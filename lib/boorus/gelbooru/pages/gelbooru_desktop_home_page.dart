@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/search/search.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
@@ -26,13 +25,6 @@ class _GelbooruDesktopHomePageState
     extends ConsumerState<GelbooruDesktopHomePage> {
   late final selectedTagController =
       SelectedTagController(tagInfo: ref.read(tagInfoProvider));
-
-  @override
-  void initState() {
-    super.initState();
-    ref.read(searchHistoryProvider.notifier).fetchHistories();
-    ref.read(postCountStateProvider(ref.readConfig).notifier).getPostCount([]);
-  }
 
   @override
   void dispose() {
@@ -88,9 +80,6 @@ class _GelbooruDesktopHomePageState
   void _onSearch(
     PostGridController postController,
   ) {
-    ref
-        .read(postCountStateProvider(ref.readConfig).notifier)
-        .getPostCount(selectedTagController.rawTags);
     ref
         .read(searchHistoryProvider.notifier)
         .addHistory(selectedTagController.rawTagsString);

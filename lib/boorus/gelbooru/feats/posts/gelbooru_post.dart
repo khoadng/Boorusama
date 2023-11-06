@@ -12,7 +12,8 @@ class GelbooruPost extends Equatable
         TranslatedMixin,
         ImageInfoMixin,
         VideoInfoMixin,
-        NoTagDetailsMixin
+        NoTagDetailsMixin,
+        TagListCheckMixin
     implements Post {
   const GelbooruPost({
     required this.format,

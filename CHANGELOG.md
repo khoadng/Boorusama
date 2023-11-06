@@ -1,3 +1,11 @@
+# 3.7.0
+- Introduce custom filename formatting for downloaded files, which you can find in profile settings.
+- Improve bookmark management, you can now filter and sort bookmarks.
+- Allow the import/export of bookmarks as a file.
+- Make search suggestions more responsive.
+- [Danbooru] Add artist search page.
+- Performance improvements and bug fixes.
+
 # 3.6.0
 - Add tag highlighing for various sites
 - [Danbooru] Add support tag editting

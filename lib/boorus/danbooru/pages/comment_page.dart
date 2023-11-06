@@ -88,7 +88,9 @@ class _CommentPageState extends ConsumerState<CommentPage> {
               )
             : null,
         body: comments.toOption().fold(
-              () => const SizedBox.shrink(),
+              () => const Center(
+                child: CircularProgressIndicator.adaptive(),
+              ),
               (comments) => GestureDetector(
                 onTap: () => isEditing.value = false,
                 child: Column(

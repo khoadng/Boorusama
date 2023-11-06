@@ -1,7 +1,5 @@
-export 'count/post_count_notifier.dart';
 export 'count/post_count_provider.dart';
 export 'count/post_count_repository.dart';
-export 'count/post_count_state.dart';
 export 'details.dart';
 export 'filter.dart';
 export 'media_info_mixin.dart';

@@ -6,21 +6,27 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/gelbooru/feats/comments/comments.dart';
 import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
+import 'package:boorusama/foundation/path.dart';
 import 'pages/create_gelbooru_config_page.dart';
 import 'pages/gelbooru_artist_page.dart';
 import 'pages/gelbooru_home_page.dart';
 import 'pages/gelbooru_post_details_desktop_page.dart';
 import 'pages/gelbooru_post_details_page.dart';
+
+const kGelbooruCustomDownloadFileNameFormat =
+    '{id}_{md5:maxlength=8}.{extension}';
 
 final gelbooruClientProvider =
     Provider.family<GelbooruClient, BooruConfig>((ref, booruConfig) {
@@ -132,7 +138,12 @@ class GelbooruBuilder
         backgroundColor,
       }) =>
           CreateGelbooruConfigPage(
-            config: BooruConfig.defaultConfig(booruType: booruType, url: url),
+            config: BooruConfig.defaultConfig(
+              booruType: booruType,
+              url: url,
+              customDownloadFileNameFormat:
+                  kGelbooruCustomDownloadFileNameFormat,
+            ),
             backgroundColor: backgroundColor,
           );
 
@@ -162,8 +173,16 @@ class GelbooruBuilder
       (query) => autocompleteRepo.getAutocomplete(query);
 
   @override
-  PostCountFetcher? get postCountFetcher =>
-      (tags) => client.countPosts(tags: tags);
+  PostCountFetcher? get postCountFetcher => (config, tags) {
+        final tag = booruFilterConfigToGelbooruTag(config.ratingFilter);
+
+        return client.getPosts(
+          tags: [
+            ...tags,
+            if (tag != null) tag,
+          ],
+        ).then((value) => value.count);
+      };
 
   @override
   SearchPageBuilder get searchPageBuilder =>
@@ -195,6 +214,29 @@ class GelbooruBuilder
       (context, useAppBar, postId) => GelbooruCommentPage(
             postId: postId,
           );
+
+  @override
+  DownloadFilenameGenerator get downloadFilenameBuilder =>
+      DownloadFileNameBuilder(
+        defaultFileNameFormat: kGelbooruCustomDownloadFileNameFormat,
+        defaultBulkDownloadFileNameFormat:
+            kGelbooruCustomDownloadFileNameFormat,
+        sampleData: kDanbooruPostSamples,
+        tokenHandlers: {
+          'id': (post, config) => post.id.toString(),
+          'tags': (post, config) => post.tags.join(' '),
+          'extension': (post, config) =>
+              extension(config.downloadUrl).substring(1),
+          'width': (post, config) => post.width.toString(),
+          'height': (post, config) => post.height.toString(),
+          'mpixels': (post, config) => post.mpixels.toString(),
+          'aspect_ratio': (post, config) => post.aspectRatio.toString(),
+          'md5': (post, config) => post.md5,
+          'source': (post, config) => config.downloadUrl,
+          'rating': (post, config) => post.rating.name,
+          'index': (post, config) => config.index?.toString(),
+        },
+      );
 }
 
 class GelbooruSearchPage extends ConsumerWidget {

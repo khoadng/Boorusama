@@ -2,6 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/downloads/downloads.dart';
@@ -9,6 +10,7 @@ import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
 import 'package:boorusama/foundation/permissions.dart';
 import 'package:boorusama/utils/duration_utils.dart';
+import 'package:boorusama/widgets/toast.dart';
 
 const _serviceName = 'Bulk Download Manager';
 
@@ -51,6 +53,7 @@ class BulkDownloadManagerNotifier extends FamilyNotifier<void, BooruConfig> {
     final deviceInfo = ref.read(deviceInfoProvider);
     final permission = await checkMediaPermissions(deviceInfo);
     final storagePath = ref.read(bulkDownloadOptionsProvider).storagePath;
+    final settings = ref.read(settingsProvider);
 
     logger.logI(_serviceName,
         'Download requested for "$tags" at "$storagePath" with permission status: $permission');
@@ -67,7 +70,13 @@ class BulkDownloadManagerNotifier extends FamilyNotifier<void, BooruConfig> {
 
     bulkDownloadStatus.state = BulkDownloadManagerStatus.downloadInProgress;
 
-    final fileNameGenerator = ref.read(downloadFileNameGeneratorProvider(arg));
+    final fileNameBuilder = ref.readBooruBuilder(arg)?.downloadFilenameBuilder;
+
+    if (fileNameBuilder == null) {
+      logger.logE('Bulk Download', 'No file name builder found, aborting...');
+      showErrorToast('Download aborted, cannot create file name');
+      return;
+    }
 
     try {
       var page = 1;
@@ -77,15 +86,16 @@ class BulkDownloadManagerNotifier extends FamilyNotifier<void, BooruConfig> {
       while (itemStack.isNotEmpty) {
         final items = itemStack.removeLast();
 
-        for (var item in items) {
-          final downloadUrl = ref.read(downloadUrlProvider(item));
+        for (var index = 0; index < items.length; index++) {
+          final item = items[index];
+          final downloadUrl = getDownloadFileUrl(item, settings);
           if (downloadUrl.isEmpty) continue;
 
           downloader.enqueueDownload(
             url: downloadUrl,
             path: storagePath,
-            fileNameBuilder: () =>
-                fileNameGenerator.generateFor(item, downloadUrl),
+            fileNameBuilder: () => fileNameBuilder
+                .generateForBulkDownload(settings, arg, item, index: index),
           );
 
           ref.read(bulkDownloadThumbnailsProvider.notifier).state = {

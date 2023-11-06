@@ -371,7 +371,7 @@ enum BooruType {
 
 extension BooruTypeX on BooruType {
   String stringify() => switch (this) {
-        BooruType.unknown => '<UNKNOWN>',
+        BooruType.unknown => 'UNKNOWN',
         BooruType.danbooru => 'Danbooru',
         BooruType.gelbooruV1 => 'Gelbooru v1',
         BooruType.gelbooru => 'Gelbooru',

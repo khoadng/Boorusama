@@ -32,6 +32,8 @@ class _CreatePhilomenaConfigPageState
     extends ConsumerState<CreatePhilomenaConfigPage> {
   late String configName = widget.config.name;
   late String key = widget.config.apiKey ?? '';
+  late String? customDownloadFileNameFormat =
+      widget.config.customDownloadFileNameFormat;
 
   @override
   Widget build(BuildContext context) {
@@ -68,6 +70,12 @@ class _CreatePhilomenaConfigPageState
                 ),
               ),
               const SizedBox(height: 16),
+              // CreateBooruCustomDownloadFileNameField(
+              //   format: customDownloadFileNameFormat,
+              //   onChanged: (value) =>
+              //       setState(() => customDownloadFileNameFormat = value),
+              // ),
+              // const SizedBox(height: 16),
               CreateBooruSubmitButton(
                 onSubmit: allowSubmit() ? submit : null,
               ),
@@ -93,6 +101,8 @@ class _CreatePhilomenaConfigPageState
             hideDeleted: false,
             ratingFilter: BooruConfigRatingFilter.none,
             url: widget.config.url,
+            customDownloadFileNameFormat: customDownloadFileNameFormat,
+            customBulkDownloadFileNameFormat: null,
           ),
         );
     context.pop();

@@ -65,7 +65,6 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
 
   @override
   Widget build(BuildContext context) {
-    final histories = ref.watch(searchHistoryProvider);
     final favoritesNotifier = ref.watch(favoriteTagsProvider.notifier);
 
     return FadeTransition(
@@ -105,26 +104,27 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
               if (widget.trendingBuilder != null) ...[
                 widget.trendingBuilder!.call(context),
               ],
-              SearchHistorySection(
-                histories: histories.histories,
-                onHistoryTap: (history) {
-                  _onHistoryTap(history, ref);
-                  widget.onHistoryTap?.call(history);
-                },
-                onHistoryRemoved: (value) => _onHistoryRemoved(value),
-                onHistoryCleared: () => _onHistoryCleared(),
-                onFullHistoryRequested: () {
-                  goToSearchHistoryPage(
-                    context,
-                    onClear: () => _onHistoryCleared(),
-                    onRemove: (value) => _onHistoryRemoved(value),
-                    onTap: (value) {
-                      context.navigator.pop();
-                      _onHistoryTap(value, ref);
-                    },
-                  );
-                },
-              ),
+              ref.watch(searchHistoryProvider).maybeWhen(
+                    data: (histories) => SearchHistorySection(
+                      histories: histories.histories,
+                      onHistoryTap: (history) {
+                        _onHistoryTap(history, ref);
+                        widget.onHistoryTap?.call(history);
+                      },
+                      onFullHistoryRequested: () {
+                        goToSearchHistoryPage(
+                          context,
+                          onClear: () => _onHistoryCleared(),
+                          onRemove: (value) => _onHistoryRemoved(value),
+                          onTap: (value) {
+                            context.navigator.pop();
+                            _onHistoryTap(value, ref);
+                          },
+                        );
+                      },
+                    ),
+                    orElse: () => const SizedBox.shrink(),
+                  ),
             ],
           ),
         ),

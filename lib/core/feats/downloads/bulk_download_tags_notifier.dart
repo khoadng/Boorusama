@@ -10,6 +10,10 @@ class BulkDownloadTagsNotifier extends Notifier<List<String>> {
     return [];
   }
 
+  void clear() {
+    state = [];
+  }
+
   void addTag(String tag) {
     final currentManagerStatus = ref.read(bulkDownloadManagerStatusProvider);
 

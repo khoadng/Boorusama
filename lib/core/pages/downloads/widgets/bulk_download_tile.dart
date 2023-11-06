@@ -13,7 +13,6 @@ import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 
@@ -63,7 +62,7 @@ class BulkDownloadTile extends ConsumerWidget {
                       },
                       Chip(
                         visualDensity: const ShrinkVisualDensity(),
-                        label: Text(extension(data.url)),
+                        label: Text(sanitizedExtension(data.url)),
                       ),
                       const SizedBox(width: 4),
                       if (fileSizes[data.url] != null &&

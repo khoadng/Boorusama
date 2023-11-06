@@ -29,6 +29,7 @@ import 'pages/add_to_favorite_group_page.dart';
 import 'pages/blacklisted_tags_page.dart';
 import 'pages/comment_create_page.dart';
 import 'pages/comment_update_page.dart';
+import 'pages/danbooru_artist_search_page.dart';
 import 'pages/danbooru_character_page.dart';
 import 'pages/danbooru_dmail_page.dart';
 import 'pages/danbooru_forum_page.dart';
@@ -105,6 +106,12 @@ void goToBlacklistedTagPage(BuildContext context) {
 void goToDmailPage(BuildContext context) {
   context.navigator.push(MaterialPageRoute(
     builder: (_) => const DanbooruDmailPage(),
+  ));
+}
+
+void goToArtistSearchPage(BuildContext context) {
+  context.navigator.push(MaterialPageRoute(
+    builder: (_) => const DanbooruArtistSearchPage(),
   ));
 }
 

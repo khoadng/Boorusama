@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/danbooru/pages/create_danbooru_config_page.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 import 'package:boorusama/boorus/e621/feats/tags/e621_tag_category.dart';
 import 'package:boorusama/boorus/providers.dart';
@@ -14,10 +13,13 @@ import 'package:boorusama/clients/e621/e621_client.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/comments/comment.dart';
+import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/comment_page_scaffold.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
+import 'package:boorusama/foundation/path.dart';
+import 'pages/create_e621_config_page.dart';
 import 'pages/e621_artist_page.dart';
 import 'pages/e621_favorites_page.dart';
 import 'pages/e621_home_page.dart';
@@ -62,6 +64,48 @@ final e621AutocompleteRepoProvider =
   );
 });
 
+const kE621PostSamples = [
+  {
+    'id': '123456',
+    'artist': 'artist_x_(abc) artist_2',
+    'character': 'sonic_the_hedgehog classic_sonic',
+    'copyright': 'sonic_the_hedgehog_(comics) sonic_the_hedgehog_(series)',
+    'general': 'male solo',
+    'meta': 'highres translated',
+    'species': 'mammal hedgehog',
+    'tags':
+        'male solo sonic_the_hedgehog classic_sonic sonic_the_hedgehog_(comics) sonic_the_hedgehog_(series) highres translated mammal hedgehog',
+    'extension': 'jpg',
+    'md5': '9cf364e77f46183e2ebd75de757488e2',
+    'width': '2232',
+    'height': '1000',
+    'aspect_ratio': '0.44776119402985076',
+    'mpixels': '2.232356356345635',
+    'source': 'https://example.com/filename.jpg',
+    'rating': 'general',
+    'index': '0',
+  },
+  {
+    'id': '654321',
+    'artist': 'artist_3',
+    'character': 'classic_sonic',
+    'copyright': 'sega',
+    'general': 'male solo',
+    'meta': 'highres translated',
+    'species': 'mammal hedgehog',
+    'tags': 'male solo classic_sonic sega highres translated mammal hedgehog',
+    'extension': 'png',
+    'md5': '2ebd75de757488e29cf364e77f46183e',
+    'width': '1334',
+    'height': '2232',
+    'aspect_ratio': '0.598744769874477',
+    'mpixels': '2.976527856856785678',
+    'source': 'https://example.com/example_filename.jpg',
+    'rating': 'general',
+    'index': '1',
+  }
+];
+
 class E621Builder
     with PostCountNotSupportedMixin, DefaultThumbnailUrlMixin
     implements BooruBuilder {
@@ -85,8 +129,13 @@ class E621Builder
         booruType, {
         backgroundColor,
       }) =>
-          CreateDanbooruConfigPage(
-            config: BooruConfig.defaultConfig(booruType: booruType, url: url),
+          CreateE621ConfigPage(
+            config: BooruConfig.defaultConfig(
+              booruType: booruType,
+              url: url,
+              customDownloadFileNameFormat:
+                  kBoorusamaCustomDownloadFileNameFormat,
+            ),
             backgroundColor: backgroundColor,
           );
 
@@ -100,7 +149,7 @@ class E621Builder
         config, {
         backgroundColor,
       }) =>
-          CreateDanbooruConfigPage(
+          CreateE621ConfigPage(
             config: config,
             backgroundColor: backgroundColor,
           );
@@ -180,6 +229,35 @@ class E621Builder
 
   @override
   NoteFetcher? get noteFetcher => (postId) => noteRepo.getNotes(postId);
+
+  @override
+  DownloadFilenameGenerator get downloadFilenameBuilder =>
+      DownloadFileNameBuilder<E621Post>(
+        defaultFileNameFormat: kBoorusamaCustomDownloadFileNameFormat,
+        defaultBulkDownloadFileNameFormat:
+            kBoorusamaBulkDownloadCustomFileNameFormat,
+        sampleData: kE621PostSamples,
+        tokenHandlers: {
+          'id': (post, config) => post.id.toString(),
+          'artist': (post, config) => post.artistTags.join(' '),
+          'character': (post, config) => post.characterTags.join(' '),
+          'copyright': (post, config) => post.copyrightTags.join(' '),
+          'general': (post, config) => post.generalTags.join(' '),
+          'meta': (post, config) => post.metaTags.join(' '),
+          'species': (post, config) => post.speciesTags.join(' '),
+          'tags': (post, config) => post.tags.join(' '),
+          'extension': (post, config) =>
+              extension(config.downloadUrl).substring(1),
+          'width': (post, config) => post.width.toString(),
+          'height': (post, config) => post.height.toString(),
+          'mpixels': (post, config) => post.mpixels.toString(),
+          'aspect_ratio': (post, config) => post.aspectRatio.toString(),
+          'md5': (post, config) => post.md5,
+          'source': (post, config) => config.downloadUrl,
+          'rating': (post, config) => post.rating.name,
+          'index': (post, config) => config.index?.toString(),
+        },
+      );
 }
 
 class E621CommentPage extends ConsumerWidget {

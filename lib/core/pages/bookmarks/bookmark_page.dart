@@ -3,160 +3,79 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/feats/bookmarks/bookmark_notifier.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
-import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import 'bookmark_appbar.dart';
+import 'bookmark_scroll_view.dart';
+import 'bookmark_search_bar.dart';
+import 'providers.dart';
 
 class BookmarkPage extends ConsumerStatefulWidget {
-  const BookmarkPage({Key? key}) : super(key: key);
+  const BookmarkPage({
+    super.key,
+  });
 
   @override
   ConsumerState<BookmarkPage> createState() => _BookmarkPageState();
 }
 
-class _BookmarkPageState extends ConsumerState<BookmarkPage>
-    with EditableMixin {
+class _BookmarkPageState extends ConsumerState<BookmarkPage> {
+  final _searchController = TextEditingController();
+  final scrollController = AutoScrollController();
+  final focusNode = FocusNode();
+
+  @override
+  void dispose() {
+    super.dispose();
+    _searchController.dispose();
+    scrollController.dispose();
+    focusNode.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController.addListener(() {
+      ref.read(selectedTagsProvider.notifier).state = _searchController.text;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final settings = ref.watch(settingsProvider);
-
-    return WillPopScope(
-      onWillPop: () async {
-        if (edit) {
-          endEditMode();
-          return false;
-        }
-
-        return true;
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Bookmarks'),
-          automaticallyImplyLeading: !edit,
-          leading: edit
-              ? IconButton(
-                  onPressed: () => endEditMode(),
-                  icon: Icon(
-                    Icons.check,
-                    color: context.theme.colorScheme.primary,
-                  ),
-                )
-              : null,
-          actions: [
-            if (!edit)
-              PopupMenuButton<String>(
-                onSelected: (value) {
-                  switch (value) {
-                    case 'edit':
-                      startEditMode();
-                      break;
-                    case 'download_all':
-                      ref.bookmarks.downloadAllBookmarks();
-                      break;
-                    case 'export':
-                      ref.bookmarks.exportAllBookmarks();
-                      break;
-                    default:
-                  }
-                },
-                itemBuilder: (BuildContext context) {
-                  return [
-                    const PopupMenuItem(
-                      value: 'edit',
-                      child: Text('Edit'),
-                    ),
-                    const PopupMenuItem(
-                      value: 'download_all',
-                      child: Text('Download All'),
-                    ),
-                    const PopupMenuItem(
-                      value: 'export',
-                      child: Text('Export'),
-                    ),
-                  ];
-                },
+    return GestureDetector(
+      onTap: () => focusNode.unfocus(),
+      child: CustomContextMenuOverlay(
+        child: Scaffold(
+          appBar: const PreferredSize(
+            preferredSize: Size.fromHeight(kToolbarHeight),
+            child: BookmarkAppBar(),
+          ),
+          floatingActionButton: ScrollToTop(
+            scrollController: scrollController,
+            child: FloatingActionButton(
+              heroTag: null,
+              child: const FaIcon(FontAwesomeIcons.angleUp),
+              onPressed: () => scrollController.jumpTo(0),
+            ),
+          ),
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              BookmarkSearchBar(
+                focusNode: focusNode,
+                controller: _searchController,
               ),
-          ],
-        ),
-        body: Builder(
-          builder: (context) {
-            final config = ref.watchConfig;
-            final state = ref.watch(bookmarkProvider(config));
-
-            if (state.bookmarks.isEmpty) {
-              return const Center(
-                child: Text('No bookmarks'),
-              );
-            }
-
-            return CustomScrollView(
-              slivers: [
-                SliverMasonryGrid.count(
-                  crossAxisCount: switch (Screen.of(context).size) {
-                    ScreenSize.small => 2,
-                    ScreenSize.medium => 3,
-                    ScreenSize.large => 5,
-                    ScreenSize.veryLarge => 6,
-                  },
-                  mainAxisSpacing: settings.imageGridSpacing,
-                  crossAxisSpacing: settings.imageGridSpacing,
-                  childCount: state.bookmarks.length,
-                  itemBuilder: (context, index) {
-                    final bookmark = state.bookmarks[index];
-                    final source = PostSource.from(bookmark.sourceUrl);
-
-                    return GestureDetector(
-                      onTap: () =>
-                          context.go('/bookmarks/details?index=$index'),
-                      child: Stack(
-                        children: [
-                          BooruImage(
-                            borderRadius: BorderRadius.circular(
-                                settings.imageBorderRadius),
-                            aspectRatio: bookmark.aspectRatio,
-                            fit: BoxFit.cover,
-                            imageUrl: bookmark.isVideo
-                                ? bookmark.thumbnailUrl
-                                : bookmark.sampleUrl,
-                            placeholderUrl: bookmark.thumbnailUrl,
-                          ),
-                          source.whenWeb(
-                            (url) => Positioned(
-                              bottom: 5,
-                              right: 5,
-                              child: BooruLogo(
-                                source: url,
-                              ),
-                            ),
-                            () => const SizedBox(),
-                          ),
-                          if (edit)
-                            Positioned(
-                              top: 5,
-                              right: 5,
-                              child: CircularIconButton(
-                                icon: const Icon(Icons.close),
-                                onPressed: () => ref.bookmarks
-                                    .removeBookmarkWithToast(bookmark),
-                              ),
-                            ),
-                        ],
-                      ),
-                    );
-                  },
+              Expanded(
+                child: BookmarkScrollView(
+                  controller: scrollController,
                 ),
-              ],
-            );
-          },
+              ),
+            ],
+          ),
         ),
       ),
     );

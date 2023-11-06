@@ -78,41 +78,44 @@ class _PopularContent extends ConsumerWidget {
       },
     );
 
-    return Column(
-      children: [
-        Expanded(
-          child: DanbooruInfinitePostList(
-            errors: errors,
-            controller: controller,
-            sliverHeaderBuilder: (context) => [
-              ExploreSliverAppBar(
-                title: 'explore.popular'.tr(),
-              ),
-              SliverList(
-                delegate: SliverChildListDelegate(
-                  [
-                    TimeScaleToggleSwitch(
-                      onToggle: (scale) =>
-                          ref.read(timeScaleProvider.notifier).state = scale,
-                    ),
-                    const SizedBox(height: 20),
-                  ],
+    return SafeArea(
+      child: Column(
+        children: [
+          Expanded(
+            child: DanbooruInfinitePostList(
+              errors: errors,
+              controller: controller,
+              safeArea: false,
+              sliverHeaderBuilder: (context) => [
+                ExploreSliverAppBar(
+                  title: 'explore.popular'.tr(),
                 ),
-              ),
-            ],
+                SliverList(
+                  delegate: SliverChildListDelegate(
+                    [
+                      TimeScaleToggleSwitch(
+                        onToggle: (scale) =>
+                            ref.read(timeScaleProvider.notifier).state = scale,
+                      ),
+                      const SizedBox(height: 20),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-        Container(
-          color: context.theme.bottomNavigationBarTheme.backgroundColor,
-          child: DateTimeSelector(
-            onDateChanged: (date) =>
-                ref.read(dateProvider.notifier).state = date,
-            date: scaleAndTime.date,
-            scale: scaleAndTime.scale,
-            backgroundColor: Colors.transparent,
+          Container(
+            color: context.theme.bottomNavigationBarTheme.backgroundColor,
+            child: DateTimeSelector(
+              onDateChanged: (date) =>
+                  ref.read(dateProvider.notifier).state = date,
+              date: scaleAndTime.date,
+              scale: scaleAndTime.scale,
+              backgroundColor: Colors.transparent,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

@@ -8,13 +8,14 @@ import 'package:boorusama/foundation/image.dart';
 import 'package:boorusama/foundation/video.dart';
 
 abstract class Post extends Equatable
-    with MediaInfoMixin, ImageInfoMixin, VideoInfoMixin
+    with MediaInfoMixin, ImageInfoMixin, VideoInfoMixin, TagListCheckMixin
     implements TagDetails {
   int get id;
   DateTime? get createdAt;
   String get thumbnailImageUrl;
   String get sampleImageUrl;
   String get originalImageUrl;
+  @override
   List<String> get tags;
   Rating get rating;
   bool get hasComment;
@@ -41,7 +42,8 @@ class SimplePost extends Equatable
         TranslatedMixin,
         ImageInfoMixin,
         VideoInfoMixin,
-        NoTagDetailsMixin
+        NoTagDetailsMixin,
+        TagListCheckMixin
     implements Post {
   SimplePost({
     required this.id,
@@ -166,6 +168,10 @@ extension PostX on Post {
         downvotes: downvotes,
       ),
       pattern);
+}
+
+mixin TagListCheckMixin {
+  List<String> get tags;
 
   bool get isAI => tags.any((e) => _kAiTags.contains(e.toLowerCase()));
 }

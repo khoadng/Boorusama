@@ -10,7 +10,6 @@ import 'package:boorusama/boorus/danbooru/pages/widgets/search/related_tag_secti
 import 'package:boorusama/boorus/danbooru/pages/widgets/widgets.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/search/search.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -26,14 +25,6 @@ class DanbooruDesktopHomePage extends ConsumerStatefulWidget {
 class _DanbooruHomePageState extends ConsumerState<DanbooruDesktopHomePage> {
   late final selectedTagController =
       SelectedTagController(tagInfo: ref.read(tagInfoProvider));
-
-  @override
-  void initState() {
-    super.initState();
-    final config = ref.readConfig;
-    ref.read(searchHistoryProvider.notifier).fetchHistories();
-    ref.read(postCountStateProvider(config).notifier).getPostCount([]);
-  }
 
   @override
   void dispose() {
@@ -100,9 +91,6 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruDesktopHomePage> {
   void _onSearch(
     PostGridController postController,
   ) {
-    ref
-        .read(postCountStateProvider(ref.readConfig).notifier)
-        .getPostCount(selectedTagController.rawTags);
     ref
         .read(searchHistoryProvider.notifier)
         .addHistory(selectedTagController.rawTagsString);

@@ -30,7 +30,8 @@ final gelbooruPostRepoProvider =
             page: page,
             limit: limit,
           )
-          .then((value) => value.map(gelbooruPostDtoToGelbooruPost).toList()),
+          .then((value) =>
+              value.posts.map(gelbooruPostDtoToGelbooruPost).toList()),
       getSettings: () async => ref.read(settingsProvider),
     );
   },

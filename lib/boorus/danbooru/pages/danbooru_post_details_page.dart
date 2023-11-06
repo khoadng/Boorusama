@@ -1,6 +1,5 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,27 +9,22 @@ import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/artist_commentaries/artist_commentaries.dart';
 import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/notes/notes.dart';
+import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/feats/tags/booru_tag_type_store.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/post_details_page_scaffold.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
-import 'package:boorusama/widgets/context_menu.dart';
 import 'package:boorusama/widgets/sliver_sized_box.dart';
-import 'tag_edit_page.dart';
+import 'widgets/danbooru_tags_tile.dart';
 import 'widgets/details/danbooru_more_action_button.dart';
 import 'widgets/details/danbooru_post_action_toolbar.dart';
 import 'widgets/details/danbooru_recommend_artist_list.dart';
-import 'widgets/details/danbooru_recommend_character_list.dart';
 import 'widgets/details/pool_tiles.dart';
 
 class DanbooruPostDetailsPage extends ConsumerStatefulWidget {
@@ -56,6 +50,8 @@ class _DanbooruPostDetailsPageState
 
   @override
   Widget build(BuildContext context) {
+    final settings = ref.watch(settingsProvider);
+
     return PostDetailsPageScaffold(
       posts: posts,
       initialIndex: widget.intitialIndex,
@@ -63,31 +59,12 @@ class _DanbooruPostDetailsPageState
       showSourceTile: false,
       onTagTap: (tag) => goToSearchPage(context, tag: tag),
       toolbarBuilder: (context, post) => DanbooruPostActionToolbar(post: post),
-      sliverArtistPostsBuilder: (context, post) => ref
-          .watch(danbooruPostDetailsArtistProvider(post))
-          .maybeWhen(
-            data: (artists) => DanbooruRecommendArtistList(artists: artists),
-            orElse: () => const SliverToBoxAdapter(),
-          ),
+      sliverArtistPostsBuilder: (context, post) =>
+          DanbooruArtistPostList(post: post),
       sliverCharacterPostsBuilder: (context, post) =>
-          ref.watch(danbooruPostDetailsCharacterProvider(post)).maybeWhen(
-                data: (characters) =>
-                    DanbooruRecommendCharacterList(characters: characters),
-                orElse: () => const SliverToBoxAdapter(),
-              ),
+          DanbooruCharacterPostList(post: post),
       sliverRelatedPostsBuilder: (context, post) =>
-          ref.watch(danbooruPostDetailsChildrenProvider(post)).maybeWhen(
-                data: (posts) => RelatedPostsSection(
-                  posts: posts,
-                  imageUrl: (item) => item.url720x720,
-                  onTap: (index) => goToPostDetailsPage(
-                    context: context,
-                    posts: posts,
-                    initialIndex: index,
-                  ),
-                ),
-                orElse: () => const SliverSizedBox.shrink(),
-              ),
+          DanbooruRelatedPostsSection(post: post),
       poolTileBuilder: (context, post) =>
           ref.watch(danbooruPostDetailsPoolsProvider(post.id)).maybeWhen(
                 data: (pools) => PoolTiles(pools: pools),
@@ -95,13 +72,16 @@ class _DanbooruPostDetailsPageState
               ),
       statsTileBuilder: (context, post) => DanbooruPostStatsTile(post: post),
       onExpanded: (post) => post.loadDetailsFrom(ref),
-      tagListBuilder: (context, post) => TagsTile(post: post),
+      tagListBuilder: (context, post) => DanbooruTagsTile(post: post),
       infoBuilder: (context, post) => SimpleInformationSection(
         post: post,
         showSource: true,
       ),
       artistInfoBuilder: (context, post) => DanbooruArtistSection(post: post),
-      swipeImageUrlBuilder: (post) => post.url720x720,
+      swipeImageUrlBuilder: (post) => switch (settings.imageQuality) {
+        ImageQuality.highest || ImageQuality.original => post.sampleImageUrl,
+        _ => post.url720x720,
+      },
       placeholderImageUrlBuilder: (post, currentPage) =>
           currentPage == widget.intitialIndex && post.isTranslated
               ? null
@@ -215,9 +195,8 @@ final danbooruTagGroupsProvider = FutureProvider.autoDispose
   return createTagGroupItems(tags);
 });
 
-// ignore: prefer-single-widget-per-file
-class TagsTile extends ConsumerWidget {
-  const TagsTile({
+class DanbooruArtistPostList extends ConsumerWidget {
+  const DanbooruArtistPostList({
     super.key,
     required this.post,
   });
@@ -226,98 +205,78 @@ class TagsTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
-    final tagItems = ref.watch(danbooruTagGroupsProvider(post));
-    final tagDetails = ref.watch(danbooruTagListProvider(config))[post.id];
-    final count = tagDetails?.allTags.length ?? post.tags.length;
+    return ref.watch(danbooruPostDetailsArtistProvider(post)).maybeWhen(
+          data: (artists) => DanbooruRecommendArtistList(artists: artists),
+          orElse: () => const SliverToBoxAdapter(),
+        );
+  }
+}
 
-    return Theme(
-      data: context.theme.copyWith(dividerColor: Colors.transparent),
-      child: ExpansionTile(
-        title: Text('$count tags'),
-        trailing: config.hasLoginDetails()
-            ? ElevatedButton(
-                onPressed: tagItems.maybeWhen(
-                  data: (data) =>
-                      () => context.navigator.push(MaterialPageRoute(
-                            builder: (context) => TagEditPage(
-                              imageUrl: post.url720x720,
-                              aspectRatio: post.aspectRatio ?? 1,
-                              rating: tagDetails != null
-                                  ? tagDetails.rating
-                                  : post.rating,
-                              postId: post.id,
-                              tags: data
-                                  .map((e) => e.tags.map((e) => e.rawName))
-                                  .expand((e) => e)
-                                  .toList(),
-                            ),
-                          )),
-                  orElse: () => null,
-                ),
-                child: const Text('Edit'),
-              )
-            : null,
-        controlAffinity: ListTileControlAffinity.leading,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: PostTagList(
-              tags: tagItems.maybeWhen(
-                data: (data) => data,
-                orElse: () => null,
-              ),
-              itemBuilder: (context, tag) => ContextMenu(
-                items: [
-                  PopupMenuItem(
-                    value: 'wiki',
-                    child: const Text('post.detail.open_wiki').tr(),
+class DanbooruCharacterPostList extends ConsumerWidget {
+  const DanbooruCharacterPostList({
+    super.key,
+    required this.post,
+  });
+
+  final DanbooruPost post;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tags = post.characterTags.take(2).toList();
+
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+        (context, index) => ref
+            .watch(danbooruPostDetailsCharacterProvider(tags[index]))
+            .maybeWhen(
+              data: (r) {
+                if (r.posts.isEmpty) return const SizedBox();
+
+                return RecommendPostSection(
+                  grid: false,
+                  header: ListTile(
+                    onTap: () => goToCharacterPage(context, tags[index]),
+                    title: Text(r.title),
+                    trailing: const Icon(Icons.keyboard_arrow_right_rounded),
                   ),
-                  PopupMenuItem(
-                    value: 'add_to_favorites',
-                    child: const Text('post.detail.add_to_favorites').tr(),
+                  posts: r.posts,
+                  onTap: (postIdx) => goToPostDetailsPage(
+                    context: context,
+                    posts: r.posts,
+                    initialIndex: index,
                   ),
-                  if (config.hasLoginDetails())
-                    PopupMenuItem(
-                      value: 'blacklist',
-                      child: const Text('post.detail.add_to_blacklist').tr(),
-                    ),
-                  if (config.hasLoginDetails())
-                    PopupMenuItem(
-                      value: 'copy_and_move_to_saved_search',
-                      child: const Text(
-                        'post.detail.copy_and_open_saved_search',
-                      ).tr(),
-                    ),
-                ],
-                onSelected: (value) {
-                  if (value == 'blacklist') {
-                    ref
-                        .read(danbooruBlacklistedTagsProvider(config).notifier)
-                        .addWithToast(tag: tag.rawName);
-                  } else if (value == 'wiki') {
-                    launchWikiPage(config.url, tag.rawName);
-                  } else if (value == 'copy_and_move_to_saved_search') {
-                    Clipboard.setData(
-                      ClipboardData(text: tag.rawName),
-                    ).then((value) => goToSavedSearchEditPage(context));
-                  } else if (value == 'add_to_favorites') {
-                    ref.read(favoriteTagsProvider.notifier).add(tag.rawName);
-                  }
-                },
-                child: GestureDetector(
-                  onTap: () => goToSearchPage(context, tag: tag.rawName),
-                  child: PostTagListChip(
-                    tag: tag,
-                    maxTagWidth: null,
-                  ),
-                ),
-              ),
+                  imageUrl: (post) => post.url360x360,
+                );
+              },
+              orElse: () => const SizedBox.shrink(),
             ),
-          ),
-          const SizedBox(height: 8),
-        ],
+        childCount: tags.length,
       ),
     );
+  }
+}
+
+class DanbooruRelatedPostsSection extends ConsumerWidget {
+  const DanbooruRelatedPostsSection({
+    super.key,
+    required this.post,
+  });
+
+  final DanbooruPost post;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ref.watch(danbooruPostDetailsChildrenProvider(post)).maybeWhen(
+          data: (posts) => RelatedPostsSection(
+            posts: posts,
+            imageUrl: (item) => item.url720x720,
+            onTap: (index) => goToPostDetailsPage(
+              context: context,
+              posts: posts,
+              initialIndex: index,
+            ),
+          ),
+          orElse: () => const SliverSizedBox.shrink(),
+        );
   }
 }

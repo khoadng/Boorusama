@@ -21,14 +21,14 @@ import 'package:boorusama/widgets/sliver_sized_box.dart';
 
 class SliverPostGrid extends ConsumerWidget {
   const SliverPostGrid({
-    Key? key,
+    super.key,
     required this.itemBuilder,
     required this.refreshing,
     required this.error,
     required this.data,
     required this.onRetry,
     this.constraints,
-  }) : super(key: key);
+  });
 
   final IndexedWidgetBuilder itemBuilder;
   final bool refreshing;

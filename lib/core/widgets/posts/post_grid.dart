@@ -45,6 +45,7 @@ class PostGrid<T extends Post> extends ConsumerStatefulWidget {
     required this.controller,
     this.refreshAtStart = true,
     this.enablePullToRefresh = true,
+    this.safeArea = true,
   });
 
   final VoidCallback? onLoadMore;
@@ -58,6 +59,7 @@ class PostGrid<T extends Post> extends ConsumerStatefulWidget {
 
   final bool refreshAtStart;
   final bool enablePullToRefresh;
+  final bool safeArea;
 
   final ItemWidgetBuilder<T> itemBuilder;
   final FooterBuilder<T>? footerBuilder;
@@ -193,7 +195,11 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
             onRefresh: () => controller.refresh(),
             blacklistHeader: _buildConfigHeader(
                 !isMobilePlatform() ? Axis.vertical : Axis.horizontal),
-            builder: (context, header) => SafeArea(
+            builder: (context, header) => ConditionalParentWidget(
+              condition: widget.safeArea,
+              conditionalBuilder: (child) => SafeArea(
+                child: child,
+              ),
               child: MultiSelectWidget<T>(
                 footerBuilder: widget.footerBuilder,
                 multiSelectController: _multiSelectController,

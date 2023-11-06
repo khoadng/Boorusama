@@ -29,7 +29,7 @@ const defaultEpsilon = 1 / 1000;
 class Split extends StatefulWidget {
   /// Builds a split oriented along [axis].
   Split({
-    Key? key,
+    super.key,
     required this.axis,
     required this.children,
     required this.initialFractions,
@@ -38,8 +38,7 @@ class Split extends StatefulWidget {
     this.ignoreFractionChange = false,
   })  : assert(children.length >= 2),
         assert(initialFractions.length >= 2),
-        assert(children.length == initialFractions.length),
-        super(key: key) {
+        assert(children.length == initialFractions.length) {
     _verifyFractionsSumTo1(initialFractions);
     if (minSizes != null) {
       assert(minSizes!.length == children.length);

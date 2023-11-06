@@ -21,7 +21,7 @@ double getTopActionIconAlignValue() => hasStatusBar() ? -0.92 : -1;
 
 class DetailsPage<T> extends ConsumerStatefulWidget {
   const DetailsPage({
-    Key? key,
+    super.key,
     this.onPageChanged,
     required this.intitialIndex,
     required this.targetSwipeDownBuilder,
@@ -32,7 +32,7 @@ class DetailsPage<T> extends ConsumerStatefulWidget {
     this.bottomSheet,
     required this.onExit,
     this.controller,
-  }) : super(key: key);
+  });
 
   final void Function(int page)? onPageChanged;
   final int intitialIndex;

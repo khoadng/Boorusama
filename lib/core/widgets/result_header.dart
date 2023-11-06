@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/posts/posts.dart';
-import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class ResultHeaderWithProvider extends ConsumerWidget {
@@ -19,21 +18,13 @@ class ResultHeaderWithProvider extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final postCountState = ref.watch(postCountProvider);
-
-    if (postCountState.isLoading(selectedTags)) {
-      return const ResultHeader(count: 0, loading: true);
-    } else if (postCountState.isEmpty(selectedTags)) {
-      return const SizedBox.shrink();
-    } else {
-      return postCountState.getPostCount(selectedTags).toOption().fold(
-            () => const SizedBox.shrink(),
-            (count) => ResultHeader(
-              count: count,
-              loading: false,
-            ),
-          );
-    }
+    return ref.watch(postCountProvider(selectedTags.join(' '))).when(
+          data: (data) => data != null
+              ? ResultHeader(count: data, loading: false)
+              : const SizedBox.shrink(),
+          error: (error, stackTrace) => const SizedBox.shrink(),
+          loading: () => const ResultHeader(count: 0, loading: true),
+        );
   }
 }
 

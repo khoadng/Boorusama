@@ -32,6 +32,7 @@ class InfinitePostListScaffold<T extends Post> extends ConsumerStatefulWidget {
     required this.controller,
     this.refreshAtStart = true,
     this.errors,
+    this.safeArea = true,
   });
 
   final VoidCallback? onLoadMore;
@@ -42,6 +43,7 @@ class InfinitePostListScaffold<T extends Post> extends ConsumerStatefulWidget {
 
   final bool extendBody;
   final double? extendBodyHeight;
+  final bool safeArea;
 
   final PostGridController<T> controller;
   final bool refreshAtStart;
@@ -99,6 +101,7 @@ class _InfinitePostListScaffoldState<T extends Post>
         controller: widget.controller,
         refreshAtStart: widget.refreshAtStart,
         scrollController: _autoScrollController,
+        safeArea: widget.safeArea,
         sliverHeaderBuilder: (context) {
           return [
             ...widget.sliverHeaderBuilder?.call(context) ?? [],

@@ -49,42 +49,34 @@ final danbooruPostDetailsArtistProvider = FutureProvider.family
 });
 
 final danbooruPostDetailsCharacterProvider = FutureProvider.family
-    .autoDispose<List<Recommend<DanbooruPost>>, DanbooruPost>(
-        (ref, post) async {
+    .autoDispose<Recommend<DanbooruPost>, String>((ref, tag) async {
   final config = ref.watchConfig;
   final repo = ref.watch(danbooruArtistCharacterPostRepoProvider(config));
   final blacklistedTags =
       await ref.watch(danbooruBlacklistedTagsProvider(config).future);
   final globalBlacklistedTags = ref.watch(globalBlacklistedTagsProvider);
 
-  final tags = post.characterTags.take(3);
-  List<Recommend<DanbooruPost>> state = [];
+  List<DanbooruPost> posts;
 
-  for (final tag in tags) {
-    List<DanbooruPost> posts;
+  posts = await repo
+      .getPosts([tag], 1)
+      .run()
+      .then((value) => value.fold((l) => [], (r) => r));
 
-    posts = await repo
-        .getPosts([tag], 1)
-        .run()
-        .then((value) => value.fold((l) => [], (r) => r));
+  posts = posts.take(30).toList();
 
-    posts = posts.take(30).toList();
-
-    state.add(Recommend(
-      type: RecommendType.character,
-      title: tag.replaceAll('_', ' '),
-      tag: tag,
-      posts: filterTags(
-        posts.where((e) => !e.isFlash).toList(),
-        {
-          if (blacklistedTags != null) ...blacklistedTags,
-          ...globalBlacklistedTags.map((e) => e.name),
-        },
-      ),
-    ));
-  }
-
-  return state;
+  return Recommend(
+    type: RecommendType.character,
+    title: tag.replaceAll('_', ' '),
+    tag: tag,
+    posts: filterTags(
+      posts.where((e) => !e.isFlash).toList(),
+      {
+        if (blacklistedTags != null) ...blacklistedTags,
+        ...globalBlacklistedTags.map((e) => e.name),
+      },
+    ),
+  );
 });
 
 final danbooruPostDetailsChildrenProvider = FutureProvider.family

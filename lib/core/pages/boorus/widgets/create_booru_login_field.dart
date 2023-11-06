@@ -7,28 +7,33 @@ import 'package:boorusama/widgets/login_field.dart';
 class CreateBooruLoginField extends StatefulWidget {
   const CreateBooruLoginField({
     super.key,
-    required this.onChanged,
+    this.onChanged,
     required this.labelText,
     this.hintText,
     this.text,
+    this.controller,
   });
 
-  final void Function(String value) onChanged;
+  final void Function(String value)? onChanged;
   final String labelText;
   final String? hintText;
   final String? text;
+  final TextEditingController? controller;
 
   @override
   State<CreateBooruLoginField> createState() => _CreateBooruLoginFieldState();
 }
 
 class _CreateBooruLoginFieldState extends State<CreateBooruLoginField> {
-  late var controller = TextEditingController(text: widget.text);
+  late var controller =
+      widget.controller ?? TextEditingController(text: widget.text);
 
   @override
   void dispose() {
     super.dispose();
-    controller.dispose();
+    if (widget.controller == null) {
+      controller.dispose();
+    }
   }
 
   @override

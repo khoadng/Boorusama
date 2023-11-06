@@ -14,10 +14,7 @@ final downloadNotificationProvider = Provider<DownloadNotifications>((ref) {
   throw UnimplementedError();
 });
 
-final downloadUrlProvider =
-    Provider.autoDispose.family<String, Post>((ref, post) {
-  final settings = ref.watch(settingsProvider);
-
+String getDownloadFileUrl(Post post, Settings settings) {
   if (post.isVideo) return post.videoUrl;
 
   return switch (settings.downloadQuality) {
@@ -25,7 +22,7 @@ final downloadUrlProvider =
     DownloadQuality.sample => post.sampleImageUrl,
     DownloadQuality.preview => post.thumbnailImageUrl,
   };
-});
+}
 
 final downloadServiceProvider = Provider.family<DownloadService, BooruConfig>(
   (ref, config) {
@@ -45,15 +42,11 @@ final downloadServiceProvider = Provider.family<DownloadService, BooruConfig>(
   ],
 );
 
-class DownloadUrlBaseNameFileNameGenerator implements FileNameGenerator<Post> {
-  @override
-  String generateFor(Post item, String fileUrl) => basename(fileUrl);
-}
+String generateMd5FileNameFor(Post item, String fileUrl) =>
+    '${item.md5}${sanitizedExtension(fileUrl)}';
 
-class Md5OnlyFileNameGenerator implements FileNameGenerator<Post> {
-  @override
-  String generateFor(Post item, String fileUrl) =>
-      '${item.md5}${extension((sanitizedUrl(fileUrl)))}';
+String sanitizedExtension(String url) {
+  return extension(sanitizedUrl(url));
 }
 
 String sanitizedUrl(String url) {

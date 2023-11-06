@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/e621/feats/posts/e621_post_provider.dart';
@@ -29,7 +28,6 @@ import 'package:boorusama/clients/shimmie2/shimmie2_client.dart';
 import 'package:boorusama/clients/zerochan/zerochan_client.dart';
 import 'package:boorusama/core/feats/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
@@ -184,30 +182,6 @@ final cacheSizeProvider =
 
 final appInfoProvider = Provider<AppInfo>((ref) {
   throw UnimplementedError();
-});
-
-final downloadFileNameGeneratorProvider =
-    Provider.family<FileNameGenerator, BooruConfig>((ref, config) {
-  switch (config.booruType) {
-    case BooruType.danbooru:
-      return BoorusamaStyledFileNameGenerator();
-    case BooruType.gelbooru || BooruType.gelbooruV2 || BooruType.gelbooruV1:
-      return DownloadUrlBaseNameFileNameGenerator();
-    case BooruType.moebooru:
-      return DownloadUrlBaseNameFileNameGenerator();
-    case BooruType.e621:
-      return Md5OnlyFileNameGenerator();
-    case BooruType.zerochan:
-      return DownloadUrlBaseNameFileNameGenerator();
-    case BooruType.unknown:
-      return DownloadUrlBaseNameFileNameGenerator();
-    case BooruType.sankaku:
-      return Md5OnlyFileNameGenerator();
-    case BooruType.philomena:
-      return Md5OnlyFileNameGenerator();
-    case BooruType.shimmie2:
-      return DownloadUrlBaseNameFileNameGenerator();
-  }
 });
 
 final tagRepoProvider = Provider.family<TagRepository, BooruConfig>(

@@ -33,39 +33,30 @@ sealed class DownloadError {
 
 final class HttpDownloadError extends DownloadError {
   HttpDownloadError({
-    required Option<String> savedPath,
-    required String fileName,
+    required super.savedPath,
+    required super.fileName,
     required this.exception,
-  }) : super(
-          savedPath: savedPath,
-          fileName: fileName,
-        );
+  });
 
   final DioException exception;
 }
 
 final class GenericDownloadError extends DownloadError {
   GenericDownloadError({
-    required Option<String> savedPath,
-    required String fileName,
+    required super.savedPath,
+    required super.fileName,
     required this.message,
-  }) : super(
-          savedPath: savedPath,
-          fileName: fileName,
-        );
+  });
 
   final String message;
 }
 
 final class FileSystemDownloadError extends DownloadError {
   FileSystemDownloadError({
-    required Option<String> savedPath,
-    required String fileName,
+    required super.savedPath,
+    required super.fileName,
     required this.error,
-  }) : super(
-          savedPath: savedPath,
-          fileName: fileName,
-        ) {
+  }) {
     if (error is PathNotFoundException) {
       type = FileSystemDownloadErrorType.directoryNotFound;
     } else {
@@ -88,13 +79,13 @@ typedef DownloadPathOrError = TaskEither<DownloadError, String>;
 abstract class DownloadService {
   DownloadPathOrError download({
     required String url,
-    required DownloadFileNameBuilder fileNameBuilder,
+    required DownloadFilenameBuilder fileNameBuilder,
   });
 
   DownloadPathOrError downloadCustomLocation({
     required String url,
     required String path,
-    required DownloadFileNameBuilder fileNameBuilder,
+    required DownloadFilenameBuilder fileNameBuilder,
   });
 }
 
@@ -103,7 +94,7 @@ extension DownloadWithSettingsX on DownloadService {
     Settings settings, {
     required String url,
     String? folderName,
-    required DownloadFileNameBuilder fileNameBuilder,
+    required DownloadFilenameBuilder fileNameBuilder,
   }) =>
       settings.downloadPath.toOption().fold(
             () => download(
@@ -155,7 +146,7 @@ class DioDownloadService implements DownloadService {
   @override
   DownloadPathOrError download({
     required String url,
-    required DownloadFileNameBuilder fileNameBuilder,
+    required DownloadFilenameBuilder fileNameBuilder,
   }) =>
       retryOn404
           ? _download(
@@ -176,7 +167,7 @@ class DioDownloadService implements DownloadService {
 
   DownloadPathOrError _download({
     required List<String> urls,
-    required DownloadFileNameBuilder fileNameBuilder,
+    required DownloadFilenameBuilder fileNameBuilder,
   }) {
     if (urls.isEmpty) {
       return TaskEither.left(GenericDownloadError(
@@ -208,7 +199,7 @@ class DioDownloadService implements DownloadService {
   //FIXME: should merge with _download, i'm playing it safe for now
   DownloadPathOrError _downloadCustomLocation({
     required List<String> urls,
-    required DownloadFileNameBuilder fileNameBuilder,
+    required DownloadFilenameBuilder fileNameBuilder,
     required String path,
   }) {
     if (urls.isEmpty) {
@@ -243,7 +234,7 @@ class DioDownloadService implements DownloadService {
   DownloadPathOrError downloadCustomLocation({
     required String url,
     required String path,
-    required DownloadFileNameBuilder fileNameBuilder,
+    required DownloadFilenameBuilder fileNameBuilder,
   }) =>
       retryOn404
           ? _downloadCustomLocation(

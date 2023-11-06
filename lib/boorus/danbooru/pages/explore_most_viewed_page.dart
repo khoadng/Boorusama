@@ -79,29 +79,32 @@ class _MostViewedContent extends ConsumerWidget {
       },
     );
 
-    return Column(
-      children: [
-        Expanded(
-          child: DanbooruInfinitePostList(
-            errors: errors,
-            controller: controller,
-            sliverHeaderBuilder: (context) => [
-              ExploreSliverAppBar(
-                title: 'explore.most_viewed'.tr(),
-              ),
-            ],
+    return SafeArea(
+      child: Column(
+        children: [
+          Expanded(
+            child: DanbooruInfinitePostList(
+              errors: errors,
+              controller: controller,
+              safeArea: false,
+              sliverHeaderBuilder: (context) => [
+                ExploreSliverAppBar(
+                  title: 'explore.most_viewed'.tr(),
+                ),
+              ],
+            ),
           ),
-        ),
-        Container(
-          color: context.theme.bottomNavigationBarTheme.backgroundColor,
-          child: DateTimeSelector(
-            onDateChanged: (date) =>
-                ref.read(dateProvider.notifier).state = date,
-            date: date,
-            backgroundColor: Colors.transparent,
+          Container(
+            color: context.theme.bottomNavigationBarTheme.backgroundColor,
+            child: DateTimeSelector(
+              onDateChanged: (date) =>
+                  ref.read(dateProvider.notifier).state = date,
+              date: date,
+              backgroundColor: Colors.transparent,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

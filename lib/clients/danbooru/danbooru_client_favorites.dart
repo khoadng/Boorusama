@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:isolate';
+
 // Package imports:
 import 'package:dio/dio.dart';
 
@@ -72,8 +75,8 @@ mixin DanbooruClientFavorites {
       },
     );
 
-    return (response.data as List)
+    return Isolate.run(() => (response.data as List)
         .map((item) => FavoriteDto.fromJson(item))
-        .toList();
+        .toList());
   }
 }

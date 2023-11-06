@@ -7,8 +7,6 @@ import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/search/search.dart';
 import 'package:boorusama/core/pages/search/metatags/danbooru_metatags_section.dart';
 import 'package:boorusama/core/pages/search/search_app_bar.dart';
@@ -41,19 +39,6 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
       RegExp('(${ref.watch(metatagsProvider).map((e) => e.name).join('|')})+:');
 
   @override
-  void initState() {
-    super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (widget.initialQuery != null) {
-        ref
-            .read(postCountStateProvider(ref.readConfig).notifier)
-            .getPostCount([widget.initialQuery!]);
-      }
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     return SearchScope(
       selectedTagController: widget.selectedTagController,
@@ -70,8 +55,7 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
         DisplayState.options => Scaffold(
             floatingActionButton: SearchButton(
               allowSearch: allowSearch,
-              onSearch: () =>
-                  _onSearch(searchController, selectedTagController),
+              onSearch: () => searchController.search(),
             ),
             appBar: PreferredSize(
               preferredSize: const Size.fromHeight(kToolbarHeight * 1.2),
@@ -147,7 +131,7 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
             onRelatedTagSelected: (tag, postController) {
               selectedTagController.addTag(tag.tag);
               postController.refresh();
-              _onSearch(searchController, selectedTagController);
+              searchController.search();
             },
             headerBuilder: () => [
               SearchAppBarResultView(
@@ -163,16 +147,6 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
           )
       },
     );
-  }
-
-  void _onSearch(
-    SearchPageController searchController,
-    SelectedTagController selectedTagController,
-  ) {
-    ref
-        .read(postCountStateProvider(ref.readConfig).notifier)
-        .getPostCount(selectedTagController.rawTags);
-    searchController.search();
   }
 }
 

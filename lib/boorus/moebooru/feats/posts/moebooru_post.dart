@@ -12,7 +12,8 @@ class MoebooruPost extends Equatable
         TranslatedMixin,
         ImageInfoMixin,
         VideoInfoMixin,
-        NoTagDetailsMixin
+        NoTagDetailsMixin,
+        TagListCheckMixin
     implements Post {
   MoebooruPost({
     required this.id,

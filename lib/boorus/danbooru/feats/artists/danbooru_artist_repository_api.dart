@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/artists/artists.dart';
 import 'package:boorusama/clients/danbooru/danbooru_client.dart';
+import 'package:boorusama/clients/danbooru/danbooru_client_artists.dart';
 
 class DanbooruArtistRepositoryApi implements DanbooruArtistRepository {
   DanbooruArtistRepositoryApi({
@@ -43,4 +44,29 @@ class DanbooruArtistRepositoryApi implements DanbooruArtistRepository {
       }
     }
   }
+
+  @override
+  Future<List<DanbooruArtist>> getArtists({
+    String? name,
+    String? url,
+    bool? isDeleted,
+    bool? isBanned,
+    bool? hasTag,
+    bool? includeTag,
+    ArtistOrder? order,
+    CancelToken? cancelToken,
+    int? page,
+  }) =>
+      client
+          .getArtists(
+              name: name,
+              url: url,
+              isDeleted: isDeleted,
+              isBanned: isBanned,
+              hasTag: hasTag,
+              includeTag: includeTag,
+              order: order,
+              cancelToken: cancelToken,
+              page: page)
+          .then((value) => value.map((e) => artistDtoToArtist(e)).toList());
 }

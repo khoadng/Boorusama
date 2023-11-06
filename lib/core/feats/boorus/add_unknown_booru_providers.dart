@@ -35,6 +35,11 @@ final booruDeletedItemBehaviorProvider =
   return BooruConfigDeletedItemBehavior.hide;
 });
 
+final booruCustomDownloadFileNameFormatProvider =
+    StateProvider.autoDispose<String?>((ref) {
+  return null;
+});
+
 // allow submit
 final booruAllowSubmitProvider = StateProvider.autoDispose<bool>((ref) {
   final engine = ref.watch(booruEngineProvider);
@@ -62,5 +67,8 @@ final newbooruConfigProvider =
         BooruConfigDeletedItemBehavior.hide,
     ratingFilter: ref.watch(booruRatingFilterProvider),
     url: url,
+    customDownloadFileNameFormat:
+        ref.watch(booruCustomDownloadFileNameFormatProvider),
+    customBulkDownloadFileNameFormat: null,
   );
 });

@@ -64,6 +64,7 @@ final bulkDownloaderManagerProvider =
   BulkDownloadManagerNotifier.new,
   dependencies: [
     currentBooruConfigProvider,
+    settingsProvider,
   ],
 );
 

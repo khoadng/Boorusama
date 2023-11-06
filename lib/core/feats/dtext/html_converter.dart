@@ -22,9 +22,9 @@ String grammarToHtmlString(List<dynamic> value) {
 
 String mapDataToString(dynamic data) => switch (data) {
       BBCode c => parseBBcodeToHtml(c),
-      LineBreakElement => '<br>',
+      LineBreakElement _ => '<br>',
       UrlElement url => parseUrl(url),
-      String => data,
+      String _ => data,
       _ => data.toString(),
     };
 

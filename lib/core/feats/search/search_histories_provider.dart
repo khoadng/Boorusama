@@ -8,10 +8,5 @@ final searchHistoryRepoProvider =
     Provider<SearchHistoryRepository>((ref) => throw UnimplementedError());
 
 final searchHistoryProvider =
-    StateNotifierProvider<SearchHistoryNotifier, SearchHistoryState>((ref) {
-  final searchHistoryRepository = ref.watch(searchHistoryRepoProvider);
-  return SearchHistoryNotifier(
-      searchHistoryRepository: searchHistoryRepository);
-}, dependencies: [
-  searchHistoryRepoProvider,
-]);
+    AsyncNotifierProvider<SearchHistoryNotifier, SearchHistoryState>(
+        SearchHistoryNotifier.new);

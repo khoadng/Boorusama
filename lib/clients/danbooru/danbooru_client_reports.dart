@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:isolate';
+
 // Package imports:
 import 'package:dio/dio.dart';
 
@@ -34,8 +37,8 @@ mixin DanbooruClientReports {
       cancelToken: cancelToken,
     );
 
-    return (response.data as List)
+    return Isolate.run(() => (response.data as List)
         .map((item) => ReportDataPointDto.fromJson(item))
-        .toList();
+        .toList());
   }
 }

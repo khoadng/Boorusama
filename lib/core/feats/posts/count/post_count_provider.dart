@@ -2,23 +2,19 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'post_count_notifier.dart';
 import 'post_count_repository.dart';
-import 'post_count_state.dart';
 
-final postCountStateProvider =
-    NotifierProvider.family<PostCountNotifier, PostCountState, BooruConfig>(
-  PostCountNotifier.new,
-);
+final postCountProvider =
+    FutureProvider.autoDispose.family<int?, String>((ref, tags) async {
+  final booruBuilder = ref.watch(booruBuilderProvider);
+  final fetcher = booruBuilder?.postCountFetcher;
 
-final postCountProvider = Provider<PostCountState>(
-  (ref) => ref.watch(postCountStateProvider(ref.watchConfig)),
-  dependencies: [
-    postCountStateProvider,
-    currentBooruConfigProvider,
-  ],
-);
+  final postCount = await fetcher?.call(ref.watchConfig, tags.split(' '));
+
+  return postCount;
+});
 
 final emptyPostCountRepoProvider =
     Provider<PostCountRepository>((ref) => const EmptyPostCountRepository());

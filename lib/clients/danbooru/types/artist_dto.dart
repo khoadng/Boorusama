@@ -1,5 +1,5 @@
 // Project imports:
-import 'artist_url_dto.dart';
+import 'package:boorusama/clients/danbooru/types/types.dart';
 
 class ArtistDto {
   ArtistDto({
@@ -12,6 +12,7 @@ class ArtistDto {
     required this.isBanned,
     required this.otherNames,
     required this.urls,
+    required this.tag,
   });
 
   factory ArtistDto.fromJson(Map<String, dynamic> json) => ArtistDto(
@@ -25,6 +26,7 @@ class ArtistDto {
         otherNames: List<String>.from(json['other_names'].map((x) => x)),
         urls: List<ArtistUrlDto>.from(
             json['urls'].map((x) => ArtistUrlDto.fromJson(x))),
+        tag: json['tag'] != null ? TagDto.fromJson(json['tag']) : null,
       );
 
   final int id;
@@ -36,6 +38,7 @@ class ArtistDto {
   final bool isBanned;
   final List<String> otherNames;
   final List<ArtistUrlDto> urls;
+  final TagDto? tag;
 
   @override
   String toString() => name;

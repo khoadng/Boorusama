@@ -4,10 +4,11 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
+import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/foundation/image.dart';
 import 'package:boorusama/foundation/path.dart';
 
-class Bookmark extends Equatable with ImageInfoMixin {
+class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
   const Bookmark({
     required this.id,
     required this.booruId,
@@ -36,6 +37,7 @@ class Bookmark extends Equatable with ImageInfoMixin {
   @override
   final double height;
   final String md5;
+  @override
   final List<String> tags;
 
   bool get isVideo => ['.mp4', '.webm'].contains(extension(sampleUrl));
@@ -98,6 +100,23 @@ class Bookmark extends Equatable with ImageInfoMixin {
       height: height ?? this.height,
       md5: md5 ?? this.md5,
       tags: tags ?? this.tags,
+    );
+  }
+
+  factory Bookmark.fromJson(Map<String, dynamic> json) {
+    return Bookmark(
+      id: json['id'] as int,
+      booruId: json['booruId'] as int,
+      createdAt: DateTime.parse(json['createdAt'] as String),
+      updatedAt: DateTime.parse(json['updatedAt'] as String),
+      thumbnailUrl: json['thumbnailUrl'] as String,
+      sampleUrl: json['sampleUrl'] as String,
+      originalUrl: json['originalUrl'] as String,
+      sourceUrl: json['sourceUrl'] as String,
+      width: (json['width'] as num).toDouble(),
+      height: (json['height'] as num).toDouble(),
+      md5: json['md5'] as String,
+      tags: (json['tags'] as List<dynamic>).map((e) => e as String).toList(),
     );
   }
 

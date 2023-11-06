@@ -50,12 +50,10 @@ class MoebooruCommentSection extends ConsumerWidget {
                       fontSize: 16,
                     ),
                   ),
-                  ...comments
-                      .map((comment) => Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8),
-                            child: MoebooruCommentItem(comment: comment),
-                          ))
-                      .toList()
+                  ...comments.map((comment) => Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: MoebooruCommentItem(comment: comment),
+                      ))
                 ],
               ),
             ),

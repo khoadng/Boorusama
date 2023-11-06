@@ -28,8 +28,6 @@ class FullHistoryView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final histories = ref.watch(searchHistoryProvider);
-
     return Column(
       children: [
         Padding(
@@ -39,36 +37,39 @@ class FullHistoryView extends ConsumerWidget {
                 ref.read(searchHistoryProvider.notifier).filterHistories(value),
           ),
         ),
-        Expanded(
-          child: ImplicitlyAnimatedList<SearchHistory>(
-            items: histories.filteredHistories,
-            controller: scrollController,
-            areItemsTheSame: (oldItem, newItem) => oldItem == newItem,
-            insertDuration: const Duration(milliseconds: 250),
-            removeDuration: const Duration(milliseconds: 250),
-            itemBuilder: (context, animation, history, index) =>
-                SizeFadeTransition(
-              sizeFraction: 0.7,
-              curve: Curves.easeInOut,
-              animation: animation,
-              child: ListTile(
-                title: Text(history.query),
-                subtitle: Text(history.createdAt
-                    .fuzzify(locale: Localizations.localeOf(context))),
-                onTap: () {
-                  onHistoryTap(history.query);
-                },
-                trailing: IconButton(
-                  onPressed: () => onHistoryRemoved(history),
-                  icon: Icon(
-                    Icons.close,
-                    color: context.theme.hintColor,
+        ref.watch(searchHistoryProvider).maybeWhen(
+              data: (histories) => Expanded(
+                child: ImplicitlyAnimatedList(
+                  items: histories.filteredHistories,
+                  controller: scrollController,
+                  areItemsTheSame: (oldItem, newItem) => oldItem == newItem,
+                  insertDuration: const Duration(milliseconds: 250),
+                  removeDuration: const Duration(milliseconds: 250),
+                  itemBuilder: (context, animation, history, index) =>
+                      SizeFadeTransition(
+                    sizeFraction: 0.7,
+                    curve: Curves.easeInOut,
+                    animation: animation,
+                    child: ListTile(
+                      title: Text(history.query),
+                      subtitle: Text(history.createdAt
+                          .fuzzify(locale: Localizations.localeOf(context))),
+                      onTap: () {
+                        onHistoryTap(history.query);
+                      },
+                      trailing: IconButton(
+                        onPressed: () => onHistoryRemoved(history),
+                        icon: Icon(
+                          Icons.close,
+                          color: context.theme.hintColor,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ),
+              orElse: () => const SizedBox.shrink(),
             ),
-          ),
-        ),
       ],
     );
   }

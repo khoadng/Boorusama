@@ -87,6 +87,9 @@ void initializeErrorHandlers(Settings settings) {
         if (exception.response?.statusCode == 304) return;
       }
 
+      // Ignore image service errors
+      if (details.library == 'image resource service') return;
+
       FirebaseCrashlytics.instance.recordFlutterFatalError(details);
 
       return;

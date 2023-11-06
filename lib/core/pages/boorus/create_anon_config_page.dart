@@ -48,6 +48,11 @@ class _CreateAnonConfigPageState extends ConsumerState<CreateAnonConfigPage> {
                 text: configName,
                 onChanged: (value) => setState(() => configName = value),
               ),
+              // CreateBooruCustomDownloadFileNameField(
+              //   format: customDownloadFileNameFormat,
+              //   onChanged: (value) =>
+              //       setState(() => customDownloadFileNameFormat = value),
+              // ),
               CreateBooruSubmitButton(
                 onSubmit: allowSubmit() ? submit : null,
               ),
@@ -63,18 +68,22 @@ class _CreateAnonConfigPageState extends ConsumerState<CreateAnonConfigPage> {
   }
 
   void submit() {
-    ref.read(booruConfigProvider.notifier).addFromAddBooruConfig(
-          newConfig: AddNewBooruConfig(
-            login: '',
-            apiKey: '',
-            booru: widget.config.booruType,
-            booruHint: widget.config.booruType,
-            configName: configName,
-            hideDeleted: false,
-            ratingFilter: BooruConfigRatingFilter.none,
-            url: widget.config.url,
-          ),
-        );
+    final config = AddNewBooruConfig(
+      login: '',
+      apiKey: '',
+      booru: widget.config.booruType,
+      booruHint: widget.config.booruType,
+      configName: configName,
+      hideDeleted: false,
+      ratingFilter: BooruConfigRatingFilter.none,
+      url: widget.config.url,
+      customDownloadFileNameFormat: null,
+      customBulkDownloadFileNameFormat: null,
+    );
+
+    ref
+        .read(booruConfigProvider.notifier)
+        .addOrUpdate(config: widget.config, newConfig: config);
     context.pop();
   }
 }

@@ -13,7 +13,12 @@ import 'post_variant.dart';
 typedef DanbooruPostsOrError = PostsOrErrorCore<DanbooruPost>;
 
 class DanbooruPost extends Equatable
-    with MediaInfoMixin, TranslatedMixin, ImageInfoMixin, VideoInfoMixin
+    with
+        MediaInfoMixin,
+        TranslatedMixin,
+        ImageInfoMixin,
+        VideoInfoMixin,
+        TagListCheckMixin
     implements Post, DanbooruTagDetails {
   DanbooruPost({
     required this.id,

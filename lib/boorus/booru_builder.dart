@@ -23,6 +23,7 @@ import 'package:boorusama/boorus/zerochan/zerochan.dart';
 import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
@@ -99,7 +100,10 @@ typedef FavoriteAdder = Future<bool> Function(int postId);
 typedef FavoriteRemover = Future<bool> Function(int postId);
 typedef FavoriteChecker = bool Function(int postId);
 
-typedef PostCountFetcher = Future<int?> Function(List<String> tags);
+typedef PostCountFetcher = Future<int?> Function(
+  BooruConfig config,
+  List<String> tags,
+);
 
 typedef GridThumbnailUrlBuilder = String Function(
   Settings settings,
@@ -125,6 +129,8 @@ abstract class BooruBuilder {
   GridThumbnailUrlBuilder get gridThumbnailUrlBuilder;
 
   TagColorBuilder get tagColorBuilder;
+
+  DownloadFilenameGenerator get downloadFilenameBuilder;
 
   // Data Builders
   PostFetcher get postFetcher;
