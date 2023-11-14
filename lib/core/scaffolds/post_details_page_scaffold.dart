@@ -120,6 +120,7 @@ class _PostDetailPageScaffoldState<T extends Post>
                 builder: (_, progress, __) => BooruVideoProgressBar(
                   progress: progress,
                   onSeek: (position) => onVideoSeekTo(position, page),
+                  onSoundToggle: (value) => onSoundToggle(value, page),
                 ),
               ),
             if (widget.infoBuilder != null)
