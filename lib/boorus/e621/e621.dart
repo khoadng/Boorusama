@@ -107,7 +107,10 @@ const kE621PostSamples = [
 ];
 
 class E621Builder
-    with PostCountNotSupportedMixin, DefaultThumbnailUrlMixin
+    with
+        PostCountNotSupportedMixin,
+        DefaultThumbnailUrlMixin,
+        DefaultPostImageDetailsUrlMixin
     implements BooruBuilder {
   E621Builder({
     required this.postRepo,

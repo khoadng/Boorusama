@@ -16,6 +16,7 @@ class Shimmie2Builder
         ArtistNotSupportedMixin,
         NoteNotSupportedMixin,
         DefaultTagColorMixin,
+        DefaultPostImageDetailsUrlMixin,
         DefaultBooruUIMixin
     implements BooruBuilder {
   const Shimmie2Builder({

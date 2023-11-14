@@ -115,6 +115,12 @@ typedef TagColorBuilder = Color Function(
   String? tagType,
 );
 
+typedef PostImageDetailsUrlBuilder = String Function(
+  Settings settings,
+  Post post,
+  BooruConfig config,
+);
+
 abstract class BooruBuilder {
   // UI Builders
   HomePageBuilder get homePageBuilder;
@@ -131,6 +137,8 @@ abstract class BooruBuilder {
   TagColorBuilder get tagColorBuilder;
 
   DownloadFilenameGenerator get downloadFilenameBuilder;
+
+  PostImageDetailsUrlBuilder get postImageDetailsUrlBuilder;
 
   // Data Builders
   PostFetcher get postFetcher;
@@ -206,6 +214,26 @@ mixin DefaultTagColorMixin implements BooruBuilder {
           _ => Colors.white,
         };
       };
+}
+
+mixin DefaultPostImageDetailsUrlMixin implements BooruBuilder {
+  @override
+  PostImageDetailsUrlBuilder get postImageDetailsUrlBuilder =>
+      (settings, post, config) => config.imageDetaisQuality.toOption().fold(
+          () => switch (settings.imageQuality) {
+                ImageQuality.low => post.thumbnailImageUrl,
+                ImageQuality.original =>
+                  post.isVideo ? post.videoThumbnailUrl : post.originalImageUrl,
+                _ =>
+                  post.isVideo ? post.videoThumbnailUrl : post.sampleImageUrl,
+              },
+          (quality) => switch (stringToGeneralPostQualityType(quality)) {
+                GeneralPostQualityType.preview => post.thumbnailImageUrl,
+                GeneralPostQualityType.sample =>
+                  post.isVideo ? post.videoThumbnailUrl : post.sampleImageUrl,
+                GeneralPostQualityType.original =>
+                  post.isVideo ? post.videoThumbnailUrl : post.originalImageUrl,
+              });
 }
 
 extension BooruBuilderWidgetRef on WidgetRef {

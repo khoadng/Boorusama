@@ -17,6 +17,7 @@ class BooruConfig extends Equatable {
     required this.url,
     required this.customDownloadFileNameFormat,
     required this.customBulkDownloadFileNameFormat,
+    required this.imageDetaisQuality,
   });
 
   static const BooruConfig empty = BooruConfig(
@@ -31,6 +32,7 @@ class BooruConfig extends Equatable {
     url: '',
     customDownloadFileNameFormat: null,
     customBulkDownloadFileNameFormat: null,
+    imageDetaisQuality: null,
   );
 
   static BooruConfig defaultConfig({
@@ -50,6 +52,7 @@ class BooruConfig extends Equatable {
         url: url,
         customDownloadFileNameFormat: customDownloadFileNameFormat,
         customBulkDownloadFileNameFormat: customDownloadFileNameFormat,
+        imageDetaisQuality: null,
       );
 
   final int id;
@@ -63,6 +66,7 @@ class BooruConfig extends Equatable {
   final BooruConfigRatingFilter ratingFilter;
   final String? customDownloadFileNameFormat;
   final String? customBulkDownloadFileNameFormat;
+  final String? imageDetaisQuality;
 
   BooruConfig copyWith({
     String? url,
@@ -82,6 +86,7 @@ class BooruConfig extends Equatable {
       ratingFilter: ratingFilter,
       customDownloadFileNameFormat: customDownloadFileNameFormat,
       customBulkDownloadFileNameFormat: customBulkDownloadFileNameFormat,
+      imageDetaisQuality: imageDetaisQuality,
     );
   }
 
@@ -98,6 +103,7 @@ class BooruConfig extends Equatable {
         url,
         customDownloadFileNameFormat,
         customBulkDownloadFileNameFormat,
+        imageDetaisQuality,
       ];
 }
 

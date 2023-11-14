@@ -7,7 +7,9 @@ mixin MediaInfoMixin {
   int get fileSize;
 
   bool get isVideo {
-    return _supportVideoFormat.contains(format);
+    final supportFormatWithDot = _supportVideoFormat.map((e) => '.$e');
+    return _supportVideoFormat.contains(format) ||
+        supportFormatWithDot.contains(format);
   }
 
   bool get isFlash => format == 'swf';

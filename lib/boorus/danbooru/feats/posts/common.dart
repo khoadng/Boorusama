@@ -72,6 +72,6 @@ PostVariant variantDtoToVariant(VariantDto dto) => PostVariant(
       url: dto.url ?? '',
       width: dto.width ?? 0,
       height: dto.height ?? 0,
-      type: mapStringToPostQualityType(dto.type),
+      type: mapStringToPostQualityType(dto.type) ?? PostQualityType.sample,
       fileExt: dto.fileExt ?? 'jpg',
     );

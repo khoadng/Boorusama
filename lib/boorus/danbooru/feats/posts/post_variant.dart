@@ -9,13 +9,23 @@ enum PostQualityType {
   original,
 }
 
-PostQualityType mapStringToPostQualityType(String? value) => switch (value) {
+extension PostQualityTypeX on PostQualityType {
+  String stringify() => switch (this) {
+        PostQualityType.v180x180 => '180x180',
+        PostQualityType.v360x360 => '360x360',
+        PostQualityType.v720x720 => '720x720',
+        PostQualityType.sample => 'sample',
+        PostQualityType.original => 'original',
+      };
+}
+
+PostQualityType? mapStringToPostQualityType(String? value) => switch (value) {
       '180x180' => PostQualityType.v180x180,
       '360x360' => PostQualityType.v360x360,
       '720x720' => PostQualityType.v720x720,
       'sample' => PostQualityType.sample,
       'original' => PostQualityType.original,
-      _ => PostQualityType.sample
+      _ => null,
     };
 
 class PostVariant extends Equatable {

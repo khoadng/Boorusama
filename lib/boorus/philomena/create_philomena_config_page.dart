@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/philomena/philomena_post.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_api_key_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_config_name_field.dart';
+import 'package:boorusama/core/pages/boorus/widgets/create_booru_post_details_resolution_option_tile.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_scaffold.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_submit_button.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -34,6 +36,7 @@ class _CreatePhilomenaConfigPageState
   late String key = widget.config.apiKey ?? '';
   late String? customDownloadFileNameFormat =
       widget.config.customDownloadFileNameFormat;
+  late var imageDetaisQuality = widget.config.imageDetaisQuality;
 
   @override
   Widget build(BuildContext context) {
@@ -70,6 +73,15 @@ class _CreatePhilomenaConfigPageState
                 ),
               ),
               const SizedBox(height: 16),
+              CreateBooruImageDetailsResolutionOptionTile(
+                value: imageDetaisQuality,
+                items: PhilomenaPostQualityType.values
+                    .map((e) => e.stringify())
+                    .toList(),
+                onChanged: (value) =>
+                    setState(() => imageDetaisQuality = value),
+              ),
+              const SizedBox(height: 16),
               // CreateBooruCustomDownloadFileNameField(
               //   format: customDownloadFileNameFormat,
               //   onChanged: (value) =>
@@ -91,20 +103,24 @@ class _CreatePhilomenaConfigPageState
   }
 
   void submit() {
-    ref.read(booruConfigProvider.notifier).addFromAddBooruConfig(
-          newConfig: AddNewBooruConfig(
-            login: '',
-            apiKey: key,
-            booru: widget.config.booruType,
-            booruHint: widget.config.booruType,
-            configName: configName,
-            hideDeleted: false,
-            ratingFilter: BooruConfigRatingFilter.none,
-            url: widget.config.url,
-            customDownloadFileNameFormat: customDownloadFileNameFormat,
-            customBulkDownloadFileNameFormat: null,
-          ),
-        );
+    final config = AddNewBooruConfig(
+      login: '',
+      apiKey: key,
+      booru: widget.config.booruType,
+      booruHint: widget.config.booruType,
+      configName: configName,
+      hideDeleted: false,
+      ratingFilter: BooruConfigRatingFilter.none,
+      url: widget.config.url,
+      customDownloadFileNameFormat: customDownloadFileNameFormat,
+      customBulkDownloadFileNameFormat: null,
+      imageDetaisQuality: imageDetaisQuality,
+    );
+
+    ref
+        .read(booruConfigProvider.notifier)
+        .addOrUpdate(config: widget.config, newConfig: config);
+
     context.pop();
   }
 }
