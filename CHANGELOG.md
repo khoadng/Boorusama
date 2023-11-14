@@ -1,3 +1,8 @@
+# 3.7.1
+- Add a mute button for videos
+- Add an option in profile settings to change default image resolution
+- Minor bug fixes
+
 # 3.7.0
 - Introduce custom filename formatting for downloaded files, which you can find in profile settings.
 - Improve bookmark management, you can now filter and sort bookmarks.
