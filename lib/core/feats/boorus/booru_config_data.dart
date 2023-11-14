@@ -13,6 +13,7 @@ class BooruConfigData {
     required this.url,
     required this.customDownloadFileNameFormat,
     required this.customBulkDownloadFileNameFormat,
+    required this.imageDetaisQuality,
   });
 
   factory BooruConfigData.anonymous({
@@ -23,6 +24,7 @@ class BooruConfigData {
     required String url,
     required String? customDownloadFileNameFormat,
     required String? customBulkDownloadFileNameFormat,
+    required String? imageDetaisQuality,
   }) =>
       BooruConfigData(
         booruId: booru.toBooruId(),
@@ -35,6 +37,7 @@ class BooruConfigData {
         ratingFilter: filter.index,
         customDownloadFileNameFormat: customDownloadFileNameFormat,
         customBulkDownloadFileNameFormat: customBulkDownloadFileNameFormat,
+        imageDetaisQuality: imageDetaisQuality,
       );
 
   static BooruConfigData? fromJson(Map<String, dynamic> json) {
@@ -52,6 +55,7 @@ class BooruConfigData {
             json['customDownloadFileNameFormat'] as String?,
         customBulkDownloadFileNameFormat:
             json['customBulkDownloadFileNameFormat'] as String?,
+        imageDetaisQuality: json['imageDetaisQuality'] as String?,
       );
     } catch (e) {
       return null;
@@ -70,6 +74,7 @@ class BooruConfigData {
       'ratingFilter': ratingFilter,
       'customDownloadFileNameFormat': customDownloadFileNameFormat,
       'customBulkDownloadFileNameFormat': customBulkDownloadFileNameFormat,
+      'imageDetaisQuality': imageDetaisQuality,
     };
   }
 
@@ -83,6 +88,7 @@ class BooruConfigData {
   final String url;
   final String? customDownloadFileNameFormat;
   final String? customBulkDownloadFileNameFormat;
+  final String? imageDetaisQuality;
 }
 
 BooruConfig? convertToBooruConfig({
@@ -105,5 +111,6 @@ BooruConfig? convertToBooruConfig({
     customDownloadFileNameFormat: booruConfigData.customDownloadFileNameFormat,
     customBulkDownloadFileNameFormat:
         booruConfigData.customBulkDownloadFileNameFormat,
+    imageDetaisQuality: booruConfigData.imageDetaisQuality,
   );
 }

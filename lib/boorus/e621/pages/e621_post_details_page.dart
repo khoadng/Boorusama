@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/artist_commentaries/artist_commentaries.dart';
 import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/router.dart';
@@ -43,8 +42,6 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final settings = ref.watch(settingsProvider);
-
     return PostDetailsPageScaffold(
       posts: posts,
       initialIndex: widget.intitialIndex,
@@ -58,7 +55,6 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage> {
         post: post,
         showSource: true,
       ),
-      swipeImageUrlBuilder: (post) => post.thumbnailFromSettings(settings),
       placeholderImageUrlBuilder: (post, currentPage) =>
           currentPage == widget.intitialIndex && post.isTranslated
               ? null

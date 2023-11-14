@@ -6,6 +6,9 @@ import 'package:exprollable_page_view/exprollable_page_view.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/feats/boorus/providers.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
@@ -117,6 +120,7 @@ class _PostDetailPageScaffoldState<T extends Post>
                 builder: (_, progress, __) => BooruVideoProgressBar(
                   progress: progress,
                   onSeek: (position) => onVideoSeekTo(position, page),
+                  onSoundToggle: (value) => onSoundToggle(value, page),
                 ),
               ),
             if (widget.infoBuilder != null)
@@ -200,6 +204,7 @@ class _PostDetailPageScaffoldState<T extends Post>
     int currentPage,
     WidgetRef ref,
   ) {
+    final config = ref.watchConfig;
     final post = posts[page];
     final expandedOnCurrentPage = expanded && page == currentPage;
     final media = PostMedia(
@@ -207,7 +212,14 @@ class _PostDetailPageScaffoldState<T extends Post>
       post: post,
       imageUrl: widget.swipeImageUrlBuilder != null
           ? widget.swipeImageUrlBuilder!(post)
-          : post.sampleImageUrl,
+          : ref.watchBooruBuilder(config)?.postImageDetailsUrlBuilder != null
+              ? ref.watchBooruBuilder(config)?.postImageDetailsUrlBuilder(
+                        ref.watch(settingsProvider),
+                        post,
+                        config,
+                      ) ??
+                  post.sampleImageUrl
+              : post.sampleImageUrl,
       placeholderImageUrl: widget.placeholderImageUrlBuilder != null
           ? widget.placeholderImageUrlBuilder!(post, currentPage)
           : post.thumbnailImageUrl,

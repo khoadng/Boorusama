@@ -121,11 +121,20 @@ extension BooruX on Booru {
               false,
         _ => null,
       };
+
+  bool? hasCensoredTagsBanned(String url) => switch (this) {
+        Danbooru d => d.sites
+                .firstWhereOrNull((e) => url.contains(e.url))
+                ?.censoredTagsBanned ??
+            false,
+        _ => null,
+      };
 }
 
 typedef DanbooruSite = ({
   String url,
   bool? aiTagSupport,
+  bool? censoredTagsBanned,
 });
 
 final class Danbooru extends Booru {
@@ -141,10 +150,12 @@ final class Danbooru extends Booru {
     for (final item in data['sites']) {
       final url = item['url'] as String;
       final aiTagSupport = item['ai-tag'];
+      final censoredTagsBanned = item['censored-tags-banned'];
 
       sites.add((
         url: url,
         aiTagSupport: aiTagSupport,
+        censoredTagsBanned: censoredTagsBanned,
       ));
     }
 
@@ -402,8 +413,6 @@ extension BooruTypeX on BooruType {
   bool get supportBlacklistedTags => isDanbooruBased;
 
   bool get hasUnknownFullImageUrl => this == BooruType.zerochan;
-
-  bool get hasCensoredTagsBanned => this == BooruType.danbooru;
 
   int toBooruId() => switch (this) {
         BooruType.danbooru => kDanbooruId,

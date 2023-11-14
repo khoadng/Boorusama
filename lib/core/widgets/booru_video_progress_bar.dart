@@ -29,10 +29,12 @@ class BooruVideoProgressBar extends StatelessWidget {
     super.key,
     required this.progress,
     this.onSeek,
+    this.onSoundToggle,
   });
 
   final VideoProgress progress;
   final void Function(Duration position)? onSeek;
+  final void Function(bool value)? onSoundToggle;
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +68,48 @@ class BooruVideoProgressBar extends StatelessWidget {
         const SizedBox(
           width: 8,
         ),
+        SoundControlButton(
+          hasSound: true,
+          onSoundChanged: onSoundToggle,
+        ),
+        const SizedBox(
+          width: 8,
+        )
       ],
+    );
+  }
+}
+
+class SoundControlButton extends StatefulWidget {
+  const SoundControlButton({
+    super.key,
+    required this.hasSound,
+    this.onSoundChanged,
+  });
+
+  final bool hasSound;
+  final void Function(bool hasSound)? onSoundChanged;
+
+  @override
+  State<SoundControlButton> createState() => _SoundControlButtonState();
+}
+
+class _SoundControlButtonState extends State<SoundControlButton> {
+  late var soundOn = widget.hasSound;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () => setState(() {
+          soundOn = !soundOn;
+          widget.onSoundChanged?.call(soundOn);
+        }),
+        child: Icon(
+          soundOn ? Icons.volume_up : Icons.volume_off,
+        ),
+      ),
     );
   }
 }

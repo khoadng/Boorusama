@@ -40,6 +40,16 @@ final booruCustomDownloadFileNameFormatProvider =
   return null;
 });
 
+final booruCustomBulkDownloadFileNameFormatProvider =
+    StateProvider.autoDispose<String?>((ref) {
+  return null;
+});
+
+final booruImageDetaisQualityProvider =
+    StateProvider.autoDispose<String?>((ref) {
+  return null;
+});
+
 // allow submit
 final booruAllowSubmitProvider = StateProvider.autoDispose<bool>((ref) {
   final engine = ref.watch(booruEngineProvider);
@@ -69,6 +79,8 @@ final newbooruConfigProvider =
     url: url,
     customDownloadFileNameFormat:
         ref.watch(booruCustomDownloadFileNameFormatProvider),
-    customBulkDownloadFileNameFormat: null,
+    customBulkDownloadFileNameFormat:
+        ref.watch(booruCustomBulkDownloadFileNameFormatProvider),
+    imageDetaisQuality: ref.watch(booruImageDetaisQualityProvider),
   );
 });

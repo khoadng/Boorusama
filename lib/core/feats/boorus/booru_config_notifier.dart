@@ -75,6 +75,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?> {
             customDownloadFileNameFormat: config.customDownloadFileNameFormat,
             customBulkDownloadFileNameFormat:
                 config.customBulkDownloadFileNameFormat,
+            imageDetaisQuality: config.imageDetaisQuality,
           )
         : BooruConfigData(
             login: config.login,
@@ -90,6 +91,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?> {
             customDownloadFileNameFormat: config.customDownloadFileNameFormat,
             customBulkDownloadFileNameFormat:
                 config.customBulkDownloadFileNameFormat,
+            imageDetaisQuality: config.imageDetaisQuality,
           );
     final updatedConfig =
         await ref.read(booruConfigRepoProvider).update(id, booruConfigData);
@@ -126,6 +128,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?> {
           customDownloadFileNameFormat: newConfig.customDownloadFileNameFormat,
           customBulkDownloadFileNameFormat:
               newConfig.customBulkDownloadFileNameFormat,
+          imageDetaisQuality: newConfig.imageDetaisQuality,
         );
 
         final config =
@@ -159,6 +162,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?> {
           customDownloadFileNameFormat: newConfig.customDownloadFileNameFormat,
           customBulkDownloadFileNameFormat:
               newConfig.customBulkDownloadFileNameFormat,
+          imageDetaisQuality: newConfig.imageDetaisQuality,
         );
 
         final config =
@@ -220,6 +224,7 @@ class AddNewBooruConfig {
     required this.booruHint,
     required this.customDownloadFileNameFormat,
     required this.customBulkDownloadFileNameFormat,
+    required this.imageDetaisQuality,
   });
 
   final String login;
@@ -232,4 +237,5 @@ class AddNewBooruConfig {
   final String url;
   final String? customDownloadFileNameFormat;
   final String? customBulkDownloadFileNameFormat;
+  final String? imageDetaisQuality;
 }

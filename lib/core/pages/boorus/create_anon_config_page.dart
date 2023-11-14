@@ -79,6 +79,7 @@ class _CreateAnonConfigPageState extends ConsumerState<CreateAnonConfigPage> {
       url: widget.config.url,
       customDownloadFileNameFormat: null,
       customBulkDownloadFileNameFormat: null,
+      imageDetaisQuality: null,
     );
 
     ref

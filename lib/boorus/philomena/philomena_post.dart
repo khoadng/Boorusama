@@ -43,6 +43,7 @@ class PhilomenaPost extends Equatable
     required this.favCount,
     required this.upvotes,
     required this.downvotes,
+    required this.representation,
   }) : _getLink = getLink;
 
   @override
@@ -116,6 +117,8 @@ class PhilomenaPost extends Equatable
   final int commentCount;
   final int favCount;
   final int upvotes;
+
+  final PhilomenaRepresentation representation;
 }
 
 List<String>? _findArtistFromTags(List<String> tags) {
@@ -123,3 +126,74 @@ List<String>? _findArtistFromTags(List<String> tags) {
   final artistTag = tags.firstWhereOrNull((e) => e.startsWith(metaTag));
   return artistTag != null ? [artistTag.substring(metaTag.length)] : null;
 }
+
+class PhilomenaRepresentation extends Equatable {
+  final String full;
+  final String large;
+  final String medium;
+  final String small;
+  final String tall;
+  final String thumb;
+  final String thumbSmall;
+  final String thumbTiny;
+
+  const PhilomenaRepresentation({
+    required this.full,
+    required this.large,
+    required this.medium,
+    required this.small,
+    required this.tall,
+    required this.thumb,
+    required this.thumbSmall,
+    required this.thumbTiny,
+  });
+
+  @override
+  List<Object> get props => [
+        full,
+        large,
+        medium,
+        small,
+        tall,
+        thumb,
+        thumbSmall,
+        thumbTiny,
+      ];
+}
+
+enum PhilomenaPostQualityType {
+  full,
+  large,
+  medium,
+  small,
+  tall,
+  thumb,
+  thumbSmall,
+  thumbTiny,
+}
+
+extension PhilomenaPostQualityTypeX on PhilomenaPostQualityType {
+  String stringify() => switch (this) {
+        PhilomenaPostQualityType.full => 'full',
+        PhilomenaPostQualityType.large => 'large',
+        PhilomenaPostQualityType.medium => 'medium',
+        PhilomenaPostQualityType.small => 'small',
+        PhilomenaPostQualityType.tall => 'tall',
+        PhilomenaPostQualityType.thumb => 'thumb',
+        PhilomenaPostQualityType.thumbSmall => 'thumbSmall',
+        PhilomenaPostQualityType.thumbTiny => 'thumbTiny'
+      };
+}
+
+PhilomenaPostQualityType? stringToPhilomenaPostQualityType(String? value) =>
+    switch (value) {
+      'full' => PhilomenaPostQualityType.full,
+      'large' => PhilomenaPostQualityType.large,
+      'medium' => PhilomenaPostQualityType.medium,
+      'small' => PhilomenaPostQualityType.small,
+      'tall' => PhilomenaPostQualityType.tall,
+      'thumb' => PhilomenaPostQualityType.thumb,
+      'thumbSmall' => PhilomenaPostQualityType.thumbSmall,
+      'thumbTiny' => PhilomenaPostQualityType.thumbTiny,
+      _ => null,
+    };

@@ -46,7 +46,6 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailsPage> {
       onExit: widget.onExit,
       onTagTap: (tag) => goToSearchPage(context, tag: tag),
       toolbarBuilder: (context, post) => SimplePostActionToolbar(post: post),
-      swipeImageUrlBuilder: (post) => post.sampleImageUrl,
       sliverArtistPostsBuilder: (context, post) =>
           GelbooruRecommendedArtistList(
         artists: ref.watch(booruPostDetailsArtistProvider(post.id)),

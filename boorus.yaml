@@ -3,10 +3,13 @@
     sites:
       - url: https://danbooru.donmai.us/
         ai-tag: true
+        censored-tags-banned: true
       - url: https://donmai.moe/
         ai-tag: true
+        censored-tags-banned: true
       - url: https://safebooru.donmai.us/
         ai-tag: true
+        censored-tags-banned: true
       - url: https://aibooru.online/
         ai-tag: true
       - url: https://testbooru.donmai.us/

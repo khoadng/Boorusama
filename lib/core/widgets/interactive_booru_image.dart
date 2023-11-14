@@ -99,8 +99,12 @@ class _InteractiveBooruImageState extends ConsumerState<InteractiveBooruImage> {
                     children: [
                       ExtendedImage.network(
                         widget.imageUrl,
-                        width: constraints.maxWidth,
-                        height: constraints.maxHeight,
+                        width: constraints.maxWidth.isFinite
+                            ? constraints.maxWidth
+                            : null,
+                        height: constraints.maxHeight.isFinite
+                            ? constraints.maxHeight
+                            : null,
                         fit: BoxFit.contain,
                         headers: {
                           'User-Agent': ref
@@ -113,12 +117,22 @@ class _InteractiveBooruImageState extends ConsumerState<InteractiveBooruImage> {
                   ),
                 ),
               )
-            : ExtendedImage.network(
-                widget.imageUrl,
-                headers: {
-                  'User-Agent':
-                      ref.watch(userAgentGeneratorProvider(config)).generate(),
-                },
+            : LayoutBuilder(
+                builder: (context, constraints) => ExtendedImage.network(
+                  widget.imageUrl,
+                  width: constraints.maxWidth.isFinite
+                      ? constraints.maxWidth
+                      : null,
+                  height: constraints.maxHeight.isFinite
+                      ? constraints.maxHeight
+                      : null,
+                  fit: BoxFit.contain,
+                  headers: {
+                    'User-Agent': ref
+                        .watch(userAgentGeneratorProvider(config))
+                        .generate(),
+                  },
+                ),
               ),
       ),
     );

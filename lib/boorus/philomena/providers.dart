@@ -73,6 +73,16 @@ final philomenaPostRepoProvider =
           favCount: e.faves ?? 0,
           upvotes: e.upvotes ?? 0,
           downvotes: e.downvotes ?? 0,
+          representation: PhilomenaRepresentation(
+            full: e.representations?.full ?? '',
+            large: e.representations?.large ?? '',
+            medium: e.representations?.medium ?? '',
+            small: e.representations?.small ?? '',
+            tall: e.representations?.tall ?? '',
+            thumb: e.representations?.thumb ?? '',
+            thumbSmall: e.representations?.thumbSmall ?? '',
+            thumbTiny: e.representations?.thumbTiny ?? '',
+          ),
         );
       }).toList();
     },

@@ -10,6 +10,7 @@ import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_api_key_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_config_name_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_login_field.dart';
+import 'package:boorusama/core/pages/boorus/widgets/create_booru_post_details_resolution_option_tile.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_rating_options_tile.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_submit_button.dart';
 import 'package:boorusama/core/pages/boorus/widgets/custom_download_file_name_section.dart';
@@ -44,6 +45,7 @@ class _CreateGelbooruConfigPageState
       widget.config.customDownloadFileNameFormat;
   late var customBulkDownloadFileNameFormat =
       widget.config.customBulkDownloadFileNameFormat;
+  late var imageDetaisQuality = widget.config.imageDetaisQuality;
 
   @override
   void dispose() {
@@ -146,6 +148,11 @@ class _CreateGelbooruConfigPageState
             onChanged: (value) =>
                 value != null ? setState(() => ratingFilter = value) : null,
           ),
+          const SizedBox(height: 16),
+          CreateBooruGeneralPostDetailsResolutionOptionTile(
+            value: imageDetaisQuality,
+            onChanged: (value) => setState(() => imageDetaisQuality = value),
+          ),
         ],
       ),
     );
@@ -242,6 +249,7 @@ class _CreateGelbooruConfigPageState
       url: widget.config.url,
       customDownloadFileNameFormat: customDownloadFileNameFormat,
       customBulkDownloadFileNameFormat: customBulkDownloadFileNameFormat,
+      imageDetaisQuality: imageDetaisQuality,
     );
 
     ref

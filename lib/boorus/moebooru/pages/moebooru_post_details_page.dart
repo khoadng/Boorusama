@@ -70,7 +70,6 @@ class _MoebooruPostDetailsPageState
       ),
       commentsBuilder: (context, post) => MoebooruCommentSection(post: post),
       infoBuilder: (context, post) => MoebooruInformationSection(post: post),
-      swipeImageUrlBuilder: (post) => post.sampleImageUrl,
       onPageChanged: (post) {
         ref.read(tagsProvider(booruConfig).notifier).load(post.tags);
       },

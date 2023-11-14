@@ -9,10 +9,12 @@ import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/functional.dart';
 import 'philomena_post.dart';
 
 class PhilomenaBuilder
@@ -136,6 +138,37 @@ class PhilomenaBuilder
         generateFileName: (post, downloadUrl) =>
             generateMd5FileNameFor(post, downloadUrl),
       );
+
+  @override
+  PostImageDetailsUrlBuilder get postImageDetailsUrlBuilder =>
+      (settings, post, config) => (post as PhilomenaPost).toOption().fold(
+            () => post.sampleImageUrl,
+            (post) => config.imageDetaisQuality.toOption().fold(
+                () => switch (settings.imageQuality) {
+                      ImageQuality.highest ||
+                      ImageQuality.original =>
+                        post.representation.medium,
+                      _ => post.representation.small,
+                    },
+                (quality) =>
+                    switch (stringToPhilomenaPostQualityType(quality)) {
+                      PhilomenaPostQualityType.full => post.representation.full,
+                      PhilomenaPostQualityType.large =>
+                        post.representation.large,
+                      PhilomenaPostQualityType.medium =>
+                        post.representation.medium,
+                      PhilomenaPostQualityType.tall => post.representation.tall,
+                      PhilomenaPostQualityType.small =>
+                        post.representation.small,
+                      PhilomenaPostQualityType.thumb =>
+                        post.representation.thumb,
+                      PhilomenaPostQualityType.thumbSmall =>
+                        post.representation.thumbSmall,
+                      PhilomenaPostQualityType.thumbTiny =>
+                        post.representation.thumbTiny,
+                      null => post.representation.small,
+                    }),
+          );
 }
 
 String _generatePercentText(PhilomenaPost? post) {

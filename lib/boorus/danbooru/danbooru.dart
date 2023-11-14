@@ -11,8 +11,10 @@ import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/path.dart';
+import 'package:boorusama/functional.dart';
 import 'pages/create_danbooru_config_page.dart';
 import 'pages/danbooru_artist_page.dart';
 import 'pages/danbooru_home_page.dart';
@@ -215,4 +217,27 @@ class DanbooruBuilder with DefaultTagColorMixin implements BooruBuilder {
           'index': (post, config) => config.index?.toString(),
         },
       );
+
+  @override
+  PostImageDetailsUrlBuilder get postImageDetailsUrlBuilder =>
+      (settings, post, config) => (post as DanbooruPost).toOption().fold(
+            () => post.sampleImageUrl,
+            (post) => config.imageDetaisQuality.toOption().fold(
+                () => switch (settings.imageQuality) {
+                      ImageQuality.highest ||
+                      ImageQuality.original =>
+                        post.sampleImageUrl,
+                      _ => post.url720x720,
+                    },
+                (quality) => switch (mapStringToPostQualityType(quality)) {
+                      PostQualityType.v180x180 => post.url180x180,
+                      PostQualityType.v360x360 => post.url360x360,
+                      PostQualityType.v720x720 => post.url720x720,
+                      PostQualityType.sample =>
+                        post.isVideo ? post.url720x720 : post.sampleImageUrl,
+                      PostQualityType.original =>
+                        post.isVideo ? post.url720x720 : post.originalImageUrl,
+                      null => post.url720x720,
+                    }),
+          );
 }

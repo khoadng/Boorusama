@@ -101,6 +101,11 @@ class _DanbooruInfinitePostListState
             );
     final currentUser = ref.watch(danbooruCurrentUserProvider(booruConfig));
     final isUnverified = booruConfig.isUnverified();
+    final booruFactory = ref.watch(booruFactoryProvider);
+    final censoredTagsBanned = booruFactory
+            .create(type: booruConfig.booruType)
+            ?.hasCensoredTagsBanned(booruConfig.url) ??
+        false;
 
     return LayoutBuilder(
       builder: (context, constraints) => PostGrid(
@@ -123,12 +128,10 @@ class _DanbooruInfinitePostListState
           data: (user) => {
             ...globalBlacklist.map((e) => e.name),
             if (danbooruBlacklist != null) ...danbooruBlacklist,
-            if (!isUnverified &&
-                booruConfig.booruType.hasCensoredTagsBanned &&
-                user == null)
+            if (!isUnverified && censoredTagsBanned && user == null)
               ...kCensoredTags,
             if (!isUnverified &&
-                booruConfig.booruType.hasCensoredTagsBanned &&
+                censoredTagsBanned &&
                 user != null &&
                 !isBooruGoldPlusAccount(user.level))
               ...kCensoredTags,
