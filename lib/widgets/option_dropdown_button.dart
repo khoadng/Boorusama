@@ -32,9 +32,13 @@ class OptionDropDownButton<T> extends StatelessWidget {
             alignment: alignment,
             isDense: true,
             value: value,
-            icon: const Padding(
-              padding: EdgeInsets.only(left: 5, top: 2),
-              child: FaIcon(FontAwesomeIcons.angleDown, size: 16),
+            icon: Padding(
+              padding: const EdgeInsets.only(left: 5, top: 2),
+              child: FaIcon(
+                FontAwesomeIcons.angleDown,
+                size: 16,
+                color: Theme.of(context).iconTheme.color,
+              ),
             ),
             onChanged: onChanged,
             items: items,
