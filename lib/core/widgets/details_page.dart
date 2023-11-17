@@ -1,6 +1,3 @@
-// Dart imports:
-import 'dart:async';
-
 // Flutter imports:
 import 'package:flutter/material.dart' hide ThemeMode;
 
@@ -161,7 +158,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
     handlePointerUp(event);
   }
 
-  Future<void> _onBackButtonPressed() async {
+  void _onBackButtonPressed() {
     _keepBottomSheetDown.value = true;
     context.navigator.pop();
     widget.onExit(controller.currentPage.value);
@@ -169,10 +166,10 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        await _onBackButtonPressed();
-        return false;
+    return PopScope(
+      onPopInvoked: (didPop) {
+        if (didPop) return;
+        _onBackButtonPressed();
       },
       child: NotificationListener<ScrollNotification>(
         onNotification: (notification) {

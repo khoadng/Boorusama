@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/router.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -187,8 +188,12 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
   Widget build(BuildContext context) {
     final settings = ref.watch(settingsProvider);
 
-    return WillPopScope(
-        onWillPop: _onWillPop,
+    return PopScope(
+        canPop: !multiSelect,
+        onPopInvoked: (didPop) {
+          if (didPop) return;
+          _onWillPop();
+        },
         child: ColoredBox(
           color: context.theme.scaffoldBackgroundColor,
           child: PostGridConfigRegion(
@@ -414,13 +419,11 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
     });
   }
 
-  Future<bool> _onWillPop() async {
+  void _onWillPop() {
     if (multiSelect) {
       _multiSelectController.disableMultiSelect();
-
-      return false;
     } else {
-      return true;
+      context.pop();
     }
   }
 }

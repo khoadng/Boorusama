@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/router.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -11,7 +12,6 @@ import 'package:boorusama/boorus/danbooru/pages/widgets/comments/comment_list.da
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/dart.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/functional.dart';
 
 class CommentPage extends ConsumerStatefulWidget {
@@ -63,27 +63,37 @@ class _CommentPageState extends ConsumerState<CommentPage> {
     _focus.dispose();
   }
 
+  void _pop() {
+    if (isEditing.value) {
+      isEditing.value = false;
+    } else {
+      context.pop();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final config = ref.watchConfig;
     final comments = ref.watch(danbooruCommentsProvider(config))[widget.postId];
 
-    return WillPopScope(
-      onWillPop: () async {
-        if (isEditing.value) {
-          isEditing.value = false;
-
-          return false;
-        } else {
-          return true;
-        }
+    return ValueListenableBuilder(
+      valueListenable: isEditing,
+      builder: (context, edit, child) {
+        return PopScope(
+          canPop: !edit,
+          onPopInvoked: (didPop) {
+            if (didPop) return;
+            _pop();
+          },
+          child: child!,
+        );
       },
       child: Scaffold(
         appBar: widget.useAppBar
             ? AppBar(
                 leading: IconButton(
                   icon: const Icon(Icons.keyboard_arrow_down),
-                  onPressed: () => context.navigator.pop(),
+                  onPressed: () => _pop(),
                 ),
               )
             : null,

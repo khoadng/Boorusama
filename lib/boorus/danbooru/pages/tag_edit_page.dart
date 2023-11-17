@@ -94,6 +94,16 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
     scrollController.dispose();
   }
 
+  void _pop() {
+    if (expandMode != null) {
+      setState(() {
+        expandMode = null;
+      });
+    } else {
+      context.pop();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final config = ref.watchConfig;
@@ -101,19 +111,20 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
         ref.watch(booruFactoryProvider).create(type: config.booruType);
     final aiTagSupport = booru?.hasAiTagSupported(config.url);
 
-    return WillPopScope(
-      onWillPop: () {
-        if (expandMode != null) {
-          setState(() {
-            expandMode = null;
-          });
-          return Future.value(false);
-        }
-        return Future.value(true);
+    return PopScope(
+      canPop: expandMode == null,
+      onPopInvoked: (didPop) {
+        if (didPop) return;
+
+        _pop();
       },
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Edit'),
+          leading: IconButton(
+            onPressed: _pop,
+            icon: const Icon(Icons.arrow_back),
+          ),
           actions: [
             TextButton(
               onPressed: (toBeAdded.isNotEmpty ||
