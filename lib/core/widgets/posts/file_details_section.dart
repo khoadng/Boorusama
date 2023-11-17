@@ -98,6 +98,7 @@ class _FileDetailTile extends StatelessWidget {
             value,
             style: TextStyle(
               color: context.colorScheme.onSecondaryContainer,
+              fontSize: 14,
             ),
           ),
         ),

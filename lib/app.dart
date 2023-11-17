@@ -63,7 +63,7 @@ class _AppState extends ConsumerState<App> {
           ),
           theme: AppTheme.lightTheme(),
           darkTheme: theme == ThemeMode.amoledDark
-              ? AppTheme.darkAmoledTheme(context)
+              ? AppTheme.darkAmoledTheme()
               : AppTheme.darkTheme(),
           themeMode: mapAppThemeModeToSystemThemeMode(theme),
           localizationsDelegates: context.localizationDelegates,

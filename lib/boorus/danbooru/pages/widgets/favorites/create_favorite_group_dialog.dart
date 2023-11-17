@@ -104,20 +104,6 @@ class _EditFavoriteGroupDialogState
                 maxLines: null,
                 decoration: InputDecoration(
                   hintText: 'favorite_groups.group_name_hint'.tr(),
-                  filled: true,
-                  fillColor: context.theme.cardColor,
-                  enabledBorder: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                    borderSide: BorderSide.none,
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: const BorderRadius.all(Radius.circular(8)),
-                    borderSide: BorderSide(
-                      color: context.colorScheme.secondary,
-                      width: 2,
-                    ),
-                  ),
-                  contentPadding: const EdgeInsets.all(12),
                 ),
               ),
               if (widget.enableManualDataInput)
@@ -145,21 +131,6 @@ class _EditFavoriteGroupDialogState
                       hintMaxLines: 6,
                       hintText:
                           '${'favorite_groups.initial_posts_hint'.tr()}\n\n\n\n\n',
-                      filled: true,
-                      fillColor: context.theme.cardColor,
-                      enabledBorder: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8)),
-                        borderSide: BorderSide.none,
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(8)),
-                        borderSide: BorderSide(
-                          color: context.colorScheme.secondary,
-                          width: 2,
-                        ),
-                      ),
-                      contentPadding: const EdgeInsets.all(12),
                     ),
                   ),
                 ),
@@ -252,7 +223,7 @@ class PrivacyToggle extends ConsumerWidget {
       secondChild: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 4),
         title: const Text('favorite_groups.is_private_group_option').tr(),
-        trailing: Switch.adaptive(
+        trailing: Switch(
           value: isPrivate,
           onChanged: onChanged,
         ),

@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:searchfield/searchfield.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/theme/theme.dart';
 import 'providers.dart';
 
 class BookmarkSearchBar extends ConsumerWidget {
@@ -49,20 +48,6 @@ class BookmarkSearchBar extends ConsumerWidget {
                   ),
                 )
               : null,
-          filled: true,
-          fillColor: context.colorScheme.background,
-          enabledBorder: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-            borderSide: BorderSide.none,
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: const BorderRadius.all(Radius.circular(8)),
-            borderSide: BorderSide(
-              color: context.theme.colorScheme.secondary,
-              width: 2,
-            ),
-          ),
-          contentPadding: const EdgeInsets.all(12),
           hintText: 'Filter...',
         ),
         controller: controller,

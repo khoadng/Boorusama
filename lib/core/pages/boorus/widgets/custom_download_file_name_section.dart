@@ -264,23 +264,9 @@ class FormatEditingField extends StatelessWidget {
         controller: controller,
         maxLines: null,
         onChanged: onChanged,
-        decoration: InputDecoration(
+        decoration: const InputDecoration(
           hintMaxLines: 4,
           hintText: '\n\n\n',
-          filled: true,
-          fillColor: context.colorScheme.background,
-          enabledBorder: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-            borderSide: BorderSide.none,
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: const BorderRadius.all(Radius.circular(8)),
-            borderSide: BorderSide(
-              color: context.theme.colorScheme.secondary,
-              width: 2,
-            ),
-          ),
-          contentPadding: const EdgeInsets.all(12),
         ),
       ),
     );

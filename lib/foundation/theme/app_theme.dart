@@ -5,8 +5,23 @@ import 'package:flutter/material.dart' hide ThemeMode;
 import 'colors.dart';
 import 'theme_mode.dart';
 
-const kPrimaryDarkColor = Color.fromARGB(255, 114, 137, 218);
-const kSecondaryDarkColor = Color.fromARGB(255, 0, 128, 128);
+const kLightWhiteColor = Color.fromARGB(255, 220, 220, 220);
+
+// AMOLED Dark theme
+const kPrimaryAmoledDarkColor = Color.fromARGB(255, 86, 99, 233);
+const kOnPrimaryAmoledDarkColor = kLightWhiteColor;
+const kBackgroundAmoledDarkColor = Colors.black;
+const kOnBackgroundAmoledDarkColor = kLightWhiteColor;
+const kSecondaryContainerAmoledDarkColor = Color.fromARGB(255, 50, 50, 50);
+const kSurfaceAmoledDarkColor = Color.fromARGB(255, 40, 40, 40);
+const kOnSurfaceAmoledDarkColor = kLightWhiteColor;
+const kErrorAmoledDarkColor = Colors.redAccent;
+const kOnErrorAmoledDarkColor = kLightWhiteColor;
+const kIconAmoledDarkColor = kLightWhiteColor;
+
+// Dark theme
+
+// Light theme
 const kPrimaryLightColor = Color.fromARGB(255, 114, 137, 218);
 
 class AppTheme {
@@ -101,8 +116,8 @@ class AppTheme {
               iconColor: Colors.white,
             ),
         colorScheme: const ColorScheme.dark(
-          primary: kPrimaryDarkColor,
-          secondary: kPrimaryDarkColor,
+          primary: kPrimaryAmoledDarkColor,
+          secondary: kPrimaryAmoledDarkColor,
         ).copyWith(background: const Color.fromARGB(255, 36, 36, 36)),
         floatingActionButtonTheme:
             ThemeData.dark().floatingActionButtonTheme.copyWith(
@@ -110,50 +125,90 @@ class AppTheme {
                 ),
       );
 
-  static ThemeData darkAmoledTheme(BuildContext context) => ThemeData(
+  static ThemeData darkAmoledTheme() => ThemeData(
         appBarTheme: const AppBarTheme(
           scrolledUnderElevation: 0,
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
         ),
+        chipTheme: const ChipThemeData(
+          shape: StadiumBorder(),
+          side: BorderSide.none,
+        ),
+        cardTheme: const CardTheme(
+          color: kSurfaceAmoledDarkColor,
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
+        ),
+        dividerTheme: const DividerThemeData(
+          color: kSurfaceAmoledDarkColor,
+          endIndent: 0,
+          indent: 0,
+        ),
+        dialogTheme: const DialogTheme(
+          backgroundColor: kSurfaceAmoledDarkColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
+        ),
+        expansionTileTheme: const ExpansionTileThemeData(
+          iconColor: kIconAmoledDarkColor,
+        ),
         extensions: const [
           BoorusamaColors(
             videoPlayerBackgroundColor: Colors.black,
             themeMode: ThemeMode.amoledDark,
-            selectedColor: Color.fromARGB(255, 40, 40, 40),
+            selectedColor: kSurfaceAmoledDarkColor,
           ),
         ],
-        inputDecorationTheme: InputDecorationTheme(
+        iconTheme: const IconThemeData(
+          color: kIconAmoledDarkColor,
+        ),
+        inputDecorationTheme: const InputDecorationTheme(
           floatingLabelBehavior: FloatingLabelBehavior.always,
           filled: true,
-          enabledBorder: const OutlineInputBorder(
+          fillColor: kSurfaceAmoledDarkColor,
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
             borderSide: BorderSide.none,
           ),
           focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
             borderSide: BorderSide(
-              color: Theme.of(context).colorScheme.primary,
+              color: kPrimaryAmoledDarkColor,
               width: 2,
             ),
           ),
-          errorBorder: const OutlineInputBorder(
-            borderSide: BorderSide(
-              width: 2,
-            ),
-          ),
-          focusedErrorBorder: const OutlineInputBorder(
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
             borderSide: BorderSide(
               width: 2,
             ),
           ),
-          contentPadding: const EdgeInsets.all(12),
+          focusedErrorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+            borderSide: BorderSide(
+              width: 2,
+            ),
+          ),
+          contentPadding: EdgeInsets.all(12),
         ),
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: kPrimaryDarkColor,
+        colorScheme: const ColorScheme(
           brightness: Brightness.dark,
-          background: Colors.black,
-          onBackground: Colors.white,
-          secondaryContainer: const Color.fromARGB(255, 40, 40, 40),
-          onSecondaryContainer: Colors.white,
+          background: kBackgroundAmoledDarkColor,
+          onBackground: kOnBackgroundAmoledDarkColor,
+          secondaryContainer: kSecondaryContainerAmoledDarkColor,
+          onSecondaryContainer: kOnSurfaceAmoledDarkColor,
+          primary: kPrimaryAmoledDarkColor,
+          onPrimary: kOnPrimaryAmoledDarkColor,
+          secondary: kPrimaryAmoledDarkColor,
+          onSecondary: kOnPrimaryAmoledDarkColor,
+          error: kErrorAmoledDarkColor,
+          onError: kOnErrorAmoledDarkColor,
+          surface: kSurfaceAmoledDarkColor,
+          onSurface: kOnSurfaceAmoledDarkColor,
         ),
       );
 }

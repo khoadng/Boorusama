@@ -116,28 +116,6 @@ class _PageSelectorState extends State<PageSelector> {
                 }
               },
               child: TextField(
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Theme.of(context).colorScheme.background,
-                  enabledBorder: const OutlineInputBorder(
-                    borderSide: BorderSide.none,
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Theme.of(context).colorScheme.secondary,
-                      width: 2,
-                    ),
-                  ),
-                  errorBorder: OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: Theme.of(context).colorScheme.error),
-                  ),
-                  focusedErrorBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                        color: Theme.of(context).colorScheme.error, width: 2),
-                  ),
-                  contentPadding: const EdgeInsets.all(12),
-                ),
                 autofocus: true,
                 keyboardType: TextInputType.number,
                 onSubmitted: onSubmit,

@@ -75,7 +75,7 @@ class _EditSavedSearchSheetState extends ConsumerState<EditSavedSearchSheet> {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.transparent,
+      color: context.colorScheme.secondaryContainer,
       child: Container(
         margin: EdgeInsets.only(
           left: 30,
@@ -100,9 +100,8 @@ class _EditSavedSearchSheetState extends ConsumerState<EditSavedSearchSheet> {
               autofocus: true,
               controller: queryTextController,
               maxLines: null,
-              decoration: _getDecoration(
-                context: context,
-                hint: 'saved_search.saved_search_query'.tr(),
+              decoration: InputDecoration(
+                hintText: 'saved_search.saved_search_query'.tr(),
                 suffixIcon: Material(
                   color: Colors.transparent,
                   child: InkWell(
@@ -144,10 +143,9 @@ class _EditSavedSearchSheetState extends ConsumerState<EditSavedSearchSheet> {
             TextField(
               controller: labelTextController,
               maxLines: null,
-              decoration: _getDecoration(
-                context: context,
-                hint: 'saved_search.saved_search_labels'.tr(),
-                suffixIcon: ValueListenableBuilder<bool>(
+              decoration: InputDecoration(
+                hintText: 'saved_search.saved_search_labels'.tr(),
+                suffixIcon: ValueListenableBuilder(
                   valueListenable: labelsHasText,
                   builder: (context, hasText, _) => hasText
                       ? _ClearTextButton(
@@ -237,35 +235,3 @@ class _ClearTextButton extends StatelessWidget {
     );
   }
 }
-
-InputDecoration _getDecoration({
-  required BuildContext context,
-  required String hint,
-  Widget? suffixIcon,
-}) =>
-    InputDecoration(
-      suffixIcon: suffixIcon,
-      hintText: hint,
-      filled: true,
-      fillColor: context.theme.cardColor,
-      enabledBorder: const OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(12)),
-        borderSide: BorderSide.none,
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: const BorderRadius.all(Radius.circular(12)),
-        borderSide: BorderSide(
-          color: context.colorScheme.secondary,
-          width: 2,
-        ),
-      ),
-      errorBorder: OutlineInputBorder(
-        borderRadius: const BorderRadius.all(Radius.circular(12)),
-        borderSide: BorderSide(color: context.colorScheme.error),
-      ),
-      focusedErrorBorder: OutlineInputBorder(
-        borderRadius: const BorderRadius.all(Radius.circular(12)),
-        borderSide: BorderSide(color: context.colorScheme.error, width: 2),
-      ),
-      contentPadding: const EdgeInsets.all(12),
-    );

@@ -64,6 +64,10 @@ class _PostListConfigurationHeaderState
         ),
       ActionChip(
         visualDensity: const ShrinkVisualDensity(),
+        side: BorderSide(
+          width: 1,
+          color: context.theme.hintColor,
+        ),
         shape: StadiumBorder(
           side: BorderSide(
             width: 1,
@@ -121,8 +125,9 @@ class _PostListConfigurationHeaderState
                 },
                 title: Row(
                   children: [
+                    const SizedBox(width: 8),
                     const Text('Blacklisted'),
-                    const SizedBox(width: 4),
+                    const SizedBox(width: 8),
                     if (widget.hiddenCount > 0)
                       Chip(
                           padding: EdgeInsets.zero,

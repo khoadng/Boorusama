@@ -1,8 +1,8 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-// Package imports:
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+// Project imports:
+import 'package:boorusama/widgets/option_dropdown_button.dart';
 
 class SettingsTile<T> extends StatelessWidget {
   const SettingsTile({
@@ -30,28 +30,20 @@ class SettingsTile<T> extends StatelessWidget {
       leading: leading,
       subtitle: subtitle,
       title: title,
-      trailing: DropdownButtonHideUnderline(
-        child: DropdownButton<T>(
-          alignment: AlignmentDirectional.centerEnd,
-          isDense: true,
-          value: selectedOption,
-          focusColor: Colors.transparent,
-          icon: const Padding(
-            padding: EdgeInsets.only(left: 5, top: 2),
-            child: FaIcon(FontAwesomeIcons.angleDown, size: 16),
-          ),
-          onChanged: (newValue) {
-            if (newValue != null) onChanged(newValue);
-          },
-          items: items.map<DropdownMenuItem<T>>((value) {
-            return DropdownMenuItem<T>(
-              value: value,
-              child: optionBuilder(value),
-            );
-          }).toList(),
-        ),
+      trailing: OptionDropDownButton<T>(
+        backgroundColor: Colors.transparent,
+        alignment: AlignmentDirectional.centerEnd,
+        value: selectedOption,
+        onChanged: (newValue) {
+          if (newValue != null) onChanged(newValue);
+        },
+        items: items
+            .map<DropdownMenuItem<T>>((value) => DropdownMenuItem<T>(
+                  value: value,
+                  child: optionBuilder(value),
+                ))
+            .toList(),
       ),
     );
-    // }
   }
 }

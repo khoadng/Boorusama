@@ -3,12 +3,13 @@ import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
+import 'package:boorusama/core/pages/settings/widgets/settings_tile.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class PerformancePage extends ConsumerStatefulWidget {
@@ -41,35 +42,21 @@ class _PerformancePageState extends ConsumerState<PerformancePage> {
           shrinkWrap: true,
           primary: false,
           children: [
-            ListTile(
+            SettingsTile(
               title: const Text('settings.performance.posts_per_page').tr(),
-              subtitle:
-                  const Text('settings.performance.posts_per_page_explain')
-                      .tr(),
-              trailing: DropdownButtonHideUnderline(
-                child: DropdownButton<int>(
-                  alignment: AlignmentDirectional.centerEnd,
-                  isDense: true,
-                  value: settings.postsPerPage,
-                  focusColor: Colors.transparent,
-                  icon: const Padding(
-                    padding: EdgeInsets.only(left: 5, top: 2),
-                    child: FaIcon(FontAwesomeIcons.angleDown, size: 16),
-                  ),
-                  onChanged: (newValue) {
-                    if (newValue != null) {
-                      ref.updateSettings(
-                          settings.copyWith(postsPerPage: newValue));
-                    }
-                  },
-                  items: getPostsPerPagePossibleValue()
-                      .map<DropdownMenuItem<int>>((value) {
-                    return DropdownMenuItem<int>(
-                      value: value,
-                      child: Text(value.toString()),
-                    );
-                  }).toList(),
+              subtitle: Text(
+                'settings.performance.posts_per_page_explain',
+                style: TextStyle(
+                  color: context.theme.hintColor,
                 ),
+              ).tr(),
+              selectedOption: settings.postsPerPage,
+              items: getPostsPerPagePossibleValue(),
+              onChanged: (newValue) {
+                ref.updateSettings(settings.copyWith(postsPerPage: newValue));
+              },
+              optionBuilder: (value) => Text(
+                value.toString(),
               ),
             ),
           ],

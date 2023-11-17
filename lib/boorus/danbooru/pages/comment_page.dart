@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/router.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -13,6 +12,7 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/functional.dart';
+import 'package:boorusama/router.dart';
 
 class CommentPage extends ConsumerStatefulWidget {
   const CommentPage({

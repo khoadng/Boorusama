@@ -73,20 +73,6 @@ class _ImportTagsDialogState extends ConsumerState<ImportTagsDialog> {
                     hintMaxLines: 6,
                     hintText:
                         '${widget.hint ?? 'favorite_tags.import_hint'.tr()}\n\n\n\n\n',
-                    filled: true,
-                    fillColor: context.theme.cardColor,
-                    enabledBorder: const OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                      borderSide: BorderSide.none,
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: const BorderRadius.all(Radius.circular(8)),
-                      borderSide: BorderSide(
-                        color: context.theme.colorScheme.secondary,
-                        width: 2,
-                      ),
-                    ),
-                    contentPadding: const EdgeInsets.all(12),
                   ),
                 ),
               ),
