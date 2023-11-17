@@ -69,10 +69,7 @@ class UserDetailsPage extends ConsumerWidget {
     final state = ref.watch(danbooruUserProvider(uid));
 
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-      ),
+      appBar: AppBar(),
       body: SafeArea(
         child: state.when(
           data: (user) => Container(

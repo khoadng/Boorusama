@@ -39,9 +39,6 @@ class _BookmarkDetailsPageState extends ConsumerState<BookmarkDetailsPage> {
       extendBodyBehindAppBar: true,
       appBar: !hideOverlay
           ? AppBar(
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              shadowColor: Colors.transparent,
               actions: [
                 PopupMenuButton<String>(
                   onSelected: (value) {

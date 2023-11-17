@@ -41,25 +41,6 @@ class LoginField extends StatelessWidget {
         hintText: hintText,
         floatingLabelBehavior: FloatingLabelBehavior.always,
         suffixIcon: suffixIcon,
-        filled: true,
-        fillColor: Theme.of(context).colorScheme.background,
-        enabledBorder: const OutlineInputBorder(
-          borderSide: BorderSide.none,
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: Theme.of(context).colorScheme.secondary,
-            width: 2,
-          ),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderSide:
-              BorderSide(color: Theme.of(context).colorScheme.error, width: 2),
-        ),
-        contentPadding: const EdgeInsets.all(12),
         labelText: labelText,
       ),
     );

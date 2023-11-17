@@ -45,9 +45,6 @@ class _DownloadTagSelectionViewState
 
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        shadowColor: Colors.transparent,
         leading: IconButton(
           splashRadius: 18,
           onPressed: () {

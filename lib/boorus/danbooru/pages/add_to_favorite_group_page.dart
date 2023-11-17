@@ -35,7 +35,6 @@ class AddToFavoriteGroupPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
         title: Text(
           'favorite_groups.add_to_group_dialog_title',
           style: context.textTheme.titleLarge,

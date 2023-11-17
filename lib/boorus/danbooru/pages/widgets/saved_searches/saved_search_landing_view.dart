@@ -20,8 +20,7 @@ class SavedSearchLandingView extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('saved_search.saved_search_feed').tr(),
-        elevation: 0,
-        shadowColor: Colors.transparent,
+        backgroundColor: context.theme.scaffoldBackgroundColor,
       ),
       body: SingleChildScrollView(
         child: Column(

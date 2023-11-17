@@ -151,9 +151,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
           onTap: () => context.navigator.push(MaterialPageRoute(
               builder: (_) => Scaffold(
                     appBar: AppBar(
-                      elevation: 0,
                       title: const Text('Explore'),
-                      backgroundColor: Colors.transparent,
                     ),
                     body: const ExplorePage(),
                   ))),

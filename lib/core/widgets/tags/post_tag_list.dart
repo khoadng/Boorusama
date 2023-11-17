@@ -12,7 +12,6 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 
 class PostTagList extends StatelessWidget {
@@ -65,7 +64,7 @@ class PostTagList extends StatelessWidget {
   ) {
     return Tags(
       alignment: WrapAlignment.start,
-      runSpacing: isMobilePlatform() ? 0 : 4,
+      runSpacing: 4,
       itemCount: tags.length,
       itemBuilder: (index) {
         final tag = tags[index];

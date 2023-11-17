@@ -33,9 +33,6 @@ class DanbooruDmailDetailsPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        shadowColor: Colors.transparent,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
         actions: [
           // Mark as unread
           IconButton(

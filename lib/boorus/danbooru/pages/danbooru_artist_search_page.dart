@@ -47,9 +47,6 @@ class _DanbooruArtistSearchPageState
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Artists'),
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          shadowColor: Colors.transparent,
           actions: [
             TextButton(
               child: const Text('Search'),

@@ -24,8 +24,6 @@ class SearchAppBarResultView extends ConsumerWidget {
       titleSpacing: 0,
       toolbarHeight: kToolbarHeight * 1.2,
       backgroundColor: context.theme.scaffoldBackgroundColor,
-      elevation: 0,
-      shadowColor: Colors.transparent,
       title: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: BooruSearchBar(

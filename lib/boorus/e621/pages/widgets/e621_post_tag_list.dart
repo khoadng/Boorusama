@@ -16,7 +16,6 @@ import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -126,7 +125,7 @@ class E621PostTagList extends ConsumerWidget {
   ) {
     return Tags(
       alignment: WrapAlignment.start,
-      runSpacing: isMobilePlatform() ? 0 : 4,
+      runSpacing: 4,
       itemCount: group.tags.length,
       itemBuilder: (index) {
         final tag = group.tags[index];

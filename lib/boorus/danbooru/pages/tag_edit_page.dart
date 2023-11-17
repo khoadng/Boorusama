@@ -20,7 +20,6 @@ import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
@@ -299,7 +298,6 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
               ),
               SliverToBoxAdapter(
                 child: Wrap(
-                  runSpacing: isMobilePlatform() ? -4 : 8,
                   spacing: 4,
                   children: tags.map((tag) {
                     final colors =
@@ -542,9 +540,7 @@ class _TagEditFavoriteViewState extends ConsumerState<TagEditFavoriteView> {
 
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
         title: const Text('Favorite tags'),
-        backgroundColor: Colors.transparent,
         automaticallyImplyLeading: false,
         leading: IconButton(
           onPressed: widget.onClosed,
@@ -615,16 +611,13 @@ class _TagEditzwikiViewState extends ConsumerState<TagEditWikiView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
         title: const Text('Related tags'),
-        backgroundColor: Colors.transparent,
         automaticallyImplyLeading: false,
         leading: IconButton(
           onPressed: widget.onClosed,
           icon: const Icon(Icons.keyboard_arrow_down),
         ),
       ),
-      backgroundColor: context.colorScheme.background,
       body: widget.tag.toOption().fold(
             () => const Center(
               child: Text(
@@ -784,16 +777,13 @@ class _TagEditAITagViewState extends ConsumerState<TagEditAITagView> {
 
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
         title: const Text('Suggested tags'),
-        backgroundColor: Colors.transparent,
         automaticallyImplyLeading: false,
         leading: IconButton(
           onPressed: widget.onClosed,
           icon: const Icon(Icons.keyboard_arrow_down),
         ),
       ),
-      backgroundColor: context.colorScheme.background,
       body: SingleChildScrollView(
         child: Column(
           children: [

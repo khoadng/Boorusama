@@ -24,8 +24,6 @@ class BookmarkAppBar extends ConsumerWidget {
     final hasBookmarks = ref.watch(hasBookmarkProvider);
 
     return AppBar(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
       title: const Text('Bookmarks'),
       automaticallyImplyLeading: !edit,
       leading: edit

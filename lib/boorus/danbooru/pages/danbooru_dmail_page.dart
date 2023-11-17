@@ -40,9 +40,6 @@ class _DanbooruDmailPageState extends ConsumerState<DanbooruDmailPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Messages'),
-        shadowColor: Colors.transparent,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
         actions: [
           IconButton(
               icon: const Icon(Icons.refresh),

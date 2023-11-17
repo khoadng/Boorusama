@@ -207,8 +207,6 @@ void goToSearchHistoryPage(
     duration: const Duration(milliseconds: 200),
     builder: (_) => Scaffold(
       appBar: AppBar(
-        shadowColor: Colors.transparent,
-        elevation: 0,
         title: const Text('search.history.history').tr(),
         actions: [
           TextButton(

@@ -38,8 +38,6 @@ class _PoolSearchPageState extends ConsumerState<PoolSearchPage> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
         automaticallyImplyLeading: false,
         title: _SearchBar(textEditingController: textEditingController),
       ),
