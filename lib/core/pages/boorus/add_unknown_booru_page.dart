@@ -221,8 +221,8 @@ class _AddUnknownBooruPageState extends ConsumerState<AddUnknownBooruPage> {
                   },
                 ),
                 const SizedBox(height: 16),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
+                FilledButton(
+                  style: FilledButton.styleFrom(
                     backgroundColor: isValidSite.toOption().fold(
                           () => context.colorScheme.primary,
                           (value) => value ? Colors.green : Colors.red,

@@ -30,8 +30,8 @@ class NoteActionButton extends StatelessWidget {
     if (!post.isTranslated) return const SizedBox.shrink();
 
     if (showDownload) {
-      return ElevatedButton.icon(
-        style: ElevatedButton.styleFrom(
+      return FilledButton.icon(
+        style: FilledButton.styleFrom(
           backgroundColor: context.colorScheme.background.withOpacity(0.8),
           padding: const EdgeInsets.all(4),
         ),

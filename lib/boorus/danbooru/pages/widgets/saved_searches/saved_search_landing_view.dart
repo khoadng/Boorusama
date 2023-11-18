@@ -42,7 +42,7 @@ class SavedSearchLandingView extends ConsumerWidget {
                     ),
                     child: const Text('saved_search.saved_search_help').tr(),
                   ),
-                  ElevatedButton(
+                  FilledButton(
                     onPressed: () => _onAddSearch(ref, context),
                     child: const Text('generic.action.add').tr(),
                   ),
@@ -149,7 +149,7 @@ class _ExampleContainer extends StatelessWidget {
               Row(
                 children: [
                   const Spacer(),
-                  ElevatedButton(
+                  FilledButton(
                     onPressed: () => onTry(query),
                     child: const Text('saved_search.saved_search_try').tr(),
                   ),

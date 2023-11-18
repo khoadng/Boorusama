@@ -227,7 +227,7 @@ class _DownloadFormatCardState extends ConsumerState<DownloadFormatCard> {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Row(
                 children: [
-                  ElevatedButton(
+                  FilledButton(
                     onPressed: () {
                       setState(() {
                         textController.text = widget.defaultFileNameFormat;
@@ -329,6 +329,7 @@ class AvailableTokens extends ConsumerWidget {
         const Text('Available tokens: '),
         for (final token in availableTokens)
           RawChip(
+            backgroundColor: context.colorScheme.secondaryContainer,
             visualDensity: VisualDensity.compact,
             label: Text(token),
             onPressed: () {

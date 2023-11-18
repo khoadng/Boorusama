@@ -91,7 +91,7 @@ class DanbooruDmailDetailsPage extends ConsumerWidget {
               '[/quote]',
             ),
             const SizedBox(height: 16),
-            ElevatedButton(
+            FilledButton(
               onPressed: () {
                 launchExternalUrlString('${config.url}dmails/${dmail.id}');
               },

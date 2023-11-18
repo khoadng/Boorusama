@@ -150,7 +150,7 @@ class _EditFavoriteGroupDialogState
                   ),
                   ValueListenableBuilder<TextEditingValue>(
                     valueListenable: nameController,
-                    builder: (context, value, child) => ElevatedButton(
+                    builder: (context, value, child) => FilledButton(
                       onPressed: nameController.text.isNotEmpty
                           ? () {
                               context.navigator.pop();

@@ -88,7 +88,7 @@ class SliverPostGrid extends ConsumerWidget {
                         ),
                         const SizedBox(height: 16),
                         if (e.isServerError)
-                          ElevatedButton(
+                          FilledButton(
                             onPressed: onRetry,
                             child: const Text('Retry'),
                           ),

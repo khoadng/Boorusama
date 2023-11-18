@@ -25,8 +25,8 @@ class SliverUnreadMailsBanner extends ConsumerWidget {
                 content: 'You have ${mails.length} unread mails',
                 mainColor: Colors.blue,
                 actions: [
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
+                  FilledButton(
+                    style: FilledButton.styleFrom(
                       visualDensity: VisualDensity.compact,
                     ),
                     onPressed: () => goToDmailPage(context),

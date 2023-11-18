@@ -79,7 +79,7 @@ class _ImportTagsDialogState extends ConsumerState<ImportTagsDialog> {
               const SizedBox(height: 24),
               ValueListenableBuilder(
                 valueListenable: textController,
-                builder: (context, value, child) => ElevatedButton(
+                builder: (context, value, child) => FilledButton(
                   onPressed: value.text.isNotEmpty
                       ? () {
                           context.navigator.pop();
@@ -90,7 +90,7 @@ class _ImportTagsDialogState extends ConsumerState<ImportTagsDialog> {
                 ),
               ),
               SizedBox(height: widget.padding ?? 0),
-              ElevatedButton(
+              FilledButton(
                 onPressed: () => context.navigator.pop(),
                 child: const Text('favorite_tags.cancel').tr(),
               ),

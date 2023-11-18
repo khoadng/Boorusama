@@ -72,8 +72,8 @@ class AddToFavoriteGroupPage extends ConsumerWidget {
                   fontWeight: FontWeight.w800,
                 ),
               ),
-              trailing: ElevatedButton(
-                style: ElevatedButton.styleFrom(
+              trailing: FilledButton(
+                style: FilledButton.styleFrom(
                   visualDensity: VisualDensity.compact,
                 ),
                 onPressed: () => goToFavoriteGroupCreatePage(

@@ -57,8 +57,8 @@ class _OptionTagsArenaState extends State<OptionTagsArena> {
                 ),
               ),
               if (widget.editable)
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
+                FilledButton(
+                  style: FilledButton.styleFrom(
                     visualDensity: VisualDensity.compact,
                     shape: const CircleBorder(),
                     backgroundColor: editMode

@@ -412,8 +412,8 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
             child: ListView(
               scrollDirection: Axis.horizontal,
               children: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
+                FilledButton(
+                  style: FilledButton.styleFrom(
                     backgroundColor: context.theme.cardColor,
                   ),
                   onPressed: () {
@@ -428,8 +428,8 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                   child: const Text('Search'),
                 ),
                 const SizedBox(width: 8),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
+                FilledButton(
+                  style: FilledButton.styleFrom(
                     backgroundColor: context.theme.cardColor,
                   ),
                   onPressed: () {
@@ -440,8 +440,8 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                   child: const Text('Favorites'),
                 ),
                 const SizedBox(width: 8),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
+                FilledButton(
+                  style: FilledButton.styleFrom(
                     backgroundColor: context.theme.cardColor,
                   ),
                   onPressed: () {
@@ -453,8 +453,8 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                 ),
                 if (aiTagSupport) ...[
                   const SizedBox(width: 8),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
+                  FilledButton(
+                    style: FilledButton.styleFrom(
                       backgroundColor: context.theme.cardColor,
                     ),
                     onPressed: () {

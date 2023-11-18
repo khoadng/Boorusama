@@ -72,8 +72,8 @@ class _PageSelectorState extends State<PageSelector> {
           current: widget.currentPage,
           total: widget.totalResults,
           itemPerPage: widget.itemPerPage,
-        ).map((page) => ElevatedButton(
-              style: ElevatedButton.styleFrom(
+        ).map((page) => FilledButton(
+              style: FilledButton.styleFrom(
                 minimumSize: const Size(36, 36),
                 shape: const CircleBorder(),
                 shadowColor: Colors.transparent,

@@ -220,7 +220,7 @@ class _DownloadTagSelectionViewState
                   final selectedTags =
                       ref.watch(bulkDownloadSelectedTagsProvider);
 
-                  return ElevatedButton(
+                  return FilledButton(
                     onPressed: allowDownloadd
                         ? () => ref
                             .read(

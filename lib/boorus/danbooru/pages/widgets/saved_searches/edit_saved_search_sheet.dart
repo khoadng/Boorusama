@@ -172,8 +172,8 @@ class _EditSavedSearchSheetState extends ConsumerState<EditSavedSearchSheet> {
               child: ButtonBar(
                 alignment: MainAxisAlignment.spaceAround,
                 children: [
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
+                  FilledButton(
+                    style: FilledButton.styleFrom(
                       foregroundColor: context.iconTheme.color,
                       backgroundColor: context.theme.cardColor,
                       shape: const RoundedRectangleBorder(
@@ -187,8 +187,8 @@ class _EditSavedSearchSheetState extends ConsumerState<EditSavedSearchSheet> {
                   ),
                   ValueListenableBuilder<bool>(
                     valueListenable: queryHasText,
-                    builder: (context, enable, _) => ElevatedButton(
-                      style: ElevatedButton.styleFrom(
+                    builder: (context, enable, _) => FilledButton(
+                      style: FilledButton.styleFrom(
                         foregroundColor: context.iconTheme.color,
                         shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(16)),

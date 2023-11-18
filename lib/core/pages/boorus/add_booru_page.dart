@@ -211,11 +211,11 @@ class _AddBooruPageInternalState extends ConsumerState<AddBooruPageInternal> {
           builder: (_, error, __) => Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: error.fold(
-              (e) => ElevatedButton(
+              (e) => FilledButton(
                 onPressed: null,
                 child: const Text('booru.next_step').tr(),
               ),
-              (uri) => ElevatedButton(
+              (uri) => FilledButton(
                 onPressed: () => _onNext(uri.toString()),
                 child: const Text('booru.next_step').tr(),
               ),

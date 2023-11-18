@@ -138,7 +138,7 @@ class _PostDetailPageScaffoldState<T extends Post>
                   border: Border(
                     top: BorderSide(
                       color: context.theme.dividerColor,
-                      width: 1,
+                      width: 0.2,
                     ),
                   ),
                 ),

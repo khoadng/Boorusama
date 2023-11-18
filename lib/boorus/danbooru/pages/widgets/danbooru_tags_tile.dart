@@ -42,7 +42,7 @@ class DanbooruTagsTile extends ConsumerWidget {
       child: ExpansionTile(
         title: Text('$count tags'),
         trailing: config.hasLoginDetails()
-            ? ElevatedButton(
+            ? FilledButton(
                 onPressed: tagItems.maybeWhen(
                   data: (data) =>
                       () => context.navigator.push(MaterialPageRoute(
