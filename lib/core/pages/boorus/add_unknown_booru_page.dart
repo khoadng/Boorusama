@@ -151,7 +151,7 @@ class _AddUnknownBooruPageState extends ConsumerState<AddUnknownBooruPage> {
             child: ListTile(
               title: const Text('booru.booru_engine_input_label').tr(),
               trailing: OptionDropDownButton(
-                alignment: AlignmentDirectional.centerEnd,
+                alignment: AlignmentDirectional.centerStart,
                 value: engine,
                 onChanged: (value) {
                   ref.read(booruEngineProvider.notifier).state = value;
@@ -168,20 +168,20 @@ class _AddUnknownBooruPageState extends ConsumerState<AddUnknownBooruPage> {
               ),
             ),
           ),
+          CreateBooruConfigNameField(
+            text: config.name,
+            onChanged: (value) =>
+                ref.read(booruConfigNameProvider.notifier).state = value,
+          ),
+          const SizedBox(height: 16),
           Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: 16,
+              horizontal: 12,
               vertical: 8,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                CreateBooruConfigNameField(
-                  text: config.name,
-                  onChanged: (value) =>
-                      ref.read(booruConfigNameProvider.notifier).state = value,
-                ),
-                const SizedBox(height: 16),
                 CreateBooruSiteUrlField(
                   text: config.url,
                   onChanged: (value) => setState(() {
