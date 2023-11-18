@@ -68,12 +68,19 @@ class _DanbooruArtistSearchPageState
                   children: [
                     SizedBox(
                       width: 48,
-                      child: Text('Name', style: context.textTheme.titleMedium),
+                      child: Text(
+                        'Name',
+                        style: context.textTheme.titleMedium,
+                      ),
                     ),
                     const SizedBox(width: 8),
                     Expanded(
                       child: TextField(
                         controller: nameController,
+                        decoration: const InputDecoration(
+                          hintText: 'Name, group name, or other name',
+                          helperText: '*Supports wildcards and regexes',
+                        ),
                       ),
                     ),
                   ],
@@ -87,12 +94,18 @@ class _DanbooruArtistSearchPageState
                   children: [
                     SizedBox(
                       width: 48,
-                      child: Text('URL', style: context.textTheme.titleMedium),
+                      child: Text(
+                        'URL',
+                        style: context.textTheme.titleMedium,
+                      ),
                     ),
                     const SizedBox(width: 8),
                     Expanded(
                       child: TextField(
                         controller: urlController,
+                        decoration: const InputDecoration(
+                          hintText: 'URL or a part of it',
+                        ),
                       ),
                     ),
                   ],
@@ -104,8 +117,10 @@ class _DanbooruArtistSearchPageState
                 children: [
                   SizedBox(
                     width: 62,
-                    child:
-                        Text('Sort by', style: context.textTheme.titleMedium),
+                    child: Text(
+                      'Sort by',
+                      style: context.textTheme.titleMedium,
+                    ),
                   ),
                   OptionDropDownButton(
                     alignment: AlignmentDirectional.centerStart,
@@ -146,13 +161,13 @@ class _DanbooruArtistSearchPageState
                       padding: const EdgeInsets.symmetric(
                           horizontal: 4, vertical: 12),
                       child: ExpandablePanel(
-                        theme: const ExpandableThemeData(
+                        theme: ExpandableThemeData(
                           useInkWell: false,
                           iconPlacement: ExpandablePanelIconPlacement.right,
                           headerAlignment:
                               ExpandablePanelHeaderAlignment.center,
                           tapBodyToCollapse: false,
-                          iconColor: Colors.white,
+                          iconColor: context.theme.iconTheme.color,
                         ),
                         header: Row(
                           children: [
@@ -167,6 +182,9 @@ class _DanbooruArtistSearchPageState
                             ),
                             const SizedBox(width: 8),
                             Chip(
+                              padding: const EdgeInsets.all(2),
+                              backgroundColor:
+                                  context.colorScheme.secondaryContainer,
                               visualDensity: const ShrinkVisualDensity(),
                               label: Text(artist.postCount.toString()),
                             ),

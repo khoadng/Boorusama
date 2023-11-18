@@ -31,13 +31,15 @@ class _CreateBooruConfigNameFieldState
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      controller: controller,
-      validator: (p0) => null,
-      onChanged: widget.onChanged,
-      decoration: InputDecoration(
-        hintText: 'A label to identify this profile',
-        labelText: 'booru.config_name_label'.tr(),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: TextFormField(
+        controller: controller,
+        onChanged: widget.onChanged,
+        decoration: InputDecoration(
+          hintText: 'A label to identify this profile',
+          labelText: 'booru.config_name_label'.tr(),
+        ),
       ),
     );
   }
