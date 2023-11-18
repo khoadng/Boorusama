@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/widgets/login_field.dart';
 
 class CreateBooruConfigNameField extends StatefulWidget {
   const CreateBooruConfigNameField({
@@ -32,12 +31,14 @@ class _CreateBooruConfigNameFieldState
 
   @override
   Widget build(BuildContext context) {
-    return LoginField(
+    return TextFormField(
       controller: controller,
       validator: (p0) => null,
-      labelText: 'booru.config_name_label'.tr(),
       onChanged: widget.onChanged,
-      hintText: 'A label to identify this profile',
+      decoration: InputDecoration(
+        hintText: 'A label to identify this profile',
+        labelText: 'booru.config_name_label'.tr(),
+      ),
     );
   }
 }

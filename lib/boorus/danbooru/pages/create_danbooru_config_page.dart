@@ -76,8 +76,6 @@ class _CreateDanbooruConfigPageState
               text: configName,
               onChanged: (value) => setState(() => configName = value),
             ),
-
-            // 2 tabs
             Expanded(
               child: DefaultTabController(
                 length: 3,
