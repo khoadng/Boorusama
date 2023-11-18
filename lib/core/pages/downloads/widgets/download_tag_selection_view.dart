@@ -45,9 +45,6 @@ class _DownloadTagSelectionViewState
 
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        shadowColor: Colors.transparent,
         leading: IconButton(
           splashRadius: 18,
           onPressed: () {
@@ -223,7 +220,7 @@ class _DownloadTagSelectionViewState
                   final selectedTags =
                       ref.watch(bulkDownloadSelectedTagsProvider);
 
-                  return ElevatedButton(
+                  return FilledButton(
                     onPressed: allowDownloadd
                         ? () => ref
                             .read(

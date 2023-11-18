@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/widgets/login_field.dart';
 
 class CreateBooruSiteUrlField extends StatefulWidget {
   const CreateBooruSiteUrlField({
@@ -31,12 +30,14 @@ class _CreateBooruSiteUrlFieldState extends State<CreateBooruSiteUrlField> {
 
   @override
   Widget build(BuildContext context) {
-    return LoginField(
+    return TextFormField(
       readOnly: widget.onChanged == null,
       validator: (p0) => null,
       controller: urlController,
-      labelText: 'booru.site_url_label'.tr(),
       onChanged: widget.onChanged,
+      decoration: InputDecoration(
+        labelText: 'booru.site_url_label'.tr(),
+      ),
     );
   }
 }

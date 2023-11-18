@@ -175,8 +175,7 @@ class ExploreList extends ConsumerWidget {
                           bottom: 1,
                           child: Text(
                             '${index + 1}',
-                            style: context.textTheme.displayMedium!
-                                .copyWith(color: Colors.white),
+                            style: context.textTheme.displayMedium!,
                           ),
                         ),
                       ],

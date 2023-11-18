@@ -19,7 +19,6 @@ class BooruSearchBar extends StatefulWidget {
     this.onSubmitted,
     this.constraints,
     this.focus,
-    this.backgroundColor,
     this.dense,
     this.onTapOutside,
     this.onFocusChanged,
@@ -36,7 +35,6 @@ class BooruSearchBar extends StatefulWidget {
   final TextEditingController? queryEditingController;
   final String? hintText;
   final FocusNode? focus;
-  final Color? backgroundColor;
   final bool? dense;
   final VoidCallback? onTapOutside;
   final void Function(bool value)? onFocusChanged;
@@ -67,11 +65,6 @@ class _BooruSearchBarState extends State<BooruSearchBar> {
   Widget build(BuildContext context) {
     return Center(
       child: Card(
-        elevation: 4,
-        color: widget.backgroundColor ?? context.theme.cardColor,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(6)),
-        ),
         child: GestureDetector(
           onTap: () => widget.onTap?.call(),
           child: Row(

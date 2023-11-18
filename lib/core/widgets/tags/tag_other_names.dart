@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Project imports:
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/display.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
 
 class TagOtherNames extends StatelessWidget {
@@ -28,9 +29,11 @@ class TagOtherNames extends StatelessWidget {
                   itemBuilder: (context, index) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 4),
-                      child: Chip(
-                        shape: const StadiumBorder(
-                            side: BorderSide(color: Colors.grey)),
+                      child: RawChip(
+                        side: BorderSide(
+                          color: context.theme.hintColor,
+                          width: 0.5,
+                        ),
                         padding: const EdgeInsets.all(4),
                         labelPadding: const EdgeInsets.all(1),
                         visualDensity: VisualDensity.compact,

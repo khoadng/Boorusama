@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -25,7 +26,12 @@ class CreateBooruImageDetailsResolutionOptionTile<T> extends StatelessWidget {
       contentPadding: EdgeInsets.zero,
       visualDensity: VisualDensity.compact,
       title: const Text("Details page's image resolution"),
-      subtitle: const Text('Higher resolution will take longer to load.'),
+      subtitle: Text(
+        'Higher resolution will take longer to load.',
+        style: TextStyle(
+          color: context.theme.hintColor,
+        ),
+      ),
       trailing: OptionDropDownButton(
         alignment: AlignmentDirectional.centerStart,
         value: value ?? 'Auto',

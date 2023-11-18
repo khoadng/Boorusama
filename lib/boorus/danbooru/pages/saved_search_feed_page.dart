@@ -55,9 +55,6 @@ class _SavedSearchFeedPageState extends ConsumerState<SavedSearchFeedPage> {
                   SliverAppBar(
                     title: const Text('saved_search.saved_search_feed').tr(),
                     floating: true,
-                    elevation: 0,
-                    shadowColor: Colors.transparent,
-                    backgroundColor: context.theme.scaffoldBackgroundColor,
                     actions: [
                       IconButton(
                         onPressed: () => goToSavedSearchEditPage(context),

@@ -61,7 +61,7 @@ final booruTypeCountProvider =
 });
 
 final tagColorProvider =
-    FutureProvider.autoDispose.family<Color, String>((ref, tag) async {
+    FutureProvider.autoDispose.family<Color?, String>((ref, tag) async {
   final config = ref.watchConfig;
   final settings = ref.watch(settingsProvider);
   final tagTypeStore = ref.watch(booruTagTypeStoreProvider);
@@ -71,7 +71,7 @@ final tagColorProvider =
       .watch(booruBuilderProvider)
       ?.tagColorBuilder(settings.themeMode, tagType);
 
-  return color != null && color != Colors.white ? color : Colors.white;
+  return color;
 });
 
 final tagMapProvider = Provider<Map<String, int>>((ref) {

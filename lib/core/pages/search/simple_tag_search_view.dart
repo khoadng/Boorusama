@@ -113,7 +113,6 @@ class _SimpleTagSearchViewState extends ConsumerState<SimpleTagSearchView> {
                     const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
                 child: BooruSearchBar(
                   queryEditingController: textEditingController,
-                  backgroundColor: context.colorScheme.background,
                   leading: widget.backButton,
                   autofocus: true,
                   onSubmitted: (text) =>

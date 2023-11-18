@@ -29,8 +29,8 @@ class BooruChip extends StatelessWidget {
         color != null ? generateChipColors(color!, context.themeMode) : null;
 
     return trailing != null
-        ? ElevatedButton.icon(
-            style: ElevatedButton.styleFrom(
+        ? FilledButton.icon(
+            style: FilledButton.styleFrom(
               visualDensity: visualDensity,
               foregroundColor: colors?.foregroundColor,
               padding: const EdgeInsets.only(left: 6, right: 2),
@@ -46,8 +46,8 @@ class BooruChip extends StatelessWidget {
             icon: trailing!,
             label: label,
           )
-        : ElevatedButton(
-            style: ElevatedButton.styleFrom(
+        : FilledButton(
+            style: FilledButton.styleFrom(
               visualDensity: visualDensity,
               foregroundColor: colors?.foregroundColor,
               padding:

@@ -41,7 +41,6 @@ class HomeSearchBar extends ConsumerWidget {
                     child: const FaIcon(
                       FontAwesomeIcons.arrowUp,
                       size: 14,
-                      color: Colors.white,
                     ),
                   ),
                   onPressed: () {
@@ -122,7 +121,7 @@ class HomeSearchBar extends ConsumerWidget {
                                     child: const Text('app_update.later').tr(),
                                   ),
                                   const SizedBox(width: 16),
-                                  ElevatedButton(
+                                  FilledButton(
                                     onPressed: () {
                                       launchExternalUrlString(d.storeUrl);
                                       context.navigator.pop();

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart' hide ThemeMode;
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:toggle_switch/toggle_switch.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
@@ -20,7 +19,6 @@ import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
@@ -94,6 +92,16 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
     scrollController.dispose();
   }
 
+  void _pop() {
+    if (expandMode != null) {
+      setState(() {
+        expandMode = null;
+      });
+    } else {
+      context.pop();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final config = ref.watchConfig;
@@ -101,19 +109,20 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
         ref.watch(booruFactoryProvider).create(type: config.booruType);
     final aiTagSupport = booru?.hasAiTagSupported(config.url);
 
-    return WillPopScope(
-      onWillPop: () {
-        if (expandMode != null) {
-          setState(() {
-            expandMode = null;
-          });
-          return Future.value(false);
-        }
-        return Future.value(true);
+    return PopScope(
+      canPop: expandMode == null,
+      onPopInvoked: (didPop) {
+        if (didPop) return;
+
+        _pop();
       },
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Edit'),
+          leading: IconButton(
+            onPressed: _pop,
+            icon: const Icon(Icons.arrow_back),
+          ),
           actions: [
             TextButton(
               onPressed: (toBeAdded.isNotEmpty ||
@@ -203,28 +212,19 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
               ),
               SliverToBoxAdapter(
                 child: Center(
-                  child: ToggleSwitch(
-                    dividerColor: Colors.black,
-                    changeOnTap: false,
-                    initialLabelIndex: ratingLabels.indexOf(rating.name),
-                    minWidth: 75,
-                    minHeight: 30,
-                    cornerRadius: 5,
-                    customWidths: const [70, 120, 80, 75],
-                    labels: ratingLabels.map((e) => e.sentenceCase).toList(),
-                    activeBgColor: [context.colorScheme.primary],
-                    inactiveBgColor: context.colorScheme.background,
-                    borderWidth: 1,
-                    borderColor: [context.theme.hintColor],
-                    onToggle: (index) {
+                  child: SegmentedButton(
+                    showSelectedIcon: false,
+                    segments: Rating.values
+                        .where((e) => e != Rating.unknown)
+                        .map((e) => ButtonSegment(
+                              value: e,
+                              label: Text(e.name.sentenceCase),
+                            ))
+                        .toList(),
+                    selected: {rating},
+                    onSelectionChanged: (values) {
                       setState(() {
-                        rating = switch (index) {
-                          0 => Rating.explicit,
-                          1 => Rating.questionable,
-                          2 => Rating.sensitive,
-                          3 => Rating.general,
-                          _ => Rating.unknown,
-                        };
+                        rating = values.first;
                       });
                     },
                   ),
@@ -288,7 +288,6 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
               ),
               SliverToBoxAdapter(
                 child: Wrap(
-                  runSpacing: isMobilePlatform() ? -4 : 8,
                   spacing: 4,
                   children: tags.map((tag) {
                     final colors =
@@ -403,8 +402,8 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
             child: ListView(
               scrollDirection: Axis.horizontal,
               children: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
+                FilledButton(
+                  style: FilledButton.styleFrom(
                     backgroundColor: context.theme.cardColor,
                   ),
                   onPressed: () {
@@ -419,8 +418,8 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                   child: const Text('Search'),
                 ),
                 const SizedBox(width: 8),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
+                FilledButton(
+                  style: FilledButton.styleFrom(
                     backgroundColor: context.theme.cardColor,
                   ),
                   onPressed: () {
@@ -431,8 +430,8 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                   child: const Text('Favorites'),
                 ),
                 const SizedBox(width: 8),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
+                FilledButton(
+                  style: FilledButton.styleFrom(
                     backgroundColor: context.theme.cardColor,
                   ),
                   onPressed: () {
@@ -444,8 +443,8 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                 ),
                 if (aiTagSupport) ...[
                   const SizedBox(width: 8),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
+                  FilledButton(
+                    style: FilledButton.styleFrom(
                       backgroundColor: context.theme.cardColor,
                     ),
                     onPressed: () {
@@ -531,9 +530,7 @@ class _TagEditFavoriteViewState extends ConsumerState<TagEditFavoriteView> {
 
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
         title: const Text('Favorite tags'),
-        backgroundColor: Colors.transparent,
         automaticallyImplyLeading: false,
         leading: IconButton(
           onPressed: widget.onClosed,
@@ -541,32 +538,26 @@ class _TagEditFavoriteViewState extends ConsumerState<TagEditFavoriteView> {
         ),
       ),
       backgroundColor: context.colorScheme.background,
-      body: Builder(
-        builder: (context) {
-          return Wrap(
-            spacing: 4,
-            children: tags.map((tag) {
-              final selected = widget.isSelected(tag.name);
+      body: Wrap(
+        spacing: 4,
+        children: tags.map((tag) {
+          final selected = widget.isSelected(tag.name);
 
-              return RawChip(
-                selected: selected,
-                showCheckmark: true,
-                checkmarkColor:
-                    context.themeMode.isDark ? Colors.black : Colors.white,
-                visualDensity: VisualDensity.compact,
-                onSelected: (value) => value
-                    ? widget.onAdded(tag.name)
-                    : widget.onRemoved(tag.name),
-                label: Text(
-                  tag.name.replaceUnderscoreWithSpace(),
-                  style: TextStyle(
-                    color: selected ? Colors.black : Colors.white,
-                  ),
-                ),
-              );
-            }).toList(),
+          return FilterChip(
+            side: BorderSide(
+              color: context.theme.hintColor,
+              width: 0.5,
+            ),
+            selected: selected,
+            showCheckmark: true,
+            visualDensity: VisualDensity.compact,
+            onSelected: (value) =>
+                value ? widget.onAdded(tag.name) : widget.onRemoved(tag.name),
+            label: Text(
+              tag.name.replaceUnderscoreWithSpace(),
+            ),
           );
-        },
+        }).toList(),
       ),
     );
   }
@@ -604,16 +595,13 @@ class _TagEditzwikiViewState extends ConsumerState<TagEditWikiView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
         title: const Text('Related tags'),
-        backgroundColor: Colors.transparent,
         automaticallyImplyLeading: false,
         leading: IconButton(
           onPressed: widget.onClosed,
           icon: const Icon(Icons.keyboard_arrow_down),
         ),
       ),
-      backgroundColor: context.colorScheme.background,
       body: widget.tag.toOption().fold(
             () => const Center(
               child: Text(
@@ -624,25 +612,18 @@ class _TagEditzwikiViewState extends ConsumerState<TagEditWikiView> {
               child: Column(
                 children: [
                   Center(
-                    child: ToggleSwitch(
-                      dividerColor: Colors.black,
-                      changeOnTap: false,
-                      initialLabelIndex: relatedTabs.indexOf(selectTab),
-                      minWidth: 75,
-                      minHeight: 30,
-                      cornerRadius: 5,
-                      customWidths: const [60, 70],
-                      labels: relatedTabs.map((e) => e.sentenceCase).toList(),
-                      activeBgColor: [context.colorScheme.primary],
-                      inactiveBgColor: context.colorScheme.background,
-                      borderWidth: 1,
-                      borderColor: [context.theme.hintColor],
-                      onToggle: (index) {
+                    child: SegmentedButton(
+                      showSelectedIcon: false,
+                      segments: relatedTabs
+                          .map((e) => ButtonSegment(
+                                value: e,
+                                label: Text(e.sentenceCase),
+                              ))
+                          .toList(),
+                      selected: {selectTab},
+                      onSelectionChanged: (values) {
                         setState(() {
-                          selectTab = switch (index) {
-                            1 => 'wiki',
-                            _ => 'all',
-                          };
+                          selectTab = values.first;
                         });
                       },
                     ),
@@ -706,15 +687,17 @@ class _RelatedTagChips extends ConsumerWidget {
         return RawChip(
           selected: selected,
           showCheckmark: true,
-          checkmarkColor: colors.foregroundColor,
+          checkmarkColor: colors?.foregroundColor,
           visualDensity: VisualDensity.compact,
-          selectedColor: colors.backgroundColor,
-          backgroundColor: selected ? colors.backgroundColor : null,
+          selectedColor: colors?.backgroundColor,
+          backgroundColor: selected ? colors?.backgroundColor : null,
           side: selected
-              ? BorderSide(
-                  width: 2,
-                  color: colors.borderColor,
-                )
+              ? colors != null
+                  ? BorderSide(
+                      width: 2,
+                      color: colors.borderColor,
+                    )
+                  : null
               : null,
           onSelected: (value) =>
               value ? onAdded(tag.name) : onRemoved(tag.name),
@@ -727,7 +710,7 @@ class _RelatedTagChips extends ConsumerWidget {
               text: TextSpan(
                 text: tag.name.replaceUnderscoreWithSpace(),
                 style: TextStyle(
-                  color: colors.foregroundColor,
+                  color: colors?.foregroundColor,
                   fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
                 ),
                 children: [
@@ -773,16 +756,13 @@ class _TagEditAITagViewState extends ConsumerState<TagEditAITagView> {
 
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
         title: const Text('Suggested tags'),
-        backgroundColor: Colors.transparent,
         automaticallyImplyLeading: false,
         leading: IconButton(
           onPressed: widget.onClosed,
           icon: const Icon(Icons.keyboard_arrow_down),
         ),
       ),
-      backgroundColor: context.colorScheme.background,
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -803,15 +783,17 @@ class _TagEditAITagViewState extends ConsumerState<TagEditAITagView> {
                   return RawChip(
                     selected: selected,
                     showCheckmark: true,
-                    checkmarkColor: colors.foregroundColor,
+                    checkmarkColor: colors?.foregroundColor,
                     visualDensity: VisualDensity.compact,
-                    selectedColor: colors.backgroundColor,
-                    backgroundColor: selected ? colors.backgroundColor : null,
+                    selectedColor: colors?.backgroundColor,
+                    backgroundColor: selected ? colors?.backgroundColor : null,
                     side: selected
-                        ? BorderSide(
-                            width: 2,
-                            color: colors.borderColor,
-                          )
+                        ? colors != null
+                            ? BorderSide(
+                                width: 2,
+                                color: colors.borderColor,
+                              )
+                            : null
                         : null,
                     onSelected: (value) => value
                         ? widget.onAdded(tag.name)
@@ -825,7 +807,7 @@ class _TagEditAITagViewState extends ConsumerState<TagEditAITagView> {
                         text: TextSpan(
                           text: tag.name.replaceUnderscoreWithSpace(),
                           style: TextStyle(
-                            color: colors.foregroundColor,
+                            color: colors?.foregroundColor,
                             fontWeight:
                                 selected ? FontWeight.w700 : FontWeight.w500,
                           ),

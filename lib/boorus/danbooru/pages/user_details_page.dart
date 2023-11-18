@@ -69,10 +69,7 @@ class UserDetailsPage extends ConsumerWidget {
     final state = ref.watch(danbooruUserProvider(uid));
 
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-      ),
+      appBar: AppBar(),
       body: SafeArea(
         child: state.when(
           data: (user) => Container(
@@ -183,7 +180,10 @@ class UserDetailsPage extends ConsumerWidget {
   }
 
   Widget _buildTags(
-      List<RelatedTagItem> tags, BuildContext context, WidgetRef ref) {
+    List<RelatedTagItem> tags,
+    BuildContext context,
+    WidgetRef ref,
+  ) {
     return Wrap(
       spacing: 8,
       children: tags
@@ -202,8 +202,10 @@ class UserDetailsPage extends ConsumerWidget {
                     text: TextSpan(
                       text: e.tag.replaceUnderscoreWithSpace(),
                       style: TextStyle(
-                        color: ref.getTagColor(
-                            context, TagCategory.copyright.name),
+                        color: context.themeMode.isDark
+                            ? ref.getTagColor(
+                                context, TagCategory.copyright.name)
+                            : Colors.white,
                       ),
                       children: [
                         TextSpan(

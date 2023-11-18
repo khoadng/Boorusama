@@ -13,7 +13,6 @@ import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
-import 'package:boorusama/widgets/widgets.dart';
 
 enum AddBooruPhase {
   url,
@@ -171,19 +170,21 @@ class _AddBooruPageInternalState extends ConsumerState<AddBooruPageInternal> {
           ),
           child: ValueListenableBuilder(
             valueListenable: booruUrlError,
-            builder: (_, error, __) => LoginField(
+            builder: (_, error, __) => TextFormField(
               validator: (p0) => null,
               autofocus: true,
               onChanged: (value) {
                 inputText.value = value;
                 booruUrlError.value = mapBooruUrlToUri(value);
               },
-              onSubmitted: error.fold(
+              onFieldSubmitted: error.fold(
                 (l) => null,
                 (r) => (_) => _onNext(r.toString()),
               ),
               controller: urlController,
-              labelText: 'booru.site_url'.tr(),
+              decoration: InputDecoration(
+                labelText: 'booru.site_url'.tr(),
+              ),
             ),
           ),
         ),
@@ -211,11 +212,11 @@ class _AddBooruPageInternalState extends ConsumerState<AddBooruPageInternal> {
           builder: (_, error, __) => Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: error.fold(
-              (e) => ElevatedButton(
+              (e) => FilledButton(
                 onPressed: null,
                 child: const Text('booru.next_step').tr(),
               ),
-              (uri) => ElevatedButton(
+              (uri) => FilledButton(
                 onPressed: () => _onNext(uri.toString()),
                 child: const Text('booru.next_step').tr(),
               ),

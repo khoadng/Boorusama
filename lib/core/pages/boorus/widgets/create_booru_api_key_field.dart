@@ -6,7 +6,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/widgets/login_field.dart';
 
 class CreateBooruApiKeyField extends StatefulWidget {
   const CreateBooruApiKeyField({
@@ -41,25 +40,27 @@ class _CreateBooruApiKeyFieldState extends State<CreateBooruApiKeyField> {
 
   @override
   Widget build(BuildContext context) {
-    return LoginField(
+    return TextFormField(
       controller: controller,
       validator: (p0) => null,
       obscureText: !revealKey,
-      labelText: 'booru.password_api_key_label'.tr(),
       onChanged: widget.onChanged,
-      hintText: widget.hintText,
-      suffixIcon: IconButton(
-        splashColor: Colors.transparent,
-        icon: revealKey
-            ? const FaIcon(
-                FontAwesomeIcons.solidEyeSlash,
-                size: 18,
-              )
-            : const FaIcon(
-                FontAwesomeIcons.solidEye,
-                size: 18,
-              ),
-        onPressed: () => setState(() => revealKey = !revealKey),
+      decoration: InputDecoration(
+        labelText: 'booru.password_api_key_label'.tr(),
+        hintText: widget.hintText,
+        suffixIcon: IconButton(
+          splashColor: Colors.transparent,
+          icon: revealKey
+              ? const FaIcon(
+                  FontAwesomeIcons.solidEyeSlash,
+                  size: 18,
+                )
+              : const FaIcon(
+                  FontAwesomeIcons.solidEye,
+                  size: 18,
+                ),
+          onPressed: () => setState(() => revealKey = !revealKey),
+        ),
       ),
     );
   }

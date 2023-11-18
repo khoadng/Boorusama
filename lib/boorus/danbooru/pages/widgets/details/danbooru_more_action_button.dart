@@ -35,7 +35,8 @@ class DanbooruMoreActionButton extends ConsumerWidget {
         child: Material(
           color: Colors.black.withOpacity(0.5),
           shape: const CircleBorder(),
-          child: PopupMenuButton<String>(
+          child: PopupMenuButton(
+            iconColor: Colors.white,
             padding: EdgeInsets.zero,
             onSelected: (value) {
               switch (value) {

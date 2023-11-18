@@ -203,10 +203,10 @@ class _DownloadFormatCardState extends ConsumerState<DownloadFormatCard> {
         border: Border.all(color: context.theme.hintColor),
       ),
       child: ExpandablePanel(
-        theme: const ExpandableThemeData(
+        theme: ExpandableThemeData(
           headerAlignment: ExpandablePanelHeaderAlignment.center,
           tapBodyToCollapse: true,
-          iconColor: Colors.white,
+          iconColor: context.iconTheme.color,
         ),
         header: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -227,7 +227,7 @@ class _DownloadFormatCardState extends ConsumerState<DownloadFormatCard> {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Row(
                 children: [
-                  ElevatedButton(
+                  FilledButton(
                     onPressed: () {
                       setState(() {
                         textController.text = widget.defaultFileNameFormat;
@@ -264,23 +264,9 @@ class FormatEditingField extends StatelessWidget {
         controller: controller,
         maxLines: null,
         onChanged: onChanged,
-        decoration: InputDecoration(
+        decoration: const InputDecoration(
           hintMaxLines: 4,
           hintText: '\n\n\n',
-          filled: true,
-          fillColor: context.colorScheme.background,
-          enabledBorder: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-            borderSide: BorderSide.none,
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: const BorderRadius.all(Radius.circular(8)),
-            borderSide: BorderSide(
-              color: context.theme.colorScheme.secondary,
-              width: 2,
-            ),
-          ),
-          contentPadding: const EdgeInsets.all(12),
         ),
       ),
     );
@@ -343,6 +329,7 @@ class AvailableTokens extends ConsumerWidget {
         const Text('Available tokens: '),
         for (final token in availableTokens)
           RawChip(
+            backgroundColor: context.colorScheme.secondaryContainer,
             visualDensity: VisualDensity.compact,
             label: Text(token),
             onPressed: () {

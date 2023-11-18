@@ -53,6 +53,7 @@ class _CreateAnonConfigPageState extends ConsumerState<CreateAnonConfigPage> {
               //   onChanged: (value) =>
               //       setState(() => customDownloadFileNameFormat = value),
               // ),
+              const SizedBox(height: 16),
               CreateBooruSubmitButton(
                 onSubmit: allowSubmit() ? submit : null,
               ),

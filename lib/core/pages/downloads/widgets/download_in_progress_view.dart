@@ -144,7 +144,7 @@ class DownloadInProgressView extends ConsumerWidget {
             status == BulkDownloadManagerStatus.cancel)
           Padding(
             padding: const EdgeInsets.all(16),
-            child: ElevatedButton(
+            child: FilledButton(
               onPressed: () => ref
                   .read(bulkDownloaderManagerProvider(config).notifier)
                   .done(),
@@ -154,7 +154,7 @@ class DownloadInProgressView extends ConsumerWidget {
         else
           Padding(
             padding: const EdgeInsets.all(16),
-            child: ElevatedButton(
+            child: FilledButton(
               onPressed: () => ref
                   .read(bulkDownloaderManagerProvider(config).notifier)
                   .cancelAll(),

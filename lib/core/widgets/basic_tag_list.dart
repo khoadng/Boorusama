@@ -10,7 +10,6 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 
 class BasicTagList extends ConsumerWidget {
@@ -29,7 +28,7 @@ class BasicTagList extends ConsumerWidget {
 
     return Wrap(
       spacing: 4,
-      runSpacing: isMobilePlatform() ? 0 : 8,
+      runSpacing: 4,
       children: tags.sorted((a, b) => a.compareTo(b)).map((tag) {
         final categoryAsync = ref.watch(booruTagTypeProvider(tag));
 

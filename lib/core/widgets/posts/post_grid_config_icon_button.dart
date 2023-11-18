@@ -135,7 +135,6 @@ class PostGridActionSheet extends ConsumerWidget {
         contentPadding: EdgeInsets.zero,
         title: const Text('Page mode'),
         trailing: OptionDropDownButton(
-          backgroundColor: Colors.transparent,
           alignment: AlignmentDirectional.centerEnd,
           onChanged: (value) => value != null ? ref.setPageMode(value) : null,
           value: pageMode,
@@ -152,7 +151,6 @@ class PostGridActionSheet extends ConsumerWidget {
         contentPadding: EdgeInsets.zero,
         title: const Text('Grid'),
         trailing: OptionDropDownButton(
-          backgroundColor: Colors.transparent,
           alignment: AlignmentDirectional.centerEnd,
           onChanged: (value) => value != null ? ref.setGridSize(value) : null,
           value: gridSize,
@@ -169,7 +167,6 @@ class PostGridActionSheet extends ConsumerWidget {
         contentPadding: EdgeInsets.zero,
         title: const Text('Image list'),
         trailing: OptionDropDownButton(
-          backgroundColor: Colors.transparent,
           alignment: AlignmentDirectional.centerEnd,
           onChanged: (value) =>
               value != null ? ref.setImageListType(value) : null,

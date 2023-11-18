@@ -33,9 +33,6 @@ class DanbooruDmailDetailsPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        shadowColor: Colors.transparent,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
         actions: [
           // Mark as unread
           IconButton(
@@ -94,7 +91,7 @@ class DanbooruDmailDetailsPage extends ConsumerWidget {
               '[/quote]',
             ),
             const SizedBox(height: 16),
-            ElevatedButton(
+            FilledButton(
               onPressed: () {
                 launchExternalUrlString('${config.url}dmails/${dmail.id}');
               },

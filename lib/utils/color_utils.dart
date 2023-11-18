@@ -10,7 +10,8 @@ typedef ChipColors = ({
   Color borderColor,
 });
 
-ChipColors generateChipColors(Color color, ThemeMode themeMode) {
+ChipColors? generateChipColors(Color? color, ThemeMode themeMode) {
+  if (color == null) return null;
   if (themeMode == ThemeMode.light) {
     return (
       backgroundColor: color,

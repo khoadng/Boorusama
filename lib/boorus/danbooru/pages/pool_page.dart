@@ -25,8 +25,6 @@ class PoolPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('pool.pool_gallery').tr(),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
         actions: const [
           PoolSearchButton(),
         ],

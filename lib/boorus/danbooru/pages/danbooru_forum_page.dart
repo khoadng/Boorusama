@@ -30,8 +30,6 @@ class DanbooruForumPage extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('forum.forum').tr(),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
       ),
       body: RiverPagedBuilder.autoDispose(
         firstPageProgressIndicatorBuilder: (context, controller) =>

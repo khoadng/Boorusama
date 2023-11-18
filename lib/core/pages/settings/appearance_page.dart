@@ -136,13 +136,13 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
                   ref.updateSettings(settings.copyWith(pageMode: value)),
               optionBuilder: (value) => Text(_layoutToString(value)).tr(),
             ),
-            SwitchListTile.adaptive(
+            SwitchListTile(
               title: const Text('settings.appearance.show_scores').tr(),
               value: settings.showScoresInGrid,
               onChanged: (value) => ref
                   .updateSettings(settings.copyWith(showScoresInGrid: value)),
             ),
-            SwitchListTile.adaptive(
+            SwitchListTile(
               title: const Text('Show posts configuration header').tr(),
               value: settings.showPostListConfigHeader,
               onChanged: (value) =>

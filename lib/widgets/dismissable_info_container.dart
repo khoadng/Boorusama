@@ -47,11 +47,13 @@ class _DismissableInfoContainerState extends State<DismissableInfoContainer> {
           margin: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             borderRadius: const BorderRadius.all(Radius.circular(4)),
-            color: colors.backgroundColor,
-            border: Border.all(
-              color: colors.borderColor,
-              width: 1,
-            ),
+            color: colors?.backgroundColor,
+            border: colors != null
+                ? Border.all(
+                    color: colors.borderColor,
+                    width: 1,
+                  )
+                : null,
           ),
           width: MediaQuery.sizeOf(context).width,
           child: Padding(

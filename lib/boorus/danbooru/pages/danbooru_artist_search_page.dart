@@ -47,9 +47,6 @@ class _DanbooruArtistSearchPageState
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Artists'),
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          shadowColor: Colors.transparent,
           actions: [
             TextButton(
               child: const Text('Search'),
@@ -62,165 +59,158 @@ class _DanbooruArtistSearchPageState
             ),
           ],
         ),
-        body: Theme(
-          data: context.theme.copyWith(
-            inputDecorationTheme: context.theme.inputDecorationTheme.copyWith(
-              filled: true,
-              fillColor: context.colorScheme.background,
-              enabledBorder: const OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(8)),
-                borderSide: BorderSide.none,
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: const BorderRadius.all(Radius.circular(8)),
-                borderSide: BorderSide(
-                  color: context.theme.colorScheme.secondary,
-                  width: 2,
-                ),
-              ),
-              contentPadding: const EdgeInsets.all(12),
-            ),
-          ),
-          child: CustomScrollView(
-            slivers: [
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  child: Row(
-                    children: [
-                      SizedBox(
-                        width: 48,
-                        child:
-                            Text('Name', style: context.textTheme.titleMedium),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: TextField(
-                          controller: nameController,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  child: Row(
-                    children: [
-                      SizedBox(
-                        width: 48,
-                        child:
-                            Text('URL', style: context.textTheme.titleMedium),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: TextField(
-                          controller: urlController,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              SliverToBoxAdapter(
+        body: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 child: Row(
                   children: [
                     SizedBox(
-                      width: 62,
-                      child:
-                          Text('Sort by', style: context.textTheme.titleMedium),
+                      width: 48,
+                      child: Text(
+                        'Name',
+                        style: context.textTheme.titleMedium,
+                      ),
                     ),
-                    OptionDropDownButton(
-                      alignment: AlignmentDirectional.centerStart,
-                      backgroundColor: context.colorScheme.background,
-                      value: ref.watch(artistOrderProvider),
-                      onChanged: (value) {
-                        ref.read(artistOrderProvider.notifier).state = value!;
-                      },
-                      items: ArtistOrder.values
-                          .map((e) => DropdownMenuItem(
-                                value: e,
-                                child: Text(e.name.titleCase),
-                              ))
-                          .toList(),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: TextField(
+                        controller: nameController,
+                        decoration: const InputDecoration(
+                          hintText: 'Name, group name, or other name',
+                          helperText: '*Supports wildcards and regexes',
+                        ),
+                      ),
                     ),
                   ],
                 ),
               ),
-              const SliverSizedBox(height: 8),
-              SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 4),
-                sliver: RiverPagedBuilder.autoDispose(
-                  provider: danbooruArtistsProvider,
-                  firstPageProgressIndicatorBuilder: (context, controller) =>
-                      const Center(
-                    child: CircularProgressIndicator.adaptive(),
+            ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: 48,
+                      child: Text(
+                        'URL',
+                        style: context.textTheme.titleMedium,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: TextField(
+                        controller: urlController,
+                        decoration: const InputDecoration(
+                          hintText: 'URL or a part of it',
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 62,
+                    child: Text(
+                      'Sort by',
+                      style: context.textTheme.titleMedium,
+                    ),
                   ),
-                  pullToRefresh: false,
-                  firstPageKey: 1,
-                  pagedBuilder: (controller, builder) => PagedSliverList(
-                    pagingController: controller,
-                    builderDelegate: builder,
+                  OptionDropDownButton(
+                    alignment: AlignmentDirectional.centerStart,
+                    value: ref.watch(artistOrderProvider),
+                    onChanged: (value) {
+                      ref.read(artistOrderProvider.notifier).state = value!;
+                    },
+                    items: ArtistOrder.values
+                        .map((e) => DropdownMenuItem(
+                              value: e,
+                              child: Text(e.name.titleCase),
+                            ))
+                        .toList(),
                   ),
-                  itemBuilder: (context, artist, index) => Card(
-                    color: context.colorScheme.background,
-                    child: InkWell(
-                      onTap: () => goToArtistPage(context, artist.name),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 4, vertical: 12),
-                        child: ExpandablePanel(
-                          theme: const ExpandableThemeData(
-                            useInkWell: false,
-                            iconPlacement: ExpandablePanelIconPlacement.right,
-                            headerAlignment:
-                                ExpandablePanelHeaderAlignment.center,
-                            tapBodyToCollapse: false,
-                            iconColor: Colors.white,
-                          ),
-                          header: Row(
-                            children: [
-                              const SizedBox(width: 8),
-                              Flexible(
-                                child: Text(
-                                  artist.name.replaceAll('_', ' '),
-                                  style: context.textTheme.titleLarge?.copyWith(
-                                    color: ref.getTagColor(context, 'artist'),
-                                  ),
+                ],
+              ),
+            ),
+            const SliverSizedBox(height: 8),
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              sliver: RiverPagedBuilder.autoDispose(
+                provider: danbooruArtistsProvider,
+                firstPageProgressIndicatorBuilder: (context, controller) =>
+                    const Center(
+                  child: CircularProgressIndicator.adaptive(),
+                ),
+                pullToRefresh: false,
+                firstPageKey: 1,
+                pagedBuilder: (controller, builder) => PagedSliverList(
+                  pagingController: controller,
+                  builderDelegate: builder,
+                ),
+                itemBuilder: (context, artist, index) => Card(
+                  color: context.colorScheme.background,
+                  child: InkWell(
+                    onTap: () => goToArtistPage(context, artist.name),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 4, vertical: 12),
+                      child: ExpandablePanel(
+                        theme: ExpandableThemeData(
+                          useInkWell: false,
+                          iconPlacement: ExpandablePanelIconPlacement.right,
+                          headerAlignment:
+                              ExpandablePanelHeaderAlignment.center,
+                          tapBodyToCollapse: false,
+                          iconColor: context.theme.iconTheme.color,
+                        ),
+                        header: Row(
+                          children: [
+                            const SizedBox(width: 8),
+                            Flexible(
+                              child: Text(
+                                artist.name.replaceAll('_', ' '),
+                                style: context.textTheme.titleLarge?.copyWith(
+                                  color: ref.getTagColor(context, 'artist'),
                                 ),
                               ),
-                              const SizedBox(width: 8),
-                              Chip(
-                                visualDensity: const ShrinkVisualDensity(),
-                                label: Text(artist.postCount.toString()),
+                            ),
+                            const SizedBox(width: 8),
+                            Chip(
+                              padding: const EdgeInsets.all(2),
+                              backgroundColor:
+                                  context.colorScheme.secondaryContainer,
+                              visualDensity: const ShrinkVisualDensity(),
+                              label: Text(artist.postCount.toString()),
+                            ),
+                          ],
+                        ),
+                        collapsed: const SizedBox.shrink(),
+                        expanded: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (artist.otherNames.isNotEmpty) ...[
+                                const SizedBox(height: 8),
+                                _TagOtherNames(otherNames: artist.otherNames),
+                              ],
+                              const SizedBox(height: 8),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8),
+                                child: DanbooruArtistUrlChips(
+                                  artist: artist,
+                                  alignment: WrapAlignment.start,
+                                ),
                               ),
                             ],
-                          ),
-                          collapsed: const SizedBox.shrink(),
-                          expanded: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 4),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                if (artist.otherNames.isNotEmpty) ...[
-                                  const SizedBox(height: 8),
-                                  _TagOtherNames(otherNames: artist.otherNames),
-                                ],
-                                const SizedBox(height: 8),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 8),
-                                  child: DanbooruArtistUrlChips(
-                                    artist: artist,
-                                    alignment: WrapAlignment.start,
-                                  ),
-                                ),
-                              ],
-                            ),
                           ),
                         ),
                       ),
@@ -228,8 +218,8 @@ class _DanbooruArtistSearchPageState
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -255,6 +245,7 @@ class _TagOtherNames extends StatelessWidget {
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4),
             child: Chip(
+              backgroundColor: context.colorScheme.secondaryContainer,
               shape: const StadiumBorder(side: BorderSide(color: Colors.grey)),
               padding: const EdgeInsets.all(4),
               labelPadding: const EdgeInsets.all(1),

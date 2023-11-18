@@ -66,7 +66,7 @@ class _PerformancePageState extends ConsumerState<DataAndStoragePage> {
                       .tr()
                       .replaceAll('{0}', filesize(imageCacheSize.size))
                       .replaceAll('{1}', imageCacheSize.fileCount.toString())),
-                  trailing: ElevatedButton(
+                  trailing: FilledButton(
                     onPressed: () => ref
                         .read(cacheSizeProvider.notifier)
                         .clearAppImageCache(),
@@ -81,7 +81,7 @@ class _PerformancePageState extends ConsumerState<DataAndStoragePage> {
                     data: (data) => Text(filesize(data)),
                     orElse: () => const Text('Loading...'),
                   ),
-              trailing: ElevatedButton(
+              trailing: FilledButton(
                 onPressed: () => ref
                     .read(booruTagTypeStoreProvider)
                     .clear()
@@ -98,7 +98,7 @@ class _PerformancePageState extends ConsumerState<DataAndStoragePage> {
                 return ListTile(
                   title: const Text('All cache'),
                   subtitle: Text(filesize(size.size)),
-                  trailing: ElevatedButton(
+                  trailing: FilledButton(
                     onPressed: () =>
                         ref.read(cacheSizeProvider.notifier).clearAppCache(),
                     child: const Text('settings.performance.clear_cache').tr(),

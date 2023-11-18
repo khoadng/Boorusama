@@ -48,10 +48,7 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
           title: const Text('Popular'),
           onTap: () => context.navigator.push(MaterialPageRoute(
               builder: (_) => Scaffold(
-                    appBar: AppBar(
-                      elevation: 0,
-                      backgroundColor: Colors.transparent,
-                    ),
+                    appBar: AppBar(),
                     body: const CustomContextMenuOverlay(
                         child: MoebooruPopularPage()),
                   ))),
@@ -61,10 +58,7 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
           title: const Text('Hot'),
           onTap: () => context.navigator.push(MaterialPageRoute(
               builder: (_) => Scaffold(
-                    appBar: AppBar(
-                      elevation: 0,
-                      backgroundColor: Colors.transparent,
-                    ),
+                    appBar: AppBar(),
                     body: const CustomContextMenuOverlay(
                         child: MoebooruPopularRecentPage()),
                   ))),

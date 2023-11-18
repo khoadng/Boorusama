@@ -5,7 +5,7 @@ publish_to: "none"
 version: 3.7.1+74
 
 environment:
-  sdk: ">=3.0.0 <4.0.0"
+  sdk: ">=3.2.0 <4.0.0"
 
 dependencies:
   android_intent_plus: ^4.0.3
@@ -41,10 +41,10 @@ dependencies:
   fast_immutable_collections: ^9.1.6
   file_picker: ^6.1.1
   filesize: ^2.0.1
-  firebase_analytics: ^10.6.3
-  firebase_core: ^2.21.0
-  firebase_crashlytics: ^3.4.3
-  firebase_performance: ^0.9.3+3
+  firebase_analytics: ^10.7.0
+  firebase_core: ^2.22.0
+  firebase_crashlytics: ^3.4.4
+  firebase_performance: ^0.9.3+4
   fl_chart: ^0.64.0
   flutter:
     sdk: flutter
@@ -116,7 +116,6 @@ dependencies:
   sliver_tools: ^0.2.12
   stack_trace: ^1.11.0
   timeago: ^3.6.0
-  toggle_switch: ^2.1.0
   url_launcher: ^6.2.1
   uuid: ^4.1.0
   version: ^3.0.2

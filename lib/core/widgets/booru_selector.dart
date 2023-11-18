@@ -121,8 +121,12 @@ class _BooruSelectorState extends ConsumerState<BooruSelector> {
                                   textAlign: TextAlign.center,
                                   maxLines: 3,
                                   overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    fontSize: 10,
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w500,
+                                    color: currentConfig == config
+                                        ? context.colorScheme.onPrimary
+                                        : null,
                                   ),
                                 ),
                               ],

@@ -94,14 +94,16 @@ class FavoriteTagsSection extends ConsumerWidget {
           label: Text(
             tag.name.replaceUnderscoreWithSpace(),
             style: TextStyle(
-              color: colors.foregroundColor,
+              color: colors?.foregroundColor,
             ),
           ),
-          backgroundColor: colors.backgroundColor,
-          side: BorderSide(
-            color: colors.borderColor,
-            width: 1,
-          ),
+          backgroundColor: colors?.backgroundColor,
+          side: colors != null
+              ? BorderSide(
+                  color: colors.borderColor,
+                  width: 1,
+                )
+              : null,
           deleteIcon: const Icon(
             Icons.close,
             size: 18,

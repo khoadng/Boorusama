@@ -127,13 +127,11 @@ class DanbooruPostStatsTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final comments = ref.watch(danbooruCommentProvider(post.id));
 
-    return RepaintBoundary(
-      child: SimplePostStatsTile(
-        score: post.score,
-        favCount: post.favCount,
-        totalComments: comments?.length ?? 0,
-        votePercentText: _generatePercentText(post),
-      ),
+    return SimplePostStatsTile(
+      score: post.score,
+      favCount: post.favCount,
+      totalComments: comments?.length ?? 0,
+      votePercentText: _generatePercentText(post),
     );
   }
 

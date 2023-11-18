@@ -49,7 +49,10 @@ class TagSuggestionItems extends ConsumerWidget {
                 trailing: tag.hasCount
                     ? Text(
                         NumberFormat.compact().format(tag.postCount),
-                        style: const TextStyle(color: Colors.grey),
+                        style: TextStyle(
+                          color: context.theme.hintColor,
+                          fontSize: 14,
+                        ),
                       )
                     : null,
                 title: _getTitle(

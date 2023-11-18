@@ -16,7 +16,6 @@ import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -126,7 +125,7 @@ class E621PostTagList extends ConsumerWidget {
   ) {
     return Tags(
       alignment: WrapAlignment.start,
-      runSpacing: isMobilePlatform() ? 0 : 4,
+      runSpacing: 4,
       itemCount: group.tags.length,
       itemBuilder: (index) {
         final tag = group.tags[index];
@@ -175,11 +174,11 @@ class _Chip extends ConsumerWidget {
   const _Chip({
     required this.tag,
     required this.maxTagWidth,
-    required this.tagColor,
+    this.tagColor,
   });
 
   final String tag;
-  final Color tagColor;
+  final Color? tagColor;
   final double? maxTagWidth;
 
   @override
@@ -191,11 +190,13 @@ class _Chip extends ConsumerWidget {
       children: [
         Chip(
           visualDensity: const ShrinkVisualDensity(),
-          backgroundColor: colors.backgroundColor,
-          side: BorderSide(
-            color: colors.borderColor,
-            width: 1,
-          ),
+          backgroundColor: colors?.backgroundColor,
+          side: colors != null
+              ? BorderSide(
+                  color: colors.borderColor,
+                  width: 1,
+                )
+              : null,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),
           ),
@@ -208,7 +209,7 @@ class _Chip extends ConsumerWidget {
               overflow: TextOverflow.fade,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                color: colors.foregroundColor,
+                color: colors?.foregroundColor,
               ),
             ),
           ),

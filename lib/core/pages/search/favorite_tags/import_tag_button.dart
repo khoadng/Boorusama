@@ -13,8 +13,8 @@ class ImportTagButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(shape: const StadiumBorder()),
+    return FilledButton(
+      style: FilledButton.styleFrom(shape: const StadiumBorder()),
       onPressed: () => goToFavoriteTagImportPage(
         context,
         ref,

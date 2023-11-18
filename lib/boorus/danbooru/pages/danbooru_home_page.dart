@@ -151,9 +151,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
           onTap: () => context.navigator.push(MaterialPageRoute(
               builder: (_) => Scaffold(
                     appBar: AppBar(
-                      elevation: 0,
                       title: const Text('Explore'),
-                      backgroundColor: Colors.transparent,
                     ),
                     body: const ExplorePage(),
                   ))),
@@ -217,7 +215,6 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
                   data: (data) => data.isNotEmpty
                       ? Badge.count(
                           count: data.length,
-                          textColor: Colors.white,
                           child: const Icon(Icons.mail),
                         )
                       : const Icon(Icons.mail),

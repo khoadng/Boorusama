@@ -64,11 +64,10 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
             _previousPost(),
         const SingleActivator(LogicalKeyboardKey.escape): () => _onExit(),
       },
-      child: WillPopScope(
-        onWillPop: () {
+      child: PopScope(
+        onPopInvoked: (didPop) {
+          if (didPop) return;
           _onExit();
-
-          return Future.value(false);
         },
         child: Focus(
           autofocus: true,
@@ -135,7 +134,10 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                                         builder: (context) =>
                                             widget.infoBuilder(context),
                                       ),
-                                      icon: const Icon(Icons.info),
+                                      icon: const Icon(
+                                        Icons.info,
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   widget.topRightBuilder!.call(context),
                                 ],

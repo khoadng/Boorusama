@@ -72,8 +72,8 @@ class _PageSelectorState extends State<PageSelector> {
           current: widget.currentPage,
           total: widget.totalResults,
           itemPerPage: widget.itemPerPage,
-        ).map((page) => ElevatedButton(
-              style: ElevatedButton.styleFrom(
+        ).map((page) => FilledButton(
+              style: FilledButton.styleFrom(
                 minimumSize: const Size(36, 36),
                 shape: const CircleBorder(),
                 shadowColor: Colors.transparent,
@@ -82,18 +82,14 @@ class _PageSelectorState extends State<PageSelector> {
                     : Colors.transparent,
               ),
               onPressed: () => widget.onPageSelect(page),
-              child: Text(
-                '$page',
-                style: page == widget.currentPage
-                    ? Theme.of(context)
-                        .textTheme
-                        .titleMedium!
-                        .copyWith(fontWeight: FontWeight.bold)
-                    : Theme.of(context)
-                        .textTheme
-                        .titleMedium!
-                        .copyWith(color: Theme.of(context).hintColor),
-              ),
+              child: Text('$page',
+                  style: page == widget.currentPage
+                      ? const TextStyle(
+                          fontWeight: FontWeight.bold,
+                        )
+                      : TextStyle(
+                          color: Theme.of(context).hintColor,
+                        )),
             )),
         if (!pageInputMode)
           IconButton(
@@ -116,28 +112,6 @@ class _PageSelectorState extends State<PageSelector> {
                 }
               },
               child: TextField(
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Theme.of(context).colorScheme.background,
-                  enabledBorder: const OutlineInputBorder(
-                    borderSide: BorderSide.none,
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Theme.of(context).colorScheme.secondary,
-                      width: 2,
-                    ),
-                  ),
-                  errorBorder: OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: Theme.of(context).colorScheme.error),
-                  ),
-                  focusedErrorBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                        color: Theme.of(context).colorScheme.error, width: 2),
-                  ),
-                  contentPadding: const EdgeInsets.all(12),
-                ),
                 autofocus: true,
                 keyboardType: TextInputType.number,
                 onSubmitted: onSubmit,

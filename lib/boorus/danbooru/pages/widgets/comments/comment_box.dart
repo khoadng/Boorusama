@@ -107,8 +107,8 @@ class _CommentBoxState extends ConsumerState<CommentBox> {
                   builder: (context, value, child) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 6),
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
+                      child: FilledButton(
+                        style: FilledButton.styleFrom(
                           shape: const RoundedRectangleBorder(
                             borderRadius: BorderRadius.all(Radius.circular(50)),
                           ),
