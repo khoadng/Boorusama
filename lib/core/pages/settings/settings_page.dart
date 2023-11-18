@@ -49,7 +49,7 @@ class SettingsPage extends ConsumerWidget {
                       title: const Text(
                         'settings.appearance.appearance',
                         style: TextStyle(
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w400,
                         ),
                       ).tr(),
                       onTap: () => context.go('/settings/appearance'),
@@ -57,7 +57,7 @@ class SettingsPage extends ConsumerWidget {
                     ListTile(
                       title: const Text('settings.language.language',
                           style: TextStyle(
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.w400,
                           )).tr(),
                       leading: Icon(
                         Icons.translate,
@@ -69,7 +69,7 @@ class SettingsPage extends ConsumerWidget {
                       title: const Text(
                         'download.download',
                         style: TextStyle(
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w400,
                         ),
                       ).tr(),
                       leading: FaIcon(
@@ -82,7 +82,7 @@ class SettingsPage extends ConsumerWidget {
                       title: const Text(
                         'settings.performance.performance',
                         style: TextStyle(
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w400,
                         ),
                       ).tr(),
                       leading: FaIcon(
@@ -95,7 +95,7 @@ class SettingsPage extends ConsumerWidget {
                       title: const Text(
                         'Data and Storage',
                         style: TextStyle(
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w400,
                         ),
                       ),
                       leading: FaIcon(
@@ -108,7 +108,7 @@ class SettingsPage extends ConsumerWidget {
                       title: const Text(
                         'settings.search.search',
                         style: TextStyle(
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w400,
                         ),
                       ).tr(),
                       leading: FaIcon(
@@ -121,7 +121,7 @@ class SettingsPage extends ConsumerWidget {
                       title: const Text(
                         'settings.privacy.privacy',
                         style: TextStyle(
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w400,
                         ),
                       ).tr(),
                       leading: FaIcon(
@@ -138,7 +138,7 @@ class SettingsPage extends ConsumerWidget {
                       title: const Text(
                         'settings.changelog',
                         style: TextStyle(
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w400,
                         ),
                       ).tr(),
                       leading: FaIcon(
@@ -151,7 +151,7 @@ class SettingsPage extends ConsumerWidget {
                       title: const Text(
                         'settings.debug_logs.debug_logs',
                         style: TextStyle(
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w400,
                         ),
                       ).tr(),
                       leading: FaIcon(
@@ -165,7 +165,7 @@ class SettingsPage extends ConsumerWidget {
                       title: const Text(
                         'settings.help_us_translate',
                         style: TextStyle(
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w400,
                         ),
                       ).tr(),
                       leading: Icon(
@@ -179,7 +179,7 @@ class SettingsPage extends ConsumerWidget {
                       title: const Text(
                         'settings.information',
                         style: TextStyle(
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w400,
                         ),
                       ).tr(),
                       leading: Icon(

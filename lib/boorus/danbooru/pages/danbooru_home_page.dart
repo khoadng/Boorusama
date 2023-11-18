@@ -215,7 +215,6 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
                   data: (data) => data.isNotEmpty
                       ? Badge.count(
                           count: data.length,
-                          textColor: Colors.white,
                           child: const Icon(Icons.mail),
                         )
                       : const Icon(Icons.mail),

@@ -538,32 +538,26 @@ class _TagEditFavoriteViewState extends ConsumerState<TagEditFavoriteView> {
         ),
       ),
       backgroundColor: context.colorScheme.background,
-      body: Builder(
-        builder: (context) {
-          return Wrap(
-            spacing: 4,
-            children: tags.map((tag) {
-              final selected = widget.isSelected(tag.name);
+      body: Wrap(
+        spacing: 4,
+        children: tags.map((tag) {
+          final selected = widget.isSelected(tag.name);
 
-              return RawChip(
-                selected: selected,
-                showCheckmark: true,
-                checkmarkColor:
-                    context.themeMode.isDark ? Colors.black : Colors.white,
-                visualDensity: VisualDensity.compact,
-                onSelected: (value) => value
-                    ? widget.onAdded(tag.name)
-                    : widget.onRemoved(tag.name),
-                label: Text(
-                  tag.name.replaceUnderscoreWithSpace(),
-                  style: TextStyle(
-                    color: selected ? Colors.black : Colors.white,
-                  ),
-                ),
-              );
-            }).toList(),
+          return FilterChip(
+            side: BorderSide(
+              color: context.theme.hintColor,
+              width: 0.5,
+            ),
+            selected: selected,
+            showCheckmark: true,
+            visualDensity: VisualDensity.compact,
+            onSelected: (value) =>
+                value ? widget.onAdded(tag.name) : widget.onRemoved(tag.name),
+            label: Text(
+              tag.name.replaceUnderscoreWithSpace(),
+            ),
           );
-        },
+        }).toList(),
       ),
     );
   }

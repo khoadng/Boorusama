@@ -87,9 +87,7 @@ class _Chip extends ConsumerWidget {
         side: BorderSide(
           width: 1.5,
           color: isSelected
-              ? context.themeMode.isDark
-                  ? Colors.white
-                  : Colors.black
+              ? Colors.transparent
               : colors?.borderColor ?? Colors.transparent,
         ),
         onSelected: (selected) => onSelected(search),
@@ -99,11 +97,7 @@ class _Chip extends ConsumerWidget {
         label: Text(
           search.keyword.replaceUnderscoreWithSpace(),
           style: TextStyle(
-            color: isSelected
-                ? context.themeMode.isDark
-                    ? Colors.black
-                    : Colors.white
-                : colors?.foregroundColor,
+            color: isSelected ? null : colors?.foregroundColor,
           ),
           overflow: TextOverflow.ellipsis,
         ),

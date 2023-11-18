@@ -15,7 +15,7 @@ const kOnBackgroundAmoledDarkColor = kLightWhiteColor;
 const kSecondaryContainerAmoledDarkColor = Color.fromARGB(255, 50, 50, 50);
 const kSurfaceAmoledDarkColor = Color.fromARGB(255, 40, 40, 40);
 const kOnSurfaceAmoledDarkColor = kLightWhiteColor;
-const kErrorAmoledDarkColor = Colors.redAccent;
+const kErrorAmoledDarkColor = Color(0xFFCF6679);
 const kOnErrorAmoledDarkColor = kLightWhiteColor;
 const kIconAmoledDarkColor = kDimWhiteColor;
 
@@ -27,7 +27,7 @@ const kOnBackgroundDarkColor = kLightWhiteColor;
 const kSecondaryContainerDarkColor = Color.fromARGB(255, 65, 65, 65);
 const kSurfaceDarkColor = Color.fromARGB(255, 50, 50, 50);
 const kOnSurfaceDarkColor = kLightWhiteColor;
-const kErrorDarkColor = Colors.redAccent;
+const kErrorDarkColor = Color(0xFFCF6679);
 const kOnErrorDarkColor = kLightWhiteColor;
 const kIconDarkColor = kLightWhiteColor;
 
@@ -39,7 +39,7 @@ const kOnBackgroundLightColor = Colors.black;
 const kSecondaryContainerLightColor = Color.fromARGB(255, 225, 227, 229);
 const kSurfaceLightColor = Colors.white;
 const kOnSurfaceLightColor = Colors.black;
-const kErrorLightColor = Colors.redAccent;
+const kErrorLightColor = Color.fromARGB(255, 211, 47, 47);
 const kOnErrorLightColor = Colors.white;
 const kIconLightColor = Color.fromARGB(255, 79, 86, 96);
 
