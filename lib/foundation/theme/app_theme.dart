@@ -6,6 +6,7 @@ import 'colors.dart';
 import 'theme_mode.dart';
 
 const kLightWhiteColor = Color.fromARGB(255, 220, 220, 220);
+const kDimWhiteColor = Color.fromARGB(255, 130, 130, 130);
 
 // AMOLED Dark theme
 const kPrimaryAmoledDarkColor = Color.fromARGB(255, 86, 99, 233);
@@ -17,7 +18,7 @@ const kSurfaceAmoledDarkColor = Color.fromARGB(255, 40, 40, 40);
 const kOnSurfaceAmoledDarkColor = kLightWhiteColor;
 const kErrorAmoledDarkColor = Colors.redAccent;
 const kOnErrorAmoledDarkColor = kLightWhiteColor;
-const kIconAmoledDarkColor = kLightWhiteColor;
+const kIconAmoledDarkColor = kDimWhiteColor;
 
 // Dark theme
 const kPrimaryDarkColor = Color.fromARGB(255, 86, 99, 233);
@@ -117,6 +118,21 @@ class AppTheme {
           contentPadding: EdgeInsets.all(12),
         ),
         brightness: Brightness.light,
+        segmentedButtonTheme: SegmentedButtonThemeData(
+          style: ButtonStyle(
+            shape: MaterialStateProperty.all<OutlinedBorder>(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            textStyle: MaterialStateProperty.all<TextStyle>(
+              const TextStyle(
+                fontSize: 13,
+              ),
+            ),
+            visualDensity: VisualDensity.compact,
+          ),
+        ),
         colorScheme: const ColorScheme(
           brightness: Brightness.light,
           background: kBackgroundLightColor,
@@ -205,6 +221,21 @@ class AppTheme {
           contentPadding: EdgeInsets.all(12),
         ),
         brightness: Brightness.dark,
+        segmentedButtonTheme: SegmentedButtonThemeData(
+          style: ButtonStyle(
+            shape: MaterialStateProperty.all<OutlinedBorder>(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            textStyle: MaterialStateProperty.all<TextStyle>(
+              const TextStyle(
+                fontSize: 13,
+              ),
+            ),
+            visualDensity: VisualDensity.compact,
+          ),
+        ),
         colorScheme: const ColorScheme(
           brightness: Brightness.dark,
           background: kBackgroundDarkColor,
@@ -293,6 +324,21 @@ class AppTheme {
           contentPadding: EdgeInsets.all(12),
         ),
         brightness: Brightness.dark,
+        segmentedButtonTheme: SegmentedButtonThemeData(
+          style: ButtonStyle(
+            shape: MaterialStateProperty.all<OutlinedBorder>(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            textStyle: MaterialStateProperty.all<TextStyle>(
+              const TextStyle(
+                fontSize: 13,
+              ),
+            ),
+            visualDensity: VisualDensity.compact,
+          ),
+        ),
         colorScheme: const ColorScheme(
           brightness: Brightness.dark,
           background: kBackgroundAmoledDarkColor,

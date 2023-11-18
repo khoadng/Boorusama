@@ -116,7 +116,6 @@ dependencies:
   sliver_tools: ^0.2.12
   stack_trace: ^1.11.0
   timeago: ^3.6.0
-  toggle_switch: ^2.1.0
   url_launcher: ^6.2.1
   uuid: ^4.1.0
   version: ^3.0.2

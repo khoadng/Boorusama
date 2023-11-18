@@ -245,6 +245,7 @@ class _TagOtherNames extends StatelessWidget {
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4),
             child: Chip(
+              backgroundColor: context.colorScheme.secondaryContainer,
               shape: const StadiumBorder(side: BorderSide(color: Colors.grey)),
               padding: const EdgeInsets.all(4),
               labelPadding: const EdgeInsets.all(1),

@@ -41,64 +41,93 @@ class SettingsPage extends ConsumerWidget {
                     _SettingsSection(
                       label: 'settings.app_settings'.tr(),
                     ),
-                    // ListTile(
-                    //   leading: const Icon(Icons.admin_panel_settings),
-                    //   title: const Text('settings.safe_mode').tr(),
-                    //   trailing: Switch(
-                    //       activeColor:
-                    //           context.theme.colorScheme.primary,
-                    //       value: settings.safeMode,
-                    //       onChanged: (value) {
-                    //         context.read<SettingsCubit>().update(
-                    //             settings.copyWith(safeMode: value));
-                    //       }),
-                    // ),
-                    // ListTile(
-                    //   leading: const FaIcon(FontAwesomeIcons.gears),
-                    //   title: const Text('settings.general').tr(),
-                    //   onTap: () => goToSettingsGeneral(context, this),
-                    // ),
                     ListTile(
-                      leading: const FaIcon(
+                      leading: FaIcon(
                         FontAwesomeIcons.paintRoller,
+                        color: context.iconTheme.color,
                       ),
-                      title: const Text('settings.appearance.appearance').tr(),
+                      title: const Text(
+                        'settings.appearance.appearance',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ).tr(),
                       onTap: () => context.go('/settings/appearance'),
                     ),
                     ListTile(
-                      title: const Text('settings.language.language').tr(),
-                      leading: const Icon(Icons.translate),
+                      title: const Text('settings.language.language',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                          )).tr(),
+                      leading: Icon(
+                        Icons.translate,
+                        color: context.iconTheme.color,
+                      ),
                       onTap: () => context.go('/settings/language'),
                     ),
                     ListTile(
-                      title: const Text('download.download').tr(),
-                      leading: const FaIcon(FontAwesomeIcons.download),
+                      title: const Text(
+                        'download.download',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ).tr(),
+                      leading: FaIcon(
+                        FontAwesomeIcons.download,
+                        color: context.iconTheme.color,
+                      ),
                       onTap: () => context.go('/settings/download'),
                     ),
                     ListTile(
                       title: const Text(
                         'settings.performance.performance',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                        ),
                       ).tr(),
-                      leading: const FaIcon(FontAwesomeIcons.gear),
+                      leading: FaIcon(
+                        FontAwesomeIcons.gear,
+                        color: context.iconTheme.color,
+                      ),
                       onTap: () => context.go('/settings/performance'),
                     ),
                     ListTile(
                       title: const Text(
                         'Data and Storage',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                      leading: const FaIcon(FontAwesomeIcons.database),
+                      leading: FaIcon(
+                        FontAwesomeIcons.database,
+                        color: context.iconTheme.color,
+                      ),
                       onTap: () => context.go('/settings/data_and_storage'),
                     ),
                     ListTile(
-                      title: const Text('settings.search.search').tr(),
-                      leading: const FaIcon(
+                      title: const Text(
+                        'settings.search.search',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ).tr(),
+                      leading: FaIcon(
                         FontAwesomeIcons.magnifyingGlass,
+                        color: context.iconTheme.color,
                       ),
                       onTap: () => context.go('/settings/search'),
                     ),
                     ListTile(
-                      title: const Text('settings.privacy.privacy').tr(),
-                      leading: const FaIcon(FontAwesomeIcons.shieldHalved),
+                      title: const Text(
+                        'settings.privacy.privacy',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ).tr(),
+                      leading: FaIcon(
+                        FontAwesomeIcons.shieldHalved,
+                        color: context.iconTheme.color,
+                      ),
                       onTap: () => context.go('/settings/privacy'),
                     ),
                     const Divider(),
@@ -106,27 +135,57 @@ class SettingsPage extends ConsumerWidget {
                       label: 'settings.other_settings'.tr(),
                     ),
                     ListTile(
-                      title: const Text('settings.changelog').tr(),
-                      leading: const FaIcon(
+                      title: const Text(
+                        'settings.changelog',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ).tr(),
+                      leading: FaIcon(
                         FontAwesomeIcons.solidNoteSticky,
+                        color: context.iconTheme.color,
                       ),
                       onTap: () => context.go('/settings/changelog'),
                     ),
                     ListTile(
-                      title: const Text('settings.debug_logs.debug_logs').tr(),
-                      leading: const FaIcon(FontAwesomeIcons.bug),
+                      title: const Text(
+                        'settings.debug_logs.debug_logs',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ).tr(),
+                      leading: FaIcon(
+                        FontAwesomeIcons.bug,
+                        color: context.iconTheme.color,
+                      ),
                       onTap: () => context.navigator.push(MaterialPageRoute(
                           builder: (_) => const DebugLogsPage())),
                     ),
                     ListTile(
-                      title: const Text('settings.help_us_translate').tr(),
-                      leading: const Icon(Icons.language),
+                      title: const Text(
+                        'settings.help_us_translate',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ).tr(),
+                      leading: Icon(
+                        Icons.language,
+                        color: context.iconTheme.color,
+                      ),
                       onTap: () => launchExternalUrlString(
                           appInfo.translationProjectUrl),
                     ),
                     ListTile(
-                      title: const Text('settings.information').tr(),
-                      leading: const Icon(Icons.info),
+                      title: const Text(
+                        'settings.information',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ).tr(),
+                      leading: Icon(
+                        Icons.info,
+                        color: context.iconTheme.color,
+                      ),
                       onTap: () => showDialog(
                         context: context,
                         builder: (context) => const AboutPage(),

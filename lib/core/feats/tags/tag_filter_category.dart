@@ -2,8 +2,8 @@
 import 'package:boorusama/functional.dart';
 
 enum TagFilterCategory {
-  popular,
   newest,
+  popular,
 }
 
 typedef TagFilterCategoryStringBuilder = Option<String> Function(

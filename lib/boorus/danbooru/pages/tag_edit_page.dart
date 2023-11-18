@@ -4,7 +4,6 @@ import 'package:flutter/material.dart' hide ThemeMode;
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:toggle_switch/toggle_switch.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
@@ -213,28 +212,19 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
               ),
               SliverToBoxAdapter(
                 child: Center(
-                  child: ToggleSwitch(
-                    dividerColor: Colors.black,
-                    changeOnTap: false,
-                    initialLabelIndex: ratingLabels.indexOf(rating.name),
-                    minWidth: 75,
-                    minHeight: 30,
-                    cornerRadius: 5,
-                    customWidths: const [70, 120, 80, 75],
-                    labels: ratingLabels.map((e) => e.sentenceCase).toList(),
-                    activeBgColor: [context.colorScheme.primary],
-                    inactiveBgColor: context.colorScheme.background,
-                    borderWidth: 1,
-                    borderColor: [context.theme.hintColor],
-                    onToggle: (index) {
+                  child: SegmentedButton(
+                    showSelectedIcon: false,
+                    segments: Rating.values
+                        .where((e) => e != Rating.unknown)
+                        .map((e) => ButtonSegment(
+                              value: e,
+                              label: Text(e.name.sentenceCase),
+                            ))
+                        .toList(),
+                    selected: {rating},
+                    onSelectionChanged: (values) {
                       setState(() {
-                        rating = switch (index) {
-                          0 => Rating.explicit,
-                          1 => Rating.questionable,
-                          2 => Rating.sensitive,
-                          3 => Rating.general,
-                          _ => Rating.unknown,
-                        };
+                        rating = values.first;
                       });
                     },
                   ),
@@ -628,25 +618,18 @@ class _TagEditzwikiViewState extends ConsumerState<TagEditWikiView> {
               child: Column(
                 children: [
                   Center(
-                    child: ToggleSwitch(
-                      dividerColor: Colors.black,
-                      changeOnTap: false,
-                      initialLabelIndex: relatedTabs.indexOf(selectTab),
-                      minWidth: 75,
-                      minHeight: 30,
-                      cornerRadius: 5,
-                      customWidths: const [60, 70],
-                      labels: relatedTabs.map((e) => e.sentenceCase).toList(),
-                      activeBgColor: [context.colorScheme.primary],
-                      inactiveBgColor: context.colorScheme.background,
-                      borderWidth: 1,
-                      borderColor: [context.theme.hintColor],
-                      onToggle: (index) {
+                    child: SegmentedButton(
+                      showSelectedIcon: false,
+                      segments: relatedTabs
+                          .map((e) => ButtonSegment(
+                                value: e,
+                                label: Text(e.sentenceCase),
+                              ))
+                          .toList(),
+                      selected: {selectTab},
+                      onSelectionChanged: (values) {
                         setState(() {
-                          selectTab = switch (index) {
-                            1 => 'wiki',
-                            _ => 'all',
-                          };
+                          selectTab = values.first;
                         });
                       },
                     ),
