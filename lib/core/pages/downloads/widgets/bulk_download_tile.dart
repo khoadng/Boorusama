@@ -53,9 +53,6 @@ class BulkDownloadTile extends ConsumerWidget {
                             backgroundColor: context.theme.colorScheme.primary,
                             label: const Text(
                               'File exists',
-                              style: TextStyle(
-                                color: Colors.white,
-                              ),
                             ),
                           ),
                         _ => const SizedBox.shrink(),

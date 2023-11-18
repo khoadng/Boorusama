@@ -174,11 +174,11 @@ class _Chip extends ConsumerWidget {
   const _Chip({
     required this.tag,
     required this.maxTagWidth,
-    required this.tagColor,
+    this.tagColor,
   });
 
   final String tag;
-  final Color tagColor;
+  final Color? tagColor;
   final double? maxTagWidth;
 
   @override
@@ -190,11 +190,13 @@ class _Chip extends ConsumerWidget {
       children: [
         Chip(
           visualDensity: const ShrinkVisualDensity(),
-          backgroundColor: colors.backgroundColor,
-          side: BorderSide(
-            color: colors.borderColor,
-            width: 1,
-          ),
+          backgroundColor: colors?.backgroundColor,
+          side: colors != null
+              ? BorderSide(
+                  color: colors.borderColor,
+                  width: 1,
+                )
+              : null,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),
           ),
@@ -207,7 +209,7 @@ class _Chip extends ConsumerWidget {
               overflow: TextOverflow.fade,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                color: colors.foregroundColor,
+                color: colors?.foregroundColor,
               ),
             ),
           ),

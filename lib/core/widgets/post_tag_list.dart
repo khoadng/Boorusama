@@ -94,11 +94,13 @@ class PostTagListChip extends ConsumerWidget {
       children: [
         Chip(
           visualDensity: const ShrinkVisualDensity(),
-          backgroundColor: colors.backgroundColor,
-          side: BorderSide(
-            color: colors.borderColor,
-            width: 1,
-          ),
+          backgroundColor: colors?.backgroundColor,
+          side: colors != null
+              ? BorderSide(
+                  color: colors.borderColor,
+                  width: 1,
+                )
+              : null,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(8),
@@ -114,18 +116,20 @@ class PostTagListChip extends ConsumerWidget {
               overflow: TextOverflow.fade,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                color: colors.foregroundColor,
+                color: colors?.foregroundColor,
               ),
             ),
           ),
         ),
         Chip(
           visualDensity: const ShrinkVisualDensity(),
-          backgroundColor: numberColors.backgroundColor,
-          side: BorderSide(
-            color: numberColors.borderColor,
-            width: 1,
-          ),
+          backgroundColor: numberColors?.backgroundColor,
+          side: numberColors != null
+              ? BorderSide(
+                  color: numberColors.borderColor,
+                  width: 1,
+                )
+              : null,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
               topRight: Radius.circular(8),
@@ -135,7 +139,7 @@ class PostTagListChip extends ConsumerWidget {
           label: Text(
             NumberFormat.compact().format(tag.postCount),
             style: TextStyle(
-              color: numberColors.foregroundColor,
+              color: numberColors?.foregroundColor,
               fontSize: 12,
             ),
           ),

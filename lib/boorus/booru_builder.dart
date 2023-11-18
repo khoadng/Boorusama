@@ -110,7 +110,7 @@ typedef GridThumbnailUrlBuilder = String Function(
   Post post,
 );
 
-typedef TagColorBuilder = Color Function(
+typedef TagColorBuilder = Color? Function(
   ThemeMode themeMode,
   String? tagType,
 );
@@ -211,7 +211,7 @@ mixin DefaultTagColorMixin implements BooruBuilder {
           '3' || 'copyright' => colors.copyright,
           '4' || 'character' => colors.character,
           '5' || 'meta' || 'metadata' => colors.meta,
-          _ => Colors.white,
+          _ => null,
         };
       };
 }
@@ -237,14 +237,13 @@ mixin DefaultPostImageDetailsUrlMixin implements BooruBuilder {
 }
 
 extension BooruBuilderWidgetRef on WidgetRef {
-  Color getTagColor(
+  Color? getTagColor(
     BuildContext context,
     String tagType, {
     ThemeMode? themeMode,
   }) =>
       watchBooruBuilder(watchConfig)
-          ?.tagColorBuilder(themeMode ?? context.themeMode, tagType) ??
-      Colors.white;
+          ?.tagColorBuilder(themeMode ?? context.themeMode, tagType);
 }
 
 final booruBuilderProvider = Provider<BooruBuilder?>((ref) {

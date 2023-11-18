@@ -71,15 +71,15 @@ class BookmarkSearchBar extends ConsumerWidget {
                           style: TextStyle(
                             color: ref.watch(tagColorProvider(e)).maybeWhen(
                                   data: (color) => color,
-                                  orElse: () => Colors.white,
+                                  orElse: () => null,
                                 ),
                           ),
                         ),
                       ),
                       Text(
                         ref.watch(tagCountProvider(e)).toString(),
-                        style: const TextStyle(
-                          color: Colors.grey,
+                        style: TextStyle(
+                          color: Theme.of(context).hintColor,
                         ),
                       ),
                     ],

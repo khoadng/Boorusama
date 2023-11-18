@@ -180,7 +180,10 @@ class UserDetailsPage extends ConsumerWidget {
   }
 
   Widget _buildTags(
-      List<RelatedTagItem> tags, BuildContext context, WidgetRef ref) {
+    List<RelatedTagItem> tags,
+    BuildContext context,
+    WidgetRef ref,
+  ) {
     return Wrap(
       spacing: 8,
       children: tags
@@ -199,8 +202,10 @@ class UserDetailsPage extends ConsumerWidget {
                     text: TextSpan(
                       text: e.tag.replaceUnderscoreWithSpace(),
                       style: TextStyle(
-                        color: ref.getTagColor(
-                            context, TagCategory.copyright.name),
+                        color: context.themeMode.isDark
+                            ? ref.getTagColor(
+                                context, TagCategory.copyright.name)
+                            : Colors.white,
                       ),
                       children: [
                         TextSpan(

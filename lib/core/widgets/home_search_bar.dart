@@ -41,7 +41,6 @@ class HomeSearchBar extends ConsumerWidget {
                     child: const FaIcon(
                       FontAwesomeIcons.arrowUp,
                       size: 14,
-                      color: Colors.white,
                     ),
                   ),
                   onPressed: () {

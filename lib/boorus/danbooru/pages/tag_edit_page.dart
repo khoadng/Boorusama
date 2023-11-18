@@ -687,15 +687,17 @@ class _RelatedTagChips extends ConsumerWidget {
         return RawChip(
           selected: selected,
           showCheckmark: true,
-          checkmarkColor: colors.foregroundColor,
+          checkmarkColor: colors?.foregroundColor,
           visualDensity: VisualDensity.compact,
-          selectedColor: colors.backgroundColor,
-          backgroundColor: selected ? colors.backgroundColor : null,
+          selectedColor: colors?.backgroundColor,
+          backgroundColor: selected ? colors?.backgroundColor : null,
           side: selected
-              ? BorderSide(
-                  width: 2,
-                  color: colors.borderColor,
-                )
+              ? colors != null
+                  ? BorderSide(
+                      width: 2,
+                      color: colors.borderColor,
+                    )
+                  : null
               : null,
           onSelected: (value) =>
               value ? onAdded(tag.name) : onRemoved(tag.name),
@@ -708,7 +710,7 @@ class _RelatedTagChips extends ConsumerWidget {
               text: TextSpan(
                 text: tag.name.replaceUnderscoreWithSpace(),
                 style: TextStyle(
-                  color: colors.foregroundColor,
+                  color: colors?.foregroundColor,
                   fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
                 ),
                 children: [
@@ -781,15 +783,17 @@ class _TagEditAITagViewState extends ConsumerState<TagEditAITagView> {
                   return RawChip(
                     selected: selected,
                     showCheckmark: true,
-                    checkmarkColor: colors.foregroundColor,
+                    checkmarkColor: colors?.foregroundColor,
                     visualDensity: VisualDensity.compact,
-                    selectedColor: colors.backgroundColor,
-                    backgroundColor: selected ? colors.backgroundColor : null,
+                    selectedColor: colors?.backgroundColor,
+                    backgroundColor: selected ? colors?.backgroundColor : null,
                     side: selected
-                        ? BorderSide(
-                            width: 2,
-                            color: colors.borderColor,
-                          )
+                        ? colors != null
+                            ? BorderSide(
+                                width: 2,
+                                color: colors.borderColor,
+                              )
+                            : null
                         : null,
                     onSelected: (value) => value
                         ? widget.onAdded(tag.name)
@@ -803,7 +807,7 @@ class _TagEditAITagViewState extends ConsumerState<TagEditAITagView> {
                         text: TextSpan(
                           text: tag.name.replaceUnderscoreWithSpace(),
                           style: TextStyle(
-                            color: colors.foregroundColor,
+                            color: colors?.foregroundColor,
                             fontWeight:
                                 selected ? FontWeight.w700 : FontWeight.w500,
                           ),

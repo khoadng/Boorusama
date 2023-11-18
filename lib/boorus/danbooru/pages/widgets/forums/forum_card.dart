@@ -79,8 +79,8 @@ class ForumCard extends ConsumerWidget {
                 children: [
                   CompactChip(
                     label: creatorName.replaceUnderscoreWithSpace(),
-                    backgroundColor: colors.backgroundColor,
-                    textColor: colors.foregroundColor,
+                    backgroundColor: colors?.backgroundColor,
+                    textColor: colors?.foregroundColor,
                     onTap: onCreatorTap,
                   ),
                   const SizedBox(width: 8),

@@ -9,7 +9,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 part 'details_page_controller.dart';
@@ -413,14 +412,12 @@ class _NavigationButtonBar extends StatelessWidget {
     return Row(
       children: [
         CircularIconButton(
-          icon: Padding(
-            padding: const EdgeInsets.only(left: 8),
-            child: !context.themeMode.isDark
-                ? Icon(
-                    Icons.arrow_back_ios,
-                    color: context.colorScheme.onPrimary,
-                  )
-                : const Icon(Icons.arrow_back_ios),
+          icon: const Padding(
+            padding: EdgeInsets.only(left: 8),
+            child: Icon(
+              Icons.arrow_back_ios,
+              color: Colors.white,
+            ),
           ),
           onPressed: onBack,
         ),
@@ -428,12 +425,10 @@ class _NavigationButtonBar extends StatelessWidget {
           width: 4,
         ),
         CircularIconButton(
-          icon: !context.themeMode.isDark
-              ? Icon(
-                  Icons.home,
-                  color: context.colorScheme.onPrimary,
-                )
-              : const Icon(Icons.home),
+          icon: const Icon(
+            Icons.home,
+            color: Colors.white,
+          ),
           onPressed: () => goToHomePage(context),
         ),
       ],

@@ -134,7 +134,10 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                                         builder: (context) =>
                                             widget.infoBuilder(context),
                                       ),
-                                      icon: const Icon(Icons.info),
+                                      icon: const Icon(
+                                        Icons.info,
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   widget.topRightBuilder!.call(context),
                                 ],

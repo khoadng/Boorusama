@@ -57,7 +57,10 @@ class InformationSection extends ConsumerWidget {
                           .replaceUnderscoreWithSpace()
                           .titleCase,
                   overflow: TextOverflow.fade,
-                  style: context.textTheme.titleLarge,
+                  style: context.textTheme.titleLarge?.copyWith(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500,
+                  ),
                   maxLines: 1,
                   softWrap: false,
                 ),
@@ -69,7 +72,7 @@ class InformationSection extends ConsumerWidget {
                           .replaceUnderscoreWithSpace()
                           .titleCase,
                   overflow: TextOverflow.fade,
-                  style: context.textTheme.bodyMedium,
+                  style: context.textTheme.bodyLarge,
                   maxLines: 1,
                   softWrap: false,
                 ),

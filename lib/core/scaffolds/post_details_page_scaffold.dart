@@ -261,7 +261,7 @@ class _PostDetailPageScaffoldState<T extends Post>
           widget.artistInfoBuilder!(context, post),
         ],
         if (widget.statsTileBuilder != null) ...[
-          const Divider(height: 8, thickness: 1),
+          const SizedBox(height: 12),
           widget.statsTileBuilder!(context, post),
         ],
         const Divider(height: 8, thickness: 1),

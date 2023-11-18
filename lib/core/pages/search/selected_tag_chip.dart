@@ -44,7 +44,6 @@ class SelectedTagChip extends StatelessWidget {
             ),
             label: Text(
               filterOperatorToStringCharacter(tagSearchItem.operator),
-              style: const TextStyle(color: Colors.white70),
             ),
           ),
         if (hasMeta)
@@ -55,12 +54,11 @@ class SelectedTagChip extends StatelessWidget {
             shape: _getOutlineBorderForMetaChip(hasOperator),
             label: Text(
               tagSearchItem.metatag!,
-              style: const TextStyle(color: Colors.white70),
             ),
           ),
         Chip(
           visualDensity: const ShrinkVisualDensity(),
-          backgroundColor: Colors.grey[800],
+          backgroundColor: context.colorScheme.secondaryContainer,
           shape: hasAny
               ? const RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(
@@ -83,7 +81,6 @@ class SelectedTagChip extends StatelessWidget {
             child: Text(
               tagSearchItem.tag.replaceUnderscoreWithSpace(),
               overflow: TextOverflow.fade,
-              style: const TextStyle(color: Colors.white70),
             ),
           ),
         ),

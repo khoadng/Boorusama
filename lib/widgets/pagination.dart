@@ -82,18 +82,14 @@ class _PageSelectorState extends State<PageSelector> {
                     : Colors.transparent,
               ),
               onPressed: () => widget.onPageSelect(page),
-              child: Text(
-                '$page',
-                style: page == widget.currentPage
-                    ? Theme.of(context)
-                        .textTheme
-                        .titleMedium!
-                        .copyWith(fontWeight: FontWeight.bold)
-                    : Theme.of(context)
-                        .textTheme
-                        .titleMedium!
-                        .copyWith(color: Theme.of(context).hintColor),
-              ),
+              child: Text('$page',
+                  style: page == widget.currentPage
+                      ? const TextStyle(
+                          fontWeight: FontWeight.bold,
+                        )
+                      : TextStyle(
+                          color: Theme.of(context).hintColor,
+                        )),
             )),
         if (!pageInputMode)
           IconButton(

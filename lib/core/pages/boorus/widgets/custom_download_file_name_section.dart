@@ -203,10 +203,10 @@ class _DownloadFormatCardState extends ConsumerState<DownloadFormatCard> {
         border: Border.all(color: context.theme.hintColor),
       ),
       child: ExpandablePanel(
-        theme: const ExpandableThemeData(
+        theme: ExpandableThemeData(
           headerAlignment: ExpandablePanelHeaderAlignment.center,
           tapBodyToCollapse: true,
-          iconColor: Colors.white,
+          iconColor: context.iconTheme.color,
         ),
         header: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),

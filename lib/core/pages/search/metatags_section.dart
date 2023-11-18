@@ -65,9 +65,9 @@ class _MetatagsSectionState extends ConsumerState<MetatagsSection> {
             generateChipColors(context.colorScheme.primary, context.themeMode);
         return RawChip(
           visualDensity: VisualDensity.compact,
-          label: Text(tag, style: TextStyle(color: colors.foregroundColor)),
-          backgroundColor: colors.backgroundColor,
-          side: BorderSide(color: colors.borderColor),
+          label: Text(tag, style: TextStyle(color: colors?.foregroundColor)),
+          backgroundColor: colors?.backgroundColor,
+          side: colors != null ? BorderSide(color: colors.borderColor) : null,
           onPressed: editMode ? null : () => widget.onOptionTap?.call(tag),
           deleteIcon: const Icon(
             Icons.close,
