@@ -95,9 +95,10 @@ class SankakuBuilder
         final scrollController = payload.scrollController;
 
         return BooruProvider(
-          builder: (booruBuilder) => PostDetailsPageScaffold(
+          builder: (booruBuilder, ref) => PostDetailsPageScaffold(
             posts: posts,
             initialIndex: initialIndex,
+            swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
             infoBuilder: (context, post) => SimpleInformationSection(
               post: post,
               showSource: true,

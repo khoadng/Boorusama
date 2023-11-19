@@ -72,7 +72,7 @@ class PhilomenaBuilder
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
       (context, config, payload) => BooruProvider(
-            builder: (booruBuilder) => PostDetailsPageScaffold(
+            builder: (booruBuilder, ref) => PostDetailsPageScaffold(
               posts: payload.posts,
               initialIndex: payload.initialIndex,
               artistInfoBuilder: (context, post) => ArtistSection(
@@ -87,6 +87,7 @@ class PhilomenaBuilder
                 artistTags: post.artistTags ?? [],
                 source: post.source,
               ),
+              swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
               infoBuilder: (context, post) =>
                   SimpleInformationSection(post: post),
               statsTileBuilder: (context, post) => SimplePostStatsTile(

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
@@ -59,6 +60,7 @@ class _MoebooruPostDetailsPageState
         context,
         tag: tag,
       ),
+      swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
       sliverRelatedPostsBuilder: (context, post) =>
           MoebooruRelatedPostsSection(post: post),
       tagListBuilder: (context, post) => PostTagList(

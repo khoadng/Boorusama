@@ -82,7 +82,7 @@ class GelbooruV1Builder
   @override
   SearchPageBuilder get searchPageBuilder => (context, initialQuery) =>
       BooruProvider(
-        builder: (booruBuilder) => SearchPageScaffold(
+        builder: (booruBuilder, _) => SearchPageScaffold(
           noticeBuilder: (context) => InfoContainer(
             contentBuilder: (context) => Html(
                 data: 'The app will use <b>Gelbooru</b> for tag completion.'),
