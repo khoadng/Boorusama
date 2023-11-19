@@ -9,7 +9,6 @@ environment:
 
 dependencies:
   android_intent_plus: ^4.0.3
-  animated_flip_counter: ^0.2.6
   animated_list_plus: ^0.5.2
   auto_size_text: ^3.0.0
   cached_network_image: ^3.3.0
@@ -32,7 +31,6 @@ dependencies:
       url: https://github.com/khoadng/dio.git
       ref: 9c565a556fffeb868e29c5e26200a153d7e80c0c
       path: plugins/http2_adapter
-  draggable_scrollbar: ^0.1.0
   easy_localization: ^3.0.3
   equatable: ^2.0.5
   expandable: ^5.0.1
