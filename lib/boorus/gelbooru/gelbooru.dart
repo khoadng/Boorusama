@@ -205,6 +205,17 @@ class GelbooruBuilder
             );
 
   @override
+  FavoritesPageBuilder? get favoritesPageBuilder =>
+      (context, config) => config.hasLoginDetails()
+          ? GelbooruFavoritesPage(uid: config.login!)
+          : const Scaffold(
+              body: Center(
+                child: Text(
+                    'You need to provide login details to use this feature.'),
+              ),
+            );
+
+  @override
   ArtistPageBuilder? get artistPageBuilder =>
       (context, artistName) => GelbooruArtistPage(
             artistName: artistName,
@@ -278,6 +289,27 @@ class GelbooruCommentPage extends ConsumerWidget {
       postId: postId,
       fetcher: (postId) =>
           ref.watch(gelbooruCommentRepoProvider(config)).getComments(postId),
+    );
+  }
+}
+
+class GelbooruFavoritesPage extends ConsumerWidget {
+  const GelbooruFavoritesPage({
+    super.key,
+    required this.uid,
+  });
+
+  final String uid;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
+    final query = 'fav:$uid';
+
+    return FavoritesPageScaffold(
+      favQueryBuilder: () => query,
+      fetcher: (page) =>
+          ref.read(gelbooruPostRepoProvider(config)).getPosts([query], page),
     );
   }
 }

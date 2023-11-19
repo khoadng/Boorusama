@@ -16,12 +16,10 @@ import 'infinite_post_list_scaffold.dart';
 class FavoritesPageScaffold<T extends Post> extends ConsumerWidget {
   const FavoritesPageScaffold({
     super.key,
-    required this.username,
     required this.fetcher,
     required this.favQueryBuilder,
   });
 
-  final String username;
   final PostsOrError<T> Function(int page) fetcher;
   final String Function() favQueryBuilder;
 
