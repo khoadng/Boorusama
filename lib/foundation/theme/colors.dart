@@ -17,7 +17,7 @@ const kSurfaceAmoledDarkColor = Color.fromARGB(255, 40, 40, 40);
 const kOnSurfaceAmoledDarkColor = kLightWhiteColor;
 const kErrorAmoledDarkColor = Color(0xFFCF6679);
 const kOnErrorAmoledDarkColor = kLightWhiteColor;
-const kIconAmoledDarkColor = kDimWhiteColor;
+const kIconAmoledDarkColor = kLightWhiteColor;
 
 // Dark theme
 const kPrimaryDarkColor = Color.fromARGB(255, 86, 99, 233);

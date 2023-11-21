@@ -225,7 +225,7 @@ void goToSavedSearchCreatePage(
       settings: const RouteSettings(
         name: RouterPageConstant.savedSearchCreate,
       ),
-      backgroundColor: context.colorScheme.background,
+      backgroundColor: context.colorScheme.secondaryContainer,
       builder: (_) => EditSavedSearchSheet(
         initialValue: initialValue,
         onSubmit: (query, label) => ref
@@ -252,7 +252,7 @@ void goToSavedSearchCreatePage(
       barrierColor: Colors.black54,
       pageBuilder: (context, _, __) {
         return Dialog(
-          backgroundColor: context.colorScheme.background,
+          backgroundColor: context.colorScheme.secondaryContainer,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),
           ),
@@ -299,7 +299,7 @@ void goToSavedSearchPatchPage(
     settings: const RouteSettings(
       name: RouterPageConstant.savedSearchPatch,
     ),
-    backgroundColor: context.colorScheme.background,
+    backgroundColor: context.colorScheme.secondaryContainer,
     builder: (_) => EditSavedSearchSheet(
       title: 'saved_search.update_saved_search'.tr(),
       initialValue: savedSearch,

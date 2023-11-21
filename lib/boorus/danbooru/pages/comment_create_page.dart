@@ -52,7 +52,7 @@ class _CommentCreatePageState extends ConsumerState<CommentCreatePage> {
                 Padding(
                   padding: const EdgeInsets.only(top: 8),
                   child: Row(
-                    children: <Widget>[
+                    children: [
                       IconButton(
                         onPressed: () => context.navigator.pop(),
                         icon: const Icon(
@@ -76,8 +76,11 @@ class _CommentCreatePageState extends ConsumerState<CommentCreatePage> {
                   padding: const EdgeInsets.all(12),
                   child: TextField(
                     controller: textEditingController,
-                    decoration: InputDecoration.collapsed(
+                    decoration: InputDecoration(
                       hintText: 'comment.create.hint'.tr(),
+                      filled: false,
+                      border: const OutlineInputBorder(),
+                      focusedBorder: const OutlineInputBorder(),
                     ),
                     autofocus: true,
                     keyboardType: TextInputType.multiline,
