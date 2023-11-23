@@ -62,19 +62,22 @@ class _BookmarkPageState extends ConsumerState<BookmarkPage> {
               onPressed: () => scrollController.jumpTo(0),
             ),
           ),
-          body: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              BookmarkSearchBar(
-                focusNode: focusNode,
-                controller: _searchController,
-              ),
-              Expanded(
-                child: BookmarkScrollView(
-                  controller: scrollController,
+          body: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                BookmarkSearchBar(
+                  focusNode: focusNode,
+                  controller: _searchController,
                 ),
-              ),
-            ],
+                Expanded(
+                  child: BookmarkScrollView(
+                    controller: scrollController,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -93,11 +93,8 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
             if (dynamicColorSupported)
               SwitchListTile(
                 title: const Text('Dynamic theme color').tr(),
-                subtitle: Text(
+                subtitle: const Text(
                   'Sync theme color with wallpaper',
-                  style: TextStyle(
-                    color: context.theme.hintColor,
-                  ),
                 ).tr(),
                 value: settings.enableDynamicColoring,
                 onChanged: (value) => ref.updateSettings(

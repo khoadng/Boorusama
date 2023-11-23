@@ -95,10 +95,22 @@ class AppTheme {
     bool useDynamicColor = false,
   }) =>
       switch (mode) {
-        ThemeMode.light => lightTheme(colorScheme: colorScheme),
-        ThemeMode.dark => darkTheme(colorScheme: colorScheme),
-        ThemeMode.amoledDark => darkAmoledTheme(colorScheme: colorScheme),
-        ThemeMode.system => darkAmoledTheme(colorScheme: colorScheme),
+        ThemeMode.light => lightTheme(
+            colorScheme: colorScheme,
+            useDynamicColor: useDynamicColor,
+          ),
+        ThemeMode.dark => darkTheme(
+            colorScheme: colorScheme,
+            useDynamicColor: useDynamicColor,
+          ),
+        ThemeMode.amoledDark => darkAmoledTheme(
+            colorScheme: colorScheme,
+            useDynamicColor: useDynamicColor,
+          ),
+        ThemeMode.system => darkAmoledTheme(
+            colorScheme: colorScheme,
+            useDynamicColor: useDynamicColor,
+          ),
       };
 
   static ThemeData lightTheme({
@@ -196,6 +208,7 @@ class AppTheme {
 
   static ThemeData darkTheme({
     ColorScheme? colorScheme,
+    bool useDynamicColor = false,
   }) =>
       ThemeData(
         appBarTheme: const AppBarTheme(
@@ -307,8 +320,8 @@ class AppTheme {
             borderRadius: BorderRadius.all(Radius.circular(8)),
           ),
         ),
-        dividerTheme: DividerThemeData(
-          color: !useDynamicColor ? kSurfaceAmoledDarkColor : null,
+        dividerTheme: const DividerThemeData(
+          color: kSurfaceAmoledDarkColor,
           endIndent: 0,
           indent: 0,
         ),
@@ -359,6 +372,11 @@ class AppTheme {
             ),
           ),
           contentPadding: const EdgeInsets.all(12),
+        ),
+        listTileTheme: ListTileThemeData(
+          subtitleTextStyle: TextStyle(
+            color: !useDynamicColor ? kHintAmoledDarkColor : null,
+          ),
         ),
         brightness: Brightness.dark,
         segmentedButtonTheme: SegmentedButtonThemeData(

@@ -105,7 +105,7 @@ class Settings extends Equatable {
         showPostListConfigHeader = json['showPostListConfigHeader'] ?? true,
         enableIncognitoModeForKeyboard =
             json['enableIncognitoModeForKeyboard'] ?? false,
-        enableDynamicColoring = json['enableDynamicColoring'] ?? true,
+        enableDynamicColoring = json['enableDynamicColoring'] ?? false,
         imageBorderRadius = json['imageBorderRadius'],
         imageGridSpacing = json['imageGridSpacing'];
 
@@ -131,7 +131,7 @@ class Settings extends Equatable {
     showScoresInGrid: false,
     showPostListConfigHeader: true,
     enableIncognitoModeForKeyboard: false,
-    enableDynamicColoring: true,
+    enableDynamicColoring: false,
   );
 
   final String blacklistedTags;

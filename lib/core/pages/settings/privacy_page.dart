@@ -51,11 +51,8 @@ class PrivacyPage extends ConsumerWidget {
             ),
             ListTile(
               title: const Text('Enable incognito mode for keyboard'),
-              subtitle: Text(
+              subtitle: const Text(
                 'Whether to enable that the IME update personalized data such as typing history and user dictionary data. Only affects Android.',
-                style: TextStyle(
-                  color: context.theme.hintColor,
-                ),
               ),
               trailing: Switch(
                 activeColor: context.colorScheme.primary,

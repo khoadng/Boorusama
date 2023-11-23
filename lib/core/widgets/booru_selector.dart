@@ -64,76 +64,13 @@ class _BooruSelectorState extends ConsumerState<BooruSelector> {
                   (context, index) {
                     final config = configs[index];
 
-                    return Padding(
-                      key: ValueKey(config.id),
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 4, horizontal: 4),
-                      child: Material(
-                        color: currentConfig == config
-                            ? context.colorScheme.primary
-                            : Colors.transparent,
-                        borderRadius: BorderRadius.circular(4),
-                        child: InkWell(
-                          hoverColor: context.theme.hoverColor.withOpacity(0.1),
-                          onSecondaryTap: () => show(config),
-                          onTap: () => ref
-                              .read(currentBooruConfigProvider.notifier)
-                              .update(config),
-                          child: Container(
-                            width: 60,
-                            margin: const EdgeInsets.symmetric(
-                              vertical: 8,
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                switch (PostSource.from(config.url)) {
-                                  WebSource source => FittedBox(
-                                      child: ExtendedImage.network(
-                                        source.faviconUrl,
-                                        width: 24,
-                                        height: 24,
-                                        fit: BoxFit.cover,
-                                        loadStateChanged: (state) => switch (
-                                            state.extendedImageLoadState) {
-                                          LoadState.failed => const Card(
-                                              child: FaIcon(
-                                                FontAwesomeIcons.globe,
-                                                size: 22,
-                                                color: Colors.blue,
-                                              ),
-                                            ),
-                                          _ => state.completedWidget,
-                                        },
-                                      ),
-                                    ),
-                                  _ => const Card(
-                                      child: SizedBox(
-                                        width: 32,
-                                        height: 32,
-                                      ),
-                                    ),
-                                },
-                                const SizedBox(height: 4),
-                                Text(
-                                  config.name,
-                                  textAlign: TextAlign.center,
-                                  maxLines: 3,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.w500,
-                                    color: currentConfig == config
-                                        ? context.colorScheme.onPrimary
-                                        : null,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
+                    return BooruSelectorItem(
+                      config: config,
+                      show: () => show(config),
+                      onTap: () => ref
+                          .read(currentBooruConfigProvider.notifier)
+                          .update(config),
+                      selected: currentConfig == config,
                     );
                   },
                   childCount: configs.length,
@@ -165,6 +102,99 @@ class _BooruSelectorState extends ConsumerState<BooruSelector> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class BooruSelectorItem extends StatelessWidget {
+  const BooruSelectorItem({
+    super.key,
+    required this.config,
+    required this.onTap,
+    required this.show,
+    required this.selected,
+  });
+
+  final BooruConfig config;
+  final bool selected;
+  final void Function() show;
+  final void Function() onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      key: ValueKey(config.id),
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(4),
+      child: InkWell(
+        hoverColor: context.theme.hoverColor.withOpacity(0.1),
+        onSecondaryTap: () => show(),
+        onTap: onTap,
+        child: Container(
+          width: 60,
+          padding: const EdgeInsets.symmetric(
+            vertical: 4,
+          ),
+          margin: const EdgeInsets.symmetric(
+            vertical: 8,
+          ),
+          decoration: BoxDecoration(
+            border: Border(
+              left: BorderSide(
+                color:
+                    selected ? context.colorScheme.primary : Colors.transparent,
+                width: 2,
+              ),
+            ),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              switch (PostSource.from(config.url)) {
+                WebSource source => FittedBox(
+                    child: ExtendedImage.network(
+                      source.faviconUrl,
+                      width: 24,
+                      height: 24,
+                      fit: BoxFit.cover,
+                      clearMemoryCacheIfFailed: false,
+                      loadStateChanged: (state) =>
+                          switch (state.extendedImageLoadState) {
+                        LoadState.failed => const Card(
+                            child: FaIcon(
+                              FontAwesomeIcons.globe,
+                              size: 22,
+                              color: Colors.blue,
+                            ),
+                          ),
+                        _ => state.completedWidget,
+                      },
+                    ),
+                  ),
+                _ => const Card(
+                    child: SizedBox(
+                      width: 32,
+                      height: 32,
+                    ),
+                  ),
+              },
+              const SizedBox(height: 4),
+              Text(
+                config.name,
+                textAlign: TextAlign.center,
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: selected ? FontWeight.bold : null,
+                  color: selected ? context.colorScheme.onPrimary : null,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

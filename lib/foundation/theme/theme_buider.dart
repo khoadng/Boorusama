@@ -55,7 +55,11 @@ class ThemeBuilder extends ConsumerWidget {
                   .overrideWithValue(light != null && dark != null),
             ],
             child: builder(
-              AppTheme.themeFrom(theme, colorScheme: colorScheme),
+              AppTheme.themeFrom(
+                theme,
+                colorScheme: colorScheme,
+                useDynamicColor: enableDynamicColor,
+              ),
               tm.mapAppThemeModeToSystemThemeMode(theme),
             ),
           ),
