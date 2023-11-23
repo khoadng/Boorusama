@@ -22,6 +22,7 @@ class CurrentBooruTile extends ConsumerWidget {
     final logo = switch (source) {
       WebSource s => WebsiteLogo(
           url: s.faviconUrl,
+          size: 24,
         ),
       _ => const SizedBox.shrink(),
     };
@@ -31,7 +32,7 @@ class CurrentBooruTile extends ConsumerWidget {
           ? ListTile(
               horizontalTitleGap: 0,
               minLeadingWidth: 36,
-              contentPadding: const EdgeInsets.only(left: 8),
+              contentPadding: const EdgeInsets.only(left: 4),
               leading: logo,
               title: Wrap(
                 children: [
@@ -44,8 +45,8 @@ class CurrentBooruTile extends ConsumerWidget {
                     softWrap: false,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
                     ),
                   ),
                   if (booruConfig.ratingFilter !=

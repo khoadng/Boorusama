@@ -145,7 +145,7 @@ class BooruSelectorItem extends StatelessWidget {
               left: BorderSide(
                 color:
                     selected ? context.colorScheme.primary : Colors.transparent,
-                width: 2,
+                width: 6,
               ),
             ),
           ),
@@ -189,8 +189,6 @@ class BooruSelectorItem extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontSize: 11,
-                  fontWeight: selected ? FontWeight.bold : null,
-                  color: selected ? context.colorScheme.onPrimary : null,
                 ),
               ),
             ],

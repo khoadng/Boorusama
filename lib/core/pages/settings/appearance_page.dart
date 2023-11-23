@@ -199,10 +199,10 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
   }
 
   Widget _buildBorderRadiusSlider(Settings settings) {
-    return ValueListenableBuilder<double>(
+    return ValueListenableBuilder(
       valueListenable: _borderRadiusSliderValue,
       builder: (context, value, child) {
-        return Slider.adaptive(
+        return Slider(
           label: value.toInt().toString(),
           divisions: 10,
           max: 10,
@@ -216,10 +216,10 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
   }
 
   Widget _buildSpacingSlider(Settings settings) {
-    return ValueListenableBuilder<double>(
+    return ValueListenableBuilder(
       valueListenable: _spacingSliderValue,
       builder: (context, value, child) {
-        return Slider.adaptive(
+        return Slider(
           label: value.toInt().toString(),
           divisions: 10,
           max: 10,

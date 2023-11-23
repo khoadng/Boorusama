@@ -48,6 +48,7 @@ const kOnSurfaceLightColor = Colors.black;
 const kErrorLightColor = Color.fromARGB(255, 211, 47, 47);
 const kOnErrorLightColor = Colors.white;
 const kIconLightColor = Color.fromARGB(255, 79, 86, 96);
+const kHintLightColor = Color.fromARGB(255, 79, 86, 96);
 
 class BoorusamaColors extends ThemeExtension<BoorusamaColors> {
   const BoorusamaColors({

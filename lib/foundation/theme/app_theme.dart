@@ -127,26 +127,27 @@ class AppTheme {
           shape: StadiumBorder(),
           side: BorderSide.none,
         ),
-        cardTheme: const CardTheme(
-          color: kSurfaceLightColor,
+        cardTheme: CardTheme(
+          // color: kSurfaceLightColor,
+          color: !useDynamicColor ? kSurfaceLightColor : null,
           elevation: 0,
-          shape: RoundedRectangleBorder(
+          shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),
           ),
         ),
-        dividerTheme: const DividerThemeData(
-          color: kSurfaceLightColor,
+        dividerTheme: DividerThemeData(
+          color: !useDynamicColor ? kHintLightColor.withOpacity(0.4) : null,
           endIndent: 0,
           indent: 0,
         ),
-        dialogTheme: const DialogTheme(
-          backgroundColor: kSurfaceLightColor,
-          shape: RoundedRectangleBorder(
+        dialogTheme: DialogTheme(
+          backgroundColor: !useDynamicColor ? kSurfaceLightColor : null,
+          shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),
           ),
         ),
-        expansionTileTheme: const ExpansionTileThemeData(
-          iconColor: kIconLightColor,
+        expansionTileTheme: ExpansionTileThemeData(
+          iconColor: !useDynamicColor ? kIconLightColor : null,
         ),
         extensions: const [
           BoorusamaColors(
@@ -155,37 +156,42 @@ class AppTheme {
             selectedColor: Colors.grey,
           ),
         ],
-        iconTheme: const IconThemeData(
-          color: kIconLightColor,
+        iconTheme: IconThemeData(
+          color: !useDynamicColor ? kIconLightColor : null,
         ),
-        inputDecorationTheme: const InputDecorationTheme(
+        inputDecorationTheme: InputDecorationTheme(
           floatingLabelBehavior: FloatingLabelBehavior.always,
           filled: true,
-          fillColor: kSurfaceLightColor,
-          enabledBorder: OutlineInputBorder(
+          fillColor: !useDynamicColor ? kSurfaceLightColor : null,
+          enabledBorder: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),
             borderSide: BorderSide.none,
           ),
-          focusedBorder: OutlineInputBorder(
+          focusedBorder: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),
             borderSide: BorderSide(
               color: kPrimaryLightColor,
               width: 2,
             ),
           ),
-          errorBorder: OutlineInputBorder(
+          errorBorder: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),
             borderSide: BorderSide(
               width: 2,
             ),
           ),
-          focusedErrorBorder: OutlineInputBorder(
+          focusedErrorBorder: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),
             borderSide: BorderSide(
               width: 2,
             ),
           ),
-          contentPadding: EdgeInsets.all(12),
+          contentPadding: const EdgeInsets.all(12),
+        ),
+        listTileTheme: const ListTileThemeData(
+          subtitleTextStyle: TextStyle(
+            color: kHintLightColor,
+          ),
         ),
         brightness: Brightness.light,
         segmentedButtonTheme: SegmentedButtonThemeData(
@@ -220,10 +226,10 @@ class AppTheme {
           shape: StadiumBorder(),
           side: BorderSide.none,
         ),
-        cardTheme: const CardTheme(
-          color: kSurfaceDarkColor,
+        cardTheme: CardTheme(
+          color: !useDynamicColor ? kSurfaceDarkColor : null,
           elevation: 0,
-          shape: RoundedRectangleBorder(
+          shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),
           ),
         ),
@@ -232,14 +238,14 @@ class AppTheme {
           endIndent: 0,
           indent: 0,
         ),
-        dialogTheme: const DialogTheme(
-          backgroundColor: kSurfaceDarkColor,
-          shape: RoundedRectangleBorder(
+        dialogTheme: DialogTheme(
+          backgroundColor: !useDynamicColor ? kSurfaceDarkColor : null,
+          shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),
           ),
         ),
-        expansionTileTheme: const ExpansionTileThemeData(
-          iconColor: kIconDarkColor,
+        expansionTileTheme: ExpansionTileThemeData(
+          iconColor: !useDynamicColor ? kIconDarkColor : null,
         ),
         extensions: const [
           BoorusamaColors(
@@ -248,39 +254,44 @@ class AppTheme {
             selectedColor: kSurfaceDarkColor,
           ),
         ],
-        iconTheme: const IconThemeData(
-          color: kIconDarkColor,
+        iconTheme: IconThemeData(
+          color: !useDynamicColor ? kIconDarkColor : null,
         ),
-        inputDecorationTheme: const InputDecorationTheme(
+        inputDecorationTheme: InputDecorationTheme(
           floatingLabelBehavior: FloatingLabelBehavior.always,
           filled: true,
-          fillColor: kSurfaceDarkColor,
-          enabledBorder: OutlineInputBorder(
+          fillColor: !useDynamicColor ? kSurfaceDarkColor : null,
+          enabledBorder: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),
             borderSide: BorderSide.none,
           ),
-          focusedBorder: OutlineInputBorder(
+          focusedBorder: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),
             borderSide: BorderSide(
               color: kPrimaryDarkColor,
               width: 2,
             ),
           ),
-          errorBorder: OutlineInputBorder(
+          errorBorder: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),
             borderSide: BorderSide(
               width: 2,
             ),
           ),
-          focusedErrorBorder: OutlineInputBorder(
+          focusedErrorBorder: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),
             borderSide: BorderSide(
               width: 2,
             ),
           ),
-          contentPadding: EdgeInsets.all(12),
+          contentPadding: const EdgeInsets.all(12),
         ),
         brightness: Brightness.dark,
+        listTileTheme: ListTileThemeData(
+          subtitleTextStyle: TextStyle(
+            color: !useDynamicColor ? kHintAmoledDarkColor : null,
+          ),
+        ),
         segmentedButtonTheme: SegmentedButtonThemeData(
           style: ButtonStyle(
             shape: MaterialStateProperty.all<OutlinedBorder>(

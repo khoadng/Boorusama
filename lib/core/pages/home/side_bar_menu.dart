@@ -37,12 +37,14 @@ class SideBarMenu extends ConsumerWidget {
     return Container(
       color: Theme.of(context).colorScheme.background,
       constraints:
-          BoxConstraints.expand(width: min(context.screenWidth * 0.8, 500)),
+          BoxConstraints.expand(width: min(context.screenWidth * 0.75, 500)),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SafeArea(child: BooruSelector()),
-          const VerticalDivider(),
+          const VerticalDivider(
+            width: 0,
+          ),
           Expanded(
             child: SingleChildScrollView(
               child: Column(
@@ -51,51 +53,65 @@ class SideBarMenu extends ConsumerWidget {
                   SizedBox(
                     height: MediaQuery.viewPaddingOf(context).top,
                   ),
-                  const CurrentBooruTile(),
-                  if (initialContentBuilder != null) ...[
-                    ...initialContentBuilder!(context)!,
-                  ],
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8),
+                    child: CurrentBooruTile(),
+                  ),
+                  if (initialContentBuilder != null)
+                    ...[
+                      ...initialContentBuilder!(context)!,
+                    ].map((e) => Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: e,
+                        )),
                   const Divider(),
                   if (contentBuilder != null) ...[
-                    ...contentBuilder!(context),
-                  ] else ...[
-                    SideMenuTile(
-                      icon: const Icon(Icons.favorite),
-                      title: const Text('sideMenu.your_bookmarks').tr(),
-                      onTap: () {
-                        if (popOnSelect) context.navigator.pop();
-                        context.go('/bookmarks');
-                      },
-                    ),
-                    SideMenuTile(
-                      icon: const Icon(Icons.list_alt),
-                      title: const Text('sideMenu.your_blacklist').tr(),
-                      onTap: () {
-                        if (popOnSelect) context.navigator.pop();
-                        context.go('/global_blacklisted_tags');
-                      },
-                    ),
-                    SideMenuTile(
-                      icon: const Icon(Icons.download),
-                      title: const Text('sideMenu.bulk_download').tr(),
-                      onTap: () {
-                        if (popOnSelect) context.navigator.pop();
-                        goToBulkDownloadPage(
-                          context,
-                          null,
-                          ref: ref,
-                        );
-                      },
-                    ),
-                    SideMenuTile(
-                      icon: const Icon(Icons.settings_outlined),
-                      title: Text('sideMenu.settings'.tr()),
-                      onTap: () {
-                        if (popOnSelect) context.navigator.pop();
-                        context.go('/settings');
-                      },
-                    ),
-                  ]
+                    ...contentBuilder!(context).map((e) => Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: e,
+                        ))
+                  ] else
+                    ...[
+                      SideMenuTile(
+                        icon: const Icon(Icons.favorite),
+                        title: const Text('sideMenu.your_bookmarks').tr(),
+                        onTap: () {
+                          if (popOnSelect) context.navigator.pop();
+                          context.go('/bookmarks');
+                        },
+                      ),
+                      SideMenuTile(
+                        icon: const Icon(Icons.list_alt),
+                        title: const Text('sideMenu.your_blacklist').tr(),
+                        onTap: () {
+                          if (popOnSelect) context.navigator.pop();
+                          context.go('/global_blacklisted_tags');
+                        },
+                      ),
+                      SideMenuTile(
+                        icon: const Icon(Icons.download),
+                        title: const Text('sideMenu.bulk_download').tr(),
+                        onTap: () {
+                          if (popOnSelect) context.navigator.pop();
+                          goToBulkDownloadPage(
+                            context,
+                            null,
+                            ref: ref,
+                          );
+                        },
+                      ),
+                      SideMenuTile(
+                        icon: const Icon(Icons.settings_outlined),
+                        title: Text('sideMenu.settings'.tr()),
+                        onTap: () {
+                          if (popOnSelect) context.navigator.pop();
+                          context.go('/settings');
+                        },
+                      ),
+                    ].map((e) => Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: e,
+                        )),
                 ],
               ),
             ),
