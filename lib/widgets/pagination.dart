@@ -4,6 +4,9 @@ import 'dart:math' as math;
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Project imports:
+import 'package:boorusama/core/widgets/widgets.dart';
+
 const _maxSelectablePage = 4;
 
 List<int> generatePage({
@@ -111,7 +114,7 @@ class _PageSelectorState extends State<PageSelector> {
                   });
                 }
               },
-              child: TextField(
+              child: BooruTextField(
                 autofocus: true,
                 keyboardType: TextInputType.number,
                 onSubmitted: onSubmit,

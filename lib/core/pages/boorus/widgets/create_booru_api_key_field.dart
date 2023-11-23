@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 class CreateBooruApiKeyField extends StatefulWidget {
@@ -40,7 +41,7 @@ class _CreateBooruApiKeyFieldState extends State<CreateBooruApiKeyField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
+    return BooruTextFormField(
       controller: controller,
       validator: (p0) => null,
       obscureText: !revealKey,

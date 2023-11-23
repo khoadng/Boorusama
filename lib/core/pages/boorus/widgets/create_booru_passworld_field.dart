@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 class CreateBooruPasswordField extends StatefulWidget {
@@ -41,7 +42,7 @@ class _CreateBooruPasswordFieldState extends State<CreateBooruPasswordField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
+    return BooruTextFormField(
       controller: controller,
       readOnly: widget.readOnly,
       validator: (p0) => null,

@@ -62,6 +62,7 @@ class Settings extends Equatable {
     required this.downloadQuality,
     required this.showScoresInGrid,
     required this.showPostListConfigHeader,
+    required this.enableIncognitoModeForKeyboard,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
@@ -101,6 +102,8 @@ class Settings extends Equatable {
             ? castOrFallback<String>(json['booruConfigIdOrders'], '')
             : '',
         showPostListConfigHeader = json['showPostListConfigHeader'] ?? true,
+        enableIncognitoModeForKeyboard =
+            json['enableIncognitoModeForKeyboard'] ?? false,
         imageBorderRadius = json['imageBorderRadius'],
         imageGridSpacing = json['imageGridSpacing'];
 
@@ -125,6 +128,7 @@ class Settings extends Equatable {
     downloadQuality: DownloadQuality.original,
     showScoresInGrid: false,
     showPostListConfigHeader: true,
+    enableIncognitoModeForKeyboard: false,
   );
 
   final String blacklistedTags;
@@ -161,6 +165,8 @@ class Settings extends Equatable {
 
   final bool showPostListConfigHeader;
 
+  final bool enableIncognitoModeForKeyboard;
+
   Settings copyWith({
     String? blacklistedTags,
     String? language,
@@ -182,6 +188,7 @@ class Settings extends Equatable {
     DownloadQuality? downloadQuality,
     bool? showScoresInGrid,
     bool? showPostListConfigHeader,
+    bool? enableIncognitoModeForKeyboard,
   }) =>
       Settings(
         safeMode: safeMode ?? this.safeMode,
@@ -206,6 +213,8 @@ class Settings extends Equatable {
         showScoresInGrid: showScoresInGrid ?? this.showScoresInGrid,
         showPostListConfigHeader:
             showPostListConfigHeader ?? this.showPostListConfigHeader,
+        enableIncognitoModeForKeyboard: enableIncognitoModeForKeyboard ??
+            this.enableIncognitoModeForKeyboard,
       );
 
   Map<String, dynamic> toJson() => {
@@ -229,6 +238,7 @@ class Settings extends Equatable {
         'downloadQuality': downloadQuality.index,
         'showScoresInGrid': showScoresInGrid,
         'showPostListConfigHeader': showPostListConfigHeader,
+        'enableIncognitoModeForKeyboard': enableIncognitoModeForKeyboard,
       };
 
   @override
@@ -253,9 +263,6 @@ class Settings extends Equatable {
         downloadQuality,
         showScoresInGrid,
         showPostListConfigHeader,
+        enableIncognitoModeForKeyboard,
       ];
-}
-
-extension SettingsX on Settings {
-  bool get hasSelectedBooru => currentBooruConfigId != -1;
 }

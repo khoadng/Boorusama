@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Project imports:
+import 'package:boorusama/core/widgets/widgets.dart';
+
 class CreateBooruLoginField extends StatefulWidget {
   const CreateBooruLoginField({
     super.key,
@@ -35,7 +38,7 @@ class _CreateBooruLoginFieldState extends State<CreateBooruLoginField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
+    return BooruTextFormField(
       controller: controller,
       validator: (p0) => null,
       onChanged: widget.onChanged,

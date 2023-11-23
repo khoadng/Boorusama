@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 class CreateBooruConfigNameField extends StatefulWidget {
@@ -33,7 +34,7 @@ class _CreateBooruConfigNameFieldState
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: TextFormField(
+      child: BooruTextFormField(
         controller: controller,
         onChanged: widget.onChanged,
         decoration: InputDecoration(

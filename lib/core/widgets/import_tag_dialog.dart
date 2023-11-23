@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -66,7 +67,7 @@ class _ImportTagsDialogState extends ConsumerState<ImportTagsDialog> {
               ),
               Container(
                 constraints: const BoxConstraints(maxHeight: 150),
-                child: TextField(
+                child: BooruTextField(
                   controller: textController,
                   maxLines: null,
                   decoration: InputDecoration(

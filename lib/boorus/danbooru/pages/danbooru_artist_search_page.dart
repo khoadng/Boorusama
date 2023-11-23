@@ -13,6 +13,7 @@ import 'package:boorusama/boorus/danbooru/feats/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/danbooru_artist_url_chips.dart';
 import 'package:boorusama/clients/danbooru/danbooru_client_artists.dart';
 import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
@@ -75,7 +76,7 @@ class _DanbooruArtistSearchPageState
                     ),
                     const SizedBox(width: 8),
                     Expanded(
-                      child: TextField(
+                      child: BooruTextField(
                         controller: nameController,
                         decoration: const InputDecoration(
                           hintText: 'Name, group name, or other name',
@@ -101,7 +102,7 @@ class _DanbooruArtistSearchPageState
                     ),
                     const SizedBox(width: 8),
                     Expanded(
-                      child: TextField(
+                      child: BooruTextField(
                         controller: urlController,
                         decoration: const InputDecoration(
                           hintText: 'URL or a part of it',

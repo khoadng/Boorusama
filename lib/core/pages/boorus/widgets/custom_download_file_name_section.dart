@@ -15,6 +15,7 @@ import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/filename_generators/token_option.dart';
 import 'package:boorusama/core/feats/posts/post.dart';
 import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -260,7 +261,7 @@ class FormatEditingField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       constraints: const BoxConstraints(maxHeight: 150),
-      child: TextField(
+      child: BooruTextField(
         controller: controller,
         maxLines: null,
         onChanged: onChanged,

@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'reply_header.dart';
 
@@ -66,7 +67,7 @@ class _CommentBoxState extends ConsumerState<CommentBox> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (comment != null) ReplyHeader(comment: comment),
-            TextField(
+            BooruTextField(
               focusNode: widget.focus,
               controller: textEditingController,
               decoration: InputDecoration(

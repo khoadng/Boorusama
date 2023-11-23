@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 class CreateBooruSiteUrlField extends StatefulWidget {
@@ -30,7 +31,7 @@ class _CreateBooruSiteUrlFieldState extends State<CreateBooruSiteUrlField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
+    return BooruTextFormField(
       readOnly: widget.onChanged == null,
       validator: (p0) => null,
       controller: urlController,

@@ -32,23 +32,43 @@ class PrivacyPage extends ConsumerWidget {
         body: child,
       ),
       child: SafeArea(
-        child: Column(children: [
-          ListTile(
-            title: const Text('settings.privacy.send_error_data_notice').tr(),
-            trailing: Switch(
-              activeColor: context.colorScheme.primary,
-              value:
-                  settings.dataCollectingStatus == DataCollectingStatus.allow,
-              onChanged: (value) {
-                ref.updateSettings(settings.copyWith(
-                  dataCollectingStatus: value
-                      ? DataCollectingStatus.allow
-                      : DataCollectingStatus.prohibit,
-                ));
-              },
+        child: Column(
+          children: [
+            ListTile(
+              title: const Text('settings.privacy.send_error_data_notice').tr(),
+              trailing: Switch(
+                activeColor: context.colorScheme.primary,
+                value:
+                    settings.dataCollectingStatus == DataCollectingStatus.allow,
+                onChanged: (value) {
+                  ref.updateSettings(settings.copyWith(
+                    dataCollectingStatus: value
+                        ? DataCollectingStatus.allow
+                        : DataCollectingStatus.prohibit,
+                  ));
+                },
+              ),
             ),
-          ),
-        ]),
+            ListTile(
+              title: const Text('Enable incognito mode for keyboard'),
+              subtitle: Text(
+                'Whether to enable that the IME update personalized data such as typing history and user dictionary data. Only affects Android.',
+                style: TextStyle(
+                  color: context.theme.hintColor,
+                ),
+              ),
+              trailing: Switch(
+                activeColor: context.colorScheme.primary,
+                value: settings.enableIncognitoModeForKeyboard,
+                onChanged: (value) {
+                  ref.updateSettings(settings.copyWith(
+                    enableIncognitoModeForKeyboard: value,
+                  ));
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

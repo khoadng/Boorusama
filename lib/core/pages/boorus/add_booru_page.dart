@@ -9,6 +9,7 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/pages/boorus/add_unknown_booru_page.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -170,7 +171,7 @@ class _AddBooruPageInternalState extends ConsumerState<AddBooruPageInternal> {
           ),
           child: ValueListenableBuilder(
             valueListenable: booruUrlError,
-            builder: (_, error, __) => TextFormField(
+            builder: (_, error, __) => BooruTextFormField(
               validator: (p0) => null,
               autofocus: true,
               onChanged: (value) {

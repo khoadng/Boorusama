@@ -11,6 +11,7 @@ import 'package:rxdart/rxdart.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/saved_searches/saved_searches.dart';
 import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -96,7 +97,7 @@ class _EditSavedSearchSheetState extends ConsumerState<EditSavedSearchSheet> {
             const SizedBox(
               height: 16,
             ),
-            TextField(
+            BooruTextField(
               autofocus: true,
               controller: queryTextController,
               maxLines: null,
@@ -140,7 +141,7 @@ class _EditSavedSearchSheetState extends ConsumerState<EditSavedSearchSheet> {
             const SizedBox(
               height: 16,
             ),
-            TextField(
+            BooruTextField(
               controller: labelTextController,
               maxLines: null,
               decoration: InputDecoration(
