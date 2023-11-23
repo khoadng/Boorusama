@@ -1,6 +1,8 @@
 // Flutter imports:
-import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
+
+// Package imports:
+import 'package:dynamic_color/dynamic_color.dart';
 
 // Project imports:
 import 'colors.dart';
