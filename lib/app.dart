@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
@@ -51,27 +52,51 @@ class _AppState extends ConsumerState<App> {
 
     return Portal(
       child: OKToast(
-        child: MaterialApp.router(
-          builder: (context, child) => ConditionalParentWidget(
-            condition: isDesktopPlatform(),
-            conditionalBuilder: (child) => child,
-            child: ScrollConfiguration(
-              behavior:
-                  const MaterialScrollBehavior().copyWith(overscroll: false),
-              child: child!,
-            ),
-          ),
-          theme: AppTheme.lightTheme(),
-          darkTheme: theme == ThemeMode.amoledDark
-              ? AppTheme.darkAmoledTheme()
-              : AppTheme.darkTheme(),
-          themeMode: mapAppThemeModeToSystemThemeMode(theme),
-          localizationsDelegates: context.localizationDelegates,
-          supportedLocales: context.supportedLocales,
-          locale: context.locale,
-          debugShowCheckedModeBanner: false,
-          title: ref.watch(appInfoProvider).appName,
-          routerConfig: router,
+        child: DynamicColorBuilder(
+          builder: (light, dark) {
+            final darkScheme =
+                AppTheme.generateFromThemeMode(theme, seed: dark);
+            final lightScheme =
+                AppTheme.generateFromThemeMode(theme, seed: light);
+            final darkAmoledScheme = AppTheme.generateFromThemeMode(
+                ThemeMode.amoledDark,
+                seed: dark);
+
+            final colorScheme = theme == ThemeMode.light
+                ? lightScheme
+                : theme == ThemeMode.dark
+                    ? darkScheme
+                    : darkAmoledScheme;
+
+            return Builder(
+              builder: (context) => ProviderScope(
+                overrides: [
+                  colorSchemeProvider.overrideWithValue(
+                    colorScheme,
+                  ),
+                ],
+                child: MaterialApp.router(
+                  builder: (context, child) => ConditionalParentWidget(
+                    condition: isDesktopPlatform(),
+                    conditionalBuilder: (child) => child,
+                    child: ScrollConfiguration(
+                      behavior: const MaterialScrollBehavior()
+                          .copyWith(overscroll: false),
+                      child: child!,
+                    ),
+                  ),
+                  theme: AppTheme.themeFrom(theme, colorScheme: colorScheme),
+                  themeMode: mapAppThemeModeToSystemThemeMode(theme),
+                  localizationsDelegates: context.localizationDelegates,
+                  supportedLocales: context.supportedLocales,
+                  locale: context.locale,
+                  debugShowCheckedModeBanner: false,
+                  title: ref.watch(appInfoProvider).appName,
+                  routerConfig: router,
+                ),
+              ),
+            );
+          },
         ),
       ),
     );

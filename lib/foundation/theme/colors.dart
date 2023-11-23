@@ -1,5 +1,8 @@
 // Flutter imports:
+import 'package:boorusama/dart.dart';
+import 'package:boorusama/foundation/theme/theme_utils.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'theme_mode.dart';
@@ -87,3 +90,12 @@ class BoorusamaColors extends ThemeExtension<BoorusamaColors> {
     );
   }
 }
+
+extension DynamicColorX on BuildContext {
+  ChipColors? generateChipColors(Color? color, ThemeMode themeMode) =>
+      generateChipColorsFromColorScheme(color, themeMode, colorScheme);
+}
+
+final colorSchemeProvider = Provider<ColorScheme>((ref) {
+  throw UnimplementedError();
+});

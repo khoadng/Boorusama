@@ -31,6 +31,7 @@ dependencies:
       url: https://github.com/khoadng/dio.git
       ref: 9c565a556fffeb868e29c5e26200a153d7e80c0c
       path: plugins/http2_adapter
+  dynamic_color: ^1.6.8
   easy_localization: ^3.0.3
   equatable: ^2.0.5
   expandable: ^5.0.1

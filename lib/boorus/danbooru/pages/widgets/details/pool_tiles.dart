@@ -23,7 +23,7 @@ class PoolTiles extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: context.theme.cardColor,
+      color: context.colorScheme.surfaceVariant,
       child: Column(
         children: [
           ...pools.mapIndexed(

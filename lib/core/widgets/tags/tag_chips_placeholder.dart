@@ -37,7 +37,7 @@ class TagChipsPlaceholder extends StatelessWidget {
               right: 4,
             ),
             child: ChoiceChip(
-              disabledColor: context.theme.cardColor,
+              disabledColor: context.colorScheme.surfaceVariant,
               label: SizedBox(width: Random().nextInt(40).toDouble() + 40),
               selected: false,
               padding: const EdgeInsets.all(4),

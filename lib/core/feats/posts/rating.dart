@@ -1,8 +1,8 @@
 enum Rating {
   unknown,
-  sensitive,
-  questionable,
   explicit,
+  questionable,
+  sensitive,
   general,
 }
 

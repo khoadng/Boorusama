@@ -36,7 +36,7 @@ class PoolImage extends ConsumerWidget {
                 aspectRatio: 0.6,
                 child: Container(
                   decoration: BoxDecoration(
-                    color: context.theme.cardColor,
+                    color: context.colorScheme.surfaceVariant,
                     borderRadius: const BorderRadius.all(Radius.circular(4)),
                   ),
                   child: Center(
@@ -48,7 +48,7 @@ class PoolImage extends ConsumerWidget {
             aspectRatio: 0.6,
             child: Container(
               decoration: BoxDecoration(
-                color: context.theme.cardColor,
+                color: context.colorScheme.surfaceVariant,
                 borderRadius: const BorderRadius.all(Radius.circular(4)),
               ),
             ),

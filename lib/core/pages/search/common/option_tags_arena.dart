@@ -63,7 +63,7 @@ class _OptionTagsArenaState extends State<OptionTagsArena> {
                     shape: const CircleBorder(),
                     backgroundColor: editMode
                         ? context.colorScheme.primary
-                        : context.theme.cardColor,
+                        : context.colorScheme.surfaceVariant,
                   ),
                   onPressed: () => setState(() => editMode = !editMode),
                   child: Icon(

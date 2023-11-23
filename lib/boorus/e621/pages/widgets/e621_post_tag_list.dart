@@ -13,7 +13,6 @@ import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -183,7 +182,7 @@ class _Chip extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final colors = generateChipColors(tagColor, context.themeMode);
+    final colors = context.generateChipColors(tagColor, context.themeMode);
 
     return Row(
       mainAxisSize: MainAxisSize.min,

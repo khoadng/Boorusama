@@ -41,7 +41,8 @@ class DateTimeSelector extends StatelessWidget {
         TextButton(
           style: TextButton.styleFrom(
             foregroundColor: context.textTheme.titleLarge!.color,
-            backgroundColor: backgroundColor ?? context.theme.cardColor,
+            backgroundColor:
+                backgroundColor ?? context.colorScheme.surfaceVariant,
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(18)),
             ),

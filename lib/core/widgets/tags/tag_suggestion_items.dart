@@ -44,7 +44,7 @@ class TagSuggestionItems extends ConsumerWidget {
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: ListTile(
-                hoverColor: context.theme.cardColor,
+                hoverColor: context.colorScheme.surfaceVariant,
                 onTap: () => onItemTap(_tags[index]),
                 trailing: tag.hasCount
                     ? Text(

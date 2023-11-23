@@ -8,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 
@@ -37,7 +36,7 @@ class BasicTagList extends ConsumerWidget {
           child: categoryAsync.maybeWhen(
             data: (category) {
               final colors = category != null
-                  ? generateChipColors(
+                  ? context.generateChipColors(
                       ref.getTagColor(context, category), theme)
                   : null;
 

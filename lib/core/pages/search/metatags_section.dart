@@ -9,7 +9,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/pages/search/common/option_tags_arena.dart';
 import 'package:boorusama/core/router.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 
@@ -61,8 +60,8 @@ class _MetatagsSectionState extends ConsumerState<MetatagsSection> {
   ) {
     return [
       ...widget.userMetatags().map((tag) {
-        final colors =
-            generateChipColors(context.colorScheme.primary, context.themeMode);
+        final colors = context.generateChipColors(
+            context.colorScheme.primary, context.themeMode);
         return RawChip(
           visualDensity: VisualDensity.compact,
           label: Text(tag, style: TextStyle(color: colors?.foregroundColor)),

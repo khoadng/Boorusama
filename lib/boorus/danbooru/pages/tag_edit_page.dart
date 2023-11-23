@@ -44,8 +44,11 @@ final danbooruTagEditColorProvider =
       .watch(booruBuilderProvider)
       ?.tagColorBuilder(settings.themeMode, tagType);
 
+  final colorScheme = ref.watch(colorSchemeProvider);
+
   return color != null && color != Colors.white
-      ? generateChipColors(color, settings.themeMode)
+      ? generateChipColorsFromColorScheme(
+          color, settings.themeMode, colorScheme)
       : null;
 });
 
@@ -404,7 +407,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
               children: [
                 FilledButton(
                   style: FilledButton.styleFrom(
-                    backgroundColor: context.theme.cardColor,
+                    backgroundColor: context.colorScheme.surfaceVariant,
                   ),
                   onPressed: () {
                     goToQuickSearchPage(
@@ -420,7 +423,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                 const SizedBox(width: 8),
                 FilledButton(
                   style: FilledButton.styleFrom(
-                    backgroundColor: context.theme.cardColor,
+                    backgroundColor: context.colorScheme.surfaceVariant,
                   ),
                   onPressed: () {
                     setState(() {
@@ -432,7 +435,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                 const SizedBox(width: 8),
                 FilledButton(
                   style: FilledButton.styleFrom(
-                    backgroundColor: context.theme.cardColor,
+                    backgroundColor: context.colorScheme.surfaceVariant,
                   ),
                   onPressed: () {
                     setState(() {
@@ -445,7 +448,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                   const SizedBox(width: 8),
                   FilledButton(
                     style: FilledButton.styleFrom(
-                      backgroundColor: context.theme.cardColor,
+                      backgroundColor: context.colorScheme.surfaceVariant,
                     ),
                     onPressed: () {
                       setState(() {
@@ -681,7 +684,7 @@ class _RelatedTagChips extends ConsumerWidget {
       spacing: 4,
       children: tags.map((tag) {
         final selected = isSelected(tag.name);
-        final colors = generateChipColors(
+        final colors = context.generateChipColors(
             ref.getTagColor(context, tag.category.name), context.themeMode);
 
         return RawChip(
@@ -775,7 +778,7 @@ class _TagEditAITagViewState extends ConsumerState<TagEditAITagView> {
                 spacing: 4,
                 children: tags.map((d) {
                   final tag = d.tag;
-                  final colors = generateChipColors(
+                  final colors = context.generateChipColors(
                       ref.getTagColor(context, tag.category.name),
                       context.themeMode);
                   final selected = widget.isSelected(tag.name);

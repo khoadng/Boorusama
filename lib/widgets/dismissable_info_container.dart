@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 // Project imports:
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 
 class DismissableInfoContainer extends StatefulWidget {
@@ -32,7 +31,7 @@ class _DismissableInfoContainerState extends State<DismissableInfoContainer> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = generateChipColors(
+    final colors = context.generateChipColors(
       widget.mainColor ?? Colors.grey,
       context.themeMode,
     );

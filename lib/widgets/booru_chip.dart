@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Project imports:
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 
 class BooruChip extends StatelessWidget {
@@ -25,8 +24,9 @@ class BooruChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors =
-        color != null ? generateChipColors(color!, context.themeMode) : null;
+    final colors = color != null
+        ? context.generateChipColors(color!, context.themeMode)
+        : null;
 
     return trailing != null
         ? FilledButton.icon(

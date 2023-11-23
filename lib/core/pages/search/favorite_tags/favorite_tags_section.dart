@@ -10,7 +10,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
@@ -83,7 +82,7 @@ class FavoriteTagsSection extends ConsumerWidget {
   ) {
     return [
       ...tags.mapIndexed((index, tag) {
-        final colors = generateChipColors(
+        final colors = context.generateChipColors(
           context.themeMode.isDark ? Colors.white : Colors.black,
           context.themeMode,
         );

@@ -9,7 +9,6 @@ import 'package:flutter_tags_x/flutter_tags_x.dart' hide TagsState;
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -85,9 +84,9 @@ class PostTagListChip extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = context.themeMode;
-    final colors =
-        generateChipColors(ref.getTagColor(context, tag.category.name), theme);
-    final numberColors = generateChipColors(Colors.grey[600]!, theme);
+    final colors = context.generateChipColors(
+        ref.getTagColor(context, tag.category.name), theme);
+    final numberColors = context.generateChipColors(Colors.grey[600]!, theme);
 
     return Row(
       mainAxisSize: MainAxisSize.min,
