@@ -66,6 +66,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
   @override
   Widget build(BuildContext context) {
     final settings = ref.watch(settingsProvider);
+    final dynamicColorSupported = ref.watch(dynamicColorSupportProvider);
 
     return ConditionalParentWidget(
       condition: widget.hasAppBar,
@@ -89,6 +90,19 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
                   ref.updateSettings(settings.copyWith(themeMode: value)),
               optionBuilder: (value) => Text(_themeModeToString(value).tr()),
             ),
+            if (dynamicColorSupported)
+              SwitchListTile(
+                title: const Text('Dynamic theme color').tr(),
+                subtitle: Text(
+                  'Sync theme color with wallpaper',
+                  style: TextStyle(
+                    color: context.theme.hintColor,
+                  ),
+                ).tr(),
+                value: settings.enableDynamicColoring,
+                onChanged: (value) => ref.updateSettings(
+                    settings.copyWith(enableDynamicColoring: value)),
+              ),
             const Divider(thickness: 1),
             SettingsHeader(label: 'settings.image_grid.image_grid'.tr()),
             SettingsTile<GridSize>(

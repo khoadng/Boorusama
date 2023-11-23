@@ -63,6 +63,7 @@ class Settings extends Equatable {
     required this.showScoresInGrid,
     required this.showPostListConfigHeader,
     required this.enableIncognitoModeForKeyboard,
+    required this.enableDynamicColoring,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
@@ -104,6 +105,7 @@ class Settings extends Equatable {
         showPostListConfigHeader = json['showPostListConfigHeader'] ?? true,
         enableIncognitoModeForKeyboard =
             json['enableIncognitoModeForKeyboard'] ?? false,
+        enableDynamicColoring = json['enableDynamicColoring'] ?? true,
         imageBorderRadius = json['imageBorderRadius'],
         imageGridSpacing = json['imageGridSpacing'];
 
@@ -129,6 +131,7 @@ class Settings extends Equatable {
     showScoresInGrid: false,
     showPostListConfigHeader: true,
     enableIncognitoModeForKeyboard: false,
+    enableDynamicColoring: true,
   );
 
   final String blacklistedTags;
@@ -167,6 +170,8 @@ class Settings extends Equatable {
 
   final bool enableIncognitoModeForKeyboard;
 
+  final bool enableDynamicColoring;
+
   Settings copyWith({
     String? blacklistedTags,
     String? language,
@@ -189,6 +194,7 @@ class Settings extends Equatable {
     bool? showScoresInGrid,
     bool? showPostListConfigHeader,
     bool? enableIncognitoModeForKeyboard,
+    bool? enableDynamicColoring,
   }) =>
       Settings(
         safeMode: safeMode ?? this.safeMode,
@@ -215,6 +221,8 @@ class Settings extends Equatable {
             showPostListConfigHeader ?? this.showPostListConfigHeader,
         enableIncognitoModeForKeyboard: enableIncognitoModeForKeyboard ??
             this.enableIncognitoModeForKeyboard,
+        enableDynamicColoring:
+            enableDynamicColoring ?? this.enableDynamicColoring,
       );
 
   Map<String, dynamic> toJson() => {
@@ -239,6 +247,7 @@ class Settings extends Equatable {
         'showScoresInGrid': showScoresInGrid,
         'showPostListConfigHeader': showPostListConfigHeader,
         'enableIncognitoModeForKeyboard': enableIncognitoModeForKeyboard,
+        'enableDynamicColoring': enableDynamicColoring,
       };
 
   @override
@@ -264,5 +273,6 @@ class Settings extends Equatable {
         showScoresInGrid,
         showPostListConfigHeader,
         enableIncognitoModeForKeyboard,
+        enableDynamicColoring,
       ];
 }

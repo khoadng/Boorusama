@@ -38,6 +38,8 @@ class _AppState extends ConsumerState<App> {
     final theme =
         ref.watch(settingsProvider.select((value) => value.themeMode));
     final router = ref.watch(routerProvider(widget.settings));
+    final enableDynamicColor = ref
+        .watch(settingsProvider.select((value) => value.enableDynamicColoring));
 
     ref.listen(
       currentBooruConfigProvider,
@@ -54,13 +56,18 @@ class _AppState extends ConsumerState<App> {
       child: OKToast(
         child: DynamicColorBuilder(
           builder: (light, dark) {
-            final darkScheme =
-                AppTheme.generateFromThemeMode(theme, seed: dark);
-            final lightScheme =
-                AppTheme.generateFromThemeMode(theme, seed: light);
+            final darkScheme = AppTheme.generateFromThemeMode(
+              theme,
+              seed: enableDynamicColor ? dark : null,
+            );
+            final lightScheme = AppTheme.generateFromThemeMode(
+              theme,
+              seed: enableDynamicColor ? light : null,
+            );
             final darkAmoledScheme = AppTheme.generateFromThemeMode(
-                ThemeMode.amoledDark,
-                seed: dark);
+              ThemeMode.amoledDark,
+              seed: enableDynamicColor ? dark : null,
+            );
 
             final colorScheme = theme == ThemeMode.light
                 ? lightScheme
@@ -71,9 +78,9 @@ class _AppState extends ConsumerState<App> {
             return Builder(
               builder: (context) => ProviderScope(
                 overrides: [
-                  colorSchemeProvider.overrideWithValue(
-                    colorScheme,
-                  ),
+                  colorSchemeProvider.overrideWithValue(colorScheme),
+                  dynamicColorSupportProvider
+                      .overrideWithValue(light != null && dark != null),
                 ],
                 child: MaterialApp.router(
                   builder: (context, child) => ConditionalParentWidget(
