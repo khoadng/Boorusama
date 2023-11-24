@@ -5,6 +5,7 @@ import 'package:flutter/material.dart' hide ThemeMode;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/theme/theme_utils.dart';
 import 'theme_mode.dart';
@@ -96,8 +97,11 @@ class BoorusamaColors extends ThemeExtension<BoorusamaColors> {
 }
 
 extension DynamicColorX on BuildContext {
-  ChipColors? generateChipColors(Color? color, ThemeMode themeMode) =>
-      generateChipColorsFromColorScheme(color, themeMode, colorScheme);
+  ChipColors? generateChipColors(
+    Color? color,
+    Settings settings,
+  ) =>
+      generateChipColorsFromColorScheme(color, settings, colorScheme);
 }
 
 final colorSchemeProvider = Provider<ColorScheme>((ref) {

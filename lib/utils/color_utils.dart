@@ -5,6 +5,7 @@ import 'package:flutter/material.dart' hide ThemeMode;
 import 'package:dynamic_color/dynamic_color.dart';
 
 // Project imports:
+import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 
 typedef ChipColors = ({
@@ -15,13 +16,15 @@ typedef ChipColors = ({
 
 ChipColors? generateChipColorsFromColorScheme(
   Color? color,
-  ThemeMode themeMode,
+  Settings settings,
   ColorScheme colorScheme,
 ) {
   if (color == null) return null;
-  if (themeMode == ThemeMode.light) {
+  if (settings.themeMode == ThemeMode.light) {
     return (
-      backgroundColor: color.harmonizeWith(colorScheme.primary),
+      backgroundColor: settings.enableDynamicColoring
+          ? color.harmonizeWith(colorScheme.primary)
+          : color,
       foregroundColor: Colors.white,
       borderColor: color
     );
@@ -42,9 +45,15 @@ ChipColors? generateChipColorsFromColorScheme(
   );
 
   return (
-    foregroundColor: color.harmonizeWith(colorScheme.primary),
-    backgroundColor: darkColor.harmonizeWith(colorScheme.primary),
-    borderColor: neutralDarkColor.harmonizeWith(colorScheme.primary)
+    foregroundColor: settings.enableDynamicColoring
+        ? color.harmonizeWith(colorScheme.primary)
+        : color,
+    backgroundColor: settings.enableDynamicColoring
+        ? darkColor.harmonizeWith(colorScheme.primary)
+        : darkColor,
+    borderColor: settings.enableDynamicColoring
+        ? neutralDarkColor.harmonizeWith(colorScheme.primary)
+        : neutralDarkColor,
   );
 }
 

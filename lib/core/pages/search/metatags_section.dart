@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/pages/search/common/option_tags_arena.dart';
 import 'package:boorusama/core/router.dart';
@@ -61,7 +62,9 @@ class _MetatagsSectionState extends ConsumerState<MetatagsSection> {
     return [
       ...widget.userMetatags().map((tag) {
         final colors = context.generateChipColors(
-            context.colorScheme.primary, context.themeMode);
+          context.colorScheme.primary,
+          ref.watch(settingsProvider),
+        );
         return RawChip(
           visualDensity: VisualDensity.compact,
           label: Text(tag, style: TextStyle(color: colors?.foregroundColor)),

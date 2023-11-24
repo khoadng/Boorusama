@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -88,10 +89,14 @@ class _Chip extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = context.themeMode;
     final colors = context.generateChipColors(
-        ref.getTagColor(context, tag.category.name), theme);
-    final numberColors = context.generateChipColors(Colors.grey[800]!, theme);
+      ref.getTagColor(context, tag.category.name),
+      ref.watch(settingsProvider),
+    );
+    final numberColors = context.generateChipColors(
+      Colors.grey[800]!,
+      ref.watch(settingsProvider),
+    );
 
     return Row(
       mainAxisSize: MainAxisSize.min,

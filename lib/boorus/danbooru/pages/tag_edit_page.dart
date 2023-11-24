@@ -47,8 +47,7 @@ final danbooruTagEditColorProvider =
   final colorScheme = ref.watch(colorSchemeProvider);
 
   return color != null && color != Colors.white
-      ? generateChipColorsFromColorScheme(
-          color, settings.themeMode, colorScheme)
+      ? generateChipColorsFromColorScheme(color, settings, colorScheme)
       : null;
 });
 
@@ -685,7 +684,9 @@ class _RelatedTagChips extends ConsumerWidget {
       children: tags.map((tag) {
         final selected = isSelected(tag.name);
         final colors = context.generateChipColors(
-            ref.getTagColor(context, tag.category.name), context.themeMode);
+          ref.getTagColor(context, tag.category.name),
+          ref.watch(settingsProvider),
+        );
 
         return RawChip(
           selected: selected,
@@ -779,8 +780,9 @@ class _TagEditAITagViewState extends ConsumerState<TagEditAITagView> {
                 children: tags.map((d) {
                   final tag = d.tag;
                   final colors = context.generateChipColors(
-                      ref.getTagColor(context, tag.category.name),
-                      context.themeMode);
+                    ref.getTagColor(context, tag.category.name),
+                    ref.watch(settingsProvider),
+                  );
                   final selected = widget.isSelected(tag.name);
 
                   return RawChip(

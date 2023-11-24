@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
@@ -37,7 +38,10 @@ class ForumCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final colors = context.generateChipColors(creatorColor, context.themeMode);
+    final colors = context.generateChipColors(
+      creatorColor,
+      ref.watch(settingsProvider),
+    );
 
     return Card(
       child: InkWell(

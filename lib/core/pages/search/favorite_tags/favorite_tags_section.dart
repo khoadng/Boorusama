@@ -7,6 +7,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
@@ -84,7 +85,7 @@ class FavoriteTagsSection extends ConsumerWidget {
       ...tags.mapIndexed((index, tag) {
         final colors = context.generateChipColors(
           context.themeMode.isDark ? Colors.white : Colors.black,
-          context.themeMode,
+          ref.watch(settingsProvider),
         );
 
         return RawChip(
