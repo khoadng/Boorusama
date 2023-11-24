@@ -34,7 +34,7 @@ enum TagEditExpandMode {
 const _kHowToRateUrl = 'https://danbooru.donmai.us/wiki_pages/howto:rate';
 
 final danbooruTagEditColorProvider =
-    FutureProvider.autoDispose.family<ChipColors?, String>((ref, tag) async {
+    FutureProvider.autoDispose.family<Color?, String>((ref, tag) async {
   final config = ref.watchConfig;
   final settings = ref.watch(settingsProvider);
   final tagTypeStore = ref.watch(booruTagTypeStoreProvider);
@@ -44,11 +44,7 @@ final danbooruTagEditColorProvider =
       .watch(booruBuilderProvider)
       ?.tagColorBuilder(settings.themeMode, tagType);
 
-  final colorScheme = ref.watch(colorSchemeProvider);
-
-  return color != null && color != Colors.white
-      ? generateChipColorsFromColorScheme(color, settings, colorScheme)
-      : null;
+  return color;
 });
 
 class TagEditPage extends ConsumerStatefulWidget {
@@ -294,7 +290,14 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                   children: tags.map((tag) {
                     final colors =
                         ref.watch(danbooruTagEditColorProvider(tag)).maybeWhen(
-                              data: (color) => color,
+                              data: (color) =>
+                                  color != null && color != Colors.white
+                                      ? generateChipColorsFromColorScheme(
+                                          color,
+                                          ref.watch(settingsProvider),
+                                          context.colorScheme,
+                                        )
+                                      : null,
                               orElse: () => null,
                             );
                     final backgroundColor = colors?.backgroundColor;

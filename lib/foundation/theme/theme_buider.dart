@@ -50,7 +50,6 @@ class ThemeBuilder extends ConsumerWidget {
         return Builder(
           builder: (context) => ProviderScope(
             overrides: [
-              colorSchemeProvider.overrideWithValue(colorScheme),
               dynamicColorSupportProvider
                   .overrideWithValue(light != null && dark != null),
             ],
