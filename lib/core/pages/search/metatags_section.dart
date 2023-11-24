@@ -68,9 +68,10 @@ class _MetatagsSectionState extends ConsumerState<MetatagsSection> {
           backgroundColor: colors?.backgroundColor,
           side: colors != null ? BorderSide(color: colors.borderColor) : null,
           onPressed: editMode ? null : () => widget.onOptionTap?.call(tag),
-          deleteIcon: const Icon(
+          deleteIcon: Icon(
             Icons.close,
             size: 18,
+            color: colors?.foregroundColor,
           ),
           onDeleted: editMode
               ? () async {

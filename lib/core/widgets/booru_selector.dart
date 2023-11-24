@@ -51,8 +51,9 @@ class _BooruSelectorState extends ConsumerState<BooruSelector> {
 
     void hide() => context.contextMenuOverlay.hide();
 
-    return SizedBox(
+    return Container(
       width: 68,
+      color: context.colorScheme.tertiaryContainer,
       child: ScrollConfiguration(
         behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
         child: CustomScrollView(

@@ -18,6 +18,8 @@ class AppTheme {
             onBackground: kOnBackgroundLightColor,
             secondaryContainer: kSecondaryContainerLightColor,
             onSecondaryContainer: kOnSurfaceLightColor,
+            tertiaryContainer: Color.fromARGB(255, 220, 220, 220),
+            onTertiaryContainer: kOnSurfaceLightColor,
             primary: kPrimaryLightColor,
             onPrimary: kOnPrimaryLightColor,
             secondary: kPrimaryLightColor,
@@ -33,6 +35,8 @@ class AppTheme {
             onBackground: kOnBackgroundDarkColor,
             secondaryContainer: kSecondaryContainerDarkColor,
             onSecondaryContainer: kOnSurfaceDarkColor,
+            tertiaryContainer: Color.fromARGB(255, 20, 20, 20),
+            onTertiaryContainer: kOnSurfaceDarkColor,
             primary: kPrimaryDarkColor,
             onPrimary: kOnPrimaryDarkColor,
             secondary: kPrimaryDarkColor,
@@ -48,6 +52,8 @@ class AppTheme {
             onBackground: kOnBackgroundAmoledDarkColor,
             secondaryContainer: kSecondaryContainerAmoledDarkColor,
             onSecondaryContainer: kOnSurfaceAmoledDarkColor,
+            tertiaryContainer: Color.fromARGB(255, 20, 20, 20),
+            onTertiaryContainer: kOnSurfaceAmoledDarkColor,
             primary: kPrimaryAmoledDarkColor,
             onPrimary: kOnPrimaryAmoledDarkColor,
             secondary: kPrimaryAmoledDarkColor,
@@ -63,6 +69,8 @@ class AppTheme {
             onBackground: kOnBackgroundAmoledDarkColor,
             secondaryContainer: kSecondaryContainerAmoledDarkColor,
             onSecondaryContainer: kOnSurfaceAmoledDarkColor,
+            tertiaryContainer: Color.fromARGB(255, 20, 20, 20),
+            onTertiaryContainer: kOnSurfaceAmoledDarkColor,
             primary: kPrimaryAmoledDarkColor,
             onPrimary: kOnPrimaryAmoledDarkColor,
             secondary: kPrimaryAmoledDarkColor,
@@ -83,8 +91,25 @@ class AppTheme {
           seed != null ? seed.harmonized() : defaultColorScheme(mode),
         ThemeMode.dark =>
           seed != null ? seed.harmonized() : defaultColorScheme(mode),
-        ThemeMode.amoledDark =>
-          seed != null ? seed.harmonized() : defaultColorScheme(mode),
+        ThemeMode.amoledDark => seed != null
+            ? ColorScheme(
+                brightness: Brightness.dark,
+                background: kBackgroundAmoledDarkColor,
+                onBackground: kOnBackgroundAmoledDarkColor,
+                secondaryContainer: kSecondaryContainerAmoledDarkColor,
+                onSecondaryContainer: kOnSurfaceAmoledDarkColor,
+                tertiaryContainer: const Color.fromARGB(255, 20, 20, 20),
+                onTertiaryContainer: kOnSurfaceAmoledDarkColor,
+                primary: seed.primary,
+                onPrimary: seed.onPrimary,
+                secondary: kPrimaryAmoledDarkColor,
+                onSecondary: kOnPrimaryAmoledDarkColor,
+                error: kErrorAmoledDarkColor,
+                onError: kOnErrorAmoledDarkColor,
+                surface: kSurfaceAmoledDarkColor,
+                onSurface: kOnSurfaceAmoledDarkColor,
+              )
+            : defaultColorScheme(mode),
         ThemeMode.system =>
           seed != null ? seed.harmonized() : defaultColorScheme(mode),
       };
@@ -156,9 +181,6 @@ class AppTheme {
             selectedColor: Colors.grey,
           ),
         ],
-        iconTheme: IconThemeData(
-          color: !useDynamicColor ? kIconLightColor : null,
-        ),
         inputDecorationTheme: InputDecorationTheme(
           floatingLabelBehavior: FloatingLabelBehavior.always,
           filled: true,
@@ -254,9 +276,6 @@ class AppTheme {
             selectedColor: kSurfaceDarkColor,
           ),
         ],
-        iconTheme: IconThemeData(
-          color: !useDynamicColor ? kIconDarkColor : null,
-        ),
         inputDecorationTheme: InputDecorationTheme(
           floatingLabelBehavior: FloatingLabelBehavior.always,
           filled: true,
@@ -352,9 +371,6 @@ class AppTheme {
             selectedColor: kSurfaceAmoledDarkColor,
           ),
         ],
-        iconTheme: IconThemeData(
-          color: !useDynamicColor ? kIconAmoledDarkColor : null,
-        ),
         inputDecorationTheme: InputDecorationTheme(
           floatingLabelBehavior: FloatingLabelBehavior.always,
           filled: true,
@@ -384,9 +400,9 @@ class AppTheme {
           ),
           contentPadding: const EdgeInsets.all(12),
         ),
-        listTileTheme: ListTileThemeData(
+        listTileTheme: const ListTileThemeData(
           subtitleTextStyle: TextStyle(
-            color: !useDynamicColor ? kHintAmoledDarkColor : null,
+            color: kHintAmoledDarkColor,
           ),
         ),
         brightness: Brightness.dark,
