@@ -146,7 +146,7 @@ class BooruSelectorItem extends StatelessWidget {
               left: BorderSide(
                 color:
                     selected ? context.colorScheme.primary : Colors.transparent,
-                width: 6,
+                width: 4,
               ),
             ),
           ),

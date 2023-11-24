@@ -28,6 +28,7 @@ class PoolOptionsHeader extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           SegmentedButton(
+            showSelectedIcon: false,
             segments: PoolCategory.values
                 .where((e) => e != PoolCategory.unknown)
                 .map((e) => ButtonSegment(

@@ -84,7 +84,7 @@ class SideBarMenu extends ConsumerWidget {
                           },
                         ),
                         SideMenuTile(
-                          icon: const Icon(Icons.list_alt),
+                          icon: const Icon(Icons.list),
                           title: const Text('sideMenu.your_blacklist').tr(),
                           onTap: () {
                             if (popOnSelect) context.navigator.pop();
@@ -104,7 +104,7 @@ class SideBarMenu extends ConsumerWidget {
                           },
                         ),
                         SideMenuTile(
-                          icon: const Icon(Icons.settings_outlined),
+                          icon: const Icon(Icons.settings),
                           title: Text('sideMenu.settings'.tr()),
                           onTap: () {
                             if (popOnSelect) context.navigator.pop();

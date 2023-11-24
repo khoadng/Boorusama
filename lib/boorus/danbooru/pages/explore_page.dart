@@ -27,9 +27,7 @@ class ExplorePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
-      padding: Screen.of(context).size == ScreenSize.small
-          ? EdgeInsets.zero
-          : const EdgeInsets.symmetric(horizontal: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       child: CustomScrollView(
         primary: false,
         slivers: [

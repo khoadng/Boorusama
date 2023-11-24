@@ -220,7 +220,7 @@ class AppTheme {
           style: ButtonStyle(
             shape: MaterialStateProperty.all<OutlinedBorder>(
               RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(4),
               ),
             ),
             textStyle: MaterialStateProperty.all<TextStyle>(
@@ -315,7 +315,7 @@ class AppTheme {
           style: ButtonStyle(
             shape: MaterialStateProperty.all<OutlinedBorder>(
               RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(4),
               ),
             ),
             textStyle: MaterialStateProperty.all<TextStyle>(
@@ -410,7 +410,7 @@ class AppTheme {
           style: ButtonStyle(
             shape: MaterialStateProperty.all<OutlinedBorder>(
               RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(4),
               ),
             ),
             textStyle: MaterialStateProperty.all<TextStyle>(
