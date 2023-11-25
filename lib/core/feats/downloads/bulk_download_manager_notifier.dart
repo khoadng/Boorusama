@@ -84,6 +84,10 @@ class BulkDownloadManagerNotifier extends FamilyNotifier<void, BooruConfig> {
       final itemStack = [initialItems];
 
       while (itemStack.isNotEmpty) {
+        if (bulkDownloadStatus.state == BulkDownloadManagerStatus.cancel) {
+          break;
+        }
+
         final items = itemStack.removeLast();
 
         for (var index = 0; index < items.length; index++) {

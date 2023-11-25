@@ -58,6 +58,7 @@ class BulkDownloadTile extends ConsumerWidget {
                         _ => const SizedBox.shrink(),
                       },
                       Chip(
+                        backgroundColor: context.colorScheme.tertiaryContainer,
                         visualDensity: const ShrinkVisualDensity(),
                         label: Text(sanitizedExtension(data.url)),
                       ),
@@ -65,6 +66,8 @@ class BulkDownloadTile extends ConsumerWidget {
                       if (fileSizes[data.url] != null &&
                           fileSizes[data.url]! > 0)
                         Chip(
+                          backgroundColor:
+                              context.colorScheme.tertiaryContainer,
                           visualDensity: const ShrinkVisualDensity(),
                           label: Text(filesize(fileSizes[data.url], 1)),
                         ),

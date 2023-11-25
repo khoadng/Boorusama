@@ -108,6 +108,7 @@ class _AddUnknownBooruPageState extends ConsumerState<AddUnknownBooruPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          const SizedBox(height: 32),
           Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: 12,

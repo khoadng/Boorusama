@@ -78,8 +78,9 @@ class DownloadInProgressView extends ConsumerWidget {
                 title: filesize(state.estimatedDownloadSize, 1),
                 subtitle: 'download.bulk_download_total_count'.tr(),
               ),
-              const SizedBox(
+              SizedBox(
                 child: VerticalDivider(
+                  color: context.theme.hintColor,
                   indent: 5,
                   endIndent: 5,
                   thickness: 2,
@@ -103,6 +104,8 @@ class DownloadInProgressView extends ConsumerWidget {
             spacing: 4,
             children: selectedTags
                 .map((e) => Chip(
+                      visualDensity: VisualDensity.compact,
+                      backgroundColor: context.theme.colorScheme.surfaceVariant,
                       label: Text(e.replaceUnderscoreWithSpace()),
                       shape: const StadiumBorder(side: BorderSide()),
                     ))
@@ -129,6 +132,7 @@ class DownloadInProgressView extends ConsumerWidget {
             );
           }),
         ),
+        const SizedBox(height: 4),
         Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
