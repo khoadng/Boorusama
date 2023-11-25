@@ -1,5 +1,5 @@
 // Flutter imports:
-import 'package:flutter/material.dart' hide ThemeMode;
+import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_portal/flutter_portal.dart';
@@ -34,8 +34,6 @@ class App extends ConsumerStatefulWidget {
 class _AppState extends ConsumerState<App> {
   @override
   Widget build(BuildContext context) {
-    final theme =
-        ref.watch(settingsProvider.select((value) => value.themeMode));
     final router = ref.watch(routerProvider(widget.settings));
 
     ref.listen(
@@ -51,27 +49,26 @@ class _AppState extends ConsumerState<App> {
 
     return Portal(
       child: OKToast(
-        child: MaterialApp.router(
-          builder: (context, child) => ConditionalParentWidget(
-            condition: isDesktopPlatform(),
-            conditionalBuilder: (child) => child,
-            child: ScrollConfiguration(
-              behavior:
-                  const MaterialScrollBehavior().copyWith(overscroll: false),
-              child: child!,
+        child: ThemeBuilder(
+          builder: (theme, themeMode) => MaterialApp.router(
+            builder: (context, child) => ConditionalParentWidget(
+              condition: isDesktopPlatform(),
+              conditionalBuilder: (child) => child,
+              child: ScrollConfiguration(
+                behavior:
+                    const MaterialScrollBehavior().copyWith(overscroll: false),
+                child: child!,
+              ),
             ),
+            theme: theme,
+            themeMode: themeMode,
+            localizationsDelegates: context.localizationDelegates,
+            supportedLocales: context.supportedLocales,
+            locale: context.locale,
+            debugShowCheckedModeBanner: false,
+            title: ref.watch(appInfoProvider).appName,
+            routerConfig: router,
           ),
-          theme: AppTheme.lightTheme(),
-          darkTheme: theme == ThemeMode.amoledDark
-              ? AppTheme.darkAmoledTheme()
-              : AppTheme.darkTheme(),
-          themeMode: mapAppThemeModeToSystemThemeMode(theme),
-          localizationsDelegates: context.localizationDelegates,
-          supportedLocales: context.supportedLocales,
-          locale: context.locale,
-          debugShowCheckedModeBanner: false,
-          title: ref.watch(appInfoProvider).appName,
-          routerConfig: router,
         ),
       ),
     );

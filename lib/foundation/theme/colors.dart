@@ -1,7 +1,13 @@
 // Flutter imports:
 import 'package:flutter/material.dart' hide ThemeMode;
 
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 // Project imports:
+import 'package:boorusama/core/feats/settings/settings.dart';
+import 'package:boorusama/dart.dart';
+import 'package:boorusama/foundation/theme/theme_utils.dart';
 import 'theme_mode.dart';
 
 const kLightWhiteColor = Color.fromARGB(255, 220, 220, 220);
@@ -18,6 +24,7 @@ const kOnSurfaceAmoledDarkColor = kLightWhiteColor;
 const kErrorAmoledDarkColor = Color(0xFFCF6679);
 const kOnErrorAmoledDarkColor = kLightWhiteColor;
 const kIconAmoledDarkColor = kLightWhiteColor;
+const kHintAmoledDarkColor = kDimWhiteColor;
 
 // Dark theme
 const kPrimaryDarkColor = Color.fromARGB(255, 86, 99, 233);
@@ -42,6 +49,7 @@ const kOnSurfaceLightColor = Colors.black;
 const kErrorLightColor = Color.fromARGB(255, 211, 47, 47);
 const kOnErrorLightColor = Colors.white;
 const kIconLightColor = Color.fromARGB(255, 79, 86, 96);
+const kHintLightColor = Color.fromARGB(255, 79, 86, 96);
 
 class BoorusamaColors extends ThemeExtension<BoorusamaColors> {
   const BoorusamaColors({
@@ -87,3 +95,15 @@ class BoorusamaColors extends ThemeExtension<BoorusamaColors> {
     );
   }
 }
+
+extension DynamicColorX on BuildContext {
+  ChipColors? generateChipColors(
+    Color? color,
+    Settings settings,
+  ) =>
+      generateChipColorsFromColorScheme(color, settings, colorScheme);
+}
+
+final dynamicColorSupportProvider = Provider<bool>((ref) {
+  throw UnimplementedError();
+});

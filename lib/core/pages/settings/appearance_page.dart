@@ -66,6 +66,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
   @override
   Widget build(BuildContext context) {
     final settings = ref.watch(settingsProvider);
+    final dynamicColorSupported = ref.watch(dynamicColorSupportProvider);
 
     return ConditionalParentWidget(
       condition: widget.hasAppBar,
@@ -89,6 +90,16 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
                   ref.updateSettings(settings.copyWith(themeMode: value)),
               optionBuilder: (value) => Text(_themeModeToString(value).tr()),
             ),
+            if (dynamicColorSupported)
+              SwitchListTile(
+                title: const Text('Dynamic theme color').tr(),
+                subtitle: const Text(
+                  'Sync theme color with wallpaper',
+                ).tr(),
+                value: settings.enableDynamicColoring,
+                onChanged: (value) => ref.updateSettings(
+                    settings.copyWith(enableDynamicColoring: value)),
+              ),
             const Divider(thickness: 1),
             SettingsHeader(label: 'settings.image_grid.image_grid'.tr()),
             SettingsTile<GridSize>(
@@ -188,10 +199,10 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
   }
 
   Widget _buildBorderRadiusSlider(Settings settings) {
-    return ValueListenableBuilder<double>(
+    return ValueListenableBuilder(
       valueListenable: _borderRadiusSliderValue,
       builder: (context, value, child) {
-        return Slider.adaptive(
+        return Slider(
           label: value.toInt().toString(),
           divisions: 10,
           max: 10,
@@ -205,10 +216,10 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
   }
 
   Widget _buildSpacingSlider(Settings settings) {
-    return ValueListenableBuilder<double>(
+    return ValueListenableBuilder(
       valueListenable: _spacingSliderValue,
       builder: (context, value, child) {
-        return Slider.adaptive(
+        return Slider(
           label: value.toInt().toString(),
           divisions: 10,
           max: 10,

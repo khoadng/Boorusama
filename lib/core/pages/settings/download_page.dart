@@ -64,7 +64,7 @@ class _DownloadPageState extends ConsumerState<DownloadPage>
               child: Material(
                 child: Ink(
                   decoration: BoxDecoration(
-                    color: context.theme.cardColor,
+                    color: context.colorScheme.surfaceVariant,
                     border: Border.fromBorderSide(
                       BorderSide(color: context.theme.hintColor),
                     ),

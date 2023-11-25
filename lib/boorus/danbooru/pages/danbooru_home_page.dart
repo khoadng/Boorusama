@@ -164,7 +164,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
           },
         ),
         SideMenuTile(
-          icon: const Icon(Icons.forum_outlined),
+          icon: const Icon(Icons.forum),
           title: const Text('forum.forum').tr(),
           onTap: () {
             goToForumPage(context);
@@ -179,7 +179,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
         ),
         if (widget.config.hasLoginDetails()) ...[
           SideMenuTile(
-            icon: const Icon(Icons.favorite_outline),
+            icon: const Icon(Icons.favorite),
             title: Text('profile.favorites'.tr()),
             onTap: () {
               goToFavoritesPage(context);

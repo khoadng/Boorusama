@@ -69,7 +69,7 @@ class DownloadInProgressView extends ConsumerWidget {
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
             borderRadius: const BorderRadius.all(Radius.circular(8)),
-            color: context.theme.cardColor,
+            color: context.colorScheme.surfaceVariant,
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,

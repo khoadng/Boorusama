@@ -66,6 +66,7 @@ class _BooruSearchBarState extends State<BooruSearchBar> {
   Widget build(BuildContext context) {
     return Center(
       child: Card(
+        color: context.colorScheme.surfaceVariant,
         child: GestureDetector(
           onTap: () => widget.onTap?.call(),
           child: Row(
@@ -94,6 +95,7 @@ class _BooruSearchBarState extends State<BooruSearchBar> {
                       isDense: widget.dense,
                       floatingLabelBehavior: FloatingLabelBehavior.never,
                       border: InputBorder.none,
+                      fillColor: Colors.transparent,
                       focusedBorder: InputBorder.none,
                       enabledBorder: InputBorder.none,
                       errorBorder: InputBorder.none,

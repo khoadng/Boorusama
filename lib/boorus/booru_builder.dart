@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -242,9 +243,17 @@ extension BooruBuilderWidgetRef on WidgetRef {
     BuildContext context,
     String tagType, {
     ThemeMode? themeMode,
-  }) =>
-      watchBooruBuilder(watchConfig)
-          ?.tagColorBuilder(themeMode ?? context.themeMode, tagType);
+  }) {
+    final dynamicColor =
+        watch(settingsProvider.select((value) => value.enableDynamicColoring));
+
+    final color = watchBooruBuilder(watchConfig)
+        ?.tagColorBuilder(themeMode ?? context.themeMode, tagType);
+
+    return dynamicColor
+        ? color?.harmonizeWith(context.colorScheme.primary)
+        : color;
+  }
 }
 
 final booruBuilderProvider = Provider<BooruBuilder?>((ref) {

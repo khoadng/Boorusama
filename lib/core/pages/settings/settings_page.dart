@@ -45,6 +45,7 @@ class SettingsPage extends ConsumerWidget {
                       leading: FaIcon(
                         FontAwesomeIcons.paintRoller,
                         color: context.iconTheme.color,
+                        size: 20,
                       ),
                       title: const Text(
                         'settings.appearance.appearance',
@@ -75,6 +76,7 @@ class SettingsPage extends ConsumerWidget {
                       leading: FaIcon(
                         FontAwesomeIcons.download,
                         color: context.iconTheme.color,
+                        size: 20,
                       ),
                       onTap: () => context.go('/settings/download'),
                     ),
@@ -88,6 +90,7 @@ class SettingsPage extends ConsumerWidget {
                       leading: FaIcon(
                         FontAwesomeIcons.gear,
                         color: context.iconTheme.color,
+                        size: 20,
                       ),
                       onTap: () => context.go('/settings/performance'),
                     ),
@@ -101,6 +104,7 @@ class SettingsPage extends ConsumerWidget {
                       leading: FaIcon(
                         FontAwesomeIcons.database,
                         color: context.iconTheme.color,
+                        size: 20,
                       ),
                       onTap: () => context.go('/settings/data_and_storage'),
                     ),
@@ -114,6 +118,7 @@ class SettingsPage extends ConsumerWidget {
                       leading: FaIcon(
                         FontAwesomeIcons.magnifyingGlass,
                         color: context.iconTheme.color,
+                        size: 20,
                       ),
                       onTap: () => context.go('/settings/search'),
                     ),
@@ -127,6 +132,7 @@ class SettingsPage extends ConsumerWidget {
                       leading: FaIcon(
                         FontAwesomeIcons.shieldHalved,
                         color: context.iconTheme.color,
+                        size: 20,
                       ),
                       onTap: () => context.go('/settings/privacy'),
                     ),
@@ -144,6 +150,7 @@ class SettingsPage extends ConsumerWidget {
                       leading: FaIcon(
                         FontAwesomeIcons.solidNoteSticky,
                         color: context.iconTheme.color,
+                        size: 20,
                       ),
                       onTap: () => context.go('/settings/changelog'),
                     ),
@@ -157,6 +164,7 @@ class SettingsPage extends ConsumerWidget {
                       leading: FaIcon(
                         FontAwesomeIcons.bug,
                         color: context.iconTheme.color,
+                        size: 20,
                       ),
                       onTap: () => context.navigator.push(MaterialPageRoute(
                           builder: (_) => const DebugLogsPage())),

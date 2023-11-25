@@ -409,23 +409,34 @@ class TokenOptionHelpModal extends StatelessWidget {
                             Flexible(child: Text(option)),
                             const SizedBox(width: 4),
                             switch (docs?.tokenOption) {
-                              IntegerTokenOption _ => const Chip(
-                                  label: Text('integer'),
-                                  visualDensity: ShrinkVisualDensity(),
+                              IntegerTokenOption _ => Chip(
+                                  label: const Text('integer'),
+                                  visualDensity: const ShrinkVisualDensity(),
+                                  backgroundColor:
+                                      context.colorScheme.secondaryContainer,
                                 ),
-                              BooleanTokenOption _ => const Chip(
-                                  label: Text('boolean'),
-                                  visualDensity: ShrinkVisualDensity(),
+                              BooleanTokenOption _ => Chip(
+                                  label: const Text('boolean'),
+                                  visualDensity: const ShrinkVisualDensity(),
+                                  backgroundColor:
+                                      context.colorScheme.secondaryContainer,
                                 ),
-                              StringTokenOption _ => const Chip(
-                                  label: Text('string'),
-                                  visualDensity: ShrinkVisualDensity(),
+                              StringTokenOption _ => Chip(
+                                  label: const Text('string'),
+                                  visualDensity: const ShrinkVisualDensity(),
+                                  backgroundColor:
+                                      context.colorScheme.secondaryContainer,
                                 ),
                               _ => const SizedBox.shrink(),
                             }
                           ],
                         ),
-                        subtitle: docs != null ? Text(docs.description) : null,
+                        subtitle: docs != null
+                            ? Container(
+                                padding: const EdgeInsets.only(top: 6),
+                                child: Text(docs.description),
+                              )
+                            : null,
                         trailing: IconButton(
                           onPressed: () {
                             Clipboard.setData(ClipboardData(text: option))

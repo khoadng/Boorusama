@@ -9,11 +9,11 @@ import 'package:flutter_tags_x/flutter_tags_x.dart' hide TagsState;
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 import 'package:boorusama/boorus/e621/feats/tags/e621_tag_category.dart';
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -183,7 +183,10 @@ class _Chip extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final colors = generateChipColors(tagColor, context.themeMode);
+    final colors = context.generateChipColors(
+      tagColor,
+      ref.watch(settingsProvider),
+    );
 
     return Row(
       mainAxisSize: MainAxisSize.min,

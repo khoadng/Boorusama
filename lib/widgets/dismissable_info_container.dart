@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/dart.dart';
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 
-class DismissableInfoContainer extends StatefulWidget {
+class DismissableInfoContainer extends ConsumerStatefulWidget {
   const DismissableInfoContainer({
     super.key,
     required this.content,
@@ -23,18 +24,19 @@ class DismissableInfoContainer extends StatefulWidget {
   final List<Widget> actions;
 
   @override
-  State<DismissableInfoContainer> createState() =>
+  ConsumerState<DismissableInfoContainer> createState() =>
       _DismissableInfoContainerState();
 }
 
-class _DismissableInfoContainerState extends State<DismissableInfoContainer> {
+class _DismissableInfoContainerState
+    extends ConsumerState<DismissableInfoContainer> {
   var _isDismissed = false;
 
   @override
   Widget build(BuildContext context) {
-    final colors = generateChipColors(
+    final colors = context.generateChipColors(
       widget.mainColor ?? Colors.grey,
-      context.themeMode,
+      ref.watch(settingsProvider),
     );
 
     if (_isDismissed) {

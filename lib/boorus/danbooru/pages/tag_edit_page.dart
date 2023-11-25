@@ -34,7 +34,7 @@ enum TagEditExpandMode {
 const _kHowToRateUrl = 'https://danbooru.donmai.us/wiki_pages/howto:rate';
 
 final danbooruTagEditColorProvider =
-    FutureProvider.autoDispose.family<ChipColors?, String>((ref, tag) async {
+    FutureProvider.autoDispose.family<Color?, String>((ref, tag) async {
   final config = ref.watchConfig;
   final settings = ref.watch(settingsProvider);
   final tagTypeStore = ref.watch(booruTagTypeStoreProvider);
@@ -44,9 +44,7 @@ final danbooruTagEditColorProvider =
       .watch(booruBuilderProvider)
       ?.tagColorBuilder(settings.themeMode, tagType);
 
-  return color != null && color != Colors.white
-      ? generateChipColors(color, settings.themeMode)
-      : null;
+  return color;
 });
 
 class TagEditPage extends ConsumerStatefulWidget {
@@ -292,7 +290,14 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                   children: tags.map((tag) {
                     final colors =
                         ref.watch(danbooruTagEditColorProvider(tag)).maybeWhen(
-                              data: (color) => color,
+                              data: (color) =>
+                                  color != null && color != Colors.white
+                                      ? generateChipColorsFromColorScheme(
+                                          color,
+                                          ref.watch(settingsProvider),
+                                          context.colorScheme,
+                                        )
+                                      : null,
                               orElse: () => null,
                             );
                     final backgroundColor = colors?.backgroundColor;
@@ -404,7 +409,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
               children: [
                 FilledButton(
                   style: FilledButton.styleFrom(
-                    backgroundColor: context.theme.cardColor,
+                    backgroundColor: context.colorScheme.surfaceVariant,
                   ),
                   onPressed: () {
                     goToQuickSearchPage(
@@ -420,7 +425,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                 const SizedBox(width: 8),
                 FilledButton(
                   style: FilledButton.styleFrom(
-                    backgroundColor: context.theme.cardColor,
+                    backgroundColor: context.colorScheme.surfaceVariant,
                   ),
                   onPressed: () {
                     setState(() {
@@ -432,7 +437,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                 const SizedBox(width: 8),
                 FilledButton(
                   style: FilledButton.styleFrom(
-                    backgroundColor: context.theme.cardColor,
+                    backgroundColor: context.colorScheme.surfaceVariant,
                   ),
                   onPressed: () {
                     setState(() {
@@ -445,7 +450,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                   const SizedBox(width: 8),
                   FilledButton(
                     style: FilledButton.styleFrom(
-                      backgroundColor: context.theme.cardColor,
+                      backgroundColor: context.colorScheme.surfaceVariant,
                     ),
                     onPressed: () {
                       setState(() {
@@ -681,8 +686,10 @@ class _RelatedTagChips extends ConsumerWidget {
       spacing: 4,
       children: tags.map((tag) {
         final selected = isSelected(tag.name);
-        final colors = generateChipColors(
-            ref.getTagColor(context, tag.category.name), context.themeMode);
+        final colors = context.generateChipColors(
+          ref.getTagColor(context, tag.category.name),
+          ref.watch(settingsProvider),
+        );
 
         return RawChip(
           selected: selected,
@@ -775,9 +782,10 @@ class _TagEditAITagViewState extends ConsumerState<TagEditAITagView> {
                 spacing: 4,
                 children: tags.map((d) {
                   final tag = d.tag;
-                  final colors = generateChipColors(
-                      ref.getTagColor(context, tag.category.name),
-                      context.themeMode);
+                  final colors = context.generateChipColors(
+                    ref.getTagColor(context, tag.category.name),
+                    ref.watch(settingsProvider),
+                  );
                   final selected = widget.isSelected(tag.name);
 
                   return RawChip(

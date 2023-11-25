@@ -119,9 +119,6 @@ class _SavedSearchList extends ConsumerWidget {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4),
           child: ChoiceChip(
-            disabledColor: context.theme.chipTheme.disabledColor,
-            backgroundColor: context.theme.chipTheme.backgroundColor,
-            selectedColor: context.theme.chipTheme.selectedColor,
             selected: isSelected,
             onSelected: (selected) {
               if (!isSelected) {

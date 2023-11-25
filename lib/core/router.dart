@@ -336,7 +336,8 @@ Future<T?> showDesktopDialogWindow<T>(
       barrierColor: Colors.black87,
       pageBuilder: (context, _, __) {
         return Dialog(
-          backgroundColor: backgroundColor ?? context.theme.cardColor,
+          backgroundColor:
+              backgroundColor ?? context.colorScheme.surfaceVariant,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),
           ),

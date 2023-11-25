@@ -6,10 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/pages/search/common/option_tags_arena.dart';
 import 'package:boorusama/core/router.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 
@@ -61,17 +61,20 @@ class _MetatagsSectionState extends ConsumerState<MetatagsSection> {
   ) {
     return [
       ...widget.userMetatags().map((tag) {
-        final colors =
-            generateChipColors(context.colorScheme.primary, context.themeMode);
+        final colors = context.generateChipColors(
+          context.colorScheme.primary,
+          ref.watch(settingsProvider),
+        );
         return RawChip(
           visualDensity: VisualDensity.compact,
           label: Text(tag, style: TextStyle(color: colors?.foregroundColor)),
           backgroundColor: colors?.backgroundColor,
           side: colors != null ? BorderSide(color: colors.borderColor) : null,
           onPressed: editMode ? null : () => widget.onOptionTap?.call(tag),
-          deleteIcon: const Icon(
+          deleteIcon: Icon(
             Icons.close,
             size: 18,
+            color: colors?.foregroundColor,
           ),
           onDeleted: editMode
               ? () async {
