@@ -25,6 +25,7 @@ import 'package:boorusama/core/feats/search/search.dart';
 import 'package:boorusama/core/feats/search_histories/search_histories.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/analytics.dart';
 import 'package:boorusama/foundation/app_info.dart';
 import 'package:boorusama/foundation/device_info_service.dart';
@@ -171,6 +172,11 @@ void main() async {
     if (stack is stack_trace.Chain) return stack.toTrace().vmTrace;
     return stack;
   };
+
+  if (settings.clearImageCacheOnStartup) {
+    logger.logI('Start up', 'Clearing image cache on startup');
+    await clearImageCache();
+  }
 
   logger.logI('Start up',
       'Initialization done in ${stopwatch.elapsed.inMilliseconds}ms');

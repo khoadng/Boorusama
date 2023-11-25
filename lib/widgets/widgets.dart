@@ -1,5 +1,6 @@
 export 'animated_indexed_stack.dart';
 export 'animated_spinning_icon.dart';
+export 'app_lifecycle_observer.dart';
 export 'auto_slide_mixin.dart';
 export 'booru_chip.dart';
 export 'booru_dialog.dart';

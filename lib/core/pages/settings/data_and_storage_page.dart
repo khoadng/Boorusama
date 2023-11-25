@@ -10,6 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/feats/tags/booru_tag_type_store.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/foundation/i18n.dart';
@@ -41,6 +42,8 @@ class DataAndStoragePage extends ConsumerStatefulWidget {
 class _PerformancePageState extends ConsumerState<DataAndStoragePage> {
   @override
   Widget build(BuildContext context) {
+    final settings = ref.watch(settingsProvider);
+
     return ConditionalParentWidget(
       condition: widget.hasAppBar,
       conditionalBuilder: (child) => Scaffold(
@@ -105,6 +108,13 @@ class _PerformancePageState extends ConsumerState<DataAndStoragePage> {
                   ),
                 );
               },
+            ),
+            SwitchListTile(
+              value: settings.clearImageCacheOnStartup,
+              title: const Text('Clear image cache on start up'),
+              onChanged: (value) => ref.updateSettings(
+                settings.copyWith(clearImageCacheOnStartup: value),
+              ),
             ),
           ],
         ),

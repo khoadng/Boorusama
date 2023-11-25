@@ -64,6 +64,7 @@ class Settings extends Equatable {
     required this.showPostListConfigHeader,
     required this.enableIncognitoModeForKeyboard,
     required this.enableDynamicColoring,
+    required this.clearImageCacheOnStartup,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
@@ -106,6 +107,7 @@ class Settings extends Equatable {
         enableIncognitoModeForKeyboard =
             json['enableIncognitoModeForKeyboard'] ?? false,
         enableDynamicColoring = json['enableDynamicColoring'] ?? false,
+        clearImageCacheOnStartup = json['clearImageCacheOnStartup'] ?? false,
         imageBorderRadius = json['imageBorderRadius'],
         imageGridSpacing = json['imageGridSpacing'];
 
@@ -132,6 +134,7 @@ class Settings extends Equatable {
     showPostListConfigHeader: true,
     enableIncognitoModeForKeyboard: false,
     enableDynamicColoring: false,
+    clearImageCacheOnStartup: false,
   );
 
   final String blacklistedTags;
@@ -172,6 +175,8 @@ class Settings extends Equatable {
 
   final bool enableDynamicColoring;
 
+  final bool clearImageCacheOnStartup;
+
   Settings copyWith({
     String? blacklistedTags,
     String? language,
@@ -195,6 +200,7 @@ class Settings extends Equatable {
     bool? showPostListConfigHeader,
     bool? enableIncognitoModeForKeyboard,
     bool? enableDynamicColoring,
+    bool? clearImageCacheOnStartup,
   }) =>
       Settings(
         safeMode: safeMode ?? this.safeMode,
@@ -223,6 +229,8 @@ class Settings extends Equatable {
             this.enableIncognitoModeForKeyboard,
         enableDynamicColoring:
             enableDynamicColoring ?? this.enableDynamicColoring,
+        clearImageCacheOnStartup:
+            clearImageCacheOnStartup ?? this.clearImageCacheOnStartup,
       );
 
   Map<String, dynamic> toJson() => {
@@ -248,6 +256,7 @@ class Settings extends Equatable {
         'showPostListConfigHeader': showPostListConfigHeader,
         'enableIncognitoModeForKeyboard': enableIncognitoModeForKeyboard,
         'enableDynamicColoring': enableDynamicColoring,
+        'clearImageCacheOnStartup': clearImageCacheOnStartup,
       };
 
   @override
@@ -274,5 +283,6 @@ class Settings extends Equatable {
         showPostListConfigHeader,
         enableIncognitoModeForKeyboard,
         enableDynamicColoring,
+        clearImageCacheOnStartup,
       ];
 }
