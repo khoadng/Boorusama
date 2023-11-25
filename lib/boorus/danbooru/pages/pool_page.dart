@@ -44,35 +44,38 @@ class _PostList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfig;
 
-    return CustomScrollView(
-      slivers: [
-        const SliverToBoxAdapter(
-          child: PoolOptionsHeader(),
-        ),
-        RiverPagedBuilder.autoDispose(
-          firstPageProgressIndicatorBuilder: (context, controller) =>
-              const Center(
-            child: CircularProgressIndicator.adaptive(),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: CustomScrollView(
+        slivers: [
+          const SliverToBoxAdapter(
+            child: PoolOptionsHeader(),
           ),
-          pullToRefresh: false,
-          firstPageKey: const PoolKey(page: 1),
-          provider: danbooruPoolsProvider(config),
-          itemBuilder: (context, pool, index) => PoolGridItem(pool: pool),
-          pagedBuilder: (controller, builder) => PagedSliverGrid(
-            pagingController: controller,
-            builderDelegate: builder,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: switch (Screen.of(context).size) {
-                ScreenSize.small => 2,
-                ScreenSize.medium => 3,
-                ScreenSize.large => 5,
-                ScreenSize.veryLarge => 6,
-              },
-              childAspectRatio: 0.6,
+          RiverPagedBuilder.autoDispose(
+            firstPageProgressIndicatorBuilder: (context, controller) =>
+                const Center(
+              child: CircularProgressIndicator.adaptive(),
+            ),
+            pullToRefresh: false,
+            firstPageKey: const PoolKey(page: 1),
+            provider: danbooruPoolsProvider(config),
+            itemBuilder: (context, pool, index) => PoolGridItem(pool: pool),
+            pagedBuilder: (controller, builder) => PagedSliverGrid(
+              pagingController: controller,
+              builderDelegate: builder,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: switch (Screen.of(context).size) {
+                  ScreenSize.small => 2,
+                  ScreenSize.medium => 3,
+                  ScreenSize.large => 5,
+                  ScreenSize.veryLarge => 6,
+                },
+                childAspectRatio: 0.6,
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 // Project imports:
 import 'package:boorusama/core/feats/tags/tag_filter_category.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
-class CategoryToggleSwitch extends StatefulWidget {
+class CategoryToggleSwitch extends StatelessWidget {
   const CategoryToggleSwitch({
     super.key,
     required this.onToggle,
@@ -14,32 +15,16 @@ class CategoryToggleSwitch extends StatefulWidget {
   final void Function(TagFilterCategory category) onToggle;
 
   @override
-  State<CategoryToggleSwitch> createState() => _CategoryToggleSwitchState();
-}
-
-class _CategoryToggleSwitchState extends State<CategoryToggleSwitch> {
-  var selected = TagFilterCategory.newest;
-
-  @override
   Widget build(BuildContext context) {
     return Center(
-      child: SegmentedButton(
-        showSelectedIcon: false,
-        segments: TagFilterCategory.values
-            .map((e) => ButtonSegment(
-                value: e,
-                label: Text(switch (e) {
-                  TagFilterCategory.newest => 'tag.explore.new'.tr(),
-                  TagFilterCategory.popular => 'tag.explore.popular'.tr(),
-                })))
-            .toList(),
-        selected: {selected},
-        onSelectionChanged: (value) {
-          setState(() {
-            selected = value.first;
-            widget.onToggle(value.first);
-          });
+      child: BooruSegmentedButton(
+        initialValue: TagFilterCategory.newest,
+        fixedWidth: 120,
+        segments: {
+          TagFilterCategory.newest: 'tag.explore.new'.tr(),
+          TagFilterCategory.popular: 'tag.explore.popular'.tr(),
         },
+        onChanged: (value) => onToggle(value),
       ),
     );
   }

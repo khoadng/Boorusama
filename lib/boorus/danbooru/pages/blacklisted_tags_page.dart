@@ -14,6 +14,7 @@ import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/import_export_tag_button.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 //FIXME: This is a copy of lib/boorus/core/pages/blacklists/blacklisted_tag_page.dart
@@ -104,6 +105,11 @@ class BlacklistedTagsList extends ConsumerWidget {
                 SliverToBoxAdapter(
                   child: WarningContainer(
                       contentBuilder: (context) => Html(
+                            style: {
+                              'body': Style(
+                                color: context.colorScheme.onError,
+                              ),
+                            },
                             data: 'blacklisted_tags.limitation_notice'.tr(),
                           )),
                 ),

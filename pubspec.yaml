@@ -22,6 +22,7 @@ dependencies:
       url: https://github.com/khoadng/flutter-context-menu.git
       ref: e0ee29b44156afa167d8328299e00486d2787b4b
   crypto: ^3.0.3
+  custom_sliding_segmented_control: ^1.8.1
   device_info_plus: ^9.1.0
   dio: ^5.3.3
   dio_cache_interceptor: ^3.4.4
@@ -47,6 +48,7 @@ dependencies:
   fl_chart: ^0.64.0
   flutter:
     sdk: flutter
+  flutter_advanced_segment: ^3.0.2
   flutter_cache_manager: ^3.3.1
   flutter_download_manager:
     git:

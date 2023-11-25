@@ -12,6 +12,7 @@ import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/import_export_tag_button.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -76,6 +77,11 @@ class BlacklistedTagsList extends ConsumerWidget {
               SliverToBoxAdapter(
                 child: WarningContainer(
                     contentBuilder: (context) => Html(
+                          style: {
+                            'body': Style(
+                              color: context.colorScheme.onError,
+                            ),
+                          },
                           data: 'blacklisted_tags.limitation_notice'.tr(),
                         )),
               ),

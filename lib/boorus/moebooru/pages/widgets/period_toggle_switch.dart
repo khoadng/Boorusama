@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
-class PeriodToggleSwitch extends StatefulWidget {
+class PeriodToggleSwitch extends StatelessWidget {
   const PeriodToggleSwitch({
     super.key,
     required this.onToggle,
@@ -13,30 +14,14 @@ class PeriodToggleSwitch extends StatefulWidget {
   final void Function(MoebooruTimePeriod period) onToggle;
 
   @override
-  State<PeriodToggleSwitch> createState() => _PeriodToggleSwitchState();
-}
-
-class _PeriodToggleSwitchState extends State<PeriodToggleSwitch> {
-  var selected = MoebooruTimePeriod.day;
-
-  @override
   Widget build(BuildContext context) {
     return Center(
-      child: SegmentedButton(
-        showSelectedIcon: false,
-        segments: MoebooruTimePeriod.values
-            .map((e) => ButtonSegment(
-                  value: e,
-                  label: Text(e.name),
-                ))
-            .toList(),
-        selected: {selected},
-        onSelectionChanged: (value) {
-          setState(() {
-            selected = value.first;
-            widget.onToggle(value.first);
-          });
+      child: BooruSegmentedButton(
+        segments: {
+          for (final entry in MoebooruTimePeriod.values) entry: entry.name,
         },
+        initialValue: MoebooruTimePeriod.day,
+        onChanged: (value) => onToggle(value),
       ),
     );
   }

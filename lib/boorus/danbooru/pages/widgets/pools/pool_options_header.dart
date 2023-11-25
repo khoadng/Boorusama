@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/widgets/option_dropdown_button.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class PoolOptionsHeader extends ConsumerWidget {
   const PoolOptionsHeader({
@@ -27,19 +27,16 @@ class PoolOptionsHeader extends ConsumerWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          SegmentedButton(
-            showSelectedIcon: false,
-            segments: PoolCategory.values
-                .where((e) => e != PoolCategory.unknown)
-                .map((e) => ButtonSegment(
-                      value: e,
-                      label: Text(_poolCategoryToString(e)).tr(),
-                    ))
-                .toList(),
-            selected: {category},
-            onSelectionChanged: (value) {
+          BooruSegmentedButton(
+            segments: {
+              for (final category in PoolCategory.values
+                  .where((e) => e != PoolCategory.unknown))
+                category: _poolCategoryToString(category).tr(),
+            },
+            initialValue: category,
+            onChanged: (value) {
               ref.read(danbooruSelectedPoolCategoryProvider.notifier).state =
-                  value.first;
+                  value;
             },
           ),
           OptionDropDownButton(

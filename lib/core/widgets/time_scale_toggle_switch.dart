@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 // Project imports:
 import 'package:boorusama/core/feats/types.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
-class TimeScaleToggleSwitch extends StatefulWidget {
+class TimeScaleToggleSwitch extends StatelessWidget {
   const TimeScaleToggleSwitch({
     super.key,
     required this.onToggle,
@@ -14,42 +15,22 @@ class TimeScaleToggleSwitch extends StatefulWidget {
   final void Function(TimeScale category) onToggle;
 
   @override
-  State<TimeScaleToggleSwitch> createState() => _TimeScaleToggleSwitchState();
-}
-
-class _TimeScaleToggleSwitchState extends State<TimeScaleToggleSwitch> {
-  var selected = TimeScale.day;
-
-  @override
   Widget build(BuildContext context) {
     return Center(
-      child: SegmentedButton(
-        showSelectedIcon: false,
-        segments: TimeScale.values
-            .map((e) => ButtonSegment(
-                  value: e,
-                  label: Text(_timeScaleToString(e).tr()),
-                ))
-            .toList(),
-        selected: {selected},
-        onSelectionChanged: (value) {
-          setState(() {
-            selected = value.first;
-            widget.onToggle(value.first);
-          });
+      child: BooruSegmentedButton(
+        segments: {
+          for (final entry in TimeScale.values)
+            entry: _timeScaleToString(entry).tr(),
         },
+        initialValue: TimeScale.day,
+        onChanged: (value) => onToggle(value),
       ),
     );
   }
 }
 
-String _timeScaleToString(TimeScale scale) {
-  switch (scale) {
-    case TimeScale.month:
-      return 'dateRange.month';
-    case TimeScale.week:
-      return 'dateRange.week';
-    case TimeScale.day:
-      return 'dateRange.day';
-  }
-}
+String _timeScaleToString(TimeScale scale) => switch (scale) {
+      TimeScale.month => 'dateRange.month',
+      TimeScale.week => 'dateRange.week',
+      TimeScale.day => 'dateRange.day'
+    };

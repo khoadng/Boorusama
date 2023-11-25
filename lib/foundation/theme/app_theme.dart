@@ -216,21 +216,6 @@ class AppTheme {
           ),
         ),
         brightness: Brightness.light,
-        segmentedButtonTheme: SegmentedButtonThemeData(
-          style: ButtonStyle(
-            shape: MaterialStateProperty.all<OutlinedBorder>(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(4),
-              ),
-            ),
-            textStyle: MaterialStateProperty.all<TextStyle>(
-              const TextStyle(
-                fontSize: 13,
-              ),
-            ),
-            visualDensity: VisualDensity.compact,
-          ),
-        ),
         colorScheme: colorScheme,
       );
 
@@ -309,21 +294,6 @@ class AppTheme {
         listTileTheme: ListTileThemeData(
           subtitleTextStyle: TextStyle(
             color: !useDynamicColor ? kHintAmoledDarkColor : null,
-          ),
-        ),
-        segmentedButtonTheme: SegmentedButtonThemeData(
-          style: ButtonStyle(
-            shape: MaterialStateProperty.all<OutlinedBorder>(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(4),
-              ),
-            ),
-            textStyle: MaterialStateProperty.all<TextStyle>(
-              const TextStyle(
-                fontSize: 13,
-              ),
-            ),
-            visualDensity: VisualDensity.compact,
           ),
         ),
         colorScheme: colorScheme,
@@ -406,21 +376,6 @@ class AppTheme {
           ),
         ),
         brightness: Brightness.dark,
-        segmentedButtonTheme: SegmentedButtonThemeData(
-          style: ButtonStyle(
-            shape: MaterialStateProperty.all<OutlinedBorder>(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(4),
-              ),
-            ),
-            textStyle: MaterialStateProperty.all<TextStyle>(
-              const TextStyle(
-                fontSize: 13,
-              ),
-            ),
-            visualDensity: VisualDensity.compact,
-          ),
-        ),
         colorScheme: colorScheme,
       );
 }

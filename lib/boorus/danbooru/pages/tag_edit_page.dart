@@ -210,19 +210,16 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
               ),
               SliverToBoxAdapter(
                 child: Center(
-                  child: SegmentedButton(
-                    showSelectedIcon: false,
-                    segments: Rating.values
-                        .where((e) => e != Rating.unknown)
-                        .map((e) => ButtonSegment(
-                              value: e,
-                              label: Text(e.name.sentenceCase),
-                            ))
-                        .toList(),
-                    selected: {rating},
-                    onSelectionChanged: (values) {
+                  child: BooruSegmentedButton(
+                    segments: {
+                      for (final rating
+                          in Rating.values.where((e) => e != Rating.unknown))
+                        rating: rating.name.sentenceCase,
+                    },
+                    initialValue: rating,
+                    onChanged: (value) {
                       setState(() {
-                        rating = values.first;
+                        rating = value;
                       });
                     },
                   ),
@@ -346,7 +343,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
       switch (expandMode) {
         TagEditExpandMode.favorite => Container(
             height: 280,
-            color: context.colorScheme.background,
+            color: context.colorScheme.secondaryContainer,
             child: TagEditFavoriteView(
               onRemoved: (tag) {
                 _removeTag(tag);
@@ -364,7 +361,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
           ),
         TagEditExpandMode.related => Container(
             height: 280,
-            color: context.colorScheme.background,
+            color: context.colorScheme.secondaryContainer,
             child: TagEditWikiView(
               tag: selectedTag,
               onRemoved: (tag) {
@@ -384,7 +381,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
           ),
         TagEditExpandMode.aiTag => Container(
             height: 280,
-            color: context.colorScheme.background,
+            color: context.colorScheme.secondaryContainer,
             child: TagEditAITagView(
               postId: widget.postId,
               onRemoved: (tag) {
@@ -409,6 +406,9 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
               children: [
                 FilledButton(
                   style: FilledButton.styleFrom(
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(4)),
+                    ),
                     backgroundColor: context.colorScheme.surfaceVariant,
                   ),
                   onPressed: () {
@@ -420,11 +420,19 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                       },
                     );
                   },
-                  child: const Text('Search'),
+                  child: Text(
+                    'Search',
+                    style: TextStyle(
+                      color: context.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: 4),
                 FilledButton(
                   style: FilledButton.styleFrom(
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(4)),
+                    ),
                     backgroundColor: context.colorScheme.surfaceVariant,
                   ),
                   onPressed: () {
@@ -432,11 +440,19 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                       expandMode = TagEditExpandMode.favorite;
                     });
                   },
-                  child: const Text('Favorites'),
+                  child: Text(
+                    'Favorites',
+                    style: TextStyle(
+                      color: context.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: 4),
                 FilledButton(
                   style: FilledButton.styleFrom(
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(4)),
+                    ),
                     backgroundColor: context.colorScheme.surfaceVariant,
                   ),
                   onPressed: () {
@@ -444,12 +460,20 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                       expandMode = TagEditExpandMode.related;
                     });
                   },
-                  child: const Text('Related'),
+                  child: Text(
+                    'Related',
+                    style: TextStyle(
+                      color: context.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
                 ),
                 if (aiTagSupport) ...[
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 4),
                   FilledButton(
                     style: FilledButton.styleFrom(
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(4)),
+                      ),
                       backgroundColor: context.colorScheme.surfaceVariant,
                     ),
                     onPressed: () {
@@ -457,7 +481,12 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                         expandMode = TagEditExpandMode.aiTag;
                       });
                     },
-                    child: const Text('Suggested'),
+                    child: Text(
+                      'Suggested',
+                      style: TextStyle(
+                        color: context.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
                   ),
                 ],
               ],
@@ -542,7 +571,6 @@ class _TagEditFavoriteViewState extends ConsumerState<TagEditFavoriteView> {
           icon: const Icon(Icons.keyboard_arrow_down),
         ),
       ),
-      backgroundColor: context.colorScheme.background,
       body: Wrap(
         spacing: 4,
         children: tags.map((tag) {
@@ -617,18 +645,15 @@ class _TagEditzwikiViewState extends ConsumerState<TagEditWikiView> {
               child: Column(
                 children: [
                   Center(
-                    child: SegmentedButton(
-                      showSelectedIcon: false,
-                      segments: relatedTabs
-                          .map((e) => ButtonSegment(
-                                value: e,
-                                label: Text(e.sentenceCase),
-                              ))
-                          .toList(),
-                      selected: {selectTab},
-                      onSelectionChanged: (values) {
+                    child: BooruSegmentedButton(
+                      segments: {
+                        for (final entry in relatedTabs)
+                          entry: entry.sentenceCase,
+                      },
+                      initialValue: selectTab,
+                      onChanged: (values) {
                         setState(() {
-                          selectTab = values.first;
+                          selectTab = values;
                         });
                       },
                     ),
@@ -697,7 +722,9 @@ class _RelatedTagChips extends ConsumerWidget {
           checkmarkColor: colors?.foregroundColor,
           visualDensity: VisualDensity.compact,
           selectedColor: colors?.backgroundColor,
-          backgroundColor: selected ? colors?.backgroundColor : null,
+          backgroundColor: selected
+              ? colors?.backgroundColor
+              : context.colorScheme.secondaryContainer,
           side: selected
               ? colors != null
                   ? BorderSide(
@@ -717,7 +744,9 @@ class _RelatedTagChips extends ConsumerWidget {
               text: TextSpan(
                 text: tag.name.replaceUnderscoreWithSpace(),
                 style: TextStyle(
-                  color: colors?.foregroundColor,
+                  color: selected
+                      ? colors?.foregroundColor
+                      : context.colorScheme.onSecondaryContainer,
                   fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
                 ),
                 children: [
@@ -774,8 +803,12 @@ class _TagEditAITagViewState extends ConsumerState<TagEditAITagView> {
         child: Column(
           children: [
             WarningContainer(contentBuilder: (context) {
-              return const Text(
-                  'The suggested tags are generated by AI, please check them carefully before submitting.');
+              return Text(
+                'The suggested tags are generated by AI, please check them carefully before submitting.',
+                style: TextStyle(
+                  color: context.colorScheme.onError,
+                ),
+              );
             }),
             tagAsync.maybeWhen(
               data: (tags) => Wrap(
@@ -794,7 +827,9 @@ class _TagEditAITagViewState extends ConsumerState<TagEditAITagView> {
                     checkmarkColor: colors?.foregroundColor,
                     visualDensity: VisualDensity.compact,
                     selectedColor: colors?.backgroundColor,
-                    backgroundColor: selected ? colors?.backgroundColor : null,
+                    backgroundColor: selected
+                        ? colors?.backgroundColor
+                        : context.colorScheme.secondaryContainer,
                     side: selected
                         ? colors != null
                             ? BorderSide(
@@ -815,7 +850,9 @@ class _TagEditAITagViewState extends ConsumerState<TagEditAITagView> {
                         text: TextSpan(
                           text: tag.name.replaceUnderscoreWithSpace(),
                           style: TextStyle(
-                            color: colors?.foregroundColor,
+                            color: selected
+                                ? colors?.foregroundColor
+                                : context.colorScheme.onSecondaryContainer,
                             fontWeight:
                                 selected ? FontWeight.w700 : FontWeight.w500,
                           ),

@@ -96,55 +96,61 @@ class PostTagListChip extends ConsumerWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Chip(
-          visualDensity: const ShrinkVisualDensity(),
-          backgroundColor: colors?.backgroundColor,
-          side: colors != null
-              ? BorderSide(
-                  color: colors.borderColor,
-                  width: 1,
-                )
-              : null,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(8),
-              bottomLeft: Radius.circular(8),
+        SizedBox(
+          height: 28,
+          child: Chip(
+            visualDensity: const ShrinkVisualDensity(),
+            backgroundColor: colors?.backgroundColor,
+            side: colors != null
+                ? BorderSide(
+                    color: colors.borderColor,
+                    width: 1,
+                  )
+                : null,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(8),
+                bottomLeft: Radius.circular(8),
+              ),
             ),
-          ),
-          label: ConstrainedBox(
-            constraints: BoxConstraints(
-              maxWidth: maxTagWidth ?? context.screenWidth * 0.7,
-            ),
-            child: Text(
-              _getTagStringDisplayName(tag),
-              overflow: TextOverflow.fade,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: colors?.foregroundColor,
+            label: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: maxTagWidth ?? context.screenWidth * 0.7,
+              ),
+              child: Text(
+                _getTagStringDisplayName(tag),
+                overflow: TextOverflow.fade,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: colors?.foregroundColor,
+                ),
               ),
             ),
           ),
         ),
-        Chip(
-          visualDensity: const ShrinkVisualDensity(),
-          backgroundColor: numberColors?.backgroundColor,
-          side: numberColors != null
-              ? BorderSide(
-                  color: numberColors.borderColor,
-                  width: 1,
-                )
-              : null,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-              topRight: Radius.circular(8),
-              bottomRight: Radius.circular(8),
+        SizedBox(
+          height: 28,
+          child: Chip(
+            visualDensity: const ShrinkVisualDensity(),
+            backgroundColor: numberColors?.backgroundColor,
+            side: numberColors != null
+                ? BorderSide(
+                    color: numberColors.borderColor,
+                    width: 1,
+                  )
+                : null,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                topRight: Radius.circular(8),
+                bottomRight: Radius.circular(8),
+              ),
             ),
-          ),
-          label: Text(
-            NumberFormat.compact().format(tag.postCount),
-            style: TextStyle(
-              color: numberColors?.foregroundColor,
-              fontSize: 12,
+            label: Text(
+              NumberFormat.compact().format(tag.postCount),
+              style: TextStyle(
+                color: numberColors?.foregroundColor,
+                fontSize: 12,
+              ),
             ),
           ),
         ),

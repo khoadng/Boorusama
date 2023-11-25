@@ -268,6 +268,11 @@ class DownloadPathWarning extends StatelessWidget {
   Widget build(BuildContext context) {
     return WarningContainer(
       contentBuilder: (context) => Html(
+        style: {
+          'body': Style(
+            color: context.colorScheme.onError,
+          ),
+        },
         data: 'download.bulk_download_folder_select_warning'
             .tr()
             .replaceAll('{0}', allowedFolders.join(', '))

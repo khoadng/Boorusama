@@ -129,8 +129,13 @@ class _AddUnknownBooruPageState extends ConsumerState<AddUnknownBooruPage> {
             Stack(
               children: [
                 WarningContainer(
-                    contentBuilder: (context) => Text(
-                        'This configuration is invalid. Please check again. \n\nError: $error')),
+                  contentBuilder: (context) => Text(
+                    'This configuration is invalid. Please check again. \n\nError: $error',
+                    style: TextStyle(
+                      color: context.colorScheme.onError,
+                    ),
+                  ),
+                ),
                 Positioned(
                   top: 6,
                   right: 6,
