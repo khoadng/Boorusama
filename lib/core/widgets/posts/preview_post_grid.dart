@@ -81,6 +81,7 @@ class PreviewPostList<T extends Post> extends StatelessWidget {
     this.physics,
     this.imageBuilder,
     required this.imageUrl,
+    this.width,
   });
 
   final List<T> posts;
@@ -88,6 +89,7 @@ class PreviewPostList<T extends Post> extends StatelessWidget {
   final void Function(int index) onTap;
   final Widget Function(T item)? imageBuilder;
   final String Function(T item) imageUrl;
+  final double? width;
 
   @override
   Widget build(BuildContext context) {
@@ -115,7 +117,7 @@ class PreviewPostList<T extends Post> extends StatelessWidget {
                       image: imageBuilder != null
                           ? imageBuilder!(post)
                           : BooruImage(
-                              width: constraints.maxWidth * 0.3,
+                              width: width ?? constraints.maxWidth * 0.3,
                               forceFill: true,
                               aspectRatio: 0.6,
                               imageUrl: imageUrl(post),

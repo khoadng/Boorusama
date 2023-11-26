@@ -12,8 +12,10 @@ import 'package:reorderables/reorderables.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
+import 'package:boorusama/core/router.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
 
@@ -52,16 +54,40 @@ class _BooruSelectorState extends ConsumerState<BooruSelector> {
                 labelStyle: TextStyle(
                   color: context.colorScheme.error,
                 ),
-                onPressed: () => showDialog(
-                  context: context,
-                  builder: (context) => RemoveBooruConfigAlertDialog(
-                    title: "Delete '${config.name}'",
-                    description:
-                        'Are you sure you want to delete this profile? This action cannot be undone.',
-                    onConfirm: () =>
-                        ref.read(booruConfigProvider.notifier).delete(config),
-                  ),
-                ),
+                onPressed: () {
+                  if (isMobilePlatform()) {
+                    showDialog(
+                      context: context,
+                      builder: (context) => Dialog(
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                        ),
+                        child: RemoveBooruConfigAlertDialog(
+                          title: "Delete '${config.name}'",
+                          description:
+                              'Are you sure you want to delete this profile? This action cannot be undone.',
+                          onConfirm: () => ref
+                              .read(booruConfigProvider.notifier)
+                              .delete(config),
+                        ),
+                      ),
+                    );
+                  } else {
+                    showDesktopDialogWindow(
+                      context,
+                      width: 400,
+                      height: 300,
+                      builder: (context) => RemoveBooruConfigAlertDialog(
+                        title: "Delete '${config.name}'",
+                        description:
+                            'Are you sure you want to delete this profile? This action cannot be undone.',
+                        onConfirm: () => ref
+                            .read(booruConfigProvider.notifier)
+                            .delete(config),
+                      ),
+                    );
+                  }
+                },
               ),
           ],
         ),
@@ -235,78 +261,73 @@ class RemoveBooruConfigAlertDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(8)),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const SizedBox(height: 20),
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w700,
-              ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SizedBox(height: 20),
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w700,
             ),
-            const SizedBox(height: 20),
-            Text(
-              description,
-              style: const TextStyle(
-                fontWeight: FontWeight.w400,
-                fontSize: 14,
-              ),
+          ),
+          const SizedBox(height: 20),
+          Text(
+            description,
+            style: const TextStyle(
+              fontWeight: FontWeight.w400,
+              fontSize: 14,
             ),
-            const SizedBox(height: 20),
-            FilledButton(
-              style: FilledButton.styleFrom(
-                backgroundColor: context.colorScheme.errorContainer,
-                shadowColor: Colors.transparent,
-                elevation: 0,
-              ),
-              onPressed: () {
-                Navigator.pop(context);
-                onConfirm();
-              },
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                child: Text(
-                  'Delete',
-                  style: TextStyle(
-                    color: context.colorScheme.onErrorContainer,
-                    fontWeight: FontWeight.w600,
-                  ),
+          ),
+          const Spacer(),
+          FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: context.colorScheme.errorContainer,
+              shadowColor: Colors.transparent,
+              elevation: 0,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+              onConfirm();
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              child: Text(
+                'Delete',
+                style: TextStyle(
+                  color: context.colorScheme.onErrorContainer,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),
-            const SizedBox(height: 8),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.transparent,
-                shadowColor: Colors.transparent,
-                elevation: 0,
-              ),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                child: Text(
-                  'Cancel',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    color: Theme.of(context).colorScheme.onBackground,
-                  ),
+          ),
+          const SizedBox(height: 8),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.transparent,
+              shadowColor: Colors.transparent,
+              elevation: 0,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              child: Text(
+                'Cancel',
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: Theme.of(context).colorScheme.onBackground,
                 ),
               ),
             ),
-            const SizedBox(height: 12),
-          ],
-        ),
+          ),
+          const SizedBox(height: 12),
+        ],
       ),
     );
   }

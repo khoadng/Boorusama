@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
+import 'package:boorusama/foundation/display.dart';
 
 enum BookmarkSortType {
   newest,
@@ -106,7 +107,13 @@ final selectedTagsProvider = StateProvider.autoDispose<String>((ref) => '');
 final selectedBooruProvider = StateProvider.autoDispose<BooruType?>((ref) {
   return null;
 });
-final selectRowCountProvider = StateProvider.autoDispose<int>((ref) => 2);
+final selectRowCountProvider = StateProvider.autoDispose
+    .family<int, ScreenSize>((ref, size) => switch (size) {
+          ScreenSize.small => 2,
+          ScreenSize.medium => 4,
+          ScreenSize.large => 5,
+          ScreenSize.veryLarge => 6,
+        });
 
 final selectedBookmarkSortTypeProvider =
     StateProvider.autoDispose<BookmarkSortType>(

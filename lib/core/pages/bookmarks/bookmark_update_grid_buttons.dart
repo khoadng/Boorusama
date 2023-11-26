@@ -16,19 +16,21 @@ class BookmarkGridUpdateButtons extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final size = Screen.of(context).size;
+
     return GridSizeAdjustmentButtons(
       minCount: 2,
       maxCount: switch (Screen.of(context).nextBreakpoint()) {
         ScreenSize.small => 2,
         ScreenSize.medium => 4,
-        ScreenSize.large => 6,
-        ScreenSize.veryLarge => 8
+        ScreenSize.large => 5,
+        ScreenSize.veryLarge => 6,
       },
-      count: ref.watch(selectRowCountProvider),
+      count: ref.watch(selectRowCountProvider(size)),
       onAdded: (count) =>
-          ref.read(selectRowCountProvider.notifier).state = count + 1,
+          ref.read(selectRowCountProvider(size).notifier).state = count + 1,
       onDecreased: (count) =>
-          ref.read(selectRowCountProvider.notifier).state = count - 1,
+          ref.read(selectRowCountProvider(size).notifier).state = count - 1,
     );
   }
 }
