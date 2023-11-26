@@ -152,7 +152,7 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                 ),
                 if (!isSmall)
                   Container(
-                    width: 350,
+                    constraints: const BoxConstraints(maxWidth: 400),
                     color: context.colorScheme.surface,
                     child: widget.infoBuilder(context),
                   ),

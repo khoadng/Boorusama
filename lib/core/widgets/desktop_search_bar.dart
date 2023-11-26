@@ -64,9 +64,10 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                 target: Alignment.bottomCenter,
                 offset: Offset(-32, 0),
               ),
-              portalFollower: SizedBox(
-                width: min(600, context.screenWidth),
-                height: context.screenHeight * 0.75,
+              portalFollower: Container(
+                constraints: BoxConstraints(
+                    maxWidth: min(context.screenWidth * 0.8, 500),
+                    maxHeight: min(context.screenHeight * 0.8, 400)),
                 child: ValueListenableBuilder(
                   valueListenable: textEditingController,
                   builder: (context, query, child) {
