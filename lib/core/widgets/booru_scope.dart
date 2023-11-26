@@ -166,7 +166,7 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
       ),
     );
     return Scaffold(
-      backgroundColor: context.colorScheme.background,
+      backgroundColor: context.colorScheme.surface,
       body: !widget.resizable
           ? Row(
               crossAxisAlignment: CrossAxisAlignment.start,

@@ -273,7 +273,7 @@ Future<T?> showCommentPage<T>(
                   Container(
                     height: kToolbarHeight * 0.8,
                     decoration: BoxDecoration(
-                      color: context.colorScheme.background,
+                      color: context.colorScheme.surface,
                       borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(6),
                       ),

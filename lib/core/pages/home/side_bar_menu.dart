@@ -36,7 +36,7 @@ class SideBarMenu extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Container(
-      color: context.colorScheme.background,
+      color: context.colorScheme.surface,
       constraints:
           BoxConstraints.expand(width: min(context.screenWidth * 0.85, 500)),
       child: Row(
@@ -48,7 +48,7 @@ class SideBarMenu extends ConsumerWidget {
           ),
           Expanded(
             child: ColoredBox(
-              color: context.colorScheme.background,
+              color: context.colorScheme.surface,
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

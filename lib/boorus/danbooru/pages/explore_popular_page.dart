@@ -79,7 +79,7 @@ class _PopularContent extends ConsumerWidget {
     );
 
     return Container(
-      color: context.colorScheme.background,
+      color: context.colorScheme.surface,
       child: SafeArea(
         child: Column(
           children: [

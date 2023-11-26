@@ -135,7 +135,7 @@ class _ExampleContainer extends StatelessWidget {
               ),
               Card(
                 margin: const EdgeInsets.all(8),
-                color: context.colorScheme.background,
+                color: context.colorScheme.surface,
                 child: Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 16),

@@ -155,7 +155,7 @@ class _DanbooruArtistSearchPageState
                   builderDelegate: builder,
                 ),
                 itemBuilder: (context, artist, index) => Card(
-                  color: context.colorScheme.background,
+                  color: context.colorScheme.surface,
                   child: InkWell(
                     onTap: () => goToArtistPage(context, artist.name),
                     child: Padding(

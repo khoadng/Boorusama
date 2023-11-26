@@ -28,7 +28,7 @@ class TagDetailsRegion extends ConsumerWidget {
     return isMobilePlatform() && context.orientation.isPortrait
         ? builder(context)
         : Material(
-            color: context.colorScheme.background,
+            color: context.colorScheme.surface,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
