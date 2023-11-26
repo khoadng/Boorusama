@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -31,6 +30,7 @@ import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/routes.dart';
+import 'package:boorusama/widgets/widgets.dart';
 import 'pages/search/full_history_view.dart';
 import 'utils.dart';
 
