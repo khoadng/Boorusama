@@ -41,7 +41,7 @@ class TagDetailsRegion extends ConsumerWidget {
                         Row(
                           children: [
                             IconButton(
-                              iconSize: 40,
+                              iconSize: 28,
                               splashRadius: 24,
                               icon: const Icon(
                                 Icons.close,

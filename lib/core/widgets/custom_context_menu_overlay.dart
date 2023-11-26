@@ -37,10 +37,7 @@ class CustomContextMenuOverlay extends StatelessWidget {
               onTap: config.onPressed,
               title: Text(
                 config.label,
-                style: config.labelStyle ??
-                    const TextStyle(
-                      fontWeight: FontWeight.w500,
-                    ),
+                style: config.labelStyle,
               ),
               contentPadding: const EdgeInsets.symmetric(horizontal: 8),
               minVerticalPadding: 0,

@@ -51,7 +51,6 @@ class _BooruSelectorState extends ConsumerState<BooruSelector> {
                 'generic.action.delete'.tr(),
                 labelStyle: TextStyle(
                   color: context.colorScheme.error,
-                  fontWeight: FontWeight.w500,
                 ),
                 onPressed: () => showDialog(
                   context: context,
