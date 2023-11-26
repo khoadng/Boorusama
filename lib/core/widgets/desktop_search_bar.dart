@@ -75,6 +75,7 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
 
                     return query.text.isNotEmpty
                         ? TagSuggestionItems(
+                            dense: true,
                             backgroundColor:
                                 Theme.of(context).colorScheme.surface,
                             tags: suggestionTags,
