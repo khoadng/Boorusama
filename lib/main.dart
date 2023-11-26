@@ -214,6 +214,7 @@ void main() async {
                 .overrideWithValue(danbooruCreatorBox),
           ],
           child: App(
+            appName: packageInfo.appName,
             initialSettings: settings,
           ),
         ),

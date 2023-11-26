@@ -12,13 +12,11 @@ import 'routes.dart';
 
 export 'package:go_router/go_router.dart';
 
-typedef RouterParams = ({
-  List<NavigatorObserver>? observers,
-});
-
-final routerProvider = Provider.family<GoRouter, RouterParams>((ref, params) {
+final routerProvider = Provider.family<GoRouter, bool>((ref, analyticsEnabled) {
   return GoRouter(
-    observers: params.observers,
+    observers: [
+      if (analyticsEnabled) getAnalyticsObserver(),
+    ],
     routes: [
       Routes.home(ref),
     ],
@@ -96,11 +94,7 @@ class RouterBuilder extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final router = ref.watch(routerProvider((
-      observers: [
-        if (analyticsEnabled) getAnalyticsObserver(),
-      ],
-    )));
+    final router = ref.watch(routerProvider(analyticsEnabled));
 
     return builder(context, router);
   }

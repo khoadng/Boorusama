@@ -3,11 +3,9 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_portal/flutter_portal.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:oktoast/oktoast.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/foundation/analytics.dart';
 import 'package:boorusama/foundation/i18n.dart';
@@ -18,16 +16,18 @@ import 'package:boorusama/widgets/widgets.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
-class App extends ConsumerWidget {
+class App extends StatelessWidget {
   const App({
     super.key,
+    required this.appName,
     required this.initialSettings,
   });
 
+  final String appName;
   final Settings initialSettings;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Portal(
       child: OKToast(
         child: AnalyticsScope(
@@ -51,7 +51,7 @@ class App extends ConsumerWidget {
                 supportedLocales: context.supportedLocales,
                 locale: context.locale,
                 debugShowCheckedModeBanner: false,
-                title: ref.watch(appInfoProvider).appName,
+                title: appName,
                 routerConfig: router,
               ),
             ),
