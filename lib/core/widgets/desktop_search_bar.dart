@@ -76,7 +76,7 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                     return query.text.isNotEmpty
                         ? TagSuggestionItems(
                             backgroundColor:
-                                Theme.of(context).colorScheme.background,
+                                Theme.of(context).colorScheme.tertiaryContainer,
                             tags: suggestionTags,
                             currentQuery: query.text,
                             onItemTap: (tag) {
@@ -89,11 +89,12 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                                 generateAutocompleteTagColor(ref, context, tag),
                           )
                         : Material(
-                            color: context.colorScheme.background,
                             elevation: 4,
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(8)),
                             child: SearchLandingView(
+                              backgroundColor:
+                                  context.colorScheme.tertiaryContainer,
                               onHistoryCleared: () => ref
                                   .read(searchHistoryProvider.notifier)
                                   .clearHistories(),
