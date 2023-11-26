@@ -131,54 +131,26 @@ class PostGridActionSheet extends ConsumerWidget {
     ];
 
     final desktopButtons = [
-      ListTile(
-        contentPadding: EdgeInsets.zero,
-        title: const Text('Page mode'),
-        trailing: OptionDropDownButton(
-          alignment: AlignmentDirectional.centerEnd,
-          onChanged: (value) => value != null ? ref.setPageMode(value) : null,
-          value: pageMode,
-          items: PageMode.values
-              .map((value) => DropdownMenuItem(
-                    value: value,
-                    child: Text(value.name.sentenceCase,
-                        style: TextStyle(color: context.theme.hintColor)),
-                  ))
-              .toList(),
-        ),
+      DesktopPostGridConfigTile(
+        title: 'Page mode',
+        value: pageMode,
+        onChanged: (value) => ref.setPageMode(value),
+        items: PageMode.values,
+        optionNameBuilder: (option) => option.name.sentenceCase,
       ),
-      ListTile(
-        contentPadding: EdgeInsets.zero,
-        title: const Text('Grid'),
-        trailing: OptionDropDownButton(
-          alignment: AlignmentDirectional.centerEnd,
-          onChanged: (value) => value != null ? ref.setGridSize(value) : null,
-          value: gridSize,
-          items: GridSize.values
-              .map((value) => DropdownMenuItem(
-                    value: value,
-                    child: Text(value.name.sentenceCase,
-                        style: TextStyle(color: context.theme.hintColor)),
-                  ))
-              .toList(),
-        ),
+      DesktopPostGridConfigTile(
+        title: 'Grid',
+        value: gridSize,
+        onChanged: (value) => ref.setGridSize(value),
+        items: GridSize.values,
+        optionNameBuilder: (option) => option.name.sentenceCase,
       ),
-      ListTile(
-        contentPadding: EdgeInsets.zero,
-        title: const Text('Image list'),
-        trailing: OptionDropDownButton(
-          alignment: AlignmentDirectional.centerEnd,
-          onChanged: (value) =>
-              value != null ? ref.setImageListType(value) : null,
-          value: imageListType,
-          items: ImageListType.values
-              .map((value) => DropdownMenuItem(
-                    value: value,
-                    child: Text(value.name.sentenceCase,
-                        style: TextStyle(color: context.theme.hintColor)),
-                  ))
-              .toList(),
-        ),
+      DesktopPostGridConfigTile(
+        title: 'Image list',
+        value: imageListType,
+        onChanged: (value) => ref.setImageListType(value),
+        items: ImageListType.values,
+        optionNameBuilder: (option) => option.name.sentenceCase,
       ),
     ];
 
@@ -287,6 +259,61 @@ class PageModeActionSheet extends StatelessWidget {
             )
             .toList(),
       ),
+    );
+  }
+}
+
+class DesktopPostGridConfigTile<T> extends StatelessWidget {
+  const DesktopPostGridConfigTile({
+    super.key,
+    required this.value,
+    required this.title,
+    required this.onChanged,
+    required this.items,
+    required this.optionNameBuilder,
+  });
+
+  final String title;
+  final T value;
+  final void Function(T value) onChanged;
+  final List<T> items;
+  final String Function(T option) optionNameBuilder;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        Container(
+          width: 80,
+          constraints: const BoxConstraints(maxWidth: 100),
+          child: Text(title),
+        ),
+        const SizedBox(width: 4),
+        Expanded(
+          child: Container(
+            constraints: const BoxConstraints(minWidth: 150),
+            child: OptionDropDownButton(
+              alignment: AlignmentDirectional.centerStart,
+              onChanged: (value) => value != null ? onChanged(value) : null,
+              value: value,
+              items: items
+                  .map(
+                    (value) => DropdownMenuItem(
+                      value: value,
+                      child: Text(
+                        optionNameBuilder(value),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                  )
+                  .toList(),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
