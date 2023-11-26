@@ -1,4 +1,6 @@
 // Flutter imports:
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -61,34 +63,74 @@ void goToPoolDetailPage(BuildContext context, Pool pool) {
   ));
 }
 
-void goToExplorePopularPage(BuildContext context) =>
-    context.navigator.push(ExplorePopularPage.routeOf(context));
-
-void goToExploreHotPage(BuildContext context) =>
-    context.navigator.push(ExploreHotPage.routeOf(context));
-
-void goToExploreMostViewedPage(BuildContext context) =>
-    context.navigator.push(ExploreMostViewedPage.routeOf(context));
-
-void goToSavedSearchPage(BuildContext context, String? username) {
+void goToExplorePopularPage(BuildContext context) {
   if (isMobilePlatform()) {
     context.navigator.push(MaterialPageRoute(
-      builder: (_) => SavedSearchFeedPage.of(context),
+      settings: const RouteSettings(
+        name: RouterPageConstant.explorePopular,
+      ),
+      builder: (_) => ExplorePopularPage.routeOf(context),
     ));
   } else {
-    showDesktopFullScreenWindow(
+    showDesktopWindow(
       context,
-      builder: (_) => SavedSearchFeedPage.of(context),
+      builder: (_) => ExplorePopularPage.routeOf(context),
     );
   }
 }
 
-void goToSavedSearchEditPage(BuildContext context) {
+void goToExploreHotPage(BuildContext context) {
+  if (isMobilePlatform()) {
+    context.navigator.push(MaterialPageRoute(
+      settings: const RouteSettings(
+        name: RouterPageConstant.exploreHot,
+      ),
+      builder: (_) => ExploreHotPage.routeOf(context),
+    ));
+  } else {
+    showDesktopWindow(
+      context,
+      builder: (_) => ExploreHotPage.routeOf(context),
+    );
+  }
+}
+
+void goToExploreMostViewedPage(BuildContext context) {
+  if (isMobilePlatform()) {
+    context.navigator.push(MaterialPageRoute(
+      settings: const RouteSettings(
+        name: RouterPageConstant.exploreMostViewed,
+      ),
+      builder: (_) => ExploreMostViewedPage.routeOf(context),
+    ));
+  } else {
+    showDesktopWindow(
+      context,
+      builder: (_) => ExploreMostViewedPage.routeOf(context),
+    );
+  }
+}
+
+void goToSavedSearchPage(BuildContext context, String? username) {
   context.navigator.push(MaterialPageRoute(
-    builder: (_) {
-      return const SavedSearchPage();
-    },
+    builder: (_) => SavedSearchFeedPage.of(context),
   ));
+}
+
+void goToSavedSearchEditPage(BuildContext context) {
+  if (isMobilePlatform()) {
+    context.navigator.push(MaterialPageRoute(
+      builder: (_) {
+        return const SavedSearchPage();
+      },
+    ));
+  } else {
+    showDesktopWindow(
+      context,
+      width: min(context.screenWidth * 0.5, 600),
+      builder: (_) => const SavedSearchPage(),
+    );
+  }
 }
 
 void goToPoolPage(BuildContext context, WidgetRef ref) {

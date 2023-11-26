@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -30,8 +31,6 @@ import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/routes.dart';
-import '../../widgets/image_grid_item.dart';
-import '../../widgets/info_container.dart';
 import 'pages/search/full_history_view.dart';
 import 'utils.dart';
 
@@ -379,4 +378,23 @@ Future<T?> showDesktopFullScreenWindow<T>(
       pageBuilder: (context, _, __) {
         return builder(context);
       },
+    );
+
+Future<T?> showDesktopWindow<T>(
+  BuildContext context, {
+  required Widget Function(BuildContext context) builder,
+  double? width,
+}) =>
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: false,
+      pageBuilder: (context, _, __) => Dialog(
+        surfaceTintColor: Colors.transparent,
+        backgroundColor: Colors.transparent,
+        shadowColor: Colors.transparent,
+        child: BooruDialog(
+          width: width ?? context.screenWidth * 0.75,
+          child: builder(context),
+        ),
+      ),
     );
