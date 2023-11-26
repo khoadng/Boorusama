@@ -143,239 +143,245 @@ class AppTheme {
     bool useDynamicColor = false,
   }) =>
       ThemeData(
-        appBarTheme: const AppBarTheme(
-          scrolledUnderElevation: 0,
-          backgroundColor: Colors.transparent,
-          shadowColor: Colors.transparent,
-        ),
-        chipTheme: const ChipThemeData(
-          shape: StadiumBorder(),
-          side: BorderSide.none,
-        ),
-        cardTheme: CardTheme(
-          // color: kSurfaceLightColor,
-          color: !useDynamicColor ? kSurfaceLightColor : null,
-          elevation: 0,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
+          appBarTheme: const AppBarTheme(
+            scrolledUnderElevation: 0,
+            backgroundColor: Colors.transparent,
+            shadowColor: Colors.transparent,
           ),
-        ),
-        dividerTheme: DividerThemeData(
-          color: !useDynamicColor ? kHintLightColor.withOpacity(0.4) : null,
-          endIndent: 0,
-          indent: 0,
-        ),
-        dialogTheme: DialogTheme(
-          backgroundColor: !useDynamicColor ? kSurfaceLightColor : null,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
+          chipTheme: const ChipThemeData(
+            shape: StadiumBorder(),
+            side: BorderSide.none,
           ),
-        ),
-        expansionTileTheme: ExpansionTileThemeData(
-          iconColor: !useDynamicColor ? kIconLightColor : null,
-        ),
-        extensions: const [
-          BoorusamaColors(
-            videoPlayerBackgroundColor: Colors.white,
-            themeMode: ThemeMode.light,
-            selectedColor: Colors.grey,
-          ),
-        ],
-        inputDecorationTheme: InputDecorationTheme(
-          floatingLabelBehavior: FloatingLabelBehavior.always,
-          filled: true,
-          fillColor: !useDynamicColor ? kSurfaceLightColor : null,
-          enabledBorder: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-            borderSide: BorderSide.none,
-          ),
-          focusedBorder: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-            borderSide: BorderSide(
-              color: kPrimaryLightColor,
-              width: 2,
+          cardTheme: CardTheme(
+            // color: kSurfaceLightColor,
+            color: !useDynamicColor ? kSurfaceLightColor : null,
+            elevation: 0,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
             ),
           ),
-          errorBorder: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-            borderSide: BorderSide(
-              width: 2,
+          dividerTheme: DividerThemeData(
+            color: !useDynamicColor ? kHintLightColor.withOpacity(0.4) : null,
+            endIndent: 0,
+            indent: 0,
+          ),
+          dialogTheme: DialogTheme(
+            backgroundColor: !useDynamicColor ? kSurfaceLightColor : null,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
             ),
           ),
-          focusedErrorBorder: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-            borderSide: BorderSide(
-              width: 2,
+          expansionTileTheme: ExpansionTileThemeData(
+            iconColor: !useDynamicColor ? kIconLightColor : null,
+          ),
+          extensions: const [
+            BoorusamaColors(
+              videoPlayerBackgroundColor: Colors.white,
+              themeMode: ThemeMode.light,
+              selectedColor: Colors.grey,
+            ),
+          ],
+          inputDecorationTheme: InputDecorationTheme(
+            floatingLabelBehavior: FloatingLabelBehavior.always,
+            filled: true,
+            fillColor: !useDynamicColor ? kSurfaceLightColor : null,
+            enabledBorder: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+              borderSide: BorderSide.none,
+            ),
+            focusedBorder: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+              borderSide: BorderSide(
+                color: kPrimaryLightColor,
+                width: 2,
+              ),
+            ),
+            errorBorder: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+              borderSide: BorderSide(
+                width: 2,
+              ),
+            ),
+            focusedErrorBorder: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+              borderSide: BorderSide(
+                width: 2,
+              ),
+            ),
+            contentPadding: const EdgeInsets.all(12),
+          ),
+          listTileTheme: const ListTileThemeData(
+            subtitleTextStyle: TextStyle(
+              color: kHintLightColor,
             ),
           ),
-          contentPadding: const EdgeInsets.all(12),
-        ),
-        listTileTheme: const ListTileThemeData(
-          subtitleTextStyle: TextStyle(
-            color: kHintLightColor,
-          ),
-        ),
-        brightness: Brightness.light,
-        colorScheme: colorScheme,
-      );
+          brightness: Brightness.light,
+          colorScheme: colorScheme,
+          scrollbarTheme: ScrollbarThemeData(
+            thickness: MaterialStateProperty.all(4),
+          ));
 
   static ThemeData darkTheme({
     ColorScheme? colorScheme,
     bool useDynamicColor = false,
   }) =>
       ThemeData(
-        appBarTheme: const AppBarTheme(
-          scrolledUnderElevation: 0,
-          backgroundColor: Colors.transparent,
-          shadowColor: Colors.transparent,
-        ),
-        chipTheme: const ChipThemeData(
-          shape: StadiumBorder(),
-          side: BorderSide.none,
-        ),
-        cardTheme: CardTheme(
-          color: !useDynamicColor ? kSurfaceDarkColor : null,
-          elevation: 0,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
+          appBarTheme: const AppBarTheme(
+            scrolledUnderElevation: 0,
+            backgroundColor: Colors.transparent,
+            shadowColor: Colors.transparent,
           ),
-        ),
-        dividerTheme: const DividerThemeData(
-          color: kSurfaceDarkColor,
-          endIndent: 0,
-          indent: 0,
-        ),
-        dialogTheme: DialogTheme(
-          backgroundColor: !useDynamicColor ? kSurfaceDarkColor : null,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
+          chipTheme: const ChipThemeData(
+            shape: StadiumBorder(),
+            side: BorderSide.none,
           ),
-        ),
-        expansionTileTheme: ExpansionTileThemeData(
-          iconColor: !useDynamicColor ? kIconDarkColor : null,
-        ),
-        extensions: const [
-          BoorusamaColors(
-            videoPlayerBackgroundColor: Colors.black,
-            themeMode: ThemeMode.amoledDark,
-            selectedColor: kSurfaceDarkColor,
-          ),
-        ],
-        inputDecorationTheme: InputDecorationTheme(
-          floatingLabelBehavior: FloatingLabelBehavior.always,
-          filled: true,
-          fillColor: !useDynamicColor ? kSurfaceDarkColor : null,
-          enabledBorder: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-            borderSide: BorderSide.none,
-          ),
-          focusedBorder: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-            borderSide: BorderSide(
-              color: kPrimaryDarkColor,
-              width: 2,
+          cardTheme: CardTheme(
+            color: !useDynamicColor ? kSurfaceDarkColor : null,
+            elevation: 0,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
             ),
           ),
-          errorBorder: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-            borderSide: BorderSide(
-              width: 2,
+          dividerTheme: const DividerThemeData(
+            color: kSurfaceDarkColor,
+            endIndent: 0,
+            indent: 0,
+          ),
+          dialogTheme: DialogTheme(
+            backgroundColor: !useDynamicColor ? kSurfaceDarkColor : null,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
             ),
           ),
-          focusedErrorBorder: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-            borderSide: BorderSide(
-              width: 2,
+          expansionTileTheme: ExpansionTileThemeData(
+            iconColor: !useDynamicColor ? kIconDarkColor : null,
+          ),
+          extensions: const [
+            BoorusamaColors(
+              videoPlayerBackgroundColor: Colors.black,
+              themeMode: ThemeMode.amoledDark,
+              selectedColor: kSurfaceDarkColor,
+            ),
+          ],
+          inputDecorationTheme: InputDecorationTheme(
+            floatingLabelBehavior: FloatingLabelBehavior.always,
+            filled: true,
+            fillColor: !useDynamicColor ? kSurfaceDarkColor : null,
+            enabledBorder: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+              borderSide: BorderSide.none,
+            ),
+            focusedBorder: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+              borderSide: BorderSide(
+                color: kPrimaryDarkColor,
+                width: 2,
+              ),
+            ),
+            errorBorder: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+              borderSide: BorderSide(
+                width: 2,
+              ),
+            ),
+            focusedErrorBorder: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+              borderSide: BorderSide(
+                width: 2,
+              ),
+            ),
+            contentPadding: const EdgeInsets.all(12),
+          ),
+          brightness: Brightness.dark,
+          listTileTheme: ListTileThemeData(
+            subtitleTextStyle: TextStyle(
+              color: !useDynamicColor ? kHintAmoledDarkColor : null,
             ),
           ),
-          contentPadding: const EdgeInsets.all(12),
-        ),
-        brightness: Brightness.dark,
-        listTileTheme: ListTileThemeData(
-          subtitleTextStyle: TextStyle(
-            color: !useDynamicColor ? kHintAmoledDarkColor : null,
-          ),
-        ),
-        colorScheme: colorScheme,
-      );
+          colorScheme: colorScheme,
+          scrollbarTheme: ScrollbarThemeData(
+            thickness: MaterialStateProperty.all(4),
+          ));
 
   static ThemeData darkAmoledTheme({
     ColorScheme? colorScheme,
     bool useDynamicColor = false,
   }) =>
       ThemeData(
-        appBarTheme: const AppBarTheme(
-          scrolledUnderElevation: 0,
-          backgroundColor: Colors.transparent,
-          shadowColor: Colors.transparent,
-        ),
-        chipTheme: const ChipThemeData(
-          shape: StadiumBorder(),
-          side: BorderSide.none,
-        ),
-        cardTheme: CardTheme(
-          color: !useDynamicColor ? kSurfaceAmoledDarkColor : null,
-          elevation: 0,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
+          appBarTheme: const AppBarTheme(
+            scrolledUnderElevation: 0,
+            backgroundColor: Colors.transparent,
+            shadowColor: Colors.transparent,
           ),
-        ),
-        dividerTheme: const DividerThemeData(
-          color: kSurfaceAmoledDarkColor,
-          endIndent: 0,
-          indent: 0,
-        ),
-        dialogTheme: DialogTheme(
-          backgroundColor: !useDynamicColor ? kSurfaceAmoledDarkColor : null,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
+          chipTheme: const ChipThemeData(
+            shape: StadiumBorder(),
+            side: BorderSide.none,
           ),
-        ),
-        expansionTileTheme: ExpansionTileThemeData(
-          iconColor: !useDynamicColor ? kIconAmoledDarkColor : null,
-        ),
-        extensions: const [
-          BoorusamaColors(
-            videoPlayerBackgroundColor: Colors.black,
-            themeMode: ThemeMode.amoledDark,
-            selectedColor: kSurfaceAmoledDarkColor,
-          ),
-        ],
-        inputDecorationTheme: InputDecorationTheme(
-          floatingLabelBehavior: FloatingLabelBehavior.always,
-          filled: true,
-          fillColor: !useDynamicColor ? kSurfaceAmoledDarkColor : null,
-          enabledBorder: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-            borderSide: BorderSide.none,
-          ),
-          focusedBorder: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-            borderSide: BorderSide(
-              color: kPrimaryAmoledDarkColor,
-              width: 2,
+          cardTheme: CardTheme(
+            color: !useDynamicColor ? kSurfaceAmoledDarkColor : null,
+            elevation: 0,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
             ),
           ),
-          errorBorder: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-            borderSide: BorderSide(
-              width: 2,
+          dividerTheme: const DividerThemeData(
+            color: kSurfaceAmoledDarkColor,
+            endIndent: 0,
+            indent: 0,
+          ),
+          dialogTheme: DialogTheme(
+            backgroundColor: !useDynamicColor ? kSurfaceAmoledDarkColor : null,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
             ),
           ),
-          focusedErrorBorder: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-            borderSide: BorderSide(
-              width: 2,
+          expansionTileTheme: ExpansionTileThemeData(
+            iconColor: !useDynamicColor ? kIconAmoledDarkColor : null,
+          ),
+          extensions: const [
+            BoorusamaColors(
+              videoPlayerBackgroundColor: Colors.black,
+              themeMode: ThemeMode.amoledDark,
+              selectedColor: kSurfaceAmoledDarkColor,
+            ),
+          ],
+          inputDecorationTheme: InputDecorationTheme(
+            floatingLabelBehavior: FloatingLabelBehavior.always,
+            filled: true,
+            fillColor: !useDynamicColor ? kSurfaceAmoledDarkColor : null,
+            enabledBorder: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+              borderSide: BorderSide.none,
+            ),
+            focusedBorder: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+              borderSide: BorderSide(
+                color: kPrimaryAmoledDarkColor,
+                width: 2,
+              ),
+            ),
+            errorBorder: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+              borderSide: BorderSide(
+                width: 2,
+              ),
+            ),
+            focusedErrorBorder: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+              borderSide: BorderSide(
+                width: 2,
+              ),
+            ),
+            contentPadding: const EdgeInsets.all(12),
+          ),
+          listTileTheme: const ListTileThemeData(
+            subtitleTextStyle: TextStyle(
+              color: kHintAmoledDarkColor,
             ),
           ),
-          contentPadding: const EdgeInsets.all(12),
-        ),
-        listTileTheme: const ListTileThemeData(
-          subtitleTextStyle: TextStyle(
-            color: kHintAmoledDarkColor,
-          ),
-        ),
-        brightness: Brightness.dark,
-        colorScheme: colorScheme,
-      );
+          brightness: Brightness.dark,
+          colorScheme: colorScheme,
+          scrollbarTheme: ScrollbarThemeData(
+            thickness: MaterialStateProperty.all(4),
+          ));
 }

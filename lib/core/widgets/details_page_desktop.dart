@@ -82,9 +82,9 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                         Align(
                           alignment: Alignment.centerRight,
                           child: MaterialButton(
-                            color: Theme.of(context).cardColor,
+                            color: Colors.black.withOpacity(0.5),
                             shape: const CircleBorder(),
-                            padding: const EdgeInsets.all(20),
+                            padding: const EdgeInsets.all(12),
                             onPressed: () => _nextPost(),
                             child: const Icon(Icons.arrow_forward),
                           ),
@@ -93,9 +93,9 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                         Align(
                           alignment: Alignment.centerLeft,
                           child: MaterialButton(
-                            color: Theme.of(context).cardColor,
+                            color: Colors.black.withOpacity(0.5),
                             shape: const CircleBorder(),
-                            padding: const EdgeInsets.all(20),
+                            padding: const EdgeInsets.all(12),
                             onPressed: () => _previousPost(),
                             child: const Icon(Icons.arrow_back),
                           ),
@@ -106,9 +106,9 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                           child: Padding(
                             padding: const EdgeInsets.only(top: 8),
                             child: MaterialButton(
-                              color: Theme.of(context).cardColor,
+                              color: Colors.black.withOpacity(0.5),
                               shape: const CircleBorder(),
-                              padding: const EdgeInsets.all(20),
+                              padding: const EdgeInsets.all(12),
                               onPressed: () => _onExit(),
                               child: const Icon(Icons.close),
                             ),
