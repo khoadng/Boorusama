@@ -72,7 +72,7 @@ class _BooruSelectorState extends ConsumerState<BooruSelector> {
 
     return Container(
       width: 68,
-      color: context.colorScheme.tertiaryContainer,
+      color: context.colorScheme.secondaryContainer,
       child: ScrollConfiguration(
         behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
         child: CustomScrollView(

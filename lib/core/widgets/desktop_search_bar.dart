@@ -76,7 +76,7 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                     return query.text.isNotEmpty
                         ? TagSuggestionItems(
                             backgroundColor:
-                                Theme.of(context).colorScheme.tertiaryContainer,
+                                Theme.of(context).colorScheme.surface,
                             tags: suggestionTags,
                             currentQuery: query.text,
                             onItemTap: (tag) {
@@ -93,8 +93,7 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(8)),
                             child: SearchLandingView(
-                              backgroundColor:
-                                  context.colorScheme.tertiaryContainer,
+                              backgroundColor: context.colorScheme.surface,
                               onHistoryCleared: () => ref
                                   .read(searchHistoryProvider.notifier)
                                   .clearHistories(),

@@ -120,7 +120,7 @@ class AppTheme {
 
   static ThemeData themeFrom(
     ThemeMode mode, {
-    ColorScheme? colorScheme,
+    required ColorScheme colorScheme,
     bool useDynamicColor = false,
   }) =>
       switch (mode) {
@@ -130,7 +130,6 @@ class AppTheme {
           ),
         ThemeMode.dark => darkTheme(
             colorScheme: colorScheme,
-            useDynamicColor: useDynamicColor,
           ),
         ThemeMode.amoledDark => darkAmoledTheme(
             colorScheme: colorScheme,
@@ -143,7 +142,7 @@ class AppTheme {
       };
 
   static ThemeData lightTheme({
-    ColorScheme? colorScheme,
+    required ColorScheme colorScheme,
     bool useDynamicColor = false,
   }) =>
       ThemeData(
@@ -226,8 +225,7 @@ class AppTheme {
           ));
 
   static ThemeData darkTheme({
-    ColorScheme? colorScheme,
-    bool useDynamicColor = false,
+    required ColorScheme colorScheme,
   }) =>
       ThemeData(
           appBarTheme: const AppBarTheme(
@@ -239,26 +237,20 @@ class AppTheme {
             shape: StadiumBorder(),
             side: BorderSide.none,
           ),
-          cardTheme: CardTheme(
-            color: !useDynamicColor ? kSurfaceDarkColor : null,
+          cardTheme: const CardTheme(
             elevation: 0,
-            shape: const RoundedRectangleBorder(
+            shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(8)),
             ),
           ),
           dividerTheme: const DividerThemeData(
-            color: kSurfaceDarkColor,
             endIndent: 0,
             indent: 0,
           ),
-          dialogTheme: DialogTheme(
-            backgroundColor: !useDynamicColor ? kSurfaceDarkColor : null,
-            shape: const RoundedRectangleBorder(
+          dialogTheme: const DialogTheme(
+            shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(8)),
             ),
-          ),
-          expansionTileTheme: ExpansionTileThemeData(
-            iconColor: !useDynamicColor ? kIconDarkColor : null,
           ),
           extensions: const [
             BoorusamaColors(
@@ -267,39 +259,38 @@ class AppTheme {
               selectedColor: Color.fromARGB(255, 74, 74, 74),
             ),
           ],
-          inputDecorationTheme: InputDecorationTheme(
+          inputDecorationTheme: const InputDecorationTheme(
             floatingLabelBehavior: FloatingLabelBehavior.always,
             filled: true,
-            fillColor: !useDynamicColor ? kSurfaceDarkColor : null,
-            enabledBorder: const OutlineInputBorder(
+            enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(8)),
               borderSide: BorderSide.none,
             ),
-            focusedBorder: const OutlineInputBorder(
+            focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(8)),
               borderSide: BorderSide(
                 color: kPrimaryDarkColor,
                 width: 2,
               ),
             ),
-            errorBorder: const OutlineInputBorder(
+            errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(8)),
               borderSide: BorderSide(
                 width: 2,
               ),
             ),
-            focusedErrorBorder: const OutlineInputBorder(
+            focusedErrorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(8)),
               borderSide: BorderSide(
                 width: 2,
               ),
             ),
-            contentPadding: const EdgeInsets.all(12),
+            contentPadding: EdgeInsets.all(12),
           ),
           brightness: Brightness.dark,
           listTileTheme: ListTileThemeData(
             subtitleTextStyle: TextStyle(
-              color: !useDynamicColor ? kHintAmoledDarkColor : null,
+              color: colorScheme.outline,
             ),
           ),
           colorScheme: colorScheme,
@@ -308,7 +299,7 @@ class AppTheme {
           ));
 
   static ThemeData darkAmoledTheme({
-    ColorScheme? colorScheme,
+    required ColorScheme colorScheme,
     bool useDynamicColor = false,
   }) =>
       ThemeData(

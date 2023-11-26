@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
@@ -20,8 +21,8 @@ class HomeNavigationTile extends StatelessWidget {
   // Will override the onTap function
   final VoidCallback? onTap;
   final String title;
-  final Widget icon;
-  final Widget selectedIcon;
+  final IconData icon;
+  final IconData selectedIcon;
   final int value;
   final BoxConstraints constraints;
   final HomePageController controller;
@@ -30,21 +31,35 @@ class HomeNavigationTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: controller,
-      builder: (context, index, child) => NavigationTile(
-        value: value,
-        index: index,
-        showIcon: constraints.maxWidth > 200 || constraints.maxWidth <= 62,
-        showTitle: constraints.maxWidth > 62,
-        selectedIcon: selectedIcon,
-        icon: icon,
-        title: Text(
-          title,
-          softWrap: false,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-        onTap: (value) => onTap != null ? onTap!() : controller.goToTab(value),
-      ),
+      builder: (context, index, child) {
+        final selected = value == index;
+
+        return NavigationTile(
+          value: value,
+          index: index,
+          showIcon: constraints.maxWidth > 200 || constraints.maxWidth <= 62,
+          showTitle: constraints.maxWidth > 62,
+          selectedIcon: Icon(
+            selected ? selectedIcon : icon,
+            color: selected ? context.colorScheme.onSecondary : null,
+          ),
+          icon: Icon(
+            icon,
+            color: selected ? context.colorScheme.onSecondary : null,
+          ),
+          title: Text(
+            title,
+            softWrap: false,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: selected ? context.colorScheme.onSecondary : null,
+            ),
+          ),
+          onTap: (value) =>
+              onTap != null ? onTap!() : controller.goToTab(value),
+        );
+      },
     );
   }
 }

@@ -66,7 +66,7 @@ class _BooruSearchBarState extends State<BooruSearchBar> {
   Widget build(BuildContext context) {
     return Center(
       child: Card(
-        color: context.colorScheme.tertiaryContainer,
+        color: context.colorScheme.secondaryContainer,
         child: GestureDetector(
           onTap: () => widget.onTap?.call(),
           child: Row(

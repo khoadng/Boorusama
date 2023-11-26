@@ -116,41 +116,44 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                         ),
                       ),
                       if (widget.topRightBuilder != null)
-                        SafeArea(
-                          child: Align(
-                            alignment: Alignment.topRight,
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 8),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  if (isSmall)
-                                    CircularIconButton(
-                                      onPressed: () =>
-                                          showMaterialModalBottomSheet(
-                                        context: context,
-                                        backgroundColor: context
-                                            .theme.scaffoldBackgroundColor,
-                                        builder: (context) =>
-                                            widget.infoBuilder(context),
-                                      ),
-                                      icon: const Icon(
-                                        Icons.info,
-                                        color: Colors.white,
-                                      ),
+                        Positioned(
+                          top: 8,
+                          right: 12,
+                          child: SafeArea(
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                if (isSmall)
+                                  CircularIconButton(
+                                    onPressed: () =>
+                                        showMaterialModalBottomSheet(
+                                      context: context,
+                                      backgroundColor:
+                                          context.theme.scaffoldBackgroundColor,
+                                      builder: (context) =>
+                                          widget.infoBuilder(context),
                                     ),
-                                  widget.topRightBuilder!.call(context),
-                                ],
-                              ),
+                                    icon: const Icon(
+                                      Icons.info,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                widget.topRightBuilder!.call(context),
+                              ],
                             ),
                           ),
                         ),
                     ],
                   ),
                 ),
+                const VerticalDivider(
+                  width: 1,
+                  thickness: 1,
+                ),
                 if (!isSmall)
-                  SizedBox(
+                  Container(
                     width: 350,
+                    color: context.colorScheme.surface,
                     child: widget.infoBuilder(context),
                   ),
               ],
