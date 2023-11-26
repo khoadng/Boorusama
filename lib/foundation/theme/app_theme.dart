@@ -18,7 +18,7 @@ class AppTheme {
             onBackground: kOnBackgroundLightColor,
             secondaryContainer: kSecondaryContainerLightColor,
             onSecondaryContainer: kOnSurfaceLightColor,
-            tertiaryContainer: Color.fromARGB(255, 220, 220, 220),
+            tertiaryContainer: kTeritaryContainerLightColor,
             onTertiaryContainer: kOnSurfaceLightColor,
             primary: kPrimaryLightColor,
             onPrimary: kOnPrimaryLightColor,
@@ -35,7 +35,7 @@ class AppTheme {
             onBackground: kOnBackgroundDarkColor,
             secondaryContainer: kSecondaryContainerDarkColor,
             onSecondaryContainer: kOnSurfaceDarkColor,
-            tertiaryContainer: Color.fromARGB(255, 20, 20, 20),
+            tertiaryContainer: kTeritaryContainerDarkColor,
             onTertiaryContainer: kOnSurfaceDarkColor,
             primary: kPrimaryDarkColor,
             onPrimary: kOnPrimaryDarkColor,
@@ -52,7 +52,7 @@ class AppTheme {
             onBackground: kOnBackgroundAmoledDarkColor,
             secondaryContainer: kSecondaryContainerAmoledDarkColor,
             onSecondaryContainer: kOnSurfaceAmoledDarkColor,
-            tertiaryContainer: Color.fromARGB(255, 20, 20, 20),
+            tertiaryContainer: kTeritaryContainerAmoledDarkColor,
             onTertiaryContainer: kOnSurfaceAmoledDarkColor,
             primary: kPrimaryAmoledDarkColor,
             onPrimary: kOnPrimaryAmoledDarkColor,
@@ -260,7 +260,7 @@ class AppTheme {
             BoorusamaColors(
               videoPlayerBackgroundColor: Colors.black,
               themeMode: ThemeMode.amoledDark,
-              selectedColor: kSurfaceDarkColor,
+              selectedColor: Color.fromARGB(255, 74, 74, 74),
             ),
           ],
           inputDecorationTheme: InputDecorationTheme(
@@ -342,7 +342,7 @@ class AppTheme {
             BoorusamaColors(
               videoPlayerBackgroundColor: Colors.black,
               themeMode: ThemeMode.amoledDark,
-              selectedColor: kSurfaceAmoledDarkColor,
+              selectedColor: Color.fromARGB(255, 50, 50, 50),
             ),
           ],
           inputDecorationTheme: InputDecorationTheme(

@@ -131,8 +131,11 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
       ),
     );
 
-    final menu = SizedBox(
+    final menu = Container(
       width: 220,
+      decoration: BoxDecoration(
+        color: context.colorScheme.surface,
+      ),
       child: Column(
         children: [
           const CurrentBooruTile(),
