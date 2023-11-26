@@ -8,7 +8,6 @@ import 'package:oktoast/oktoast.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/feats/boorus/providers.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/foundation/analytics.dart';
 import 'package:boorusama/foundation/i18n.dart';
@@ -19,55 +18,43 @@ import 'package:boorusama/widgets/widgets.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
-class App extends ConsumerStatefulWidget {
+class App extends ConsumerWidget {
   const App({
     super.key,
-    required this.settings,
+    required this.initialSettings,
   });
 
-  final Settings settings;
+  final Settings initialSettings;
 
   @override
-  ConsumerState<App> createState() => _AppState();
-}
-
-class _AppState extends ConsumerState<App> {
-  @override
-  Widget build(BuildContext context) {
-    final router = ref.watch(routerProvider(widget.settings));
-
-    ref.listen(
-      currentBooruConfigProvider,
-      (p, c) {
-        if (p != c) {
-          if (isAnalyticsEnabled(widget.settings)) {
-            changeCurrentAnalyticConfig(c);
-          }
-        }
-      },
-    );
-
+  Widget build(BuildContext context, WidgetRef ref) {
     return Portal(
       child: OKToast(
-        child: ThemeBuilder(
-          builder: (theme, themeMode) => MaterialApp.router(
-            builder: (context, child) => ConditionalParentWidget(
-              condition: isDesktopPlatform(),
-              conditionalBuilder: (child) => child,
-              child: ScrollConfiguration(
-                behavior:
-                    const MaterialScrollBehavior().copyWith(overscroll: false),
-                child: child!,
+        child: AnalyticsScope(
+          settings: initialSettings,
+          builder: (analyticsEnabled) => RouterBuilder(
+            analyticsEnabled: analyticsEnabled,
+            builder: (context, router) => ThemeBuilder(
+              builder: (theme, themeMode) => MaterialApp.router(
+                builder: (context, child) => ConditionalParentWidget(
+                  condition: isDesktopPlatform(),
+                  conditionalBuilder: (child) => child,
+                  child: ScrollConfiguration(
+                    behavior: const MaterialScrollBehavior()
+                        .copyWith(overscroll: false),
+                    child: child!,
+                  ),
+                ),
+                theme: theme,
+                themeMode: themeMode,
+                localizationsDelegates: context.localizationDelegates,
+                supportedLocales: context.supportedLocales,
+                locale: context.locale,
+                debugShowCheckedModeBanner: false,
+                title: ref.watch(appInfoProvider).appName,
+                routerConfig: router,
               ),
             ),
-            theme: theme,
-            themeMode: themeMode,
-            localizationsDelegates: context.localizationDelegates,
-            supportedLocales: context.supportedLocales,
-            locale: context.locale,
-            debugShowCheckedModeBanner: false,
-            title: ref.watch(appInfoProvider).appName,
-            routerConfig: router,
           ),
         ),
       ),

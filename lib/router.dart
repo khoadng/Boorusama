@@ -6,18 +6,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 // Project imports:
-import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/foundation/loggers/logger.dart';
 import 'foundation/analytics.dart';
 import 'routes.dart';
 
 export 'package:go_router/go_router.dart';
 
-final routerProvider = Provider.family<GoRouter, Settings>((ref, settings) {
+typedef RouterParams = ({
+  List<NavigatorObserver>? observers,
+});
+
+final routerProvider = Provider.family<GoRouter, RouterParams>((ref, params) {
   return GoRouter(
-    observers: [
-      if (isAnalyticsEnabled(settings)) getAnalyticsObserver(),
-    ],
+    observers: params.observers,
     routes: [
       Routes.home(ref),
     ],
@@ -81,4 +82,26 @@ class DialogPage<T> extends Page<T> {
         useSafeArea: useSafeArea,
         themes: themes,
       );
+}
+
+class RouterBuilder extends ConsumerWidget {
+  const RouterBuilder({
+    super.key,
+    required this.analyticsEnabled,
+    required this.builder,
+  });
+
+  final bool analyticsEnabled;
+  final Widget Function(BuildContext context, GoRouter router) builder;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final router = ref.watch(routerProvider((
+      observers: [
+        if (analyticsEnabled) getAnalyticsObserver(),
+      ],
+    )));
+
+    return builder(context, router);
+  }
 }

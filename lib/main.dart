@@ -213,7 +213,9 @@ void main() async {
             danbooruCreatorHiveBoxProvider
                 .overrideWithValue(danbooruCreatorBox),
           ],
-          child: App(settings: settings),
+          child: App(
+            initialSettings: settings,
+          ),
         ),
       ),
     );
