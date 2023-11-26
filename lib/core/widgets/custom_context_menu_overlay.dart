@@ -35,7 +35,13 @@ class CustomContextMenuOverlay extends StatelessWidget {
               visualDensity: const ShrinkVisualDensity(),
               hoverColor: context.colorScheme.primary,
               onTap: config.onPressed,
-              title: Text(config.label),
+              title: Text(
+                config.label,
+                style: config.labelStyle ??
+                    const TextStyle(
+                      fontWeight: FontWeight.w500,
+                    ),
+              ),
               contentPadding: const EdgeInsets.symmetric(horizontal: 8),
               minVerticalPadding: 0,
             ),

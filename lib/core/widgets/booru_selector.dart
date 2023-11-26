@@ -40,10 +40,30 @@ class _BooruSelectorState extends ConsumerState<BooruSelector> {
               'generic.action.edit'.tr(),
               onPressed: () => context.go('/boorus/${config.id}/update'),
             ),
+            ContextMenuButtonConfig(
+              'Duplicate',
+              onPressed: () => ref
+                  .read(booruConfigProvider.notifier)
+                  .duplicate(config: config),
+            ),
             if (currentConfig != config)
-              ContextMenuButtonConfig('generic.action.delete'.tr(),
-                  onPressed: () =>
-                      ref.read(booruConfigProvider.notifier).delete(config)),
+              ContextMenuButtonConfig(
+                'generic.action.delete'.tr(),
+                labelStyle: TextStyle(
+                  color: context.colorScheme.error,
+                  fontWeight: FontWeight.w500,
+                ),
+                onPressed: () => showDialog(
+                  context: context,
+                  builder: (context) => RemoveBooruConfigAlertDialog(
+                    title: "Delete '${config.name}'",
+                    description:
+                        'Are you sure you want to delete this profile? This action cannot be undone.',
+                    onConfirm: () =>
+                        ref.read(booruConfigProvider.notifier).delete(config),
+                  ),
+                ),
+              ),
           ],
         ),
       );
@@ -77,6 +97,8 @@ class _BooruSelectorState extends ConsumerState<BooruSelector> {
                   childCount: configs.length,
                 ),
                 onReorder: (oldIndex, newIndex) {
+                  if (oldIndex == newIndex) return;
+
                   final orders = ref.read(configIdOrdersProvider);
                   final newOrders =
                       (orders.isEmpty || orders.length != configs.length
@@ -188,12 +210,103 @@ class BooruSelectorItem extends StatelessWidget {
                 textAlign: TextAlign.center,
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 11,
                 ),
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class RemoveBooruConfigAlertDialog extends StatelessWidget {
+  const RemoveBooruConfigAlertDialog({
+    super.key,
+    required this.onConfirm,
+    required this.title,
+    required this.description,
+  });
+
+  final void Function() onConfirm;
+  final String title;
+  final String description;
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(8)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 20),
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              description,
+              style: const TextStyle(
+                fontWeight: FontWeight.w400,
+                fontSize: 14,
+              ),
+            ),
+            const SizedBox(height: 20),
+            FilledButton(
+              style: FilledButton.styleFrom(
+                backgroundColor: context.colorScheme.errorContainer,
+                shadowColor: Colors.transparent,
+                elevation: 0,
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+                onConfirm();
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                child: Text(
+                  'Delete',
+                  style: TextStyle(
+                    color: context.colorScheme.onErrorContainer,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.transparent,
+                shadowColor: Colors.transparent,
+                elevation: 0,
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                child: Text(
+                  'Cancel',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: Theme.of(context).colorScheme.onBackground,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+          ],
         ),
       ),
     );
