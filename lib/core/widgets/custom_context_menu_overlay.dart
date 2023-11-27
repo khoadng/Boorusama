@@ -19,8 +19,11 @@ class CustomContextMenuOverlay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ContextMenuOverlay(
-      cardBuilder: (context, children) => Card(
-        child: Padding(
+      cardBuilder: (context, children) => Material(
+        color: context.colorScheme.surface,
+        borderRadius: BorderRadius.circular(4),
+        elevation: 4,
+        child: Container(
           padding: const EdgeInsets.all(8),
           child: Column(children: children),
         ),
@@ -67,16 +70,19 @@ class _ContextMenuTileState extends State<ContextMenuTile> {
                   ? Text(
                       widget.config.label,
                       style: widget.config.labelStyle != null
-                          ? widget.config.labelStyle!
-                              .copyWith(color: context.colorScheme.onError)
+                          ? widget.config.labelStyle!.copyWith(
+                              color: context.colorScheme.onError,
+                            )
                           : TextStyle(
                               color: context.colorScheme.onPrimary,
-                              fontWeight: FontWeight.w500,
                             ),
                     )
                   : Text(
                       widget.config.label,
-                      style: widget.config.labelStyle,
+                      style: widget.config.labelStyle ??
+                          TextStyle(
+                              color: context.colorScheme.onSurface
+                                  .withOpacity(0.75)),
                     ),
               contentPadding: const EdgeInsets.symmetric(horizontal: 8),
               minVerticalPadding: 0,
