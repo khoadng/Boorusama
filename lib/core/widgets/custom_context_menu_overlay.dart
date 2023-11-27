@@ -25,7 +25,33 @@ class CustomContextMenuOverlay extends StatelessWidget {
           child: Column(children: children),
         ),
       ),
-      buttonBuilder: (context, config, [__]) => ConstrainedBox(
+      buttonBuilder: (context, config, [__]) => ContextMenuTile(config: config),
+      child: child,
+    );
+  }
+}
+
+class ContextMenuTile extends StatefulWidget {
+  const ContextMenuTile({
+    super.key,
+    required this.config,
+  });
+
+  final ContextMenuButtonConfig config;
+
+  @override
+  State<ContextMenuTile> createState() => _ContextMenuTileState();
+}
+
+class _ContextMenuTileState extends State<ContextMenuTile> {
+  var isMouseOver = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => isMouseOver = true),
+      onExit: (_) => setState(() => isMouseOver = false),
+      child: ConstrainedBox(
         constraints: const BoxConstraints(minWidth: 200),
         child: Material(
           color: Colors.transparent,
@@ -33,19 +59,31 @@ class CustomContextMenuOverlay extends StatelessWidget {
             child: ListTile(
               dense: true,
               visualDensity: const ShrinkVisualDensity(),
-              hoverColor: context.colorScheme.primary,
-              onTap: config.onPressed,
-              title: Text(
-                config.label,
-                style: config.labelStyle,
-              ),
+              hoverColor: widget.config.labelStyle == null
+                  ? context.colorScheme.primary
+                  : widget.config.labelStyle!.color,
+              onTap: widget.config.onPressed,
+              title: isMouseOver
+                  ? Text(
+                      widget.config.label,
+                      style: widget.config.labelStyle != null
+                          ? widget.config.labelStyle!
+                              .copyWith(color: context.colorScheme.onError)
+                          : TextStyle(
+                              color: context.colorScheme.onPrimary,
+                              fontWeight: FontWeight.w500,
+                            ),
+                    )
+                  : Text(
+                      widget.config.label,
+                      style: widget.config.labelStyle,
+                    ),
               contentPadding: const EdgeInsets.symmetric(horizontal: 8),
               minVerticalPadding: 0,
             ),
           ),
         ),
       ),
-      child: child,
     );
   }
 }
