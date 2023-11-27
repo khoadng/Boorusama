@@ -131,8 +131,11 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
       ),
     );
 
-    final menu = SizedBox(
+    final menu = Container(
       width: 220,
+      decoration: BoxDecoration(
+        color: context.colorScheme.surfaceVariant,
+      ),
       child: Column(
         children: [
           const CurrentBooruTile(),
@@ -163,7 +166,7 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
       ),
     );
     return Scaffold(
-      backgroundColor: context.colorScheme.background,
+      backgroundColor: context.colorScheme.surface,
       body: !widget.resizable
           ? Row(
               crossAxisAlignment: CrossAxisAlignment.start,

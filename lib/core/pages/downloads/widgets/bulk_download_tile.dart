@@ -31,7 +31,7 @@ class BulkDownloadTile extends ConsumerWidget {
     final fileSizes = ref.watch(bulkDownloadFileSizeProvider);
 
     return Card(
-      color: context.colorScheme.background,
+      color: context.colorScheme.surface,
       child: Row(
         children: [
           SizedBox(

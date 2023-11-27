@@ -19,7 +19,7 @@ class ModalFavoriteGroupAction extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: context.colorScheme.background,
+      color: context.colorScheme.surface,
       child: SafeArea(
         top: false,
         child: Column(

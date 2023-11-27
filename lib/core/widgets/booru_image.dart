@@ -229,7 +229,7 @@ class ErrorPlaceholder extends StatelessWidget {
           ),
           child: Image.asset(
             'assets/images/error.png',
-            color: context.colorScheme.background.withOpacity(0.7),
+            color: context.colorScheme.surface.withOpacity(0.7),
           ),
         ),
       ),

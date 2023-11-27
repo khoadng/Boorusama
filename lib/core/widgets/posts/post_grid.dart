@@ -197,7 +197,6 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
         child: ColoredBox(
           color: context.theme.scaffoldBackgroundColor,
           child: PostGridConfigRegion(
-            onRefresh: () => controller.refresh(),
             blacklistHeader: _buildConfigHeader(
                 !isMobilePlatform() ? Axis.vertical : Axis.horizontal),
             builder: (context, header) => ConditionalParentWidget(

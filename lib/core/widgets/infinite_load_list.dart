@@ -221,7 +221,7 @@ class InfiniteLoadListScrollView extends StatelessWidget {
       topBuilder: multiSelect ? topBuilder : null,
       bottomBuilder: multiSelect
           ? () => BottomSheet(
-                backgroundColor: context.colorScheme.background,
+                backgroundColor: context.colorScheme.surface,
                 enableDrag: false,
                 // ignore: no-empty-block
                 onClosing: () {},

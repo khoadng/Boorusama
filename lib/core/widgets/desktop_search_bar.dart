@@ -64,9 +64,10 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                 target: Alignment.bottomCenter,
                 offset: Offset(-32, 0),
               ),
-              portalFollower: SizedBox(
-                width: min(600, context.screenWidth),
-                height: context.screenHeight * 0.75,
+              portalFollower: Container(
+                constraints: BoxConstraints(
+                    maxWidth: min(context.screenWidth * 0.8, 500),
+                    maxHeight: min(context.screenHeight * 0.8, 400)),
                 child: ValueListenableBuilder(
                   valueListenable: textEditingController,
                   builder: (context, query, child) {
@@ -75,8 +76,9 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
 
                     return query.text.isNotEmpty
                         ? TagSuggestionItems(
+                            dense: true,
                             backgroundColor:
-                                Theme.of(context).colorScheme.background,
+                                Theme.of(context).colorScheme.surface,
                             tags: suggestionTags,
                             currentQuery: query.text,
                             onItemTap: (tag) {
@@ -89,11 +91,11 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                                 generateAutocompleteTagColor(ref, context, tag),
                           )
                         : Material(
-                            color: context.colorScheme.background,
                             elevation: 4,
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(8)),
                             child: SearchLandingView(
+                              backgroundColor: context.colorScheme.surface,
                               onHistoryCleared: () => ref
                                   .read(searchHistoryProvider.notifier)
                                   .clearHistories(),

@@ -20,11 +20,9 @@ import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
-import 'package:boorusama/core/widgets/details_page_desktop.dart';
-import 'package:boorusama/core/widgets/post_media.dart';
-import 'package:boorusama/core/widgets/posts/file_details_section.dart';
-import 'package:boorusama/core/widgets/posts/information_section.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
+import 'package:boorusama/widgets/widgets.dart';
 import 'danbooru_post_details_page.dart';
 import 'widgets/danbooru_tags_tile.dart';
 
@@ -151,6 +149,10 @@ class _DanbooruPostDetailsDesktopPageState
                 ),
                 orElse: () => const SliverToBoxAdapter(),
               ),
+              DanbooruRelatedPostsSection(
+                post: post,
+              ),
+              const SliverSizedBox(height: 8),
               artists.maybeWhen(
                 data: (artists) =>
                     DanbooruRecommendArtistList(artists: artists),

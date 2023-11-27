@@ -20,6 +20,7 @@ class TagSuggestionItems extends ConsumerWidget {
     required this.currentQuery,
     this.backgroundColor,
     this.textColorBuilder,
+    this.dense = false,
   }) : _tags = tags;
 
   final IList<AutocompleteData> _tags;
@@ -27,6 +28,7 @@ class TagSuggestionItems extends ConsumerWidget {
   final String currentQuery;
   final Color? backgroundColor;
   final Color? Function(AutocompleteData tag)? textColorBuilder;
+  final bool dense;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -34,31 +36,40 @@ class TagSuggestionItems extends ConsumerWidget {
       color: backgroundColor ?? context.theme.scaffoldBackgroundColor,
       elevation: 4,
       borderRadius: const BorderRadius.all(Radius.circular(8)),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
         child: ListView.builder(
           itemCount: _tags.length,
           itemBuilder: (context, index) {
             final tag = _tags[index];
 
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: ListTile(
-                hoverColor: context.colorScheme.surfaceVariant,
-                onTap: () => onItemTap(_tags[index]),
-                trailing: tag.hasCount
-                    ? Text(
-                        NumberFormat.compact().format(tag.postCount),
-                        style: TextStyle(
-                          color: context.theme.hintColor,
-                          fontSize: 14,
+            return InkWell(
+              onTap: () => onItemTap(tag),
+              child: Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: dense ? 4 : 12,
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: _getTitle(
+                        tag,
+                        currentQuery,
+                        textColorBuilder?.call(tag),
+                      ),
+                    ),
+                    if (tag.hasCount)
+                      Container(
+                        constraints: const BoxConstraints(maxWidth: 100),
+                        child: Text(
+                          NumberFormat.compact().format(tag.postCount),
+                          style: TextStyle(
+                            color: context.theme.hintColor,
+                          ),
                         ),
-                      )
-                    : null,
-                title: _getTitle(
-                  tag,
-                  currentQuery,
-                  textColorBuilder?.call(tag),
+                      ),
+                  ],
                 ),
               ),
             );
@@ -81,8 +92,13 @@ Widget _getTitle(
             'p': Style(
               fontSize: FontSize.medium,
               color: color,
+              padding: EdgeInsets.zero,
+              margin: EdgeInsets.zero,
             ),
-            'body': Style(padding: EdgeInsets.zero, margin: EdgeInsets.zero),
+            'body': Style(
+              padding: EdgeInsets.zero,
+              margin: EdgeInsets.zero,
+            ),
             'b': Style(
               fontWeight: FontWeight.w900,
             ),
@@ -95,8 +111,13 @@ Widget _getTitle(
             'p': Style(
               fontSize: FontSize.medium,
               color: color,
+              padding: EdgeInsets.zero,
+              margin: EdgeInsets.zero,
             ),
-            'body': Style(padding: EdgeInsets.zero, margin: EdgeInsets.zero),
+            'body': Style(
+              padding: EdgeInsets.zero,
+              margin: EdgeInsets.zero,
+            ),
             'b': Style(
               fontWeight: FontWeight.w900,
             ),

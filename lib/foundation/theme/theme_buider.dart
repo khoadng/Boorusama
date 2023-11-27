@@ -57,7 +57,6 @@ class ThemeBuilder extends ConsumerWidget {
               AppTheme.themeFrom(
                 theme,
                 colorScheme: colorScheme,
-                useDynamicColor: enableDynamicColor,
               ),
               tm.mapAppThemeModeToSystemThemeMode(theme),
             ),

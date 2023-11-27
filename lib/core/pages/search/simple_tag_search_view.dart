@@ -130,7 +130,7 @@ class _SimpleTagSearchViewState extends ConsumerState<SimpleTagSearchView> {
                         padding: const EdgeInsets.symmetric(horizontal: 8),
                         child: TagSuggestionItems(
                           textColorBuilder: widget.textColorBuilder,
-                          backgroundColor: context.colorScheme.background,
+                          backgroundColor: context.colorScheme.surface,
                           tags: tags,
                           onItemTap: (tag) {
                             if (widget.closeOnSelected) {

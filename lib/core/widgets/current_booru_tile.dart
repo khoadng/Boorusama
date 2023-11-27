@@ -60,8 +60,9 @@ class CurrentBooruTile extends ConsumerWidget {
                         softWrap: false,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w800,
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                       color: booruConfig.ratingFilter ==

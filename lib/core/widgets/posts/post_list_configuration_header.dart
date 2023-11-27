@@ -135,8 +135,8 @@ class _PostListConfigurationHeaderState
                           backgroundColor: context.colorScheme.primary,
                           label: Text(
                             '${widget.hiddenCount} of ${widget.postCount}',
-                            style: const TextStyle(
-                              color: Colors.white,
+                            style: TextStyle(
+                              color: context.colorScheme.onPrimary,
                               fontWeight: FontWeight.bold,
                             ),
                           )),
@@ -220,8 +220,8 @@ class _BadgedChip extends StatelessWidget {
         backgroundColor: context.colorScheme.primary,
         label: Text(
           count.toString(),
-          style: const TextStyle(
-            color: Colors.white,
+          style: TextStyle(
+            color: context.colorScheme.onPrimary,
             fontWeight: FontWeight.bold,
           ),
         ),

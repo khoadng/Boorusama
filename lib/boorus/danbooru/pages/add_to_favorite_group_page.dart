@@ -41,7 +41,7 @@ class AddToFavoriteGroupPage extends ConsumerWidget {
         ).tr(),
         backgroundColor: Colors.transparent,
       ),
-      backgroundColor: context.colorScheme.background,
+      backgroundColor: context.colorScheme.surface,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
