@@ -12,15 +12,21 @@ class ResultHeaderWithProvider extends ConsumerWidget {
   const ResultHeaderWithProvider({
     super.key,
     required this.selectedTags,
+    required this.onRefresh,
   });
 
   final List<String> selectedTags;
+  final Future<void> Function()? onRefresh;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ref.watch(postCountProvider(selectedTags.join(' '))).when(
           data: (data) => data != null
-              ? ResultHeader(count: data, loading: false)
+              ? ResultHeader(
+                  count: data,
+                  loading: false,
+                  onRefresh: onRefresh,
+                )
               : const SizedBox.shrink(),
           error: (error, stackTrace) => const SizedBox.shrink(),
           loading: () => const ResultHeader(count: 0, loading: true),
@@ -33,10 +39,12 @@ class ResultHeader extends StatelessWidget {
     super.key,
     required this.count,
     required this.loading,
+    this.onRefresh,
   });
 
   final int count;
   final bool loading;
+  final Future<void> Function()? onRefresh;
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +60,7 @@ class ResultHeader extends StatelessWidget {
             child: ResultCounter(
               count: count,
               loading: loading,
+              onRefresh: onRefresh,
             ),
           ),
         ],

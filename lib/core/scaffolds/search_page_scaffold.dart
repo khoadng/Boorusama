@@ -134,7 +134,9 @@ class _SearchPageScaffoldState<T extends Post>
                       children: [
                         ...[
                           ResultHeaderWithProvider(
-                              selectedTags: selectedTagController.rawTags),
+                            selectedTags: selectedTagController.rawTags,
+                            onRefresh: () => controller.refresh(),
+                          ),
                           const Spacer(),
                         ]
                       ],

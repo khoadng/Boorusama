@@ -86,7 +86,10 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                             shape: const CircleBorder(),
                             padding: const EdgeInsets.all(12),
                             onPressed: () => _nextPost(),
-                            child: const Icon(Icons.arrow_forward),
+                            child: const Icon(
+                              Icons.arrow_forward,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       if (currentPage > 0)
@@ -97,7 +100,10 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                             shape: const CircleBorder(),
                             padding: const EdgeInsets.all(12),
                             onPressed: () => _previousPost(),
-                            child: const Icon(Icons.arrow_back),
+                            child: const Icon(
+                              Icons.arrow_back,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       SafeArea(
@@ -110,7 +116,10 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                               shape: const CircleBorder(),
                               padding: const EdgeInsets.all(12),
                               onPressed: () => _onExit(),
-                              child: const Icon(Icons.close),
+                              child: const Icon(
+                                Icons.close,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                         ),

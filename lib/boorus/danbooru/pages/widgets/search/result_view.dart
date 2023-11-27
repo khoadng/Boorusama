@@ -82,6 +82,7 @@ class _ResultViewState extends ConsumerState<ResultView> {
                     builder: (context, selectedTags, _) =>
                         ResultHeaderWithProvider(
                       selectedTags: selectedTags.toRawStringList(),
+                      onRefresh: () => controller.refresh(),
                     ),
                   ),
                   const Spacer(),
