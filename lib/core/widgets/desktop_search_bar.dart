@@ -82,7 +82,11 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                             tags: suggestionTags,
                             currentQuery: query.text,
                             onItemTap: (tag) {
-                              selectedTagController.addTag(tag.value);
+                              selectedTagController.addTag(
+                                tag.value,
+                                operator: getFilterOperator(
+                                    textEditingController.text),
+                              );
                               textEditingController.clear();
                               showSuggestions.value = false;
                               context.focusScope.unfocus();
@@ -107,8 +111,8 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                                 operator: getFilterOperator(
                                     textEditingController.text),
                               ),
-                              onHistoryTap: (value) =>
-                                  selectedTagController.addTag(value),
+                              onHistoryTap: (value) => selectedTagController
+                                  .addTags(value.split(' ')),
                               metatagsBuilder: (context) =>
                                   DanbooruMetatagsSection(
                                 onOptionTap: (value) {

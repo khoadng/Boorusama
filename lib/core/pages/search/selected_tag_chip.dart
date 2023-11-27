@@ -34,7 +34,7 @@ class SelectedTagChip extends StatelessWidget {
         if (hasOperator)
           Chip(
             visualDensity: const ShrinkVisualDensity(),
-            backgroundColor: Colors.purple,
+            backgroundColor: context.colorScheme.tertiary,
             labelPadding: const EdgeInsets.symmetric(horizontal: 1),
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.only(
@@ -44,6 +44,9 @@ class SelectedTagChip extends StatelessWidget {
             ),
             label: Text(
               filterOperatorToStringCharacter(tagSearchItem.operator),
+              style: TextStyle(
+                color: context.colorScheme.onTertiary,
+              ),
             ),
           ),
         if (hasMeta)
@@ -54,6 +57,9 @@ class SelectedTagChip extends StatelessWidget {
             shape: _getOutlineBorderForMetaChip(hasOperator),
             label: Text(
               tagSearchItem.metatag!,
+              style: TextStyle(
+                color: context.colorScheme.onSecondary,
+              ),
             ),
           ),
         Chip(
@@ -67,9 +73,9 @@ class SelectedTagChip extends StatelessWidget {
                   ),
                 )
               : null,
-          deleteIcon: const Icon(
+          deleteIcon: Icon(
             FontAwesomeIcons.xmark,
-            color: Colors.red,
+            color: context.colorScheme.error,
             size: 15,
           ),
           onDeleted: () => onDeleted?.call(),
