@@ -82,7 +82,11 @@ class BulkDownloadTile extends ConsumerWidget {
                       ),
                       contentPadding: const EdgeInsets.symmetric(horizontal: 8),
                       title: _Title(data: data),
-                      trailing: const CircularProgressIndicator(),
+                      trailing: const SizedBox(
+                        width: 12,
+                        height: 12,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
                     ),
                   BulkDownloadQueued _ => ListTile(
                       dense: true,

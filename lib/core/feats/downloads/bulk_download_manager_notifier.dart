@@ -160,4 +160,12 @@ class BulkDownloadManagerNotifier extends FamilyNotifier<void, BooruConfig> {
     bulkDownloadStatus.state = BulkDownloadManagerStatus.cancel;
     await downloader.cancelAll();
   }
+
+  Future<void> retryAll() async {
+    final failed = bulkDownloadState.state.downloadStatuses.values
+        .whereType<BulkDownloadFailed>();
+    for (final download in failed) {
+      retry(download.url, download.fileName);
+    }
+  }
 }
