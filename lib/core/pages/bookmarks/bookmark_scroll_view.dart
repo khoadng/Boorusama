@@ -53,7 +53,7 @@ class BookmarkScrollView extends ConsumerWidget {
           const SliverToBoxAdapter(
             child: Row(
               children: [
-                BookmarkBooruTypeSelector(),
+                BookmarkBooruSourceUrlSelector(),
                 BookmarkSortButton(),
                 Spacer(),
                 BookmarkGridUpdateButtons(),

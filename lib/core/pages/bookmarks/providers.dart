@@ -20,7 +20,7 @@ enum BookmarkSortType {
 
 final filteredBookmarksProvider = Provider.autoDispose<List<Bookmark>>((ref) {
   final tags = ref.watch(selectedTagsProvider);
-  final selectedBooru = ref.watch(selectedBooruProvider);
+  final selectedBooruUrl = ref.watch(selectedBooruUrlProvider);
   final sortType = ref.watch(selectedBookmarkSortTypeProvider);
   final config = ref.watchConfig;
   final bookmarks = ref.watch(bookmarkProvider(config)).bookmarks;
@@ -28,9 +28,9 @@ final filteredBookmarksProvider = Provider.autoDispose<List<Bookmark>>((ref) {
   final tagsList = tags.split(' ').where((e) => e.isNotEmpty).toList();
 
   return bookmarks
-      .where((bookmark) => selectedBooru == null
+      .where((bookmark) => selectedBooruUrl == null
           ? true
-          : intToBooruType(bookmark.booruId) == selectedBooru)
+          : bookmark.sourceUrl.contains(selectedBooruUrl))
       .where((bookmark) => tagsList.every((tag) => bookmark.tags.contains(tag)))
       .sorted((a, b) => switch (sortType) {
             BookmarkSortType.newest => b.createdAt.compareTo(a.createdAt),
@@ -104,7 +104,7 @@ final tagSuggestionsProvider = Provider.autoDispose<List<String>>((ref) {
 });
 
 final selectedTagsProvider = StateProvider.autoDispose<String>((ref) => '');
-final selectedBooruProvider = StateProvider.autoDispose<BooruType?>((ref) {
+final selectedBooruUrlProvider = StateProvider.autoDispose<String?>((ref) {
   return null;
 });
 final selectRowCountProvider = StateProvider.autoDispose
@@ -124,6 +124,18 @@ final availableBooruOptionsProvider = Provider.autoDispose<List<BooruType?>>(
         .sorted((a, b) => a?.stringify().compareTo(b?.stringify() ?? '') ?? 0)
         .where((e) => ref.watch(booruTypeCountProvider(e)) > 0)
         .toList());
+
+final availableBooruUrlsProvider = Provider.autoDispose<List<String>>((ref) {
+  final bookmarks = ref.watch(bookmarkProvider(ref.watchConfig)).bookmarks;
+
+  return bookmarks
+      .map((e) => e.sourceUrl)
+      .map((e) => Uri.tryParse(e))
+      .whereNotNull()
+      .map((e) => e.host)
+      .toSet()
+      .toList();
+});
 
 final hasBookmarkProvider = Provider.autoDispose<bool>((ref) {
   final config = ref.watchConfig;

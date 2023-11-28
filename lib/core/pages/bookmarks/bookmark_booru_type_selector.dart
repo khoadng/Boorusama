@@ -5,32 +5,42 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'providers.dart';
 
-class BookmarkBooruTypeSelector extends ConsumerWidget {
-  const BookmarkBooruTypeSelector({
+class BookmarkBooruSourceUrlSelector extends ConsumerWidget {
+  const BookmarkBooruSourceUrlSelector({
     super.key,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final options = ref.watch(availableBooruOptionsProvider);
+    final options = ref.watch(availableBooruUrlsProvider);
 
     return OptionDropDownButton(
       alignment: AlignmentDirectional.centerStart,
-      value: ref.watch(selectedBooruProvider),
+      value: ref.watch(selectedBooruUrlProvider),
       onChanged: (value) =>
-          ref.read(selectedBooruProvider.notifier).state = value,
-      items: options
-          .map(
-            (value) => DropdownMenuItem(
-              value: value,
-              child: Text(value?.stringify() ?? 'All'),
+          ref.read(selectedBooruUrlProvider.notifier).state = value,
+      items: [
+        const DropdownMenuItem(
+          value: null,
+          child: Text('All'),
+        ),
+        ...options.map(
+          (value) => DropdownMenuItem(
+            value: value,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 125),
+              child: Text(
+                value,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
-          )
-          .toList(),
+          ),
+        ),
+      ],
     );
   }
 }
