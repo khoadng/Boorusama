@@ -174,6 +174,9 @@ class AppTheme {
               color: kHintLightColor,
             ),
           ),
+          popupMenuTheme: PopupMenuThemeData(
+            color: colorScheme.secondaryContainer,
+          ),
           brightness: Brightness.light,
           colorScheme: colorScheme,
           scrollbarTheme: ScrollbarThemeData(
@@ -243,6 +246,9 @@ class AppTheme {
               ),
             ),
             contentPadding: EdgeInsets.all(12),
+          ),
+          popupMenuTheme: PopupMenuThemeData(
+            color: colorScheme.secondaryContainer,
           ),
           brightness: Brightness.dark,
           listTileTheme: ListTileThemeData(
@@ -322,6 +328,9 @@ class AppTheme {
             subtitleTextStyle: TextStyle(
               color: kHintAmoledDarkColor,
             ),
+          ),
+          popupMenuTheme: PopupMenuThemeData(
+            color: colorScheme.secondaryContainer,
           ),
           brightness: Brightness.dark,
           colorScheme: colorScheme,
