@@ -94,9 +94,20 @@ class _GelbooruV1TagsTileState extends ConsumerState<GelbooruV1TagsTile> {
     if (expanded) {
       ref.listen(gelbooruV2TagsFromIdProvider(widget.post.id),
           (previous, next) {
-        if (next is AsyncError) {
-          setState(() => error = next.error);
-        }
+        next.when(
+          data: (data) {
+            if (!mounted) return;
+            if (data.isEmpty && widget.post.tags.isNotEmpty) {
+              // Just a dummy data so the check below will branch into the else block
+              setState(() => error = 'No tags found');
+            }
+          },
+          loading: () {},
+          error: (error, stackTrace) {
+            if (!mounted) return;
+            setState(() => this.error = error);
+          },
+        );
       });
     }
 

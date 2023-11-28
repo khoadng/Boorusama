@@ -283,7 +283,7 @@ class RemoveBooruConfigAlertDialog extends StatelessWidget {
               fontSize: 14,
             ),
           ),
-          const Spacer(),
+          const SizedBox(height: 20),
           FilledButton(
             style: FilledButton.styleFrom(
               backgroundColor: context.colorScheme.errorContainer,
