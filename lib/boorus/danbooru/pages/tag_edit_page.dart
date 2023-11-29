@@ -563,6 +563,7 @@ class _TagEditFavoriteViewState extends ConsumerState<TagEditFavoriteView> {
     final tags = ref.watch(favoriteTagsProvider);
 
     return Scaffold(
+      backgroundColor: context.colorScheme.secondaryContainer,
       appBar: AppBar(
         title: const Text('Favorite tags'),
         automaticallyImplyLeading: false,
@@ -571,26 +572,33 @@ class _TagEditFavoriteViewState extends ConsumerState<TagEditFavoriteView> {
           icon: const Icon(Icons.keyboard_arrow_down),
         ),
       ),
-      body: Wrap(
-        spacing: 4,
-        children: tags.map((tag) {
-          final selected = widget.isSelected(tag.name);
+      body: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: Wrap(
+          spacing: 4,
+          children: tags.map((tag) {
+            final selected = widget.isSelected(tag.name);
 
-          return FilterChip(
-            side: BorderSide(
-              color: context.theme.hintColor,
-              width: 0.5,
-            ),
-            selected: selected,
-            showCheckmark: true,
-            visualDensity: VisualDensity.compact,
-            onSelected: (value) =>
-                value ? widget.onAdded(tag.name) : widget.onRemoved(tag.name),
-            label: Text(
-              tag.name.replaceUnderscoreWithSpace(),
-            ),
-          );
-        }).toList(),
+            return FilterChip(
+              side: selected
+                  ? BorderSide(
+                      color: context.theme.hintColor,
+                      width: 0.5,
+                    )
+                  : null,
+              selected: selected,
+              showCheckmark: true,
+              visualDensity: VisualDensity.compact,
+              selectedColor: context.colorScheme.primary,
+              backgroundColor: context.colorScheme.background,
+              onSelected: (value) =>
+                  value ? widget.onAdded(tag.name) : widget.onRemoved(tag.name),
+              label: Text(
+                tag.name.replaceUnderscoreWithSpace(),
+              ),
+            );
+          }).toList(),
+        ),
       ),
     );
   }
@@ -627,6 +635,7 @@ class _TagEditzwikiViewState extends ConsumerState<TagEditWikiView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: context.colorScheme.secondaryContainer,
       appBar: AppBar(
         title: const Text('Related tags'),
         automaticallyImplyLeading: false,
@@ -635,59 +644,63 @@ class _TagEditzwikiViewState extends ConsumerState<TagEditWikiView> {
           icon: const Icon(Icons.keyboard_arrow_down),
         ),
       ),
-      body: widget.tag.toOption().fold(
-            () => const Center(
-              child: Text(
-                'Select a tag to view related tags',
+      body: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: widget.tag.toOption().fold(
+              () => const Center(
+                child: Text(
+                  'Select a tag to view related tags',
+                ),
               ),
-            ),
-            (tag) => SingleChildScrollView(
-              child: Column(
-                children: [
-                  Center(
-                    child: BooruSegmentedButton(
-                      segments: {
-                        for (final entry in relatedTabs)
-                          entry: entry.sentenceCase,
-                      },
-                      initialValue: selectTab,
-                      onChanged: (values) {
-                        setState(() {
-                          selectTab = values;
-                        });
-                      },
+              (tag) => SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Center(
+                      child: BooruSegmentedButton(
+                        segments: {
+                          for (final entry in relatedTabs)
+                            entry: entry.sentenceCase,
+                        },
+                        initialValue: selectTab,
+                        onChanged: (values) {
+                          setState(() {
+                            selectTab = values;
+                          });
+                        },
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 12),
-                  switch (selectTab) {
-                    'wiki' =>
-                      ref.watch(danbooruWikiTagsProvider(tag)).maybeWhen(
-                          data: (data) => data.isNotEmpty
-                              ? _RelatedTagChips(
+                    const SizedBox(height: 12),
+                    switch (selectTab) {
+                      'wiki' =>
+                        ref.watch(danbooruWikiTagsProvider(tag)).maybeWhen(
+                            data: (data) => data.isNotEmpty
+                                ? _RelatedTagChips(
+                                    tags: data,
+                                    isSelected: widget.isSelected,
+                                    onAdded: widget.onAdded,
+                                    onRemoved: widget.onRemoved,
+                                  )
+                                : const Center(child: Text('No tags found')),
+                            orElse: () => const Center(
+                                  child: CircularProgressIndicator.adaptive(),
+                                )),
+                      _ =>
+                        ref.watch(danbooruRelatedTagsProvider(tag)).maybeWhen(
+                            data: (data) => _RelatedTagChips(
                                   tags: data,
                                   isSelected: widget.isSelected,
                                   onAdded: widget.onAdded,
                                   onRemoved: widget.onRemoved,
-                                )
-                              : const Center(child: Text('No tags found')),
-                          orElse: () => const Center(
-                                child: CircularProgressIndicator.adaptive(),
-                              )),
-                    _ => ref.watch(danbooruRelatedTagsProvider(tag)).maybeWhen(
-                        data: (data) => _RelatedTagChips(
-                              tags: data,
-                              isSelected: widget.isSelected,
-                              onAdded: widget.onAdded,
-                              onRemoved: widget.onRemoved,
-                            ),
-                        orElse: () => const Center(
-                              child: CircularProgressIndicator.adaptive(),
-                            )),
-                  },
-                ],
+                                ),
+                            orElse: () => const Center(
+                                  child: CircularProgressIndicator.adaptive(),
+                                )),
+                    },
+                  ],
+                ),
               ),
             ),
-          ),
+      ),
     );
   }
 }
@@ -791,6 +804,7 @@ class _TagEditAITagViewState extends ConsumerState<TagEditAITagView> {
     final tagAsync = ref.watch(danbooruAITagsProvider(widget.postId));
 
     return Scaffold(
+      backgroundColor: context.colorScheme.secondaryContainer,
       appBar: AppBar(
         title: const Text('Suggested tags'),
         automaticallyImplyLeading: false,
@@ -810,66 +824,69 @@ class _TagEditAITagViewState extends ConsumerState<TagEditAITagView> {
                 ),
               );
             }),
-            tagAsync.maybeWhen(
-              data: (tags) => Wrap(
-                spacing: 4,
-                children: tags.map((d) {
-                  final tag = d.tag;
-                  final colors = context.generateChipColors(
-                    ref.getTagColor(context, tag.category.name),
-                    ref.watch(settingsProvider),
-                  );
-                  final selected = widget.isSelected(tag.name);
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: tagAsync.maybeWhen(
+                data: (tags) => Wrap(
+                  spacing: 4,
+                  children: tags.map((d) {
+                    final tag = d.tag;
+                    final colors = context.generateChipColors(
+                      ref.getTagColor(context, tag.category.name),
+                      ref.watch(settingsProvider),
+                    );
+                    final selected = widget.isSelected(tag.name);
 
-                  return RawChip(
-                    selected: selected,
-                    showCheckmark: true,
-                    checkmarkColor: colors?.foregroundColor,
-                    visualDensity: VisualDensity.compact,
-                    selectedColor: colors?.backgroundColor,
-                    backgroundColor: selected
-                        ? colors?.backgroundColor
-                        : context.colorScheme.secondaryContainer,
-                    side: selected
-                        ? colors != null
-                            ? BorderSide(
-                                width: 2,
-                                color: colors.borderColor,
-                              )
-                            : null
-                        : null,
-                    onSelected: (value) => value
-                        ? widget.onAdded(tag.name)
-                        : widget.onRemoved(tag.name),
-                    label: ConstrainedBox(
-                      constraints: BoxConstraints(
-                        maxWidth: context.screenWidth * 0.8,
-                      ),
-                      child: RichText(
-                        overflow: TextOverflow.ellipsis,
-                        text: TextSpan(
-                          text: tag.name.replaceUnderscoreWithSpace(),
-                          style: TextStyle(
-                            color: selected
-                                ? colors?.foregroundColor
-                                : context.colorScheme.onSecondaryContainer,
-                            fontWeight:
-                                selected ? FontWeight.w700 : FontWeight.w500,
-                          ),
-                          children: [
-                            TextSpan(
-                              text: '  ${d.score}%',
-                              style: context.textTheme.bodySmall,
+                    return RawChip(
+                      selected: selected,
+                      showCheckmark: true,
+                      checkmarkColor: colors?.foregroundColor,
+                      visualDensity: VisualDensity.compact,
+                      selectedColor: colors?.backgroundColor,
+                      backgroundColor: selected
+                          ? colors?.backgroundColor
+                          : context.colorScheme.secondaryContainer,
+                      side: selected
+                          ? colors != null
+                              ? BorderSide(
+                                  width: 2,
+                                  color: colors.borderColor,
+                                )
+                              : null
+                          : null,
+                      onSelected: (value) => value
+                          ? widget.onAdded(tag.name)
+                          : widget.onRemoved(tag.name),
+                      label: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxWidth: context.screenWidth * 0.8,
+                        ),
+                        child: RichText(
+                          overflow: TextOverflow.ellipsis,
+                          text: TextSpan(
+                            text: tag.name.replaceUnderscoreWithSpace(),
+                            style: TextStyle(
+                              color: selected
+                                  ? colors?.foregroundColor
+                                  : context.colorScheme.onSecondaryContainer,
+                              fontWeight:
+                                  selected ? FontWeight.w700 : FontWeight.w500,
                             ),
-                          ],
+                            children: [
+                              TextSpan(
+                                text: '  ${d.score}%',
+                                style: context.textTheme.bodySmall,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                }).toList(),
-              ),
-              orElse: () => const Center(
-                child: CircularProgressIndicator.adaptive(),
+                    );
+                  }).toList(),
+                ),
+                orElse: () => const Center(
+                  child: CircularProgressIndicator.adaptive(),
+                ),
               ),
             ),
           ],
