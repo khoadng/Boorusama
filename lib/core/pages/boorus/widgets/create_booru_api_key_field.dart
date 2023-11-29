@@ -41,26 +41,31 @@ class _CreateBooruApiKeyFieldState extends State<CreateBooruApiKeyField> {
 
   @override
   Widget build(BuildContext context) {
-    return BooruTextFormField(
-      controller: controller,
-      validator: (p0) => null,
-      obscureText: !revealKey,
-      onChanged: widget.onChanged,
-      decoration: InputDecoration(
-        labelText: 'booru.password_api_key_label'.tr(),
-        hintText: widget.hintText,
-        suffixIcon: IconButton(
-          splashColor: Colors.transparent,
-          icon: revealKey
-              ? const FaIcon(
-                  FontAwesomeIcons.solidEyeSlash,
-                  size: 18,
-                )
-              : const FaIcon(
-                  FontAwesomeIcons.solidEye,
-                  size: 18,
-                ),
-          onPressed: () => setState(() => revealKey = !revealKey),
+    return AutofillGroup(
+      child: BooruTextFormField(
+        controller: controller,
+        validator: (p0) => null,
+        autofillHints: const [
+          AutofillHints.password,
+        ],
+        obscureText: !revealKey,
+        onChanged: widget.onChanged,
+        decoration: InputDecoration(
+          labelText: 'booru.password_api_key_label'.tr(),
+          hintText: widget.hintText,
+          suffixIcon: IconButton(
+            splashColor: Colors.transparent,
+            icon: revealKey
+                ? const FaIcon(
+                    FontAwesomeIcons.solidEyeSlash,
+                    size: 18,
+                  )
+                : const FaIcon(
+                    FontAwesomeIcons.solidEye,
+                    size: 18,
+                  ),
+            onPressed: () => setState(() => revealKey = !revealKey),
+          ),
         ),
       ),
     );

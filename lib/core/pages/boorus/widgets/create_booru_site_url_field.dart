@@ -31,13 +31,18 @@ class _CreateBooruSiteUrlFieldState extends State<CreateBooruSiteUrlField> {
 
   @override
   Widget build(BuildContext context) {
-    return BooruTextFormField(
-      readOnly: widget.onChanged == null,
-      validator: (p0) => null,
-      controller: urlController,
-      onChanged: widget.onChanged,
-      decoration: InputDecoration(
-        labelText: 'booru.site_url_label'.tr(),
+    return AutofillGroup(
+      child: BooruTextFormField(
+        readOnly: widget.onChanged == null,
+        autofillHints: const [
+          AutofillHints.url,
+        ],
+        validator: (p0) => null,
+        controller: urlController,
+        onChanged: widget.onChanged,
+        decoration: InputDecoration(
+          labelText: 'booru.site_url_label'.tr(),
+        ),
       ),
     );
   }

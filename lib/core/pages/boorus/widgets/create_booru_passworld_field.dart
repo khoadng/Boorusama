@@ -42,28 +42,33 @@ class _CreateBooruPasswordFieldState extends State<CreateBooruPasswordField> {
 
   @override
   Widget build(BuildContext context) {
-    return BooruTextFormField(
-      controller: controller,
-      readOnly: widget.readOnly,
-      validator: (p0) => null,
-      obscureText: !revealKey,
-      onChanged: widget.onChanged,
-      decoration: InputDecoration(
-        labelText: widget.readOnly
-            ? 'booru.password_hashed_label'.tr()
-            : 'booru.password_label'.tr(),
-        suffixIcon: IconButton(
-          splashColor: Colors.transparent,
-          icon: revealKey
-              ? const FaIcon(
-                  FontAwesomeIcons.solidEyeSlash,
-                  size: 18,
-                )
-              : const FaIcon(
-                  FontAwesomeIcons.solidEye,
-                  size: 18,
-                ),
-          onPressed: () => setState(() => revealKey = !revealKey),
+    return AutofillGroup(
+      child: BooruTextFormField(
+        controller: controller,
+        readOnly: widget.readOnly,
+        autofillHints: const [
+          AutofillHints.password,
+        ],
+        validator: (p0) => null,
+        obscureText: !revealKey,
+        onChanged: widget.onChanged,
+        decoration: InputDecoration(
+          labelText: widget.readOnly
+              ? 'booru.password_hashed_label'.tr()
+              : 'booru.password_label'.tr(),
+          suffixIcon: IconButton(
+            splashColor: Colors.transparent,
+            icon: revealKey
+                ? const FaIcon(
+                    FontAwesomeIcons.solidEyeSlash,
+                    size: 18,
+                  )
+                : const FaIcon(
+                    FontAwesomeIcons.solidEye,
+                    size: 18,
+                  ),
+            onPressed: () => setState(() => revealKey = !revealKey),
+          ),
         ),
       ),
     );

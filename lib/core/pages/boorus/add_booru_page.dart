@@ -171,20 +171,25 @@ class _AddBooruPageInternalState extends ConsumerState<AddBooruPageInternal> {
           ),
           child: ValueListenableBuilder(
             valueListenable: booruUrlError,
-            builder: (_, error, __) => BooruTextFormField(
-              validator: (p0) => null,
-              autofocus: true,
-              onChanged: (value) {
-                inputText.value = value;
-                booruUrlError.value = mapBooruUrlToUri(value);
-              },
-              onFieldSubmitted: error.fold(
-                (l) => null,
-                (r) => (_) => _onNext(r.toString()),
-              ),
-              controller: urlController,
-              decoration: InputDecoration(
-                labelText: 'booru.site_url'.tr(),
+            builder: (_, error, __) => AutofillGroup(
+              child: BooruTextFormField(
+                validator: (p0) => null,
+                autofillHints: const [
+                  AutofillHints.url,
+                ],
+                autofocus: true,
+                onChanged: (value) {
+                  inputText.value = value;
+                  booruUrlError.value = mapBooruUrlToUri(value);
+                },
+                onFieldSubmitted: error.fold(
+                  (l) => null,
+                  (r) => (_) => _onNext(r.toString()),
+                ),
+                controller: urlController,
+                decoration: InputDecoration(
+                  labelText: 'booru.site_url'.tr(),
+                ),
               ),
             ),
           ),

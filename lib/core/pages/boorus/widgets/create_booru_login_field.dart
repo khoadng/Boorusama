@@ -38,13 +38,19 @@ class _CreateBooruLoginFieldState extends State<CreateBooruLoginField> {
 
   @override
   Widget build(BuildContext context) {
-    return BooruTextFormField(
-      controller: controller,
-      validator: (p0) => null,
-      onChanged: widget.onChanged,
-      decoration: InputDecoration(
-        hintText: widget.hintText,
-        labelText: widget.labelText,
+    return AutofillGroup(
+      child: BooruTextFormField(
+        controller: controller,
+        autofillHints: const [
+          AutofillHints.username,
+          AutofillHints.email,
+        ],
+        validator: (p0) => null,
+        onChanged: widget.onChanged,
+        decoration: InputDecoration(
+          hintText: widget.hintText,
+          labelText: widget.labelText,
+        ),
       ),
     );
   }
