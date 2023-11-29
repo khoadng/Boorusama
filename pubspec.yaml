@@ -77,6 +77,7 @@ dependencies:
   intl: ^0.18.1
   jiffy: ^6.2.1
   like_button: ^2.0.5
+  local_auth: ^2.1.7
   lottie: ^2.7.0
   media_scanner: ^2.1.0
   modal_bottom_sheet: ^3.0.0-pre

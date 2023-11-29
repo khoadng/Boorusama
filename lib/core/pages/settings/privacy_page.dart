@@ -8,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class PrivacyPage extends ConsumerWidget {
@@ -37,7 +36,6 @@ class PrivacyPage extends ConsumerWidget {
             ListTile(
               title: const Text('settings.privacy.send_error_data_notice').tr(),
               trailing: Switch(
-                activeColor: context.colorScheme.primary,
                 value:
                     settings.dataCollectingStatus == DataCollectingStatus.allow,
                 onChanged: (value) {
@@ -55,12 +53,28 @@ class PrivacyPage extends ConsumerWidget {
                 'Whether to enable that the IME update personalized data such as typing history and user dictionary data. Only affects Android.',
               ),
               trailing: Switch(
-                activeColor: context.colorScheme.primary,
                 value: settings.enableIncognitoModeForKeyboard,
                 onChanged: (value) {
                   ref.updateSettings(settings.copyWith(
                     enableIncognitoModeForKeyboard: value,
                   ));
+                },
+              ),
+            ),
+            ListTile(
+              title: const Text('Enable biometric lock'),
+              subtitle: const Text(
+                'Only works on devices with biometrics support and has been set up.',
+              ),
+              trailing: Switch(
+                value: settings.appLockType == AppLockType.biometrics,
+                onChanged: (value) {
+                  ref.updateSettings(
+                    settings.copyWith(
+                      appLockType:
+                          value ? AppLockType.biometrics : AppLockType.none,
+                    ),
+                  );
                 },
               ),
             ),

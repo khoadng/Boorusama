@@ -138,7 +138,9 @@ class PostGridActionSheet extends ConsumerWidget {
     ];
 
     return Material(
-      color: context.colorScheme.secondaryContainer,
+      color: isDesktopPlatform()
+          ? context.colorScheme.surface
+          : context.colorScheme.secondaryContainer,
       child: ConditionalParentWidget(
         condition: isMobilePlatform(),
         conditionalBuilder: (child) => Padding(

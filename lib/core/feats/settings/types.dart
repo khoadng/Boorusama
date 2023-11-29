@@ -40,6 +40,12 @@ enum DownloadQuality {
   preview,
 }
 
+enum AppLockType {
+  none,
+  biometrics,
+  pin,
+}
+
 class Settings extends Equatable {
   const Settings({
     required this.safeMode,
@@ -65,6 +71,7 @@ class Settings extends Equatable {
     required this.enableIncognitoModeForKeyboard,
     required this.enableDynamicColoring,
     required this.clearImageCacheOnStartup,
+    required this.appLockType,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
@@ -109,6 +116,9 @@ class Settings extends Equatable {
         enableDynamicColoring = json['enableDynamicColoring'] ?? false,
         clearImageCacheOnStartup = json['clearImageCacheOnStartup'] ?? false,
         imageBorderRadius = json['imageBorderRadius'],
+        appLockType = json['appLockType'] != null
+            ? AppLockType.values[json['appLockType']]
+            : AppLockType.none,
         imageGridSpacing = json['imageGridSpacing'];
 
   static const defaultSettings = Settings(
@@ -135,6 +145,7 @@ class Settings extends Equatable {
     enableIncognitoModeForKeyboard: false,
     enableDynamicColoring: false,
     clearImageCacheOnStartup: false,
+    appLockType: AppLockType.none,
   );
 
   final String blacklistedTags;
@@ -177,6 +188,8 @@ class Settings extends Equatable {
 
   final bool clearImageCacheOnStartup;
 
+  final AppLockType appLockType;
+
   Settings copyWith({
     String? blacklistedTags,
     String? language,
@@ -201,6 +214,7 @@ class Settings extends Equatable {
     bool? enableIncognitoModeForKeyboard,
     bool? enableDynamicColoring,
     bool? clearImageCacheOnStartup,
+    AppLockType? appLockType,
   }) =>
       Settings(
         safeMode: safeMode ?? this.safeMode,
@@ -231,6 +245,7 @@ class Settings extends Equatable {
             enableDynamicColoring ?? this.enableDynamicColoring,
         clearImageCacheOnStartup:
             clearImageCacheOnStartup ?? this.clearImageCacheOnStartup,
+        appLockType: appLockType ?? this.appLockType,
       );
 
   Map<String, dynamic> toJson() => {
@@ -257,6 +272,7 @@ class Settings extends Equatable {
         'enableIncognitoModeForKeyboard': enableIncognitoModeForKeyboard,
         'enableDynamicColoring': enableDynamicColoring,
         'clearImageCacheOnStartup': clearImageCacheOnStartup,
+        'appLockType': appLockType.index,
       };
 
   @override
@@ -284,5 +300,10 @@ class Settings extends Equatable {
         enableIncognitoModeForKeyboard,
         enableDynamicColoring,
         clearImageCacheOnStartup,
+        appLockType,
       ];
+}
+
+extension SettingsX on Settings {
+  bool get appLockEnabled => appLockType == AppLockType.biometrics;
 }
