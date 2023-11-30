@@ -19,6 +19,7 @@ import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
@@ -143,13 +144,16 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
             ),
           ],
         ),
-        body: Column(
-          children: [
-            Expanded(
-              child: _buildSplit(context),
-            ),
-            _buildMode(context, aiTagSupport ?? false),
-          ],
+        body: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: Column(
+            children: [
+              Expanded(
+                child: _buildSplit(context),
+              ),
+              _buildMode(context, aiTagSupport ?? false),
+            ],
+          ),
         ),
       ),
     );
@@ -284,6 +288,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
               SliverToBoxAdapter(
                 child: Wrap(
                   spacing: 4,
+                  runSpacing: isMobilePlatform() ? 0 : 6,
                   children: tags.map((tag) {
                     final colors =
                         ref.watch(danbooruTagEditColorProvider(tag)).maybeWhen(
@@ -399,7 +404,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
             ),
           ),
         null => Container(
-            margin: const EdgeInsets.only(left: 20, bottom: 20, top: 8),
+            margin: const EdgeInsets.only(left: 8, bottom: 20, top: 8),
             height: 42,
             child: ListView(
               scrollDirection: Axis.horizontal,
