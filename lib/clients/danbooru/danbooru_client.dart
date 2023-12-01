@@ -18,6 +18,7 @@ import 'danbooru_client_reports.dart';
 import 'danbooru_client_saved_searches.dart';
 import 'danbooru_client_tags.dart';
 import 'danbooru_client_users.dart';
+import 'danbooru_client_versions.dart';
 import 'types/autocomplete_dto.dart';
 import 'types/note_dto.dart';
 import 'types/wiki_dto.dart';
@@ -39,6 +40,7 @@ class DanbooruClient
         DanbooruClientSavedSearches,
         DanbooruClientDmails,
         DanbooruClientTags,
+        DanbooruClientVersions,
         DanbooruClientUsers {
   DanbooruClient({
     required String baseUrl,

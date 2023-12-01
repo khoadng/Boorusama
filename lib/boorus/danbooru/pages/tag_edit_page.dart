@@ -236,45 +236,11 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      RichText(
-                        text: TextSpan(
-                          text:
-                              '${widget.tags.length} tag${widget.tags.length > 1 ? 's' : ''}',
-                          style: Theme.of(context).textTheme.titleLarge,
-                          children: [
-                            if (toBeAdded.isNotEmpty && toBeRemoved.isNotEmpty)
-                              TextSpan(
-                                text:
-                                    ' (${toBeAdded.length} added, ${toBeRemoved.length} removed)',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(
-                                      color: context.theme.hintColor,
-                                    ),
-                              )
-                            else if (toBeAdded.isNotEmpty)
-                              TextSpan(
-                                text: ' (${toBeAdded.length} added)',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(
-                                      color: context.theme.hintColor,
-                                    ),
-                              )
-                            else if (toBeRemoved.isNotEmpty)
-                              TextSpan(
-                                text: ' (${toBeRemoved.length} removed)',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(
-                                      color: context.theme.hintColor,
-                                    ),
-                              ),
-                          ],
-                        ),
+                      TagChangedText(
+                        title:
+                            '${widget.tags.length} tag${widget.tags.length > 1 ? 's' : ''}',
+                        added: toBeAdded,
+                        removed: toBeRemoved,
                       ),
                     ],
                   ),

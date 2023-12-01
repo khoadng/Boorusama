@@ -12,7 +12,7 @@ UserLevel intToUserLevel(int value) => switch (value) {
       _ => UserLevel.member
     };
 
-UserLevel stringToUserLevel(String value) => switch (value.toLowerCase()) {
+UserLevel stringToUserLevel(String? value) => switch (value?.toLowerCase()) {
       'restricted' => UserLevel.restricted,
       'member' => UserLevel.member,
       'gold' => UserLevel.gold,

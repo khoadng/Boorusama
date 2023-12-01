@@ -65,6 +65,8 @@ class DanbooruMoreActionButton extends ConsumerWidget {
                 case 'toggle_slide_show':
                   onToggleSlideShow?.call();
                   break;
+                case 'tag_history':
+                  goToPostVersionPage(context, post);
                 // ignore: no_default_cases
                 default:
               }
@@ -87,6 +89,10 @@ class DanbooruMoreActionButton extends ConsumerWidget {
               const PopupMenuItem(
                 value: 'add_to_global_blacklist',
                 child: Text('Add to global blacklist'),
+              ),
+              const PopupMenuItem(
+                value: 'tag_history',
+                child: Text('View tag history'),
               ),
               PopupMenuItem(
                 value: 'view_in_browser',

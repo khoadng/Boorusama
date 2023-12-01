@@ -36,6 +36,7 @@ import 'pages/danbooru_artist_search_page.dart';
 import 'pages/danbooru_character_page.dart';
 import 'pages/danbooru_dmail_page.dart';
 import 'pages/danbooru_forum_page.dart';
+import 'pages/danbooru_post_versions_page.dart';
 import 'pages/explore_hot_page.dart';
 import 'pages/explore_most_viewed_page.dart';
 import 'pages/explore_popular_page.dart';
@@ -62,6 +63,18 @@ void goToPoolDetailPage(BuildContext context, Pool pool) {
   context.navigator.push(MaterialPageRoute(
     builder: (_) => PoolDetailPage.of(context, pool: pool),
   ));
+}
+
+void goToPostVersionPage(BuildContext context, DanbooruPost post) {
+  showMaterialModalBottomSheet(
+    context: context,
+    builder: (_) {
+      return DanbooruPostVersionsPage(
+        postId: post.id,
+        previewUrl: post.sampleImageUrl,
+      );
+    },
+  );
 }
 
 void goToExplorePopularPage(BuildContext context) {
