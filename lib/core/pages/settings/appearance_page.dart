@@ -90,16 +90,21 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
                   ref.updateSettings(settings.copyWith(themeMode: value)),
               optionBuilder: (value) => Text(_themeModeToString(value).tr()),
             ),
-            if (dynamicColorSupported)
-              SwitchListTile(
-                title: const Text('Dynamic theme color').tr(),
-                subtitle: const Text(
-                  'Sync theme color with wallpaper',
-                ).tr(),
-                value: settings.enableDynamicColoring,
-                onChanged: (value) => ref.updateSettings(
-                    settings.copyWith(enableDynamicColoring: value)),
-              ),
+            SwitchListTile(
+              title: const Text('Dynamic theme color').tr(),
+              subtitle: dynamicColorSupported
+                  ? const Text(
+                      'Sync theme color with wallpaper',
+                    )
+                  : const Text(
+                      'Sync theme color with wallpaper. This device does not support dynamic color.',
+                    ),
+              value: settings.enableDynamicColoring,
+              onChanged: dynamicColorSupported
+                  ? (value) => ref.updateSettings(
+                      settings.copyWith(enableDynamicColoring: value))
+                  : null,
+            ),
             const Divider(thickness: 1),
             SettingsHeader(label: 'settings.image_grid.image_grid'.tr()),
             SettingsTile<GridSize>(

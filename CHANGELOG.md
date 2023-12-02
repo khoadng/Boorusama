@@ -1,5 +1,5 @@
 # 3.8.0
-- Migrate to Material 3, support dynamic color theme
+- Migrate to Material 3, support dynamic theme color for Android 12+
 - Show more information in bookmark details
 - Add more privacy focus features like incognito keyboard, biometric lock
 - Add an option to duplicate a profile
