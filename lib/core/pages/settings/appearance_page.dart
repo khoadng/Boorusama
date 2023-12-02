@@ -66,6 +66,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
   @override
   Widget build(BuildContext context) {
     final settings = ref.watch(settingsProvider);
+    final dynamicColorSupported = ref.watch(dynamicColorSupportProvider);
 
     return ConditionalParentWidget(
       condition: widget.hasAppBar,
@@ -88,6 +89,21 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
               onChanged: (value) =>
                   ref.updateSettings(settings.copyWith(themeMode: value)),
               optionBuilder: (value) => Text(_themeModeToString(value).tr()),
+            ),
+            SwitchListTile(
+              title: const Text('Dynamic theme color').tr(),
+              subtitle: dynamicColorSupported
+                  ? const Text(
+                      'Sync theme color with wallpaper',
+                    )
+                  : const Text(
+                      'Sync theme color with wallpaper. This device does not support dynamic color.',
+                    ),
+              value: settings.enableDynamicColoring,
+              onChanged: dynamicColorSupported
+                  ? (value) => ref.updateSettings(
+                      settings.copyWith(enableDynamicColoring: value))
+                  : null,
             ),
             const Divider(thickness: 1),
             SettingsHeader(label: 'settings.image_grid.image_grid'.tr()),
@@ -136,13 +152,13 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
                   ref.updateSettings(settings.copyWith(pageMode: value)),
               optionBuilder: (value) => Text(_layoutToString(value)).tr(),
             ),
-            SwitchListTile.adaptive(
+            SwitchListTile(
               title: const Text('settings.appearance.show_scores').tr(),
               value: settings.showScoresInGrid,
               onChanged: (value) => ref
                   .updateSettings(settings.copyWith(showScoresInGrid: value)),
             ),
-            SwitchListTile.adaptive(
+            SwitchListTile(
               title: const Text('Show posts configuration header').tr(),
               value: settings.showPostListConfigHeader,
               onChanged: (value) =>
@@ -188,10 +204,10 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
   }
 
   Widget _buildBorderRadiusSlider(Settings settings) {
-    return ValueListenableBuilder<double>(
+    return ValueListenableBuilder(
       valueListenable: _borderRadiusSliderValue,
       builder: (context, value, child) {
-        return Slider.adaptive(
+        return Slider(
           label: value.toInt().toString(),
           divisions: 10,
           max: 10,
@@ -205,10 +221,10 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
   }
 
   Widget _buildSpacingSlider(Settings settings) {
-    return ValueListenableBuilder<double>(
+    return ValueListenableBuilder(
       valueListenable: _spacingSliderValue,
       builder: (context, value, child) {
-        return Slider.adaptive(
+        return Slider(
           label: value.toInt().toString(),
           divisions: 10,
           max: 10,

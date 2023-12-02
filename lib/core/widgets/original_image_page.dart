@@ -77,9 +77,7 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
           child: Scaffold(
             extendBodyBehindAppBar: true,
             appBar: AppBar(
-              elevation: 0,
               toolbarHeight: kToolbarHeight * 1.3,
-              backgroundColor: Colors.transparent,
               automaticallyImplyLeading: false,
               leading: overlay
                   ? IconButton(

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart' hide ThemeMode;
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:toggle_switch/toggle_switch.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
@@ -36,7 +35,7 @@ enum TagEditExpandMode {
 const _kHowToRateUrl = 'https://danbooru.donmai.us/wiki_pages/howto:rate';
 
 final danbooruTagEditColorProvider =
-    FutureProvider.autoDispose.family<ChipColors?, String>((ref, tag) async {
+    FutureProvider.autoDispose.family<Color?, String>((ref, tag) async {
   final config = ref.watchConfig;
   final settings = ref.watch(settingsProvider);
   final tagTypeStore = ref.watch(booruTagTypeStoreProvider);
@@ -46,9 +45,7 @@ final danbooruTagEditColorProvider =
       .watch(booruBuilderProvider)
       ?.tagColorBuilder(settings.themeMode, tagType);
 
-  return color != null && color != Colors.white
-      ? generateChipColors(color, settings.themeMode)
-      : null;
+  return color;
 });
 
 class TagEditPage extends ConsumerStatefulWidget {
@@ -94,6 +91,16 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
     scrollController.dispose();
   }
 
+  void _pop() {
+    if (expandMode != null) {
+      setState(() {
+        expandMode = null;
+      });
+    } else {
+      context.pop();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final config = ref.watchConfig;
@@ -101,19 +108,20 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
         ref.watch(booruFactoryProvider).create(type: config.booruType);
     final aiTagSupport = booru?.hasAiTagSupported(config.url);
 
-    return WillPopScope(
-      onWillPop: () {
-        if (expandMode != null) {
-          setState(() {
-            expandMode = null;
-          });
-          return Future.value(false);
-        }
-        return Future.value(true);
+    return PopScope(
+      canPop: expandMode == null,
+      onPopInvoked: (didPop) {
+        if (didPop) return;
+
+        _pop();
       },
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Edit'),
+          leading: IconButton(
+            onPressed: _pop,
+            icon: const Icon(Icons.arrow_back),
+          ),
           actions: [
             TextButton(
               onPressed: (toBeAdded.isNotEmpty ||
@@ -136,13 +144,16 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
             ),
           ],
         ),
-        body: Column(
-          children: [
-            Expanded(
-              child: _buildSplit(context),
-            ),
-            _buildMode(context, aiTagSupport ?? false),
-          ],
+        body: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: Column(
+            children: [
+              Expanded(
+                child: _buildSplit(context),
+              ),
+              _buildMode(context, aiTagSupport ?? false),
+            ],
+          ),
         ),
       ),
     );
@@ -203,28 +214,16 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
               ),
               SliverToBoxAdapter(
                 child: Center(
-                  child: ToggleSwitch(
-                    dividerColor: Colors.black,
-                    changeOnTap: false,
-                    initialLabelIndex: ratingLabels.indexOf(rating.name),
-                    minWidth: 75,
-                    minHeight: 30,
-                    cornerRadius: 5,
-                    customWidths: const [70, 120, 80, 75],
-                    labels: ratingLabels.map((e) => e.sentenceCase).toList(),
-                    activeBgColor: [context.colorScheme.primary],
-                    inactiveBgColor: context.colorScheme.background,
-                    borderWidth: 1,
-                    borderColor: [context.theme.hintColor],
-                    onToggle: (index) {
+                  child: BooruSegmentedButton(
+                    segments: {
+                      for (final rating
+                          in Rating.values.where((e) => e != Rating.unknown))
+                        rating: rating.name.sentenceCase,
+                    },
+                    initialValue: rating,
+                    onChanged: (value) {
                       setState(() {
-                        rating = switch (index) {
-                          0 => Rating.explicit,
-                          1 => Rating.questionable,
-                          2 => Rating.sensitive,
-                          3 => Rating.general,
-                          _ => Rating.unknown,
-                        };
+                        rating = value;
                       });
                     },
                   ),
@@ -237,45 +236,11 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      RichText(
-                        text: TextSpan(
-                          text:
-                              '${widget.tags.length} tag${widget.tags.length > 1 ? 's' : ''}',
-                          style: Theme.of(context).textTheme.titleLarge,
-                          children: [
-                            if (toBeAdded.isNotEmpty && toBeRemoved.isNotEmpty)
-                              TextSpan(
-                                text:
-                                    ' (${toBeAdded.length} added, ${toBeRemoved.length} removed)',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(
-                                      color: context.theme.hintColor,
-                                    ),
-                              )
-                            else if (toBeAdded.isNotEmpty)
-                              TextSpan(
-                                text: ' (${toBeAdded.length} added)',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(
-                                      color: context.theme.hintColor,
-                                    ),
-                              )
-                            else if (toBeRemoved.isNotEmpty)
-                              TextSpan(
-                                text: ' (${toBeRemoved.length} removed)',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(
-                                      color: context.theme.hintColor,
-                                    ),
-                              ),
-                          ],
-                        ),
+                      TagChangedText(
+                        title:
+                            '${widget.tags.length} tag${widget.tags.length > 1 ? 's' : ''}',
+                        added: toBeAdded,
+                        removed: toBeRemoved,
                       ),
                     ],
                   ),
@@ -288,12 +253,19 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
               ),
               SliverToBoxAdapter(
                 child: Wrap(
-                  runSpacing: isMobilePlatform() ? -4 : 8,
                   spacing: 4,
+                  runSpacing: isMobilePlatform() ? 0 : 6,
                   children: tags.map((tag) {
                     final colors =
                         ref.watch(danbooruTagEditColorProvider(tag)).maybeWhen(
-                              data: (color) => color,
+                              data: (color) =>
+                                  color != null && color != Colors.white
+                                      ? generateChipColorsFromColorScheme(
+                                          color,
+                                          ref.watch(settingsProvider),
+                                          context.colorScheme,
+                                        )
+                                      : null,
                               orElse: () => null,
                             );
                     final backgroundColor = colors?.backgroundColor;
@@ -342,7 +314,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
       switch (expandMode) {
         TagEditExpandMode.favorite => Container(
             height: 280,
-            color: context.colorScheme.background,
+            color: context.colorScheme.secondaryContainer,
             child: TagEditFavoriteView(
               onRemoved: (tag) {
                 _removeTag(tag);
@@ -360,7 +332,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
           ),
         TagEditExpandMode.related => Container(
             height: 280,
-            color: context.colorScheme.background,
+            color: context.colorScheme.secondaryContainer,
             child: TagEditWikiView(
               tag: selectedTag,
               onRemoved: (tag) {
@@ -380,7 +352,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
           ),
         TagEditExpandMode.aiTag => Container(
             height: 280,
-            color: context.colorScheme.background,
+            color: context.colorScheme.secondaryContainer,
             child: TagEditAITagView(
               postId: widget.postId,
               onRemoved: (tag) {
@@ -398,14 +370,17 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
             ),
           ),
         null => Container(
-            margin: const EdgeInsets.only(left: 20, bottom: 20, top: 8),
+            margin: const EdgeInsets.only(left: 8, bottom: 20, top: 8),
             height: 42,
             child: ListView(
               scrollDirection: Axis.horizontal,
               children: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: context.theme.cardColor,
+                FilledButton(
+                  style: FilledButton.styleFrom(
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(4)),
+                    ),
+                    backgroundColor: context.colorScheme.surfaceVariant,
                   ),
                   onPressed: () {
                     goToQuickSearchPage(
@@ -416,44 +391,73 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                       },
                     );
                   },
-                  child: const Text('Search'),
+                  child: Text(
+                    'Search',
+                    style: TextStyle(
+                      color: context.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
                 ),
-                const SizedBox(width: 8),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: context.theme.cardColor,
+                const SizedBox(width: 4),
+                FilledButton(
+                  style: FilledButton.styleFrom(
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(4)),
+                    ),
+                    backgroundColor: context.colorScheme.surfaceVariant,
                   ),
                   onPressed: () {
                     setState(() {
                       expandMode = TagEditExpandMode.favorite;
                     });
                   },
-                  child: const Text('Favorites'),
+                  child: Text(
+                    'Favorites',
+                    style: TextStyle(
+                      color: context.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
                 ),
-                const SizedBox(width: 8),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: context.theme.cardColor,
+                const SizedBox(width: 4),
+                FilledButton(
+                  style: FilledButton.styleFrom(
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(4)),
+                    ),
+                    backgroundColor: context.colorScheme.surfaceVariant,
                   ),
                   onPressed: () {
                     setState(() {
                       expandMode = TagEditExpandMode.related;
                     });
                   },
-                  child: const Text('Related'),
+                  child: Text(
+                    'Related',
+                    style: TextStyle(
+                      color: context.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
                 ),
                 if (aiTagSupport) ...[
-                  const SizedBox(width: 8),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: context.theme.cardColor,
+                  const SizedBox(width: 4),
+                  FilledButton(
+                    style: FilledButton.styleFrom(
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(4)),
+                      ),
+                      backgroundColor: context.colorScheme.surfaceVariant,
                     ),
                     onPressed: () {
                       setState(() {
                         expandMode = TagEditExpandMode.aiTag;
                       });
                     },
-                    child: const Text('Suggested'),
+                    child: Text(
+                      'Suggested',
+                      style: TextStyle(
+                        color: context.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
                   ),
                 ],
               ],
@@ -530,43 +534,42 @@ class _TagEditFavoriteViewState extends ConsumerState<TagEditFavoriteView> {
     final tags = ref.watch(favoriteTagsProvider);
 
     return Scaffold(
+      backgroundColor: context.colorScheme.secondaryContainer,
       appBar: AppBar(
-        elevation: 0,
         title: const Text('Favorite tags'),
-        backgroundColor: Colors.transparent,
         automaticallyImplyLeading: false,
         leading: IconButton(
           onPressed: widget.onClosed,
           icon: const Icon(Icons.keyboard_arrow_down),
         ),
       ),
-      backgroundColor: context.colorScheme.background,
-      body: Builder(
-        builder: (context) {
-          return Wrap(
-            spacing: 4,
-            children: tags.map((tag) {
-              final selected = widget.isSelected(tag.name);
+      body: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: Wrap(
+          spacing: 4,
+          children: tags.map((tag) {
+            final selected = widget.isSelected(tag.name);
 
-              return RawChip(
-                selected: selected,
-                showCheckmark: true,
-                checkmarkColor:
-                    context.themeMode.isDark ? Colors.black : Colors.white,
-                visualDensity: VisualDensity.compact,
-                onSelected: (value) => value
-                    ? widget.onAdded(tag.name)
-                    : widget.onRemoved(tag.name),
-                label: Text(
-                  tag.name.replaceUnderscoreWithSpace(),
-                  style: TextStyle(
-                    color: selected ? Colors.black : Colors.white,
-                  ),
-                ),
-              );
-            }).toList(),
-          );
-        },
+            return FilterChip(
+              side: selected
+                  ? BorderSide(
+                      color: context.theme.hintColor,
+                      width: 0.5,
+                    )
+                  : null,
+              selected: selected,
+              showCheckmark: true,
+              visualDensity: VisualDensity.compact,
+              selectedColor: context.colorScheme.primary,
+              backgroundColor: context.colorScheme.background,
+              onSelected: (value) =>
+                  value ? widget.onAdded(tag.name) : widget.onRemoved(tag.name),
+              label: Text(
+                tag.name.replaceUnderscoreWithSpace(),
+              ),
+            );
+          }).toList(),
+        ),
       ),
     );
   }
@@ -603,80 +606,72 @@ class _TagEditzwikiViewState extends ConsumerState<TagEditWikiView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: context.colorScheme.secondaryContainer,
       appBar: AppBar(
-        elevation: 0,
         title: const Text('Related tags'),
-        backgroundColor: Colors.transparent,
         automaticallyImplyLeading: false,
         leading: IconButton(
           onPressed: widget.onClosed,
           icon: const Icon(Icons.keyboard_arrow_down),
         ),
       ),
-      backgroundColor: context.colorScheme.background,
-      body: widget.tag.toOption().fold(
-            () => const Center(
-              child: Text(
-                'Select a tag to view related tags',
+      body: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: widget.tag.toOption().fold(
+              () => const Center(
+                child: Text(
+                  'Select a tag to view related tags',
+                ),
               ),
-            ),
-            (tag) => SingleChildScrollView(
-              child: Column(
-                children: [
-                  Center(
-                    child: ToggleSwitch(
-                      dividerColor: Colors.black,
-                      changeOnTap: false,
-                      initialLabelIndex: relatedTabs.indexOf(selectTab),
-                      minWidth: 75,
-                      minHeight: 30,
-                      cornerRadius: 5,
-                      customWidths: const [60, 70],
-                      labels: relatedTabs.map((e) => e.sentenceCase).toList(),
-                      activeBgColor: [context.colorScheme.primary],
-                      inactiveBgColor: context.colorScheme.background,
-                      borderWidth: 1,
-                      borderColor: [context.theme.hintColor],
-                      onToggle: (index) {
-                        setState(() {
-                          selectTab = switch (index) {
-                            1 => 'wiki',
-                            _ => 'all',
-                          };
-                        });
-                      },
+              (tag) => SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Center(
+                      child: BooruSegmentedButton(
+                        segments: {
+                          for (final entry in relatedTabs)
+                            entry: entry.sentenceCase,
+                        },
+                        initialValue: selectTab,
+                        onChanged: (values) {
+                          setState(() {
+                            selectTab = values;
+                          });
+                        },
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 12),
-                  switch (selectTab) {
-                    'wiki' =>
-                      ref.watch(danbooruWikiTagsProvider(tag)).maybeWhen(
-                          data: (data) => data.isNotEmpty
-                              ? _RelatedTagChips(
+                    const SizedBox(height: 12),
+                    switch (selectTab) {
+                      'wiki' =>
+                        ref.watch(danbooruWikiTagsProvider(tag)).maybeWhen(
+                            data: (data) => data.isNotEmpty
+                                ? _RelatedTagChips(
+                                    tags: data,
+                                    isSelected: widget.isSelected,
+                                    onAdded: widget.onAdded,
+                                    onRemoved: widget.onRemoved,
+                                  )
+                                : const Center(child: Text('No tags found')),
+                            orElse: () => const Center(
+                                  child: CircularProgressIndicator.adaptive(),
+                                )),
+                      _ =>
+                        ref.watch(danbooruRelatedTagsProvider(tag)).maybeWhen(
+                            data: (data) => _RelatedTagChips(
                                   tags: data,
                                   isSelected: widget.isSelected,
                                   onAdded: widget.onAdded,
                                   onRemoved: widget.onRemoved,
-                                )
-                              : const Center(child: Text('No tags found')),
-                          orElse: () => const Center(
-                                child: CircularProgressIndicator.adaptive(),
-                              )),
-                    _ => ref.watch(danbooruRelatedTagsProvider(tag)).maybeWhen(
-                        data: (data) => _RelatedTagChips(
-                              tags: data,
-                              isSelected: widget.isSelected,
-                              onAdded: widget.onAdded,
-                              onRemoved: widget.onRemoved,
-                            ),
-                        orElse: () => const Center(
-                              child: CircularProgressIndicator.adaptive(),
-                            )),
-                  },
-                ],
+                                ),
+                            orElse: () => const Center(
+                                  child: CircularProgressIndicator.adaptive(),
+                                )),
+                    },
+                  ],
+                ),
               ),
             ),
-          ),
+      ),
     );
   }
 }
@@ -700,21 +695,27 @@ class _RelatedTagChips extends ConsumerWidget {
       spacing: 4,
       children: tags.map((tag) {
         final selected = isSelected(tag.name);
-        final colors = generateChipColors(
-            ref.getTagColor(context, tag.category.name), context.themeMode);
+        final colors = context.generateChipColors(
+          ref.getTagColor(context, tag.category.name),
+          ref.watch(settingsProvider),
+        );
 
         return RawChip(
           selected: selected,
           showCheckmark: true,
-          checkmarkColor: colors.foregroundColor,
+          checkmarkColor: colors?.foregroundColor,
           visualDensity: VisualDensity.compact,
-          selectedColor: colors.backgroundColor,
-          backgroundColor: selected ? colors.backgroundColor : null,
+          selectedColor: colors?.backgroundColor,
+          backgroundColor: selected
+              ? colors?.backgroundColor
+              : context.colorScheme.secondaryContainer,
           side: selected
-              ? BorderSide(
-                  width: 2,
-                  color: colors.borderColor,
-                )
+              ? colors != null
+                  ? BorderSide(
+                      width: 2,
+                      color: colors.borderColor,
+                    )
+                  : null
               : null,
           onSelected: (value) =>
               value ? onAdded(tag.name) : onRemoved(tag.name),
@@ -727,7 +728,9 @@ class _RelatedTagChips extends ConsumerWidget {
               text: TextSpan(
                 text: tag.name.replaceUnderscoreWithSpace(),
                 style: TextStyle(
-                  color: colors.foregroundColor,
+                  color: selected
+                      ? colors?.foregroundColor
+                      : context.colorScheme.onSecondaryContainer,
                   fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
                 ),
                 children: [
@@ -772,77 +775,89 @@ class _TagEditAITagViewState extends ConsumerState<TagEditAITagView> {
     final tagAsync = ref.watch(danbooruAITagsProvider(widget.postId));
 
     return Scaffold(
+      backgroundColor: context.colorScheme.secondaryContainer,
       appBar: AppBar(
-        elevation: 0,
         title: const Text('Suggested tags'),
-        backgroundColor: Colors.transparent,
         automaticallyImplyLeading: false,
         leading: IconButton(
           onPressed: widget.onClosed,
           icon: const Icon(Icons.keyboard_arrow_down),
         ),
       ),
-      backgroundColor: context.colorScheme.background,
       body: SingleChildScrollView(
         child: Column(
           children: [
             WarningContainer(contentBuilder: (context) {
-              return const Text(
-                  'The suggested tags are generated by AI, please check them carefully before submitting.');
+              return Text(
+                'The suggested tags are generated by AI, please check them carefully before submitting.',
+                style: TextStyle(
+                  color: context.colorScheme.onError,
+                ),
+              );
             }),
-            tagAsync.maybeWhen(
-              data: (tags) => Wrap(
-                spacing: 4,
-                children: tags.map((d) {
-                  final tag = d.tag;
-                  final colors = generateChipColors(
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: tagAsync.maybeWhen(
+                data: (tags) => Wrap(
+                  spacing: 4,
+                  children: tags.map((d) {
+                    final tag = d.tag;
+                    final colors = context.generateChipColors(
                       ref.getTagColor(context, tag.category.name),
-                      context.themeMode);
-                  final selected = widget.isSelected(tag.name);
+                      ref.watch(settingsProvider),
+                    );
+                    final selected = widget.isSelected(tag.name);
 
-                  return RawChip(
-                    selected: selected,
-                    showCheckmark: true,
-                    checkmarkColor: colors.foregroundColor,
-                    visualDensity: VisualDensity.compact,
-                    selectedColor: colors.backgroundColor,
-                    backgroundColor: selected ? colors.backgroundColor : null,
-                    side: selected
-                        ? BorderSide(
-                            width: 2,
-                            color: colors.borderColor,
-                          )
-                        : null,
-                    onSelected: (value) => value
-                        ? widget.onAdded(tag.name)
-                        : widget.onRemoved(tag.name),
-                    label: ConstrainedBox(
-                      constraints: BoxConstraints(
-                        maxWidth: context.screenWidth * 0.8,
-                      ),
-                      child: RichText(
-                        overflow: TextOverflow.ellipsis,
-                        text: TextSpan(
-                          text: tag.name.replaceUnderscoreWithSpace(),
-                          style: TextStyle(
-                            color: colors.foregroundColor,
-                            fontWeight:
-                                selected ? FontWeight.w700 : FontWeight.w500,
-                          ),
-                          children: [
-                            TextSpan(
-                              text: '  ${d.score}%',
-                              style: context.textTheme.bodySmall,
+                    return RawChip(
+                      selected: selected,
+                      showCheckmark: true,
+                      checkmarkColor: colors?.foregroundColor,
+                      visualDensity: VisualDensity.compact,
+                      selectedColor: colors?.backgroundColor,
+                      backgroundColor: selected
+                          ? colors?.backgroundColor
+                          : context.colorScheme.secondaryContainer,
+                      side: selected
+                          ? colors != null
+                              ? BorderSide(
+                                  width: 2,
+                                  color: colors.borderColor,
+                                )
+                              : null
+                          : null,
+                      onSelected: (value) => value
+                          ? widget.onAdded(tag.name)
+                          : widget.onRemoved(tag.name),
+                      label: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxWidth: context.screenWidth * 0.8,
+                        ),
+                        child: RichText(
+                          overflow: TextOverflow.ellipsis,
+                          text: TextSpan(
+                            text: tag.name.replaceUnderscoreWithSpace(),
+                            style: TextStyle(
+                              color: selected
+                                  ? colors?.foregroundColor
+                                  : context.colorScheme.onSecondaryContainer,
+                              fontWeight:
+                                  selected ? FontWeight.w700 : FontWeight.w500,
                             ),
-                          ],
+                            children: [
+                              TextSpan(
+                                text: '  ${d.score}%',
+                                style: context.textTheme.bodySmall,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                }).toList(),
-              ),
-              orElse: () => const Center(
-                child: CircularProgressIndicator.adaptive(),
+                    );
+                  }).toList(),
+                ),
+                orElse: () => const Center(
+                  child: CircularProgressIndicator.adaptive(),
+                ),
               ),
             ),
           ],

@@ -20,8 +20,7 @@ class SavedSearchLandingView extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('saved_search.saved_search_feed').tr(),
-        elevation: 0,
-        shadowColor: Colors.transparent,
+        backgroundColor: context.theme.scaffoldBackgroundColor,
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -43,7 +42,7 @@ class SavedSearchLandingView extends ConsumerWidget {
                     ),
                     child: const Text('saved_search.saved_search_help').tr(),
                   ),
-                  ElevatedButton(
+                  FilledButton(
                     onPressed: () => _onAddSearch(ref, context),
                     child: const Text('generic.action.add').tr(),
                   ),
@@ -136,7 +135,7 @@ class _ExampleContainer extends StatelessWidget {
               ),
               Card(
                 margin: const EdgeInsets.all(8),
-                color: context.colorScheme.background,
+                color: context.colorScheme.surface,
                 child: Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
@@ -150,7 +149,7 @@ class _ExampleContainer extends StatelessWidget {
               Row(
                 children: [
                   const Spacer(),
-                  ElevatedButton(
+                  FilledButton(
                     onPressed: () => onTry(query),
                     child: const Text('saved_search.saved_search_try').tr(),
                   ),

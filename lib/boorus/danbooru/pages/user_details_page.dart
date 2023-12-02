@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:math';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -18,6 +21,7 @@ import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/string.dart';
@@ -69,10 +73,7 @@ class UserDetailsPage extends ConsumerWidget {
     final state = ref.watch(danbooruUserProvider(uid));
 
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-      ),
+      appBar: AppBar(),
       body: SafeArea(
         child: state.when(
           data: (user) => Container(
@@ -183,7 +184,10 @@ class UserDetailsPage extends ConsumerWidget {
   }
 
   Widget _buildTags(
-      List<RelatedTagItem> tags, BuildContext context, WidgetRef ref) {
+    List<RelatedTagItem> tags,
+    BuildContext context,
+    WidgetRef ref,
+  ) {
     return Wrap(
       spacing: 8,
       children: tags
@@ -202,8 +206,10 @@ class UserDetailsPage extends ConsumerWidget {
                     text: TextSpan(
                       text: e.tag.replaceUnderscoreWithSpace(),
                       style: TextStyle(
-                        color: ref.getTagColor(
-                            context, TagCategory.copyright.name),
+                        color: context.themeMode.isDark
+                            ? ref.getTagColor(
+                                context, TagCategory.copyright.name)
+                            : Colors.white,
                       ),
                       children: [
                         TextSpan(
@@ -238,7 +244,7 @@ class UserDetailsPage extends ConsumerWidget {
         barTouchData: BarTouchData(
           enabled: true,
           touchTooltipData: BarTouchTooltipData(
-            tooltipBgColor: context.theme.cardColor,
+            tooltipBgColor: context.colorScheme.surfaceVariant,
             fitInsideHorizontally: true,
             getTooltipItem: (group, groupIndex, rod, rodIndex) {
               final date = data[groupIndex].date;
@@ -393,14 +399,18 @@ class _PreviewList extends ConsumerWidget {
             child: const Text('View all'),
           ),
         ),
-        PreviewPostList(
-          posts: posts,
-          onTap: (index) => goToPostDetailsPage(
-            context: context,
-            posts: posts.toList(),
-            initialIndex: index,
+        LayoutBuilder(
+          builder: (context, constraints) => PreviewPostList(
+            posts: posts,
+            height: isMobilePlatform() ? null : 300,
+            width: max(constraints.maxWidth / 6, 100),
+            onTap: (index) => goToPostDetailsPage(
+              context: context,
+              posts: posts.toList(),
+              initialIndex: index,
+            ),
+            imageUrl: (item) => item.url360x360,
           ),
-          imageUrl: (item) => item.url360x360,
         ),
       ],
     );

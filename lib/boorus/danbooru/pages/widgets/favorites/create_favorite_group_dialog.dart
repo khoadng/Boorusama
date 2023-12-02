@@ -9,6 +9,7 @@ import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -98,26 +99,12 @@ class _EditFavoriteGroupDialogState
                   ),
                 ),
               ),
-              TextField(
+              BooruTextField(
                 autofocus: true,
                 controller: nameController,
                 maxLines: null,
                 decoration: InputDecoration(
                   hintText: 'favorite_groups.group_name_hint'.tr(),
-                  filled: true,
-                  fillColor: context.theme.cardColor,
-                  enabledBorder: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                    borderSide: BorderSide.none,
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: const BorderRadius.all(Radius.circular(8)),
-                    borderSide: BorderSide(
-                      color: context.colorScheme.secondary,
-                      width: 2,
-                    ),
-                  ),
-                  contentPadding: const EdgeInsets.all(12),
                 ),
               ),
               if (widget.enableManualDataInput)
@@ -138,28 +125,13 @@ class _EditFavoriteGroupDialogState
               if (widget.enableManualDataInput)
                 Container(
                   constraints: const BoxConstraints(maxHeight: 150),
-                  child: TextField(
+                  child: BooruTextField(
                     controller: textController,
                     maxLines: null,
                     decoration: InputDecoration(
                       hintMaxLines: 6,
                       hintText:
                           '${'favorite_groups.initial_posts_hint'.tr()}\n\n\n\n\n',
-                      filled: true,
-                      fillColor: context.theme.cardColor,
-                      enabledBorder: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8)),
-                        borderSide: BorderSide.none,
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(8)),
-                        borderSide: BorderSide(
-                          color: context.colorScheme.secondary,
-                          width: 2,
-                        ),
-                      ),
-                      contentPadding: const EdgeInsets.all(12),
                     ),
                   ),
                 ),
@@ -179,7 +151,7 @@ class _EditFavoriteGroupDialogState
                   ),
                   ValueListenableBuilder<TextEditingValue>(
                     valueListenable: nameController,
-                    builder: (context, value, child) => ElevatedButton(
+                    builder: (context, value, child) => FilledButton(
                       onPressed: nameController.text.isNotEmpty
                           ? () {
                               context.navigator.pop();
@@ -252,7 +224,7 @@ class PrivacyToggle extends ConsumerWidget {
       secondChild: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 4),
         title: const Text('favorite_groups.is_private_group_option').tr(),
-        trailing: Switch.adaptive(
+        trailing: Switch(
           value: isPrivate,
           onChanged: onChanged,
         ),

@@ -55,9 +55,6 @@ class _SavedSearchFeedPageState extends ConsumerState<SavedSearchFeedPage> {
                   SliverAppBar(
                     title: const Text('saved_search.saved_search_feed').tr(),
                     floating: true,
-                    elevation: 0,
-                    shadowColor: Colors.transparent,
-                    backgroundColor: context.theme.scaffoldBackgroundColor,
                     actions: [
                       IconButton(
                         onPressed: () => goToSavedSearchEditPage(context),
@@ -122,9 +119,6 @@ class _SavedSearchList extends ConsumerWidget {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4),
           child: ChoiceChip(
-            disabledColor: context.theme.chipTheme.disabledColor,
-            backgroundColor: context.theme.chipTheme.backgroundColor,
-            selectedColor: context.theme.chipTheme.selectedColor,
             selected: isSelected,
             onSelected: (selected) {
               if (!isSelected) {

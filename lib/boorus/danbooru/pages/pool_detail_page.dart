@@ -56,9 +56,6 @@ class PoolDetailPage extends ConsumerWidget {
           SliverAppBar(
             title: const Text('pool.pool').tr(),
             floating: true,
-            elevation: 0,
-            shadowColor: Colors.transparent,
-            backgroundColor: context.theme.scaffoldBackgroundColor,
             actions: [
               IconButton(
                 onPressed: () {

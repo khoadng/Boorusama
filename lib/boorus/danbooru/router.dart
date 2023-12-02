@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:math';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -33,6 +36,7 @@ import 'pages/danbooru_artist_search_page.dart';
 import 'pages/danbooru_character_page.dart';
 import 'pages/danbooru_dmail_page.dart';
 import 'pages/danbooru_forum_page.dart';
+import 'pages/danbooru_post_versions_page.dart';
 import 'pages/explore_hot_page.dart';
 import 'pages/explore_most_viewed_page.dart';
 import 'pages/explore_popular_page.dart';
@@ -61,34 +65,85 @@ void goToPoolDetailPage(BuildContext context, Pool pool) {
   ));
 }
 
-void goToExplorePopularPage(BuildContext context) =>
-    context.navigator.push(ExplorePopularPage.routeOf(context));
+void goToPostVersionPage(BuildContext context, DanbooruPost post) {
+  showMaterialModalBottomSheet(
+    context: context,
+    duration: const Duration(milliseconds: 250),
+    builder: (_) => DanbooruPostVersionsPage(
+      postId: post.id,
+      previewUrl: post.url720x720,
+    ),
+  );
+}
 
-void goToExploreHotPage(BuildContext context) =>
-    context.navigator.push(ExploreHotPage.routeOf(context));
-
-void goToExploreMostViewedPage(BuildContext context) =>
-    context.navigator.push(ExploreMostViewedPage.routeOf(context));
-
-void goToSavedSearchPage(BuildContext context, String? username) {
+void goToExplorePopularPage(BuildContext context) {
   if (isMobilePlatform()) {
     context.navigator.push(MaterialPageRoute(
-      builder: (_) => SavedSearchFeedPage.of(context),
+      settings: const RouteSettings(
+        name: RouterPageConstant.explorePopular,
+      ),
+      builder: (_) => ExplorePopularPage.routeOf(context),
     ));
   } else {
-    showDesktopFullScreenWindow(
+    showDesktopWindow(
       context,
-      builder: (_) => SavedSearchFeedPage.of(context),
+      builder: (_) => ExplorePopularPage.routeOf(context),
     );
   }
 }
 
-void goToSavedSearchEditPage(BuildContext context) {
+void goToExploreHotPage(BuildContext context) {
+  if (isMobilePlatform()) {
+    context.navigator.push(MaterialPageRoute(
+      settings: const RouteSettings(
+        name: RouterPageConstant.exploreHot,
+      ),
+      builder: (_) => ExploreHotPage.routeOf(context),
+    ));
+  } else {
+    showDesktopWindow(
+      context,
+      builder: (_) => ExploreHotPage.routeOf(context),
+    );
+  }
+}
+
+void goToExploreMostViewedPage(BuildContext context) {
+  if (isMobilePlatform()) {
+    context.navigator.push(MaterialPageRoute(
+      settings: const RouteSettings(
+        name: RouterPageConstant.exploreMostViewed,
+      ),
+      builder: (_) => ExploreMostViewedPage.routeOf(context),
+    ));
+  } else {
+    showDesktopWindow(
+      context,
+      builder: (_) => ExploreMostViewedPage.routeOf(context),
+    );
+  }
+}
+
+void goToSavedSearchPage(BuildContext context, String? username) {
   context.navigator.push(MaterialPageRoute(
-    builder: (_) {
-      return const SavedSearchPage();
-    },
+    builder: (_) => SavedSearchFeedPage.of(context),
   ));
+}
+
+void goToSavedSearchEditPage(BuildContext context) {
+  if (isMobilePlatform()) {
+    context.navigator.push(MaterialPageRoute(
+      builder: (_) {
+        return const SavedSearchPage();
+      },
+    ));
+  } else {
+    showDesktopWindow(
+      context,
+      width: min(context.screenWidth * 0.5, 600),
+      builder: (_) => const SavedSearchPage(),
+    );
+  }
 }
 
 void goToPoolPage(BuildContext context, WidgetRef ref) {
@@ -225,7 +280,7 @@ void goToSavedSearchCreatePage(
       settings: const RouteSettings(
         name: RouterPageConstant.savedSearchCreate,
       ),
-      backgroundColor: context.colorScheme.background,
+      backgroundColor: context.colorScheme.secondaryContainer,
       builder: (_) => EditSavedSearchSheet(
         initialValue: initialValue,
         onSubmit: (query, label) => ref
@@ -252,7 +307,7 @@ void goToSavedSearchCreatePage(
       barrierColor: Colors.black54,
       pageBuilder: (context, _, __) {
         return Dialog(
-          backgroundColor: context.colorScheme.background,
+          backgroundColor: context.colorScheme.secondaryContainer,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),
           ),
@@ -299,7 +354,7 @@ void goToSavedSearchPatchPage(
     settings: const RouteSettings(
       name: RouterPageConstant.savedSearchPatch,
     ),
-    backgroundColor: context.colorScheme.background,
+    backgroundColor: context.colorScheme.secondaryContainer,
     builder: (_) => EditSavedSearchSheet(
       title: 'saved_search.update_saved_search'.tr(),
       initialValue: savedSearch,

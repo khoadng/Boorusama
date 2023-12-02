@@ -1,5 +1,3 @@
-// ignore: prefer-single-widget-per-file
-
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -106,6 +104,10 @@ class DanbooruPostContextMenu extends ConsumerWidget {
             'Open in browser',
             onPressed: () =>
                 launchExternalUrlString(post.getLink(booruConfig.url)),
+          ),
+          ContextMenuButtonConfig(
+            'View tag history',
+            onPressed: () => goToPostVersionPage(context, post),
           ),
           if (hasAccount)
             ContextMenuButtonConfig(

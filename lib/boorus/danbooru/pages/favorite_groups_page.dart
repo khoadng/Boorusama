@@ -117,7 +117,7 @@ class FavoriteGroupsPage extends ConsumerWidget {
                 onPressed: () => context.navigator.pop(),
                 child: const Text('generic.action.cancel').tr(),
               ),
-              ElevatedButton(
+              FilledButton(
                 onPressed: () {
                   context.navigator.pop();
                   ref

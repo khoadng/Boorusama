@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
+import 'package:boorusama/foundation/display.dart';
 
 enum BookmarkSortType {
   newest,
@@ -19,7 +20,7 @@ enum BookmarkSortType {
 
 final filteredBookmarksProvider = Provider.autoDispose<List<Bookmark>>((ref) {
   final tags = ref.watch(selectedTagsProvider);
-  final selectedBooru = ref.watch(selectedBooruProvider);
+  final selectedBooruUrl = ref.watch(selectedBooruUrlProvider);
   final sortType = ref.watch(selectedBookmarkSortTypeProvider);
   final config = ref.watchConfig;
   final bookmarks = ref.watch(bookmarkProvider(config)).bookmarks;
@@ -27,9 +28,9 @@ final filteredBookmarksProvider = Provider.autoDispose<List<Bookmark>>((ref) {
   final tagsList = tags.split(' ').where((e) => e.isNotEmpty).toList();
 
   return bookmarks
-      .where((bookmark) => selectedBooru == null
+      .where((bookmark) => selectedBooruUrl == null
           ? true
-          : intToBooruType(bookmark.booruId) == selectedBooru)
+          : bookmark.sourceUrl.contains(selectedBooruUrl))
       .where((bookmark) => tagsList.every((tag) => bookmark.tags.contains(tag)))
       .sorted((a, b) => switch (sortType) {
             BookmarkSortType.newest => b.createdAt.compareTo(a.createdAt),
@@ -61,7 +62,7 @@ final booruTypeCountProvider =
 });
 
 final tagColorProvider =
-    FutureProvider.autoDispose.family<Color, String>((ref, tag) async {
+    FutureProvider.autoDispose.family<Color?, String>((ref, tag) async {
   final config = ref.watchConfig;
   final settings = ref.watch(settingsProvider);
   final tagTypeStore = ref.watch(booruTagTypeStoreProvider);
@@ -71,7 +72,7 @@ final tagColorProvider =
       .watch(booruBuilderProvider)
       ?.tagColorBuilder(settings.themeMode, tagType);
 
-  return color != null && color != Colors.white ? color : Colors.white;
+  return color;
 });
 
 final tagMapProvider = Provider<Map<String, int>>((ref) {
@@ -103,10 +104,16 @@ final tagSuggestionsProvider = Provider.autoDispose<List<String>>((ref) {
 });
 
 final selectedTagsProvider = StateProvider.autoDispose<String>((ref) => '');
-final selectedBooruProvider = StateProvider.autoDispose<BooruType?>((ref) {
+final selectedBooruUrlProvider = StateProvider.autoDispose<String?>((ref) {
   return null;
 });
-final selectRowCountProvider = StateProvider.autoDispose<int>((ref) => 2);
+final selectRowCountProvider = StateProvider.autoDispose
+    .family<int, ScreenSize>((ref, size) => switch (size) {
+          ScreenSize.small => 2,
+          ScreenSize.medium => 4,
+          ScreenSize.large => 5,
+          ScreenSize.veryLarge => 6,
+        });
 
 final selectedBookmarkSortTypeProvider =
     StateProvider.autoDispose<BookmarkSortType>(
@@ -117,6 +124,18 @@ final availableBooruOptionsProvider = Provider.autoDispose<List<BooruType?>>(
         .sorted((a, b) => a?.stringify().compareTo(b?.stringify() ?? '') ?? 0)
         .where((e) => ref.watch(booruTypeCountProvider(e)) > 0)
         .toList());
+
+final availableBooruUrlsProvider = Provider.autoDispose<List<String>>((ref) {
+  final bookmarks = ref.watch(bookmarkProvider(ref.watchConfig)).bookmarks;
+
+  return bookmarks
+      .map((e) => e.sourceUrl)
+      .map((e) => Uri.tryParse(e))
+      .whereNotNull()
+      .map((e) => e.host)
+      .toSet()
+      .toList();
+});
 
 final hasBookmarkProvider = Provider.autoDispose<bool>((ref) {
   final config = ref.watchConfig;

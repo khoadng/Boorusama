@@ -45,19 +45,19 @@ class _CreatePhilomenaConfigPageState
       booruType: widget.config.booruType,
       url: widget.config.url,
       children: [
+        CreateBooruConfigNameField(
+          text: configName,
+          onChanged: (value) => setState(() => configName = value),
+        ),
+        const SizedBox(height: 16),
         Padding(
           padding: const EdgeInsets.symmetric(
-            horizontal: 16,
+            horizontal: 12,
             vertical: 8,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              CreateBooruConfigNameField(
-                text: configName,
-                onChanged: (value) => setState(() => configName = value),
-              ),
-              const SizedBox(height: 16),
               CreateBooruApiKeyField(
                 text: key,
                 hintText: 'e.g: AC8gZrxKsDpWy3unU0jB',
@@ -81,13 +81,13 @@ class _CreatePhilomenaConfigPageState
                 onChanged: (value) =>
                     setState(() => imageDetaisQuality = value),
               ),
-              const SizedBox(height: 16),
+              // const SizedBox(height: 16),
               // CreateBooruCustomDownloadFileNameField(
               //   format: customDownloadFileNameFormat,
               //   onChanged: (value) =>
               //       setState(() => customDownloadFileNameFormat = value),
               // ),
-              // const SizedBox(height: 16),
+              const SizedBox(height: 16),
               CreateBooruSubmitButton(
                 onSubmit: allowSubmit() ? submit : null,
               ),

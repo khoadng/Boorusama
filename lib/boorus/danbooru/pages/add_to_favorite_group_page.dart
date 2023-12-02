@@ -35,14 +35,13 @@ class AddToFavoriteGroupPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
         title: Text(
           'favorite_groups.add_to_group_dialog_title',
           style: context.textTheme.titleLarge,
         ).tr(),
         backgroundColor: Colors.transparent,
       ),
-      backgroundColor: context.colorScheme.background,
+      backgroundColor: context.colorScheme.surface,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -73,8 +72,8 @@ class AddToFavoriteGroupPage extends ConsumerWidget {
                   fontWeight: FontWeight.w800,
                 ),
               ),
-              trailing: ElevatedButton(
-                style: ElevatedButton.styleFrom(
+              trailing: FilledButton(
+                style: FilledButton.styleFrom(
                   visualDensity: VisualDensity.compact,
                 ),
                 onPressed: () => goToFavoriteGroupCreatePage(

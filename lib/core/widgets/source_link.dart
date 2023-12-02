@@ -49,9 +49,14 @@ class SourceLink extends StatelessWidget {
             )
           : null,
       leading: CircleAvatar(
-        backgroundColor: context.colorScheme.background,
+        backgroundColor: context.colorScheme.tertiaryContainer,
         child: Center(
-          child: Text(name.getFirstCharacter().toUpperCase()),
+          child: Text(
+            name.getFirstCharacter().toUpperCase(),
+            style: TextStyle(
+              color: context.colorScheme.onTertiaryContainer,
+            ),
+          ),
         ),
       ),
       trailing: actionBuilder(),

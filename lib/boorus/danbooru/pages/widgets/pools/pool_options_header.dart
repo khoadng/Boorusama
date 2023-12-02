@@ -3,15 +3,11 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:toggle_switch/toggle_switch.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
-import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class PoolOptionsHeader extends ConsumerWidget {
   const PoolOptionsHeader({
@@ -20,107 +16,45 @@ class PoolOptionsHeader extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final category = ref.watch(danbooruSelectedPoolCategoryProvider);
+    final order = ref.watch(danbooruSelectedPoolOrderProvider);
+
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 8,
+        vertical: 12,
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Builder(
-            builder: (context) {
-              final category = ref.watch(danbooruSelectedPoolCategoryProvider);
-
-              return ToggleSwitch(
-                initialLabelIndex: switch (category) {
-                  PoolCategory.series => 0,
-                  PoolCategory.collection => 1,
-                  PoolCategory.unknown => 0,
-                },
-                changeOnTap: false,
-                minHeight: 30,
-                minWidth: 100,
-                cornerRadius: 10,
-                totalSwitches: 2,
-                borderWidth: 1,
-                inactiveBgColor: context.theme.chipTheme.backgroundColor,
-                activeBgColor: [context.colorScheme.primary],
-                labels: [
-                  _poolCategoryToString(PoolCategory.series).tr(),
-                  _poolCategoryToString(PoolCategory.collection).tr(),
-                ],
-                onToggle: (index) {
-                  ref
-                          .read(danbooruSelectedPoolCategoryProvider.notifier)
-                          .state =
-                      index == 0
-                          ? PoolCategory.series
-                          : PoolCategory.collection;
-                },
-              );
+          BooruSegmentedButton(
+            segments: {
+              for (final category in PoolCategory.values
+                  .where((e) => e != PoolCategory.unknown))
+                category: _poolCategoryToString(category).tr(),
+            },
+            initialValue: category,
+            onChanged: (value) {
+              ref.read(danbooruSelectedPoolCategoryProvider.notifier).state =
+                  value;
             },
           ),
-          Builder(
-            builder: (context) {
-              final order = ref.watch(danbooruSelectedPoolOrderProvider);
-
-              return TextButton(
-                style: TextButton.styleFrom(
-                  foregroundColor: context.textTheme.titleLarge!.color,
-                  backgroundColor: context.theme.cardColor,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(18)),
-                  ),
-                ),
-                onPressed: () {
-                  Screen.of(context).size == ScreenSize.small
-                      ? showMaterialModalBottomSheet(
-                          context: context,
-                          builder: (context) => const _OrderMenu(),
-                        )
-                      : showDialog(
-                          context: context,
-                          builder: (context) => const AlertDialog(
-                            contentPadding: EdgeInsets.zero,
-                            content: _OrderMenu(),
-                          ),
-                        );
-                },
-                child: Row(
-                  children: [
-                    Text(_poolOrderToString(order)).tr(),
-                    const Icon(Icons.arrow_drop_down),
-                  ],
-                ),
-              );
+          OptionDropDownButton(
+            value: order,
+            alignment: AlignmentDirectional.centerStart,
+            onChanged: (value) {
+              if (value == null) return;
+              ref.read(danbooruSelectedPoolOrderProvider.notifier).state =
+                  value;
             },
+            items: PoolOrder.values
+                .map((e) => DropdownMenuItem(
+                      value: e,
+                      child: Text(_poolOrderToString(e)).tr(),
+                    ))
+                .toList(),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _OrderMenu extends ConsumerWidget {
-  const _OrderMenu();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Material(
-      child: SafeArea(
-        top: false,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: PoolOrder.values
-              .map((e) => ListTile(
-                    title: Text(_poolOrderToString(e)).tr(),
-                    onTap: () {
-                      context.navigator.pop();
-                      ref
-                          .read(danbooruSelectedPoolOrderProvider.notifier)
-                          .state = e;
-                    },
-                  ))
-              .toList(),
-        ),
       ),
     );
   }

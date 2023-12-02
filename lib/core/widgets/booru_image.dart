@@ -193,7 +193,7 @@ class ImagePlaceHolder extends StatelessWidget {
       width: width?.toDouble(),
       height: height?.toDouble(),
       decoration: BoxDecoration(
-        color: context.theme.cardColor,
+        color: context.colorScheme.surfaceVariant.withOpacity(0.5),
         borderRadius:
             borderRadius ?? const BorderRadius.all(Radius.circular(4)),
       ),
@@ -217,7 +217,7 @@ class ErrorPlaceholder extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: context.theme.cardColor,
+        color: context.colorScheme.surfaceVariant,
         borderRadius:
             borderRadius ?? const BorderRadius.all(Radius.circular(4)),
       ),
@@ -229,7 +229,7 @@ class ErrorPlaceholder extends StatelessWidget {
           ),
           child: Image.asset(
             'assets/images/error.png',
-            color: context.colorScheme.background.withOpacity(0.7),
+            color: context.colorScheme.surface.withOpacity(0.7),
           ),
         ),
       ),

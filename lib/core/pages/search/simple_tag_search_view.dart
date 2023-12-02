@@ -38,7 +38,7 @@ void showSimpleTagSearchView(
     showDesktopDialogWindow(
       context,
       settings: settings,
-      backgroundColor: context.theme.cardColor,
+      backgroundColor: context.colorScheme.surfaceVariant,
       margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
       width: min(context.screenWidth * 0.7, 600),
       height: min(context.screenHeight * 0.7, 500),
@@ -113,7 +113,6 @@ class _SimpleTagSearchViewState extends ConsumerState<SimpleTagSearchView> {
                     const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
                 child: BooruSearchBar(
                   queryEditingController: textEditingController,
-                  backgroundColor: context.colorScheme.background,
                   leading: widget.backButton,
                   autofocus: true,
                   onSubmitted: (text) =>
@@ -131,7 +130,7 @@ class _SimpleTagSearchViewState extends ConsumerState<SimpleTagSearchView> {
                         padding: const EdgeInsets.symmetric(horizontal: 8),
                         child: TagSuggestionItems(
                           textColorBuilder: widget.textColorBuilder,
-                          backgroundColor: context.colorScheme.background,
+                          backgroundColor: context.colorScheme.surface,
                           tags: tags,
                           onItemTap: (tag) {
                             if (widget.closeOnSelected) {

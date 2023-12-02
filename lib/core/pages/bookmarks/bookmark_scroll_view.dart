@@ -14,6 +14,7 @@ import 'package:boorusama/core/pages/bookmarks/bookmark_sort_button.dart';
 import 'package:boorusama/core/pages/bookmarks/bookmark_update_grid_buttons.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
@@ -52,7 +53,7 @@ class BookmarkScrollView extends ConsumerWidget {
           const SliverToBoxAdapter(
             child: Row(
               children: [
-                BookmarkBooruTypeSelector(),
+                BookmarkBooruSourceUrlSelector(),
                 BookmarkSortButton(),
                 Spacer(),
                 BookmarkGridUpdateButtons(),
@@ -72,7 +73,8 @@ class BookmarkScrollView extends ConsumerWidget {
               }
 
               return SliverMasonryGrid.count(
-                crossAxisCount: ref.watch(selectRowCountProvider),
+                crossAxisCount:
+                    ref.watch(selectRowCountProvider(Screen.of(context).size)),
                 mainAxisSpacing: settings.imageGridSpacing,
                 crossAxisSpacing: settings.imageGridSpacing,
                 childCount: bookmarks.length,
@@ -137,7 +139,10 @@ class BookmarkScrollView extends ConsumerWidget {
                             right: 5,
                             child: CircularIconButton(
                               padding: const EdgeInsets.all(4),
-                              icon: const Icon(Icons.close),
+                              icon: const Icon(
+                                Icons.close,
+                                color: Colors.white,
+                              ),
                               onPressed: () => ref.bookmarks
                                   .removeBookmarkWithToast(bookmark),
                             ),

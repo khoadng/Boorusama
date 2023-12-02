@@ -52,7 +52,7 @@ class _RelatedTagActionSheetState extends ConsumerState<RelatedTagActionSheet> {
       ),
       body: ListView.builder(
         itemBuilder: (context, index) => ListTile(
-          visualDensity: const ShrinkVisualDensity(),
+          visualDensity: VisualDensity.compact,
           title: Text(
             tags[index].tag.replaceUnderscoreWithSpace(),
             style: TextStyle(
@@ -69,6 +69,8 @@ class _RelatedTagActionSheetState extends ConsumerState<RelatedTagActionSheet> {
                 padding: EdgeInsets.zero,
                 child: ListTile(
                   visualDensity: const ShrinkVisualDensity(),
+                  contentPadding:
+                      const EdgeInsetsDirectional.symmetric(horizontal: 8),
                   onTap: () {
                     context.navigator.pop();
                     context.navigator.pop();
@@ -85,6 +87,8 @@ class _RelatedTagActionSheetState extends ConsumerState<RelatedTagActionSheet> {
                 padding: EdgeInsets.zero,
                 child: ListTile(
                   visualDensity: const ShrinkVisualDensity(),
+                  contentPadding:
+                      const EdgeInsetsDirectional.symmetric(horizontal: 8),
                   onTap: () {
                     context.navigator.pop();
                     launchWikiPage(

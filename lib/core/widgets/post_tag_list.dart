@@ -8,11 +8,10 @@ import 'package:flutter_tags_x/flutter_tags_x.dart' hide TagsState;
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 
 class PostTagList extends StatelessWidget {
@@ -63,7 +62,7 @@ class PostTagList extends StatelessWidget {
   ) {
     return Tags(
       alignment: WrapAlignment.start,
-      runSpacing: isMobilePlatform() ? 0 : 4,
+      runSpacing: 4,
       itemCount: tags.length,
       itemBuilder: (index) {
         final tag = tags[index];
@@ -85,59 +84,73 @@ class PostTagListChip extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = context.themeMode;
-    final colors =
-        generateChipColors(ref.getTagColor(context, tag.category.name), theme);
-    final numberColors = generateChipColors(Colors.grey[600]!, theme);
+    final colors = context.generateChipColors(
+      ref.getTagColor(context, tag.category.name),
+      ref.watch(settingsProvider),
+    );
+    final numberColors = context.generateChipColors(
+      Colors.grey[600]!,
+      ref.watch(settingsProvider),
+    );
 
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Chip(
-          visualDensity: const ShrinkVisualDensity(),
-          backgroundColor: colors.backgroundColor,
-          side: BorderSide(
-            color: colors.borderColor,
-            width: 1,
-          ),
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(8),
-              bottomLeft: Radius.circular(8),
+        SizedBox(
+          height: 28,
+          child: Chip(
+            visualDensity: const ShrinkVisualDensity(),
+            backgroundColor: colors?.backgroundColor,
+            side: colors != null
+                ? BorderSide(
+                    color: colors.borderColor,
+                    width: 1,
+                  )
+                : null,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(8),
+                bottomLeft: Radius.circular(8),
+              ),
             ),
-          ),
-          label: ConstrainedBox(
-            constraints: BoxConstraints(
-              maxWidth: maxTagWidth ?? context.screenWidth * 0.7,
-            ),
-            child: Text(
-              _getTagStringDisplayName(tag),
-              overflow: TextOverflow.fade,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: colors.foregroundColor,
+            label: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: maxTagWidth ?? context.screenWidth * 0.7,
+              ),
+              child: Text(
+                _getTagStringDisplayName(tag),
+                overflow: TextOverflow.fade,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: colors?.foregroundColor,
+                ),
               ),
             ),
           ),
         ),
-        Chip(
-          visualDensity: const ShrinkVisualDensity(),
-          backgroundColor: numberColors.backgroundColor,
-          side: BorderSide(
-            color: numberColors.borderColor,
-            width: 1,
-          ),
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-              topRight: Radius.circular(8),
-              bottomRight: Radius.circular(8),
+        SizedBox(
+          height: 28,
+          child: Chip(
+            visualDensity: const ShrinkVisualDensity(),
+            backgroundColor: numberColors?.backgroundColor,
+            side: numberColors != null
+                ? BorderSide(
+                    color: numberColors.borderColor,
+                    width: 1,
+                  )
+                : null,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                topRight: Radius.circular(8),
+                bottomRight: Radius.circular(8),
+              ),
             ),
-          ),
-          label: Text(
-            NumberFormat.compact().format(tag.postCount),
-            style: TextStyle(
-              color: numberColors.foregroundColor,
-              fontSize: 12,
+            label: Text(
+              NumberFormat.compact().format(tag.postCount),
+              style: TextStyle(
+                color: numberColors?.foregroundColor,
+                fontSize: 12,
+              ),
             ),
           ),
         ),

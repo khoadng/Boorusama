@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/widgets.dart';
-import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/types.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
@@ -22,18 +21,13 @@ class ExplorePopularPage extends ConsumerWidget {
     super.key,
   });
 
-  static MaterialPageRoute routeOf(BuildContext context) => MaterialPageRoute(
-        settings: const RouteSettings(
-          name: RouterPageConstant.explorePopular,
-        ),
-        builder: (_) => CustomContextMenuOverlay(
-          child: ProviderScope(
-            overrides: [
-              timeScaleProvider.overrideWith((ref) => TimeScale.day),
-              dateProvider.overrideWith((ref) => DateTime.now()),
-            ],
-            child: const ExplorePopularPage(),
-          ),
+  static Widget routeOf(BuildContext context) => CustomContextMenuOverlay(
+        child: ProviderScope(
+          overrides: [
+            timeScaleProvider.overrideWith((ref) => TimeScale.day),
+            dateProvider.overrideWith((ref) => DateTime.now()),
+          ],
+          child: const ExplorePopularPage(),
         ),
       );
 
@@ -78,43 +72,47 @@ class _PopularContent extends ConsumerWidget {
       },
     );
 
-    return SafeArea(
-      child: Column(
-        children: [
-          Expanded(
-            child: DanbooruInfinitePostList(
-              errors: errors,
-              controller: controller,
-              safeArea: false,
-              sliverHeaderBuilder: (context) => [
-                ExploreSliverAppBar(
-                  title: 'explore.popular'.tr(),
-                ),
-                SliverList(
-                  delegate: SliverChildListDelegate(
-                    [
-                      TimeScaleToggleSwitch(
-                        onToggle: (scale) =>
-                            ref.read(timeScaleProvider.notifier).state = scale,
-                      ),
-                      const SizedBox(height: 20),
-                    ],
+    return Container(
+      color: context.colorScheme.surface,
+      child: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: DanbooruInfinitePostList(
+                errors: errors,
+                controller: controller,
+                safeArea: false,
+                sliverHeaderBuilder: (context) => [
+                  ExploreSliverAppBar(
+                    title: 'explore.popular'.tr(),
                   ),
-                ),
-              ],
+                  SliverList(
+                    delegate: SliverChildListDelegate(
+                      [
+                        TimeScaleToggleSwitch(
+                          onToggle: (scale) => ref
+                              .read(timeScaleProvider.notifier)
+                              .state = scale,
+                        ),
+                        const SizedBox(height: 20),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          Container(
-            color: context.theme.bottomNavigationBarTheme.backgroundColor,
-            child: DateTimeSelector(
-              onDateChanged: (date) =>
-                  ref.read(dateProvider.notifier).state = date,
-              date: scaleAndTime.date,
-              scale: scaleAndTime.scale,
-              backgroundColor: Colors.transparent,
+            Container(
+              color: context.theme.bottomNavigationBarTheme.backgroundColor,
+              child: DateTimeSelector(
+                onDateChanged: (date) =>
+                    ref.read(dateProvider.notifier).state = date,
+                date: scaleAndTime.date,
+                scale: scaleAndTime.scale,
+                backgroundColor: Colors.transparent,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

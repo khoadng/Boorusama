@@ -90,12 +90,16 @@ class _FileDetailTile extends StatelessWidget {
         builder: (context, constrainst) => Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: context.theme.cardColor,
+            color: context.colorScheme.secondaryContainer,
             borderRadius: const BorderRadius.all(Radius.circular(4)),
           ),
           width: constrainst.maxWidth * 0.5,
           child: Text(
             value,
+            style: TextStyle(
+              color: context.colorScheme.onSecondaryContainer,
+              fontSize: 14,
+            ),
           ),
         ),
       ),

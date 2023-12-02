@@ -64,11 +64,10 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
             _previousPost(),
         const SingleActivator(LogicalKeyboardKey.escape): () => _onExit(),
       },
-      child: WillPopScope(
-        onWillPop: () {
+      child: PopScope(
+        onPopInvoked: (didPop) {
+          if (didPop) return;
           _onExit();
-
-          return Future.value(false);
         },
         child: Focus(
           autofocus: true,
@@ -83,22 +82,28 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                         Align(
                           alignment: Alignment.centerRight,
                           child: MaterialButton(
-                            color: Theme.of(context).cardColor,
+                            color: Colors.black.withOpacity(0.5),
                             shape: const CircleBorder(),
-                            padding: const EdgeInsets.all(20),
+                            padding: const EdgeInsets.all(12),
                             onPressed: () => _nextPost(),
-                            child: const Icon(Icons.arrow_forward),
+                            child: const Icon(
+                              Icons.arrow_forward,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       if (currentPage > 0)
                         Align(
                           alignment: Alignment.centerLeft,
                           child: MaterialButton(
-                            color: Theme.of(context).cardColor,
+                            color: Colors.black.withOpacity(0.5),
                             shape: const CircleBorder(),
-                            padding: const EdgeInsets.all(20),
+                            padding: const EdgeInsets.all(12),
                             onPressed: () => _previousPost(),
-                            child: const Icon(Icons.arrow_back),
+                            child: const Icon(
+                              Icons.arrow_back,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       SafeArea(
@@ -107,48 +112,57 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                           child: Padding(
                             padding: const EdgeInsets.only(top: 8),
                             child: MaterialButton(
-                              color: Theme.of(context).cardColor,
+                              color: Colors.black.withOpacity(0.5),
                               shape: const CircleBorder(),
-                              padding: const EdgeInsets.all(20),
+                              padding: const EdgeInsets.all(12),
                               onPressed: () => _onExit(),
-                              child: const Icon(Icons.close),
+                              child: const Icon(
+                                Icons.close,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                         ),
                       ),
                       if (widget.topRightBuilder != null)
-                        SafeArea(
-                          child: Align(
-                            alignment: Alignment.topRight,
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 8),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  if (isSmall)
-                                    CircularIconButton(
-                                      onPressed: () =>
-                                          showMaterialModalBottomSheet(
-                                        context: context,
-                                        backgroundColor: context
-                                            .theme.scaffoldBackgroundColor,
-                                        builder: (context) =>
-                                            widget.infoBuilder(context),
-                                      ),
-                                      icon: const Icon(Icons.info),
+                        Positioned(
+                          top: 8,
+                          right: 12,
+                          child: SafeArea(
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                if (isSmall)
+                                  CircularIconButton(
+                                    onPressed: () =>
+                                        showMaterialModalBottomSheet(
+                                      context: context,
+                                      backgroundColor:
+                                          context.theme.scaffoldBackgroundColor,
+                                      builder: (context) =>
+                                          widget.infoBuilder(context),
                                     ),
-                                  widget.topRightBuilder!.call(context),
-                                ],
-                              ),
+                                    icon: const Icon(
+                                      Icons.info,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                widget.topRightBuilder!.call(context),
+                              ],
                             ),
                           ),
                         ),
                     ],
                   ),
                 ),
+                const VerticalDivider(
+                  width: 1,
+                  thickness: 1,
+                ),
                 if (!isSmall)
-                  SizedBox(
-                    width: 350,
+                  Container(
+                    constraints: const BoxConstraints(maxWidth: 400),
+                    color: context.colorScheme.surface,
                     child: widget.infoBuilder(context),
                   ),
               ],

@@ -22,6 +22,7 @@ class SearchLandingView extends ConsumerStatefulWidget {
     required this.onHistoryRemoved,
     required this.onHistoryCleared,
     this.noticeBuilder,
+    this.backgroundColor,
   });
 
   final ValueChanged<String>? onHistoryTap;
@@ -31,6 +32,7 @@ class SearchLandingView extends ConsumerStatefulWidget {
   final Widget Function(BuildContext context)? metatagsBuilder;
   final Widget Function(BuildContext context)? trendingBuilder;
   final Widget Function(BuildContext context)? noticeBuilder;
+  final Color? backgroundColor;
 
   @override
   ConsumerState<SearchLandingView> createState() => _SearchLandingViewState();
@@ -67,65 +69,68 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
   Widget build(BuildContext context) {
     final favoritesNotifier = ref.watch(favoriteTagsProvider.notifier);
 
-    return FadeTransition(
-      opacity: animationController,
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (widget.noticeBuilder != null) ...[
-                widget.noticeBuilder!.call(context),
-              ],
-              if (widget.metatagsBuilder != null) ...[
-                widget.metatagsBuilder!(context),
-                const SizedBox(
-                  height: 10,
-                ),
-                const Divider(thickness: 1),
-              ],
-              FavoriteTagsSection(
-                onAddTagRequest: () {
-                  goToQuickSearchPage(
-                    context,
-                    ref: ref,
-                    onSubmitted: (context, text) {
-                      context.navigator.pop();
-                      favoritesNotifier.add(text);
-                    },
-                    onSelected: (tag) => favoritesNotifier.add(tag.value),
-                  );
-                },
-                onTagTap: (value) {
-                  _onTagTap(value, ref);
-                },
-              ),
-              if (widget.trendingBuilder != null) ...[
-                widget.trendingBuilder!.call(context),
-              ],
-              ref.watch(searchHistoryProvider).maybeWhen(
-                    data: (histories) => SearchHistorySection(
-                      histories: histories.histories,
-                      onHistoryTap: (history) {
-                        _onHistoryTap(history, ref);
-                        widget.onHistoryTap?.call(history);
-                      },
-                      onFullHistoryRequested: () {
-                        goToSearchHistoryPage(
-                          context,
-                          onClear: () => _onHistoryCleared(),
-                          onRemove: (value) => _onHistoryRemoved(value),
-                          onTap: (value) {
-                            context.navigator.pop();
-                            _onHistoryTap(value, ref);
-                          },
-                        );
-                      },
-                    ),
-                    orElse: () => const SizedBox.shrink(),
+    return Container(
+      color: widget.backgroundColor,
+      child: FadeTransition(
+        opacity: animationController,
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (widget.noticeBuilder != null) ...[
+                  widget.noticeBuilder!.call(context),
+                ],
+                if (widget.metatagsBuilder != null) ...[
+                  widget.metatagsBuilder!(context),
+                  const SizedBox(
+                    height: 10,
                   ),
-            ],
+                  const Divider(thickness: 1),
+                ],
+                FavoriteTagsSection(
+                  onAddTagRequest: () {
+                    goToQuickSearchPage(
+                      context,
+                      ref: ref,
+                      onSubmitted: (context, text) {
+                        context.navigator.pop();
+                        favoritesNotifier.add(text);
+                      },
+                      onSelected: (tag) => favoritesNotifier.add(tag.value),
+                    );
+                  },
+                  onTagTap: (value) {
+                    _onTagTap(value, ref);
+                  },
+                ),
+                if (widget.trendingBuilder != null) ...[
+                  widget.trendingBuilder!.call(context),
+                ],
+                ref.watch(searchHistoryProvider).maybeWhen(
+                      data: (histories) => SearchHistorySection(
+                        histories: histories.histories,
+                        onHistoryTap: (history) {
+                          _onHistoryTap(history, ref);
+                          widget.onHistoryTap?.call(history);
+                        },
+                        onFullHistoryRequested: () {
+                          goToSearchHistoryPage(
+                            context,
+                            onClear: () => _onHistoryCleared(),
+                            onRemove: (value) => _onHistoryRemoved(value),
+                            onTap: (value) {
+                              context.navigator.pop();
+                              _onHistoryTap(value, ref);
+                            },
+                          );
+                        },
+                      ),
+                      orElse: () => const SizedBox.shrink(),
+                    ),
+              ],
+            ),
           ),
         ),
       ),

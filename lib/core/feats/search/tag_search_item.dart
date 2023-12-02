@@ -1,17 +1,14 @@
-// Flutter imports:
-import 'package:flutter/foundation.dart';
-
 // Package imports:
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/core/feats/tags/tag_info_service.dart';
+import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/string.dart';
 import 'filter_operator.dart';
 
-bool _hasMetatag(String query) => query.contains(':');
+bool _hasMetatag(String query, TagInfo tagInfo) =>
+    tagInfo.metatags.any((tag) => query.startsWith('${tag.name}:'));
 
-@immutable
 class TagSearchItem extends Equatable {
   const TagSearchItem({
     required this.tag,
@@ -25,7 +22,7 @@ class TagSearchItem extends Equatable {
   ) {
     final operator = stringToFilterOperator(query.getFirstCharacter());
 
-    if (!_hasMetatag(query)) {
+    if (!_hasMetatag(query, tagInfo)) {
       return TagSearchItem(
         tag: stripFilterOperator(query, operator).replaceUnderscoreWithSpace(),
         operator: operator,

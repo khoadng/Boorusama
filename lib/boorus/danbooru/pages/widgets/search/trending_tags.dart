@@ -46,7 +46,7 @@ class TrendingTags extends ConsumerWidget {
                 label: Text(
                   e.keyword.replaceUnderscoreWithSpace(),
                   style: TextStyle(
-                    color: theme.isDark ? color : Colors.white,
+                    color: theme.isDark ? color : null,
                   ),
                 ),
               );

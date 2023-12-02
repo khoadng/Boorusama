@@ -40,67 +40,68 @@ class DanbooruForumPostsPage extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
       ),
-      body: RiverPagedBuilder.autoDispose(
-        firstPageProgressIndicatorBuilder: (context, controller) =>
-            const Center(
-          child: CircularProgressIndicator.adaptive(),
-        ),
-        pullToRefresh: false,
-        firstPageKey: (responseCount / _pageSize).ceil(),
-        limit: _pageSize,
-        provider: danbooruForumPostsProvider(topicId),
-        itemBuilder: (context, post, index) {
-          final creator = ref.watch(danbooruCreatorProvider(post.creatorId));
-          final creatorName = creator?.name ?? '...';
-          final creatorLevel = creator?.level ?? UserLevel.member;
+      body: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 4),
+        child: RiverPagedBuilder.autoDispose(
+          firstPageProgressIndicatorBuilder: (context, controller) =>
+              const Center(
+            child: CircularProgressIndicator.adaptive(),
+          ),
+          pullToRefresh: false,
+          firstPageKey: (responseCount / _pageSize).ceil(),
+          limit: _pageSize,
+          provider: danbooruForumPostsProvider(topicId),
+          itemBuilder: (context, post, index) {
+            final creator = ref.watch(danbooruCreatorProvider(post.creatorId));
+            final creatorName = creator?.name ?? '...';
+            final creatorLevel = creator?.level ?? UserLevel.member;
 
-          return Padding(
-            padding: const EdgeInsets.all(8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ForumPostHeader(
-                  authorName: creatorName,
-                  createdAt: post.createdAt,
-                  authorLevel: creatorLevel,
-                  onTap: () => goToUserDetailsPage(
-                    ref,
-                    context,
-                    uid: post.creatorId,
-                    username: creatorName,
-                  ),
-                ),
-                Html(
-                  onLinkTap: (url, context, attributes, element) =>
-                      url != null ? launchExternalUrlString(url) : null,
-                  style: {
-                    'body': Style(
-                      margin: const EdgeInsets.symmetric(vertical: 4),
+            return Padding(
+              padding: const EdgeInsets.all(8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ForumPostHeader(
+                    authorName: creatorName,
+                    createdAt: post.createdAt,
+                    authorLevel: creatorLevel,
+                    onTap: () => goToUserDetailsPage(
+                      ref,
+                      context,
+                      uid: post.creatorId,
+                      username: creatorName,
                     ),
-                    'blockquote': Style(
-                      padding: const EdgeInsets.only(left: 8),
-                      margin: const EdgeInsets.only(left: 4, bottom: 16),
-                      border: const Border(
-                          left: BorderSide(color: Colors.grey, width: 3)),
+                  ),
+                  Html(
+                    onLinkTap: (url, context, attributes, element) =>
+                        url != null ? launchExternalUrlString(url) : null,
+                    style: {
+                      'body': Style(
+                        margin: const EdgeInsets.symmetric(vertical: 4),
+                      ),
+                      'blockquote': Style(
+                        padding: const EdgeInsets.only(left: 8),
+                        margin: const EdgeInsets.only(left: 4, bottom: 16),
+                        border: const Border(
+                            left: BorderSide(color: Colors.grey, width: 3)),
+                      )
+                    },
+                    data: dtext(post.body, booruUrl: booruConfig.url),
+                  ),
+                  const SizedBox(height: 8),
+                  if (post.votes.isNotEmpty)
+                    _VoteChips(
+                      votes: post.votes,
                     )
-                  },
-                  data: dtext(post.body, booruUrl: booruConfig.url),
-                ),
-                const SizedBox(height: 8),
-                if (post.votes.isNotEmpty)
-                  _VoteChips(
-                    votes: post.votes,
-                  )
-              ],
-            ),
-          );
-        },
-        pagedBuilder: (controller, builder) => PagedListView(
-          pagingController: controller,
-          builderDelegate: builder,
+                ],
+              ),
+            );
+          },
+          pagedBuilder: (controller, builder) => PagedListView(
+            pagingController: controller,
+            builderDelegate: builder,
+          ),
         ),
       ),
     );

@@ -40,6 +40,12 @@ enum DownloadQuality {
   preview,
 }
 
+enum AppLockType {
+  none,
+  biometrics,
+  pin,
+}
+
 class Settings extends Equatable {
   const Settings({
     required this.safeMode,
@@ -62,6 +68,10 @@ class Settings extends Equatable {
     required this.downloadQuality,
     required this.showScoresInGrid,
     required this.showPostListConfigHeader,
+    required this.enableIncognitoModeForKeyboard,
+    required this.enableDynamicColoring,
+    required this.clearImageCacheOnStartup,
+    required this.appLockType,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
@@ -101,7 +111,14 @@ class Settings extends Equatable {
             ? castOrFallback<String>(json['booruConfigIdOrders'], '')
             : '',
         showPostListConfigHeader = json['showPostListConfigHeader'] ?? true,
+        enableIncognitoModeForKeyboard =
+            json['enableIncognitoModeForKeyboard'] ?? false,
+        enableDynamicColoring = json['enableDynamicColoring'] ?? false,
+        clearImageCacheOnStartup = json['clearImageCacheOnStartup'] ?? false,
         imageBorderRadius = json['imageBorderRadius'],
+        appLockType = json['appLockType'] != null
+            ? AppLockType.values[json['appLockType']]
+            : AppLockType.none,
         imageGridSpacing = json['imageGridSpacing'];
 
   static const defaultSettings = Settings(
@@ -125,6 +142,10 @@ class Settings extends Equatable {
     downloadQuality: DownloadQuality.original,
     showScoresInGrid: false,
     showPostListConfigHeader: true,
+    enableIncognitoModeForKeyboard: false,
+    enableDynamicColoring: false,
+    clearImageCacheOnStartup: false,
+    appLockType: AppLockType.none,
   );
 
   final String blacklistedTags;
@@ -161,6 +182,14 @@ class Settings extends Equatable {
 
   final bool showPostListConfigHeader;
 
+  final bool enableIncognitoModeForKeyboard;
+
+  final bool enableDynamicColoring;
+
+  final bool clearImageCacheOnStartup;
+
+  final AppLockType appLockType;
+
   Settings copyWith({
     String? blacklistedTags,
     String? language,
@@ -182,6 +211,10 @@ class Settings extends Equatable {
     DownloadQuality? downloadQuality,
     bool? showScoresInGrid,
     bool? showPostListConfigHeader,
+    bool? enableIncognitoModeForKeyboard,
+    bool? enableDynamicColoring,
+    bool? clearImageCacheOnStartup,
+    AppLockType? appLockType,
   }) =>
       Settings(
         safeMode: safeMode ?? this.safeMode,
@@ -206,6 +239,13 @@ class Settings extends Equatable {
         showScoresInGrid: showScoresInGrid ?? this.showScoresInGrid,
         showPostListConfigHeader:
             showPostListConfigHeader ?? this.showPostListConfigHeader,
+        enableIncognitoModeForKeyboard: enableIncognitoModeForKeyboard ??
+            this.enableIncognitoModeForKeyboard,
+        enableDynamicColoring:
+            enableDynamicColoring ?? this.enableDynamicColoring,
+        clearImageCacheOnStartup:
+            clearImageCacheOnStartup ?? this.clearImageCacheOnStartup,
+        appLockType: appLockType ?? this.appLockType,
       );
 
   Map<String, dynamic> toJson() => {
@@ -229,6 +269,10 @@ class Settings extends Equatable {
         'downloadQuality': downloadQuality.index,
         'showScoresInGrid': showScoresInGrid,
         'showPostListConfigHeader': showPostListConfigHeader,
+        'enableIncognitoModeForKeyboard': enableIncognitoModeForKeyboard,
+        'enableDynamicColoring': enableDynamicColoring,
+        'clearImageCacheOnStartup': clearImageCacheOnStartup,
+        'appLockType': appLockType.index,
       };
 
   @override
@@ -253,9 +297,13 @@ class Settings extends Equatable {
         downloadQuality,
         showScoresInGrid,
         showPostListConfigHeader,
+        enableIncognitoModeForKeyboard,
+        enableDynamicColoring,
+        clearImageCacheOnStartup,
+        appLockType,
       ];
 }
 
 extension SettingsX on Settings {
-  bool get hasSelectedBooru => currentBooruConfigId != -1;
+  bool get appLockEnabled => appLockType == AppLockType.biometrics;
 }

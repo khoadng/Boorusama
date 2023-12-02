@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/widgets/login_field.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 
 class CreateBooruLoginField extends StatefulWidget {
   const CreateBooruLoginField({
@@ -38,12 +38,20 @@ class _CreateBooruLoginFieldState extends State<CreateBooruLoginField> {
 
   @override
   Widget build(BuildContext context) {
-    return LoginField(
-      controller: controller,
-      validator: (p0) => null,
-      labelText: widget.labelText,
-      onChanged: widget.onChanged,
-      hintText: widget.hintText,
+    return AutofillGroup(
+      child: BooruTextFormField(
+        controller: controller,
+        autofillHints: const [
+          AutofillHints.username,
+          AutofillHints.email,
+        ],
+        validator: (p0) => null,
+        onChanged: widget.onChanged,
+        decoration: InputDecoration(
+          hintText: widget.hintText,
+          labelText: widget.labelText,
+        ),
+      ),
     );
   }
 }

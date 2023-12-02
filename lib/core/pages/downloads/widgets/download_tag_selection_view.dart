@@ -45,9 +45,6 @@ class _DownloadTagSelectionViewState
 
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        shadowColor: Colors.transparent,
         leading: IconButton(
           splashRadius: 18,
           onPressed: () {
@@ -58,7 +55,7 @@ class _DownloadTagSelectionViewState
           icon: const Icon(Icons.arrow_back),
         ),
       ),
-      extendBodyBehindAppBar: true,
+      extendBodyBehindAppBar: false,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -66,7 +63,6 @@ class _DownloadTagSelectionViewState
             Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: 12,
-                vertical: 18,
               ),
               child: Text(
                 'download.bulk_download_tag_confirmation',
@@ -90,6 +86,8 @@ class _DownloadTagSelectionViewState
                     spacing: 5,
                     children: [
                       ...selectedTags.map((e) => Chip(
+                            backgroundColor:
+                                context.theme.colorScheme.surfaceVariant,
                             label: Text(e.replaceUnderscoreWithSpace()),
                             deleteIcon: Icon(
                               Icons.close,
@@ -157,7 +155,7 @@ class _DownloadTagSelectionViewState
                   return Material(
                     child: Ink(
                       decoration: BoxDecoration(
-                        color: context.theme.cardColor,
+                        color: context.colorScheme.surfaceVariant,
                         border: Border.fromBorderSide(
                           BorderSide(color: context.theme.hintColor),
                         ),
@@ -223,7 +221,7 @@ class _DownloadTagSelectionViewState
                   final selectedTags =
                       ref.watch(bulkDownloadSelectedTagsProvider);
 
-                  return ElevatedButton(
+                  return FilledButton(
                     onPressed: allowDownloadd
                         ? () => ref
                             .read(
@@ -270,6 +268,11 @@ class DownloadPathWarning extends StatelessWidget {
   Widget build(BuildContext context) {
     return WarningContainer(
       contentBuilder: (context) => Html(
+        style: {
+          'body': Style(
+            color: context.colorScheme.onError,
+          ),
+        },
         data: 'download.bulk_download_folder_select_warning'
             .tr()
             .replaceAll('{0}', allowedFolders.join(', '))

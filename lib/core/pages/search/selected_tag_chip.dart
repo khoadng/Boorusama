@@ -34,7 +34,7 @@ class SelectedTagChip extends StatelessWidget {
         if (hasOperator)
           Chip(
             visualDensity: const ShrinkVisualDensity(),
-            backgroundColor: Colors.purple,
+            backgroundColor: context.colorScheme.tertiary,
             labelPadding: const EdgeInsets.symmetric(horizontal: 1),
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.only(
@@ -44,7 +44,9 @@ class SelectedTagChip extends StatelessWidget {
             ),
             label: Text(
               filterOperatorToStringCharacter(tagSearchItem.operator),
-              style: const TextStyle(color: Colors.white70),
+              style: TextStyle(
+                color: context.colorScheme.onTertiary,
+              ),
             ),
           ),
         if (hasMeta)
@@ -55,12 +57,14 @@ class SelectedTagChip extends StatelessWidget {
             shape: _getOutlineBorderForMetaChip(hasOperator),
             label: Text(
               tagSearchItem.metatag!,
-              style: const TextStyle(color: Colors.white70),
+              style: TextStyle(
+                color: context.colorScheme.onSecondary,
+              ),
             ),
           ),
         Chip(
           visualDensity: const ShrinkVisualDensity(),
-          backgroundColor: Colors.grey[800],
+          backgroundColor: context.colorScheme.secondaryContainer,
           shape: hasAny
               ? const RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(
@@ -69,9 +73,9 @@ class SelectedTagChip extends StatelessWidget {
                   ),
                 )
               : null,
-          deleteIcon: const Icon(
+          deleteIcon: Icon(
             FontAwesomeIcons.xmark,
-            color: Colors.red,
+            color: context.colorScheme.error,
             size: 15,
           ),
           onDeleted: () => onDeleted?.call(),
@@ -83,7 +87,6 @@ class SelectedTagChip extends StatelessWidget {
             child: Text(
               tagSearchItem.tag.replaceUnderscoreWithSpace(),
               overflow: TextOverflow.fade,
-              style: const TextStyle(color: Colors.white70),
             ),
           ),
         ),

@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/widgets.dart';
-import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
@@ -22,17 +21,12 @@ class ExploreMostViewedPage extends ConsumerWidget {
     super.key,
   });
 
-  static MaterialPageRoute routeOf(BuildContext context) => MaterialPageRoute(
-        settings: const RouteSettings(
-          name: RouterPageConstant.exploreMostViewed,
-        ),
-        builder: (_) => CustomContextMenuOverlay(
-          child: ProviderScope(
-            overrides: [
-              dateProvider.overrideWith((ref) => DateTime.now()),
-            ],
-            child: const ExploreMostViewedPage(),
-          ),
+  static Widget routeOf(BuildContext context) => CustomContextMenuOverlay(
+        child: ProviderScope(
+          overrides: [
+            dateProvider.overrideWith((ref) => DateTime.now()),
+          ],
+          child: const ExploreMostViewedPage(),
         ),
       );
 
@@ -79,31 +73,34 @@ class _MostViewedContent extends ConsumerWidget {
       },
     );
 
-    return SafeArea(
-      child: Column(
-        children: [
-          Expanded(
-            child: DanbooruInfinitePostList(
-              errors: errors,
-              controller: controller,
-              safeArea: false,
-              sliverHeaderBuilder: (context) => [
-                ExploreSliverAppBar(
-                  title: 'explore.most_viewed'.tr(),
-                ),
-              ],
+    return Container(
+      color: context.colorScheme.surface,
+      child: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: DanbooruInfinitePostList(
+                errors: errors,
+                controller: controller,
+                safeArea: false,
+                sliverHeaderBuilder: (context) => [
+                  ExploreSliverAppBar(
+                    title: 'explore.most_viewed'.tr(),
+                  ),
+                ],
+              ),
             ),
-          ),
-          Container(
-            color: context.theme.bottomNavigationBarTheme.backgroundColor,
-            child: DateTimeSelector(
-              onDateChanged: (date) =>
-                  ref.read(dateProvider.notifier).state = date,
-              date: date,
-              backgroundColor: Colors.transparent,
+            Container(
+              color: context.theme.bottomNavigationBarTheme.backgroundColor,
+              child: DateTimeSelector(
+                onDateChanged: (date) =>
+                    ref.read(dateProvider.notifier).state = date,
+                date: date,
+                backgroundColor: Colors.transparent,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

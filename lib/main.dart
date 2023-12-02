@@ -25,6 +25,7 @@ import 'package:boorusama/core/feats/search/search.dart';
 import 'package:boorusama/core/feats/search_histories/search_histories.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/analytics.dart';
 import 'package:boorusama/foundation/app_info.dart';
 import 'package:boorusama/foundation/device_info_service.dart';
@@ -35,6 +36,9 @@ import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'app.dart';
 import 'foundation/i18n.dart';
+
+// Comment text field is weird
+// Long press to select images bottom sheet color is off
 
 void main() async {
   final uiLogger = UILogger();
@@ -169,6 +173,11 @@ void main() async {
     return stack;
   };
 
+  if (settings.clearImageCacheOnStartup) {
+    logger.logI('Start up', 'Clearing image cache on startup');
+    await clearImageCache();
+  }
+
   logger.logI('Start up',
       'Initialization done in ${stopwatch.elapsed.inMilliseconds}ms');
   stopwatch.stop();
@@ -204,7 +213,10 @@ void main() async {
             danbooruCreatorHiveBoxProvider
                 .overrideWithValue(danbooruCreatorBox),
           ],
-          child: App(settings: settings),
+          child: App(
+            appName: packageInfo.appName,
+            initialSettings: settings,
+          ),
         ),
       ),
     );

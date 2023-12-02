@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -17,6 +18,7 @@ import 'package:boorusama/boorus/gelbooru_v1/gelbooru_v1.dart';
 import 'package:boorusama/boorus/moebooru/feats/autocomplete/moebooru_autocomplete_provider.dart';
 import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/moebooru/moebooru.dart';
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/boorus/sankaku/sankaku.dart';
 import 'package:boorusama/boorus/shimmie2/providers.dart';
 import 'package:boorusama/boorus/zerochan/zerochan.dart';
@@ -110,7 +112,7 @@ typedef GridThumbnailUrlBuilder = String Function(
   Post post,
 );
 
-typedef TagColorBuilder = Color Function(
+typedef TagColorBuilder = Color? Function(
   ThemeMode themeMode,
   String? tagType,
 );
@@ -211,7 +213,7 @@ mixin DefaultTagColorMixin implements BooruBuilder {
           '3' || 'copyright' => colors.copyright,
           '4' || 'character' => colors.character,
           '5' || 'meta' || 'metadata' => colors.meta,
-          _ => Colors.white,
+          _ => null,
         };
       };
 }
@@ -237,14 +239,21 @@ mixin DefaultPostImageDetailsUrlMixin implements BooruBuilder {
 }
 
 extension BooruBuilderWidgetRef on WidgetRef {
-  Color getTagColor(
+  Color? getTagColor(
     BuildContext context,
     String tagType, {
     ThemeMode? themeMode,
-  }) =>
-      watchBooruBuilder(watchConfig)
-          ?.tagColorBuilder(themeMode ?? context.themeMode, tagType) ??
-      Colors.white;
+  }) {
+    final dynamicColor =
+        watch(settingsProvider.select((value) => value.enableDynamicColoring));
+
+    final color = watchBooruBuilder(watchConfig)
+        ?.tagColorBuilder(themeMode ?? context.themeMode, tagType);
+
+    return dynamicColor
+        ? color?.harmonizeWith(context.colorScheme.primary)
+        : color;
+  }
 }
 
 final booruBuilderProvider = Provider<BooruBuilder?>((ref) {
@@ -355,13 +364,13 @@ class BooruProvider extends ConsumerWidget {
     required this.builder,
   });
 
-  final Widget Function(BooruBuilder? booruBuilder) builder;
+  final Widget Function(BooruBuilder? booruBuilderl, WidgetRef ref) builder;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final booruBuilder = ref.watch(booruBuilderProvider);
 
-    return builder(booruBuilder);
+    return builder(booruBuilder, ref);
   }
 }
 
@@ -381,7 +390,7 @@ mixin DefaultBooruUIMixin implements BooruBuilder {
   @override
   SearchPageBuilder get searchPageBuilder =>
       (context, initialQuery) => BooruProvider(
-            builder: (booruBuilder) => SearchPageScaffold(
+            builder: (booruBuilder, _) => SearchPageScaffold(
               initialQuery: initialQuery,
               fetcher: (page, tags) =>
                   booruBuilder?.postFetcher.call(page, tags) ??
@@ -392,14 +401,25 @@ mixin DefaultBooruUIMixin implements BooruBuilder {
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
       (context, config, payload) => BooruProvider(
-            builder: (booruBuilder) => PostDetailsPageScaffold(
+            builder: (booruBuilder, ref) => PostDetailsPageScaffold(
               posts: payload.posts,
               initialIndex: payload.initialIndex,
+              swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
               onExit: (page) => payload.scrollController?.scrollToIndex(page),
               onTagTap: (tag) => goToSearchPage(context, tag: tag),
             ),
           );
 }
+
+String Function(
+  Post post,
+) defaultPostImageUrlBuilder(
+  WidgetRef ref,
+) =>
+    (post) =>
+        ref.watchBooruBuilder(ref.watchConfig)?.postImageDetailsUrlBuilder(
+            ref.watch(settingsProvider), post, ref.watchConfig) ??
+        post.sampleImageUrl;
 
 extension BooruRef on Ref {
   BooruBuilder? readBooruBuilder(BooruConfig? config) {

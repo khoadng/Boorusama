@@ -1,11 +1,14 @@
 // Flutter imports:
 import 'package:flutter/material.dart' hide ThemeMode;
 
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 // Project imports:
-import 'package:boorusama/dart.dart';
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 
-class BooruChip extends StatelessWidget {
+class BooruChip extends ConsumerWidget {
   const BooruChip({
     super.key,
     this.color,
@@ -24,13 +27,17 @@ class BooruChip extends StatelessWidget {
   final VisualDensity? visualDensity;
 
   @override
-  Widget build(BuildContext context) {
-    final colors =
-        color != null ? generateChipColors(color!, context.themeMode) : null;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colors = color != null
+        ? context.generateChipColors(
+            color!,
+            ref.watch(settingsProvider),
+          )
+        : null;
 
     return trailing != null
-        ? ElevatedButton.icon(
-            style: ElevatedButton.styleFrom(
+        ? FilledButton.icon(
+            style: FilledButton.styleFrom(
               visualDensity: visualDensity,
               foregroundColor: colors?.foregroundColor,
               padding: const EdgeInsets.only(left: 6, right: 2),
@@ -46,8 +53,8 @@ class BooruChip extends StatelessWidget {
             icon: trailing!,
             label: label,
           )
-        : ElevatedButton(
-            style: ElevatedButton.styleFrom(
+        : FilledButton(
+            style: FilledButton.styleFrom(
               visualDensity: visualDensity,
               foregroundColor: colors?.foregroundColor,
               padding:

@@ -20,7 +20,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?> {
     state = configs;
   }
 
-  Future<void> add(BooruConfig booruConfig) async {
+  Future<void> _add(BooruConfig booruConfig) async {
     if (state == null) return;
     final orders = ref.read(configIdOrdersProvider);
     final newOrders = [...orders, booruConfig.id];
@@ -28,6 +28,31 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?> {
     ref.setBooruConfigOrder(newOrders);
 
     state = [...state!, booruConfig];
+  }
+
+  Future<void> duplicate({
+    required BooruConfig config,
+  }) {
+    final copyData = config.copyWith(
+      name: '${config.name} copy',
+    );
+
+    return addFromAddBooruConfig(
+        newConfig: AddNewBooruConfig(
+      login: copyData.login ?? '',
+      apiKey: copyData.apiKey ?? '',
+      booru: copyData.booruType,
+      configName: copyData.name,
+      hideDeleted:
+          copyData.deletedItemBehavior == BooruConfigDeletedItemBehavior.hide,
+      ratingFilter: copyData.ratingFilter,
+      url: copyData.url,
+      booruHint: copyData.booruType,
+      customDownloadFileNameFormat: copyData.customDownloadFileNameFormat,
+      customBulkDownloadFileNameFormat:
+          copyData.customBulkDownloadFileNameFormat,
+      imageDetaisQuality: copyData.imageDetaisQuality,
+    ));
   }
 
   Future<void> delete(
@@ -142,7 +167,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?> {
 
         onSuccess?.call(config);
 
-        add(config);
+        _add(config);
 
         if (setAsCurrent) {
           ref.read(currentBooruConfigProvider.notifier).update(config);
@@ -182,7 +207,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?> {
           hasLogin: config.hasLoginDetails(),
         );
 
-        add(config);
+        _add(config);
       }
     } catch (e) {
       onFailure?.call('Failed to add account');

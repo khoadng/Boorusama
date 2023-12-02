@@ -64,6 +64,10 @@ class _PostListConfigurationHeaderState
         ),
       ActionChip(
         visualDensity: const ShrinkVisualDensity(),
+        side: BorderSide(
+          width: 1,
+          color: context.theme.hintColor,
+        ),
         shape: StadiumBorder(
           side: BorderSide(
             width: 1,
@@ -121,8 +125,9 @@ class _PostListConfigurationHeaderState
                 },
                 title: Row(
                   children: [
+                    const SizedBox(width: 8),
                     const Text('Blacklisted'),
-                    const SizedBox(width: 4),
+                    const SizedBox(width: 8),
                     if (widget.hiddenCount > 0)
                       Chip(
                           padding: EdgeInsets.zero,
@@ -130,8 +135,8 @@ class _PostListConfigurationHeaderState
                           backgroundColor: context.colorScheme.primary,
                           label: Text(
                             '${widget.hiddenCount} of ${widget.postCount}',
-                            style: const TextStyle(
-                              color: Colors.white,
+                            style: TextStyle(
+                              color: context.colorScheme.onPrimary,
                               fontWeight: FontWeight.bold,
                             ),
                           )),
@@ -150,7 +155,8 @@ class _PostListConfigurationHeaderState
                         const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                     child: widget.axis == Axis.horizontal
                         ? Wrap(
-                            spacing: 8,
+                            spacing: 4,
+                            runSpacing: 4,
                             children: tags,
                           )
                         : Column(
@@ -206,26 +212,32 @@ class _BadgedChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Badge(
-        offset: switch (count.digitCount()) {
-          < 2 => const Offset(0, -4),
-          2 => const Offset(-4, -4),
-          3 => const Offset(-8, -4),
-          _ => const Offset(-12, -4),
-        },
-        backgroundColor: context.colorScheme.primary,
-        label: Text(
-          count.toString(),
-          style: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
+      offset: switch (count.digitCount()) {
+        < 2 => const Offset(0, -4),
+        2 => const Offset(-4, -4),
+        3 => const Offset(-8, -4),
+        _ => const Offset(-12, -4),
+      },
+      backgroundColor: context.colorScheme.primary,
+      label: Text(
+        count.toString(),
+        style: TextStyle(
+          color: context.colorScheme.onPrimary,
+          fontWeight: FontWeight.bold,
         ),
-        child: ChoiceChip(
-          visualDensity: const ShrinkVisualDensity(),
-          selected: active,
-          backgroundColor: context.theme.scaffoldBackgroundColor,
-          label: Text(label),
-          onSelected: (value) => onChanged(value),
-        ));
+      ),
+      child: ChoiceChip(
+        showCheckmark: false,
+        visualDensity: const ShrinkVisualDensity(),
+        selected: active,
+        side: BorderSide(
+          width: 1,
+          color: active ? context.theme.hintColor : Colors.transparent,
+        ),
+        backgroundColor: context.colorScheme.surface,
+        label: Text(label),
+        onSelected: (value) => onChanged(value),
+      ),
+    );
   }
 }

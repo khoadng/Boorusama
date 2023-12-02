@@ -12,7 +12,6 @@ import 'package:boorusama/foundation/platform.dart';
 class PostGridConfigRegion extends ConsumerWidget {
   const PostGridConfigRegion({
     super.key,
-    required this.onRefresh,
     required this.blacklistHeader,
     required this.builder,
   });
@@ -22,7 +21,6 @@ class PostGridConfigRegion extends ConsumerWidget {
     Widget blacklistHeader,
   ) builder;
   final Widget blacklistHeader;
-  final VoidCallback onRefresh;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -42,17 +40,6 @@ class PostGridConfigRegion extends ConsumerWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        ButtonBar(
-                          buttonPadding: EdgeInsets.zero,
-                          children: [
-                            IconButton(
-                              iconSize: 18,
-                              splashRadius: 18,
-                              onPressed: onRefresh,
-                              icon: const Icon(Icons.refresh),
-                            ),
-                          ],
-                        ),
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8),
                           width: 230,

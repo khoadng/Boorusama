@@ -40,7 +40,7 @@ class ErrorBox extends StatelessWidget {
           ).tr(),
         ),
         const SizedBox(height: 16),
-        ElevatedButton(
+        FilledButton(
           onPressed: onRetry,
           child: const Text('Retry'),
         ),

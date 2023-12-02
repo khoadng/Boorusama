@@ -7,9 +7,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
 
@@ -68,9 +68,9 @@ class _Chip extends ConsumerWidget {
     final colors =
         ref.watch(danbooruTagCategoryProvider(search.keyword)).maybeWhen(
               data: (data) => data != null
-                  ? generateChipColors(
+                  ? context.generateChipColors(
                       ref.getTagColor(context, data.name),
-                      context.themeMode,
+                      ref.watch(settingsProvider),
                     )
                   : null,
               orElse: () => null,
@@ -87,9 +87,7 @@ class _Chip extends ConsumerWidget {
         side: BorderSide(
           width: 1.5,
           color: isSelected
-              ? context.themeMode.isDark
-                  ? Colors.white
-                  : Colors.black
+              ? Colors.transparent
               : colors?.borderColor ?? Colors.transparent,
         ),
         onSelected: (selected) => onSelected(search),
@@ -99,11 +97,7 @@ class _Chip extends ConsumerWidget {
         label: Text(
           search.keyword.replaceUnderscoreWithSpace(),
           style: TextStyle(
-            color: isSelected
-                ? context.themeMode.isDark
-                    ? Colors.black
-                    : Colors.white
-                : colors?.foregroundColor,
+            color: isSelected ? null : colors?.foregroundColor,
           ),
           overflow: TextOverflow.ellipsis,
         ),

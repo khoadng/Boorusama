@@ -179,119 +179,130 @@ class _FavoriteGroupDetailsPageState
           ? const Center(
               child: CircularProgressIndicator(),
             )
-          : Column(
-              children: [
-                if (editing)
-                  Row(
-                    children: [
-                      const Expanded(
-                        child: Text('Drag and drop to determine ordering.'),
-                      ),
-                      GridSizeAdjustmentButtons(
-                        minCount: 2,
-                        maxCount: _sizeToGridCount(
-                          Screen.of(context).nextBreakpoint(),
+          : Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (editing)
+                    Row(
+                      children: [
+                        const Expanded(
+                          child: Text('Drag and drop to determine ordering.'),
                         ),
-                        count: rowCountEditMode,
-                        onAdded: (count) =>
-                            setState(() => rowCountEditMode = count + 1),
-                        onDecreased: (count) =>
-                            setState(() => rowCountEditMode = count - 1),
-                      ),
-                    ],
-                  ),
-                Expanded(
-                  child: InfiniteLoadList(
-                    scrollController: scrollController,
-                    onLoadMore: () => controller.fetchMore(),
-                    enableRefresh: false,
-                    enableLoadMore: hasMore,
-                    builder: (context, scrollController) {
-                      final count = _sizeToGridCount(Screen.of(context).size);
-
-                      return ReorderableGridView.builder(
-                        controller: scrollController,
-                        dragEnabled: editing,
-                        itemCount: items.length,
-                        onReorder: (oldIndex, newIndex) {
-                          controller.moveAndInsert(
-                            fromIndex: oldIndex,
-                            toIndex: newIndex,
-                            onSuccess: () {
-                              if (oldIndex != newIndex) {
-                                setState(() {
-                                  commands.add([false, oldIndex, newIndex, 0]);
-                                });
-                              }
-                            },
-                          );
-                        },
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: editing ? rowCountEditMode : count,
-                          mainAxisSpacing: 4,
-                          crossAxisSpacing: 4,
+                        GridSizeAdjustmentButtons(
+                          minCount: 2,
+                          maxCount: _sizeToGridCount(
+                            Screen.of(context).nextBreakpoint(),
+                          ),
+                          count: rowCountEditMode,
+                          onAdded: (count) =>
+                              setState(() => rowCountEditMode = count + 1),
+                          onDecreased: (count) =>
+                              setState(() => rowCountEditMode = count - 1),
                         ),
-                        itemBuilder: (context, index) {
-                          final post = items[index];
+                      ],
+                    ),
+                  Expanded(
+                    child: InfiniteLoadList(
+                      scrollController: scrollController,
+                      onLoadMore: () => controller.fetchMore(),
+                      enableRefresh: false,
+                      enableLoadMore: hasMore,
+                      builder: (context, scrollController) {
+                        final count = _sizeToGridCount(Screen.of(context).size);
 
-                          return Stack(
-                            key: ValueKey(index),
-                            children: [
-                              ConditionalParentWidget(
-                                condition: !editing,
-                                conditionalBuilder: (child) =>
-                                    ContextMenuRegion(
-                                  contextMenu: DanbooruPostContextMenu(
+                        return ReorderableGridView.builder(
+                          controller: scrollController,
+                          dragEnabled: editing,
+                          itemCount: items.length,
+                          onReorder: (oldIndex, newIndex) {
+                            controller.moveAndInsert(
+                              fromIndex: oldIndex,
+                              toIndex: newIndex,
+                              onSuccess: () {
+                                if (oldIndex != newIndex) {
+                                  setState(() {
+                                    commands
+                                        .add([false, oldIndex, newIndex, 0]);
+                                  });
+                                }
+                              },
+                            );
+                          },
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: editing ? rowCountEditMode : count,
+                            mainAxisSpacing: 4,
+                            crossAxisSpacing: 4,
+                          ),
+                          itemBuilder: (context, index) {
+                            final post = items[index];
+
+                            return Stack(
+                              key: ValueKey(index),
+                              children: [
+                                ConditionalParentWidget(
+                                  condition: !editing,
+                                  conditionalBuilder: (child) =>
+                                      ContextMenuRegion(
+                                    contextMenu: DanbooruPostContextMenu(
+                                      post: post,
+                                      hasAccount: config.hasLoginDetails(),
+                                    ),
+                                    child: child,
+                                  ),
+                                  child: DanbooruImageGridItem(
+                                    image: BooruImage(
+                                      fit: BoxFit.cover,
+                                      imageUrl:
+                                          post.thumbnailFromSettings(settings),
+                                      placeholderUrl: post.thumbnailImageUrl,
+                                    ),
+                                    enableFav: config.hasLoginDetails(),
+                                    hideOverlay: editing,
+                                    autoScrollOptions: AutoScrollOptions(
+                                      controller: scrollController,
+                                      index: index,
+                                    ),
                                     post: post,
-                                    hasAccount: config.hasLoginDetails(),
-                                  ),
-                                  child: child,
-                                ),
-                                child: DanbooruImageGridItem(
-                                  image: BooruImage(
-                                    fit: BoxFit.cover,
-                                    imageUrl:
-                                        post.thumbnailFromSettings(settings),
-                                    placeholderUrl: post.thumbnailImageUrl,
-                                  ),
-                                  enableFav: config.hasLoginDetails(),
-                                  hideOverlay: editing,
-                                  autoScrollOptions: AutoScrollOptions(
-                                    controller: scrollController,
-                                    index: index,
-                                  ),
-                                  post: post,
-                                  onTap: !editing
-                                      ? () => goToPostDetailsPage(
-                                            context: context,
-                                            posts: items,
-                                            initialIndex: index,
-                                            scrollController: scrollController,
-                                          )
-                                      : null,
-                                ),
-                              ),
-                              if (editing)
-                                Positioned(
-                                  top: 4,
-                                  right: 4,
-                                  child: CircularIconButton(
-                                    padding: const EdgeInsets.all(4),
-                                    icon: const Icon(Icons.close),
-                                    onPressed: () {
-                                      controller.remove([post.id], (e) => e.id);
-                                      commands.add([true, 0, 0, post.id]);
-                                    },
+                                    onTap: !editing
+                                        ? () => goToPostDetailsPage(
+                                              context: context,
+                                              posts: items,
+                                              initialIndex: index,
+                                              scrollController:
+                                                  scrollController,
+                                            )
+                                        : null,
                                   ),
                                 ),
-                            ],
-                          );
-                        },
-                      );
-                    },
+                                if (editing)
+                                  Positioned(
+                                    top: 4,
+                                    right: 4,
+                                    child: CircularIconButton(
+                                      padding: const EdgeInsets.all(4),
+                                      icon: const Icon(
+                                        Icons.close,
+                                        color: Colors.white,
+                                      ),
+                                      onPressed: () {
+                                        controller
+                                            .remove([post.id], (e) => e.id);
+                                        commands.add([true, 0, 0, post.id]);
+                                      },
+                                    ),
+                                  ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
     );
   }

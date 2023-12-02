@@ -20,8 +20,6 @@ class TagDetailsSlilverAppBar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return SliverAppBar(
       floating: true,
-      elevation: 0,
-      shadowColor: Colors.transparent,
       backgroundColor: context.theme.scaffoldBackgroundColor,
       actions: [
         IconButton(

@@ -7,10 +7,10 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
@@ -44,7 +44,7 @@ class FavoriteTagsSection extends ConsumerWidget {
               ),
               onSelected: (value) {
                 if (value == 'import') {
-                  goToFavoriteTagImportPage(context, ref);
+                  goToFavoriteTagImportPage(context);
                 } else if (value == 'export') {
                   ref.read(favoriteTagsProvider.notifier).export(
                     onDone: (tagString) {
@@ -83,9 +83,9 @@ class FavoriteTagsSection extends ConsumerWidget {
   ) {
     return [
       ...tags.mapIndexed((index, tag) {
-        final colors = generateChipColors(
+        final colors = context.generateChipColors(
           context.themeMode.isDark ? Colors.white : Colors.black,
-          context.themeMode,
+          ref.watch(settingsProvider),
         );
 
         return RawChip(
@@ -94,14 +94,16 @@ class FavoriteTagsSection extends ConsumerWidget {
           label: Text(
             tag.name.replaceUnderscoreWithSpace(),
             style: TextStyle(
-              color: colors.foregroundColor,
+              color: colors?.foregroundColor,
             ),
           ),
-          backgroundColor: colors.backgroundColor,
-          side: BorderSide(
-            color: colors.borderColor,
-            width: 1,
-          ),
+          backgroundColor: colors?.backgroundColor,
+          side: colors != null
+              ? BorderSide(
+                  color: colors.borderColor,
+                  width: 1,
+                )
+              : null,
           deleteIcon: const Icon(
             Icons.close,
             size: 18,

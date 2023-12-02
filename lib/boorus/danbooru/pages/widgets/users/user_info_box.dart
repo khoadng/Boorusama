@@ -37,7 +37,12 @@ class UserInfoBox extends StatelessWidget {
             ),
             const SizedBox(width: 4),
             Chip(
-              label: Text(user.level.name.sentenceCase),
+              label: Text(
+                user.level.name.sentenceCase,
+                style: const TextStyle(
+                  color: Colors.white,
+                ),
+              ),
               visualDensity: const VisualDensity(vertical: -4),
               backgroundColor: user.level.toColor(),
             ),

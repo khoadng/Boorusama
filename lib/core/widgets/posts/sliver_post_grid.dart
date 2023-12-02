@@ -88,7 +88,7 @@ class SliverPostGrid extends ConsumerWidget {
                         ),
                         const SizedBox(height: 16),
                         if (e.isServerError)
-                          ElevatedButton(
+                          FilledButton(
                             onPressed: onRetry,
                             child: const Text('Retry'),
                           ),
@@ -196,7 +196,7 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
                 (context, _) {
                   return Container(
                     decoration: BoxDecoration(
-                      color: context.theme.cardColor,
+                      color: context.colorScheme.surfaceVariant,
                       borderRadius: BorderRadius.circular(
                         imageBorderRadius,
                       ),

@@ -71,6 +71,6 @@ Future<void> clearImageCache() async {
   final imageCacheDir = Directory('${cacheDir.path}/cacheimage');
 
   if (imageCacheDir.existsSync()) {
-    imageCacheDir.deleteSync(recursive: true);
+    await imageCacheDir.delete(recursive: true);
   }
 }

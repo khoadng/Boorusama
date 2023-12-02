@@ -15,6 +15,7 @@ import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/filename_generators/token_option.dart';
 import 'package:boorusama/core/feats/posts/post.dart';
 import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -203,10 +204,10 @@ class _DownloadFormatCardState extends ConsumerState<DownloadFormatCard> {
         border: Border.all(color: context.theme.hintColor),
       ),
       child: ExpandablePanel(
-        theme: const ExpandableThemeData(
+        theme: ExpandableThemeData(
           headerAlignment: ExpandablePanelHeaderAlignment.center,
           tapBodyToCollapse: true,
-          iconColor: Colors.white,
+          iconColor: context.iconTheme.color,
         ),
         header: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -227,7 +228,7 @@ class _DownloadFormatCardState extends ConsumerState<DownloadFormatCard> {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Row(
                 children: [
-                  ElevatedButton(
+                  FilledButton(
                     onPressed: () {
                       setState(() {
                         textController.text = widget.defaultFileNameFormat;
@@ -260,27 +261,13 @@ class FormatEditingField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       constraints: const BoxConstraints(maxHeight: 150),
-      child: TextField(
+      child: BooruTextField(
         controller: controller,
         maxLines: null,
         onChanged: onChanged,
-        decoration: InputDecoration(
+        decoration: const InputDecoration(
           hintMaxLines: 4,
           hintText: '\n\n\n',
-          filled: true,
-          fillColor: context.colorScheme.background,
-          enabledBorder: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-            borderSide: BorderSide.none,
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: const BorderRadius.all(Radius.circular(8)),
-            borderSide: BorderSide(
-              color: context.theme.colorScheme.secondary,
-              width: 2,
-            ),
-          ),
-          contentPadding: const EdgeInsets.all(12),
         ),
       ),
     );
@@ -343,6 +330,7 @@ class AvailableTokens extends ConsumerWidget {
         const Text('Available tokens: '),
         for (final token in availableTokens)
           RawChip(
+            backgroundColor: context.colorScheme.secondaryContainer,
             visualDensity: VisualDensity.compact,
             label: Text(token),
             onPressed: () {
@@ -421,23 +409,34 @@ class TokenOptionHelpModal extends StatelessWidget {
                             Flexible(child: Text(option)),
                             const SizedBox(width: 4),
                             switch (docs?.tokenOption) {
-                              IntegerTokenOption _ => const Chip(
-                                  label: Text('integer'),
-                                  visualDensity: ShrinkVisualDensity(),
+                              IntegerTokenOption _ => Chip(
+                                  label: const Text('integer'),
+                                  visualDensity: const ShrinkVisualDensity(),
+                                  backgroundColor:
+                                      context.colorScheme.secondaryContainer,
                                 ),
-                              BooleanTokenOption _ => const Chip(
-                                  label: Text('boolean'),
-                                  visualDensity: ShrinkVisualDensity(),
+                              BooleanTokenOption _ => Chip(
+                                  label: const Text('boolean'),
+                                  visualDensity: const ShrinkVisualDensity(),
+                                  backgroundColor:
+                                      context.colorScheme.secondaryContainer,
                                 ),
-                              StringTokenOption _ => const Chip(
-                                  label: Text('string'),
-                                  visualDensity: ShrinkVisualDensity(),
+                              StringTokenOption _ => Chip(
+                                  label: const Text('string'),
+                                  visualDensity: const ShrinkVisualDensity(),
+                                  backgroundColor:
+                                      context.colorScheme.secondaryContainer,
                                 ),
                               _ => const SizedBox.shrink(),
                             }
                           ],
                         ),
-                        subtitle: docs != null ? Text(docs.description) : null,
+                        subtitle: docs != null
+                            ? Container(
+                                padding: const EdgeInsets.only(top: 6),
+                                child: Text(docs.description),
+                              )
+                            : null,
                         trailing: IconButton(
                           onPressed: () {
                             Clipboard.setData(ClipboardData(text: option))

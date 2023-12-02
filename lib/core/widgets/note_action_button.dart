@@ -6,7 +6,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/posts/posts.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/circular_icon_button.dart';
 
 class NoteActionButton extends StatelessWidget {
@@ -30,9 +29,9 @@ class NoteActionButton extends StatelessWidget {
     if (!post.isTranslated) return const SizedBox.shrink();
 
     if (showDownload) {
-      return ElevatedButton.icon(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: context.colorScheme.background.withOpacity(0.8),
+      return FilledButton.icon(
+        style: FilledButton.styleFrom(
+          backgroundColor: Colors.black.withOpacity(0.7),
           padding: const EdgeInsets.all(4),
         ),
         icon: const Icon(Icons.download_rounded),
@@ -43,24 +42,20 @@ class NoteActionButton extends StatelessWidget {
 
     return CircularIconButton(
       icon: enableNotes
-          ? Padding(
-              padding: const EdgeInsets.all(3),
+          ? const Padding(
+              padding: EdgeInsets.all(3),
               child: FaIcon(
                 FontAwesomeIcons.eyeSlash,
                 size: 18,
-                color: context.themeMode.isLight
-                    ? context.colorScheme.onPrimary
-                    : null,
+                color: Colors.white,
               ),
             )
-          : Padding(
-              padding: const EdgeInsets.all(4),
+          : const Padding(
+              padding: EdgeInsets.all(4),
               child: FaIcon(
                 FontAwesomeIcons.eye,
                 size: 18,
-                color: context.themeMode.isLight
-                    ? context.colorScheme.onPrimary
-                    : null,
+                color: Colors.white,
               ),
             ),
       onPressed: onToggleNotes,

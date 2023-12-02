@@ -11,7 +11,6 @@ import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'widgets/danbooru_infinite_post_list.dart';
 
@@ -39,9 +38,6 @@ class DanbooruFavoritesPage extends ConsumerWidget {
             SliverAppBar(
               title: const Text('profile.favorites').tr(),
               floating: true,
-              elevation: 0,
-              shadowColor: Colors.transparent,
-              backgroundColor: context.theme.scaffoldBackgroundColor,
               actions: [
                 IconButton(
                   icon: const Icon(Icons.search),

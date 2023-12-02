@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
@@ -46,6 +47,7 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailsPage> {
       onExit: widget.onExit,
       onTagTap: (tag) => goToSearchPage(context, tag: tag),
       toolbarBuilder: (context, post) => SimplePostActionToolbar(post: post),
+      swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
       sliverArtistPostsBuilder: (context, post) =>
           GelbooruRecommendedArtistList(
         artists: ref.watch(booruPostDetailsArtistProvider(post.id)),
@@ -92,9 +94,20 @@ class _GelbooruV1TagsTileState extends ConsumerState<GelbooruV1TagsTile> {
     if (expanded) {
       ref.listen(gelbooruV2TagsFromIdProvider(widget.post.id),
           (previous, next) {
-        if (next is AsyncError) {
-          setState(() => error = next.error);
-        }
+        next.when(
+          data: (data) {
+            if (!mounted) return;
+            if (data.isEmpty && widget.post.tags.isNotEmpty) {
+              // Just a dummy data so the check below will branch into the else block
+              setState(() => error = 'No tags found');
+            }
+          },
+          loading: () {},
+          error: (error, stackTrace) {
+            if (!mounted) return;
+            setState(() => this.error = error);
+          },
+        );
       });
     }
 

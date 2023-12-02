@@ -11,6 +11,7 @@ import 'package:rxdart/rxdart.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/saved_searches/saved_searches.dart';
 import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -75,7 +76,7 @@ class _EditSavedSearchSheetState extends ConsumerState<EditSavedSearchSheet> {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.transparent,
+      color: context.colorScheme.secondaryContainer,
       child: Container(
         margin: EdgeInsets.only(
           left: 30,
@@ -96,13 +97,12 @@ class _EditSavedSearchSheetState extends ConsumerState<EditSavedSearchSheet> {
             const SizedBox(
               height: 16,
             ),
-            TextField(
+            BooruTextField(
               autofocus: true,
               controller: queryTextController,
               maxLines: null,
-              decoration: _getDecoration(
-                context: context,
-                hint: 'saved_search.saved_search_query'.tr(),
+              decoration: InputDecoration(
+                hintText: 'saved_search.saved_search_query'.tr(),
                 suffixIcon: Material(
                   color: Colors.transparent,
                   child: InkWell(
@@ -141,13 +141,12 @@ class _EditSavedSearchSheetState extends ConsumerState<EditSavedSearchSheet> {
             const SizedBox(
               height: 16,
             ),
-            TextField(
+            BooruTextField(
               controller: labelTextController,
               maxLines: null,
-              decoration: _getDecoration(
-                context: context,
-                hint: 'saved_search.saved_search_labels'.tr(),
-                suffixIcon: ValueListenableBuilder<bool>(
+              decoration: InputDecoration(
+                hintText: 'saved_search.saved_search_labels'.tr(),
+                suffixIcon: ValueListenableBuilder(
                   valueListenable: labelsHasText,
                   builder: (context, hasText, _) => hasText
                       ? _ClearTextButton(
@@ -174,10 +173,10 @@ class _EditSavedSearchSheetState extends ConsumerState<EditSavedSearchSheet> {
               child: ButtonBar(
                 alignment: MainAxisAlignment.spaceAround,
                 children: [
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
+                  FilledButton(
+                    style: FilledButton.styleFrom(
                       foregroundColor: context.iconTheme.color,
-                      backgroundColor: context.theme.cardColor,
+                      backgroundColor: context.colorScheme.surfaceVariant,
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(16)),
                       ),
@@ -189,8 +188,8 @@ class _EditSavedSearchSheetState extends ConsumerState<EditSavedSearchSheet> {
                   ),
                   ValueListenableBuilder<bool>(
                     valueListenable: queryHasText,
-                    builder: (context, enable, _) => ElevatedButton(
-                      style: ElevatedButton.styleFrom(
+                    builder: (context, enable, _) => FilledButton(
+                      style: FilledButton.styleFrom(
                         foregroundColor: context.iconTheme.color,
                         shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(16)),
@@ -237,35 +236,3 @@ class _ClearTextButton extends StatelessWidget {
     );
   }
 }
-
-InputDecoration _getDecoration({
-  required BuildContext context,
-  required String hint,
-  Widget? suffixIcon,
-}) =>
-    InputDecoration(
-      suffixIcon: suffixIcon,
-      hintText: hint,
-      filled: true,
-      fillColor: context.theme.cardColor,
-      enabledBorder: const OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(12)),
-        borderSide: BorderSide.none,
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: const BorderRadius.all(Radius.circular(12)),
-        borderSide: BorderSide(
-          color: context.colorScheme.secondary,
-          width: 2,
-        ),
-      ),
-      errorBorder: OutlineInputBorder(
-        borderRadius: const BorderRadius.all(Radius.circular(12)),
-        borderSide: BorderSide(color: context.colorScheme.error),
-      ),
-      focusedErrorBorder: OutlineInputBorder(
-        borderRadius: const BorderRadius.all(Radius.circular(12)),
-        borderSide: BorderSide(color: context.colorScheme.error, width: 2),
-      ),
-      contentPadding: const EdgeInsets.all(12),
-    );

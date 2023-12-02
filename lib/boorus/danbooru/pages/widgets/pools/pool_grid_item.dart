@@ -75,15 +75,15 @@ class PoolGridItem extends ConsumerWidget {
                   Text(
                     pool.postCount.toString(),
                     style: const TextStyle(
-                      color: Colors.white70,
                       fontWeight: FontWeight.w700,
+                      color: Colors.white,
                     ),
                   ),
                   const SizedBox(width: 4),
                   const FaIcon(
                     FontAwesomeIcons.images,
                     size: 16,
-                    color: Colors.white70,
+                    color: Colors.white,
                   ),
                 ],
               ),

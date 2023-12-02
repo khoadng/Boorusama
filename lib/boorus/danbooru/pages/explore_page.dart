@@ -14,6 +14,9 @@ import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import 'explore_hot_page.dart';
+import 'explore_most_viewed_page.dart';
+import 'explore_popular_page.dart';
 import 'widgets/explores/explore_section.dart';
 
 class ExplorePage extends ConsumerWidget {
@@ -27,9 +30,7 @@ class ExplorePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
-      padding: Screen.of(context).size == ScreenSize.small
-          ? EdgeInsets.zero
-          : const EdgeInsets.symmetric(horizontal: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       child: CustomScrollView(
         primary: false,
         slivers: [
@@ -37,9 +38,18 @@ class ExplorePage extends ConsumerWidget {
             height:
                 useAppBarPadding ? MediaQuery.viewPaddingOf(context).top : 0,
           ),
-          const SliverToBoxAdapter(child: _PopularExplore()),
-          const SliverToBoxAdapter(child: _HotExplore()),
-          const SliverToBoxAdapter(child: _MostViewedExplore()),
+          SliverToBoxAdapter(
+              child: _PopularExplore(
+            onPressed: () => goToExplorePopularPage(context),
+          )),
+          SliverToBoxAdapter(
+              child: _HotExplore(
+            onPressed: () => goToExploreHotPage(context),
+          )),
+          SliverToBoxAdapter(
+              child: _MostViewedExplore(
+            onPressed: () => goToExploreMostViewedPage(context),
+          )),
           const SliverSizedBox(height: kBottomNavigationBarHeight + 20),
         ],
       ),
@@ -47,8 +57,82 @@ class ExplorePage extends ConsumerWidget {
   }
 }
 
+final selectedExploreCategoryProvider =
+    StateProvider.autoDispose<ExploreCategory?>((ref) {
+  return null;
+});
+
+class ExplorePageDesktop extends ConsumerWidget {
+  const ExplorePageDesktop({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selectedCategory = ref.watch(selectedExploreCategoryProvider);
+
+    return Stack(
+      children: [
+        Offstage(
+          offstage: selectedCategory != null,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: CustomScrollView(
+              primary: false,
+              slivers: [
+                SliverToBoxAdapter(
+                    child: _PopularExplore(
+                  onPressed: () => ref
+                      .read(selectedExploreCategoryProvider.notifier)
+                      .state = ExploreCategory.popular,
+                )),
+                SliverToBoxAdapter(
+                    child: _HotExplore(
+                  onPressed: () => ref
+                      .read(selectedExploreCategoryProvider.notifier)
+                      .state = ExploreCategory.hot,
+                )),
+                SliverToBoxAdapter(
+                    child: _MostViewedExplore(
+                  onPressed: () => ref
+                      .read(selectedExploreCategoryProvider.notifier)
+                      .state = ExploreCategory.mostViewed,
+                )),
+              ],
+            ),
+          ),
+        ),
+        Offstage(
+          offstage: selectedCategory == null,
+          child: Scaffold(
+            appBar: AppBar(
+              leading: IconButton(
+                onPressed: () => ref
+                    .read(selectedExploreCategoryProvider.notifier)
+                    .state = null,
+                icon: const Icon(Icons.arrow_back),
+              ),
+            ),
+            body: switch (selectedCategory) {
+              ExploreCategory.hot => ExploreHotPage.routeOf(context),
+              ExploreCategory.mostViewed =>
+                ExploreMostViewedPage.routeOf(context),
+              ExploreCategory.popular => ExplorePopularPage.routeOf(context),
+              null => const SizedBox.shrink(),
+            },
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class _MostViewedExplore extends ConsumerStatefulWidget {
-  const _MostViewedExplore();
+  const _MostViewedExplore({
+    required this.onPressed,
+  });
+
+  final void Function() onPressed;
 
   @override
   ConsumerState<_MostViewedExplore> createState() => _MostViewedExploreState();
@@ -65,13 +149,17 @@ class _MostViewedExploreState extends ConsumerState<_MostViewedExplore> {
         data: (posts) => ExploreList(posts: posts),
         orElse: () => const ExploreList(posts: []),
       ),
-      onPressed: () => goToExploreMostViewedPage(context),
+      onPressed: () => widget.onPressed(),
     );
   }
 }
 
 class _HotExplore extends ConsumerStatefulWidget {
-  const _HotExplore();
+  const _HotExplore({
+    required this.onPressed,
+  });
+
+  final void Function() onPressed;
 
   @override
   ConsumerState<_HotExplore> createState() => _HotExploreState();
@@ -88,13 +176,17 @@ class _HotExploreState extends ConsumerState<_HotExplore> {
         data: (posts) => ExploreList(posts: posts),
         orElse: () => const ExploreList(posts: []),
       ),
-      onPressed: () => goToExploreHotPage(context),
+      onPressed: () => widget.onPressed(),
     );
   }
 }
 
 class _PopularExplore extends ConsumerStatefulWidget {
-  const _PopularExplore();
+  const _PopularExplore({
+    required this.onPressed,
+  });
+
+  final void Function() onPressed;
 
   @override
   ConsumerState<_PopularExplore> createState() => _PopularExploreState();
@@ -111,7 +203,7 @@ class _PopularExploreState extends ConsumerState<_PopularExplore> {
         data: (posts) => ExploreList(posts: posts),
         orElse: () => const ExploreList(posts: []),
       ),
-      onPressed: () => goToExplorePopularPage(context),
+      onPressed: () => widget.onPressed(),
     );
   }
 }
@@ -175,8 +267,7 @@ class ExploreList extends ConsumerWidget {
                           bottom: 1,
                           child: Text(
                             '${index + 1}',
-                            style: context.textTheme.displayMedium!
-                                .copyWith(color: Colors.white),
+                            style: context.textTheme.displayMedium!,
                           ),
                         ),
                       ],

@@ -5,6 +5,8 @@ export 'bookmark_post_button.dart';
 export 'booru_bottom_bar.dart';
 export 'booru_image.dart';
 export 'booru_logo.dart';
+export 'booru_text_form_field.dart';
+export 'booru_text_field.dart';
 export 'booru_scope.dart';
 export 'booru_search_bar.dart';
 export 'booru_selector.dart';

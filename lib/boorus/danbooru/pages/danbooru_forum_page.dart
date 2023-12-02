@@ -30,48 +30,49 @@ class DanbooruForumPage extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('forum.forum').tr(),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
       ),
-      body: RiverPagedBuilder.autoDispose(
-        firstPageProgressIndicatorBuilder: (context, controller) =>
-            const Center(
-          child: CircularProgressIndicator.adaptive(),
-        ),
-        pullToRefresh: false,
-        firstPageKey: 1,
-        provider: danbooruForumTopicsProvider(config),
-        itemBuilder: (context, topic, index) {
-          final creator = ref.watch(danbooruCreatorProvider(topic.creatorId));
-          final creatorName = creator?.name ?? '...';
-          final creatorLevel = creator?.level ?? UserLevel.member;
+      body: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: RiverPagedBuilder.autoDispose(
+          firstPageProgressIndicatorBuilder: (context, controller) =>
+              const Center(
+            child: CircularProgressIndicator.adaptive(),
+          ),
+          pullToRefresh: false,
+          firstPageKey: 1,
+          provider: danbooruForumTopicsProvider(config),
+          itemBuilder: (context, topic, index) {
+            final creator = ref.watch(danbooruCreatorProvider(topic.creatorId));
+            final creatorName = creator?.name ?? '...';
+            final creatorLevel = creator?.level ?? UserLevel.member;
 
-          return ForumCard(
-            title: topic.title,
-            responseCount: topic.responseCount,
-            createdAt: topic.createdAt,
-            creatorName: creatorName,
-            creatorColor: !context.themeMode.isDark
-                ? creatorLevel.toColor()
-                : creatorLevel.toOnDarkColor(),
-            onCreatorTap: () => goToUserDetailsPage(
-              ref,
-              context,
-              uid: topic.creatorId,
-              username: creatorName,
-            ),
-            onTap: () => context.navigator.push(MaterialPageRoute(
-              builder: (_) => DanbooruForumPostsPage(
-                topicId: topic.id,
-                title: topic.title,
-                responseCount: topic.responseCount,
+            return ForumCard(
+              title: topic.title,
+              responseCount: topic.responseCount,
+              createdAt: topic.createdAt,
+              creatorName: creatorName,
+              creatorColor: !context.themeMode.isDark
+                  ? creatorLevel.toColor()
+                  : creatorLevel.toOnDarkColor(),
+              onCreatorTap: () => goToUserDetailsPage(
+                ref,
+                context,
+                uid: topic.creatorId,
+                username: creatorName,
               ),
-            )),
-          );
-        },
-        pagedBuilder: (controller, builder) => PagedListView(
-          pagingController: controller,
-          builderDelegate: builder,
+              onTap: () => context.navigator.push(MaterialPageRoute(
+                builder: (_) => DanbooruForumPostsPage(
+                  topicId: topic.id,
+                  title: topic.title,
+                  responseCount: topic.responseCount,
+                ),
+              )),
+            );
+          },
+          pagedBuilder: (controller, builder) => PagedListView(
+            pagingController: controller,
+            builderDelegate: builder,
+          ),
         ),
       ),
     );

@@ -31,7 +31,7 @@ class BulkDownloadTile extends ConsumerWidget {
     final fileSizes = ref.watch(bulkDownloadFileSizeProvider);
 
     return Card(
-      color: context.colorScheme.background,
+      color: context.colorScheme.surface,
       child: Row(
         children: [
           SizedBox(
@@ -53,14 +53,12 @@ class BulkDownloadTile extends ConsumerWidget {
                             backgroundColor: context.theme.colorScheme.primary,
                             label: const Text(
                               'File exists',
-                              style: TextStyle(
-                                color: Colors.white,
-                              ),
                             ),
                           ),
                         _ => const SizedBox.shrink(),
                       },
                       Chip(
+                        backgroundColor: context.colorScheme.tertiaryContainer,
                         visualDensity: const ShrinkVisualDensity(),
                         label: Text(sanitizedExtension(data.url)),
                       ),
@@ -68,6 +66,8 @@ class BulkDownloadTile extends ConsumerWidget {
                       if (fileSizes[data.url] != null &&
                           fileSizes[data.url]! > 0)
                         Chip(
+                          backgroundColor:
+                              context.colorScheme.tertiaryContainer,
                           visualDensity: const ShrinkVisualDensity(),
                           label: Text(filesize(fileSizes[data.url], 1)),
                         ),
@@ -82,7 +82,11 @@ class BulkDownloadTile extends ConsumerWidget {
                       ),
                       contentPadding: const EdgeInsets.symmetric(horizontal: 8),
                       title: _Title(data: data),
-                      trailing: const CircularProgressIndicator(),
+                      trailing: const SizedBox(
+                        width: 12,
+                        height: 12,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
                     ),
                   BulkDownloadQueued _ => ListTile(
                       dense: true,

@@ -8,12 +8,12 @@ import 'package:boorusama/widgets/booru_chip.dart';
 class RelatedTagButton extends StatelessWidget {
   const RelatedTagButton({
     super.key,
-    required this.backgroundColor,
+    this.backgroundColor,
     required this.onPressed,
     required this.label,
   });
 
-  final Color backgroundColor;
+  final Color? backgroundColor;
   final VoidCallback onPressed;
   final Widget label;
 

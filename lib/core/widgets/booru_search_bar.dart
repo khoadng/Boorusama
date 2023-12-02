@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 
@@ -19,7 +20,6 @@ class BooruSearchBar extends StatefulWidget {
     this.onSubmitted,
     this.constraints,
     this.focus,
-    this.backgroundColor,
     this.dense,
     this.onTapOutside,
     this.onFocusChanged,
@@ -36,7 +36,6 @@ class BooruSearchBar extends StatefulWidget {
   final TextEditingController? queryEditingController;
   final String? hintText;
   final FocusNode? focus;
-  final Color? backgroundColor;
   final bool? dense;
   final VoidCallback? onTapOutside;
   final void Function(bool value)? onFocusChanged;
@@ -67,11 +66,7 @@ class _BooruSearchBarState extends State<BooruSearchBar> {
   Widget build(BuildContext context) {
     return Center(
       child: Card(
-        elevation: 4,
-        color: widget.backgroundColor ?? context.theme.cardColor,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(6)),
-        ),
+        color: context.colorScheme.secondaryContainer,
         child: GestureDetector(
           onTap: () => widget.onTap?.call(),
           child: Row(
@@ -83,7 +78,7 @@ class _BooruSearchBarState extends State<BooruSearchBar> {
                 child: Focus(
                   focusNode: widget.focus,
                   onFocusChange: widget.onFocusChanged,
-                  child: TextFormField(
+                  child: BooruTextFormField(
                     onTapOutside: (event) {
                       if (widget.onTapOutside == null) {
                         widget.focus?.unfocus();
@@ -100,6 +95,7 @@ class _BooruSearchBarState extends State<BooruSearchBar> {
                       isDense: widget.dense,
                       floatingLabelBehavior: FloatingLabelBehavior.never,
                       border: InputBorder.none,
+                      fillColor: Colors.transparent,
                       focusedBorder: InputBorder.none,
                       enabledBorder: InputBorder.none,
                       errorBorder: InputBorder.none,

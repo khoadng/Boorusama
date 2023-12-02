@@ -9,11 +9,11 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/pages/boorus/add_unknown_booru_page.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
-import 'package:boorusama/widgets/widgets.dart';
 
 enum AddBooruPhase {
   url,
@@ -171,19 +171,26 @@ class _AddBooruPageInternalState extends ConsumerState<AddBooruPageInternal> {
           ),
           child: ValueListenableBuilder(
             valueListenable: booruUrlError,
-            builder: (_, error, __) => LoginField(
-              validator: (p0) => null,
-              autofocus: true,
-              onChanged: (value) {
-                inputText.value = value;
-                booruUrlError.value = mapBooruUrlToUri(value);
-              },
-              onSubmitted: error.fold(
-                (l) => null,
-                (r) => (_) => _onNext(r.toString()),
+            builder: (_, error, __) => AutofillGroup(
+              child: BooruTextFormField(
+                validator: (p0) => null,
+                autofillHints: const [
+                  AutofillHints.url,
+                ],
+                autofocus: true,
+                onChanged: (value) {
+                  inputText.value = value;
+                  booruUrlError.value = mapBooruUrlToUri(value);
+                },
+                onFieldSubmitted: error.fold(
+                  (l) => null,
+                  (r) => (_) => _onNext(r.toString()),
+                ),
+                controller: urlController,
+                decoration: InputDecoration(
+                  labelText: 'booru.site_url'.tr(),
+                ),
               ),
-              controller: urlController,
-              labelText: 'booru.site_url'.tr(),
             ),
           ),
         ),
@@ -211,11 +218,11 @@ class _AddBooruPageInternalState extends ConsumerState<AddBooruPageInternal> {
           builder: (_, error, __) => Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: error.fold(
-              (e) => ElevatedButton(
+              (e) => FilledButton(
                 onPressed: null,
                 child: const Text('booru.next_step').tr(),
               ),
-              (uri) => ElevatedButton(
+              (uri) => FilledButton(
                 onPressed: () => _onNext(uri.toString()),
                 child: const Text('booru.next_step').tr(),
               ),

@@ -23,8 +23,6 @@ class ExploreSliverAppBar extends StatelessWidget {
             context.textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w700),
       ),
       floating: true,
-      elevation: 0,
-      shadowColor: Colors.transparent,
       backgroundColor: context.theme.scaffoldBackgroundColor,
     );
   }

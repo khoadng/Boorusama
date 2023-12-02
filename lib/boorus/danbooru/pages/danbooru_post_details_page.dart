@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/artist_commentaries/artist_commentaries.dart';
 import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
@@ -56,6 +57,7 @@ class _DanbooruPostDetailsPageState
       showSourceTile: false,
       onTagTap: (tag) => goToSearchPage(context, tag: tag),
       toolbarBuilder: (context, post) => DanbooruPostActionToolbar(post: post),
+      swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
       sliverArtistPostsBuilder: (context, post) =>
           DanbooruArtistPostList(post: post),
       sliverCharacterPostsBuilder: (context, post) =>
@@ -127,13 +129,11 @@ class DanbooruPostStatsTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final comments = ref.watch(danbooruCommentProvider(post.id));
 
-    return RepaintBoundary(
-      child: SimplePostStatsTile(
-        score: post.score,
-        favCount: post.favCount,
-        totalComments: comments?.length ?? 0,
-        votePercentText: _generatePercentText(post),
-      ),
+    return SimplePostStatsTile(
+      score: post.score,
+      favCount: post.favCount,
+      totalComments: comments?.length ?? 0,
+      votePercentText: _generatePercentText(post),
     );
   }
 

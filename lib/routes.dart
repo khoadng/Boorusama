@@ -7,12 +7,15 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/pages/blacklists/blacklisted_tag_page.dart';
 import 'package:boorusama/core/pages/downloads/bulk_download_page.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/biometrics/app_lock.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
@@ -55,22 +58,14 @@ class BoorusRoutes {
         ),
       );
 
-  //FIXME: create custom page builder, also can't tap outside to dismiss
-  //FIXME: doesn't work on desktop with new implementation
   static GoRoute addDesktop() => GoRoute(
       path: 'desktop/boorus/add',
       pageBuilder: (context, state) => DialogPage(
             key: state.pageKey,
             name: state.name,
-            builder: (context) => BooruDialog(
-              padding: const EdgeInsets.all(16),
-              color: context.theme.canvasColor,
-              width: 400,
-              child: IntrinsicHeight(
-                child: AddBooruPage(
-                  backgroundColor: context.theme.canvasColor,
-                  setCurrentBooruOnSubmit: false,
-                ),
+            builder: (context) => const BooruDialog(
+              child: AddBooruPage(
+                setCurrentBooruOnSubmit: false,
               ),
             ),
           ));
@@ -144,21 +139,16 @@ class BoorusRoutes {
             name: state.name,
             builder: (context) => BooruDialog(
               padding: const EdgeInsets.all(16),
-              color: context.theme.canvasColor,
-              width: 400,
-              child: IntrinsicHeight(
-                child: booruBuilder?.updateConfigPageBuilder(
-                      context,
-                      config,
-                      backgroundColor: context.theme.canvasColor,
-                    ) ??
-                    Scaffold(
-                      appBar: AppBar(),
-                      body: const Center(
-                        child: Text('Not implemented'),
-                      ),
+              child: booruBuilder?.updateConfigPageBuilder(
+                    context,
+                    config,
+                  ) ??
+                  Scaffold(
+                    appBar: AppBar(),
+                    body: const Center(
+                      child: Text('Not implemented'),
                     ),
-              ),
+                  ),
             ),
           );
         },
@@ -270,13 +260,16 @@ typedef DetailsPayload<T extends Post> = ({
 class Routes {
   static GoRoute home(Ref ref) => GoRoute(
         path: '/',
-        builder: (context, state) => ConditionalParentWidget(
-          condition: canRate(),
-          conditionalBuilder: (child) => createAppRatingWidget(child: child),
-          child: const CustomContextMenuOverlay(
-            child: Focus(
-              autofocus: true,
-              child: EntryPage(),
+        builder: (context, state) => AppLock(
+          enable: ref.read(settingsProvider).appLockEnabled,
+          child: ConditionalParentWidget(
+            condition: canRate(),
+            conditionalBuilder: (child) => createAppRatingWidget(child: child),
+            child: const CustomContextMenuOverlay(
+              child: Focus(
+                autofocus: true,
+                child: EntryPage(),
+              ),
             ),
           ),
         ),

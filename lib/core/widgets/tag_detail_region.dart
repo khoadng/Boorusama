@@ -28,7 +28,7 @@ class TagDetailsRegion extends ConsumerWidget {
     return isMobilePlatform() && context.orientation.isPortrait
         ? builder(context)
         : Material(
-            color: context.colorScheme.background,
+            color: context.colorScheme.surface,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -41,7 +41,7 @@ class TagDetailsRegion extends ConsumerWidget {
                         Row(
                           children: [
                             IconButton(
-                              iconSize: 40,
+                              iconSize: 28,
                               splashRadius: 24,
                               icon: const Icon(
                                 Icons.close,

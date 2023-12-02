@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/artist_commentaries/artist_commentaries.dart';
 import 'package:boorusama/core/feats/notes/notes.dart';
@@ -48,6 +49,7 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage> {
       onExit: widget.onExit,
       onTagTap: (tag) => goToSearchPage(context, tag: tag),
       toolbarBuilder: (context, post) => E621PostActionToolbar(post: post),
+      swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
       sliverArtistPostsBuilder: (context, post) =>
           E621RecommendedArtistList(post: post),
       tagListBuilder: (context, post) => E621TagsTile(post: post),

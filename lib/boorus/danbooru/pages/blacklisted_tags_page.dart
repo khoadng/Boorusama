@@ -10,10 +10,12 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/core/feats/blacklists/blacklists.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/pages/blacklists/blacklisted_tag_page.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/import_export_tag_button.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 //FIXME: This is a copy of lib/boorus/core/pages/blacklists/blacklisted_tag_page.dart
@@ -104,6 +106,11 @@ class BlacklistedTagsList extends ConsumerWidget {
                 SliverToBoxAdapter(
                   child: WarningContainer(
                       contentBuilder: (context) => Html(
+                            style: {
+                              'body': Style(
+                                color: context.colorScheme.onError,
+                              ),
+                            },
                             data: 'blacklisted_tags.limitation_notice'.tr(),
                           )),
                 ),
@@ -149,70 +156,6 @@ class BlacklistedTagsList extends ConsumerWidget {
               ],
             )
           : const SizedBox.shrink(),
-    );
-  }
-}
-
-// ignore: prefer-single-widget-per-file
-class BlacklistedTagTile extends StatelessWidget {
-  const BlacklistedTagTile({
-    super.key,
-    required this.tag,
-    required this.onEditTap,
-    required this.onRemoveTag,
-  });
-
-  final String tag;
-  final VoidCallback onEditTap;
-  final void Function(String tag) onRemoveTag;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: Ink(
-        child: ListTile(
-          title: Text(tag),
-          // ignore: no-empty-block
-          onTap: () {},
-          trailing: PopupMenuButton(
-            constraints: const BoxConstraints(minWidth: 150),
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(4)),
-            ),
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                padding: EdgeInsets.zero,
-                child: ListTile(
-                  onTap: () {
-                    context.navigator.pop();
-                    onRemoveTag.call(tag);
-                  },
-                  title: const Text('blacklisted_tags.remove').tr(),
-                  trailing: const FaIcon(
-                    FontAwesomeIcons.trash,
-                    size: 16,
-                  ),
-                ),
-              ),
-              PopupMenuItem(
-                padding: EdgeInsets.zero,
-                child: ListTile(
-                  onTap: () {
-                    context.navigator.pop();
-                    onEditTap.call();
-                  },
-                  title: const Text('blacklisted_tags.edit').tr(),
-                  trailing: const FaIcon(
-                    FontAwesomeIcons.pen,
-                    size: 16,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }

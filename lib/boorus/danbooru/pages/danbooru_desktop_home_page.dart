@@ -72,6 +72,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruDesktopHomePage> {
                         builder: (context, value, _) =>
                             ResultHeaderWithProvider(
                           selectedTags: value.split(' '),
+                          onRefresh: () => controller.refresh(),
                         ),
                       ),
                       const Spacer(),

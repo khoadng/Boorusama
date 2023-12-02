@@ -86,50 +86,66 @@ class _LargeLayoutState extends ConsumerState<_LargeLayout> {
                     label: 'settings.app_settings'.tr(),
                   ),
                   ListTile(
-                    textColor: index == 0 ? Colors.white : null,
-                    tileColor: index == 0 ? Colors.grey[800] : null,
+                    textColor:
+                        index == 0 ? context.colorScheme.onSecondary : null,
+                    tileColor:
+                        index == 0 ? context.colorScheme.secondary : null,
                     title: const Text('settings.appearance.appearance').tr(),
                     onTap: () => currentTab.value = 0,
                   ),
                   ListTile(
-                    textColor: index == 1 ? Colors.white : null,
-                    tileColor: index == 1 ? Colors.grey[800] : null,
+                    textColor:
+                        index == 1 ? context.colorScheme.onSecondary : null,
+                    tileColor:
+                        index == 1 ? context.colorScheme.secondary : null,
                     title: const Text('settings.language.language').tr(),
                     onTap: () => currentTab.value = 1,
                   ),
                   ListTile(
-                    textColor: index == 2 ? Colors.white : null,
-                    tileColor: index == 2 ? Colors.grey[800] : null,
+                    textColor:
+                        index == 2 ? context.colorScheme.onSecondary : null,
+                    tileColor:
+                        index == 2 ? context.colorScheme.secondary : null,
                     title: const Text('download.download').tr(),
                     onTap: () => currentTab.value = 2,
                   ),
                   ListTile(
-                    textColor: index == 3 ? Colors.white : null,
-                    tileColor: index == 3 ? Colors.grey[800] : null,
+                    textColor:
+                        index == 3 ? context.colorScheme.onSecondary : null,
+                    tileColor:
+                        index == 3 ? context.colorScheme.secondary : null,
                     title: const Text('settings.performance.performance').tr(),
                     onTap: () => currentTab.value = 3,
                   ),
                   ListTile(
-                    textColor: index == 4 ? Colors.white : null,
-                    tileColor: index == 4 ? Colors.grey[800] : null,
+                    textColor:
+                        index == 4 ? context.colorScheme.onSecondary : null,
+                    tileColor:
+                        index == 4 ? context.colorScheme.secondary : null,
                     title: const Text('Data and Storage'),
                     onTap: () => currentTab.value = 4,
                   ),
                   ListTile(
-                    textColor: index == 5 ? Colors.white : null,
-                    tileColor: index == 5 ? Colors.grey[800] : null,
+                    textColor:
+                        index == 5 ? context.colorScheme.onSecondary : null,
+                    tileColor:
+                        index == 5 ? context.colorScheme.secondary : null,
                     title: const Text('settings.search.search').tr(),
                     onTap: () => currentTab.value = 5,
                   ),
                   ListTile(
-                    textColor: index == 6 ? Colors.white : null,
-                    tileColor: index == 6 ? Colors.grey[800] : null,
+                    textColor:
+                        index == 6 ? context.colorScheme.onSecondary : null,
+                    tileColor:
+                        index == 6 ? context.colorScheme.secondary : null,
                     title: const Text('settings.privacy.privacy').tr(),
                     onTap: () => currentTab.value = 6,
                   ),
                   ListTile(
-                    textColor: index == 7 ? Colors.white : null,
-                    tileColor: index == 7 ? Colors.grey[800] : null,
+                    textColor:
+                        index == 7 ? context.colorScheme.onSecondary : null,
+                    tileColor:
+                        index == 7 ? context.colorScheme.secondary : null,
                     title: const Text('settings.debug_logs.debug_logs').tr(),
                     onTap: () => currentTab.value = 7,
                   ),

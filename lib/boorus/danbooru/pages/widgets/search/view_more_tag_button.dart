@@ -19,10 +19,10 @@ class ViewMoreTagButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
+    return FilledButton(
+      style: FilledButton.styleFrom(
         foregroundColor: context.iconTheme.color,
-        backgroundColor: context.theme.cardColor,
+        backgroundColor: context.colorScheme.surfaceVariant,
         side: BorderSide(
           color: context.theme.hintColor,
         ),

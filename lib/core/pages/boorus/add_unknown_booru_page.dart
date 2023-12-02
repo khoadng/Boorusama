@@ -108,6 +108,7 @@ class _AddUnknownBooruPageState extends ConsumerState<AddUnknownBooruPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          const SizedBox(height: 32),
           Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: 12,
@@ -128,8 +129,13 @@ class _AddUnknownBooruPageState extends ConsumerState<AddUnknownBooruPage> {
             Stack(
               children: [
                 WarningContainer(
-                    contentBuilder: (context) => Text(
-                        'This configuration is invalid. Please check again. \n\nError: $error')),
+                  contentBuilder: (context) => Text(
+                    'This configuration is invalid. Please check again. \n\nError: $error',
+                    style: TextStyle(
+                      color: context.colorScheme.onError,
+                    ),
+                  ),
+                ),
                 Positioned(
                   top: 6,
                   right: 6,
@@ -151,7 +157,7 @@ class _AddUnknownBooruPageState extends ConsumerState<AddUnknownBooruPage> {
             child: ListTile(
               title: const Text('booru.booru_engine_input_label').tr(),
               trailing: OptionDropDownButton(
-                alignment: AlignmentDirectional.centerEnd,
+                alignment: AlignmentDirectional.centerStart,
                 value: engine,
                 onChanged: (value) {
                   ref.read(booruEngineProvider.notifier).state = value;
@@ -168,20 +174,20 @@ class _AddUnknownBooruPageState extends ConsumerState<AddUnknownBooruPage> {
               ),
             ),
           ),
+          CreateBooruConfigNameField(
+            text: config.name,
+            onChanged: (value) =>
+                ref.read(booruConfigNameProvider.notifier).state = value,
+          ),
+          const SizedBox(height: 16),
           Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: 16,
+              horizontal: 12,
               vertical: 8,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                CreateBooruConfigNameField(
-                  text: config.name,
-                  onChanged: (value) =>
-                      ref.read(booruConfigNameProvider.notifier).state = value,
-                ),
-                const SizedBox(height: 16),
                 CreateBooruSiteUrlField(
                   text: config.url,
                   onChanged: (value) => setState(() {
@@ -221,8 +227,8 @@ class _AddUnknownBooruPageState extends ConsumerState<AddUnknownBooruPage> {
                   },
                 ),
                 const SizedBox(height: 16),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
+                FilledButton(
+                  style: FilledButton.styleFrom(
                     backgroundColor: isValidSite.toOption().fold(
                           () => context.colorScheme.primary,
                           (value) => value ? Colors.green : Colors.red,

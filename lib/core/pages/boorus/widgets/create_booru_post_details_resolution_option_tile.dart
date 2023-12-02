@@ -25,7 +25,9 @@ class CreateBooruImageDetailsResolutionOptionTile<T> extends StatelessWidget {
       contentPadding: EdgeInsets.zero,
       visualDensity: VisualDensity.compact,
       title: const Text("Details page's image resolution"),
-      subtitle: const Text('Higher resolution will take longer to load.'),
+      subtitle: const Text(
+        'Higher resolution will take longer to load.',
+      ),
       trailing: OptionDropDownButton(
         alignment: AlignmentDirectional.centerStart,
         value: value ?? 'Auto',

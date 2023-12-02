@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+// Project imports:
+import 'package:boorusama/foundation/theme/theme.dart';
+
 class WarningContainer extends StatelessWidget {
   const WarningContainer({
     super.key,
@@ -25,14 +28,16 @@ class WarningContainer extends StatelessWidget {
         padding: const EdgeInsets.all(8),
         child: Row(
           children: [
-            const Padding(
-              padding: EdgeInsets.only(right: 12),
+            Padding(
+              padding: const EdgeInsets.only(right: 12),
               child: FaIcon(
                 FontAwesomeIcons.triangleExclamation,
-                color: Colors.white,
+                color: context.colorScheme.onError,
               ),
             ),
-            Expanded(child: contentBuilder(context)),
+            Expanded(
+              child: contentBuilder(context),
+            ),
           ],
         ),
       ),

@@ -23,7 +23,7 @@ class SelectedBooruChip extends StatelessWidget {
 
     return ListTile(
       minVerticalPadding: 0,
-      horizontalTitleGap: 4,
+      horizontalTitleGap: 12,
       visualDensity: VisualDensity.compact,
       leading: source.whenWeb(
         (source) => BooruLogo(source: source),

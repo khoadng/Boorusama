@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 
 class OptionTagsArena extends StatefulWidget {
@@ -37,7 +36,6 @@ class _OptionTagsArenaState extends State<OptionTagsArena> {
         ),
         Wrap(
           spacing: 4,
-          runSpacing: isMobilePlatform() ? -4 : 8,
           children: widget.childrenBuilder(editMode),
         ),
       ],
@@ -59,13 +57,13 @@ class _OptionTagsArenaState extends State<OptionTagsArena> {
                 ),
               ),
               if (widget.editable)
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
+                FilledButton(
+                  style: FilledButton.styleFrom(
                     visualDensity: VisualDensity.compact,
                     shape: const CircleBorder(),
                     backgroundColor: editMode
                         ? context.colorScheme.primary
-                        : context.theme.cardColor,
+                        : context.colorScheme.surfaceVariant,
                   ),
                   onPressed: () => setState(() => editMode = !editMode),
                   child: Icon(

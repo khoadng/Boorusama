@@ -1,3 +1,13 @@
+# 3.8.0
+- Migrate to Material 3, support dynamic theme color for Android 12+
+- Show more information in bookmark details
+- Add more privacy focus features like incognito keyboard, biometric lock
+- Add an option to duplicate a profile
+- Add an option to clear image cache on startup
+- [Danbooru] Add a button to show a post version history
+- [Gelbooru] Add a favorite tab
+- A lot of bug fixes and UI adjustments
+
 # 3.7.1
 - Add a mute button for videos
 - Add an option in profile settings to change default image resolution

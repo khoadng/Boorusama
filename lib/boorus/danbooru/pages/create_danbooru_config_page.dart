@@ -76,8 +76,6 @@ class _CreateDanbooruConfigPageState
               text: configName,
               onChanged: (value) => setState(() => configName = value),
             ),
-
-            // 2 tabs
             Expanded(
               child: DefaultTabController(
                 length: 3,
@@ -144,13 +142,8 @@ class _CreateDanbooruConfigPageState
           CreateBooruHideDeletedSwitch(
               value: hideDeleted,
               onChanged: (value) => setState(() => hideDeleted = value),
-              subtitle: Text(
+              subtitle: const Text(
                 'Hide low-quality images, some decent ones might also be hidden.',
-                style: context.textTheme.titleSmall!.copyWith(
-                  color: context.theme.hintColor,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                ),
               )),
         ],
       ),

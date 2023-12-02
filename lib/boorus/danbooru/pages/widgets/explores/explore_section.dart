@@ -22,6 +22,7 @@ class ExploreSection extends StatelessWidget {
     return Column(
       children: [
         ListTile(
+          contentPadding: const EdgeInsets.symmetric(horizontal: 4),
           title: Text(
             title,
             style: context.textTheme.titleLarge!

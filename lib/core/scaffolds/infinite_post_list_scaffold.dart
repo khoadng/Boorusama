@@ -16,6 +16,7 @@ import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/error.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class InfinitePostListScaffold<T extends Post> extends ConsumerStatefulWidget {
@@ -109,8 +110,11 @@ class _InfinitePostListScaffoldState<T extends Post>
                 config.booruType == BooruType.gelbooruV1)
               SliverToBoxAdapter(
                 child: WarningContainer(
-                    contentBuilder: (context) => const Text(
+                    contentBuilder: (context) => Text(
                           'Consider switching to the "Standard" layout. "Masonry" is glitchy on Gelbooru V1.',
+                          style: TextStyle(
+                            color: context.colorScheme.onError,
+                          ),
                         )),
               ),
           ];

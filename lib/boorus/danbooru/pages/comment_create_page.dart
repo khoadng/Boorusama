@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/comments/editor_spacer.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
@@ -52,7 +53,7 @@ class _CommentCreatePageState extends ConsumerState<CommentCreatePage> {
                 Padding(
                   padding: const EdgeInsets.only(top: 8),
                   child: Row(
-                    children: <Widget>[
+                    children: [
                       IconButton(
                         onPressed: () => context.navigator.pop(),
                         icon: const Icon(
@@ -74,10 +75,13 @@ class _CommentCreatePageState extends ConsumerState<CommentCreatePage> {
                 const SizedBox(height: 8),
                 Padding(
                   padding: const EdgeInsets.all(12),
-                  child: TextField(
+                  child: BooruTextField(
                     controller: textEditingController,
-                    decoration: InputDecoration.collapsed(
+                    decoration: InputDecoration(
                       hintText: 'comment.create.hint'.tr(),
+                      filled: false,
+                      border: const OutlineInputBorder(),
+                      focusedBorder: const OutlineInputBorder(),
                     ),
                     autofocus: true,
                     keyboardType: TextInputType.multiline,

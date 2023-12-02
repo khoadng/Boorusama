@@ -14,7 +14,7 @@ class CreateBooruSubmitButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
+    return FilledButton(
       onPressed: onSubmit,
       child: const Text('booru.config_booru_confirm').tr(),
     );

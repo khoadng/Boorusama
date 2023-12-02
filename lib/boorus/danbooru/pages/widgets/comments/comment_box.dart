@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'reply_header.dart';
 
@@ -55,24 +56,26 @@ class _CommentBoxState extends ConsumerState<CommentBox> {
   Widget build(BuildContext context) {
     final config = ref.watchConfig;
 
-    return ValueListenableBuilder<CommentData?>(
+    return ValueListenableBuilder(
       valueListenable: widget.commentReply,
       builder: (_, comment, __) => Container(
         decoration: const BoxDecoration(
           border: Border(top: BorderSide(color: Colors.grey)),
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (comment != null) ReplyHeader(comment: comment),
-            TextField(
+            BooruTextField(
               focusNode: widget.focus,
               controller: textEditingController,
               decoration: InputDecoration(
                 isDense: true,
+                filled: false,
                 hintText: 'comment.create.hint'.tr(),
                 border: const UnderlineInputBorder(),
+                focusedBorder: const UnderlineInputBorder(),
                 suffix: IconButton(
                   visualDensity: VisualDensity.compact,
                   icon: const Icon(Icons.fullscreen),
@@ -96,19 +99,19 @@ class _CommentBoxState extends ConsumerState<CommentBox> {
               keyboardType: TextInputType.multiline,
               maxLines: null,
             ),
-            ValueListenableBuilder<bool>(
+            ValueListenableBuilder(
               valueListenable: widget.isEditing,
               builder: (context, value, child) =>
                   value ? child! : const SizedBox.shrink(),
               child: Align(
                 alignment: Alignment.topRight,
-                child: ValueListenableBuilder<TextEditingValue>(
+                child: ValueListenableBuilder(
                   valueListenable: textEditingController,
                   builder: (context, value, child) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 6),
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
+                      child: FilledButton(
+                        style: FilledButton.styleFrom(
                           shape: const RoundedRectangleBorder(
                             borderRadius: BorderRadius.all(Radius.circular(50)),
                           ),

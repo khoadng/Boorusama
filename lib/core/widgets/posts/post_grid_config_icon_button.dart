@@ -25,6 +25,7 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
     final pageMode = ref.watch(pageModeSettingsProvider);
 
     return InkWell(
+      customBorder: const CircleBorder(),
       onTap: () => showMaterialModalBottomSheet(
         context: context,
         builder: (_) => PostGridActionSheet(
@@ -37,7 +38,10 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
               ref.setImageListType(imageListType),
         ),
       ),
-      child: const Icon(Icons.settings),
+      child: Container(
+        margin: const EdgeInsets.all(4),
+        child: const Icon(Icons.settings),
+      ),
     );
   }
 }
@@ -66,16 +70,9 @@ class PostGridActionSheet extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     var mobileButtons = [
-      ListTile(
-        title: const Text('Page mode'),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(pageMode.name.sentenceCase,
-                style: TextStyle(color: context.theme.hintColor)),
-            const Icon(Icons.chevron_right),
-          ],
-        ),
+      MobilePostGridConfigTile(
+        value: pageMode.name.sentenceCase,
+        title: 'Page mode',
         onTap: () {
           if (popOnSelect) context.navigator.pop();
           showMaterialModalBottomSheet(
@@ -86,16 +83,9 @@ class PostGridActionSheet extends ConsumerWidget {
           );
         },
       ),
-      ListTile(
-        title: const Text('Grid'),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(gridSize.name.sentenceCase,
-                style: TextStyle(color: context.theme.hintColor)),
-            const Icon(Icons.chevron_right),
-          ],
-        ),
+      MobilePostGridConfigTile(
+        value: gridSize.name.sentenceCase,
+        title: 'Grid',
         onTap: () {
           if (popOnSelect) context.navigator.pop();
           showMaterialModalBottomSheet(
@@ -106,16 +96,9 @@ class PostGridActionSheet extends ConsumerWidget {
           );
         },
       ),
-      ListTile(
-        title: const Text('Image list'),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(imageListType.name.sentenceCase,
-                style: TextStyle(color: context.theme.hintColor)),
-            const Icon(Icons.chevron_right),
-          ],
-        ),
+      MobilePostGridConfigTile(
+        value: imageListType.name.sentenceCase,
+        title: 'Image list',
         onTap: () {
           if (popOnSelect) context.navigator.pop();
           showMaterialModalBottomSheet(
@@ -131,66 +114,37 @@ class PostGridActionSheet extends ConsumerWidget {
     ];
 
     final desktopButtons = [
-      ListTile(
-        contentPadding: EdgeInsets.zero,
-        title: const Text('Page mode'),
-        trailing: OptionDropDownButton(
-          backgroundColor: Colors.transparent,
-          alignment: AlignmentDirectional.centerEnd,
-          onChanged: (value) => value != null ? ref.setPageMode(value) : null,
-          value: pageMode,
-          items: PageMode.values
-              .map((value) => DropdownMenuItem(
-                    value: value,
-                    child: Text(value.name.sentenceCase,
-                        style: TextStyle(color: context.theme.hintColor)),
-                  ))
-              .toList(),
-        ),
+      DesktopPostGridConfigTile(
+        title: 'Page mode',
+        value: pageMode,
+        onChanged: (value) => ref.setPageMode(value),
+        items: PageMode.values,
+        optionNameBuilder: (option) => option.name.sentenceCase,
       ),
-      ListTile(
-        contentPadding: EdgeInsets.zero,
-        title: const Text('Grid'),
-        trailing: OptionDropDownButton(
-          backgroundColor: Colors.transparent,
-          alignment: AlignmentDirectional.centerEnd,
-          onChanged: (value) => value != null ? ref.setGridSize(value) : null,
-          value: gridSize,
-          items: GridSize.values
-              .map((value) => DropdownMenuItem(
-                    value: value,
-                    child: Text(value.name.sentenceCase,
-                        style: TextStyle(color: context.theme.hintColor)),
-                  ))
-              .toList(),
-        ),
+      DesktopPostGridConfigTile(
+        title: 'Grid',
+        value: gridSize,
+        onChanged: (value) => ref.setGridSize(value),
+        items: GridSize.values,
+        optionNameBuilder: (option) => option.name.sentenceCase,
       ),
-      ListTile(
-        contentPadding: EdgeInsets.zero,
-        title: const Text('Image list'),
-        trailing: OptionDropDownButton(
-          backgroundColor: Colors.transparent,
-          alignment: AlignmentDirectional.centerEnd,
-          onChanged: (value) =>
-              value != null ? ref.setImageListType(value) : null,
-          value: imageListType,
-          items: ImageListType.values
-              .map((value) => DropdownMenuItem(
-                    value: value,
-                    child: Text(value.name.sentenceCase,
-                        style: TextStyle(color: context.theme.hintColor)),
-                  ))
-              .toList(),
-        ),
+      DesktopPostGridConfigTile(
+        title: 'Image list',
+        value: imageListType,
+        onChanged: (value) => ref.setImageListType(value),
+        items: ImageListType.values,
+        optionNameBuilder: (option) => option.name.sentenceCase,
       ),
     ];
 
     return Material(
-      color: Colors.transparent,
+      color: isDesktopPlatform()
+          ? context.colorScheme.surface
+          : context.colorScheme.secondaryContainer,
       child: ConditionalParentWidget(
         condition: isMobilePlatform(),
         conditionalBuilder: (child) => Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           child: child,
         ),
         child: Column(
@@ -198,6 +152,40 @@ class PostGridActionSheet extends ConsumerWidget {
           children: isMobilePlatform() ? mobileButtons : desktopButtons,
         ),
       ),
+    );
+  }
+}
+
+class MobilePostGridConfigTile extends StatelessWidget {
+  const MobilePostGridConfigTile({
+    super.key,
+    required this.value,
+    required this.title,
+    required this.onTap,
+  });
+
+  final String title;
+  final String value;
+  final void Function() onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text(title),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            value,
+            style: TextStyle(
+              color: context.theme.hintColor,
+              fontSize: 14,
+            ),
+          ),
+          const Icon(Icons.chevron_right),
+        ],
+      ),
+      onTap: onTap,
     );
   }
 }
@@ -218,18 +206,21 @@ class OptionActionSheet<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.transparent,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: options
-            .map((e) => ListTile(
-                  title: Text(optionName(e)),
-                  onTap: () {
-                    context.navigator.pop();
-                    onChanged(e);
-                  },
-                ))
-            .toList(),
+      color: context.colorScheme.secondaryContainer,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: options
+              .map((e) => ListTile(
+                    title: Text(optionName(e)),
+                    onTap: () {
+                      context.navigator.pop();
+                      onChanged(e);
+                    },
+                  ))
+              .toList(),
+        ),
       ),
     );
   }
@@ -246,18 +237,21 @@ class GridSizeActionSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.transparent,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: GridSize.values
-            .map((e) => ListTile(
-                  title: Text(e.name.sentenceCase),
-                  onTap: () {
-                    context.navigator.pop();
-                    onChanged(e);
-                  },
-                ))
-            .toList(),
+      color: context.colorScheme.secondaryContainer,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: GridSize.values
+              .map((e) => ListTile(
+                    title: Text(e.name.sentenceCase),
+                    onTap: () {
+                      context.navigator.pop();
+                      onChanged(e);
+                    },
+                  ))
+              .toList(),
+        ),
       ),
     );
   }
@@ -275,21 +269,79 @@ class PageModeActionSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.transparent,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: PageMode.values
-            .map(
-              (e) => ListTile(
-                title: Text(e.name.sentenceCase),
-                onTap: () {
-                  context.navigator.pop();
-                  onModeChanged(e);
-                },
-              ),
-            )
-            .toList(),
+      color: context.colorScheme.secondaryContainer,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: PageMode.values
+              .map(
+                (e) => ListTile(
+                  title: Text(e.name.sentenceCase),
+                  onTap: () {
+                    context.navigator.pop();
+                    onModeChanged(e);
+                  },
+                ),
+              )
+              .toList(),
+        ),
       ),
+    );
+  }
+}
+
+class DesktopPostGridConfigTile<T> extends StatelessWidget {
+  const DesktopPostGridConfigTile({
+    super.key,
+    required this.value,
+    required this.title,
+    required this.onChanged,
+    required this.items,
+    required this.optionNameBuilder,
+  });
+
+  final String title;
+  final T value;
+  final void Function(T value) onChanged;
+  final List<T> items;
+  final String Function(T option) optionNameBuilder;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        Container(
+          width: 80,
+          constraints: const BoxConstraints(maxWidth: 100),
+          child: Text(title),
+        ),
+        const SizedBox(width: 4),
+        Expanded(
+          child: Container(
+            constraints: const BoxConstraints(minWidth: 150),
+            child: OptionDropDownButton(
+              alignment: AlignmentDirectional.centerStart,
+              onChanged: (value) => value != null ? onChanged(value) : null,
+              value: value,
+              items: items
+                  .map(
+                    (value) => DropdownMenuItem(
+                      value: value,
+                      child: Text(
+                        optionNameBuilder(value),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                  )
+                  .toList(),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

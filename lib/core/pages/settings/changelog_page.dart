@@ -19,9 +19,6 @@ class ChangelogPage extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('settings.changelog').tr(),
         automaticallyImplyLeading: false,
-        shadowColor: Colors.transparent,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
         actions: [
           IconButton(
             onPressed: () => context.navigator.pop(),

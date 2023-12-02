@@ -99,11 +99,11 @@ class _SlideShowConfigContainerState extends State<SlideShowConfigContainer> {
             ButtonBar(
               alignment: MainAxisAlignment.spaceAround,
               children: [
-                ElevatedButton(
+                FilledButton(
                   onPressed: () => context.navigator.pop(null),
                   child: const Text('post.detail.slide_show.cancel').tr(),
                 ),
-                ElevatedButton(
+                FilledButton(
                   onPressed: () => context.navigator.pop(config.value),
                   child: const Text('post.detail.slide_show.ok').tr(),
                 ),

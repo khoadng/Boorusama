@@ -216,7 +216,7 @@ class _CreateGelbooruConfigPageState
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              ElevatedButton.icon(
+              FilledButton.icon(
                 onPressed: () => Clipboard.getData('text/plain').then(
                   (value) {
                     if (value == null) return;

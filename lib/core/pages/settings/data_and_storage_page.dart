@@ -10,6 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/feats/tags/booru_tag_type_store.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/foundation/i18n.dart';
@@ -41,6 +42,8 @@ class DataAndStoragePage extends ConsumerStatefulWidget {
 class _PerformancePageState extends ConsumerState<DataAndStoragePage> {
   @override
   Widget build(BuildContext context) {
+    final settings = ref.watch(settingsProvider);
+
     return ConditionalParentWidget(
       condition: widget.hasAppBar,
       conditionalBuilder: (child) => Scaffold(
@@ -66,7 +69,7 @@ class _PerformancePageState extends ConsumerState<DataAndStoragePage> {
                       .tr()
                       .replaceAll('{0}', filesize(imageCacheSize.size))
                       .replaceAll('{1}', imageCacheSize.fileCount.toString())),
-                  trailing: ElevatedButton(
+                  trailing: FilledButton(
                     onPressed: () => ref
                         .read(cacheSizeProvider.notifier)
                         .clearAppImageCache(),
@@ -81,7 +84,7 @@ class _PerformancePageState extends ConsumerState<DataAndStoragePage> {
                     data: (data) => Text(filesize(data)),
                     orElse: () => const Text('Loading...'),
                   ),
-              trailing: ElevatedButton(
+              trailing: FilledButton(
                 onPressed: () => ref
                     .read(booruTagTypeStoreProvider)
                     .clear()
@@ -98,13 +101,20 @@ class _PerformancePageState extends ConsumerState<DataAndStoragePage> {
                 return ListTile(
                   title: const Text('All cache'),
                   subtitle: Text(filesize(size.size)),
-                  trailing: ElevatedButton(
+                  trailing: FilledButton(
                     onPressed: () =>
                         ref.read(cacheSizeProvider.notifier).clearAppCache(),
                     child: const Text('settings.performance.clear_cache').tr(),
                   ),
                 );
               },
+            ),
+            SwitchListTile(
+              value: settings.clearImageCacheOnStartup,
+              title: const Text('Clear image cache on start up'),
+              onChanged: (value) => ref.updateSettings(
+                settings.copyWith(clearImageCacheOnStartup: value),
+              ),
             ),
           ],
         ),

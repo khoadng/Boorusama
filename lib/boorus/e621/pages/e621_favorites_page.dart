@@ -23,7 +23,6 @@ class E621FavoritesPage extends ConsumerWidget {
     final query = 'fav:${config.login?.replaceAll(' ', '_')}';
 
     return FavoritesPageScaffold(
-        username: username,
         favQueryBuilder: () => query,
         fetcher: (page) =>
             ref.read(e621PostRepoProvider(config)).getPosts([query], page));

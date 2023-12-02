@@ -6,9 +6,6 @@ import 'package:exprollable_page_view/exprollable_page_view.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/feats/boorus/providers.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
@@ -27,7 +24,7 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     this.onExpanded,
     this.tagListBuilder,
     this.infoBuilder,
-    this.swipeImageUrlBuilder,
+    required this.swipeImageUrlBuilder,
     this.topRightButtonsBuilder,
     this.placeholderImageUrlBuilder,
     this.imageOverlayBuilder,
@@ -47,7 +44,7 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   final void Function(String tag) onTagTap;
   final void Function(T post)? onExpanded;
   final void Function(T post)? onPageChanged;
-  final String Function(T post)? swipeImageUrlBuilder;
+  final String Function(T post) swipeImageUrlBuilder;
   final String? Function(T post, int currentPage)? placeholderImageUrlBuilder;
   final Widget Function(BuildContext context, T post)? toolbarBuilder;
   final Widget Function(BuildContext context, T post)? sliverArtistPostsBuilder;
@@ -138,7 +135,7 @@ class _PostDetailPageScaffoldState<T extends Post>
                   border: Border(
                     top: BorderSide(
                       color: context.theme.dividerColor,
-                      width: 1,
+                      width: 0.2,
                     ),
                   ),
                 ),
@@ -149,9 +146,7 @@ class _PostDetailPageScaffoldState<T extends Post>
       targetSwipeDownBuilder: (context, page) => SwipeTargetImage(
         imageUrl: posts[page].isVideo
             ? posts[page].videoThumbnailUrl
-            : widget.swipeImageUrlBuilder != null
-                ? widget.swipeImageUrlBuilder!(posts[page])
-                : posts[page].thumbnailImageUrl,
+            : widget.swipeImageUrlBuilder(posts[page]),
         aspectRatio: posts[page].aspectRatio,
       ),
       expandedBuilder: (context, page, currentPage, expanded, enableSwipe) {
@@ -204,22 +199,12 @@ class _PostDetailPageScaffoldState<T extends Post>
     int currentPage,
     WidgetRef ref,
   ) {
-    final config = ref.watchConfig;
     final post = posts[page];
     final expandedOnCurrentPage = expanded && page == currentPage;
     final media = PostMedia(
       inFocus: !expanded && page == currentPage,
       post: post,
-      imageUrl: widget.swipeImageUrlBuilder != null
-          ? widget.swipeImageUrlBuilder!(post)
-          : ref.watchBooruBuilder(config)?.postImageDetailsUrlBuilder != null
-              ? ref.watchBooruBuilder(config)?.postImageDetailsUrlBuilder(
-                        ref.watch(settingsProvider),
-                        post,
-                        config,
-                      ) ??
-                  post.sampleImageUrl
-              : post.sampleImageUrl,
+      imageUrl: widget.swipeImageUrlBuilder(post),
       placeholderImageUrl: widget.placeholderImageUrlBuilder != null
           ? widget.placeholderImageUrlBuilder!(post, currentPage)
           : post.thumbnailImageUrl,
@@ -261,16 +246,19 @@ class _PostDetailPageScaffoldState<T extends Post>
           widget.artistInfoBuilder!(context, post),
         ],
         if (widget.statsTileBuilder != null) ...[
-          const Divider(height: 8, thickness: 1),
+          const SizedBox(height: 12),
           widget.statsTileBuilder!(context, post),
         ],
         const Divider(height: 8, thickness: 1),
         if (widget.tagListBuilder != null)
           widget.tagListBuilder!(context, post)
         else
-          BasicTagList(
-            tags: post.tags,
-            onTap: widget.onTagTap,
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            child: BasicTagList(
+              tags: post.tags,
+              onTap: widget.onTagTap,
+            ),
           ),
         const Divider(height: 8, thickness: 1),
         if (widget.fileDetailsBuilder != null)
