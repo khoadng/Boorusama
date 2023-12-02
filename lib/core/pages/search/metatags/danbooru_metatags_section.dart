@@ -27,6 +27,7 @@ class DanbooruMetatagsSection extends ConsumerWidget {
     final userMetatags = ref.watch(danbooruUserMetatagsProvider);
     final metatags = ref.watch(metatagsProvider);
     final cheatSheet = booru?.cheetsheet(booruConfig.url);
+    final notifier = ref.watch(danbooruUserMetatagsProvider.notifier);
 
     return MetatagsSection(
       onOptionTap: onOptionTap,
@@ -40,10 +41,8 @@ class DanbooruMetatagsSection extends ConsumerWidget {
               );
             }
           : null,
-      onUserMetatagDeleted: (tag) =>
-          ref.read(danbooruUserMetatagsProvider.notifier).delete(tag),
-      onUserMetatagAdded: (tag) =>
-          ref.read(danbooruUserMetatagsProvider.notifier).add(tag.name),
+      onUserMetatagDeleted: (tag) => notifier.delete(tag),
+      onUserMetatagAdded: (tag) => notifier.add(tag.name),
     );
   }
 }

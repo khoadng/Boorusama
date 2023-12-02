@@ -21,7 +21,7 @@ class ImportTagsDialog extends ConsumerStatefulWidget {
 
   final double? padding;
   final String? hint;
-  final void Function(String tagString) onImport;
+  final void Function(String tagString, WidgetRef ref) onImport;
 
   @override
   ConsumerState<ImportTagsDialog> createState() => _ImportTagsDialogState();
@@ -84,7 +84,7 @@ class _ImportTagsDialogState extends ConsumerState<ImportTagsDialog> {
                   onPressed: value.text.isNotEmpty
                       ? () {
                           context.navigator.pop();
-                          widget.onImport(value.text);
+                          widget.onImport(value.text, ref);
                         }
                       : null,
                   child: const Text('favorite_tags.import').tr(),

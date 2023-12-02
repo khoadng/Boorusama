@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:math';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -7,7 +10,6 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 // Project imports:
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/widgets/image_grid_item.dart';
 
@@ -82,6 +84,7 @@ class PreviewPostList<T extends Post> extends StatelessWidget {
     this.imageBuilder,
     required this.imageUrl,
     this.width,
+    this.height,
   });
 
   final List<T> posts;
@@ -90,12 +93,13 @@ class PreviewPostList<T extends Post> extends StatelessWidget {
   final Widget Function(T item)? imageBuilder;
   final String Function(T item) imageUrl;
   final double? width;
+  final double? height;
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) => SizedBox(
-        height: context.screenHeight * 0.22,
+        height: height ?? 200,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: MediaQuery.removePadding(
@@ -117,7 +121,8 @@ class PreviewPostList<T extends Post> extends StatelessWidget {
                       image: imageBuilder != null
                           ? imageBuilder!(post)
                           : BooruImage(
-                              width: width ?? constraints.maxWidth * 0.3,
+                              width:
+                                  width ?? max(constraints.maxWidth / 6, 120),
                               forceFill: true,
                               aspectRatio: 0.6,
                               imageUrl: imageUrl(post),

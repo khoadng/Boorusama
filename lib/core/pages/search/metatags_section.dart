@@ -10,7 +10,6 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/pages/search/common/option_tags_arena.dart';
 import 'package:boorusama/core/router.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 
 class MetatagsSection extends ConsumerStatefulWidget {
@@ -91,10 +90,9 @@ class _MetatagsSectionState extends ConsumerState<MetatagsSection> {
           onPressed: () => goToMetatagsPage(
             context,
             metatags: metatags,
-            onSelected: (tag) => setState(() {
-              context.navigator.pop();
+            onSelected: (tag) {
               widget.onUserMetatagAdded(tag);
-            }),
+            },
           ),
           icon: const Icon(Icons.add),
         ),

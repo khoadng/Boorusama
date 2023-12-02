@@ -37,7 +37,7 @@ class ImportExportTagButton extends ConsumerWidget {
             pageBuilder: (context, _, __) => ImportTagsDialog(
               padding: isMobilePlatform() ? 0 : 8,
               hint: _kHint,
-              onImport: (tagString) {
+              onImport: (tagString, _) {
                 onImport(tagString);
               },
             ),

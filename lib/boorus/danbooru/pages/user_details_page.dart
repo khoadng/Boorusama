@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:math';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -396,15 +399,18 @@ class _PreviewList extends ConsumerWidget {
             child: const Text('View all'),
           ),
         ),
-        PreviewPostList(
-          posts: posts,
-          width: isMobilePlatform() ? null : 150,
-          onTap: (index) => goToPostDetailsPage(
-            context: context,
-            posts: posts.toList(),
-            initialIndex: index,
+        LayoutBuilder(
+          builder: (context, constraints) => PreviewPostList(
+            posts: posts,
+            height: isMobilePlatform() ? null : 300,
+            width: max(constraints.maxWidth / 6, 100),
+            onTap: (index) => goToPostDetailsPage(
+              context: context,
+              posts: posts.toList(),
+              initialIndex: index,
+            ),
+            imageUrl: (item) => item.url360x360,
           ),
-          imageUrl: (item) => item.url360x360,
         ),
       ],
     );

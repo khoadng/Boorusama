@@ -32,6 +32,7 @@ import 'package:boorusama/router.dart';
 import 'package:boorusama/routes.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'pages/search/full_history_view.dart';
+import 'pages/search/metatag_list_page.dart';
 import 'utils.dart';
 
 void goToHomePage(
@@ -122,46 +123,15 @@ void goToMetatagsPage(
     settings: const RouteSettings(
       name: RouterPageConstant.metatags,
     ),
-    builder: (context) => Scaffold(
-      appBar: AppBar(
-        title: const Text('Metatags'),
-        automaticallyImplyLeading: false,
-        actions: [
-          IconButton(
-            onPressed: context.navigator.pop,
-            icon: const Icon(Icons.close),
-          ),
-        ],
-      ),
-      body: Column(
-        children: [
-          InfoContainer(
-            contentBuilder: (context) =>
-                const Text('search.metatags_notice').tr(),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: metatags.length,
-              itemBuilder: (context, index) {
-                final tag = metatags[index];
-
-                return ListTile(
-                  onTap: () => onSelected(tag),
-                  title: Text(tag.name),
-                  trailing: tag.isFree ? const Chip(label: Text('Free')) : null,
-                );
-              },
-            ),
-          ),
-        ],
-      ),
+    builder: (context) => MetatagListPage(
+      metatags: metatags,
+      onSelected: onSelected,
     ),
   );
 }
 
 Future<Object?> goToFavoriteTagImportPage(
   BuildContext context,
-  WidgetRef ref,
 ) {
   return showGeneralDialog(
     context: context,
@@ -170,7 +140,7 @@ Future<Object?> goToFavoriteTagImportPage(
     ),
     pageBuilder: (context, _, __) => ImportTagsDialog(
       padding: isMobilePlatform() ? 0 : 8,
-      onImport: (tagString) =>
+      onImport: (tagString, ref) =>
           ref.read(favoriteTagsProvider.notifier).import(tagString),
     ),
   );
@@ -204,7 +174,7 @@ void goToSearchHistoryPage(
       name: RouterPageConstant.searchHistories,
     ),
     duration: const Duration(milliseconds: 200),
-    builder: (_) => Scaffold(
+    builder: (context) => Scaffold(
       appBar: AppBar(
         title: const Text('search.history.history').tr(),
         actions: [
