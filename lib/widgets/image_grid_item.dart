@@ -169,6 +169,7 @@ class ImageGridItem extends StatelessWidget {
                   'AI',
                   style: TextStyle(
                     fontWeight: FontWeight.w900,
+                    color: Colors.white,
                   ),
                 ),
               )
