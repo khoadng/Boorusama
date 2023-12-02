@@ -68,12 +68,11 @@ void goToPoolDetailPage(BuildContext context, Pool pool) {
 void goToPostVersionPage(BuildContext context, DanbooruPost post) {
   showMaterialModalBottomSheet(
     context: context,
-    builder: (_) {
-      return DanbooruPostVersionsPage(
-        postId: post.id,
-        previewUrl: post.sampleImageUrl,
-      );
-    },
+    duration: const Duration(milliseconds: 250),
+    builder: (_) => DanbooruPostVersionsPage(
+      postId: post.id,
+      previewUrl: post.url720x720,
+    ),
   );
 }
 
