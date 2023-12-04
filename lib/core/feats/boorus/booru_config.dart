@@ -2,6 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 
 class BooruConfig extends Equatable {
@@ -151,4 +152,7 @@ extension BooruConfigX on BooruConfig {
   bool isUnverified() => booruId != booruIdHint;
 
   bool isDefault() => id == -1;
+
+  bool get isSFW =>
+      ratingFilter != BooruConfigRatingFilter.none || url == kDanbooruSafeUrl;
 }

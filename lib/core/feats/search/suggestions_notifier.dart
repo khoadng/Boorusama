@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/search/search.dart';
@@ -63,6 +64,7 @@ class SuggestionsNotifier
     final booruBuilder = ref.read(booruBuilderProvider);
     final autocompleteFetcher = booruBuilder?.autocompleteFetcher;
     final booruTagTypeStore = ref.read(booruTagTypeStoreProvider);
+    final tagInfo = ref.read(tagInfoProvider);
 
     debounce(
       'suggestions',
@@ -72,13 +74,51 @@ class SuggestionsNotifier
 
         await booruTagTypeStore.saveAutocompleteIfNotExist(arg.booruType, data);
 
-        state = state.add(sanitized, data.lock);
+        final filter = filterNsfw(
+          data,
+          tagInfo.r18Tags,
+          shouldFilter: arg.isSFW,
+        );
+
+        state = state.add(sanitized, filter);
 
         if (fallback.mounted && fallback.hasListeners) {
-          fallback.state = data.lock;
+          fallback.state = filter;
         }
       },
       duration: const Duration(milliseconds: 350),
     );
   }
+}
+
+IList<AutocompleteData> filterNsfw(
+  List<AutocompleteData> data,
+  List<String> nsfwTags, {
+  bool shouldFilter = true,
+}) {
+  return shouldFilter
+      ? data
+          .where((e) {
+            final words = e.value.split('_');
+            final aliasWords = e.antecedent?.split('_') ?? [];
+
+            for (final tag in nsfwTags) {
+              for (final word in words) {
+                if (word.contains(tag)) {
+                  return false;
+                }
+              }
+
+              for (final word in aliasWords) {
+                if (word.contains(tag)) {
+                  return false;
+                }
+              }
+            }
+
+            return true;
+          })
+          .toList()
+          .lock
+      : data.lock;
 }
