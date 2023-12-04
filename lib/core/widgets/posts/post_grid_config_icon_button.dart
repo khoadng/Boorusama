@@ -6,7 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/core/feats/boorus/providers.dart';
+import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -16,7 +20,10 @@ import 'package:boorusama/widgets/widgets.dart';
 class PostGridConfigIconButton<T> extends ConsumerWidget {
   const PostGridConfigIconButton({
     super.key,
+    required this.postController,
   });
+
+  final PostGridController<Post> postController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -29,6 +36,7 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
       onTap: () => showMaterialModalBottomSheet(
         context: context,
         builder: (_) => PostGridActionSheet(
+          postController: postController,
           gridSize: gridSize,
           pageMode: pageMode,
           imageListType: imageListType,
@@ -56,6 +64,7 @@ class PostGridActionSheet extends ConsumerWidget {
     required this.imageListType,
     required this.onImageListChanged,
     this.popOnSelect = true,
+    required this.postController,
   });
 
   final void Function(PageMode mode) onModeChanged;
@@ -66,9 +75,13 @@ class PostGridActionSheet extends ConsumerWidget {
   final GridSize gridSize;
   final ImageListType imageListType;
   final bool popOnSelect;
+  final PostGridController<Post> postController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final postStatsPageBuilder =
+        ref.watchBooruBuilder(ref.watchConfig)?.postStatisticsPageBuilder;
+
     var mobileButtons = [
       MobilePostGridConfigTile(
         value: pageMode.name.sentenceCase,
@@ -111,6 +124,23 @@ class PostGridActionSheet extends ConsumerWidget {
           );
         },
       ),
+      if (postStatsPageBuilder != null) ...[
+        const Divider(),
+        ListTile(
+          title: const Text('Stats for nerds'),
+          onTap: () {
+            context.navigator.pop();
+            showMaterialModalBottomSheet(
+              context: context,
+              duration: const Duration(milliseconds: 250),
+              builder: (_) => postStatsPageBuilder(
+                context,
+                postController.items,
+              ),
+            );
+          },
+        ),
+      ],
     ];
 
     final desktopButtons = [

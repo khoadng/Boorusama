@@ -16,6 +16,7 @@ import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/widgets/widgets.dart';
 import 'related_tag_cloud_chip.dart';
 
 const _kTagCloudTotal = 30;
@@ -141,25 +142,14 @@ class ArtistTagCloud extends ConsumerWidget {
 
         if (tags.isEmpty) return const SizedBox.shrink();
 
-        return ConstrainedBox(
-          constraints: const BoxConstraints(minHeight: 180),
-          child: FittedBox(
-            child: Scatter(
-              fillGaps: true,
-              delegate: FermatSpiralScatterDelegate(
-                ratio: context.screenAspectRatio,
-              ),
-              children: [
-                for (var i = 0; i < tags.length; i++)
-                  RelatedTagCloudChip(
-                    index: i,
-                    tag: tags[i],
-                    onPressed: () => goToSearchPage(
-                      context,
-                      tag: tags[i].tag,
-                    ),
-                  ),
-              ],
+        return TagCloud(
+          itemCount: tags.length,
+          itemBuilder: (context, i) => RelatedTagCloudChip(
+            index: i,
+            tag: tags[i],
+            onPressed: () => goToSearchPage(
+              context,
+              tag: tags[i].tag,
             ),
           ),
         );

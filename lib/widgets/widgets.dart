@@ -50,6 +50,7 @@ export 'split.dart';
 export 'square_chip.dart';
 export 'swipe_down_to_dismiss_mixin.dart';
 export 'tag_changed_text.dart';
+export 'tag_cloud.dart';
 export 'toast.dart';
 export 'touch_count_recognizer.dart';
 export 'video_play_duration_icon.dart';

@@ -6,12 +6,14 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/pages/comment_page.dart';
+import 'package:boorusama/boorus/danbooru/pages/danbooru_post_statistics_page.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
+import 'package:boorusama/core/pages/post_statistics_page.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/functional.dart';
@@ -240,4 +242,18 @@ class DanbooruBuilder with DefaultTagColorMixin implements BooruBuilder {
                       null => post.url720x720,
                     }),
           );
+
+  @override
+  PostStatisticsPageBuilder get postStatisticsPageBuilder => (context, posts) {
+        try {
+          return DanbooruPostStatisticsPage(
+            posts: posts.map((e) => e as DanbooruPost).toList(),
+          );
+        } catch (e) {
+          return PostStatisticsPage(
+            totalPosts: () => posts.length,
+            generalStats: () => posts.getStats(),
+          );
+        }
+      };
 }

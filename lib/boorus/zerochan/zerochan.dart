@@ -108,6 +108,7 @@ class ZerochanBuilder
         DefaultThumbnailUrlMixin,
         CommentNotSupportedMixin,
         DefaultPostImageDetailsUrlMixin,
+        DefaultPostStatisticsPageBuilderMixin,
         DefaultBooruUIMixin
     implements BooruBuilder {
   const ZerochanBuilder({

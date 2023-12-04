@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
-import 'package:boorusama/core/widgets/posts/post_grid_config_icon_button.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/platform.dart';
 
 class PostGridConfigRegion extends ConsumerWidget {
@@ -14,6 +15,7 @@ class PostGridConfigRegion extends ConsumerWidget {
     super.key,
     required this.blacklistHeader,
     required this.builder,
+    required this.postController,
   });
 
   final Widget Function(
@@ -21,6 +23,7 @@ class PostGridConfigRegion extends ConsumerWidget {
     Widget blacklistHeader,
   ) builder;
   final Widget blacklistHeader;
+  final PostGridController<Post> postController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -44,6 +47,7 @@ class PostGridConfigRegion extends ConsumerWidget {
                           padding: const EdgeInsets.symmetric(horizontal: 8),
                           width: 230,
                           child: PostGridActionSheet(
+                            postController: postController,
                             popOnSelect: false,
                             gridSize: gridSize,
                             pageMode: pageMode,
