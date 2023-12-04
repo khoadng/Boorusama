@@ -79,6 +79,6 @@ final danbooruPostCountRepoProvider =
     countTags: (tags) =>
         ref.read(danbooruClientProvider(config)).countPosts(tags: tags),
     //TODO: this is a hack to get around the fact that count endpoint includes all ratings
-    extraTags: config.isSFW ? ['rating:general'] : [],
+    extraTags: config.hasStrictSFW ? ['rating:general'] : [],
   );
 });

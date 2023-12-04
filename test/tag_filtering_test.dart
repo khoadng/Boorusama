@@ -4,7 +4,6 @@ import 'package:test/test.dart';
 // Project imports:
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
-import 'package:boorusama/core/feats/search/search.dart';
 
 void main() {
   group('single', () {
@@ -376,6 +375,22 @@ void main() {
       expect(result.first.value, 'b');
     });
 
+    test('filter matched full tag', () {
+      final result = filterNsfw(
+        [
+          AutocompleteData.fromJson(const {'value': 'a_b', 'label': 'a_b'}),
+          AutocompleteData.fromJson(
+              const {'value': 'xyz', 'label': 'xyz', 'antecedent': 'a_b'}),
+          AutocompleteData.fromJson(const {'value': 'b', 'label': 'b'}),
+        ],
+        ['a_b'],
+        shouldFilter: true,
+      );
+
+      expect(result.length, 1);
+      expect(result.first.value, 'b');
+    });
+
     test('word-based filter', () {
       final result = filterNsfw(
         [
@@ -388,8 +403,7 @@ void main() {
         shouldFilter: true,
       );
 
-      expect(result.length, 2);
-      expect(result.first.value, 'ab');
+      expect(result.length, 1);
       expect(result.last.value, 'b');
     });
 

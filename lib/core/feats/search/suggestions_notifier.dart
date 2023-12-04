@@ -77,7 +77,7 @@ class SuggestionsNotifier
         final filter = filterNsfw(
           data,
           tagInfo.r18Tags,
-          shouldFilter: arg.isSFW,
+          shouldFilter: arg.hasStrictSFW,
         );
 
         state = state.add(sanitized, filter);
@@ -89,36 +89,4 @@ class SuggestionsNotifier
       duration: const Duration(milliseconds: 350),
     );
   }
-}
-
-IList<AutocompleteData> filterNsfw(
-  List<AutocompleteData> data,
-  List<String> nsfwTags, {
-  bool shouldFilter = true,
-}) {
-  return shouldFilter
-      ? data
-          .where((e) {
-            final words = e.value.split('_');
-            final aliasWords = e.antecedent?.split('_') ?? [];
-
-            for (final tag in nsfwTags) {
-              for (final word in words) {
-                if (word.contains(tag)) {
-                  return false;
-                }
-              }
-
-              for (final word in aliasWords) {
-                if (word.contains(tag)) {
-                  return false;
-                }
-              }
-            }
-
-            return true;
-          })
-          .toList()
-          .lock
-      : data.lock;
 }

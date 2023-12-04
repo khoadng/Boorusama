@@ -153,6 +153,5 @@ extension BooruConfigX on BooruConfig {
 
   bool isDefault() => id == -1;
 
-  bool get isSFW =>
-      ratingFilter != BooruConfigRatingFilter.none || url == kDanbooruSafeUrl;
+  bool get hasStrictSFW => url == kDanbooruSafeUrl;
 }
