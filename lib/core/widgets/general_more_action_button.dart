@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/boorus/providers.dart';
 import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
@@ -60,10 +61,11 @@ class GeneralMoreActionButton extends ConsumerWidget {
                 value: 'download',
                 child: const Text('download.download').tr(),
               ),
-              PopupMenuItem(
-                value: 'view_in_browser',
-                child: const Text('post.detail.view_in_browser').tr(),
-              ),
+              if (!booru.hasStrictSFW)
+                PopupMenuItem(
+                  value: 'view_in_browser',
+                  child: const Text('post.detail.view_in_browser').tr(),
+                ),
               const PopupMenuItem(
                 value: 'add_to_global_blacklist',
                 child: Text('Add to global blacklist'),

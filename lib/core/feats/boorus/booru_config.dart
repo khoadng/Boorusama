@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/foundation/platform.dart';
 
 class BooruConfig extends Equatable {
   const BooruConfig({
@@ -153,5 +154,5 @@ extension BooruConfigX on BooruConfig {
 
   bool isDefault() => id == -1;
 
-  bool get hasStrictSFW => url == kDanbooruSafeUrl;
+  bool get hasStrictSFW => url == kDanbooruSafeUrl && isIOS();
 }

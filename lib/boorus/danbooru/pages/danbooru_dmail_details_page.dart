@@ -91,12 +91,13 @@ class DanbooruDmailDetailsPage extends ConsumerWidget {
               '[/quote]',
             ),
             const SizedBox(height: 16),
-            FilledButton(
-              onPressed: () {
-                launchExternalUrlString('${config.url}dmails/${dmail.id}');
-              },
-              child: const Text('View in Browser (LOGGED IN REQUIRED))'),
-            ),
+            if (!config.hasStrictSFW)
+              FilledButton(
+                onPressed: () {
+                  launchExternalUrlString('${config.url}dmails/${dmail.id}');
+                },
+                child: const Text('View in Browser (LOGGED IN REQUIRED))'),
+              ),
           ],
         ),
       ),

@@ -9,6 +9,7 @@ import 'package:flutter_tags_x/flutter_tags_x.dart' hide TagsState;
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
@@ -107,11 +108,13 @@ class PostTagListChip extends ConsumerWidget {
                     width: 1,
                   )
                 : null,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(8),
-                bottomLeft: Radius.circular(8),
-              ),
+            shape: RoundedRectangleBorder(
+              borderRadius: !ref.watchConfig.hasStrictSFW
+                  ? const BorderRadius.only(
+                      topLeft: Radius.circular(8),
+                      bottomLeft: Radius.circular(8),
+                    )
+                  : const BorderRadius.all(Radius.circular(8)),
             ),
             label: ConstrainedBox(
               constraints: BoxConstraints(
@@ -128,32 +131,33 @@ class PostTagListChip extends ConsumerWidget {
             ),
           ),
         ),
-        SizedBox(
-          height: 28,
-          child: Chip(
-            visualDensity: const ShrinkVisualDensity(),
-            backgroundColor: numberColors?.backgroundColor,
-            side: numberColors != null
-                ? BorderSide(
-                    color: numberColors.borderColor,
-                    width: 1,
-                  )
-                : null,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                topRight: Radius.circular(8),
-                bottomRight: Radius.circular(8),
+        if (!ref.watchConfig.hasStrictSFW)
+          SizedBox(
+            height: 28,
+            child: Chip(
+              visualDensity: const ShrinkVisualDensity(),
+              backgroundColor: numberColors?.backgroundColor,
+              side: numberColors != null
+                  ? BorderSide(
+                      color: numberColors.borderColor,
+                      width: 1,
+                    )
+                  : null,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(8),
+                  bottomRight: Radius.circular(8),
+                ),
               ),
-            ),
-            label: Text(
-              NumberFormat.compact().format(tag.postCount),
-              style: TextStyle(
-                color: numberColors?.foregroundColor,
-                fontSize: 12,
+              label: Text(
+                NumberFormat.compact().format(tag.postCount),
+                style: TextStyle(
+                  color: numberColors?.foregroundColor,
+                  fontSize: 12,
+                ),
               ),
             ),
           ),
-        ),
       ],
     );
   }

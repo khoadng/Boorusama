@@ -55,11 +55,12 @@ final danbooruRelatedTagRepProvider =
 
 final danbooruRelatedTagProvider =
     FutureProvider.autoDispose.family<RelatedTag, String>(
-  (ref, tag) {
+  (ref, tag) async {
     final config = ref.watchConfig;
+    final nsfwTags = ref.watch(tagInfoProvider).r18Tags;
     final sfwTags = filterNsfwRawTagString(
       tag,
-      ref.watch(tagInfoProvider).r18Tags,
+      nsfwTags,
       shouldFilter: config.hasStrictSFW,
     );
 
@@ -68,7 +69,17 @@ final danbooruRelatedTagProvider =
 
     final repo = ref.watch(danbooruRelatedTagRepProvider(config));
 
-    return repo.getRelatedTag(tag);
+    final relatedTag = await repo.getRelatedTag(tag);
+
+    return config.hasStrictSFW
+        ? relatedTag.copyWith(
+            tags: relatedTag.tags
+                .where((e) => isSfwTag(
+                      value: e.tag,
+                      nsfwTags: nsfwTags,
+                    ))
+                .toList())
+        : relatedTag;
   },
 );
 

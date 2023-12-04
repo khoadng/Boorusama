@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/autocompletes/autocomplete.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/string.dart';
@@ -59,7 +60,7 @@ class TagSuggestionItems extends ConsumerWidget {
                         textColorBuilder?.call(tag),
                       ),
                     ),
-                    if (tag.hasCount)
+                    if (tag.hasCount && !ref.watchConfig.hasStrictSFW)
                       Container(
                         constraints: const BoxConstraints(maxWidth: 100),
                         child: Text(

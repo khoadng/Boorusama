@@ -33,7 +33,7 @@ class DanbooruMetatagsSection extends ConsumerWidget {
       onOptionTap: onOptionTap,
       metatags: metatags,
       userMetatags: () => userMetatags,
-      onHelpRequest: cheatSheet != null
+      onHelpRequest: cheatSheet != null && !booruConfig.hasStrictSFW
           ? () {
               launchExternalUrl(
                 Uri.parse(cheatSheet),
