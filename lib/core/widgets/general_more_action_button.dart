@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/boorus/providers.dart';
 import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
@@ -32,7 +31,7 @@ class GeneralMoreActionButton extends ConsumerWidget {
         child: Material(
           color: Colors.black.withOpacity(0.5),
           shape: const CircleBorder(),
-          child: PopupMenuButton<String>(
+          child: PopupMenuButton(
             padding: EdgeInsets.zero,
             onSelected: (value) {
               switch (value) {
