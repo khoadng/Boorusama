@@ -74,8 +74,10 @@ class DanbooruForumPostsPage extends ConsumerWidget {
                     ),
                   ),
                   Html(
-                    onLinkTap: (url, context, attributes, element) =>
-                        url != null ? launchExternalUrlString(url) : null,
+                    onLinkTap: !booruConfig.hasStrictSFW
+                        ? (url, context, attributes, element) =>
+                            url != null ? launchExternalUrlString(url) : null
+                        : null,
                     style: {
                       'body': Style(
                         margin: const EdgeInsets.symmetric(vertical: 4),

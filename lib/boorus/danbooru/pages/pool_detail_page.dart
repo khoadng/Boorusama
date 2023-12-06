@@ -85,12 +85,14 @@ class PoolDetailPage extends ConsumerWidget {
                     hasTextBetweenDiv(data.description)
                 ? SliverToBoxAdapter(
                     child: Html(
-                      onLinkTap: (url, context, attributes, element) =>
-                          _onHtmlLinkTapped(
-                        attributes,
-                        url,
-                        data.descriptionEndpointRefUrl,
-                      ),
+                      onLinkTap: !config.hasStrictSFW
+                          ? (url, context, attributes, element) =>
+                              _onHtmlLinkTapped(
+                                attributes,
+                                url,
+                                data.descriptionEndpointRefUrl,
+                              )
+                          : null,
                       data: data.description,
                     ),
                   )
