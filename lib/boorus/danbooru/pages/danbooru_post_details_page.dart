@@ -95,9 +95,8 @@ class _DanbooruPostDetailsPageState
           rating: tagDetails != null ? tagDetails.rating : post.rating,
         );
       },
-      topRightButtonsBuilder: (page, expanded) {
+      topRightButtonsBuilder: (page, expanded, post) {
         final noteState = ref.watch(notesControllerProvider(posts[page]));
-        final post = posts[page];
 
         return [
           NoteActionButton(

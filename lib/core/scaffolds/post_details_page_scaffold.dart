@@ -60,7 +60,7 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
 
   final Widget Function(BuildContext context, T post)?
       sliverRelatedPostsBuilder;
-  final List<Widget> Function(int currentPage, bool expanded)?
+  final List<Widget> Function(int currentPage, bool expanded, T post)?
       topRightButtonsBuilder;
   final List<Widget> Function(BoxConstraints constraints, T post)?
       imageOverlayBuilder;
@@ -184,7 +184,7 @@ class _PostDetailPageScaffoldState<T extends Post>
       pageCount: widget.posts.length,
       topRightButtonsBuilder: (page, expanded) =>
           widget.topRightButtonsBuilder != null
-              ? widget.topRightButtonsBuilder!(page, expanded)
+              ? widget.topRightButtonsBuilder!(page, expanded, posts[page])
               : [
                   GeneralMoreActionButton(post: widget.posts[page]),
                 ],

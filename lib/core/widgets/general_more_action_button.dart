@@ -17,9 +17,11 @@ class GeneralMoreActionButton extends ConsumerWidget {
   const GeneralMoreActionButton({
     super.key,
     required this.post,
+    this.onDownload,
   });
 
   final Post post;
+  final void Function(Post post)? onDownload;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -37,7 +39,11 @@ class GeneralMoreActionButton extends ConsumerWidget {
               switch (value) {
                 case 'download':
                   showDownloadStartToast(context);
-                  download(post);
+                  if (onDownload != null) {
+                    onDownload!(post);
+                  } else {
+                    download(post);
+                  }
                   break;
                 case 'view_in_browser':
                   launchExternalUrl(
