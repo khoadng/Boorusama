@@ -22,9 +22,24 @@ class StatisticalSummary {
     required this.percentile75,
     required this.percentile90,
   });
+
+  factory StatisticalSummary.empty() {
+    return StatisticalSummary(
+      mean: 0,
+      median: 0,
+      highest: 0,
+      lowest: 0,
+      standardDeviation: 0,
+      percentile25: 0,
+      percentile75: 0,
+      percentile90: 0,
+    );
+  }
 }
 
-StatisticalSummary calculateStats(List<double> numbers) {
+StatisticalSummary calculateStats(List<double>? numbers) {
+  if (numbers == null || numbers.isEmpty) return StatisticalSummary.empty();
+
   // Sort the list
   numbers.sort();
 
