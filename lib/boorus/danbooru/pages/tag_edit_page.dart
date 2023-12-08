@@ -149,7 +149,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
           child: Column(
             children: [
               Expanded(
-                child: _buildSplit(context),
+                child: _buildSplit(context, config),
               ),
               _buildMode(context, aiTagSupport ?? false),
             ],
@@ -159,7 +159,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
     );
   }
 
-  Widget _buildSplit(BuildContext context) {
+  Widget _buildSplit(BuildContext context, BooruConfig config) {
     return Theme(
       data: context.theme.copyWith(
         focusColor: context.colorScheme.primary,
@@ -198,16 +198,17 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                         'Rating',
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
-                      IconButton(
-                        splashRadius: 20,
-                        visualDensity: VisualDensity.compact,
-                        onPressed: () =>
-                            launchExternalUrlString(_kHowToRateUrl),
-                        icon: const FaIcon(
-                          FontAwesomeIcons.circleQuestion,
-                          size: 16,
+                      if (!config.hasStrictSFW)
+                        IconButton(
+                          splashRadius: 20,
+                          visualDensity: VisualDensity.compact,
+                          onPressed: () =>
+                              launchExternalUrlString(_kHowToRateUrl),
+                          icon: const FaIcon(
+                            FontAwesomeIcons.circleQuestion,
+                            size: 16,
+                          ),
                         ),
-                      ),
                     ],
                   ),
                 ),

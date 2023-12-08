@@ -1,5 +1,7 @@
 // Project imports:
 import 'package:boorusama/core/feats/bookmarks/bookmarks.dart';
+import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/functional.dart';
 
 // map BoxError to BookmarkGetError
@@ -70,4 +72,47 @@ BookmarkHiveObject favoriteToHiveObject(Bookmark bookmark) {
     md5: bookmark.md5,
     tags: bookmark.tags,
   );
+}
+
+extension BookmarkToPost on Bookmark {
+  SimplePost toPost() => SimplePost(
+        id: id,
+        thumbnailImageUrl: thumbnailUrl,
+        sampleImageUrl: sampleUrl,
+        originalImageUrl: originalUrl,
+        tags: tags,
+        rating: Rating.unknown,
+        hasComment: false,
+        isTranslated: false,
+        hasParentOrChildren: false,
+        source: PostSource.from(sourceUrl),
+        score: 0,
+        duration: 0,
+        fileSize: 0,
+        format: extension(originalUrl),
+        hasSound: null,
+        height: height,
+        md5: md5,
+        videoThumbnailUrl: thumbnailUrl,
+        videoUrl: originalUrl,
+        width: width,
+        getLink: (_) => sourceUrl,
+      );
+}
+
+extension PostToBookmark on Post {
+  Bookmark toBookmark() => Bookmark(
+        id: id,
+        booruId: -1,
+        createdAt: createdAt ?? DateTime.now(),
+        updatedAt: createdAt ?? DateTime.now(),
+        thumbnailUrl: thumbnailImageUrl,
+        sampleUrl: sampleImageUrl,
+        originalUrl: originalImageUrl,
+        sourceUrl: '',
+        width: width,
+        height: height,
+        md5: md5,
+        tags: tags,
+      );
 }

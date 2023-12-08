@@ -94,10 +94,11 @@ class DanbooruMoreActionButton extends ConsumerWidget {
                 value: 'tag_history',
                 child: Text('View tag history'),
               ),
-              PopupMenuItem(
-                value: 'view_in_browser',
-                child: const Text('post.detail.view_in_browser').tr(),
-              ),
+              if (!booruConfig.hasStrictSFW)
+                PopupMenuItem(
+                  value: 'view_in_browser',
+                  child: const Text('post.detail.view_in_browser').tr(),
+                ),
               if (post.hasFullView)
                 PopupMenuItem(
                   value: 'view_original',

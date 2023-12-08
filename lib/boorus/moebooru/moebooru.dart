@@ -41,6 +41,7 @@ class MoebooruBuilder
         DefaultThumbnailUrlMixin,
         DefaultTagColorMixin,
         DefaultPostImageDetailsUrlMixin,
+        DefaultPostStatisticsPageBuilderMixin,
         ArtistNotSupportedMixin
     implements BooruBuilder {
   MoebooruBuilder({

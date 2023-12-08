@@ -2,6 +2,7 @@
 import 'package:test/test.dart';
 
 // Project imports:
+import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 
 void main() {
@@ -356,6 +357,71 @@ void main() {
           false,
         );
       });
+    });
+  });
+
+  group('autocomplete filter', () {
+    test('filter matched', () {
+      final result = filterNsfw(
+        [
+          AutocompleteData.fromJson(const {'value': 'a', 'label': 'a'}),
+          AutocompleteData.fromJson(const {'value': 'b', 'label': 'b'}),
+        ],
+        ['a'],
+        shouldFilter: true,
+      );
+
+      expect(result.length, 1);
+      expect(result.first.value, 'b');
+    });
+
+    test('filter matched full tag', () {
+      final result = filterNsfw(
+        [
+          AutocompleteData.fromJson(const {'value': 'a_b', 'label': 'a_b'}),
+          AutocompleteData.fromJson(
+              const {'value': 'xyz', 'label': 'xyz', 'antecedent': 'a_b'}),
+          AutocompleteData.fromJson(const {'value': 'b', 'label': 'b'}),
+        ],
+        ['a_b'],
+        shouldFilter: true,
+      );
+
+      expect(result.length, 1);
+      expect(result.first.value, 'b');
+    });
+
+    test('word-based filter', () {
+      final result = filterNsfw(
+        [
+          AutocompleteData.fromJson(const {'value': 'ab', 'label': 'ab'}),
+          AutocompleteData.fromJson(const {'value': 'a_b', 'label': 'a_b'}),
+          AutocompleteData.fromJson(const {'value': 'xyz_a', 'label': 'xyz_a'}),
+          AutocompleteData.fromJson(const {'value': 'b', 'label': 'b'}),
+        ],
+        ['a'],
+        shouldFilter: true,
+      );
+
+      expect(result.length, 1);
+      expect(result.last.value, 'b');
+    });
+
+    test('alias filter', () {
+      final result = filterNsfw(
+        [
+          AutocompleteData.fromJson(
+              const {'value': 'foo', 'label': 'foo', 'antecedent': 'a_b'}),
+          AutocompleteData.fromJson(
+              const {'value': 'foo', 'label': 'foo', 'antecedent': 'b_(a)'}),
+          AutocompleteData.fromJson(const {'value': 'b', 'label': 'b'}),
+        ],
+        ['a'],
+        shouldFilter: true,
+      );
+
+      expect(result.length, 1);
+      expect(result.first.value, 'b');
     });
   });
 }

@@ -197,6 +197,7 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
         child: ColoredBox(
           color: context.theme.scaffoldBackgroundColor,
           child: PostGridConfigRegion(
+            postController: controller,
             blacklistHeader: _buildConfigHeader(
                 !isMobilePlatform() ? Axis.vertical : Axis.horizontal),
             builder: (context, header) => ConditionalParentWidget(
@@ -365,9 +366,11 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
           .where((element) => element.count > 0)
           .toList(),
       trailing: axis == Axis.horizontal
-          ? const ButtonBar(
+          ? ButtonBar(
               children: [
-                PostGridConfigIconButton(),
+                PostGridConfigIconButton(
+                  postController: controller,
+                ),
               ],
             )
           : null,

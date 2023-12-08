@@ -1,3 +1,8 @@
+# 3.8.1
+- Fix an issue where the download won't start in bookmark details.
+- Add a button to display some statistics for the current query.
+- Fix the crash issue on some devices using Android 8 and below.
+
 # 3.8.0
 - Migrate to Material 3, support dynamic theme color for Android 12+
 - Show more information in bookmark details

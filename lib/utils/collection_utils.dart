@@ -69,4 +69,22 @@ extension ListX<E> on List<E> {
 
     return true;
   }
+
+  Map<String, int> count({
+    required String Function(E item) selector,
+  }) {
+    final counts = <String, int>{};
+
+    for (final item in this) {
+      final key = selector(item);
+
+      if (counts.containsKey(key)) {
+        counts[key] = counts[key]! + 1;
+      } else {
+        counts[key] = 1;
+      }
+    }
+
+    return counts;
+  }
 }

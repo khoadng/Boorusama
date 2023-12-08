@@ -7,6 +7,7 @@ import 'package:equatable/equatable.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/foundation/image.dart';
 import 'package:boorusama/foundation/path.dart';
+import 'package:boorusama/foundation/video.dart';
 
 class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
   const Bookmark({
@@ -40,7 +41,7 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
   @override
   final List<String> tags;
 
-  bool get isVideo => ['.mp4', '.webm'].contains(extension(sampleUrl));
+  bool get isVideo => isFormatVideo(extension(originalUrl));
 
   static Bookmark empty = Bookmark(
     id: -1,

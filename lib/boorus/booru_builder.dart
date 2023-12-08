@@ -30,6 +30,7 @@ import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
+import 'package:boorusama/core/pages/post_statistics_page.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -123,6 +124,11 @@ typedef PostImageDetailsUrlBuilder = String Function(
   BooruConfig config,
 );
 
+typedef PostStatisticsPageBuilder = Widget Function(
+  BuildContext context,
+  List<Post> posts,
+);
+
 abstract class BooruBuilder {
   // UI Builders
   HomePageBuilder get homePageBuilder;
@@ -141,6 +147,8 @@ abstract class BooruBuilder {
   DownloadFilenameGenerator get downloadFilenameBuilder;
 
   PostImageDetailsUrlBuilder get postImageDetailsUrlBuilder;
+
+  PostStatisticsPageBuilder get postStatisticsPageBuilder;
 
   // Data Builders
   PostFetcher get postFetcher;
@@ -236,6 +244,15 @@ mixin DefaultPostImageDetailsUrlMixin implements BooruBuilder {
                 GeneralPostQualityType.original =>
                   post.isVideo ? post.videoThumbnailUrl : post.originalImageUrl,
               });
+}
+
+mixin DefaultPostStatisticsPageBuilderMixin on BooruBuilder {
+  @override
+  PostStatisticsPageBuilder get postStatisticsPageBuilder =>
+      (context, posts) => PostStatisticsPage(
+            generalStats: () => posts.getStats(),
+            totalPosts: () => posts.length,
+          );
 }
 
 extension BooruBuilderWidgetRef on WidgetRef {

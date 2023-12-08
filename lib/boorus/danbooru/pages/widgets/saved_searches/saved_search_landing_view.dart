@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/saved_searches/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -36,12 +37,13 @@ class SavedSearchLandingView extends ConsumerWidget {
                   GenericNoDataBox(
                     text: 'saved_search.empty_saved_search'.tr(),
                   ),
-                  TextButton(
-                    onPressed: () => launchExternalUrl(
-                      Uri.parse(savedSearchHelpUrl),
+                  if (!ref.watchConfig.hasStrictSFW)
+                    TextButton(
+                      onPressed: () => launchExternalUrl(
+                        Uri.parse(savedSearchHelpUrl),
+                      ),
+                      child: const Text('saved_search.saved_search_help').tr(),
                     ),
-                    child: const Text('saved_search.saved_search_help').tr(),
-                  ),
                   FilledButton(
                     onPressed: () => _onAddSearch(ref, context),
                     child: const Text('generic.action.add').tr(),

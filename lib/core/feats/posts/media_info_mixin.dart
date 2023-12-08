@@ -1,23 +1,14 @@
-//TODO: handle other kind of video format
-final _supportVideoFormat = {'mp4', 'webm', 'zip'};
+// Project imports:
+import 'package:boorusama/foundation/video.dart';
 
 mixin MediaInfoMixin {
   String get format;
   String get md5;
   int get fileSize;
 
-  bool get isVideo {
-    final supportFormatWithDot = _supportVideoFormat.map((e) => '.$e');
-    return _supportVideoFormat.contains(format) ||
-        supportFormatWithDot.contains(format);
-  }
-
-  bool get isFlash => format == 'swf';
-
-  bool get isWebm => format == 'webm';
-  bool get isMp4 => format == 'mp4';
+  bool get isVideo => isFormatVideo(format);
 
   bool get isAnimated {
-    return isVideo || (format == 'gif');
+    return isVideo || (format == 'gif') || (format == '.gif');
   }
 }

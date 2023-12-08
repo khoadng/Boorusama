@@ -65,8 +65,7 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage> {
         final noteState = ref.watch(notesControllerProvider(post));
         return noteOverlayBuilderDelegate(constraints, post, noteState);
       },
-      topRightButtonsBuilder: (page, expanded) {
-        final post = posts[page];
+      topRightButtonsBuilder: (page, expanded, post) {
         final noteState = ref.watch(notesControllerProvider(post));
 
         return [

@@ -110,6 +110,7 @@ class E621Builder
     with
         PostCountNotSupportedMixin,
         DefaultThumbnailUrlMixin,
+        DefaultPostStatisticsPageBuilderMixin,
         DefaultPostImageDetailsUrlMixin
     implements BooruBuilder {
   E621Builder({

@@ -393,13 +393,12 @@ class Routes {
           GoRoute(
             path: 'details',
             name: '/bookmarks/details',
-            pageBuilder: (context, state) => CustomTransitionPage(
+            pageBuilder: (context, state) => MaterialPage(
               key: state.pageKey,
               name: '${state.name}?index=${state.uri.queryParameters['index']}',
               child: BookmarkDetailsPage(
                 initialIndex: state.uri.queryParameters['index']?.toInt() ?? 0,
               ),
-              transitionsBuilder: leftToRightTransitionBuilder(),
             ),
           ),
         ],

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/feats/boorus/providers.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
@@ -17,9 +17,11 @@ class GeneralMoreActionButton extends ConsumerWidget {
   const GeneralMoreActionButton({
     super.key,
     required this.post,
+    this.onDownload,
   });
 
   final Post post;
+  final void Function(Post post)? onDownload;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -31,13 +33,17 @@ class GeneralMoreActionButton extends ConsumerWidget {
         child: Material(
           color: Colors.black.withOpacity(0.5),
           shape: const CircleBorder(),
-          child: PopupMenuButton<String>(
+          child: PopupMenuButton(
             padding: EdgeInsets.zero,
             onSelected: (value) {
               switch (value) {
                 case 'download':
                   showDownloadStartToast(context);
-                  download(post);
+                  if (onDownload != null) {
+                    onDownload!(post);
+                  } else {
+                    download(post);
+                  }
                   break;
                 case 'view_in_browser':
                   launchExternalUrl(
@@ -60,10 +66,11 @@ class GeneralMoreActionButton extends ConsumerWidget {
                 value: 'download',
                 child: const Text('download.download').tr(),
               ),
-              PopupMenuItem(
-                value: 'view_in_browser',
-                child: const Text('post.detail.view_in_browser').tr(),
-              ),
+              if (!booru.hasStrictSFW)
+                PopupMenuItem(
+                  value: 'view_in_browser',
+                  child: const Text('post.detail.view_in_browser').tr(),
+                ),
               const PopupMenuItem(
                 value: 'add_to_global_blacklist',
                 child: Text('Add to global blacklist'),

@@ -18,6 +18,7 @@ import 'package:boorusama/core/pages/boorus/widgets/custom_download_file_name_se
 import 'package:boorusama/core/pages/boorus/widgets/selected_booru_chip.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 
 class CreateDanbooruConfigPage extends ConsumerStatefulWidget {
@@ -189,14 +190,15 @@ class _CreateDanbooruConfigPageState
             onChanged: (value) => setState(() => apiKey = value),
           ),
           const SizedBox(height: 8),
-          Text(
-            '*Log in to your account on the browser, visit My Account > API Key. Copy your key or create a new one if needed, ensuring all permissions are enabled for proper app functionality.',
-            style: context.textTheme.titleSmall!.copyWith(
-              color: context.theme.hintColor,
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
+          if (!isApple())
+            Text(
+              '*Log in to your account on the browser, visit My Account > API Key. Copy your key or create a new one if needed, ensuring all permissions are enabled for proper app functionality.',
+              style: context.textTheme.titleSmall!.copyWith(
+                color: context.theme.hintColor,
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+              ),
             ),
-          ),
         ],
       ),
     );

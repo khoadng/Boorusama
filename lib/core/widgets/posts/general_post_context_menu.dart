@@ -80,11 +80,12 @@ class GeneralPostContextMenu extends ConsumerWidget {
               goToAddToGlobalBlacklistPage(ref, context, post.extractTags());
             },
           ),
-          ContextMenuButtonConfig(
-            'Open in browser',
-            onPressed: () =>
-                launchExternalUrlString(post.getLink(booruConfig.url)),
-          ),
+          if (!booruConfig.hasStrictSFW)
+            ContextMenuButtonConfig(
+              'Open in browser',
+              onPressed: () =>
+                  launchExternalUrlString(post.getLink(booruConfig.url)),
+            ),
           if (onMultiSelect != null)
             ContextMenuButtonConfig(
               'post.action.select'.tr(),

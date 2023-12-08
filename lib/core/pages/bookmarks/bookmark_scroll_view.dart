@@ -9,6 +9,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/bookmarks/bookmarks.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/pages/bookmarks/bookmark_sort_button.dart';
 import 'package:boorusama/core/pages/bookmarks/bookmark_update_grid_buttons.dart';
@@ -98,11 +99,12 @@ class BookmarkScrollView extends ConsumerWidget {
                             bookmark,
                           ),
                         ),
-                        ContextMenuButtonConfig(
-                          'Open source in browser',
-                          onPressed: () =>
-                              launchExternalUrlString(bookmark.sourceUrl),
-                        ),
+                        if (!ref.watchConfig.hasStrictSFW)
+                          ContextMenuButtonConfig(
+                            'Open source in browser',
+                            onPressed: () =>
+                                launchExternalUrlString(bookmark.sourceUrl),
+                          ),
                       ],
                     ),
                     child: Stack(

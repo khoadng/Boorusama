@@ -25,6 +25,7 @@ class PhilomenaBuilder
         DefaultThumbnailUrlMixin,
         CommentNotSupportedMixin,
         ArtistNotSupportedMixin,
+        DefaultPostStatisticsPageBuilderMixin,
         DefaultBooruUIMixin
     implements BooruBuilder {
   PhilomenaBuilder({

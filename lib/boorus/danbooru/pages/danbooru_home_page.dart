@@ -70,14 +70,15 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
 
   void _onSharedTextsReceived(SharedMedia media) {
     final text = media.content;
+    final config = ref.readConfig;
+    final booruName = config.booruType.stringify();
+    final booruUrl = config.url;
+
+    if (config.hasStrictSFW) return;
 
     if (text != null) {
       context.navigator.push(MaterialPageRoute(
         builder: (context) {
-          final config = ref.readConfig;
-          final booruName = config.booruType.stringify();
-          final booruUrl = config.url;
-
           return AlertDialog(
             title: Text('Upload to $booruName'),
             content: Text(
