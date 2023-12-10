@@ -12,10 +12,8 @@ import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/forums/forum_card.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/user_level_colors.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
 import 'danbooru_forum_posts_page.dart';
 
 class DanbooruForumPage extends ConsumerWidget {
@@ -44,16 +42,13 @@ class DanbooruForumPage extends ConsumerWidget {
           itemBuilder: (context, topic, index) {
             final creator = ref.watch(danbooruCreatorProvider(topic.creatorId));
             final creatorName = creator?.name ?? '...';
-            final creatorLevel = creator?.level ?? UserLevel.member;
 
             return ForumCard(
               title: topic.title,
               responseCount: topic.responseCount,
               createdAt: topic.createdAt,
               creatorName: creatorName,
-              creatorColor: !context.themeMode.isDark
-                  ? creatorLevel.toColor()
-                  : creatorLevel.toOnDarkColor(),
+              creatorColor: creator.getColor(context),
               onCreatorTap: () => goToUserDetailsPage(
                 ref,
                 context,

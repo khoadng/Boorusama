@@ -1,11 +1,16 @@
 // Dart imports:
 import 'dart:convert';
 
+// Flutter imports:
+import 'package:flutter/material.dart';
+
 // Package imports:
 import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'package:boorusama/clients/danbooru/types/types.dart';
+import 'package:boorusama/core/feats/user_level_colors.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'user.dart';
 import 'user_level.dart';
 
@@ -64,3 +69,13 @@ Creator creatorDtoToCreator(CreatorDto? d) => d != null
         level: d.level == null ? UserLevel.member : intToUserLevel(d.level!),
       )
     : Creator.empty();
+
+extension CreatorDtoX on Creator? {
+  Color getColor(BuildContext context) {
+    final creatorLevel = this?.level ?? UserLevel.member;
+
+    return !context.themeMode.isDark
+        ? creatorLevel.toColor()
+        : creatorLevel.toOnDarkColor();
+  }
+}

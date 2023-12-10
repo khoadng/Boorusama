@@ -15,10 +15,14 @@ class FileDetailsSection extends StatelessWidget {
     super.key,
     required this.post,
     required this.rating,
+    this.uploader,
+    this.customDetails,
   });
 
   final Post post;
   final Rating rating;
+  final Widget? uploader;
+  final Map<String, Widget>? customDetails;
 
   @override
   Widget build(BuildContext context) {
@@ -43,22 +47,34 @@ class FileDetailsSection extends StatelessWidget {
           children: [
             _FileDetailTile(
               title: 'post.detail.rating'.tr(),
-              value: rating.name.pascalCase,
+              valueLabel: rating.name.pascalCase,
             ),
             if (post.fileSize > 0)
               _FileDetailTile(
                 title: 'post.detail.size'.tr(),
-                value: filesize(post.fileSize, 1),
+                valueLabel: filesize(post.fileSize, 1),
               ),
             if (post.width > 0 && post.height > 0)
               _FileDetailTile(
                 title: 'post.detail.resolution'.tr(),
-                value: '${post.width.toInt()}x${post.height.toInt()}',
+                valueLabel: '${post.width.toInt()}x${post.height.toInt()}',
               ),
             _FileDetailTile(
               title: 'post.detail.file_format'.tr(),
-              value: post.format,
+              valueLabel: post.format,
             ),
+            if (uploader != null)
+              _FileDetailTile(
+                title: 'Uploader',
+                value: uploader,
+              ),
+            if (customDetails != null) ...[
+              for (final detail in customDetails!.entries)
+                _FileDetailTile(
+                  title: detail.key,
+                  value: detail.value,
+                )
+            ]
           ],
         ),
       ],
@@ -69,11 +85,13 @@ class FileDetailsSection extends StatelessWidget {
 class _FileDetailTile extends StatelessWidget {
   const _FileDetailTile({
     required this.title,
-    required this.value,
-  });
+    this.valueLabel,
+    this.value,
+  }) : assert(valueLabel != null || value != null);
 
   final String title;
-  final String value;
+  final String? valueLabel;
+  final Widget? value;
 
   @override
   Widget build(BuildContext context) {
@@ -93,14 +111,17 @@ class _FileDetailTile extends StatelessWidget {
             color: context.colorScheme.secondaryContainer,
             borderRadius: const BorderRadius.all(Radius.circular(4)),
           ),
-          width: constrainst.maxWidth * 0.5,
-          child: Text(
-            value,
-            style: TextStyle(
-              color: context.colorScheme.onSecondaryContainer,
-              fontSize: 14,
-            ),
-          ),
+          width: constrainst.maxWidth * 0.55,
+          child: value ??
+              (valueLabel != null
+                  ? Text(
+                      valueLabel!,
+                      style: TextStyle(
+                        color: context.colorScheme.onSecondaryContainer,
+                        fontSize: 14,
+                      ),
+                    )
+                  : null),
         ),
       ),
     );

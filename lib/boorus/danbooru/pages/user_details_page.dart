@@ -399,6 +399,7 @@ class _PreviewList extends ConsumerWidget {
             child: const Text('View all'),
           ),
         ),
+        const SizedBox(height: 8),
         LayoutBuilder(
           builder: (context, constraints) => PreviewPostList(
             posts: posts,
