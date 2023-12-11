@@ -7,6 +7,7 @@ import 'package:video_player/video_player.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/video/videos_provider.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/platform.dart';
@@ -64,6 +65,7 @@ class PostMedia extends ConsumerWidget {
                             context.colors.videoPlayerBackgroundColor,
                         onWebmVideoPlayerCreated: onWebmVideoPlayerCreated,
                         autoPlay: autoPlay,
+                        sound: ref.isGlobalVideoSoundOn,
                       )
                     : Stack(
                         children: [
@@ -89,6 +91,7 @@ class PostMedia extends ConsumerWidget {
                     onVisibilityChanged: onVideoVisibilityChanged,
                     autoPlay: autoPlay,
                     onVideoPlayerCreated: onVideoPlayerCreated,
+                    sound: ref.isGlobalVideoSoundOn,
                   )
         : InteractiveBooruImage(
             useHero: useHero,

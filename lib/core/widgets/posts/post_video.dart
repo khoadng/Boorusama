@@ -19,6 +19,7 @@ class BooruVideo extends StatefulWidget {
     this.onVisibilityChanged,
     this.autoPlay = false,
     this.onVideoPlayerCreated,
+    this.sound = true,
   });
 
   final String url;
@@ -28,6 +29,7 @@ class BooruVideo extends StatefulWidget {
   final void Function(bool value)? onVisibilityChanged;
   final void Function(VideoPlayerController controller)? onVideoPlayerCreated;
   final bool autoPlay;
+  final bool sound;
 
   @override
   State<BooruVideo> createState() => _BooruVideoState();
@@ -60,6 +62,8 @@ class _BooruVideoState extends State<BooruVideo> {
 
     widget.onVideoPlayerCreated?.call(_videoPlayerController);
 
+    _videoPlayerController.setVolume(widget.sound ? 1 : 0);
+
     _listenToVideoPosition();
   }
 
@@ -90,6 +94,10 @@ class _BooruVideoState extends State<BooruVideo> {
     if (widget.url != oldWidget.url) {
       _disposeVideoPlayerController();
       _initVideoPlayerController();
+    }
+
+    if (widget.sound != oldWidget.sound) {
+      _videoPlayerController.setVolume(widget.sound ? 1 : 0);
     }
   }
 
