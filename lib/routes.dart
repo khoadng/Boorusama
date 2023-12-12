@@ -213,6 +213,17 @@ class SettingsRoutes {
         ),
       );
 
+  static GoRoute backupAndRestore() => GoRoute(
+        path: 'backup_and_restore',
+        name: '/settings/backup_and_restore',
+        pageBuilder: (context, state) => CustomTransitionPage(
+          key: state.pageKey,
+          name: state.name,
+          child: const BackupAndRestorePage(),
+          transitionsBuilder: leftToRightTransitionBuilder(),
+        ),
+      );
+
   static GoRoute privacy() => GoRoute(
         path: 'privacy',
         name: '/settings/privacy',
@@ -456,6 +467,7 @@ class Routes {
           SettingsRoutes.language(),
           SettingsRoutes.performance(),
           SettingsRoutes.dataAndStorage(),
+          SettingsRoutes.backupAndRestore(),
           SettingsRoutes.privacy(),
           SettingsRoutes.search(),
           SettingsRoutes.changelog(),

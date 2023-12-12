@@ -1,11 +1,7 @@
-// Dart imports:
-import 'dart:io';
-
 // Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -48,12 +44,6 @@ class BookmarkAppBar extends ConsumerWidget {
                   ref.bookmarks
                       .downloadBookmarks(ref.read(filteredBookmarksProvider));
                   break;
-                case 'export':
-                  _pickFolder(ref);
-                  break;
-                case 'import':
-                  _pickFile(ref);
-                default:
               }
             },
             itemBuilder: (context) {
@@ -69,44 +59,10 @@ class BookmarkAppBar extends ConsumerWidget {
                     child: Text(
                         'Download ${ref.watch(filteredBookmarksProvider).length} bookmarks'),
                   ),
-                if (hasBookmarks)
-                  const PopupMenuItem(
-                    value: 'export',
-                    child: Text('Export'),
-                  ),
-                const PopupMenuItem(
-                  value: 'import',
-                  child: Text('Import'),
-                ),
               ];
             },
           ),
       ],
     );
-  }
-
-  void _pickFolder(WidgetRef ref) async {
-    final path = await FilePicker.platform.getDirectoryPath();
-
-    if (path != null) {
-      ref.bookmarks.exportAllBookmarks(path);
-    }
-  }
-
-  void _pickFile(WidgetRef ref) async {
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['json'],
-    );
-
-    if (result != null) {
-      final path = result.files.single.path;
-      if (path != null) {
-        final file = File(path);
-        ref.bookmarks.importBookmarks(file);
-      } else {
-        // User canceled the picker
-      }
-    }
   }
 }

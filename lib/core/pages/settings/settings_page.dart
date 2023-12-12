@@ -110,6 +110,20 @@ class SettingsPage extends ConsumerWidget {
                     ),
                     ListTile(
                       title: const Text(
+                        'Backup and Restore',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      leading: FaIcon(
+                        FontAwesomeIcons.cloudArrowDown,
+                        color: context.iconTheme.color,
+                        size: 20,
+                      ),
+                      onTap: () => context.go('/settings/backup_and_restore'),
+                    ),
+                    ListTile(
+                      title: const Text(
                         'settings.search.search',
                         style: TextStyle(
                           fontWeight: FontWeight.w400,

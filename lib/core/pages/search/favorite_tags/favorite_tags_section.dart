@@ -1,6 +1,5 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:collection/collection.dart';
@@ -9,8 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
-import 'package:boorusama/core/router.dart';
-import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
@@ -37,41 +34,6 @@ class FavoriteTagsSection extends ConsumerWidget {
       title: 'favorite_tags.favorites'.tr(),
       childrenBuilder: (editMode) =>
           _buildFavoriteTags(context, ref, tags, editMode),
-      titleTrailing: (editMode) => editMode && tags.isNotEmpty
-          ? PopupMenuButton(
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(4)),
-              ),
-              onSelected: (value) {
-                if (value == 'import') {
-                  goToFavoriteTagImportPage(context);
-                } else if (value == 'export') {
-                  ref.read(favoriteTagsProvider.notifier).export(
-                    onDone: (tagString) {
-                      Clipboard.setData(
-                        ClipboardData(text: tagString),
-                      ).then((value) => showSimpleSnackBar(
-                            context: context,
-                            content: const Text(
-                              'favorite_tags.export_notification',
-                            ).tr(),
-                          ));
-                    },
-                  );
-                }
-              },
-              itemBuilder: (context) => [
-                PopupMenuItem(
-                  value: 'import',
-                  child: const Text('favorite_tags.import').tr(),
-                ),
-                PopupMenuItem(
-                  value: 'export',
-                  child: const Text('favorite_tags.export').tr(),
-                ),
-              ],
-            )
-          : const SizedBox.shrink(),
     );
   }
 

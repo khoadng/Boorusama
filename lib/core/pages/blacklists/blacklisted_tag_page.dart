@@ -9,7 +9,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 // Project imports:
 import 'package:boorusama/core/feats/blacklists/blacklists.dart';
 import 'package:boorusama/core/router.dart';
-import 'package:boorusama/core/widgets/import_export_tag_button.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -23,8 +22,6 @@ class BlacklistedTagPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tags = ref.watch(globalBlacklistedTagsProvider);
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('blacklist.manage.title').tr(),
@@ -47,12 +44,6 @@ class BlacklistedTagPage extends ConsumerWidget {
               );
             },
             icon: const FaIcon(FontAwesomeIcons.plus),
-          ),
-          ImportExportTagButton(
-            onImport: (tagString) => ref
-                .read(globalBlacklistedTagsProvider.notifier)
-                .addTagStringWithToast(tagString),
-            tags: tags.map((e) => e.name).toList(),
           ),
         ],
       ),
