@@ -2,6 +2,8 @@
 import 'dart:io';
 
 // Flutter imports:
+import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -132,9 +134,15 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
                 onSelected: (value) {
                   switch (value) {
                     case 'export':
-                      _pickBookmarkFolder(ref);
+                      _pickProfileFolder(ref);
                       break;
                     case 'import':
+
+                      //FIXME: Test value need to be removed
+                      ref.read(booruConfigRepoProvider).getAll().then((value) {
+                        final config = value[1];
+                        Reboot.start(context, config);
+                      });
                       _pickBookmarkFile(ref);
                     default:
                   }
@@ -186,10 +194,27 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
   }
 
   void _pickProfileFolder(WidgetRef ref) async {
-    final path = await FilePicker.platform.getDirectoryPath();
+    // final path = await FilePicker.platform.getDirectoryPath();
 
-    if (path != null) {
-      ref.bookmarks.exportAllBookmarks(path);
-    }
+    // if (path != null) {
+    //   ref.bookmarks.exportAllBookmarks(path);
+    // }
+  }
+
+  void _pickProfileFile(WidgetRef ref) async {
+    // final result = await FilePicker.platform.pickFiles(
+    //   type: FileType.custom,
+    //   allowedExtensions: ['json'],
+    // );
+
+    // if (result != null) {
+    //   final path = result.files.single.path;
+    //   if (path != null) {
+    //     final file = File(path);
+    //     ref.bookmarks.importBookmarks(file);
+    //   } else {
+    //     // User canceled the picker
+    //   }
+    // }
   }
 }

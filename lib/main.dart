@@ -185,7 +185,8 @@ void main() async {
   void run() {
     runApp(
       Reboot(
-        child: BooruLocalization(
+        initialConfig: initialConfig ?? BooruConfig.empty,
+        builder: (context, config) => BooruLocalization(
           child: ProviderScope(
             overrides: [
               favoriteTagRepoProvider.overrideWithValue(favoriteTagsRepo),
@@ -195,9 +196,8 @@ void main() async {
               settingsRepoProvider.overrideWithValue(settingRepository),
               settingsProvider.overrideWith(() => SettingsNotifier(settings)),
               booruConfigRepoProvider.overrideWithValue(booruUserRepo),
-              currentBooruConfigProvider.overrideWith(() =>
-                  CurrentBooruConfigNotifier(
-                      initialConfig: initialConfig ?? BooruConfig.empty)),
+              currentBooruConfigProvider.overrideWith(
+                  () => CurrentBooruConfigNotifier(initialConfig: config)),
               globalBlacklistedTagRepoProvider
                   .overrideWithValue(globalBlacklistedTags),
               httpCacheDirProvider.overrideWithValue(tempPath),
@@ -231,23 +231,31 @@ void main() async {
 class Reboot extends StatefulWidget {
   const Reboot({
     super.key,
-    required this.child,
+    required this.initialConfig,
+    required this.builder,
   });
-  final Widget child;
+
+  final BooruConfig initialConfig;
+
+  final Widget Function(BuildContext context, BooruConfig config) builder;
 
   @override
   State<Reboot> createState() => _RebootState();
 
-  static start(BuildContext context) {
-    context.findAncestorStateOfType<_RebootState>()!.restartApp();
+  static start(BuildContext context, BooruConfig newInitialConfig) {
+    context
+        .findAncestorStateOfType<_RebootState>()!
+        .restartApp(newInitialConfig);
   }
 }
 
 class _RebootState extends State<Reboot> {
   Key _key = UniqueKey();
+  late var _config = widget.initialConfig;
 
-  void restartApp() {
+  void restartApp(BooruConfig config) {
     setState(() {
+      _config = config;
       _key = UniqueKey();
     });
   }
@@ -256,7 +264,7 @@ class _RebootState extends State<Reboot> {
   Widget build(BuildContext context) {
     return KeyedSubtree(
       key: _key,
-      child: widget.child,
+      child: widget.builder(context, _config),
     );
   }
 }
