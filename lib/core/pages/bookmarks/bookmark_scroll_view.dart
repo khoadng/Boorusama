@@ -88,8 +88,10 @@ class BookmarkScrollView extends ConsumerWidget {
                       buttonConfigs: [
                         ContextMenuButtonConfig(
                           'download.download'.tr(),
-                          onPressed: () =>
-                              ref.bookmarks.downloadBookmarks([bookmark]),
+                          onPressed: () => ref.bookmarks.downloadBookmarks(
+                            ref.watchConfig,
+                            [bookmark],
+                          ),
                         ),
                         // remove bookmark
                         ContextMenuButtonConfig(

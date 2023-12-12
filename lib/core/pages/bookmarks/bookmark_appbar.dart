@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/bookmarks/bookmarks.dart';
+import 'package:boorusama/core/feats/boorus/providers.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'providers.dart';
 
@@ -41,8 +42,10 @@ class BookmarkAppBar extends ConsumerWidget {
                   ref.read(bookmarkEditProvider.notifier).state = true;
                   break;
                 case 'download_all':
-                  ref.bookmarks
-                      .downloadBookmarks(ref.read(filteredBookmarksProvider));
+                  ref.bookmarks.downloadBookmarks(
+                    ref.watchConfig,
+                    ref.read(filteredBookmarksProvider),
+                  );
                   break;
               }
             },

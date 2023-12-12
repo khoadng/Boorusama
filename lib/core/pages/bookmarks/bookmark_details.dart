@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/bookmarks/bookmarks.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
@@ -40,7 +41,10 @@ class _BookmarkDetailsPageState extends ConsumerState<BookmarkDetailsPage> {
         GeneralMoreActionButton(
           post: post,
           onDownload: (post) {
-            ref.bookmarks.downloadBookmarks([post.toBookmark()]);
+            ref.bookmarks.downloadBookmarks(
+              ref.watchConfig,
+              [post.toBookmark()],
+            );
           },
         ),
       ],
@@ -76,7 +80,10 @@ class BookmarkPostActionToolbar extends ConsumerWidget {
             splashRadius: 16,
             onPressed: () {
               showDownloadStartToast(context);
-              ref.bookmarks.downloadBookmarks([post.toBookmark()]);
+              ref.bookmarks.downloadBookmarks(
+                ref.watchConfig,
+                [post.toBookmark()],
+              );
             },
             icon: const FaIcon(
               FontAwesomeIcons.download,
