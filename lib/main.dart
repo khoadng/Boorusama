@@ -184,38 +184,41 @@ void main() async {
 
   void run() {
     runApp(
-      BooruLocalization(
-        child: ProviderScope(
-          overrides: [
-            favoriteTagRepoProvider.overrideWithValue(favoriteTagsRepo),
-            searchHistoryRepoProvider.overrideWithValue(searchHistoryRepo),
-            booruFactoryProvider.overrideWithValue(booruFactory),
-            tagInfoProvider.overrideWithValue(tagInfo),
-            settingsRepoProvider.overrideWithValue(settingRepository),
-            settingsProvider.overrideWith(() => SettingsNotifier(settings)),
-            booruConfigRepoProvider.overrideWithValue(booruUserRepo),
-            currentBooruConfigProvider.overrideWith(() =>
-                CurrentBooruConfigNotifier(
-                    initialConfig: initialConfig ?? BooruConfig.empty)),
-            globalBlacklistedTagRepoProvider
-                .overrideWithValue(globalBlacklistedTags),
-            httpCacheDirProvider.overrideWithValue(tempPath),
-            loggerProvider.overrideWithValue(logger),
-            bookmarkRepoProvider.overrideWithValue(bookmarkRepo),
-            downloadNotificationProvider
-                .overrideWithValue(downloadNotifications),
-            deviceInfoProvider.overrideWithValue(deviceInfo),
-            danbooruUserMetatagRepoProvider.overrideWithValue(userMetatagRepo),
-            packageInfoProvider.overrideWithValue(packageInfo),
-            appInfoProvider.overrideWithValue(appInfo),
-            uiLoggerProvider.overrideWithValue(uiLogger),
-            supportedLanguagesProvider.overrideWithValue(supportedLanguages),
-            danbooruCreatorHiveBoxProvider
-                .overrideWithValue(danbooruCreatorBox),
-          ],
-          child: App(
-            appName: packageInfo.appName,
-            initialSettings: settings,
+      Reboot(
+        child: BooruLocalization(
+          child: ProviderScope(
+            overrides: [
+              favoriteTagRepoProvider.overrideWithValue(favoriteTagsRepo),
+              searchHistoryRepoProvider.overrideWithValue(searchHistoryRepo),
+              booruFactoryProvider.overrideWithValue(booruFactory),
+              tagInfoProvider.overrideWithValue(tagInfo),
+              settingsRepoProvider.overrideWithValue(settingRepository),
+              settingsProvider.overrideWith(() => SettingsNotifier(settings)),
+              booruConfigRepoProvider.overrideWithValue(booruUserRepo),
+              currentBooruConfigProvider.overrideWith(() =>
+                  CurrentBooruConfigNotifier(
+                      initialConfig: initialConfig ?? BooruConfig.empty)),
+              globalBlacklistedTagRepoProvider
+                  .overrideWithValue(globalBlacklistedTags),
+              httpCacheDirProvider.overrideWithValue(tempPath),
+              loggerProvider.overrideWithValue(logger),
+              bookmarkRepoProvider.overrideWithValue(bookmarkRepo),
+              downloadNotificationProvider
+                  .overrideWithValue(downloadNotifications),
+              deviceInfoProvider.overrideWithValue(deviceInfo),
+              danbooruUserMetatagRepoProvider
+                  .overrideWithValue(userMetatagRepo),
+              packageInfoProvider.overrideWithValue(packageInfo),
+              appInfoProvider.overrideWithValue(appInfo),
+              uiLoggerProvider.overrideWithValue(uiLogger),
+              supportedLanguagesProvider.overrideWithValue(supportedLanguages),
+              danbooruCreatorHiveBoxProvider
+                  .overrideWithValue(danbooruCreatorBox),
+            ],
+            child: App(
+              appName: packageInfo.appName,
+              initialSettings: settings,
+            ),
           ),
         ),
       ),
@@ -223,4 +226,37 @@ void main() async {
   }
 
   run();
+}
+
+class Reboot extends StatefulWidget {
+  const Reboot({
+    super.key,
+    required this.child,
+  });
+  final Widget child;
+
+  @override
+  State<Reboot> createState() => _RebootState();
+
+  static start(BuildContext context) {
+    context.findAncestorStateOfType<_RebootState>()!.restartApp();
+  }
+}
+
+class _RebootState extends State<Reboot> {
+  Key _key = UniqueKey();
+
+  void restartApp() {
+    setState(() {
+      _key = UniqueKey();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return KeyedSubtree(
+      key: _key,
+      child: widget.child,
+    );
+  }
 }

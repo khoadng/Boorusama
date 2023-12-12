@@ -58,10 +58,10 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
                 onSelected: (value) {
                   switch (value) {
                     case 'export':
-                      _pickFolder(ref);
+                      _pickBookmarkFolder(ref);
                       break;
                     case 'import':
-                      _pickFile(ref);
+                      _pickBookmarkFile(ref);
                     default:
                   }
                 },
@@ -126,13 +126,41 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
                 tags: blacklistedTags.map((e) => e.name).toList(),
               ),
             ),
+            ListTile(
+              title: const Text('Profiles'),
+              trailing: PopupMenuButton(
+                onSelected: (value) {
+                  switch (value) {
+                    case 'export':
+                      _pickBookmarkFolder(ref);
+                      break;
+                    case 'import':
+                      _pickBookmarkFile(ref);
+                    default:
+                  }
+                },
+                itemBuilder: (context) {
+                  return [
+                    if (hasBookmarks)
+                      const PopupMenuItem(
+                        value: 'export',
+                        child: Text('Export'),
+                      ),
+                    const PopupMenuItem(
+                      value: 'import',
+                      child: Text('Import'),
+                    ),
+                  ];
+                },
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 
-  void _pickFolder(WidgetRef ref) async {
+  void _pickBookmarkFolder(WidgetRef ref) async {
     final path = await FilePicker.platform.getDirectoryPath();
 
     if (path != null) {
@@ -140,7 +168,7 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
     }
   }
 
-  void _pickFile(WidgetRef ref) async {
+  void _pickBookmarkFile(WidgetRef ref) async {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['json'],
@@ -154,6 +182,14 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
       } else {
         // User canceled the picker
       }
+    }
+  }
+
+  void _pickProfileFolder(WidgetRef ref) async {
+    final path = await FilePicker.platform.getDirectoryPath();
+
+    if (path != null) {
+      ref.bookmarks.exportAllBookmarks(path);
     }
   }
 }
