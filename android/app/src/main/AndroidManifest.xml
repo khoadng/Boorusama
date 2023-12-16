@@ -34,7 +34,7 @@
 
    <application
         android:name="${applicationName}"
-        android:label="Boorusama"
+        android:label="@string/app_name"
         android:requestLegacyExternalStorage="true"
         android:icon="@mipmap/ic_launcher">
         <activity

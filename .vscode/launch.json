@@ -5,19 +5,22 @@
             "name": "boorusama",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "debug"
+            "flutterMode": "debug",
+            "args": ["--flavor", "dev"]
         },
         {
             "name": "boorusama (profile mode)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "profile"
+            "flutterMode": "profile",
+            "args": ["--flavor", "dev"]
         },
         {
             "name": "boorusama (release mode)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "release"
+            "flutterMode": "release",
+            "args": ["--flavor", "dev"]
         }
     ]
 }
