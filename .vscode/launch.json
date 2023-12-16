@@ -6,21 +6,36 @@
             "request": "launch",
             "type": "dart",
             "flutterMode": "debug",
-            "args": ["--flavor", "dev"]
+            "args": [
+                "--flavor", 
+                "dev",
+                "--dart-define-from-file",
+                "env/dev.json"
+            ]
         },
         {
             "name": "boorusama (profile mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile",
-            "args": ["--flavor", "dev"]
+            "args": [
+                "--flavor", 
+                "dev",
+                "--dart-define-from-file",
+                "env/dev.json"
+            ]
         },
         {
             "name": "boorusama (release mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release",
-            "args": ["--flavor", "dev"]
+            "args": [
+                "--flavor", 
+                "dev",
+                "--dart-define-from-file",
+                "env/dev.json"
+            ]
         }
     ]
 }
