@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/feats/backup/data_io_handler.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/functional.dart';
 
@@ -56,9 +57,13 @@ final configsProvider = Provider<IList<BooruConfig>>((ref) {
 });
 
 final booruConfigFileHandlerProvider = Provider<BooruConfigIOHandler>((ref) {
-  final deviceInfo = ref.watch(deviceInfoProvider);
-
-  return BooruConfigIOHandler.file(deviceInfo: deviceInfo);
+  return BooruConfigIOHandler(
+    handler: DataIOHandler.file(
+      version: kBooruConfigsExporterImporterVersion,
+      deviceInfo: ref.watch(deviceInfoProvider),
+      prefixName: 'boorusama_profiles',
+    ),
+  );
 });
 
 extension BooruWidgetRef on WidgetRef {

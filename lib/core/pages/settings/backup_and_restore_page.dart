@@ -10,6 +10,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/blacklists/blacklists.dart';
 import 'package:boorusama/core/feats/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
@@ -61,6 +62,8 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
               _buildBookmark(),
               const SizedBox(height: 8),
               _buildBlacklistedTags(),
+              const SizedBox(height: 8),
+              _buildSettings(),
             ],
           ),
         ),
@@ -252,6 +255,38 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
     );
   }
 
+  Widget _buildSettings() {
+    return BackupRestoreTile(
+      leadingIcon: Icons.settings,
+      title: 'Settings',
+      trailing: PopupMenuButton(
+        onSelected: (value) {
+          switch (value) {
+            case 'export':
+              _pickSettingsFolder(ref);
+              break;
+            case 'import':
+              _pickSettingsFile(ref);
+              break;
+            default:
+          }
+        },
+        itemBuilder: (context) {
+          return [
+            const PopupMenuItem(
+              value: 'export',
+              child: Text('Export'),
+            ),
+            const PopupMenuItem(
+              value: 'import',
+              child: Text('Import'),
+            ),
+          ];
+        },
+      ),
+    );
+  }
+
   Future<bool> _showImportBooruConfigsAlertDialog(
     BooruConfigExportData data,
   ) async {
@@ -277,19 +312,13 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
   }
 
   void _pickBookmarkFile(WidgetRef ref) async {
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['json'],
-    );
+    final path = await _pickFile();
 
-    if (result != null) {
-      final path = result.files.single.path;
-      if (path != null) {
-        final file = File(path);
-        ref.bookmarks.importBookmarks(file);
-      } else {
-        // User canceled the picker
-      }
+    if (path != null) {
+      final file = File(path);
+      ref.bookmarks.importBookmarks(file);
+    } else {
+      // User canceled the picker
     }
   }
 
@@ -305,24 +334,42 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
     }
   }
 
-  void _pickProfileFile(WidgetRef ref) async {
+  Future<String?> _pickFile() async {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['json'],
     );
 
-    if (result != null) {
-      final path = result.files.single.path;
-      if (path != null) {
-        ref.read(booruConfigProvider.notifier).import(
-              path: path,
-              onSuccess: _onImportSuccess,
-              onWillImport: _showImportBooruConfigsAlertDialog,
-              onFailure: (message) => showErrorToast(message),
-            );
-      } else {
-        // User canceled the picker
-      }
+    return result?.files.singleOrNull?.path;
+  }
+
+  void _pickProfileFile(WidgetRef ref) async {
+    final path = await _pickFile();
+    if (path != null) {
+      ref.read(booruConfigProvider.notifier).import(
+            path: path,
+            onSuccess: _onImportSuccess,
+            onWillImport: _showImportBooruConfigsAlertDialog,
+            onFailure: (message) => showErrorToast(message),
+          );
+    }
+  }
+
+  void _pickSettingsFolder(WidgetRef ref) async {
+    final path = await FilePicker.platform.getDirectoryPath();
+
+    if (path != null) {
+      ref.read(settingsProvider.notifier).exportSettings(path);
+    }
+  }
+
+  void _pickSettingsFile(WidgetRef ref) async {
+    final path = await _pickFile();
+
+    if (path != null) {
+      ref.read(settingsProvider.notifier).importSettings(path);
+    } else {
+      // User canceled the picker
     }
   }
 }
@@ -352,7 +399,7 @@ class BackupRestoreTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           CircleAvatar(
             radius: 22,

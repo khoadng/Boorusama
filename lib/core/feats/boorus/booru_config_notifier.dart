@@ -227,7 +227,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?> {
     ref
         .read(booruConfigFileHandlerProvider)
         .import(
-          path: path,
+          from: path,
         )
         .run()
         .then(

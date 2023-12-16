@@ -20,10 +20,4 @@ class SettingsRepositoryLoggerInterceptor implements SettingsRepository {
         _logger.logE('Settings', "Failed to load settings: $error");
         return error;
       });
-
-  @override
-  Future<String> export(Settings settings) => repository.export(settings);
-
-  @override
-  Future<void> import(String path) => repository.import(path);
 }

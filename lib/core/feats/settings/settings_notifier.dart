@@ -7,21 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
-
-final gridSizeSettingsProvider = Provider<GridSize>(
-    (ref) => ref.watch(settingsProvider.select((value) => value.gridSize)));
-
-final imageListTypeSettingsProvider = Provider<ImageListType>((ref) =>
-    ref.watch(settingsProvider.select((value) => value.imageListType)));
-
-final pageModeSettingsProvider = Provider<PageMode>(
-    (ref) => ref.watch(settingsProvider.select((value) => value.pageMode)));
-
-final gridSpacingSettingsProvider = Provider<double>((ref) => ref.watch(
-    settingsProvider.select((value) => value.imageGridSpacing.toDouble())));
-
-final imageBorderRadiusSettingsProvider = Provider<double>((ref) => ref.watch(
-    settingsProvider.select((value) => value.imageBorderRadius.toDouble())));
+import 'package:boorusama/widgets/widgets.dart';
 
 class SettingsNotifier extends Notifier<Settings> {
   SettingsNotifier(this.initialSettings) : super();
@@ -51,10 +37,35 @@ class SettingsNotifier extends Notifier<Settings> {
     }
   }
 
-  // export
-  Future<void> exportSettings() async {
-    final data = await ref.read(settingsRepoProvider).export(state);
-    print(data);
+  Future<void> importSettings(String path) async {
+    await ref
+        .read(settingIOHandlerProvider)
+        .import(
+          from: path,
+        )
+        .run()
+        .then(
+          (value) => value.fold(
+            (l) => showErrorToast(l.toString()),
+            (r) => updateSettings(r),
+          ),
+        );
+  }
+
+  Future<void> exportSettings(String path) async {
+    await ref
+        .read(settingIOHandlerProvider)
+        .export(
+          state,
+          to: path,
+        )
+        .run()
+        .then(
+          (value) => value.fold(
+            (l) => showErrorToast(l.toString()),
+            (r) => showSuccessToast('Settings exported to $path'),
+          ),
+        );
   }
 }
 

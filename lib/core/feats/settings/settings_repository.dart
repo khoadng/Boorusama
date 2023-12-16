@@ -15,8 +15,6 @@ enum SettingsLoadError {
 abstract class SettingsRepository {
   Future<bool> save(Settings setting);
   SettingsOrError load();
-  Future<String> export(Settings settings);
-  Future<void> import(String path);
 }
 
 Future<int> getSettingsPostsPerPage(SettingsRepository repository) =>
