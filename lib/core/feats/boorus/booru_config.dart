@@ -107,6 +107,43 @@ class BooruConfig extends Equatable {
         customBulkDownloadFileNameFormat,
         imageDetaisQuality,
       ];
+
+  factory BooruConfig.fromJson(Map<String, dynamic> json) {
+    return BooruConfig(
+      id: json['id'] as int,
+      booruId: json['booruId'] as int,
+      booruIdHint: json['booruIdHint'] as int,
+      apiKey: json['apiKey'] as String?,
+      login: json['login'] as String?,
+      url: json['url'] as String,
+      name: json['name'] as String,
+      deletedItemBehavior: BooruConfigDeletedItemBehavior
+          .values[json['deletedItemBehavior'] as int],
+      ratingFilter: BooruConfigRatingFilter.values[json['ratingFilter'] as int],
+      customDownloadFileNameFormat:
+          json['customDownloadFileNameFormat'] as String?,
+      customBulkDownloadFileNameFormat:
+          json['customBulkDownloadFileNameFormat'] as String?,
+      imageDetaisQuality: json['imageDetaisQuality'] as String?,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'booruId': booruId,
+      'booruIdHint': booruIdHint,
+      'apiKey': apiKey,
+      'login': login,
+      'url': url,
+      'name': name,
+      'deletedItemBehavior': deletedItemBehavior.index,
+      'ratingFilter': ratingFilter.index,
+      'customDownloadFileNameFormat': customDownloadFileNameFormat,
+      'customBulkDownloadFileNameFormat': customBulkDownloadFileNameFormat,
+      'imageDetaisQuality': imageDetaisQuality,
+    };
+  }
 }
 
 enum BooruConfigDeletedItemBehavior {

@@ -22,8 +22,7 @@ final filteredBookmarksProvider = Provider.autoDispose<List<Bookmark>>((ref) {
   final tags = ref.watch(selectedTagsProvider);
   final selectedBooruUrl = ref.watch(selectedBooruUrlProvider);
   final sortType = ref.watch(selectedBookmarkSortTypeProvider);
-  final config = ref.watchConfig;
-  final bookmarks = ref.watch(bookmarkProvider(config)).bookmarks;
+  final bookmarks = ref.watch(bookmarkProvider).bookmarks;
 
   final tagsList = tags.split(' ').where((e) => e.isNotEmpty).toList();
 
@@ -53,8 +52,7 @@ final booruTypeCountProvider =
     return ref.watch(filteredBookmarksProvider).length;
   }
 
-  final config = ref.watchConfig;
-  final bookmarks = ref.watch(bookmarkProvider(config)).bookmarks;
+  final bookmarks = ref.watch(bookmarkProvider).bookmarks;
 
   return bookmarks
       .where((bookmark) => intToBooruType(bookmark.booruId) == booruType)
@@ -76,8 +74,7 @@ final tagColorProvider =
 });
 
 final tagMapProvider = Provider<Map<String, int>>((ref) {
-  final config = ref.watchConfig;
-  final bookmarks = ref.watch(bookmarkProvider(config)).bookmarks;
+  final bookmarks = ref.watch(bookmarkProvider).bookmarks;
 
   final tagMap = <String, int>{};
 
@@ -126,7 +123,7 @@ final availableBooruOptionsProvider = Provider.autoDispose<List<BooruType?>>(
         .toList());
 
 final availableBooruUrlsProvider = Provider.autoDispose<List<String>>((ref) {
-  final bookmarks = ref.watch(bookmarkProvider(ref.watchConfig)).bookmarks;
+  final bookmarks = ref.watch(bookmarkProvider).bookmarks;
 
   return bookmarks
       .map((e) => e.sourceUrl)
@@ -138,8 +135,7 @@ final availableBooruUrlsProvider = Provider.autoDispose<List<String>>((ref) {
 });
 
 final hasBookmarkProvider = Provider.autoDispose<bool>((ref) {
-  final config = ref.watchConfig;
-  final bookmarks = ref.watch(bookmarkProvider(config)).bookmarks;
+  final bookmarks = ref.watch(bookmarkProvider).bookmarks;
 
   return bookmarks.isNotEmpty;
 });

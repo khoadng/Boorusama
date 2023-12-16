@@ -80,4 +80,42 @@ class HiveBooruConfigRepository implements BooruConfigRepository {
       return null;
     }
   }
+
+  @override
+  Future<void> clear() async {
+    await box.clear();
+  }
+
+  @override
+  Future<List<BooruConfig>> addAll(List<BooruConfig> booruConfigs) async {
+    final configs = <BooruConfig>[];
+
+    for (final booruConfig in booruConfigs) {
+      final data = BooruConfigData(
+        booruId: booruConfig.booruId,
+        booruIdHint: booruConfig.booruIdHint,
+        apiKey: booruConfig.apiKey ?? '',
+        login: booruConfig.login ?? '',
+        url: booruConfig.url,
+        name: booruConfig.name,
+        deletedItemBehavior: booruConfig.deletedItemBehavior.index,
+        ratingFilter: booruConfig.ratingFilter.index,
+        customDownloadFileNameFormat:
+            booruConfig.customDownloadFileNameFormat ?? '',
+        customBulkDownloadFileNameFormat:
+            booruConfig.customBulkDownloadFileNameFormat ?? '',
+        imageDetaisQuality: booruConfig.imageDetaisQuality ?? '',
+      );
+      final json = data.toJson();
+      final jsonString = jsonEncode(json);
+      await box.put(booruConfig.id, jsonString);
+
+      configs.add(convertToBooruConfig(
+        id: booruConfig.id,
+        booruConfigData: data,
+      )!);
+    }
+
+    return configs;
+  }
 }

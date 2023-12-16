@@ -1,5 +1,6 @@
 export 'about_page.dart';
 export 'appearance_page.dart';
+export 'backup_and_restore_page.dart';
 export 'changelog_page.dart';
 export 'data_and_storage_page.dart';
 export 'debug_logs_page.dart';
