@@ -29,7 +29,7 @@ class BooruConfigIOHandler {
             .catchError((e, st) => onError?.call(e.toString())),
       );
 
-  static Future<Either<DataImportError, BooruConfigExportData>>
+  static Future<Either<ImportError, BooruConfigExportData>>
       importFromClipboard() async {
     final data = await Clipboard.getData('text/plain');
 
@@ -49,7 +49,7 @@ class BooruConfigIOHandler {
 
   final DataIOHandler handler;
 
-  TaskEither<DataExportError, Unit> export({
+  TaskEither<ExportError, Unit> export({
     required List<BooruConfig> configs,
     required String path,
   }) =>
@@ -58,18 +58,23 @@ class BooruConfigIOHandler {
         path: path,
       );
 
-  TaskEither<DataImportError, BooruConfigExportData> import({
+  TaskEither<ImportError, BooruConfigExportData> import({
     required String from,
   }) =>
-      handler
-          .import(
-            path: from,
-          )
-          .map((data) => BooruConfigExportData(
-                version: data.version,
-                exportDate: data.exportDate,
-                data: data.data.map((e) => BooruConfig.fromJson(e)).toList(),
-              ));
+      TaskEither.Do(($) async {
+        final data = await $(handler.import(path: from));
+
+        final transformed = await $(Either.tryCatch(
+          () => data.data.map((e) => BooruConfig.fromJson(e)).toList(),
+          (o, s) => const ImportInvalidJsonField(),
+        ).toTaskEither());
+
+        return BooruConfigExportData(
+          version: data.version,
+          exportDate: data.exportDate,
+          data: transformed,
+        );
+      });
 }
 
 class BooruConfigExportData {

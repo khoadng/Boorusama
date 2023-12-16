@@ -53,8 +53,18 @@ final class DataExportError extends ExportError {
   final StackTrace stackTrace;
 }
 
-sealed class DataImportError {
-  const DataImportError._(this.message);
+final class DataExportNotPermitted extends ExportError {
+  const DataExportNotPermitted({
+    required this.error,
+    required this.stackTrace,
+  }) : super._('Cannot export data to this location');
+
+  final Object error;
+  final StackTrace stackTrace;
+}
+
+sealed class ImportError {
+  const ImportError._(this.message);
 
   final String message;
 
@@ -62,17 +72,18 @@ sealed class DataImportError {
   String toString() => message;
 }
 
-final class ImportErrorEmpty extends DataImportError {
+final class ImportErrorEmpty extends ImportError {
   const ImportErrorEmpty() : super._('Data is empty');
 }
 
-final class ImportInvalidJson extends DataImportError {
+final class ImportInvalidJson extends ImportError {
   const ImportInvalidJson() : super._('Invalid backup format');
 }
 
-final class ImportInvalidJsonField extends DataImportError {
+final class ImportInvalidJsonField extends ImportError {
   const ImportInvalidJsonField()
-      : super._('Missing required fields or invalid field type');
+      : super._(
+            'Missing required fields or invalid field type, are you sure this is a valid backup file?');
 }
 
 class ExportDataPayload {
@@ -132,7 +143,7 @@ class DataIOHandler {
   final Future<String> Function(String path) importer;
   final int version;
 
-  TaskEither<DataExportError, Unit> export({
+  TaskEither<ExportError, Unit> export({
     required List<dynamic> data,
     required String path,
   }) =>
@@ -144,27 +155,40 @@ class DataIOHandler {
             final status = await permissionRequester();
 
             if (status != PermissionStatus.granted) {
-              throw const StoragePermissionDenied();
+              return $(TaskEither.left(const StoragePermissionDenied()));
             }
           }
 
-          try {
-            final jsonString = await $(tryEncodeData(
-              version: version,
-              exportDate: DateTime.now(),
-              payload: data,
-            ).toTaskEither());
+          final jsonString = await $(tryEncodeData(
+            version: version,
+            exportDate: DateTime.now(),
+            payload: data,
+          ).toTaskEither());
 
-            await exporter(path, jsonString);
-          } catch (e, st) {
-            throw DataExportError(error: e, stackTrace: st);
-          }
+          return await $(TaskEither.tryCatch(
+            () async {
+              await exporter(path, jsonString);
 
-          return unit;
+              return unit;
+            },
+            (e, st) {
+              if (e is PathAccessException) {
+                return DataExportNotPermitted(
+                  error: e,
+                  stackTrace: st,
+                );
+              } else {
+                return DataExportError(
+                  error: e,
+                  stackTrace: st,
+                );
+              }
+            },
+          ));
         },
       );
 
-  TaskEither<DataImportError, ExportDataPayload> import({
+  TaskEither<ImportError, ExportDataPayload> import({
     required String path,
   }) =>
       TaskEither.Do(
@@ -177,7 +201,7 @@ class DataIOHandler {
       );
 }
 
-Either<DataExportError, String> tryEncodeData({
+Either<ExportError, String> tryEncodeData({
   required int version,
   required DateTime exportDate,
   required List<dynamic> payload,
@@ -201,7 +225,7 @@ Either<DataExportError, String> tryEncodeData({
       }
     });
 
-Either<DataImportError, ExportDataPayload> tryDecodeData({
+Either<ImportError, ExportDataPayload> tryDecodeData({
   required String data,
 }) =>
     Either.Do(($) {

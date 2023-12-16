@@ -10,7 +10,7 @@ class SettingsIOHandler {
 
   final DataIOHandler handler;
 
-  TaskEither<DataExportError, Unit> export(
+  TaskEither<ExportError, Unit> export(
     Settings settings, {
     required String to,
   }) =>
@@ -21,12 +21,19 @@ class SettingsIOHandler {
         path: to,
       );
 
-  TaskEither<DataImportError, Settings> import({
+  TaskEither<ImportError, Settings> import({
     required String from,
   }) =>
-      handler
-          .import(
-            path: from,
-          )
-          .map((json) => Settings.fromJson(json.data.first));
+      TaskEither.Do(
+        ($) async {
+          final data = await $(handler.import(path: from));
+
+          final transformed = $(Either.tryCatch(
+            () => Settings.fromJson(data.data.first),
+            (e, st) => const ImportInvalidJsonField(),
+          ).toTaskEither());
+
+          return transformed;
+        },
+      );
 }
