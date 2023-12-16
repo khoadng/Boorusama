@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:extended_image/extended_image.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/posts/posts.dart';
@@ -31,7 +32,17 @@ class BooruLogo extends StatelessWidget {
       child: ExtendedImage.network(
         source.faviconUrl,
         fit: BoxFit.cover,
-        enableLoadState: false,
+        clearMemoryCacheIfFailed: false,
+        loadStateChanged: (state) => switch (state.extendedImageLoadState) {
+          LoadState.failed => const Card(
+              child: FaIcon(
+                FontAwesomeIcons.globe,
+                size: 22,
+                color: Colors.blue,
+              ),
+            ),
+          _ => state.completedWidget,
+        },
       ),
     );
   }

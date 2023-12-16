@@ -2,9 +2,6 @@
 import 'dart:io';
 
 // Flutter imports:
-import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
-import 'package:boorusama/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -15,12 +12,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/core/feats/blacklists/blacklists.dart';
 import 'package:boorusama/core/feats/bookmarks/bookmarks.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/pages/bookmarks/providers.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/main.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class BackupAndRestorePage extends ConsumerStatefulWidget {
@@ -38,10 +39,6 @@ class BackupAndRestorePage extends ConsumerStatefulWidget {
 class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
   @override
   Widget build(BuildContext context) {
-    final hasBookmarks = ref.watch(hasBookmarkProvider);
-    final tags = ref.watch(favoriteTagsProvider);
-    final blacklistedTags = ref.watch(globalBlacklistedTagsProvider);
-
     return ConditionalParentWidget(
       condition: widget.hasAppBar,
       conditionalBuilder: (child) => Scaffold(
@@ -51,135 +48,206 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
         body: child,
       ),
       child: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const SizedBox(height: 16),
-            ListTile(
-              title: const Text('Bookmarks'),
-              trailing: PopupMenuButton(
-                onSelected: (value) {
-                  switch (value) {
-                    case 'export':
-                      _pickBookmarkFolder(ref);
-                      break;
-                    case 'import':
-                      _pickBookmarkFile(ref);
-                    default:
-                  }
-                },
-                itemBuilder: (context) {
-                  return [
-                    if (hasBookmarks)
-                      const PopupMenuItem(
-                        value: 'export',
-                        child: Text('Export'),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const SizedBox(height: 8),
+              _buildProfiles(),
+              const SizedBox(height: 8),
+              _buildFavoriteTags(),
+              const SizedBox(height: 8),
+              _buildBookmark(),
+              const SizedBox(height: 8),
+              _buildBlacklistedTags(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProfiles() {
+    final configs = ref.watch(booruConfigProvider);
+    final first5Configs = configs?.take(5).toList();
+
+    return BackupRestoreTile(
+      leadingIcon: Icons.settings,
+      title: 'Booru profiles',
+      subtitle: '${configs?.length} profiles',
+      extra: first5Configs != null && first5Configs.isNotEmpty
+          ? [
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  ...first5Configs.map(
+                    (e) => PostSource.from(e.url).whenWeb(
+                      (source) => ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: BooruLogo(source: source),
                       ),
-                    const PopupMenuItem(
-                      value: 'import',
-                      child: Text('Import'),
+                      () => const SizedBox.shrink(),
                     ),
-                  ];
-                },
-              ),
-            ),
-            ListTile(
-              title: const Text('Favorite tags'),
-              trailing: PopupMenuButton(
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(4)),
-                ),
-                onSelected: (value) {
-                  if (value == 'import') {
-                    goToFavoriteTagImportPage(context);
-                  } else if (value == 'export') {
-                    ref.read(favoriteTagsProvider.notifier).export(
-                      onDone: (tagString) {
-                        Clipboard.setData(
-                          ClipboardData(text: tagString),
-                        ).then((value) => showSimpleSnackBar(
-                              context: context,
-                              content: const Text(
-                                'favorite_tags.export_notification',
-                              ).tr(),
-                            ));
-                      },
-                    );
-                  }
-                },
-                itemBuilder: (context) => [
-                  PopupMenuItem(
-                    value: 'import',
-                    child: const Text('favorite_tags.import').tr(),
                   ),
-                  if (tags.isNotEmpty)
-                    PopupMenuItem(
-                      value: 'export',
-                      child: const Text('favorite_tags.export').tr(),
+                  if (first5Configs.length < configs!.length)
+                    Text(
+                      '+${configs.length - first5Configs.length}',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: context.colorScheme.onSurface,
+                        fontWeight: FontWeight.w900,
+                        fontSize: 18,
+                      ),
                     ),
                 ],
               ),
+              const SizedBox(height: 8),
+            ]
+          : null,
+      trailing: PopupMenuButton(
+        onSelected: (value) {
+          switch (value) {
+            case 'export':
+              _pickProfileFolder(ref);
+              break;
+            case 'import':
+              _pickProfileFile(ref);
+              break;
+            case 'export_clipboard':
+              ref.read(booruConfigProvider.notifier).exportClipboard(
+                    onSuccess: (message) => showSuccessToast(message),
+                    onFailure: (message) => showErrorToast(message),
+                  );
+              break;
+            case 'import_clipboard':
+              ref.read(booruConfigProvider.notifier).importClipboard(
+                    onSuccess: _onImportSuccess,
+                    onWillImport: _showImportBooruConfigsAlertDialog,
+                    onFailure: (message) => showErrorToast(message),
+                  );
+              break;
+            default:
+          }
+        },
+        itemBuilder: (context) {
+          return [
+            const PopupMenuItem(
+              value: 'export',
+              child: Text('Export to file'),
             ),
-            ListTile(
-              title: const Text('Blacklisted tags'),
-              trailing: ImportExportTagButton(
-                onImport: (tagString) => ref
-                    .read(globalBlacklistedTagsProvider.notifier)
-                    .addTagStringWithToast(tagString),
-                tags: blacklistedTags.map((e) => e.name).toList(),
-              ),
+            const PopupMenuItem(
+              value: 'import',
+              child: Text('Import from file'),
             ),
-            ListTile(
-              title: const Text('Profiles'),
-              trailing: PopupMenuButton(
-                onSelected: (value) {
-                  switch (value) {
-                    case 'export':
-                      _pickProfileFolder(ref);
-                      break;
-                    case 'import':
-                      _pickProfileFile(ref);
-                      break;
-                    case 'export_clipboard':
-                      ref.read(booruConfigProvider.notifier).exportClipboard(
-                            onSuccess: (message) => showSuccessToast(message),
-                            onFailure: (message) => showErrorToast(message),
-                          );
-                      break;
-                    case 'import_clipboard':
-                      ref.read(booruConfigProvider.notifier).importClipboard(
-                            onSuccess: _onImportSuccess,
-                            onWillImport: _showImportBooruConfigsAlertDialog,
-                            onFailure: (message) => showErrorToast(message),
-                          );
-                      break;
-                    default:
-                  }
-                },
-                itemBuilder: (context) {
-                  return [
-                    const PopupMenuItem(
-                      value: 'export',
-                      child: Text('Export to file'),
-                    ),
-                    const PopupMenuItem(
-                      value: 'import',
-                      child: Text('Import from file'),
-                    ),
-                    const PopupMenuItem(
-                      value: 'export_clipboard',
-                      child: Text('Export to clipboard'),
-                    ),
-                    const PopupMenuItem(
-                      value: 'import_clipboard',
-                      child: Text('Import from clipboard'),
-                    ),
-                  ];
-                },
-              ),
+            const PopupMenuItem(
+              value: 'export_clipboard',
+              child: Text('Export to clipboard'),
             ),
-          ],
+            const PopupMenuItem(
+              value: 'import_clipboard',
+              child: Text('Import from clipboard'),
+            ),
+          ];
+        },
+      ),
+    );
+  }
+
+  Widget _buildBlacklistedTags() {
+    final blacklistedTags = ref.watch(globalBlacklistedTagsProvider);
+
+    return BackupRestoreTile(
+      leadingIcon: Icons.tag,
+      title: 'Blacklisted tags',
+      subtitle: '${blacklistedTags.length} tags',
+      trailing: ImportExportTagButton(
+        onImport: (tagString) => ref
+            .read(globalBlacklistedTagsProvider.notifier)
+            .addTagStringWithToast(tagString),
+        tags: blacklistedTags.map((e) => e.name).toList(),
+      ),
+    );
+  }
+
+  Widget _buildFavoriteTags() {
+    final tags = ref.watch(favoriteTagsProvider);
+
+    return BackupRestoreTile(
+      leadingIcon: Icons.favorite,
+      title: 'Favorite tags',
+      subtitle: '${tags.length} tags',
+      trailing: PopupMenuButton(
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(4)),
         ),
+        onSelected: (value) {
+          if (value == 'import') {
+            goToFavoriteTagImportPage(context);
+          } else if (value == 'export') {
+            ref.read(favoriteTagsProvider.notifier).export(
+              onDone: (tagString) {
+                Clipboard.setData(
+                  ClipboardData(text: tagString),
+                ).then((value) => showSimpleSnackBar(
+                      context: context,
+                      content: const Text(
+                        'favorite_tags.export_notification',
+                      ).tr(),
+                    ));
+              },
+            );
+          }
+        },
+        itemBuilder: (context) => [
+          PopupMenuItem(
+            value: 'import',
+            child: const Text('favorite_tags.import').tr(),
+          ),
+          if (tags.isNotEmpty)
+            PopupMenuItem(
+              value: 'export',
+              child: const Text('favorite_tags.export').tr(),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBookmark() {
+    final hasBookmarks = ref.watch(hasBookmarkProvider);
+    final bookmarks = ref.watch(bookmarkProvider).bookmarks;
+
+    return BackupRestoreTile(
+      leadingIcon: Icons.bookmark,
+      title: 'Bookmarks',
+      subtitle: hasBookmarks ? '${bookmarks.length} bookmarks' : 'No bookmarks',
+      trailing: PopupMenuButton(
+        onSelected: (value) {
+          switch (value) {
+            case 'export':
+              _pickBookmarkFolder(ref);
+              break;
+            case 'import':
+              _pickBookmarkFile(ref);
+            default:
+          }
+        },
+        itemBuilder: (context) {
+          return [
+            if (hasBookmarks)
+              const PopupMenuItem(
+                value: 'export',
+                child: Text('Export'),
+              ),
+            const PopupMenuItem(
+              value: 'import',
+              child: Text('Import'),
+            ),
+          ];
+        },
       ),
     );
   }
@@ -256,6 +324,73 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
         // User canceled the picker
       }
     }
+  }
+}
+
+class BackupRestoreTile extends StatelessWidget {
+  const BackupRestoreTile({
+    super.key,
+    required this.leadingIcon,
+    required this.title,
+    this.subtitle,
+    required this.trailing,
+    this.extra,
+  });
+
+  final IconData leadingIcon;
+  final String title;
+  final String? subtitle;
+  final Widget trailing;
+  final List<Widget>? extra;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: context.colorScheme.secondaryContainer,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CircleAvatar(
+            radius: 22,
+            backgroundColor: context.colorScheme.surface,
+            child: Icon(
+              leadingIcon,
+              color: context.colorScheme.onSurface,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const SizedBox(height: 4),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                if (subtitle != null)
+                  Text(
+                    subtitle!,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w400,
+                      color: context.theme.hintColor,
+                    ),
+                  ),
+                if (extra != null) ...extra!,
+              ],
+            ),
+          ),
+          trailing,
+        ],
+      ),
+    );
   }
 }
 
