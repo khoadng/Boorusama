@@ -11,6 +11,8 @@ abstract class BooruConfigRepository {
   Future<BooruConfig?> update(int id, BooruConfigData booruConfigData);
   Future<void> remove(BooruConfig booruConfig);
   Future<List<BooruConfig>> getAll();
+  Future<void> clear();
+  Future<List<BooruConfig>> addAll(List<BooruConfig> booruConfigs);
 }
 
 extension BooruConfigRepositoryX on BooruConfigRepository {

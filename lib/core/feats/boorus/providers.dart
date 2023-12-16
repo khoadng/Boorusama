@@ -55,6 +55,12 @@ final configsProvider = Provider<IList<BooruConfig>>((ref) {
   }
 });
 
+final booruConfigFileHandlerProvider = Provider<BooruConfigIOHandler>((ref) {
+  final deviceInfo = ref.watch(deviceInfoProvider);
+
+  return BooruConfigIOHandler.file(deviceInfo: deviceInfo);
+});
+
 extension BooruWidgetRef on WidgetRef {
   /// {@template boorusama.booru.readConfig}
   /// Shortcut for `read(currentBooruConfigProvider)`

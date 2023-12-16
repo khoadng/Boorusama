@@ -2,7 +2,8 @@
 import 'dart:io';
 
 // Flutter imports:
-import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -137,26 +138,41 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
                       _pickProfileFolder(ref);
                       break;
                     case 'import':
-
-                      //FIXME: Test value need to be removed
-                      ref.read(booruConfigRepoProvider).getAll().then((value) {
-                        final config = value[1];
-                        Reboot.start(context, config);
-                      });
-                      _pickBookmarkFile(ref);
+                      _pickProfileFile(ref);
+                      break;
+                    case 'export_clipboard':
+                      ref.read(booruConfigProvider.notifier).exportClipboard(
+                            onSuccess: (message) => showSuccessToast(message),
+                            onFailure: (message) => showErrorToast(message),
+                          );
+                      break;
+                    case 'import_clipboard':
+                      ref.read(booruConfigProvider.notifier).importClipboard(
+                            onSuccess: _onImportSuccess,
+                            onWillImport: _showImportBooruConfigsAlertDialog,
+                            onFailure: (message) => showErrorToast(message),
+                          );
+                      break;
                     default:
                   }
                 },
                 itemBuilder: (context) {
                   return [
-                    if (hasBookmarks)
-                      const PopupMenuItem(
-                        value: 'export',
-                        child: Text('Export'),
-                      ),
+                    const PopupMenuItem(
+                      value: 'export',
+                      child: Text('Export to file'),
+                    ),
                     const PopupMenuItem(
                       value: 'import',
-                      child: Text('Import'),
+                      child: Text('Import from file'),
+                    ),
+                    const PopupMenuItem(
+                      value: 'export_clipboard',
+                      child: Text('Export to clipboard'),
+                    ),
+                    const PopupMenuItem(
+                      value: 'import_clipboard',
+                      child: Text('Import from clipboard'),
                     ),
                   ];
                 },
@@ -166,6 +182,22 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
         ),
       ),
     );
+  }
+
+  Future<bool> _showImportBooruConfigsAlertDialog(
+    BooruConfigExportData data,
+  ) async {
+    final result = await showDialog<bool?>(
+      context: context,
+      builder: (context) => ImportBooruConfigsAlertDialog(data: data),
+    );
+
+    return result ?? false;
+  }
+
+  void _onImportSuccess(String message, List<BooruConfig> configs) {
+    final config = configs.first;
+    Reboot.start(context, config);
   }
 
   void _pickBookmarkFolder(WidgetRef ref) async {
@@ -194,27 +226,121 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
   }
 
   void _pickProfileFolder(WidgetRef ref) async {
-    // final path = await FilePicker.platform.getDirectoryPath();
+    final path = await FilePicker.platform.getDirectoryPath();
 
-    // if (path != null) {
-    //   ref.bookmarks.exportAllBookmarks(path);
-    // }
+    if (path != null) {
+      ref.read(booruConfigProvider.notifier).export(
+            path: path,
+            onSuccess: (message) => showSuccessToast(message),
+            onFailure: (message) => showErrorToast(message),
+          );
+    }
   }
 
   void _pickProfileFile(WidgetRef ref) async {
-    // final result = await FilePicker.platform.pickFiles(
-    //   type: FileType.custom,
-    //   allowedExtensions: ['json'],
-    // );
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['json'],
+    );
 
-    // if (result != null) {
-    //   final path = result.files.single.path;
-    //   if (path != null) {
-    //     final file = File(path);
-    //     ref.bookmarks.importBookmarks(file);
-    //   } else {
-    //     // User canceled the picker
-    //   }
-    // }
+    if (result != null) {
+      final path = result.files.single.path;
+      if (path != null) {
+        ref.read(booruConfigProvider.notifier).import(
+              path: path,
+              onSuccess: _onImportSuccess,
+              onWillImport: _showImportBooruConfigsAlertDialog,
+              onFailure: (message) => showErrorToast(message),
+            );
+      } else {
+        // User canceled the picker
+      }
+    }
+  }
+}
+
+class ImportBooruConfigsAlertDialog extends StatelessWidget {
+  const ImportBooruConfigsAlertDialog({
+    super.key,
+    required this.data,
+  });
+
+  final BooruConfigExportData data;
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(8)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 20),
+            Text(
+              'Importing ${data.data.length} profiles',
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'This will override ALL your current profiles, are you sure?',
+              style: TextStyle(
+                fontWeight: FontWeight.w400,
+                fontSize: 14,
+              ),
+            ),
+            const SizedBox(height: 20),
+            FilledButton(
+              style: FilledButton.styleFrom(
+                backgroundColor: context.colorScheme.errorContainer,
+                shadowColor: Colors.transparent,
+                elevation: 0,
+              ),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                child: Text(
+                  'Sure',
+                  style: TextStyle(
+                    color: context.colorScheme.onErrorContainer,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.transparent,
+                shadowColor: Colors.transparent,
+                elevation: 0,
+              ),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                child: Text(
+                  'Cancel',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: Theme.of(context).colorScheme.onBackground,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+          ],
+        ),
+      ),
+    );
   }
 }
