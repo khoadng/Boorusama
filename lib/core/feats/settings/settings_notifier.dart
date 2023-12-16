@@ -50,6 +50,12 @@ class SettingsNotifier extends Notifier<Settings> {
       state = settings;
     }
   }
+
+  // export
+  Future<void> exportSettings() async {
+    final data = await ref.read(settingsRepoProvider).export(state);
+    print(data);
+  }
 }
 
 extension SettingsNotifierX on WidgetRef {

@@ -1,5 +1,6 @@
 // Dart imports:
 import 'dart:convert';
+import 'dart:io';
 
 // Package imports:
 import 'package:hive/hive.dart';
@@ -63,5 +64,21 @@ class SettingsRepositoryHive implements SettingsRepository {
     await db.put('settings', json);
 
     return true;
+  }
+
+  @override
+  Future<String> export(Settings settings) async {
+    final json = jsonEncode(settings.toJson());
+
+    return json;
+  }
+
+  @override
+  Future<void> import(String path) {
+    final file = File(path);
+    final jsonString = file.readAsStringSync();
+    final json = jsonDecode(jsonString);
+
+    return save(Settings.fromJson(json));
   }
 }
