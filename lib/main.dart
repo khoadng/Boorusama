@@ -37,9 +37,6 @@ import 'package:boorusama/foundation/platform.dart';
 import 'app.dart';
 import 'foundation/i18n.dart';
 
-// Comment text field is weird
-// Long press to select images bottom sheet color is off
-
 void main() async {
   final uiLogger = UILogger();
   final logger = await loggerWith(uiLogger);

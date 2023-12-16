@@ -27,7 +27,7 @@ class AppInfo {
   factory AppInfo.fromJson(Map<String, dynamic> json) => AppInfo(
         discordUrl: json['discordUrl'],
         githubUrl: json['githubUrl'],
-        appName: json['appName'],
+        appName: const String.fromEnvironment('APP_NAME'),
         translationProjectUrl: json['translationProjectUrl'],
         booruDefUrl: json['booruDefUrl'],
       );
