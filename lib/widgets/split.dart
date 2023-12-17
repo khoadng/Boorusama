@@ -93,10 +93,10 @@ class Split extends StatefulWidget {
   }
 
   @override
-  State<StatefulWidget> createState() => _SplitState();
+  State<StatefulWidget> createState() => SplitState();
 }
 
-class _SplitState extends State<Split> {
+class SplitState extends State<Split> {
   late final List<double> fractions;
 
   bool get isHorizontal => widget.axis == Axis.horizontal;
@@ -105,6 +105,14 @@ class _SplitState extends State<Split> {
   void initState() {
     super.initState();
     fractions = List.of(widget.initialFractions);
+  }
+
+  void setFractions(List<double> newFractions) {
+    assert(newFractions.length == fractions.length);
+    _verifyFractionsSumTo1(newFractions);
+    setState(() {
+      fractions.setAll(0, newFractions);
+    });
   }
 
   @override

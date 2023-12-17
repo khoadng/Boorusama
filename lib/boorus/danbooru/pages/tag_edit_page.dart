@@ -75,6 +75,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
   final toBeRemoved = <String>{};
   TagEditExpandMode? expandMode;
   final scrollController = ScrollController();
+  final splitKey = GlobalKey<SplitState>();
 
   String? selectedTag;
 
@@ -95,6 +96,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
     if (expandMode != null) {
       setState(() {
         expandMode = null;
+        splitKey.currentState?.setFractions(const [0.7, 0.3]);
       });
     } else {
       context.pop();
@@ -116,8 +118,8 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
         _pop();
       },
       child: Scaffold(
+        extendBodyBehindAppBar: expandMode != null,
         appBar: AppBar(
-          title: const Text('Edit'),
           leading: IconButton(
             onPressed: _pop,
             icon: const Icon(Icons.arrow_back),
@@ -165,8 +167,9 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
         focusColor: context.colorScheme.primary,
       ),
       child: Split(
+        key: splitKey,
         axis: Axis.vertical,
-        initialFractions: const [0.3, 0.7],
+        initialFractions: const [0.7, 0.3],
         minSizes: const [120, 100],
         ignoreFractionChange: true,
         children: [
@@ -278,6 +281,8 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                         onPressed: () => setState(() {
                               selectedTag = tag;
                               expandMode = TagEditExpandMode.related;
+                              splitKey.currentState
+                                  ?.setFractions(const [0.9, 0.1]);
                             }),
                         deleteIcon: Icon(
                           color: foregroundColor,
@@ -316,58 +321,63 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
         TagEditExpandMode.favorite => Container(
             height: 280,
             color: context.colorScheme.secondaryContainer,
-            child: TagEditFavoriteView(
-              onRemoved: (tag) {
-                _removeTag(tag);
-              },
-              onAdded: (tag) {
-                _addTag(tag);
-              },
-              onClosed: () {
-                setState(() {
-                  expandMode = null;
-                });
-              },
-              isSelected: (tag) => tags.contains(tag),
+            child: Column(
+              children: [
+                _buildAppSheetAppbar('Favorites'),
+                Expanded(
+                  child: TagEditFavoriteView(
+                    onRemoved: (tag) {
+                      _removeTag(tag);
+                    },
+                    onAdded: (tag) {
+                      _addTag(tag);
+                    },
+                    isSelected: (tag) => tags.contains(tag),
+                  ),
+                ),
+              ],
             ),
           ),
         TagEditExpandMode.related => Container(
             height: 280,
             color: context.colorScheme.secondaryContainer,
-            child: TagEditWikiView(
-              tag: selectedTag,
-              onRemoved: (tag) {
-                _removeTag(tag);
-              },
-              onAdded: (tag) {
-                _addTag(tag);
-              },
-              onClosed: () {
-                setState(() {
-                  expandMode = null;
-                  selectedTag = null;
-                });
-              },
-              isSelected: (tag) => tags.contains(tag),
+            child: Column(
+              children: [
+                _buildAppSheetAppbar('Related'),
+                Expanded(
+                  child: TagEditWikiView(
+                    tag: selectedTag,
+                    onRemoved: (tag) {
+                      _removeTag(tag);
+                    },
+                    onAdded: (tag) {
+                      _addTag(tag);
+                    },
+                    isSelected: (tag) => tags.contains(tag),
+                  ),
+                ),
+              ],
             ),
           ),
         TagEditExpandMode.aiTag => Container(
             height: 280,
             color: context.colorScheme.secondaryContainer,
-            child: TagEditAITagView(
-              postId: widget.postId,
-              onRemoved: (tag) {
-                _removeTag(tag);
-              },
-              onAdded: (tag) {
-                _addTag(tag);
-              },
-              onClosed: () {
-                setState(() {
-                  expandMode = null;
-                });
-              },
-              isSelected: (tag) => tags.contains(tag),
+            child: Column(
+              children: [
+                _buildAppSheetAppbar('Suggested'),
+                Expanded(
+                  child: TagEditAITagView(
+                    postId: widget.postId,
+                    onRemoved: (tag) {
+                      _removeTag(tag);
+                    },
+                    onAdded: (tag) {
+                      _addTag(tag);
+                    },
+                    isSelected: (tag) => tags.contains(tag),
+                  ),
+                ),
+              ],
             ),
           ),
         null => Container(
@@ -410,6 +420,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                   onPressed: () {
                     setState(() {
                       expandMode = TagEditExpandMode.favorite;
+                      splitKey.currentState?.setFractions(const [0.9, 0.1]);
                     });
                   },
                   child: Text(
@@ -430,6 +441,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                   onPressed: () {
                     setState(() {
                       expandMode = TagEditExpandMode.related;
+                      splitKey.currentState?.setFractions(const [0.9, 0.1]);
                     });
                   },
                   child: Text(
@@ -451,6 +463,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                     onPressed: () {
                       setState(() {
                         expandMode = TagEditExpandMode.aiTag;
+                        splitKey.currentState?.setFractions(const [0.9, 0.1]);
                       });
                     },
                     child: Text(
@@ -465,6 +478,42 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
             ),
           ),
       };
+
+  Widget _buildAppSheetAppbar(String title) {
+    return Row(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 16, top: 8, bottom: 4),
+          child: Text(
+            title,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+        ),
+        const Spacer(),
+        Padding(
+          padding: const EdgeInsets.only(right: 16, top: 8, bottom: 4),
+          child: Material(
+            shape: const CircleBorder(),
+            color: context.colorScheme.surfaceVariant,
+            child: Container(
+              padding: const EdgeInsets.all(4),
+              child: InkWell(
+                radius: 32,
+                customBorder: const CircleBorder(),
+                onTap: () {
+                  setState(() {
+                    expandMode = null;
+                    splitKey.currentState?.setFractions(const [0.7, 0.3]);
+                  });
+                },
+                child: const Icon(Icons.close),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 
   void _removeTag(String tag) {
     setState(() {
@@ -515,14 +564,12 @@ class TagEditFavoriteView extends ConsumerStatefulWidget {
     super.key,
     required this.onRemoved,
     required this.onAdded,
-    required this.onClosed,
     required this.isSelected,
   });
 
   final void Function(String tag) onRemoved;
   final void Function(String tag) onAdded;
   final bool Function(String tag) isSelected;
-  final void Function() onClosed;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -534,44 +581,44 @@ class _TagEditFavoriteViewState extends ConsumerState<TagEditFavoriteView> {
   Widget build(BuildContext context) {
     final tags = ref.watch(favoriteTagsProvider);
 
-    return Scaffold(
-      backgroundColor: context.colorScheme.secondaryContainer,
-      appBar: AppBar(
-        title: const Text('Favorite tags'),
-        automaticallyImplyLeading: false,
-        leading: IconButton(
-          onPressed: widget.onClosed,
-          icon: const Icon(Icons.keyboard_arrow_down),
-        ),
-      ),
-      body: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: Wrap(
-          spacing: 4,
-          children: tags.map((tag) {
-            final selected = widget.isSelected(tag.name);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: tags.isNotEmpty
+          ? Wrap(
+              spacing: 4,
+              children: tags.map((tag) {
+                final selected = widget.isSelected(tag.name);
 
-            return FilterChip(
-              side: selected
-                  ? BorderSide(
-                      color: context.theme.hintColor,
-                      width: 0.5,
-                    )
-                  : null,
-              selected: selected,
-              showCheckmark: true,
-              visualDensity: VisualDensity.compact,
-              selectedColor: context.colorScheme.primary,
-              backgroundColor: context.colorScheme.background,
-              onSelected: (value) =>
-                  value ? widget.onAdded(tag.name) : widget.onRemoved(tag.name),
-              label: Text(
-                tag.name.replaceUnderscoreWithSpace(),
+                return FilterChip(
+                  side: selected
+                      ? BorderSide(
+                          color: context.theme.hintColor,
+                          width: 0.5,
+                        )
+                      : null,
+                  selected: selected,
+                  showCheckmark: false,
+                  visualDensity: VisualDensity.compact,
+                  selectedColor: context.colorScheme.primary,
+                  backgroundColor: context.colorScheme.background,
+                  onSelected: (value) => value
+                      ? widget.onAdded(tag.name)
+                      : widget.onRemoved(tag.name),
+                  label: Text(
+                    tag.name.replaceUnderscoreWithSpace(),
+                  ),
+                );
+              }).toList(),
+            )
+          : const Center(
+              child: Text(
+                'No favorites',
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
+                ),
               ),
-            );
-          }).toList(),
-        ),
-      ),
+            ),
     );
   }
 }
@@ -581,7 +628,6 @@ class TagEditWikiView extends ConsumerStatefulWidget {
     super.key,
     required this.onRemoved,
     required this.onAdded,
-    required this.onClosed,
     required this.isSelected,
     required this.tag,
   });
@@ -590,7 +636,6 @@ class TagEditWikiView extends ConsumerStatefulWidget {
   final void Function(String tag) onRemoved;
   final void Function(String tag) onAdded;
   final bool Function(String tag) isSelected;
-  final void Function() onClosed;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -606,73 +651,61 @@ class _TagEditzwikiViewState extends ConsumerState<TagEditWikiView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: context.colorScheme.secondaryContainer,
-      appBar: AppBar(
-        title: const Text('Related tags'),
-        automaticallyImplyLeading: false,
-        leading: IconButton(
-          onPressed: widget.onClosed,
-          icon: const Icon(Icons.keyboard_arrow_down),
-        ),
-      ),
-      body: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: widget.tag.toOption().fold(
-              () => const Center(
-                child: Text(
-                  'Select a tag to view related tags',
-                ),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: widget.tag.toOption().fold(
+            () => const Center(
+              child: Text(
+                'Select a tag to view related tags',
               ),
-              (tag) => SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Center(
-                      child: BooruSegmentedButton(
-                        segments: {
-                          for (final entry in relatedTabs)
-                            entry: entry.sentenceCase,
-                        },
-                        initialValue: selectTab,
-                        onChanged: (values) {
-                          setState(() {
-                            selectTab = values;
-                          });
-                        },
-                      ),
+            ),
+            (tag) => SingleChildScrollView(
+              child: Column(
+                children: [
+                  Center(
+                    child: BooruSegmentedButton(
+                      segments: {
+                        for (final entry in relatedTabs)
+                          entry: entry.sentenceCase,
+                      },
+                      initialValue: selectTab,
+                      onChanged: (values) {
+                        setState(() {
+                          selectTab = values;
+                        });
+                      },
                     ),
-                    const SizedBox(height: 12),
-                    switch (selectTab) {
-                      'wiki' =>
-                        ref.watch(danbooruWikiTagsProvider(tag)).maybeWhen(
-                            data: (data) => data.isNotEmpty
-                                ? _RelatedTagChips(
-                                    tags: data,
-                                    isSelected: widget.isSelected,
-                                    onAdded: widget.onAdded,
-                                    onRemoved: widget.onRemoved,
-                                  )
-                                : const Center(child: Text('No tags found')),
-                            orElse: () => const Center(
-                                  child: CircularProgressIndicator.adaptive(),
-                                )),
-                      _ =>
-                        ref.watch(danbooruRelatedTagsProvider(tag)).maybeWhen(
-                            data: (data) => _RelatedTagChips(
+                  ),
+                  const SizedBox(height: 12),
+                  switch (selectTab) {
+                    'wiki' =>
+                      ref.watch(danbooruWikiTagsProvider(tag)).maybeWhen(
+                          data: (data) => data.isNotEmpty
+                              ? _RelatedTagChips(
                                   tags: data,
                                   isSelected: widget.isSelected,
                                   onAdded: widget.onAdded,
                                   onRemoved: widget.onRemoved,
-                                ),
-                            orElse: () => const Center(
-                                  child: CircularProgressIndicator.adaptive(),
-                                )),
-                    },
-                  ],
-                ),
+                                )
+                              : const Center(child: Text('No tags found')),
+                          orElse: () => const Center(
+                                child: CircularProgressIndicator.adaptive(),
+                              )),
+                    _ => ref.watch(danbooruRelatedTagsProvider(tag)).maybeWhen(
+                        data: (data) => _RelatedTagChips(
+                              tags: data,
+                              isSelected: widget.isSelected,
+                              onAdded: widget.onAdded,
+                              onRemoved: widget.onRemoved,
+                            ),
+                        orElse: () => const Center(
+                              child: CircularProgressIndicator.adaptive(),
+                            )),
+                  },
+                ],
               ),
             ),
-      ),
+          ),
     );
   }
 }
@@ -703,7 +736,7 @@ class _RelatedTagChips extends ConsumerWidget {
 
         return RawChip(
           selected: selected,
-          showCheckmark: true,
+          showCheckmark: false,
           checkmarkColor: colors?.foregroundColor,
           visualDensity: VisualDensity.compact,
           selectedColor: colors?.backgroundColor,
@@ -754,7 +787,6 @@ class TagEditAITagView extends ConsumerStatefulWidget {
     super.key,
     required this.onRemoved,
     required this.onAdded,
-    required this.onClosed,
     required this.isSelected,
     required this.postId,
   });
@@ -763,7 +795,6 @@ class TagEditAITagView extends ConsumerStatefulWidget {
   final void Function(String tag) onRemoved;
   final void Function(String tag) onAdded;
   final bool Function(String tag) isSelected;
-  final void Function() onClosed;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -775,94 +806,89 @@ class _TagEditAITagViewState extends ConsumerState<TagEditAITagView> {
   Widget build(BuildContext context) {
     final tagAsync = ref.watch(danbooruAITagsProvider(widget.postId));
 
-    return Scaffold(
-      backgroundColor: context.colorScheme.secondaryContainer,
-      appBar: AppBar(
-        title: const Text('Suggested tags'),
-        automaticallyImplyLeading: false,
-        leading: IconButton(
-          onPressed: widget.onClosed,
-          icon: const Icon(Icons.keyboard_arrow_down),
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            WarningContainer(contentBuilder: (context) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          WarningContainer(
+            margin: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 8,
+            ),
+            contentBuilder: (context) {
               return Text(
                 'The suggested tags are generated by AI, please check them carefully before submitting.',
                 style: TextStyle(
                   color: context.colorScheme.onError,
                 ),
               );
-            }),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: tagAsync.maybeWhen(
-                data: (tags) => Wrap(
-                  spacing: 4,
-                  children: tags.map((d) {
-                    final tag = d.tag;
-                    final colors = context.generateChipColors(
-                      ref.getTagColor(context, tag.category.name),
-                      ref.watch(settingsProvider),
-                    );
-                    final selected = widget.isSelected(tag.name);
+            },
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: tagAsync.maybeWhen(
+              data: (tags) => Wrap(
+                spacing: 4,
+                children: tags.map((d) {
+                  final tag = d.tag;
+                  final colors = context.generateChipColors(
+                    ref.getTagColor(context, tag.category.name),
+                    ref.watch(settingsProvider),
+                  );
+                  final selected = widget.isSelected(tag.name);
 
-                    return RawChip(
-                      selected: selected,
-                      showCheckmark: true,
-                      checkmarkColor: colors?.foregroundColor,
-                      visualDensity: VisualDensity.compact,
-                      selectedColor: colors?.backgroundColor,
-                      backgroundColor: selected
-                          ? colors?.backgroundColor
-                          : context.colorScheme.secondaryContainer,
-                      side: selected
-                          ? colors != null
-                              ? BorderSide(
-                                  width: 2,
-                                  color: colors.borderColor,
-                                )
-                              : null
-                          : null,
-                      onSelected: (value) => value
-                          ? widget.onAdded(tag.name)
-                          : widget.onRemoved(tag.name),
-                      label: ConstrainedBox(
-                        constraints: BoxConstraints(
-                          maxWidth: context.screenWidth * 0.8,
-                        ),
-                        child: RichText(
-                          overflow: TextOverflow.ellipsis,
-                          text: TextSpan(
-                            text: tag.name.replaceUnderscoreWithSpace(),
-                            style: TextStyle(
-                              color: selected
-                                  ? colors?.foregroundColor
-                                  : context.colorScheme.onSecondaryContainer,
-                              fontWeight:
-                                  selected ? FontWeight.w700 : FontWeight.w500,
-                            ),
-                            children: [
-                              TextSpan(
-                                text: '  ${d.score}%',
-                                style: context.textTheme.bodySmall,
-                              ),
-                            ],
+                  return RawChip(
+                    selected: selected,
+                    showCheckmark: false,
+                    checkmarkColor: colors?.foregroundColor,
+                    visualDensity: VisualDensity.compact,
+                    selectedColor: colors?.backgroundColor,
+                    backgroundColor: selected
+                        ? colors?.backgroundColor
+                        : context.colorScheme.secondaryContainer,
+                    side: selected
+                        ? colors != null
+                            ? BorderSide(
+                                width: 2,
+                                color: colors.borderColor,
+                              )
+                            : null
+                        : null,
+                    onSelected: (value) => value
+                        ? widget.onAdded(tag.name)
+                        : widget.onRemoved(tag.name),
+                    label: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: context.screenWidth * 0.8,
+                      ),
+                      child: RichText(
+                        overflow: TextOverflow.ellipsis,
+                        text: TextSpan(
+                          text: tag.name.replaceUnderscoreWithSpace(),
+                          style: TextStyle(
+                            color: selected
+                                ? colors?.foregroundColor
+                                : context.colorScheme.onSecondaryContainer,
+                            fontWeight:
+                                selected ? FontWeight.w700 : FontWeight.w500,
                           ),
+                          children: [
+                            TextSpan(
+                              text: '  ${d.score}%',
+                              style: context.textTheme.bodySmall,
+                            ),
+                          ],
                         ),
                       ),
-                    );
-                  }).toList(),
-                ),
-                orElse: () => const Center(
-                  child: CircularProgressIndicator.adaptive(),
-                ),
+                    ),
+                  );
+                }).toList(),
+              ),
+              orElse: () => const Center(
+                child: CircularProgressIndicator.adaptive(),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
