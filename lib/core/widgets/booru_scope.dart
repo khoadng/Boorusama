@@ -121,6 +121,8 @@ class BooruDesktopScope extends ConsumerStatefulWidget {
 }
 
 class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
+  final _hovering = ValueNotifier((0, false));
+
   @override
   Widget build(BuildContext context) {
     final content = ValueListenableBuilder(
@@ -181,8 +183,30 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
               axis: Axis.horizontal,
               minSizes: const [55, 600],
               initialFractions: const [0.18, 0.82],
+              onHoverStateChanged: (index, hovering) =>
+                  _hovering.value = (index, hovering),
               children: [
-                menu,
+                ValueListenableBuilder(
+                  valueListenable: _hovering,
+                  builder: (context, hovering, child) => Container(
+                    padding: EdgeInsets.only(
+                      right: hovering.$1 == 0 && hovering.$2 ? 0 : 2,
+                    ),
+                    decoration: BoxDecoration(
+                      color: context.colorScheme.surfaceVariant,
+                      border: Border(
+                        right: BorderSide(
+                          color: hovering.$1 == 0 && hovering.$2
+                              ? context.colorScheme.primary
+                              : context.colorScheme.outlineVariant
+                                  .withOpacity(0.2),
+                          width: hovering.$1 == 0 && hovering.$2 ? 3 : 1,
+                        ),
+                      ),
+                    ),
+                    child: menu,
+                  ),
+                ),
                 content,
               ],
             ),
