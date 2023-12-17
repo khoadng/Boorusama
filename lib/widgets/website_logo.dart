@@ -28,14 +28,22 @@ class WebsiteLogo extends StatelessWidget {
         url,
         clearMemoryCacheIfFailed: false,
         fit: BoxFit.cover,
-        loadStateChanged: (state) =>
-            state.extendedImageLoadState == LoadState.failed
-                ? const FaIcon(
-                    FontAwesomeIcons.globe,
-                    size: 22,
-                    color: Colors.blue,
-                  )
-                : null,
+        loadStateChanged: (state) => switch (state.extendedImageLoadState) {
+          LoadState.failed => const Card(
+              child: FaIcon(
+                FontAwesomeIcons.globe,
+                size: 22,
+                color: Colors.blue,
+              ),
+            ),
+          LoadState.loading => Container(
+              padding: const EdgeInsets.all(6),
+              child: const CircularProgressIndicator(
+                strokeWidth: 1,
+              ),
+            ),
+          _ => state.completedWidget,
+        },
       ),
     );
   }

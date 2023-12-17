@@ -26,15 +26,20 @@ class DanbooruTagsTile extends ConsumerWidget {
   const DanbooruTagsTile({
     super.key,
     required this.post,
+    this.allowFetch = true,
   });
 
   final DanbooruPost post;
+  final bool allowFetch;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfig;
-    final tagItems = ref.watch(danbooruTagGroupsProvider(post));
-    final tagDetails = ref.watch(danbooruTagListProvider(config))[post.id];
+    final tagItems = allowFetch
+        ? ref.watch(danbooruTagGroupsProvider(post))
+        : const AsyncData(<TagGroupItem>[]);
+    final tagDetails =
+        allowFetch ? ref.watch(danbooruTagListProvider(config))[post.id] : null;
     final count = tagDetails?.allTags.length ?? post.tags.length;
 
     return Theme(

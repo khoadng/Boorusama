@@ -41,6 +41,12 @@ class BooruLogo extends StatelessWidget {
                 color: Colors.blue,
               ),
             ),
+          LoadState.loading => Container(
+              padding: const EdgeInsets.all(6),
+              child: const CircularProgressIndicator(
+                strokeWidth: 1,
+              ),
+            ),
           _ => state.completedWidget,
         },
       ),

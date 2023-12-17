@@ -103,6 +103,7 @@ class _DanbooruPostDetailsDesktopPageState
             imageOverlayBuilder: (constraints) =>
                 noteOverlayBuilderDelegate(constraints, post, noteState),
             autoPlay: true,
+            inFocus: true,
           );
         },
         infoBuilder: (context) {
