@@ -97,6 +97,7 @@ extension BookmarkToPost on Bookmark {
         videoUrl: originalUrl,
         width: width,
         getLink: (_) => sourceUrl,
+        uploaderId: null,
       );
 }
 

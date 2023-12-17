@@ -30,6 +30,7 @@ class PostDto {
   final bool? hasComments;
   final bool? postLocked;
   final bool? hasChildren;
+  final int? creatorId;
 
   PostDto({
     this.previewUrl,
@@ -60,6 +61,7 @@ class PostDto {
     this.hasComments,
     this.postLocked,
     this.hasChildren,
+    this.creatorId,
   });
 
   factory PostDto.fromJson(Map<String, dynamic> json, String baseUrl) {
@@ -136,6 +138,7 @@ class PostDto {
       hasComments: _parseHasComment(json),
       postLocked: _parseBool(json['post_locked']),
       hasChildren: _parseBool(json['has_children']),
+      creatorId: json['creator_id'],
     );
   }
 

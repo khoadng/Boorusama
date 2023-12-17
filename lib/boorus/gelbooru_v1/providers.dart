@@ -36,6 +36,7 @@ final gelbooruV1PostRepoProvider = Provider.family<PostRepository, BooruConfig>(
                   width: 0,
                   getLink: (baseUrl) =>
                       '$baseUrl/index.php?page=post&s=view&id=${e.id}',
+                  uploaderId: null,
                 ))
             .toList();
       },

@@ -83,6 +83,7 @@ final philomenaPostRepoProvider =
             thumbSmall: e.representations?.thumbSmall ?? '',
             thumbTiny: e.representations?.thumbTiny ?? '',
           ),
+          uploaderId: e.uploaderId,
         );
       }).toList();
     },

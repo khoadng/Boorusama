@@ -94,5 +94,6 @@ MoebooruPost postDtoToPost(PostDto postDto) {
         ? DateTime.fromMillisecondsSinceEpoch(postDto.createdAt! * 1000)
         : null,
     parentId: postDto.parentId,
+    uploaderId: postDto.creatorId,
   );
 }

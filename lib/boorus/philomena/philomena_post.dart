@@ -44,6 +44,7 @@ class PhilomenaPost extends Equatable
     required this.upvotes,
     required this.downvotes,
     required this.representation,
+    required this.uploaderId,
   }) : _getLink = getLink;
 
   @override
@@ -119,6 +120,9 @@ class PhilomenaPost extends Equatable
   final int upvotes;
 
   final PhilomenaRepresentation representation;
+
+  @override
+  final int? uploaderId;
 }
 
 List<String>? _findArtistFromTags(List<String> tags) {

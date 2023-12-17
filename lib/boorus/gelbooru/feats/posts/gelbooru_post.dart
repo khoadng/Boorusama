@@ -33,6 +33,7 @@ class GelbooruPost extends Equatable
     required this.score,
     required this.createdAt,
     required this.parentId,
+    required this.uploaderId,
   }) : _sampleImageUrl = sampleImageUrl;
 
   factory GelbooruPost.empty() => GelbooruPost(
@@ -53,6 +54,7 @@ class GelbooruPost extends Equatable
         score: 0,
         createdAt: null,
         parentId: null,
+        uploaderId: null,
       );
 
   final String _sampleImageUrl;
@@ -132,4 +134,7 @@ class GelbooruPost extends Equatable
 
   @override
   final int? parentId;
+
+  @override
+  final int? uploaderId;
 }

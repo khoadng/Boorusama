@@ -84,6 +84,7 @@ E621Post postDtoToPost(PostDto dto) {
     sources: dto.sources?.map(PostSource.from).toList() ?? [],
     description: dto.description ?? '',
     parentId: dto.relationships?.parentId,
+    uploaderId: dto.uploaderId,
   );
 }
 

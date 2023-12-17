@@ -3,6 +3,7 @@ import 'dart:math';
 
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:collection/collection.dart';
@@ -75,7 +76,24 @@ class UserDetailsPage extends ConsumerWidget {
     final state = ref.watch(danbooruUserProvider(uid));
 
     return Scaffold(
-      appBar: hasAppBar ? AppBar() : null,
+      appBar: AppBar(
+        title: const Text('Profile'),
+        actions: [
+          PopupMenuButton(
+            itemBuilder: (context) => [
+              const PopupMenuItem(
+                value: 0,
+                child: Text('Copy User ID'),
+              ),
+            ],
+            onSelected: (value) {
+              if (value == 0) {
+                Clipboard.setData(ClipboardData(text: uid.toString()));
+              }
+            },
+          ),
+        ],
+      ),
       body: SafeArea(
         child: state.when(
           data: (user) => Container(
@@ -210,13 +228,19 @@ class UserDetailsPage extends ConsumerWidget {
                       style: TextStyle(
                         color: context.themeMode.isDark
                             ? ref.getTagColor(
-                                context, TagCategory.copyright.name)
+                                context,
+                                TagCategory.copyright.name,
+                              )
                             : Colors.white,
                       ),
                       children: [
                         TextSpan(
                           text: '  ${(e.frequency * 100).toStringAsFixed(1)}%',
-                          style: context.textTheme.bodySmall,
+                          style: context.textTheme.bodySmall?.copyWith(
+                            color: context.themeMode.isLight
+                                ? Colors.white.withOpacity(0.85)
+                                : null,
+                          ),
                         ),
                       ],
                     ),

@@ -25,6 +25,7 @@ abstract class Post extends Equatable
   PostSource get source;
   int get score;
   int? get downvotes;
+  int? get uploaderId;
 
   String getLink(String baseUrl);
   Uri getUriLink(String baseUrl);
@@ -70,6 +71,7 @@ class SimplePost extends Equatable
     required this.videoUrl,
     required this.width,
     required Function(String baseUrl) getLink,
+    required this.uploaderId,
   }) : _getLink = getLink;
 
   @override
@@ -119,6 +121,9 @@ class SimplePost extends Equatable
   @override
   final double width;
 
+  @override
+  final int? uploaderId;
+
   final Function(String baseUrl) _getLink;
 
   @override
@@ -161,13 +166,15 @@ extension PostX on Post {
   }
 
   bool containsTagPattern(String pattern) => checkIfTagsContainsTagExpression(
-      TagFilterData(
-        tags: tags,
-        rating: rating,
-        score: score,
-        downvotes: downvotes,
-      ),
-      pattern);
+        TagFilterData(
+          tags: tags,
+          rating: rating,
+          score: score,
+          downvotes: downvotes,
+          uploaderId: uploaderId,
+        ),
+        pattern,
+      );
 }
 
 enum GeneralPostQualityType {
@@ -249,18 +256,21 @@ class TagFilterData {
     required this.rating,
     required this.score,
     this.downvotes,
+    this.uploaderId,
   });
 
   TagFilterData.tags({
     required this.tags,
   })  : rating = Rating.general,
         score = 0,
+        uploaderId = null,
         downvotes = null;
 
   final List<String> tags;
   final Rating rating;
   final int score;
   final int? downvotes;
+  final int? uploaderId;
 }
 
 bool checkIfTagsContainsTagExpression(
@@ -277,6 +287,13 @@ bool checkIfTagsContainsTagExpression(
       final targetRating =
           expression.endsWith('explicit') ? Rating.explicit : Rating.general;
       if (filterData.rating != targetRating) {
+        return false;
+      }
+    }
+    // Handle uploaderid "uploaderid"
+    else if (expression.startsWith('uploaderid:')) {
+      final targetUploaderId = int.tryParse(expression.split(':')[1]) ?? -1;
+      if (filterData.uploaderId != targetUploaderId) {
         return false;
       }
     }

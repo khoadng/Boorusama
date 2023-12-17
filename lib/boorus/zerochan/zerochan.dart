@@ -65,6 +65,7 @@ final zerochanPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
                   getLink: (baseUrl) => baseUrl.endsWith('/')
                       ? '$baseUrl${e.id}'
                       : '$baseUrl/${e.id}',
+                  uploaderId: null,
                 ))
             .toList();
       },
