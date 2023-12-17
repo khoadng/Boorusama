@@ -371,6 +371,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
             UserDetailsPage(
               uid: userId,
               username: widget.config.login!,
+              hasAppBar: false,
             )
           else
             const SizedBox(),

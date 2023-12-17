@@ -63,17 +63,19 @@ class UserDetailsPage extends ConsumerWidget {
     super.key,
     required this.uid,
     required this.username,
+    this.hasAppBar = true,
   });
 
   final int uid;
   final String username;
+  final bool hasAppBar;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(danbooruUserProvider(uid));
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: hasAppBar ? AppBar() : null,
       body: SafeArea(
         child: state.when(
           data: (user) => Container(

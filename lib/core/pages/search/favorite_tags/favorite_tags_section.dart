@@ -66,9 +66,10 @@ class FavoriteTagsSection extends ConsumerWidget {
                   width: 1,
                 )
               : null,
-          deleteIcon: const Icon(
+          deleteIcon: Icon(
             Icons.close,
             size: 18,
+            color: colors?.foregroundColor,
           ),
           onDeleted: editMode
               ? () => ref.read(favoriteTagsProvider.notifier).remove(index)

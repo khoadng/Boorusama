@@ -51,20 +51,22 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
       child: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const SizedBox(height: 8),
-              _buildProfiles(),
-              const SizedBox(height: 8),
-              _buildFavoriteTags(),
-              const SizedBox(height: 8),
-              _buildBookmark(),
-              const SizedBox(height: 8),
-              _buildBlacklistedTags(),
-              const SizedBox(height: 8),
-              _buildSettings(),
-            ],
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const SizedBox(height: 8),
+                _buildProfiles(),
+                const SizedBox(height: 8),
+                _buildFavoriteTags(),
+                const SizedBox(height: 8),
+                _buildBookmark(),
+                const SizedBox(height: 8),
+                _buildBlacklistedTags(),
+                const SizedBox(height: 8),
+                _buildSettings(),
+              ],
+            ),
           ),
         ),
       ),
@@ -101,7 +103,7 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: context.colorScheme.onSurface,
-                        fontWeight: FontWeight.w900,
+                        fontWeight: FontWeight.w700,
                         fontSize: 18,
                       ),
                     ),
@@ -419,7 +421,7 @@ class BackupRestoreTile extends StatelessWidget {
                 Text(
                   title,
                   style: const TextStyle(
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
                 if (subtitle != null)

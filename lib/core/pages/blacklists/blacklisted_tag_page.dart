@@ -63,56 +63,59 @@ class BlacklistedTagsList extends ConsumerWidget {
 
     return tags.toOption().fold(
           () => const Center(child: CircularProgressIndicator()),
-          (tags) => CustomScrollView(
-            slivers: [
-              SliverToBoxAdapter(
-                child: WarningContainer(
-                    contentBuilder: (context) => Html(
-                          style: {
-                            'body': Style(
-                              color: context.colorScheme.onError,
-                            ),
-                          },
-                          data: 'blacklisted_tags.limitation_notice'.tr(),
-                        )),
-              ),
-              SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    final tag = tags[index];
+          (tags) => tags.isNotEmpty
+              ? CustomScrollView(
+                  slivers: [
+                    SliverToBoxAdapter(
+                      child: WarningContainer(
+                          contentBuilder: (context) => Html(
+                                style: {
+                                  'body': Style(
+                                    color: context.colorScheme.onError,
+                                  ),
+                                },
+                                data: 'blacklisted_tags.limitation_notice'.tr(),
+                              )),
+                    ),
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          final tag = tags[index];
 
-                    return BlacklistedTagTile(
-                      tag: tag.name,
-                      onRemoveTag: (_) => ref
-                          .read(globalBlacklistedTagsProvider.notifier)
-                          .removeTag(tag),
-                      onEditTap: () {
-                        goToBlacklistedTagsSearchPage(
-                          context,
-                          initialTags: tag.name.split(' '),
-                          onSelectDone: (tagItems, currentQuery) {
-                            final tagString = [
-                              ...tagItems.map((e) => e.toString()),
-                              if (currentQuery.isNotEmpty) currentQuery,
-                            ].join(' ');
-
-                            ref
+                          return BlacklistedTagTile(
+                            tag: tag.name,
+                            onRemoveTag: (_) => ref
                                 .read(globalBlacklistedTagsProvider.notifier)
-                                .updateTag(
-                                  oldTag: tag,
-                                  newTag: tagString,
-                                );
-                            context.navigator.pop();
-                          },
-                        );
-                      },
-                    );
-                  },
-                  childCount: tags.length,
-                ),
-              ),
-            ],
-          ),
+                                .removeTag(tag),
+                            onEditTap: () {
+                              goToBlacklistedTagsSearchPage(
+                                context,
+                                initialTags: tag.name.split(' '),
+                                onSelectDone: (tagItems, currentQuery) {
+                                  final tagString = [
+                                    ...tagItems.map((e) => e.toString()),
+                                    if (currentQuery.isNotEmpty) currentQuery,
+                                  ].join(' ');
+
+                                  ref
+                                      .read(globalBlacklistedTagsProvider
+                                          .notifier)
+                                      .updateTag(
+                                        oldTag: tag,
+                                        newTag: tagString,
+                                      );
+                                  context.navigator.pop();
+                                },
+                              );
+                            },
+                          );
+                        },
+                        childCount: tags.length,
+                      ),
+                    ),
+                  ],
+                )
+              : const Center(child: Text('No blacklisted tags')),
         );
   }
 }

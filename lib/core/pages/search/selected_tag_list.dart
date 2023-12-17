@@ -1,13 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-// Package imports:
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-
 // Project imports:
 import 'package:boorusama/core/feats/search/search.dart';
 import 'package:boorusama/core/pages/search/selected_tag_chip.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 class SelectedTagList extends StatelessWidget {
@@ -27,26 +23,40 @@ class SelectedTagList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedCrossFade(
-      firstChild: Row(children: [
-        const SizedBox(width: 10),
-        InkWell(
-          customBorder: const CircleBorder(),
-          onTap: () => showMaterialModalBottomSheet(
-            context: context,
-            builder: (context) => ModalSelectedTag(
-              onClear: () => onClear.call(),
-              onBulkDownload: () => onBulkDownload(tags),
+      firstChild: Row(
+        children: [
+          PopupMenuButton(
+            icon: const Icon(Icons.more_vert),
+            offset: const Offset(0, 48),
+            onSelected: (value) {
+              if (value == 0) {
+                onClear.call();
+              } else if (value == 1) {
+                onBulkDownload(tags);
+              }
+            },
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(4)),
+            ),
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: 0,
+                child: const Text('search.remove_all_selected').tr(),
+              ),
+              PopupMenuItem(
+                value: 1,
+                child: const Text('download.bulk_download').tr(),
+              ),
+            ],
+          ),
+          Expanded(
+            child: _SelectedTagChips(
+              tags: tags,
+              onDelete: onDelete,
             ),
           ),
-          child: const Icon(Icons.more_vert),
-        ),
-        Expanded(
-          child: _SelectedTagChips(
-            tags: tags,
-            onDelete: onDelete,
-          ),
-        ),
-      ]),
+        ],
+      ),
       secondChild: const SizedBox.shrink(),
       crossFadeState: tags.isNotEmpty
           ? CrossFadeState.showFirst
@@ -69,8 +79,7 @@ class _SelectedTagChips extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(left: 8),
+    return SizedBox(
       height: 35,
       child: ListView.builder(
         shrinkWrap: true,
@@ -85,48 +94,6 @@ class _SelectedTagChips extends StatelessWidget {
             ),
           );
         },
-      ),
-    );
-  }
-}
-
-// ignore: prefer-single-widget-per-file
-class ModalSelectedTag extends StatelessWidget {
-  const ModalSelectedTag({
-    super.key,
-    this.onClear,
-    this.onBulkDownload,
-  });
-
-  final void Function()? onClear;
-  final void Function()? onBulkDownload;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      child: SafeArea(
-        top: false,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              title: const Text('search.remove_all_selected').tr(),
-              leading: const Icon(Icons.clear_all),
-              onTap: () {
-                context.navigator.pop();
-                onClear?.call();
-              },
-            ),
-            ListTile(
-              title: const Text('download.bulk_download').tr(),
-              leading: const Icon(Icons.download),
-              onTap: () {
-                context.navigator.pop();
-                onBulkDownload?.call();
-              },
-            ),
-          ],
-        ),
       ),
     );
   }

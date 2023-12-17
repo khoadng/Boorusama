@@ -11,6 +11,7 @@ import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/pages/search/common/option_tags_arena.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'favorite_tags/add_tag_button.dart';
 
 class MetatagsSection extends ConsumerStatefulWidget {
   const MetatagsSection({
@@ -84,9 +85,7 @@ class _MetatagsSectionState extends ConsumerState<MetatagsSection> {
         );
       }),
       if (editMode)
-        IconButton(
-          iconSize: 28,
-          splashRadius: 20,
+        AddTagButton(
           onPressed: () => goToMetatagsPage(
             context,
             metatags: metatags,
@@ -94,7 +93,6 @@ class _MetatagsSectionState extends ConsumerState<MetatagsSection> {
               widget.onUserMetatagAdded(tag);
             },
           ),
-          icon: const Icon(Icons.add),
         ),
     ];
   }

@@ -44,7 +44,7 @@ class _OptionTagsArenaState extends State<OptionTagsArena> {
 
   Widget _buildHeader() {
     return SizedBox(
-      height: 40,
+      height: 48,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -69,7 +69,9 @@ class _OptionTagsArenaState extends State<OptionTagsArena> {
                   child: Icon(
                     editMode ? Icons.check : Icons.edit,
                     size: 16,
-                    color: context.colorScheme.onBackground,
+                    color: editMode
+                        ? context.colorScheme.onPrimary
+                        : context.colorScheme.onSurfaceVariant,
                   ),
                 ),
             ],

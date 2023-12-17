@@ -11,11 +11,18 @@ class AddTagButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      iconSize: 28,
-      splashRadius: 20,
-      onPressed: onPressed,
-      icon: const Icon(Icons.add),
+    return Container(
+      padding: const EdgeInsets.only(top: 4, left: 4),
+      child: Material(
+        child: InkWell(
+          customBorder: const CircleBorder(),
+          onTap: onPressed,
+          child: const Icon(
+            Icons.add,
+            size: 28,
+          ),
+        ),
+      ),
     );
   }
 }
