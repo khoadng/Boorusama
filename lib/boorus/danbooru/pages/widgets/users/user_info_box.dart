@@ -18,41 +18,35 @@ class UserInfoBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Row(
       children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Column(
-              children: [
-                const SizedBox(height: 8),
-                Text(
-                  user.name.replaceAll('_', ' '),
-                  style: context.textTheme.titleLarge?.copyWith(
-                    color: user.level.toColor(),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(width: 4),
-            Chip(
-              label: Text(
-                user.level.name.sentenceCase,
-                style: const TextStyle(
-                  color: Colors.white,
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                user.name.replaceAll('_', ' '),
+                style: context.textTheme.titleLarge?.copyWith(
+                  color: user.level.toColor(),
                 ),
               ),
-              visualDensity: const VisualDensity(vertical: -4),
-              backgroundColor: user.level.toColor(),
-            ),
-          ],
-        ),
-        Text(
-          DateFormat('yyyy-MM-dd').format(user.joinedDate),
-          style: TextStyle(
-            color: context.theme.hintColor,
+              Text(
+                DateFormat('yyyy-MM-dd').format(user.joinedDate),
+                style: TextStyle(
+                  color: context.theme.hintColor,
+                ),
+              ),
+            ],
           ),
+        ),
+        Chip(
+          label: Text(
+            user.level.name.sentenceCase,
+            style: const TextStyle(
+              color: Colors.white,
+            ),
+          ),
+          backgroundColor: user.level.toColor(),
         ),
       ],
     );

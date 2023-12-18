@@ -15,10 +15,12 @@ class SelectedTagListWithData extends ConsumerWidget {
     super.key,
     required this.controller,
     this.onDeleted,
+    this.onClear,
   });
 
   final SelectedTagController controller;
   final void Function(TagSearchItem value)? onDeleted;
+  final void Function()? onClear;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -31,7 +33,10 @@ class SelectedTagListWithData extends ConsumerWidget {
               children: [
                 SelectedTagList(
                   tags: tags,
-                  onClear: () => controller.clear(),
+                  onClear: () {
+                    controller.clear();
+                    onClear?.call();
+                  },
                   onDelete: (tag) {
                     controller.removeTag(tag);
                     onDeleted?.call(tag);

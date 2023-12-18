@@ -177,9 +177,19 @@ class DanbooruPostVersionsPage extends ConsumerWidget {
                   ),
                 );
               },
-              loading: () => const SliverToBoxAdapter(
+              loading: () => SliverToBoxAdapter(
                 child: Center(
-                  child: CircularProgressIndicator(),
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    margin: const EdgeInsets.symmetric(
+                      vertical: 4,
+                    ),
+                    child: const SizedBox(
+                      height: 12,
+                      width: 12,
+                      child: CircularProgressIndicator(),
+                    ),
+                  ),
                 ),
               ),
               error: (error, stackTrace) => SliverToBoxAdapter(

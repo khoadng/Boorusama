@@ -77,9 +77,12 @@ class FavoriteTagsSection extends ConsumerWidget {
         );
       }),
       if (tags.isEmpty) ...[
-        AddTagButton(onPressed: onAddTagRequest),
-        Padding(
-          padding: const EdgeInsets.only(top: 12, right: 8),
+        Container(
+          padding: const EdgeInsets.only(top: 4, right: 8),
+          child: AddTagButton(onPressed: onAddTagRequest),
+        ),
+        Container(
+          padding: const EdgeInsets.only(top: 8, right: 8),
           child: Text(
             'favorite_tags.or'.tr(),
             style: context.textTheme.titleLarge,
