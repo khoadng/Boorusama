@@ -3,6 +3,7 @@ import 'dart:io';
 
 // Package imports:
 import 'package:dio/dio.dart';
+import 'package:gal/gal.dart';
 import 'package:media_scanner/media_scanner.dart';
 
 // Project imports:
@@ -155,14 +156,14 @@ class DioDownloadService implements DownloadService {
                   .toList(),
               fileNameBuilder: fileNameBuilder,
             )
-              .flatMap(_reloadMediaIfAndroid)
+              .flatMap(_reloadMedia)
               .mapLeft((error) => _notifyFailure(notifications, error))
           : downloadUrl(
                   dio: dio,
                   notifications: notifications,
                   url: url,
                   fileNameBuilder: fileNameBuilder)
-              .flatMap(_reloadMediaIfAndroid)
+              .flatMap(_reloadMedia)
               .mapLeft((error) => _notifyFailure(notifications, error));
 
   DownloadPathOrError _download({
@@ -244,7 +245,7 @@ class DioDownloadService implements DownloadService {
               fileNameBuilder: fileNameBuilder,
               path: path,
             )
-              .flatMap(_reloadMediaIfAndroid)
+              .flatMap(_reloadMedia)
               .mapLeft((error) => _notifyFailure(notifications, error))
           : downloadUrlCustomLocation(
               dio: dio,
@@ -253,13 +254,15 @@ class DioDownloadService implements DownloadService {
               url: url,
               fileNameBuilder: fileNameBuilder,
             )
-              .flatMap(_reloadMediaIfAndroid)
+              .flatMap(_reloadMedia)
               .mapLeft((error) => _notifyFailure(notifications, error));
 }
 
-DownloadPathOrError _reloadMediaIfAndroid(String path) => TaskEither(() async {
+DownloadPathOrError _reloadMedia(String path) => TaskEither(() async {
       if (isAndroid()) {
         await MediaScanner.loadMedia(path: path);
+      } else if (isIOS()) {
+        await Gal.putImage(path);
       }
       return Either.right(path);
     });
