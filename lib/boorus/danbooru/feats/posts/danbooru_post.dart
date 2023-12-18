@@ -128,6 +128,7 @@ class DanbooruPost extends Equatable
   final int upScore;
   final int downScore;
   final int favCount;
+  @override
   final int uploaderId;
   final int? approverId;
   @override

@@ -1,23 +1,18 @@
 // Flutter imports:
+import 'package:boorusama/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 // Package imports:
 import 'package:flutter_improved_scrolling/flutter_improved_scrolling.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
-
-// Project imports:
-import 'package:boorusama/foundation/theme/theme.dart';
-import 'package:boorusama/widgets/sliver_sized_box.dart';
 
 class InfiniteLoadList extends StatefulWidget {
   const InfiniteLoadList({
     super.key,
     this.limit = 0.95,
     this.scrollController,
-    this.refreshController,
     this.enableRefresh = true,
     this.enableLoadMore = true,
     this.onLoadMore,
@@ -37,8 +32,7 @@ class InfiniteLoadList extends StatefulWidget {
   final bool enableLoadMore;
   final double limit;
   final AutoScrollController? scrollController;
-  final RefreshController? refreshController;
-  final void Function(RefreshController controller)? onRefresh;
+  final Future<void> Function()? onRefresh;
   final VoidCallback? onLoadMore;
   final Widget Function(
     BuildContext context,
@@ -56,7 +50,6 @@ class InfiniteLoadList extends StatefulWidget {
 class _InfiniteLoadListState extends State<InfiniteLoadList>
     with TickerProviderStateMixin {
   late AutoScrollController _scrollController;
-  late RefreshController _refreshController;
   late AnimationController _animationController;
 
   final ValueNotifier<bool> _isOnTop = ValueNotifier(false);
@@ -65,7 +58,6 @@ class _InfiniteLoadListState extends State<InfiniteLoadList>
   void initState() {
     super.initState();
     _scrollController = widget.scrollController ?? AutoScrollController();
-    _refreshController = widget.refreshController ?? RefreshController();
     _animationController = AnimationController(
       vsync: this,
       duration: kThemeAnimationDuration,
@@ -85,9 +77,6 @@ class _InfiniteLoadListState extends State<InfiniteLoadList>
       _scrollController.dispose();
     }
 
-    if (widget.refreshController == null) {
-      _refreshController.dispose();
-    }
     _animationController.dispose();
     super.dispose();
   }
@@ -161,99 +150,17 @@ class _InfiniteLoadListState extends State<InfiniteLoadList>
         scrollController: _scrollController,
         enableKeyboardScrolling: true,
         enableMMBScrolling: true,
-        child: SmartRefresher(
-          controller: _refreshController,
-          enablePullDown: widget.enableRefresh,
-          header: const MaterialClassicHeader(),
-          onRefresh: () => widget.onRefresh?.call(_refreshController),
+        child: ConditionalParentWidget(
+          condition: widget.onRefresh != null,
+          conditionalBuilder: (child) => RefreshIndicator(
+            onRefresh: widget.onRefresh!,
+            child: child,
+          ),
           child: widget.builder(
             context,
             _scrollController,
           ),
         ),
-      ),
-    );
-  }
-}
-
-// ignore: prefer-single-widget-per-file
-class InfiniteLoadListScrollView extends StatelessWidget {
-  const InfiniteLoadListScrollView({
-    super.key,
-    required this.enableLoadMore,
-    this.onLoadMore,
-    this.onRefresh,
-    required this.sliverBuilder,
-    this.loadingBuilder,
-    required this.isLoading,
-    this.scrollController,
-    this.refreshController,
-    this.extendBody,
-    this.enableRefresh = true,
-    this.scrollPhysics,
-    this.backgroundColor,
-    this.multiSelect = false,
-    this.bottomBuilder,
-    this.topBuilder,
-  });
-
-  final bool? extendBody;
-  final bool enableLoadMore;
-  final bool enableRefresh;
-  final VoidCallback? onLoadMore;
-  final void Function(RefreshController controller)? onRefresh;
-  final List<Widget> Function(AutoScrollController controller) sliverBuilder;
-  final Widget Function(BuildContext context, Widget child)? loadingBuilder;
-  final bool isLoading;
-  final AutoScrollController? scrollController;
-  final RefreshController? refreshController;
-  final ScrollPhysics? scrollPhysics;
-  final Color? backgroundColor;
-
-  final bool multiSelect;
-  final Widget Function()? bottomBuilder;
-  final PreferredSizeWidget Function()? topBuilder;
-
-  @override
-  Widget build(BuildContext context) {
-    return InfiniteLoadList(
-      multiSelect: multiSelect,
-      topBuilder: multiSelect ? topBuilder : null,
-      bottomBuilder: multiSelect
-          ? () => BottomSheet(
-                backgroundColor: context.colorScheme.surface,
-                enableDrag: false,
-                // ignore: no-empty-block
-                onClosing: () {},
-                builder: (context) => SizedBox(
-                  height: 60,
-                  child: bottomBuilder?.call(),
-                ),
-              )
-          : null,
-      backgroundColor: backgroundColor,
-      extendBody: extendBody ?? false,
-      scrollController: scrollController,
-      refreshController: refreshController,
-      enableLoadMore: enableLoadMore,
-      enableRefresh: enableRefresh,
-      onLoadMore: onLoadMore,
-      onRefresh: onRefresh,
-      builder: (context, controller) => CustomScrollView(
-        physics: scrollPhysics,
-        controller: controller,
-        slivers: [
-          ...sliverBuilder(controller),
-          if (isLoading)
-            const SliverPadding(
-              padding: EdgeInsets.symmetric(vertical: 20),
-              sliver: SliverToBoxAdapter(
-                child: Center(child: CircularProgressIndicator()),
-              ),
-            )
-          else
-            const SliverSizedBox.shrink(),
-        ],
       ),
     );
   }

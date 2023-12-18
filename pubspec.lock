@@ -1362,15 +1362,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.3"
-  pull_to_refresh:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: "flutter-3.0"
-      resolved-ref: "5be6d6db9fe926c02564cbe9014d1693894465b0"
-      url: "https://github.com/khoadng/flutter_pulltorefresh.git"
-    source: git
-    version: "2.0.0"
   rate_my_app:
     dependency: "direct main"
     description:

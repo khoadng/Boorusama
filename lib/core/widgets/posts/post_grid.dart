@@ -268,15 +268,21 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                               onPressed: () => _autoScrollController.jumpTo(0),
                             ),
                     ),
-                    body: RefreshIndicator(
-                      notificationPredicate: widget.enablePullToRefresh
-                          ? (_) => true
-                          : (_) => false,
-                      onRefresh: () async {
-                        widget.onRefresh?.call();
-                        _multiSelectController.clearSelected();
-                        await controller.refresh();
-                      },
+                    body: ConditionalParentWidget(
+                      condition: isMobilePlatform(),
+                      conditionalBuilder: (child) => RefreshIndicator(
+                        edgeOffset: 75,
+                        displacement: 50,
+                        notificationPredicate: widget.enablePullToRefresh
+                            ? (_) => true
+                            : (_) => false,
+                        onRefresh: () async {
+                          widget.onRefresh?.call();
+                          _multiSelectController.clearSelected();
+                          await controller.refresh();
+                        },
+                        child: child,
+                      ),
                       child: ImprovedScrolling(
                         scrollController: _autoScrollController,
                         // https://github.com/adrianflutur/flutter_improved_scrolling/issues/5
