@@ -273,7 +273,7 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                     body: ConditionalParentWidget(
                       condition: isMobilePlatform(),
                       conditionalBuilder: (child) => RefreshIndicator(
-                        edgeOffset: 75,
+                        edgeOffset: 50,
                         displacement: 50,
                         notificationPredicate: widget.enablePullToRefresh
                             ? (_) => true

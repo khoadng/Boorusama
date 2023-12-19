@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -7,6 +6,9 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_improved_scrolling/flutter_improved_scrolling.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
+
+// Project imports:
+import 'package:boorusama/widgets/widgets.dart';
 
 class InfiniteLoadList extends StatefulWidget {
   const InfiniteLoadList({

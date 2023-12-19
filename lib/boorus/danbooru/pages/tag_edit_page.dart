@@ -147,6 +147,9 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
           ],
         ),
         body: Container(
+          margin: EdgeInsets.only(
+            bottom: MediaQuery.paddingOf(context).bottom,
+          ),
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Column(
             children: [
