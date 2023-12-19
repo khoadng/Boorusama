@@ -142,6 +142,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
     if (!_controller.pageSwipe ||
         !_controller.swipeDownToDismiss ||
         expanded ||
+        context.navigator.userGestureInProgress ||
         _controller.slideShow.value.$1 ||
         _isSwiping) {
       return;

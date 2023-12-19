@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -161,99 +162,90 @@ class SettingsRoutes {
   static GoRoute appearance() => GoRoute(
         path: 'appearance',
         name: '/settings/appearance',
-        pageBuilder: (context, state) => CustomTransitionPage(
+        pageBuilder: (context, state) => CupertinoPage(
           key: state.pageKey,
           name: state.name,
           child: const AppearancePage(),
-          transitionsBuilder: leftToRightTransitionBuilder(),
         ),
       );
 
   static GoRoute download() => GoRoute(
         path: 'download',
         name: '/settings/download',
-        pageBuilder: (context, state) => CustomTransitionPage(
+        pageBuilder: (context, state) => CupertinoPage(
           key: state.pageKey,
           name: state.name,
           child: const DownloadPage(),
-          transitionsBuilder: leftToRightTransitionBuilder(),
         ),
       );
 
   static GoRoute language() => GoRoute(
         path: 'language',
         name: '/settings/language',
-        pageBuilder: (context, state) => CustomTransitionPage(
+        pageBuilder: (context, state) => CupertinoPage(
           key: state.pageKey,
           name: state.name,
           child: const LanguagePage(),
-          transitionsBuilder: leftToRightTransitionBuilder(),
         ),
       );
 
   static GoRoute performance() => GoRoute(
         path: 'performance',
         name: '/settings/performance',
-        pageBuilder: (context, state) => CustomTransitionPage(
+        pageBuilder: (context, state) => CupertinoPage(
           key: state.pageKey,
           name: state.name,
           child: const PerformancePage(),
-          transitionsBuilder: leftToRightTransitionBuilder(),
         ),
       );
 
   static GoRoute dataAndStorage() => GoRoute(
         path: 'data_and_storage',
         name: '/settings/data_and_storage',
-        pageBuilder: (context, state) => CustomTransitionPage(
+        pageBuilder: (context, state) => CupertinoPage(
           key: state.pageKey,
           name: state.name,
           child: const DataAndStoragePage(),
-          transitionsBuilder: leftToRightTransitionBuilder(),
         ),
       );
 
   static GoRoute backupAndRestore() => GoRoute(
         path: 'backup_and_restore',
         name: '/settings/backup_and_restore',
-        pageBuilder: (context, state) => CustomTransitionPage(
+        pageBuilder: (context, state) => CupertinoPage(
           key: state.pageKey,
           name: state.name,
           child: const BackupAndRestorePage(),
-          transitionsBuilder: leftToRightTransitionBuilder(),
         ),
       );
 
   static GoRoute privacy() => GoRoute(
         path: 'privacy',
         name: '/settings/privacy',
-        pageBuilder: (context, state) => CustomTransitionPage(
+        pageBuilder: (context, state) => CupertinoPage(
           key: state.pageKey,
           name: state.name,
           child: const PrivacyPage(),
-          transitionsBuilder: leftToRightTransitionBuilder(),
         ),
       );
 
   static GoRoute search() => GoRoute(
         path: 'search',
         name: '/settings/search',
-        pageBuilder: (context, state) => CustomTransitionPage(
+        pageBuilder: (context, state) => CupertinoPage(
           key: state.pageKey,
           name: state.name,
           child: const SearchSettingsPage(),
-          transitionsBuilder: leftToRightTransitionBuilder(),
         ),
       );
 
   static GoRoute changelog() => GoRoute(
         path: 'changelog',
         name: '/settings/changelog',
-        pageBuilder: (context, state) => CustomTransitionPage(
+        pageBuilder: (context, state) => CupertinoPage(
           key: state.pageKey,
           name: state.name,
           child: const ChangelogPage(),
-          transitionsBuilder: leftToRightTransitionBuilder(),
         ),
       );
 }
@@ -340,13 +332,12 @@ class Routes {
           final builder = booruBuilder?.searchPageBuilder;
           final query = state.uri.queryParameters[kInitialQueryKey];
 
-          return CustomTransitionPage(
+          return CupertinoPage(
             key: state.pageKey,
             name: state.name,
             child: builder != null
                 ? builder(context, query)
                 : const Scaffold(body: Center(child: Text('Not implemented'))),
-            transitionsBuilder: fadeTransitionBuilder(),
           );
         },
       );
@@ -359,13 +350,12 @@ class Routes {
           final booruBuilder = ref.readBooruBuilder(config);
           final builder = booruBuilder?.favoritesPageBuilder;
 
-          return CustomTransitionPage(
+          return CupertinoPage(
             key: state.pageKey,
             name: state.name,
             child: builder != null
                 ? builder(context, config)
                 : const Scaffold(body: Center(child: Text('Not implemented'))),
-            transitionsBuilder: leftToRightTransitionBuilder(),
           );
         },
       );
@@ -394,11 +384,10 @@ class Routes {
   static GoRoute bookmarks() => GoRoute(
         path: 'bookmarks',
         name: '/bookmarks',
-        pageBuilder: (context, state) => CustomTransitionPage(
+        pageBuilder: (context, state) => CupertinoPage(
           key: state.pageKey,
           name: state.name,
           child: const BookmarkPage(),
-          transitionsBuilder: leftToRightTransitionBuilder(),
         ),
         routes: [
           GoRoute(
@@ -418,11 +407,10 @@ class Routes {
   static GoRoute globalBlacklistedTags() => GoRoute(
         path: 'global_blacklisted_tags',
         name: '/global_blacklisted_tags',
-        pageBuilder: (context, state) => CustomTransitionPage(
+        pageBuilder: (context, state) => CupertinoPage(
           key: state.pageKey,
           name: state.name,
           child: const BlacklistedTagPage(),
-          transitionsBuilder: leftToRightTransitionBuilder(),
         ),
       );
 
@@ -430,7 +418,7 @@ class Routes {
         path: 'bulk_downloads',
         name: '/bulk_downloads',
         pageBuilder: (context, state) {
-          return CustomTransitionPage(
+          return CupertinoPage(
             key: state.pageKey,
             name: state.name,
             child: ref.read(currentBooruConfigProvider).booruType ==
@@ -445,7 +433,6 @@ class Routes {
                     ),
                   )
                 : const BulkDownloadPage(),
-            transitionsBuilder: leftToRightTransitionBuilder(),
           );
         },
       );
@@ -455,11 +442,10 @@ class Routes {
         name: '/settings',
         redirect: (context, state) =>
             !isMobilePlatform() ? '/desktop/settings' : null,
-        pageBuilder: (context, state) => CustomTransitionPage(
+        pageBuilder: (context, state) => CupertinoPage(
           key: state.pageKey,
           name: state.name,
           child: const SettingsPage(),
-          transitionsBuilder: leftToRightTransitionBuilder(),
         ),
         routes: [
           SettingsRoutes.appearance(),
