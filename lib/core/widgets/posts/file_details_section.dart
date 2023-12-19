@@ -1,5 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:filesize/filesize.dart';
@@ -9,6 +10,8 @@ import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
+import 'package:boorusama/utils/flutter_utils.dart';
+import 'package:boorusama/widgets/toast.dart';
 
 class FileDetailsSection extends StatelessWidget {
   const FileDetailsSection({
@@ -26,58 +29,70 @@ class FileDetailsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Container(
-          padding: const EdgeInsets.symmetric(
-            vertical: 8,
-            horizontal: 12,
-          ),
-          child: Text(
-            'post.detail.file_details'.tr(),
-            style: context.textTheme.titleLarge!.copyWith(
-              color: context.theme.hintColor,
-              fontSize: 16,
-            ),
+    return Theme(
+      data: context.theme.copyWith(dividerColor: Colors.transparent),
+      child: ExpansionTile(
+        title: Text(
+          'post.detail.file_details'.tr(),
+        ),
+        subtitle: Text(
+          '${post.width.toInt()}x${post.height.toInt()} • ${post.format.toUpperCase()} • ${filesize(post.fileSize, 1)} • ${rating.name.getFirstCharacter().toUpperCase()}',
+          style: TextStyle(
+            color: context.theme.hintColor,
           ),
         ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
+        children: [
+          _FileDetailTile(
+              title: 'ID',
+              valueLabel: post.id.toString(),
+              valueTrailing: IconButton(
+                visualDensity: const ShrinkVisualDensity(),
+                icon: const Icon(
+                  Icons.copy,
+                  size: 16,
+                ),
+                onPressed: () {
+                  Clipboard.setData(ClipboardData(text: post.id.toString()))
+                      .then((value) => showSuccessToast('Copied'));
+                },
+              )),
+          _FileDetailTile(
+            title: 'post.detail.rating'.tr(),
+            valueLabel: rating.name.pascalCase,
+          ),
+          if (post.fileSize > 0)
             _FileDetailTile(
-              title: 'post.detail.rating'.tr(),
-              valueLabel: rating.name.pascalCase,
+              title: 'post.detail.size'.tr(),
+              valueLabel: filesize(post.fileSize, 1),
             ),
-            if (post.fileSize > 0)
-              _FileDetailTile(
-                title: 'post.detail.size'.tr(),
-                valueLabel: filesize(post.fileSize, 1),
-              ),
-            if (post.width > 0 && post.height > 0)
-              _FileDetailTile(
-                title: 'post.detail.resolution'.tr(),
-                valueLabel: '${post.width.toInt()}x${post.height.toInt()}',
-              ),
+          if (post.width > 0 && post.height > 0)
             _FileDetailTile(
-              title: 'post.detail.file_format'.tr(),
-              valueLabel: post.format,
+              title: 'post.detail.resolution'.tr(),
+              valueLabel: '${post.width.toInt()}x${post.height.toInt()}',
             ),
-            if (uploader != null)
+          _FileDetailTile(
+            title: 'post.detail.file_format'.tr(),
+            valueLabel: post.format,
+          ),
+          if (post.isVideo && post.duration > 0)
+            _FileDetailTile(
+              title: 'Duration',
+              valueLabel: '${post.duration.toInt()} seconds',
+            ),
+          if (uploader != null)
+            _FileDetailTile(
+              title: 'Uploader',
+              value: uploader,
+            ),
+          if (customDetails != null) ...[
+            for (final detail in customDetails!.entries)
               _FileDetailTile(
-                title: 'Uploader',
-                value: uploader,
-              ),
-            if (customDetails != null) ...[
-              for (final detail in customDetails!.entries)
-                _FileDetailTile(
-                  title: detail.key,
-                  value: detail.value,
-                )
-            ]
-          ],
-        ),
-      ],
+                title: detail.key,
+                value: detail.value,
+              )
+          ]
+        ],
+      ),
     );
   }
 }
@@ -87,11 +102,13 @@ class _FileDetailTile extends StatelessWidget {
     required this.title,
     this.valueLabel,
     this.value,
+    this.valueTrailing,
   }) : assert(valueLabel != null || value != null);
 
   final String title;
   final String? valueLabel;
   final Widget? value;
+  final Widget? valueTrailing;
 
   @override
   Widget build(BuildContext context) {
@@ -114,15 +131,28 @@ class _FileDetailTile extends StatelessWidget {
           width: constrainst.maxWidth * 0.55,
           child: value ??
               (valueLabel != null
-                  ? Text(
-                      valueLabel!,
-                      style: TextStyle(
-                        color: context.colorScheme.onSecondaryContainer,
-                        fontSize: 14,
-                      ),
-                    )
+                  ? valueTrailing != null
+                      ? Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            _buildValue(context),
+                            const Spacer(),
+                            valueTrailing!,
+                          ],
+                        )
+                      : _buildValue(context)
                   : null),
         ),
+      ),
+    );
+  }
+
+  Widget _buildValue(BuildContext context) {
+    return Text(
+      valueLabel!,
+      style: TextStyle(
+        color: context.colorScheme.onSecondaryContainer,
+        fontSize: 14,
       ),
     );
   }

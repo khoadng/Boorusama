@@ -57,7 +57,6 @@ export 'posts/recommend_artist_list.dart';
 export 'posts/recommend_character_list.dart';
 export 'posts/recommend_posts.dart';
 export 'posts/recommend_section.dart';
-export 'posts/recommend_section_placeholder.dart';
 export 'posts/sliver_post_grid.dart';
 export 'posts/source_section.dart';
 export 'related_posts_section.dart';

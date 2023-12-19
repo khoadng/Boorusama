@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 // Project imports:
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
@@ -28,7 +31,10 @@ class RecommendPosts<T extends Post> extends StatelessWidget {
         header: ListTile(
           onTap: () => onHeaderTap(),
           title: Text(title),
-          trailing: const Icon(Icons.keyboard_arrow_right_rounded),
+          trailing: const Icon(
+            FontAwesomeIcons.arrowRightLong,
+            size: 18,
+          ),
         ),
         posts: items,
         onTap: (postIdx) => onTap(postIdx),

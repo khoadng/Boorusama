@@ -14,7 +14,7 @@ class BooruTextFormField extends ConsumerWidget {
     this.controller,
     this.initialValue,
     this.focusNode,
-    this.decoration,
+    this.decoration = const InputDecoration(),
     this.keyboardType,
     this.textCapitalization = TextCapitalization.none,
     this.textInputAction,
@@ -62,7 +62,6 @@ class BooruTextFormField extends ConsumerWidget {
     this.restorationId,
     this.enableIMEPersonalizedLearning,
     this.mouseCursor,
-    this.contextMenuBuilder,
     this.spellCheckConfiguration,
     this.magnifierConfiguration,
     this.undoController,
@@ -125,7 +124,6 @@ class BooruTextFormField extends ConsumerWidget {
   final String? restorationId;
   final bool? enableIMEPersonalizedLearning;
   final MouseCursor? mouseCursor;
-  final EditableTextContextMenuBuilder? contextMenuBuilder;
   final SpellCheckConfiguration? spellCheckConfiguration;
   final TextMagnifierConfiguration? magnifierConfiguration;
   final UndoHistoryController? undoController;
@@ -194,7 +192,6 @@ class BooruTextFormField extends ConsumerWidget {
       enableIMEPersonalizedLearning: enableIMEPersonalizedLearning ??
           !settings.enableIncognitoModeForKeyboard,
       mouseCursor: mouseCursor,
-      contextMenuBuilder: contextMenuBuilder,
       spellCheckConfiguration: spellCheckConfiguration,
       magnifierConfiguration: magnifierConfiguration,
       undoController: undoController,

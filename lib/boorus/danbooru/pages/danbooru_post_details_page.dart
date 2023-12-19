@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
@@ -296,7 +297,10 @@ class DanbooruCharacterPostList extends ConsumerWidget {
                   header: ListTile(
                     onTap: () => goToCharacterPage(context, tags[index]),
                     title: Text(r.title),
-                    trailing: const Icon(Icons.keyboard_arrow_right_rounded),
+                    trailing: const Icon(
+                      FontAwesomeIcons.arrowRightLong,
+                      size: 18,
+                    ),
                   ),
                   posts: r.posts,
                   onTap: (postIdx) => goToPostDetailsPage(

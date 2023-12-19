@@ -159,13 +159,13 @@ class _BlacklistedTagsSearchPageState
     if (tagSearchItem.operator == FilterOperator.none) {
       return Chip(
         visualDensity: const ShrinkVisualDensity(),
-        backgroundColor: Colors.grey[800],
+        backgroundColor: context.colorScheme.secondaryContainer,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(8)),
         ),
-        deleteIcon: const Icon(
+        deleteIcon: Icon(
           FontAwesomeIcons.xmark,
-          color: Colors.red,
+          color: context.colorScheme.error,
           size: 15,
         ),
         labelPadding: const EdgeInsets.symmetric(horizontal: 2),

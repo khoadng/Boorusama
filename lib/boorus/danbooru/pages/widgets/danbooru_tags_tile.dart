@@ -45,9 +45,16 @@ class DanbooruTagsTile extends ConsumerWidget {
     return Theme(
       data: context.theme.copyWith(dividerColor: Colors.transparent),
       child: ExpansionTile(
-        title: Text('$count tags'),
-        trailing: config.hasLoginDetails()
-            ? FilledButton(
+        title: Row(
+          children: [
+            Text('$count tags'),
+            if (config.hasLoginDetails())
+              FilledButton(
+                style: FilledButton.styleFrom(
+                  visualDensity: VisualDensity.compact,
+                  shape: const CircleBorder(),
+                  backgroundColor: context.colorScheme.surfaceVariant,
+                ),
                 onPressed: tagItems.maybeWhen(
                   data: (data) =>
                       () => context.navigator.push(MaterialPageRoute(
@@ -66,10 +73,14 @@ class DanbooruTagsTile extends ConsumerWidget {
                           )),
                   orElse: () => null,
                 ),
-                child: const Text('Edit'),
-              )
-            : null,
-        controlAffinity: ListTileControlAffinity.leading,
+                child: Icon(
+                  Icons.edit,
+                  size: 16,
+                  color: context.colorScheme.onSurfaceVariant,
+                ),
+              ),
+          ],
+        ),
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -80,6 +91,10 @@ class DanbooruTagsTile extends ConsumerWidget {
               ),
               itemBuilder: (context, tag) => ContextMenu(
                 items: [
+                  const PopupMenuItem(
+                    value: 'copy',
+                    child: Text('Copy tag'),
+                  ),
                   PopupMenuItem(
                     value: 'wiki',
                     child: const Text('post.detail.open_wiki').tr(),
@@ -114,6 +129,10 @@ class DanbooruTagsTile extends ConsumerWidget {
                     ).then((value) => goToSavedSearchEditPage(context));
                   } else if (value == 'add_to_favorites') {
                     ref.read(favoriteTagsProvider.notifier).add(tag.rawName);
+                  } else if (value == 'copy') {
+                    Clipboard.setData(
+                      ClipboardData(text: tag.rawName),
+                    ).then((value) => showSuccessToast('Copied'));
                   }
                 },
                 child: GestureDetector(
