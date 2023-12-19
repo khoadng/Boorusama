@@ -45,6 +45,7 @@ class SideBarMenu extends ConsumerWidget {
           Container(
             color: context.colorScheme.secondaryContainer,
             child: const SafeArea(
+              bottom: false,
               child: BooruSelector(),
             ),
           ),

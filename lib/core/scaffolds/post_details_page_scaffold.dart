@@ -126,9 +126,14 @@ class _PostDetailPageScaffoldState<T extends Post>
               ),
             if (widget.infoBuilder != null)
               widget.infoBuilder!(context, posts[page]),
-            widget.toolbarBuilder != null
-                ? widget.toolbarBuilder!(context, posts[page])
-                : SimplePostActionToolbar(post: posts[page]),
+            Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.paddingOf(context).bottom,
+              ),
+              child: widget.toolbarBuilder != null
+                  ? widget.toolbarBuilder!(context, posts[page])
+                  : SimplePostActionToolbar(post: posts[page]),
+            ),
           ],
         );
 

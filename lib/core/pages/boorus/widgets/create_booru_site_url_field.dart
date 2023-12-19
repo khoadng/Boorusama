@@ -34,6 +34,8 @@ class _CreateBooruSiteUrlFieldState extends State<CreateBooruSiteUrlField> {
     return AutofillGroup(
       child: BooruTextFormField(
         readOnly: widget.onChanged == null,
+        autocorrect: false,
+        keyboardType: TextInputType.url,
         autofillHints: const [
           AutofillHints.url,
         ],

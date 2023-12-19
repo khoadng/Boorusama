@@ -203,6 +203,7 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
             builder: (context, header) => ConditionalParentWidget(
               condition: widget.safeArea,
               conditionalBuilder: (child) => SafeArea(
+                bottom: false,
                 child: child,
               ),
               child: MultiSelectWidget<T>(
@@ -240,6 +241,7 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                     widget.itemBuilder(context, items, index),
                 scrollableWidgetBuilder: (context, items, itemBuilder) {
                   return Scaffold(
+                    extendBody: true,
                     floatingActionButton: ScrollToTop(
                       scrollController: _autoScrollController,
                       onBottomReached: () {

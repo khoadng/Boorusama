@@ -95,6 +95,7 @@ class UserDetailsPage extends ConsumerWidget {
         ],
       ),
       body: SafeArea(
+        bottom: false,
         child: state.when(
           data: (user) => Container(
             padding: const EdgeInsets.all(4),

@@ -56,6 +56,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
     initialPage: widget.intitialIndex,
     viewportConfiguration: ViewportConfiguration(
       minFraction: 0.99,
+      extendPage: true,
     ),
   );
   var isExpanded = ValueNotifier(false);

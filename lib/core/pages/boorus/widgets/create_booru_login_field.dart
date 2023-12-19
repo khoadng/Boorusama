@@ -41,6 +41,7 @@ class _CreateBooruLoginFieldState extends State<CreateBooruLoginField> {
     return AutofillGroup(
       child: BooruTextFormField(
         controller: controller,
+        autocorrect: false,
         autofillHints: const [
           AutofillHints.username,
           AutofillHints.email,

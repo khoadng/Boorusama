@@ -175,6 +175,8 @@ void main() async {
     await clearImageCache();
   }
 
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+
   logger.logI('Start up',
       'Initialization done in ${stopwatch.elapsed.inMilliseconds}ms');
   stopwatch.stop();
