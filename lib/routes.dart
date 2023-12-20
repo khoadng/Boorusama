@@ -332,12 +332,13 @@ class Routes {
           final builder = booruBuilder?.searchPageBuilder;
           final query = state.uri.queryParameters[kInitialQueryKey];
 
-          return CupertinoPage(
+          return CustomTransitionPage(
             key: state.pageKey,
             name: state.name,
             child: builder != null
                 ? builder(context, query)
                 : const Scaffold(body: Center(child: Text('Not implemented'))),
+            transitionsBuilder: fadeTransitionBuilder(),
           );
         },
       );

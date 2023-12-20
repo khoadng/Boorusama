@@ -89,7 +89,14 @@ class _EntryPageState extends ConsumerState<EntryPage> {
         conditionalBuilder: (child) => Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const BooruSelector(),
+            ConditionalParentWidget(
+              condition: orientation.isLandscape,
+              conditionalBuilder: (child) => SafeArea(
+                right: false,
+                child: child,
+              ),
+              child: const BooruSelector(),
+            ),
             const VerticalDivider(
               thickness: 1,
               width: 1,
