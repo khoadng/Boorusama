@@ -56,6 +56,7 @@ class _DanbooruPostDetailsDesktopPageState
     extends ConsumerState<DanbooruPostDetailsDesktopPage> with DebounceMixin {
   late var page = widget.initialIndex;
   Timer? _debounceTimer;
+  final showInfo = ValueNotifier(false);
 
   @override
   void dispose() {
@@ -71,13 +72,7 @@ class _DanbooruPostDetailsDesktopPageState
         .where((e) => e.postId == post.id)
         .map((e) => e.name)
         .toList();
-    final artists = ref.watch(allowFetchProvider)
-        ? ref.watch(danbooruPostDetailsArtistProvider(post))
-        : const AsyncData(<Recommend<DanbooruPost>>[]);
-    // final characters = ref.watch(danbooruPostDetailsCharacterProvider(post));
-    final pools = ref.watch(allowFetchProvider)
-        ? ref.watch(danbooruPostDetailsPoolsProvider(post.id))
-        : const AsyncData(<Pool>[]);
+
     final isFav = ref.watch(danbooruFavoriteProvider(post.id));
     final booruConfig = ref.watchConfig;
 
@@ -95,6 +90,7 @@ class _DanbooruPostDetailsDesktopPageState
       child: DanbooruCreatorPreloader(
         posts: widget.posts,
         child: DetailsPageDesktop(
+          onShowInfoChanged: (value) => showInfo.value = value,
           onExit: widget.onExit,
           initialPage: widget.initialIndex,
           totalPages: widget.posts.length,
@@ -131,6 +127,14 @@ class _DanbooruPostDetailsDesktopPageState
             );
           },
           infoBuilder: (context) {
+            final artists = ref.watch(allowFetchProvider)
+                ? ref.watch(danbooruPostDetailsArtistProvider(post))
+                : const AsyncData(<Recommend<DanbooruPost>>[]);
+
+            final pools = ref.watch(allowFetchProvider)
+                ? ref.watch(danbooruPostDetailsPoolsProvider(post.id))
+                : const AsyncData(<Pool>[]);
+
             return CustomScrollView(
               slivers: [
                 SliverList(
