@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -106,7 +107,7 @@ class _DanbooruDmailPageState extends ConsumerState<DanbooruDmailPage> {
                                     (value) => ref.invalidate(dmailProvider));
                               }
                               Navigator.of(context).push(
-                                MaterialPageRoute(
+                                CupertinoPageRoute(
                                   builder: (context) =>
                                       DanbooruDmailDetailsPage(
                                     dmail: dmail,

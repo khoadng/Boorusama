@@ -1,5 +1,5 @@
 // Flutter imports:
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
 // Package imports:
 import 'package:context_menus/context_menus.dart';
@@ -114,7 +114,7 @@ class DanbooruPostContextMenu extends ConsumerWidget {
             ContextMenuButtonConfig(
               'Edit',
               onPressed: () {
-                context.navigator.push(MaterialPageRoute(
+                context.navigator.push(CupertinoPageRoute(
                   builder: (context) => TagEditPage(
                     postId: post.id,
                     tags: tags.containsKey(post.id)

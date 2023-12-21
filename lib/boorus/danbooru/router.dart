@@ -2,6 +2,7 @@
 import 'dart:math';
 
 // Flutter imports:
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -54,13 +55,13 @@ import 'pages/widgets/search/related_tag_action_sheet.dart';
 import 'router_page_constant.dart';
 
 void goToCharacterPage(BuildContext context, String tag) {
-  context.navigator.push(MaterialPageRoute(
+  context.navigator.push(CupertinoPageRoute(
     builder: (_) => DanbooruCharacterPage.of(context, tag),
   ));
 }
 
 void goToPoolDetailPage(BuildContext context, Pool pool) {
-  context.navigator.push(MaterialPageRoute(
+  context.navigator.push(CupertinoPageRoute(
     builder: (_) => PoolDetailPage.of(context, pool: pool),
   ));
 }
@@ -78,7 +79,7 @@ void goToPostVersionPage(BuildContext context, DanbooruPost post) {
 
 void goToExplorePopularPage(BuildContext context) {
   if (isMobilePlatform()) {
-    context.navigator.push(MaterialPageRoute(
+    context.navigator.push(CupertinoPageRoute(
       settings: const RouteSettings(
         name: RouterPageConstant.explorePopular,
       ),
@@ -94,7 +95,7 @@ void goToExplorePopularPage(BuildContext context) {
 
 void goToExploreHotPage(BuildContext context) {
   if (isMobilePlatform()) {
-    context.navigator.push(MaterialPageRoute(
+    context.navigator.push(CupertinoPageRoute(
       settings: const RouteSettings(
         name: RouterPageConstant.exploreHot,
       ),
@@ -110,7 +111,7 @@ void goToExploreHotPage(BuildContext context) {
 
 void goToExploreMostViewedPage(BuildContext context) {
   if (isMobilePlatform()) {
-    context.navigator.push(MaterialPageRoute(
+    context.navigator.push(CupertinoPageRoute(
       settings: const RouteSettings(
         name: RouterPageConstant.exploreMostViewed,
       ),
@@ -125,14 +126,14 @@ void goToExploreMostViewedPage(BuildContext context) {
 }
 
 void goToSavedSearchPage(BuildContext context, String? username) {
-  context.navigator.push(MaterialPageRoute(
+  context.navigator.push(CupertinoPageRoute(
     builder: (_) => SavedSearchFeedPage.of(context),
   ));
 }
 
 void goToSavedSearchEditPage(BuildContext context) {
   if (isMobilePlatform()) {
-    context.navigator.push(MaterialPageRoute(
+    context.navigator.push(CupertinoPageRoute(
       builder: (_) {
         return const SavedSearchPage();
       },
@@ -147,25 +148,25 @@ void goToSavedSearchEditPage(BuildContext context) {
 }
 
 void goToPoolPage(BuildContext context, WidgetRef ref) {
-  context.navigator.push(MaterialPageRoute(
+  context.navigator.push(CupertinoPageRoute(
     builder: (_) => const PoolPage(),
   ));
 }
 
 void goToBlacklistedTagPage(BuildContext context) {
-  context.navigator.push(MaterialPageRoute(
+  context.navigator.push(CupertinoPageRoute(
     builder: (_) => const BlacklistedTagsPage(),
   ));
 }
 
 void goToDmailPage(BuildContext context) {
-  context.navigator.push(MaterialPageRoute(
+  context.navigator.push(CupertinoPageRoute(
     builder: (_) => const DanbooruDmailPage(),
   ));
 }
 
 void goToArtistSearchPage(BuildContext context) {
-  context.navigator.push(MaterialPageRoute(
+  context.navigator.push(CupertinoPageRoute(
     builder: (_) => const DanbooruArtistSearchPage(),
   ));
 }
@@ -175,7 +176,7 @@ void goToCommentCreatePage(
   required int postId,
   String? initialContent,
 }) {
-  context.navigator.push(MaterialPageRoute(
+  context.navigator.push(CupertinoPageRoute(
     builder: (_) => CommentCreatePage(
       postId: postId,
       initialContent: initialContent,
@@ -194,7 +195,7 @@ void goToCommentUpdatePage(
   String? initialContent,
 }) {
   context.navigator.push(
-    MaterialPageRoute(
+    CupertinoPageRoute(
       builder: (_) => CommentUpdatePage(
         postId: postId,
         commentId: commentId,
@@ -214,7 +215,7 @@ void goToUserDetailsPage(
   required String username,
 }) {
   context.navigator.push(
-    MaterialPageRoute(
+    CupertinoPageRoute(
       builder: (_) => UserDetailsPage(
         uid: uid,
         username: username,
@@ -224,7 +225,7 @@ void goToUserDetailsPage(
 }
 
 void goToPoolSearchPage(BuildContext context, WidgetRef ref) {
-  context.navigator.push(MaterialPageRoute(
+  context.navigator.push(CupertinoPageRoute(
     builder: (_) => const PoolSearchPage(),
     settings: const RouteSettings(
       name: RouterPageConstant.poolSearch,
@@ -406,7 +407,7 @@ Future<Object?> goToFavoriteGroupEditPage(
 }
 
 void goToFavoriteGroupPage(BuildContext context) {
-  context.navigator.push(MaterialPageRoute(
+  context.navigator.push(CupertinoPageRoute(
     builder: (_) => const FavoriteGroupsPage(),
   ));
 }
@@ -415,7 +416,7 @@ void goToFavoriteGroupDetailsPage(
   BuildContext context,
   FavoriteGroup group,
 ) {
-  context.navigator.push(MaterialPageRoute(
+  context.navigator.push(CupertinoPageRoute(
     builder: (_) => CustomContextMenuOverlay(
       child: FavoriteGroupDetailsPage(
         group: group,
@@ -463,7 +464,7 @@ Future<bool?> goToAddToBlacklistPage(
 }
 
 void goToForumPage(BuildContext context) {
-  context.navigator.push(MaterialPageRoute(
+  context.navigator.push(CupertinoPageRoute(
     builder: (_) => const DanbooruForumPage(),
   ));
 }

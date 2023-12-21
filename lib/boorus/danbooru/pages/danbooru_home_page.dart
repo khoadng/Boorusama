@@ -2,6 +2,7 @@
 import 'dart:async';
 
 // Flutter imports:
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -77,7 +78,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
     if (config.hasStrictSFW) return;
 
     if (text != null) {
-      context.navigator.push(MaterialPageRoute(
+      context.navigator.push(CupertinoPageRoute(
         builder: (context) {
           return AlertDialog(
             title: Text('Upload to $booruName'),
@@ -149,7 +150,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
         SideMenuTile(
           icon: const Icon(Icons.explore),
           title: const Text('Explore'),
-          onTap: () => context.navigator.push(MaterialPageRoute(
+          onTap: () => context.navigator.push(CupertinoPageRoute(
               builder: (_) => Scaffold(
                     appBar: AppBar(
                       title: const Text('Explore'),

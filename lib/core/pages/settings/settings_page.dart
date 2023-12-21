@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -180,7 +181,7 @@ class SettingsPage extends ConsumerWidget {
                         color: context.iconTheme.color,
                         size: 20,
                       ),
-                      onTap: () => context.navigator.push(MaterialPageRoute(
+                      onTap: () => context.navigator.push(CupertinoPageRoute(
                           builder: (_) => const DebugLogsPage())),
                     ),
                     ListTile(

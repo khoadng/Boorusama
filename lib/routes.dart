@@ -84,7 +84,7 @@ class BoorusRoutes {
               ?.firstWhere((element) => element.id == id);
 
           if (config == null) {
-            return const MaterialPage(
+            return const CupertinoPage(
               child: Scaffold(
                 body: Center(
                   child: Text('Booru not found or not loaded yet'),
@@ -95,7 +95,7 @@ class BoorusRoutes {
 
           final booruBuilder = ref.readBooruBuilder(config);
 
-          return MaterialPage(
+          return CupertinoPage(
             key: state.pageKey,
             child: booruBuilder?.updateConfigPageBuilder(
                   context,
@@ -369,7 +369,7 @@ class Routes {
           final builder = booruBuilder?.artistPageBuilder;
           final artistName = state.uri.queryParameters[kArtistNameKey];
 
-          return MaterialPage(
+          return CupertinoPage(
             key: state.pageKey,
             name: state.name,
             child: builder != null
@@ -394,7 +394,7 @@ class Routes {
           GoRoute(
             path: 'details',
             name: '/bookmarks/details',
-            pageBuilder: (context, state) => MaterialPage(
+            pageBuilder: (context, state) => CupertinoPage(
               key: state.pageKey,
               name: '${state.name}?index=${state.uri.queryParameters['index']}',
               child: BookmarkDetailsPage(

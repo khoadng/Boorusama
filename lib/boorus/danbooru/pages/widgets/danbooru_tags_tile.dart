@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -57,7 +58,7 @@ class DanbooruTagsTile extends ConsumerWidget {
                 ),
                 onPressed: tagItems.maybeWhen(
                   data: (data) =>
-                      () => context.navigator.push(MaterialPageRoute(
+                      () => context.navigator.push(CupertinoPageRoute(
                             builder: (context) => TagEditPage(
                               imageUrl: post.url720x720,
                               aspectRatio: post.aspectRatio ?? 1,

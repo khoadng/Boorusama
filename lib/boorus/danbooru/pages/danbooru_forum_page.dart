@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
@@ -55,7 +56,7 @@ class DanbooruForumPage extends ConsumerWidget {
                 uid: topic.creatorId,
                 username: creatorName,
               ),
-              onTap: () => context.navigator.push(MaterialPageRoute(
+              onTap: () => context.navigator.push(CupertinoPageRoute(
                 builder: (_) => DanbooruForumPostsPage(
                   topicId: topic.id,
                   title: topic.title,

@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -102,7 +103,7 @@ void goToBlacklistedTagsSearchPage(
       onSelectDone,
   List<String>? initialTags,
 }) {
-  context.navigator.push(MaterialPageRoute(
+  context.navigator.push(CupertinoPageRoute(
     builder: (_) => BlacklistedTagsSearchPage(
       initialTags: initialTags,
       onSelectedDone: onSelectDone,
