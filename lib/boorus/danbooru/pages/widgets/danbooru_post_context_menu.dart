@@ -8,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/pages/tag_edit_page.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/feats/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
@@ -17,7 +16,6 @@ import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 class DanbooruPostContextMenu extends ConsumerWidget {
@@ -114,19 +112,16 @@ class DanbooruPostContextMenu extends ConsumerWidget {
             ContextMenuButtonConfig(
               'Edit',
               onPressed: () {
-                context.navigator.push(CupertinoPageRoute(
-                  builder: (context) => TagEditPage(
-                    postId: post.id,
-                    tags: tags.containsKey(post.id)
-                        ? tags[post.id]!.allTags
-                        : post.tags,
-                    rating: tags.containsKey(post.id)
-                        ? tags[post.id]!.rating
-                        : post.rating,
-                    imageUrl: post.url720x720,
-                    aspectRatio: post.aspectRatio ?? 1,
-                  ),
-                ));
+                goToTagEdiPage(
+                  context,
+                  post: post,
+                  tags: tags.containsKey(post.id)
+                      ? tags[post.id]!.allTags
+                      : post.tags,
+                  rating: tags.containsKey(post.id)
+                      ? tags[post.id]!.rating
+                      : post.rating,
+                );
               },
             ),
           if (onMultiSelect != null)

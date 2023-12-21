@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -11,14 +10,12 @@ import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/pages/danbooru_post_details_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/tag_edit_page.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -57,21 +54,17 @@ class DanbooruTagsTile extends ConsumerWidget {
                   backgroundColor: context.colorScheme.surfaceVariant,
                 ),
                 onPressed: tagItems.maybeWhen(
-                  data: (data) =>
-                      () => context.navigator.push(CupertinoPageRoute(
-                            builder: (context) => TagEditPage(
-                              imageUrl: post.url720x720,
-                              aspectRatio: post.aspectRatio ?? 1,
-                              rating: tagDetails != null
-                                  ? tagDetails.rating
-                                  : post.rating,
-                              postId: post.id,
-                              tags: data
-                                  .map((e) => e.tags.map((e) => e.rawName))
-                                  .expand((e) => e)
-                                  .toList(),
-                            ),
-                          )),
+                  data: (data) => () => goToTagEdiPage(
+                        context,
+                        post: post,
+                        tags: data
+                            .map((e) => e.tags.map((e) => e.rawName))
+                            .expand((e) => e)
+                            .toList(),
+                        rating: tagDetails != null
+                            ? tagDetails.rating
+                            : post.rating,
+                      ),
                   orElse: () => null,
                 ),
                 child: Icon(

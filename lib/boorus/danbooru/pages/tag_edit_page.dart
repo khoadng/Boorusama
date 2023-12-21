@@ -8,7 +8,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
@@ -18,13 +17,15 @@ import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
-import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import 'tag_edit_ai_view.dart';
+import 'tag_edit_favorite_view.dart';
+import 'tag_edit_wiki_view.dart';
 
 enum TagEditExpandMode {
   favorite,
@@ -151,16 +152,62 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
             bottom: MediaQuery.paddingOf(context).bottom,
           ),
           padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: Column(
-            children: [
-              Expanded(
-                child: _buildSplit(context, config),
-              ),
-              _buildMode(context, aiTagSupport ?? false),
-            ],
-          ),
+          child: Screen.of(context).size == ScreenSize.small
+              ? Column(
+                  children: [
+                    Expanded(
+                      child: _buildSplit(context, config),
+                    ),
+                    _buildMode(context, aiTagSupport ?? false),
+                  ],
+                )
+              : Row(
+                  children: [
+                    Container(
+                      constraints: BoxConstraints(
+                        minWidth: 200,
+                        maxWidth: context.screenWidth * 0.7,
+                      ),
+                      child: _buildImage(),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: CustomScrollView(
+                        controller: scrollController,
+                        slivers: [
+                          SliverToBoxAdapter(
+                            child: TagEditRatingSelectorSection(
+                              rating: rating,
+                              onChanged: (value) {
+                                setState(() {
+                                  rating = value;
+                                });
+                              },
+                            ),
+                          ),
+                          const SliverSizedBox(height: 8),
+                          SliverToBoxAdapter(
+                            child: _buildTagListSection(),
+                          ),
+                          SliverToBoxAdapter(
+                              child:
+                                  _buildMode(context, aiTagSupport ?? false)),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
         ),
       ),
+    );
+  }
+
+  Widget _buildImage() {
+    return BooruImage(
+      borderRadius: BorderRadius.zero,
+      imageUrl: widget.imageUrl,
+      aspectRatio: widget.aspectRatio,
+      fit: BoxFit.contain,
     );
   }
 
@@ -179,12 +226,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
           Column(
             children: [
               Expanded(
-                child: BooruImage(
-                  borderRadius: BorderRadius.zero,
-                  imageUrl: widget.imageUrl,
-                  aspectRatio: widget.aspectRatio,
-                  fit: BoxFit.contain,
-                ),
+                child: _buildImage(),
               ),
               const Divider(
                 thickness: 2,
@@ -196,126 +238,42 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
             controller: scrollController,
             slivers: [
               SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Row(
-                    children: [
-                      Text(
-                        'Rating',
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                      if (!config.hasStrictSFW)
-                        IconButton(
-                          splashRadius: 20,
-                          visualDensity: VisualDensity.compact,
-                          onPressed: () =>
-                              launchExternalUrlString(_kHowToRateUrl),
-                          icon: const FaIcon(
-                            FontAwesomeIcons.circleQuestion,
-                            size: 16,
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: Center(
-                  child: BooruSegmentedButton(
-                    segments: {
-                      for (final rating
-                          in Rating.values.where((e) => e != Rating.unknown))
-                        rating: rating.name.sentenceCase,
-                    },
-                    initialValue: rating,
-                    onChanged: (value) {
-                      setState(() {
-                        rating = value;
-                      });
-                    },
-                  ),
+                child: TagEditRatingSelectorSection(
+                  rating: rating,
+                  onChanged: (value) {
+                    setState(() {
+                      rating = value;
+                    });
+                  },
                 ),
               ),
               const SliverSizedBox(height: 8),
               SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      TagChangedText(
-                        title:
-                            '${widget.tags.length} tag${widget.tags.length > 1 ? 's' : ''}',
-                        added: toBeAdded,
-                        removed: toBeRemoved,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SliverToBoxAdapter(
-                child: Divider(
-                  thickness: 2,
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: Wrap(
-                  spacing: 4,
-                  runSpacing: isMobilePlatform() ? 0 : 6,
-                  children: tags.map((tag) {
-                    final colors =
-                        ref.watch(danbooruTagEditColorProvider(tag)).maybeWhen(
-                              data: (color) =>
-                                  color != null && color != Colors.white
-                                      ? generateChipColorsFromColorScheme(
-                                          color,
-                                          ref.watch(settingsProvider),
-                                          context.colorScheme,
-                                        )
-                                      : null,
-                              orElse: () => null,
-                            );
-                    final backgroundColor = colors?.backgroundColor;
-                    final foregroundColor = colors?.foregroundColor;
-                    final borderColor = colors?.borderColor;
-
-                    return RawChip(
-                        visualDensity: VisualDensity.compact,
-                        onPressed: () => setState(() {
-                              selectedTag = tag;
-                              expandMode = TagEditExpandMode.related;
-                              splitKey.currentState
-                                  ?.setFractions(const [0.9, 0.1]);
-                            }),
-                        deleteIcon: Icon(
-                          color: foregroundColor,
-                          Icons.close,
-                          size: 18,
-                        ),
-                        side: borderColor != null
-                            ? BorderSide(
-                                color: borderColor,
-                                width: 1,
-                              )
-                            : null,
-                        backgroundColor: backgroundColor,
-                        onDeleted: () => _removeTag(tag),
-                        label: Text(
-                          tag.replaceAll('_', ' '),
-                          style: TextStyle(
-                            color: foregroundColor,
-                            fontWeight: toBeAdded.contains(tag)
-                                ? FontWeight.w900
-                                : null,
-                          ),
-                        ));
-                  }).toList(),
-                ),
+                child: _buildTagListSection(),
               ),
             ],
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildTagListSection() {
+    return TagEditTagListSection(
+      tags: tags,
+      toBeAdded: toBeAdded.toSet(),
+      toBeRemoved: toBeRemoved.toSet(),
+      initialTags: widget.tags,
+      onDeleted: (tag) {
+        _removeTag(tag);
+      },
+      onTagTap: (tag) {
+        setState(() {
+          selectedTag = tag;
+          expandMode = TagEditExpandMode.related;
+          splitKey.currentState?.setFractions(const [0.9, 0.1]);
+        });
+      },
     );
   }
 
@@ -562,337 +520,145 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
   }
 }
 
-class TagEditFavoriteView extends ConsumerStatefulWidget {
-  const TagEditFavoriteView({
+class TagEditRatingSelectorSection extends ConsumerWidget {
+  const TagEditRatingSelectorSection({
     super.key,
-    required this.onRemoved,
-    required this.onAdded,
-    required this.isSelected,
+    required this.rating,
+    required this.onChanged,
   });
 
-  final void Function(String tag) onRemoved;
-  final void Function(String tag) onAdded;
-  final bool Function(String tag) isSelected;
-
-  @override
-  ConsumerState<ConsumerStatefulWidget> createState() =>
-      _TagEditFavoriteViewState();
-}
-
-class _TagEditFavoriteViewState extends ConsumerState<TagEditFavoriteView> {
-  @override
-  Widget build(BuildContext context) {
-    final tags = ref.watch(favoriteTagsProvider);
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: tags.isNotEmpty
-          ? Wrap(
-              spacing: 4,
-              children: tags.map((tag) {
-                final selected = widget.isSelected(tag.name);
-
-                return FilterChip(
-                  side: selected
-                      ? BorderSide(
-                          color: context.theme.hintColor,
-                          width: 0.5,
-                        )
-                      : null,
-                  selected: selected,
-                  showCheckmark: false,
-                  visualDensity: VisualDensity.compact,
-                  selectedColor: context.colorScheme.primary,
-                  backgroundColor: context.colorScheme.background,
-                  onSelected: (value) => value
-                      ? widget.onAdded(tag.name)
-                      : widget.onRemoved(tag.name),
-                  label: Text(
-                    tag.name.replaceUnderscoreWithSpace(),
-                  ),
-                );
-              }).toList(),
-            )
-          : const Center(
-              child: Text(
-                'No favorites',
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 16,
-                ),
-              ),
-            ),
-    );
-  }
-}
-
-class TagEditWikiView extends ConsumerStatefulWidget {
-  const TagEditWikiView({
-    super.key,
-    required this.onRemoved,
-    required this.onAdded,
-    required this.isSelected,
-    required this.tag,
-  });
-
-  final String? tag;
-  final void Function(String tag) onRemoved;
-  final void Function(String tag) onAdded;
-  final bool Function(String tag) isSelected;
-
-  @override
-  ConsumerState<ConsumerStatefulWidget> createState() =>
-      _TagEditzwikiViewState();
-}
-
-class _TagEditzwikiViewState extends ConsumerState<TagEditWikiView> {
-  final relatedTabs = const [
-    'all',
-    'wiki',
-  ];
-  var selectTab = 'all';
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: widget.tag.toOption().fold(
-            () => const Center(
-              child: Text(
-                'Select a tag to view related tags',
-              ),
-            ),
-            (tag) => SingleChildScrollView(
-              child: Column(
-                children: [
-                  Center(
-                    child: BooruSegmentedButton(
-                      segments: {
-                        for (final entry in relatedTabs)
-                          entry: entry.sentenceCase,
-                      },
-                      initialValue: selectTab,
-                      onChanged: (values) {
-                        setState(() {
-                          selectTab = values;
-                        });
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  switch (selectTab) {
-                    'wiki' =>
-                      ref.watch(danbooruWikiTagsProvider(tag)).maybeWhen(
-                          data: (data) => data.isNotEmpty
-                              ? _RelatedTagChips(
-                                  tags: data,
-                                  isSelected: widget.isSelected,
-                                  onAdded: widget.onAdded,
-                                  onRemoved: widget.onRemoved,
-                                )
-                              : const Center(child: Text('No tags found')),
-                          orElse: () => const Center(
-                                child: CircularProgressIndicator.adaptive(),
-                              )),
-                    _ => ref.watch(danbooruRelatedTagsProvider(tag)).maybeWhen(
-                        data: (data) => _RelatedTagChips(
-                              tags: data,
-                              isSelected: widget.isSelected,
-                              onAdded: widget.onAdded,
-                              onRemoved: widget.onRemoved,
-                            ),
-                        orElse: () => const Center(
-                              child: CircularProgressIndicator.adaptive(),
-                            )),
-                  },
-                ],
-              ),
-            ),
-          ),
-    );
-  }
-}
-
-class _RelatedTagChips extends ConsumerWidget {
-  const _RelatedTagChips({
-    required this.tags,
-    required this.isSelected,
-    required this.onAdded,
-    required this.onRemoved,
-  });
-
-  final List<Tag> tags;
-  final bool Function(String tag) isSelected;
-  final void Function(String tag) onAdded;
-  final void Function(String tag) onRemoved;
+  final Rating rating;
+  final void Function(Rating rating) onChanged;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Wrap(
-      spacing: 4,
-      children: tags.map((tag) {
-        final selected = isSelected(tag.name);
-        final colors = context.generateChipColors(
-          ref.getTagColor(context, tag.category.name),
-          ref.watch(settingsProvider),
-        );
+    final config = ref.watchConfig;
 
-        return RawChip(
-          selected: selected,
-          showCheckmark: false,
-          checkmarkColor: colors?.foregroundColor,
-          visualDensity: VisualDensity.compact,
-          selectedColor: colors?.backgroundColor,
-          backgroundColor: selected
-              ? colors?.backgroundColor
-              : context.colorScheme.secondaryContainer,
-          side: selected
-              ? colors != null
-                  ? BorderSide(
-                      width: 2,
-                      color: colors.borderColor,
-                    )
-                  : null
-              : null,
-          onSelected: (value) =>
-              value ? onAdded(tag.name) : onRemoved(tag.name),
-          label: ConstrainedBox(
-            constraints: BoxConstraints(
-              maxWidth: context.screenWidth * 0.8,
-            ),
-            child: RichText(
-              overflow: TextOverflow.ellipsis,
-              text: TextSpan(
-                text: tag.name.replaceUnderscoreWithSpace(),
-                style: TextStyle(
-                  color: selected
-                      ? colors?.foregroundColor
-                      : context.colorScheme.onSecondaryContainer,
-                  fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                ),
-                children: [
-                  TextSpan(
-                    text: '  ${NumberFormat.compact().format(tag.postCount)}',
-                    style: context.textTheme.bodySmall,
-                  ),
-                ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8),
+          child: Row(
+            children: [
+              Text(
+                'Rating',
+                style: Theme.of(context).textTheme.titleLarge,
               ),
-            ),
+              if (!config.hasStrictSFW)
+                IconButton(
+                  splashRadius: 20,
+                  visualDensity: VisualDensity.compact,
+                  onPressed: () => launchExternalUrlString(_kHowToRateUrl),
+                  icon: const FaIcon(
+                    FontAwesomeIcons.circleQuestion,
+                    size: 16,
+                  ),
+                ),
+            ],
           ),
-        );
-      }).toList(),
+        ),
+        Center(
+          child: BooruSegmentedButton(
+            segments: {
+              for (final rating
+                  in Rating.values.where((e) => e != Rating.unknown))
+                rating: rating.name.sentenceCase,
+            },
+            initialValue: rating,
+            onChanged: onChanged,
+          ),
+        ),
+      ],
     );
   }
 }
 
-class TagEditAITagView extends ConsumerStatefulWidget {
-  const TagEditAITagView({
+class TagEditTagListSection extends ConsumerWidget {
+  const TagEditTagListSection({
     super.key,
-    required this.onRemoved,
-    required this.onAdded,
-    required this.isSelected,
-    required this.postId,
+    required this.initialTags,
+    required this.tags,
+    required this.onTagTap,
+    required this.onDeleted,
+    required this.toBeAdded,
+    required this.toBeRemoved,
   });
 
-  final int postId;
-  final void Function(String tag) onRemoved;
-  final void Function(String tag) onAdded;
-  final bool Function(String tag) isSelected;
+  final List<String> initialTags;
+  final List<String> tags;
+  final void Function(String tag) onTagTap;
+  final void Function(String tag) onDeleted;
+  final Set<String> toBeAdded;
+  final Set<String> toBeRemoved;
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() =>
-      _TagEditAITagViewState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Column(
+      children: [
+        const Divider(
+          thickness: 2,
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              TagChangedText(
+                title:
+                    '${initialTags.length} tag${initialTags.length > 1 ? 's' : ''}',
+                added: toBeAdded,
+                removed: toBeRemoved,
+              ),
+            ],
+          ),
+        ),
+        Wrap(
+          spacing: 4,
+          runSpacing: isMobilePlatform() ? 0 : 6,
+          children: tags.map((tag) {
+            final colors =
+                ref.watch(danbooruTagEditColorProvider(tag)).maybeWhen(
+                      data: (color) => color != null && color != Colors.white
+                          ? generateChipColorsFromColorScheme(
+                              color,
+                              ref.watch(settingsProvider),
+                              context.colorScheme,
+                            )
+                          : null,
+                      orElse: () => null,
+                    );
+            final backgroundColor = colors?.backgroundColor;
+            final foregroundColor = colors?.foregroundColor;
+            final borderColor = colors?.borderColor;
 
-class _TagEditAITagViewState extends ConsumerState<TagEditAITagView> {
-  @override
-  Widget build(BuildContext context) {
-    final tagAsync = ref.watch(danbooruAITagsProvider(widget.postId));
-
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          WarningContainer(
-            margin: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 8,
-            ),
-            contentBuilder: (context) {
-              return Text(
-                'The suggested tags are generated by AI, please check them carefully before submitting.',
-                style: TextStyle(
-                  color: context.colorScheme.onError,
+            return RawChip(
+                visualDensity: VisualDensity.compact,
+                onPressed: () => onTagTap(tag),
+                deleteIcon: Icon(
+                  color: foregroundColor,
+                  Icons.close,
+                  size: 18,
                 ),
-              );
-            },
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: tagAsync.maybeWhen(
-              data: (tags) => Wrap(
-                spacing: 4,
-                children: tags.map((d) {
-                  final tag = d.tag;
-                  final colors = context.generateChipColors(
-                    ref.getTagColor(context, tag.category.name),
-                    ref.watch(settingsProvider),
-                  );
-                  final selected = widget.isSelected(tag.name);
-
-                  return RawChip(
-                    selected: selected,
-                    showCheckmark: false,
-                    checkmarkColor: colors?.foregroundColor,
-                    visualDensity: VisualDensity.compact,
-                    selectedColor: colors?.backgroundColor,
-                    backgroundColor: selected
-                        ? colors?.backgroundColor
-                        : context.colorScheme.secondaryContainer,
-                    side: selected
-                        ? colors != null
-                            ? BorderSide(
-                                width: 2,
-                                color: colors.borderColor,
-                              )
-                            : null
-                        : null,
-                    onSelected: (value) => value
-                        ? widget.onAdded(tag.name)
-                        : widget.onRemoved(tag.name),
-                    label: ConstrainedBox(
-                      constraints: BoxConstraints(
-                        maxWidth: context.screenWidth * 0.8,
-                      ),
-                      child: RichText(
-                        overflow: TextOverflow.ellipsis,
-                        text: TextSpan(
-                          text: tag.name.replaceUnderscoreWithSpace(),
-                          style: TextStyle(
-                            color: selected
-                                ? colors?.foregroundColor
-                                : context.colorScheme.onSecondaryContainer,
-                            fontWeight:
-                                selected ? FontWeight.w700 : FontWeight.w500,
-                          ),
-                          children: [
-                            TextSpan(
-                              text: '  ${d.score}%',
-                              style: context.textTheme.bodySmall,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
-                }).toList(),
-              ),
-              orElse: () => const Center(
-                child: CircularProgressIndicator.adaptive(),
-              ),
-            ),
-          ),
-        ],
-      ),
+                side: borderColor != null
+                    ? BorderSide(
+                        color: borderColor,
+                        width: 1,
+                      )
+                    : null,
+                backgroundColor: backgroundColor,
+                onDeleted: () => onDeleted(tag),
+                label: Text(
+                  tag.replaceAll('_', ' '),
+                  style: TextStyle(
+                    color: foregroundColor,
+                    fontWeight:
+                        toBeAdded.contains(tag) ? FontWeight.w900 : null,
+                  ),
+                ));
+          }).toList(),
+        ),
+      ],
     );
   }
 }

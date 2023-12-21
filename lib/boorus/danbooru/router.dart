@@ -18,6 +18,7 @@ import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/saved_searches/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/core/feats/boorus/providers.dart';
+import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/pages/blacklists/add_to_blacklist_page.dart';
 import 'package:boorusama/core/router.dart';
@@ -48,6 +49,7 @@ import 'pages/pool_page.dart';
 import 'pages/pool_search_page.dart';
 import 'pages/saved_search_feed_page.dart';
 import 'pages/saved_search_page.dart';
+import 'pages/tag_edit_page.dart';
 import 'pages/user_details_page.dart';
 import 'pages/widgets/favorites/create_favorite_group_dialog.dart';
 import 'pages/widgets/saved_searches/edit_saved_search_sheet.dart';
@@ -467,4 +469,33 @@ void goToForumPage(BuildContext context) {
   context.navigator.push(CupertinoPageRoute(
     builder: (_) => const DanbooruForumPage(),
   ));
+}
+
+void goToTagEdiPage(
+  BuildContext context, {
+  required DanbooruPost post,
+  required List<String> tags,
+  required Rating rating,
+}) {
+  if (Screen.of(context).size == ScreenSize.small) {
+    context.navigator.push(CupertinoPageRoute(
+      builder: (context) => TagEditPage(
+        postId: post.id,
+        tags: tags,
+        rating: rating,
+        imageUrl: post.url720x720,
+        aspectRatio: post.aspectRatio ?? 1,
+      ),
+    ));
+  } else {
+    context.navigator.push(MaterialPageRoute(
+      builder: (context) => TagEditPage(
+        postId: post.id,
+        tags: tags,
+        rating: rating,
+        imageUrl: post.url720x720,
+        aspectRatio: post.aspectRatio ?? 1,
+      ),
+    ));
+  }
 }
