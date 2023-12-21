@@ -51,18 +51,18 @@ PODS:
   - Firebase/Performance (10.18.0):
     - Firebase/CoreOnly
     - FirebasePerformance (~> 10.18.0)
-  - firebase_analytics (10.7.2):
+  - firebase_analytics (10.7.4):
     - Firebase/Analytics (= 10.18.0)
     - firebase_core
     - Flutter
-  - firebase_core (2.24.0):
+  - firebase_core (2.24.2):
     - Firebase/CoreOnly (= 10.18.0)
     - Flutter
-  - firebase_crashlytics (3.4.6):
+  - firebase_crashlytics (3.4.8):
     - Firebase/Crashlytics (= 10.18.0)
     - firebase_core
     - Flutter
-  - firebase_performance (0.9.3-6):
+  - firebase_performance (0.9.3-8):
     - Firebase/Performance (= 10.18.0)
     - firebase_core
     - Flutter
@@ -209,11 +209,11 @@ PODS:
   - SDWebImage (5.18.5):
     - SDWebImage/Core (= 5.18.5)
   - SDWebImage/Core (5.18.5)
-  - share_handler_ios (0.0.11):
+  - share_handler_ios (0.0.12):
     - Flutter
-    - share_handler_ios/share_handler_ios_models (= 0.0.11)
+    - share_handler_ios/share_handler_ios_models (= 0.0.12)
     - share_handler_ios_models
-  - share_handler_ios/share_handler_ios_models (0.0.11):
+  - share_handler_ios/share_handler_ios_models (0.0.12):
     - Flutter
     - share_handler_ios_models
   - share_handler_ios_models (0.0.9)
@@ -346,10 +346,10 @@ SPEC CHECKSUMS:
   DKPhotoGallery: fdfad5125a9fdda9cc57df834d49df790dbb4179
   file_picker: 15fd9539e4eb735dc54bae8c0534a7a9511a03de
   Firebase: 414ad272f8d02dfbf12662a9d43f4bba9bec2a06
-  firebase_analytics: a8c0d8ba83f213c9b775b5f61d36dadaafb1b239
-  firebase_core: f802c5c1f6caff9b8d38b591a36e7b25f8878936
-  firebase_crashlytics: 0db78a5b6badc630f21a833d0c9ab20ab5d81948
-  firebase_performance: e24d96d0be9d67e1adc1a1fdff6e78c2c460b4e6
+  firebase_analytics: 88c111412070acc2b05c1734151f58824f3db657
+  firebase_core: 0af4a2b24f62071f9bf283691c0ee41556dcb3f5
+  firebase_crashlytics: 55714f63ae0973c54b3a721c451ae5f815086c1f
+  firebase_performance: 2183122a3c7a650c80d8c164e9e28f13c4c62fc7
   FirebaseABTesting: d8b10ff4c6d1a9d6b11f02a08463ad5fd9fc6b1b
   FirebaseAnalytics: 4d310b35c48eaa4a058ddc04bdca6bdb5dc0fe80
   FirebaseCore: 2322423314d92f946219c8791674d2f3345b598f
@@ -378,7 +378,7 @@ SPEC CHECKSUMS:
   rate_my_app: 80fba94c4885cd31738231b7b1f51c1ad726f5c7
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   SDWebImage: 7ac2b7ddc5e8484c79aa90fc4e30b149d6a2c88f
-  share_handler_ios: ae3584532280673e02aacdf77f2cdfb2c96b9211
+  share_handler_ios: 83934899a7ad80e435607a0302a7e5b257f8e2f9
   share_handler_ios_models: fc638c9b4330dc7f082586c92aee9dfa0b87b871
   share_plus: c3fef564749587fc939ef86ffb283ceac0baf9f5
   shared_preferences_foundation: 5b919d13b803cadd15ed2dc053125c68730e5126
