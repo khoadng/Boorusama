@@ -1,3 +1,11 @@
+# 3.9.0
+- Support exporting/importing booru profiles and settings.
+- Centralize all export/import options into a new section in settings.
+- Display more information in file details.
+- Add an 'uploaderid' metatag to filter posts by uploader ID.
+- Enable swipe-from-edge gesture to navigate back on most pages.
+- Address several issues with the video player.
+
 # 3.8.1
 - Fix an issue where the download won't start in bookmark details.
 - Add a button to display some statistics for the current query.
