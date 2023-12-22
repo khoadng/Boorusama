@@ -127,7 +127,8 @@ dependencies:
 
 dev_dependencies:
   build_runner: ^2.4.6
-  flutter_launcher_icons: ^0.13.1
+  flutter_launcher_icons:
+    git: https://github.com/fluttercommunity/flutter_launcher_icons.git
   flutter_lints: ^3.0.1
   flutter_localizations:
     sdk: flutter
@@ -137,14 +138,6 @@ dev_dependencies:
   import_sorter: ^4.6.0
   mocktail: ^1.0.1
   test: ^1.21.1
-
-flutter_icons:
-  remove_alpha_ios: true
-  adaptive_icon_foreground: "assets/icon/icon-512x512.png"
-  adaptive_icon_background: "#e7bf55"
-  android: true
-  ios: true
-  image_path: "assets/icon/icon-512x512.png"
 
 flutter:
   uses-material-design: true
