@@ -96,6 +96,7 @@ class _DanbooruPostDetailsDesktopPageState
             imageUrl: post.sampleImageUrl,
             placeholderImageUrl: post.thumbnailImageUrl,
             autoPlay: true,
+            inFocus: true,
           );
         },
         infoBuilder: (context) {

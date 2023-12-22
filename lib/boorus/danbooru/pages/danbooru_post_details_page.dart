@@ -2,7 +2,9 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
@@ -10,6 +12,8 @@ import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/artist_commentaries/artist_commentaries.dart';
 import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
+import 'package:boorusama/boorus/danbooru/pages/widgets/danbooru_creator_preloader.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
@@ -50,68 +54,132 @@ class _DanbooruPostDetailsPageState
 
   @override
   Widget build(BuildContext context) {
-    return PostDetailsPageScaffold(
+    return DanbooruCreatorPreloader(
       posts: posts,
-      initialIndex: widget.intitialIndex,
-      onExit: widget.onExit,
-      showSourceTile: false,
-      onTagTap: (tag) => goToSearchPage(context, tag: tag),
-      toolbarBuilder: (context, post) => DanbooruPostActionToolbar(post: post),
-      swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
-      sliverArtistPostsBuilder: (context, post) =>
-          DanbooruArtistPostList(post: post),
-      sliverCharacterPostsBuilder: (context, post) =>
-          DanbooruCharacterPostList(post: post),
-      sliverRelatedPostsBuilder: (context, post) =>
-          DanbooruRelatedPostsSection(post: post),
-      poolTileBuilder: (context, post) =>
-          ref.watch(danbooruPostDetailsPoolsProvider(post.id)).maybeWhen(
-                data: (pools) => PoolTiles(pools: pools),
-                orElse: () => const SizedBox.shrink(),
-              ),
-      statsTileBuilder: (context, post) => DanbooruPostStatsTile(post: post),
-      onExpanded: (post) => post.loadDetailsFrom(ref),
-      tagListBuilder: (context, post) => DanbooruTagsTile(post: post),
-      infoBuilder: (context, post) => SimpleInformationSection(
-        post: post,
-        showSource: true,
-      ),
-      artistInfoBuilder: (context, post) => DanbooruArtistSection(post: post),
-      placeholderImageUrlBuilder: (post, currentPage) =>
-          currentPage == widget.intitialIndex && post.isTranslated
-              ? null
-              : post.thumbnailImageUrl,
-      imageOverlayBuilder: (constraints, post) => noteOverlayBuilderDelegate(
-        constraints,
-        post,
-        ref.watch(notesControllerProvider(post)),
-      ),
-      fileDetailsBuilder: (context, post) {
-        final tagDetails =
-            ref.watch(danbooruTagListProvider(ref.watchConfig))[post.id];
-
-        return FileDetailsSection(
+      child: PostDetailsPageScaffold(
+        posts: posts,
+        initialIndex: widget.intitialIndex,
+        onExit: widget.onExit,
+        showSourceTile: false,
+        onTagTap: (tag) => goToSearchPage(context, tag: tag),
+        toolbarBuilder: (context, post) =>
+            DanbooruPostActionToolbar(post: post),
+        swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
+        sliverArtistPostsBuilder: (context, post) =>
+            DanbooruArtistPostList(post: post),
+        sliverCharacterPostsBuilder: (context, post) =>
+            DanbooruCharacterPostList(post: post),
+        sliverRelatedPostsBuilder: (context, post) =>
+            DanbooruRelatedPostsSection(post: post),
+        poolTileBuilder: (context, post) =>
+            ref.watch(danbooruPostDetailsPoolsProvider(post.id)).maybeWhen(
+                  data: (pools) => PoolTiles(pools: pools),
+                  orElse: () => const SizedBox.shrink(),
+                ),
+        statsTileBuilder: (context, post) => DanbooruPostStatsTile(post: post),
+        onExpanded: (post) => post.loadDetailsFrom(ref),
+        tagListBuilder: (context, post) => DanbooruTagsTile(post: post),
+        infoBuilder: (context, post) => SimpleInformationSection(
           post: post,
-          rating: tagDetails != null ? tagDetails.rating : post.rating,
-        );
-      },
-      topRightButtonsBuilder: (page, expanded, post) {
-        final noteState = ref.watch(notesControllerProvider(posts[page]));
+          showSource: true,
+        ),
+        artistInfoBuilder: (context, post) => DanbooruArtistSection(post: post),
+        placeholderImageUrlBuilder: (post, currentPage) =>
+            currentPage == widget.intitialIndex && post.isTranslated
+                ? null
+                : post.thumbnailImageUrl,
+        imageOverlayBuilder: (constraints, post) => noteOverlayBuilderDelegate(
+          constraints,
+          post,
+          ref.watch(notesControllerProvider(post)),
+        ),
+        fileDetailsBuilder: (context, post) => DanbooruFileDetails(post: post),
+        topRightButtonsBuilder: (page, expanded, post) {
+          final noteState = ref.watch(notesControllerProvider(posts[page]));
 
-        return [
-          NoteActionButton(
-            post: post,
-            showDownload: !expanded && noteState.notes.isEmpty,
-            enableNotes: noteState.enableNotes,
-            onDownload: () =>
-                ref.read(notesControllerProvider(post).notifier).load(),
-            onToggleNotes: () => ref
-                .read(notesControllerProvider(post).notifier)
-                .toggleNoteVisibility(),
-          ),
-          DanbooruMoreActionButton(post: post),
-        ];
-      },
+          return [
+            NoteActionButton(
+              post: post,
+              showDownload: !expanded && noteState.notes.isEmpty,
+              enableNotes: noteState.enableNotes,
+              onDownload: () =>
+                  ref.read(notesControllerProvider(post).notifier).load(),
+              onToggleNotes: () => ref
+                  .read(notesControllerProvider(post).notifier)
+                  .toggleNoteVisibility(),
+            ),
+            DanbooruMoreActionButton(post: post),
+          ];
+        },
+      ),
+    );
+  }
+}
+
+class DanbooruFileDetails extends ConsumerWidget {
+  const DanbooruFileDetails({
+    super.key,
+    required this.post,
+  });
+
+  final DanbooruPost post;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tagDetails =
+        ref.watch(danbooruTagListProvider(ref.watchConfig))[post.id];
+    final uploader = ref.watch(danbooruCreatorProvider(post.uploaderId));
+    final approver = ref.watch(danbooruCreatorProvider(post.approverId));
+
+    return FileDetailsSection(
+      post: post,
+      rating: tagDetails != null ? tagDetails.rating : post.rating,
+      uploader: uploader != null
+          ? Material(
+              color: Colors.transparent,
+              elevation: 0,
+              child: InkWell(
+                onTap: () => goToUserDetailsPage(
+                  ref,
+                  context,
+                  uid: uploader.id,
+                  username: uploader.name,
+                ),
+                child: AutoSizeText(
+                  uploader.name.replaceAll('_', ' '),
+                  maxLines: 1,
+                  style: TextStyle(
+                    color: uploader.getColor(context),
+                    fontSize: 14,
+                  ),
+                ),
+              ),
+            )
+          : null,
+      customDetails: approver != null
+          ? {
+              'Approver': Material(
+                color: Colors.transparent,
+                elevation: 0,
+                child: InkWell(
+                  onTap: () => goToUserDetailsPage(
+                    ref,
+                    context,
+                    uid: approver.id,
+                    username: approver.name,
+                  ),
+                  child: AutoSizeText(
+                    approver.name.replaceAll('_', ' '),
+                    maxLines: 1,
+                    style: TextStyle(
+                      color: uploader.getColor(context),
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
+              ),
+            }
+          : null,
     );
   }
 }
@@ -229,7 +297,10 @@ class DanbooruCharacterPostList extends ConsumerWidget {
                   header: ListTile(
                     onTap: () => goToCharacterPage(context, tags[index]),
                     title: Text(r.title),
-                    trailing: const Icon(Icons.keyboard_arrow_right_rounded),
+                    trailing: const Icon(
+                      FontAwesomeIcons.arrowRightLong,
+                      size: 18,
+                    ),
                   ),
                   posts: r.posts,
                   onTap: (postIdx) => goToPostDetailsPage(

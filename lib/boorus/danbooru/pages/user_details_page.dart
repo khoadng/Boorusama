@@ -3,6 +3,7 @@ import 'dart:math';
 
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:collection/collection.dart';
@@ -63,18 +64,38 @@ class UserDetailsPage extends ConsumerWidget {
     super.key,
     required this.uid,
     required this.username,
+    this.hasAppBar = true,
   });
 
   final int uid;
   final String username;
+  final bool hasAppBar;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(danbooruUserProvider(uid));
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: const Text('Profile'),
+        actions: [
+          PopupMenuButton(
+            itemBuilder: (context) => [
+              const PopupMenuItem(
+                value: 0,
+                child: Text('Copy User ID'),
+              ),
+            ],
+            onSelected: (value) {
+              if (value == 0) {
+                Clipboard.setData(ClipboardData(text: uid.toString()));
+              }
+            },
+          ),
+        ],
+      ),
       body: SafeArea(
+        bottom: false,
         child: state.when(
           data: (user) => Container(
             padding: const EdgeInsets.all(4),
@@ -117,53 +138,50 @@ class UserDetailsPage extends ConsumerWidget {
                                           child: _buildChart(context, data)),
                                     ],
                                   ),
-                                  orElse: () => const Center(
-                                    child: SizedBox(
-                                      width: 15,
-                                      height: 15,
-                                      child:
-                                          CircularProgressIndicator.adaptive(),
+                                  orElse: () => const SizedBox(
+                                    height: 160,
+                                    child: Center(
+                                      child: SizedBox(
+                                        width: 15,
+                                        height: 15,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 4,
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),
                           ),
                         ),
                       if (user.uploadCount > 0)
-                        ref
-                            .watch(userCopyrightDataProvider(
-                              user.name,
-                            ))
-                            .maybeWhen(
-                              data: (data) {
-                                final tags = data.tags.take(5).toList();
-
-                                return Padding(
-                                  padding: const EdgeInsets.only(top: 24),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.stretch,
-                                    children: [
-                                      Text(
-                                        'Top 5 copyrights',
-                                        style: context.textTheme.titleMedium!
-                                            .copyWith(
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 4),
-                                      _buildTags(tags, context, ref),
-                                    ],
-                                  ),
-                                );
-                              },
-                              orElse: () => const Center(
-                                child: SizedBox(
-                                  width: 15,
-                                  height: 15,
-                                  child: CircularProgressIndicator.adaptive(),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 24),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Text(
+                                'Top 5 copyrights',
+                                style: context.textTheme.titleMedium!.copyWith(
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
-                            ),
+                              const SizedBox(height: 4),
+                              ref
+                                  .watch(userCopyrightDataProvider(
+                                    user.name,
+                                  ))
+                                  .maybeWhen(
+                                    data: (data) => _buildTags(
+                                      data.tags.take(5).toList(),
+                                      context,
+                                      ref,
+                                    ),
+                                    orElse: () =>
+                                        _buildPlaceHolderTags(context),
+                                  )
+                            ],
+                          ),
+                        ),
                       _UserUploads(uid: uid, user: user),
                       _UserFavorites(uid: uid, user: user),
                     ],
@@ -180,6 +198,31 @@ class UserDetailsPage extends ConsumerWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildPlaceHolderTags(BuildContext context) {
+    return Wrap(
+      spacing: 8,
+      children: [
+        'aaaaaaaaaaaaa',
+        'fffffffffffffffff',
+        'ccccccccccccccccc',
+        'dddddddddd',
+        'bbbddddddbb'
+      ]
+          .map(
+            (e) => BooruChip(
+              label: ConstrainedBox(
+                  constraints:
+                      BoxConstraints(maxWidth: context.screenWidth * 0.8),
+                  child: Text(
+                    e,
+                    style: const TextStyle(color: Colors.transparent),
+                  )),
+            ),
+          )
+          .toList(),
     );
   }
 
@@ -208,13 +251,19 @@ class UserDetailsPage extends ConsumerWidget {
                       style: TextStyle(
                         color: context.themeMode.isDark
                             ? ref.getTagColor(
-                                context, TagCategory.copyright.name)
+                                context,
+                                TagCategory.copyright.name,
+                              )
                             : Colors.white,
                       ),
                       children: [
                         TextSpan(
                           text: '  ${(e.frequency * 100).toStringAsFixed(1)}%',
-                          style: context.textTheme.bodySmall,
+                          style: context.textTheme.bodySmall?.copyWith(
+                            color: context.themeMode.isLight
+                                ? Colors.white.withOpacity(0.85)
+                                : null,
+                          ),
                         ),
                       ],
                     ),
@@ -317,7 +366,7 @@ class _UserFavorites extends ConsumerWidget {
           ? Column(
               children: [
                 const Divider(
-                  thickness: 2,
+                  thickness: 1,
                   height: 36,
                 ),
                 _PreviewList(
@@ -355,7 +404,7 @@ class _UserUploads extends ConsumerWidget {
           ? Column(
               children: [
                 const Divider(
-                  thickness: 2,
+                  thickness: 1,
                   height: 26,
                 ),
                 _PreviewList(
@@ -389,6 +438,7 @@ class _PreviewList extends ConsumerWidget {
     return Column(
       children: [
         ListTile(
+          contentPadding: EdgeInsets.zero,
           title: Text(
             title,
             style: const TextStyle(fontWeight: FontWeight.w900),
@@ -399,6 +449,7 @@ class _PreviewList extends ConsumerWidget {
             child: const Text('View all'),
           ),
         ),
+        const SizedBox(height: 8),
         LayoutBuilder(
           builder: (context, constraints) => PreviewPostList(
             posts: posts,

@@ -1,2 +1,2 @@
 String buildFavoriteQuery(String username) =>
-    'ordfav:${username.replaceAll(' ', '_')}';
+    'ordfav:${username.replaceAll(' ', '_')}'.trim();

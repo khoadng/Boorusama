@@ -124,7 +124,7 @@ class PostGridActionSheet extends ConsumerWidget {
           );
         },
       ),
-      if (postStatsPageBuilder != null) ...[
+      if (postStatsPageBuilder != null && postController.items.isNotEmpty) ...[
         const Divider(),
         ListTile(
           title: const Text('Stats for nerds'),

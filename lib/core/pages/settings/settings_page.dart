@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -110,6 +111,20 @@ class SettingsPage extends ConsumerWidget {
                     ),
                     ListTile(
                       title: const Text(
+                        'Backup and Restore',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      leading: FaIcon(
+                        FontAwesomeIcons.cloudArrowDown,
+                        color: context.iconTheme.color,
+                        size: 20,
+                      ),
+                      onTap: () => context.go('/settings/backup_and_restore'),
+                    ),
+                    ListTile(
+                      title: const Text(
                         'settings.search.search',
                         style: TextStyle(
                           fontWeight: FontWeight.w400,
@@ -166,7 +181,7 @@ class SettingsPage extends ConsumerWidget {
                         color: context.iconTheme.color,
                         size: 20,
                       ),
-                      onTap: () => context.navigator.push(MaterialPageRoute(
+                      onTap: () => context.navigator.push(CupertinoPageRoute(
                           builder: (_) => const DebugLogsPage())),
                     ),
                     ListTile(
@@ -231,26 +246,31 @@ class _Footer extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return SizedBox(
-      height: 50,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          IconButton(
-            onPressed: () => launchExternalUrl(
-              Uri.parse(ref.read(appInfoProvider).githubUrl),
-              mode: LaunchMode.externalApplication,
+    return Padding(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.paddingOf(context).bottom,
+      ),
+      child: SizedBox(
+        height: 50,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            IconButton(
+              onPressed: () => launchExternalUrl(
+                Uri.parse(ref.read(appInfoProvider).githubUrl),
+                mode: LaunchMode.externalApplication,
+              ),
+              icon: const FaIcon(FontAwesomeIcons.squareGithub),
             ),
-            icon: const FaIcon(FontAwesomeIcons.squareGithub),
-          ),
-          IconButton(
-            onPressed: () => launchExternalUrl(
-              Uri.parse(ref.read(appInfoProvider).discordUrl),
-              mode: LaunchMode.externalApplication,
+            IconButton(
+              onPressed: () => launchExternalUrl(
+                Uri.parse(ref.read(appInfoProvider).discordUrl),
+                mode: LaunchMode.externalApplication,
+              ),
+              icon: const FaIcon(FontAwesomeIcons.discord),
             ),
-            icon: const FaIcon(FontAwesomeIcons.discord),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

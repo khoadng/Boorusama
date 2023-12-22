@@ -145,6 +145,7 @@ class EmbeddedWebViewWebm extends StatefulWidget {
     this.backgroundColor,
     this.onWebmVideoPlayerCreated,
     this.autoPlay = false,
+    this.sound = true,
   });
 
   final String url;
@@ -154,6 +155,7 @@ class EmbeddedWebViewWebm extends StatefulWidget {
       onCurrentPositionChanged;
   final void Function(WebmVideoController controller)? onWebmVideoPlayerCreated;
   final bool autoPlay;
+  final bool sound;
 
   @override
   State<EmbeddedWebViewWebm> createState() => _EmbeddedWebViewWebmState();
@@ -167,12 +169,22 @@ class _EmbeddedWebViewWebmState extends State<EmbeddedWebViewWebm> {
   );
 
   @override
+  void didUpdateWidget(covariant EmbeddedWebViewWebm oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.sound != widget.sound) {
+      webmVideoController.mute(!widget.sound);
+    }
+  }
+
+  @override
   void initState() {
     super.initState();
     webmVideoController.load(urlToHtml(
       widget.url,
       backgroundColor: widget.backgroundColor ?? Colors.black,
     ));
+    webmVideoController.mute(!widget.sound);
     widget.onWebmVideoPlayerCreated?.call(webmVideoController);
   }
 

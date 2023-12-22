@@ -10,15 +10,17 @@ import 'package:boorusama/foundation/theme/theme.dart';
 class WarningContainer extends StatelessWidget {
   const WarningContainer({
     super.key,
+    this.margin,
     required this.contentBuilder,
   });
+  final EdgeInsetsGeometry? margin;
 
   final Widget Function(BuildContext context) contentBuilder;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(16),
+      margin: margin ?? const EdgeInsets.all(16),
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(4)),
         color: Theme.of(context).colorScheme.error,

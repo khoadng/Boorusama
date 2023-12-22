@@ -18,6 +18,7 @@ import 'package:boorusama/core/pages/search/search_landing_view.dart';
 import 'package:boorusama/core/pages/search/selected_tag_list_with_data.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 
 class DesktopSearchbar extends ConsumerStatefulWidget {
@@ -74,54 +75,83 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                     final suggestionTags =
                         ref.watch(suggestionProvider(query.text));
 
-                    return query.text.isNotEmpty
-                        ? TagSuggestionItems(
-                            dense: true,
-                            backgroundColor:
-                                Theme.of(context).colorScheme.surface,
-                            tags: suggestionTags,
-                            currentQuery: query.text,
-                            onItemTap: (tag) {
-                              selectedTagController.addTag(
-                                tag.value,
-                                operator: getFilterOperator(
-                                    textEditingController.text),
-                              );
-                              textEditingController.clear();
-                              showSuggestions.value = false;
-                              context.focusScope.unfocus();
-                            },
-                            textColorBuilder: (tag) =>
-                                generateAutocompleteTagColor(ref, context, tag),
-                          )
-                        : Material(
-                            elevation: 4,
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(8)),
-                            child: SearchLandingView(
-                              backgroundColor: context.colorScheme.surface,
-                              onHistoryCleared: () => ref
-                                  .read(searchHistoryProvider.notifier)
-                                  .clearHistories(),
-                              onHistoryRemoved: (value) => ref
-                                  .read(searchHistoryProvider.notifier)
-                                  .removeHistory(value.query),
-                              onTagTap: (value) => selectedTagController.addTag(
-                                value,
-                                operator: getFilterOperator(
-                                    textEditingController.text),
-                              ),
-                              onHistoryTap: (value) => selectedTagController
-                                  .addTags(value.split(' ')),
-                              metatagsBuilder: (context) =>
-                                  DanbooruMetatagsSection(
-                                onOptionTap: (value) {
-                                  textEditingController.text = '$value:';
-                                  _onTextChanged('$value:');
+                    return Stack(
+                      children: [
+                        query.text.isNotEmpty
+                            ? TagSuggestionItems(
+                                dense: true,
+                                backgroundColor:
+                                    Theme.of(context).colorScheme.surface,
+                                tags: suggestionTags,
+                                currentQuery: query.text,
+                                onItemTap: (tag) {
+                                  selectedTagController.addTag(
+                                    tag.value,
+                                    operator: getFilterOperator(
+                                        textEditingController.text),
+                                  );
+                                  textEditingController.clear();
+                                  showSuggestions.value = false;
+                                  focusNode.unfocus();
                                 },
+                                textColorBuilder: (tag) =>
+                                    generateAutocompleteTagColor(
+                                        ref, context, tag),
+                              )
+                            : Material(
+                                elevation: 4,
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(8)),
+                                child: SearchLandingView(
+                                  backgroundColor: context.colorScheme.surface,
+                                  onHistoryCleared: () => ref
+                                      .read(searchHistoryProvider.notifier)
+                                      .clearHistories(),
+                                  onHistoryRemoved: (value) => ref
+                                      .read(searchHistoryProvider.notifier)
+                                      .removeHistory(value.query),
+                                  onTagTap: (value) =>
+                                      selectedTagController.addTag(
+                                    value,
+                                    operator: getFilterOperator(
+                                        textEditingController.text),
+                                  ),
+                                  onHistoryTap: (value) => selectedTagController
+                                      .addTags(value.split(' ')),
+                                  metatagsBuilder: (context) =>
+                                      DanbooruMetatagsSection(
+                                    onOptionTap: (value) {
+                                      textEditingController.text = '$value:';
+                                      _onTextChanged('$value:');
+                                    },
+                                  ),
+                                ),
+                              ),
+                        if (isMobilePlatform())
+                          Positioned(
+                            top: 4,
+                            right: 4,
+                            child: MaterialButton(
+                              minWidth: 0,
+                              color: context.colorScheme.secondaryContainer,
+                              shape: const CircleBorder(),
+                              onPressed: () {
+                                textEditingController.clear();
+                                showSuggestions.value = false;
+                                focusNode.unfocus();
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(4),
+                                child: Icon(
+                                  Icons.close,
+                                  color:
+                                      context.colorScheme.onSecondaryContainer,
+                                ),
                               ),
                             ),
-                          );
+                          ),
+                      ],
+                    );
                   },
                 ),
               ),

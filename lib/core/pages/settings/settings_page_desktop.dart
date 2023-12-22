@@ -9,6 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/pages/settings/appearance_page.dart';
+import 'package:boorusama/core/pages/settings/backup_and_restore_page.dart';
 import 'package:boorusama/core/pages/settings/data_and_storage_page.dart';
 import 'package:boorusama/core/pages/settings/download_page.dart';
 import 'package:boorusama/core/pages/settings/language_page.dart';
@@ -130,7 +131,7 @@ class _LargeLayoutState extends ConsumerState<_LargeLayout> {
                         index == 5 ? context.colorScheme.onSecondary : null,
                     tileColor:
                         index == 5 ? context.colorScheme.secondary : null,
-                    title: const Text('settings.search.search').tr(),
+                    title: const Text('Backup and Restore'),
                     onTap: () => currentTab.value = 5,
                   ),
                   ListTile(
@@ -138,14 +139,22 @@ class _LargeLayoutState extends ConsumerState<_LargeLayout> {
                         index == 6 ? context.colorScheme.onSecondary : null,
                     tileColor:
                         index == 6 ? context.colorScheme.secondary : null,
-                    title: const Text('settings.privacy.privacy').tr(),
-                    onTap: () => currentTab.value = 6,
+                    title: const Text('settings.search.search').tr(),
+                    onTap: () => currentTab.value = 5,
                   ),
                   ListTile(
                     textColor:
                         index == 7 ? context.colorScheme.onSecondary : null,
                     tileColor:
                         index == 7 ? context.colorScheme.secondary : null,
+                    title: const Text('settings.privacy.privacy').tr(),
+                    onTap: () => currentTab.value = 6,
+                  ),
+                  ListTile(
+                    textColor:
+                        index == 8 ? context.colorScheme.onSecondary : null,
+                    tileColor:
+                        index == 8 ? context.colorScheme.secondary : null,
                     title: const Text('settings.debug_logs.debug_logs').tr(),
                     onTap: () => currentTab.value = 7,
                   ),
@@ -203,6 +212,9 @@ class _LargeLayoutState extends ConsumerState<_LargeLayout> {
                   hasAppBar: false,
                 ),
                 DataAndStoragePage(
+                  hasAppBar: false,
+                ),
+                BackupAndRestorePage(
                   hasAppBar: false,
                 ),
                 SearchSettingsPage(

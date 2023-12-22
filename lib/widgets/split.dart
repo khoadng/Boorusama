@@ -36,6 +36,7 @@ class Split extends StatefulWidget {
     this.minSizes,
     this.splitters,
     this.ignoreFractionChange = false,
+    this.onHoverStateChanged,
   })  : assert(children.length >= 2),
         assert(initialFractions.length >= 2),
         assert(children.length == initialFractions.length) {
@@ -78,6 +79,8 @@ class Split extends StatefulWidget {
 
   final bool ignoreFractionChange;
 
+  final void Function(int index, bool hovering)? onHoverStateChanged;
+
   /// The key passed to the divider between children[index] and
   /// children[index + 1].
   ///
@@ -93,10 +96,10 @@ class Split extends StatefulWidget {
   }
 
   @override
-  State<StatefulWidget> createState() => _SplitState();
+  State<StatefulWidget> createState() => SplitState();
 }
 
-class _SplitState extends State<Split> {
+class SplitState extends State<Split> {
   late final List<double> fractions;
 
   bool get isHorizontal => widget.axis == Axis.horizontal;
@@ -105,6 +108,14 @@ class _SplitState extends State<Split> {
   void initState() {
     super.initState();
     fractions = List.of(widget.initialFractions);
+  }
+
+  void setFractions(List<double> newFractions) {
+    assert(newFractions.length == fractions.length);
+    _verifyFractionsSumTo1(newFractions);
+    setState(() {
+      fractions.setAll(0, newFractions);
+    });
   }
 
   @override
@@ -260,6 +271,8 @@ class _SplitState extends State<Split> {
         ),
         if (i < widget.children.length - 1)
           MouseRegion(
+            onEnter: (_) => widget.onHoverStateChanged?.call(i, true),
+            onExit: (_) => widget.onHoverStateChanged?.call(i, false),
             cursor: isHorizontal
                 ? SystemMouseCursors.resizeColumn
                 : SystemMouseCursors.resizeRow,

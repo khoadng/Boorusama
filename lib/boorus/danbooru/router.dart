@@ -2,6 +2,7 @@
 import 'dart:math';
 
 // Flutter imports:
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -17,6 +18,7 @@ import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/saved_searches/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/core/feats/boorus/providers.dart';
+import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/pages/blacklists/add_to_blacklist_page.dart';
 import 'package:boorusama/core/router.dart';
@@ -47,6 +49,7 @@ import 'pages/pool_page.dart';
 import 'pages/pool_search_page.dart';
 import 'pages/saved_search_feed_page.dart';
 import 'pages/saved_search_page.dart';
+import 'pages/tag_edit_page.dart';
 import 'pages/user_details_page.dart';
 import 'pages/widgets/favorites/create_favorite_group_dialog.dart';
 import 'pages/widgets/saved_searches/edit_saved_search_sheet.dart';
@@ -54,13 +57,13 @@ import 'pages/widgets/search/related_tag_action_sheet.dart';
 import 'router_page_constant.dart';
 
 void goToCharacterPage(BuildContext context, String tag) {
-  context.navigator.push(MaterialPageRoute(
+  context.navigator.push(CupertinoPageRoute(
     builder: (_) => DanbooruCharacterPage.of(context, tag),
   ));
 }
 
 void goToPoolDetailPage(BuildContext context, Pool pool) {
-  context.navigator.push(MaterialPageRoute(
+  context.navigator.push(CupertinoPageRoute(
     builder: (_) => PoolDetailPage.of(context, pool: pool),
   ));
 }
@@ -78,7 +81,7 @@ void goToPostVersionPage(BuildContext context, DanbooruPost post) {
 
 void goToExplorePopularPage(BuildContext context) {
   if (isMobilePlatform()) {
-    context.navigator.push(MaterialPageRoute(
+    context.navigator.push(CupertinoPageRoute(
       settings: const RouteSettings(
         name: RouterPageConstant.explorePopular,
       ),
@@ -94,7 +97,7 @@ void goToExplorePopularPage(BuildContext context) {
 
 void goToExploreHotPage(BuildContext context) {
   if (isMobilePlatform()) {
-    context.navigator.push(MaterialPageRoute(
+    context.navigator.push(CupertinoPageRoute(
       settings: const RouteSettings(
         name: RouterPageConstant.exploreHot,
       ),
@@ -110,7 +113,7 @@ void goToExploreHotPage(BuildContext context) {
 
 void goToExploreMostViewedPage(BuildContext context) {
   if (isMobilePlatform()) {
-    context.navigator.push(MaterialPageRoute(
+    context.navigator.push(CupertinoPageRoute(
       settings: const RouteSettings(
         name: RouterPageConstant.exploreMostViewed,
       ),
@@ -125,14 +128,14 @@ void goToExploreMostViewedPage(BuildContext context) {
 }
 
 void goToSavedSearchPage(BuildContext context, String? username) {
-  context.navigator.push(MaterialPageRoute(
+  context.navigator.push(CupertinoPageRoute(
     builder: (_) => SavedSearchFeedPage.of(context),
   ));
 }
 
 void goToSavedSearchEditPage(BuildContext context) {
   if (isMobilePlatform()) {
-    context.navigator.push(MaterialPageRoute(
+    context.navigator.push(CupertinoPageRoute(
       builder: (_) {
         return const SavedSearchPage();
       },
@@ -147,25 +150,25 @@ void goToSavedSearchEditPage(BuildContext context) {
 }
 
 void goToPoolPage(BuildContext context, WidgetRef ref) {
-  context.navigator.push(MaterialPageRoute(
+  context.navigator.push(CupertinoPageRoute(
     builder: (_) => const PoolPage(),
   ));
 }
 
 void goToBlacklistedTagPage(BuildContext context) {
-  context.navigator.push(MaterialPageRoute(
+  context.navigator.push(CupertinoPageRoute(
     builder: (_) => const BlacklistedTagsPage(),
   ));
 }
 
 void goToDmailPage(BuildContext context) {
-  context.navigator.push(MaterialPageRoute(
+  context.navigator.push(CupertinoPageRoute(
     builder: (_) => const DanbooruDmailPage(),
   ));
 }
 
 void goToArtistSearchPage(BuildContext context) {
-  context.navigator.push(MaterialPageRoute(
+  context.navigator.push(CupertinoPageRoute(
     builder: (_) => const DanbooruArtistSearchPage(),
   ));
 }
@@ -175,7 +178,7 @@ void goToCommentCreatePage(
   required int postId,
   String? initialContent,
 }) {
-  context.navigator.push(MaterialPageRoute(
+  context.navigator.push(CupertinoPageRoute(
     builder: (_) => CommentCreatePage(
       postId: postId,
       initialContent: initialContent,
@@ -194,7 +197,7 @@ void goToCommentUpdatePage(
   String? initialContent,
 }) {
   context.navigator.push(
-    MaterialPageRoute(
+    CupertinoPageRoute(
       builder: (_) => CommentUpdatePage(
         postId: postId,
         commentId: commentId,
@@ -214,7 +217,7 @@ void goToUserDetailsPage(
   required String username,
 }) {
   context.navigator.push(
-    MaterialPageRoute(
+    CupertinoPageRoute(
       builder: (_) => UserDetailsPage(
         uid: uid,
         username: username,
@@ -224,7 +227,7 @@ void goToUserDetailsPage(
 }
 
 void goToPoolSearchPage(BuildContext context, WidgetRef ref) {
-  context.navigator.push(MaterialPageRoute(
+  context.navigator.push(CupertinoPageRoute(
     builder: (_) => const PoolSearchPage(),
     settings: const RouteSettings(
       name: RouterPageConstant.poolSearch,
@@ -406,7 +409,7 @@ Future<Object?> goToFavoriteGroupEditPage(
 }
 
 void goToFavoriteGroupPage(BuildContext context) {
-  context.navigator.push(MaterialPageRoute(
+  context.navigator.push(CupertinoPageRoute(
     builder: (_) => const FavoriteGroupsPage(),
   ));
 }
@@ -415,7 +418,7 @@ void goToFavoriteGroupDetailsPage(
   BuildContext context,
   FavoriteGroup group,
 ) {
-  context.navigator.push(MaterialPageRoute(
+  context.navigator.push(CupertinoPageRoute(
     builder: (_) => CustomContextMenuOverlay(
       child: FavoriteGroupDetailsPage(
         group: group,
@@ -463,7 +466,36 @@ Future<bool?> goToAddToBlacklistPage(
 }
 
 void goToForumPage(BuildContext context) {
-  context.navigator.push(MaterialPageRoute(
+  context.navigator.push(CupertinoPageRoute(
     builder: (_) => const DanbooruForumPage(),
   ));
+}
+
+void goToTagEdiPage(
+  BuildContext context, {
+  required DanbooruPost post,
+  required List<String> tags,
+  required Rating rating,
+}) {
+  if (Screen.of(context).size == ScreenSize.small) {
+    context.navigator.push(CupertinoPageRoute(
+      builder: (context) => TagEditPage(
+        postId: post.id,
+        tags: tags,
+        rating: rating,
+        imageUrl: post.url720x720,
+        aspectRatio: post.aspectRatio ?? 1,
+      ),
+    ));
+  } else {
+    context.navigator.push(MaterialPageRoute(
+      builder: (context) => TagEditPage(
+        postId: post.id,
+        tags: tags,
+        rating: rating,
+        imageUrl: post.url720x720,
+        aspectRatio: post.aspectRatio ?? 1,
+      ),
+    ));
+  }
 }

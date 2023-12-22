@@ -72,39 +72,37 @@ class _AppLockState extends ConsumerState<AppLock> {
     );
 
     return Scaffold(
-      body: SafeArea(
-        child: ref.watch(canUseBiometricLockProvider).when(
-              data: (canUse) {
-                if (canUse && !unlocked) {
-                  return Center(
-                      child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const Text('Please authenticate to use the app'),
-                      const SizedBox(height: 16),
-                      IconButton(
-                        onPressed: () => _authenticate(localAuth),
-                        icon: Icon(
-                          Icons.fingerprint,
-                          size: 72,
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                      )
-                    ],
-                  ));
-                }
+      body: ref.watch(canUseBiometricLockProvider).when(
+            data: (canUse) {
+              if (canUse && !unlocked) {
+                return Center(
+                    child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Text('Please authenticate to use the app'),
+                    const SizedBox(height: 16),
+                    IconButton(
+                      onPressed: () => _authenticate(localAuth),
+                      icon: Icon(
+                        Icons.fingerprint,
+                        size: 72,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    )
+                  ],
+                ));
+              }
 
-                return widget.child;
-              },
-              loading: () => const Material(
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
+              return widget.child;
+            },
+            loading: () => const Material(
+              child: Center(
+                child: CircularProgressIndicator(),
               ),
-              error: (error, stack) => widget.child,
             ),
-      ),
+            error: (error, stack) => widget.child,
+          ),
     );
   }
 }

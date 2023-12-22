@@ -203,6 +203,7 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
             builder: (context, header) => ConditionalParentWidget(
               condition: widget.safeArea,
               conditionalBuilder: (child) => SafeArea(
+                bottom: false,
                 child: child,
               ),
               child: MultiSelectWidget<T>(
@@ -240,6 +241,7 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                     widget.itemBuilder(context, items, index),
                 scrollableWidgetBuilder: (context, items, itemBuilder) {
                   return Scaffold(
+                    extendBody: true,
                     floatingActionButton: ScrollToTop(
                       scrollController: _autoScrollController,
                       onBottomReached: () {
@@ -268,15 +270,21 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                               onPressed: () => _autoScrollController.jumpTo(0),
                             ),
                     ),
-                    body: RefreshIndicator(
-                      notificationPredicate: widget.enablePullToRefresh
-                          ? (_) => true
-                          : (_) => false,
-                      onRefresh: () async {
-                        widget.onRefresh?.call();
-                        _multiSelectController.clearSelected();
-                        await controller.refresh();
-                      },
+                    body: ConditionalParentWidget(
+                      condition: isMobilePlatform(),
+                      conditionalBuilder: (child) => RefreshIndicator(
+                        edgeOffset: 60,
+                        displacement: 50,
+                        notificationPredicate: widget.enablePullToRefresh
+                            ? (_) => true
+                            : (_) => false,
+                        onRefresh: () async {
+                          widget.onRefresh?.call();
+                          _multiSelectController.clearSelected();
+                          await controller.refresh();
+                        },
+                        child: child,
+                      ),
                       child: ImprovedScrolling(
                         scrollController: _autoScrollController,
                         // https://github.com/adrianflutur/flutter_improved_scrolling/issues/5

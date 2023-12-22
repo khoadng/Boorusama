@@ -30,8 +30,10 @@ class BooruVideoProgressBar extends StatelessWidget {
     required this.progress,
     this.onSeek,
     this.onSoundToggle,
+    this.soundOn = true,
   });
 
+  final bool soundOn;
   final VideoProgress progress;
   final void Function(Duration position)? onSeek;
   final void Function(bool value)? onSoundToggle;
@@ -60,7 +62,7 @@ class BooruVideoProgressBar extends StatelessWidget {
               backgroundColor: Theme.of(context).hintColor,
               playedColor: Theme.of(context).colorScheme.primary,
               bufferedColor: Theme.of(context).hintColor,
-              handleColor: Theme.of(context).colorScheme.onPrimary,
+              handleColor: Theme.of(context).colorScheme.primary,
             ),
           ),
         ),
@@ -69,7 +71,7 @@ class BooruVideoProgressBar extends StatelessWidget {
           width: 8,
         ),
         SoundControlButton(
-          hasSound: true,
+          soundOn: soundOn,
           onSoundChanged: onSoundToggle,
         ),
         const SizedBox(
@@ -80,32 +82,22 @@ class BooruVideoProgressBar extends StatelessWidget {
   }
 }
 
-class SoundControlButton extends StatefulWidget {
+class SoundControlButton extends StatelessWidget {
   const SoundControlButton({
     super.key,
-    required this.hasSound,
+    required this.soundOn,
     this.onSoundChanged,
   });
 
-  final bool hasSound;
+  final bool soundOn;
+
   final void Function(bool hasSound)? onSoundChanged;
-
-  @override
-  State<SoundControlButton> createState() => _SoundControlButtonState();
-}
-
-class _SoundControlButtonState extends State<SoundControlButton> {
-  late var soundOn = widget.hasSound;
-
   @override
   Widget build(BuildContext context) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () => setState(() {
-          soundOn = !soundOn;
-          widget.onSoundChanged?.call(soundOn);
-        }),
+        onTap: () => onSoundChanged?.call(!soundOn),
         child: Icon(
           soundOn ? Icons.volume_up : Icons.volume_off,
         ),

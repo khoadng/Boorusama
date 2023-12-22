@@ -95,6 +95,7 @@ final sankakuPostRepoProvider =
             createdAt: timestamp != null
                 ? DateTime.fromMillisecondsSinceEpoch(timestamp * 1000)
                 : null,
+            uploaderId: e.author?.id,
           );
         }).toList();
       },

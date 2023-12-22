@@ -1,3 +1,6 @@
+// Package imports:
+import 'package:petitparser/core.dart';
+
 // Project imports:
 import 'dtext_grammar.dart';
 
@@ -8,7 +11,7 @@ String dtext(
   final tagSearchUrl = '$booruUrl/posts?tags=';
   final result =
       DTextGrammarDefinition(tagSearchUrl: tagSearchUrl).build().parse(value);
-  return result.isSuccess ? grammarToHtmlString(result.value) : value;
+  return result is Success ? grammarToHtmlString(result.value) : value;
 }
 
 String grammarToHtmlString(List<dynamic> value) {

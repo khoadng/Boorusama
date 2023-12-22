@@ -34,6 +34,7 @@ class MoebooruPost extends Equatable
     required this.score,
     required this.createdAt,
     required this.parentId,
+    required this.uploaderId,
   });
 
   @override
@@ -99,4 +100,6 @@ class MoebooruPost extends Equatable
   int? get downvotes => null;
   @override
   final int? parentId;
+  @override
+  final int? uploaderId;
 }

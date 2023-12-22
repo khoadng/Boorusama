@@ -49,6 +49,7 @@ class E621Post extends Equatable
     required this.description,
     required this.videoUrl,
     required this.parentId,
+    required this.uploaderId,
   });
 
   @override
@@ -141,6 +142,9 @@ class E621Post extends Equatable
 
   @override
   final int? parentId;
+
+  @override
+  final int? uploaderId;
 }
 
 extension PostImageX on E621Post {

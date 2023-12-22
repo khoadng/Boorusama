@@ -134,7 +134,8 @@ final danbooruCreatorsProvider =
     NotifierProvider.family<CreatorsNotifier, IMap<int, Creator>, BooruConfig>(
         CreatorsNotifier.new);
 
-final danbooruCreatorProvider = Provider.family<Creator?, int>((ref, id) {
+final danbooruCreatorProvider = Provider.family<Creator?, int?>((ref, id) {
+  if (id == null) return null;
   final config = ref.watchConfig;
   return ref.watch(danbooruCreatorsProvider(config))[id];
 });

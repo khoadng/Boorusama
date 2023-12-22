@@ -21,6 +21,7 @@ class DetailsPageDesktop extends ConsumerStatefulWidget {
     required this.onPageChanged,
     required this.onExit,
     this.topRightBuilder,
+    this.onShowInfoChanged,
   });
 
   final int initialPage;
@@ -30,6 +31,7 @@ class DetailsPageDesktop extends ConsumerStatefulWidget {
   final Widget Function(BuildContext context)? topRightBuilder;
   final void Function(int page) onPageChanged;
   final void Function(int page) onExit;
+  final void Function(bool value)? onShowInfoChanged;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -38,6 +40,7 @@ class DetailsPageDesktop extends ConsumerStatefulWidget {
 
 class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
   late var currentPage = widget.initialPage;
+  var showInfo = false;
 
   @override
   void initState() {
@@ -146,7 +149,22 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                                       Icons.info,
                                       color: Colors.white,
                                     ),
+                                  )
+                                else
+                                  CircularIconButton(
+                                    onPressed: () => setState(
+                                      () {
+                                        showInfo = !showInfo;
+                                        widget.onShowInfoChanged
+                                            ?.call(showInfo);
+                                      },
+                                    ),
+                                    icon: const Icon(
+                                      Icons.info,
+                                      color: Colors.white,
+                                    ),
                                   ),
+                                const SizedBox(width: 8),
                                 widget.topRightBuilder!.call(context),
                               ],
                             ),
@@ -159,7 +177,7 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                   width: 1,
                   thickness: 1,
                 ),
-                if (!isSmall)
+                if (showInfo && !isSmall)
                   Container(
                     constraints: const BoxConstraints(maxWidth: 400),
                     color: context.colorScheme.surface,

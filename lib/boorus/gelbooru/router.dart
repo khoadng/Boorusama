@@ -1,5 +1,5 @@
 // Flutter imports:
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,7 +13,7 @@ void goToGelbooruArtistPage(
   BuildContext context,
   String artist,
 ) {
-  context.navigator.push(MaterialPageRoute(
+  context.navigator.push(CupertinoPageRoute(
     builder: (_) => GelbooruArtistPage(
       artistName: artist,
     ),

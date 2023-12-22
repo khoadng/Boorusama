@@ -7,9 +7,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/video/videos_provider.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   const PostDetailsPageScaffold({
@@ -114,17 +116,25 @@ class _PostDetailPageScaffoldState<T extends Post>
             if (posts[page].isVideo)
               ValueListenableBuilder(
                 valueListenable: videoProgress,
-                builder: (_, progress, __) => BooruVideoProgressBar(
-                  progress: progress,
-                  onSeek: (position) => onVideoSeekTo(position, page),
-                  onSoundToggle: (value) => onSoundToggle(value, page),
+                builder: (_, progress, __) => VideoSoundScope(
+                  builder: (context, soundOn) => BooruVideoProgressBar(
+                    soundOn: soundOn,
+                    progress: progress,
+                    onSeek: (position) => onVideoSeekTo(position, page),
+                    onSoundToggle: (value) => ref.setGlobalVideoSound(value),
+                  ),
                 ),
               ),
             if (widget.infoBuilder != null)
               widget.infoBuilder!(context, posts[page]),
-            widget.toolbarBuilder != null
-                ? widget.toolbarBuilder!(context, posts[page])
-                : SimplePostActionToolbar(post: posts[page]),
+            Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.paddingOf(context).bottom,
+              ),
+              child: widget.toolbarBuilder != null
+                  ? widget.toolbarBuilder!(context, posts[page])
+                  : SimplePostActionToolbar(post: posts[page]),
+            ),
           ],
         );
 
@@ -177,6 +187,9 @@ class _PostDetailPageScaffoldState<T extends Post>
                   expanded &&
                   page == currentPage)
                 widget.sliverCharacterPostsBuilder!(context, posts[page]),
+              SliverSizedBox(
+                height: MediaQuery.paddingOf(context).bottom,
+              ),
             ],
           ),
         );
@@ -236,20 +249,20 @@ class _PostDetailPageScaffoldState<T extends Post>
         if (widget.poolTileBuilder != null)
           widget.poolTileBuilder!(context, post),
         if (widget.infoBuilder != null) widget.infoBuilder!(context, post),
-        const Divider(height: 8, thickness: 1),
+        const Divider(height: 8, thickness: 0.5),
         if (widget.toolbarBuilder != null)
           widget.toolbarBuilder!(context, post)
         else
           SimplePostActionToolbar(post: post),
         if (widget.artistInfoBuilder != null) ...[
-          const Divider(height: 8, thickness: 1),
+          const Divider(height: 8, thickness: 0.5),
           widget.artistInfoBuilder!(context, post),
         ],
         if (widget.statsTileBuilder != null) ...[
           const SizedBox(height: 12),
           widget.statsTileBuilder!(context, post),
         ],
-        const Divider(height: 8, thickness: 1),
+        const Divider(height: 8, thickness: 0.5),
         if (widget.tagListBuilder != null)
           widget.tagListBuilder!(context, post)
         else
@@ -260,7 +273,6 @@ class _PostDetailPageScaffoldState<T extends Post>
               onTap: widget.onTagTap,
             ),
           ),
-        const Divider(height: 8, thickness: 1),
         if (widget.fileDetailsBuilder != null)
           widget.fileDetailsBuilder!(context, post)
         else
@@ -268,6 +280,7 @@ class _PostDetailPageScaffoldState<T extends Post>
             post: post,
             rating: post.rating,
           ),
+        const Divider(height: 8, thickness: 0.5),
         if (widget.showSourceTile)
           post.source.whenWeb(
             (source) => SourceSection(source: source),

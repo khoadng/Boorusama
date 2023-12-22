@@ -42,6 +42,7 @@ class DanbooruPost extends Equatable
     required this.downScore,
     required this.favCount,
     required this.uploaderId,
+    required this.approverId,
     required this.rating,
     required this.fileSize,
     required this.isBanned,
@@ -80,6 +81,7 @@ class DanbooruPost extends Equatable
         downScore: 0,
         favCount: 0,
         uploaderId: 0,
+        approverId: 0,
         rating: Rating.explicit,
         fileSize: 0,
         isBanned: false,
@@ -126,7 +128,9 @@ class DanbooruPost extends Equatable
   final int upScore;
   final int downScore;
   final int favCount;
+  @override
   final int uploaderId;
+  final int? approverId;
   @override
   final Rating rating;
   @override
@@ -316,6 +320,7 @@ extension PostX on DanbooruPost {
         downScore: downScore ?? this.downScore,
         favCount: favCount ?? this.favCount,
         uploaderId: uploaderId,
+        approverId: approverId,
         rating: rating,
         fileSize: fileSize,
         isBanned: isBanned,
@@ -356,4 +361,11 @@ extension DanbooruTagDetailsX on DanbooruTagDetails {
         ...generalTags ?? [],
         ...metaTags ?? [],
       ];
+}
+
+extension DanbooruIdsX on List<DanbooruPost> {
+  List<int> extractEmbeddedUserIds() => map((e) => [
+        e.uploaderId,
+        if (e.approverId != null) e.approverId!,
+      ]).expand((e) => e).toSet().toList();
 }

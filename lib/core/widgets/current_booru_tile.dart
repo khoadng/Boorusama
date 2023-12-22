@@ -30,6 +30,7 @@ class CurrentBooruTile extends ConsumerWidget {
     return LayoutBuilder(
       builder: (context, constraints) => constraints.maxWidth > 62
           ? ListTile(
+              visualDensity: const VisualDensity(vertical: -4),
               horizontalTitleGap: 0,
               minLeadingWidth: 36,
               contentPadding: const EdgeInsets.only(left: 4),

@@ -60,14 +60,6 @@ mixin PostDetailsPageMixin<T extends StatefulWidget, E extends Post>
     }
   }
 
-  void onSoundToggle(bool value, int page) {
-    if (posts[page].videoUrl.endsWith('.webm')) {
-      _webmVideoControllers[page]?.mute(!value);
-    } else {
-      _videoControllers[page]?.setVolume(value ? 1 : 0);
-    }
-  }
-
   void onWebmVideoPlayerCreated(WebmVideoController controller, int page) {
     _webmVideoControllers[page] = controller;
   }

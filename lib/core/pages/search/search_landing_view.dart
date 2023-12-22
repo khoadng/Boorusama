@@ -105,6 +105,7 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
                     _onTagTap(value, ref);
                   },
                 ),
+                const SizedBox(height: 8),
                 if (widget.trendingBuilder != null) ...[
                   widget.trendingBuilder!.call(context),
                 ],

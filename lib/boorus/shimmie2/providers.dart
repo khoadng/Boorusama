@@ -59,6 +59,7 @@ final shimmie2PostRepoProvider = Provider.family<PostRepository, BooruConfig>(
                       ? '${baseUrl}post/view/${e.id}'
                       : '$baseUrl/post/view/${e.id}',
                   createdAt: e.date,
+                  uploaderId: null,
                 ))
             .toList();
       },

@@ -10,14 +10,12 @@ import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/pages/danbooru_post_details_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/tag_edit_page.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -26,45 +24,57 @@ class DanbooruTagsTile extends ConsumerWidget {
   const DanbooruTagsTile({
     super.key,
     required this.post,
+    this.allowFetch = true,
   });
 
   final DanbooruPost post;
+  final bool allowFetch;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfig;
-    final tagItems = ref.watch(danbooruTagGroupsProvider(post));
-    final tagDetails = ref.watch(danbooruTagListProvider(config))[post.id];
+    final tagItems = allowFetch
+        ? ref.watch(danbooruTagGroupsProvider(post))
+        : const AsyncData(<TagGroupItem>[]);
+    final tagDetails =
+        allowFetch ? ref.watch(danbooruTagListProvider(config))[post.id] : null;
     final count = tagDetails?.allTags.length ?? post.tags.length;
 
     return Theme(
       data: context.theme.copyWith(dividerColor: Colors.transparent),
       child: ExpansionTile(
-        title: Text('$count tags'),
-        trailing: config.hasLoginDetails()
-            ? FilledButton(
+        title: Row(
+          children: [
+            Text('$count tags'),
+            if (config.hasLoginDetails())
+              FilledButton(
+                style: FilledButton.styleFrom(
+                  visualDensity: VisualDensity.compact,
+                  shape: const CircleBorder(),
+                  backgroundColor: context.colorScheme.surfaceVariant,
+                ),
                 onPressed: tagItems.maybeWhen(
-                  data: (data) =>
-                      () => context.navigator.push(MaterialPageRoute(
-                            builder: (context) => TagEditPage(
-                              imageUrl: post.url720x720,
-                              aspectRatio: post.aspectRatio ?? 1,
-                              rating: tagDetails != null
-                                  ? tagDetails.rating
-                                  : post.rating,
-                              postId: post.id,
-                              tags: data
-                                  .map((e) => e.tags.map((e) => e.rawName))
-                                  .expand((e) => e)
-                                  .toList(),
-                            ),
-                          )),
+                  data: (data) => () => goToTagEdiPage(
+                        context,
+                        post: post,
+                        tags: data
+                            .map((e) => e.tags.map((e) => e.rawName))
+                            .expand((e) => e)
+                            .toList(),
+                        rating: tagDetails != null
+                            ? tagDetails.rating
+                            : post.rating,
+                      ),
                   orElse: () => null,
                 ),
-                child: const Text('Edit'),
-              )
-            : null,
-        controlAffinity: ListTileControlAffinity.leading,
+                child: Icon(
+                  Icons.edit,
+                  size: 16,
+                  color: context.colorScheme.onSurfaceVariant,
+                ),
+              ),
+          ],
+        ),
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -75,6 +85,10 @@ class DanbooruTagsTile extends ConsumerWidget {
               ),
               itemBuilder: (context, tag) => ContextMenu(
                 items: [
+                  const PopupMenuItem(
+                    value: 'copy',
+                    child: Text('Copy tag'),
+                  ),
                   PopupMenuItem(
                     value: 'wiki',
                     child: const Text('post.detail.open_wiki').tr(),
@@ -109,6 +123,10 @@ class DanbooruTagsTile extends ConsumerWidget {
                     ).then((value) => goToSavedSearchEditPage(context));
                   } else if (value == 'add_to_favorites') {
                     ref.read(favoriteTagsProvider.notifier).add(tag.rawName);
+                  } else if (value == 'copy') {
+                    Clipboard.setData(
+                      ClipboardData(text: tag.rawName),
+                    ).then((value) => showSuccessToast('Copied'));
                   }
                 },
                 child: GestureDetector(

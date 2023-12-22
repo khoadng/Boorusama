@@ -5,19 +5,47 @@
             "name": "boorusama",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "debug"
+            "flutterMode": "debug",
+            "args": [
+                "--flavor", 
+                "dev",
+                "--dart-define-from-file",
+                "env/dev.json"
+            ]
+        },
+        {
+            "name": "boorusama desktop",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "debug",
+            "args": [
+                "--dart-define-from-file",
+                "env/dev.json"
+            ]
         },
         {
             "name": "boorusama (profile mode)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "profile"
+            "flutterMode": "profile",
+            "args": [
+                "--flavor", 
+                "dev",
+                "--dart-define-from-file",
+                "env/dev.json"
+            ]
         },
         {
             "name": "boorusama (release mode)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "release"
+            "flutterMode": "release",
+            "args": [
+                "--flavor", 
+                "dev",
+                "--dart-define-from-file",
+                "env/dev.json"
+            ]
         }
     ]
 }

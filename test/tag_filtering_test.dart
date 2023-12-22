@@ -315,6 +315,34 @@ void main() {
           false,
         );
       });
+
+      test('positive (uploaderid)', () {
+        expect(
+          checkIfTagsContainsTagExpression(
+              TagFilterData(
+                tags: ['a', 'b', 'c'],
+                rating: Rating.explicit,
+                score: 0,
+                uploaderId: 123,
+              ),
+              'a uploaderid:123'),
+          true,
+        );
+      });
+
+      test('negative (uploaderid)', () {
+        expect(
+          checkIfTagsContainsTagExpression(
+              TagFilterData(
+                tags: ['a', 'b', 'c'],
+                rating: Rating.explicit,
+                score: 0,
+                uploaderId: 123,
+              ),
+              'a uploaderid:321'),
+          false,
+        );
+      });
     });
 
     group('NOT + Metatags', () {

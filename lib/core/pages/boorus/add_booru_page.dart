@@ -174,9 +174,11 @@ class _AddBooruPageInternalState extends ConsumerState<AddBooruPageInternal> {
             builder: (_, error, __) => AutofillGroup(
               child: BooruTextFormField(
                 validator: (p0) => null,
+                autocorrect: false,
                 autofillHints: const [
                   AutofillHints.url,
                 ],
+                keyboardType: TextInputType.url,
                 autofocus: true,
                 onChanged: (value) {
                   inputText.value = value;

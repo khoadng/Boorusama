@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/boorus/danbooru/feats/versions/versions.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/feats/user_level_colors.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -57,7 +57,6 @@ class DanbooruPostVersionsPage extends ConsumerWidget {
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
                       final version = data[index];
-                      final level = version.updater.level;
 
                       return Container(
                         padding: const EdgeInsets.all(12),
@@ -104,9 +103,8 @@ class DanbooruPostVersionsPage extends ConsumerWidget {
                                               version.updater.name,
                                               style: TextStyle(
                                                 fontWeight: FontWeight.bold,
-                                                color: !context.themeMode.isDark
-                                                    ? level.toColor()
-                                                    : level.toOnDarkColor(),
+                                                color: version.updater
+                                                    .getColor(context),
                                               ),
                                             ),
                                           ),
@@ -179,9 +177,19 @@ class DanbooruPostVersionsPage extends ConsumerWidget {
                   ),
                 );
               },
-              loading: () => const SliverToBoxAdapter(
+              loading: () => SliverToBoxAdapter(
                 child: Center(
-                  child: CircularProgressIndicator(),
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    margin: const EdgeInsets.symmetric(
+                      vertical: 4,
+                    ),
+                    child: const SizedBox(
+                      height: 12,
+                      width: 12,
+                      child: CircularProgressIndicator(),
+                    ),
+                  ),
                 ),
               ),
               error: (error, stackTrace) => SliverToBoxAdapter(

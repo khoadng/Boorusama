@@ -12,6 +12,7 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/search/search.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 
 class DanbooruDesktopHomePage extends ConsumerStatefulWidget {
@@ -41,49 +42,84 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruDesktopHomePage> {
             selectedTagController.rawTags,
             page,
           ),
-      builder: (context, controller, errors) => Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          DesktopSearchbar(
-            onSearch: () => _onSearch(controller),
-            selectedTagController: selectedTagController,
-          ),
-          ValueListenableBuilder(
-            valueListenable: selectedTagString,
-            builder: (context, value, _) => Material(
-              color: context.theme.scaffoldBackgroundColor,
-              child: RelatedTagSection(
-                backgroundColor: Colors.transparent,
-                query: value,
-                onSelected: (tag) => selectedTagController.addTag(tag.tag),
-              ),
-            ),
-          ),
-          Expanded(
-            child: DanbooruInfinitePostList(
-              controller: controller,
-              errors: errors,
-              sliverHeaderBuilder: (context) => [
-                SliverToBoxAdapter(
-                  child: Row(
-                    children: [
-                      ValueListenableBuilder(
-                        valueListenable: selectedTagString,
-                        builder: (context, value, _) =>
-                            ResultHeaderWithProvider(
-                          selectedTags: value.split(' '),
-                          onRefresh: () => controller.refresh(),
-                        ),
-                      ),
-                      const Spacer(),
-                    ],
+      builder: (context, controller, errors) => LayoutBuilder(
+        builder: (context, constraints) => constraints.maxHeight < 500
+            ? _buildList(
+                controller,
+                errors,
+                children: [
+                  SliverToBoxAdapter(
+                    child: _buildSearchbar(controller),
                   ),
-                ),
-              ],
-            ),
-          ),
-        ],
+                  SliverToBoxAdapter(
+                    child: _buildRelatedTags(),
+                  ),
+                ],
+              )
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _buildSearchbar(controller),
+                  _buildRelatedTags(),
+                  Expanded(
+                    child: _buildList(
+                      controller,
+                      errors,
+                      children: [
+                        SliverToBoxAdapter(
+                          child: Row(
+                            children: [
+                              ValueListenableBuilder(
+                                valueListenable: selectedTagString,
+                                builder: (context, value, _) =>
+                                    ResultHeaderWithProvider(
+                                  selectedTags: value.split(' '),
+                                  onRefresh: () => controller.refresh(),
+                                ),
+                              ),
+                              const Spacer(),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
       ),
+    );
+  }
+
+  Widget _buildList(
+    PostGridController<DanbooruPost> controller,
+    BooruError? errors, {
+    required List<Widget> children,
+  }) {
+    return DanbooruInfinitePostList(
+      controller: controller,
+      errors: errors,
+      sliverHeaderBuilder: (context) => children,
+    );
+  }
+
+  Widget _buildRelatedTags() {
+    return ValueListenableBuilder(
+      valueListenable: selectedTagString,
+      builder: (context, value, _) => Material(
+        color: context.theme.scaffoldBackgroundColor,
+        child: RelatedTagSection(
+          backgroundColor: Colors.transparent,
+          query: value,
+          onSelected: (tag) => selectedTagController.addTag(tag.tag),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSearchbar(PostGridController<DanbooruPost> controller) {
+    return DesktopSearchbar(
+      onSearch: () => _onSearch(controller),
+      selectedTagController: selectedTagController,
     );
   }
 

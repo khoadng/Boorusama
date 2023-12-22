@@ -38,7 +38,7 @@ class TagSuggestionItems extends ConsumerWidget {
       elevation: 4,
       borderRadius: const BorderRadius.all(Radius.circular(8)),
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
         child: ListView.builder(
           itemCount: _tags.length,
           itemBuilder: (context, index) {

@@ -37,9 +37,6 @@ import 'package:boorusama/foundation/platform.dart';
 import 'app.dart';
 import 'foundation/i18n.dart';
 
-// Comment text field is weird
-// Long press to select images bottom sheet color is off
-
 void main() async {
   final uiLogger = UILogger();
   final logger = await loggerWith(uiLogger);
@@ -184,38 +181,41 @@ void main() async {
 
   void run() {
     runApp(
-      BooruLocalization(
-        child: ProviderScope(
-          overrides: [
-            favoriteTagRepoProvider.overrideWithValue(favoriteTagsRepo),
-            searchHistoryRepoProvider.overrideWithValue(searchHistoryRepo),
-            booruFactoryProvider.overrideWithValue(booruFactory),
-            tagInfoProvider.overrideWithValue(tagInfo),
-            settingsRepoProvider.overrideWithValue(settingRepository),
-            settingsProvider.overrideWith(() => SettingsNotifier(settings)),
-            booruConfigRepoProvider.overrideWithValue(booruUserRepo),
-            currentBooruConfigProvider.overrideWith(() =>
-                CurrentBooruConfigNotifier(
-                    initialConfig: initialConfig ?? BooruConfig.empty)),
-            globalBlacklistedTagRepoProvider
-                .overrideWithValue(globalBlacklistedTags),
-            httpCacheDirProvider.overrideWithValue(tempPath),
-            loggerProvider.overrideWithValue(logger),
-            bookmarkRepoProvider.overrideWithValue(bookmarkRepo),
-            downloadNotificationProvider
-                .overrideWithValue(downloadNotifications),
-            deviceInfoProvider.overrideWithValue(deviceInfo),
-            danbooruUserMetatagRepoProvider.overrideWithValue(userMetatagRepo),
-            packageInfoProvider.overrideWithValue(packageInfo),
-            appInfoProvider.overrideWithValue(appInfo),
-            uiLoggerProvider.overrideWithValue(uiLogger),
-            supportedLanguagesProvider.overrideWithValue(supportedLanguages),
-            danbooruCreatorHiveBoxProvider
-                .overrideWithValue(danbooruCreatorBox),
-          ],
-          child: App(
-            appName: packageInfo.appName,
-            initialSettings: settings,
+      Reboot(
+        initialConfig: initialConfig ?? BooruConfig.empty,
+        builder: (context, config) => BooruLocalization(
+          child: ProviderScope(
+            overrides: [
+              favoriteTagRepoProvider.overrideWithValue(favoriteTagsRepo),
+              searchHistoryRepoProvider.overrideWithValue(searchHistoryRepo),
+              booruFactoryProvider.overrideWithValue(booruFactory),
+              tagInfoProvider.overrideWithValue(tagInfo),
+              settingsRepoProvider.overrideWithValue(settingRepository),
+              settingsProvider.overrideWith(() => SettingsNotifier(settings)),
+              booruConfigRepoProvider.overrideWithValue(booruUserRepo),
+              currentBooruConfigProvider.overrideWith(
+                  () => CurrentBooruConfigNotifier(initialConfig: config)),
+              globalBlacklistedTagRepoProvider
+                  .overrideWithValue(globalBlacklistedTags),
+              httpCacheDirProvider.overrideWithValue(tempPath),
+              loggerProvider.overrideWithValue(logger),
+              bookmarkRepoProvider.overrideWithValue(bookmarkRepo),
+              downloadNotificationProvider
+                  .overrideWithValue(downloadNotifications),
+              deviceInfoProvider.overrideWithValue(deviceInfo),
+              danbooruUserMetatagRepoProvider
+                  .overrideWithValue(userMetatagRepo),
+              packageInfoProvider.overrideWithValue(packageInfo),
+              appInfoProvider.overrideWithValue(appInfo),
+              uiLoggerProvider.overrideWithValue(uiLogger),
+              supportedLanguagesProvider.overrideWithValue(supportedLanguages),
+              danbooruCreatorHiveBoxProvider
+                  .overrideWithValue(danbooruCreatorBox),
+            ],
+            child: App(
+              appName: packageInfo.appName,
+              initialSettings: settings,
+            ),
           ),
         ),
       ),
@@ -223,4 +223,45 @@ void main() async {
   }
 
   run();
+}
+
+class Reboot extends StatefulWidget {
+  const Reboot({
+    super.key,
+    required this.initialConfig,
+    required this.builder,
+  });
+
+  final BooruConfig initialConfig;
+
+  final Widget Function(BuildContext context, BooruConfig config) builder;
+
+  @override
+  State<Reboot> createState() => _RebootState();
+
+  static start(BuildContext context, BooruConfig newInitialConfig) {
+    context
+        .findAncestorStateOfType<_RebootState>()!
+        .restartApp(newInitialConfig);
+  }
+}
+
+class _RebootState extends State<Reboot> {
+  Key _key = UniqueKey();
+  late var _config = widget.initialConfig;
+
+  void restartApp(BooruConfig config) {
+    setState(() {
+      _config = config;
+      _key = UniqueKey();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return KeyedSubtree(
+      key: _key,
+      child: widget.builder(context, _config),
+    );
+  }
 }

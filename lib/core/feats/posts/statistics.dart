@@ -102,6 +102,7 @@ Map<String, int> countDomain(List<Post> posts) {
     '.nijie.': 'nijie.info',
     '.catbox.moe': 'catbox.moe',
     'imgur.com': 'imgur.com',
+    '.gumroad.com': 'gumroad.com',
   };
 
   for (final entry in toBeMergedDomains.entries) {

@@ -79,6 +79,8 @@ class _BooruSearchBarState extends State<BooruSearchBar> {
                   focusNode: widget.focus,
                   onFocusChange: widget.onFocusChanged,
                   child: BooruTextFormField(
+                    keyboardType: TextInputType.text,
+                    autocorrect: false,
                     onTapOutside: (event) {
                       if (widget.onTapOutside == null) {
                         widget.focus?.unfocus();
