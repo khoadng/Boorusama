@@ -135,6 +135,8 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
 
     final menu = SafeArea(
       bottom: false,
+      left: false,
+      right: false,
       child: Container(
         width: 220,
         decoration: BoxDecoration(

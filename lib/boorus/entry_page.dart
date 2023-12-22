@@ -99,6 +99,8 @@ class _EntryPageState extends ConsumerState<EntryPage> {
             ),
             const SafeArea(
               bottom: false,
+              left: false,
+              right: false,
               child: VerticalDivider(
                 thickness: 1,
                 width: 1,
