@@ -133,38 +133,41 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
       ),
     );
 
-    final menu = Container(
-      width: 220,
-      decoration: BoxDecoration(
-        color: context.colorScheme.surfaceVariant,
-      ),
-      child: Column(
-        children: [
-          const CurrentBooruTile(),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  const SizedBox(height: 8),
-                  Theme(
-                    data: context.theme.copyWith(
-                      iconTheme: context.theme.iconTheme.copyWith(size: 20),
-                    ),
-                    child: LayoutBuilder(
-                      builder: (context, constraints) => Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: widget.menuBuilder(
-                          context,
-                          constraints,
+    final menu = SafeArea(
+      bottom: false,
+      child: Container(
+        width: 220,
+        decoration: BoxDecoration(
+          color: context.colorScheme.surfaceVariant,
+        ),
+        child: Column(
+          children: [
+            const CurrentBooruTile(),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    const SizedBox(height: 8),
+                    Theme(
+                      data: context.theme.copyWith(
+                        iconTheme: context.theme.iconTheme.copyWith(size: 20),
+                      ),
+                      child: LayoutBuilder(
+                        builder: (context, constraints) => Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: widget.menuBuilder(
+                            context,
+                            constraints,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
     return Scaffold(

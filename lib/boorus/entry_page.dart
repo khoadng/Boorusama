@@ -97,9 +97,12 @@ class _EntryPageState extends ConsumerState<EntryPage> {
               ),
               child: const BooruSelector(),
             ),
-            const VerticalDivider(
-              thickness: 1,
-              width: 1,
+            const SafeArea(
+              bottom: false,
+              child: VerticalDivider(
+                thickness: 1,
+                width: 1,
+              ),
             ),
             Expanded(
               child: child,
