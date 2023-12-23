@@ -73,27 +73,37 @@ class _TagEditzwikiViewState extends ConsumerState<TagEditWikiView> {
                   switch (selectTab) {
                     'wiki' =>
                       ref.watch(danbooruWikiTagsProvider(tag)).maybeWhen(
-                          data: (data) => data.isNotEmpty
-                              ? _RelatedTagChips(
-                                  tags: data,
-                                  isSelected: widget.isSelected,
-                                  onAdded: widget.onAdded,
-                                  onRemoved: widget.onRemoved,
-                                )
-                              : const Center(child: Text('No tags found')),
-                          orElse: () => const Center(
-                                child: CircularProgressIndicator.adaptive(),
-                              )),
-                    _ => ref.watch(danbooruRelatedTagsProvider(tag)).maybeWhen(
-                        data: (data) => _RelatedTagChips(
-                              tags: data,
-                              isSelected: widget.isSelected,
-                              onAdded: widget.onAdded,
-                              onRemoved: widget.onRemoved,
+                            data: (data) => data.isNotEmpty
+                                ? _RelatedTagChips(
+                                    tags: data,
+                                    isSelected: widget.isSelected,
+                                    onAdded: widget.onAdded,
+                                    onRemoved: widget.onRemoved,
+                                  )
+                                : const Center(child: Text('No tags found')),
+                            orElse: () => const Center(
+                              child: SizedBox(
+                                height: 24,
+                                width: 24,
+                                child: CircularProgressIndicator(),
+                              ),
                             ),
-                        orElse: () => const Center(
-                              child: CircularProgressIndicator.adaptive(),
-                            )),
+                          ),
+                    _ => ref.watch(danbooruRelatedTagsProvider(tag)).maybeWhen(
+                          data: (data) => _RelatedTagChips(
+                            tags: data,
+                            isSelected: widget.isSelected,
+                            onAdded: widget.onAdded,
+                            onRemoved: widget.onRemoved,
+                          ),
+                          orElse: () => const Center(
+                            child: SizedBox(
+                              height: 24,
+                              width: 24,
+                              child: CircularProgressIndicator(),
+                            ),
+                          ),
+                        ),
                   },
                 ],
               ),

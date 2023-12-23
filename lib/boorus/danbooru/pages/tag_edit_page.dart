@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:math';
+
 // Flutter imports:
 import 'package:flutter/material.dart' hide ThemeMode;
 
@@ -17,8 +20,8 @@ import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
+import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/string.dart';
@@ -119,7 +122,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
         _pop();
       },
       child: Scaffold(
-        extendBodyBehindAppBar: expandMode != null,
+        extendBodyBehindAppBar: isMobilePlatform() && expandMode != null,
         appBar: AppBar(
           leading: IconButton(
             onPressed: _pop,
@@ -163,35 +166,42 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                 )
               : Row(
                   children: [
-                    Container(
-                      constraints: BoxConstraints(
-                        minWidth: 200,
-                        maxWidth: context.screenWidth * 0.7,
-                      ),
+                    Expanded(
                       child: _buildImage(),
                     ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: CustomScrollView(
-                        controller: scrollController,
-                        slivers: [
-                          SliverToBoxAdapter(
-                            child: TagEditRatingSelectorSection(
-                              rating: rating,
-                              onChanged: (value) {
-                                setState(() {
-                                  rating = value;
-                                });
-                              },
+                    const VerticalDivider(
+                      width: 4,
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      width: min(
+                        MediaQuery.of(context).size.width * 0.4,
+                        380,
+                      ),
+                      child: Column(
+                        children: [
+                          Expanded(
+                            child: CustomScrollView(
+                              controller: scrollController,
+                              slivers: [
+                                SliverToBoxAdapter(
+                                  child: TagEditRatingSelectorSection(
+                                    rating: rating,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        rating = value;
+                                      });
+                                    },
+                                  ),
+                                ),
+                                const SliverSizedBox(height: 8),
+                                SliverToBoxAdapter(
+                                  child: _buildTagListSection(),
+                                ),
+                              ],
                             ),
                           ),
-                          const SliverSizedBox(height: 8),
-                          SliverToBoxAdapter(
-                            child: _buildTagListSection(),
-                          ),
-                          SliverToBoxAdapter(
-                              child:
-                                  _buildMode(context, aiTagSupport ?? false)),
+                          _buildMode(context, aiTagSupport ?? false)
                         ],
                       ),
                     ),
@@ -540,42 +550,49 @@ class TagEditRatingSelectorSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfig;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(8),
-          child: Row(
-            children: [
-              Text(
-                'Rating',
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              if (!config.hasStrictSFW)
-                IconButton(
-                  splashRadius: 20,
-                  visualDensity: VisualDensity.compact,
-                  onPressed: () => launchExternalUrlString(_kHowToRateUrl),
-                  icon: const FaIcon(
-                    FontAwesomeIcons.circleQuestion,
-                    size: 16,
-                  ),
+    return LayoutBuilder(
+      builder: (context, constraints) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8),
+            child: Row(
+              children: [
+                Text(
+                  'Rating',
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
-            ],
+                if (!config.hasStrictSFW)
+                  IconButton(
+                    splashRadius: 20,
+                    visualDensity: VisualDensity.compact,
+                    onPressed: () => launchExternalUrlString(_kHowToRateUrl),
+                    icon: const FaIcon(
+                      FontAwesomeIcons.circleQuestion,
+                      size: 16,
+                    ),
+                  ),
+              ],
+            ),
           ),
-        ),
-        Center(
-          child: BooruSegmentedButton(
-            segments: {
-              for (final rating
-                  in Rating.values.where((e) => e != Rating.unknown))
-                rating: rating.name.sentenceCase,
-            },
-            initialValue: rating,
-            onChanged: onChanged,
+          Center(
+            child: BooruSegmentedButton(
+              segments: {
+                for (final rating
+                    in Rating.values.where((e) => e != Rating.unknown))
+                  rating: constraints.maxWidth > 350
+                      ? rating.name.sentenceCase
+                      : rating.name.sentenceCase
+                          .getFirstCharacter()
+                          .toUpperCase(),
+              },
+              initialValue: rating,
+              onChanged: onChanged,
+              fixedWidth: constraints.maxWidth < 350 ? 36 : null,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -632,10 +649,13 @@ class TagEditTagListSection extends ConsumerWidget {
           constraints: const BoxConstraints(minHeight: 56),
           margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
                 '${initialTags.length} tag${initialTags.length > 1 ? 's' : ''}',
-                style: Theme.of(context).textTheme.titleLarge,
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontSize: 20,
+                    ),
               ),
               filterOn
                   ? Expanded(
@@ -644,11 +664,16 @@ class TagEditTagListSection extends ConsumerWidget {
                         child: Row(
                           children: [
                             Expanded(
-                              child: BooruSearchBar(
-                                hintText: 'Filter...',
-                                onChanged: (value) => ref
-                                    .read(tagEditCurrentFilterProvider.notifier)
-                                    .state = value,
+                              child: SizedBox(
+                                height: 36,
+                                child: BooruSearchBar(
+                                  autofocus: true,
+                                  hintText: 'Filter...',
+                                  onChanged: (value) => ref
+                                      .read(
+                                          tagEditCurrentFilterProvider.notifier)
+                                      .state = value,
+                                ),
                               ),
                             ),
                             FilledButton(
@@ -713,25 +738,22 @@ class TagEditTagListSection extends ConsumerWidget {
             itemCount: filtered.length,
             itemBuilder: (_, index) {
               final colors = _getColors(filtered[index], context, ref);
-              return ListTile(
-                contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-                visualDensity: VisualDensity.compact,
-                onTap: () => onTagTap(filtered[index]),
+
+              return TagEditTagTile(
                 title: Text(
                   filtered[index].replaceAll('_', ' '),
                   style: TextStyle(
-                    color: colors?.foregroundColor,
+                    color: context.themeMode.isLight
+                        ? colors?.backgroundColor
+                        : colors?.foregroundColor,
                     fontWeight: toBeAdded.contains(filtered[index])
                         ? FontWeight.w900
                         : null,
                   ),
                 ),
-                trailing: IconButton(
-                  splashRadius: 20,
-                  visualDensity: VisualDensity.compact,
-                  onPressed: () => onDeleted(filtered[index]),
-                  icon: const Icon(Icons.close),
-                ),
+                onTap: () => onTagTap(filtered[index]),
+                filtered: filtered,
+                onDeleted: () => onDeleted(filtered[index]),
               );
             },
           ),
@@ -767,5 +789,73 @@ class TagEditTagListSection extends ConsumerWidget {
         );
 
     return colors;
+  }
+}
+
+class TagEditTagTile extends StatefulWidget {
+  const TagEditTagTile({
+    super.key,
+    required this.onTap,
+    required this.filtered,
+    required this.onDeleted,
+    required this.title,
+  });
+
+  final void Function() onTap;
+  final List<String> filtered;
+  final void Function() onDeleted;
+  final Widget title;
+
+  @override
+  State<TagEditTagTile> createState() => _TagEditTagTileState();
+}
+
+class _TagEditTagTileState extends State<TagEditTagTile> {
+  var hover = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) {
+        setState(() {
+          hover = true;
+        });
+      },
+      onExit: (_) {
+        setState(() {
+          hover = false;
+        });
+      },
+      child: InkWell(
+        onTap: widget.onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 8,
+            vertical: 4,
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: widget.title,
+              ),
+              if (!isMobilePlatform() && !hover)
+                const SizedBox(
+                  height: 32,
+                )
+              else
+                IconButton(
+                  splashRadius: 20,
+                  visualDensity: VisualDensity.compact,
+                  onPressed: widget.onDeleted,
+                  icon: Icon(
+                    Icons.close,
+                    size: isDesktopPlatform() ? 16 : 20,
+                  ),
+                )
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

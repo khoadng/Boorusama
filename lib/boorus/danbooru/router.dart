@@ -69,14 +69,25 @@ void goToPoolDetailPage(BuildContext context, Pool pool) {
 }
 
 void goToPostVersionPage(BuildContext context, DanbooruPost post) {
-  showMaterialModalBottomSheet(
-    context: context,
-    duration: const Duration(milliseconds: 250),
-    builder: (_) => DanbooruPostVersionsPage(
-      postId: post.id,
-      previewUrl: post.url720x720,
-    ),
-  );
+  if (isMobilePlatform()) {
+    showMaterialModalBottomSheet(
+      context: context,
+      duration: const Duration(milliseconds: 250),
+      builder: (_) => DanbooruPostVersionsPage(
+        postId: post.id,
+        previewUrl: post.url720x720,
+      ),
+    );
+  } else {
+    showSideSheetFromRight(
+      context: context,
+      width: min(context.screenWidth * 0.35, 500),
+      body: DanbooruPostVersionsPage(
+        postId: post.id,
+        previewUrl: post.url720x720,
+      ),
+    );
+  }
 }
 
 void goToExplorePopularPage(BuildContext context) {
