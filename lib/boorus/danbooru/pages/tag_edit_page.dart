@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/tags/booru_tag_type_store.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
@@ -18,7 +19,6 @@ import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/string.dart';
@@ -97,7 +97,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
     if (expandMode != null) {
       setState(() {
         expandMode = null;
-        splitKey.currentState?.setFractions(const [0.7, 0.3]);
+        splitKey.currentState?.setFractions(const [0.5, 0.5]);
       });
     } else {
       context.pop();
@@ -203,11 +203,17 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
   }
 
   Widget _buildImage() {
-    return BooruImage(
-      borderRadius: BorderRadius.zero,
-      imageUrl: widget.imageUrl,
-      aspectRatio: widget.aspectRatio,
-      fit: BoxFit.contain,
+    return LayoutBuilder(
+      builder: (context, constraints) => constraints.maxHeight > 80
+          ? BooruImage(
+              borderRadius: BorderRadius.zero,
+              imageUrl: widget.imageUrl,
+              aspectRatio: widget.aspectRatio,
+              fit: BoxFit.contain,
+            )
+          : SizedBox(
+              height: constraints.maxHeight,
+            ),
     );
   }
 
@@ -219,8 +225,8 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
       child: Split(
         key: splitKey,
         axis: Axis.vertical,
-        initialFractions: const [0.7, 0.3],
-        minSizes: const [120, 100],
+        initialFractions: const [0.5, 0.5],
+        minSizes: const [4, 100],
         ignoreFractionChange: true,
         children: [
           Column(
@@ -229,7 +235,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                 child: _buildImage(),
               ),
               const Divider(
-                thickness: 2,
+                thickness: 1,
                 height: 4,
               ),
             ],
@@ -260,7 +266,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
 
   Widget _buildTagListSection() {
     return TagEditTagListSection(
-      tags: tags,
+      tags: tags.toList(),
       toBeAdded: toBeAdded.toSet(),
       toBeRemoved: toBeRemoved.toSet(),
       initialTags: widget.tags,
@@ -464,7 +470,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                 onTap: () {
                   setState(() {
                     expandMode = null;
-                    splitKey.currentState?.setFractions(const [0.7, 0.3]);
+                    splitKey.currentState?.setFractions(const [0.5, 0.5]);
                   });
                 },
                 child: const Icon(Icons.close),
@@ -574,6 +580,23 @@ class TagEditRatingSelectorSection extends ConsumerWidget {
   }
 }
 
+final tagEditTagFilterModeProvider = StateProvider.autoDispose<bool>((ref) {
+  return false;
+});
+
+final tagEditCurrentFilterProvider = StateProvider.autoDispose<String>((ref) {
+  return '';
+});
+
+final tagEditFilteredListProvider =
+    Provider.autoDispose.family<List<String>, List<String>>((ref, tags) {
+  final filter = ref.watch(tagEditCurrentFilterProvider);
+
+  if (filter.isEmpty) return tags;
+
+  return tags.where((tag) => tag.contains(filter)).toList();
+});
+
 class TagEditTagListSection extends ConsumerWidget {
   const TagEditTagListSection({
     super.key,
@@ -594,71 +617,155 @@ class TagEditTagListSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final filtered = ref.watch(tagEditFilteredListProvider(tags));
+    final filterOn = ref.watch(tagEditTagFilterModeProvider);
+
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         const Divider(
-          thickness: 2,
+          thickness: 1,
         ),
-        Padding(
-          padding: const EdgeInsets.all(8),
+        Container(
+          constraints: const BoxConstraints(minHeight: 56),
+          margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              TagChangedText(
-                title:
-                    '${initialTags.length} tag${initialTags.length > 1 ? 's' : ''}',
-                added: toBeAdded,
-                removed: toBeRemoved,
+              Text(
+                '${initialTags.length} tag${initialTags.length > 1 ? 's' : ''}',
+                style: Theme.of(context).textTheme.titleLarge,
               ),
+              filterOn
+                  ? Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 8),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: BooruSearchBar(
+                                hintText: 'Filter...',
+                                onChanged: (value) => ref
+                                    .read(tagEditCurrentFilterProvider.notifier)
+                                    .state = value,
+                              ),
+                            ),
+                            FilledButton(
+                              style: FilledButton.styleFrom(
+                                  visualDensity: VisualDensity.compact,
+                                  shape: const CircleBorder(),
+                                  backgroundColor: context.colorScheme.primary),
+                              onPressed: () {
+                                ref
+                                    .read(tagEditTagFilterModeProvider.notifier)
+                                    .state = false;
+                                ref
+                                    .read(tagEditCurrentFilterProvider.notifier)
+                                    .state = '';
+                              },
+                              child: Icon(
+                                Icons.check,
+                                size: 16,
+                                color: context.colorScheme.onPrimary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  : IconButton(
+                      splashRadius: 20,
+                      onPressed: () => ref
+                          .read(tagEditTagFilterModeProvider.notifier)
+                          .state = true,
+                      icon: const Icon(
+                        Icons.filter_list,
+                      ),
+                    ),
+              if (!filterOn) const Spacer(),
+              if (!filterOn)
+                PopupMenuButton(
+                  icon: const Icon(Icons.more_vert),
+                  itemBuilder: (_) => [
+                    const PopupMenuItem(
+                      value: 'fetch_category',
+                      child: Text('Fetch tag category'),
+                    ),
+                  ],
+                  onSelected: (value) async {
+                    switch (value) {
+                      case 'fetch_category':
+                        await _fetch(ref);
+                        break;
+                    }
+                  },
+                ),
             ],
           ),
         ),
-        Wrap(
-          spacing: 4,
-          runSpacing: isMobilePlatform() ? 0 : 6,
-          children: tags.map((tag) {
-            final colors =
-                ref.watch(danbooruTagEditColorProvider(tag)).maybeWhen(
-                      data: (color) => color != null && color != Colors.white
-                          ? generateChipColorsFromColorScheme(
-                              color,
-                              ref.watch(settingsProvider),
-                              context.colorScheme,
-                            )
-                          : null,
-                      orElse: () => null,
-                    );
-            final backgroundColor = colors?.backgroundColor;
-            final foregroundColor = colors?.foregroundColor;
-            final borderColor = colors?.borderColor;
-
-            return RawChip(
+        MediaQuery.removePadding(
+          context: context,
+          removeTop: true,
+          child: ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: filtered.length,
+            itemBuilder: (_, index) {
+              final colors = _getColors(filtered[index], context, ref);
+              return ListTile(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 4),
                 visualDensity: VisualDensity.compact,
-                onPressed: () => onTagTap(tag),
-                deleteIcon: Icon(
-                  color: foregroundColor,
-                  Icons.close,
-                  size: 18,
-                ),
-                side: borderColor != null
-                    ? BorderSide(
-                        color: borderColor,
-                        width: 1,
-                      )
-                    : null,
-                backgroundColor: backgroundColor,
-                onDeleted: () => onDeleted(tag),
-                label: Text(
-                  tag.replaceAll('_', ' '),
+                onTap: () => onTagTap(filtered[index]),
+                title: Text(
+                  filtered[index].replaceAll('_', ' '),
                   style: TextStyle(
-                    color: foregroundColor,
-                    fontWeight:
-                        toBeAdded.contains(tag) ? FontWeight.w900 : null,
+                    color: colors?.foregroundColor,
+                    fontWeight: toBeAdded.contains(filtered[index])
+                        ? FontWeight.w900
+                        : null,
                   ),
-                ));
-          }).toList(),
+                ),
+                trailing: IconButton(
+                  splashRadius: 20,
+                  visualDensity: VisualDensity.compact,
+                  onPressed: () => onDeleted(filtered[index]),
+                  icon: const Icon(Icons.close),
+                ),
+              );
+            },
+          ),
         ),
       ],
     );
+  }
+
+  Future<void> _fetch(WidgetRef ref) async {
+    final repo = ref.watch(tagRepoProvider(ref.watchConfig));
+
+    final t = await repo.getTagsByName(tags, 1);
+
+    await ref
+        .watch(booruTagTypeStoreProvider)
+        .saveTagIfNotExist(ref.watchConfig.booruType, t);
+
+    for (final tag in t) {
+      ref.invalidate(danbooruTagEditColorProvider(tag.rawName));
+    }
+  }
+
+  ChipColors? _getColors(String tag, BuildContext context, WidgetRef ref) {
+    final colors = ref.watch(danbooruTagEditColorProvider(tag)).maybeWhen(
+          data: (color) => color != null && color != Colors.white
+              ? generateChipColorsFromColorScheme(
+                  color,
+                  ref.watch(settingsProvider),
+                  context.colorScheme,
+                )
+              : null,
+          orElse: () => null,
+        );
+
+    return colors;
   }
 }
