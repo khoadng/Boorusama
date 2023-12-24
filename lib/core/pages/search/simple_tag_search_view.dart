@@ -47,10 +47,7 @@ void showSimpleTagSearchView(
           const SingleActivator(LogicalKeyboardKey.escape): () =>
               context.navigator.pop(),
         },
-        child: Focus(
-          autofocus: true,
-          child: builder(context, false),
-        ),
+        child: builder(context, false),
       ),
     );
   }

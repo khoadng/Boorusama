@@ -7,6 +7,7 @@ import 'package:flutter/material.dart' hide ThemeMode;
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:multi_split_view/multi_split_view.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
@@ -79,7 +80,18 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
   final toBeRemoved = <String>{};
   TagEditExpandMode? expandMode;
   final scrollController = ScrollController();
-  final splitKey = GlobalKey<SplitState>();
+  final splitController = MultiSplitViewController(
+    areas: [
+      Area(
+        minimalSize: 4,
+        weight: 0.5,
+      ),
+      Area(
+        minimalSize: 100,
+        weight: 0.5,
+      ),
+    ],
+  );
 
   String? selectedTag;
 
@@ -94,17 +106,44 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
   void dispose() {
     super.dispose();
     scrollController.dispose();
+    splitController.dispose();
   }
 
   void _pop() {
     if (expandMode != null) {
       setState(() {
         expandMode = null;
-        splitKey.currentState?.setFractions(const [0.5, 0.5]);
+        _setDefaultSplit();
       });
     } else {
       context.pop();
     }
+  }
+
+  void _setDefaultSplit() {
+    splitController.areas = [
+      Area(
+        minimalSize: 4,
+        weight: 0.5,
+      ),
+      Area(
+        minimalSize: 100,
+        weight: 0.5,
+      ),
+    ];
+  }
+
+  void _setMaxSplit() {
+    splitController.areas = [
+      Area(
+        minimalSize: 4,
+        weight: 0.9,
+      ),
+      Area(
+        minimalSize: 100,
+        weight: 0.1,
+      ),
+    ];
   }
 
   @override
@@ -176,7 +215,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                       padding: const EdgeInsets.symmetric(horizontal: 8),
                       width: min(
                         MediaQuery.of(context).size.width * 0.4,
-                        380,
+                        400,
                       ),
                       child: Column(
                         children: [
@@ -232,44 +271,52 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
       data: context.theme.copyWith(
         focusColor: context.colorScheme.primary,
       ),
-      child: Split(
-        key: splitKey,
-        axis: Axis.vertical,
-        initialFractions: const [0.5, 0.5],
-        minSizes: const [4, 100],
-        ignoreFractionChange: true,
-        children: [
-          Column(
-            children: [
-              Expanded(
-                child: _buildImage(),
-              ),
-              const Divider(
-                thickness: 1,
-                height: 4,
-              ),
-            ],
+      child: MultiSplitViewTheme(
+        data: MultiSplitViewThemeData(
+          dividerPainter: DividerPainters.grooved1(
+            color: context.colorScheme.onSurface,
+            thickness: 4,
+            size: 75,
+            highlightedSize: 40,
+            highlightedColor: context.colorScheme.primary,
           ),
-          CustomScrollView(
-            controller: scrollController,
-            slivers: [
-              SliverToBoxAdapter(
-                child: TagEditRatingSelectorSection(
-                  rating: rating,
-                  onChanged: (value) {
-                    setState(() {
-                      rating = value;
-                    });
-                  },
+        ),
+        child: MultiSplitView(
+          axis: Axis.vertical,
+          controller: splitController,
+          children: [
+            Column(
+              children: [
+                Expanded(
+                  child: _buildImage(),
                 ),
-              ),
-              const SliverSizedBox(height: 8),
-              SliverToBoxAdapter(
-                child: _buildTagListSection(),
-              ),
-            ],
-          ),
-        ],
+                const Divider(
+                  thickness: 1,
+                  height: 4,
+                ),
+              ],
+            ),
+            CustomScrollView(
+              controller: scrollController,
+              slivers: [
+                SliverToBoxAdapter(
+                  child: TagEditRatingSelectorSection(
+                    rating: rating,
+                    onChanged: (value) {
+                      setState(() {
+                        rating = value;
+                      });
+                    },
+                  ),
+                ),
+                const SliverSizedBox(height: 8),
+                SliverToBoxAdapter(
+                  child: _buildTagListSection(),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -287,7 +334,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
         setState(() {
           selectedTag = tag;
           expandMode = TagEditExpandMode.related;
-          splitKey.currentState?.setFractions(const [0.9, 0.1]);
+          _setMaxSplit();
         });
       },
     );
@@ -397,7 +444,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                   onPressed: () {
                     setState(() {
                       expandMode = TagEditExpandMode.favorite;
-                      splitKey.currentState?.setFractions(const [0.9, 0.1]);
+                      _setMaxSplit();
                     });
                   },
                   child: Text(
@@ -418,7 +465,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                   onPressed: () {
                     setState(() {
                       expandMode = TagEditExpandMode.related;
-                      splitKey.currentState?.setFractions(const [0.9, 0.1]);
+                      _setMaxSplit();
                     });
                   },
                   child: Text(
@@ -440,7 +487,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                     onPressed: () {
                       setState(() {
                         expandMode = TagEditExpandMode.aiTag;
-                        splitKey.currentState?.setFractions(const [0.9, 0.1]);
+                        _setMaxSplit();
                       });
                     },
                     child: Text(
@@ -480,7 +527,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                 onTap: () {
                   setState(() {
                     expandMode = null;
-                    splitKey.currentState?.setFractions(const [0.5, 0.5]);
+                    _setDefaultSplit();
                   });
                 },
                 child: const Icon(Icons.close),

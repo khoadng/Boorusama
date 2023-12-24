@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
+import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
@@ -55,6 +56,17 @@ void main() async {
       ..registerAdapter(SearchHistoryHiveObjectAdapter())
       ..registerAdapter(BookmarkHiveObjectAdapter())
       ..registerAdapter(FavoriteTagHiveObjectAdapter());
+  }
+
+  if (isDesktopPlatform()) {
+    doWhenWindowReady(() {
+      const initialSize = Size(1000, 700);
+      const minSize = Size(950, 500);
+      appWindow.minSize = minSize;
+      appWindow.size = initialSize;
+      appWindow.alignment = Alignment.center;
+      appWindow.show();
+    });
   }
 
   final appInfo = await getAppInfo();

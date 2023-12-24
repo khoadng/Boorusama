@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:multi_split_view/multi_split_view.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/entry_page.dart';
@@ -16,7 +17,6 @@ import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/lazy_indexed_stack.dart';
-import 'package:boorusama/widgets/split.dart';
 import 'current_booru_tile.dart';
 
 class BooruScope extends ConsumerStatefulWidget {
@@ -121,8 +121,6 @@ class BooruDesktopScope extends ConsumerStatefulWidget {
 }
 
 class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
-  final _hovering = ValueNotifier((0, false));
-
   @override
   Widget build(BuildContext context) {
     final content = ValueListenableBuilder(
@@ -184,36 +182,31 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
                 )
               ],
             )
-          : Split(
-              axis: Axis.horizontal,
-              minSizes: const [55, 600],
-              initialFractions: const [0.18, 0.82],
-              onHoverStateChanged: (index, hovering) =>
-                  _hovering.value = (index, hovering),
-              children: [
-                ValueListenableBuilder(
-                  valueListenable: _hovering,
-                  builder: (context, hovering, child) => Container(
-                    padding: EdgeInsets.only(
-                      right: hovering.$1 == 0 && hovering.$2 ? 0 : 2,
-                    ),
-                    decoration: BoxDecoration(
-                      color: context.colorScheme.surfaceVariant,
-                      border: Border(
-                        right: BorderSide(
-                          color: hovering.$1 == 0 && hovering.$2
-                              ? context.colorScheme.primary
-                              : context.colorScheme.outlineVariant
-                                  .withOpacity(0.2),
-                          width: hovering.$1 == 0 && hovering.$2 ? 3 : 1,
-                        ),
-                      ),
-                    ),
-                    child: menu,
-                  ),
+          : MultiSplitViewTheme(
+              data: MultiSplitViewThemeData(
+                dividerThickness: 4,
+                dividerPainter: DividerPainters.background(
+                  animationEnabled: false,
+                  color: context.colorScheme.surface,
+                  highlightedColor: context.colorScheme.primary,
                 ),
-                content,
-              ],
+              ),
+              child: MultiSplitView(
+                axis: Axis.horizontal,
+                initialAreas: [
+                  Area(
+                    minimalSize: 62,
+                    size: 250,
+                  ),
+                  Area(
+                    minimalSize: 500,
+                  ),
+                ],
+                children: [
+                  menu,
+                  content,
+                ],
+              ),
             ),
     );
   }
