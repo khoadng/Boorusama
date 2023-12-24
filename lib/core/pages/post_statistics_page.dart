@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:collection/collection.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
@@ -210,7 +211,7 @@ class _StatisticsFromMapPageState extends State<StatisticsFromMapPage> {
                     : _convertToNumber(widget.data);
               });
             },
-            icon: const Icon(Icons.change_circle),
+            icon: const Icon(Symbols.change_circle),
           ),
         ],
       ),

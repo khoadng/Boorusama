@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:material_symbols_icons/symbols.dart';
+
 // Project imports:
 import 'package:boorusama/foundation/theme/theme.dart';
 
@@ -67,7 +70,7 @@ class _OptionTagsArenaState extends State<OptionTagsArena> {
                   ),
                   onPressed: () => setState(() => editMode = !editMode),
                   child: Icon(
-                    editMode ? Icons.check : Icons.edit,
+                    editMode ? Symbols.check : Symbols.edit,
                     size: 16,
                     color: editMode
                         ? context.colorScheme.onPrimary

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/posts/posts.dart';
@@ -40,7 +41,7 @@ class FavoritesPageScaffold<T extends Post> extends ConsumerWidget {
               backgroundColor: context.theme.scaffoldBackgroundColor,
               actions: [
                 IconButton(
-                  icon: const Icon(Icons.search),
+                  icon: const Icon(Symbols.search),
                   onPressed: () {
                     goToSearchPage(
                       context,

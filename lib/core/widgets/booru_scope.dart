@@ -196,7 +196,7 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
                 initialAreas: [
                   Area(
                     minimalSize: 62,
-                    size: 250,
+                    size: 280,
                   ),
                   Area(
                     minimalSize: 500,

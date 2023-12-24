@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 class OptionDropDownButton<T> extends StatelessWidget {
   const OptionDropDownButton({
@@ -34,8 +34,8 @@ class OptionDropDownButton<T> extends StatelessWidget {
             value: value,
             icon: Padding(
               padding: const EdgeInsets.only(left: 5, top: 2),
-              child: FaIcon(
-                FontAwesomeIcons.angleDown,
+              child: Icon(
+                Symbols.keyboard_arrow_down,
                 size: 16,
                 color: Theme.of(context).iconTheme.color,
               ),

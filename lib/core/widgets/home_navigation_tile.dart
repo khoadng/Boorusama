@@ -41,6 +41,7 @@ class HomeNavigationTile extends StatelessWidget {
           showTitle: constraints.maxWidth > 62,
           selectedIcon: Icon(
             selected ? selectedIcon : icon,
+            fill: 1,
             color: selected ? context.colorScheme.onSecondary : null,
           ),
           icon: Icon(

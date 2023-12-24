@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/boorus/boorus.dart';
@@ -65,7 +66,7 @@ class _CreateDanbooruConfigPageState
                 IconButton(
                   splashRadius: 20,
                   onPressed: context.navigator.pop,
-                  icon: const Icon(Icons.close),
+                  icon: const Icon(Symbols.close),
                 ),
               ],
             ),

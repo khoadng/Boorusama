@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:material_symbols_icons/symbols.dart';
+
 class CenterPlayButton extends StatelessWidget {
   const CenterPlayButton({
     super.key,
@@ -39,7 +42,7 @@ class CenterPlayButton extends StatelessWidget {
                 iconSize: 32,
                 padding: const EdgeInsets.all(12.0),
                 icon: isFinished
-                    ? Icon(Icons.replay, color: iconColor)
+                    ? Icon(Symbols.replay, color: iconColor)
                     : AnimatedPlayPause(
                         color: iconColor,
                         playing: isPlaying,

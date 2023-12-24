@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:material_symbols_icons/symbols.dart';
+
 class GridSizeAdjustmentButtons extends StatelessWidget {
   const GridSizeAdjustmentButtons({
     super.key,
@@ -23,11 +26,11 @@ class GridSizeAdjustmentButtons extends StatelessWidget {
       children: [
         IconButton(
           onPressed: count > minCount ? () => onDecreased(count) : null,
-          icon: const Icon(Icons.remove),
+          icon: const Icon(Symbols.remove),
         ),
         IconButton(
           onPressed: count < maxCount ? () => onAdded(count) : null,
-          icon: const Icon(Icons.add),
+          icon: const Icon(Symbols.add),
         ),
       ],
     );

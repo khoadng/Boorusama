@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
@@ -43,7 +44,7 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
           if (config.hasLoginDetails())
             IconButton(
               icon: Icon(
-                Icons.arrow_upward,
+                Symbols.arrow_upward,
                 color: voteState.isUpvoted ? Colors.redAccent : null,
               ),
               splashRadius: 16,
@@ -56,7 +57,7 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
           if (config.hasLoginDetails())
             IconButton(
               icon: Icon(
-                Icons.arrow_downward,
+                Symbols.arrow_downward,
                 color: voteState.isDownvoted ? Colors.blueAccent : null,
               ),
               splashRadius: 16,

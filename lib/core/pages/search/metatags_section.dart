@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
@@ -72,7 +73,7 @@ class _MetatagsSectionState extends ConsumerState<MetatagsSection> {
           side: colors != null ? BorderSide(color: colors.borderColor) : null,
           onPressed: editMode ? null : () => widget.onOptionTap?.call(tag),
           deleteIcon: Icon(
-            Icons.close,
+            Symbols.close,
             size: 18,
             color: colors?.foregroundColor,
           ),

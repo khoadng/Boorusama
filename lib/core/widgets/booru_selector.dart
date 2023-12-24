@@ -6,6 +6,7 @@ import 'package:context_menus/context_menus.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:reorderables/reorderables.dart';
 
 // Project imports:
@@ -143,7 +144,7 @@ class _BooruSelectorState extends ConsumerState<BooruSelector> {
                     IconButton(
                       splashRadius: 20,
                       onPressed: () => context.go('/boorus/add'),
-                      icon: const Icon(Icons.add),
+                      icon: const Icon(Symbols.add),
                     ),
                   ],
                 ),

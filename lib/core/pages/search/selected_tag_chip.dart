@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/search/search.dart';
@@ -74,9 +74,10 @@ class SelectedTagChip extends StatelessWidget {
                 )
               : null,
           deleteIcon: Icon(
-            FontAwesomeIcons.xmark,
+            Symbols.close,
             color: context.colorScheme.error,
-            size: 15,
+            size: 18,
+            weight: 600,
           ),
           onDeleted: () => onDeleted?.call(),
           labelPadding: const EdgeInsets.symmetric(horizontal: 2),

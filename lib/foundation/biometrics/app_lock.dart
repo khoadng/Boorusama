@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
@@ -85,7 +86,7 @@ class _AppLockState extends ConsumerState<AppLock> {
                     IconButton(
                       onPressed: () => _authenticate(localAuth),
                       icon: Icon(
-                        Icons.fingerprint,
+                        Symbols.fingerprint,
                         size: 72,
                         color: Theme.of(context).colorScheme.primary,
                       ),

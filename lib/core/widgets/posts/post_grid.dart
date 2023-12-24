@@ -6,6 +6,7 @@ import 'package:flutter_improved_scrolling/flutter_improved_scrolling.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
@@ -220,16 +221,16 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                             leading: IconButton(
                               onPressed: () =>
                                   _multiSelectController.disableMultiSelect(),
-                              icon: const Icon(Icons.close),
+                              icon: const Icon(Symbols.close),
                             ),
                             actions: [
                               IconButton(
                                 onPressed: selectAll,
-                                icon: const Icon(Icons.select_all),
+                                icon: const Icon(Symbols.select_all),
                               ),
                               IconButton(
                                 onPressed: clearSelected,
-                                icon: const Icon(Icons.clear_all),
+                                icon: const Icon(Symbols.clear_all),
                               ),
                             ],
                             title: selected.isEmpty

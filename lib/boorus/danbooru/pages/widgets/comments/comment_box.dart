@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
@@ -78,7 +79,7 @@ class _CommentBoxState extends ConsumerState<CommentBox> {
                 focusedBorder: const UnderlineInputBorder(),
                 suffix: IconButton(
                   visualDensity: VisualDensity.compact,
-                  icon: const Icon(Icons.fullscreen),
+                  icon: const Icon(Symbols.fullscreen),
                   onPressed: () {
                     final content = textEditingController.text;
                     String initialContent = content;

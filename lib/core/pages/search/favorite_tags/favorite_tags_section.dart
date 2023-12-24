@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
@@ -67,7 +68,7 @@ class FavoriteTagsSection extends ConsumerWidget {
                 )
               : null,
           deleteIcon: Icon(
-            Icons.close,
+            Symbols.close,
             size: 18,
             color: colors?.foregroundColor,
           ),

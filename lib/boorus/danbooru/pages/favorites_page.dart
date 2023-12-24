@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
@@ -40,7 +41,7 @@ class DanbooruFavoritesPage extends ConsumerWidget {
               floating: true,
               actions: [
                 IconButton(
-                  icon: const Icon(Icons.search),
+                  icon: const Icon(Symbols.search),
                   onPressed: () {
                     goToSearchPage(
                       context,

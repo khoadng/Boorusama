@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
@@ -65,7 +66,7 @@ class PoolDetailPage extends ConsumerWidget {
                     ref: ref,
                   );
                 },
-                icon: const Icon(Icons.download),
+                icon: const Icon(Symbols.download),
               ),
             ],
           ),

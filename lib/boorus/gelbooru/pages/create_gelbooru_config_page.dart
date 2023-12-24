@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/boorus/boorus.dart';
@@ -72,7 +73,7 @@ class _CreateGelbooruConfigPageState
                 IconButton(
                   splashRadius: 20,
                   onPressed: context.navigator.pop,
-                  icon: const Icon(Icons.close),
+                  icon: const Icon(Symbols.close),
                 ),
               ],
             ),
@@ -227,7 +228,7 @@ class _CreateGelbooruConfigPageState
                     });
                   },
                 ),
-                icon: const Icon(Icons.paste),
+                icon: const Icon(Symbols.content_paste),
                 label: const Text('Paste from clipboard'),
               ),
             ],

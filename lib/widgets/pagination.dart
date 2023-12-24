@@ -4,6 +4,9 @@ import 'dart:math' as math;
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:material_symbols_icons/symbols.dart';
+
 const _maxSelectablePage = 4;
 
 List<int> generatePage({
@@ -64,7 +67,7 @@ class _PageSelectorState extends State<PageSelector> {
         IconButton(
           onPressed: widget.onPrevious,
           icon: const Icon(
-            Icons.chevron_left,
+            Symbols.chevron_left,
             size: 32,
           ),
         ),
@@ -98,7 +101,7 @@ class _PageSelectorState extends State<PageSelector> {
                 pageInputMode = !pageInputMode;
               });
             },
-            icon: const Icon(Icons.more_horiz),
+            icon: const Icon(Symbols.more_horiz),
           )
         else
           SizedBox(
@@ -121,7 +124,7 @@ class _PageSelectorState extends State<PageSelector> {
         IconButton(
           onPressed: widget.onNext,
           icon: const Icon(
-            Icons.chevron_right,
+            Symbols.chevron_right,
             size: 32,
           ),
         ),

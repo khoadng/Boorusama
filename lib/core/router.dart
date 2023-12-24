@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
@@ -279,7 +280,7 @@ void goToQuickSearchPage(
             backButton: IconButton(
               splashRadius: 16,
               onPressed: () => context.navigator.pop(),
-              icon: const Icon(Icons.arrow_back),
+              icon: const Icon(Symbols.arrow_back),
             ),
             ensureValidTag: ensureValidTag,
             onSelected: onSelected,

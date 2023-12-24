@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
@@ -133,7 +134,7 @@ class _AddBooruPageInternalState extends ConsumerState<AddBooruPageInternal> {
               alignment: Alignment.topRight,
               child: IconButton(
                 onPressed: context.navigator.pop,
-                icon: const Icon(Icons.close),
+                icon: const Icon(Symbols.close),
               ),
             )
           ],

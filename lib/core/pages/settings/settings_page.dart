@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
@@ -62,7 +63,7 @@ class SettingsPage extends ConsumerWidget {
                             fontWeight: FontWeight.w400,
                           )).tr(),
                       leading: Icon(
-                        Icons.translate,
+                        Symbols.translate,
                         color: context.iconTheme.color,
                       ),
                       onTap: () => context.go('/settings/language'),
@@ -192,7 +193,7 @@ class SettingsPage extends ConsumerWidget {
                         ),
                       ).tr(),
                       leading: Icon(
-                        Icons.language,
+                        Symbols.language,
                         color: context.iconTheme.color,
                       ),
                       onTap: () => launchExternalUrlString(
@@ -206,7 +207,7 @@ class SettingsPage extends ConsumerWidget {
                         ),
                       ).tr(),
                       leading: Icon(
-                        Icons.info,
+                        Symbols.info,
                         color: context.iconTheme.color,
                       ),
                       onTap: () => showDialog(

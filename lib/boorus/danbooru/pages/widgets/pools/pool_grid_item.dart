@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
@@ -80,9 +80,8 @@ class PoolGridItem extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(width: 4),
-                  const FaIcon(
-                    FontAwesomeIcons.images,
-                    size: 16,
+                  const Icon(
+                    Symbols.photo_library,
                     color: Colors.white,
                   ),
                 ],

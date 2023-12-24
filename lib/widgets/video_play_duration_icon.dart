@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:material_symbols_icons/symbols.dart';
+
 // Project imports:
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/time.dart';
@@ -37,12 +40,12 @@ class VideoPlayDurationIcon extends StatelessWidget {
                 () => const SizedBox.shrink(),
                 (sound) => sound
                     ? const Icon(
-                        Icons.volume_up_rounded,
+                        Symbols.volume_up_rounded,
                         color: Colors.white70,
                         size: 18,
                       )
                     : const Icon(
-                        Icons.volume_off_rounded,
+                        Symbols.volume_off_rounded,
                         color: Colors.white70,
                         size: 18,
                       ),

@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 // Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:photo_view/photo_view.dart';
 
 // Project imports:
@@ -81,7 +82,7 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
               automaticallyImplyLeading: false,
               leading: overlay
                   ? IconButton(
-                      icon: const Icon(Icons.close, color: Colors.white),
+                      icon: const Icon(Symbols.close, color: Colors.white),
                       onPressed: () => context.navigator.pop(),
                     )
                   : null,
@@ -103,8 +104,8 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
                     },
                     color: Colors.white,
                     icon: currentRotation == Orientation.portrait
-                        ? const Icon(Icons.rotate_left)
-                        : const Icon(Icons.rotate_right),
+                        ? const Icon(Symbols.rotate_left)
+                        : const Icon(Symbols.rotate_right),
                   ),
               ],
             ),

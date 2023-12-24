@@ -15,6 +15,7 @@ import 'package:chewie/src/material/material_progress_bar.dart';
 import 'package:chewie/src/material/widgets/options_dialog.dart';
 import 'package:chewie/src/material/widgets/playback_speed_dialog.dart';
 import 'package:chewie/src/notifiers/index.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 
@@ -81,7 +82,7 @@ class _MaterialDesktopControlsState extends State<MaterialDesktopControls>
           ) ??
           const Center(
             child: Icon(
-              Icons.error,
+              Symbols.error,
               color: Colors.white,
               size: 42,
             ),
@@ -171,7 +172,7 @@ class _MaterialDesktopControlsState extends State<MaterialDesktopControls>
           Navigator.pop(context);
           await _onSpeedButtonTap();
         },
-        iconData: Icons.speed,
+        iconData: Symbols.speed,
         title: chewieController.optionsTranslation?.playbackSpeedButtonText ??
             'Playback speed',
       ),
@@ -185,9 +186,8 @@ class _MaterialDesktopControlsState extends State<MaterialDesktopControls>
             _onSubtitleTap();
             Navigator.pop(context);
           },
-          iconData: _subtitleOn
-              ? Icons.closed_caption
-              : Icons.closed_caption_off_outlined,
+          iconData:
+              _subtitleOn ? Symbols.closed_caption : Symbols.closed_caption_off,
           title: chewieController.optionsTranslation?.subtitlesButtonText ??
               'Subtitles',
         ),
@@ -227,7 +227,7 @@ class _MaterialDesktopControlsState extends State<MaterialDesktopControls>
           }
         },
         icon: Icon(
-          icon ?? Icons.more_vert,
+          icon ?? Symbols.more_vert,
           color: Colors.white,
         ),
       ),
@@ -303,9 +303,9 @@ class _MaterialDesktopControlsState extends State<MaterialDesktopControls>
                     if (chewieController.showControls &&
                         chewieController.subtitle != null &&
                         chewieController.subtitle!.isNotEmpty)
-                      _buildSubtitleToggle(icon: Icons.subtitles),
+                      _buildSubtitleToggle(icon: Symbols.subtitles),
                     if (chewieController.showOptions)
-                      _buildOptionsButton(icon: Icons.settings),
+                      _buildOptionsButton(icon: Symbols.settings),
                     if (chewieController.allowFullScreen) _buildExpandButton(),
                   ],
                 ),
@@ -341,8 +341,8 @@ class _MaterialDesktopControlsState extends State<MaterialDesktopControls>
           child: Center(
             child: Icon(
               chewieController.isFullScreen
-                  ? Icons.fullscreen_exit
-                  : Icons.fullscreen,
+                  ? Symbols.fullscreen_exit
+                  : Symbols.fullscreen,
               color: Colors.white,
             ),
           ),
@@ -431,7 +431,7 @@ class _MaterialDesktopControlsState extends State<MaterialDesktopControls>
               right: 15,
             ),
             child: Icon(
-              _latestValue.volume > 0 ? Icons.volume_up : Icons.volume_off,
+              _latestValue.volume > 0 ? Symbols.volume_up : Symbols.volume_off,
               color: Colors.white,
             ),
           ),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
@@ -92,7 +93,7 @@ class _CommentPageState extends ConsumerState<CommentPage> {
         appBar: widget.useAppBar
             ? AppBar(
                 leading: IconButton(
-                  icon: const Icon(Icons.keyboard_arrow_down),
+                  icon: const Icon(Symbols.keyboard_arrow_down),
                   onPressed: () => _pop(),
                 ),
               )

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
@@ -234,7 +235,7 @@ class FavoriteGroupMultiSelectionActions extends ConsumerWidget {
                     endMultiSelect();
                   }
                 : null,
-            icon: const Icon(Icons.download),
+            icon: const Icon(Symbols.download),
           ),
         ),
         if (config.hasLoginDetails())
@@ -245,7 +246,7 @@ class FavoriteGroupMultiSelectionActions extends ConsumerWidget {
                     endMultiSelect();
                   }
                 : null,
-            icon: const Icon(Icons.remove),
+            icon: const Icon(Symbols.remove),
           ),
       ],
     );

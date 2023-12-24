@@ -39,8 +39,15 @@ class App extends StatelessWidget {
               builder: (theme, themeMode) => MaterialApp.router(
                 builder: (context, child) => ConditionalParentWidget(
                   condition: isDesktopPlatform(),
-                  conditionalBuilder: (child) => WindowTitleBar(
-                    child: child,
+                  conditionalBuilder: (child) => Theme(
+                    data: Theme.of(context).copyWith(
+                      iconTheme: Theme.of(context).iconTheme.copyWith(
+                            weight: 200,
+                          ),
+                    ),
+                    child: WindowTitleBar(
+                      child: child,
+                    ),
                   ),
                   child: ScrollConfiguration(
                     behavior: const MaterialScrollBehavior()

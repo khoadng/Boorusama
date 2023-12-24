@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:material_symbols_icons/symbols.dart';
+
 // Project imports:
 import 'package:boorusama/core/feats/search/search.dart';
 import 'package:boorusama/foundation/i18n.dart';
@@ -47,7 +50,7 @@ class SearchHistorySection extends StatelessWidget {
                     if (onFullHistoryRequested != null)
                       IconButton(
                         onPressed: onFullHistoryRequested,
-                        icon: const Icon(Icons.manage_history),
+                        icon: const Icon(Symbols.manage_history),
                       ),
                   ],
                 ),

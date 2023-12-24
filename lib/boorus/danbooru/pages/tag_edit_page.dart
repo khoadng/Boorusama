@@ -7,6 +7,7 @@ import 'package:flutter/material.dart' hide ThemeMode;
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 
 // Project imports:
@@ -165,7 +166,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
         appBar: AppBar(
           leading: IconButton(
             onPressed: _pop,
-            icon: const Icon(Icons.arrow_back),
+            icon: const Icon(Symbols.arrow_back),
           ),
           actions: [
             TextButton(
@@ -530,7 +531,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                     _setDefaultSplit();
                   });
                 },
-                child: const Icon(Icons.close),
+                child: const Icon(Symbols.close),
               ),
             ),
           ),
@@ -614,7 +615,7 @@ class TagEditRatingSelectorSection extends ConsumerWidget {
                     splashRadius: 20,
                     visualDensity: VisualDensity.compact,
                     onPressed: () => launchExternalUrlString(_kHowToRateUrl),
-                    icon: const FaIcon(
+                    icon: const Icon(
                       FontAwesomeIcons.circleQuestion,
                       size: 16,
                     ),
@@ -737,7 +738,7 @@ class TagEditTagListSection extends ConsumerWidget {
                                     .state = '';
                               },
                               child: Icon(
-                                Icons.check,
+                                Symbols.check,
                                 size: 16,
                                 color: context.colorScheme.onPrimary,
                               ),
@@ -752,13 +753,16 @@ class TagEditTagListSection extends ConsumerWidget {
                           .read(tagEditTagFilterModeProvider.notifier)
                           .state = true,
                       icon: const Icon(
-                        Icons.filter_list,
+                        Symbols.filter_list,
                       ),
                     ),
               if (!filterOn) const Spacer(),
               if (!filterOn)
                 PopupMenuButton(
-                  icon: const Icon(Icons.more_vert),
+                  icon: const Icon(
+                    Symbols.more_vert,
+                    weight: 400,
+                  ),
                   itemBuilder: (_) => [
                     const PopupMenuItem(
                       value: 'fetch_category',
@@ -895,7 +899,7 @@ class _TagEditTagTileState extends State<TagEditTagTile> {
                   visualDensity: VisualDensity.compact,
                   onPressed: widget.onDeleted,
                   icon: Icon(
-                    Icons.close,
+                    Symbols.close,
                     size: isDesktopPlatform() ? 16 : 20,
                   ),
                 )

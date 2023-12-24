@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:riverpod_infinite_scroll/riverpod_infinite_scroll.dart';
 
 // Project imports:
@@ -156,7 +157,7 @@ class _SearchBar extends ConsumerWidget {
         splashRadius: 16,
         onPressed: () => context.navigator.pop(),
         icon: const Icon(
-          Icons.arrow_back,
+          Symbols.arrow_back,
         ),
       ),
       queryEditingController: textEditingController,
@@ -167,7 +168,7 @@ class _SearchBar extends ConsumerWidget {
                 textEditingController.clear();
                 ref.read(danbooruPoolQueryProvider.notifier).state = '';
               },
-              icon: const Icon(Icons.close),
+              icon: const Icon(Symbols.close),
             )
           : const SizedBox.shrink(),
       onChanged: (value) =>

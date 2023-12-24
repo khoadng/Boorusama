@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/widgets/widgets.dart';
@@ -31,7 +32,7 @@ class SearchAppBarResultView extends ConsumerWidget {
           onTap: onTap,
           leading: IconButton(
             splashRadius: 16,
-            icon: const Icon(Icons.arrow_back),
+            icon: const Icon(Symbols.arrow_back),
             onPressed: onBack,
           ),
         ),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/dmails/dmails.dart';
@@ -36,7 +37,7 @@ class DanbooruDmailDetailsPage extends ConsumerWidget {
         actions: [
           // Mark as unread
           IconButton(
-              icon: const Icon(Icons.mark_email_unread),
+              icon: const Icon(Symbols.mark_email_unread),
               onPressed: () {
                 onDmailUnread(context, dmail);
                 Navigator.pop(context);

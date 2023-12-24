@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
@@ -53,7 +54,7 @@ class SearchAppBar extends ConsumerWidget {
       leading: onBack != null
           ? IconButton(
               splashRadius: 16,
-              icon: const Icon(Icons.arrow_back),
+              icon: const Icon(Symbols.arrow_back),
               onPressed: onBack,
             )
           : null,
@@ -63,7 +64,7 @@ class SearchAppBar extends ConsumerWidget {
           return value.text.isNotEmpty
               ? IconButton(
                   splashRadius: 16,
-                  icon: const Icon(Icons.close),
+                  icon: const Icon(Symbols.close),
                   onPressed: () {
                     queryEditingController.clear();
                     onClear?.call();

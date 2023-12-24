@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
@@ -36,6 +37,10 @@ class DanbooruMoreActionButton extends ConsumerWidget {
           color: Colors.black.withOpacity(0.5),
           shape: const CircleBorder(),
           child: PopupMenuButton(
+            icon: const Icon(
+              Symbols.more_vert,
+              weight: 400,
+            ),
             iconColor: Colors.white,
             padding: EdgeInsets.zero,
             onSelected: (value) {

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:filesize/filesize.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/boorus/boorus.dart';
@@ -74,7 +75,10 @@ class DownloadInProgressView extends ConsumerWidget {
       appBar: AppBar(
         actions: [
           PopupMenuButton(
-            icon: const Icon(Icons.more_vert),
+            icon: const Icon(
+              Symbols.more_vert,
+              weight: 400,
+            ),
             color: context.theme.colorScheme.secondaryContainer,
             onSelected: (value) {
               switch (value) {

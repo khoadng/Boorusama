@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:filesize/filesize.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/posts/posts.dart';
@@ -48,7 +49,7 @@ class FileDetailsSection extends StatelessWidget {
               valueTrailing: IconButton(
                 visualDensity: const ShrinkVisualDensity(),
                 icon: const Icon(
-                  Icons.copy,
+                  Symbols.content_copy,
                   size: 16,
                 ),
                 onPressed: () {

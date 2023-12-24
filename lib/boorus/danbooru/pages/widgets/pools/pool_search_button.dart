@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/router.dart';
@@ -20,7 +20,7 @@ class PoolSearchButton extends ConsumerWidget {
       onPressed: () {
         goToPoolSearchPage(context, ref);
       },
-      icon: const FaIcon(FontAwesomeIcons.magnifyingGlass),
+      icon: const Icon(Symbols.search),
     );
   }
 }

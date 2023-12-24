@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:material_symbols_icons/symbols.dart';
+
 // Project imports:
 import 'package:boorusama/core/feats/search/search.dart';
 import 'package:boorusama/core/pages/search/selected_tag_chip.dart';
@@ -26,7 +29,10 @@ class SelectedTagList extends StatelessWidget {
       firstChild: Row(
         children: [
           PopupMenuButton(
-            icon: const Icon(Icons.more_vert),
+            icon: const Icon(
+              Symbols.more_vert,
+              weight: 400,
+            ),
             offset: const Offset(0, 48),
             onSelected: (value) {
               if (value == 0) {

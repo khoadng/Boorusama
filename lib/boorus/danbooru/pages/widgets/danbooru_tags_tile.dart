@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
@@ -68,7 +69,7 @@ class DanbooruTagsTile extends ConsumerWidget {
                   orElse: () => null,
                 ),
                 child: Icon(
-                  Icons.edit,
+                  Symbols.edit,
                   size: 16,
                   color: context.colorScheme.onSurfaceVariant,
                 ),

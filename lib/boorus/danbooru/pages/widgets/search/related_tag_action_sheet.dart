@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
@@ -43,7 +43,7 @@ class _RelatedTagActionSheetState extends ConsumerState<RelatedTagActionSheet> {
         actions: [
           IconButton(
             onPressed: context.navigator.pop,
-            icon: const Icon(Icons.close),
+            icon: const Icon(Symbols.close),
           ),
         ],
         toolbarHeight: kToolbarHeight * 0.75,
@@ -60,6 +60,10 @@ class _RelatedTagActionSheetState extends ConsumerState<RelatedTagActionSheet> {
             ),
           ),
           trailing: PopupMenuButton(
+            icon: const Icon(
+              Symbols.more_vert,
+              weight: 400,
+            ),
             padding: const EdgeInsets.all(1),
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(4)),
@@ -77,9 +81,8 @@ class _RelatedTagActionSheetState extends ConsumerState<RelatedTagActionSheet> {
                     widget.onSelected(tags[index]);
                   },
                   title: const Text('tag.related.add_to_current_search').tr(),
-                  trailing: const FaIcon(
-                    FontAwesomeIcons.plus,
-                    size: 20,
+                  trailing: const Icon(
+                    Symbols.add,
                   ),
                 ),
               ),
@@ -97,9 +100,8 @@ class _RelatedTagActionSheetState extends ConsumerState<RelatedTagActionSheet> {
                     );
                   },
                   title: const Text('tag.related.open_wiki').tr(),
-                  trailing: const FaIcon(
-                    FontAwesomeIcons.arrowUpRightFromSquare,
-                    size: 20,
+                  trailing: const Icon(
+                    Symbols.share_windows,
                   ),
                 ),
               ),

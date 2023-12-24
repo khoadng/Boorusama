@@ -6,6 +6,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:riverpod_infinite_scroll/riverpod_infinite_scroll.dart';
 
 // Project imports:
@@ -128,11 +129,11 @@ class _VoteChips extends ConsumerWidget {
         return ForumVoteChip(
           icon: switch (e.type) {
             DanbooruForumPostVoteType.upvote => Icon(
-                Icons.arrow_upward,
+                Symbols.arrow_upward,
                 color: _iconColor(e.type),
               ),
             DanbooruForumPostVoteType.downvote => Icon(
-                Icons.arrow_downward,
+                Symbols.arrow_downward,
                 color: _iconColor(e.type),
               ),
             DanbooruForumPostVoteType.unsure => Container(

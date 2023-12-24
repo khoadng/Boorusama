@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:material_symbols_icons/symbols.dart';
+
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
 import 'package:boorusama/flutter.dart';
@@ -56,6 +59,10 @@ class CommentList extends StatelessWidget {
                   onReply: () => onReply(comment),
                   moreBuilder: (context) => authenticated
                       ? PopupMenuButton(
+                          icon: const Icon(
+                            Symbols.more_vert,
+                            weight: 400,
+                          ),
                           padding: EdgeInsets.zero,
                           constraints: const BoxConstraints(minWidth: 150),
                           shape: const RoundedRectangleBorder(
@@ -78,7 +85,7 @@ class CommentList extends StatelessWidget {
                                 child: ListTile(
                                   visualDensity: const ShrinkVisualDensity(),
                                   dense: true,
-                                  leading: const Icon(Icons.edit),
+                                  leading: const Icon(Symbols.edit),
                                   title: const Text('comment.list.edit').tr(),
                                 ),
                               ),
@@ -88,7 +95,7 @@ class CommentList extends StatelessWidget {
                               child: ListTile(
                                 visualDensity: const ShrinkVisualDensity(),
                                 dense: true,
-                                leading: const Icon(Icons.reply),
+                                leading: const Icon(Symbols.reply),
                                 title: const Text('comment.list.reply').tr(),
                               ),
                             ),
@@ -99,7 +106,7 @@ class CommentList extends StatelessWidget {
                                 child: ListTile(
                                   visualDensity: const ShrinkVisualDensity(),
                                   dense: true,
-                                  leading: const Icon(Icons.close),
+                                  leading: const Icon(Symbols.close),
                                   title: const Text('comment.list.delete').tr(),
                                 ),
                               ),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/downloads/bulk_download_provider.dart';
@@ -28,7 +29,7 @@ class DownloadEmptyTagView extends ConsumerWidget {
               ? IconButton(
                   splashRadius: 16,
                   onPressed: context.navigator.pop,
-                  icon: const Icon(Icons.arrow_back),
+                  icon: const Icon(Symbols.arrow_back),
                 )
               : null,
           textColorBuilder: (tag) =>

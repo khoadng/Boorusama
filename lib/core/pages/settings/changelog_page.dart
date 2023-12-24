@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 // Package imports:
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/flutter.dart';
@@ -23,7 +24,7 @@ class ChangelogPage extends ConsumerWidget {
           IconButton(
             onPressed: () => context.navigator.pop(),
             icon: const Icon(
-              Icons.close,
+              Symbols.close,
               size: 24,
             ),
           ),

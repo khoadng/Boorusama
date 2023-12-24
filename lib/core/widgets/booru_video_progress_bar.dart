@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:equatable/equatable.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/time.dart';
@@ -99,7 +100,7 @@ class SoundControlButton extends StatelessWidget {
       child: InkWell(
         onTap: () => onSoundChanged?.call(!soundOn),
         child: Icon(
-          soundOn ? Icons.volume_up : Icons.volume_off,
+          soundOn ? Symbols.volume_up : Symbols.volume_off,
         ),
       ),
     );

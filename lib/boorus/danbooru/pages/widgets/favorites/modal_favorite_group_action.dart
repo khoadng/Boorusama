@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:material_symbols_icons/symbols.dart';
+
 // Project imports:
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
@@ -27,7 +30,7 @@ class ModalFavoriteGroupAction extends StatelessWidget {
           children: [
             ListTile(
               title: const Text('generic.action.edit').tr(),
-              leading: const Icon(Icons.edit),
+              leading: const Icon(Symbols.edit),
               onTap: () {
                 context.navigator.pop();
                 onEdit?.call();
@@ -35,7 +38,7 @@ class ModalFavoriteGroupAction extends StatelessWidget {
             ),
             ListTile(
               title: const Text('generic.action.delete').tr(),
-              leading: const Icon(Icons.clear),
+              leading: const Icon(Symbols.clear),
               onTap: () {
                 context.navigator.pop();
                 onDelete?.call();

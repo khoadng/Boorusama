@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/router.dart';
@@ -79,7 +80,7 @@ class SideBarMenu extends ConsumerWidget {
                     ] else
                       ...[
                         SideMenuTile(
-                          icon: const Icon(Icons.favorite),
+                          icon: const Icon(Symbols.favorite),
                           title: const Text('sideMenu.your_bookmarks').tr(),
                           onTap: () {
                             if (popOnSelect) context.navigator.pop();
@@ -87,7 +88,7 @@ class SideBarMenu extends ConsumerWidget {
                           },
                         ),
                         SideMenuTile(
-                          icon: const Icon(Icons.list),
+                          icon: const Icon(Symbols.list),
                           title: const Text('sideMenu.your_blacklist').tr(),
                           onTap: () {
                             if (popOnSelect) context.navigator.pop();
@@ -95,7 +96,7 @@ class SideBarMenu extends ConsumerWidget {
                           },
                         ),
                         SideMenuTile(
-                          icon: const Icon(Icons.download),
+                          icon: const Icon(Symbols.download),
                           title: const Text('sideMenu.bulk_download').tr(),
                           onTap: () {
                             if (popOnSelect) context.navigator.pop();
@@ -107,7 +108,10 @@ class SideBarMenu extends ConsumerWidget {
                           },
                         ),
                         SideMenuTile(
-                          icon: const Icon(Icons.settings),
+                          icon: const Icon(
+                            Symbols.settings,
+                            fill: 1,
+                          ),
                           title: Text('sideMenu.settings'.tr()),
                           onTap: () {
                             if (popOnSelect) context.navigator.pop();

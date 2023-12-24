@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
@@ -56,13 +57,13 @@ class ForumCard extends ConsumerWidget {
                 children: [
                   if (isSticky)
                     Icon(
-                      Icons.push_pin_outlined,
+                      Symbols.push_pin,
                       size: 20,
                       color: Theme.of(context).hintColor,
                     ),
                   if (isLocked)
                     Icon(
-                      Icons.lock_outline,
+                      Symbols.lock_outline,
                       size: 20,
                       color: Theme.of(context).hintColor,
                     ),

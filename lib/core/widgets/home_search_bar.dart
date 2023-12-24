@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/utils.dart';
@@ -144,7 +145,7 @@ class HomeSearchBar extends ConsumerWidget {
       leading: onMenuTap != null
           ? IconButton(
               splashRadius: 16,
-              icon: const Icon(Icons.menu),
+              icon: const Icon(Symbols.menu),
               onPressed: onMenuTap,
             )
           : null,

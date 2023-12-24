@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
@@ -58,7 +59,10 @@ class _SavedSearchFeedPageState extends ConsumerState<SavedSearchFeedPage> {
                     actions: [
                       IconButton(
                         onPressed: () => goToSavedSearchEditPage(context),
-                        icon: const Icon(Icons.settings),
+                        icon: const Icon(
+                          Symbols.settings,
+                          fill: 1,
+                        ),
                       ),
                     ],
                   ),

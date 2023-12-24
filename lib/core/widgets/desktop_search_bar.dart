@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_portal/flutter_portal.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/boorus/boorus.dart';
@@ -143,7 +144,7 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                               child: Padding(
                                 padding: const EdgeInsets.all(4),
                                 child: Icon(
-                                  Icons.close,
+                                  Symbols.close,
                                   color:
                                       context.colorScheme.onSecondaryContainer,
                                 ),
@@ -180,7 +181,7 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                   onPressed: () => widget.onSearch(),
                   child: const Padding(
                     padding: EdgeInsets.all(8),
-                    child: Icon(Icons.search, size: 20),
+                    child: Icon(Symbols.search, size: 20),
                   ),
                 ),
               ),

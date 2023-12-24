@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
@@ -42,7 +43,7 @@ class DanbooruMultiSelectionActions extends ConsumerWidget {
                     endMultiSelect();
                   }
                 : null,
-            icon: const Icon(Icons.download),
+            icon: const Icon(Symbols.download),
           ),
         ),
         AddBookmarksButton(
@@ -62,7 +63,7 @@ class DanbooruMultiSelectionActions extends ConsumerWidget {
                     }
                   }
                 : null,
-            icon: const Icon(Icons.add),
+            icon: const Icon(Symbols.add),
           ),
       ],
     );
