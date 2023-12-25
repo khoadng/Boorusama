@@ -469,8 +469,12 @@ class Routes {
             name: state.name,
             builder: (context) => Container(
                   margin: EdgeInsets.symmetric(
-                    vertical: context.screenWidth * 0.05,
-                    horizontal: context.screenHeight * 0.1,
+                    vertical: context.screenWidth < 1100
+                        ? 50
+                        : context.screenWidth * 0.1,
+                    horizontal: context.screenHeight < 900
+                        ? 50
+                        : context.screenHeight * 0.2,
                   ),
                   decoration: const BoxDecoration(
                     borderRadius: BorderRadius.all(

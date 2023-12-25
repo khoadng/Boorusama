@@ -176,6 +176,7 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                 onBack: null,
                 trailingSearchButton: MaterialButton(
                   minWidth: 0,
+                  elevation: 0,
                   color: Theme.of(context).cardColor,
                   shape: const CircleBorder(),
                   onPressed: () => widget.onSearch(),

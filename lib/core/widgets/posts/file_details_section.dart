@@ -11,7 +11,6 @@ import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
-import 'package:boorusama/utils/flutter_utils.dart';
 import 'package:boorusama/widgets/toast.dart';
 
 class FileDetailsSection extends StatelessWidget {
@@ -46,16 +45,20 @@ class FileDetailsSection extends StatelessWidget {
           _FileDetailTile(
               title: 'ID',
               valueLabel: post.id.toString(),
-              valueTrailing: IconButton(
-                visualDensity: const ShrinkVisualDensity(),
-                icon: const Icon(
-                  Symbols.content_copy,
-                  size: 16,
+              valueTrailing: Material(
+                color: Colors.transparent,
+                elevation: 0,
+                child: InkWell(
+                  customBorder: const CircleBorder(),
+                  child: const Icon(
+                    Symbols.content_copy,
+                    size: 18,
+                  ),
+                  onTap: () {
+                    Clipboard.setData(ClipboardData(text: post.id.toString()))
+                        .then((value) => showSuccessToast('Copied'));
+                  },
                 ),
-                onPressed: () {
-                  Clipboard.setData(ClipboardData(text: post.id.toString()))
-                      .then((value) => showSuccessToast('Copied'));
-                },
               )),
           _FileDetailTile(
             title: 'post.detail.rating'.tr(),

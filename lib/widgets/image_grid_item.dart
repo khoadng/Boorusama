@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:like_button/like_button.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -156,7 +157,7 @@ class ImageGridItem extends StatelessWidget {
             if (hasComments ?? false)
               const ImageOverlayIcon(icon: Symbols.comment, size: 20),
             if (hasParentOrChildren ?? false)
-              const ImageOverlayIcon(icon: Symbols.photo_library, size: 20),
+              const ImageOverlayIcon(icon: FontAwesomeIcons.images, size: 16),
             if (isAI)
               Container(
                 padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 6),

@@ -16,6 +16,7 @@ import 'package:boorusama/widgets/widgets.dart';
 import 'widgets/platforms/platforms.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
+const kMinSideBarWidth = 62.0;
 
 class App extends StatelessWidget {
   const App({
@@ -42,10 +43,11 @@ class App extends StatelessWidget {
                   conditionalBuilder: (child) => Theme(
                     data: Theme.of(context).copyWith(
                       iconTheme: Theme.of(context).iconTheme.copyWith(
-                            weight: 200,
+                            weight: isMacOS() ? 400 : 200,
                           ),
                     ),
                     child: WindowTitleBar(
+                      appName: appName,
                       child: child,
                     ),
                   ),

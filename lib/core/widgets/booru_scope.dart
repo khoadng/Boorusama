@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 
 // Project imports:
+import 'package:boorusama/app.dart';
 import 'package:boorusama/boorus/entry_page.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
@@ -195,7 +196,7 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
                 axis: Axis.horizontal,
                 initialAreas: [
                   Area(
-                    minimalSize: 62,
+                    minimalSize: kMinSideBarWidth,
                     size: 280,
                   ),
                   Area(

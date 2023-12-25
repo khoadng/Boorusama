@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
+import 'package:boorusama/app.dart';
 import 'package:boorusama/boorus/entry_page.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/navigation_tile.dart';
@@ -37,8 +38,9 @@ class HomeNavigationTile extends StatelessWidget {
         return NavigationTile(
           value: value,
           index: index,
-          showIcon: constraints.maxWidth > 200 || constraints.maxWidth <= 62,
-          showTitle: constraints.maxWidth > 62,
+          showIcon: constraints.maxWidth > 200 ||
+              constraints.maxWidth <= kMinSideBarWidth,
+          showTitle: constraints.maxWidth > kMinSideBarWidth,
           selectedIcon: Icon(
             selected ? selectedIcon : icon,
             fill: 1,

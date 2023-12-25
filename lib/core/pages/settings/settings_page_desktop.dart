@@ -197,37 +197,40 @@ class _LargeLayoutState extends ConsumerState<_LargeLayout> {
           ),
           const VerticalDivider(width: 1),
           Expanded(
-            child: IndexedStack(
-              index: index,
-              children: const [
-                AppearancePage(
-                  hasAppBar: false,
-                ),
-                LanguagePage(
-                  hasAppBar: false,
-                ),
-                DownloadPage(
-                  hasAppBar: false,
-                ),
-                PerformancePage(
-                  hasAppBar: false,
-                ),
-                DataAndStoragePage(
-                  hasAppBar: false,
-                ),
-                BackupAndRestorePage(
-                  hasAppBar: false,
-                ),
-                SearchSettingsPage(
-                  hasAppBar: false,
-                ),
-                PrivacyPage(
-                  hasAppBar: false,
-                ),
-                DebugLogsPage(
-                  hasAppBar: false,
-                ),
-              ],
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: IndexedStack(
+                index: index,
+                children: const [
+                  AppearancePage(
+                    hasAppBar: false,
+                  ),
+                  LanguagePage(
+                    hasAppBar: false,
+                  ),
+                  DownloadPage(
+                    hasAppBar: false,
+                  ),
+                  PerformancePage(
+                    hasAppBar: false,
+                  ),
+                  DataAndStoragePage(
+                    hasAppBar: false,
+                  ),
+                  BackupAndRestorePage(
+                    hasAppBar: false,
+                  ),
+                  SearchSettingsPage(
+                    hasAppBar: false,
+                  ),
+                  PrivacyPage(
+                    hasAppBar: false,
+                  ),
+                  DebugLogsPage(
+                    hasAppBar: false,
+                  ),
+                ],
+              ),
             ),
           ),
         ],
