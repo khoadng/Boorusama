@@ -29,7 +29,7 @@ class HomePageScaffold extends ConsumerStatefulWidget {
 
   final void Function(
     BuildContext context,
-    List<Post> posts,
+    Iterable<Post> posts,
     Post post,
     AutoScrollController scrollController,
     Settings settings,

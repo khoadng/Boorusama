@@ -17,7 +17,7 @@ class DefaultMultiSelectionActions extends StatelessWidget {
     required this.endMultiSelect,
   });
 
-  final List<Post> selectedPosts;
+  final Iterable<Post> selectedPosts;
   final void Function() endMultiSelect;
 
   @override

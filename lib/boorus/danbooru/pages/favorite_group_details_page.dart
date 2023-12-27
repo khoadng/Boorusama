@@ -52,6 +52,7 @@ class _FavoriteGroupDetailsPageState
   late final controller = PostGridController<DanbooruPost>(
     fetcher: (page) => getPostsFromIdQueue(widget.postIds),
     refresher: () => getPostsFromIdQueue(widget.postIds),
+    keySelector: (item) => item.id,
   );
 
   int rowCountEditMode = 2;
@@ -74,7 +75,7 @@ class _FavoriteGroupDetailsPageState
 
   void _onControllerChanged() {
     setState(() {
-      items = controller.items;
+      items = controller.items.toList();
       hasMore = controller.hasMore;
       loading = controller.loading;
       refreshing = controller.refreshing;

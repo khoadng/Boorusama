@@ -126,7 +126,7 @@ typedef PostImageDetailsUrlBuilder = String Function(
 
 typedef PostStatisticsPageBuilder = Widget Function(
   BuildContext context,
-  List<Post> posts,
+  Iterable<Post> posts,
 );
 
 abstract class BooruBuilder {

@@ -55,7 +55,7 @@ class DanbooruInfinitePostList extends ConsumerStatefulWidget {
   final BooruError? errors;
 
   final Widget Function(
-    List<Post> selectedPosts,
+    Iterable<Post> selectedPosts,
     void Function() endMultiSelect,
   )? multiSelectActions;
 
@@ -211,7 +211,7 @@ class FavoriteGroupMultiSelectionActions extends ConsumerWidget {
     required this.onRemoveFromFavGroup,
   });
 
-  final List<Post> selectedPosts;
+  final Iterable<Post> selectedPosts;
   final void Function() endMultiSelect;
   final void Function() onRemoveFromFavGroup;
 

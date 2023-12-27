@@ -24,7 +24,7 @@ extension PostStatsDisplay on PostStats {
       '${(explicitRatingPercentage * 100).toStringAsFixed(1)}%';
 }
 
-extension PostStatisticsX on List<Post> {
+extension PostStatisticsX on Iterable<Post> {
   PostStats getStats() {
     final scores = map((x) => x.score.toDouble()).toList();
     final tagCounts = map((e) => e.tags.length.toDouble()).toList();
@@ -64,7 +64,7 @@ extension PostStatisticsX on List<Post> {
   }
 }
 
-Map<String, int> countDomain(List<Post> posts) {
+Map<String, int> countDomain(Iterable<Post> posts) {
   final domainMap = <String, int>{};
 
   for (final post in posts) {

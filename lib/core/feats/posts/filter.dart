@@ -5,7 +5,7 @@ List<T> filterTags<T extends Post>(List<T> posts, Set<String> tags) =>
     filter(posts, tags).data;
 
 ({List<T> data, List<T> filtered}) filter<T extends Post>(
-  List<T> posts,
+  Iterable<T> posts,
   Iterable<String> blacklistedTags,
 ) {
   final filtered = <T>[];

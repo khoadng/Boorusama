@@ -17,7 +17,7 @@ class AddBookmarksButton extends ConsumerWidget {
     required this.onPressed,
   });
 
-  final List<Post> posts;
+  final Iterable<Post> posts;
   final VoidCallback onPressed;
 
   @override

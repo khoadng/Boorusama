@@ -59,7 +59,7 @@ class BookmarkHiveRepository implements BookmarkRepository {
   Future<List<Bookmark>> addBookmarks(
     int booruId,
     String booruUrl,
-    List<Post> posts,
+    Iterable<Post> posts,
   ) async {
     final futures = posts.map((post) => addBookmark(booruId, booruUrl, post));
     final bookmarks = await Future.wait(futures);

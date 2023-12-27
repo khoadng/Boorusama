@@ -80,7 +80,7 @@ class PostGrid<T extends Post> extends ConsumerStatefulWidget {
   final PostGridController<T> controller;
 
   final Widget Function(
-    List<Post> selectedPosts,
+    Iterable<Post> selectedPosts,
     void Function() endMultiSelect,
   )? multiSelectActions;
 

@@ -83,7 +83,7 @@ void goToArtistPage(
 
 void goToPostDetailsPage<T extends Post>({
   required BuildContext context,
-  required List<T> posts,
+  required Iterable<T> posts,
   required int initialIndex,
   AutoScrollController? scrollController,
 }) {
