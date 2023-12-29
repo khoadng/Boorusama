@@ -73,6 +73,7 @@ class PostGridController<T> extends ChangeNotifier {
     notifyListeners();
 
     final newItems = await refresher();
+    _clear();
     _addAll(newItems);
     _hasMore = newItems.isNotEmpty;
     _refreshing = false;
