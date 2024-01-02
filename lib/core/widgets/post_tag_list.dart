@@ -13,6 +13,7 @@ import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 
 class PostTagList extends StatelessWidget {
@@ -96,7 +97,8 @@ class PostTagListChip extends ConsumerWidget {
         SizedBox(
           height: 28,
           child: Chip(
-            padding: EdgeInsets.zero,
+            padding:
+                isMobilePlatform() ? const EdgeInsets.all(4) : EdgeInsets.zero,
             visualDensity: const ShrinkVisualDensity(),
             backgroundColor: colors?.backgroundColor,
             side: colors != null
