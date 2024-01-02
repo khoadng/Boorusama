@@ -75,6 +75,7 @@ class _OptionTagsArenaState extends State<OptionTagsArena> {
                     color: editMode
                         ? context.colorScheme.onPrimary
                         : context.colorScheme.onSurfaceVariant,
+                    fill: 1,
                   ),
                 ),
             ],

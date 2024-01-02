@@ -72,6 +72,7 @@ class DanbooruTagsTile extends ConsumerWidget {
                   Symbols.edit,
                   size: 16,
                   color: context.colorScheme.onSurfaceVariant,
+                  fill: 1,
                 ),
               ),
           ],

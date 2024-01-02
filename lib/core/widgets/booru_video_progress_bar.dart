@@ -101,6 +101,7 @@ class SoundControlButton extends StatelessWidget {
         onTap: () => onSoundChanged?.call(!soundOn),
         child: Icon(
           soundOn ? Symbols.volume_up : Symbols.volume_off,
+          fill: 1,
         ),
       ),
     );

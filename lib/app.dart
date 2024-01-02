@@ -40,21 +40,21 @@ class App extends StatelessWidget {
               builder: (theme, themeMode) => MaterialApp.router(
                 builder: (context, child) => ConditionalParentWidget(
                   condition: isDesktopPlatform(),
-                  conditionalBuilder: (child) => Theme(
+                  conditionalBuilder: (child) => WindowTitleBar(
+                    appName: appName,
+                    child: child,
+                  ),
+                  child: Theme(
                     data: Theme.of(context).copyWith(
                       iconTheme: Theme.of(context).iconTheme.copyWith(
-                            weight: isMacOS() ? 400 : 200,
+                            weight: isWindows() ? 200 : 400,
                           ),
                     ),
-                    child: WindowTitleBar(
-                      appName: appName,
-                      child: child,
+                    child: ScrollConfiguration(
+                      behavior: const MaterialScrollBehavior()
+                          .copyWith(overscroll: false),
+                      child: child!,
                     ),
-                  ),
-                  child: ScrollConfiguration(
-                    behavior: const MaterialScrollBehavior()
-                        .copyWith(overscroll: false),
-                    child: child!,
                   ),
                 ),
                 theme: theme,

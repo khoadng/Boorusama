@@ -43,11 +43,13 @@ class VideoPlayDurationIcon extends StatelessWidget {
                         Symbols.volume_up_rounded,
                         color: Colors.white70,
                         size: 18,
+                        fill: 1,
                       )
                     : const Icon(
                         Symbols.volume_off_rounded,
                         color: Colors.white70,
                         size: 18,
+                        fill: 1,
                       ),
               ),
         ],

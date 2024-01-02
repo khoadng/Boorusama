@@ -163,7 +163,10 @@ class _FavoriteGroupDetailsPageState
                   commands.clear();
                 });
               },
-              icon: const Icon(Symbols.edit),
+              icon: const Icon(
+                Symbols.edit,
+                fill: 1,
+              ),
             )
           else
             TextButton(

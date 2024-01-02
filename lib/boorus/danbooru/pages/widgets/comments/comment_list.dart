@@ -85,7 +85,10 @@ class CommentList extends StatelessWidget {
                                 child: ListTile(
                                   visualDensity: const ShrinkVisualDensity(),
                                   dense: true,
-                                  leading: const Icon(Symbols.edit),
+                                  leading: const Icon(
+                                    Symbols.edit,
+                                    fill: 1,
+                                  ),
                                   title: const Text('comment.list.edit').tr(),
                                 ),
                               ),

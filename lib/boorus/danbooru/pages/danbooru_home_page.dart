@@ -136,7 +136,10 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
       mobileMenuBuilder: (context, controller) => [
         if (widget.config.hasLoginDetails() && userId != null)
           SideMenuTile(
-            icon: const Icon(Symbols.account_box),
+            icon: const Icon(
+              Symbols.account_box,
+              fill: 1,
+            ),
             title: const Text('Profile'),
             onTap: () {
               goToUserDetailsPage(
@@ -148,7 +151,10 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
             },
           ),
         SideMenuTile(
-          icon: const Icon(Symbols.explore),
+          icon: const Icon(
+            Symbols.explore,
+            fill: 1,
+          ),
           title: const Text('Explore'),
           onTap: () => context.navigator.push(CupertinoPageRoute(
               builder: (_) => Scaffold(
@@ -159,21 +165,30 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
                   ))),
         ),
         SideMenuTile(
-          icon: const Icon(Symbols.photo_album),
+          icon: const Icon(
+            Symbols.photo_album,
+            fill: 1,
+          ),
           title: const Text('Pools'),
           onTap: () {
             goToPoolPage(context, ref);
           },
         ),
         SideMenuTile(
-          icon: const Icon(Symbols.forum),
+          icon: const Icon(
+            Symbols.forum,
+            fill: 1,
+          ),
           title: const Text('forum.forum').tr(),
           onTap: () {
             goToForumPage(context);
           },
         ),
         SideMenuTile(
-          icon: const Icon(Symbols.search),
+          icon: const Icon(
+            Symbols.search,
+            fill: 1,
+          ),
           title: const Text('Artists'),
           onTap: () {
             goToArtistSearchPage(context);
@@ -181,28 +196,40 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
         ),
         if (widget.config.hasLoginDetails()) ...[
           SideMenuTile(
-            icon: const Icon(Symbols.favorite),
+            icon: const Icon(
+              Symbols.favorite,
+              fill: 1,
+            ),
             title: Text('profile.favorites'.tr()),
             onTap: () {
               goToFavoritesPage(context);
             },
           ),
           SideMenuTile(
-            icon: const Icon(Symbols.collections),
+            icon: const Icon(
+              Symbols.collections,
+              fill: 1,
+            ),
             title: const Text('favorite_groups.favorite_groups').tr(),
             onTap: () {
               goToFavoriteGroupPage(context);
             },
           ),
           SideMenuTile(
-            icon: const Icon(Symbols.search),
+            icon: const Icon(
+              Symbols.search,
+              fill: 1,
+            ),
             title: const Text('saved_search.saved_search').tr(),
             onTap: () {
               goToSavedSearchPage(context, widget.config.login);
             },
           ),
           SideMenuTile(
-            icon: const Icon(Symbols.tag),
+            icon: const Icon(
+              Symbols.tag,
+              fill: 1,
+            ),
             title: const Text(
               'blacklisted_tags.blacklisted_tags',
             ).tr(),
@@ -217,10 +244,19 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
                   data: (data) => data.isNotEmpty
                       ? Badge.count(
                           count: data.length,
-                          child: const Icon(Symbols.mail),
+                          child: const Icon(
+                            Symbols.mail,
+                            fill: 1,
+                          ),
                         )
-                      : const Icon(Symbols.mail),
-                  orElse: () => const Icon(Symbols.mail),
+                      : const Icon(
+                          Symbols.mail,
+                          fill: 1,
+                        ),
+                  orElse: () => const Icon(
+                    Symbols.mail,
+                    fill: 1,
+                  ),
                 ),
             title: const Text(
               'Dmails',

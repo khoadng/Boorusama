@@ -30,7 +30,10 @@ class ModalFavoriteGroupAction extends StatelessWidget {
           children: [
             ListTile(
               title: const Text('generic.action.edit').tr(),
-              leading: const Icon(Symbols.edit),
+              leading: const Icon(
+                Symbols.edit,
+                fill: 1,
+              ),
               onTap: () {
                 context.navigator.pop();
                 onEdit?.call();

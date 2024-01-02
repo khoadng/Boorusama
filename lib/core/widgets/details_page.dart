@@ -431,6 +431,7 @@ class _NavigationButtonBar extends StatelessWidget {
           icon: const Icon(
             Symbols.home,
             color: Colors.white,
+            fill: 1,
           ),
           onPressed: () => goToHomePage(context),
         ),
