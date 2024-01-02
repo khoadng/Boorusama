@@ -10,6 +10,10 @@ import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/platform.dart';
 
+final postGridSideBarVisibleProvider = StateProvider<bool>((ref) {
+  return true;
+});
+
 class PostGridConfigRegion extends ConsumerWidget {
   const PostGridConfigRegion({
     super.key,
@@ -37,33 +41,68 @@ class PostGridConfigRegion extends ConsumerWidget {
               return Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                          width: 230,
-                          child: PostGridActionSheet(
-                            postController: postController,
-                            popOnSelect: false,
-                            gridSize: gridSize,
-                            pageMode: pageMode,
-                            imageListType: imageListType,
-                            onModeChanged: (mode) => ref.setPageMode(mode),
-                            onGridChanged: (grid) => ref.setGridSize(grid),
-                            onImageListChanged: (imageListType) =>
-                                ref.setImageListType(imageListType),
+                  if (ref.watch(postGridSideBarVisibleProvider))
+                    SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            width: 230,
+                            child: PostGridActionSheet(
+                              postController: postController,
+                              popOnSelect: false,
+                              gridSize: gridSize,
+                              pageMode: pageMode,
+                              imageListType: imageListType,
+                              onModeChanged: (mode) => ref.setPageMode(mode),
+                              onGridChanged: (grid) => ref.setGridSize(grid),
+                              onImageListChanged: (imageListType) =>
+                                  ref.setImageListType(imageListType),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 230,
+                            child: blacklistHeader,
+                          ),
+                        ],
+                      ),
+                    ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Material(
+                        color: Colors.transparent,
+                        elevation: 0,
+                        shadowColor: Colors.transparent,
+                        child: InkWell(
+                          onTap: () {
+                            ref
+                                    .read(postGridSideBarVisibleProvider.notifier)
+                                    .state =
+                                !ref
+                                    .read(
+                                        postGridSideBarVisibleProvider.notifier)
+                                    .state;
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            width: 2,
+                            height: 32,
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).dividerColor,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
                           ),
                         ),
-                        SizedBox(
-                          width: 230,
-                          child: blacklistHeader,
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                   Expanded(
                     child: builder(
