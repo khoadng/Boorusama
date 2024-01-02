@@ -12,12 +12,14 @@ import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/feats/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/posts/post_grid_config_region.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'post_grid_config_icon_button.dart';
@@ -162,7 +164,18 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
           if (filters[tag]!) tag
       ],
     );
-    items = d.data;
+
+    // Dirty hack to filter out bookmarked posts
+    final settings = ref.read(settingsProvider);
+
+    final bookmarks = settings.shouldFilterBookmarks
+        ? ref.read(bookmarkProvider).bookmarks
+        : <Bookmark>[].lock;
+
+    final dataWithoutBookmarks = d.data.where((element) =>
+        !bookmarks.any((e) => e.originalUrl == element.originalImageUrl));
+
+    items = dataWithoutBookmarks.toList();
     filteredItems = d.filtered;
   }
 

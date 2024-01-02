@@ -141,7 +141,7 @@ class _LargeLayoutState extends ConsumerState<_LargeLayout> {
                     tileColor:
                         index == 6 ? context.colorScheme.secondary : null,
                     title: const Text('settings.search.search').tr(),
-                    onTap: () => currentTab.value = 5,
+                    onTap: () => currentTab.value = 6,
                   ),
                   ListTile(
                     textColor:
@@ -149,7 +149,7 @@ class _LargeLayoutState extends ConsumerState<_LargeLayout> {
                     tileColor:
                         index == 7 ? context.colorScheme.secondary : null,
                     title: const Text('settings.privacy.privacy').tr(),
-                    onTap: () => currentTab.value = 6,
+                    onTap: () => currentTab.value = 7,
                   ),
                   ListTile(
                     textColor:
@@ -157,7 +157,7 @@ class _LargeLayoutState extends ConsumerState<_LargeLayout> {
                     tileColor:
                         index == 8 ? context.colorScheme.secondary : null,
                     title: const Text('settings.debug_logs.debug_logs').tr(),
-                    onTap: () => currentTab.value = 7,
+                    onTap: () => currentTab.value = 8,
                   ),
                   const Divider(
                     thickness: 0.8,

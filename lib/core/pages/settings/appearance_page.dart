@@ -91,7 +91,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
               optionBuilder: (value) => Text(_themeModeToString(value).tr()),
             ),
             SwitchListTile(
-              title: const Text('Dynamic theme color').tr(),
+              title: const Text('Dynamic theme color'),
               subtitle: dynamicColorSupported
                   ? const Text(
                       'Sync theme color with wallpaper',
@@ -159,7 +159,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
                   .updateSettings(settings.copyWith(showScoresInGrid: value)),
             ),
             SwitchListTile(
-              title: const Text('Show posts configuration header').tr(),
+              title: const Text('Show posts configuration header'),
               value: settings.showPostListConfigHeader,
               onChanged: (value) =>
                   ref.setPostListConfigHeaderStatus(active: value),

@@ -53,6 +53,20 @@ class _SearchSettingsPageState extends ConsumerState<SearchSettingsPage> {
                 },
               ),
             ),
+            ListTile(
+              title: const Text('Hide bookmarked posts from search results'),
+              trailing: Switch(
+                activeColor: context.colorScheme.primary,
+                value: settings.shouldFilterBookmarks,
+                onChanged: (value) {
+                  ref.updateSettings(settings.copyWith(
+                    bookmarkFilterType: value
+                        ? BookmarkFilterType.hideAll
+                        : BookmarkFilterType.none,
+                  ));
+                },
+              ),
+            ),
           ],
         ),
       ),
