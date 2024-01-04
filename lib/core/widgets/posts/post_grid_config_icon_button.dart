@@ -178,7 +178,7 @@ class PostGridActionSheet extends ConsumerWidget {
       child: ConditionalParentWidget(
         condition: isMobilePlatform(),
         conditionalBuilder: (child) => Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           child: child,
         ),
         child: Column(

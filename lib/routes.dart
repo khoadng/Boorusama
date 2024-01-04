@@ -369,7 +369,7 @@ class Routes {
           final builder = booruBuilder?.artistPageBuilder;
           final artistName = state.uri.queryParameters[kArtistNameKey];
 
-          return CupertinoPage(
+          return createPage(
             key: state.pageKey,
             name: state.name,
             child: builder != null
@@ -500,3 +500,20 @@ class Routes {
                 )),
       );
 }
+
+Page<T> createPage<T>({
+  required Widget child,
+  String? name,
+  LocalKey? key,
+}) =>
+    isMobilePlatform()
+        ? CupertinoPage<T>(
+            key: key,
+            name: name,
+            child: child,
+          )
+        : MaterialPage<T>(
+            key: key,
+            name: name,
+            child: child,
+          );

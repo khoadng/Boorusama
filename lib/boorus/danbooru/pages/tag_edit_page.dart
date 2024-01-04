@@ -712,16 +712,12 @@ class TagEditTagListSection extends ConsumerWidget {
                         child: Row(
                           children: [
                             Expanded(
-                              child: SizedBox(
-                                height: 36,
-                                child: BooruSearchBar(
-                                  autofocus: true,
-                                  hintText: 'Filter...',
-                                  onChanged: (value) => ref
-                                      .read(
-                                          tagEditCurrentFilterProvider.notifier)
-                                      .state = value,
-                                ),
+                              child: BooruSearchBar(
+                                autofocus: true,
+                                hintText: 'Filter...',
+                                onChanged: (value) => ref
+                                    .read(tagEditCurrentFilterProvider.notifier)
+                                    .state = value,
                               ),
                             ),
                             FilledButton(
@@ -882,7 +878,6 @@ class _TagEditTagTileState extends State<TagEditTagTile> {
         child: Container(
           padding: const EdgeInsets.symmetric(
             horizontal: 8,
-            vertical: 4,
           ),
           child: Row(
             children: [
