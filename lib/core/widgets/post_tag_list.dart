@@ -79,10 +79,12 @@ class PostTagListChip extends ConsumerWidget {
     super.key,
     required this.tag,
     this.maxTagWidth,
+    this.onTap,
   });
 
   final Tag tag;
   final double? maxTagWidth;
+  final void Function()? onTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -91,55 +93,50 @@ class PostTagListChip extends ConsumerWidget {
       ref.watch(settingsProvider),
     );
 
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        SizedBox(
-          height: 28,
-          child: Chip(
-            padding:
-                isMobilePlatform() ? const EdgeInsets.all(4) : EdgeInsets.zero,
-            visualDensity: const ShrinkVisualDensity(),
-            backgroundColor: colors?.backgroundColor,
-            side: colors != null
-                ? BorderSide(
-                    color: colors.borderColor,
-                    width: 1,
-                  )
-                : null,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-            ),
-            label: ConstrainedBox(
-              constraints: BoxConstraints(
-                maxWidth: maxTagWidth ?? context.screenWidth * 0.7,
+    return SizedBox(
+      height: 28,
+      child: RawChip(
+        onPressed: onTap,
+        padding: isMobilePlatform() ? const EdgeInsets.all(4) : EdgeInsets.zero,
+        visualDensity: const ShrinkVisualDensity(),
+        backgroundColor: colors?.backgroundColor,
+        side: colors != null
+            ? BorderSide(
+                color: colors.borderColor,
+                width: 1,
+              )
+            : null,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+        ),
+        label: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: maxTagWidth ?? context.screenWidth * 0.7,
+          ),
+          child: RichText(
+            overflow: TextOverflow.ellipsis,
+            text: TextSpan(
+              text: _getTagStringDisplayName(tag),
+              style: TextStyle(
+                color: colors?.foregroundColor,
+                fontWeight: FontWeight.w600,
               ),
-              child: RichText(
-                overflow: TextOverflow.ellipsis,
-                text: TextSpan(
-                  text: _getTagStringDisplayName(tag),
-                  style: TextStyle(
-                    color: colors?.foregroundColor,
+              children: [
+                if (!ref.watchConfig.hasStrictSFW)
+                  TextSpan(
+                    text: '  ${NumberFormat.compact().format(tag.postCount)}',
+                    style: context.textTheme.bodySmall?.copyWith(
+                      fontSize: 11,
+                      color: context.themeMode.isLight
+                          ? Colors.white.withOpacity(0.85)
+                          : Colors.grey.withOpacity(0.85),
+                    ),
                   ),
-                  children: [
-                    if (!ref.watchConfig.hasStrictSFW)
-                      TextSpan(
-                        text:
-                            '  ${NumberFormat.compact().format(tag.postCount)}',
-                        style: context.textTheme.bodySmall?.copyWith(
-                          fontSize: 11,
-                          color: context.themeMode.isLight
-                              ? Colors.white.withOpacity(0.85)
-                              : Colors.grey.withOpacity(0.85),
-                        ),
-                      ),
-                  ],
-                ),
-              ),
+              ],
             ),
           ),
         ),
-      ],
+      ),
     );
   }
 }
@@ -161,10 +158,13 @@ class _TagBlockTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       const SizedBox(
-        height: 5,
+        height: 8,
       ),
       _TagHeader(
         title: title,
+      ),
+      const SizedBox(
+        height: 4,
       ),
     ]);
   }

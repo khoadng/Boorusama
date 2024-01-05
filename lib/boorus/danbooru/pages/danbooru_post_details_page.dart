@@ -67,8 +67,6 @@ class _DanbooruPostDetailsPageState
         swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
         sliverArtistPostsBuilder: (context, post) =>
             DanbooruArtistPostList(post: post),
-        sliverCharacterPostsBuilder: (context, post) =>
-            DanbooruCharacterPostList(post: post),
         sliverRelatedPostsBuilder: (context, post) =>
             DanbooruRelatedPostsSection(post: post),
         poolTileBuilder: (context, post) =>

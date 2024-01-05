@@ -131,12 +131,10 @@ class DanbooruTagsTile extends ConsumerWidget {
                     ).then((value) => showSuccessToast('Copied'));
                   }
                 },
-                child: GestureDetector(
+                child: PostTagListChip(
+                  tag: tag,
                   onTap: () => goToSearchPage(context, tag: tag.rawName),
-                  child: PostTagListChip(
-                    tag: tag,
-                    maxTagWidth: null,
-                  ),
+                  maxTagWidth: null,
                 ),
               ),
             ),

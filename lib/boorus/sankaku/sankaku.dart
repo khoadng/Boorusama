@@ -113,11 +113,9 @@ class SankakuBuilder
                 ...post.characterDetailsTags,
                 ...post.copyrightDetailsTags,
               ]),
-              itemBuilder: (context, tag) => GestureDetector(
+              itemBuilder: (context, tag) => PostTagListChip(
                 onTap: () => goToSearchPage(context, tag: tag.rawName),
-                child: PostTagListChip(
-                  tag: tag,
-                ),
+                tag: tag,
               ),
             ),
             onExit: (page) => scrollController?.scrollToIndex(page),
