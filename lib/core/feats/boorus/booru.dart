@@ -92,7 +92,7 @@ extension BooruX on Booru {
         Danbooru d => d.sites.any((e) => e.url == url),
         Gelbooru g => g.sites.contains(url),
         GelbooruV1 g => g.sites.contains(url),
-        GelbooruV2 g => g.sites.contains(url),
+        GelbooruV2 g => g.sites.any((e) => e.url == url),
         Moebooru m => m.sites.any((e) => e.url == url),
         E621 e => e.sites.contains(url),
         Zerochan z => z.sites.contains(url),
@@ -122,6 +122,12 @@ extension BooruX on Booru {
         _ => null,
       };
 
+  String getApiUrl(String url) => switch (this) {
+        GelbooruV2 g =>
+          g.sites.firstWhereOrNull((e) => url.contains(e.url))?.apiUrl ?? url,
+        _ => url,
+      };
+
   bool? hasCensoredTagsBanned(String url) => switch (this) {
         Danbooru d => d.sites
                 .firstWhereOrNull((e) => url.contains(e.url))
@@ -135,6 +141,11 @@ typedef DanbooruSite = ({
   String url,
   bool? aiTagSupport,
   bool? censoredTagsBanned,
+});
+
+typedef GelbooruV2Site = ({
+  String url,
+  String? apiUrl,
 });
 
 final class Danbooru extends Booru {
@@ -213,14 +224,26 @@ class GelbooruV2 extends Booru {
   });
 
   factory GelbooruV2.from(String name, dynamic data) {
+    final sites = <GelbooruV2Site>[];
+
+    for (final item in data['sites']) {
+      final url = item['url'] as String;
+      final apiUrl = item['api-url'];
+
+      sites.add((
+        url: url,
+        apiUrl: apiUrl,
+      ));
+    }
+
     return GelbooruV2(
       name: name,
       protocol: _parseProtocol(data['protocol']),
-      sites: List.from(data['sites']),
+      sites: sites,
     );
   }
 
-  final List<String> sites;
+  final List<GelbooruV2Site> sites;
 }
 
 class E621 extends Booru {

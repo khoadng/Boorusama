@@ -22,9 +22,10 @@ Dio newDio(
   final booru = booruFactory.getBooruFromUrl(baseUrl);
   final supportsHttp2 =
       booru?.getSiteProtocol(baseUrl) == NetworkProtocol.https_2_0;
+  final apiUrl = booru?.getApiUrl(baseUrl) ?? baseUrl;
 
   final dio = Dio(BaseOptions(
-    baseUrl: baseUrl,
+    baseUrl: apiUrl,
     headers: {
       'User-Agent': generator.generate(),
     },

@@ -149,14 +149,6 @@ class GelbooruClient with RequestDeduplicator<GelbooruPosts> {
             if (apiKey != null) 'api_key': apiKey,
           },
         ),
-      _kRule34XXXUrl => _dio.get(
-          '/public/autocomplete.php',
-          queryParameters: {
-            'q': term,
-            if (userId != null) 'user_id': userId,
-            if (apiKey != null) 'api_key': apiKey,
-          },
-        ),
       _ => _dio.get(
           '/autocomplete.php',
           queryParameters: {
