@@ -1,3 +1,7 @@
+# 3.9.1
+- Add an option to hide bookmarked posts from search results.
+- Bug fixes and UI/UX improvements.
+
 # 3.9.0
 - Support exporting/importing booru profiles and settings.
 - Centralize all export/import options into a new section in settings.
