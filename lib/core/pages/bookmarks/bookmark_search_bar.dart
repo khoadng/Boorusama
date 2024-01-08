@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:searchfield/searchfield.dart';
 
 // Project imports:
@@ -30,7 +31,7 @@ class BookmarkSearchBar extends ConsumerWidget {
         focusNode: focusNode,
         maxSuggestionsInViewPort: 10,
         searchInputDecoration: InputDecoration(
-          prefixIcon: const Icon(Icons.search),
+          prefixIcon: const Icon(Symbols.search),
           suffix: ref.watch(selectedTagsProvider).isNotEmpty
               ? ClipRRect(
                   borderRadius: BorderRadius.circular(50),
@@ -38,7 +39,7 @@ class BookmarkSearchBar extends ConsumerWidget {
                     child: InkWell(
                       child: const Padding(
                         padding: EdgeInsets.all(2),
-                        child: Icon(Icons.clear, size: 18),
+                        child: Icon(Symbols.clear, size: 18),
                       ),
                       onTap: () {
                         controller.clear();

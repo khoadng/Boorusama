@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -293,7 +294,7 @@ Future<T?> showCommentPage<T>(
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(20)),
                             onTap: context.navigator.pop,
-                            child: const Icon(Icons.close),
+                            child: const Icon(Symbols.close),
                           ),
                         ),
                         const SizedBox(width: 8),

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
@@ -66,7 +67,7 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
       ),
       mobileMenuBuilder: (context, controller) => [
         SideMenuTile(
-          icon: const Icon(Icons.explore),
+          icon: const Icon(Symbols.explore),
           title: const Text('Popular'),
           onTap: () => context.navigator.push(CupertinoPageRoute(
               builder: (_) => Scaffold(
@@ -80,7 +81,7 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
         ),
         if (config.hasLoginDetails()) ...[
           SideMenuTile(
-            icon: const Icon(Icons.favorite_outline),
+            icon: const Icon(Symbols.favorite),
             title: Text('profile.favorites'.tr()),
             onTap: () => goToFavoritesPage(context),
           ),
@@ -91,16 +92,16 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
           value: 0,
           controller: controller,
           constraints: constraints,
-          selectedIcon: Icons.dashboard,
-          icon: Icons.dashboard_outlined,
+          selectedIcon: Symbols.dashboard,
+          icon: Symbols.dashboard,
           title: 'Home',
         ),
         HomeNavigationTile(
           value: 1,
           controller: controller,
           constraints: constraints,
-          selectedIcon: Icons.explore,
-          icon: Icons.explore_outlined,
+          selectedIcon: Symbols.explore,
+          icon: Symbols.explore,
           title: 'Explore',
         ),
         if (config.hasLoginDetails()) ...[
@@ -108,8 +109,8 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
             value: 2,
             controller: controller,
             constraints: constraints,
-            selectedIcon: Icons.favorite,
-            icon: Icons.favorite_border_outlined,
+            selectedIcon: Symbols.favorite,
+            icon: Symbols.favorite,
             title: 'Favorites',
           ),
         ],
@@ -118,24 +119,24 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
           value: 3,
           controller: controller,
           constraints: constraints,
-          selectedIcon: Icons.bookmark,
-          icon: Icons.bookmark_border_outlined,
+          selectedIcon: Symbols.bookmark,
+          icon: Symbols.bookmark,
           title: 'sideMenu.your_bookmarks'.tr(),
         ),
         HomeNavigationTile(
           value: 4,
           controller: controller,
           constraints: constraints,
-          selectedIcon: Icons.list_alt,
-          icon: Icons.list_alt_outlined,
+          selectedIcon: Symbols.list_alt,
+          icon: Symbols.list_alt,
           title: 'sideMenu.your_blacklist'.tr(),
         ),
         HomeNavigationTile(
           value: 5,
           controller: controller,
           constraints: constraints,
-          selectedIcon: Icons.download,
-          icon: Icons.download_outlined,
+          selectedIcon: Symbols.download,
+          icon: Symbols.download,
           title: 'sideMenu.bulk_download'.tr(),
         ),
         const Divider(),
@@ -143,8 +144,8 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
           value: 999,
           controller: controller,
           constraints: constraints,
-          selectedIcon: Icons.settings,
-          icon: Icons.settings,
+          selectedIcon: Symbols.settings,
+          icon: Symbols.settings,
           title: 'sideMenu.settings'.tr(),
           onTap: () => context.go('/settings'),
         ),

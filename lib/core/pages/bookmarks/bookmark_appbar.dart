@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/bookmarks/bookmarks.dart';
@@ -28,7 +29,7 @@ class BookmarkAppBar extends ConsumerWidget {
               onPressed: () =>
                   ref.read(bookmarkEditProvider.notifier).state = false,
               icon: Icon(
-                Icons.check,
+                Symbols.check,
                 color: context.theme.colorScheme.primary,
               ),
             )
@@ -36,6 +37,10 @@ class BookmarkAppBar extends ConsumerWidget {
       actions: [
         if (!edit)
           PopupMenuButton(
+            icon: const Icon(
+              Symbols.more_vert,
+              weight: 400,
+            ),
             onSelected: (value) {
               switch (value) {
                 case 'edit':

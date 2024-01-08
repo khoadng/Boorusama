@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
@@ -90,7 +91,7 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                             padding: const EdgeInsets.all(12),
                             onPressed: () => _nextPost(),
                             child: const Icon(
-                              Icons.arrow_forward,
+                              Symbols.arrow_forward,
                               color: Colors.white,
                             ),
                           ),
@@ -104,7 +105,7 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                             padding: const EdgeInsets.all(12),
                             onPressed: () => _previousPost(),
                             child: const Icon(
-                              Icons.arrow_back,
+                              Symbols.arrow_back,
                               color: Colors.white,
                             ),
                           ),
@@ -120,7 +121,7 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                               padding: const EdgeInsets.all(12),
                               onPressed: () => _onExit(),
                               child: const Icon(
-                                Icons.close,
+                                Symbols.close,
                                 color: Colors.white,
                               ),
                             ),
@@ -146,7 +147,7 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                                           widget.infoBuilder(context),
                                     ),
                                     icon: const Icon(
-                                      Icons.info,
+                                      Symbols.info,
                                       color: Colors.white,
                                     ),
                                   )
@@ -160,7 +161,7 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                                       },
                                     ),
                                     icon: const Icon(
-                                      Icons.info,
+                                      Symbols.info,
                                       color: Colors.white,
                                     ),
                                   ),

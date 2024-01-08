@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/utils.dart';
@@ -45,13 +45,14 @@ class FavoritePostButton extends StatelessWidget {
         }
       },
       icon: isFaved
-          ? const FaIcon(
-              FontAwesomeIcons.solidHeart,
+          ? const Icon(
+              Symbols.favorite,
+              fill: 1,
               color: Colors.red,
               size: 20,
             )
-          : const FaIcon(
-              FontAwesomeIcons.heart,
+          : const Icon(
+              Symbols.favorite,
               size: 20,
             ),
     );

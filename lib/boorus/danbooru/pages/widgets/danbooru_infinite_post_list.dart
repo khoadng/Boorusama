@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
@@ -54,7 +55,7 @@ class DanbooruInfinitePostList extends ConsumerStatefulWidget {
   final BooruError? errors;
 
   final Widget Function(
-    List<Post> selectedPosts,
+    Iterable<Post> selectedPosts,
     void Function() endMultiSelect,
   )? multiSelectActions;
 
@@ -210,7 +211,7 @@ class FavoriteGroupMultiSelectionActions extends ConsumerWidget {
     required this.onRemoveFromFavGroup,
   });
 
-  final List<Post> selectedPosts;
+  final Iterable<Post> selectedPosts;
   final void Function() endMultiSelect;
   final void Function() onRemoveFromFavGroup;
 
@@ -234,7 +235,7 @@ class FavoriteGroupMultiSelectionActions extends ConsumerWidget {
                     endMultiSelect();
                   }
                 : null,
-            icon: const Icon(Icons.download),
+            icon: const Icon(Symbols.download),
           ),
         ),
         if (config.hasLoginDetails())
@@ -245,7 +246,7 @@ class FavoriteGroupMultiSelectionActions extends ConsumerWidget {
                     endMultiSelect();
                   }
                 : null,
-            icon: const Icon(Icons.remove),
+            icon: const Icon(Symbols.remove),
           ),
       ],
     );

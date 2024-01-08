@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
@@ -43,7 +44,7 @@ class SettingsPageDesktop extends StatelessWidget {
             IconButton(
               splashRadius: 18,
               onPressed: () => context.navigator.pop(),
-              icon: const Icon(Icons.close),
+              icon: const Icon(Symbols.close),
             ),
           ],
         ),
@@ -140,7 +141,7 @@ class _LargeLayoutState extends ConsumerState<_LargeLayout> {
                     tileColor:
                         index == 6 ? context.colorScheme.secondary : null,
                     title: const Text('settings.search.search').tr(),
-                    onTap: () => currentTab.value = 5,
+                    onTap: () => currentTab.value = 6,
                   ),
                   ListTile(
                     textColor:
@@ -148,7 +149,7 @@ class _LargeLayoutState extends ConsumerState<_LargeLayout> {
                     tileColor:
                         index == 7 ? context.colorScheme.secondary : null,
                     title: const Text('settings.privacy.privacy').tr(),
-                    onTap: () => currentTab.value = 6,
+                    onTap: () => currentTab.value = 7,
                   ),
                   ListTile(
                     textColor:
@@ -156,7 +157,7 @@ class _LargeLayoutState extends ConsumerState<_LargeLayout> {
                     tileColor:
                         index == 8 ? context.colorScheme.secondary : null,
                     title: const Text('settings.debug_logs.debug_logs').tr(),
-                    onTap: () => currentTab.value = 7,
+                    onTap: () => currentTab.value = 8,
                   ),
                   const Divider(
                     thickness: 0.8,
@@ -196,37 +197,40 @@ class _LargeLayoutState extends ConsumerState<_LargeLayout> {
           ),
           const VerticalDivider(width: 1),
           Expanded(
-            child: IndexedStack(
-              index: index,
-              children: const [
-                AppearancePage(
-                  hasAppBar: false,
-                ),
-                LanguagePage(
-                  hasAppBar: false,
-                ),
-                DownloadPage(
-                  hasAppBar: false,
-                ),
-                PerformancePage(
-                  hasAppBar: false,
-                ),
-                DataAndStoragePage(
-                  hasAppBar: false,
-                ),
-                BackupAndRestorePage(
-                  hasAppBar: false,
-                ),
-                SearchSettingsPage(
-                  hasAppBar: false,
-                ),
-                PrivacyPage(
-                  hasAppBar: false,
-                ),
-                DebugLogsPage(
-                  hasAppBar: false,
-                ),
-              ],
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: IndexedStack(
+                index: index,
+                children: const [
+                  AppearancePage(
+                    hasAppBar: false,
+                  ),
+                  LanguagePage(
+                    hasAppBar: false,
+                  ),
+                  DownloadPage(
+                    hasAppBar: false,
+                  ),
+                  PerformancePage(
+                    hasAppBar: false,
+                  ),
+                  DataAndStoragePage(
+                    hasAppBar: false,
+                  ),
+                  BackupAndRestorePage(
+                    hasAppBar: false,
+                  ),
+                  SearchSettingsPage(
+                    hasAppBar: false,
+                  ),
+                  PrivacyPage(
+                    hasAppBar: false,
+                  ),
+                  DebugLogsPage(
+                    hasAppBar: false,
+                  ),
+                ],
+              ),
             ),
           ),
         ],

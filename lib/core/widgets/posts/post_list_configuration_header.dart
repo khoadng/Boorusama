@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:material_symbols_icons/symbols.dart';
+
 // Project imports:
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
@@ -106,8 +109,8 @@ class _PostListConfigurationHeaderState
                   children: [
                     const Spacer(),
                     !expanded
-                        ? const Icon(Icons.keyboard_arrow_right)
-                        : const Icon(Icons.keyboard_arrow_down),
+                        ? const Icon(Symbols.keyboard_arrow_right)
+                        : const Icon(Symbols.keyboard_arrow_down),
                     const Spacer()
                   ],
                 ),
@@ -115,7 +118,7 @@ class _PostListConfigurationHeaderState
                 trailing: widget.axis == Axis.horizontal && expanded
                     ? IconButton(
                         onPressed: widget.onClosed,
-                        icon: const Icon(Icons.close),
+                        icon: const Icon(Symbols.close),
                       )
                     : null,
                 onExpansionChanged: (value) => {

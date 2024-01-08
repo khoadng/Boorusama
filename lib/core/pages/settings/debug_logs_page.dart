@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/settings/settings.dart';
@@ -65,11 +66,11 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
           title: const Text('settings.debug_logs.debug_logs').tr(),
           actions: [
             IconButton(
-              icon: const Icon(Icons.copy),
+              icon: const Icon(Symbols.content_copy),
               onPressed: copyLogsToClipboard,
             ),
             IconButton(
-              icon: const Icon(Icons.download),
+              icon: const Icon(Symbols.download),
               onPressed: () async {
                 await writeLogsToFile(logs);
               },
@@ -86,7 +87,7 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
               );
             });
           },
-          child: const Icon(Icons.arrow_downward),
+          child: const Icon(Symbols.arrow_downward),
         ),
         body: child,
       ),

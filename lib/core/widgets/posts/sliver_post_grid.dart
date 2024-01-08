@@ -33,7 +33,7 @@ class SliverPostGrid extends ConsumerWidget {
   final IndexedWidgetBuilder itemBuilder;
   final bool refreshing;
   final BooruError? error;
-  final List<Post> data;
+  final Iterable<Post> data;
   final VoidCallback? onRetry;
   final BoxConstraints? constraints;
 

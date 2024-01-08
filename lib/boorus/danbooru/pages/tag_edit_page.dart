@@ -1,9 +1,14 @@
+// Dart imports:
+import 'dart:math';
+
 // Flutter imports:
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:material_symbols_icons/symbols.dart';
+import 'package:multi_split_view/multi_split_view.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
@@ -11,12 +16,12 @@ import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/tags/booru_tag_type_store.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -76,7 +81,18 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
   final toBeRemoved = <String>{};
   TagEditExpandMode? expandMode;
   final scrollController = ScrollController();
-  final splitKey = GlobalKey<SplitState>();
+  final splitController = MultiSplitViewController(
+    areas: [
+      Area(
+        minimalSize: 4,
+        weight: 0.5,
+      ),
+      Area(
+        minimalSize: 100,
+        weight: 0.5,
+      ),
+    ],
+  );
 
   String? selectedTag;
 
@@ -91,17 +107,44 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
   void dispose() {
     super.dispose();
     scrollController.dispose();
+    splitController.dispose();
   }
 
   void _pop() {
     if (expandMode != null) {
       setState(() {
         expandMode = null;
-        splitKey.currentState?.setFractions(const [0.7, 0.3]);
+        _setDefaultSplit();
       });
     } else {
       context.pop();
     }
+  }
+
+  void _setDefaultSplit() {
+    splitController.areas = [
+      Area(
+        minimalSize: 4,
+        weight: 0.5,
+      ),
+      Area(
+        minimalSize: 100,
+        weight: 0.5,
+      ),
+    ];
+  }
+
+  void _setMaxSplit() {
+    splitController.areas = [
+      Area(
+        minimalSize: 4,
+        weight: 0.9,
+      ),
+      Area(
+        minimalSize: 100,
+        weight: 0.1,
+      ),
+    ];
   }
 
   @override
@@ -119,11 +162,11 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
         _pop();
       },
       child: Scaffold(
-        extendBodyBehindAppBar: expandMode != null,
+        extendBodyBehindAppBar: isMobilePlatform() && expandMode != null,
         appBar: AppBar(
           leading: IconButton(
             onPressed: _pop,
-            icon: const Icon(Icons.arrow_back),
+            icon: const Icon(Symbols.arrow_back),
           ),
           actions: [
             TextButton(
@@ -163,35 +206,42 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                 )
               : Row(
                   children: [
-                    Container(
-                      constraints: BoxConstraints(
-                        minWidth: 200,
-                        maxWidth: context.screenWidth * 0.7,
-                      ),
+                    Expanded(
                       child: _buildImage(),
                     ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: CustomScrollView(
-                        controller: scrollController,
-                        slivers: [
-                          SliverToBoxAdapter(
-                            child: TagEditRatingSelectorSection(
-                              rating: rating,
-                              onChanged: (value) {
-                                setState(() {
-                                  rating = value;
-                                });
-                              },
+                    const VerticalDivider(
+                      width: 4,
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      width: min(
+                        MediaQuery.of(context).size.width * 0.4,
+                        400,
+                      ),
+                      child: Column(
+                        children: [
+                          Expanded(
+                            child: CustomScrollView(
+                              controller: scrollController,
+                              slivers: [
+                                SliverToBoxAdapter(
+                                  child: TagEditRatingSelectorSection(
+                                    rating: rating,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        rating = value;
+                                      });
+                                    },
+                                  ),
+                                ),
+                                const SliverSizedBox(height: 8),
+                                SliverToBoxAdapter(
+                                  child: _buildTagListSection(),
+                                ),
+                              ],
                             ),
                           ),
-                          const SliverSizedBox(height: 8),
-                          SliverToBoxAdapter(
-                            child: _buildTagListSection(),
-                          ),
-                          SliverToBoxAdapter(
-                              child:
-                                  _buildMode(context, aiTagSupport ?? false)),
+                          _buildMode(context, aiTagSupport ?? false)
                         ],
                       ),
                     ),
@@ -203,11 +253,17 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
   }
 
   Widget _buildImage() {
-    return BooruImage(
-      borderRadius: BorderRadius.zero,
-      imageUrl: widget.imageUrl,
-      aspectRatio: widget.aspectRatio,
-      fit: BoxFit.contain,
+    return LayoutBuilder(
+      builder: (context, constraints) => constraints.maxHeight > 80
+          ? BooruImage(
+              borderRadius: BorderRadius.zero,
+              imageUrl: widget.imageUrl,
+              aspectRatio: widget.aspectRatio,
+              fit: BoxFit.contain,
+            )
+          : SizedBox(
+              height: constraints.maxHeight,
+            ),
     );
   }
 
@@ -216,51 +272,59 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
       data: context.theme.copyWith(
         focusColor: context.colorScheme.primary,
       ),
-      child: Split(
-        key: splitKey,
-        axis: Axis.vertical,
-        initialFractions: const [0.7, 0.3],
-        minSizes: const [120, 100],
-        ignoreFractionChange: true,
-        children: [
-          Column(
-            children: [
-              Expanded(
-                child: _buildImage(),
-              ),
-              const Divider(
-                thickness: 2,
-                height: 4,
-              ),
-            ],
+      child: MultiSplitViewTheme(
+        data: MultiSplitViewThemeData(
+          dividerPainter: DividerPainters.grooved1(
+            color: context.colorScheme.onSurface,
+            thickness: 4,
+            size: 75,
+            highlightedSize: 40,
+            highlightedColor: context.colorScheme.primary,
           ),
-          CustomScrollView(
-            controller: scrollController,
-            slivers: [
-              SliverToBoxAdapter(
-                child: TagEditRatingSelectorSection(
-                  rating: rating,
-                  onChanged: (value) {
-                    setState(() {
-                      rating = value;
-                    });
-                  },
+        ),
+        child: MultiSplitView(
+          axis: Axis.vertical,
+          controller: splitController,
+          children: [
+            Column(
+              children: [
+                Expanded(
+                  child: _buildImage(),
                 ),
-              ),
-              const SliverSizedBox(height: 8),
-              SliverToBoxAdapter(
-                child: _buildTagListSection(),
-              ),
-            ],
-          ),
-        ],
+                const Divider(
+                  thickness: 1,
+                  height: 4,
+                ),
+              ],
+            ),
+            CustomScrollView(
+              controller: scrollController,
+              slivers: [
+                SliverToBoxAdapter(
+                  child: TagEditRatingSelectorSection(
+                    rating: rating,
+                    onChanged: (value) {
+                      setState(() {
+                        rating = value;
+                      });
+                    },
+                  ),
+                ),
+                const SliverSizedBox(height: 8),
+                SliverToBoxAdapter(
+                  child: _buildTagListSection(),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildTagListSection() {
     return TagEditTagListSection(
-      tags: tags,
+      tags: tags.toList(),
       toBeAdded: toBeAdded.toSet(),
       toBeRemoved: toBeRemoved.toSet(),
       initialTags: widget.tags,
@@ -271,7 +335,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
         setState(() {
           selectedTag = tag;
           expandMode = TagEditExpandMode.related;
-          splitKey.currentState?.setFractions(const [0.9, 0.1]);
+          _setMaxSplit();
         });
       },
     );
@@ -381,7 +445,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                   onPressed: () {
                     setState(() {
                       expandMode = TagEditExpandMode.favorite;
-                      splitKey.currentState?.setFractions(const [0.9, 0.1]);
+                      _setMaxSplit();
                     });
                   },
                   child: Text(
@@ -402,7 +466,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                   onPressed: () {
                     setState(() {
                       expandMode = TagEditExpandMode.related;
-                      splitKey.currentState?.setFractions(const [0.9, 0.1]);
+                      _setMaxSplit();
                     });
                   },
                   child: Text(
@@ -424,7 +488,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                     onPressed: () {
                       setState(() {
                         expandMode = TagEditExpandMode.aiTag;
-                        splitKey.currentState?.setFractions(const [0.9, 0.1]);
+                        _setMaxSplit();
                       });
                     },
                     child: Text(
@@ -464,10 +528,10 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                 onTap: () {
                   setState(() {
                     expandMode = null;
-                    splitKey.currentState?.setFractions(const [0.7, 0.3]);
+                    _setDefaultSplit();
                   });
                 },
-                child: const Icon(Icons.close),
+                child: const Icon(Symbols.close),
               ),
             ),
           ),
@@ -534,45 +598,69 @@ class TagEditRatingSelectorSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfig;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(8),
-          child: Row(
-            children: [
-              Text(
-                'Rating',
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              if (!config.hasStrictSFW)
-                IconButton(
-                  splashRadius: 20,
-                  visualDensity: VisualDensity.compact,
-                  onPressed: () => launchExternalUrlString(_kHowToRateUrl),
-                  icon: const FaIcon(
-                    FontAwesomeIcons.circleQuestion,
-                    size: 16,
-                  ),
+    return LayoutBuilder(
+      builder: (context, constraints) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8),
+            child: Row(
+              children: [
+                Text(
+                  'Rating',
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
-            ],
+                if (!config.hasStrictSFW)
+                  IconButton(
+                    splashRadius: 20,
+                    visualDensity: VisualDensity.compact,
+                    onPressed: () => launchExternalUrlString(_kHowToRateUrl),
+                    icon: const Icon(
+                      FontAwesomeIcons.circleQuestion,
+                      size: 16,
+                    ),
+                  ),
+              ],
+            ),
           ),
-        ),
-        Center(
-          child: BooruSegmentedButton(
-            segments: {
-              for (final rating
-                  in Rating.values.where((e) => e != Rating.unknown))
-                rating: rating.name.sentenceCase,
-            },
-            initialValue: rating,
-            onChanged: onChanged,
+          Center(
+            child: BooruSegmentedButton(
+              segments: {
+                for (final rating
+                    in Rating.values.where((e) => e != Rating.unknown))
+                  rating: constraints.maxWidth > 350
+                      ? rating.name.sentenceCase
+                      : rating.name.sentenceCase
+                          .getFirstCharacter()
+                          .toUpperCase(),
+              },
+              initialValue: rating,
+              onChanged: onChanged,
+              fixedWidth: constraints.maxWidth < 350 ? 36 : null,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
+
+final tagEditTagFilterModeProvider = StateProvider.autoDispose<bool>((ref) {
+  return false;
+});
+
+final tagEditCurrentFilterProvider = StateProvider.autoDispose<String>((ref) {
+  return '';
+});
+
+final tagEditFilteredListProvider =
+    Provider.autoDispose.family<List<String>, List<String>>((ref, tags) {
+  final filter = ref.watch(tagEditCurrentFilterProvider);
+
+  if (filter.isEmpty) return tags;
+
+  return tags.where((tag) => tag.contains(filter)).toList();
+});
 
 class TagEditTagListSection extends ConsumerWidget {
   const TagEditTagListSection({
@@ -594,71 +682,226 @@ class TagEditTagListSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final filtered = ref.watch(tagEditFilteredListProvider(tags));
+    final filterOn = ref.watch(tagEditTagFilterModeProvider);
+
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         const Divider(
-          thickness: 2,
+          thickness: 1,
         ),
-        Padding(
-          padding: const EdgeInsets.all(8),
+        Container(
+          constraints: const BoxConstraints(minHeight: 56),
+          margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              TagChangedText(
-                title:
-                    '${initialTags.length} tag${initialTags.length > 1 ? 's' : ''}',
-                added: toBeAdded,
-                removed: toBeRemoved,
+              Text(
+                '${initialTags.length} tag${initialTags.length > 1 ? 's' : ''}',
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontSize: 20,
+                    ),
               ),
+              filterOn
+                  ? Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 8),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: BooruSearchBar(
+                                autofocus: true,
+                                hintText: 'Filter...',
+                                onChanged: (value) => ref
+                                    .read(tagEditCurrentFilterProvider.notifier)
+                                    .state = value,
+                              ),
+                            ),
+                            FilledButton(
+                              style: FilledButton.styleFrom(
+                                  visualDensity: VisualDensity.compact,
+                                  shape: const CircleBorder(),
+                                  backgroundColor: context.colorScheme.primary),
+                              onPressed: () {
+                                ref
+                                    .read(tagEditTagFilterModeProvider.notifier)
+                                    .state = false;
+                                ref
+                                    .read(tagEditCurrentFilterProvider.notifier)
+                                    .state = '';
+                              },
+                              child: Icon(
+                                Symbols.check,
+                                size: 16,
+                                color: context.colorScheme.onPrimary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  : IconButton(
+                      splashRadius: 20,
+                      onPressed: () => ref
+                          .read(tagEditTagFilterModeProvider.notifier)
+                          .state = true,
+                      icon: const Icon(
+                        Symbols.filter_list,
+                      ),
+                    ),
+              if (!filterOn) const Spacer(),
+              if (!filterOn)
+                PopupMenuButton(
+                  icon: const Icon(
+                    Symbols.more_vert,
+                    weight: 400,
+                  ),
+                  itemBuilder: (_) => [
+                    const PopupMenuItem(
+                      value: 'fetch_category',
+                      child: Text('Fetch tag category'),
+                    ),
+                  ],
+                  onSelected: (value) async {
+                    switch (value) {
+                      case 'fetch_category':
+                        await _fetch(ref);
+                        break;
+                    }
+                  },
+                ),
             ],
           ),
         ),
-        Wrap(
-          spacing: 4,
-          runSpacing: isMobilePlatform() ? 0 : 6,
-          children: tags.map((tag) {
-            final colors =
-                ref.watch(danbooruTagEditColorProvider(tag)).maybeWhen(
-                      data: (color) => color != null && color != Colors.white
-                          ? generateChipColorsFromColorScheme(
-                              color,
-                              ref.watch(settingsProvider),
-                              context.colorScheme,
-                            )
-                          : null,
-                      orElse: () => null,
-                    );
-            final backgroundColor = colors?.backgroundColor;
-            final foregroundColor = colors?.foregroundColor;
-            final borderColor = colors?.borderColor;
+        MediaQuery.removePadding(
+          context: context,
+          removeTop: true,
+          child: ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: filtered.length,
+            itemBuilder: (_, index) {
+              final colors = _getColors(filtered[index], context, ref);
 
-            return RawChip(
-                visualDensity: VisualDensity.compact,
-                onPressed: () => onTagTap(tag),
-                deleteIcon: Icon(
-                  color: foregroundColor,
-                  Icons.close,
-                  size: 18,
-                ),
-                side: borderColor != null
-                    ? BorderSide(
-                        color: borderColor,
-                        width: 1,
-                      )
-                    : null,
-                backgroundColor: backgroundColor,
-                onDeleted: () => onDeleted(tag),
-                label: Text(
-                  tag.replaceAll('_', ' '),
+              return TagEditTagTile(
+                title: Text(
+                  filtered[index].replaceAll('_', ' '),
                   style: TextStyle(
-                    color: foregroundColor,
-                    fontWeight:
-                        toBeAdded.contains(tag) ? FontWeight.w900 : null,
+                    color: context.themeMode.isLight
+                        ? colors?.backgroundColor
+                        : colors?.foregroundColor,
+                    fontWeight: toBeAdded.contains(filtered[index])
+                        ? FontWeight.w900
+                        : null,
                   ),
-                ));
-          }).toList(),
+                ),
+                onTap: () => onTagTap(filtered[index]),
+                filtered: filtered,
+                onDeleted: () => onDeleted(filtered[index]),
+              );
+            },
+          ),
         ),
       ],
+    );
+  }
+
+  Future<void> _fetch(WidgetRef ref) async {
+    final repo = ref.watch(tagRepoProvider(ref.watchConfig));
+
+    final t = await repo.getTagsByName(tags, 1);
+
+    await ref
+        .watch(booruTagTypeStoreProvider)
+        .saveTagIfNotExist(ref.watchConfig.booruType, t);
+
+    for (final tag in t) {
+      ref.invalidate(danbooruTagEditColorProvider(tag.rawName));
+    }
+  }
+
+  ChipColors? _getColors(String tag, BuildContext context, WidgetRef ref) {
+    final colors = ref.watch(danbooruTagEditColorProvider(tag)).maybeWhen(
+          data: (color) => color != null && color != Colors.white
+              ? generateChipColorsFromColorScheme(
+                  color,
+                  ref.watch(settingsProvider),
+                  context.colorScheme,
+                )
+              : null,
+          orElse: () => null,
+        );
+
+    return colors;
+  }
+}
+
+class TagEditTagTile extends StatefulWidget {
+  const TagEditTagTile({
+    super.key,
+    required this.onTap,
+    required this.filtered,
+    required this.onDeleted,
+    required this.title,
+  });
+
+  final void Function() onTap;
+  final List<String> filtered;
+  final void Function() onDeleted;
+  final Widget title;
+
+  @override
+  State<TagEditTagTile> createState() => _TagEditTagTileState();
+}
+
+class _TagEditTagTileState extends State<TagEditTagTile> {
+  var hover = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) {
+        setState(() {
+          hover = true;
+        });
+      },
+      onExit: (_) {
+        setState(() {
+          hover = false;
+        });
+      },
+      child: InkWell(
+        onTap: widget.onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 8,
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: widget.title,
+              ),
+              if (!isMobilePlatform() && !hover)
+                const SizedBox(
+                  height: 32,
+                )
+              else
+                IconButton(
+                  splashRadius: 20,
+                  visualDensity: VisualDensity.compact,
+                  onPressed: widget.onDeleted,
+                  icon: Icon(
+                    Symbols.close,
+                    size: isDesktopPlatform() ? 16 : 20,
+                  ),
+                )
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

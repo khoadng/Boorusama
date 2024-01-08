@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:html/parser.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/utils.dart';
@@ -73,7 +74,7 @@ class YoutubePreviewBox extends StatelessWidget {
                                   ),
                                   child: IconButton(
                                     onPressed: () => launchExternalUrl(uri),
-                                    icon: const Icon(Icons.play_arrow),
+                                    icon: const Icon(Symbols.play_arrow),
                                   ),
                                 ),
                               ),

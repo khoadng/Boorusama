@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:share_handler/share_handler.dart';
 
 // Project imports:
@@ -136,7 +136,10 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
       mobileMenuBuilder: (context, controller) => [
         if (widget.config.hasLoginDetails() && userId != null)
           SideMenuTile(
-            icon: const Icon(Icons.account_box),
+            icon: const Icon(
+              Symbols.account_box,
+              fill: 1,
+            ),
             title: const Text('Profile'),
             onTap: () {
               goToUserDetailsPage(
@@ -148,7 +151,10 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
             },
           ),
         SideMenuTile(
-          icon: const Icon(Icons.explore),
+          icon: const Icon(
+            Symbols.explore,
+            fill: 1,
+          ),
           title: const Text('Explore'),
           onTap: () => context.navigator.push(CupertinoPageRoute(
               builder: (_) => Scaffold(
@@ -159,21 +165,30 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
                   ))),
         ),
         SideMenuTile(
-          icon: const Icon(Icons.photo_album_outlined),
+          icon: const Icon(
+            Symbols.photo_album,
+            fill: 1,
+          ),
           title: const Text('Pools'),
           onTap: () {
             goToPoolPage(context, ref);
           },
         ),
         SideMenuTile(
-          icon: const Icon(Icons.forum),
+          icon: const Icon(
+            Symbols.forum,
+            fill: 1,
+          ),
           title: const Text('forum.forum').tr(),
           onTap: () {
             goToForumPage(context);
           },
         ),
         SideMenuTile(
-          icon: const Icon(Icons.search_outlined),
+          icon: const Icon(
+            Symbols.search,
+            fill: 1,
+          ),
           title: const Text('Artists'),
           onTap: () {
             goToArtistSearchPage(context);
@@ -181,28 +196,40 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
         ),
         if (widget.config.hasLoginDetails()) ...[
           SideMenuTile(
-            icon: const Icon(Icons.favorite),
+            icon: const Icon(
+              Symbols.favorite,
+              fill: 1,
+            ),
             title: Text('profile.favorites'.tr()),
             onTap: () {
               goToFavoritesPage(context);
             },
           ),
           SideMenuTile(
-            icon: const Icon(Icons.collections),
+            icon: const Icon(
+              Symbols.collections,
+              fill: 1,
+            ),
             title: const Text('favorite_groups.favorite_groups').tr(),
             onTap: () {
               goToFavoriteGroupPage(context);
             },
           ),
           SideMenuTile(
-            icon: const Icon(Icons.search),
+            icon: const Icon(
+              Symbols.search,
+              fill: 1,
+            ),
             title: const Text('saved_search.saved_search').tr(),
             onTap: () {
               goToSavedSearchPage(context, widget.config.login);
             },
           ),
           SideMenuTile(
-            icon: const FaIcon(FontAwesomeIcons.ban, size: 20),
+            icon: const Icon(
+              Symbols.tag,
+              fill: 1,
+            ),
             title: const Text(
               'blacklisted_tags.blacklisted_tags',
             ).tr(),
@@ -217,10 +244,19 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
                   data: (data) => data.isNotEmpty
                       ? Badge.count(
                           count: data.length,
-                          child: const Icon(Icons.mail),
+                          child: const Icon(
+                            Symbols.mail,
+                            fill: 1,
+                          ),
                         )
-                      : const Icon(Icons.mail),
-                  orElse: () => const Icon(Icons.mail),
+                      : const Icon(
+                          Symbols.mail,
+                          fill: 1,
+                        ),
+                  orElse: () => const Icon(
+                    Symbols.mail,
+                    fill: 1,
+                  ),
                 ),
             title: const Text(
               'Dmails',
@@ -236,40 +272,40 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
           value: 0,
           controller: controller,
           constraints: constraints,
-          selectedIcon: Icons.dashboard,
-          icon: Icons.dashboard_outlined,
+          selectedIcon: Symbols.dashboard,
+          icon: Symbols.dashboard,
           title: 'Home',
         ),
         HomeNavigationTile(
           value: 1,
           controller: controller,
           constraints: constraints,
-          selectedIcon: Icons.explore,
-          icon: Icons.explore_outlined,
+          selectedIcon: Symbols.explore,
+          icon: Symbols.explore,
           title: 'Explore',
         ),
         HomeNavigationTile(
           value: 2,
           controller: controller,
           constraints: constraints,
-          selectedIcon: Icons.photo_album,
-          icon: Icons.photo_album_outlined,
+          selectedIcon: Symbols.photo_album,
+          icon: Symbols.photo_album,
           title: 'Pools',
         ),
         HomeNavigationTile(
           value: 3,
           controller: controller,
           constraints: constraints,
-          selectedIcon: Icons.forum,
-          icon: Icons.forum_outlined,
+          selectedIcon: Symbols.forum,
+          icon: Symbols.forum,
           title: 'forum.forum'.tr(),
         ),
         HomeNavigationTile(
           value: 4,
           controller: controller,
           constraints: constraints,
-          selectedIcon: Icons.search,
-          icon: Icons.search_outlined,
+          selectedIcon: Symbols.search,
+          icon: Symbols.search,
           title: 'Artists',
         ),
         if (widget.config.hasLoginDetails()) ...[
@@ -278,8 +314,8 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
               value: 5,
               controller: controller,
               constraints: constraints,
-              selectedIcon: Icons.account_box,
-              icon: Icons.account_box_outlined,
+              selectedIcon: Symbols.account_box,
+              icon: Symbols.account_box,
               title: 'Profile',
             )
           else
@@ -288,40 +324,40 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
             value: 6,
             controller: controller,
             constraints: constraints,
-            selectedIcon: Icons.favorite,
-            icon: Icons.favorite_border_outlined,
+            selectedIcon: Symbols.favorite,
+            icon: Symbols.favorite,
             title: 'Favorites',
           ),
           HomeNavigationTile(
             value: 7,
             controller: controller,
             constraints: constraints,
-            selectedIcon: Icons.collections,
-            icon: Icons.collections_outlined,
+            selectedIcon: Symbols.collections,
+            icon: Symbols.collections,
             title: 'favorite_groups.favorite_groups'.tr(),
           ),
           HomeNavigationTile(
             value: 8,
             controller: controller,
             constraints: constraints,
-            selectedIcon: Icons.saved_search,
-            icon: Icons.saved_search_outlined,
+            selectedIcon: Symbols.saved_search,
+            icon: Symbols.saved_search,
             title: 'saved_search.saved_search'.tr(),
           ),
           HomeNavigationTile(
             value: 9,
             controller: controller,
             constraints: constraints,
-            selectedIcon: Icons.tag,
-            icon: Icons.tag_outlined,
+            selectedIcon: Symbols.tag,
+            icon: Symbols.tag,
             title: 'blacklisted_tags.blacklisted_tags'.tr(),
           ),
           HomeNavigationTile(
             value: 10,
             controller: controller,
             constraints: constraints,
-            selectedIcon: Icons.mail,
-            icon: Icons.mail_outline,
+            selectedIcon: Symbols.mail,
+            icon: Symbols.mail,
             title: 'Dmails',
           ),
         ],
@@ -330,24 +366,24 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
           value: 11,
           controller: controller,
           constraints: constraints,
-          selectedIcon: Icons.bookmark,
-          icon: Icons.bookmark_border_outlined,
+          selectedIcon: Symbols.bookmark,
+          icon: Symbols.bookmark,
           title: 'sideMenu.your_bookmarks'.tr(),
         ),
         HomeNavigationTile(
           value: 12,
           controller: controller,
           constraints: constraints,
-          selectedIcon: Icons.list_alt,
-          icon: Icons.list_alt_outlined,
+          selectedIcon: Symbols.list_alt,
+          icon: Symbols.list_alt,
           title: 'sideMenu.your_blacklist'.tr(),
         ),
         HomeNavigationTile(
           value: 13,
           controller: controller,
           constraints: constraints,
-          selectedIcon: Icons.download,
-          icon: Icons.download_outlined,
+          selectedIcon: Symbols.download,
+          icon: Symbols.download,
           title: 'sideMenu.bulk_download'.tr(),
         ),
         const Divider(),
@@ -355,8 +391,8 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
           value: 999,
           controller: controller,
           constraints: constraints,
-          selectedIcon: Icons.settings,
-          icon: Icons.settings,
+          selectedIcon: Symbols.settings,
+          icon: Symbols.settings,
           title: 'sideMenu.settings'.tr(),
           onTap: () => context.go('/settings'),
         ),

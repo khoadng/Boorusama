@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/sankaku/sankaku.dart';
@@ -33,7 +34,7 @@ class SankakuHomePage extends ConsumerWidget {
       mobileMenuBuilder: (context, controller) => [
         if (login != null)
           SideMenuTile(
-            icon: const Icon(Icons.favorite_outline),
+            icon: const Icon(Symbols.favorite),
             title: Text('profile.favorites'.tr()),
             onTap: () {
               goToFavoritesPage(context);
@@ -45,8 +46,8 @@ class SankakuHomePage extends ConsumerWidget {
           value: 0,
           controller: controller,
           constraints: constraints,
-          selectedIcon: Icons.dashboard,
-          icon: Icons.dashboard_outlined,
+          selectedIcon: Symbols.dashboard,
+          icon: Symbols.dashboard,
           title: 'Home',
         ),
         const Divider(),
@@ -54,24 +55,24 @@ class SankakuHomePage extends ConsumerWidget {
           value: 1,
           controller: controller,
           constraints: constraints,
-          selectedIcon: Icons.bookmark,
-          icon: Icons.bookmark_border_outlined,
+          selectedIcon: Symbols.bookmark,
+          icon: Symbols.bookmark,
           title: 'sideMenu.your_bookmarks'.tr(),
         ),
         HomeNavigationTile(
           value: 2,
           controller: controller,
           constraints: constraints,
-          selectedIcon: Icons.list_alt,
-          icon: Icons.list_alt_outlined,
+          selectedIcon: Symbols.list_alt,
+          icon: Symbols.list_alt,
           title: 'sideMenu.your_blacklist'.tr(),
         ),
         HomeNavigationTile(
           value: 3,
           controller: controller,
           constraints: constraints,
-          selectedIcon: Icons.download,
-          icon: Icons.download_outlined,
+          selectedIcon: Symbols.download,
+          icon: Symbols.download,
           title: 'sideMenu.bulk_download'.tr(),
         ),
         const Divider(),
@@ -80,16 +81,16 @@ class SankakuHomePage extends ConsumerWidget {
             value: 4,
             controller: controller,
             constraints: constraints,
-            selectedIcon: Icons.favorite,
-            icon: Icons.favorite_border_outlined,
+            selectedIcon: Symbols.favorite,
+            icon: Symbols.favorite,
             title: 'Favorites',
           ),
         HomeNavigationTile(
           value: 999,
           controller: controller,
           constraints: constraints,
-          selectedIcon: Icons.settings,
-          icon: Icons.settings,
+          selectedIcon: Symbols.settings,
+          icon: Symbols.settings,
           title: 'sideMenu.settings'.tr(),
           onTap: () => context.go('/settings'),
         ),

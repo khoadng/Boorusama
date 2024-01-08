@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
@@ -144,7 +145,7 @@ class BookmarkScrollView extends ConsumerWidget {
                             child: CircularIconButton(
                               padding: const EdgeInsets.all(4),
                               icon: const Icon(
-                                Icons.close,
+                                Symbols.close,
                                 color: Colors.white,
                               ),
                               onPressed: () => ref.bookmarks

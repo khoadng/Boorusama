@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:collection/collection.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
@@ -80,6 +81,10 @@ class UserDetailsPage extends ConsumerWidget {
         title: const Text('Profile'),
         actions: [
           PopupMenuButton(
+            icon: const Icon(
+              Symbols.more_vert,
+              weight: 400,
+            ),
             itemBuilder: (context) => [
               const PopupMenuItem(
                 value: 0,

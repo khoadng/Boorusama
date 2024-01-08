@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/app.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -28,7 +29,7 @@ class CurrentBooruTile extends ConsumerWidget {
     };
 
     return LayoutBuilder(
-      builder: (context, constraints) => constraints.maxWidth > 62
+      builder: (context, constraints) => constraints.maxWidth > kMinSideBarWidth
           ? ListTile(
               visualDensity: const VisualDensity(vertical: -4),
               horizontalTitleGap: 0,
@@ -83,7 +84,10 @@ class CurrentBooruTile extends ConsumerWidget {
                     )
                   : null,
             )
-          : logo,
+          : Container(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: logo,
+            ),
     );
   }
 }

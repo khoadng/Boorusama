@@ -6,6 +6,7 @@ import 'package:android_intent_plus/android_intent.dart';
 import 'package:android_intent_plus/flag.dart';
 import 'package:filesize/filesize.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 // Project imports:
@@ -108,7 +109,7 @@ class BulkDownloadTile extends ConsumerWidget {
                               .read(bulkDownloaderManagerProvider(config)
                                   .notifier)
                               .pause(d.url),
-                          icon: const Icon(Icons.pause)),
+                          icon: const Icon(Symbols.pause)),
                       title: _Title(data: data),
                       subtitle: LinearPercentIndicator(
                         lineHeight: 2,
@@ -132,7 +133,7 @@ class BulkDownloadTile extends ConsumerWidget {
                               .read(bulkDownloaderManagerProvider(config)
                                   .notifier)
                               .resume(d.url),
-                          icon: const Icon(Icons.play_arrow)),
+                          icon: const Icon(Symbols.play_arrow)),
                       title: _Title(data: data),
                       subtitle: LinearPercentIndicator(
                         lineHeight: 2,
@@ -181,7 +182,7 @@ class BulkDownloadTile extends ConsumerWidget {
                       minVerticalPadding: 0,
                       contentPadding: const EdgeInsets.symmetric(horizontal: 8),
                       trailing: const Icon(
-                        Icons.download_done,
+                        Symbols.download_done,
                         color: Colors.green,
                       ),
                       onTap: () async {
@@ -228,7 +229,7 @@ class _RetryButton extends ConsumerWidget {
       onPressed: () => ref
           .read(bulkDownloaderManagerProvider(config).notifier)
           .retry(url, fileName),
-      icon: const Icon(Icons.refresh),
+      icon: const Icon(Symbols.refresh),
     );
   }
 }

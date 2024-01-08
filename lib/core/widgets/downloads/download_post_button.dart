@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/downloads/downloads.dart';
@@ -27,9 +27,8 @@ class DownloadPostButton extends ConsumerWidget {
           showDownloadStartToast(context);
           download(post);
         },
-        icon: const FaIcon(
-          FontAwesomeIcons.download,
-          size: 20,
+        icon: const Icon(
+          Symbols.download,
         ),
       ),
     );

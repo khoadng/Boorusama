@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_html/flutter_html.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/artist_commentaries/artist_commentaries.dart';
@@ -144,7 +145,7 @@ class _Link extends StatelessWidget {
       actionBuilder: () => commentary.isTranslated
           ? PopupMenuButton(
               padding: EdgeInsets.zero,
-              icon: const Icon(Icons.keyboard_arrow_down),
+              icon: const Icon(Symbols.keyboard_arrow_down),
               onSelected: onChanged,
               itemBuilder: (_) => [
                 switch (display) {

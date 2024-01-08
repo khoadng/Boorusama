@@ -212,7 +212,7 @@ const _kAiTags = {
   'ai art',
 };
 
-extension PostsX on List<Post> {
+extension PostsX on Iterable<Post> {
   Map<String, int> extractTagsWithoutCount() {
     final tagCounts = <String, int>{};
 

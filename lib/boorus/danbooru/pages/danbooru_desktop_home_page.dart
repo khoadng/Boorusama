@@ -43,7 +43,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruDesktopHomePage> {
             page,
           ),
       builder: (context, controller, errors) => LayoutBuilder(
-        builder: (context, constraints) => constraints.maxHeight < 500
+        builder: (context, constraints) => constraints.maxHeight < 450
             ? _buildList(
                 controller,
                 errors,

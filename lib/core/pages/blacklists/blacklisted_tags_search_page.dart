@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
@@ -164,9 +165,10 @@ class _BlacklistedTagsSearchPageState
           borderRadius: BorderRadius.all(Radius.circular(8)),
         ),
         deleteIcon: Icon(
-          FontAwesomeIcons.xmark,
+          Symbols.close,
           color: context.colorScheme.error,
-          size: 15,
+          size: 18,
+          weight: 600,
         ),
         labelPadding: const EdgeInsets.symmetric(horizontal: 2),
         onDeleted: () => selectedTagController.removeTag(tagSearchItem),
@@ -208,10 +210,11 @@ class _BlacklistedTagsSearchPageState
               bottomRight: Radius.circular(8),
             ),
           ),
-          deleteIcon: const Icon(
-            FontAwesomeIcons.xmark,
-            color: Colors.red,
-            size: 15,
+          deleteIcon: Icon(
+            Symbols.close,
+            color: context.colorScheme.error,
+            size: 18,
+            weight: 600,
           ),
           onDeleted: () => selectedTagController.removeTag(tagSearchItem),
           labelPadding: const EdgeInsets.symmetric(horizontal: 2),

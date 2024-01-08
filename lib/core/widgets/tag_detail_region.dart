@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/flutter.dart';
@@ -44,7 +45,7 @@ class TagDetailsRegion extends ConsumerWidget {
                               iconSize: 28,
                               splashRadius: 24,
                               icon: const Icon(
-                                Icons.close,
+                                Symbols.close,
                               ),
                               onPressed: () => Navigator.of(context).pop(),
                             ),

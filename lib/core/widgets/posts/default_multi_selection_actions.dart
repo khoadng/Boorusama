@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:material_symbols_icons/symbols.dart';
+
 // Project imports:
 import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
@@ -14,7 +17,7 @@ class DefaultMultiSelectionActions extends StatelessWidget {
     required this.endMultiSelect,
   });
 
-  final List<Post> selectedPosts;
+  final Iterable<Post> selectedPosts;
   final void Function() endMultiSelect;
 
   @override
@@ -35,7 +38,7 @@ class DefaultMultiSelectionActions extends StatelessWidget {
                     endMultiSelect();
                   }
                 : null,
-            icon: const Icon(Icons.download),
+            icon: const Icon(Symbols.download),
           ),
         ),
         AddBookmarksButton(

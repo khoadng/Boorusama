@@ -13,8 +13,10 @@ import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import 'widgets/platforms/platforms.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
+const kMinSideBarWidth = 62.0;
 
 class App extends StatelessWidget {
   const App({
@@ -38,11 +40,21 @@ class App extends StatelessWidget {
               builder: (theme, themeMode) => MaterialApp.router(
                 builder: (context, child) => ConditionalParentWidget(
                   condition: isDesktopPlatform(),
-                  conditionalBuilder: (child) => child,
-                  child: ScrollConfiguration(
-                    behavior: const MaterialScrollBehavior()
-                        .copyWith(overscroll: false),
-                    child: child!,
+                  conditionalBuilder: (child) => WindowTitleBar(
+                    appName: appName,
+                    child: child,
+                  ),
+                  child: Theme(
+                    data: Theme.of(context).copyWith(
+                      iconTheme: Theme.of(context).iconTheme.copyWith(
+                            weight: isWindows() ? 200 : 400,
+                          ),
+                    ),
+                    child: ScrollConfiguration(
+                      behavior: const MaterialScrollBehavior()
+                          .copyWith(overscroll: false),
+                      child: child!,
+                    ),
                   ),
                 ),
                 theme: theme,

@@ -15,21 +15,24 @@ class PostGridController<T> extends ChangeNotifier {
   PostGridController({
     required this.fetcher,
     required this.refresher,
+    required this.keySelector,
     this.debounceDuration = const Duration(milliseconds: 500),
     PageMode pageMode = PageMode.infinite,
   }) : _pageMode = pageMode;
 
   final ItemFetcher<T> fetcher;
   final ItemRefresher<T> refresher;
+  final int Function(T item) keySelector;
   PageMode _pageMode;
 
   List<T> _items = [];
+  Set<int> _keys = {};
   int _page = 1;
   bool _hasMore = true;
   bool _loading = false;
   bool _refreshing = false;
 
-  List<T> get items => _items;
+  Iterable<T> get items => _items;
 
   bool get hasMore => _hasMore;
   bool get loading => _loading;
@@ -52,7 +55,7 @@ class PostGridController<T> extends ChangeNotifier {
     _refreshing = false;
     _loading = false;
     if (newPageMode == PageMode.infinite) {
-      _items.clear();
+      _clear();
       _page = 1;
       refresh();
     } else {
@@ -70,7 +73,8 @@ class PostGridController<T> extends ChangeNotifier {
     notifyListeners();
 
     final newItems = await refresher();
-    _items = newItems;
+    _clear();
+    _addAll(newItems);
     _hasMore = newItems.isNotEmpty;
     _refreshing = false;
     notifyListeners();
@@ -93,7 +97,7 @@ class PostGridController<T> extends ChangeNotifier {
       final newItems = await fetcher(_page);
       _hasMore = newItems.isNotEmpty;
       if (_hasMore) {
-        _items.addAll(newItems);
+        _addAll(newItems);
       }
       _loading = false;
       notifyListeners();
@@ -110,14 +114,14 @@ class PostGridController<T> extends ChangeNotifier {
     }
 
     _page = targetPage;
-    _items.clear();
+    _clear();
     _refreshing = true;
     notifyListeners();
 
     final newItems = await fetcher(_page);
     _hasMore = newItems.isNotEmpty;
     if (_hasMore) {
-      _items.addAll(newItems);
+      _addAll(newItems);
     }
     _refreshing = false;
     notifyListeners();
@@ -165,7 +169,27 @@ class PostGridController<T> extends ChangeNotifier {
     final data = [..._items]
       ..removeWhere((e) => postIds.contains(itemIdExtractor(e)));
 
+    // remove keys
+    _keys = data.map((e) => itemIdExtractor(e)).toSet();
+
     _items = data;
+    notifyListeners();
+  }
+
+  void _addAll(List<T> newItems) {
+    for (final item in newItems) {
+      final key = keySelector(item);
+      if (!_keys.contains(key)) {
+        _items.add(item);
+        _keys.add(key);
+      }
+    }
+    notifyListeners();
+  }
+
+  void _clear() {
+    _items.clear();
+    _keys.clear();
     notifyListeners();
   }
 }

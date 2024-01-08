@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:collection/collection.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
@@ -38,9 +38,8 @@ class PoolTiles extends StatelessWidget {
                 softWrap: false,
                 style: context.textTheme.titleSmall,
               ),
-              trailing: const FaIcon(
-                FontAwesomeIcons.angleRight,
-                size: 12,
+              trailing: const Icon(
+                Symbols.keyboard_arrow_right,
               ),
             ),
           ),

@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/posts/posts.dart';
@@ -22,9 +22,8 @@ class CommentPostButton extends StatelessWidget {
     return IconButton(
       splashRadius: 16,
       onPressed: onPressed,
-      icon: const FaIcon(
-        FontAwesomeIcons.comment,
-        size: 20,
+      icon: const Icon(
+        Symbols.mode_comment,
       ),
     );
   }

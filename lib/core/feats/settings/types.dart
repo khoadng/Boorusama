@@ -46,6 +46,11 @@ enum AppLockType {
   pin,
 }
 
+enum BookmarkFilterType {
+  none,
+  hideAll,
+}
+
 class Settings extends Equatable {
   const Settings({
     required this.safeMode,
@@ -72,6 +77,7 @@ class Settings extends Equatable {
     required this.enableDynamicColoring,
     required this.clearImageCacheOnStartup,
     required this.appLockType,
+    required this.bookmarkFilterType,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
@@ -119,6 +125,9 @@ class Settings extends Equatable {
         appLockType = json['appLockType'] != null
             ? AppLockType.values[json['appLockType']]
             : AppLockType.none,
+        bookmarkFilterType = json['bookmarkFilterType'] != null
+            ? BookmarkFilterType.values[json['bookmarkFilterType']]
+            : BookmarkFilterType.none,
         imageGridSpacing = json['imageGridSpacing'];
 
   static const defaultSettings = Settings(
@@ -146,6 +155,7 @@ class Settings extends Equatable {
     enableDynamicColoring: false,
     clearImageCacheOnStartup: false,
     appLockType: AppLockType.none,
+    bookmarkFilterType: BookmarkFilterType.none,
   );
 
   final String blacklistedTags;
@@ -190,6 +200,8 @@ class Settings extends Equatable {
 
   final AppLockType appLockType;
 
+  final BookmarkFilterType bookmarkFilterType;
+
   Settings copyWith({
     String? blacklistedTags,
     String? language,
@@ -215,6 +227,7 @@ class Settings extends Equatable {
     bool? enableDynamicColoring,
     bool? clearImageCacheOnStartup,
     AppLockType? appLockType,
+    BookmarkFilterType? bookmarkFilterType,
   }) =>
       Settings(
         safeMode: safeMode ?? this.safeMode,
@@ -246,6 +259,7 @@ class Settings extends Equatable {
         clearImageCacheOnStartup:
             clearImageCacheOnStartup ?? this.clearImageCacheOnStartup,
         appLockType: appLockType ?? this.appLockType,
+        bookmarkFilterType: bookmarkFilterType ?? this.bookmarkFilterType,
       );
 
   Map<String, dynamic> toJson() => {
@@ -273,6 +287,7 @@ class Settings extends Equatable {
         'enableDynamicColoring': enableDynamicColoring,
         'clearImageCacheOnStartup': clearImageCacheOnStartup,
         'appLockType': appLockType.index,
+        'bookmarkFilterType': bookmarkFilterType.index,
       };
 
   @override
@@ -301,9 +316,12 @@ class Settings extends Equatable {
         enableDynamicColoring,
         clearImageCacheOnStartup,
         appLockType,
+        bookmarkFilterType,
       ];
 }
 
 extension SettingsX on Settings {
   bool get appLockEnabled => appLockType == AppLockType.biometrics;
+  bool get shouldFilterBookmarks =>
+      bookmarkFilterType != BookmarkFilterType.none;
 }

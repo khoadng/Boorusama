@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:animated_list_plus/animated_list_plus.dart';
 import 'package:animated_list_plus/transitions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/search/search.dart';
@@ -60,7 +61,7 @@ class FullHistoryView extends ConsumerWidget {
                       trailing: IconButton(
                         onPressed: () => onHistoryRemoved(history),
                         icon: Icon(
-                          Icons.close,
+                          Symbols.close,
                           color: context.theme.hintColor,
                         ),
                       ),

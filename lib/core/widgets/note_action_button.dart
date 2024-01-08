@@ -3,6 +3,7 @@ import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/posts/posts.dart';
@@ -34,7 +35,7 @@ class NoteActionButton extends StatelessWidget {
           backgroundColor: Colors.black.withOpacity(0.7),
           padding: const EdgeInsets.all(4),
         ),
-        icon: const Icon(Icons.download_rounded),
+        icon: const Icon(Symbols.download_rounded),
         label: const Text('Notes'),
         onPressed: onDownload,
       );

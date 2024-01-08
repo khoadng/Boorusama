@@ -6,17 +6,20 @@ import 'package:flutter_improved_scrolling/flutter_improved_scrolling.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/feats/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/posts/post_grid_config_region.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'post_grid_config_icon_button.dart';
@@ -79,7 +82,7 @@ class PostGrid<T extends Post> extends ConsumerStatefulWidget {
   final PostGridController<T> controller;
 
   final Widget Function(
-    List<Post> selectedPosts,
+    Iterable<Post> selectedPosts,
     void Function() endMultiSelect,
   )? multiSelectActions;
 
@@ -161,7 +164,18 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
           if (filters[tag]!) tag
       ],
     );
-    items = d.data;
+
+    // Dirty hack to filter out bookmarked posts
+    final settings = ref.read(settingsProvider);
+
+    final bookmarks = settings.shouldFilterBookmarks
+        ? ref.read(bookmarkProvider).bookmarks
+        : <Bookmark>[].lock;
+
+    final dataWithoutBookmarks = d.data.where((element) =>
+        !bookmarks.any((e) => e.originalUrl == element.originalImageUrl));
+
+    items = dataWithoutBookmarks.toList();
     filteredItems = d.filtered;
   }
 
@@ -220,16 +234,16 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                             leading: IconButton(
                               onPressed: () =>
                                   _multiSelectController.disableMultiSelect(),
-                              icon: const Icon(Icons.close),
+                              icon: const Icon(Symbols.close),
                             ),
                             actions: [
                               IconButton(
                                 onPressed: selectAll,
-                                icon: const Icon(Icons.select_all),
+                                icon: const Icon(Symbols.select_all),
                               ),
                               IconButton(
                                 onPressed: clearSelected,
-                                icon: const Icon(Icons.clear_all),
+                                icon: const Icon(Symbols.clear_all),
                               ),
                             ],
                             title: selected.isEmpty

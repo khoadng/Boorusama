@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
@@ -87,7 +88,7 @@ class _AddUnknownBooruPageState extends ConsumerState<AddUnknownBooruPage> {
               alignment: Alignment.topRight,
               child: IconButton(
                 onPressed: context.navigator.pop,
-                icon: const Icon(Icons.close),
+                icon: const Icon(Symbols.close),
               ),
             )
           ],
@@ -144,7 +145,7 @@ class _AddUnknownBooruPageState extends ConsumerState<AddUnknownBooruPage> {
                       error = null;
                       isValidSite = null;
                     }),
-                    icon: const Icon(Icons.close),
+                    icon: const Icon(Symbols.close),
                   ),
                 ),
               ],

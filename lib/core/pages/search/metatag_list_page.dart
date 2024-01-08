@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:material_symbols_icons/symbols.dart';
+
 // Project imports:
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/flutter.dart';
@@ -26,7 +29,7 @@ class MetatagListPage extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: context.navigator.pop,
-            icon: const Icon(Icons.close),
+            icon: const Icon(Symbols.close),
           ),
         ],
       ),

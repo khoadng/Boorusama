@@ -52,7 +52,7 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
   Future<void> addBookmarks(
     int booruId,
     String booruUrl,
-    List<Post> posts, {
+    Iterable<Post> posts, {
     void Function()? onSuccess,
     void Function()? onError,
   }) async {
@@ -217,7 +217,7 @@ extension BookmarkCubitToastX on BookmarkNotifier {
   Future<void> addBookmarksWithToast(
     int booruId,
     String booruUrl,
-    List<Post> posts,
+    Iterable<Post> posts,
   ) =>
       addBookmarks(
         booruId,

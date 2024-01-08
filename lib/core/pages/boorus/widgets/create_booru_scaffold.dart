@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:material_symbols_icons/symbols.dart';
+
 // Project imports:
 import 'package:boorusama/core/feats/boorus/booru.dart';
 import 'package:boorusama/flutter.dart';
@@ -40,7 +43,7 @@ class CreateBooruScaffold extends StatelessWidget {
                 IconButton(
                   splashRadius: 20,
                   onPressed: context.navigator.pop,
-                  icon: const Icon(Icons.close),
+                  icon: const Icon(Symbols.close),
                 ),
               ],
             ),

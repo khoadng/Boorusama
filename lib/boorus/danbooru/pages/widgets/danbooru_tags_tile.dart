@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
@@ -68,9 +69,10 @@ class DanbooruTagsTile extends ConsumerWidget {
                   orElse: () => null,
                 ),
                 child: Icon(
-                  Icons.edit,
+                  Symbols.edit,
                   size: 16,
                   color: context.colorScheme.onSurfaceVariant,
+                  fill: 1,
                 ),
               ),
           ],
@@ -129,12 +131,10 @@ class DanbooruTagsTile extends ConsumerWidget {
                     ).then((value) => showSuccessToast('Copied'));
                   }
                 },
-                child: GestureDetector(
+                child: PostTagListChip(
+                  tag: tag,
                   onTap: () => goToSearchPage(context, tag: tag.rawName),
-                  child: PostTagListChip(
-                    tag: tag,
-                    maxTagWidth: null,
-                  ),
+                  maxTagWidth: null,
                 ),
               ),
             ),

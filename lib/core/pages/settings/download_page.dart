@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
@@ -87,7 +88,7 @@ class _DownloadPageState extends ConsumerState<DownloadPage>
                           ),
                     trailing: IconButton(
                       onPressed: () => _pickFolder(settings),
-                      icon: const Icon(Icons.folder),
+                      icon: const Icon(Symbols.folder),
                     ),
                   ),
                 ),

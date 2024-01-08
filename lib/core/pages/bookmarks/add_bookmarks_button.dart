@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/bookmarks/bookmarks.dart';
@@ -16,7 +17,7 @@ class AddBookmarksButton extends ConsumerWidget {
     required this.onPressed,
   });
 
-  final List<Post> posts;
+  final Iterable<Post> posts;
   final VoidCallback onPressed;
 
   @override
@@ -34,7 +35,7 @@ class AddBookmarksButton extends ConsumerWidget {
               onPressed();
             }
           : null,
-      icon: const Icon(Icons.bookmark_add),
+      icon: const Icon(Symbols.bookmark_add),
     );
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
@@ -48,7 +49,10 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
       ),
       child: Container(
         margin: const EdgeInsets.all(4),
-        child: const Icon(Icons.settings),
+        child: const Icon(
+          Symbols.settings,
+          fill: 1,
+        ),
       ),
     );
   }
@@ -174,7 +178,7 @@ class PostGridActionSheet extends ConsumerWidget {
       child: ConditionalParentWidget(
         condition: isMobilePlatform(),
         conditionalBuilder: (child) => Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           child: child,
         ),
         child: Column(
@@ -212,7 +216,7 @@ class MobilePostGridConfigTile extends StatelessWidget {
               fontSize: 14,
             ),
           ),
-          const Icon(Icons.chevron_right),
+          const Icon(Symbols.chevron_right),
         ],
       ),
       onTap: onTap,

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
@@ -110,7 +111,7 @@ class ExplorePageDesktop extends ConsumerWidget {
                 onPressed: () => ref
                     .read(selectedExploreCategoryProvider.notifier)
                     .state = null,
-                icon: const Icon(Icons.arrow_back),
+                icon: const Icon(Symbols.arrow_back),
               ),
             ),
             body: switch (selectedCategory) {

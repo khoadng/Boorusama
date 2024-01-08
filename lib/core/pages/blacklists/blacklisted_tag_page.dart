@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/blacklists/blacklists.dart';
@@ -43,7 +43,7 @@ class BlacklistedTagPage extends ConsumerWidget {
                 },
               );
             },
-            icon: const FaIcon(FontAwesomeIcons.plus),
+            icon: const Icon(Symbols.add),
           ),
         ],
       ),
@@ -138,6 +138,10 @@ class BlacklistedTagTile extends StatelessWidget {
     return ListTile(
       title: Text(tag),
       trailing: PopupMenuButton(
+        icon: const Icon(
+          Symbols.more_vert,
+          weight: 400,
+        ),
         constraints: const BoxConstraints(minWidth: 150),
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(4)),

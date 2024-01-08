@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:animated_list_plus/animated_list_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
@@ -32,7 +33,7 @@ class SavedSearchPage extends ConsumerWidget {
         actions: [
           IconButton(
             onPressed: () => goToSavedSearchCreatePage(ref, context),
-            icon: const Icon(Icons.add),
+            icon: const Icon(Symbols.add),
           ),
         ],
       ),
@@ -103,7 +104,7 @@ class _SuccessView extends ConsumerWidget {
                             context,
                             savedSearch,
                           ),
-                          icon: const Icon(Icons.more_vert),
+                          icon: const Icon(Symbols.more_vert),
                         ),
                   onTap: savedSearch.labels.isNotEmpty
                       ? () => goToSearchPage(

@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:like_button/like_button.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
@@ -95,8 +96,9 @@ class ImageGridItem extends StatelessWidget {
                   },
                   likeBuilder: (bool isLiked) {
                     return Icon(
-                      isLiked ? Icons.favorite : Icons.favorite_border_outlined,
+                      isLiked ? Symbols.favorite : Symbols.favorite,
                       color: isLiked ? Colors.redAccent : Colors.white,
+                      fill: isLiked ? 1 : 0,
                     );
                   },
                 ),
@@ -142,7 +144,7 @@ class ImageGridItem extends StatelessWidget {
             if (isAnimated ?? false)
               if (duration == null)
                 const ImageOverlayIcon(
-                  icon: Icons.play_circle_outline,
+                  icon: Symbols.play_circle,
                   size: 20,
                 )
               else
@@ -151,10 +153,9 @@ class ImageGridItem extends StatelessWidget {
                   hasSound: hasSound,
                 ),
             if (isTranslated ?? false)
-              const ImageOverlayIcon(
-                  icon: Icons.g_translate_outlined, size: 20),
+              const ImageOverlayIcon(icon: Symbols.g_translate, size: 20),
             if (hasComments ?? false)
-              const ImageOverlayIcon(icon: Icons.comment, size: 20),
+              const ImageOverlayIcon(icon: Symbols.comment, size: 20),
             if (hasParentOrChildren ?? false)
               const ImageOverlayIcon(icon: FontAwesomeIcons.images, size: 16),
             if (isAI)

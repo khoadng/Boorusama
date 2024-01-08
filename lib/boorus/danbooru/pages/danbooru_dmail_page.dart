@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/clients/danbooru/types/types.dart';
@@ -43,7 +44,7 @@ class _DanbooruDmailPageState extends ConsumerState<DanbooruDmailPage> {
         title: const Text('Messages'),
         actions: [
           IconButton(
-              icon: const Icon(Icons.refresh),
+              icon: const Icon(Symbols.refresh),
               onPressed: () => ref.invalidate(dmailProvider)),
         ],
       ),

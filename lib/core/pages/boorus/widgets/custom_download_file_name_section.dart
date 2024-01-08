@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
@@ -378,7 +379,7 @@ class TokenOptionHelpModal extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: context.navigator.pop,
-            icon: const Icon(Icons.close),
+            icon: const Icon(Symbols.close),
           ),
         ],
       ),
@@ -442,7 +443,7 @@ class TokenOptionHelpModal extends StatelessWidget {
                             Clipboard.setData(ClipboardData(text: option))
                                 .then((value) => showSuccessToast('Copied'));
                           },
-                          icon: const Icon(Icons.copy),
+                          icon: const Icon(Symbols.copy_all),
                         ),
                       );
                     },

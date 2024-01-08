@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/types.dart';
@@ -32,7 +33,7 @@ class DateTimeSelector extends StatelessWidget {
         Material(
           color: Colors.transparent,
           child: IconButton(
-            icon: const Icon(Icons.keyboard_arrow_left),
+            icon: const Icon(Symbols.keyboard_arrow_left),
             onPressed: () => onDateChanged(Jiffy.parseFromDateTime(date)
                 .dateTime
                 .subtractTimeScale(scale)),
@@ -61,14 +62,14 @@ class DateTimeSelector extends StatelessWidget {
           child: Row(
             children: <Widget>[
               Text(DateFormat('MMM d, yyyy').format(date)),
-              const Icon(Icons.arrow_drop_down),
+              const Icon(Symbols.arrow_drop_down),
             ],
           ),
         ),
         Material(
           color: Colors.transparent,
           child: IconButton(
-            icon: const Icon(Icons.keyboard_arrow_right),
+            icon: const Icon(Symbols.keyboard_arrow_right),
             onPressed: () => onDateChanged(
                 Jiffy.parseFromDateTime(date).dateTime.addTimeScale(scale)),
           ),

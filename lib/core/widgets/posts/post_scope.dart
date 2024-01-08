@@ -36,6 +36,7 @@ class _PostScopeState<T extends Post> extends ConsumerState<PostScope<T>> {
     fetcher: (page) => fetchPosts(page),
     refresher: () => fetchPosts(1),
     pageMode: ref.read(pageModeSettingsProvider),
+    keySelector: (item) => item.id,
   );
 
   BooruError? errors;

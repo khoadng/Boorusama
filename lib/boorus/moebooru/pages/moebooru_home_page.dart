@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/entry_page.dart';
@@ -45,7 +46,7 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
           _buildMobileHomeView(controller, widget.config),
       mobileMenuBuilder: (context, controller) => [
         SideMenuTile(
-          icon: const Icon(Icons.explore),
+          icon: const Icon(Symbols.explore),
           title: const Text('Popular'),
           onTap: () => context.navigator.push(CupertinoPageRoute(
               builder: (_) => Scaffold(
@@ -55,7 +56,7 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
                   ))),
         ),
         SideMenuTile(
-          icon: const Icon(Icons.local_fire_department),
+          icon: const Icon(Symbols.local_fire_department),
           title: const Text('Hot'),
           onTap: () => context.navigator.push(CupertinoPageRoute(
               builder: (_) => Scaffold(
@@ -70,24 +71,24 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
           value: 0,
           controller: controller,
           constraints: constraints,
-          selectedIcon: Icons.dashboard,
-          icon: Icons.dashboard_outlined,
+          selectedIcon: Symbols.dashboard,
+          icon: Symbols.dashboard,
           title: 'Home',
         ),
         HomeNavigationTile(
           value: 1,
           controller: controller,
           constraints: constraints,
-          selectedIcon: Icons.explore,
-          icon: Icons.explore_outlined,
+          selectedIcon: Symbols.explore,
+          icon: Symbols.explore,
           title: 'Explore',
         ),
         HomeNavigationTile(
           value: 2,
           controller: controller,
           constraints: constraints,
-          selectedIcon: Icons.local_fire_department,
-          icon: Icons.local_fire_department_outlined,
+          selectedIcon: Symbols.local_fire_department,
+          icon: Symbols.local_fire_department,
           title: 'Hot',
         ),
         const Divider(),
@@ -95,24 +96,24 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
           value: 3,
           controller: controller,
           constraints: constraints,
-          selectedIcon: Icons.bookmark,
-          icon: Icons.bookmark_border_outlined,
+          selectedIcon: Symbols.bookmark,
+          icon: Symbols.bookmark,
           title: 'sideMenu.your_bookmarks'.tr(),
         ),
         HomeNavigationTile(
           value: 4,
           controller: controller,
           constraints: constraints,
-          selectedIcon: Icons.list_alt,
-          icon: Icons.list_alt_outlined,
+          selectedIcon: Symbols.list_alt,
+          icon: Symbols.list_alt,
           title: 'sideMenu.your_blacklist'.tr(),
         ),
         HomeNavigationTile(
           value: 5,
           controller: controller,
           constraints: constraints,
-          selectedIcon: Icons.download,
-          icon: Icons.download_outlined,
+          selectedIcon: Symbols.download,
+          icon: Symbols.download,
           title: 'sideMenu.bulk_download'.tr(),
         ),
         const Divider(),
@@ -120,8 +121,8 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
           value: 999,
           controller: controller,
           constraints: constraints,
-          selectedIcon: Icons.settings,
-          icon: Icons.settings,
+          selectedIcon: Symbols.settings,
+          icon: Symbols.settings,
           title: 'sideMenu.settings'.tr(),
           onTap: () => context.go('/settings'),
         ),

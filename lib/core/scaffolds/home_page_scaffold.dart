@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
@@ -28,7 +29,7 @@ class HomePageScaffold extends ConsumerStatefulWidget {
 
   final void Function(
     BuildContext context,
-    List<Post> posts,
+    Iterable<Post> posts,
     Post post,
     AutoScrollController scrollController,
     Settings settings,
@@ -57,8 +58,8 @@ class _HomePageScaffoldState extends ConsumerState<HomePageScaffold> {
           value: 0,
           controller: controller,
           constraints: constraints,
-          selectedIcon: Icons.dashboard,
-          icon: Icons.dashboard_outlined,
+          selectedIcon: Symbols.dashboard,
+          icon: Symbols.dashboard,
           title: 'Home',
         ),
         const Divider(),
@@ -66,24 +67,24 @@ class _HomePageScaffoldState extends ConsumerState<HomePageScaffold> {
           value: 1,
           controller: controller,
           constraints: constraints,
-          selectedIcon: Icons.bookmark,
-          icon: Icons.bookmark_border_outlined,
+          selectedIcon: Symbols.bookmark,
+          icon: Symbols.bookmark,
           title: 'sideMenu.your_bookmarks'.tr(),
         ),
         HomeNavigationTile(
           value: 2,
           controller: controller,
           constraints: constraints,
-          selectedIcon: Icons.list_alt,
-          icon: Icons.list_alt_outlined,
+          selectedIcon: Symbols.list_alt,
+          icon: Symbols.list_alt,
           title: 'sideMenu.your_blacklist'.tr(),
         ),
         HomeNavigationTile(
           value: 3,
           controller: controller,
           constraints: constraints,
-          selectedIcon: Icons.download,
-          icon: Icons.download_outlined,
+          selectedIcon: Symbols.download,
+          icon: Symbols.download,
           title: 'sideMenu.bulk_download'.tr(),
         ),
         const Divider(),
@@ -91,8 +92,8 @@ class _HomePageScaffoldState extends ConsumerState<HomePageScaffold> {
           value: 999,
           controller: controller,
           constraints: constraints,
-          selectedIcon: Icons.settings,
-          icon: Icons.settings,
+          selectedIcon: Symbols.settings,
+          icon: Symbols.settings,
           title: 'sideMenu.settings'.tr(),
           onTap: () => context.go('/settings'),
         ),

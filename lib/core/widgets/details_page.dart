@@ -4,6 +4,7 @@ import 'package:flutter/material.dart' hide ThemeMode;
 // Package imports:
 import 'package:exprollable_page_view/exprollable_page_view.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/router.dart';
@@ -196,7 +197,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
                               curve: Curves.easeOut,
                               duration: const Duration(milliseconds: 150));
                         },
-                        child: const Icon(Icons.keyboard_arrow_up),
+                        child: const Icon(Symbols.keyboard_arrow_up),
                       ),
                     ),
                   )
@@ -417,7 +418,7 @@ class _NavigationButtonBar extends StatelessWidget {
           icon: const Padding(
             padding: EdgeInsets.only(left: 8),
             child: Icon(
-              Icons.arrow_back_ios,
+              Symbols.arrow_back_ios,
               color: Colors.white,
             ),
           ),
@@ -428,8 +429,9 @@ class _NavigationButtonBar extends StatelessWidget {
         ),
         CircularIconButton(
           icon: const Icon(
-            Icons.home,
+            Symbols.home,
             color: Colors.white,
+            fill: 1,
           ),
           onPressed: () => goToHomePage(context),
         ),

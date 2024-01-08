@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:reorderable_grid_view/reorderable_grid_view.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
@@ -51,6 +52,7 @@ class _FavoriteGroupDetailsPageState
   late final controller = PostGridController<DanbooruPost>(
     fetcher: (page) => getPostsFromIdQueue(widget.postIds),
     refresher: () => getPostsFromIdQueue(widget.postIds),
+    keySelector: (item) => item.id,
   );
 
   int rowCountEditMode = 2;
@@ -73,7 +75,7 @@ class _FavoriteGroupDetailsPageState
 
   void _onControllerChanged() {
     setState(() {
-      items = controller.items;
+      items = controller.items.toList();
       hasMore = controller.hasMore;
       loading = controller.loading;
       refreshing = controller.refreshing;
@@ -122,7 +124,7 @@ class _FavoriteGroupDetailsPageState
                 _aggregate(config);
                 setState(() => editing = false);
               },
-              child: const Icon(Icons.save),
+              child: const Icon(Symbols.save),
             )
           : null,
       appBar: AppBar(
@@ -140,7 +142,7 @@ class _FavoriteGroupDetailsPageState
                   tag: widget.group.getQueryString(),
                 );
               },
-              icon: const Icon(Icons.search),
+              icon: const Icon(Symbols.search),
             ),
           if (!editing)
             IconButton(
@@ -151,7 +153,7 @@ class _FavoriteGroupDetailsPageState
                   ref: ref,
                 );
               },
-              icon: const Icon(Icons.download),
+              icon: const Icon(Symbols.download),
             ),
           if (!editing)
             IconButton(
@@ -161,7 +163,10 @@ class _FavoriteGroupDetailsPageState
                   commands.clear();
                 });
               },
-              icon: const Icon(Icons.edit),
+              icon: const Icon(
+                Symbols.edit,
+                fill: 1,
+              ),
             )
           else
             TextButton(
@@ -284,7 +289,7 @@ class _FavoriteGroupDetailsPageState
                                     child: CircularIconButton(
                                       padding: const EdgeInsets.all(4),
                                       icon: const Icon(
-                                        Icons.close,
+                                        Symbols.close,
                                         color: Colors.white,
                                       ),
                                       onPressed: () {

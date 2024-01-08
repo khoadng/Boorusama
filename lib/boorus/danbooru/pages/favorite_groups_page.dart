@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
@@ -33,7 +33,7 @@ class FavoriteGroupsPage extends ConsumerWidget {
         actions: [
           IconButton(
             onPressed: () => goToFavoriteGroupCreatePage(context),
-            icon: const FaIcon(FontAwesomeIcons.plus),
+            icon: const Icon(Symbols.add),
           ),
         ],
       ),
@@ -83,7 +83,7 @@ class FavoriteGroupsPage extends ConsumerWidget {
                           group,
                           config,
                         ),
-                        icon: const Icon(Icons.more_vert),
+                        icon: const Icon(Symbols.more_vert),
                       ),
                     );
                   },

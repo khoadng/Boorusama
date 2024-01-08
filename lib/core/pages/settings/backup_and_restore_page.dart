@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 // Package imports:
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
@@ -78,7 +79,7 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
     final first5Configs = configs?.take(5).toList();
 
     return BackupRestoreTile(
-      leadingIcon: Icons.settings,
+      leadingIcon: Symbols.settings,
       title: 'Booru profiles',
       subtitle: '${configs?.length} profiles',
       extra: first5Configs != null && first5Configs.isNotEmpty
@@ -113,6 +114,10 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
             ]
           : null,
       trailing: PopupMenuButton(
+        icon: const Icon(
+          Symbols.more_vert,
+          weight: 400,
+        ),
         onSelected: (value) {
           switch (value) {
             case 'export':
@@ -165,7 +170,7 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
     final blacklistedTags = ref.watch(globalBlacklistedTagsProvider);
 
     return BackupRestoreTile(
-      leadingIcon: Icons.tag,
+      leadingIcon: Symbols.tag,
       title: 'Blacklisted tags',
       subtitle: '${blacklistedTags.length} tags',
       trailing: ImportExportTagButton(
@@ -181,10 +186,14 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
     final tags = ref.watch(favoriteTagsProvider);
 
     return BackupRestoreTile(
-      leadingIcon: Icons.favorite,
+      leadingIcon: Symbols.favorite,
       title: 'Favorite tags',
       subtitle: '${tags.length} tags',
       trailing: PopupMenuButton(
+        icon: const Icon(
+          Symbols.more_vert,
+          weight: 400,
+        ),
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(4)),
         ),
@@ -226,10 +235,14 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
     final bookmarks = ref.watch(bookmarkProvider).bookmarks;
 
     return BackupRestoreTile(
-      leadingIcon: Icons.bookmark,
+      leadingIcon: Symbols.bookmark,
       title: 'Bookmarks',
       subtitle: hasBookmarks ? '${bookmarks.length} bookmarks' : 'No bookmarks',
       trailing: PopupMenuButton(
+        icon: const Icon(
+          Symbols.more_vert,
+          weight: 400,
+        ),
         onSelected: (value) {
           switch (value) {
             case 'export':
@@ -259,9 +272,13 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
 
   Widget _buildSettings() {
     return BackupRestoreTile(
-      leadingIcon: Icons.settings,
+      leadingIcon: Symbols.settings,
       title: 'Settings',
       trailing: PopupMenuButton(
+        icon: const Icon(
+          Symbols.more_vert,
+          weight: 400,
+        ),
         onSelected: (value) {
           switch (value) {
             case 'export':

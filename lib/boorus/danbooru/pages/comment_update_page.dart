@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
@@ -60,7 +61,7 @@ class _CommentUpdatePageState extends ConsumerState<CommentUpdatePage> {
                         IconButton(
                           onPressed: () => context.navigator.pop(),
                           icon: const Icon(
-                            Icons.close,
+                            Symbols.close,
                           ),
                         ),
                         const Expanded(
@@ -71,7 +72,7 @@ class _CommentUpdatePageState extends ConsumerState<CommentUpdatePage> {
                             context.navigator.pop();
                             _handleSave(textEditingController.text, config);
                           },
-                          icon: const Icon(Icons.save),
+                          icon: const Icon(Symbols.save),
                         ),
                       ],
                     ),

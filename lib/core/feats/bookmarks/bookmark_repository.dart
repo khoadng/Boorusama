@@ -20,7 +20,7 @@ abstract class BookmarkRepository {
   Future<List<Bookmark>> addBookmarks(
     int booruId,
     String booruUrl,
-    List<Post> posts,
+    Iterable<Post> posts,
   );
 
   Future<void> addBookmarkWithBookmarks(

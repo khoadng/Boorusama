@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
@@ -89,7 +90,7 @@ class _DismissableInfoContainerState
               top: 12,
               right: 12,
               child: IconButton(
-                icon: const Icon(Icons.close),
+                icon: const Icon(Symbols.close),
                 onPressed: () {
                   setState(() {
                     _isDismissed = true;

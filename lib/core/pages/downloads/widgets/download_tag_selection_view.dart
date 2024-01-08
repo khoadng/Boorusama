@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
@@ -52,7 +53,7 @@ class _DownloadTagSelectionViewState
             ref.watch(bulkDownloadManagerStatusProvider.notifier).state =
                 BulkDownloadManagerStatus.initial;
           },
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(Symbols.arrow_back),
         ),
       ),
       extendBodyBehindAppBar: false,
@@ -90,7 +91,7 @@ class _DownloadTagSelectionViewState
                                 context.theme.colorScheme.surfaceVariant,
                             label: Text(e.replaceUnderscoreWithSpace()),
                             deleteIcon: Icon(
-                              Icons.close,
+                              Symbols.close,
                               size: 16,
                               color: context.theme.colorScheme.error,
                             ),
@@ -120,7 +121,7 @@ class _DownloadTagSelectionViewState
                             },
                           );
                         },
-                        icon: const Icon(Icons.add),
+                        icon: const Icon(Symbols.add),
                       ),
                     ],
                   );
@@ -179,7 +180,7 @@ class _DownloadTagSelectionViewState
                               ),
                         trailing: IconButton(
                           onPressed: () => _pickFolder(context, options),
-                          icon: const Icon(Icons.folder),
+                          icon: const Icon(Symbols.folder),
                         ),
                       ),
                     ),

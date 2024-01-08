@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/bookmarks/bookmarks.dart';
@@ -34,10 +34,10 @@ class BookmarkPostButton extends ConsumerWidget {
                 bookmarkState.getBookmark(post, booruConfig.booruType)!,
               );
             },
-            icon: const FaIcon(
-              FontAwesomeIcons.solidBookmark,
+            icon: const Icon(
+              Symbols.bookmark,
+              fill: 1,
               color: Colors.red,
-              size: 20,
             ),
           )
         : IconButton(
@@ -49,9 +49,8 @@ class BookmarkPostButton extends ConsumerWidget {
                 post,
               );
             },
-            icon: const FaIcon(
-              FontAwesomeIcons.bookmark,
-              size: 20,
+            icon: const Icon(
+              Symbols.bookmark,
             ),
           );
   }

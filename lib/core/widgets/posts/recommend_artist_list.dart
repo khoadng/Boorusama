@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/posts/posts.dart';
@@ -36,8 +36,7 @@ class RecommendArtistList<T extends Post> extends StatelessWidget {
               onTap: () => onHeaderTap(index),
               title: Text(r.title),
               trailing: const Icon(
-                FontAwesomeIcons.arrowRightLong,
-                size: 18,
+                Symbols.arrow_right_alt,
               ),
             ),
             posts: r.posts,

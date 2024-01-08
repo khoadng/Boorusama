@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 class SearchButton extends ConsumerWidget {
   const SearchButton({
@@ -20,7 +21,7 @@ class SearchButton extends ConsumerWidget {
         ? FloatingActionButton(
             onPressed: onSearch,
             heroTag: null,
-            child: const Icon(Icons.search),
+            child: const Icon(Symbols.search),
           )
         : const SizedBox.shrink();
   }
