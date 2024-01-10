@@ -28,13 +28,15 @@ class GelbooruClient with RequestDeduplicator<GelbooruPosts> {
     this.userId,
     this.apiKey,
     Dio? dio,
-  }) : _dio = dio ??
+  })  : _dio = dio ??
             Dio(BaseOptions(
               baseUrl: baseUrl ?? '',
               headers: headers ?? {},
-            ));
+            )),
+        _baseUrl = baseUrl;
 
   final Dio _dio;
+  final String? _baseUrl;
   final String? userId;
   final String? apiKey;
 
@@ -215,7 +217,14 @@ class GelbooruClient with RequestDeduplicator<GelbooruPosts> {
     // I'm lazy to implement this for Gelbooru since we can just use getTags
     if (_dio.options.baseUrl == _kGelbooruUrl) return [];
 
-    final response = await _dio.get(
+    final crawlerDio = Dio(
+      BaseOptions(
+        baseUrl: _baseUrl ?? '',
+        headers: _dio.options.headers,
+      ),
+    );
+
+    final response = await crawlerDio.get(
       '/index.php',
       queryParameters: {
         'page': 'post',

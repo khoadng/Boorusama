@@ -29,6 +29,9 @@ class FileDetailsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final fileSizeText =
+        post.fileSize > 0 ? '• ${filesize(post.fileSize, 1)}' : '';
+
     return Theme(
       data: context.theme.copyWith(dividerColor: Colors.transparent),
       child: ExpansionTile(
@@ -36,7 +39,7 @@ class FileDetailsSection extends StatelessWidget {
           'post.detail.file_details'.tr(),
         ),
         subtitle: Text(
-          '${post.width.toInt()}x${post.height.toInt()} • ${post.format.toUpperCase()} • ${filesize(post.fileSize, 1)} • ${rating.name.getFirstCharacter().toUpperCase()}',
+          '${post.width.toInt()}x${post.height.toInt()} • ${post.format.toUpperCase()} $fileSizeText • ${rating.name.getFirstCharacter().toUpperCase()}',
           style: TextStyle(
             color: context.theme.hintColor,
           ),
