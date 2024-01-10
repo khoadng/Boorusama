@@ -6,6 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:video_player/video_player.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/feats/boorus/providers.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/video/videos_provider.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
@@ -66,6 +68,9 @@ class PostMedia extends ConsumerWidget {
                         onWebmVideoPlayerCreated: onWebmVideoPlayerCreated,
                         autoPlay: autoPlay,
                         sound: ref.isGlobalVideoSoundOn,
+                        userAgent: ref
+                            .watch(userAgentGeneratorProvider(ref.watchConfig))
+                            .generate(),
                       )
                     : Stack(
                         children: [
