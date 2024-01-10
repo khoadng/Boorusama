@@ -12,6 +12,7 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 
 class PostTagList extends StatelessWidget {
@@ -69,9 +70,10 @@ class PostTagList extends StatelessWidget {
       itemBuilder: (index) {
         final tag = tags[index];
 
-        return GestureDetector(
+        return _Chip(
+          tag: tag,
+          maxTagWidth: maxTagWidth,
           onTap: () => onTap?.call(tag),
-          child: _Chip(tag: tag, maxTagWidth: maxTagWidth),
         );
       },
     );
@@ -82,10 +84,12 @@ class _Chip extends ConsumerWidget {
   const _Chip({
     required this.tag,
     required this.maxTagWidth,
+    this.onTap,
   });
 
   final Tag tag;
   final double? maxTagWidth;
+  final void Function()? onTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -93,70 +97,50 @@ class _Chip extends ConsumerWidget {
       ref.getTagColor(context, tag.category.name),
       ref.watch(settingsProvider),
     );
-    final numberColors = context.generateChipColors(
-      Colors.grey[800]!,
-      ref.watch(settingsProvider),
-    );
 
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Chip(
-          visualDensity: const ShrinkVisualDensity(),
-          backgroundColor: colors?.backgroundColor,
-          side: colors != null
-              ? BorderSide(
-                  width: 1,
-                  color: colors.borderColor,
-                )
-              : null,
-          shape: RoundedRectangleBorder(
-            borderRadius: tag.hasPost
-                ? const BorderRadius.only(
-                    topLeft: Radius.circular(8),
-                    bottomLeft: Radius.circular(8),
-                  )
-                : const BorderRadius.all(Radius.circular(8)),
+    return SizedBox(
+      height: 28,
+      child: RawChip(
+        onPressed: onTap,
+        padding: isMobilePlatform() ? const EdgeInsets.all(4) : EdgeInsets.zero,
+        visualDensity: const ShrinkVisualDensity(),
+        backgroundColor: colors?.backgroundColor,
+        side: colors != null
+            ? BorderSide(
+                color: colors.borderColor,
+                width: 1,
+              )
+            : null,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+        ),
+        label: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: maxTagWidth ?? context.screenWidth * 0.7,
           ),
-          label: ConstrainedBox(
-            constraints: BoxConstraints(
-              maxWidth: maxTagWidth ?? context.screenWidth * 0.7,
-            ),
-            child: Text(
-              _getTagStringDisplayName(tag),
-              overflow: TextOverflow.fade,
+          child: RichText(
+            overflow: TextOverflow.ellipsis,
+            text: TextSpan(
+              text: _getTagStringDisplayName(tag),
               style: TextStyle(
-                fontWeight: FontWeight.bold,
                 color: colors?.foregroundColor,
+                fontWeight: FontWeight.w600,
               ),
+              children: [
+                TextSpan(
+                  text: '  ${NumberFormat.compact().format(tag.postCount)}',
+                  style: context.textTheme.bodySmall?.copyWith(
+                    fontSize: 11,
+                    color: context.themeMode.isLight
+                        ? Colors.white.withOpacity(0.85)
+                        : Colors.grey.withOpacity(0.85),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
-        if (tag.hasPost)
-          Chip(
-            visualDensity: const ShrinkVisualDensity(),
-            backgroundColor: numberColors?.backgroundColor,
-            side: numberColors != null
-                ? BorderSide(
-                    width: 1,
-                    color: numberColors.borderColor,
-                  )
-                : null,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                topRight: Radius.circular(8),
-                bottomRight: Radius.circular(8),
-              ),
-            ),
-            label: Text(
-              NumberFormat.compact().format(tag.postCount),
-              style: TextStyle(
-                color: numberColors?.foregroundColor,
-                fontSize: 12,
-              ),
-            ),
-          ),
-      ],
+      ),
     );
   }
 }

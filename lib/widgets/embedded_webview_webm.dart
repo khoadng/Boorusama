@@ -12,8 +12,12 @@ import 'package:boorusama/dart.dart';
 import 'center_play_button.dart';
 
 class WebmVideoController {
-  WebmVideoController({this.onCurrentPositionChanged}) {
+  WebmVideoController({
+    this.onCurrentPositionChanged,
+    String? userAgent,
+  }) {
     _webViewController = WebViewController()
+      ..setUserAgent(userAgent)
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setBackgroundColor(Colors.black);
   }
@@ -146,6 +150,7 @@ class EmbeddedWebViewWebm extends StatefulWidget {
     this.onWebmVideoPlayerCreated,
     this.autoPlay = false,
     this.sound = true,
+    this.userAgent,
   });
 
   final String url;
@@ -156,6 +161,7 @@ class EmbeddedWebViewWebm extends StatefulWidget {
   final void Function(WebmVideoController controller)? onWebmVideoPlayerCreated;
   final bool autoPlay;
   final bool sound;
+  final String? userAgent;
 
   @override
   State<EmbeddedWebViewWebm> createState() => _EmbeddedWebViewWebmState();
@@ -164,6 +170,7 @@ class EmbeddedWebViewWebm extends StatefulWidget {
 class _EmbeddedWebViewWebmState extends State<EmbeddedWebViewWebm> {
   var showPlay = true;
   late final webmVideoController = WebmVideoController(
+    userAgent: widget.userAgent,
     onCurrentPositionChanged: (current, total) =>
         widget.onCurrentPositionChanged?.call(current, total, widget.url),
   );
