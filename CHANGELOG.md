@@ -1,3 +1,7 @@
+# 3.9.2
+- Fix an issue where webm files cannot be played.
+- Fix tag highlighting not working on some sites.
+
 # 3.9.1
 - Add an option to hide bookmarked posts from search results.
 - Bug fixes and UI/UX improvements.
