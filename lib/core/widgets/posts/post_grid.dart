@@ -304,86 +304,92 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                         // https://github.com/adrianflutur/flutter_improved_scrolling/issues/5
                         enableKeyboardScrolling: false,
                         enableMMBScrolling: true,
-                        child: CustomScrollView(
-                          controller: _autoScrollController,
-                          slivers: [
-                            if (!multiSelect &&
-                                widget.sliverHeaderBuilder != null)
-                              ...widget.sliverHeaderBuilder!(context),
-                            if (settings.showPostListConfigHeader &&
-                                !refreshing)
-                              if (isMobilePlatform())
-                                SliverPinnedHeader(
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 16),
-                                    child: header,
+                        child: ConditionalParentWidget(
+                          condition:
+                              pageMode == PageMode.paginated && !refreshing,
+                          conditionalBuilder: (child) =>
+                              _buildPaginatedSwipe(context, child),
+                          child: CustomScrollView(
+                            controller: _autoScrollController,
+                            slivers: [
+                              if (!multiSelect &&
+                                  widget.sliverHeaderBuilder != null)
+                                ...widget.sliverHeaderBuilder!(context),
+                              if (settings.showPostListConfigHeader &&
+                                  !refreshing)
+                                if (isMobilePlatform())
+                                  SliverPinnedHeader(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 16),
+                                      child: header,
+                                    ),
                                   ),
-                                ),
-                            const SliverSizedBox(
-                              height: 4,
-                            ),
-                            if (!refreshing && pageMode == PageMode.paginated)
-                              SliverToBoxAdapter(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(bottom: 8),
-                                  child: PageSelector(
-                                    currentPage: page,
-                                    onPrevious: controller.hasPreviousPage()
-                                        ? () => controller.goToPreviousPage()
-                                        : null,
-                                    onNext: controller.hasNextPage()
-                                        ? () => controller.goToNextPage()
-                                        : null,
-                                    onPageSelect: (page) =>
-                                        controller.jumpToPage(page),
-                                  ),
-                                ),
+                              const SliverSizedBox(
+                                height: 4,
                               ),
-                            widget.bodyBuilder(
-                              context,
-                              itemBuilder,
-                              refreshing,
-                              items,
-                            ),
-                            if (pageMode == PageMode.infinite && loading)
-                              SliverPadding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 20),
-                                sliver: SliverToBoxAdapter(
-                                  child: Center(
-                                    child: SpinKitPulse(
-                                      color: context
-                                          .theme.colorScheme.onBackground,
+                              if (!refreshing && pageMode == PageMode.paginated)
+                                SliverToBoxAdapter(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(bottom: 8),
+                                    child: PageSelector(
+                                      currentPage: page,
+                                      onPrevious: controller.hasPreviousPage()
+                                          ? () => controller.goToPreviousPage()
+                                          : null,
+                                      onNext: controller.hasNextPage()
+                                          ? () => controller.goToNextPage()
+                                          : null,
+                                      onPageSelect: (page) =>
+                                          controller.jumpToPage(page),
                                     ),
                                   ),
                                 ),
-                              )
-                            else
-                              const SliverSizedBox.shrink(),
-                            if (items.isNotEmpty &&
-                                !refreshing &&
-                                pageMode == PageMode.paginated)
-                              SliverToBoxAdapter(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                    top: 40,
-                                    bottom: 20,
+                              widget.bodyBuilder(
+                                context,
+                                itemBuilder,
+                                refreshing,
+                                items,
+                              ),
+                              if (pageMode == PageMode.infinite && loading)
+                                SliverPadding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 20),
+                                  sliver: SliverToBoxAdapter(
+                                    child: Center(
+                                      child: SpinKitPulse(
+                                        color: context
+                                            .theme.colorScheme.onBackground,
+                                      ),
+                                    ),
                                   ),
-                                  child: PageSelector(
-                                    currentPage: page,
-                                    onPrevious: controller.hasPreviousPage()
-                                        ? () => controller.goToPreviousPage()
-                                        : null,
-                                    onNext: controller.hasNextPage()
-                                        ? () => controller.goToNextPage()
-                                        : null,
-                                    onPageSelect: (page) =>
-                                        controller.jumpToPage(page),
+                                )
+                              else
+                                const SliverSizedBox.shrink(),
+                              if (items.isNotEmpty &&
+                                  !refreshing &&
+                                  pageMode == PageMode.paginated)
+                                SliverToBoxAdapter(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                      top: 40,
+                                      bottom: 20,
+                                    ),
+                                    child: PageSelector(
+                                      currentPage: page,
+                                      onPrevious: controller.hasPreviousPage()
+                                          ? () => controller.goToPreviousPage()
+                                          : null,
+                                      onNext: controller.hasNextPage()
+                                          ? () => controller.goToNextPage()
+                                          : null,
+                                      onPageSelect: (page) =>
+                                          controller.jumpToPage(page),
+                                    ),
                                   ),
                                 ),
-                              ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -393,6 +399,54 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
             ),
           ),
         ));
+  }
+
+  Widget _buildPaginatedSwipe(BuildContext context, Widget child) {
+    return SwipeTo(
+      swipeRightEnabled: controller.hasPreviousPage(),
+      swipeLeftEnabled: controller.hasNextPage(),
+      rightSwipeWidget: Chip(
+        visualDensity: VisualDensity.compact,
+        side: BorderSide(
+          width: 1,
+          color: context.theme.hintColor,
+        ),
+        backgroundColor: context.colorScheme.surface,
+        label: Row(
+          children: [
+            Icon(
+              Symbols.arrow_back,
+              color: context.theme.colorScheme.onPrimary,
+              size: 16,
+            ),
+            const SizedBox(width: 4),
+            Text('Page ${page - 1}'),
+          ],
+        ),
+      ),
+      leftSwipeWidget: Chip(
+        visualDensity: VisualDensity.compact,
+        side: BorderSide(
+          width: 1,
+          color: context.theme.hintColor,
+        ),
+        backgroundColor: context.colorScheme.surface,
+        label: Row(
+          children: [
+            Text('Page ${page + 1}'),
+            const SizedBox(width: 4),
+            Icon(
+              Symbols.arrow_forward,
+              color: context.theme.colorScheme.onPrimary,
+              size: 16,
+            ),
+          ],
+        ),
+      ),
+      onLeftSwipe: (_) => controller.goToNextPage(),
+      onRightSwipe: (_) => controller.goToPreviousPage(),
+      child: child,
+    );
   }
 
   Widget _buildConfigHeader(Axis axis) {

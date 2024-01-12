@@ -41,6 +41,7 @@ export 'platforms/windows/windows.dart';
 export 'result_counter.dart';
 export 'route_transition_builder.dart';
 export 'scroll_to_top.dart';
+export 'swipe_to.dart';
 export 'selectable_icon_button.dart';
 export 'shadow_gradient_overlay.dart';
 export 'side_sheet.dart';
