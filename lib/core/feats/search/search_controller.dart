@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:boorusama/core/feats/search/search.dart';
 
 enum DisplayState {
-  options,
   suggestion,
   result,
 }
@@ -37,15 +36,6 @@ class SearchPageController extends ChangeNotifier with SearchMixin {
 
   void _onTextChanged() {
     final query = textEditingController.text;
-
-    if (query.isEmpty) {
-      if (searchStateController.value != DisplayState.result) {
-        resetToOptions();
-      }
-    } else {
-      goToSuggestions();
-    }
-
     suggestions.getSuggestions(query);
   }
 

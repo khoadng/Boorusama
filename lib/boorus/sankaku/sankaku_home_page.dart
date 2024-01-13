@@ -29,7 +29,6 @@ class SankakuHomePage extends ConsumerWidget {
       config: config,
       mobileView: (controller) => MobileHomePageScaffold(
         controller: controller,
-        onSearchTap: () => goToSearchPage(context),
       ),
       mobileMenuBuilder: (context, controller) => [
         if (login != null)

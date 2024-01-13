@@ -24,7 +24,9 @@ class ResultView extends ConsumerStatefulWidget {
     required this.onRelatedTagSelected,
   });
 
-  final List<Widget> Function()? headerBuilder;
+  final List<Widget> Function(
+    PostGridController<DanbooruPost> postController,
+  )? headerBuilder;
   final AutoScrollController? scrollController;
   final SelectedTagController selectedTagController;
   final Color? backgroundColor;
@@ -63,7 +65,7 @@ class _ResultViewState extends ConsumerState<ResultView> {
           controller: controller,
           errors: errors,
           sliverHeaderBuilder: (context) => [
-            ...widget.headerBuilder?.call() ?? [],
+            ...widget.headerBuilder?.call(controller) ?? [],
             SliverToBoxAdapter(
               child: ValueListenableBuilder(
                 valueListenable: widget.selectedTagController,

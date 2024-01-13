@@ -3,14 +3,13 @@ import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sliver_tools/sliver_tools.dart';
+import 'package:material_symbols_icons/symbols.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/search/search.dart';
 import 'package:boorusama/core/pages/search/search_app_bar.dart';
-import 'package:boorusama/core/pages/search/search_app_bar_result_view.dart';
-import 'package:boorusama/core/pages/search/search_button.dart';
 import 'package:boorusama/core/pages/search/search_landing_view.dart';
 import 'package:boorusama/core/pages/search/selected_tag_list_with_data.dart';
 import 'package:boorusama/core/scaffolds/infinite_post_list_scaffold.dart';
@@ -24,6 +23,7 @@ class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     required this.fetcher,
     this.gridBuilder,
     this.noticeBuilder,
+    this.allowBack = true,
   });
 
   final String? initialQuery;
@@ -38,6 +38,8 @@ class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     List<Widget> slivers,
   )? gridBuilder;
 
+  final bool allowBack;
+
   @override
   ConsumerState<SearchPageScaffold<T>> createState() =>
       _SearchPageScaffoldState<T>();
@@ -47,115 +49,131 @@ class _SearchPageScaffoldState<T extends Post>
     extends ConsumerState<SearchPageScaffold<T>> {
   @override
   Widget build(BuildContext context) {
-    return CustomContextMenuOverlay(
-      child: SearchScope(
-        initialQuery: widget.initialQuery,
-        builder: (state, focus, controller, selectedTagController,
-                searchController, allowSearch) =>
-            switch (state) {
-          DisplayState.options => Scaffold(
-              floatingActionButton: SearchButton(
-                allowSearch: allowSearch,
-                onSearch: () {
-                  searchController.search();
-                },
-              ),
-              appBar: PreferredSize(
-                preferredSize: const Size.fromHeight(kToolbarHeight * 1.2),
-                child: SearchAppBar(
-                  focusNode: focus,
-                  queryEditingController: controller,
-                  onSubmitted: (value) => searchController.submit(value),
-                  onBack: () => state != DisplayState.options
-                      ? searchController.resetToOptions()
-                      : context.pop(),
-                ),
-              ),
-              body: SafeArea(
-                child: CustomScrollView(slivers: [
-                  SliverPinnedHeader(
-                    child: SelectedTagListWithData(
-                      controller: selectedTagController,
-                      onClear: () => searchController.resetToOptions(),
-                      onDeleted: (value) => searchController.resetToOptions(),
-                    ),
-                  ),
-                  SliverToBoxAdapter(
-                    child: SearchLandingView(
-                      noticeBuilder: widget.noticeBuilder,
-                      onHistoryCleared: () => ref
-                          .read(searchHistoryProvider.notifier)
-                          .clearHistories(),
-                      onHistoryRemoved: (value) => ref
-                          .read(searchHistoryProvider.notifier)
-                          .removeHistory(value.query),
-                      onHistoryTap: (value) =>
-                          searchController.tapHistoryTag(value),
-                      onTagTap: (value) => searchController.tapTag(value),
-                    ),
-                  ),
-                ]),
-              ),
-            ),
-          DisplayState.suggestion => Scaffold(
-              appBar: PreferredSize(
-                preferredSize: const Size.fromHeight(kToolbarHeight * 1.2),
-                child: SearchAppBar(
-                  focusNode: focus,
-                  queryEditingController: controller,
-                  onSubmitted: (value) => searchController.submit(value),
-                  onBack: () => state != DisplayState.options
-                      ? searchController.resetToOptions()
-                      : context.pop(),
-                ),
-              ),
-              body: DefaultSearchSuggestionView(
-                selectedTagController: selectedTagController,
-                textEditingController: controller,
-                searchController: searchController,
-              ),
-            ),
-          DisplayState.result => PostScope(
-              fetcher: (page) =>
-                  widget.fetcher.call(page, selectedTagController.rawTags),
-              builder: (context, controller, errors) {
-                final slivers = [
-                  SearchAppBarResultView(
-                    onTap: () => searchController.goToSuggestions(),
-                    onBack: () => searchController.resetToOptions(),
-                  ),
-                  SliverToBoxAdapter(
-                      child: SelectedTagListWithData(
-                    controller: selectedTagController,
-                    onClear: () => searchController.resetToOptions(),
-                    onDeleted: (value) => searchController.resetToOptions(),
-                  )),
-                  SliverToBoxAdapter(
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        ...[
-                          ResultHeaderWithProvider(
-                            selectedTags: selectedTagController.rawTags,
-                            onRefresh: null,
+    return SearchScope(
+      initialQuery: widget.initialQuery,
+      builder: (state, focus, textController, selectedTagController,
+              searchController, allowSearch) =>
+          ValueListenableBuilder(
+        valueListenable: textController,
+        builder: (context, value, child) => Stack(
+          children: [
+            Offstage(
+                offstage: value.text.isNotEmpty,
+                child: PostScope(
+                  fetcher: (page) =>
+                      widget.fetcher.call(page, selectedTagController.rawTags),
+                  builder: (context, controller, errors) {
+                    final slivers = [
+                      const SliverAppAnnouncementBanner(),
+                      SliverToBoxAdapter(
+                        child: SearchAppBar(
+                          focusNode: focus,
+                          queryEditingController: textController,
+                          onSubmitted: (value) =>
+                              searchController.submit(value),
+                          onBack:
+                              !widget.allowBack ? null : () => context.pop(),
+                          innerSearchButton: value.text.isEmpty
+                              ? InkWell(
+                                  customBorder: const CircleBorder(),
+                                  onTap: () {
+                                    searchController.search();
+                                    controller.refresh();
+                                  },
+                                  child: Container(
+                                    margin: const EdgeInsets.all(12),
+                                    child: const Icon(
+                                      Symbols.search,
+                                    ),
+                                  ),
+                                )
+                              : null,
+                          trailingSearchButton: IconButton(
+                            onPressed: () => showBarModalBottomSheet(
+                              context: context,
+                              builder: (context) => Scaffold(
+                                body: SafeArea(
+                                  child: CustomScrollView(
+                                    slivers: [
+                                      SliverToBoxAdapter(
+                                        child: SearchLandingView(
+                                          onHistoryCleared: () => ref
+                                              .read(searchHistoryProvider
+                                                  .notifier)
+                                              .clearHistories(),
+                                          onHistoryRemoved: (value) => ref
+                                              .read(searchHistoryProvider
+                                                  .notifier)
+                                              .removeHistory(value.query),
+                                          onHistoryTap: (value) {
+                                            searchController
+                                                .tapHistoryTag(value);
+                                          },
+                                          onTagTap: (value) {
+                                            searchController.tapTag(value);
+                                            context.pop();
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            icon: const Icon(Symbols.sort),
                           ),
-                          const Spacer(),
-                        ]
-                      ],
-                    ),
-                  ),
-                ];
+                        ),
+                      ),
+                      SliverToBoxAdapter(
+                          child: SelectedTagListWithData(
+                        controller: selectedTagController,
+                      )),
+                      SliverToBoxAdapter(
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            ...[
+                              ResultHeaderWithProvider(
+                                selectedTags: selectedTagController.rawTags,
+                                onRefresh: null,
+                              ),
+                              const Spacer(),
+                            ]
+                          ],
+                        ),
+                      ),
+                    ];
 
-                return widget.gridBuilder != null
-                    ? widget.gridBuilder!(context, controller, slivers)
-                    : InfinitePostListScaffold(
-                        errors: errors,
-                        controller: controller,
-                        sliverHeaderBuilder: (context) => slivers,
-                      );
-              },
-            ),
-        },
+                    return widget.gridBuilder != null
+                        ? widget.gridBuilder!(context, controller, slivers)
+                        : InfinitePostListScaffold(
+                            errors: errors,
+                            controller: controller,
+                            sliverHeaderBuilder: (context) => slivers,
+                          );
+                  },
+                )),
+            Offstage(
+              offstage: value.text.isEmpty,
+              child: Scaffold(
+                appBar: PreferredSize(
+                  preferredSize: const Size.fromHeight(kToolbarHeight * 1.2),
+                  child: SearchAppBar(
+                    focusNode: focus,
+                    queryEditingController: textController,
+                    onSubmitted: (value) => searchController.submit(value),
+                    onBack: null,
+                  ),
+                ),
+                body: DefaultSearchSuggestionView(
+                  textEditingController: textController,
+                  searchController: searchController,
+                  selectedTagController: selectedTagController,
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

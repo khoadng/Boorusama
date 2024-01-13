@@ -17,7 +17,6 @@ import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/utils/flutter_utils.dart';
 import 'e621_desktop_home_page.dart';
@@ -43,27 +42,10 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
 
     return BooruScope(
       config: widget.config,
-      mobileView: (controller) => PostScope(
-        fetcher: (page) =>
-            ref.read(e621PostRepoProvider(config)).getPosts([], page),
-        builder: (context, postController, errors) => InfinitePostListScaffold(
-          errors: errors,
-          controller: postController,
-          sliverHeaderBuilder: (context) => [
-            SliverAppBar(
-              backgroundColor: context.theme.scaffoldBackgroundColor,
-              toolbarHeight: kToolbarHeight * 1.2,
-              title: HomeSearchBar(
-                onMenuTap: controller.openMenu,
-                onTap: () => goToSearchPage(context),
-              ),
-              floating: true,
-              snap: true,
-              automaticallyImplyLeading: false,
-            ),
-            const SliverAppAnnouncementBanner(),
-          ],
-        ),
+      mobileView: (controller) => SearchPageScaffold(
+        allowBack: false,
+        fetcher: (page, tags) =>
+            ref.read(e621PostRepoProvider(config)).getPosts(tags, page),
       ),
       mobileMenuBuilder: (context, controller) => [
         SideMenuTile(

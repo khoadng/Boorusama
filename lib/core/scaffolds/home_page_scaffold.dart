@@ -24,7 +24,6 @@ class HomePageScaffold extends ConsumerStatefulWidget {
   const HomePageScaffold({
     super.key,
     required this.onPostTap,
-    required this.onSearchTap,
   });
 
   final void Function(
@@ -35,7 +34,6 @@ class HomePageScaffold extends ConsumerStatefulWidget {
     Settings settings,
     int initialIndex,
   ) onPostTap;
-  final void Function() onSearchTap;
 
   @override
   ConsumerState<HomePageScaffold> createState() => _HomePageScaffoldState();
@@ -50,7 +48,6 @@ class _HomePageScaffoldState extends ConsumerState<HomePageScaffold> {
       config: config,
       mobileView: (controller) => MobileHomePageScaffold(
         controller: controller,
-        onSearchTap: widget.onSearchTap,
       ),
       mobileMenuBuilder: (context, controller) => [],
       desktopMenuBuilder: (context, controller, constraints) => [

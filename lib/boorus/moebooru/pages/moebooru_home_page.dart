@@ -13,12 +13,10 @@ import 'package:boorusama/core/pages/blacklists/blacklisted_tag_page.dart';
 import 'package:boorusama/core/pages/bookmarks/bookmark_page.dart';
 import 'package:boorusama/core/pages/downloads/bulk_download_page.dart';
 import 'package:boorusama/core/pages/home/side_menu_tile.dart';
-import 'package:boorusama/core/router.dart';
-import 'package:boorusama/core/scaffolds/infinite_post_list_scaffold.dart';
+import 'package:boorusama/core/scaffolds/search_page_scaffold.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
 import '../feats/posts/posts.dart';
 import 'moebooru_desktop_home_page.dart';
@@ -140,27 +138,10 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
 
   Widget _buildMobileHomeView(
       HomePageController controller, BooruConfig config) {
-    return PostScope(
-      fetcher: (page) =>
-          ref.read(moebooruPostRepoProvider(config)).getPosts([], page),
-      builder: (context, postController, errors) => InfinitePostListScaffold(
-        errors: errors,
-        controller: postController,
-        sliverHeaderBuilder: (context) => [
-          SliverAppBar(
-            backgroundColor: context.theme.scaffoldBackgroundColor,
-            toolbarHeight: kToolbarHeight * 1.2,
-            title: HomeSearchBar(
-              onMenuTap: controller.openMenu,
-              onTap: () => goToSearchPage(context),
-            ),
-            floating: true,
-            snap: true,
-            automaticallyImplyLeading: false,
-          ),
-          const SliverAppAnnouncementBanner(),
-        ],
-      ),
+    return SearchPageScaffold(
+      allowBack: false,
+      fetcher: (page, tags) =>
+          ref.read(moebooruPostRepoProvider(config)).getPosts(tags, page),
     );
   }
 }

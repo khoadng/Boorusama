@@ -56,7 +56,7 @@ class _SearchScopeState extends ConsumerState<SearchScope> {
     suggestions: ref.read(suggestionsProvider(ref.readConfig).notifier),
   );
 
-  final displayState = ValueNotifier(DisplayState.options);
+  final displayState = ValueNotifier(DisplayState.result);
 
   @override
   void initState() {
@@ -111,9 +111,5 @@ class _SearchScopeState extends ConsumerState<SearchScope> {
     );
   }
 
-  bool allowSearch(DisplayState state, List<TagSearchItem> tags) =>
-      switch (state) {
-        DisplayState.options => tags.isNotEmpty,
-        _ => false,
-      };
+  bool allowSearch(DisplayState state, List<TagSearchItem> tags) => true;
 }

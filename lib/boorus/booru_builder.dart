@@ -401,7 +401,6 @@ mixin DefaultBooruUIMixin implements BooruBuilder {
           posts: posts,
           initialIndex: initialIndex,
         ),
-        onSearchTap: () => goToSearchPage(context),
       );
 
   @override

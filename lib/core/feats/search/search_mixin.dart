@@ -7,7 +7,6 @@ import 'package:boorusama/core/feats/search/search.dart';
 mixin SearchMixin {
   void submit(String value) {
     selectedTagController.addTag(value);
-    resetToOptions();
   }
 
   void skipToResultWithTag(String tag) {
@@ -28,10 +27,6 @@ mixin SearchMixin {
       operator: filterOperator,
     );
     textEditingController.clear();
-
-    if (searchStateController.value == DisplayState.suggestion) {
-      resetToOptions();
-    }
   }
 
   void tapHistoryTag(String tag) {
@@ -42,11 +37,6 @@ mixin SearchMixin {
 
   void goToSuggestions() =>
       searchStateController.value = DisplayState.suggestion;
-
-  void resetToOptions() {
-    textEditingController.clear();
-    searchStateController.value = DisplayState.options;
-  }
 
   void goToResult() {
     searchStateController.value = DisplayState.result;

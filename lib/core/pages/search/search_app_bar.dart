@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/widgets/booru_search_bar.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 
@@ -25,6 +24,7 @@ class SearchAppBar extends ConsumerWidget {
     this.height,
     this.onTapOutside,
     this.onFocusChanged,
+    this.innerSearchButton,
   });
 
   final TextEditingController queryEditingController;
@@ -34,6 +34,7 @@ class SearchAppBar extends ConsumerWidget {
   final VoidCallback? onClear;
   final void Function(String value)? onChanged;
   final Widget? trailingSearchButton;
+  final Widget? innerSearchButton;
   final bool? autofocus;
   final bool? dense;
   final double? height;
@@ -42,11 +43,8 @@ class SearchAppBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final settings = ref.watch(settingsProvider);
-
     final searchAppBar = BooruSearchBar(
       dense: dense,
-      autofocus: autofocus ?? settings.autoFocusSearchBar,
       onTapOutside: onTapOutside,
       focus: focusNode,
       queryEditingController: queryEditingController,
@@ -70,7 +68,7 @@ class SearchAppBar extends ConsumerWidget {
                     onClear?.call();
                   },
                 )
-              : const SizedBox.shrink();
+              : innerSearchButton ?? const SizedBox.shrink();
         },
       ),
       onChanged: onChanged,

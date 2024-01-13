@@ -23,7 +23,7 @@ class RelatedTagSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tagAsync = ref.watch(danbooruRelatedTagProvider(query));
+    final tagAsync = ref.watch(danbooruRelatedTagProvider);
 
     if (query.isEmpty) return const SizedBox();
 

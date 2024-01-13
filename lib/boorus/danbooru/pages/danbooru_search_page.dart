@@ -3,18 +3,18 @@ import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sliver_tools/sliver_tools.dart';
+import 'package:material_symbols_icons/symbols.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/search/search.dart';
 import 'package:boorusama/core/pages/search/metatags/danbooru_metatags_section.dart';
 import 'package:boorusama/core/pages/search/search_app_bar.dart';
-import 'package:boorusama/core/pages/search/search_app_bar_result_view.dart';
-import 'package:boorusama/core/pages/search/search_button.dart';
 import 'package:boorusama/core/pages/search/search_landing_view.dart';
 import 'package:boorusama/core/pages/search/selected_tag_list_with_data.dart';
-import 'package:boorusama/core/widgets/search_scope.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
 import 'widgets/search/result_view.dart';
@@ -51,103 +51,124 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
       },
       builder: (state, focus, controller, selectedTagController,
               searchController, allowSearch) =>
-          switch (state) {
-        DisplayState.options => Scaffold(
-            floatingActionButton: SearchButton(
-              allowSearch: allowSearch,
-              onSearch: () => searchController.search(),
-            ),
-            appBar: PreferredSize(
-              preferredSize: const Size.fromHeight(kToolbarHeight * 1.2),
-              child: SearchAppBar(
-                focusNode: focus,
-                queryEditingController: controller,
-                onSubmitted: (value) => searchController.submit(value),
-                onBack: !context.canPop()
-                    ? null
-                    : () => state != DisplayState.options
-                        ? searchController.resetToOptions()
-                        : context.pop(),
-              ),
-            ),
-            body: SafeArea(
-              child: CustomScrollView(
-                slivers: [
-                  SliverPinnedHeader(
-                    child: SelectedTagListWithData(
-                      controller: selectedTagController,
-                      onClear: () => searchController.resetToOptions(),
-                      onDeleted: (value) => searchController.resetToOptions(),
+          ValueListenableBuilder(
+        valueListenable: controller,
+        builder: (context, value, child) => Stack(
+          children: [
+            Offstage(
+              offstage: value.text.isNotEmpty,
+              child: ResultView(
+                selectedTagController: selectedTagController,
+                onRelatedTagSelected: (tag, postController) {
+                  selectedTagController.addTag(tag.tag);
+                  postController.refresh();
+                  searchController.search();
+                },
+                headerBuilder: (postController) => [
+                  const SliverAppAnnouncementBanner(),
+                  SliverToBoxAdapter(
+                    child: SearchAppBar(
+                      focusNode: focus,
+                      queryEditingController: controller,
+                      onSubmitted: (value) => searchController.submit(value),
+                      onBack: !context.canPop() ? null : () => context.pop(),
+                      innerSearchButton: value.text.isEmpty
+                          ? InkWell(
+                              customBorder: const CircleBorder(),
+                              onTap: () {
+                                searchController.search();
+                                postController.refresh();
+                                ref
+                                    .read(danbooruRelatedTagProvider.notifier)
+                                    .getRelatedTag(
+                                        selectedTagController.rawTagsString);
+                              },
+                              child: Container(
+                                margin: const EdgeInsets.all(12),
+                                child: const Icon(
+                                  Symbols.search,
+                                ),
+                              ),
+                            )
+                          : null,
+                      trailingSearchButton: IconButton(
+                        onPressed: () => showBarModalBottomSheet(
+                          context: context,
+                          builder: (context) => Scaffold(
+                            body: SafeArea(
+                              child: CustomScrollView(
+                                slivers: [
+                                  SliverToBoxAdapter(
+                                    child: SearchLandingView(
+                                      onHistoryCleared: () => ref
+                                          .read(searchHistoryProvider.notifier)
+                                          .clearHistories(),
+                                      onHistoryRemoved: (value) => ref
+                                          .read(searchHistoryProvider.notifier)
+                                          .removeHistory(value.query),
+                                      onHistoryTap: (value) {
+                                        searchController.tapHistoryTag(value);
+                                      },
+                                      onTagTap: (value) {
+                                        searchController.tapTag(value);
+                                        context.pop();
+                                      },
+                                      trendingBuilder: (context) =>
+                                          TrendingSection(
+                                        onTagTap: (value) {
+                                          searchController.tapTag(value);
+                                          context.pop();
+                                        },
+                                      ),
+                                      metatagsBuilder: (context) =>
+                                          DanbooruMetatagsSection(
+                                        onOptionTap: (value) {
+                                          searchController.tapRawMetaTag(value);
+                                          focus.requestFocus();
+                                          _onTextChanged(controller, '$value:');
+                                          context.pop();
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        icon: const Icon(Symbols.sort),
+                      ),
                     ),
                   ),
                   SliverToBoxAdapter(
-                    child: SearchLandingView(
-                      onHistoryCleared: () => ref
-                          .read(searchHistoryProvider.notifier)
-                          .clearHistories(),
-                      onHistoryRemoved: (value) => ref
-                          .read(searchHistoryProvider.notifier)
-                          .removeHistory(value.query),
-                      onHistoryTap: (value) =>
-                          searchController.tapHistoryTag(value),
-                      onTagTap: (value) => searchController.tapTag(value),
-                      trendingBuilder: (context) => TrendingSection(
-                        onTagTap: (value) {
-                          searchController.tapTag(value);
-                        },
-                      ),
-                      metatagsBuilder: (context) => DanbooruMetatagsSection(
-                        onOptionTap: (value) {
-                          searchController.tapRawMetaTag(value);
-                          focus.requestFocus();
-                          _onTextChanged(controller, '$value:');
-                        },
-                      ),
-                    ),
-                  ),
+                      child: SelectedTagListWithData(
+                    controller: selectedTagController,
+                  )),
                 ],
               ),
             ),
-          ),
-        DisplayState.suggestion => Scaffold(
-            appBar: PreferredSize(
-              preferredSize: const Size.fromHeight(kToolbarHeight * 1.2),
-              child: SearchAppBar(
-                focusNode: focus,
-                queryEditingController: controller,
-                onSubmitted: (value) => searchController.submit(value),
-                onBack: () => state != DisplayState.options
-                    ? searchController.resetToOptions()
-                    : context.pop(),
+            Offstage(
+              offstage: value.text.isEmpty,
+              child: Scaffold(
+                appBar: PreferredSize(
+                  preferredSize: const Size.fromHeight(kToolbarHeight * 1.2),
+                  child: SearchAppBar(
+                    focusNode: focus,
+                    queryEditingController: controller,
+                    onSubmitted: (value) => searchController.submit(value),
+                    onBack: null,
+                  ),
+                ),
+                body: DefaultSearchSuggestionView(
+                  textEditingController: controller,
+                  searchController: searchController,
+                  selectedTagController: selectedTagController,
+                ),
               ),
-            ),
-            body: DefaultSearchSuggestionView(
-              textEditingController: controller,
-              searchController: searchController,
-              selectedTagController: selectedTagController,
-            ),
-          ),
-        DisplayState.result => ResultView(
-            selectedTagController: selectedTagController,
-            onRelatedTagSelected: (tag, postController) {
-              selectedTagController.addTag(tag.tag);
-              postController.refresh();
-              searchController.search();
-            },
-            headerBuilder: () => [
-              SearchAppBarResultView(
-                onTap: () => searchController.goToSuggestions(),
-                onBack: () => searchController.resetToOptions(),
-              ),
-              SliverToBoxAdapter(
-                  child: SelectedTagListWithData(
-                controller: selectedTagController,
-                onClear: () => searchController.resetToOptions(),
-                onDeleted: (value) => searchController.resetToOptions(),
-              )),
-            ],
-          )
-      },
+            )
+          ],
+        ),
+      ),
     );
   }
 }
