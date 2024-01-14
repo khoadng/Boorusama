@@ -8,6 +8,7 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import 'package:boorusama/core/widgets/booru_search_bar.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/router.dart';
 
 class SearchAppBar extends ConsumerWidget {
   const SearchAppBar({
@@ -15,7 +16,7 @@ class SearchAppBar extends ConsumerWidget {
     required this.queryEditingController,
     required this.onSubmitted,
     this.focusNode,
-    required this.onBack,
+    required this.leading,
     this.onClear,
     this.onChanged,
     this.trailingSearchButton,
@@ -29,7 +30,7 @@ class SearchAppBar extends ConsumerWidget {
 
   final TextEditingController queryEditingController;
   final FocusNode? focusNode;
-  final VoidCallback? onBack;
+  final Widget? leading;
   final void Function(String value) onSubmitted;
   final VoidCallback? onClear;
   final void Function(String value)? onChanged;
@@ -49,13 +50,7 @@ class SearchAppBar extends ConsumerWidget {
       focus: focusNode,
       queryEditingController: queryEditingController,
       onFocusChanged: onFocusChanged,
-      leading: onBack != null
-          ? IconButton(
-              splashRadius: 16,
-              icon: const Icon(Symbols.arrow_back),
-              onPressed: onBack,
-            )
-          : null,
+      leading: leading,
       trailing: ValueListenableBuilder(
         valueListenable: queryEditingController,
         builder: (context, value, child) {
@@ -105,6 +100,21 @@ class SearchAppBar extends ConsumerWidget {
               ),
             )
           : searchAppBar,
+    );
+  }
+}
+
+class SearchAppBarBackButton extends StatelessWidget {
+  const SearchAppBarBackButton({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      splashRadius: 16,
+      icon: const Icon(Symbols.arrow_back),
+      onPressed: () => context.pop(),
     );
   }
 }

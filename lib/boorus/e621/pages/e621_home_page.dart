@@ -43,7 +43,13 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
     return BooruScope(
       config: widget.config,
       mobileView: (controller) => SearchPageScaffold(
-        allowBack: false,
+        searchBarLeading: IconButton(
+          splashRadius: 16,
+          icon: const Icon(Symbols.menu),
+          onPressed: () {
+            controller.openMenu();
+          },
+        ),
         fetcher: (page, tags) =>
             ref.read(e621PostRepoProvider(config)).getPosts(tags, page),
       ),

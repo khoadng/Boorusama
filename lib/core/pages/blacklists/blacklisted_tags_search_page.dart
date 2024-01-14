@@ -92,7 +92,7 @@ class _BlacklistedTagsSearchPageState
             selectedTagController.addTag(value);
             queryEditingController.clear();
           },
-          onBack: () => context.navigator.pop(),
+          leading: const SearchAppBarBackButton(),
         ),
       ),
       body: SafeArea(

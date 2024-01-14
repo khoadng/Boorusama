@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
@@ -25,7 +26,13 @@ class MobileHomePageScaffold extends ConsumerWidget {
     final fetcher = booruBuilder?.postFetcher;
 
     return SearchPageScaffold(
-      allowBack: false,
+      searchBarLeading: IconButton(
+        splashRadius: 16,
+        icon: const Icon(Symbols.menu),
+        onPressed: () {
+          controller.openMenu();
+        },
+      ),
       fetcher: (page, tags) =>
           fetcher?.call(page, tags) ?? TaskEither.of(<Post>[]),
     );

@@ -411,6 +411,7 @@ mixin DefaultBooruUIMixin implements BooruBuilder {
               fetcher: (page, tags) =>
                   booruBuilder?.postFetcher.call(page, tags) ??
                   TaskEither.of(<Post>[]),
+              searchBarLeading: null,
             ),
           );
 

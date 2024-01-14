@@ -271,6 +271,7 @@ class GelbooruSearchPage extends ConsumerWidget {
       ),
       fetcher: (page, tags) =>
           ref.watch(gelbooruPostRepoProvider(config)).getPosts(tags, page),
+      searchBarLeading: null,
     );
   }
 }

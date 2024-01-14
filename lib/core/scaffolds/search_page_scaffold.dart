@@ -23,7 +23,7 @@ class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     required this.fetcher,
     this.gridBuilder,
     this.noticeBuilder,
-    this.allowBack = true,
+    required this.searchBarLeading,
   });
 
   final String? initialQuery;
@@ -38,7 +38,7 @@ class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     List<Widget> slivers,
   )? gridBuilder;
 
-  final bool allowBack;
+  final Widget? searchBarLeading;
 
   @override
   ConsumerState<SearchPageScaffold<T>> createState() =>
@@ -82,8 +82,10 @@ class _SearchPageScaffoldState<T extends Post>
                           queryEditingController: textController,
                           onSubmitted: (value) =>
                               searchController.submit(value),
-                          onBack:
-                              !widget.allowBack ? null : () => context.pop(),
+                          leading: widget.searchBarLeading ??
+                              (!context.canPop()
+                                  ? null
+                                  : const SearchAppBarBackButton()),
                           innerSearchButton: value.text.isEmpty
                               ? InkWell(
                                   customBorder: const CircleBorder(),
@@ -179,7 +181,10 @@ class _SearchPageScaffoldState<T extends Post>
                     focusNode: focus,
                     queryEditingController: textController,
                     onSubmitted: (value) => searchController.submit(value),
-                    onBack: null,
+                    leading: widget.searchBarLeading ??
+                        (!context.canPop()
+                            ? null
+                            : const SearchAppBarBackButton()),
                   ),
                 ),
                 body: DefaultSearchSuggestionView(

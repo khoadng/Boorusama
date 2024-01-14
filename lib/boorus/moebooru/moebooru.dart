@@ -96,6 +96,7 @@ class MoebooruBuilder
       (context, initialQuery) => SearchPageScaffold(
             initialQuery: initialQuery,
             fetcher: (page, tags) => postFetcher(page, tags),
+            searchBarLeading: null,
           );
 
   @override

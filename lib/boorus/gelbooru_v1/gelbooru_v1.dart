@@ -92,6 +92,7 @@ class GelbooruV1Builder
           fetcher: (page, tags) =>
               booruBuilder?.postFetcher.call(page, tags) ??
               TaskEither.of(<Post>[]),
+          searchBarLeading: null,
         ),
       );
 

@@ -24,6 +24,7 @@ class E621SearchPage extends ConsumerWidget {
       initialQuery: initialQuery,
       fetcher: (page, tags) =>
           ref.read(e621PostRepoProvider(config)).getPosts(tags, page),
+      searchBarLeading: null,
     );
   }
 }

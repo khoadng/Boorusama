@@ -25,10 +25,12 @@ class DanbooruSearchPage extends ConsumerStatefulWidget {
     super.key,
     this.initialQuery,
     this.selectedTagController,
+    required this.searchBarLeading,
   });
 
   final String? initialQuery;
   final SelectedTagController? selectedTagController;
+  final Widget? searchBarLeading;
 
   @override
   ConsumerState<DanbooruSearchPage> createState() => _SearchPageState();
@@ -84,7 +86,10 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
                       focusNode: focus,
                       queryEditingController: controller,
                       onSubmitted: (value) => searchController.submit(value),
-                      onBack: !context.canPop() ? null : () => context.pop(),
+                      leading: widget.searchBarLeading ??
+                          (!context.canPop()
+                              ? null
+                              : const SearchAppBarBackButton()),
                       innerSearchButton: value.text.isEmpty
                           ? InkWell(
                               customBorder: const CircleBorder(),
@@ -171,7 +176,10 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
                     focusNode: focus,
                     queryEditingController: controller,
                     onSubmitted: (value) => searchController.submit(value),
-                    onBack: null,
+                    leading: widget.searchBarLeading ??
+                        (!context.canPop()
+                            ? null
+                            : const SearchAppBarBackButton()),
                   ),
                 ),
                 body: DefaultSearchSuggestionView(

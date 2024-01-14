@@ -139,7 +139,13 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
   Widget _buildMobileHomeView(
       HomePageController controller, BooruConfig config) {
     return SearchPageScaffold(
-      allowBack: false,
+      searchBarLeading: IconButton(
+        splashRadius: 16,
+        icon: const Icon(Symbols.menu),
+        onPressed: () {
+          controller.openMenu();
+        },
+      ),
       fetcher: (page, tags) =>
           ref.read(moebooruPostRepoProvider(config)).getPosts(tags, page),
     );

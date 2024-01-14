@@ -133,7 +133,13 @@ class _GelbooruMobileHomeView extends ConsumerWidget {
     final config = ref.watchConfig;
 
     return SearchPageScaffold(
-      allowBack: false,
+      searchBarLeading: IconButton(
+        splashRadius: 16,
+        icon: const Icon(Symbols.menu),
+        onPressed: () {
+          controller.openMenu();
+        },
+      ),
       // Need to use generic repo here because this is used not only for Gelbooru
       fetcher: (page, tags) =>
           ref.read(postRepoProvider(config)).getPosts(tags, page),

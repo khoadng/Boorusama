@@ -144,7 +144,10 @@ class DanbooruBuilder with DefaultTagColorMixin implements BooruBuilder {
   @override
   SearchPageBuilder get searchPageBuilder =>
       (context, initialQuery) => CustomContextMenuOverlay(
-            child: DanbooruSearchPage(initialQuery: initialQuery),
+            child: DanbooruSearchPage(
+              initialQuery: initialQuery,
+              searchBarLeading: null,
+            ),
           );
 
   @override

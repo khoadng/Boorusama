@@ -127,7 +127,15 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
 
     return BooruScope(
       config: widget.config,
-      mobileView: (controller) => const DanbooruSearchPage(),
+      mobileView: (controller) => DanbooruSearchPage(
+        searchBarLeading: IconButton(
+          splashRadius: 16,
+          icon: const Icon(Symbols.menu),
+          onPressed: () {
+            controller.openMenu();
+          },
+        ),
+      ),
       mobileMenuBuilder: (context, controller) => [
         if (widget.config.hasLoginDetails() && userId != null)
           SideMenuTile(
