@@ -47,6 +47,8 @@ class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
 
 class _SearchPageScaffoldState<T extends Post>
     extends ConsumerState<SearchPageScaffold<T>> {
+  var selectedTagString = ValueNotifier('');
+
   @override
   Widget build(BuildContext context) {
     return SearchScope(
@@ -78,6 +80,8 @@ class _SearchPageScaffoldState<T extends Post>
                                   customBorder: const CircleBorder(),
                                   onTap: () {
                                     searchController.search();
+                                    selectedTagString.value =
+                                        selectedTagController.rawTagsString;
                                     controller.refresh();
                                   },
                                   child: Container(
@@ -133,9 +137,13 @@ class _SearchPageScaffoldState<T extends Post>
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             ...[
-                              ResultHeaderWithProvider(
-                                selectedTags: selectedTagController.rawTags,
-                                onRefresh: null,
+                              ValueListenableBuilder(
+                                valueListenable: selectedTagString,
+                                builder: (context, value, _) =>
+                                    ResultHeaderWithProvider(
+                                  selectedTags: value.split(' '),
+                                  onRefresh: null,
+                                ),
                               ),
                               const Spacer(),
                             ]

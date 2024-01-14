@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 // Project imports:
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class BooruSearchBar extends StatefulWidget {
   const BooruSearchBar({
@@ -75,40 +77,49 @@ class _BooruSearchBarState extends State<BooruSearchBar> {
               widget.leading ?? const SizedBox.shrink(),
               const SizedBox(width: 10),
               Expanded(
-                child: BooruTextFormField(
-                  focusNode: widget.focus,
-                  keyboardType: TextInputType.text,
-                  autocorrect: false,
-                  onTapOutside: (event) {
-                    if (widget.onTapOutside == null) {
-                      widget.focus?.unfocus();
-                    } else {
-                      widget.onTapOutside?.call();
-                    }
-                  },
-                  onFieldSubmitted: (value) =>
-                      value.isNotEmpty ? widget.onSubmitted?.call(value) : null,
-                  onChanged: (value) => widget.onChanged?.call(value),
-                  enabled: widget.enabled,
-                  decoration: InputDecoration(
-                    isDense: widget.dense,
-                    floatingLabelBehavior: FloatingLabelBehavior.never,
-                    border: InputBorder.none,
-                    fillColor: Colors.transparent,
-                    focusedBorder: InputBorder.none,
-                    enabledBorder: InputBorder.none,
-                    errorBorder: InputBorder.none,
-                    disabledBorder: InputBorder.none,
-                    contentPadding: const EdgeInsets.only(
-                      bottom: 11,
-                      top: 11,
-                      right: 15,
-                    ),
-                    hintText: widget.hintText ?? 'search.hint'.tr(),
+                child: ConditionalParentWidget(
+                  condition: isDesktopPlatform(),
+                  conditionalBuilder: (child) => Focus(
+                    focusNode: widget.focus,
+                    onFocusChange: widget.onFocusChanged,
+                    child: child,
                   ),
-                  autofocus: widget.autofocus,
-                  controller: _textEditingController,
-                  style: context.theme.inputDecorationTheme.hintStyle,
+                  child: BooruTextFormField(
+                    focusNode: isMobilePlatform() ? widget.focus : null,
+                    keyboardType: TextInputType.text,
+                    autocorrect: false,
+                    onTapOutside: (event) {
+                      if (widget.onTapOutside == null) {
+                        widget.focus?.unfocus();
+                      } else {
+                        widget.onTapOutside?.call();
+                      }
+                    },
+                    onFieldSubmitted: (value) => value.isNotEmpty
+                        ? widget.onSubmitted?.call(value)
+                        : null,
+                    onChanged: (value) => widget.onChanged?.call(value),
+                    enabled: widget.enabled,
+                    decoration: InputDecoration(
+                      isDense: widget.dense,
+                      floatingLabelBehavior: FloatingLabelBehavior.never,
+                      border: InputBorder.none,
+                      fillColor: Colors.transparent,
+                      focusedBorder: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      errorBorder: InputBorder.none,
+                      disabledBorder: InputBorder.none,
+                      contentPadding: const EdgeInsets.only(
+                        bottom: 11,
+                        top: 11,
+                        right: 15,
+                      ),
+                      hintText: widget.hintText ?? 'search.hint'.tr(),
+                    ),
+                    autofocus: widget.autofocus,
+                    controller: _textEditingController,
+                    style: context.theme.inputDecorationTheme.hintStyle,
+                  ),
                 ),
               ),
               widget.trailing ?? const SizedBox.shrink(),

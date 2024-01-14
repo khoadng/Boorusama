@@ -38,6 +38,8 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
   late final metaTagRegex =
       RegExp('(${ref.watch(metatagsProvider).map((e) => e.name).join('|')})+:');
 
+  var selectedTagString = ValueNotifier('');
+
   @override
   Widget build(BuildContext context) {
     return SearchScope(
@@ -58,10 +60,12 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
             Offstage(
               offstage: value.text.isNotEmpty,
               child: ResultView(
+                selectedTagString: selectedTagString,
                 selectedTagController: selectedTagController,
                 onRelatedTagSelected: (tag, postController) {
                   selectedTagController.addTag(tag.tag);
                   postController.refresh();
+                  selectedTagString.value = selectedTagController.rawTagsString;
                   searchController.search();
                 },
                 headerBuilder: (postController) => [
@@ -78,6 +82,8 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
                               onTap: () {
                                 searchController.search();
                                 postController.refresh();
+                                selectedTagString.value =
+                                    selectedTagController.rawTagsString;
                                 ref
                                     .read(danbooruRelatedTagProvider.notifier)
                                     .getRelatedTag(

@@ -22,6 +22,7 @@ class ResultView extends ConsumerStatefulWidget {
     this.backgroundColor,
     required this.selectedTagController,
     required this.onRelatedTagSelected,
+    required this.selectedTagString,
   });
 
   final List<Widget> Function(
@@ -34,6 +35,8 @@ class ResultView extends ConsumerStatefulWidget {
     RelatedTagItem tag,
     PostGridController<DanbooruPost> postController,
   ) onRelatedTagSelected;
+
+  final ValueNotifier<String> selectedTagString;
 
   @override
   ConsumerState<ResultView> createState() => _ResultViewState();
@@ -80,10 +83,10 @@ class _ResultViewState extends ConsumerState<ResultView> {
               child: Row(
                 children: [
                   ValueListenableBuilder(
-                    valueListenable: widget.selectedTagController,
+                    valueListenable: widget.selectedTagString,
                     builder: (context, selectedTags, _) =>
                         ResultHeaderWithProvider(
-                      selectedTags: selectedTags.toRawStringList(),
+                      selectedTags: selectedTags.split(' '),
                       onRefresh: null,
                     ),
                   ),
