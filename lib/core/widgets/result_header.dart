@@ -24,7 +24,7 @@ class ResultHeaderWithProvider extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final fetcher = ref.watch(booruBuilderProvider)?.postCountFetcher;
 
-    if (fetcher == null) {
+    if (fetcher == null || selectedTags.join().isEmpty) {
       return const SizedBox.shrink();
     }
 
