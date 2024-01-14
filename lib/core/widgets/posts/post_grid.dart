@@ -328,23 +328,6 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                               const SliverSizedBox(
                                 height: 4,
                               ),
-                              if (!refreshing && pageMode == PageMode.paginated)
-                                SliverToBoxAdapter(
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(bottom: 8),
-                                    child: PageSelector(
-                                      currentPage: page,
-                                      onPrevious: controller.hasPreviousPage()
-                                          ? () => controller.goToPreviousPage()
-                                          : null,
-                                      onNext: controller.hasNextPage()
-                                          ? () => controller.goToNextPage()
-                                          : null,
-                                      onPageSelect: (page) =>
-                                          controller.jumpToPage(page),
-                                    ),
-                                  ),
-                                ),
                               widget.bodyBuilder(
                                 context,
                                 itemBuilder,
@@ -366,9 +349,7 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                                 )
                               else
                                 const SliverSizedBox.shrink(),
-                              if (items.isNotEmpty &&
-                                  !refreshing &&
-                                  pageMode == PageMode.paginated)
+                              if (!refreshing && pageMode == PageMode.paginated)
                                 SliverToBoxAdapter(
                                   child: Padding(
                                     padding: const EdgeInsets.only(
