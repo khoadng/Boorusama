@@ -146,6 +146,7 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
           controller.openMenu();
         },
       ),
+      searchTrailing: const UpdateAppButton(),
       fetcher: (page, tags) =>
           ref.read(moebooruPostRepoProvider(config)).getPosts(tags, page),
     );

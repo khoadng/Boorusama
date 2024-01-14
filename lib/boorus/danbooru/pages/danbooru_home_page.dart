@@ -135,6 +135,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
             controller.openMenu();
           },
         ),
+        searchTrailing: const UpdateAppButton(),
       ),
       mobileMenuBuilder: (context, controller) => [
         if (widget.config.hasLoginDetails() && userId != null)

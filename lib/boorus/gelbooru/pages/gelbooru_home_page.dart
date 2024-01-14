@@ -140,6 +140,8 @@ class _GelbooruMobileHomeView extends ConsumerWidget {
           controller.openMenu();
         },
       ),
+      searchTrailing: const UpdateAppButton(),
+
       // Need to use generic repo here because this is used not only for Gelbooru
       fetcher: (page, tags) =>
           ref.read(postRepoProvider(config)).getPosts(tags, page),

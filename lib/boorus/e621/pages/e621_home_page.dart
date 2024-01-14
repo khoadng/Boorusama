@@ -50,6 +50,7 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
             controller.openMenu();
           },
         ),
+        searchTrailing: const UpdateAppButton(),
         fetcher: (page, tags) =>
             ref.read(e621PostRepoProvider(config)).getPosts(tags, page),
       ),

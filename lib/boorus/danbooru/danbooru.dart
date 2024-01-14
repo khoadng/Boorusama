@@ -147,6 +147,7 @@ class DanbooruBuilder with DefaultTagColorMixin implements BooruBuilder {
             child: DanbooruSearchPage(
               initialQuery: initialQuery,
               searchBarLeading: null,
+              searchTrailing: null,
             ),
           );
 

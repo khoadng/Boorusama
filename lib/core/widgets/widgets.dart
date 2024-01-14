@@ -24,7 +24,7 @@ export 'downloads/download_provider_widget.dart';
 export 'error_box.dart';
 export 'general_more_action_button.dart';
 export 'home_navigation_tile.dart';
-export 'home_search_bar.dart';
+export 'update_app_button.dart';
 export 'import_export_tag_button.dart';
 export 'import_tag_dialog.dart';
 export 'infinite_load_list.dart';

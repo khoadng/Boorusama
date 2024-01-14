@@ -38,7 +38,6 @@ class _AnnouncementBannerState extends ConsumerState<AppAnnouncementBanner> {
           data: (announcement) => announcement.trimRight().isNotEmpty
               ? DismissableInfoContainer(
                   content: announcement,
-                  forceShow: true,
                   mainColor: Colors.orange[600],
                 )
               : const SizedBox.shrink(),

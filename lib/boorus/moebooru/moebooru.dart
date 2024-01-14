@@ -97,6 +97,7 @@ class MoebooruBuilder
             initialQuery: initialQuery,
             fetcher: (page, tags) => postFetcher(page, tags),
             searchBarLeading: null,
+            searchTrailing: null,
           );
 
   @override

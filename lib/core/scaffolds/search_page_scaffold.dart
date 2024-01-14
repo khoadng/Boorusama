@@ -10,6 +10,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/search/search.dart';
 import 'package:boorusama/core/pages/search/search_app_bar.dart';
+import 'package:boorusama/core/pages/search/search_button.dart';
 import 'package:boorusama/core/pages/search/search_landing_view.dart';
 import 'package:boorusama/core/pages/search/selected_tag_list_with_data.dart';
 import 'package:boorusama/core/scaffolds/infinite_post_list_scaffold.dart';
@@ -24,6 +25,7 @@ class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     this.gridBuilder,
     this.noticeBuilder,
     required this.searchBarLeading,
+    required this.searchTrailing,
   });
 
   final String? initialQuery;
@@ -39,6 +41,7 @@ class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   )? gridBuilder;
 
   final Widget? searchBarLeading;
+  final Widget? searchTrailing;
 
   @override
   ConsumerState<SearchPageScaffold<T>> createState() =>
@@ -74,6 +77,13 @@ class _SearchPageScaffoldState<T extends Post>
                   fetcher: (page) =>
                       widget.fetcher.call(page, selectedTagController.rawTags),
                   builder: (context, controller, errors) {
+                    void search() {
+                      searchController.search();
+                      selectedTagString.value =
+                          selectedTagController.rawTagsString;
+                      controller.refresh();
+                    }
+
                     final slivers = [
                       const SliverAppAnnouncementBanner(),
                       SliverToBoxAdapter(
@@ -87,21 +97,22 @@ class _SearchPageScaffoldState<T extends Post>
                                   ? null
                                   : const SearchAppBarBackButton()),
                           innerSearchButton: value.text.isEmpty
-                              ? InkWell(
-                                  customBorder: const CircleBorder(),
-                                  onTap: () {
-                                    searchController.search();
-                                    selectedTagString.value =
-                                        selectedTagController.rawTagsString;
-                                    controller.refresh();
-                                  },
-                                  child: Container(
-                                    margin: const EdgeInsets.all(12),
-                                    child: const Icon(
-                                      Symbols.search,
-                                    ),
-                                  ),
-                                )
+                              ? widget.searchTrailing != null
+                                  ? Row(
+                                      children: [
+                                        const SizedBox(width: 8),
+                                        SearchButton(
+                                          onTap: search,
+                                        ),
+                                        widget.searchTrailing!,
+                                      ],
+                                    )
+                                  : Padding(
+                                      padding: const EdgeInsets.only(right: 8),
+                                      child: SearchButton(
+                                        onTap: search,
+                                      ),
+                                    )
                               : null,
                           trailingSearchButton: IconButton(
                             onPressed: () => showBarModalBottomSheet(
