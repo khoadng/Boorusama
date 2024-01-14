@@ -100,11 +100,11 @@ class _SearchPageScaffoldState<T extends Post>
                               ? widget.searchTrailing != null
                                   ? Row(
                                       children: [
-                                        const SizedBox(width: 8),
                                         SearchButton(
                                           onTap: search,
                                         ),
                                         widget.searchTrailing!,
+                                        const SizedBox(width: 8),
                                       ],
                                     )
                                   : Padding(
