@@ -41,6 +41,15 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
   var selectedTagString = ValueNotifier('');
 
   @override
+  void initState() {
+    super.initState();
+
+    if (widget.initialQuery != null) {
+      selectedTagString.value = widget.initialQuery!;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SearchScope(
       selectedTagController: widget.selectedTagController,

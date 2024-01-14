@@ -50,6 +50,15 @@ class _SearchPageScaffoldState<T extends Post>
   var selectedTagString = ValueNotifier('');
 
   @override
+  void initState() {
+    super.initState();
+
+    if (widget.initialQuery != null) {
+      selectedTagString.value = widget.initialQuery!;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SearchScope(
       initialQuery: widget.initialQuery,

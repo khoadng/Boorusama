@@ -62,11 +62,9 @@ class _SearchScopeState extends ConsumerState<SearchScope> {
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (widget.initialQuery != null) {
-        searchController.skipToResultWithTag(widget.initialQuery!);
-      }
-    });
+    if (widget.initialQuery != null) {
+      searchController.skipToResultWithTag(widget.initialQuery!);
+    }
   }
 
   @override
