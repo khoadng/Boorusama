@@ -22,10 +22,16 @@ class ResultHeaderWithProvider extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final fetcher = ref.watch(booruBuilderProvider)?.postCountFetcher;
+
+    if (fetcher == null) {
+      return const SizedBox.shrink();
+    }
+
     final data = PostCountData(
       config: ref.watchConfig,
       tags: selectedTags.join(' '),
-      fetcher: ref.watch(booruBuilderProvider)?.postCountFetcher,
+      fetcher: fetcher,
     );
 
     return ref.watch(postCountProvider(data)).when(

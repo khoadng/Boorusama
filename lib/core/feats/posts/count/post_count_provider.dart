@@ -19,7 +19,10 @@ class PostCountData extends Equatable {
   final PostCountFetcher? fetcher;
 
   @override
-  List<Object?> get props => [tags];
+  List<Object?> get props => [
+        tags,
+        config,
+      ];
 }
 
 final postCountProvider =
