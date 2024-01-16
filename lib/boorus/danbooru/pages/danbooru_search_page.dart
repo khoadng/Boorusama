@@ -5,6 +5,7 @@ import 'package:flutter/material.dart' hide ThemeMode;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
@@ -44,6 +45,7 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
       RegExp('(${ref.watch(metatagsProvider).map((e) => e.name).join('|')})+:');
 
   var selectedTagString = ValueNotifier('');
+  final _scrollController = AutoScrollController();
 
   @override
   void initState() {
@@ -52,6 +54,17 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
     if (widget.initialQuery != null) {
       selectedTagString.value = widget.initialQuery!;
     }
+
+    widget.selectedTagController?.addListener(() {
+      // scroll to top when tag is added
+      _scrollController.jumpTo(0);
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _scrollController.dispose();
   }
 
   @override
@@ -74,6 +87,7 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
             Offstage(
               offstage: value.text.isNotEmpty,
               child: ResultView(
+                scrollController: _scrollController,
                 selectedTagString: selectedTagString,
                 selectedTagController: selectedTagController,
                 onRelatedTagSelected: (tag, postController) {

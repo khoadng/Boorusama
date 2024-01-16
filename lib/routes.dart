@@ -14,6 +14,7 @@ import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/pages/blacklists/blacklisted_tag_page.dart';
 import 'package:boorusama/core/pages/downloads/bulk_download_page.dart';
+import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/biometrics/app_lock.dart';
@@ -263,19 +264,33 @@ typedef DetailsPayload<T extends Post> = ({
 class Routes {
   static GoRoute home(Ref ref) => GoRoute(
         path: '/',
-        builder: (context, state) => AppLock(
-          enable: ref.read(settingsProvider).appLockEnabled,
-          child: ConditionalParentWidget(
-            condition: canRate(),
-            conditionalBuilder: (child) => createAppRatingWidget(child: child),
-            child: const CustomContextMenuOverlay(
-              child: Focus(
-                autofocus: true,
-                child: EntryPage(),
+        builder: (context, state) {
+          final query = state.uri.queryParameters[kInitialQueryKey];
+          final intent =
+              searchIntentFromString(state.uri.queryParameters['intent']);
+
+          return AppLock(
+            enable: ref.read(settingsProvider).appLockEnabled,
+            child: ConditionalParentWidget(
+              condition: canRate(),
+              conditionalBuilder: (child) =>
+                  createAppRatingWidget(child: child),
+              child: CustomContextMenuOverlay(
+                child: Focus(
+                  autofocus: true,
+                  child: EntryPage(
+                    search: query != null
+                        ? (
+                            query: query,
+                            intent: intent,
+                          )
+                        : null,
+                  ),
+                ),
               ),
             ),
-          ),
-        ),
+          );
+        },
         routes: [
           BoorusRoutes.update(ref),
           BoorusRoutes.updateDesktop(ref),
@@ -327,19 +342,7 @@ class Routes {
   static GoRoute search(Ref ref) => GoRoute(
         path: 'search',
         name: '/search',
-        pageBuilder: (context, state) {
-          final booruBuilder = ref.readCurrentBooruBuilder();
-          final builder = booruBuilder?.searchPageBuilder;
-          final query = state.uri.queryParameters[kInitialQueryKey];
-
-          return CupertinoPage(
-            key: state.pageKey,
-            name: state.name,
-            child: builder != null
-                ? builder(context, query)
-                : const Scaffold(body: Center(child: Text('Not implemented'))),
-          );
-        },
+        redirect: (context, state) => '/?${state.uri.query}',
       );
 
   static GoRoute favorites(Ref ref) => GoRoute(

@@ -13,6 +13,7 @@ import 'package:share_handler/share_handler.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/pages/danbooru_search_page.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/boorus/entry_page.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/pages/blacklists/blacklisted_tag_page.dart';
 import 'package:boorusama/core/pages/bookmarks/bookmark_page.dart';
@@ -128,6 +129,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
     return BooruScope(
       config: widget.config,
       mobileView: (controller) => DanbooruSearchPage(
+        selectedTagController: ref.watch(selectedTagControllerProvider),
         searchBarLeading: IconButton(
           splashRadius: 16,
           icon: const Icon(Symbols.menu),

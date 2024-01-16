@@ -6,8 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/downloads/downloads.dart';
+import 'package:boorusama/core/feats/search/selected_tag_controller.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/booru_selector.dart';
@@ -18,16 +20,55 @@ import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
+final selectedTagControllerProvider = Provider<SelectedTagController>((ref) {
+  throw UnimplementedError();
+});
+
+typedef BooruSearchData = ({
+  String query,
+  SearchIntent intent,
+});
+
 class EntryPage extends ConsumerStatefulWidget {
   const EntryPage({
     super.key,
+    this.search,
   });
+
+  final BooruSearchData? search;
 
   @override
   ConsumerState<EntryPage> createState() => _EntryPageState();
 }
 
 class _EntryPageState extends ConsumerState<EntryPage> {
+  late final selectedTagController =
+      SelectedTagController(tagInfo: ref.read(tagInfoProvider));
+
+  @override
+  void didUpdateWidget(covariant EntryPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.search != widget.search) {
+      final search = widget.search;
+
+      if (search != null) {
+        switch (search.intent) {
+          case SearchIntent.add:
+            final tags = search.query.split(' ');
+            selectedTagController.addTags(tags);
+            break;
+
+          default:
+            selectedTagController.clear();
+            final tags = search.query.split(' ');
+            selectedTagController.addTags(tags);
+            break;
+        }
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (isAndroid() || isIOS()) {
@@ -111,7 +152,14 @@ class _EntryPageState extends ConsumerState<EntryPage> {
             )
           ],
         ),
-        child: const _Boorus(),
+        child: ProviderScope(
+          overrides: [
+            selectedTagControllerProvider.overrideWithValue(
+              selectedTagController,
+            ),
+          ],
+          child: const _Boorus(),
+        ),
       ),
     );
   }

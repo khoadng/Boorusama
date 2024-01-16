@@ -87,6 +87,14 @@ class DanbooruTagsTile extends ConsumerWidget {
               ),
               itemBuilder: (context, tag) => ContextMenu(
                 items: [
+                  PopupMenuItem(
+                    value: 'add_to_search',
+                    child: Text('Add "${tag.rawName}"'),
+                  ),
+                  PopupMenuItem(
+                    value: 'add_negated_to_search',
+                    child: Text('Add "-${tag.rawName}"'),
+                  ),
                   const PopupMenuItem(
                     value: 'copy',
                     child: Text('Copy tag'),
@@ -129,6 +137,18 @@ class DanbooruTagsTile extends ConsumerWidget {
                     Clipboard.setData(
                       ClipboardData(text: tag.rawName),
                     ).then((value) => showSuccessToast('Copied'));
+                  } else if (value == 'add_to_search') {
+                    goToSearchPage(
+                      context,
+                      tag: tag.rawName,
+                      intent: SearchIntent.add,
+                    );
+                  } else if (value == 'add_negated_to_search') {
+                    goToSearchPage(
+                      context,
+                      tag: '-${tag.rawName}',
+                      intent: SearchIntent.add,
+                    );
                   }
                 },
                 child: PostTagListChip(

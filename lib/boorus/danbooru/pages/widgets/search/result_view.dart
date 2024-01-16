@@ -65,6 +65,7 @@ class _ResultViewState extends ConsumerState<ResultView> {
           ),
       builder: (context, controller, errors) {
         return DanbooruInfinitePostList(
+          scrollController: scrollController,
           controller: controller,
           errors: errors,
           sliverHeaderBuilder: (context) => [

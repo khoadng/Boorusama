@@ -57,14 +57,26 @@ void goToOriginalImagePage(BuildContext context, Post post) {
   ));
 }
 
+enum SearchIntent {
+  replace,
+  add,
+}
+
+SearchIntent searchIntentFromString(String? intent) => switch (intent) {
+      'replace' => SearchIntent.replace,
+      'add' => SearchIntent.add,
+      _ => SearchIntent.replace
+    };
+
 void goToSearchPage(
   BuildContext context, {
   String? tag,
+  SearchIntent intent = SearchIntent.replace,
 }) {
   if (tag == null) {
-    context.push('/search');
+    context.go('/search');
   } else {
-    context.push('/search?$kInitialQueryKey=$tag');
+    context.go('/search?$kInitialQueryKey=$tag&&intent=${intent.name}');
   }
 }
 
