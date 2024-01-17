@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/pages/widgets/danbooru_tag_context_menu.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
@@ -144,12 +145,15 @@ class ArtistTagCloud extends ConsumerWidget {
 
         return TagCloud(
           itemCount: tags.length,
-          itemBuilder: (context, i) => RelatedTagCloudChip(
-            index: i,
-            tag: tags[i],
-            onPressed: () => goToSearchPage(
-              context,
-              tag: tags[i].tag,
+          itemBuilder: (context, i) => DanbooruTagContextMenu(
+            tag: tags[i].tag,
+            child: RelatedTagCloudChip(
+              index: i,
+              tag: tags[i],
+              onPressed: () => goToSearchPage(
+                context,
+                tag: tags[i].tag,
+              ),
             ),
           ),
         );

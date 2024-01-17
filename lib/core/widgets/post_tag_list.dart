@@ -78,18 +78,22 @@ class PostTagListChip extends ConsumerWidget {
   const PostTagListChip({
     super.key,
     required this.tag,
+    required this.postCount,
+    required this.tagCategory,
     this.maxTagWidth,
     this.onTap,
   });
 
-  final Tag tag;
+  final String tag;
+  final int postCount;
+  final TagCategory tagCategory;
   final double? maxTagWidth;
   final void Function()? onTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.generateChipColors(
-      ref.getTagColor(context, tag.category.name),
+      ref.getTagColor(context, tagCategory.name),
       ref.watch(settingsProvider),
     );
 
@@ -116,7 +120,7 @@ class PostTagListChip extends ConsumerWidget {
           child: RichText(
             overflow: TextOverflow.ellipsis,
             text: TextSpan(
-              text: _getTagStringDisplayName(tag),
+              text: _getTagStringDisplayName(tag).replaceAll('_', ' '),
               style: TextStyle(
                 color: colors?.foregroundColor,
                 fontWeight: FontWeight.w600,
@@ -124,7 +128,7 @@ class PostTagListChip extends ConsumerWidget {
               children: [
                 if (!ref.watchConfig.hasStrictSFW)
                   TextSpan(
-                    text: '  ${NumberFormat.compact().format(tag.postCount)}',
+                    text: '  ${NumberFormat.compact().format(postCount)}',
                     style: context.textTheme.bodySmall?.copyWith(
                       fontSize: 11,
                       color: context.themeMode.isLight
@@ -141,9 +145,8 @@ class PostTagListChip extends ConsumerWidget {
   }
 }
 
-String _getTagStringDisplayName(Tag tag) => tag.displayName.length > 30
-    ? '${tag.displayName.substring(0, 30)}...'
-    : tag.displayName;
+String _getTagStringDisplayName(String tag) =>
+    tag.length > 30 ? '${tag.substring(0, 30)}...' : tag;
 
 class _TagBlockTitle extends StatelessWidget {
   const _TagBlockTitle({

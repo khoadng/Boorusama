@@ -115,7 +115,9 @@ class SankakuBuilder
               ]),
               itemBuilder: (context, tag) => PostTagListChip(
                 onTap: () => goToSearchPage(context, tag: tag.rawName),
-                tag: tag,
+                tag: tag.rawName,
+                postCount: tag.postCount,
+                tagCategory: tag.category,
               ),
             ),
             onExit: (page) => scrollController?.scrollToIndex(page),
