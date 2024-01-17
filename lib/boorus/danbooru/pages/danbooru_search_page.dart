@@ -55,15 +55,18 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
       selectedTagString.value = widget.initialQuery!;
     }
 
-    widget.selectedTagController?.addListener(() {
-      // scroll to top when tag is added
-      _scrollController.jumpTo(0);
-    });
+    widget.selectedTagController?.addListener(_onTagChanged);
+  }
+
+  void _onTagChanged() {
+    // scroll to top when tag is added
+    _scrollController.jumpTo(0);
   }
 
   @override
   void dispose() {
     super.dispose();
+    widget.selectedTagController?.removeListener(_onTagChanged);
     _scrollController.dispose();
   }
 

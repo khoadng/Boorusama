@@ -404,7 +404,9 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
         ),
       ],
       desktopViews: [
-        const DanbooruDesktopHomePage(),
+        DanbooruDesktopHomePage(
+          selectedTagController: ref.watch(selectedTagControllerProvider),
+        ),
         const ExplorePageDesktop(),
         const PoolPage(),
         const DanbooruForumPage(),

@@ -8,15 +8,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/search/related_tag_section.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/widgets.dart';
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/search/search.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 class DanbooruDesktopHomePage extends ConsumerStatefulWidget {
-  const DanbooruDesktopHomePage({super.key});
+  const DanbooruDesktopHomePage({
+    super.key,
+    required this.selectedTagController,
+  });
+
+  final SelectedTagController selectedTagController;
 
   @override
   ConsumerState<DanbooruDesktopHomePage> createState() =>
@@ -24,12 +29,29 @@ class DanbooruDesktopHomePage extends ConsumerStatefulWidget {
 }
 
 class _DanbooruHomePageState extends ConsumerState<DanbooruDesktopHomePage> {
-  late final selectedTagController =
-      SelectedTagController(tagInfo: ref.read(tagInfoProvider));
+  final autoScrollController = AutoScrollController();
+
+  SelectedTagController get selectedTagController =>
+      widget.selectedTagController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      selectedTagController.addListener(_onTagChanged);
+    });
+  }
+
+  void _onTagChanged() {
+    // scroll to top when tag is added
+    autoScrollController.jumpTo(0);
+  }
 
   @override
   void dispose() {
-    selectedTagController.dispose();
+    autoScrollController.dispose();
+    selectedTagController.removeListener(_onTagChanged);
     super.dispose();
   }
 
@@ -96,6 +118,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruDesktopHomePage> {
     required List<Widget> children,
   }) {
     return DanbooruInfinitePostList(
+      scrollController: autoScrollController,
       controller: controller,
       errors: errors,
       sliverHeaderBuilder: (context) => children,
