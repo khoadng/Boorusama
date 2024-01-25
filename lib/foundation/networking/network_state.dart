@@ -19,7 +19,7 @@ final class NetworkDisconnectedState extends NetworkState {}
 
 extension ConnectivityResultX on ConnectivityResult {
   bool get isMobile => switch (this) {
-        ConnectivityResult.wifi => true,
+        ConnectivityResult.mobile => true,
         _ => false,
       };
 }
