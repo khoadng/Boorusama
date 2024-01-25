@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'widgets/settings_header.dart';
@@ -90,21 +91,27 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
                   ref.updateSettings(settings.copyWith(themeMode: value)),
               optionBuilder: (value) => Text(_themeModeToString(value).tr()),
             ),
-            SwitchListTile(
-              title: const Text('Dynamic theme color'),
-              subtitle: dynamicColorSupported
-                  ? const Text(
-                      'Sync theme color with wallpaper',
-                    )
-                  : const Text(
-                      'Sync theme color with wallpaper. This device does not support dynamic color.',
-                    ),
-              value: settings.enableDynamicColoring,
-              onChanged: dynamicColorSupported
-                  ? (value) => ref.updateSettings(
-                      settings.copyWith(enableDynamicColoring: value))
-                  : null,
-            ),
+            Builder(builder: (context) {
+              return SwitchListTile(
+                title: const Text('Dynamic theme color'),
+                subtitle: dynamicColorSupported
+                    ? !isDesktopPlatform()
+                        ? const Text(
+                            'Sync theme color with wallpaper',
+                          )
+                        : const Text(
+                            "Sync theme color with OS's accent color",
+                          )
+                    : Text(
+                        '${!isDesktopPlatform() ? 'Sync theme color with wallpaper.' : 'Sync theme color with OS\'s accent color.'}This device does not support dynamic color.',
+                      ),
+                value: settings.enableDynamicColoring,
+                onChanged: dynamicColorSupported
+                    ? (value) => ref.updateSettings(
+                        settings.copyWith(enableDynamicColoring: value))
+                    : null,
+              );
+            }),
             const Divider(thickness: 1),
             SettingsHeader(label: 'settings.image_grid.image_grid'.tr()),
             SettingsTile<GridSize>(
