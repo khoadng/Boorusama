@@ -38,6 +38,8 @@ import 'package:boorusama/foundation/platform.dart';
 import 'app.dart';
 import 'foundation/i18n.dart';
 
+import 'package:fvp/fvp.dart' as fvp;
+
 void main() async {
   final uiLogger = UILogger();
   final logger = await loggerWith(uiLogger);
@@ -67,6 +69,16 @@ void main() async {
       appWindow.alignment = Alignment.center;
       appWindow.show();
     });
+  }
+
+  if (isLinux()) {
+    fvp.registerWith(
+      options: {
+        'platforms': [
+          'linux',
+        ]
+      },
+    );
   }
 
   final appInfo = await getAppInfo();
