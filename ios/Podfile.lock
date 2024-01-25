@@ -139,6 +139,10 @@ PODS:
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
+  - fvp (0.0.1):
+    - Flutter
+    - FlutterMacOS
+    - mdk
   - gal (1.0.0):
     - Flutter
     - FlutterMacOS
@@ -188,6 +192,7 @@ PODS:
     - GoogleUtilities/Logger
   - local_auth_ios (0.0.1):
     - Flutter
+  - mdk (0.24.0)
   - nanopb (2.30909.1):
     - nanopb/decode (= 2.30909.1)
     - nanopb/encode (= 2.30909.1)
@@ -246,6 +251,7 @@ DEPENDENCIES:
   - firebase_performance (from `.symlinks/plugins/firebase_performance/ios`)
   - Flutter (from `Flutter`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
+  - fvp (from `.symlinks/plugins/fvp/darwin`)
   - gal (from `.symlinks/plugins/gal/darwin`)
   - local_auth_ios (from `.symlinks/plugins/local_auth_ios/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
@@ -282,6 +288,7 @@ SPEC REPOS:
     - GoogleAppMeasurement
     - GoogleDataTransport
     - GoogleUtilities
+    - mdk
     - nanopb
     - PromisesObjC
     - PromisesSwift
@@ -308,6 +315,8 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_local_notifications:
     :path: ".symlinks/plugins/flutter_local_notifications/ios"
+  fvp:
+    :path: ".symlinks/plugins/fvp/darwin"
   gal:
     :path: ".symlinks/plugins/gal/darwin"
   local_auth_ios:
@@ -364,11 +373,13 @@ SPEC CHECKSUMS:
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
+  fvp: cb4a2438331cfd98abcdcac3ae49d0b0456274a2
   gal: 61e868295d28fe67ffa297fae6dacebf56fd53e1
   GoogleAppMeasurement: 70ce9aa438cff1cfb31ea3e660bcc67734cb716e
   GoogleDataTransport: 57c22343ab29bc686febbf7cbb13bad167c2d8fe
   GoogleUtilities: 0759d1a57ebb953965c2dfe0ba4c82e95ccc2e34
   local_auth_ios: c6cf091ded637a88f24f86a8875d8b0f526e2605
+  mdk: 886dffaa502539b06ddb5d35e5b06d54bb5de103
   nanopb: d4d75c12cd1316f4a64e3c6963f879ecd4b5e0d5
   package_info_plus: 115f4ad11e0698c8c1c5d8a689390df880f47e85
   path_provider_foundation: 29f094ae23ebbca9d3d0cec13889cd9060c0e943

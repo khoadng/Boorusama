@@ -37,6 +37,7 @@ class PostGridConfigRegion extends ConsumerWidget {
               final gridSize = ref.watch(gridSizeSettingsProvider);
               final imageListType = ref.watch(imageListTypeSettingsProvider);
               final pageMode = ref.watch(pageModeSettingsProvider);
+              final imageQuality = ref.watch(imageQualitySettingsProvider);
 
               return Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,10 +58,13 @@ class PostGridConfigRegion extends ConsumerWidget {
                               gridSize: gridSize,
                               pageMode: pageMode,
                               imageListType: imageListType,
+                              imageQuality: imageQuality,
                               onModeChanged: (mode) => ref.setPageMode(mode),
                               onGridChanged: (grid) => ref.setGridSize(grid),
                               onImageListChanged: (imageListType) =>
                                   ref.setImageListType(imageListType),
+                              onImageQualityChanged: (imageQuality) =>
+                                  ref.setImageQuality(imageQuality),
                             ),
                           ),
                           SizedBox(

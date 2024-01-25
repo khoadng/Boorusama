@@ -37,7 +37,7 @@ final networkStateProvider = Provider<NetworkState>((ref) {
   return connectivityResult.when(
     data: (result) => switch (result) {
       ConnectivityResult.none => NetworkDisconnectedState(),
-      _ => NetworkConnectedState(),
+      _ => NetworkConnectedState(result: result),
     },
     loading: () => NetworkLoadingState(),
     error: (_, __) => NetworkDisconnectedState(),

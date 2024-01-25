@@ -85,6 +85,12 @@ extension SettingsNotifierX on WidgetRef {
         ),
       );
 
+  Future<void> setImageQuality(ImageQuality quality) => updateSettings(
+        read(settingsProvider).copyWith(
+          imageQuality: quality,
+        ),
+      );
+
   Future<void> setPageMode(PageMode mode) => updateSettings(
         read(settingsProvider).copyWith(
           pageMode: mode,
