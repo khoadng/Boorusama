@@ -1978,14 +1978,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.2"
-  video_player_win:
-    dependency: "direct main"
-    description:
-      name: video_player_win
-      sha256: a693c0ee9da5c5e8b599d6bc9f325fc012ef1ab037f17bb4210e93cc05bf7d7d
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.3.4"
   vm_service:
     dependency: transitive
     description:
