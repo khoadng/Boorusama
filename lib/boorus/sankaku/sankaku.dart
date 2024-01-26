@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
+import 'package:boorusama/boorus/gelbooru/pages/widgets/tags_tile.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/boorus/sankaku/create_sankaku_config_page.dart';
 import 'package:boorusama/boorus/sankaku/sankaku_home_page.dart';
@@ -107,16 +108,15 @@ class SankakuBuilder
             showSourceTile: false,
             sliverArtistPostsBuilder: (context, post) =>
                 SankakuRecommendArtists(post: post),
-            tagListBuilder: (context, post) => PostTagList(
+            tagListBuilder: (context, post) => TagsTile(
+              post: post,
+              initialExpanded: true,
               tags: createTagGroupItems([
                 ...post.artistDetailsTags,
                 ...post.characterDetailsTags,
                 ...post.copyrightDetailsTags,
               ]),
-              itemBuilder: (context, tag) => PostTagListChip(
-                onTap: () => goToSearchPage(context, tag: tag.rawName),
-                tag: tag,
-              ),
+              onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
             ),
             onExit: (page) => scrollController?.scrollToIndex(page),
             onTagTap: (tag) => goToSearchPage(context, tag: tag),

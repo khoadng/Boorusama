@@ -122,7 +122,7 @@ class PostTagListChip extends ConsumerWidget {
                 fontWeight: FontWeight.w600,
               ),
               children: [
-                if (!ref.watchConfig.hasStrictSFW)
+                if (!ref.watchConfig.hasStrictSFW && tag.postCount > 0)
                   TextSpan(
                     text: '  ${NumberFormat.compact().format(tag.postCount)}',
                     style: context.textTheme.bodySmall?.copyWith(
