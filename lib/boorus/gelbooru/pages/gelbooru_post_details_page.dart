@@ -15,7 +15,6 @@ import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'widgets/gelbooru_recommend_artist_list.dart';
-import 'widgets/tags_tile.dart';
 
 class GelbooruPostDetailsPage extends ConsumerStatefulWidget {
   const GelbooruPostDetailsPage({

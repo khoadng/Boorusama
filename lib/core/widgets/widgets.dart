@@ -68,6 +68,7 @@ export 'source_link.dart';
 export 'swipe_target_image.dart';
 export 'tag_detail_region.dart';
 export 'tag_details_sliver_app_bar.dart';
+export 'tags_tile.dart';
 export 'tags/category_toggle_switch.dart';
 export 'tags/tag_chips_placeholder.dart';
 export 'tags/tag_other_names.dart';
