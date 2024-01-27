@@ -143,7 +143,6 @@
     "pool": {
         "pool": "Albums",
         "pool_gallery": "Gallerie des albums",
-        "mature_banned_content": "Contenu adulte/banni",
         "order": {
             "recent": "Récent",
             "new": "Nouveau",
