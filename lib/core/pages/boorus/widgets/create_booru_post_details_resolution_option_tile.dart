@@ -21,6 +21,9 @@ class CreateBooruImageDetailsResolutionOptionTile<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // set to Auto when value is null or empty
+    final item = value?.isNotEmpty == true ? value : 'Auto';
+
     return ListTile(
       contentPadding: EdgeInsets.zero,
       visualDensity: VisualDensity.compact,
@@ -30,7 +33,7 @@ class CreateBooruImageDetailsResolutionOptionTile<T> extends StatelessWidget {
       ),
       trailing: OptionDropDownButton(
         alignment: AlignmentDirectional.centerStart,
-        value: value ?? 'Auto',
+        value: item,
         onChanged: (value) => onChanged(value),
         items: items
             .append('Auto')
