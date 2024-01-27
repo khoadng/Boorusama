@@ -22,6 +22,9 @@ final gridSpacingSettingsProvider = Provider<double>((ref) => ref.watch(
 final imageBorderRadiusSettingsProvider = Provider<double>((ref) => ref.watch(
     settingsProvider.select((value) => value.imageBorderRadius.toDouble())));
 
+final imageQualitySettingsProvider = Provider<ImageQuality>(
+    (ref) => ref.watch(settingsProvider.select((value) => value.imageQuality)));
+
 final settingIOHandlerProvider = Provider<SettingsIOHandler>(
   (ref) => SettingsIOHandler(
     handler: DataIOHandler.file(

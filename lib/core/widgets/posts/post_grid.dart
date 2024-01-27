@@ -15,8 +15,11 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
+import 'package:boorusama/core/feats/utils.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/posts/post_grid_config_region.dart';
+import 'package:boorusama/foundation/networking/network_provider.dart';
+import 'package:boorusama/foundation/networking/network_state.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
@@ -325,26 +328,14 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                                       child: header,
                                     ),
                                   ),
+                              if (!refreshing)
+                                const SliverToBoxAdapter(
+                                  child:
+                                      HighresPreviewOnMobileDataWarningBanner(),
+                                ),
                               const SliverSizedBox(
                                 height: 4,
                               ),
-                              if (!refreshing && pageMode == PageMode.paginated)
-                                SliverToBoxAdapter(
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(bottom: 8),
-                                    child: PageSelector(
-                                      currentPage: page,
-                                      onPrevious: controller.hasPreviousPage()
-                                          ? () => controller.goToPreviousPage()
-                                          : null,
-                                      onNext: controller.hasNextPage()
-                                          ? () => controller.goToNextPage()
-                                          : null,
-                                      onPageSelect: (page) =>
-                                          controller.jumpToPage(page),
-                                    ),
-                                  ),
-                                ),
                               widget.bodyBuilder(
                                 context,
                                 itemBuilder,
@@ -366,9 +357,7 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                                 )
                               else
                                 const SliverSizedBox.shrink(),
-                              if (items.isNotEmpty &&
-                                  !refreshing &&
-                                  pageMode == PageMode.paginated)
+                              if (!refreshing && pageMode == PageMode.paginated)
                                 SliverToBoxAdapter(
                                   child: Padding(
                                     padding: const EdgeInsets.only(
@@ -525,5 +514,31 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
     } else {
       context.pop();
     }
+  }
+}
+
+class HighresPreviewOnMobileDataWarningBanner extends ConsumerWidget {
+  const HighresPreviewOnMobileDataWarningBanner({
+    super.key,
+  });
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(settingsProvider);
+
+    return switch (ref.watch(networkStateProvider)) {
+      NetworkConnectedState s =>
+        s.result.isMobile && settings.imageQuality.isHighres
+            ? DismissableInfoContainer(
+                mainColor: context.colorScheme.error,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
+                content:
+                    'Caution: The app is displaying high-resolution images using mobile data.',
+              )
+            : const SizedBox.shrink(),
+      _ => const SizedBox.shrink(),
+    };
   }
 }

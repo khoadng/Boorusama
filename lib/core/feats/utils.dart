@@ -9,6 +9,7 @@ import 'package:jiffy/jiffy.dart';
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
+import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/feats/user_level_colors.dart';
 import 'types.dart';
 
@@ -42,5 +43,13 @@ extension DateTimeX on DateTime {
         TimeScale.day => asJiffy().add(days: 1).dateTime,
         TimeScale.week => asJiffy().add(weeks: 1).dateTime,
         TimeScale.month => asJiffy().add(months: 1).dateTime
+      };
+}
+
+extension ImageQualityX on ImageQuality {
+  bool get isHighres => switch (this) {
+        ImageQuality.high => true,
+        ImageQuality.highest => true,
+        _ => false
       };
 }

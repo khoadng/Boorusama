@@ -31,6 +31,7 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
     final gridSize = ref.watch(gridSizeSettingsProvider);
     final imageListType = ref.watch(imageListTypeSettingsProvider);
     final pageMode = ref.watch(pageModeSettingsProvider);
+    final imageQuality = ref.watch(imageQualitySettingsProvider);
 
     return InkWell(
       customBorder: const CircleBorder(),
@@ -41,10 +42,13 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
           gridSize: gridSize,
           pageMode: pageMode,
           imageListType: imageListType,
+          imageQuality: imageQuality,
           onModeChanged: (mode) => ref.setPageMode(mode),
           onGridChanged: (grid) => ref.setGridSize(grid),
           onImageListChanged: (imageListType) =>
               ref.setImageListType(imageListType),
+          onImageQualityChanged: (imageQuality) =>
+              ref.setImageQuality(imageQuality),
         ),
       ),
       child: Container(
@@ -66,7 +70,9 @@ class PostGridActionSheet extends ConsumerWidget {
     required this.pageMode,
     required this.gridSize,
     required this.imageListType,
+    required this.imageQuality,
     required this.onImageListChanged,
+    required this.onImageQualityChanged,
     this.popOnSelect = true,
     required this.postController,
   });
@@ -74,10 +80,12 @@ class PostGridActionSheet extends ConsumerWidget {
   final void Function(PageMode mode) onModeChanged;
   final void Function(GridSize grid) onGridChanged;
   final void Function(ImageListType imageListType) onImageListChanged;
+  final void Function(ImageQuality imageQuality) onImageQualityChanged;
 
   final PageMode pageMode;
   final GridSize gridSize;
   final ImageListType imageListType;
+  final ImageQuality imageQuality;
   final bool popOnSelect;
   final PostGridController<Post> postController;
 
@@ -128,6 +136,21 @@ class PostGridActionSheet extends ConsumerWidget {
           );
         },
       ),
+      MobilePostGridConfigTile(
+        value: imageQuality.name.sentenceCase,
+        title: 'Image quality',
+        onTap: () {
+          if (popOnSelect) context.navigator.pop();
+          showMaterialModalBottomSheet(
+            context: context,
+            builder: (_) => OptionActionSheet(
+              onChanged: onImageQualityChanged,
+              optionName: (option) => option.name.sentenceCase,
+              options: [...ImageQuality.values]..remove(ImageQuality.original),
+            ),
+          );
+        },
+      ),
       if (postStatsPageBuilder != null && postController.items.isNotEmpty) ...[
         const Divider(),
         ListTile(
@@ -167,6 +190,13 @@ class PostGridActionSheet extends ConsumerWidget {
         value: imageListType,
         onChanged: (value) => ref.setImageListType(value),
         items: ImageListType.values,
+        optionNameBuilder: (option) => option.name.sentenceCase,
+      ),
+      DesktopPostGridConfigTile(
+        title: 'Image quality',
+        value: imageQuality,
+        onChanged: (value) => ref.setImageQuality(value),
+        items: [...ImageQuality.values]..remove(ImageQuality.original),
         optionNameBuilder: (option) => option.name.sentenceCase,
       ),
     ];

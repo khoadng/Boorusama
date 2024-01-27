@@ -17,12 +17,14 @@ class DismissableInfoContainer extends ConsumerStatefulWidget {
     this.forceShow = false,
     this.mainColor,
     this.actions = const [],
+    this.padding,
   });
 
   final String content;
   final bool forceShow;
   final Color? mainColor;
   final List<Widget> actions;
+  final EdgeInsetsGeometry? padding;
 
   @override
   ConsumerState<DismissableInfoContainer> createState() =>
@@ -47,7 +49,11 @@ class _DismissableInfoContainerState
     return Stack(
       children: [
         Container(
-          margin: const EdgeInsets.all(16),
+          margin: widget.padding ??
+              const EdgeInsets.symmetric(
+                vertical: 16,
+                horizontal: 24,
+              ),
           decoration: BoxDecoration(
             borderRadius: const BorderRadius.all(Radius.circular(4)),
             color: colors?.backgroundColor,
@@ -88,7 +94,7 @@ class _DismissableInfoContainerState
         if (!widget.forceShow)
           Positioned(
               top: 12,
-              right: 12,
+              right: 20,
               child: IconButton(
                 icon: const Icon(Symbols.close),
                 onPressed: () {

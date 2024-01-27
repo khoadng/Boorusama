@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -80,14 +81,20 @@ class InformationSection extends ConsumerWidget {
                 Row(
                   children: [
                     if (artistTags.isNotEmpty)
-                      Flexible(
-                        child: CompactChip(
-                          textColor: Colors.white,
-                          label: artistTags.first.replaceUnderscoreWithSpace(),
-                          onTap: () =>
-                              onArtistTagTap?.call(context, artistTags.first),
-                          backgroundColor: Colors.red,
-                        ),
+                      Builder(
+                        builder: (context) {
+                          final artist = chooseArtistTag(artistTags);
+
+                          return Flexible(
+                            child: CompactChip(
+                              textColor: Colors.white,
+                              label: artist.replaceUnderscoreWithSpace(),
+                              onTap: () =>
+                                  onArtistTagTap?.call(context, artist),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        },
                       ),
                     if (artistTags.isNotEmpty) const SizedBox(width: 5),
                     if (createdAt != null)
@@ -115,6 +122,16 @@ class InformationSection extends ConsumerWidget {
       ),
     );
   }
+}
+
+String chooseArtistTag(List<String> artistTags) {
+  if (artistTags.isEmpty) return artistTags.first;
+
+  // find the first artist name that not contains 'voice_actor'
+  return artistTags.firstWhereOrNull(
+        (artist) => !artist.contains('(voice_actor)'),
+      ) ??
+      artistTags.first;
 }
 
 class SimpleInformationSection extends ConsumerWidget {

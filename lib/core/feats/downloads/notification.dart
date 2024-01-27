@@ -27,6 +27,8 @@ class DownloadNotifications {
       android: AndroidInitializationSettings('@mipmap/ic_launcher'),
       iOS: DarwinInitializationSettings(),
       macOS: DarwinInitializationSettings(),
+      linux:
+          LinuxInitializationSettings(defaultActionName: 'Open notification'),
     );
     await flutterLocalNotificationsPlugin.initialize(
       initializationSettings,

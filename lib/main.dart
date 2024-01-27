@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fvp/fvp.dart' as fvp;
 import 'package:hive/hive.dart';
 import 'package:stack_trace/stack_trace.dart' as stack_trace;
 import 'package:video_player_win/video_player_win.dart';
@@ -65,6 +66,16 @@ void main() async {
       appWindow.alignment = Alignment.center;
       appWindow.show();
     });
+  }
+
+  if (isLinux()) {
+    fvp.registerWith(
+      options: {
+        'platforms': [
+          'linux',
+        ]
+      },
+    );
   }
 
   final appInfo = await getAppInfo();

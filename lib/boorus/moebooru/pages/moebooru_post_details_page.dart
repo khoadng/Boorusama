@@ -11,7 +11,7 @@ import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/post_details_page_scaffold.dart';
-import 'package:boorusama/core/widgets/tags/post_tag_list.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'widgets/moebooru_comment_section.dart';
 import 'widgets/moebooru_information_section.dart';
 import 'widgets/moebooru_related_post_section.dart';
@@ -63,11 +63,16 @@ class _MoebooruPostDetailsPageState
       swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
       sliverRelatedPostsBuilder: (context, post) =>
           MoebooruRelatedPostsSection(post: post),
-      tagListBuilder: (context, post) => PostTagList(
+      tagListBuilder: (context, post) => TagsTile(
+        initialExpanded: true,
+        post: post,
         tags: ref.watch(tagsProvider(booruConfig)),
-        onTap: (tag) => goToSearchPage(
-          context,
-          tag: tag.rawName,
+        onTagTap: (tag) => PostTagListChip(
+          tag: tag,
+          onTap: () => goToSearchPage(
+            context,
+            tag: tag.rawName,
+          ),
         ),
       ),
       commentsBuilder: (context, post) => MoebooruCommentSection(post: post),

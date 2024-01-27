@@ -44,6 +44,10 @@ PODS:
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
+  - fvp (0.0.1):
+    - Flutter
+    - FlutterMacOS
+    - mdk
   - gal (1.0.0):
     - Flutter
     - FlutterMacOS
@@ -95,6 +99,7 @@ DEPENDENCIES:
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - Flutter (from `Flutter`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
+  - fvp (from `.symlinks/plugins/fvp/darwin`)
   - gal (from `.symlinks/plugins/gal/darwin`)
   - local_auth_ios (from `.symlinks/plugins/local_auth_ios/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
@@ -131,6 +136,8 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_local_notifications:
     :path: ".symlinks/plugins/flutter_local_notifications/ios"
+  fvp:
+    :path: ".symlinks/plugins/fvp/darwin"
   gal:
     :path: ".symlinks/plugins/gal/darwin"
   local_auth_ios:
@@ -171,6 +178,7 @@ SPEC CHECKSUMS:
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
+  fvp: cb4a2438331cfd98abcdcac3ae49d0b0456274a2
   gal: 61e868295d28fe67ffa297fae6dacebf56fd53e1
   local_auth_ios: 1ba1475238daa33a6ffa2a29242558437be435ac
   package_info_plus: 115f4ad11e0698c8c1c5d8a689390df880f47e85
