@@ -70,25 +70,11 @@ flutter build apk --release
 ```
 
 ## 🌐 Translation
+Hosted by [Weblate](https://weblate.org/en/)
 
-Help us translate Boorusama to make it more accessible. Here are the steps:
-
-1. Fork this repository
-2. Use the English translations as a reference
-3. Create a new JSON file in [translation](./assets/translations/) folder using your two-letter [language code](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes)
-4. [Submit a PR](https://github.com/khoadng/Boorusama/pulls)
-
-|Language|Contributors|Source|
-|--------|------------|------|
-|English| [@khoadng](https://github.com/khoadng) |[`en-US.json`](./assets/translations/en-US.json)|
-|Vietnamese| [@khoadng](https://github.com/khoadng) |[`vi-VN.json`](./assets/translations/vi-VN.json)|
-|Japanese| [@khoadng](https://github.com/khoadng) |[`ja-JP.json`](./assets/translations/ja-JP.json)|
-|Russian| [@lesh6295-png](https://github.com/lesh6295-png) |[`ru-RU.json`](./assets/translations/ru-RU.json)|
-|Belarusian| [@lesh6295-png](https://github.com/lesh6295-png) |[`be-BY.json`](./assets/translations/be-BY.json)|
-|German| [@Forsaken5687](https://github.com/Forsaken5687) |[`de-DE.json`](./assets/translations/de-DE.json)|
-|Chinese (Traditional)| [@xperiazu21](https://github.com/xperiazu21) |[`zh-TW.json`](./assets/translations/zh-TW.json)|
-
-Alternatively, you can assist with translations on [POEditor](https://poeditor.com/join/project/uNPcakFEut).
+<a href="https://hosted.weblate.org/engage/boorusama/">
+<img src="https://hosted.weblate.org/widget/boorusama/multi-auto.svg" alt="Translation status" />
+</a>
 
 ## 📝 Feedback & Issues
 Feel free to send me feedback on [Discord](https://discord.gg/tvyYVxjfBr) or [file an issue](https://github.com/khoadng/Boorusama/issues/new). Feature requests are always welcome.
