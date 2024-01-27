@@ -140,7 +140,6 @@
     "pool": {
         "pool": "Pool",
         "pool_gallery": "Pool Gallerie",
-        "mature_banned_content": "Nicht jugendfreier/gesperrter Inhalt",
         "order": {
             "recent": "Neueste",
             "new": "Neu",
