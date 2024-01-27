@@ -20,6 +20,7 @@ class BooruVideo extends StatefulWidget {
     this.autoPlay = false,
     this.onVideoPlayerCreated,
     this.sound = true,
+    this.useCustomControls = true,
   });
 
   final String url;
@@ -30,6 +31,7 @@ class BooruVideo extends StatefulWidget {
   final void Function(VideoPlayerController controller)? onVideoPlayerCreated;
   final bool autoPlay;
   final bool sound;
+  final bool useCustomControls;
 
   @override
   State<BooruVideo> createState() => _BooruVideoState();
@@ -52,9 +54,11 @@ class _BooruVideoState extends State<BooruVideo> {
       videoPlayerController: _videoPlayerController,
       aspectRatio: widget.aspectRatio,
       autoPlay: widget.autoPlay,
-      customControls: MaterialDesktopControls(
-        onVisibilityChanged: widget.onVisibilityChanged,
-      ),
+      customControls: widget.useCustomControls
+          ? MaterialDesktopControls(
+              onVisibilityChanged: widget.onVisibilityChanged,
+            )
+          : null,
       looping: true,
       autoInitialize: true,
       showControlsOnInitialize: false,
@@ -63,22 +67,17 @@ class _BooruVideoState extends State<BooruVideo> {
     widget.onVideoPlayerCreated?.call(_videoPlayerController);
 
     _videoPlayerController.setVolume(widget.sound ? 1 : 0);
-
-    _listenToVideoPosition();
-  }
-
-  void _disposeVideoPlayerController() {
-    _videoPlayerController.removeListener(_onChanged);
-    _videoPlayerController.dispose();
-    _chewieController.dispose();
-  }
-
-  // Listen to the video position and report it back to the parent widget
-  // if the callback is set.
-  void _listenToVideoPosition() {
     if (widget.onCurrentPositionChanged != null) {
       _videoPlayerController.addListener(_onChanged);
     }
+  }
+
+  void _disposeVideoPlayerController() {
+    if (widget.onCurrentPositionChanged != null) {
+      _videoPlayerController.removeListener(_onChanged);
+    }
+    _videoPlayerController.dispose();
+    _chewieController.dispose();
   }
 
   void _onChanged() {

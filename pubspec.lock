@@ -1881,15 +1881,7 @@ packages:
       sha256: "34beb3a07d4331a24f7e7b2f75b8e2b103289038e07e65529699a671b6a6e2cb"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.3"
-  video_player_win:
-    dependency: "direct main"
-    description:
-      name: video_player_win
-      sha256: a693c0ee9da5c5e8b599d6bc9f325fc012ef1ab037f17bb4210e93cc05bf7d7d
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.3.4"
+    version: "2.1.2"
   vm_service:
     dependency: transitive
     description:
