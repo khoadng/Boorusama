@@ -121,7 +121,6 @@
     "pool": {
         "pool": "Альбом",
         "pool_gallery": "Альбомы",
-        "mature_banned_content": "Взрослый/Заблокированный контент",
         "order": {
             "recent": "Недавнее",
             "new": "Новое",
