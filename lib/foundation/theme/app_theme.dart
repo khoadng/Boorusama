@@ -176,6 +176,11 @@ class AppTheme {
           ),
           popupMenuTheme: PopupMenuThemeData(
             color: colorScheme.secondaryContainer,
+            labelTextStyle: MaterialStateProperty.all(
+              TextStyle(
+                color: colorScheme.onSecondaryContainer,
+              ),
+            ),
           ),
           brightness: Brightness.light,
           colorScheme: colorScheme,
@@ -249,6 +254,11 @@ class AppTheme {
           ),
           popupMenuTheme: PopupMenuThemeData(
             color: colorScheme.secondaryContainer,
+            labelTextStyle: MaterialStateProperty.all(
+              TextStyle(
+                color: colorScheme.onSecondaryContainer,
+              ),
+            ),
           ),
           brightness: Brightness.dark,
           listTileTheme: ListTileThemeData(
@@ -331,6 +341,11 @@ class AppTheme {
           ),
           popupMenuTheme: PopupMenuThemeData(
             color: colorScheme.secondaryContainer,
+            labelTextStyle: MaterialStateProperty.all(
+              TextStyle(
+                color: colorScheme.onSecondaryContainer,
+              ),
+            ),
           ),
           brightness: Brightness.dark,
           colorScheme: colorScheme,

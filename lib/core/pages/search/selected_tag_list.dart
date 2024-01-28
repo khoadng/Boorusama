@@ -1,13 +1,11 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-// Package imports:
-import 'package:material_symbols_icons/symbols.dart';
-
 // Project imports:
 import 'package:boorusama/core/feats/search/search.dart';
 import 'package:boorusama/core/pages/search/selected_tag_chip.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class SelectedTagList extends StatelessWidget {
   const SelectedTagList({
@@ -28,12 +26,8 @@ class SelectedTagList extends StatelessWidget {
     return AnimatedCrossFade(
       firstChild: Row(
         children: [
-          PopupMenuButton(
-            icon: const Icon(
-              Symbols.more_vert,
-              weight: 400,
-            ),
-            offset: const Offset(0, 48),
+          BooruPopupMenuButton(
+            offset: const Offset(0, 40),
             onSelected: (value) {
               if (value == 0) {
                 onClear.call();
@@ -41,19 +35,10 @@ class SelectedTagList extends StatelessWidget {
                 onBulkDownload(tags);
               }
             },
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(4)),
-            ),
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                value: 0,
-                child: const Text('search.remove_all_selected').tr(),
-              ),
-              PopupMenuItem(
-                value: 1,
-                child: const Text('download.bulk_download').tr(),
-              ),
-            ],
+            itemBuilder: {
+              0: const Text('search.remove_all_selected').tr(),
+              1: const Text('download.bulk_download').tr(),
+            },
           ),
           Expanded(
             child: _SelectedTagChips(

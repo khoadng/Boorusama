@@ -5,6 +5,7 @@ export 'auto_slide_mixin.dart';
 export 'booru_chip.dart';
 export 'booru_dialog.dart';
 export 'booru_segmented_button.dart';
+export 'booru_popup_menu_button.dart';
 export 'center_play_button.dart';
 export 'circular_icon_button.dart';
 export 'compact_chip.dart';

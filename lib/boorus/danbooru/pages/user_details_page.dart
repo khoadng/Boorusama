@@ -9,7 +9,6 @@ import 'package:flutter/services.dart';
 import 'package:collection/collection.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
@@ -28,7 +27,7 @@ import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/time.dart';
-import 'package:boorusama/widgets/booru_chip.dart';
+import 'package:boorusama/widgets/widgets.dart';
 import 'widgets/users/user_info_box.dart';
 import 'widgets/users/user_stats_group.dart';
 
@@ -80,17 +79,10 @@ class UserDetailsPage extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('Profile'),
         actions: [
-          PopupMenuButton(
-            icon: const Icon(
-              Symbols.more_vert,
-              weight: 400,
-            ),
-            itemBuilder: (context) => [
-              const PopupMenuItem(
-                value: 0,
-                child: Text('Copy User ID'),
-              ),
-            ],
+          BooruPopupMenuButton(
+            itemBuilder: const {
+              0: Text('Copy User ID'),
+            },
             onSelected: (value) {
               if (value == 0) {
                 Clipboard.setData(ClipboardData(text: uid.toString()));

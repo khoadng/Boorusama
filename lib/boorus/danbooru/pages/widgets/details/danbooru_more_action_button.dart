@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
@@ -15,6 +14,7 @@ import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class DanbooruMoreActionButton extends ConsumerWidget {
   const DanbooruMoreActionButton({
@@ -36,85 +36,60 @@ class DanbooruMoreActionButton extends ConsumerWidget {
         child: Material(
           color: Colors.black.withOpacity(0.5),
           shape: const CircleBorder(),
-          child: PopupMenuButton(
-            icon: const Icon(
-              Symbols.more_vert,
-              weight: 400,
-            ),
-            iconColor: Colors.white,
-            padding: EdgeInsets.zero,
-            onSelected: (value) {
-              switch (value) {
-                case 'download':
-                  showDownloadStartToast(context);
-                  download(post);
-                  break;
-                case 'add_to_favgroup':
-                  goToAddToFavoriteGroupSelectionPage(context, [post]);
-                  break;
-                case 'add_to_blacklist':
-                  goToAddToBlacklistPage(ref, context, post.extractTags());
-                  break;
-                case 'add_to_global_blacklist':
-                  goToAddToGlobalBlacklistPage(
-                      ref, context, post.extractTags());
-                  break;
-                case 'view_in_browser':
-                  launchExternalUrl(
-                    post.getUriLink(booruConfig.url),
-                  );
-                  break;
-                case 'view_original':
-                  goToOriginalImagePage(context, post);
-                  break;
-                case 'toggle_slide_show':
-                  onToggleSlideShow?.call();
-                  break;
-                case 'tag_history':
-                  goToPostVersionPage(context, post);
-                // ignore: no_default_cases
-                default:
-              }
-            },
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                value: 'download',
-                child: const Text('download.download').tr(),
-              ),
-              if (booruConfig.hasLoginDetails())
-                PopupMenuItem(
-                  value: 'add_to_favgroup',
-                  child: const Text('post.action.add_to_favorite_group').tr(),
-                ),
-              if (booruConfig.hasLoginDetails())
-                PopupMenuItem(
-                  value: 'add_to_blacklist',
-                  child: const Text('post.detail.add_to_blacklist').tr(),
-                ),
-              const PopupMenuItem(
-                value: 'add_to_global_blacklist',
-                child: Text('Add to global blacklist'),
-              ),
-              const PopupMenuItem(
-                value: 'tag_history',
-                child: Text('View tag history'),
-              ),
-              if (!booruConfig.hasStrictSFW)
-                PopupMenuItem(
-                  value: 'view_in_browser',
-                  child: const Text('post.detail.view_in_browser').tr(),
-                ),
-              if (post.hasFullView)
-                PopupMenuItem(
-                  value: 'view_original',
-                  child: const Text('post.image_fullview.view_original').tr(),
-                ),
-              // const PopupMenuItem(
-              //   value: 'toggle_slide_show',
-              //   child: Text('Toggle slide show'),
-              // ),
-            ],
-          ),
+          child: BooruPopupMenuButton(
+              iconColor: Colors.white,
+              onSelected: (value) {
+                switch (value) {
+                  case 'download':
+                    showDownloadStartToast(context);
+                    download(post);
+                    break;
+                  case 'add_to_favgroup':
+                    goToAddToFavoriteGroupSelectionPage(context, [post]);
+                    break;
+                  case 'add_to_blacklist':
+                    goToAddToBlacklistPage(ref, context, post.extractTags());
+                    break;
+                  case 'add_to_global_blacklist':
+                    goToAddToGlobalBlacklistPage(
+                        ref, context, post.extractTags());
+                    break;
+                  case 'view_in_browser':
+                    launchExternalUrl(
+                      post.getUriLink(booruConfig.url),
+                    );
+                    break;
+                  case 'view_original':
+                    goToOriginalImagePage(context, post);
+                    break;
+                  case 'toggle_slide_show':
+                    onToggleSlideShow?.call();
+                    break;
+                  case 'tag_history':
+                    goToPostVersionPage(context, post);
+                  // ignore: no_default_cases
+                  default:
+                }
+              },
+              itemBuilder: {
+                'download': const Text('download.download').tr(),
+                if (booruConfig.hasLoginDetails())
+                  'add_to_favgroup':
+                      const Text('post.action.add_to_favorite_group').tr(),
+                if (booruConfig.hasLoginDetails())
+                  'add_to_blacklist':
+                      const Text('post.detail.add_to_blacklist').tr(),
+                'add_to_global_blacklist':
+                    const Text('Add to global blacklist'),
+                'tag_history': const Text('View tag history'),
+                if (!booruConfig.hasStrictSFW)
+                  'view_in_browser':
+                      const Text('post.detail.view_in_browser').tr(),
+                if (post.hasFullView)
+                  'view_original':
+                      const Text('post.image_fullview.view_original').tr(),
+                // 'toggle_slide_show': const Text('Toggle slide show'),
+              }),
         ),
       ),
     );

@@ -754,17 +754,10 @@ class TagEditTagListSection extends ConsumerWidget {
                     ),
               if (!filterOn) const Spacer(),
               if (!filterOn)
-                PopupMenuButton(
-                  icon: const Icon(
-                    Symbols.more_vert,
-                    weight: 400,
-                  ),
-                  itemBuilder: (_) => [
-                    const PopupMenuItem(
-                      value: 'fetch_category',
-                      child: Text('Fetch tag category'),
-                    ),
-                  ],
+                BooruPopupMenuButton(
+                  itemBuilder: const {
+                    'fetch_category': Text('Fetch tag category'),
+                  },
                   onSelected: (value) async {
                     switch (value) {
                       case 'fetch_category':

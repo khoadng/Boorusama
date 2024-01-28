@@ -137,15 +137,7 @@ class BlacklistedTagTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(tag),
-      trailing: PopupMenuButton(
-        icon: const Icon(
-          Symbols.more_vert,
-          weight: 400,
-        ),
-        constraints: const BoxConstraints(minWidth: 150),
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(4)),
-        ),
+      trailing: BooruPopupMenuButton(
         onSelected: (value) {
           switch (value) {
             case 'remove':
@@ -156,16 +148,10 @@ class BlacklistedTagTile extends StatelessWidget {
               break;
           }
         },
-        itemBuilder: (context) => [
-          PopupMenuItem(
-            value: 'remove',
-            child: const Text('blacklisted_tags.remove').tr(),
-          ),
-          PopupMenuItem(
-            value: 'edit',
-            child: const Text('blacklisted_tags.edit').tr(),
-          ),
-        ],
+        itemBuilder: {
+          'remove': const Text('blacklisted_tags.remove').tr(),
+          'edit': const Text('blacklisted_tags.edit').tr(),
+        },
       ),
     );
   }
