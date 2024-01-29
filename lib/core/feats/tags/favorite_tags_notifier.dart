@@ -19,14 +19,22 @@ class FavoriteTagsNotifier extends Notifier<List<FavoriteTag>> {
     state = tags..sort((a, b) => a.name.compareTo(b.name));
   }
 
-  Future<void> add(String tag) async {
+  Future<void> add(
+    String tag, {
+    List<String>? labels,
+  }) async {
     if (tag.isEmpty) return;
 
     // If a tag length is larger than 255 characters, we will not add it.
     // This is a limitation of Hive.
     if (tag.length > 255) return;
 
-    await repo.create(name: tag);
+    await repo.create(
+      name: tag,
+      labels: labels != null && labels.isNotEmpty
+          ? labels.where((e) => e.isNotEmpty).toList()
+          : null,
+    );
 
     final tags = await repo.getAll();
 

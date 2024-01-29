@@ -21,18 +21,17 @@ const kSearchSelectedFavoriteTagLabelKey = 'search_selected_favorite_tag';
 class FavoriteTagsSection extends ConsumerWidget {
   const FavoriteTagsSection({
     super.key,
+    required this.selectedLabel,
     required this.onTagTap,
     required this.onAddTagRequest,
   });
 
+  final String selectedLabel;
   final ValueChanged<String>? onTagTap;
   final VoidCallback onAddTagRequest;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedLabel =
-        ref.watch(miscDataProvider(kSearchSelectedFavoriteTagLabelKey));
-
     return FavoriteTagsFilterScope(
       initialValue: selectedLabel,
       builder: (_, tags, labels, selected) => OptionTagsArena(

@@ -49,13 +49,14 @@ class FavoriteTagRepositoryHive implements FavoriteTagRepository {
   @override
   Future<FavoriteTag> create({
     required String name,
+    List<String>? labels,
   }) async {
     final now = DateTime.now();
     final obj = FavoriteTagHiveObject(
       name: name,
       createdAt: now,
       updatedAt: now,
-      labels: null,
+      labels: labels,
     );
 
     await box.put(obj.name, obj);
