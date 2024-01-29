@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/tags/tags.dart';
-import 'package:boorusama/dart.dart';
 
 class FavoriteTagsNotifier extends Notifier<List<FavoriteTag>> {
   @override
@@ -51,8 +50,10 @@ class FavoriteTagsNotifier extends Notifier<List<FavoriteTag>> {
     }
   }
 
-  Future<void> remove(int index) async {
-    final tag = state.getOrNull(index);
+  Future<void> remove(String name) async {
+    if (name.isEmpty) return;
+
+    final tag = await repo.getFirst(name);
 
     if (tag != null) {
       final deleted = await repo.deleteFirst(tag.name);

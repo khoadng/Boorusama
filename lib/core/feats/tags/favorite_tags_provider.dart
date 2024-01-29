@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/tags/tags.dart';
-import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 final favoriteTagRepoProvider =
@@ -24,10 +23,12 @@ class FavoriteTagsFilterScope extends ConsumerStatefulWidget {
   const FavoriteTagsFilterScope({
     super.key,
     this.initialValue,
+    this.filterQuery,
     required this.builder,
   });
 
   final String? initialValue;
+  final String? filterQuery;
 
   final Widget Function(
     BuildContext context,
@@ -44,12 +45,17 @@ class FavoriteTagsFilterScope extends ConsumerStatefulWidget {
 class _FavoriteTagsFilterScopeState
     extends ConsumerState<FavoriteTagsFilterScope> {
   late var selectedLabel = widget.initialValue ?? '';
+  late var filterQuery = widget.filterQuery ?? '';
 
   @override
   void didUpdateWidget(covariant FavoriteTagsFilterScope oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.initialValue != widget.initialValue) {
       selectedLabel = widget.initialValue ?? '';
+    }
+
+    if (oldWidget.filterQuery != widget.filterQuery) {
+      filterQuery = widget.filterQuery ?? '';
     }
   }
 
@@ -63,9 +69,15 @@ class _FavoriteTagsFilterScopeState
       return e.labels?.contains(selectedLabel) ?? false;
     }).toList();
 
+    final filteredTagsWithQuery = filteredTags.where((e) {
+      if (filterQuery.isEmpty) return true;
+
+      return e.name.contains(filterQuery);
+    }).toList();
+
     return widget.builder(
       context,
-      filteredTags,
+      filteredTagsWithQuery,
       tagLabels,
       tags.isEmpty ? '' : selectedLabel,
     );
@@ -99,12 +111,18 @@ class TagLabelsDropDownButton extends StatelessWidget {
           onChanged(newValue);
         }
       },
-      items: tagLabels
-          .prepend('')
+      items: [
+        '',
+        ...tagLabels,
+      ]
           .map((value) => DropdownMenuItem(
-                value: value,
-                child: Text(value.isEmpty ? 'All' : value),
-              ))
+              value: value,
+              child: Text(
+                switch (value) {
+                  '' => 'All',
+                  _ => value,
+                },
+              )))
           .toList(),
     );
   }

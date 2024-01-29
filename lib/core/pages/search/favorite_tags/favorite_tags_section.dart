@@ -88,7 +88,7 @@ class FavoriteTagsSection extends ConsumerWidget {
             color: colors?.foregroundColor,
           ),
           onDeleted: editMode
-              ? () => ref.read(favoriteTagsProvider.notifier).remove(index)
+              ? () => ref.read(favoriteTagsProvider.notifier).remove(tag.name)
               : null,
         );
       }),
