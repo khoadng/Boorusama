@@ -50,12 +50,29 @@ class FavoriteTagRepositoryHive implements FavoriteTagRepository {
   Future<FavoriteTag> create({
     required String name,
   }) async {
+    final now = DateTime.now();
     final obj = FavoriteTagHiveObject(
       name: name,
-      createdAt: DateTime.now(),
+      createdAt: now,
+      updatedAt: now,
+      labels: null,
     );
 
     await box.put(obj.name, obj);
+
+    return favoriteTagHiveObjectToFavoriteTag(obj);
+  }
+
+  @override
+  Future<FavoriteTag?> updateFirst(String name, FavoriteTag tag) async {
+    final t = tag.copyWith(
+      updatedAt: () => DateTime.now(),
+    );
+    final obj = favoriteTagToFavoriteTagHiveObject(t);
+
+    final old = box.values.firstWhere((e) => e.name == name);
+
+    await box.put(old.name, obj);
 
     return favoriteTagHiveObjectToFavoriteTag(obj);
   }

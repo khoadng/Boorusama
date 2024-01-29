@@ -108,6 +108,14 @@ class SideBarMenu extends ConsumerWidget {
                           },
                         ),
                         SideMenuTile(
+                          icon: const Icon(Symbols.tag),
+                          title: const Text('Favorite tags'),
+                          onTap: () {
+                            if (popOnSelect) context.navigator.pop();
+                            context.go('/favorite_tags');
+                          },
+                        ),
+                        SideMenuTile(
                           icon: const Icon(
                             Symbols.settings,
                             fill: 1,

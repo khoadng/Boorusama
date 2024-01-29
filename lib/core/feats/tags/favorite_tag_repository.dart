@@ -13,4 +13,6 @@ abstract class FavoriteTagRepository {
   Future<FavoriteTag> create({
     required String name,
   });
+
+  Future<FavoriteTag?> updateFirst(String name, FavoriteTag tag);
 }

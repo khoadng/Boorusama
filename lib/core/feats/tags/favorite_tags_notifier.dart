@@ -34,6 +34,23 @@ class FavoriteTagsNotifier extends Notifier<List<FavoriteTag>> {
     state = tags..sort((a, b) => a.name.compareTo(b.name));
   }
 
+  Future<void> update(String tag, FavoriteTag newTag) async {
+    if (tag.isEmpty) return;
+
+    final targetTag = await repo.getFirst(tag);
+
+    if (targetTag != null) {
+      await repo.updateFirst(
+        tag,
+        newTag.ensureValid(),
+      );
+
+      final tags = await repo.getAll();
+
+      state = tags..sort((a, b) => a.name.compareTo(b.name));
+    }
+  }
+
   Future<void> remove(int index) async {
     final tag = state.getOrNull(index);
 

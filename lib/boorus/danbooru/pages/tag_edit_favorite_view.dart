@@ -27,48 +27,78 @@ class TagEditFavoriteView extends ConsumerStatefulWidget {
 }
 
 class _TagEditFavoriteViewState extends ConsumerState<TagEditFavoriteView> {
+  var selectedLabel = '';
+
   @override
   Widget build(BuildContext context) {
-    final tags = ref.watch(favoriteTagsProvider);
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: tags.isNotEmpty
-          ? Wrap(
-              spacing: 4,
-              children: tags.map((tag) {
-                final selected = widget.isSelected(tag.name);
-
-                return FilterChip(
-                  side: selected
-                      ? BorderSide(
-                          color: context.theme.hintColor,
-                          width: 0.5,
-                        )
-                      : null,
-                  selected: selected,
-                  showCheckmark: false,
-                  visualDensity: VisualDensity.compact,
-                  selectedColor: context.colorScheme.primary,
-                  backgroundColor: context.colorScheme.background,
-                  onSelected: (value) => value
-                      ? widget.onAdded(tag.name)
-                      : widget.onRemoved(tag.name),
-                  label: Text(
-                    tag.name.replaceUnderscoreWithSpace(),
+    return SingleChildScrollView(
+      child: FavoriteTagsFilterScope(
+        initialValue: selectedLabel,
+        builder: (_, tags, labels, selected) => Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 8,
+                vertical: 8,
+              ),
+              child: Row(
+                children: [
+                  TagLabelsDropDownButton(
+                    tagLabels: labels,
+                    selectedLabel: selected,
+                    alignment: AlignmentDirectional.centerStart,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedLabel = value;
+                      });
+                    },
                   ),
-                );
-              }).toList(),
-            )
-          : const Center(
-              child: Text(
-                'No favorites',
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 16,
-                ),
+                ],
               ),
             ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: tags.isNotEmpty
+                  ? Wrap(
+                      spacing: 4,
+                      children: tags.map((tag) {
+                        final selected = widget.isSelected(tag.name);
+
+                        return FilterChip(
+                          side: selected
+                              ? BorderSide(
+                                  color: context.theme.hintColor,
+                                  width: 0.5,
+                                )
+                              : null,
+                          selected: selected,
+                          showCheckmark: false,
+                          visualDensity: VisualDensity.compact,
+                          selectedColor: context.colorScheme.primary,
+                          backgroundColor: context.colorScheme.background,
+                          onSelected: (value) => value
+                              ? widget.onAdded(tag.name)
+                              : widget.onRemoved(tag.name),
+                          label: Text(
+                            tag.name.replaceUnderscoreWithSpace(),
+                          ),
+                        );
+                      }).toList(),
+                    )
+                  : const Center(
+                      child: Text(
+                        'No favorites',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
