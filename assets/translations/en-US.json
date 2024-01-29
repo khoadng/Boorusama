@@ -218,7 +218,7 @@
             "theme": "Theme",
             "dark": "Dark",
             "light": "Light",
-            "amoled_dark": "AMOLED Dark"
+            "amoled_dark": "Black"
         },
         "privacy": {
             "privacy": "Privacy",
@@ -320,8 +320,8 @@
         "favorite": "Favorite",
         "unfavorited": "Unfavorited",
         "unfavorite": "Unfavorite",
-        "failed_to_unfavorite": "Fail to unfavorite this post",
-        "failed_to_favorite": "Fail to favorite this post"
+        "failed_to_unfavorite": "Could not unfavorite this post",
+        "failed_to_favorite": "Could not favorite this post"
     },
     "favorite_groups": {
         "favorite_groups": "Favorite Groups",
