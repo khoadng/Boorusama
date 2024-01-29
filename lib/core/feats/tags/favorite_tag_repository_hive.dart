@@ -77,4 +77,20 @@ class FavoriteTagRepositoryHive implements FavoriteTagRepository {
 
     return favoriteTagHiveObjectToFavoriteTag(obj);
   }
+
+  @override
+  Future<List<FavoriteTag>> createFrom(List<FavoriteTag> tags) async {
+    final data = <FavoriteTag>[];
+
+    for (final tag in tags) {
+      data.add(
+        await create(
+          name: tag.name,
+          labels: tag.labels,
+        ),
+      );
+    }
+
+    return data;
+  }
 }

@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/feats/backup/data_io_handler.dart';
+import 'package:boorusama/core/feats/tags/favorite_tag_io_handler.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -17,6 +20,16 @@ final favoriteTagsProvider =
   dependencies: [
     favoriteTagRepoProvider,
   ],
+);
+
+final favoriteTagsIOHandlerProvider = Provider<FavoriteTagsIOHandler>(
+  (ref) => FavoriteTagsIOHandler(
+    handler: DataIOHandler.file(
+      version: 1,
+      deviceInfo: ref.watch(deviceInfoProvider),
+      prefixName: 'boorusama_favorite_tags',
+    ),
+  ),
 );
 
 class FavoriteTagsFilterScope extends ConsumerStatefulWidget {

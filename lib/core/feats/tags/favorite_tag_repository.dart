@@ -15,5 +15,7 @@ abstract class FavoriteTagRepository {
     List<String>? labels,
   });
 
+  Future<List<FavoriteTag>> createFrom(List<FavoriteTag> tags);
+
   Future<FavoriteTag?> updateFirst(String name, FavoriteTag tag);
 }

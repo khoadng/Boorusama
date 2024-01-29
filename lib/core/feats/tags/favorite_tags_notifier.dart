@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/tags/tags.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class FavoriteTagsNotifier extends Notifier<List<FavoriteTag>> {
   @override
@@ -94,5 +95,40 @@ class FavoriteTagsNotifier extends Notifier<List<FavoriteTag>> {
     final tagString = tags.map((e) => e.name).join(' ');
 
     onDone(tagString);
+  }
+
+  Future<void> exportWithLabels({
+    required String path,
+  }) async {
+    await ref
+        .read(favoriteTagsIOHandlerProvider)
+        .export(
+          state,
+          to: path,
+        )
+        .run()
+        .then(
+          (value) => value.fold(
+            (l) => showErrorToast(l.toString()),
+            (r) => showSuccessToast('Favorite tags exported to $path'),
+          ),
+        );
+  }
+
+  Future<void> importWithLabels({
+    required String path,
+  }) async {
+    await ref
+        .read(favoriteTagsIOHandlerProvider)
+        .import(
+          from: path,
+        )
+        .run()
+        .then(
+          (value) => value.fold(
+            (l) => showErrorToast(l.toString()),
+            (r) => repo.createFrom(r).then((value) => load()),
+          ),
+        );
   }
 }
