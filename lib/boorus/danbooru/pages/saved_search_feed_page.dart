@@ -92,8 +92,14 @@ class _SavedSearchFeedPageState extends ConsumerState<SavedSearchFeedPage> {
               ),
             )
           : const SavedSearchLandingView(),
-      error: (error, stackTrace) => const ErrorBox(),
-      loading: () => const Center(child: CircularProgressIndicator.adaptive()),
+      error: (error, stackTrace) => const Scaffold(
+        body: ErrorBox(),
+      ),
+      loading: () => const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator.adaptive(),
+        ),
+      ),
     );
   }
 }

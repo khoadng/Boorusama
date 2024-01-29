@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -7,6 +6,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class BooruPopupMenuButton<T> extends StatelessWidget {
   const BooruPopupMenuButton({
@@ -33,10 +33,14 @@ class BooruPopupMenuButton<T> extends StatelessWidget {
               maxWidth: 5 * 40.0,
             )
           : null,
-      icon: const Icon(
-        Symbols.more_vert,
-        weight: 400,
-      ),
+      icon: isMobilePlatform()
+          ? const Icon(
+              Icons.more_vert,
+            )
+          : const Icon(
+              Symbols.more_vert,
+              weight: 400,
+            ),
       iconColor: iconColor,
       itemBuilder: (context) => [
         for (final item in itemBuilder.entries)

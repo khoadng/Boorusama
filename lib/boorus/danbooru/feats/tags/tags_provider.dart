@@ -58,8 +58,8 @@ final danbooruUserMetatagsProvider =
   ],
 );
 
-final trendingTagsProvider = AsyncNotifierProvider.family<TrendingTagNotifier,
-    List<Search>, BooruConfig>(
+final trendingTagsProvider = AsyncNotifierProvider.autoDispose
+    .family<TrendingTagNotifier, List<Search>, BooruConfig>(
   TrendingTagNotifier.new,
 );
 

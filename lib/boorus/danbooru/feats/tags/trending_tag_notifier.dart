@@ -2,6 +2,7 @@
 import 'dart:async';
 
 // Package imports:
+import 'package:boorusama/core/feats/blacklists/blacklists.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -12,18 +13,29 @@ import 'package:boorusama/core/feats/tags/booru_tag_type_store.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 
 class TrendingTagNotifier
-    extends FamilyAsyncNotifier<List<Search>, BooruConfig> {
+    extends AutoDisposeFamilyAsyncNotifier<List<Search>, BooruConfig> {
   @override
-  FutureOr<List<Search>> build(BooruConfig arg) {
-    if (arg.booruType != BooruType.danbooru) return [];
-    return fetch();
+  FutureOr<List<Search>> build(BooruConfig arg) async {
+    final r18Tags = ref.watch(tagInfoProvider).r18Tags;
+    final blacklistTags =
+        await ref.watch(danbooruBlacklistedTagsProvider(arg).future);
+    final globalBlacklistTags = ref.watch(globalBlacklistedTagsProvider);
+
+    return fetch(
+      excludedTags: {
+        ...r18Tags,
+        if (blacklistTags != null) ...blacklistTags,
+        ...globalBlacklistTags.map((e) => e.name),
+      },
+    );
   }
 
   PopularSearchRepository get popularSearchRepository =>
       ref.read(popularSearchProvider(arg));
 
-  Future<List<Search>> fetch() async {
-    final excludedTags = ref.read(tagInfoProvider).r18Tags;
+  Future<List<Search>> fetch({
+    required Set<String> excludedTags,
+  }) async {
     var searches =
         await popularSearchRepository.getSearchByDate(DateTime.now());
     if (searches.isEmpty) {
