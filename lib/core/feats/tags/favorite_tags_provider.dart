@@ -67,7 +67,7 @@ class _FavoriteTagsFilterScopeState
       context,
       filteredTags,
       tagLabels,
-      selectedLabel,
+      tags.isEmpty ? '' : selectedLabel,
     );
   }
 }

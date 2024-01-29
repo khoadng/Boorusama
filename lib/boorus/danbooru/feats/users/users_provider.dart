@@ -30,7 +30,7 @@ final danbooruCurrentUserProvider = FutureProvider.autoDispose
   if (!config.hasLoginDetails()) return null;
 
   // First, we try to get the user id from the cache
-  final miscData = await ref.watch(miscDataBoxProvider.future);
+  final miscData = ref.watch(miscDataBoxProvider);
   final key =
       '${_kCurrentUserIdKey}_${Uri.encodeComponent(config.url)}_${config.login}';
   final cached = miscData.get(key);

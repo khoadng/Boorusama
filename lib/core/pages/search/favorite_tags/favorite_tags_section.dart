@@ -16,7 +16,7 @@ import '../common/option_tags_arena.dart';
 import 'add_tag_button.dart';
 import 'import_tag_button.dart';
 
-final selectedFavoriteTagLabelProvider = StateProvider<String>((ref) => '');
+const kSearchSelectedFavoriteTagLabelKey = 'search_selected_favorite_tag';
 
 class FavoriteTagsSection extends ConsumerWidget {
   const FavoriteTagsSection({
@@ -30,8 +30,11 @@ class FavoriteTagsSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final selectedLabel =
+        ref.watch(miscDataProvider(kSearchSelectedFavoriteTagLabelKey));
+
     return FavoriteTagsFilterScope(
-      initialValue: ref.watch(selectedFavoriteTagLabelProvider),
+      initialValue: selectedLabel,
       builder: (_, tags, labels, selected) => OptionTagsArena(
         editable: tags.isNotEmpty,
         title: 'favorite_tags.favorites'.tr(),
@@ -39,8 +42,10 @@ class FavoriteTagsSection extends ConsumerWidget {
           backgroundColor: Colors.transparent,
           tagLabels: labels,
           selectedLabel: selected,
-          onChanged: (value) =>
-              ref.read(selectedFavoriteTagLabelProvider.notifier).state = value,
+          onChanged: (value) => ref
+              .read(
+                  miscDataProvider(kSearchSelectedFavoriteTagLabelKey).notifier)
+              .put(value),
         ),
         childrenBuilder: (editMode) =>
             _buildFavoriteTags(context, ref, tags, editMode),

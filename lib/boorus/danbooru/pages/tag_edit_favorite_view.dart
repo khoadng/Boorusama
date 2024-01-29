@@ -5,9 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
+
+const kTagEditFavoriteViewSelectedLabelKey =
+    'tag_edit_favorite_view_selected_label';
 
 class TagEditFavoriteView extends ConsumerStatefulWidget {
   const TagEditFavoriteView({
@@ -27,10 +31,11 @@ class TagEditFavoriteView extends ConsumerStatefulWidget {
 }
 
 class _TagEditFavoriteViewState extends ConsumerState<TagEditFavoriteView> {
-  var selectedLabel = '';
-
   @override
   Widget build(BuildContext context) {
+    final selectedLabel =
+        ref.watch(miscDataProvider(kTagEditFavoriteViewSelectedLabelKey));
+
     return SingleChildScrollView(
       child: FavoriteTagsFilterScope(
         initialValue: selectedLabel,
@@ -49,9 +54,13 @@ class _TagEditFavoriteViewState extends ConsumerState<TagEditFavoriteView> {
                     selectedLabel: selected,
                     alignment: AlignmentDirectional.centerStart,
                     onChanged: (value) {
-                      setState(() {
-                        selectedLabel = value;
-                      });
+                      ref
+                          .read(
+                            miscDataProvider(
+                                    kTagEditFavoriteViewSelectedLabelKey)
+                                .notifier,
+                          )
+                          .put(value);
                     },
                   ),
                 ],
