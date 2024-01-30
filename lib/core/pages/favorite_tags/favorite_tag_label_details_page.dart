@@ -7,8 +7,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/tags/tags.dart';
-import 'package:boorusama/core/router.dart';
-import 'package:boorusama/flutter.dart';
+import 'favorite_tag_add_tag_to_label_button.dart';
 
 class FavoriteTagLabelDetailsPage extends ConsumerWidget {
   const FavoriteTagLabelDetailsPage({
@@ -28,39 +27,24 @@ class FavoriteTagLabelDetailsPage extends ConsumerWidget {
       appBar: AppBar(
         title: Text(label),
         actions: [
-          IconButton(
-            onPressed: () {
-              goToQuickSearchPage(
-                context,
-                ref: ref,
-                onSubmitted: (context, text) {
-                  context.navigator.pop();
-                  ref.read(favoriteTagsProvider.notifier).add(
-                    text,
-                    labels: [
-                      label,
-                    ],
-                  );
-                },
-                onSelected: (tag) {
-                  ref.read(favoriteTagsProvider.notifier).add(
-                    tag.value,
-                    labels: [
-                      label,
-                    ],
-                  );
-                },
-              );
-            },
-            icon: const Icon(Symbols.add),
-          ),
+          FavoriteTagAddTagToLabelButton(label: label),
         ],
       ),
       body: ListView(
         children: [
           for (final tag in filtered)
             ListTile(
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16),
               title: Text(tag.name),
+              trailing: IconButton(
+                onPressed: () {
+                  ref.read(favoriteTagsProvider.notifier).update(
+                        tag.name,
+                        tag.removeLabel(label),
+                      );
+                },
+                icon: const Icon(Symbols.close),
+              ),
             ),
         ],
       ),

@@ -71,4 +71,14 @@ extension FavoriteTagX on FavoriteTag {
       labels: () => data.toList(),
     );
   }
+
+  FavoriteTag removeLabel(String label) {
+    final labels = [...(this.labels ?? <String>[])];
+
+    labels.remove(label);
+
+    return copyWith(
+      labels: () => labels,
+    );
+  }
 }

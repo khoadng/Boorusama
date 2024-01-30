@@ -4,19 +4,17 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
-import 'package:boorusama/utils/color_utils.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'edit_favorite_tag_sheet.dart';
-import 'favorite_tag_label_details_page.dart';
+import 'favorite_tag_label_chip.dart';
+import 'favorite_tag_labels_page.dart';
 
 const kFavoriteTagsSelectedLabelKey = 'favorite_tags_selected_label';
 
@@ -35,6 +33,22 @@ class FavoriteTagsPage extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Favorite tags'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              context.navigator.push(
+                CupertinoPageRoute(
+                  builder: (context) => const FavoriteTagLabelsPage(),
+                ),
+              );
+            },
+            icon: const Icon(
+              FontAwesomeIcons.tags,
+              fill: 1,
+              size: 20,
+            ),
+          ),
+        ],
       ),
       body: FavoriteTagsFilterScope(
         filterQuery: ref.watch(selectedFavoriteTagQueryProvider),
@@ -72,10 +86,6 @@ class FavoriteTagsPage extends ConsumerWidget {
       itemBuilder: (context, index) {
         final tag = tags[index];
         final labels = tag.labels ?? <String>[];
-        final colors = context.generateChipColors(
-          context.colorScheme.primary,
-          ref.watch(settingsProvider),
-        );
 
         return ListTile(
           title: Text(tag.name),
@@ -87,7 +97,9 @@ class FavoriteTagsPage extends ConsumerWidget {
                     runSpacing: 8,
                     children: [
                       for (final label in labels)
-                        _buildChip(colors, context, label),
+                        FavoriteTagLabelChip(
+                          label: label,
+                        ),
                     ],
                   ),
                 )
@@ -128,50 +140,6 @@ class FavoriteTagsPage extends ConsumerWidget {
           ),
         );
       },
-    );
-  }
-
-  Widget _buildChip(ChipColors? colors, BuildContext context, String label) {
-    return SizedBox(
-      height: 28,
-      child: RawChip(
-        onPressed: () {
-          context.navigator.push(
-            CupertinoPageRoute(
-              builder: (context) => FavoriteTagLabelDetailsPage(
-                label: label,
-              ),
-            ),
-          );
-        },
-        padding: isMobilePlatform() ? const EdgeInsets.all(4) : EdgeInsets.zero,
-        visualDensity: const ShrinkVisualDensity(),
-        backgroundColor: colors?.backgroundColor,
-        side: colors != null
-            ? BorderSide(
-                color: colors.borderColor,
-                width: 1,
-              )
-            : null,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(8)),
-        ),
-        label: ConstrainedBox(
-          constraints: BoxConstraints(
-            maxWidth: context.screenWidth * 0.7,
-          ),
-          child: RichText(
-            overflow: TextOverflow.ellipsis,
-            text: TextSpan(
-              text: label,
-              style: TextStyle(
-                color: colors?.foregroundColor,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        ),
-      ),
     );
   }
 }
