@@ -96,6 +96,14 @@ class SideBarMenu extends ConsumerWidget {
                           },
                         ),
                         SideMenuTile(
+                          icon: const Icon(Symbols.tag),
+                          title: const Text('Favorite tags'),
+                          onTap: () {
+                            if (popOnSelect) context.navigator.pop();
+                            context.go('/favorite_tags');
+                          },
+                        ),
+                        SideMenuTile(
                           icon: const Icon(Symbols.download),
                           title: const Text('sideMenu.bulk_download').tr(),
                           onTap: () {
@@ -105,14 +113,6 @@ class SideBarMenu extends ConsumerWidget {
                               null,
                               ref: ref,
                             );
-                          },
-                        ),
-                        SideMenuTile(
-                          icon: const Icon(Symbols.tag),
-                          title: const Text('Favorite tags'),
-                          onTap: () {
-                            if (popOnSelect) context.navigator.pop();
-                            context.go('/favorite_tags');
                           },
                         ),
                         SideMenuTile(
