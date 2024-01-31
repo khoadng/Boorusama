@@ -75,9 +75,9 @@ class GeneralPostContextMenu extends ConsumerWidget {
                 ),
             ),
           ContextMenuButtonConfig(
-            'Add to global blacklist',
+            'View tags',
             onPressed: () {
-              goToAddToGlobalBlacklistPage(ref, context, post.extractTags());
+              goToShowTaglistPage(ref, context, post.extractTags());
             },
           ),
           if (!booruConfig.hasStrictSFW)

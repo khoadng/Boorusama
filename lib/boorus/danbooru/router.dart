@@ -17,10 +17,11 @@ import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/saved_searches/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
-import 'package:boorusama/core/feats/boorus/providers.dart';
+import 'package:boorusama/core/feats/blacklists/blacklists.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
-import 'package:boorusama/core/pages/blacklists/add_to_blacklist_page.dart';
+import 'package:boorusama/core/pages/show_tag_list_page.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
@@ -453,23 +454,40 @@ Future<bool?> goToAddToFavoriteGroupSelectionPage(
   );
 }
 
-Future<bool?> goToAddToBlacklistPage(
+Future<bool?> goToDanbooruShowTaglistPage(
   WidgetRef ref,
   BuildContext context,
   List<Tag> tags,
 ) {
-  final notifier =
-      ref.read(danbooruBlacklistedTagsProvider(ref.readConfig).notifier);
+  final config = ref.readConfig;
+  final notifier = ref.read(danbooruBlacklistedTagsProvider(config).notifier);
+  final globalNotifier = ref.read(globalBlacklistedTagsProvider.notifier);
+  final favoriteNotifier = ref.read(favoriteTagsProvider.notifier);
 
   return showMaterialModalBottomSheet<bool>(
     context: navigatorKey.currentContext ?? context,
     duration: const Duration(milliseconds: 200),
     expand: true,
-    builder: (dialogContext) => AddToBlacklistPage(
+    builder: (dialogContext) => ShowTagListPage(
       tags: tags,
-      onSelected: (tag) {
-        notifier.addWithToast(
-          tag: tag.rawName,
+      onOpenWiki: (tag) {
+        launchWikiPage(config.url, tag.rawName);
+      },
+      onAddToBlacklist: config.hasLoginDetails()
+          ? (tag) {
+              notifier.addWithToast(
+                tag: tag.rawName,
+              );
+            }
+          : null,
+      onAddToGlobalBlacklist: (tag) {
+        globalNotifier.addTagWithToast(
+          tag.rawName,
+        );
+      },
+      onAddToFavoriteTags: (tag) {
+        favoriteNotifier.add(
+          tag.rawName,
         );
       },
     ),
