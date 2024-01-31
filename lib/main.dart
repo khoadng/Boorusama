@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fvp/fvp.dart' as fvp;
 import 'package:hive/hive.dart';
 import 'package:stack_trace/stack_trace.dart' as stack_trace;
 import 'package:video_player_win/video_player_win.dart';
@@ -67,6 +68,26 @@ void main() async {
       appWindow.alignment = Alignment.center;
       appWindow.show();
     });
+  }
+
+  if (isLinux()) {
+    fvp.registerWith(
+      options: {
+        'platforms': [
+          'linux',
+        ]
+      },
+    );
+  }
+
+  if (isIOS()) {
+    fvp.registerWith(
+      options: {
+        'platforms': [
+          'ios',
+        ]
+      },
+    );
   }
 
   final appInfo = await getAppInfo();
@@ -153,9 +174,16 @@ void main() async {
   final bookmarkBox = await Hive.openBox<BookmarkHiveObject>("favorites");
   final bookmarkRepo = BookmarkHiveRepository(bookmarkBox);
 
+  final tempPath = await getTemporaryDirectory();
+
+  final miscDataBox = await Hive.openBox<String>(
+    'misc_data_v1',
+    path: tempPath.path,
+  );
+
   final danbooruCreatorBox = await Hive.openBox(
     '${Uri.encodeComponent(initialConfig?.url ?? 'danbooru')}_creators_v1',
-    path: (await getTemporaryDirectory()).path,
+    path: tempPath.path,
   );
 
   final packageInfo = await PackageInfo.fromPlatform();
@@ -163,8 +191,6 @@ void main() async {
       await TagInfoService.create().then((value) => value.getInfo());
   final deviceInfo =
       await DeviceInfoService(plugin: DeviceInfoPlugin()).getDeviceInfo();
-
-  final tempPath = await getTemporaryDirectory();
 
   if (isWindows()) WindowsVideoPlayer.registerWith();
 
@@ -223,6 +249,7 @@ void main() async {
               supportedLanguagesProvider.overrideWithValue(supportedLanguages),
               danbooruCreatorHiveBoxProvider
                   .overrideWithValue(danbooruCreatorBox),
+              miscDataBoxProvider.overrideWithValue(miscDataBox),
             ],
             child: App(
               appName: appInfo.appName,

@@ -103,6 +103,8 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
     'general',
   ];
 
+  var viewExpanded = false;
+
   @override
   void dispose() {
     super.dispose();
@@ -190,63 +192,73 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
             ),
           ],
         ),
-        body: Container(
-          margin: EdgeInsets.only(
-            bottom: MediaQuery.paddingOf(context).bottom,
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: Screen.of(context).size == ScreenSize.small
-              ? Column(
-                  children: [
-                    Expanded(
-                      child: _buildSplit(context, config),
-                    ),
-                    _buildMode(context, aiTagSupport ?? false),
-                  ],
-                )
-              : Row(
-                  children: [
-                    Expanded(
-                      child: _buildImage(),
-                    ),
-                    const VerticalDivider(
-                      width: 4,
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      width: min(
-                        MediaQuery.of(context).size.width * 0.4,
-                        400,
+        body: LayoutBuilder(
+          builder: (context, constraints) => Container(
+            margin: EdgeInsets.only(
+              bottom: MediaQuery.paddingOf(context).bottom,
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: Screen.of(context).size == ScreenSize.small
+                ? Column(
+                    children: [
+                      Expanded(
+                        child: _buildSplit(context, config),
                       ),
-                      child: Column(
-                        children: [
-                          Expanded(
-                            child: CustomScrollView(
-                              controller: scrollController,
-                              slivers: [
-                                SliverToBoxAdapter(
-                                  child: TagEditRatingSelectorSection(
-                                    rating: rating,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        rating = value;
-                                      });
-                                    },
+                      _buildMode(
+                        context,
+                        aiTagSupport ?? false,
+                        constraints.maxHeight,
+                      ),
+                    ],
+                  )
+                : Row(
+                    children: [
+                      Expanded(
+                        child: _buildImage(),
+                      ),
+                      const VerticalDivider(
+                        width: 4,
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        width: min(
+                          MediaQuery.of(context).size.width * 0.4,
+                          400,
+                        ),
+                        child: Column(
+                          children: [
+                            Expanded(
+                              child: CustomScrollView(
+                                controller: scrollController,
+                                slivers: [
+                                  SliverToBoxAdapter(
+                                    child: TagEditRatingSelectorSection(
+                                      rating: rating,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          rating = value;
+                                        });
+                                      },
+                                    ),
                                   ),
-                                ),
-                                const SliverSizedBox(height: 8),
-                                SliverToBoxAdapter(
-                                  child: _buildTagListSection(),
-                                ),
-                              ],
+                                  const SliverSizedBox(height: 8),
+                                  SliverToBoxAdapter(
+                                    child: _buildTagListSection(),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                          _buildMode(context, aiTagSupport ?? false)
-                        ],
+                            _buildMode(
+                              context,
+                              aiTagSupport ?? false,
+                              constraints.maxHeight,
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
+                    ],
+                  ),
+          ),
         ),
       ),
     );
@@ -341,99 +353,149 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
     );
   }
 
-  Widget _buildMode(BuildContext context, bool aiTagSupport) =>
-      switch (expandMode) {
-        TagEditExpandMode.favorite => Container(
-            height: 280,
-            color: context.colorScheme.secondaryContainer,
-            child: Column(
-              children: [
-                _buildAppSheetAppbar('Favorites'),
-                Expanded(
-                  child: TagEditFavoriteView(
-                    onRemoved: (tag) {
-                      _removeTag(tag);
-                    },
-                    onAdded: (tag) {
-                      _addTag(tag);
-                    },
-                    isSelected: (tag) => tags.contains(tag),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        TagEditExpandMode.related => Container(
-            height: 280,
-            color: context.colorScheme.secondaryContainer,
-            child: Column(
-              children: [
-                _buildAppSheetAppbar('Related'),
-                Expanded(
-                  child: TagEditWikiView(
-                    tag: selectedTag,
-                    onRemoved: (tag) {
-                      _removeTag(tag);
-                    },
-                    onAdded: (tag) {
-                      _addTag(tag);
-                    },
-                    isSelected: (tag) => tags.contains(tag),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        TagEditExpandMode.aiTag => Container(
-            height: 280,
-            color: context.colorScheme.secondaryContainer,
-            child: Column(
-              children: [
-                _buildAppSheetAppbar('Suggested'),
-                Expanded(
-                  child: TagEditAITagView(
-                    postId: widget.postId,
-                    onRemoved: (tag) {
-                      _removeTag(tag);
-                    },
-                    onAdded: (tag) {
-                      _addTag(tag);
-                    },
-                    isSelected: (tag) => tags.contains(tag),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        null => Container(
-            margin: const EdgeInsets.only(left: 8, bottom: 20, top: 8),
-            height: 42,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              children: [
-                FilledButton(
-                  style: FilledButton.styleFrom(
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(4)),
-                    ),
-                    backgroundColor: context.colorScheme.surfaceVariant,
-                  ),
-                  onPressed: () {
-                    goToQuickSearchPage(
-                      context,
-                      ref: ref,
-                      onSelected: (tag) {
-                        _addTag(tag.value);
-                      },
-                    );
+  Widget _buildMode(
+    BuildContext context,
+    bool aiTagSupport,
+    double maxHeight,
+  ) {
+    final height =
+        viewExpanded ? max(maxHeight - kToolbarHeight - 120.0, 280.0) : 280.0;
+
+    return switch (expandMode) {
+      TagEditExpandMode.favorite => Container(
+          height: height,
+          color: context.colorScheme.secondaryContainer,
+          child: Column(
+            children: [
+              _buildAppSheetAppbar('Favorites'),
+              Expanded(
+                child: TagEditFavoriteView(
+                  onRemoved: (tag) {
+                    _removeTag(tag);
                   },
-                  child: Text(
-                    'Search',
-                    style: TextStyle(
-                      color: context.colorScheme.onSurfaceVariant,
-                    ),
+                  onAdded: (tag) {
+                    _addTag(tag);
+                  },
+                  isSelected: (tag) => tags.contains(tag),
+                ),
+              ),
+            ],
+          ),
+        ),
+      TagEditExpandMode.related => Container(
+          height: height,
+          color: context.colorScheme.secondaryContainer,
+          child: Column(
+            children: [
+              _buildAppSheetAppbar('Related'),
+              Expanded(
+                child: TagEditWikiView(
+                  tag: selectedTag,
+                  onRemoved: (tag) {
+                    _removeTag(tag);
+                  },
+                  onAdded: (tag) {
+                    _addTag(tag);
+                  },
+                  isSelected: (tag) => tags.contains(tag),
+                ),
+              ),
+            ],
+          ),
+        ),
+      TagEditExpandMode.aiTag => Container(
+          height: height,
+          color: context.colorScheme.secondaryContainer,
+          child: Column(
+            children: [
+              _buildAppSheetAppbar('Suggested'),
+              Expanded(
+                child: TagEditAITagView(
+                  postId: widget.postId,
+                  onRemoved: (tag) {
+                    _removeTag(tag);
+                  },
+                  onAdded: (tag) {
+                    _addTag(tag);
+                  },
+                  isSelected: (tag) => tags.contains(tag),
+                ),
+              ),
+            ],
+          ),
+        ),
+      null => Container(
+          margin: const EdgeInsets.only(left: 8, bottom: 20, top: 8),
+          height: 42,
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            children: [
+              FilledButton(
+                style: FilledButton.styleFrom(
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(4)),
+                  ),
+                  backgroundColor: context.colorScheme.surfaceVariant,
+                ),
+                onPressed: () {
+                  goToQuickSearchPage(
+                    context,
+                    ref: ref,
+                    onSelected: (tag) {
+                      _addTag(tag.value);
+                    },
+                  );
+                },
+                child: Text(
+                  'Search',
+                  style: TextStyle(
+                    color: context.colorScheme.onSurfaceVariant,
                   ),
                 ),
+              ),
+              const SizedBox(width: 4),
+              FilledButton(
+                style: FilledButton.styleFrom(
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(4)),
+                  ),
+                  backgroundColor: context.colorScheme.surfaceVariant,
+                ),
+                onPressed: () {
+                  setState(() {
+                    expandMode = TagEditExpandMode.favorite;
+                    _setMaxSplit();
+                  });
+                },
+                child: Text(
+                  'Favorites',
+                  style: TextStyle(
+                    color: context.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 4),
+              FilledButton(
+                style: FilledButton.styleFrom(
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(4)),
+                  ),
+                  backgroundColor: context.colorScheme.surfaceVariant,
+                ),
+                onPressed: () {
+                  setState(() {
+                    expandMode = TagEditExpandMode.related;
+                    _setMaxSplit();
+                  });
+                },
+                child: Text(
+                  'Related',
+                  style: TextStyle(
+                    color: context.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ),
+              if (aiTagSupport) ...[
                 const SizedBox(width: 4),
                 FilledButton(
                   style: FilledButton.styleFrom(
@@ -444,65 +506,23 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                   ),
                   onPressed: () {
                     setState(() {
-                      expandMode = TagEditExpandMode.favorite;
+                      expandMode = TagEditExpandMode.aiTag;
                       _setMaxSplit();
                     });
                   },
                   child: Text(
-                    'Favorites',
+                    'Suggested',
                     style: TextStyle(
                       color: context.colorScheme.onSurfaceVariant,
                     ),
                   ),
                 ),
-                const SizedBox(width: 4),
-                FilledButton(
-                  style: FilledButton.styleFrom(
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(4)),
-                    ),
-                    backgroundColor: context.colorScheme.surfaceVariant,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      expandMode = TagEditExpandMode.related;
-                      _setMaxSplit();
-                    });
-                  },
-                  child: Text(
-                    'Related',
-                    style: TextStyle(
-                      color: context.colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                ),
-                if (aiTagSupport) ...[
-                  const SizedBox(width: 4),
-                  FilledButton(
-                    style: FilledButton.styleFrom(
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(4)),
-                      ),
-                      backgroundColor: context.colorScheme.surfaceVariant,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        expandMode = TagEditExpandMode.aiTag;
-                        _setMaxSplit();
-                      });
-                    },
-                    child: Text(
-                      'Suggested',
-                      style: TextStyle(
-                        color: context.colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                  ),
-                ],
               ],
-            ),
+            ],
           ),
-      };
+        ),
+    };
+  }
 
   Widget _buildAppSheetAppbar(String title) {
     return Row(
@@ -515,6 +535,33 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
           ),
         ),
         const Spacer(),
+        Padding(
+          padding: const EdgeInsets.only(right: 4, top: 8, bottom: 4),
+          child: Material(
+            shape: const CircleBorder(),
+            color: context.colorScheme.surfaceVariant,
+            child: Container(
+              padding: const EdgeInsets.all(4),
+              child: InkWell(
+                radius: 32,
+                customBorder: const CircleBorder(),
+                onTap: () {
+                  setState(() {
+                    viewExpanded = !viewExpanded;
+                    if (!viewExpanded) {
+                      _setMaxSplit();
+                    } else {
+                      _setDefaultSplit();
+                    }
+                  });
+                },
+                child: !viewExpanded
+                    ? const Icon(Symbols.arrow_drop_up)
+                    : const Icon(Symbols.arrow_drop_down),
+              ),
+            ),
+          ),
+        ),
         Padding(
           padding: const EdgeInsets.only(right: 16, top: 8, bottom: 4),
           child: Material(
@@ -754,17 +801,10 @@ class TagEditTagListSection extends ConsumerWidget {
                     ),
               if (!filterOn) const Spacer(),
               if (!filterOn)
-                PopupMenuButton(
-                  icon: const Icon(
-                    Symbols.more_vert,
-                    weight: 400,
-                  ),
-                  itemBuilder: (_) => [
-                    const PopupMenuItem(
-                      value: 'fetch_category',
-                      child: Text('Fetch tag category'),
-                    ),
-                  ],
+                BooruPopupMenuButton(
+                  itemBuilder: const {
+                    'fetch_category': Text('Fetch tag category'),
+                  },
                   onSelected: (value) async {
                     switch (value) {
                       case 'fetch_category':

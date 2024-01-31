@@ -9,6 +9,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:boorusama/core/feats/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/feats/boorus/providers.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/widgets/widgets.dart';
 import 'providers.dart';
 
 class BookmarkAppBar extends ConsumerWidget {
@@ -36,11 +37,7 @@ class BookmarkAppBar extends ConsumerWidget {
           : null,
       actions: [
         if (!edit)
-          PopupMenuButton(
-            icon: const Icon(
-              Symbols.more_vert,
-              weight: 400,
-            ),
+          BooruPopupMenuButton(
             onSelected: (value) {
               switch (value) {
                 case 'edit':
@@ -54,20 +51,11 @@ class BookmarkAppBar extends ConsumerWidget {
                   break;
               }
             },
-            itemBuilder: (context) {
-              return [
-                if (hasBookmarks)
-                  const PopupMenuItem(
-                    value: 'edit',
-                    child: Text('Edit'),
-                  ),
-                if (hasBookmarks)
-                  PopupMenuItem(
-                    value: 'download_all',
-                    child: Text(
-                        'Download ${ref.watch(filteredBookmarksProvider).length} bookmarks'),
-                  ),
-              ];
+            itemBuilder: {
+              if (hasBookmarks) 'edit': const Text('Edit'),
+              if (hasBookmarks)
+                'download_all': Text(
+                    'Download ${ref.watch(filteredBookmarksProvider).length} bookmarks'),
             },
           ),
       ],

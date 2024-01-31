@@ -59,19 +59,32 @@ class PostMedia extends ConsumerWidget {
               )
             : extension(post.videoUrl) == '.webm'
                 ? !isDesktopPlatform()
-                    ? EmbeddedWebViewWebm(
-                        url: post.videoUrl,
-                        onCurrentPositionChanged: onCurrentVideoPositionChanged,
-                        onVisibilityChanged: onVideoVisibilityChanged,
-                        backgroundColor:
-                            context.colors.videoPlayerBackgroundColor,
-                        onWebmVideoPlayerCreated: onWebmVideoPlayerCreated,
-                        autoPlay: autoPlay,
-                        sound: ref.isGlobalVideoSoundOn,
-                        userAgent: ref
-                            .watch(userAgentGeneratorProvider(ref.watchConfig))
-                            .generate(),
-                      )
+                    ? isAndroid()
+                        ? EmbeddedWebViewWebm(
+                            url: post.videoUrl,
+                            onCurrentPositionChanged:
+                                onCurrentVideoPositionChanged,
+                            onVisibilityChanged: onVideoVisibilityChanged,
+                            backgroundColor:
+                                context.colors.videoPlayerBackgroundColor,
+                            onWebmVideoPlayerCreated: onWebmVideoPlayerCreated,
+                            autoPlay: autoPlay,
+                            sound: ref.isGlobalVideoSoundOn,
+                            userAgent: ref
+                                .watch(
+                                    userAgentGeneratorProvider(ref.watchConfig))
+                                .generate(),
+                          )
+                        : BooruVideo(
+                            url: post.videoUrl,
+                            aspectRatio: post.aspectRatio,
+                            onCurrentPositionChanged:
+                                onCurrentVideoPositionChanged,
+                            onVisibilityChanged: onVideoVisibilityChanged,
+                            autoPlay: autoPlay,
+                            onVideoPlayerCreated: onVideoPlayerCreated,
+                            sound: ref.isGlobalVideoSoundOn,
+                          )
                     : Stack(
                         children: [
                           Positioned.fill(

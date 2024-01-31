@@ -1,3 +1,10 @@
+# 3.10.0
+- Introduce swipe gesture for paginated mode.
+- Enhance user experience for favorite tags with improved UI and additional options.
+- Integrate Weblate for translation.
+- Address issue where sound won't play on WebM files.
+- Overall UI/UX improvements.
+
 # 3.9.2
 - Fix an issue where webm files cannot be played.
 - Fix tag highlighting not working on some sites.

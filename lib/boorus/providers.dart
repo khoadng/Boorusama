@@ -39,7 +39,6 @@ import 'package:boorusama/foundation/http/user_agent_generator_impl.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/package_info.dart';
-import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/functional.dart';
 import 'philomena/providers.dart';
 import 'shimmie2/providers.dart';
@@ -146,10 +145,12 @@ final httpCacheDirProvider = Provider<Directory>(
   (ref) => throw UnimplementedError(),
 );
 
-final miscDataBoxProvider = FutureProvider<Box<String>>((ref) async {
-  final path = await getTemporaryDirectory();
-  return Hive.openBox<String>('misc_data_v1', path: path.path);
+final miscDataBoxProvider = Provider<Box<String>>((ref) {
+  throw UnimplementedError();
 });
+
+final miscDataProvider = NotifierProvider.autoDispose
+    .family<MiscDataNotifier, String, String>(MiscDataNotifier.new);
 
 final userAgentGeneratorProvider =
     Provider.family<UserAgentGenerator, BooruConfig>(
@@ -257,3 +258,18 @@ final booruSiteValidatorProvider =
     BooruType.unknown => Future.value(false),
   };
 });
+
+class MiscDataNotifier extends AutoDisposeFamilyNotifier<String, String> {
+  @override
+  String build(String arg) {
+    final miscDataBox = ref.watch(miscDataBoxProvider);
+    return miscDataBox.get(arg) ?? '';
+  }
+
+  void put(String value) async {
+    final miscDataBox = ref.watch(miscDataBoxProvider);
+    await miscDataBox.put(arg, value);
+
+    state = value;
+  }
+}

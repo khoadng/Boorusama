@@ -1,13 +1,10 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-// Package imports:
-import 'package:material_symbols_icons/symbols.dart';
-
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/widgets/widgets.dart';
 import 'comment_item.dart';
 
 class CommentList extends StatelessWidget {
@@ -58,16 +55,7 @@ class CommentList extends StatelessWidget {
                   comment: comment,
                   onReply: () => onReply(comment),
                   moreBuilder: (context) => authenticated
-                      ? PopupMenuButton(
-                          icon: const Icon(
-                            Symbols.more_vert,
-                            weight: 400,
-                          ),
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(minWidth: 150),
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(4)),
-                          ),
+                      ? BooruPopupMenuButton(
                           onSelected: (value) {
                             if (value == 'edit') {
                               onEdit(comment);
@@ -77,44 +65,13 @@ class CommentList extends StatelessWidget {
                               onDelete(comment);
                             }
                           },
-                          itemBuilder: (context) => [
-                            if (comment.isSelf)
-                              PopupMenuItem(
-                                value: 'edit',
-                                padding: EdgeInsets.zero,
-                                child: ListTile(
-                                  visualDensity: const ShrinkVisualDensity(),
-                                  dense: true,
-                                  leading: const Icon(
-                                    Symbols.edit,
-                                    fill: 1,
-                                  ),
-                                  title: const Text('comment.list.edit').tr(),
-                                ),
-                              ),
-                            PopupMenuItem(
-                              value: 'reply',
-                              padding: EdgeInsets.zero,
-                              child: ListTile(
-                                visualDensity: const ShrinkVisualDensity(),
-                                dense: true,
-                                leading: const Icon(Symbols.reply),
-                                title: const Text('comment.list.reply').tr(),
-                              ),
-                            ),
-                            if (comment.isSelf)
-                              PopupMenuItem(
-                                value: 'delete',
-                                padding: EdgeInsets.zero,
-                                child: ListTile(
-                                  visualDensity: const ShrinkVisualDensity(),
-                                  dense: true,
-                                  leading: const Icon(Symbols.close),
-                                  title: const Text('comment.list.delete').tr(),
-                                ),
-                              ),
-                          ],
-                        )
+                          itemBuilder: {
+                              'edit': const Text('comment.list.edit').tr(),
+                              'reply': const Text('comment.list.reply').tr(),
+                              if (comment.isSelf)
+                                'delete':
+                                    const Text('comment.list.delete').tr(),
+                            })
                       : const SizedBox.shrink(),
                 ),
               );

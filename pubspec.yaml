@@ -2,7 +2,7 @@ name: boorusama
 description: A mobile client for Danbooru.
 
 publish_to: "none"
-version: 3.9.2+80
+version: 3.10.0+81
 
 environment:
   sdk: ">=3.2.0 <4.0.0"
@@ -70,6 +70,7 @@ dependencies:
   flutter_tags_x: ^1.1.0
   font_awesome_flutter: ^10.6.0
   fpdart: ^1.1.0
+  fvp: ^0.13.1
   gal: ^2.2.0
   go_router: ^12.1.1
   hive: ^2.2.3
@@ -125,6 +126,7 @@ dependencies:
   video_player_macos: ^2.0.1
   video_player_win: ^2.3.4
   webview_flutter: ^4.4.2
+  webview_flutter_android: ^3.14.0
   xml: ^6.3.0
   yaml: ^3.1.2
 

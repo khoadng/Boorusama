@@ -5,9 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
+
+const kTagEditFavoriteViewSelectedLabelKey =
+    'tag_edit_favorite_view_selected_label';
 
 class TagEditFavoriteView extends ConsumerStatefulWidget {
   const TagEditFavoriteView({
@@ -29,46 +34,75 @@ class TagEditFavoriteView extends ConsumerStatefulWidget {
 class _TagEditFavoriteViewState extends ConsumerState<TagEditFavoriteView> {
   @override
   Widget build(BuildContext context) {
-    final tags = ref.watch(favoriteTagsProvider);
+    final selectedLabel =
+        ref.watch(miscDataProvider(kTagEditFavoriteViewSelectedLabelKey));
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: tags.isNotEmpty
-          ? Wrap(
-              spacing: 4,
-              children: tags.map((tag) {
-                final selected = widget.isSelected(tag.name);
-
-                return FilterChip(
-                  side: selected
-                      ? BorderSide(
-                          color: context.theme.hintColor,
-                          width: 0.5,
-                        )
-                      : null,
-                  selected: selected,
-                  showCheckmark: false,
-                  visualDensity: VisualDensity.compact,
-                  selectedColor: context.colorScheme.primary,
-                  backgroundColor: context.colorScheme.background,
-                  onSelected: (value) => value
-                      ? widget.onAdded(tag.name)
-                      : widget.onRemoved(tag.name),
-                  label: Text(
-                    tag.name.replaceUnderscoreWithSpace(),
-                  ),
-                );
-              }).toList(),
-            )
-          : const Center(
-              child: Text(
-                'No favorites',
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 16,
-                ),
+    return SingleChildScrollView(
+      child: FavoriteTagsFilterScope(
+        initialValue: selectedLabel,
+        builder: (_, tags, labels, selected) => Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 8,
+                vertical: 8,
+              ),
+              child: FavoriteTagLabelSelectorField(
+                selected: selected,
+                labels: labels.toList(),
+                onSelect: (value) {
+                  ref
+                      .read(
+                        miscDataProvider(kTagEditFavoriteViewSelectedLabelKey)
+                            .notifier,
+                      )
+                      .put(value);
+                },
               ),
             ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: tags.isNotEmpty
+                  ? Wrap(
+                      spacing: 4,
+                      children: tags.map((tag) {
+                        final selected = widget.isSelected(tag.name);
+
+                        return FilterChip(
+                          side: selected
+                              ? BorderSide(
+                                  color: context.theme.hintColor,
+                                  width: 0.5,
+                                )
+                              : null,
+                          selected: selected,
+                          showCheckmark: false,
+                          visualDensity: VisualDensity.compact,
+                          selectedColor: context.colorScheme.primary,
+                          backgroundColor: context.colorScheme.background,
+                          onSelected: (value) => value
+                              ? widget.onAdded(tag.name)
+                              : widget.onRemoved(tag.name),
+                          label: Text(
+                            tag.name.replaceUnderscoreWithSpace(),
+                          ),
+                        );
+                      }).toList(),
+                    )
+                  : const Center(
+                      child: Text(
+                        'No favorites',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

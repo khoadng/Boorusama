@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/boorus/boorus.dart';
@@ -13,6 +12,7 @@ import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class GeneralMoreActionButton extends ConsumerWidget {
   const GeneralMoreActionButton({
@@ -34,12 +34,7 @@ class GeneralMoreActionButton extends ConsumerWidget {
         child: Material(
           color: Colors.black.withOpacity(0.5),
           shape: const CircleBorder(),
-          child: PopupMenuButton(
-            icon: const Icon(
-              Symbols.more_vert,
-              weight: 400,
-            ),
-            padding: EdgeInsets.zero,
+          child: BooruPopupMenuButton(
             onSelected: (value) {
               switch (value) {
                 case 'download':
@@ -55,9 +50,12 @@ class GeneralMoreActionButton extends ConsumerWidget {
                     post.getUriLink(booru.url),
                   );
                   break;
-                case 'add_to_global_blacklist':
-                  goToAddToGlobalBlacklistPage(
-                      ref, context, post.extractTags());
+                case 'show_tag_list':
+                  goToShowTaglistPage(
+                    ref,
+                    context,
+                    post.extractTags(),
+                  );
                   break;
                 case 'view_original':
                   goToOriginalImagePage(context, post);
@@ -66,26 +64,16 @@ class GeneralMoreActionButton extends ConsumerWidget {
                 default:
               }
             },
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                value: 'download',
-                child: const Text('download.download').tr(),
-              ),
+            itemBuilder: {
+              'download': const Text('download.download').tr(),
               if (!booru.hasStrictSFW)
-                PopupMenuItem(
-                  value: 'view_in_browser',
-                  child: const Text('post.detail.view_in_browser').tr(),
-                ),
-              const PopupMenuItem(
-                value: 'add_to_global_blacklist',
-                child: Text('Add to global blacklist'),
-              ),
+                'view_in_browser':
+                    const Text('post.detail.view_in_browser').tr(),
+              'show_tag_list': const Text('View tags'),
               if (post.hasFullView)
-                PopupMenuItem(
-                  value: 'view_original',
-                  child: const Text('post.image_fullview.view_original').tr(),
-                ),
-            ],
+                'view_original':
+                    const Text('post.image_fullview.view_original').tr(),
+            },
           ),
         ),
       ),

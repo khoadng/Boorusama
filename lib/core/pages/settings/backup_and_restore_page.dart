@@ -113,11 +113,7 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
               const SizedBox(height: 8),
             ]
           : null,
-      trailing: PopupMenuButton(
-        icon: const Icon(
-          Symbols.more_vert,
-          weight: 400,
-        ),
+      trailing: BooruPopupMenuButton(
         onSelected: (value) {
           switch (value) {
             case 'export':
@@ -142,25 +138,11 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
             default:
           }
         },
-        itemBuilder: (context) {
-          return [
-            const PopupMenuItem(
-              value: 'export',
-              child: Text('Export to file'),
-            ),
-            const PopupMenuItem(
-              value: 'import',
-              child: Text('Import from file'),
-            ),
-            const PopupMenuItem(
-              value: 'export_clipboard',
-              child: Text('Export to clipboard'),
-            ),
-            const PopupMenuItem(
-              value: 'import_clipboard',
-              child: Text('Import from clipboard'),
-            ),
-          ];
+        itemBuilder: const {
+          'export': Text('Export'),
+          'import': Text('Import'),
+          'export_clipboard': Text('Export to clipboard'),
+          'import_clipboard': Text('Import from clipboard'),
         },
       ),
     );
@@ -189,14 +171,7 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
       leadingIcon: Symbols.favorite,
       title: 'Favorite tags',
       subtitle: '${tags.length} tags',
-      trailing: PopupMenuButton(
-        icon: const Icon(
-          Symbols.more_vert,
-          weight: 400,
-        ),
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(4)),
-        ),
+      trailing: BooruPopupMenuButton(
         onSelected: (value) {
           if (value == 'import') {
             goToFavoriteTagImportPage(context);
@@ -213,19 +188,20 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
                     ));
               },
             );
+          } else if (value == 'export_with_labels') {
+            _pickFavoriteTagsFolder(ref);
+          } else if (value == 'import_with_labels') {
+            _pickFavoriteTagsFile(ref);
           }
         },
-        itemBuilder: (context) => [
-          PopupMenuItem(
-            value: 'import',
-            child: const Text('favorite_tags.import').tr(),
-          ),
+        itemBuilder: {
           if (tags.isNotEmpty)
-            PopupMenuItem(
-              value: 'export',
-              child: const Text('favorite_tags.export').tr(),
-            ),
-        ],
+            'export': const Text('favorite_tags.export').tr(),
+          'import': const Text('favorite_tags.import').tr(),
+          if (tags.isNotEmpty)
+            'export_with_labels': const Text('Export with labels'),
+          'import_with_labels': const Text('Import with labels'),
+        },
       ),
     );
   }
@@ -238,11 +214,7 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
       leadingIcon: Symbols.bookmark,
       title: 'Bookmarks',
       subtitle: hasBookmarks ? '${bookmarks.length} bookmarks' : 'No bookmarks',
-      trailing: PopupMenuButton(
-        icon: const Icon(
-          Symbols.more_vert,
-          weight: 400,
-        ),
+      trailing: BooruPopupMenuButton(
         onSelected: (value) {
           switch (value) {
             case 'export':
@@ -253,18 +225,9 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
             default:
           }
         },
-        itemBuilder: (context) {
-          return [
-            if (hasBookmarks)
-              const PopupMenuItem(
-                value: 'export',
-                child: Text('Export'),
-              ),
-            const PopupMenuItem(
-              value: 'import',
-              child: Text('Import'),
-            ),
-          ];
+        itemBuilder: {
+          if (hasBookmarks) 'export': const Text('Export'),
+          'import': const Text('Import'),
         },
       ),
     );
@@ -274,11 +237,7 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
     return BackupRestoreTile(
       leadingIcon: Symbols.settings,
       title: 'Settings',
-      trailing: PopupMenuButton(
-        icon: const Icon(
-          Symbols.more_vert,
-          weight: 400,
-        ),
+      trailing: BooruPopupMenuButton(
         onSelected: (value) {
           switch (value) {
             case 'export':
@@ -290,17 +249,9 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
             default:
           }
         },
-        itemBuilder: (context) {
-          return [
-            const PopupMenuItem(
-              value: 'export',
-              child: Text('Export'),
-            ),
-            const PopupMenuItem(
-              value: 'import',
-              child: Text('Import'),
-            ),
-          ];
+        itemBuilder: const {
+          'export': Text('Export'),
+          'import': Text('Import'),
         },
       ),
     );
@@ -391,6 +342,28 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
       // User canceled the picker
     }
   }
+
+  void _pickFavoriteTagsFolder(WidgetRef ref) async {
+    final path = await FilePicker.platform.getDirectoryPath();
+
+    if (path != null) {
+      ref.read(favoriteTagsProvider.notifier).exportWithLabels(
+            path: path,
+          );
+    }
+  }
+
+  void _pickFavoriteTagsFile(WidgetRef ref) async {
+    final path = await _pickFile();
+
+    if (path != null) {
+      ref.read(favoriteTagsProvider.notifier).importWithLabels(
+            path: path,
+          );
+    } else {
+      // User canceled the picker
+    }
+  }
 }
 
 class BackupRestoreTile extends StatelessWidget {
@@ -426,6 +399,7 @@ class BackupRestoreTile extends StatelessWidget {
             child: Icon(
               leadingIcon,
               color: context.colorScheme.onSurface,
+              fill: 1,
             ),
           ),
           const SizedBox(width: 12),

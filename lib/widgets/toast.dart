@@ -7,12 +7,16 @@ import 'package:oktoast/oktoast.dart';
 void showSuccessToast(
   String message, {
   Duration? duration,
+  Color? backgroundColor,
+  TextStyle? textStyle,
 }) =>
     showToast(
       message,
       position: ToastPosition.bottom,
       margin: const EdgeInsets.all(100),
       textPadding: const EdgeInsets.all(8),
+      backgroundColor: backgroundColor,
+      textStyle: textStyle,
       duration: duration,
     );
 

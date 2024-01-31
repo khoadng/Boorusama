@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/search/search.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/pages/search/favorite_tags/favorite_tags_section.dart';
@@ -68,6 +69,8 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
   @override
   Widget build(BuildContext context) {
     final favoritesNotifier = ref.watch(favoriteTagsProvider.notifier);
+    final selectedLabel =
+        ref.watch(miscDataProvider(kSearchSelectedFavoriteTagLabelKey));
 
     return Container(
       color: widget.backgroundColor,
@@ -90,15 +93,26 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
                   const Divider(thickness: 1),
                 ],
                 FavoriteTagsSection(
+                  selectedLabel: selectedLabel,
                   onAddTagRequest: () {
                     goToQuickSearchPage(
                       context,
                       ref: ref,
                       onSubmitted: (context, text) {
                         context.navigator.pop();
-                        favoritesNotifier.add(text);
+                        favoritesNotifier.add(
+                          text,
+                          labels: [
+                            selectedLabel,
+                          ],
+                        );
                       },
-                      onSelected: (tag) => favoritesNotifier.add(tag.value),
+                      onSelected: (tag) => favoritesNotifier.add(
+                        tag.value,
+                        labels: [
+                          selectedLabel,
+                        ],
+                      ),
                     );
                   },
                   onTagTap: (value) {

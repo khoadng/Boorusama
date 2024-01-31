@@ -11,6 +11,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:share_handler/share_handler.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/pages/blacklists/blacklisted_tag_page.dart';
@@ -124,6 +125,13 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
               data: (user) => user?.id,
               orElse: () => null,
             );
+
+    ref.listen(
+      trendingTagsProvider(ref.watchConfig),
+      (previous, next) {
+        // Only used to prevent the provider from being disposed
+      },
+    );
 
     return BooruScope(
       config: widget.config,

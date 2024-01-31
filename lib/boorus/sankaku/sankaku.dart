@@ -107,16 +107,15 @@ class SankakuBuilder
             showSourceTile: false,
             sliverArtistPostsBuilder: (context, post) =>
                 SankakuRecommendArtists(post: post),
-            tagListBuilder: (context, post) => PostTagList(
+            tagListBuilder: (context, post) => TagsTile(
+              post: post,
+              initialExpanded: true,
               tags: createTagGroupItems([
                 ...post.artistDetailsTags,
                 ...post.characterDetailsTags,
                 ...post.copyrightDetailsTags,
               ]),
-              itemBuilder: (context, tag) => PostTagListChip(
-                onTap: () => goToSearchPage(context, tag: tag.rawName),
-                tag: tag,
-              ),
+              onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
             ),
             onExit: (page) => scrollController?.scrollToIndex(page),
             onTagTap: (tag) => goToSearchPage(context, tag: tag),

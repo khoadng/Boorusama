@@ -75,25 +75,35 @@ class _PageSelectorState extends State<PageSelector> {
           current: widget.currentPage,
           total: widget.totalResults,
           itemPerPage: widget.itemPerPage,
-        ).map((page) => FilledButton(
-              style: FilledButton.styleFrom(
-                minimumSize: const Size(36, 36),
-                shape: const CircleBorder(),
-                shadowColor: Colors.transparent,
-                backgroundColor: page == widget.currentPage
-                    ? Theme.of(context).colorScheme.primary
-                    : Colors.transparent,
+        ).map(
+          (page) => InkWell(
+            borderRadius: BorderRadius.circular(8),
+            onTap: widget.currentPage != page
+                ? () => widget.onPageSelect(page)
+                : null,
+            child: Container(
+              constraints: const BoxConstraints(
+                minWidth: 50,
+                maxWidth: 80,
               ),
-              onPressed: () => widget.onPageSelect(page),
-              child: Text('$page',
-                  style: page == widget.currentPage
-                      ? const TextStyle(
-                          fontWeight: FontWeight.bold,
-                        )
-                      : TextStyle(
-                          color: Theme.of(context).hintColor,
-                        )),
-            )),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 8,
+              ),
+              child: Text(
+                '$page',
+                textAlign: TextAlign.center,
+                style: page == widget.currentPage
+                    ? const TextStyle(
+                        fontWeight: FontWeight.bold,
+                      )
+                    : TextStyle(
+                        color: Theme.of(context).hintColor,
+                      ),
+              ),
+            ),
+          ),
+        ),
         if (!pageInputMode)
           IconButton(
             onPressed: () {

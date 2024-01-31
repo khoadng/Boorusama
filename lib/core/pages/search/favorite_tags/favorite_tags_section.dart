@@ -9,6 +9,7 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
+import 'package:boorusama/core/widgets/favorite_tag_label_selector_field.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
@@ -16,25 +17,38 @@ import '../common/option_tags_arena.dart';
 import 'add_tag_button.dart';
 import 'import_tag_button.dart';
 
+const kSearchSelectedFavoriteTagLabelKey = 'search_selected_favorite_tag';
+
 class FavoriteTagsSection extends ConsumerWidget {
   const FavoriteTagsSection({
     super.key,
+    required this.selectedLabel,
     required this.onTagTap,
     required this.onAddTagRequest,
   });
 
+  final String selectedLabel;
   final ValueChanged<String>? onTagTap;
   final VoidCallback onAddTagRequest;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tags = ref.watch(favoriteTagsProvider);
-
-    return OptionTagsArena(
-      editable: tags.isNotEmpty,
-      title: 'favorite_tags.favorites'.tr(),
-      childrenBuilder: (editMode) =>
-          _buildFavoriteTags(context, ref, tags, editMode),
+    return FavoriteTagsFilterScope(
+      initialValue: selectedLabel,
+      builder: (_, tags, labels, selected) => OptionTagsArena(
+        editable: tags.isNotEmpty,
+        title: 'favorite_tags.favorites'.tr(),
+        titleTrailing: (editMode) => FavoriteTagLabelSelectorField(
+          selected: selected,
+          labels: labels.toList(),
+          onSelect: (value) => ref
+              .read(
+                  miscDataProvider(kSearchSelectedFavoriteTagLabelKey).notifier)
+              .put(value),
+        ),
+        childrenBuilder: (editMode) =>
+            _buildFavoriteTags(context, ref, tags, editMode),
+      ),
     );
   }
 
@@ -73,7 +87,7 @@ class FavoriteTagsSection extends ConsumerWidget {
             color: colors?.foregroundColor,
           ),
           onDeleted: editMode
-              ? () => ref.read(favoriteTagsProvider.notifier).remove(index)
+              ? () => ref.read(favoriteTagsProvider.notifier).remove(tag.name)
               : null,
         );
       }),

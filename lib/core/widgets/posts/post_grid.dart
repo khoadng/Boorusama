@@ -15,8 +15,11 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
+import 'package:boorusama/core/feats/utils.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/posts/post_grid_config_region.dart';
+import 'package:boorusama/foundation/networking/network_provider.dart';
+import 'package:boorusama/foundation/networking/network_state.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
@@ -304,64 +307,78 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                         // https://github.com/adrianflutur/flutter_improved_scrolling/issues/5
                         enableKeyboardScrolling: false,
                         enableMMBScrolling: true,
-                        child: CustomScrollView(
-                          controller: _autoScrollController,
-                          slivers: [
-                            if (!multiSelect &&
-                                widget.sliverHeaderBuilder != null)
-                              ...widget.sliverHeaderBuilder!(context),
-                            if (settings.showPostListConfigHeader &&
-                                !refreshing)
-                              if (isMobilePlatform())
-                                SliverPinnedHeader(
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 16),
-                                    child: header,
+                        child: ConditionalParentWidget(
+                          condition:
+                              pageMode == PageMode.paginated && !refreshing,
+                          conditionalBuilder: (child) =>
+                              _buildPaginatedSwipe(context, child),
+                          child: CustomScrollView(
+                            controller: _autoScrollController,
+                            slivers: [
+                              if (!multiSelect &&
+                                  widget.sliverHeaderBuilder != null)
+                                ...widget.sliverHeaderBuilder!(context),
+                              if (settings.showPostListConfigHeader &&
+                                  !refreshing)
+                                if (isMobilePlatform())
+                                  SliverPinnedHeader(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 16),
+                                      child: header,
+                                    ),
                                   ),
+                              if (!refreshing)
+                                const SliverToBoxAdapter(
+                                  child:
+                                      HighresPreviewOnMobileDataWarningBanner(),
                                 ),
-                            const SliverSizedBox(
-                              height: 4,
-                            ),
-                            widget.bodyBuilder(
-                              context,
-                              itemBuilder,
-                              refreshing,
-                              items,
-                            ),
-                            if (pageMode == PageMode.infinite && loading)
-                              SliverPadding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 20),
-                                sliver: SliverToBoxAdapter(
-                                  child: Center(
-                                    child: SpinKitPulse(
-                                      color: context
-                                          .theme.colorScheme.onBackground,
+                              const SliverSizedBox(
+                                height: 4,
+                              ),
+                              widget.bodyBuilder(
+                                context,
+                                itemBuilder,
+                                refreshing,
+                                items,
+                              ),
+                              if (pageMode == PageMode.infinite && loading)
+                                SliverPadding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 20),
+                                  sliver: SliverToBoxAdapter(
+                                    child: Center(
+                                      child: SpinKitPulse(
+                                        color: context
+                                            .theme.colorScheme.onBackground,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              else
+                                const SliverSizedBox.shrink(),
+                              if (!refreshing && pageMode == PageMode.paginated)
+                                SliverToBoxAdapter(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                      top: 40,
+                                      bottom: 20,
+                                    ),
+                                    child: PageSelector(
+                                      currentPage: page,
+                                      onPrevious: controller.hasPreviousPage()
+                                          ? () => controller.goToPreviousPage()
+                                          : null,
+                                      onNext: controller.hasNextPage()
+                                          ? () => controller.goToNextPage()
+                                          : null,
+                                      onPageSelect: (page) =>
+                                          controller.jumpToPage(page),
                                     ),
                                   ),
                                 ),
-                              )
-                            else
-                              const SliverSizedBox.shrink(),
-                            if (pageMode == PageMode.paginated)
-                              SliverToBoxAdapter(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(top: 40),
-                                  child: PageSelector(
-                                    currentPage: page,
-                                    onPrevious: controller.hasPreviousPage()
-                                        ? () => controller.goToPreviousPage()
-                                        : null,
-                                    onNext: controller.hasNextPage()
-                                        ? () => controller.goToNextPage()
-                                        : null,
-                                    onPageSelect: (page) =>
-                                        controller.jumpToPage(page),
-                                  ),
-                                ),
-                              ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -371,6 +388,54 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
             ),
           ),
         ));
+  }
+
+  Widget _buildPaginatedSwipe(BuildContext context, Widget child) {
+    return SwipeTo(
+      swipeRightEnabled: controller.hasPreviousPage(),
+      swipeLeftEnabled: controller.hasNextPage(),
+      rightSwipeWidget: Chip(
+        visualDensity: VisualDensity.compact,
+        side: BorderSide(
+          width: 1,
+          color: context.theme.hintColor,
+        ),
+        backgroundColor: context.colorScheme.surface,
+        label: Row(
+          children: [
+            Icon(
+              Symbols.arrow_back,
+              color: context.theme.colorScheme.onPrimary,
+              size: 16,
+            ),
+            const SizedBox(width: 4),
+            Text('Page ${page - 1}'),
+          ],
+        ),
+      ),
+      leftSwipeWidget: Chip(
+        visualDensity: VisualDensity.compact,
+        side: BorderSide(
+          width: 1,
+          color: context.theme.hintColor,
+        ),
+        backgroundColor: context.colorScheme.surface,
+        label: Row(
+          children: [
+            Text('Page ${page + 1}'),
+            const SizedBox(width: 4),
+            Icon(
+              Symbols.arrow_forward,
+              color: context.theme.colorScheme.onPrimary,
+              size: 16,
+            ),
+          ],
+        ),
+      ),
+      onLeftSwipe: (_) => controller.goToNextPage(),
+      onRightSwipe: (_) => controller.goToPreviousPage(),
+      child: child,
+    );
   }
 
   Widget _buildConfigHeader(Axis axis) {
@@ -449,5 +514,31 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
     } else {
       context.pop();
     }
+  }
+}
+
+class HighresPreviewOnMobileDataWarningBanner extends ConsumerWidget {
+  const HighresPreviewOnMobileDataWarningBanner({
+    super.key,
+  });
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(settingsProvider);
+
+    return switch (ref.watch(networkStateProvider)) {
+      NetworkConnectedState s =>
+        s.result.isMobile && settings.imageQuality.isHighres
+            ? DismissableInfoContainer(
+                mainColor: context.colorScheme.error,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
+                content:
+                    'Caution: The app is displaying high-resolution images using mobile data.',
+              )
+            : const SizedBox.shrink(),
+      _ => const SizedBox.shrink(),
+    };
   }
 }

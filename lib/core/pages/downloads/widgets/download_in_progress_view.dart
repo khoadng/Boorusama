@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:filesize/filesize.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/boorus/boorus.dart';
@@ -74,29 +73,21 @@ class DownloadInProgressView extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         actions: [
-          PopupMenuButton(
-            icon: const Icon(
-              Symbols.more_vert,
-              weight: 400,
+          if (failed.isNotEmpty)
+            BooruPopupMenuButton(
+              onSelected: (value) {
+                switch (value) {
+                  case 'retry_all':
+                    ref
+                        .read(bulkDownloaderManagerProvider(config).notifier)
+                        .retryAll();
+                    break;
+                }
+              },
+              itemBuilder: {
+                'retry_all': Text('Retry ${failed.length} failed downloads'),
+              },
             ),
-            color: context.theme.colorScheme.secondaryContainer,
-            onSelected: (value) {
-              switch (value) {
-                case 'retry_all':
-                  ref
-                      .read(bulkDownloaderManagerProvider(config).notifier)
-                      .retryAll();
-                  break;
-              }
-            },
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                enabled: failed.isNotEmpty,
-                value: 'retry_all',
-                child: Text('Retry ${failed.length} failed downloads'),
-              ),
-            ],
-          ),
         ],
       ),
       body: Column(

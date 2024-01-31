@@ -4,12 +4,12 @@ import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/widgets/widgets.dart';
 import 'import_tag_dialog.dart';
 
 const _kHint =
@@ -27,14 +27,7 @@ class ImportExportTagButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return PopupMenuButton(
-      icon: const Icon(
-        Symbols.more_vert,
-        weight: 400,
-      ),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(4)),
-      ),
+    return BooruPopupMenuButton(
       onSelected: (value) {
         if (value == 'import') {
           showGeneralDialog(
@@ -59,16 +52,10 @@ class ImportExportTagButton extends ConsumerWidget {
               ));
         }
       },
-      itemBuilder: (context) => [
-        PopupMenuItem(
-          value: 'import',
-          child: const Text('favorite_tags.import').tr(),
-        ),
-        PopupMenuItem(
-          value: 'export',
-          child: const Text('favorite_tags.export').tr(),
-        ),
-      ],
+      itemBuilder: {
+        'import': const Text('favorite_tags.import').tr(),
+        'export': const Text('favorite_tags.export').tr(),
+      },
     );
   }
 }

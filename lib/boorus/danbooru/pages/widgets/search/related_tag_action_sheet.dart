@@ -14,6 +14,7 @@ import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/string.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class RelatedTagActionSheet extends ConsumerStatefulWidget {
   const RelatedTagActionSheet({
@@ -59,53 +60,24 @@ class _RelatedTagActionSheetState extends ConsumerState<RelatedTagActionSheet> {
               color: ref.getTagColor(context, tags[index].category.name),
             ),
           ),
-          trailing: PopupMenuButton(
-            icon: const Icon(
-              Symbols.more_vert,
-              weight: 400,
-            ),
-            padding: const EdgeInsets.all(1),
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(4)),
-            ),
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                padding: EdgeInsets.zero,
-                child: ListTile(
-                  visualDensity: const ShrinkVisualDensity(),
-                  contentPadding:
-                      const EdgeInsetsDirectional.symmetric(horizontal: 8),
-                  onTap: () {
-                    context.navigator.pop();
-                    context.navigator.pop();
-                    widget.onSelected(tags[index]);
-                  },
-                  title: const Text('tag.related.add_to_current_search').tr(),
-                  trailing: const Icon(
-                    Symbols.add,
-                  ),
-                ),
-              ),
-              PopupMenuItem(
-                padding: EdgeInsets.zero,
-                child: ListTile(
-                  visualDensity: const ShrinkVisualDensity(),
-                  contentPadding:
-                      const EdgeInsetsDirectional.symmetric(horizontal: 8),
-                  onTap: () {
-                    context.navigator.pop();
-                    launchWikiPage(
-                      booru.url,
-                      tags[index].tag,
-                    );
-                  },
-                  title: const Text('tag.related.open_wiki').tr(),
-                  trailing: const Icon(
-                    Symbols.share_windows,
-                  ),
-                ),
-              ),
-            ],
+          trailing: BooruPopupMenuButton(
+            onSelected: (value) {
+              if (value == 'add_to_current_search') {
+                context.navigator.pop();
+                widget.onSelected(tags[index]);
+              } else if (value == 'open_wiki') {
+                context.navigator.pop();
+                launchWikiPage(
+                  booru.url,
+                  tags[index].tag,
+                );
+              }
+            },
+            itemBuilder: {
+              'add_to_current_search':
+                  const Text('tag.related.add_to_current_search').tr(),
+              'open_wiki': const Text('tag.related.open_wiki').tr(),
+            },
           ),
         ),
         itemCount: tags.length,

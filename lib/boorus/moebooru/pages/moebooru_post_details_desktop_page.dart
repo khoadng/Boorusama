@@ -13,13 +13,7 @@ import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
-import 'package:boorusama/core/widgets/details_page_desktop.dart';
-import 'package:boorusama/core/widgets/general_more_action_button.dart';
-import 'package:boorusama/core/widgets/post_media.dart';
-import 'package:boorusama/core/widgets/posts/file_details_section.dart';
-import 'package:boorusama/core/widgets/posts/source_section.dart';
-import 'package:boorusama/core/widgets/simple_post_action_toolbar.dart';
-import 'package:boorusama/core/widgets/tags/post_tag_list.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
 import 'widgets/moebooru_comment_section.dart';
 import 'widgets/moebooru_information_section.dart';
@@ -121,9 +115,10 @@ class _MoebooruPostDetailsDesktopPageState
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8),
-                      child: PostTagList(
+                      child: TagsTile(
+                        post: post,
                         tags: ref.watch(tagsProvider(booruConfig)),
-                        onTap: (tag) => goToSearchPage(
+                        onTagTap: (tag) => goToSearchPage(
                           context,
                           tag: tag.rawName,
                         ),
