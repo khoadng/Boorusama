@@ -60,6 +60,7 @@ export 'posts/recommend_posts.dart';
 export 'posts/recommend_section.dart';
 export 'posts/sliver_post_grid.dart';
 export 'posts/source_section.dart';
+export 'reboot.dart';
 export 'related_posts_section.dart';
 export 'result_header.dart';
 export 'search_scope.dart';

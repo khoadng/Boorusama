@@ -23,7 +23,6 @@ import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
-import 'package:boorusama/main.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class BackupAndRestorePage extends ConsumerStatefulWidget {
