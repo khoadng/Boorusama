@@ -9,6 +9,7 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
+import 'package:boorusama/core/widgets/favorite_tag_label_selector_field.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
@@ -37,11 +38,10 @@ class FavoriteTagsSection extends ConsumerWidget {
       builder: (_, tags, labels, selected) => OptionTagsArena(
         editable: tags.isNotEmpty,
         title: 'favorite_tags.favorites'.tr(),
-        titleTrailing: (editMode) => TagLabelsDropDownButton(
-          backgroundColor: Colors.transparent,
-          tagLabels: labels,
-          selectedLabel: selected,
-          onChanged: (value) => ref
+        titleTrailing: (editMode) => FavoriteTagLabelSelectorField(
+          selected: selected,
+          labels: labels.toList(),
+          onSelect: (value) => ref
               .read(
                   miscDataProvider(kSearchSelectedFavoriteTagLabelKey).notifier)
               .put(value),

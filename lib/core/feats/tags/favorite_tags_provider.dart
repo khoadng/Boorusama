@@ -10,7 +10,6 @@ import 'package:boorusama/core/feats/backup/data_io_handler.dart';
 import 'package:boorusama/core/feats/tags/favorite_tag_io_handler.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/pages/favorite_tags/favorite_tags_page.dart';
-import 'package:boorusama/widgets/widgets.dart';
 
 final favoriteTagRepoProvider =
     Provider<FavoriteTagRepository>((ref) => throw UnimplementedError());
@@ -119,50 +118,6 @@ class _FavoriteTagsFilterScopeState
       sortedTags,
       tagLabels,
       tags.isEmpty ? '' : selectedLabel,
-    );
-  }
-}
-
-class TagLabelsDropDownButton extends StatelessWidget {
-  const TagLabelsDropDownButton({
-    super.key,
-    required this.tagLabels,
-    required this.onChanged,
-    required this.selectedLabel,
-    this.backgroundColor,
-    this.alignment,
-  });
-
-  final String selectedLabel;
-  final Set<String> tagLabels;
-  final ValueChanged<String> onChanged;
-  final Color? backgroundColor;
-  final AlignmentDirectional? alignment;
-
-  @override
-  Widget build(BuildContext context) {
-    return OptionDropDownButton(
-      backgroundColor: backgroundColor,
-      alignment: alignment ?? AlignmentDirectional.centerEnd,
-      value: selectedLabel,
-      onChanged: (newValue) {
-        if (newValue != null) {
-          onChanged(newValue);
-        }
-      },
-      items: [
-        '',
-        ...tagLabels,
-      ]
-          .map((value) => DropdownMenuItem(
-              value: value,
-              child: Text(
-                switch (value) {
-                  '' => 'All',
-                  _ => value,
-                },
-              )))
-          .toList(),
     );
   }
 }

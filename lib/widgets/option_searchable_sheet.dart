@@ -167,15 +167,15 @@ class OptionSingleSearchableField<T extends Object> extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
           ),
           child: Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Expanded(
-                child: Text(
-                  optionValueBuilder(value as T),
-                  style: const TextStyle(
-                    fontSize: 16,
-                  ),
+              Text(
+                optionValueBuilder(value as T),
+                style: const TextStyle(
+                  fontSize: 16,
                 ),
               ),
+              const SizedBox(width: 8),
               const Icon(
                 FontAwesomeIcons.caretDown,
                 size: 18,
