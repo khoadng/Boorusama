@@ -80,6 +80,16 @@ void main() async {
     );
   }
 
+  if (isIOS()) {
+    fvp.registerWith(
+      options: {
+        'platforms': [
+          'ios',
+        ]
+      },
+    );
+  }
+
   final appInfo = await getAppInfo();
 
   final booruFactory = BooruFactory.from(
