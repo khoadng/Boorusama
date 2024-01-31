@@ -9,9 +9,12 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 const kTagEditFavoriteViewSelectedLabelKey =
     'tag_edit_favorite_view_selected_label';
+
+const kSpecialLabelKeyForAll = '____all____';
 
 class TagEditFavoriteView extends ConsumerStatefulWidget {
   const TagEditFavoriteView({
@@ -49,19 +52,33 @@ class _TagEditFavoriteViewState extends ConsumerState<TagEditFavoriteView> {
               ),
               child: Row(
                 children: [
-                  TagLabelsDropDownButton(
-                    tagLabels: labels,
-                    selectedLabel: selected,
-                    alignment: AlignmentDirectional.centerStart,
-                    onChanged: (value) {
-                      ref
-                          .read(
-                            miscDataProvider(
-                                    kTagEditFavoriteViewSelectedLabelKey)
-                                .notifier,
-                          )
-                          .put(value);
-                    },
+                  Container(
+                    margin: const EdgeInsets.all(4),
+                    constraints: const BoxConstraints(
+                      maxWidth: 120,
+                    ),
+                    child: OptionSingleSearchableField(
+                      backgroundColor: context.colorScheme.background,
+                      sheetTitle: 'Select',
+                      optionValueBuilder: (option) =>
+                          option == kSpecialLabelKeyForAll ? '<All>' : option,
+                      value: selected == '' ? '<All>' : selected,
+                      items: [
+                        kSpecialLabelKeyForAll,
+                        ...labels,
+                      ],
+                      onSelect: (value) {
+                        if (value == null) return;
+                        final v = value == kSpecialLabelKeyForAll ? '' : value;
+                        ref
+                            .read(
+                              miscDataProvider(
+                                      kTagEditFavoriteViewSelectedLabelKey)
+                                  .notifier,
+                            )
+                            .put(v);
+                      },
+                    ),
                   ),
                 ],
               ),

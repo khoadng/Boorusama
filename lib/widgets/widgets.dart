@@ -36,6 +36,7 @@ export 'multi_selectable_mixin.dart';
 export 'navigation_tile.dart';
 export 'nullable_aspect_ratio.dart';
 export 'option_dropdown_button.dart';
+export 'option_searchable_sheet.dart';
 export 'pagination.dart';
 export 'parallax_slide_in_page_route.dart';
 export 'platforms/windows/material_desktop_controls.dart';
