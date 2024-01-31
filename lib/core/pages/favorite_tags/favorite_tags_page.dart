@@ -134,6 +134,10 @@ class FavoriteTagsPage extends ConsumerWidget {
 
         return ListTile(
           title: Text(tag.name),
+          contentPadding: const EdgeInsets.only(
+            left: 16,
+            right: 4,
+          ),
           subtitle: labels.isNotEmpty
               ? Container(
                   margin: const EdgeInsets.only(top: 4),
