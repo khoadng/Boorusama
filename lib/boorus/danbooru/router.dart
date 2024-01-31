@@ -463,6 +463,8 @@ Future<bool?> goToDanbooruShowTaglistPage(
   final notifier = ref.read(danbooruBlacklistedTagsProvider(config).notifier);
   final globalNotifier = ref.read(globalBlacklistedTagsProvider.notifier);
   final favoriteNotifier = ref.read(favoriteTagsProvider.notifier);
+  final color = context.colorScheme.onBackground;
+  final textColor = context.colorScheme.background;
 
   return showMaterialModalBottomSheet<bool>(
     context: navigatorKey.currentContext ?? context,
@@ -486,9 +488,15 @@ Future<bool?> goToDanbooruShowTaglistPage(
         );
       },
       onAddToFavoriteTags: (tag) {
-        favoriteNotifier.add(
-          tag.rawName,
-        );
+        favoriteNotifier.add(tag.rawName).then(
+              (_) => showSuccessToast(
+                'Added',
+                backgroundColor: color,
+                textStyle: TextStyle(
+                  color: textColor,
+                ),
+              ),
+            );
       },
     ),
   );
