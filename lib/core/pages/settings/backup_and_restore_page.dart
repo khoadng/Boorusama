@@ -188,12 +188,19 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
                     ));
               },
             );
+          } else if (value == 'export_with_labels') {
+            _pickFavoriteTagsFolder(ref);
+          } else if (value == 'import_with_labels') {
+            _pickFavoriteTagsFile(ref);
           }
         },
         itemBuilder: {
           if (tags.isNotEmpty)
             'export': const Text('favorite_tags.export').tr(),
           'import': const Text('favorite_tags.import').tr(),
+          if (tags.isNotEmpty)
+            'export_with_labels': const Text('Export with labels'),
+          'import_with_labels': const Text('Import with labels'),
         },
       ),
     );
@@ -331,6 +338,28 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
 
     if (path != null) {
       ref.read(settingsProvider.notifier).importSettings(path);
+    } else {
+      // User canceled the picker
+    }
+  }
+
+  void _pickFavoriteTagsFolder(WidgetRef ref) async {
+    final path = await FilePicker.platform.getDirectoryPath();
+
+    if (path != null) {
+      ref.read(favoriteTagsProvider.notifier).exportWithLabels(
+            path: path,
+          );
+    }
+  }
+
+  void _pickFavoriteTagsFile(WidgetRef ref) async {
+    final path = await _pickFile();
+
+    if (path != null) {
+      ref.read(favoriteTagsProvider.notifier).importWithLabels(
+            path: path,
+          );
     } else {
       // User canceled the picker
     }

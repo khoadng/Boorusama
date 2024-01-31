@@ -164,9 +164,16 @@ void main() async {
   final bookmarkBox = await Hive.openBox<BookmarkHiveObject>("favorites");
   final bookmarkRepo = BookmarkHiveRepository(bookmarkBox);
 
+  final tempPath = await getTemporaryDirectory();
+
+  final miscDataBox = await Hive.openBox<String>(
+    'misc_data_v1',
+    path: tempPath.path,
+  );
+
   final danbooruCreatorBox = await Hive.openBox(
     '${Uri.encodeComponent(initialConfig?.url ?? 'danbooru')}_creators_v1',
-    path: (await getTemporaryDirectory()).path,
+    path: tempPath.path,
   );
 
   final packageInfo = await PackageInfo.fromPlatform();
@@ -174,8 +181,6 @@ void main() async {
       await TagInfoService.create().then((value) => value.getInfo());
   final deviceInfo =
       await DeviceInfoService(plugin: DeviceInfoPlugin()).getDeviceInfo();
-
-  final tempPath = await getTemporaryDirectory();
 
   if (isWindows()) WindowsVideoPlayer.registerWith();
 
@@ -234,6 +239,7 @@ void main() async {
               supportedLanguagesProvider.overrideWithValue(supportedLanguages),
               danbooruCreatorHiveBoxProvider
                   .overrideWithValue(danbooruCreatorBox),
+              miscDataBoxProvider.overrideWithValue(miscDataBox),
             ],
             child: App(
               appName: appInfo.appName,

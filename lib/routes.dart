@@ -14,6 +14,7 @@ import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/pages/blacklists/blacklisted_tag_page.dart';
 import 'package:boorusama/core/pages/downloads/bulk_download_page.dart';
+import 'package:boorusama/core/pages/favorite_tags/favorite_tags_page.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/biometrics/app_lock.dart';
@@ -290,6 +291,7 @@ class Routes {
           bookmarks(),
           globalBlacklistedTags(),
           bulkDownloads(ref),
+          favoriteTags(),
         ],
       );
 
@@ -403,6 +405,16 @@ class Routes {
             ),
           ),
         ],
+      );
+
+  static GoRoute favoriteTags() => GoRoute(
+        path: 'favorite_tags',
+        name: '/favorite_tags',
+        pageBuilder: (context, state) => CupertinoPage(
+          key: state.pageKey,
+          name: state.name,
+          child: const FavoriteTagsPage(),
+        ),
       );
 
   static GoRoute globalBlacklistedTags() => GoRoute(

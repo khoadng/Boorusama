@@ -47,12 +47,12 @@ class DanbooruMoreActionButton extends ConsumerWidget {
                   case 'add_to_favgroup':
                     goToAddToFavoriteGroupSelectionPage(context, [post]);
                     break;
-                  case 'add_to_blacklist':
-                    goToAddToBlacklistPage(ref, context, post.extractTags());
-                    break;
-                  case 'add_to_global_blacklist':
-                    goToAddToGlobalBlacklistPage(
-                        ref, context, post.extractTags());
+                  case 'show_tag_list':
+                    goToDanbooruShowTaglistPage(
+                      ref,
+                      context,
+                      post.extractTags(),
+                    );
                     break;
                   case 'view_in_browser':
                     launchExternalUrl(
@@ -76,11 +76,7 @@ class DanbooruMoreActionButton extends ConsumerWidget {
                 if (booruConfig.hasLoginDetails())
                   'add_to_favgroup':
                       const Text('post.action.add_to_favorite_group').tr(),
-                if (booruConfig.hasLoginDetails())
-                  'add_to_blacklist':
-                      const Text('post.detail.add_to_blacklist').tr(),
-                'add_to_global_blacklist':
-                    const Text('Add to global blacklist'),
+                'show_tag_list': const Text('View tags'),
                 'tag_history': const Text('View tag history'),
                 if (!booruConfig.hasStrictSFW)
                   'view_in_browser':

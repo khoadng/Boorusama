@@ -11,6 +11,8 @@ class FavoriteTagHiveObject {
   FavoriteTagHiveObject({
     required this.name,
     required this.createdAt,
+    required this.updatedAt,
+    required this.labels,
   });
 
   @HiveField(0)
@@ -18,12 +20,20 @@ class FavoriteTagHiveObject {
 
   @HiveField(1)
   DateTime createdAt;
+
+  @HiveField(2)
+  DateTime? updatedAt;
+
+  @HiveField(3)
+  List<String>? labels;
 }
 
 FavoriteTag favoriteTagHiveObjectToFavoriteTag(FavoriteTagHiveObject obj) {
   return FavoriteTag(
     name: obj.name,
     createdAt: obj.createdAt,
+    updatedAt: obj.updatedAt,
+    labels: obj.labels,
   );
 }
 
@@ -31,5 +41,7 @@ FavoriteTagHiveObject favoriteTagToFavoriteTagHiveObject(FavoriteTag tag) {
   return FavoriteTagHiveObject(
     name: tag.name,
     createdAt: tag.createdAt,
+    updatedAt: tag.updatedAt,
+    labels: tag.labels,
   );
 }

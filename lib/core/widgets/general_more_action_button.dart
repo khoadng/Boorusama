@@ -50,9 +50,12 @@ class GeneralMoreActionButton extends ConsumerWidget {
                     post.getUriLink(booru.url),
                   );
                   break;
-                case 'add_to_global_blacklist':
-                  goToAddToGlobalBlacklistPage(
-                      ref, context, post.extractTags());
+                case 'show_tag_list':
+                  goToShowTaglistPage(
+                    ref,
+                    context,
+                    post.extractTags(),
+                  );
                   break;
                 case 'view_original':
                   goToOriginalImagePage(context, post);
@@ -66,7 +69,7 @@ class GeneralMoreActionButton extends ConsumerWidget {
               if (!booru.hasStrictSFW)
                 'view_in_browser':
                     const Text('post.detail.view_in_browser').tr(),
-              'add_to_global_blacklist': const Text('Add to global blacklist'),
+              'show_tag_list': const Text('View tags'),
               if (post.hasFullView)
                 'view_original':
                     const Text('post.image_fullview.view_original').tr(),

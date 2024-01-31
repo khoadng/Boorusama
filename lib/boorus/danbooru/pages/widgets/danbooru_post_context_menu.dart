@@ -85,25 +85,18 @@ class DanbooruPostContextMenu extends ConsumerWidget {
                 );
               },
             ),
-          if (hasAccount)
-            ContextMenuButtonConfig(
-              'Add to blacklist',
-              onPressed: () {
-                goToAddToBlacklistPage(ref, context, post.extractTags());
-              },
-            ),
-          ContextMenuButtonConfig(
-            'Add to global blacklist',
-            onPressed: () {
-              goToAddToGlobalBlacklistPage(ref, context, post.extractTags());
-            },
-          ),
           if (!booruConfig.hasStrictSFW)
             ContextMenuButtonConfig(
               'Open in browser',
               onPressed: () =>
                   launchExternalUrlString(post.getLink(booruConfig.url)),
             ),
+          ContextMenuButtonConfig(
+            'View tags',
+            onPressed: () {
+              goToDanbooruShowTaglistPage(ref, context, post.extractTags());
+            },
+          ),
           ContextMenuButtonConfig(
             'View tag history',
             onPressed: () => goToPostVersionPage(context, post),

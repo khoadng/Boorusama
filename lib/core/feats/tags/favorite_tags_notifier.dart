@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/tags/tags.dart';
-import 'package:boorusama/dart.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class FavoriteTagsNotifier extends Notifier<List<FavoriteTag>> {
   @override
@@ -20,22 +20,49 @@ class FavoriteTagsNotifier extends Notifier<List<FavoriteTag>> {
     state = tags..sort((a, b) => a.name.compareTo(b.name));
   }
 
-  Future<void> add(String tag) async {
+  Future<void> add(
+    String tag, {
+    List<String>? labels,
+  }) async {
     if (tag.isEmpty) return;
 
     // If a tag length is larger than 255 characters, we will not add it.
     // This is a limitation of Hive.
     if (tag.length > 255) return;
 
-    await repo.create(name: tag);
+    await repo.create(
+      name: tag,
+      labels: labels != null && labels.isNotEmpty
+          ? labels.where((e) => e.isNotEmpty).toList()
+          : null,
+    );
 
     final tags = await repo.getAll();
 
     state = tags..sort((a, b) => a.name.compareTo(b.name));
   }
 
-  Future<void> remove(int index) async {
-    final tag = state.getOrNull(index);
+  Future<void> update(String tag, FavoriteTag newTag) async {
+    if (tag.isEmpty) return;
+
+    final targetTag = await repo.getFirst(tag);
+
+    if (targetTag != null) {
+      await repo.updateFirst(
+        tag,
+        newTag.ensureValid(),
+      );
+
+      final tags = await repo.getAll();
+
+      state = tags..sort((a, b) => a.name.compareTo(b.name));
+    }
+  }
+
+  Future<void> remove(String name) async {
+    if (name.isEmpty) return;
+
+    final tag = await repo.getFirst(name);
 
     if (tag != null) {
       final deleted = await repo.deleteFirst(tag.name);
@@ -68,5 +95,40 @@ class FavoriteTagsNotifier extends Notifier<List<FavoriteTag>> {
     final tagString = tags.map((e) => e.name).join(' ');
 
     onDone(tagString);
+  }
+
+  Future<void> exportWithLabels({
+    required String path,
+  }) async {
+    await ref
+        .read(favoriteTagsIOHandlerProvider)
+        .export(
+          state,
+          to: path,
+        )
+        .run()
+        .then(
+          (value) => value.fold(
+            (l) => showErrorToast(l.toString()),
+            (r) => showSuccessToast('Favorite tags exported to $path'),
+          ),
+        );
+  }
+
+  Future<void> importWithLabels({
+    required String path,
+  }) async {
+    await ref
+        .read(favoriteTagsIOHandlerProvider)
+        .import(
+          from: path,
+        )
+        .run()
+        .then(
+          (value) => value.fold(
+            (l) => showErrorToast(l.toString()),
+            (r) => repo.createFrom(r).then((value) => load()),
+          ),
+        );
   }
 }
