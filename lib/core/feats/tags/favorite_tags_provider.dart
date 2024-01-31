@@ -9,6 +9,7 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/backup/data_io_handler.dart';
 import 'package:boorusama/core/feats/tags/favorite_tag_io_handler.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
+import 'package:boorusama/core/pages/favorite_tags/favorite_tags_page.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 final favoriteTagRepoProvider =
@@ -37,11 +38,13 @@ class FavoriteTagsFilterScope extends ConsumerStatefulWidget {
     super.key,
     this.initialValue,
     this.filterQuery,
+    this.sortType,
     required this.builder,
   });
 
   final String? initialValue;
   final String? filterQuery;
+  final FavoriteTagsSortType? sortType;
 
   final Widget Function(
     BuildContext context,
@@ -59,6 +62,7 @@ class _FavoriteTagsFilterScopeState
     extends ConsumerState<FavoriteTagsFilterScope> {
   late var selectedLabel = widget.initialValue ?? '';
   late var filterQuery = widget.filterQuery ?? '';
+  late var sortType = widget.sortType ?? FavoriteTagsSortType.recentlyAdded;
 
   @override
   void didUpdateWidget(covariant FavoriteTagsFilterScope oldWidget) {
@@ -69,6 +73,10 @@ class _FavoriteTagsFilterScopeState
 
     if (oldWidget.filterQuery != widget.filterQuery) {
       filterQuery = widget.filterQuery ?? '';
+    }
+
+    if (oldWidget.sortType != widget.sortType) {
+      sortType = widget.sortType ?? FavoriteTagsSortType.recentlyAdded;
     }
   }
 
@@ -88,9 +96,27 @@ class _FavoriteTagsFilterScopeState
       return e.name.contains(filterQuery);
     }).toList();
 
+    final sortedTags = filteredTagsWithQuery.toList()
+      ..sort((a, b) {
+        switch (sortType) {
+          case FavoriteTagsSortType.recentlyAdded:
+            return b.createdAt.compareTo(a.createdAt);
+          case FavoriteTagsSortType.recentlyUpdated:
+            if (a.updatedAt == null || b.updatedAt == null) return 0;
+
+            return b.updatedAt!.compareTo(a.updatedAt!);
+          case FavoriteTagsSortType.nameAZ:
+            return a.name.compareTo(b.name);
+          case FavoriteTagsSortType.nameZA:
+            return b.name.compareTo(a.name);
+          default:
+            return 0;
+        }
+      });
+
     return widget.builder(
       context,
-      filteredTagsWithQuery,
+      sortedTags,
       tagLabels,
       tags.isEmpty ? '' : selectedLabel,
     );

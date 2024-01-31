@@ -11,16 +11,30 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/theme/theme_utils.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'edit_favorite_tag_sheet.dart';
+import 'favorite_tag_config_sheet.dart';
 import 'favorite_tag_label_chip.dart';
 import 'favorite_tag_labels_page.dart';
 
 const kFavoriteTagsSelectedLabelKey = 'favorite_tags_selected_label';
 
+enum FavoriteTagsSortType {
+  recentlyAdded,
+  recentlyUpdated,
+  nameAZ,
+  nameZA,
+}
+
 final selectedFavoriteTagQueryProvider =
     StateProvider.autoDispose<String>((ref) {
   return '';
+});
+
+final selectedFavoriteTagsSortTypeProvider =
+    StateProvider.autoDispose<FavoriteTagsSortType>((ref) {
+  return FavoriteTagsSortType.recentlyAdded;
 });
 
 class FavoriteTagsPage extends ConsumerWidget {
@@ -51,17 +65,48 @@ class FavoriteTagsPage extends ConsumerWidget {
         ],
       ),
       body: FavoriteTagsFilterScope(
+        sortType: ref.watch(selectedFavoriteTagsSortTypeProvider),
         filterQuery: ref.watch(selectedFavoriteTagQueryProvider),
         builder: (context, tags, labels, selected) => Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: BooruSearchBar(
-                hintText: 'Filter...',
-                onChanged: (value) => ref
-                    .read(selectedFavoriteTagQueryProvider.notifier)
-                    .state = value,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: BooruSearchBar(
+                      hintText: 'Filter...',
+                      onChanged: (value) => ref
+                          .read(selectedFavoriteTagQueryProvider.notifier)
+                          .state = value,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      showMaterialModalBottomSheet(
+                        context: context,
+                        backgroundColor: context.colorScheme.secondaryContainer,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        builder: (context) => FavoriteTagConfigSheet(
+                          onSorted: (value) {
+                            ref
+                                .read(selectedFavoriteTagsSortTypeProvider
+                                    .notifier)
+                                .state = value;
+                          },
+                        ),
+                      );
+                    },
+                    icon: const Icon(
+                      FontAwesomeIcons.sliders,
+                      fill: 1,
+                      size: 20,
+                    ),
+                  ),
+                ],
               ),
             ),
             tags.isNotEmpty
