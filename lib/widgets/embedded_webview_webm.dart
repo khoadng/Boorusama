@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:webview_flutter_android/webview_flutter_android.dart';
 
 // Project imports:
 import 'package:boorusama/dart.dart';
@@ -16,10 +17,17 @@ class WebmVideoController {
     this.onCurrentPositionChanged,
     String? userAgent,
   }) {
-    _webViewController = WebViewController()
+    _webViewController = WebViewController.fromPlatformCreationParams(
+        const PlatformWebViewControllerCreationParams())
       ..setUserAgent(userAgent)
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setBackgroundColor(Colors.black);
+
+    if (_webViewController.platform is AndroidWebViewController) {
+      AndroidWebViewController.enableDebugging(true);
+      (_webViewController.platform as AndroidWebViewController)
+          .setMediaPlaybackRequiresUserGesture(false);
+    }
   }
 
   late final WebViewController _webViewController;
@@ -114,8 +122,10 @@ class WebmVideoController {
 String urlToHtml(
   String url, {
   Color backgroundColor = Colors.black,
+  bool? muted,
 }) {
   final colorText = backgroundColor == Colors.black ? 'black' : 'white';
+  final mutedText = muted == true ? 'muted' : '';
   late final String videoHtml = '''
 <!DOCTYPE html>
 <html>
@@ -131,7 +141,7 @@ String urlToHtml(
 </style>
 </head>
 <body>
-  <video id="video" allowfullscreen width="100%" height="100%" style="background-color:$colorText;vertical-align: middle;display: inline-block;" muted loop>
+  <video id="video" allowfullscreen width="100%" height="100%" style="background-color:$colorText;vertical-align: middle;display: inline-block;" $mutedText loop>
     <source src=$url#t=0.01 type="video/webm" />
   </video>
 </body>
@@ -190,8 +200,8 @@ class _EmbeddedWebViewWebmState extends State<EmbeddedWebViewWebm> {
     webmVideoController.load(urlToHtml(
       widget.url,
       backgroundColor: widget.backgroundColor ?? Colors.black,
+      muted: !widget.sound,
     ));
-    webmVideoController.mute(!widget.sound);
     widget.onWebmVideoPlayerCreated?.call(webmVideoController);
   }
 
