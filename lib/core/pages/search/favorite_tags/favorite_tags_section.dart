@@ -40,7 +40,7 @@ class FavoriteTagsSection extends ConsumerWidget {
         title: 'favorite_tags.favorites'.tr(),
         titleTrailing: (editMode) => FavoriteTagLabelSelectorField(
           selected: selected,
-          labels: labels.toList(),
+          labels: labels,
           onSelect: (value) => ref
               .read(
                   miscDataProvider(kSearchSelectedFavoriteTagLabelKey).notifier)

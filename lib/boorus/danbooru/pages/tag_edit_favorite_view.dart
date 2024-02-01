@@ -50,7 +50,7 @@ class _TagEditFavoriteViewState extends ConsumerState<TagEditFavoriteView> {
               ),
               child: FavoriteTagLabelSelectorField(
                 selected: selected,
-                labels: labels.toList(),
+                labels: labels,
                 onSelect: (value) {
                   ref
                       .read(

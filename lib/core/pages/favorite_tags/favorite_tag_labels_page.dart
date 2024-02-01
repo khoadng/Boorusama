@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/feats/filename_generators/utils.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/flutter.dart';
 import 'favorite_tag_label_details_page.dart';
@@ -17,12 +16,7 @@ class FavoriteTagLabelsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tags = ref.watch(favoriteTagsProvider);
-    final labels = tags
-        .map((e) => e.labels)
-        .whereNotNull()
-        .expand((e) => e)
-        .toSet()
-        .toList();
+    final labels = ref.watch(favoriteTagLabelsProvider);
 
     return Scaffold(
       appBar: AppBar(
