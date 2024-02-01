@@ -23,7 +23,6 @@ import 'package:boorusama/foundation/networking/network_state.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
-import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'post_grid_config_icon_button.dart';
 import 'post_grid_controller.dart';
@@ -535,8 +534,6 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
   void _onWillPop() {
     if (multiSelect) {
       _multiSelectController.disableMultiSelect();
-    } else {
-      context.pop();
     }
   }
 }
