@@ -2,6 +2,7 @@
 import 'dart:math';
 
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
@@ -54,8 +55,31 @@ final danbooruTagEditColorProvider =
   return color;
 });
 
-class TagEditPage extends ConsumerStatefulWidget {
+class TagEditPage extends ConsumerWidget {
   const TagEditPage({
+    super.key,
+    required this.post,
+  });
+
+  final DanbooruPost post;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
+    final tags = ref.watch(danbooruTagListProvider(config));
+
+    return TagEditPageInternal(
+      postId: post.id,
+      imageUrl: post.url720x720,
+      aspectRatio: post.aspectRatio ?? 1,
+      tags: tags.containsKey(post.id) ? tags[post.id]!.allTags : post.tags,
+      rating: tags.containsKey(post.id) ? tags[post.id]!.rating : post.rating,
+    );
+  }
+}
+
+class TagEditPageInternal extends ConsumerStatefulWidget {
+  const TagEditPageInternal({
     super.key,
     required this.postId,
     required this.tags,
@@ -71,10 +95,11 @@ class TagEditPage extends ConsumerStatefulWidget {
   final Rating rating;
 
   @override
-  ConsumerState<TagEditPage> createState() => _TagEditViewState();
+  ConsumerState<TagEditPageInternal> createState() =>
+      _TagEditPageInternalState();
 }
 
-class _TagEditViewState extends ConsumerState<TagEditPage> {
+class _TagEditPageInternalState extends ConsumerState<TagEditPageInternal> {
   late final tags = [...widget.tags];
   late var rating = widget.rating;
   final toBeAdded = <String>{};
