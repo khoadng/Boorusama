@@ -108,7 +108,12 @@ class SliverPostGrid extends ConsumerWidget {
           }
 
           if (data.isEmpty) {
-            return const SliverToBoxAdapter(child: NoDataBox());
+            return const SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.only(bottom: 48),
+                child: NoDataBox(),
+              ),
+            );
           }
 
           final crossAxisCount = calculateGridCount(

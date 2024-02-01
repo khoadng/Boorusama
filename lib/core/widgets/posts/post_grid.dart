@@ -336,6 +336,25 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                               const SliverSizedBox(
                                 height: 4,
                               ),
+                              if (!refreshing &&
+                                  pageMode == PageMode.paginated &&
+                                  settings.pageIndicatorPosition.isVisibleAtTop)
+                                SliverToBoxAdapter(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(bottom: 8),
+                                    child: PageSelector(
+                                      currentPage: page,
+                                      onPrevious: controller.hasPreviousPage()
+                                          ? () => controller.goToPreviousPage()
+                                          : null,
+                                      onNext: controller.hasNextPage()
+                                          ? () => controller.goToNextPage()
+                                          : null,
+                                      onPageSelect: (page) =>
+                                          controller.jumpToPage(page),
+                                    ),
+                                  ),
+                                ),
                               widget.bodyBuilder(
                                 context,
                                 itemBuilder,
@@ -357,26 +376,11 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                                 )
                               else
                                 const SliverSizedBox.shrink(),
-                              if (!refreshing && pageMode == PageMode.paginated)
-                                SliverToBoxAdapter(
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                      top: 40,
-                                      bottom: 20,
-                                    ),
-                                    child: PageSelector(
-                                      currentPage: page,
-                                      onPrevious: controller.hasPreviousPage()
-                                          ? () => controller.goToPreviousPage()
-                                          : null,
-                                      onNext: controller.hasNextPage()
-                                          ? () => controller.goToNextPage()
-                                          : null,
-                                      onPageSelect: (page) =>
-                                          controller.jumpToPage(page),
-                                    ),
-                                  ),
-                                ),
+                              if (!refreshing &&
+                                  pageMode == PageMode.paginated &&
+                                  settings
+                                      .pageIndicatorPosition.isVisibleAtBottom)
+                                _buildPageIndicator(),
                             ],
                           ),
                         ),
@@ -388,6 +392,26 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
             ),
           ),
         ));
+  }
+
+  Widget _buildPageIndicator() {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.only(
+          top: 40,
+          bottom: 20,
+        ),
+        child: PageSelector(
+          currentPage: page,
+          onPrevious: controller.hasPreviousPage()
+              ? () => controller.goToPreviousPage()
+              : null,
+          onNext:
+              controller.hasNextPage() ? () => controller.goToNextPage() : null,
+          onPageSelect: (page) => controller.jumpToPage(page),
+        ),
+      ),
+    );
   }
 
   Widget _buildPaginatedSwipe(BuildContext context, Widget child) {
