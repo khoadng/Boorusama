@@ -15,7 +15,6 @@ import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
-import 'widgets/gelbooru_recommend_artist_list.dart';
 
 class GelbooruPostDetailsDesktopPage extends ConsumerStatefulWidget {
   const GelbooruPostDetailsDesktopPage({
@@ -78,7 +77,6 @@ class _DanbooruPostDetailsDesktopPageState
                   widget.posts[page].tags,
                   onSuccess: (tags) {
                     if (!mounted) return;
-                    widget.posts[page].loadArtistPostsFrom(ref, tags);
                     setState(() => loading = false);
                   },
                 );
@@ -99,8 +97,6 @@ class _DanbooruPostDetailsDesktopPageState
           );
         },
         infoBuilder: (context) {
-          final artists = ref.watch(booruPostDetailsArtistProvider(post.id));
-
           return CustomScrollView(
             slivers: [
               SliverList(
@@ -133,7 +129,7 @@ class _DanbooruPostDetailsDesktopPageState
                   ],
                 ),
               ),
-              GelbooruRecommendedArtistList(artists: artists),
+              // GelbooruRecommendedArtistList(artists: artists),
             ],
           );
         },

@@ -188,7 +188,7 @@ class _PostDetailPageScaffoldState<T extends Post>
                   page == currentPage)
                 widget.sliverCharacterPostsBuilder!(context, posts[page]),
               SliverSizedBox(
-                height: MediaQuery.paddingOf(context).bottom,
+                height: MediaQuery.paddingOf(context).bottom + 72,
               ),
             ],
           ),

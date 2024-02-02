@@ -106,7 +106,28 @@ class SankakuBuilder
             ),
             showSourceTile: false,
             sliverArtistPostsBuilder: (context, post) =>
-                SankakuRecommendArtists(post: post),
+                post.artistTags.isNotEmpty
+                    ? ArtistPostList(
+                        artists: post.artistTags,
+                        builder: (tag) => ref
+                            .watch(sankakuArtistPostsProvider(
+                                post.artistTags.firstOrNull))
+                            .maybeWhen(
+                              data: (data) => PreviewPostGrid(
+                                posts: data,
+                                onTap: (postIdx) => goToPostDetailsPage(
+                                  context: context,
+                                  posts: data,
+                                  initialIndex: postIdx,
+                                ),
+                                imageUrl: (item) => item.sampleImageUrl,
+                              ),
+                              orElse: () => const PreviewPostGridPlaceholder(
+                                imageCount: 30,
+                              ),
+                            ),
+                      )
+                    : const SliverSizedBox.shrink(),
             tagListBuilder: (context, post) => TagsTile(
               post: post,
               initialExpanded: true,
@@ -196,42 +217,5 @@ class SankakuArtistPage extends ConsumerWidget {
         if (selectedCategory == TagFilterCategory.popular) 'order:score',
       ], page),
     );
-  }
-}
-
-class SankakuRecommendArtists extends ConsumerWidget {
-  const SankakuRecommendArtists({
-    super.key,
-    required this.post,
-  });
-
-  final SankakuPost post;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final artistName = post.artistTags.firstOrNull;
-
-    return ref
-        .watch(sankakuArtistPostsProvider(post.artistTags.firstOrNull))
-        .maybeWhen(
-          data: (posts) => RecommendArtistList(
-            onTap: (recommendIndex, postIndex) => goToPostDetailsPage(
-              context: context,
-              posts: posts,
-              initialIndex: postIndex,
-            ),
-            onHeaderTap: (index) => goToArtistPage(context, artistName),
-            recommends: [
-              Recommend(
-                title: artistName?.replaceAll('_', ' ') ?? '????',
-                posts: posts,
-                type: RecommendType.artist,
-                tag: artistName ?? '????',
-              ),
-            ],
-            imageUrl: (item) => item.sampleImageUrl,
-          ),
-          orElse: () => const SliverSizedBox.shrink(),
-        );
   }
 }

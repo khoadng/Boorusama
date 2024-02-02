@@ -15,11 +15,9 @@ import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/danbooru_creator_preloader.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/details/danbooru_more_action_button.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/details/danbooru_post_action_toolbar.dart';
-import 'package:boorusama/boorus/danbooru/pages/widgets/details/danbooru_recommend_artist_list.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/details/pool_tiles.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/notes/notes.dart';
-import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
@@ -127,10 +125,6 @@ class _DanbooruPostDetailsDesktopPageState
             );
           },
           infoBuilder: (context) {
-            final artists = ref.watch(allowFetchProvider)
-                ? ref.watch(danbooruPostDetailsArtistProvider(post))
-                : const AsyncData(<Recommend<DanbooruPost>>[]);
-
             final pools = ref.watch(allowFetchProvider)
                 ? ref.watch(danbooruPostDetailsPoolsProvider(post.id))
                 : const AsyncData(<Pool>[]);
@@ -177,11 +171,12 @@ class _DanbooruPostDetailsDesktopPageState
                       )
                     : const SliverSizedBox.shrink(),
                 const SliverSizedBox(height: 8),
-                artists.maybeWhen(
-                  data: (artists) =>
-                      DanbooruRecommendArtistList(artists: artists),
-                  orElse: () => const SliverToBoxAdapter(),
-                ),
+                //Add artist back
+                // artists.maybeWhen(
+                //   data: (artists) =>
+                //       DanbooruRecommendArtistList(artists: artists),
+                //   orElse: () => const SliverToBoxAdapter(),
+                // ),
                 //FIXME: update desktop layout
                 // characters.maybeWhen(
                 //   data: (characters) =>

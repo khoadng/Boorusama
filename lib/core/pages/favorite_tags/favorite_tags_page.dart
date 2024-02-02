@@ -114,7 +114,10 @@ class FavoriteTagsPage extends ConsumerWidget {
                     child: _buildTags(tags, ref),
                   )
                 : const Center(
-                    child: Text('No tags'),
+                    child: Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Text('No tags'),
+                    ),
                   ),
           ],
         ),

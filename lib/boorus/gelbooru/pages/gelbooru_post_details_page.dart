@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -14,7 +15,12 @@ import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'widgets/gelbooru_recommend_artist_list.dart';
+import 'package:boorusama/functional.dart';
+import 'package:boorusama/widgets/widgets.dart';
+
+final gelbooruPostDetailsArtistMapProvider = StateProvider.autoDispose(
+  (ref) => <int, List<String>>{},
+);
 
 class GelbooruPostDetailsPage extends ConsumerStatefulWidget {
   const GelbooruPostDetailsPage({
@@ -47,10 +53,32 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailsPage> {
       onTagTap: (tag) => goToSearchPage(context, tag: tag),
       toolbarBuilder: (context, post) => SimplePostActionToolbar(post: post),
       swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
-      sliverArtistPostsBuilder: (context, post) =>
-          GelbooruRecommendedArtistList(
-        artists: ref.watch(booruPostDetailsArtistProvider(post.id)),
-      ),
+      sliverArtistPostsBuilder: (context, post) => ref
+          .watch(gelbooruPostDetailsArtistMapProvider)
+          .lookup(post.id)
+          .fold(
+            () => const SliverSizedBox.shrink(),
+            (tags) => tags.isNotEmpty
+                ? ArtistPostList(
+                    artists: tags,
+                    builder: (tag) =>
+                        ref.watch(gelbooruArtistPostsProvider(tag)).maybeWhen(
+                              data: (data) => PreviewPostGrid(
+                                posts: data,
+                                onTap: (postIdx) => goToPostDetailsPage(
+                                  context: context,
+                                  posts: data,
+                                  initialIndex: postIdx,
+                                ),
+                                imageUrl: (item) => item.sampleImageUrl,
+                              ),
+                              orElse: () => const PreviewPostGridPlaceholder(
+                                imageCount: 30,
+                              ),
+                            ),
+                  )
+                : const SliverSizedBox.shrink(),
+          ),
       tagListBuilder: (context, post) =>
           ref.watchConfig.booruType == BooruType.gelbooru
               ? TagsTile(
@@ -64,7 +92,18 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailsPage> {
               post.tags,
               onSuccess: (tags) {
                 if (!mounted) return;
-                post.loadArtistPostsFrom(ref, tags);
+                final group = tags.firstWhereOrNull(
+                    (tag) => tag.groupName.toLowerCase() == 'artist');
+
+                if (group == null) return;
+                final map = ref.read(gelbooruPostDetailsArtistMapProvider);
+
+                map[post.id] = group.tags.map((e) => e.rawName).toList();
+
+                ref.read(gelbooruPostDetailsArtistMapProvider.notifier).state =
+                    {
+                  ...map,
+                };
               },
             )
           : null,

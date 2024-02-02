@@ -12,11 +12,13 @@ import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
+import 'package:boorusama/core/feats/blacklists/blacklists.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
+import 'package:boorusama/foundation/caching/caching.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'pages/create_gelbooru_config_page.dart';
@@ -111,6 +113,33 @@ final gelbooruV2TagsFromIdProvider =
         .toList();
   },
 );
+
+final gelbooruArtistPostRepo =
+    Provider.family<PostRepository<GelbooruPost>, BooruConfig>((ref, config) {
+  return PostRepositoryCacher(
+    keyBuilder: (tags, page, {limit}) => '${tags.join('-')}_${page}_$limit',
+    repository: ref.watch(gelbooruPostRepoProvider(config)),
+    cache: LruCacher(capacity: 100),
+  );
+});
+
+//FIXME: should be handle the same as Danbooru?
+final gelbooruArtistPostsProvider = FutureProvider.autoDispose
+    .family<List<GelbooruPost>, String?>((ref, artistName) async {
+  if (artistName == null) return [];
+
+  final globalBlacklistedTags = ref.watch(globalBlacklistedTagsProvider);
+
+  final repo = ref.watch(gelbooruArtistPostRepo(ref.watchConfig));
+  final posts = await repo.getPostsFromTagsOrEmpty([artistName], 1);
+
+  return filterTags(
+    posts.take(30).where((e) => !e.isFlash).toList(),
+    {
+      ...globalBlacklistedTags.map((e) => e.name),
+    },
+  );
+});
 
 class GelbooruBuilder
     with

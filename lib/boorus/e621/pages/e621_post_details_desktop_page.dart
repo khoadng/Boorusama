@@ -23,7 +23,6 @@ import 'package:boorusama/core/widgets/posts/information_section.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
 import 'e621_post_details_page.dart';
 import 'widgets/e621_post_action_toolbar.dart';
-import 'widgets/e621_recommended_artist_list.dart';
 
 class E621PostDetailsDesktopPage extends ConsumerStatefulWidget {
   const E621PostDetailsDesktopPage({
@@ -134,10 +133,10 @@ class _DanbooruPostDetailsDesktopPageState
                   ],
                 ),
               ),
-              E621RecommendedArtistList(
-                post: post,
-                allowFetch: !loading,
-              ),
+              // E621RecommendedArtistList(
+              //   post: post,
+              //   allowFetch: !loading,
+              // ),
             ],
           );
         },
