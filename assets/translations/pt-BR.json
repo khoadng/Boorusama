@@ -57,7 +57,8 @@
             "score": {
                 "one": "Ponto",
                 "other": "Pontos"
-            }
+            },
+            "source_label": "Source"
         },
         "parent_child": {
             "children_of": "Filho de"
