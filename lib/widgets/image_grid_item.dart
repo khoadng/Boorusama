@@ -40,6 +40,7 @@ class ImageGridItem extends StatelessWidget {
     this.hasSound,
     this.score,
     this.isAI = false,
+    this.isGif = false,
   });
 
   final AutoScrollOptions? autoScrollOptions;
@@ -58,6 +59,7 @@ class ImageGridItem extends StatelessWidget {
   final bool? hasSound;
   final int? score;
   final bool isAI;
+  final bool isGif;
 
   @override
   Widget build(BuildContext context) {
@@ -134,14 +136,18 @@ class ImageGridItem extends StatelessWidget {
     );
   }
 
-  Widget _buildOverlayIcon() {
+  Widget _buildOverlayIcon(BuildContext context) {
     return IgnorePointer(
       child: Padding(
         padding: const EdgeInsets.all(2),
         child: Wrap(
           spacing: 1,
           children: [
-            if (isAnimated ?? false)
+            if (isGif)
+              const ImageOverlayIcon(
+                icon: Symbols.gif,
+              )
+            else if (isAnimated ?? false)
               if (duration == null)
                 const ImageOverlayIcon(
                   icon: Symbols.play_circle,
@@ -169,11 +175,11 @@ class ImageGridItem extends StatelessWidget {
                 child: const Text(
                   'AI',
                   style: TextStyle(
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.w800,
                     color: Colors.white,
                   ),
                 ),
-              )
+              ),
           ],
         ),
       ),
@@ -187,7 +193,7 @@ class ImageGridItem extends StatelessWidget {
         if (!hideOverlay)
           Padding(
             padding: const EdgeInsets.only(top: 1, left: 1),
-            child: _buildOverlayIcon(),
+            child: _buildOverlayIcon(context),
           ),
         Positioned.fill(
           child: Material(

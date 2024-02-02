@@ -2,7 +2,6 @@
 import 'dart:math';
 
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
@@ -14,6 +13,7 @@ import 'package:multi_split_view/multi_split_view.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
+import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';

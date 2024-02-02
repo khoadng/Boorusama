@@ -106,6 +106,7 @@ class DanbooruImageGridItem extends ConsumerWidget {
         ],
       ),
       child: ImageGridItem(
+        isGif: post.isGif,
         isAI: post.isAI,
         hideOverlay: hideOverlay,
         isFaved: isFaved,
