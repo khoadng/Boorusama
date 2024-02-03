@@ -110,7 +110,12 @@ class _DanbooruPostDetailsPageState
           post: post,
           showSource: true,
         ),
-        artistInfoBuilder: (context, post) => DanbooruArtistSection(post: post),
+        artistInfoBuilder: (context, post) => DanbooruArtistSection(
+          post: post,
+          commentary:
+              ref.watch(danbooruArtistCommentaryProvider(post.id)).value ??
+                  ArtistCommentary.empty(),
+        ),
         placeholderImageUrlBuilder: (post, currentPage) =>
             currentPage == widget.intitialIndex && post.isTranslated
                 ? null
@@ -242,15 +247,16 @@ class DanbooruArtistSection extends ConsumerWidget {
   const DanbooruArtistSection({
     super.key,
     required this.post,
+    required this.commentary,
   });
 
   final DanbooruPost post;
+  final ArtistCommentary commentary;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ArtistSection(
-      commentary: ref.watch(danbooruArtistCommentaryProvider(post.id)).value ??
-          ArtistCommentary.empty(),
+      commentary: commentary,
       artistTags: post.artistTags,
       source: post.source,
     );
@@ -303,15 +309,18 @@ class DanbooruCharacterPostList extends ConsumerWidget {
       sliver: MultiSliver(
         children: [
           SliverToBoxAdapter(
-            child: Row(
-              children: [
-                Text(
-                  'Characters',
-                  style: context.textTheme.titleMedium!.copyWith(
-                    fontWeight: FontWeight.bold,
+            child: Container(
+              margin: const EdgeInsets.only(top: 20),
+              child: Row(
+                children: [
+                  Text(
+                    'Characters',
+                    style: context.textTheme.titleMedium!.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           const SliverSizedBox(height: 8),

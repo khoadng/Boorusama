@@ -2,6 +2,8 @@
 import 'dart:async';
 
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/feats/artist_commentaries/artist_commentaries.dart';
+import 'package:boorusama/core/feats/artist_commentaries/artist_commentaries.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -130,6 +132,11 @@ class _DanbooruPostDetailsDesktopPageState
                       const Divider(height: 8, thickness: 1),
                       DanbooruArtistSection(
                         post: post,
+                        commentary: ref
+                                .watch(
+                                    danbooruArtistCommentaryProvider(post.id))
+                                .value ??
+                            ArtistCommentary.empty(),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8),
