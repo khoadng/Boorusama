@@ -26,15 +26,15 @@ final danbooruNoteRepoProvider =
 extension NoteDtoX on NoteDto {
   Note toEntity() {
     final coord = NoteCoordinate(
-      x: x.toDouble(),
-      y: y.toDouble(),
-      width: width.toDouble(),
-      height: height.toDouble(),
+      x: x?.toDouble() ?? 0,
+      y: y?.toDouble() ?? 0,
+      width: width?.toDouble() ?? 0,
+      height: height?.toDouble() ?? 0,
     );
 
     return Note(
       coordinate: coord,
-      content: body,
+      content: body ?? '',
     );
   }
 }
