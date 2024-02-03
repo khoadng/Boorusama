@@ -11,14 +11,26 @@ mixin DanbooruClientVersions {
   Dio get dio;
 
   Future<List<PostVersionDto>> getPostVersions({
-    required int id,
+    int? id,
+    String? updaterName,
+    List<String>? addedTags,
+    List<String>? removedTags,
+    List<String>? changedTags,
     CancelToken? cancelToken,
   }) async {
     final response = await dio.get(
       '/post_versions.json',
       cancelToken: cancelToken,
       queryParameters: {
+        if (id != null) 'search[post_id]': id,
         'search[post_id]': id,
+        if (updaterName != null) 'search[updater_name]': updaterName,
+        if (addedTags != null && addedTags.isNotEmpty)
+          'search[added_tags_include_all]': addedTags.join(' '),
+        if (removedTags != null && removedTags.isNotEmpty)
+          'search[removed_tags_include_all]': removedTags.join(' '),
+        if (changedTags != null && changedTags.isNotEmpty)
+          'search[changed_tags]': changedTags.join(' '),
         'only': kPostVersionParams,
       },
     );
