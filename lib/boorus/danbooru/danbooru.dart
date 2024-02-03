@@ -224,23 +224,27 @@ class DanbooruBuilder with DefaultTagColorMixin implements BooruBuilder {
   PostImageDetailsUrlBuilder get postImageDetailsUrlBuilder =>
       (settings, post, config) => (post as DanbooruPost).toOption().fold(
             () => post.sampleImageUrl,
-            (post) => config.imageDetaisQuality.toOption().fold(
-                () => switch (settings.imageQuality) {
-                      ImageQuality.highest ||
-                      ImageQuality.original =>
-                        post.sampleImageUrl,
-                      _ => post.url720x720,
-                    },
-                (quality) => switch (mapStringToPostQualityType(quality)) {
-                      PostQualityType.v180x180 => post.url180x180,
-                      PostQualityType.v360x360 => post.url360x360,
-                      PostQualityType.v720x720 => post.url720x720,
-                      PostQualityType.sample =>
-                        post.isVideo ? post.url720x720 : post.sampleImageUrl,
-                      PostQualityType.original =>
-                        post.isVideo ? post.url720x720 : post.originalImageUrl,
-                      null => post.url720x720,
-                    }),
+            (post) => post.isGif
+                ? post.sampleImageUrl
+                : config.imageDetaisQuality.toOption().fold(
+                    () => switch (settings.imageQuality) {
+                          ImageQuality.highest ||
+                          ImageQuality.original =>
+                            post.sampleImageUrl,
+                          _ => post.url720x720,
+                        },
+                    (quality) => switch (mapStringToPostQualityType(quality)) {
+                          PostQualityType.v180x180 => post.url180x180,
+                          PostQualityType.v360x360 => post.url360x360,
+                          PostQualityType.v720x720 => post.url720x720,
+                          PostQualityType.sample => post.isVideo
+                              ? post.url720x720
+                              : post.sampleImageUrl,
+                          PostQualityType.original => post.isVideo
+                              ? post.url720x720
+                              : post.originalImageUrl,
+                          null => post.url720x720,
+                        }),
           );
 
   @override

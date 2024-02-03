@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
@@ -16,6 +16,7 @@ import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/danbooru_creator_preloader.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/feats/artist_commentaries/artist_commentaries.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/tags/booru_tag_type_store.dart';
@@ -24,11 +25,11 @@ import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/post_details_page_scaffold.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/widgets/sliver_sized_box.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/widgets/widgets.dart';
 import 'widgets/danbooru_tags_tile.dart';
 import 'widgets/details/danbooru_more_action_button.dart';
 import 'widgets/details/danbooru_post_action_toolbar.dart';
-import 'widgets/details/danbooru_recommend_artist_list.dart';
 import 'widgets/details/pool_tiles.dart';
 
 class DanbooruPostDetailsPage extends ConsumerStatefulWidget {
@@ -65,8 +66,34 @@ class _DanbooruPostDetailsPageState
         toolbarBuilder: (context, post) =>
             DanbooruPostActionToolbar(post: post),
         swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
-        sliverArtistPostsBuilder: (context, post) =>
-            DanbooruArtistPostList(post: post),
+        sliverArtistPostsBuilder: (context, post) => post.artistTags.isNotEmpty
+            ? ArtistPostList(
+                artists: post.artistTags,
+                builder: (tag) =>
+                    ref.watch(danbooruPostDetailsArtistProvider(tag)).maybeWhen(
+                          data: (data) => PreviewPostGrid(
+                            posts: data,
+                            onTap: (postIdx) => goToPostDetailsPage(
+                              context: context,
+                              posts: data,
+                              initialIndex: postIdx,
+                            ),
+                            imageUrl: (item) => item.url360x360,
+                          ),
+                          orElse: () => const PreviewPostGridPlaceholder(
+                            imageCount: 30,
+                          ),
+                        ),
+              )
+            : const SliverSizedBox.shrink(),
+        sliverCharacterPostsBuilder: (context, post) => post.artistTags.isEmpty
+            ? DanbooruCharacterPostList(post: post)
+            : ref
+                .watch(danbooruPostDetailsArtistProvider(post.artistTags.first))
+                .maybeWhen(
+                  data: (_) => DanbooruCharacterPostList(post: post),
+                  orElse: () => const SliverSizedBox.shrink(),
+                ),
         sliverRelatedPostsBuilder: (context, post) =>
             DanbooruRelatedPostsSection(post: post),
         poolTileBuilder: (context, post) =>
@@ -74,14 +101,21 @@ class _DanbooruPostDetailsPageState
                   data: (pools) => PoolTiles(pools: pools),
                   orElse: () => const SizedBox.shrink(),
                 ),
-        statsTileBuilder: (context, post) => DanbooruPostStatsTile(post: post),
-        onExpanded: (post) => post.loadDetailsFrom(ref),
+        statsTileBuilder: (context, post) => DanbooruPostStatsTile(
+          post: post,
+          commentCount: ref.watch(danbooruCommentCountProvider(post.id)).value,
+        ),
         tagListBuilder: (context, post) => DanbooruTagsTile(post: post),
         infoBuilder: (context, post) => SimpleInformationSection(
           post: post,
           showSource: true,
         ),
-        artistInfoBuilder: (context, post) => DanbooruArtistSection(post: post),
+        artistInfoBuilder: (context, post) => DanbooruArtistSection(
+          post: post,
+          commentary:
+              ref.watch(danbooruArtistCommentaryProvider(post.id)).value ??
+                  ArtistCommentary.empty(),
+        ),
         placeholderImageUrlBuilder: (post, currentPage) =>
             currentPage == widget.intitialIndex && post.isTranslated
                 ? null
@@ -186,18 +220,18 @@ class DanbooruPostStatsTile extends ConsumerWidget {
   const DanbooruPostStatsTile({
     super.key,
     required this.post,
+    required this.commentCount,
   });
 
   final DanbooruPost post;
+  final int? commentCount;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final comments = ref.watch(danbooruCommentProvider(post.id));
-
     return SimplePostStatsTile(
       score: post.score,
       favCount: post.favCount,
-      totalComments: comments?.length ?? 0,
+      totalComments: commentCount ?? 0,
       votePercentText: _generatePercentText(post),
     );
   }
@@ -213,14 +247,14 @@ class DanbooruArtistSection extends ConsumerWidget {
   const DanbooruArtistSection({
     super.key,
     required this.post,
+    required this.commentary,
   });
 
   final DanbooruPost post;
+  final ArtistCommentary commentary;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final commentary = ref.watch(danbooruArtistCommentaryProvider(post.id));
-
     return ArtistSection(
       commentary: commentary,
       artistTags: post.artistTags,
@@ -253,22 +287,8 @@ final danbooruTagGroupsProvider = FutureProvider.autoDispose
   return createTagGroupItems(tags);
 });
 
-class DanbooruArtistPostList extends ConsumerWidget {
-  const DanbooruArtistPostList({
-    super.key,
-    required this.post,
-  });
-
-  final DanbooruPost post;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return ref.watch(danbooruPostDetailsArtistProvider(post)).maybeWhen(
-          data: (artists) => DanbooruRecommendArtistList(artists: artists),
-          orElse: () => const SliverToBoxAdapter(),
-        );
-  }
-}
+final danbooruCharacterExpandStateProvider =
+    StateProvider.autoDispose.family<bool, String>((ref, tag) => false);
 
 class DanbooruCharacterPostList extends ConsumerWidget {
   const DanbooruCharacterPostList({
@@ -280,37 +300,50 @@ class DanbooruCharacterPostList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tags = post.characterTags.take(2).toList();
+    final tags = post.characterTags;
 
-    return SliverList(
-      delegate: SliverChildBuilderDelegate(
-        (context, index) => ref
-            .watch(danbooruPostDetailsCharacterProvider(tags[index]))
-            .maybeWhen(
-              data: (r) {
-                if (r.posts.isEmpty) return const SizedBox();
+    if (tags.isEmpty) return const SliverSizedBox.shrink();
 
-                return RecommendPostSection(
-                  grid: false,
-                  header: ListTile(
-                    onTap: () => goToCharacterPage(context, tags[index]),
-                    title: Text(r.title),
-                    trailing: const Icon(
-                      Symbols.arrow_right_alt,
+    return SliverPadding(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      sliver: MultiSliver(
+        children: [
+          SliverToBoxAdapter(
+            child: Container(
+              margin: const EdgeInsets.only(top: 20),
+              child: Row(
+                children: [
+                  Text(
+                    'Characters',
+                    style: context.textTheme.titleMedium!.copyWith(
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  posts: r.posts,
-                  onTap: (postIdx) => goToPostDetailsPage(
-                    context: context,
-                    posts: r.posts,
-                    initialIndex: index,
-                  ),
-                  imageUrl: (post) => post.url360x360,
-                );
-              },
-              orElse: () => const SizedBox.shrink(),
+                ],
+              ),
             ),
-        childCount: tags.length,
+          ),
+          const SliverSizedBox(height: 8),
+          SliverGrid.count(
+            crossAxisCount: 2,
+            childAspectRatio: 4.5,
+            mainAxisSpacing: 4,
+            crossAxisSpacing: 4,
+            children: tags
+                .map(
+                  (tag) => BooruChip(
+                    borderRadius: BorderRadius.circular(4),
+                    color: ref.getTagColor(context, 'character'),
+                    onPressed: () => goToCharacterPage(context, tag),
+                    label: Text(
+                      tag.replaceAll('_', ' '),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                )
+                .toList(),
+          ),
+        ],
       ),
     );
   }

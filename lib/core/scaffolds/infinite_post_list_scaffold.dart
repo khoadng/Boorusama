@@ -160,6 +160,7 @@ class _InfinitePostListScaffoldState<T extends Post>
                   ),
             child: LayoutBuilder(
               builder: (context, constraints) => ImageGridItem(
+                isGif: post.isGif,
                 isAI: post.isAI,
                 onTap: !multiSelect
                     ? () {

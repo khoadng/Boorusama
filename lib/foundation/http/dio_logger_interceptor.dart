@@ -49,8 +49,15 @@ class LoggingInterceptor extends Interceptor {
     }
 
     final duration = getRequestDuration(response.requestOptions);
+    final serverRuntime = response.headers.value('x-runtime');
+    final serverRuntimeSeconds =
+        serverRuntime != null ? double.tryParse(serverRuntime) : null;
+    final serverRuntimeText = serverRuntimeSeconds != null
+        ? ' (server runtime: ${serverRuntimeSeconds.toStringAsFixed(3)}s)'
+        : '';
+
     logger.logI('Network',
-        'Completed ${response.requestOptions.method} to ${response.requestOptions.uri} with status: ${response.statusCodeOrZero} and took ${duration}ms');
+        'Completed ${response.requestOptions.method} to ${response.requestOptions.uri} with status: ${response.statusCodeOrZero} and took ${duration}ms$serverRuntimeText');
     super.onResponse(response, handler);
   }
 

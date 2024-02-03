@@ -13,6 +13,22 @@ const _kCommentParams =
 mixin DanbooruClientComments {
   Dio get dio;
 
+  Future<int> getCommentCount({
+    required int postId,
+  }) async {
+    final response = await dio.get(
+      '/comments.json',
+      queryParameters: {
+        'search[post_id]': postId,
+        'only': 'id,is_deleted',
+      },
+    );
+
+    return (response.data as List)
+        .where((item) => (item['is_deleted'] ?? false) == false)
+        .length;
+  }
+
   Future<List<CommentDto>> getComments({
     required int postId,
     int? limit,

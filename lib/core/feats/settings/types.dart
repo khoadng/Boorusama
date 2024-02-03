@@ -51,6 +51,12 @@ enum BookmarkFilterType {
   hideAll,
 }
 
+enum PageIndicatorPosition {
+  bottom,
+  top,
+  both,
+}
+
 class Settings extends Equatable {
   const Settings({
     required this.safeMode,
@@ -78,6 +84,7 @@ class Settings extends Equatable {
     required this.clearImageCacheOnStartup,
     required this.appLockType,
     required this.bookmarkFilterType,
+    required this.pageIndicatorPosition,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
@@ -128,6 +135,9 @@ class Settings extends Equatable {
         bookmarkFilterType = json['bookmarkFilterType'] != null
             ? BookmarkFilterType.values[json['bookmarkFilterType']]
             : BookmarkFilterType.none,
+        pageIndicatorPosition = json['pageIndicatorPosition'] != null
+            ? PageIndicatorPosition.values[json['pageIndicatorPosition']]
+            : PageIndicatorPosition.bottom,
         imageGridSpacing = json['imageGridSpacing'];
 
   static const defaultSettings = Settings(
@@ -156,6 +166,7 @@ class Settings extends Equatable {
     clearImageCacheOnStartup: false,
     appLockType: AppLockType.none,
     bookmarkFilterType: BookmarkFilterType.none,
+    pageIndicatorPosition: PageIndicatorPosition.bottom,
   );
 
   final String blacklistedTags;
@@ -202,6 +213,8 @@ class Settings extends Equatable {
 
   final BookmarkFilterType bookmarkFilterType;
 
+  final PageIndicatorPosition pageIndicatorPosition;
+
   Settings copyWith({
     String? blacklistedTags,
     String? language,
@@ -228,6 +241,7 @@ class Settings extends Equatable {
     bool? clearImageCacheOnStartup,
     AppLockType? appLockType,
     BookmarkFilterType? bookmarkFilterType,
+    PageIndicatorPosition? pageIndicatorPosition,
   }) =>
       Settings(
         safeMode: safeMode ?? this.safeMode,
@@ -260,6 +274,8 @@ class Settings extends Equatable {
             clearImageCacheOnStartup ?? this.clearImageCacheOnStartup,
         appLockType: appLockType ?? this.appLockType,
         bookmarkFilterType: bookmarkFilterType ?? this.bookmarkFilterType,
+        pageIndicatorPosition:
+            pageIndicatorPosition ?? this.pageIndicatorPosition,
       );
 
   Map<String, dynamic> toJson() => {
@@ -288,6 +304,7 @@ class Settings extends Equatable {
         'clearImageCacheOnStartup': clearImageCacheOnStartup,
         'appLockType': appLockType.index,
         'bookmarkFilterType': bookmarkFilterType.index,
+        'pageIndicatorPosition': pageIndicatorPosition.index,
       };
 
   @override
@@ -317,6 +334,7 @@ class Settings extends Equatable {
         clearImageCacheOnStartup,
         appLockType,
         bookmarkFilterType,
+        pageIndicatorPosition,
       ];
 }
 
@@ -324,4 +342,12 @@ extension SettingsX on Settings {
   bool get appLockEnabled => appLockType == AppLockType.biometrics;
   bool get shouldFilterBookmarks =>
       bookmarkFilterType != BookmarkFilterType.none;
+}
+
+extension PageIndicatorPositionX on PageIndicatorPosition {
+  bool get isVisibleAtBottom =>
+      this == PageIndicatorPosition.bottom ||
+      this == PageIndicatorPosition.both;
+  bool get isVisibleAtTop =>
+      this == PageIndicatorPosition.top || this == PageIndicatorPosition.both;
 }

@@ -10,72 +10,45 @@ import 'package:boorusama/core/feats/boorus/providers.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 
 final danbooruPostDetailsArtistProvider = FutureProvider.family
-    .autoDispose<List<Recommend<DanbooruPost>>, DanbooruPost>(
-        (ref, post) async {
+    .autoDispose<List<DanbooruPost>, String>((ref, tag) async {
   final config = ref.watchConfig;
   final repo = ref.watch(danbooruArtistCharacterPostRepoProvider(config));
   final blacklistedTags =
       await ref.watch(danbooruBlacklistedTagsProvider(config).future);
   final globalBlacklistedTags = ref.watch(globalBlacklistedTagsProvider);
 
-  final tags = post.artistTags;
-  List<Recommend<DanbooruPost>> state = [];
+  final posts = await repo.getPosts([tag], 1).run().then(
+        (value) => value.fold(
+          (l) => <DanbooruPost>[],
+          (r) => r,
+        ),
+      );
 
-  for (final tag in tags) {
-    List<DanbooruPost> posts;
-
-    posts = await repo
-        .getPosts([tag], 1)
-        .run()
-        .then((value) => value.fold((l) => [], (r) => r));
-
-    posts = posts.take(30).toList();
-
-    state.add(Recommend(
-      type: RecommendType.artist,
-      title: tag.replaceAll('_', ' '),
-      tag: tag,
-      posts: filterTags(
-        posts.where((e) => !e.isFlash).toList(),
-        {
-          if (blacklistedTags != null) ...blacklistedTags,
-          ...globalBlacklistedTags.map((e) => e.name),
-        },
-      ),
-    ));
-  }
-
-  return state;
+  return filterTags(
+    posts.take(30).where((e) => !e.isFlash).toList(),
+    {
+      if (blacklistedTags != null) ...blacklistedTags,
+      ...globalBlacklistedTags.map((e) => e.name),
+    },
+  );
 });
 
 final danbooruPostDetailsCharacterProvider = FutureProvider.family
-    .autoDispose<Recommend<DanbooruPost>, String>((ref, tag) async {
+    .autoDispose<List<DanbooruPost>, String>((ref, tag) async {
   final config = ref.watchConfig;
   final repo = ref.watch(danbooruArtistCharacterPostRepoProvider(config));
   final blacklistedTags =
       await ref.watch(danbooruBlacklistedTagsProvider(config).future);
   final globalBlacklistedTags = ref.watch(globalBlacklistedTagsProvider);
 
-  List<DanbooruPost> posts;
+  final posts = await repo.getPostsFromTagsOrEmpty([tag], 1);
 
-  posts = await repo
-      .getPosts([tag], 1)
-      .run()
-      .then((value) => value.fold((l) => [], (r) => r));
-
-  posts = posts.take(30).toList();
-
-  return Recommend(
-    type: RecommendType.character,
-    title: tag.replaceAll('_', ' '),
-    tag: tag,
-    posts: filterTags(
-      posts.where((e) => !e.isFlash).toList(),
-      {
-        if (blacklistedTags != null) ...blacklistedTags,
-        ...globalBlacklistedTags.map((e) => e.name),
-      },
-    ),
+  return filterTags(
+    posts.take(30).toList().where((e) => !e.isFlash).toList(),
+    {
+      if (blacklistedTags != null) ...blacklistedTags,
+      ...globalBlacklistedTags.map((e) => e.name),
+    },
   );
 });
 

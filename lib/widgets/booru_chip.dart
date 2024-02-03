@@ -17,6 +17,7 @@ class BooruChip extends ConsumerWidget {
     this.trailing,
     this.contentPadding,
     this.visualDensity,
+    this.borderRadius,
   });
 
   final Color? color;
@@ -25,6 +26,7 @@ class BooruChip extends ConsumerWidget {
   final Widget? trailing;
   final EdgeInsetsGeometry? contentPadding;
   final VisualDensity? visualDensity;
+  final BorderRadiusGeometry? borderRadius;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -42,8 +44,9 @@ class BooruChip extends ConsumerWidget {
               foregroundColor: colors?.foregroundColor,
               padding: const EdgeInsets.only(left: 6, right: 2),
               backgroundColor: colors?.backgroundColor,
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(8)),
+              shape: RoundedRectangleBorder(
+                borderRadius:
+                    borderRadius ?? const BorderRadius.all(Radius.circular(8)),
               ),
               side: BorderSide(
                 color: colors?.borderColor ?? Colors.transparent,
@@ -60,8 +63,9 @@ class BooruChip extends ConsumerWidget {
               padding:
                   contentPadding ?? const EdgeInsets.symmetric(horizontal: 8),
               backgroundColor: colors?.backgroundColor,
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(16)),
+              shape: RoundedRectangleBorder(
+                borderRadius:
+                    borderRadius ?? const BorderRadius.all(Radius.circular(16)),
               ),
               side: BorderSide(
                 color: colors?.borderColor ?? Colors.transparent,

@@ -6,7 +6,6 @@ import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/feats/bookmarks/bookmarks.dart';
@@ -36,7 +35,6 @@ class DanbooruPostContextMenu extends ConsumerWidget {
     final bookmarkState = ref.watch(bookmarkProvider);
     final isBookmarked =
         bookmarkState.isBookmarked(post, booruConfig.booruType);
-    final tags = ref.watch(danbooruTagListProvider(booruConfig));
 
     return DownloadProviderWidget(
       builder: (context, download) => GenericContextMenu(
@@ -105,15 +103,9 @@ class DanbooruPostContextMenu extends ConsumerWidget {
             ContextMenuButtonConfig(
               'Edit',
               onPressed: () {
-                goToTagEdiPage(
+                goToTagEditPage(
                   context,
                   post: post,
-                  tags: tags.containsKey(post.id)
-                      ? tags[post.id]!.allTags
-                      : post.tags,
-                  rating: tags.containsKey(post.id)
-                      ? tags[post.id]!.rating
-                      : post.rating,
                 );
               },
             ),

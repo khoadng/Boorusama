@@ -22,6 +22,15 @@ final favoriteTagsProvider =
   ],
 );
 
+final favoriteTagLabelsProvider = Provider<List<String>>((ref) {
+  final tags = ref.watch(favoriteTagsProvider);
+  final tagLabels = tags.expand((e) => e.labels ?? <String>[]).toSet();
+
+  final labels = tagLabels.toList()..sort();
+
+  return labels;
+});
+
 final favoriteTagsIOHandlerProvider = Provider<FavoriteTagsIOHandler>(
   (ref) => FavoriteTagsIOHandler(
     handler: DataIOHandler.file(
@@ -48,7 +57,7 @@ class FavoriteTagsFilterScope extends ConsumerStatefulWidget {
   final Widget Function(
     BuildContext context,
     List<FavoriteTag> tags,
-    Set<String> labels,
+    List<String> labels,
     String selectedLabel,
   ) builder;
 
@@ -82,7 +91,7 @@ class _FavoriteTagsFilterScopeState
   @override
   Widget build(BuildContext context) {
     final tags = ref.watch(favoriteTagsProvider);
-    final tagLabels = tags.expand((e) => e.labels ?? <String>[]).toSet();
+    final labels = ref.watch(favoriteTagLabelsProvider);
     final filteredTags = tags.where((e) {
       if (selectedLabel.isEmpty) return true;
 
@@ -116,7 +125,7 @@ class _FavoriteTagsFilterScopeState
     return widget.builder(
       context,
       sortedTags,
-      tagLabels,
+      labels,
       tags.isEmpty ? '' : selectedLabel,
     );
   }

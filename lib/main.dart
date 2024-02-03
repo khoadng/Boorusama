@@ -27,6 +27,7 @@ import 'package:boorusama/core/feats/search/search.dart';
 import 'package:boorusama/core/feats/search_histories/search_histories.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/analytics.dart';
 import 'package:boorusama/foundation/app_info.dart';
@@ -262,45 +263,4 @@ void main() async {
   }
 
   run();
-}
-
-class Reboot extends StatefulWidget {
-  const Reboot({
-    super.key,
-    required this.initialConfig,
-    required this.builder,
-  });
-
-  final BooruConfig initialConfig;
-
-  final Widget Function(BuildContext context, BooruConfig config) builder;
-
-  @override
-  State<Reboot> createState() => _RebootState();
-
-  static start(BuildContext context, BooruConfig newInitialConfig) {
-    context
-        .findAncestorStateOfType<_RebootState>()!
-        .restartApp(newInitialConfig);
-  }
-}
-
-class _RebootState extends State<Reboot> {
-  Key _key = UniqueKey();
-  late var _config = widget.initialConfig;
-
-  void restartApp(BooruConfig config) {
-    setState(() {
-      _config = config;
-      _key = UniqueKey();
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return KeyedSubtree(
-      key: _key,
-      child: widget.builder(context, _config),
-    );
-  }
 }

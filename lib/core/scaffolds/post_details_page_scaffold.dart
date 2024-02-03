@@ -127,7 +127,8 @@ class _PostDetailPageScaffoldState<T extends Post>
               ),
             if (widget.infoBuilder != null)
               widget.infoBuilder!(context, posts[page]),
-            Padding(
+            Container(
+              color: context.colorScheme.surface,
               padding: EdgeInsets.only(
                 bottom: MediaQuery.paddingOf(context).bottom,
               ),
@@ -188,7 +189,7 @@ class _PostDetailPageScaffoldState<T extends Post>
                   page == currentPage)
                 widget.sliverCharacterPostsBuilder!(context, posts[page]),
               SliverSizedBox(
-                height: MediaQuery.paddingOf(context).bottom,
+                height: MediaQuery.paddingOf(context).bottom + 72,
               ),
             ],
           ),

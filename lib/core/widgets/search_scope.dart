@@ -82,31 +82,47 @@ class _SearchScopeState extends ConsumerState<SearchScope> {
     super.dispose();
   }
 
+  void _pop() {
+    if (displayState.value != DisplayState.options) {
+      searchController.resetToOptions();
+    } else {
+      Navigator.of(context).pop();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => context.focusScope.unfocus(),
-      child: Builder(
-        builder: (context) {
-          return ValueListenableBuilder(
-            valueListenable: selectedTagController,
-            builder: (context, tags, child) {
-              return ValueListenableBuilder(
-                valueListenable: displayState,
-                builder: (context, state, child) {
-                  return widget.builder(
-                    state,
-                    focus,
-                    queryEditingController,
-                    selectedTagController,
-                    searchController,
-                    allowSearch(state, tags),
-                  );
-                },
-              );
-            },
-          );
-        },
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        if (didPop) return;
+
+        _pop();
+      },
+      child: GestureDetector(
+        onTap: () => context.focusScope.unfocus(),
+        child: Builder(
+          builder: (context) {
+            return ValueListenableBuilder(
+              valueListenable: selectedTagController,
+              builder: (context, tags, child) {
+                return ValueListenableBuilder(
+                  valueListenable: displayState,
+                  builder: (context, state, child) {
+                    return widget.builder(
+                      state,
+                      focus,
+                      queryEditingController,
+                      selectedTagController,
+                      searchController,
+                      allowSearch(state, tags),
+                    );
+                  },
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }

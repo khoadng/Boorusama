@@ -47,6 +47,13 @@ final danbooruCommentProvider =
   return ref.watch(danbooruCommentsProvider(config))[postId];
 });
 
+final danbooruCommentCountProvider =
+    FutureProvider.autoDispose.family<int, int>((ref, postId) {
+  final client = ref.watch(danbooruClientProvider(ref.watchConfig));
+
+  return client.getCommentCount(postId: postId);
+});
+
 DanbooruComment commentDtoToComment(CommentDto d) {
   return DanbooruComment(
     id: d.id ?? 0,

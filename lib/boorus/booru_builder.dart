@@ -229,21 +229,27 @@ mixin DefaultTagColorMixin implements BooruBuilder {
 mixin DefaultPostImageDetailsUrlMixin implements BooruBuilder {
   @override
   PostImageDetailsUrlBuilder get postImageDetailsUrlBuilder =>
-      (settings, post, config) => config.imageDetaisQuality.toOption().fold(
-          () => switch (settings.imageQuality) {
-                ImageQuality.low => post.thumbnailImageUrl,
-                ImageQuality.original =>
-                  post.isVideo ? post.videoThumbnailUrl : post.originalImageUrl,
-                _ =>
-                  post.isVideo ? post.videoThumbnailUrl : post.sampleImageUrl,
-              },
-          (quality) => switch (stringToGeneralPostQualityType(quality)) {
-                GeneralPostQualityType.preview => post.thumbnailImageUrl,
-                GeneralPostQualityType.sample =>
-                  post.isVideo ? post.videoThumbnailUrl : post.sampleImageUrl,
-                GeneralPostQualityType.original =>
-                  post.isVideo ? post.videoThumbnailUrl : post.originalImageUrl,
-              });
+      (settings, post, config) => post.isGif
+          ? post.sampleImageUrl
+          : config.imageDetaisQuality.toOption().fold(
+              () => switch (settings.imageQuality) {
+                    ImageQuality.low => post.thumbnailImageUrl,
+                    ImageQuality.original => post.isVideo
+                        ? post.videoThumbnailUrl
+                        : post.originalImageUrl,
+                    _ => post.isVideo
+                        ? post.videoThumbnailUrl
+                        : post.sampleImageUrl,
+                  },
+              (quality) => switch (stringToGeneralPostQualityType(quality)) {
+                    GeneralPostQualityType.preview => post.thumbnailImageUrl,
+                    GeneralPostQualityType.sample => post.isVideo
+                        ? post.videoThumbnailUrl
+                        : post.sampleImageUrl,
+                    GeneralPostQualityType.original => post.isVideo
+                        ? post.videoThumbnailUrl
+                        : post.originalImageUrl,
+                  });
 }
 
 mixin DefaultPostStatisticsPageBuilderMixin on BooruBuilder {

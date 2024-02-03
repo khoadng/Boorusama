@@ -9,21 +9,23 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/e621/feats/artists/artists.dart';
 import 'package:boorusama/boorus/e621/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
-import 'package:boorusama/core/widgets/details_page_desktop.dart';
-import 'package:boorusama/core/widgets/general_more_action_button.dart';
-import 'package:boorusama/core/widgets/post_media.dart';
-import 'package:boorusama/core/widgets/posts/file_details_section.dart';
-import 'package:boorusama/core/widgets/posts/information_section.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
+import 'package:boorusama/widgets/widgets.dart';
 import 'e621_post_details_page.dart';
 import 'widgets/e621_post_action_toolbar.dart';
-import 'widgets/e621_recommended_artist_list.dart';
+
+final allowFetchProvider = StateProvider<bool>((ref) {
+  return true;
+});
 
 class E621PostDetailsDesktopPage extends ConsumerStatefulWidget {
   const E621PostDetailsDesktopPage({
@@ -134,14 +136,35 @@ class _DanbooruPostDetailsDesktopPageState
                   ],
                 ),
               ),
-              E621RecommendedArtistList(
-                post: post,
-                allowFetch: !loading,
-              ),
+              if (allowFetch)
+                post.artistTags.isNotEmpty
+                    ? ArtistPostList(
+                        artists: post.artistTags,
+                        builder: (tag) => ref
+                            .watch(e621ArtistPostsProvider(tag))
+                            .maybeWhen(
+                              data: (data) => PreviewPostGrid(
+                                posts: data,
+                                onTap: (postIdx) => goToPostDetailsPage(
+                                  context: context,
+                                  posts: data,
+                                  initialIndex: postIdx,
+                                ),
+                                imageUrl: (item) => item.thumbnailFromSettings(
+                                    ref.watch(settingsProvider)),
+                              ),
+                              orElse: () => const PreviewPostGridPlaceholder(
+                                imageCount: 30,
+                              ),
+                            ),
+                      )
+                    : const SliverSizedBox.shrink()
             ],
           );
         },
       ),
     );
   }
+
+  bool get allowFetch => ref.watch(allowFetchProvider);
 }

@@ -159,6 +159,21 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
                   ref.updateSettings(settings.copyWith(pageMode: value)),
               optionBuilder: (value) => Text(_layoutToString(value)).tr(),
             ),
+            if (settings.pageMode == PageMode.paginated)
+              SettingsTile<PageIndicatorPosition>(
+                title: const Text('Page indicator position'),
+                selectedOption: settings.pageIndicatorPosition,
+                items: const [...PageIndicatorPosition.values],
+                onChanged: (value) => ref.updateSettings(
+                    settings.copyWith(pageIndicatorPosition: value)),
+                optionBuilder: (value) => Text(
+                  switch (value) {
+                    PageIndicatorPosition.top => 'Top',
+                    PageIndicatorPosition.bottom => 'Bottom',
+                    PageIndicatorPosition.both => 'Both',
+                  },
+                ),
+              ),
             SwitchListTile(
               title: const Text('settings.appearance.show_scores').tr(),
               value: settings.showScoresInGrid,

@@ -1,6 +1,5 @@
 export 'count/post_count_provider.dart';
 export 'count/post_count_repository.dart';
-export 'details.dart';
 export 'filter.dart';
 export 'media_info_mixin.dart';
 export 'post.dart';
@@ -10,7 +9,6 @@ export 'post_repository_cacher.dart';
 export 'post_share_notifier.dart';
 export 'providers.dart';
 export 'rating.dart';
-export 'recommend.dart';
 export 'share_post_button.dart';
 export 'sources/source.dart';
 export 'sources/source_def.dart';
