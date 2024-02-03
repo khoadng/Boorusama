@@ -315,7 +315,7 @@ class DanbooruCharacterPostList extends ConsumerWidget {
           const SliverSizedBox(height: 8),
           SliverGrid.count(
             crossAxisCount: 2,
-            childAspectRatio: 5,
+            childAspectRatio: 4.5,
             mainAxisSpacing: 4,
             crossAxisSpacing: 4,
             children: tags
