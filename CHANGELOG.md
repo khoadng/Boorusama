@@ -1,3 +1,7 @@
+# 3.10.1
+- Add a toggle for changing page indicator postition
+- Performance improvements and bug fixes
+
 # 3.10.0
 - Introduce swipe gesture for paginated mode.
 - Enhance user experience for favorite tags with improved UI and additional options.
