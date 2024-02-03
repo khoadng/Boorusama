@@ -18,6 +18,7 @@ import 'danbooru_client_posts.dart';
 import 'danbooru_client_reports.dart';
 import 'danbooru_client_saved_searches.dart';
 import 'danbooru_client_tags.dart';
+import 'danbooru_client_uploads.dart';
 import 'danbooru_client_users.dart';
 import 'danbooru_client_versions.dart';
 import 'types/autocomplete_dto.dart';
@@ -28,21 +29,22 @@ String _encodeAuthHeader(String login, String apiKey) =>
 
 class DanbooruClient
     with
-        DanbooruClientPosts,
         DanbooruClientArtists,
         DanbooruClientComments,
+        DanbooruClientDmails,
         DanbooruClientExplores,
         DanbooruClientFavoriteGroups,
         DanbooruClientFavorites,
         DanbooruClientForums,
+        DanbooruClientNotes,
         DanbooruClientPools,
+        DanbooruClientPosts,
         DanbooruClientReports,
         DanbooruClientSavedSearches,
-        DanbooruClientDmails,
         DanbooruClientTags,
-        DanbooruClientNotes,
-        DanbooruClientVersions,
-        DanbooruClientUsers {
+        DanbooruClientUploads,
+        DanbooruClientUsers,
+        DanbooruClientVersions {
   DanbooruClient({
     required String baseUrl,
     String? login,
