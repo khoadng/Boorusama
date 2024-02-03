@@ -1,11 +1,5 @@
-// Package imports:
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 // Project imports:
-import 'package:boorusama/boorus/danbooru/feats/artist_commentaries/artist_commentaries.dart';
-import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/tags/tag_filter_category.dart';
 import 'package:boorusama/core/utils.dart';
@@ -34,11 +28,3 @@ extension DanbooruRepoX on PostRepository<DanbooruPost> {
 
 Option<String> tagFilterCategoryToString(TagFilterCategory category) =>
     category == TagFilterCategory.popular ? const Some('order:score') : none();
-
-extension PostDetailsPostX on DanbooruPost {
-  void loadDetailsFrom(WidgetRef ref) {
-    final config = ref.readConfig;
-    ref.read(danbooruCommentsProvider(config).notifier).load(id);
-    ref.read(danbooruArtistCommentariesProvider(config).notifier).load(id);
-  }
-}

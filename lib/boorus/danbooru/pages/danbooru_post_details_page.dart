@@ -16,6 +16,7 @@ import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/danbooru_creator_preloader.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/feats/artist_commentaries/artist_commentaries.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/tags/booru_tag_type_store.dart';
@@ -101,7 +102,6 @@ class _DanbooruPostDetailsPageState
                   orElse: () => const SizedBox.shrink(),
                 ),
         statsTileBuilder: (context, post) => DanbooruPostStatsTile(post: post),
-        onExpanded: (post) => post.loadDetailsFrom(ref),
         tagListBuilder: (context, post) => DanbooruTagsTile(post: post),
         infoBuilder: (context, post) => SimpleInformationSection(
           post: post,
@@ -218,12 +218,12 @@ class DanbooruPostStatsTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final comments = ref.watch(danbooruCommentProvider(post.id));
+    final count = ref.watch(danbooruCommentCountProvider(post.id));
 
     return SimplePostStatsTile(
       score: post.score,
       favCount: post.favCount,
-      totalComments: comments?.length ?? 0,
+      totalComments: count.value ?? 0,
       votePercentText: _generatePercentText(post),
     );
   }
@@ -245,10 +245,9 @@ class DanbooruArtistSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final commentary = ref.watch(danbooruArtistCommentaryProvider(post.id));
-
     return ArtistSection(
-      commentary: commentary,
+      commentary: ref.watch(danbooruArtistCommentaryProvider(post.id)).value ??
+          ArtistCommentary.empty(),
       artistTags: post.artistTags,
       source: post.source,
     );

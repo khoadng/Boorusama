@@ -90,7 +90,6 @@ class _DanbooruPostDetailsDesktopPageState
               const Duration(seconds: 1),
               () {
                 ref.read(allowFetchProvider.notifier).state = true;
-                widget.posts[page].loadDetailsFrom(ref);
                 ref.read(notesControllerProvider(post).notifier).load();
               },
             );
