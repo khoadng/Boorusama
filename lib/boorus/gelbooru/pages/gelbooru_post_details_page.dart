@@ -92,22 +92,33 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailsPage> {
               post.tags,
               onSuccess: (tags) {
                 if (!mounted) return;
-                final group = tags.firstWhereOrNull(
-                    (tag) => tag.groupName.toLowerCase() == 'artist');
-
-                if (group == null) return;
-                final map = ref.read(gelbooruPostDetailsArtistMapProvider);
-
-                map[post.id] = group.tags.map((e) => e.rawName).toList();
-
-                ref.read(gelbooruPostDetailsArtistMapProvider.notifier).state =
-                    {
-                  ...map,
-                };
+                ref.setGelbooruPostDetailsArtistMap(
+                  post: post,
+                  tags: tags,
+                );
               },
             )
           : null,
     );
+  }
+}
+
+extension GelbooruArtistMapProviderX on WidgetRef {
+  void setGelbooruPostDetailsArtistMap({
+    required Post post,
+    required List<TagGroupItem> tags,
+  }) {
+    final group =
+        tags.firstWhereOrNull((tag) => tag.groupName.toLowerCase() == 'artist');
+
+    if (group == null) return;
+    final map = read(gelbooruPostDetailsArtistMapProvider);
+
+    map[post.id] = group.tags.map((e) => e.rawName).toList();
+
+    read(gelbooruPostDetailsArtistMapProvider.notifier).state = {
+      ...map,
+    };
   }
 }
 

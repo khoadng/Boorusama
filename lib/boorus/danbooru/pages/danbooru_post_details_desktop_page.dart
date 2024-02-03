@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/danbooru_creator_preloader.dart';
@@ -26,7 +27,7 @@ import 'danbooru_post_details_page.dart';
 import 'widgets/danbooru_tags_tile.dart';
 
 final allowFetchProvider = StateProvider<bool>((ref) {
-  return false;
+  return true;
 });
 
 class DanbooruPostDetailsDesktopPage extends ConsumerStatefulWidget {
@@ -132,7 +133,12 @@ class _DanbooruPostDetailsDesktopPageState
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8),
-                        child: DanbooruPostStatsTile(post: post),
+                        child: DanbooruPostStatsTile(
+                          post: post,
+                          commentCount: ref
+                              .watch(danbooruCommentCountProvider(post.id))
+                              .value,
+                        ),
                       ),
                       const Divider(height: 8, thickness: 1),
                       DanbooruTagsTile(

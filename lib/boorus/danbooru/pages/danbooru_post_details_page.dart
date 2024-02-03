@@ -101,7 +101,10 @@ class _DanbooruPostDetailsPageState
                   data: (pools) => PoolTiles(pools: pools),
                   orElse: () => const SizedBox.shrink(),
                 ),
-        statsTileBuilder: (context, post) => DanbooruPostStatsTile(post: post),
+        statsTileBuilder: (context, post) => DanbooruPostStatsTile(
+          post: post,
+          commentCount: ref.watch(danbooruCommentCountProvider(post.id)).value,
+        ),
         tagListBuilder: (context, post) => DanbooruTagsTile(post: post),
         infoBuilder: (context, post) => SimpleInformationSection(
           post: post,
@@ -212,18 +215,18 @@ class DanbooruPostStatsTile extends ConsumerWidget {
   const DanbooruPostStatsTile({
     super.key,
     required this.post,
+    required this.commentCount,
   });
 
   final DanbooruPost post;
+  final int? commentCount;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final count = ref.watch(danbooruCommentCountProvider(post.id));
-
     return SimplePostStatsTile(
       score: post.score,
       favCount: post.favCount,
-      totalComments: count.value ?? 0,
+      totalComments: commentCount ?? 0,
       votePercentText: _generatePercentText(post),
     );
   }

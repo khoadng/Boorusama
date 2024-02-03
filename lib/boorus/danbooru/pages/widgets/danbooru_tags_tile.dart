@@ -22,8 +22,8 @@ import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 final danbooruTagTileExpansionStateProvider =
-    StateProvider.autoDispose<bool>((ref) {
-  return false;
+    StateProvider.autoDispose.family<bool, bool>((ref, value) {
+  return value;
 });
 
 class DanbooruTagsTile extends ConsumerWidget {
@@ -31,10 +31,12 @@ class DanbooruTagsTile extends ConsumerWidget {
     super.key,
     required this.post,
     this.allowFetch = true,
+    this.initialExpanded = false,
   });
 
   final DanbooruPost post;
   final bool allowFetch;
+  final bool initialExpanded;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -42,14 +44,18 @@ class DanbooruTagsTile extends ConsumerWidget {
     final tagDetails =
         allowFetch ? ref.watch(danbooruTagListProvider(config))[post.id] : null;
     final count = tagDetails?.allTags.length ?? post.tags.length;
-    final isExpanded = ref.watch(danbooruTagTileExpansionStateProvider);
+    final isExpanded =
+        ref.watch(danbooruTagTileExpansionStateProvider(initialExpanded));
 
     return Theme(
       data: context.theme.copyWith(dividerColor: Colors.transparent),
       child: ExpansionTile(
+        initiallyExpanded: initialExpanded,
         onExpansionChanged: (value) {
-          ref.read(danbooruTagTileExpansionStateProvider.notifier).state =
-              value;
+          ref
+              .read(danbooruTagTileExpansionStateProvider(initialExpanded)
+                  .notifier)
+              .state = value;
         },
         title: Row(
           children: [
