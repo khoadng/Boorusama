@@ -17,6 +17,28 @@ sealed class PostSource {
     'pixiv.me': 'https://www.pixiv.net/favicon.ico',
   }.lock;
 
+  static final IMap<String, String> assetFaviconUrlSite = <String, String>{
+    'danbooru': 'assets/images/danbooru-logo.png',
+    'safebooru': 'assets/images/danbooru-logo.png',
+    'testbooru': 'assets/images/danbooru-logo.png',
+  }.lock;
+
+  static String? _getFavicon(String host) {
+    for (final entry in assetFaviconUrlSite.entries) {
+      if (host.contains(entry.key)) {
+        return entry.value;
+      }
+    }
+
+    for (final entry in customFaviconUrlSite.entries) {
+      if (host.contains(entry.key)) {
+        return entry.value;
+      }
+    }
+
+    return null;
+  }
+
   factory PostSource.from(
     String? value, {
     int? pixivId,
@@ -25,22 +47,13 @@ sealed class PostSource {
 
     return isWebSource(value)
         ? pixivId.toOption().fold(
-            () {
-              for (var key in customFaviconUrlSite.keys) {
-                if (value.contains(key)) {
-                  return RawWebSource(
-                    faviconUrl: customFaviconUrlSite[key]!,
-                    url: value,
-                    hasCustomFaviconUrl: true,
-                    uri: Uri.parse(value),
-                  );
-                }
-              }
-
-              return SimpleWebSource(uri: Uri.parse(value));
-            },
-            (pixivId) => PostSource.pixiv(pixivId),
-          )
+              () => RawWebSource(
+                faviconUrl: _getFavicon(value),
+                url: value,
+                uri: Uri.parse(value),
+              ),
+              (pixivId) => PostSource.pixiv(pixivId),
+            )
         : NonWebSource(value);
   }
 }
@@ -63,42 +76,29 @@ sealed class WebSource extends PostSource {
   final Uri uri;
   String get sourceHost => getHost(uri);
   String get faviconUrl;
-  bool get hasCustomFaviconUrl;
 
   String get url;
 }
 
+enum FaviconType {
+  asset,
+  network,
+}
+
 class RawWebSource extends WebSource {
   RawWebSource({
-    required this.faviconUrl,
+    required String? faviconUrl,
     required this.url,
-    required this.hasCustomFaviconUrl,
     required super.uri,
-  });
+  }) : _faviconUrl = faviconUrl;
+
+  final String? _faviconUrl;
 
   @override
-  final String faviconUrl;
+  String get faviconUrl => _faviconUrl ?? getFavicon(sourceHost);
 
   @override
   final String url;
-
-  @override
-  final bool hasCustomFaviconUrl;
-}
-
-class SimpleWebSource extends WebSource {
-  SimpleWebSource({
-    required super.uri,
-  });
-
-  @override
-  String get url => uri.toString();
-
-  @override
-  String get faviconUrl => getFavicon(sourceHost);
-
-  @override
-  bool get hasCustomFaviconUrl => false;
 }
 
 const pixivLinkUrl = 'https://www.pixiv.net/en/artworks/';
@@ -113,9 +113,6 @@ class PixivSource extends WebSource {
 
   @override
   String get faviconUrl => getFavicon(sourceHost);
-
-  @override
-  bool get hasCustomFaviconUrl => false;
 }
 
 extension PostSourceX on PostSource {
@@ -137,4 +134,9 @@ extension PostSourceX on PostSource {
         WebSource s => onWeb(s),
         _ => orElse(),
       };
+}
+
+extension WebSourceX on WebSource {
+  FaviconType get faviconType =>
+      faviconUrl.startsWith('assets') ? FaviconType.asset : FaviconType.network;
 }

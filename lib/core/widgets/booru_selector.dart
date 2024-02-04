@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:context_menus/context_menus.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:reorderables/reorderables.dart';
 
@@ -14,6 +12,7 @@ import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
@@ -203,26 +202,7 @@ class BooruSelectorItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               switch (PostSource.from(config.url)) {
-                WebSource source => FittedBox(
-                    child: ExtendedImage.network(
-                      source.faviconUrl,
-                      width: 24,
-                      height: 24,
-                      fit: BoxFit.cover,
-                      clearMemoryCacheIfFailed: false,
-                      loadStateChanged: (state) =>
-                          switch (state.extendedImageLoadState) {
-                        LoadState.failed => const Card(
-                            child: FaIcon(
-                              FontAwesomeIcons.globe,
-                              size: 22,
-                              color: Colors.blue,
-                            ),
-                          ),
-                        _ => state.completedWidget,
-                      },
-                    ),
-                  ),
+                WebSource source => BooruLogo(source: source),
                 _ => const Card(
                     child: SizedBox(
                       width: 32,
