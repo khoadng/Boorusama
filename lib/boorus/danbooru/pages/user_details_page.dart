@@ -17,6 +17,7 @@ import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/reports/reports.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
@@ -65,11 +66,13 @@ class UserDetailsPage extends ConsumerWidget {
     required this.uid,
     required this.username,
     this.hasAppBar = true,
+    this.isSelf = false,
   });
 
   final int uid;
   final String username;
   final bool hasAppBar;
+  final bool isSelf;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -111,6 +114,33 @@ class UserDetailsPage extends ConsumerWidget {
                       ),
                       const SizedBox(height: 12),
                       UserStatsGroup(user: user),
+                      if (isSelf) const SizedBox(height: 12),
+                      if (isSelf)
+                        Wrap(
+                          children: [
+                            FilledButton(
+                              style: FilledButton.styleFrom(
+                                backgroundColor:
+                                    context.colorScheme.secondaryContainer,
+                                foregroundColor:
+                                    context.colorScheme.onSecondaryContainer,
+                              ),
+                              child: const Text('My Uploads'),
+                              onPressed: () => goToMyUploadsPage(context, uid),
+                            ),
+                            const SizedBox(width: 8),
+                            FilledButton(
+                              style: FilledButton.styleFrom(
+                                backgroundColor:
+                                    context.colorScheme.secondaryContainer,
+                                foregroundColor:
+                                    context.colorScheme.onSecondaryContainer,
+                              ),
+                              child: const Text('Messages'),
+                              onPressed: () => goToDmailPage(context),
+                            ),
+                          ],
+                        ),
                       if (user.uploadCount > 0)
                         Padding(
                           padding: const EdgeInsets.only(top: 24),

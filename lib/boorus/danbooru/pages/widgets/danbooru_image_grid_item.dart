@@ -38,7 +38,7 @@ class DanbooruImageGridItem extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isFaved =
         post.isBanned ? false : ref.watch(danbooruFavoriteProvider(post.id));
-    final artistTags = post.artistTags..remove('banned_artist');
+    final artistTags = [...post.artistTags]..remove('banned_artist');
     final settings = ref.watch(settingsProvider);
 
     return ConditionalParentWidget(

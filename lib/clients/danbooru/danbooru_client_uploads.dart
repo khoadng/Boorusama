@@ -51,6 +51,9 @@ mixin DanbooruClientUploads {
           },
         if (tags != null && tags.isNotEmpty)
           'search[ai_tags_match]': tags.join(' '),
+        if (isPosted != null && isPosted == true)
+          'only':
+              'id,source,uploader_id,status,created_at,updated_at,referer_url,error,media_asset_count,upload_media_assets,posts',
       },
     );
 

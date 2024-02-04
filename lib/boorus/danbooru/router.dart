@@ -38,6 +38,7 @@ import 'pages/danbooru_artist_search_page.dart';
 import 'pages/danbooru_character_page.dart';
 import 'pages/danbooru_dmail_page.dart';
 import 'pages/danbooru_forum_page.dart';
+import 'pages/danbooru_my_uploads_page.dart';
 import 'pages/danbooru_post_versions_page.dart';
 import 'pages/explore_hot_page.dart';
 import 'pages/explore_most_viewed_page.dart';
@@ -226,12 +227,14 @@ void goToUserDetailsPage(
   BuildContext context, {
   required int uid,
   required String username,
+  bool isSelf = false,
 }) {
   context.navigator.push(
     CupertinoPageRoute(
       builder: (_) => UserDetailsPage(
         uid: uid,
         username: username,
+        isSelf: isSelf,
       ),
     ),
   );
@@ -524,4 +527,12 @@ void goToTagEditPage(
       ),
     ));
   }
+}
+
+void goToMyUploadsPage(BuildContext context, int userId) {
+  context.navigator.push(CupertinoPageRoute(
+    builder: (_) => DanbooruMyUploadsPage(
+      userId: userId,
+    ),
+  ));
 }
