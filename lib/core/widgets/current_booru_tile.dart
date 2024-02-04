@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/app.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class CurrentBooruTile extends ConsumerWidget {
@@ -30,59 +31,74 @@ class CurrentBooruTile extends ConsumerWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) => constraints.maxWidth > kMinSideBarWidth
-          ? ListTile(
-              visualDensity: const VisualDensity(vertical: -4),
-              horizontalTitleGap: 0,
-              minLeadingWidth: 36,
-              contentPadding: const EdgeInsets.only(left: 4),
-              leading: logo,
-              title: Wrap(
+          ? Container(
+              padding: const EdgeInsets.symmetric(
+                vertical: 4,
+                horizontal: 6,
+              ),
+              child: Row(
                 children: [
-                  Text(
-                    source.whenWeb(
-                      (source) => source.uri.host,
-                      () => booruConfig.url,
-                    ),
-                    maxLines: 1,
-                    softWrap: false,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
+                  logo,
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          source.whenWeb(
+                            (source) => source.uri.host,
+                            () => booruConfig.url,
+                          ),
+                          maxLines: 1,
+                          softWrap: false,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                          ),
+                        ),
+                        booruConfig.hasLoginDetails()
+                            ? Text(
+                                booruConfig.login ?? 'Unknown',
+                                maxLines: 1,
+                                softWrap: false,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  color: context.colorScheme.outline,
+                                ),
+                              )
+                            : const SizedBox.shrink(),
+                      ],
                     ),
                   ),
-                  if (booruConfig.ratingFilter !=
-                      BooruConfigRatingFilter.none) ...[
-                    const SizedBox(width: 4),
-                    SquareChip(
-                      borderRadius: const BorderRadius.all(Radius.circular(4)),
-                      label: Text(
-                        booruConfig.ratingFilter.getRatingTerm().toUpperCase(),
-                        maxLines: 1,
-                        softWrap: false,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
+                  if (constraints.maxWidth > 100)
+                    if (booruConfig.ratingFilter !=
+                        BooruConfigRatingFilter.none) ...[
+                      const SizedBox(width: 12),
+                      SquareChip(
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(4)),
+                        label: Text(
+                          booruConfig.ratingFilter
+                              .getRatingTerm()
+                              .toUpperCase(),
+                          maxLines: 1,
+                          softWrap: false,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
+                        color: booruConfig.ratingFilter ==
+                                BooruConfigRatingFilter.hideNSFW
+                            ? Colors.green
+                            : const Color.fromARGB(255, 154, 138, 0),
                       ),
-                      color: booruConfig.ratingFilter ==
-                              BooruConfigRatingFilter.hideNSFW
-                          ? Colors.green
-                          : const Color.fromARGB(255, 154, 138, 0),
-                    ),
-                  ],
+                    ],
                 ],
               ),
-              subtitle: booruConfig.hasLoginDetails()
-                  ? Text(
-                      booruConfig.login ?? 'Unknown',
-                      maxLines: 1,
-                      softWrap: false,
-                      overflow: TextOverflow.ellipsis,
-                    )
-                  : null,
             )
           : Container(
               padding: const EdgeInsets.symmetric(vertical: 16),

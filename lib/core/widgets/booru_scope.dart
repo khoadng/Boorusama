@@ -65,8 +65,12 @@ class _BooruScopeState extends ConsumerState<BooruScope> {
     return CustomContextMenuOverlay(
       child: isMobilePlatform()
           ? OrientationBuilder(
-              builder: (context, orientation) =>
-                  orientation.isPortrait ? _buildMobile() : _buildDesktop(),
+              builder: (context, orientation) => orientation.isPortrait
+                  ? _buildMobile()
+                  : _buildDesktop(
+                      resizable: true,
+                      grooveDivider: true,
+                    ),
             )
           : _buildDesktop(resizable: true),
     );
@@ -84,7 +88,10 @@ class _BooruScopeState extends ConsumerState<BooruScope> {
     );
   }
 
-  Widget _buildDesktop({bool resizable = false}) {
+  Widget _buildDesktop({
+    bool resizable = false,
+    bool grooveDivider = false,
+  }) {
     return BooruDesktopScope(
       controller: controller,
       config: widget.config,
@@ -95,6 +102,7 @@ class _BooruScopeState extends ConsumerState<BooruScope> {
         constraints,
       ),
       views: widget.desktopViews,
+      grooveDivider: grooveDivider,
     );
   }
 }
@@ -107,6 +115,7 @@ class BooruDesktopScope extends ConsumerStatefulWidget {
     required this.menuBuilder,
     required this.views,
     this.resizable = false,
+    this.grooveDivider = false,
   });
 
   final HomePageController controller;
@@ -116,6 +125,7 @@ class BooruDesktopScope extends ConsumerStatefulWidget {
 
   final List<Widget> views;
   final bool resizable;
+  final bool grooveDivider;
 
   @override
   ConsumerState<BooruDesktopScope> createState() => _BooruDesktopScopeState();
@@ -186,11 +196,19 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
           : MultiSplitViewTheme(
               data: MultiSplitViewThemeData(
                 dividerThickness: 4,
-                dividerPainter: DividerPainters.background(
-                  animationEnabled: false,
-                  color: context.colorScheme.surface,
-                  highlightedColor: context.colorScheme.primary,
-                ),
+                dividerPainter: !widget.grooveDivider
+                    ? DividerPainters.background(
+                        animationEnabled: false,
+                        color: context.colorScheme.surface,
+                        highlightedColor: context.colorScheme.primary,
+                      )
+                    : DividerPainters.grooved1(
+                        color: context.colorScheme.onSurface,
+                        thickness: 4,
+                        size: 75,
+                        highlightedSize: 40,
+                        highlightedColor: context.colorScheme.primary,
+                      ),
               ),
               child: MultiSplitView(
                 axis: Axis.horizontal,

@@ -292,11 +292,11 @@ class _TagEditPageInternalState extends ConsumerState<TagEditPageInternal> {
   Widget _buildImage() {
     return LayoutBuilder(
       builder: (context, constraints) => constraints.maxHeight > 80
-          ? BooruImage(
-              borderRadius: BorderRadius.zero,
-              imageUrl: widget.imageUrl,
+          ? InteractiveBooruImage(
+              useHero: false,
+              heroTag: '',
               aspectRatio: widget.aspectRatio,
-              fit: BoxFit.contain,
+              imageUrl: widget.imageUrl,
             )
           : SizedBox(
               height: constraints.maxHeight,
