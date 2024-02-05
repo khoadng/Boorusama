@@ -58,7 +58,10 @@
                 "one": "Ponto",
                 "other": "Pontos"
             },
-            "source_label": "Source"
+            "source_label": "Source",
+            "related_posts": "Posts relacionados",
+            "add_to_bookmark": "Adicionar marcador",
+            "remove_from_bookmark": "Remover do marcador"
         },
         "parent_child": {
             "children_of": "Filho de"
@@ -98,29 +101,137 @@
     "explore": {
         "latest": "Novidades",
         "popular": "Popular",
-        "most_viewed": "Mais visualizados"
+        "most_viewed": "Mais visualizados",
+        "hot": "Quente",
+        "see_more": "Ver mais"
     },
     "search": {
-        "hint": "Pesquisar..."
+        "hint": "Buscar...",
+        "history": {
+            "clear": "Limpar",
+            "history": "Histórico",
+            "recent": "Recente"
+        },
+        "trending": "Em alta",
+        "errors": {
+            "rate_limited": "Você está com limitação. Tente novamente mais tarde",
+            "unknown": "Erro desconhecido do servidor. Relate este problema ao desenvolvedor",
+            "access_denied": "Acesso negado",
+            "forbidden": "Falha na autenticação",
+            "generic": "Algo deu errado",
+            "database_timeout": "Sua busca demorou muito para ser executada e foi cancelada.",
+            "down": "O servidor fora do ar. Tente novamente mais tarde",
+            "tag_limit": "O limite máximo de tag foi atingido. Atualize sua conta para buscar mais tags de uma vez só."
+        },
+        "search_in_progress_notice": "Buscando...",
+        "result_counter": {
+            "one": "{} Resultado",
+            "other": "{} Resultados"
+        },
+        "no_result_notice": "Nenhum resultado",
+        "remove_all_selected": "Remover todas as tags selecionadas",
+        "search_options": "Buscar opções"
     },
     "settings": {
         "settings": "Configurações",
         "app_settings": "Config. do aplicativo",
         "appearance": {
-            "appearance": "Aparência"
+            "appearance": "Aparência",
+            "show_scores": "Mostrar resultados"
         },
         "language": {
             "language": "Idioma",
             "language_name": "Português do Brasil"
         },
         "privacy": {
-            "privacy": "Privacidade"
-        }
+            "privacy": "Privacidade",
+            "send_error_data_notice": "Envie dados anônimos de registros de erros"
+        },
+        "image_grid": {
+            "image_grid": "Grade de imagens",
+            "image_quality": {
+                "high_quality_notice": "As imagens de alta qualidade podem demorar para carregar.",
+                "high": "Alta",
+                "automatic": "Automático",
+                "original": "Original",
+                "image_quality": "Qualidade da imagem",
+                "highest": "Melhor",
+                "low": "Baixa"
+            },
+            "grid_size": {
+                "medium": "Média",
+                "small": "Pequena",
+                "large": "Grande",
+                "grid_size": "Tamanho da grade"
+            },
+            "spacing": "Espaçamento",
+            "corner_radius": "Raio do canto"
+        },
+        "information": "Informação",
+        "image_list": {
+            "image_list": "Lista de imagens",
+            "masonry": "Alvenaria",
+            "standard": "Padrão"
+        },
+        "image_viewer": {
+            "full_res_as_default": "Mostrar a resolução completa como padrão",
+            "image_viewer": "Visualizador de imagem"
+        },
+        "performance": {
+            "posts_per_page_explain": "Número de miniaturas por página",
+            "cache_size_info": "{0} mb em {1} arquivos",
+            "clear_cache": "Limpar",
+            "cache_size": "Tamanho do cache",
+            "posts_per_page": "Posts por página",
+            "performance": "Desempenho"
+        },
+        "theme": {
+            "light": "Claro",
+            "dark": "Escuro",
+            "amoled_dark": "Preto",
+            "theme": "Tema"
+        },
+        "result_layout": {
+            "pagination": "Paginação",
+            "infinite_scroll": "Rolagem infinita",
+            "result_layout": "Modo da página"
+        },
+        "debug_logs": {
+            "debug_logs": "Registros de depuração"
+        },
+        "general": "Geral",
+        "search": {
+            "search": "Buscar"
+        },
+        "image_detail": {
+            "image_detail": "Detalhe da imagem"
+        },
+        "changelog": "Registro de alterações"
     },
     "download": {
         "download": "Download"
     },
     "forum": {
         "forum": "Fórum"
+    },
+    "pool": {
+        "category": {
+            "series": "Séries",
+            "collection": "Coleção"
+        },
+        "order": {
+            "new": "Novo",
+            "post_count": "Contagem de post",
+            "name": "Nome",
+            "recent": "Recente"
+        },
+        "pool": "Conjunto",
+        "pool_gallery": "Galeria de conjunto",
+        "search": {
+            "hint": "Buscar um conjunto"
+        },
+        "detail": {
+            "last_updated": "Última atualização"
+        }
     }
 }
