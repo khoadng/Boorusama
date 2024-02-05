@@ -218,7 +218,7 @@
             "theme": "Tema",
             "dark": "Oscuro",
             "light": "Claro",
-            "amoled_dark": "AMOLED Oscuro"
+            "amoled_dark": "Negro"
         },
         "privacy": {
             "privacy": "Privacidad",
@@ -320,8 +320,8 @@
         "favorite": "Favorito",
         "unfavorited": "No Favoritos",
         "unfavorite": "No Favorito",
-        "failed_to_unfavorite": "Hubo un fallo al quitar de favoritos",
-        "failed_to_favorite": "Hubo un fallo al añadir a favoritos"
+        "failed_to_unfavorite": "No se pudo eliminar de favoritos esta publicación",
+        "failed_to_favorite": "No se pudo eliminar de favoritos este tema"
     },
     "favorite_groups": {
         "favorite_groups": "Grupos Favoritos",
