@@ -18,9 +18,7 @@ sealed class PostSource {
   }.lock;
 
   static final IMap<String, String> assetFaviconUrlSite = <String, String>{
-    'danbooru': 'assets/images/danbooru-logo.png',
-    'safebooru': 'assets/images/danbooru-logo.png',
-    'testbooru': 'assets/images/danbooru-logo.png',
+    'donmai': 'assets/images/danbooru-logo.png',
   }.lock;
 
   static String? _getFavicon(String host) {

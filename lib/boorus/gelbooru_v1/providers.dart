@@ -15,9 +15,9 @@ final gelbooruV1PostRepoProvider = Provider.family<PostRepository, BooruConfig>(
         return posts
             .map((e) => SimplePost(
                   id: e.id ?? 0,
-                  thumbnailImageUrl: e.previewUrl ?? '',
-                  sampleImageUrl: e.sampleUrl ?? '',
-                  originalImageUrl: e.fileUrl ?? '',
+                  thumbnailImageUrl: sanitizedUrl(e.previewUrl ?? ''),
+                  sampleImageUrl: sanitizedUrl(e.sampleUrl ?? ''),
+                  originalImageUrl: sanitizedUrl(e.fileUrl ?? ''),
                   tags: e.tags?.split(' ').toList() ?? [],
                   rating: mapStringToRating(e.rating),
                   hasComment: false,
