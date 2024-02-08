@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
+import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 
 class MoebooruInformationSection extends ConsumerWidget {
@@ -39,6 +40,10 @@ class MoebooruInformationSection extends ConsumerWidget {
           [],
       createdAt: post.createdAt,
       source: post.source,
+      onArtistTagTap: (context, artist) => goToSearchPage(
+        context,
+        tag: artist,
+      ),
     );
   }
 }
