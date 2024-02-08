@@ -17,11 +17,13 @@ import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/reports/reports.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/package_info.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
@@ -31,8 +33,20 @@ import 'package:boorusama/widgets/widgets.dart';
 import 'widgets/users/user_info_box.dart';
 import 'widgets/users/user_stats_group.dart';
 
-final userDataProvider = FutureProvider.family
-    .autoDispose<List<DanbooruReportDataPoint>, String>((ref, tag) async {
+typedef DanbooruReportDataParams = ({
+  String username,
+  String tag,
+  int uploadCount,
+});
+
+typedef DanbooruCopyrightDataParams = ({
+  String username,
+  int uploadCount,
+});
+
+final userDataProvider = FutureProvider.family<List<DanbooruReportDataPoint>,
+    DanbooruReportDataParams>((ref, params) async {
+  final tag = params.tag;
   final config = ref.watchConfig;
   final data =
       await ref.watch(danbooruPostReportProvider(config)).getPostReports(
@@ -50,7 +64,9 @@ final userDataProvider = FutureProvider.family
 });
 
 final userCopyrightDataProvider =
-    FutureProvider.family<RelatedTag, String>((ref, username) async {
+    FutureProvider.family<RelatedTag, DanbooruCopyrightDataParams>(
+        (ref, params) async {
+  final username = params.username;
   final config = ref.watchConfig;
   return ref.watch(danbooruRelatedTagRepProvider(config)).getRelatedTag(
         'user:$username',
@@ -65,11 +81,13 @@ class UserDetailsPage extends ConsumerWidget {
     required this.uid,
     required this.username,
     this.hasAppBar = true,
+    this.isSelf = false,
   });
 
   final int uid;
   final String username;
   final bool hasAppBar;
+  final bool isSelf;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -111,13 +129,46 @@ class UserDetailsPage extends ConsumerWidget {
                       ),
                       const SizedBox(height: 12),
                       UserStatsGroup(user: user),
+                      if (isSelf) const SizedBox(height: 12),
+                      if (isSelf)
+                        Wrap(
+                          children: [
+                            if (ref.watch(isDevEnvironmentProvider))
+                              FilledButton(
+                                style: FilledButton.styleFrom(
+                                  backgroundColor:
+                                      context.colorScheme.secondaryContainer,
+                                  foregroundColor:
+                                      context.colorScheme.onSecondaryContainer,
+                                ),
+                                child: const Text('My Uploads'),
+                                onPressed: () =>
+                                    goToMyUploadsPage(context, uid),
+                              ),
+                            const SizedBox(width: 8),
+                            FilledButton(
+                              style: FilledButton.styleFrom(
+                                backgroundColor:
+                                    context.colorScheme.secondaryContainer,
+                                foregroundColor:
+                                    context.colorScheme.onSecondaryContainer,
+                              ),
+                              child: const Text('Messages'),
+                              onPressed: () => goToDmailPage(context),
+                            ),
+                          ],
+                        ),
                       if (user.uploadCount > 0)
                         Padding(
                           padding: const EdgeInsets.only(top: 24),
                           child: SizedBox(
                             height: 220,
                             child: ref
-                                .watch(userDataProvider('user:$username'))
+                                .watch(userDataProvider((
+                                  username: username,
+                                  tag: 'user:$username',
+                                  uploadCount: user.uploadCount,
+                                )))
                                 .maybeWhen(
                                   data: (data) => Column(
                                     crossAxisAlignment:
@@ -164,9 +215,10 @@ class UserDetailsPage extends ConsumerWidget {
                               ),
                               const SizedBox(height: 4),
                               ref
-                                  .watch(userCopyrightDataProvider(
-                                    user.name,
-                                  ))
+                                  .watch(userCopyrightDataProvider((
+                                    username: username,
+                                    uploadCount: user.uploadCount,
+                                  )))
                                   .maybeWhen(
                                     data: (data) => _buildTags(
                                       data.tags.take(5).toList(),
@@ -356,30 +408,28 @@ class _UserFavorites extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(danbooruUserFavoritesProvider(uid));
-
-    return state.when(
-      data: (favorites) => favorites.isNotEmpty
-          ? Column(
-              children: [
-                const Divider(
-                  thickness: 1,
-                  height: 36,
-                ),
-                _PreviewList(
-                  posts: favorites,
-                  onViewMore: () => goToSearchPage(
-                    context,
-                    tag: buildFavoriteQuery(user.name),
-                  ),
-                  title: 'Favorites',
-                ),
-              ],
-            )
-          : const SizedBox.shrink(),
-      error: (error, stackTrace) => const SizedBox.shrink(),
-      loading: () => const SizedBox.shrink(),
-    );
+    return ref.watch(danbooruUserFavoritesProvider(uid)).when(
+          data: (favorites) => favorites.isNotEmpty
+              ? Column(
+                  children: [
+                    const Divider(
+                      thickness: 1,
+                      height: 36,
+                    ),
+                    _PreviewList(
+                      posts: favorites,
+                      onViewMore: () => goToSearchPage(
+                        context,
+                        tag: buildFavoriteQuery(user.name),
+                      ),
+                      title: 'Favorites',
+                    ),
+                  ],
+                )
+              : const SizedBox.shrink(),
+          error: (error, stackTrace) => const SizedBox.shrink(),
+          loading: () => const SizedBox.shrink(),
+        );
   }
 }
 
@@ -394,28 +444,31 @@ class _UserUploads extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(danbooruUserUploadsProvider(uid));
-
-    return state.when(
-      data: (uploads) => uploads.isNotEmpty
-          ? Column(
-              children: [
-                const Divider(
-                  thickness: 1,
-                  height: 26,
-                ),
-                _PreviewList(
-                  posts: uploads,
-                  onViewMore: () =>
-                      goToSearchPage(context, tag: 'user:${user.name}'),
-                  title: 'Uploads',
-                )
-              ],
-            )
-          : const SizedBox.shrink(),
-      error: (error, stackTrace) => const SizedBox.shrink(),
-      loading: () => const SizedBox.shrink(),
+    final params = (
+      username: user.name,
+      uploadCount: user.uploadCount,
     );
+
+    return ref.watch(danbooruUserUploadsProvider(params)).when(
+          data: (uploads) => uploads.isNotEmpty
+              ? Column(
+                  children: [
+                    const Divider(
+                      thickness: 1,
+                      height: 26,
+                    ),
+                    _PreviewList(
+                      posts: uploads,
+                      onViewMore: () =>
+                          goToSearchPage(context, tag: 'user:${user.name}'),
+                      title: 'Uploads',
+                    )
+                  ],
+                )
+              : const SizedBox.shrink(),
+          error: (error, stackTrace) => const SizedBox.shrink(),
+          loading: () => const SizedBox.shrink(),
+        );
   }
 }
 

@@ -12,15 +12,16 @@ import 'danbooru_client_explores.dart';
 import 'danbooru_client_favorite_groups.dart';
 import 'danbooru_client_favorites.dart';
 import 'danbooru_client_forums.dart';
+import 'danbooru_client_notes.dart';
 import 'danbooru_client_pools.dart';
 import 'danbooru_client_posts.dart';
 import 'danbooru_client_reports.dart';
 import 'danbooru_client_saved_searches.dart';
 import 'danbooru_client_tags.dart';
+import 'danbooru_client_uploads.dart';
 import 'danbooru_client_users.dart';
 import 'danbooru_client_versions.dart';
 import 'types/autocomplete_dto.dart';
-import 'types/note_dto.dart';
 import 'types/wiki_dto.dart';
 
 String _encodeAuthHeader(String login, String apiKey) =>
@@ -28,20 +29,22 @@ String _encodeAuthHeader(String login, String apiKey) =>
 
 class DanbooruClient
     with
-        DanbooruClientPosts,
         DanbooruClientArtists,
         DanbooruClientComments,
+        DanbooruClientDmails,
         DanbooruClientExplores,
         DanbooruClientFavoriteGroups,
         DanbooruClientFavorites,
         DanbooruClientForums,
+        DanbooruClientNotes,
         DanbooruClientPools,
+        DanbooruClientPosts,
         DanbooruClientReports,
         DanbooruClientSavedSearches,
-        DanbooruClientDmails,
         DanbooruClientTags,
-        DanbooruClientVersions,
-        DanbooruClientUsers {
+        DanbooruClientUploads,
+        DanbooruClientUsers,
+        DanbooruClientVersions {
   DanbooruClient({
     required String baseUrl,
     String? login,
@@ -72,25 +75,6 @@ class DanbooruClient
     );
 
     return response;
-  }
-
-  Future<List<NoteDto>> getNotes({
-    required int postId,
-    int limit = 200,
-    int? page,
-  }) async {
-    final response = await dio.get(
-      '/notes.json',
-      queryParameters: {
-        'search[post_id]': postId,
-        'limit': limit,
-        if (page != null) 'page': page,
-      },
-    );
-
-    return (response.data as List)
-        .map((item) => NoteDto.fromJson(item))
-        .toList();
   }
 
   Future<int?> countPosts({

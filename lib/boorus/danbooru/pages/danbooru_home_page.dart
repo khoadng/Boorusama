@@ -25,12 +25,10 @@ import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/utils/flutter_utils.dart';
-import '../feats/dmails/dmails.dart';
 import '../feats/users/users.dart';
 import 'blacklisted_tags_page.dart';
 import 'danbooru_artist_search_page.dart';
 import 'danbooru_desktop_home_page.dart';
-import 'danbooru_dmail_page.dart';
 import 'danbooru_forum_page.dart';
 import 'explore_page.dart';
 import 'favorite_groups_page.dart';
@@ -155,6 +153,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
                 context,
                 uid: userId,
                 username: widget.config.login!,
+                isSelf: true,
               );
             },
           ),
@@ -245,34 +244,6 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
               goToBlacklistedTagPage(context);
             },
           ),
-          SideMenuTile(
-            icon: ref
-                .watch(danbooruUnreadDmailsProvider(widget.config))
-                .maybeWhen(
-                  data: (data) => data.isNotEmpty
-                      ? Badge.count(
-                          count: data.length,
-                          child: const Icon(
-                            Symbols.mail,
-                            fill: 1,
-                          ),
-                        )
-                      : const Icon(
-                          Symbols.mail,
-                          fill: 1,
-                        ),
-                  orElse: () => const Icon(
-                    Symbols.mail,
-                    fill: 1,
-                  ),
-                ),
-            title: const Text(
-              'Dmails',
-            ),
-            onTap: () {
-              goToDmailPage(context);
-            },
-          ),
         ]
       ],
       desktopMenuBuilder: (context, controller, constraints) => [
@@ -360,14 +331,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
             icon: Symbols.tag,
             title: 'blacklisted_tags.blacklisted_tags'.tr(),
           ),
-          HomeNavigationTile(
-            value: 10,
-            controller: controller,
-            constraints: constraints,
-            selectedIcon: Symbols.mail,
-            icon: Symbols.mail,
-            title: 'Dmails',
-          ),
+          const SizedBox.shrink(),
         ],
         const Divider(),
         HomeNavigationTile(
@@ -424,7 +388,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
           const FavoriteGroupsPage(),
           const SavedSearchFeedPage(),
           const BlacklistedTagsPage(),
-          const DanbooruDmailPage(),
+          const SizedBox.shrink(),
         ] else ...[
           //TODO: hacky way to prevent accessing wrong index... Will need better solution
           const SizedBox(),

@@ -67,12 +67,9 @@ class _MoebooruPostDetailsPageState
         initialExpanded: true,
         post: post,
         tags: ref.watch(tagsProvider(booruConfig)),
-        onTagTap: (tag) => PostTagListChip(
-          tag: tag,
-          onTap: () => goToSearchPage(
-            context,
-            tag: tag.rawName,
-          ),
+        onTagTap: (tag) => goToSearchPage(
+          context,
+          tag: tag.rawName,
         ),
       ),
       commentsBuilder: (context, post) => MoebooruCommentSection(post: post),

@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:async';
+
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -30,6 +33,44 @@ final danbooruPostRepoProvider =
     getSettings: () async => ref.read(settingsProvider),
   );
 });
+
+final danbooruPostCreateProvider = AsyncNotifierProvider.autoDispose
+    .family<DanbooruPostCreateNotifier, DanbooruPost?, BooruConfig>(
+        DanbooruPostCreateNotifier.new);
+
+class DanbooruPostCreateNotifier
+    extends AutoDisposeFamilyAsyncNotifier<DanbooruPost?, BooruConfig> {
+  @override
+  FutureOr<DanbooruPost?> build(BooruConfig arg) {
+    return null;
+  }
+
+  Future<void> create({
+    required int mediaAssetId,
+    required int uploadMediaAssetId,
+    required Rating rating,
+    required String source,
+    required List<String> tags,
+  }) async {
+    final client = ref.read(danbooruClientProvider(arg));
+
+    state = const AsyncLoading();
+
+    try {
+      final post = await client.createPost(
+        mediaAssetId: mediaAssetId,
+        uploadMediaAssetId: uploadMediaAssetId,
+        rating: rating.toShortString(),
+        source: source,
+        tags: tags,
+      );
+
+      state = AsyncData(postDtoToPost(post));
+    } catch (e, st) {
+      state = AsyncError(e, st);
+    }
+  }
+}
 
 typedef PostFetchTransformer = Future<List<DanbooruPost>> Function(
     List<DanbooruPost> posts);

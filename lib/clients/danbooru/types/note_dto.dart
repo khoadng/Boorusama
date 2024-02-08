@@ -15,8 +15,12 @@ class NoteDto {
 
   factory NoteDto.fromJson(Map<String, dynamic> json) => NoteDto(
         id: json['id'],
-        createdAt: DateTime.parse(json['created_at']),
-        updatedAt: DateTime.parse(json['updated_at']),
+        createdAt: json['created_at'] == null
+            ? null
+            : DateTime.parse(json['created_at']),
+        updatedAt: json['updated_at'] == null
+            ? null
+            : DateTime.parse(json['updated_at']),
         x: json['x'],
         y: json['y'],
         width: json['width'],
@@ -27,18 +31,15 @@ class NoteDto {
         version: json['version'],
       );
 
-  final int id;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-  final int x;
-  final int y;
-  final int width;
-  final int height;
-  final bool isActive;
-  final int postId;
-  final String body;
-  final int version;
-
-  @override
-  String toString() => body;
+  final int? id;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+  final int? x;
+  final int? y;
+  final int? width;
+  final int? height;
+  final bool? isActive;
+  final int? postId;
+  final String? body;
+  final int? version;
 }

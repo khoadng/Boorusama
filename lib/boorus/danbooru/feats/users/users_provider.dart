@@ -12,6 +12,7 @@ import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/danbooru/danbooru_client.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/functional.dart';
 
@@ -66,21 +67,28 @@ final danbooruCurrentUserProvider = FutureProvider.autoDispose
 });
 
 final danbooruUserProvider =
-    AsyncNotifierProvider.family<UserNotifier, User, int>(
+    AsyncNotifierProvider.autoDispose.family<UserNotifier, User, int>(
   UserNotifier.new,
 );
 
-final danbooruUserUploadsProvider = FutureProvider.autoDispose
-    .family<List<DanbooruPost>, int>((ref, uid) async {
-  final user = await ref.watch(danbooruUserProvider(uid).future);
+typedef DanbooruUserUploadParams = ({
+  String username,
+  int uploadCount,
+});
 
-  if (user.uploadCount == 0) return [];
+final danbooruUserUploadsProvider =
+    FutureProvider.family<List<DanbooruPost>, DanbooruUserUploadParams>(
+        (ref, params) async {
+  final uploadCount = params.uploadCount;
+  final name = params.username;
+
+  if (uploadCount == 0) return [];
   final config = ref.watchConfig;
 
   final repo = ref.watch(danbooruPostRepoProvider(config));
   final uploads = await repo
       .getPosts(
-        ['user:${user.name}'],
+        ['user:$name'],
         1,
         limit: 50,
       )
@@ -98,17 +106,13 @@ final danbooruUserFavoritesProvider = FutureProvider.autoDispose
   final config = ref.watchConfig;
   final user = await ref.watch(danbooruUserProvider(uid).future);
   final repo = ref.watch(danbooruPostRepoProvider(config));
-  final favs = await repo
-      .getPosts(
-        [buildFavoriteQuery(user.name)],
-        1,
-        limit: 50,
-      )
-      .run()
-      .then((value) => value.fold(
-            (l) => <DanbooruPost>[],
-            (r) => r,
-          ));
+  final favs = await repo.getPostsFromTagsOrEmpty(
+    [
+      buildFavoriteQuery(user.name),
+    ],
+    1,
+    limit: 50,
+  );
 
   return favs;
 });

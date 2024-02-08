@@ -28,6 +28,44 @@ mixin DanbooruClientPosts {
         (response.data as List).map((item) => PostDto.fromJson(item)).toList());
   }
 
+  Future<PostDto> createPost({
+    required int mediaAssetId,
+    required String rating,
+    required String source,
+    required int uploadMediaAssetId,
+    List<String>? tags,
+    String? artistCommentaryTitle,
+    String? artistCommentaryDesc,
+    String? translatedCommentaryTitle,
+    String? translatedCommentaryDesc,
+    int? parentId,
+  }) async {
+    final response = await dio.post(
+      '/posts.json',
+      data: {
+        'media_asset_id': mediaAssetId,
+        'upload_media_asset_id': uploadMediaAssetId,
+        'post[rating]': rating,
+        if (tags != null && tags.isNotEmpty) 'post[tag_string]': tags.join(' '),
+        'post[source]': source,
+        if (artistCommentaryTitle != null)
+          'post[artist_commentary_title]': artistCommentaryTitle,
+        if (artistCommentaryDesc != null)
+          'post[artist_commentary_desc]': artistCommentaryDesc,
+        if (translatedCommentaryTitle != null)
+          'post[translated_commentary_title]': translatedCommentaryTitle,
+        if (translatedCommentaryDesc != null)
+          'post[translated_commentary_desc]': translatedCommentaryDesc,
+        if (parentId != null) 'post[parent_id]': parentId,
+      },
+      options: Options(
+        contentType: Headers.formUrlEncodedContentType,
+      ),
+    );
+
+    return PostDto.fromJson(response.data);
+  }
+
   Future<PostVoteDto> votePost({
     required int postId,
     required int score,

@@ -2,8 +2,6 @@
 import 'dart:async';
 
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/feats/artist_commentaries/artist_commentaries.dart';
-import 'package:boorusama/core/feats/artist_commentaries/artist_commentaries.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -11,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/feats/artist_commentaries/artist_commentaries.dart';
 import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
@@ -18,6 +17,7 @@ import 'package:boorusama/boorus/danbooru/pages/widgets/danbooru_creator_preload
 import 'package:boorusama/boorus/danbooru/pages/widgets/details/danbooru_more_action_button.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/details/danbooru_post_action_toolbar.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/details/pool_tiles.dart';
+import 'package:boorusama/core/feats/artist_commentaries/artist_commentaries.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/router.dart';
