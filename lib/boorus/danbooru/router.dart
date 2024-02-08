@@ -17,6 +17,7 @@ import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/saved_searches/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
+import 'package:boorusama/boorus/danbooru/feats/uploads/uploads.dart';
 import 'package:boorusama/core/feats/blacklists/blacklists.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
@@ -51,6 +52,7 @@ import 'pages/pool_search_page.dart';
 import 'pages/saved_search_feed_page.dart';
 import 'pages/saved_search_page.dart';
 import 'pages/tag_edit_page.dart';
+import 'pages/tag_edit_upload_page.dart';
 import 'pages/user_details_page.dart';
 import 'pages/widgets/favorites/create_favorite_group_dialog.dart';
 import 'pages/widgets/saved_searches/edit_saved_search_sheet.dart';
@@ -524,6 +526,28 @@ void goToTagEditPage(
     context.navigator.push(MaterialPageRoute(
       builder: (context) => TagEditPage(
         post: post,
+      ),
+    ));
+  }
+}
+
+void goToTagEditUploadPage(
+  BuildContext context, {
+  required DanbooruUploadPost post,
+  required void Function() onSubmitted,
+}) {
+  if (Screen.of(context).size == ScreenSize.small) {
+    context.navigator.push(CupertinoPageRoute(
+      builder: (context) => TagEditUploadPage(
+        post: post,
+        onSubmitted: onSubmitted,
+      ),
+    ));
+  } else {
+    context.navigator.push(MaterialPageRoute(
+      builder: (context) => TagEditUploadPage(
+        post: post,
+        onSubmitted: onSubmitted,
       ),
     ));
   }

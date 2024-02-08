@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/core/feats/boorus/providers.dart';
 
-class UserNotifier extends FamilyAsyncNotifier<User, int> {
+class UserNotifier extends AutoDisposeFamilyAsyncNotifier<User, int> {
   @override
   Future<User> build(int arg) async {
     final config = ref.watchConfig;

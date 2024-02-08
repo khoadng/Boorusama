@@ -46,6 +46,7 @@ class PostGrid<T extends Post> extends ConsumerStatefulWidget {
     this.footerBuilder,
     this.headerBuilder,
     this.blacklistedTags = const {},
+    this.blacklistedIds = const {},
     required this.bodyBuilder,
     this.multiSelectController,
     required this.controller,
@@ -78,6 +79,7 @@ class PostGrid<T extends Post> extends ConsumerStatefulWidget {
   ) bodyBuilder;
 
   final Set<String> blacklistedTags;
+  final Set<int> blacklistedIds;
 
   final MultiSelectController<T>? multiSelectController;
 
@@ -118,6 +120,10 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
     super.didUpdateWidget(oldWidget);
     if (oldWidget.blacklistedTags != widget.blacklistedTags) {
       _updateFilter();
+      _updateData();
+    }
+
+    if (oldWidget.blacklistedIds != widget.blacklistedIds) {
       _updateData();
     }
   }
@@ -177,7 +183,12 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
     final dataWithoutBookmarks = d.data.where((element) =>
         !bookmarks.any((e) => e.originalUrl == element.originalImageUrl));
 
-    items = dataWithoutBookmarks.toList();
+    // Dirty hack to filter out ids
+    final dataWithoutBookmarksAndIds = dataWithoutBookmarks
+        .where((element) => !widget.blacklistedIds.contains(element.id));
+
+    items = dataWithoutBookmarksAndIds.toList();
+
     filteredItems = d.filtered;
   }
 

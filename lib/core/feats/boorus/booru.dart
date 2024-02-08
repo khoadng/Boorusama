@@ -435,7 +435,8 @@ extension BooruTypeX on BooruType {
 
   bool get supportBlacklistedTags => isDanbooruBased;
 
-  bool get hasUnknownFullImageUrl => this == BooruType.zerochan;
+  bool get hasUnknownFullImageUrl =>
+      this == BooruType.zerochan || this == BooruType.gelbooruV1;
 
   int toBooruId() => switch (this) {
         BooruType.danbooru => kDanbooruId,

@@ -16,3 +16,11 @@ final dummyPackageInfoProvider = Provider<PackageInfo>((ref) {
     buildNumber: '1',
   );
 });
+
+final currentEnvironmentProvider = Provider<String>((ref) {
+  return const String.fromEnvironment('ENV_NAME');
+});
+
+final isDevEnvironmentProvider = Provider<bool>((ref) {
+  return ref.watch(currentEnvironmentProvider) == 'dev';
+});

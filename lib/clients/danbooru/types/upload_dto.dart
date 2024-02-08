@@ -12,7 +12,9 @@ class UploadDto {
   final String? error;
   final int? mediaAssetCount;
   final List<UploadMediaAssetsDto>? uploadMediaAssets;
-  final List<PostDto>? posts;
+  final List<dynamic>? posts;
+  final UserDto? uploader;
+  final List<MediaAssetDto>? mediaAssets;
 
   UploadDto({
     this.id,
@@ -26,6 +28,8 @@ class UploadDto {
     this.mediaAssetCount,
     this.uploadMediaAssets,
     this.posts,
+    this.uploader,
+    this.mediaAssets,
   });
 
   factory UploadDto.fromJson(Map<String, dynamic> json) {
@@ -46,8 +50,12 @@ class UploadDto {
       uploadMediaAssets: (json['upload_media_assets'] as List?)
           ?.map((e) => UploadMediaAssetsDto.fromJson(e as Map<String, dynamic>))
           .toList(),
-      posts: (json['posts'] as List?)
-          ?.map((e) => PostDto.fromJson(e as Map<String, dynamic>))
+      posts: json['posts'] as List?,
+      uploader: json['uploader'] == null
+          ? null
+          : UserDto.fromJson(json['uploader'] as Map<String, dynamic>),
+      mediaAssets: (json['media_assets'] as List?)
+          ?.map((e) => MediaAssetDto.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
   }
@@ -63,7 +71,6 @@ class UploadMediaAssetsDto {
   final String? sourceUrl;
   final String? error;
   final String? pageUrl;
-  final MediaAssetDto? mediaAsset;
 
   UploadMediaAssetsDto({
     this.id,
@@ -75,7 +82,6 @@ class UploadMediaAssetsDto {
     this.sourceUrl,
     this.error,
     this.pageUrl,
-    this.mediaAsset,
   });
 
   factory UploadMediaAssetsDto.fromJson(Map<String, dynamic> json) {
@@ -93,9 +99,6 @@ class UploadMediaAssetsDto {
       sourceUrl: json['source_url'] as String?,
       error: json['error'] as String?,
       pageUrl: json['page_url'] as String?,
-      mediaAsset: json['media_asset'] == null
-          ? null
-          : MediaAssetDto.fromJson(json['media_asset'] as Map<String, dynamic>),
     );
   }
 }

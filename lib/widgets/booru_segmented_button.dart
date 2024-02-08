@@ -16,7 +16,7 @@ class BooruSegmentedButton<T> extends StatefulWidget {
     required this.onChanged,
   });
 
-  final T initialValue;
+  final T? initialValue;
   final Map<T, String> segments;
   final double? fixedWidth;
   final void Function(T value) onChanged;

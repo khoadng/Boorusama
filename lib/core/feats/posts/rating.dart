@@ -17,4 +17,12 @@ Rating mapStringToRating(String? str) => switch (str?.toLowerCase()) {
 extension RatingX on Rating {
   bool isNSFW() => this == Rating.explicit || this == Rating.questionable;
   bool isSFW() => !isNSFW();
+
+  String toShortString() => switch (this) {
+        Rating.sensitive => 's',
+        Rating.explicit => 'e',
+        Rating.general => 'g',
+        Rating.questionable => 'q',
+        Rating.unknown => '',
+      };
 }
