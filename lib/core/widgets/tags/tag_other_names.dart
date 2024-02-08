@@ -1,7 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // Project imports:
+import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -62,22 +64,33 @@ class OtherNameChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4),
-      child: RawChip(
-        side: BorderSide(
-          color: context.theme.hintColor,
-          width: 0.5,
-        ),
-        padding: const EdgeInsets.all(4),
-        labelPadding: const EdgeInsets.all(1),
-        visualDensity: VisualDensity.compact,
-        label: ConstrainedBox(
-          constraints: BoxConstraints(
-            maxWidth: MediaQuery.sizeOf(context).width * 0.85,
+      child: GestureDetector(
+        onLongPress: () =>
+            Clipboard.setData(ClipboardData(text: otherName)).then(
+          (_) => showSimpleSnackBar(
+            context: context,
+            duration: const Duration(seconds: 1),
+            content: const Text('Copied'),
           ),
-          child: Text(
-            otherName.replaceUnderscoreWithSpace(),
-            overflow: TextOverflow.fade,
-            style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        child: RawChip(
+          onPressed: () {},
+          side: BorderSide(
+            color: context.theme.hintColor,
+            width: 0.5,
+          ),
+          padding: const EdgeInsets.all(4),
+          labelPadding: const EdgeInsets.all(1),
+          visualDensity: VisualDensity.compact,
+          label: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: MediaQuery.sizeOf(context).width * 0.85,
+            ),
+            child: Text(
+              otherName.replaceUnderscoreWithSpace(),
+              overflow: TextOverflow.fade,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
           ),
         ),
       ),
