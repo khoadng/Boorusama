@@ -42,7 +42,9 @@ class _DanbooruArtistPageState extends ConsumerState<DanbooruArtistPage> {
         extraBuilder: (context) => [
           const SizedBox(height: 8),
           artist.when(
-            data: (artist) => DanbooruArtistUrlChips(artist: artist),
+            data: (artist) => DanbooruArtistUrlChips(
+              artistUrls: artist.activeUrls.map((e) => e.url).toList(),
+            ),
             loading: () => const SizedBox(height: 24),
             error: (e, st) => const SizedBox.shrink(),
           ),

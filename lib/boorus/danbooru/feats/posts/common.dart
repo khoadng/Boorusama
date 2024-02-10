@@ -63,6 +63,7 @@ DanbooruPost postDtoToPost(
       duration: dto.mediaAsset?.duration ?? 0,
       variants:
           dto.mediaAsset?.variants?.map(variantDtoToVariant).toList() ?? [],
+      pixelHash: dto.mediaAsset?.pixelHash ?? '',
     );
   } catch (e) {
     return DanbooruPost.empty();

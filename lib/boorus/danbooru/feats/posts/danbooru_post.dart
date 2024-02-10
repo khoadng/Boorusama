@@ -51,6 +51,7 @@ class DanbooruPost extends Equatable
     required this.hasLarge,
     required this.duration,
     required this.variants,
+    required this.pixelHash,
   }) : tags = [
           ...artistTags,
           ...copyrightTags,
@@ -90,6 +91,7 @@ class DanbooruPost extends Equatable
         parentId: null,
         duration: 0,
         variants: const [],
+        pixelHash: '',
       );
 
   @override
@@ -169,6 +171,8 @@ class DanbooruPost extends Equatable
 
   @override
   final PostSource source;
+
+  final String pixelHash;
 
   bool get viewable => [
         thumbnailImageUrl,
@@ -329,6 +333,7 @@ extension PostX on DanbooruPost {
         parentId: parentId ?? this.parentId,
         duration: duration,
         variants: variants,
+        pixelHash: pixelHash,
       );
 }
 

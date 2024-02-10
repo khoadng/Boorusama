@@ -12,6 +12,7 @@ class ArtistDto {
     required this.isBanned,
     required this.otherNames,
     required this.urls,
+    required this.sortedUrls,
     required this.tag,
   });
 
@@ -24,8 +25,16 @@ class ArtistDto {
         groupName: json['group_name'],
         isBanned: json['is_banned'],
         otherNames: List<String>.from(json['other_names'].map((x) => x)),
-        urls: List<ArtistUrlDto>.from(
-            json['urls'].map((x) => ArtistUrlDto.fromJson(x))),
+        urls: json['urls'] != null
+            ? List<ArtistUrlDto>.from(
+                json['urls'].map((x) => ArtistUrlDto.fromJson(x)),
+              )
+            : null,
+        sortedUrls: json['sorted_urls'] != null
+            ? List<ArtistUrlDto>.from(
+                json['sorted_urls'].map((x) => ArtistUrlDto.fromJson(x)),
+              )
+            : null,
         tag: json['tag'] != null ? TagDto.fromJson(json['tag']) : null,
       );
 
@@ -37,7 +46,8 @@ class ArtistDto {
   final String groupName;
   final bool isBanned;
   final List<String> otherNames;
-  final List<ArtistUrlDto> urls;
+  final List<ArtistUrlDto>? urls;
+  final List<ArtistUrlDto>? sortedUrls;
   final TagDto? tag;
 
   @override

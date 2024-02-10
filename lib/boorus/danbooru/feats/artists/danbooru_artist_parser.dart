@@ -20,7 +20,7 @@ DanbooruArtist artistDtoToArtist(ArtistDto dto) {
     isDeleted: dto.isDeleted,
     otherNames: List<String>.of(dto.otherNames),
     updatedAt: dto.updatedAt,
-    urls: dto.urls.map(artistUrlDtoToArtistUrl).toList(),
+    urls: dto.urls?.map(artistUrlDtoToArtistUrl).toList() ?? [],
     postCount: dto.tag?.postCount,
   );
 }

@@ -18,6 +18,8 @@ class BooruChip extends ConsumerWidget {
     this.contentPadding,
     this.visualDensity,
     this.borderRadius,
+    this.showBackground = true,
+    this.showBorder = true,
   });
 
   final Color? color;
@@ -27,6 +29,8 @@ class BooruChip extends ConsumerWidget {
   final EdgeInsetsGeometry? contentPadding;
   final VisualDensity? visualDensity;
   final BorderRadiusGeometry? borderRadius;
+  final bool showBackground;
+  final bool showBorder;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -43,14 +47,17 @@ class BooruChip extends ConsumerWidget {
               visualDensity: visualDensity,
               foregroundColor: colors?.foregroundColor,
               padding: const EdgeInsets.only(left: 6, right: 2),
-              backgroundColor: colors?.backgroundColor,
+              backgroundColor:
+                  showBackground ? colors?.backgroundColor : Colors.transparent,
               shape: RoundedRectangleBorder(
                 borderRadius:
                     borderRadius ?? const BorderRadius.all(Radius.circular(8)),
               ),
-              side: BorderSide(
-                color: colors?.borderColor ?? Colors.transparent,
-              ),
+              side: showBorder
+                  ? BorderSide(
+                      color: colors?.borderColor ?? Colors.transparent,
+                    )
+                  : null,
             ),
             onPressed: onPressed,
             icon: trailing!,
@@ -62,14 +69,17 @@ class BooruChip extends ConsumerWidget {
               foregroundColor: colors?.foregroundColor,
               padding:
                   contentPadding ?? const EdgeInsets.symmetric(horizontal: 8),
-              backgroundColor: colors?.backgroundColor,
+              backgroundColor:
+                  showBackground ? colors?.backgroundColor : Colors.transparent,
               shape: RoundedRectangleBorder(
                 borderRadius:
                     borderRadius ?? const BorderRadius.all(Radius.circular(16)),
               ),
-              side: BorderSide(
-                color: colors?.borderColor ?? Colors.transparent,
-              ),
+              side: showBorder
+                  ? BorderSide(
+                      color: colors?.borderColor ?? Colors.transparent,
+                    )
+                  : null,
             ),
             onPressed: onPressed,
             child: label,

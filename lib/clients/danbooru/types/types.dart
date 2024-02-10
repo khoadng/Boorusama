@@ -13,6 +13,7 @@ export 'favorite_group_dto.dart';
 export 'forum_post_dto.dart';
 export 'forum_topic_dto.dart';
 export 'forum_vote_dto.dart';
+export 'iqdb_result_dto.dart';
 export 'note_dto.dart';
 export 'pool.dart';
 export 'pool_dto.dart';

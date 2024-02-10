@@ -207,7 +207,9 @@ class _DanbooruArtistSearchPageState
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 8),
                                 child: DanbooruArtistUrlChips(
-                                  artist: artist,
+                                  artistUrls: artist.activeUrls
+                                      .map((e) => e.url)
+                                      .toList(),
                                   alignment: WrapAlignment.start,
                                 ),
                               ),

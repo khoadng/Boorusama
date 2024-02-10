@@ -51,6 +51,11 @@ class DanbooruPostCreateNotifier
     required Rating rating,
     required String source,
     required List<String> tags,
+    String? artistCommentaryTitle,
+    String? artistCommentaryDesc,
+    String? translatedCommentaryTitle,
+    String? translatedCommentaryDesc,
+    int? parentId,
   }) async {
     final client = ref.read(danbooruClientProvider(arg));
 
@@ -63,6 +68,11 @@ class DanbooruPostCreateNotifier
         rating: rating.toShortString(),
         source: source,
         tags: tags,
+        artistCommentaryTitle: artistCommentaryTitle,
+        artistCommentaryDesc: artistCommentaryDesc,
+        translatedCommentaryTitle: translatedCommentaryTitle,
+        translatedCommentaryDesc: translatedCommentaryDesc,
+        parentId: parentId,
       );
 
       state = AsyncData(postDtoToPost(post));

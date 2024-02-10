@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/feats/artists/artists.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -10,11 +9,11 @@ import 'package:boorusama/widgets/widgets.dart';
 class DanbooruArtistUrlChips extends StatelessWidget {
   const DanbooruArtistUrlChips({
     super.key,
-    required this.artist,
+    required this.artistUrls,
     this.alignment,
   });
 
-  final DanbooruArtist artist;
+  final List<String> artistUrls;
   final WrapAlignment? alignment;
 
   @override
@@ -24,8 +23,8 @@ class DanbooruArtistUrlChips extends StatelessWidget {
       runSpacing: 8,
       alignment: alignment ?? WrapAlignment.center,
       children: [
-        for (final url in artist.activeUrls)
-          PostSource.from(url.url).whenWeb(
+        for (final url in artistUrls)
+          PostSource.from(url).whenWeb(
             (source) => Tooltip(
               message: source.url,
               child: InkWell(
