@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
@@ -15,15 +14,14 @@ class MoebooruInformationSection extends ConsumerWidget {
   const MoebooruInformationSection({
     super.key,
     required this.post,
+    required this.tags,
   });
 
   final Post post;
+  final List<TagGroupItem>? tags;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
-    final tags = ref.watch(tagsProvider(config));
-
     return InformationSection(
       characterTags: tags
               ?.map((e) => e.extractCharacterTags())
@@ -40,9 +38,9 @@ class MoebooruInformationSection extends ConsumerWidget {
           [],
       createdAt: post.createdAt,
       source: post.source,
-      onArtistTagTap: (context, artist) => goToSearchPage(
+      onArtistTagTap: (context, artist) => goToArtistPage(
         context,
-        tag: artist,
+        artist,
       ),
     );
   }

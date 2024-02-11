@@ -13,9 +13,11 @@ import 'package:boorusama/clients/moebooru/moebooru_client.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/path.dart';
+import 'package:boorusama/functional.dart';
 import 'feats/autocomplete/autocomplete.dart';
 import 'feats/posts/posts.dart';
 import 'pages/create_moebooru_config_page.dart';
@@ -44,8 +46,7 @@ class MoebooruBuilder
         DefaultThumbnailUrlMixin,
         DefaultTagColorMixin,
         DefaultPostImageDetailsUrlMixin,
-        DefaultPostStatisticsPageBuilderMixin,
-        ArtistNotSupportedMixin
+        DefaultPostStatisticsPageBuilderMixin
     implements BooruBuilder {
   MoebooruBuilder({
     required this.postRepo,
@@ -102,6 +103,18 @@ class MoebooruBuilder
           );
 
   @override
+  ArtistPageBuilder? get artistPageBuilder =>
+      (context, artistName) => MoebooruArtistPage(
+            artistName: artistName,
+          );
+
+  @override
+  CharacterPageBuilder? get characterPageBuilder =>
+      (context, characterName) => MoebooruArtistPage(
+            artistName: characterName,
+          );
+
+  @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
       (context, config) => config.hasLoginDetails()
           ? MoebooruFavoritesPage(username: config.login!)
@@ -121,7 +134,7 @@ class MoebooruBuilder
               initialIndex: payload.initialIndex,
             )
           : MoebooruPostDetailsPage(
-              posts: payload.posts,
+              posts: payload.posts.map((e) => e as MoebooruPost).toList(),
               onExit: (page) => payload.scrollController?.scrollToIndex(page),
               initialPage: payload.initialIndex,
             );
@@ -167,6 +180,35 @@ class MoebooruFavoritesPage extends ConsumerWidget {
       favQueryBuilder: () => query,
       fetcher: (page) =>
           ref.read(moebooruPostRepoProvider(config)).getPosts([query], page),
+    );
+  }
+}
+
+class MoebooruArtistPage extends ConsumerWidget {
+  const MoebooruArtistPage({
+    super.key,
+    required this.artistName,
+  });
+
+  final String artistName;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
+
+    return ArtistPageScaffold(
+      artistName: artistName,
+      fetcher: (page, selectedCategory) =>
+          ref.read(moebooruArtistCharacterPostRepoProvider(config)).getPosts(
+                queryFromTagFilterCategory(
+                  category: selectedCategory,
+                  tag: artistName,
+                  builder: (category) => category == TagFilterCategory.popular
+                      ? some('order:score')
+                      : none(),
+                ),
+                page,
+              ),
     );
   }
 }

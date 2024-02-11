@@ -81,6 +81,12 @@ void goToArtistPage(
   context.push('/artists?$kArtistNameKey=$artistName');
 }
 
+void goToCharacterPage(BuildContext context, String character) {
+  if (character.isEmpty) return;
+
+  context.push('/characters?$kCharacterNameKey=$character');
+}
+
 void goToPostDetailsPage<T extends Post>({
   required BuildContext context,
   required Iterable<T> posts,

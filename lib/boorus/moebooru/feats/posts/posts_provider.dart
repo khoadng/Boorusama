@@ -7,8 +7,10 @@ import 'package:boorusama/boorus/moebooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/moebooru/moebooru.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/moebooru/types/types.dart';
+import 'package:boorusama/core/feats/blacklists/blacklists.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/foundation/caching/caching.dart';
 
 final moebooruPostRepoProvider =
     Provider.family<PostRepository<MoebooruPost>, BooruConfig>(
@@ -49,6 +51,16 @@ final moebooruPopularRepoProvider =
   },
 );
 
+final moebooruArtistCharacterPostRepoProvider =
+    Provider.family<PostRepository, BooruConfig>(
+  (ref, config) {
+    return PostRepositoryCacher(
+      repository: ref.watch(moebooruPostRepoProvider(config)),
+      cache: LruCacher<String, List<Post>>(capacity: 100),
+    );
+  },
+);
+
 final moebooruPostDetailsChildrenProvider =
     FutureProvider.family.autoDispose<List<Post>?, Post>(
   (ref, post) async {
@@ -67,6 +79,48 @@ final moebooruPostDetailsChildrenProvider =
     );
   },
 );
+
+final moebooruPostDetailsArtistProvider =
+    FutureProvider.family.autoDispose<List<Post>, String>((ref, tag) async {
+  final config = ref.watchConfig;
+  final repo = ref.watch(moebooruArtistCharacterPostRepoProvider(config));
+  final globalBlacklistedTags = ref.watch(globalBlacklistedTagsProvider);
+
+  final posts = await repo.getPosts([tag], 1).run().then(
+        (value) => value.fold(
+          (l) => <Post>[],
+          (r) => r,
+        ),
+      );
+
+  return filterTags(
+    posts.take(30).where((e) => !e.isFlash).toList(),
+    {
+      ...globalBlacklistedTags.map((e) => e.name),
+    },
+  );
+});
+
+final moebooruPostDetailsCharacterProvider =
+    FutureProvider.family.autoDispose<List<Post>, String>((ref, tag) async {
+  final config = ref.watchConfig;
+  final repo = ref.watch(moebooruArtistCharacterPostRepoProvider(config));
+  final globalBlacklistedTags = ref.watch(globalBlacklistedTagsProvider);
+
+  final posts = await repo.getPosts([tag], 1).run().then(
+        (value) => value.fold(
+          (l) => <Post>[],
+          (r) => r,
+        ),
+      );
+
+  return filterTags(
+    posts.take(30).where((e) => !e.isFlash).toList(),
+    {
+      ...globalBlacklistedTags.map((e) => e.name),
+    },
+  );
+});
 
 MoebooruPost postDtoToPost(PostDto postDto) {
   final hasChildren = postDto.hasChildren ?? false;
@@ -95,5 +149,6 @@ MoebooruPost postDtoToPost(PostDto postDto) {
         : null,
     parentId: postDto.parentId,
     uploaderId: postDto.creatorId,
+    uploaderName: postDto.author,
   );
 }

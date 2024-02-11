@@ -27,6 +27,7 @@ class GelbooruV1Builder
         FavoriteNotSupportedMixin,
         PostCountNotSupportedMixin,
         ArtistNotSupportedMixin,
+        CharacterNotSupportedMixin,
         CommentNotSupportedMixin,
         NoteNotSupportedMixin,
         DefaultThumbnailUrlMixin,

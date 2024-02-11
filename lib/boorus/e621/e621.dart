@@ -109,6 +109,7 @@ const kE621PostSamples = [
 class E621Builder
     with
         PostCountNotSupportedMixin,
+        CharacterNotSupportedMixin,
         DefaultThumbnailUrlMixin,
         DefaultPostStatisticsPageBuilderMixin,
         DefaultPostImageDetailsUrlMixin

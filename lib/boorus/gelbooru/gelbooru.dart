@@ -144,6 +144,7 @@ final gelbooruArtistPostsProvider = FutureProvider.autoDispose
 class GelbooruBuilder
     with
         FavoriteNotSupportedMixin,
+        CharacterNotSupportedMixin,
         DefaultThumbnailUrlMixin,
         NoteNotSupportedMixin,
         DefaultThumbnailUrlMixin,

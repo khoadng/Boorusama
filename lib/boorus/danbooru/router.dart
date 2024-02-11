@@ -36,7 +36,6 @@ import 'pages/blacklisted_tags_page.dart';
 import 'pages/comment_create_page.dart';
 import 'pages/comment_update_page.dart';
 import 'pages/danbooru_artist_search_page.dart';
-import 'pages/danbooru_character_page.dart';
 import 'pages/danbooru_dmail_page.dart';
 import 'pages/danbooru_forum_page.dart';
 import 'pages/danbooru_my_uploads_page.dart';
@@ -58,12 +57,6 @@ import 'pages/widgets/favorites/create_favorite_group_dialog.dart';
 import 'pages/widgets/saved_searches/edit_saved_search_sheet.dart';
 import 'pages/widgets/search/related_tag_action_sheet.dart';
 import 'router_page_constant.dart';
-
-void goToCharacterPage(BuildContext context, String tag) {
-  context.navigator.push(CupertinoPageRoute(
-    builder: (_) => DanbooruCharacterPage.of(context, tag),
-  ));
-}
 
 void goToPoolDetailPage(BuildContext context, Pool pool) {
   context.navigator.push(CupertinoPageRoute(

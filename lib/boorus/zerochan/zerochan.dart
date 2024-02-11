@@ -105,6 +105,7 @@ class ZerochanBuilder
         FavoriteNotSupportedMixin,
         PostCountNotSupportedMixin,
         ArtistNotSupportedMixin,
+        CharacterNotSupportedMixin,
         NoteNotSupportedMixin,
         DefaultThumbnailUrlMixin,
         CommentNotSupportedMixin,

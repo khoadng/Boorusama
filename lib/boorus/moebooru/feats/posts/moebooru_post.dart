@@ -35,6 +35,7 @@ class MoebooruPost extends Equatable
     required this.createdAt,
     required this.parentId,
     required this.uploaderId,
+    required this.uploaderName,
   });
 
   @override
@@ -102,4 +103,6 @@ class MoebooruPost extends Equatable
   final int? parentId;
   @override
   final int? uploaderId;
+
+  final String? uploaderName;
 }

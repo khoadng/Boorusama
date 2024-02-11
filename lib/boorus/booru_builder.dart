@@ -82,6 +82,11 @@ typedef ArtistPageBuilder = Widget Function(
   String artistName,
 );
 
+typedef CharacterPageBuilder = Widget Function(
+  BuildContext context,
+  String characterName,
+);
+
 typedef CommentPageBuilder = Widget Function(
   BuildContext context,
   bool useAppBar,
@@ -138,6 +143,7 @@ abstract class BooruBuilder {
   PostDetailsPageBuilder get postDetailsPageBuilder;
   FavoritesPageBuilder? get favoritesPageBuilder;
   ArtistPageBuilder? get artistPageBuilder;
+  CharacterPageBuilder? get characterPageBuilder;
   CommentPageBuilder? get commentPageBuilder;
 
   GridThumbnailUrlBuilder get gridThumbnailUrlBuilder;
@@ -177,6 +183,11 @@ mixin FavoriteNotSupportedMixin implements BooruBuilder {
 mixin ArtistNotSupportedMixin implements BooruBuilder {
   @override
   ArtistPageBuilder? get artistPageBuilder => null;
+}
+
+mixin CharacterNotSupportedMixin implements BooruBuilder {
+  @override
+  CharacterPageBuilder? get characterPageBuilder => null;
 }
 
 mixin CommentNotSupportedMixin implements BooruBuilder {

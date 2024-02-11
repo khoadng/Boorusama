@@ -6,6 +6,7 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/pages/comment_page.dart';
+import 'package:boorusama/boorus/danbooru/pages/danbooru_character_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/danbooru_post_statistics_page.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
@@ -177,6 +178,11 @@ class DanbooruBuilder with DefaultTagColorMixin implements BooruBuilder {
   @override
   ArtistPageBuilder? get artistPageBuilder => (context, artistName) =>
       DanbooruArtistPage(artistName: artistName, backgroundImageUrl: '');
+
+  @override
+  CharacterPageBuilder? get characterPageBuilder =>
+      (context, characterName) => DanbooruCharacterPage(
+          characterName: characterName, backgroundImageUrl: '');
 
   @override
   GridThumbnailUrlBuilder get gridThumbnailUrlBuilder => (settings, post) =>

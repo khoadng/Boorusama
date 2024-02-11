@@ -14,6 +14,7 @@ class Shimmie2Builder
         DefaultThumbnailUrlMixin,
         CommentNotSupportedMixin,
         ArtistNotSupportedMixin,
+        CharacterNotSupportedMixin,
         NoteNotSupportedMixin,
         DefaultTagColorMixin,
         DefaultPostImageDetailsUrlMixin,

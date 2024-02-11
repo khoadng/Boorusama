@@ -35,6 +35,7 @@ class SankakuBuilder
         NoteNotSupportedMixin,
         DefaultThumbnailUrlMixin,
         CommentNotSupportedMixin,
+        CharacterNotSupportedMixin,
         DefaultTagColorMixin,
         DefaultPostImageDetailsUrlMixin,
         DefaultPostStatisticsPageBuilderMixin,
