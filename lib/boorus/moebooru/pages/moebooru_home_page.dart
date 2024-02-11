@@ -46,7 +46,10 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
           _buildMobileHomeView(controller, widget.config),
       mobileMenuBuilder: (context, controller) => [
         SideMenuTile(
-          icon: const Icon(Symbols.explore),
+          icon: const Icon(
+            Symbols.explore,
+            fill: 1,
+          ),
           title: const Text('Popular'),
           onTap: () => context.navigator.push(CupertinoPageRoute(
               builder: (_) => Scaffold(
@@ -56,7 +59,10 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
                   ))),
         ),
         SideMenuTile(
-          icon: const Icon(Symbols.local_fire_department),
+          icon: const Icon(
+            Symbols.local_fire_department,
+            fill: 1,
+          ),
           title: const Text('Hot'),
           onTap: () => context.navigator.push(CupertinoPageRoute(
               builder: (_) => Scaffold(
@@ -65,6 +71,18 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
                         child: MoebooruPopularRecentPage()),
                   ))),
         ),
+        if (widget.config.hasLoginDetails()) ...[
+          SideMenuTile(
+            icon: const Icon(
+              Symbols.favorite,
+              fill: 1,
+            ),
+            title: Text('profile.favorites'.tr()),
+            onTap: () {
+              goToFavoritesPage(context);
+            },
+          ),
+        ],
       ],
       desktopMenuBuilder: (context, controller, constraints) => [
         HomeNavigationTile(

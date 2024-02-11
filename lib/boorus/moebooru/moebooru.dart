@@ -1,3 +1,6 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -99,6 +102,17 @@ class MoebooruBuilder
           );
 
   @override
+  FavoritesPageBuilder? get favoritesPageBuilder =>
+      (context, config) => config.hasLoginDetails()
+          ? MoebooruFavoritesPage(username: config.login!)
+          : const Scaffold(
+              body: Center(
+                child: Text(
+                    'You need to provide login details to use this feature.'),
+              ),
+            );
+
+  @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
       (context, config, payload) => payload.isDesktop
           ? MoebooruPostDetailsDesktopPage(
@@ -134,4 +148,25 @@ class MoebooruBuilder
           'index': (post, config) => config.index?.toString(),
         },
       );
+}
+
+class MoebooruFavoritesPage extends ConsumerWidget {
+  const MoebooruFavoritesPage({
+    super.key,
+    required this.username,
+  });
+
+  final String username;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
+    final query = 'vote:3:$username order:vote';
+
+    return FavoritesPageScaffold(
+      favQueryBuilder: () => query,
+      fetcher: (page) =>
+          ref.read(moebooruPostRepoProvider(config)).getPosts([query], page),
+    );
+  }
 }
