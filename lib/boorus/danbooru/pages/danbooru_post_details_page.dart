@@ -61,7 +61,7 @@ class _DanbooruPostDetailsPageState
         posts: posts,
         initialIndex: widget.intitialIndex,
         onExit: widget.onExit,
-        showSourceTile: false,
+        sourceSectionBuilder: (context, post) => const SizedBox.shrink(),
         onTagTap: (tag) => goToSearchPage(context, tag: tag),
         toolbarBuilder: (context, post) =>
             DanbooruPostActionToolbar(post: post),

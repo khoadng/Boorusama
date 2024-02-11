@@ -102,7 +102,7 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage> {
           ),
         ];
       },
-      showSourceTile: false,
+      sourceSectionBuilder: (context, post) => const SizedBox.shrink(),
       artistInfoBuilder: (context, post) => E621ArtistSection(post: post),
     );
   }

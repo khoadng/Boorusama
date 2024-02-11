@@ -23,6 +23,7 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
     required this.height,
     required this.md5,
     required this.tags,
+    required this.realSourceUrl,
   });
 
   final int id;
@@ -40,6 +41,7 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
   final String md5;
   @override
   final List<String> tags;
+  final String? realSourceUrl;
 
   bool get isVideo => isFormatVideo(extension(originalUrl));
 
@@ -56,6 +58,7 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
     height: -1,
     md5: '',
     tags: const [],
+    realSourceUrl: null,
   );
 
   @override
@@ -101,6 +104,7 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
       height: height ?? this.height,
       md5: md5 ?? this.md5,
       tags: tags ?? this.tags,
+      realSourceUrl: realSourceUrl,
     );
   }
 
@@ -118,6 +122,7 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
       height: (json['height'] as num).toDouble(),
       md5: json['md5'] as String,
       tags: (json['tags'] as List<dynamic>).map((e) => e as String).toList(),
+      realSourceUrl: json['realSourceUrl'] as String?,
     );
   }
 

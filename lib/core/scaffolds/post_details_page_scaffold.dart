@@ -31,13 +31,13 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     this.placeholderImageUrlBuilder,
     this.imageOverlayBuilder,
     this.artistInfoBuilder,
-    this.showSourceTile = true,
     this.onPageChanged,
     this.sliverRelatedPostsBuilder,
     this.commentsBuilder,
     this.poolTileBuilder,
     this.statsTileBuilder,
     this.fileDetailsBuilder,
+    this.sourceSectionBuilder,
   });
 
   final int initialIndex;
@@ -59,6 +59,7 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   final Widget Function(BuildContext context, T post)? poolTileBuilder;
   final Widget Function(BuildContext context, T post)? statsTileBuilder;
   final Widget Function(BuildContext context, T post)? fileDetailsBuilder;
+  final Widget Function(BuildContext context, T post)? sourceSectionBuilder;
 
   final Widget Function(BuildContext context, T post)?
       sliverRelatedPostsBuilder;
@@ -66,7 +67,6 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
       topRightButtonsBuilder;
   final List<Widget> Function(BoxConstraints constraints, T post)?
       imageOverlayBuilder;
-  final bool showSourceTile;
 
   @override
   ConsumerState<PostDetailsPageScaffold<T>> createState() =>
@@ -282,11 +282,12 @@ class _PostDetailPageScaffoldState<T extends Post>
             rating: post.rating,
           ),
         const Divider(height: 8, thickness: 0.5),
-        if (widget.showSourceTile)
-          post.source.whenWeb(
-            (source) => SourceSection(source: source),
-            () => const SizedBox.shrink(),
-          ),
+        widget.sourceSectionBuilder != null
+            ? widget.sourceSectionBuilder!(context, post)
+            : post.source.whenWeb(
+                (source) => SourceSection(source: source),
+                () => const SizedBox.shrink(),
+              ),
         if (widget.commentsBuilder != null)
           widget.commentsBuilder!(context, post),
       ],

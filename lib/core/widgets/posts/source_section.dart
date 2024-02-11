@@ -15,8 +15,10 @@ class SourceSection extends StatelessWidget {
   const SourceSection({
     super.key,
     required this.source,
+    this.title,
   });
 
+  final String? title;
   final WebSource source;
 
   @override
@@ -30,7 +32,7 @@ class SourceSection extends StatelessWidget {
             horizontal: 12,
           ),
           child: Text(
-            'post.detail.source_label'.tr(),
+            title ?? 'post.detail.source_label'.tr(),
             style: context.textTheme.titleLarge!.copyWith(
               color: context.theme.hintColor,
               fontSize: 16,

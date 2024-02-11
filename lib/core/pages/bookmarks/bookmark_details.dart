@@ -37,6 +37,23 @@ class _BookmarkDetailsPageState extends ConsumerState<BookmarkDetailsPage> {
       posts: bookmarks.map((e) => e.toPost()).toList(),
       swipeImageUrlBuilder: (post) => post.sampleImageUrl,
       toolbarBuilder: (context, post) => BookmarkPostActionToolbar(post: post),
+      sourceSectionBuilder: (context, post) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          post.source.whenWeb(
+            (source) => SourceSection(source: source),
+            () => const SizedBox.shrink(),
+          ),
+          post.realSourceUrl.whenWeb(
+            (source) => SourceSection(
+              title: 'Original Source',
+              source: source,
+            ),
+            () => const SizedBox.shrink(),
+          ),
+        ],
+      ),
       topRightButtonsBuilder: (context, _, post) => [
         GeneralMoreActionButton(
           post: post,
