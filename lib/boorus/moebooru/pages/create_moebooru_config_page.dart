@@ -53,6 +53,8 @@ class _CreateMoebooruConfigPageState
   late var hashedPassword = widget.config.apiKey ?? '';
   var password = '';
 
+  final passwordController = TextEditingController();
+
   BooruFactory get booruFactory => ref.read(booruFactoryProvider);
 
   @override
@@ -160,6 +162,7 @@ class _CreateMoebooruConfigPageState
           ),
           const SizedBox(height: 16),
           CreateBooruPasswordField(
+            controller: passwordController,
             onChanged: (value) => setState(() {
               if (value.isEmpty) {
                 hashedPassword = '';
@@ -194,6 +197,20 @@ class _CreateMoebooruConfigPageState
                         fontWeight: FontWeight.w800,
                       ),
                     ),
+                  ),
+                  IconButton(
+                    splashRadius: 12,
+                    onPressed: () =>
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                      setState(() {
+                        password = '';
+                        hashedPassword = '';
+                        apiKey = '';
+
+                        passwordController.clear();
+                      });
+                    }),
+                    icon: const Icon(Symbols.close),
                   ),
                 ],
               ),

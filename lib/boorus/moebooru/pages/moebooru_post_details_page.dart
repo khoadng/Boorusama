@@ -8,7 +8,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/boorus/moebooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
+import 'package:boorusama/boorus/moebooru/moebooru.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
@@ -53,6 +55,22 @@ class MoebooruPostDetailsPage extends ConsumerStatefulWidget {
 class _MoebooruPostDetailsPageState
     extends ConsumerState<MoebooruPostDetailsPage> {
   List<MoebooruPost> get posts => widget.posts;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadFavoriteUsers(posts[widget.initialPage].id);
+    });
+  }
+
+  void _loadFavoriteUsers(int postId) {
+    final config = ref.readConfig;
+
+    if (!config.hasLoginDetails()) return;
+
+    ref.read(moebooruFavoritesProvider(postId).notifier).loadFavoriteUsers();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -144,11 +162,40 @@ class _MoebooruPostDetailsPageState
           tag: tag.rawName,
         ),
       ),
+      toolbarBuilder: (context, post) {
+        final config = ref.watchConfig;
+        final notifier = ref.watch(moebooruFavoritesProvider(post.id).notifier);
+        return SimplePostActionToolbar(
+          isFaved: ref
+              .watch(moebooruFavoritesProvider(post.id))
+              ?.contains(config.login),
+          addFavorite: () => ref
+              .read(moebooruClientProvider(config))
+              .favoritePost(postId: post.id)
+              .then((value) {
+            showSuccessToast('Favorited');
+            notifier.clear();
+          }),
+          removeFavorite: () => ref
+              .read(moebooruClientProvider(config))
+              .unfavoritePost(postId: post.id)
+              .then((value) {
+            showSuccessToast('Unfavorited');
+            notifier.clear();
+          }),
+          isAuthorized: config.hasLoginDetails(),
+          forceHideFav: !config.hasLoginDetails(),
+          post: post,
+        );
+      },
       commentsBuilder: (context, post) => MoebooruCommentSection(post: post),
       infoBuilder: (context, post) => MoebooruInformationSection(
         post: post,
         tags: ref.watch(moebooruPostDetailTagGroupProvider(post)).value,
       ),
+      onPageChanged: (post) {
+        _loadFavoriteUsers(post.id);
+      },
     );
   }
 
