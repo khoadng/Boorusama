@@ -64,17 +64,27 @@ class _MoebooruPostDetailsPageState
     });
   }
 
-  void _loadFavoriteUsers(int postId) {
+  void _loadFavoriteUsers(int postId) async {
     final config = ref.readConfig;
+    final booru = config.createBooruFrom(ref.read(booruFactoryProvider));
 
-    if (!config.hasLoginDetails()) return;
-
-    ref.read(moebooruFavoritesProvider(postId).notifier).loadFavoriteUsers();
+    await booru?.whenMoebooru(
+      data: (data) async {
+        if (data.supportsFavorite(config.url) && config.hasLoginDetails()) {
+          return ref
+              .read(moebooruFavoritesProvider(postId).notifier)
+              .loadFavoriteUsers();
+        }
+        return;
+      },
+      orElse: () => Future.value(null),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final booruConfig = ref.watchConfig;
+    final config = ref.watchConfig;
+    final booru = config.createBooruFrom(ref.watch(booruFactoryProvider));
 
     return PostDetailsPageScaffold(
       posts: posts,
@@ -100,7 +110,7 @@ class _MoebooruPostDetailsPageState
       sliverArtistPostsBuilder: (context, post) =>
           ref.watch(moebooruPostDetailTagGroupProvider(post)).maybeWhen(
                 data: (tags) {
-                  final artistTags = _extractArtist(booruConfig, tags);
+                  final artistTags = _extractArtist(config, tags);
 
                   return artistTags != null && artistTags.isNotEmpty
                       ? ArtistPostList(
@@ -129,8 +139,8 @@ class _MoebooruPostDetailsPageState
       sliverCharacterPostsBuilder: (context, post) {
         return ref.watch(moebooruPostDetailTagGroupProvider(post)).maybeWhen(
               data: (tags) {
-                final artistTags = _extractArtist(booruConfig, tags);
-                final characterTags = _extractCharacter(booruConfig, tags);
+                final artistTags = _extractArtist(config, tags);
+                final characterTags = _extractCharacter(config, tags);
 
                 return artistTags != null && artistTags.isNotEmpty
                     ? ref
@@ -163,30 +173,35 @@ class _MoebooruPostDetailsPageState
         ),
       ),
       toolbarBuilder: (context, post) {
-        final config = ref.watchConfig;
         final notifier = ref.watch(moebooruFavoritesProvider(post.id).notifier);
-        return SimplePostActionToolbar(
-          isFaved: ref
-              .watch(moebooruFavoritesProvider(post.id))
-              ?.contains(config.login),
-          addFavorite: () => ref
-              .read(moebooruClientProvider(config))
-              .favoritePost(postId: post.id)
-              .then((value) {
-            showSuccessToast('Favorited');
-            notifier.clear();
-          }),
-          removeFavorite: () => ref
-              .read(moebooruClientProvider(config))
-              .unfavoritePost(postId: post.id)
-              .then((value) {
-            showSuccessToast('Unfavorited');
-            notifier.clear();
-          }),
-          isAuthorized: config.hasLoginDetails(),
-          forceHideFav: !config.hasLoginDetails(),
-          post: post,
-        );
+
+        return booru?.whenMoebooru(
+                data: (data) => data.supportsFavorite(config.url)
+                    ? SimplePostActionToolbar(
+                        isFaved: ref
+                            .watch(moebooruFavoritesProvider(post.id))
+                            ?.contains(config.login),
+                        addFavorite: () => ref
+                            .read(moebooruClientProvider(config))
+                            .favoritePost(postId: post.id)
+                            .then((value) {
+                          showSuccessToast('Favorited');
+                          notifier.clear();
+                        }),
+                        removeFavorite: () => ref
+                            .read(moebooruClientProvider(config))
+                            .unfavoritePost(postId: post.id)
+                            .then((value) {
+                          showSuccessToast('Unfavorited');
+                          notifier.clear();
+                        }),
+                        isAuthorized: config.hasLoginDetails(),
+                        forceHideFav: !config.hasLoginDetails(),
+                        post: post,
+                      )
+                    : SimplePostActionToolbar(post: post),
+                orElse: () => SimplePostActionToolbar(post: post)) ??
+            SimplePostActionToolbar(post: post);
       },
       commentsBuilder: (context, post) => MoebooruCommentSection(post: post),
       infoBuilder: (context, post) => MoebooruInformationSection(
