@@ -18,6 +18,7 @@ import 'package:boorusama/widgets/widgets.dart';
 enum BulkDownloadFilter {
   all,
   pending,
+  paused,
   inProgress,
   completed,
   failed,
@@ -38,6 +39,8 @@ final bulkDownloadFilteredProvider = Provider.autoDispose
     BulkDownloadFilter.all => state.values.toList(),
     BulkDownloadFilter.pending =>
       state.values.whereType<BulkDownloadQueued>().toList(),
+    BulkDownloadFilter.paused =>
+      state.values.whereType<BulkDownloadPaused>().toList(),
     BulkDownloadFilter.inProgress =>
       state.values.whereType<BulkDownloadInProgress>().toList(),
     BulkDownloadFilter.completed =>

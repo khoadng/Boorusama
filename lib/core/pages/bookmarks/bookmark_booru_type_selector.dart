@@ -31,7 +31,7 @@ class BookmarkBooruSourceUrlSelector extends ConsumerWidget {
           (value) => DropdownMenuItem(
             value: value,
             child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 125),
+              constraints: const BoxConstraints(maxWidth: 100),
               child: Text(
                 value,
                 maxLines: 1,

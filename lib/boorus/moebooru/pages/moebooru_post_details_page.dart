@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -100,9 +99,12 @@ class _MoebooruPostDetailsPageState
         post: post,
         rating: post.rating,
         uploader: post.uploaderName != null
-            ? AutoSizeText(
+            ? Text(
                 post.uploaderName!.replaceAll('_', ' '),
                 maxLines: 1,
+                style: const TextStyle(
+                  fontSize: 14,
+                ),
               )
             : null,
       ),
