@@ -51,50 +51,52 @@ class _MoebooruPopularPageState extends ConsumerState<MoebooruPopularPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: PostScope(
-          fetcher: (page) => page > 1
-              ? TaskEither.of(<Post>[])
-              : _typeToData(selectedPopular.value, page),
-          builder: (context, controller, errors) => Column(
-            children: [
-              Container(
-                color: context.theme.bottomNavigationBarTheme.backgroundColor,
-                child: ValueListenableBuilder<DateTime>(
-                  valueListenable: selectedDateNotifier,
-                  builder: (context, d, __) =>
-                      ValueListenableBuilder<MoebooruPopularType>(
-                    valueListenable: selectedPopular,
-                    builder: (_, type, __) => DateTimeSelector(
-                      onDateChanged: (date) {
-                        selectedDateNotifier.value = date;
-                        controller.refresh();
-                      },
-                      date: d,
-                      scale: _convertToTimeScale(type),
-                      backgroundColor: Colors.transparent,
-                    ),
+    return PostScope(
+      fetcher: (page) => page > 1
+          ? TaskEither.of(<Post>[])
+          : _typeToData(selectedPopular.value, page),
+      builder: (context, controller, errors) => Column(
+        children: [
+          Expanded(
+            child: InfinitePostListScaffold(
+              errors: errors,
+              controller: controller,
+              sliverHeaderBuilder: (context) => [
+                SliverToBoxAdapter(
+                  child: TimeScaleToggleSwitch(
+                    onToggle: (category) {
+                      selectedPopular.value =
+                          _convertToMoebooruPopularType(category);
+                      controller.refresh();
+                    },
                   ),
                 ),
-              ),
-              TimeScaleToggleSwitch(
-                onToggle: (category) {
-                  selectedPopular.value =
-                      _convertToMoebooruPopularType(category);
-                  controller.refresh();
-                },
-              ),
-              const SizedBox(height: 12),
-              Expanded(
-                child: InfinitePostListScaffold(
-                  errors: errors,
-                  controller: controller,
+              ],
+            ),
+          ),
+          Container(
+            color: context.theme.bottomNavigationBarTheme.backgroundColor,
+            margin: EdgeInsets.only(
+              bottom: MediaQuery.viewPaddingOf(context).bottom,
+            ),
+            child: ValueListenableBuilder<DateTime>(
+              valueListenable: selectedDateNotifier,
+              builder: (context, d, __) =>
+                  ValueListenableBuilder<MoebooruPopularType>(
+                valueListenable: selectedPopular,
+                builder: (_, type, __) => DateTimeSelector(
+                  onDateChanged: (date) {
+                    selectedDateNotifier.value = date;
+                    controller.refresh();
+                  },
+                  date: d,
+                  scale: _convertToTimeScale(type),
+                  backgroundColor: Colors.transparent,
                 ),
               ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

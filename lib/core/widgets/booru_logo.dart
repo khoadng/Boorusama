@@ -42,7 +42,7 @@ class BooruLogo extends StatelessWidget {
                 _ => state.completedWidget,
               },
             )
-          : ExtendedImage.asset(
+          : Image.asset(
               source.faviconUrl,
               width: 28,
               height: 28,

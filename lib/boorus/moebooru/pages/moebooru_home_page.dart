@@ -51,12 +51,18 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
             fill: 1,
           ),
           title: const Text('Popular'),
-          onTap: () => context.navigator.push(CupertinoPageRoute(
+          onTap: () => context.navigator.push(
+            CupertinoPageRoute(
               builder: (_) => Scaffold(
-                    appBar: AppBar(),
-                    body: const CustomContextMenuOverlay(
-                        child: MoebooruPopularPage()),
-                  ))),
+                appBar: AppBar(
+                  title: const Text('Popular'),
+                ),
+                body: const CustomContextMenuOverlay(
+                  child: MoebooruPopularPage(),
+                ),
+              ),
+            ),
+          ),
         ),
         SideMenuTile(
           icon: const Icon(
@@ -64,12 +70,18 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
             fill: 1,
           ),
           title: const Text('Hot'),
-          onTap: () => context.navigator.push(CupertinoPageRoute(
+          onTap: () => context.navigator.push(
+            CupertinoPageRoute(
               builder: (_) => Scaffold(
-                    appBar: AppBar(),
-                    body: const CustomContextMenuOverlay(
-                        child: MoebooruPopularRecentPage()),
-                  ))),
+                appBar: AppBar(
+                  title: const Text('Hot'),
+                ),
+                body: const CustomContextMenuOverlay(
+                  child: MoebooruPopularRecentPage(),
+                ),
+              ),
+            ),
+          ),
         ),
         if (widget.config.hasLoginDetails()) ...[
           SideMenuTile(
@@ -99,7 +111,7 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
           constraints: constraints,
           selectedIcon: Symbols.explore,
           icon: Symbols.explore,
-          title: 'Explore',
+          title: 'Popular',
         ),
         HomeNavigationTile(
           value: 2,
