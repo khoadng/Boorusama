@@ -10,6 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/moebooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
+import 'package:boorusama/boorus/moebooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/moebooru/moebooru.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
@@ -28,8 +29,8 @@ final moebooruPostDetailTagGroupProvider = FutureProvider.autoDispose
     .family<List<TagGroupItem>, Post>((ref, post) async {
   final config = ref.watchConfig;
 
-  final repo = ref.watch(tagRepoProvider(config));
-  final tags = await loadTags(tagList: post.tags, repo: repo);
+  final allTags = await ref.watch(moebooruAllTagsProvider(config).future);
+  final tags = allTags.where((e) => post.tags.contains(e.rawName)).toList();
   final tagGroups = createTagGroupItems(tags);
 
   return tagGroups;
@@ -204,10 +205,16 @@ class _MoebooruPostDetailsPageState
             SimplePostActionToolbar(post: post);
       },
       commentsBuilder: (context, post) => MoebooruCommentSection(post: post),
-      infoBuilder: (context, post) => MoebooruInformationSection(
-        post: post,
-        tags: ref.watch(moebooruPostDetailTagGroupProvider(post)).value,
-      ),
+      infoBuilder: (context, post) => ref
+          .watch(moebooruAllTagsProvider(config))
+          .maybeWhen(
+            data: (tags) => MoebooruInformationSection(
+              post: post,
+              tags: createTagGroupItems(
+                  tags.where((e) => post.tags.contains(e.rawName)).toList()),
+            ),
+            orElse: () => const SizedBox.shrink(),
+          ),
       onPageChanged: (post) {
         _loadFavoriteUsers(post.id);
       },
