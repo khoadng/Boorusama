@@ -141,10 +141,26 @@ final gelbooruArtistPostsProvider = FutureProvider.autoDispose
   );
 });
 
+final gelbooruCharacterPostsProvider = FutureProvider.autoDispose
+    .family<List<GelbooruPost>, String?>((ref, characterName) async {
+  if (characterName == null) return [];
+
+  final globalBlacklistedTags = ref.watch(globalBlacklistedTagsProvider);
+
+  final repo = ref.watch(gelbooruArtistPostRepo(ref.watchConfig));
+  final posts = await repo.getPostsFromTagsOrEmpty([characterName], 1);
+
+  return filterTags(
+    posts.take(30).where((e) => !e.isFlash).toList(),
+    {
+      ...globalBlacklistedTags.map((e) => e.name),
+    },
+  );
+});
+
 class GelbooruBuilder
     with
         FavoriteNotSupportedMixin,
-        CharacterNotSupportedMixin,
         DefaultThumbnailUrlMixin,
         NoteNotSupportedMixin,
         DefaultThumbnailUrlMixin,
@@ -250,6 +266,12 @@ class GelbooruBuilder
   ArtistPageBuilder? get artistPageBuilder =>
       (context, artistName) => GelbooruArtistPage(
             artistName: artistName,
+          );
+
+  @override
+  CharacterPageBuilder? get characterPageBuilder =>
+      (context, characterName) => GelbooruArtistPage(
+            artistName: characterName,
           );
 
   @override
