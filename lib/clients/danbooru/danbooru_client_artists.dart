@@ -71,7 +71,11 @@ mixin DanbooruClientArtists {
 
     if (artists.isEmpty) return null;
 
-    return artists.first;
+    final nonDeleted = artists.where((e) => !e.isDeleted).toList();
+
+    if (nonDeleted.isEmpty) return null;
+
+    return nonDeleted.first;
   }
 
   Future<List<ArtistCommentaryDto>> getArtistCommentaries({

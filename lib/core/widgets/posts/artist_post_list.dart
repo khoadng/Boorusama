@@ -27,6 +27,7 @@ class ArtistPostList extends ConsumerWidget {
           return Column(
             children: [
               ListTile(
+                visualDensity: VisualDensity.compact,
                 onTap: () => goToArtistPage(context, tag),
                 title: Text(tag.replaceAll('_', ' ')),
                 trailing: const Icon(

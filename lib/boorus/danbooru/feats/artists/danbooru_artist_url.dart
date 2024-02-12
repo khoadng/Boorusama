@@ -20,7 +20,7 @@ class DanbooruArtistUrl extends Equatable {
 const _pixivStacc = '/stacc/';
 const _twitterIntent = '/intent/user';
 const _pawooAccount = '/web/accounts/';
-const _misskeyAccount = '/users/';
+const _misskeyAccount = 'misskey.io/users/';
 
 extension DanbooruArtistUrlX on DanbooruArtistUrl {
   DanbooruArtistUrl copyWith({

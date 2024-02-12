@@ -175,9 +175,12 @@ class BooruSelectorItem extends StatelessWidget {
     return Material(
       key: ValueKey(config.id),
       color: Colors.transparent,
-      borderRadius: BorderRadius.circular(4),
+      borderRadius: BorderRadius.circular(8),
       child: InkWell(
         hoverColor: context.theme.hoverColor.withOpacity(0.1),
+        customBorder: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
         onSecondaryTap: () => show(),
         onTap: onTap,
         child: Container(
