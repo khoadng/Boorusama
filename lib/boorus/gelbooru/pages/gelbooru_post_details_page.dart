@@ -53,6 +53,19 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailsPage> {
       onTagTap: (tag) => goToSearchPage(context, tag: tag),
       toolbarBuilder: (context, post) => SimplePostActionToolbar(post: post),
       swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
+      fileDetailsBuilder: (context, post) => FileDetailsSection(
+        post: post,
+        rating: post.rating,
+        uploader: post.uploaderName != null
+            ? Text(
+                post.uploaderName!.replaceAll('_', ' '),
+                maxLines: 1,
+                style: const TextStyle(
+                  fontSize: 14,
+                ),
+              )
+            : null,
+      ),
       sliverArtistPostsBuilder: (context, post) => ref
           .watch(gelbooruPostDetailsArtistMapProvider)
           .lookup(post.id)
