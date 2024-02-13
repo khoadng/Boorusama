@@ -10,6 +10,7 @@ import 'package:boorusama/core/feats/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -69,9 +70,7 @@ class _BookmarkDetailsPageState extends ConsumerState<BookmarkDetailsPage> {
       onExit: (page) {
         // TODO: implement onExit
       },
-      onTagTap: (tag) {
-        // TODO: implement onTagTap
-      },
+      onTagTap: (tag) => goToSearchPage(context, tag: tag),
     );
   }
 }
