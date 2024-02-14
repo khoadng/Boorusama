@@ -17,10 +17,12 @@ import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
+import 'package:boorusama/core/feats/utils.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/path.dart';
+import 'package:boorusama/functional.dart';
 import 'pages/create_gelbooru_config_page.dart';
 import 'pages/gelbooru_artist_page.dart';
 import 'pages/gelbooru_home_page.dart';
@@ -165,6 +167,7 @@ class GelbooruBuilder
         NoteNotSupportedMixin,
         DefaultThumbnailUrlMixin,
         DefaultPostImageDetailsUrlMixin,
+        DefaultGranularRatingFiltererMixin,
         DefaultPostStatisticsPageBuilderMixin,
         DefaultTagColorMixin
     implements BooruBuilder {
@@ -172,11 +175,14 @@ class GelbooruBuilder
     required this.postRepo,
     required this.autocompleteRepo,
     required this.client,
+    this.isV2 = false,
   });
 
   final PostRepository<GelbooruPost> postRepo;
   final AutocompleteRepository autocompleteRepo;
   final GelbooruClient client;
+
+  final bool isV2;
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
@@ -221,15 +227,18 @@ class GelbooruBuilder
       (query) => autocompleteRepo.getAutocomplete(query);
 
   @override
-  PostCountFetcher? get postCountFetcher => (config, tags) {
-        final tag = booruFilterConfigToGelbooruTag(config.ratingFilter);
-
-        return client.getPosts(
-          tags: [
-            ...tags,
-            if (tag != null) tag,
-          ],
-        ).then((value) => value.count);
+  PostCountFetcher? get postCountFetcher =>
+      (config, tags, granularRatingQueryBuilder) {
+        return client
+            .getPosts(
+              tags: getTags(
+                config,
+                tags,
+                granularRatingQueries: (tags) =>
+                    granularRatingQueryBuilder?.call(tags, config),
+              ),
+            )
+            .then((value) => value.count);
       };
 
   @override
@@ -279,6 +288,38 @@ class GelbooruBuilder
       (context, useAppBar, postId) => GelbooruCommentPage(
             postId: postId,
           );
+
+  @override
+  GranularRatingQueryBuilder? get granularRatingQueryBuilder =>
+      (currentQuery, config) => switch (config.ratingFilter) {
+            BooruConfigRatingFilter.none => currentQuery,
+            BooruConfigRatingFilter.hideNSFW => [
+                ...currentQuery,
+                isV2 ? 'rating:safe' : 'rating:general',
+              ],
+            BooruConfigRatingFilter.hideExplicit => [
+                ...currentQuery,
+                '-rating:explicit',
+              ],
+            BooruConfigRatingFilter.custom =>
+              config.granularRatingFiltersWithoutUnknown.toOption().fold(
+                    () => currentQuery,
+                    (ratings) => [
+                      ...currentQuery,
+                      ...ratings.map((e) => '-rating:${e.toFullString(
+                            legacy: isV2,
+                          )}'),
+                    ],
+                  ),
+          };
+
+  @override
+  GranularRatingOptionsBuilder? get granularRatingOptionsBuilder => () => {
+        Rating.explicit,
+        Rating.questionable,
+        Rating.sensitive,
+        if (!isV2) Rating.general,
+      };
 
   @override
   DownloadFilenameGenerator get downloadFilenameBuilder =>

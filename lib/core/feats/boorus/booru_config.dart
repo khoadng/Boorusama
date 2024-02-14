@@ -4,7 +4,9 @@ import 'package:equatable/equatable.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/functional.dart';
 
 class BooruConfig extends Equatable {
   const BooruConfig({
@@ -20,6 +22,7 @@ class BooruConfig extends Equatable {
     required this.customDownloadFileNameFormat,
     required this.customBulkDownloadFileNameFormat,
     required this.imageDetaisQuality,
+    required this.granularRatingFilters,
   });
 
   static const BooruConfig empty = BooruConfig(
@@ -35,6 +38,7 @@ class BooruConfig extends Equatable {
     customDownloadFileNameFormat: null,
     customBulkDownloadFileNameFormat: null,
     imageDetaisQuality: null,
+    granularRatingFilters: null,
   );
 
   static BooruConfig defaultConfig({
@@ -55,6 +59,7 @@ class BooruConfig extends Equatable {
         customDownloadFileNameFormat: customDownloadFileNameFormat,
         customBulkDownloadFileNameFormat: customDownloadFileNameFormat,
         imageDetaisQuality: null,
+        granularRatingFilters: null,
       );
 
   final int id;
@@ -69,6 +74,7 @@ class BooruConfig extends Equatable {
   final String? customDownloadFileNameFormat;
   final String? customBulkDownloadFileNameFormat;
   final String? imageDetaisQuality;
+  final Set<Rating>? granularRatingFilters;
 
   BooruConfig copyWith({
     String? url,
@@ -89,6 +95,7 @@ class BooruConfig extends Equatable {
       customDownloadFileNameFormat: customDownloadFileNameFormat,
       customBulkDownloadFileNameFormat: customBulkDownloadFileNameFormat,
       imageDetaisQuality: imageDetaisQuality,
+      granularRatingFilters: granularRatingFilters,
     );
   }
 
@@ -106,9 +113,12 @@ class BooruConfig extends Equatable {
         customDownloadFileNameFormat,
         customBulkDownloadFileNameFormat,
         imageDetaisQuality,
+        granularRatingFilters,
       ];
 
   factory BooruConfig.fromJson(Map<String, dynamic> json) {
+    final ratingFilter = json['ratingFilter'] as int?;
+
     return BooruConfig(
       id: json['id'] as int,
       booruId: json['booruId'] as int,
@@ -119,12 +129,18 @@ class BooruConfig extends Equatable {
       name: json['name'] as String,
       deletedItemBehavior: BooruConfigDeletedItemBehavior
           .values[json['deletedItemBehavior'] as int],
-      ratingFilter: BooruConfigRatingFilter.values[json['ratingFilter'] as int],
+      ratingFilter: ratingFilter != null
+          ? BooruConfigRatingFilter.values.getOrNull(ratingFilter) ??
+              BooruConfigRatingFilter.hideNSFW
+          : BooruConfigRatingFilter.hideNSFW,
       customDownloadFileNameFormat:
           json['customDownloadFileNameFormat'] as String?,
       customBulkDownloadFileNameFormat:
           json['customBulkDownloadFileNameFormat'] as String?,
       imageDetaisQuality: json['imageDetaisQuality'] as String?,
+      granularRatingFilters: parseGranularRatingFilters(
+        json['granularRatingFilterString'] as String?,
+      ),
     );
   }
 
@@ -142,8 +158,26 @@ class BooruConfig extends Equatable {
       'customDownloadFileNameFormat': customDownloadFileNameFormat,
       'customBulkDownloadFileNameFormat': customBulkDownloadFileNameFormat,
       'imageDetaisQuality': imageDetaisQuality,
+      'granularRatingFilterString': granularRatingFilterToString(
+        granularRatingFilters,
+      ),
     };
   }
+}
+
+Set<Rating>? parseGranularRatingFilters(String? granularRatingFilterString) {
+  if (granularRatingFilterString == null) return null;
+
+  return granularRatingFilterString
+      .split('|')
+      .map((e) => mapStringToRating(e))
+      .toSet();
+}
+
+String? granularRatingFilterToString(Set<Rating>? granularRatingFilters) {
+  if (granularRatingFilters == null) return null;
+
+  return granularRatingFilters.map((e) => e.toShortString()).join('|');
 }
 
 enum BooruConfigDeletedItemBehavior {
@@ -155,19 +189,22 @@ enum BooruConfigRatingFilter {
   none,
   hideExplicit,
   hideNSFW,
+  custom,
 }
 
 extension BooruConfigRatingFilterX on BooruConfigRatingFilter {
   String getRatingTerm() => switch (this) {
         BooruConfigRatingFilter.none => 'None',
         BooruConfigRatingFilter.hideExplicit => 'Safeish',
-        BooruConfigRatingFilter.hideNSFW => 'Safe'
+        BooruConfigRatingFilter.hideNSFW => 'Safe',
+        BooruConfigRatingFilter.custom => 'Custom'
       };
 
   String getFilterRatingTerm() => switch (this) {
         BooruConfigRatingFilter.none => 'None',
         BooruConfigRatingFilter.hideExplicit => 'Moderate',
-        BooruConfigRatingFilter.hideNSFW => 'Aggressive'
+        BooruConfigRatingFilter.hideNSFW => 'Aggressive',
+        BooruConfigRatingFilter.custom => 'Custom'
       };
 }
 
@@ -192,4 +229,10 @@ extension BooruConfigX on BooruConfig {
   bool isDefault() => id == -1;
 
   bool get hasStrictSFW => url == kDanbooruSafeUrl && isIOS();
+
+  Set<Rating>? get granularRatingFiltersWithoutUnknown {
+    if (granularRatingFilters == null) return null;
+
+    return granularRatingFilters!.where((e) => e != Rating.unknown).toSet();
+  }
 }

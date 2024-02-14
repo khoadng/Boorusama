@@ -69,7 +69,13 @@ const kDanbooruPostSamples = [
   }
 ];
 
-class DanbooruBuilder with DefaultTagColorMixin implements BooruBuilder {
+class DanbooruBuilder
+    with
+        DefaultTagColorMixin,
+        NewGranularRatingOptionsBuilderMixin,
+        NewGranularRatingQueryBuilderMixin,
+        DefaultGranularRatingFiltererMixin
+    implements BooruBuilder {
   const DanbooruBuilder({
     required this.postRepo,
     required this.autocompleteRepo,
@@ -140,7 +146,7 @@ class DanbooruBuilder with DefaultTagColorMixin implements BooruBuilder {
 
   @override
   PostCountFetcher? get postCountFetcher =>
-      (config, tags) => postCountRepo.count(tags);
+      (config, tags, _) => postCountRepo.count(tags);
 
   @override
   SearchPageBuilder get searchPageBuilder =>

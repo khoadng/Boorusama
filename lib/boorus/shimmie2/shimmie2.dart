@@ -16,8 +16,11 @@ class Shimmie2Builder
         ArtistNotSupportedMixin,
         CharacterNotSupportedMixin,
         NoteNotSupportedMixin,
+        LegacyGranularRatingOptionsBuilderMixin,
+        NoGranularRatingQueryBuilderMixin,
         DefaultTagColorMixin,
         DefaultPostImageDetailsUrlMixin,
+        DefaultGranularRatingFiltererMixin,
         DefaultPostStatisticsPageBuilderMixin,
         DefaultBooruUIMixin
     implements BooruBuilder {

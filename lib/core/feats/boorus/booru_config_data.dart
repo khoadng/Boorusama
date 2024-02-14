@@ -14,6 +14,7 @@ class BooruConfigData {
     required this.customDownloadFileNameFormat,
     required this.customBulkDownloadFileNameFormat,
     required this.imageDetaisQuality,
+    required this.granularRatingFilterString,
   });
 
   factory BooruConfigData.anonymous({
@@ -38,6 +39,7 @@ class BooruConfigData {
         customDownloadFileNameFormat: customDownloadFileNameFormat,
         customBulkDownloadFileNameFormat: customBulkDownloadFileNameFormat,
         imageDetaisQuality: imageDetaisQuality,
+        granularRatingFilterString: null,
       );
 
   static BooruConfigData? fromJson(Map<String, dynamic> json) {
@@ -56,6 +58,8 @@ class BooruConfigData {
         customBulkDownloadFileNameFormat:
             json['customBulkDownloadFileNameFormat'] as String?,
         imageDetaisQuality: json['imageDetaisQuality'] as String?,
+        granularRatingFilterString:
+            json['granularRatingFilterString'] as String?,
       );
     } catch (e) {
       return null;
@@ -75,6 +79,7 @@ class BooruConfigData {
       'customDownloadFileNameFormat': customDownloadFileNameFormat,
       'customBulkDownloadFileNameFormat': customBulkDownloadFileNameFormat,
       'imageDetaisQuality': imageDetaisQuality,
+      'granularRatingFilterString': granularRatingFilterString,
     };
   }
 
@@ -89,6 +94,7 @@ class BooruConfigData {
   final String? customDownloadFileNameFormat;
   final String? customBulkDownloadFileNameFormat;
   final String? imageDetaisQuality;
+  final String? granularRatingFilterString;
 }
 
 BooruConfig? convertToBooruConfig({
@@ -112,5 +118,8 @@ BooruConfig? convertToBooruConfig({
     customBulkDownloadFileNameFormat:
         booruConfigData.customBulkDownloadFileNameFormat,
     imageDetaisQuality: booruConfigData.imageDetaisQuality,
+    granularRatingFilters: parseGranularRatingFilters(
+      booruConfigData.granularRatingFilterString,
+    ),
   );
 }

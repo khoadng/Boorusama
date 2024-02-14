@@ -10,8 +10,13 @@ final postCountProvider =
     FutureProvider.autoDispose.family<int?, String>((ref, tags) async {
   final booruBuilder = ref.watch(booruBuilderProvider);
   final fetcher = booruBuilder?.postCountFetcher;
+  final granularRatingQueryBuilder = booruBuilder?.granularRatingQueryBuilder;
 
-  final postCount = await fetcher?.call(ref.watchConfig, tags.split(' '));
+  final postCount = await fetcher?.call(
+    ref.watchConfig,
+    tags.split(' '),
+    granularRatingQueryBuilder,
+  );
 
   return postCount;
 });

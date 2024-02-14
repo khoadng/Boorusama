@@ -47,6 +47,7 @@ class _CreateGelbooruConfigPageState
   late var customBulkDownloadFileNameFormat =
       widget.config.customBulkDownloadFileNameFormat;
   late var imageDetaisQuality = widget.config.imageDetaisQuality;
+  late var granularRatingFilters = widget.config.granularRatingFilters;
 
   @override
   void dispose() {
@@ -145,9 +146,13 @@ class _CreateGelbooruConfigPageState
         children: [
           const SizedBox(height: 16),
           CreateBooruRatingOptionsTile(
+            config: widget.config,
+            initialGranularRatingFilters: granularRatingFilters,
             value: ratingFilter,
             onChanged: (value) =>
                 value != null ? setState(() => ratingFilter = value) : null,
+            onGranularRatingFiltersChanged: (value) =>
+                setState(() => granularRatingFilters = value),
           ),
           const SizedBox(height: 16),
           CreateBooruGeneralPostDetailsResolutionOptionTile(
@@ -251,6 +256,7 @@ class _CreateGelbooruConfigPageState
       customDownloadFileNameFormat: customDownloadFileNameFormat,
       customBulkDownloadFileNameFormat: customBulkDownloadFileNameFormat,
       imageDetaisQuality: imageDetaisQuality,
+      granularRatingFilters: granularRatingFilters,
     );
 
     ref

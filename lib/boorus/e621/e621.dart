@@ -110,8 +110,11 @@ class E621Builder
     with
         PostCountNotSupportedMixin,
         CharacterNotSupportedMixin,
+        LegacyGranularRatingOptionsBuilderMixin,
+        LegacyGranularRatingQueryBuilderMixin,
         DefaultThumbnailUrlMixin,
         DefaultPostStatisticsPageBuilderMixin,
+        DefaultGranularRatingFiltererMixin,
         DefaultPostImageDetailsUrlMixin
     implements BooruBuilder {
   E621Builder({

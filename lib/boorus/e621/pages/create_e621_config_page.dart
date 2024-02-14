@@ -47,6 +47,7 @@ class _CreateDanbooruConfigPageState
   late var customBulkDownloadFileNameFormat =
       widget.config.customBulkDownloadFileNameFormat;
   late var imageDetaisQuality = widget.config.imageDetaisQuality;
+  late var granularRatingFilters = widget.config.granularRatingFilters;
 
   @override
   Widget build(BuildContext context) {
@@ -127,9 +128,13 @@ class _CreateDanbooruConfigPageState
         children: [
           const SizedBox(height: 16),
           CreateBooruRatingOptionsTile(
+            config: widget.config,
+            initialGranularRatingFilters: granularRatingFilters,
             value: ratingFilter,
             onChanged: (value) =>
                 value != null ? setState(() => ratingFilter = value) : null,
+            onGranularRatingFiltersChanged: (value) =>
+                setState(() => granularRatingFilters = value),
           ),
           const SizedBox(height: 16),
           CreateBooruGeneralPostDetailsResolutionOptionTile(
@@ -197,6 +202,7 @@ class _CreateDanbooruConfigPageState
       customDownloadFileNameFormat: customDownloadFileNameFormat,
       customBulkDownloadFileNameFormat: customBulkDownloadFileNameFormat,
       imageDetaisQuality: imageDetaisQuality,
+      granularRatingFilters: granularRatingFilters,
     );
 
     ref

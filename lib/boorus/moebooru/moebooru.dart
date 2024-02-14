@@ -43,9 +43,12 @@ class MoebooruBuilder
         PostCountNotSupportedMixin,
         CommentNotSupportedMixin,
         NoteNotSupportedMixin,
+        LegacyGranularRatingOptionsBuilderMixin,
+        LegacyGranularRatingQueryBuilderMixin,
         DefaultThumbnailUrlMixin,
         DefaultTagColorMixin,
         DefaultPostImageDetailsUrlMixin,
+        DefaultGranularRatingFiltererMixin,
         DefaultPostStatisticsPageBuilderMixin
     implements BooruBuilder {
   MoebooruBuilder({

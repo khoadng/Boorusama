@@ -9,6 +9,7 @@ import 'package:jiffy/jiffy.dart';
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/feats/user_level_colors.dart';
 import 'types.dart';
@@ -52,4 +53,35 @@ extension ImageQualityX on ImageQuality {
         ImageQuality.highest => true,
         _ => false
       };
+}
+
+// convert a BooruConfig and an orignal tag list to List<String>
+List<String> getTags(
+  BooruConfig booruConfig,
+  List<String> tags, {
+  List<String>? Function(List<String> tags)? granularRatingQueries,
+}) {
+  final deletedStatusTag = booruConfigDeletedBehaviorToTag(
+    booruConfig.deletedItemBehavior,
+  );
+
+  final data = [
+    ...tags,
+    if (deletedStatusTag != null) deletedStatusTag,
+  ];
+
+  return granularRatingQueries != null
+      ? granularRatingQueries(data) ?? []
+      : data;
+}
+
+String? booruConfigDeletedBehaviorToTag(
+  BooruConfigDeletedItemBehavior? behavior,
+) {
+  if (behavior == null) return null;
+
+  return switch (behavior) {
+    BooruConfigDeletedItemBehavior.show => null,
+    BooruConfigDeletedItemBehavior.hide => '-status:deleted'
+  };
 }

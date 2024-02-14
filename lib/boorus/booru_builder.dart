@@ -108,9 +108,18 @@ typedef FavoriteAdder = Future<bool> Function(int postId);
 typedef FavoriteRemover = Future<bool> Function(int postId);
 typedef FavoriteChecker = bool Function(int postId);
 
+typedef GranularRatingFilterer = bool Function(Post post, BooruConfig config);
+typedef GranularRatingQueryBuilder = List<String> Function(
+  List<String> currentQuery,
+  BooruConfig config,
+);
+
+typedef GranularRatingOptionsBuilder = Set<Rating> Function();
+
 typedef PostCountFetcher = Future<int?> Function(
   BooruConfig config,
   List<String> tags,
+  GranularRatingQueryBuilder? granularRatingQueryBuilder,
 );
 
 typedef GridThumbnailUrlBuilder = String Function(
@@ -155,6 +164,10 @@ abstract class BooruBuilder {
   PostImageDetailsUrlBuilder get postImageDetailsUrlBuilder;
 
   PostStatisticsPageBuilder get postStatisticsPageBuilder;
+
+  GranularRatingFilterer? get granularRatingFilterer;
+  GranularRatingQueryBuilder? get granularRatingQueryBuilder;
+  GranularRatingOptionsBuilder? get granularRatingOptionsBuilder;
 
   // Data Builders
   PostFetcher get postFetcher;
@@ -272,6 +285,97 @@ mixin DefaultPostStatisticsPageBuilderMixin on BooruBuilder {
           );
 }
 
+mixin DefaultGranularRatingFiltererMixin on BooruBuilder {
+  @override
+  GranularRatingFilterer? get granularRatingFilterer =>
+      (post, config) => switch (config.ratingFilter) {
+            BooruConfigRatingFilter.none => false,
+            BooruConfigRatingFilter.hideNSFW => post.rating.isNSFW(),
+            BooruConfigRatingFilter.hideExplicit =>
+              post.rating == Rating.explicit,
+            BooruConfigRatingFilter.custom =>
+              config.granularRatingFiltersWithoutUnknown.toOption().fold(
+                    () => false,
+                    (ratings) => ratings.contains(post.rating),
+                  ),
+          };
+}
+
+mixin LegacyGranularRatingOptionsBuilderMixin on BooruBuilder {
+  @override
+  GranularRatingOptionsBuilder? get granularRatingOptionsBuilder => () => {
+        Rating.explicit,
+        Rating.questionable,
+        Rating.sensitive,
+      };
+}
+
+mixin NewGranularRatingOptionsBuilderMixin on BooruBuilder {
+  @override
+  GranularRatingOptionsBuilder? get granularRatingOptionsBuilder => () => {
+        Rating.explicit,
+        Rating.questionable,
+        Rating.sensitive,
+        Rating.general,
+      };
+}
+
+mixin NoGranularRatingQueryBuilderMixin on BooruBuilder {
+  @override
+  GranularRatingQueryBuilder? get granularRatingQueryBuilder => null;
+}
+
+mixin LegacyGranularRatingQueryBuilderMixin on BooruBuilder {
+  @override
+  GranularRatingQueryBuilder? get granularRatingQueryBuilder =>
+      (currentQuery, config) => switch (config.ratingFilter) {
+            BooruConfigRatingFilter.none => currentQuery,
+            BooruConfigRatingFilter.hideNSFW => [
+                ...currentQuery,
+                'rating:safe',
+              ],
+            BooruConfigRatingFilter.hideExplicit => [
+                ...currentQuery,
+                '-rating:explicit',
+              ],
+            BooruConfigRatingFilter.custom =>
+              config.granularRatingFiltersWithoutUnknown.toOption().fold(
+                    () => currentQuery,
+                    (ratings) => [
+                      ...currentQuery,
+                      ...ratings.map((e) => '-rating:${e.toFullString(
+                            legacy: true,
+                          )}'),
+                    ],
+                  ),
+          };
+}
+
+mixin NewGranularRatingQueryBuilderMixin on BooruBuilder {
+  @override
+  GranularRatingQueryBuilder? get granularRatingQueryBuilder =>
+      (currentQuery, config) => switch (config.ratingFilter) {
+            BooruConfigRatingFilter.none => currentQuery,
+            BooruConfigRatingFilter.hideNSFW => [
+                ...currentQuery,
+                'rating:g',
+              ],
+            BooruConfigRatingFilter.hideExplicit => [
+                ...currentQuery,
+                '-rating:e',
+                '-rating:q',
+              ],
+            BooruConfigRatingFilter.custom =>
+              config.granularRatingFiltersWithoutUnknown.toOption().fold(
+                    () => currentQuery,
+                    (ratings) => [
+                      ...currentQuery,
+                      ...ratings.map((e) => '-rating:${e.toShortString()}'),
+                    ],
+                  ),
+          };
+}
+
 extension BooruBuilderWidgetRef on WidgetRef {
   Color? getTagColor(
     BuildContext context,
@@ -342,6 +446,7 @@ final booruBuildersProvider =
                 autocompleteRepo:
                     ref.read(gelbooruAutocompleteRepoProvider(config)),
                 client: ref.read(gelbooruClientProvider(config)),
+                isV2: true,
               ),
           BooruType.e621: (config) => E621Builder(
                 autocompleteRepo:

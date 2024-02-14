@@ -49,6 +49,7 @@ class _CreateMoebooruConfigPageState
   late var customBulkDownloadFileNameFormat =
       widget.config.customBulkDownloadFileNameFormat;
   late var imageDetaisQuality = widget.config.imageDetaisQuality;
+  late var granularRatingFilters = widget.config.granularRatingFilters;
 
   late var hashedPassword = widget.config.apiKey ?? '';
   var password = '';
@@ -236,9 +237,14 @@ class _CreateMoebooruConfigPageState
         children: [
           const SizedBox(height: 16),
           CreateBooruRatingOptionsTile(
+            singleSelection: true,
+            config: widget.config,
+            initialGranularRatingFilters: granularRatingFilters,
             value: ratingFilter,
             onChanged: (value) =>
                 value != null ? setState(() => ratingFilter = value) : null,
+            onGranularRatingFiltersChanged: (value) =>
+                setState(() => granularRatingFilters = value),
           ),
           const SizedBox(height: 16),
           CreateBooruGeneralPostDetailsResolutionOptionTile(
@@ -263,6 +269,7 @@ class _CreateMoebooruConfigPageState
       customDownloadFileNameFormat: customDownloadFileNameFormat,
       customBulkDownloadFileNameFormat: customBulkDownloadFileNameFormat,
       imageDetaisQuality: imageDetaisQuality,
+      granularRatingFilters: granularRatingFilters,
     );
 
     ref

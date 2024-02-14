@@ -115,6 +115,7 @@ class _CreatePhilomenaConfigPageState
       customDownloadFileNameFormat: customDownloadFileNameFormat,
       customBulkDownloadFileNameFormat: null,
       imageDetaisQuality: imageDetaisQuality,
+      granularRatingFilters: null,
     );
 
     ref

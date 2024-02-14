@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/analytics.dart';
@@ -52,6 +53,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?> {
       customBulkDownloadFileNameFormat:
           copyData.customBulkDownloadFileNameFormat,
       imageDetaisQuality: copyData.imageDetaisQuality,
+      granularRatingFilters: copyData.granularRatingFilters,
     ));
   }
 
@@ -101,6 +103,8 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?> {
             customBulkDownloadFileNameFormat:
                 config.customBulkDownloadFileNameFormat,
             imageDetaisQuality: config.imageDetaisQuality,
+            granularRatingFilterString:
+                granularRatingFilterToString(config.granularRatingFilters),
           )
         : BooruConfigData(
             login: config.login,
@@ -117,6 +121,8 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?> {
             customBulkDownloadFileNameFormat:
                 config.customBulkDownloadFileNameFormat,
             imageDetaisQuality: config.imageDetaisQuality,
+            granularRatingFilterString:
+                granularRatingFilterToString(config.granularRatingFilters),
           );
     final updatedConfig =
         await ref.read(booruConfigRepoProvider).update(id, booruConfigData);
@@ -188,6 +194,8 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?> {
           customBulkDownloadFileNameFormat:
               newConfig.customBulkDownloadFileNameFormat,
           imageDetaisQuality: newConfig.imageDetaisQuality,
+          granularRatingFilterString:
+              granularRatingFilterToString(newConfig.granularRatingFilters),
         );
 
         final config =
@@ -343,6 +351,7 @@ class AddNewBooruConfig {
     required this.customDownloadFileNameFormat,
     required this.customBulkDownloadFileNameFormat,
     required this.imageDetaisQuality,
+    required this.granularRatingFilters,
   });
 
   final String login;
@@ -356,4 +365,5 @@ class AddNewBooruConfig {
   final String? customDownloadFileNameFormat;
   final String? customBulkDownloadFileNameFormat;
   final String? imageDetaisQuality;
+  final Set<Rating>? granularRatingFilters;
 }

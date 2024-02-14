@@ -19,7 +19,6 @@ final danbooruFavoritesProvider =
     NotifierProvider.family<FavoritesNotifier, Map<int, bool>, BooruConfig>(
   FavoritesNotifier.new,
   dependencies: [
-    danbooruFavoriteRepoProvider,
     currentBooruConfigProvider,
   ],
 );
@@ -30,10 +29,6 @@ final danbooruFavoriteProvider = Provider.autoDispose.family<bool, int>(
     final config = ref.watchConfig;
     return ref.watch(danbooruFavoritesProvider(config))[postId] ?? false;
   },
-  dependencies: [
-    danbooruFavoritesProvider,
-    currentBooruConfigProvider,
-  ],
 );
 
 final danbooruFavoriteCheckerProvider =

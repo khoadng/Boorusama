@@ -5,12 +5,14 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/utils.dart';
 import 'package:boorusama/foundation/caching/lru_cacher.dart';
 import '../users/users.dart';
 
@@ -23,7 +25,14 @@ final danbooruPostRepoProvider =
       final posts = await client
           .getPosts(
             page: page,
-            tags: getTags(config, tags),
+            tags: getTags(
+              config,
+              tags,
+              granularRatingQueries: (tags) => ref
+                  .readCurrentBooruBuilder()
+                  ?.granularRatingQueryBuilder
+                  ?.call(tags, config),
+            ),
             limit: limit,
           )
           .then((value) => value.map(postDtoToPost).toList());

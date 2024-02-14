@@ -2,14 +2,15 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
-import 'package:boorusama/boorus/moebooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/moebooru/moebooru.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/moebooru/types/types.dart';
 import 'package:boorusama/core/feats/blacklists/blacklists.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/utils.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
 
 final moebooruPostRepoProvider =
@@ -17,20 +18,18 @@ final moebooruPostRepoProvider =
   (ref, config) {
     final client = ref.watch(moebooruClientProvider(config));
 
-    getTags(List<String> tags) {
-      final tag = booruFilterConfigToMoebooruTag(config.ratingFilter);
-
-      return [
-        ...tags,
-        if (tag != null) tag,
-      ];
-    }
-
     return PostRepositoryBuilder(
       fetch: (tags, page, {limit}) => client
           .getPosts(
             page: page,
-            tags: getTags(tags),
+            tags: getTags(
+              config,
+              tags,
+              granularRatingQueries: (tags) => ref
+                  .readCurrentBooruBuilder()
+                  ?.granularRatingQueryBuilder
+                  ?.call(tags, config),
+            ),
             limit: limit,
           )
           .then((value) => value.map(postDtoToPost).toList()),

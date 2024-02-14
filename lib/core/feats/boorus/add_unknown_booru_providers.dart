@@ -82,5 +82,6 @@ final newbooruConfigProvider =
     customBulkDownloadFileNameFormat:
         ref.watch(booruCustomBulkDownloadFileNameFormatProvider),
     imageDetaisQuality: ref.watch(booruImageDetaisQualityProvider),
+    granularRatingFilters: null,
   );
 });
