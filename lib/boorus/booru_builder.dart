@@ -287,18 +287,7 @@ mixin DefaultPostStatisticsPageBuilderMixin on BooruBuilder {
 
 mixin DefaultGranularRatingFiltererMixin on BooruBuilder {
   @override
-  GranularRatingFilterer? get granularRatingFilterer =>
-      (post, config) => switch (config.ratingFilter) {
-            BooruConfigRatingFilter.none => false,
-            BooruConfigRatingFilter.hideNSFW => post.rating.isNSFW(),
-            BooruConfigRatingFilter.hideExplicit =>
-              post.rating == Rating.explicit,
-            BooruConfigRatingFilter.custom =>
-              config.granularRatingFiltersWithoutUnknown.toOption().fold(
-                    () => false,
-                    (ratings) => ratings.contains(post.rating),
-                  ),
-          };
+  GranularRatingFilterer? get granularRatingFilterer => null;
 }
 
 mixin LegacyGranularRatingOptionsBuilderMixin on BooruBuilder {

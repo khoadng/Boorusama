@@ -73,8 +73,7 @@ class DanbooruBuilder
     with
         DefaultTagColorMixin,
         NewGranularRatingOptionsBuilderMixin,
-        NewGranularRatingQueryBuilderMixin,
-        DefaultGranularRatingFiltererMixin
+        NewGranularRatingQueryBuilderMixin
     implements BooruBuilder {
   const DanbooruBuilder({
     required this.postRepo,
@@ -272,4 +271,17 @@ class DanbooruBuilder
           );
         }
       };
+
+  @override
+  GranularRatingFilterer? get granularRatingFilterer =>
+      (post, config) => switch (config.ratingFilter) {
+            BooruConfigRatingFilter.none => false,
+            BooruConfigRatingFilter.hideNSFW => post.rating != Rating.general,
+            BooruConfigRatingFilter.hideExplicit => post.rating.isNSFW(),
+            BooruConfigRatingFilter.custom =>
+              config.granularRatingFiltersWithoutUnknown.toOption().fold(
+                    () => false,
+                    (ratings) => !ratings.contains(post.rating),
+                  ),
+          };
 }
