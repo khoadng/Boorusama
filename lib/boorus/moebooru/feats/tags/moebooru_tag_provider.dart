@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -15,11 +16,17 @@ final moebooruTagRepoProvider =
 });
 
 final moebooruAllTagsProvider =
-    FutureProvider.family<List<Tag>, BooruConfig>((ref, config) async {
-  if (config.booruType != BooruType.moebooru) return [];
+    FutureProvider.family<Map<String, Tag>, BooruConfig>((ref, config) async {
+  if (config.booruType != BooruType.moebooru) return {};
 
   final repo = ref.watch(moebooruTagSummaryRepoProvider(config));
   final data = await repo.getTagSummaries();
 
-  return data.map(tagSummaryToTag).toList();
+  final tags = data
+      .map(tagSummaryToTag)
+      .sorted((a, b) => a.rawName.compareTo(b.rawName));
+
+  return {
+    for (var tag in tags) tag.rawName: tag,
+  };
 });

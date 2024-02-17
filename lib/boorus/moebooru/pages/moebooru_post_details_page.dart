@@ -28,12 +28,27 @@ final moebooruPostDetailTagGroupProvider = FutureProvider.autoDispose
     .family<List<TagGroupItem>, Post>((ref, post) async {
   final config = ref.watchConfig;
 
-  final allTags = await ref.watch(moebooruAllTagsProvider(config).future);
-  final tags = allTags.where((e) => post.tags.contains(e.rawName)).toList();
+  final allTagMap = await ref.watch(moebooruAllTagsProvider(config).future);
+
+  return createMoebooruTagGroupItems(post.tags, allTagMap);
+});
+
+List<TagGroupItem> createMoebooruTagGroupItems(
+  List<String> tagStrings,
+  Map<String, Tag> allTagsMap,
+) {
+  final tags = <Tag>[];
+
+  for (var tag in tagStrings) {
+    if (allTagsMap.containsKey(tag)) {
+      tags.add(allTagsMap[tag]!);
+    }
+  }
+
   final tagGroups = createTagGroupItems(tags);
 
   return tagGroups;
-});
+}
 
 class MoebooruPostDetailsPage extends ConsumerStatefulWidget {
   const MoebooruPostDetailsPage({
@@ -207,16 +222,19 @@ class _MoebooruPostDetailsPageState
             SimplePostActionToolbar(post: post);
       },
       commentsBuilder: (context, post) => MoebooruCommentSection(post: post),
-      infoBuilder: (context, post) => ref
-          .watch(moebooruAllTagsProvider(config))
-          .maybeWhen(
-            data: (tags) => MoebooruInformationSection(
-              post: post,
-              tags: createTagGroupItems(
-                  tags.where((e) => post.tags.contains(e.rawName)).toList()),
-            ),
-            orElse: () => const SizedBox.shrink(),
-          ),
+      infoBuilder: (context, post) =>
+          ref.watch(moebooruAllTagsProvider(config)).maybeWhen(
+                data: (tags) {
+                  final tagGroups =
+                      createMoebooruTagGroupItems(post.tags, tags);
+
+                  return MoebooruInformationSection(
+                    post: post,
+                    tags: tagGroups,
+                  );
+                },
+                orElse: () => const SizedBox.shrink(),
+              ),
       onPageChanged: (post) {
         _loadFavoriteUsers(post.id);
       },
