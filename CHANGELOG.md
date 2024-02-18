@@ -1,3 +1,11 @@
+# 3.11.0
+- Show original source for bookmarked posts and allow tapping on a tag to search for it
+- Add a custom option for advance rating filtering
+- Add a 'source' metatag for blacklisting posts with a specific source e.g. `source:*example.com* score:<0`
+- [Moebooru] Allow logged-in users to favorite posts and view their favorites
+- Improve the performance on certain sites
+- Bug fixes and UI adjustments
+
 # 3.10.1
 - Add a toggle for changing page indicator postition
 - Performance improvements and bug fixes
