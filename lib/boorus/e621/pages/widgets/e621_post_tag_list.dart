@@ -18,6 +18,7 @@ import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
+import 'package:boorusama/utils/color_utils.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 typedef E621TagGroup = ({
@@ -212,7 +213,9 @@ class _Chip extends ConsumerWidget {
               overflow: TextOverflow.fade,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                color: colors?.foregroundColor,
+                color: colors?.backgroundColor.isWhite == true
+                    ? Colors.black
+                    : colors?.foregroundColor,
               ),
             ),
           ),
