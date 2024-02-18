@@ -25,15 +25,9 @@ class TagsNotifier extends FamilyNotifier<List<TagGroupItem>?, BooruConfig> {
     void Function(List<TagGroupItem> tags)? onSuccess,
   }) async {
     state = null;
-
-    // filter tagList to remove invalid tags
-    final filtered = tagList.where((e) => !invalidTags.contains(e)).toList();
-
-    if (filtered.isEmpty) return;
-
     final booruTagTypeStore = ref.read(booruTagTypeStoreProvider);
 
-    final tags = await repo.getTagsByName(filtered, 1);
+    final tags = await loadTags(tagList: tagList, repo: repo);
 
     await booruTagTypeStore.saveTagIfNotExist(arg.booruType, tags);
 
@@ -43,6 +37,20 @@ class TagsNotifier extends FamilyNotifier<List<TagGroupItem>?, BooruConfig> {
 
     state = group;
   }
+}
+
+Future<List<Tag>> loadTags({
+  required List<String> tagList,
+  required TagRepository repo,
+}) async {
+  // filter tagList to remove invalid tags
+  final filtered = tagList.where((e) => !invalidTags.contains(e)).toList();
+
+  if (filtered.isEmpty) return [];
+
+  final tags = await repo.getTagsByName(filtered, 1);
+
+  return tags;
 }
 
 List<TagGroupItem> createTagGroupItems(List<Tag> tags) {

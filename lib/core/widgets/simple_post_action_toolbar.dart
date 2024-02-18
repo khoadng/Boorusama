@@ -20,11 +20,13 @@ class SimplePostActionToolbar extends ConsumerWidget {
     this.isAuthorized,
     this.addFavorite,
     this.removeFavorite,
+    this.forceHideFav = false,
   });
 
   final Post post;
   final bool? isFaved;
   final bool? isAuthorized;
+  final bool forceHideFav;
   final Future<void> Function()? addFavorite;
   final Future<void> Function()? removeFavorite;
 
@@ -41,16 +43,17 @@ class SimplePostActionToolbar extends ConsumerWidget {
         buttonPadding: EdgeInsets.zero,
         alignment: MainAxisAlignment.spaceEvenly,
         children: [
-          if (isAuthorized != null &&
-              addFavorite != null &&
-              removeFavorite != null &&
-              booruBuilder != null)
-            FavoritePostButton(
-              isFaved: isFaved!,
-              isAuthorized: isAuthorized!,
-              addFavorite: addFavorite!,
-              removeFavorite: removeFavorite!,
-            ),
+          if (!forceHideFav)
+            if (isAuthorized != null &&
+                addFavorite != null &&
+                removeFavorite != null &&
+                booruBuilder != null)
+              FavoritePostButton(
+                isFaved: isFaved,
+                isAuthorized: isAuthorized!,
+                addFavorite: addFavorite!,
+                removeFavorite: removeFavorite!,
+              ),
           BookmarkPostButton(post: post),
           DownloadPostButton(post: post),
           if (commentPageBuilder != null)

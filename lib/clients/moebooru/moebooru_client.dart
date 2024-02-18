@@ -208,4 +208,51 @@ class MoebooruClient {
         .map((item) => CommentDto.fromJson(item))
         .toList();
   }
+
+  Future<void> votePost({
+    required int postId,
+    required int score,
+  }) async {
+    await _dio.post(
+      '/post/vote.json',
+      queryParameters: {
+        'id': postId,
+        'score': score,
+        if (login != null && passwordHashed != null) ...{
+          'login': login,
+          'password_hash': passwordHashed,
+        }
+      },
+    );
+  }
+
+  Future<void> unfavoritePost({
+    required int postId,
+  }) async {
+    await votePost(postId: postId, score: 0);
+  }
+
+  Future<void> favoritePost({
+    required int postId,
+  }) async {
+    await votePost(postId: postId, score: 3);
+  }
+
+  Future<Set<String>?> getFavoriteUsers({
+    required int postId,
+    CancelToken? cancelToken,
+  }) async {
+    final response = await _dio.get(
+      '/favorite/list_users.json',
+      queryParameters: {
+        'id': postId,
+      },
+      cancelToken: cancelToken,
+    );
+
+    final userString = response.data['favorited_users'] as String?;
+    if (userString == null) return {};
+
+    return userString.split(',').toSet();
+  }
 }

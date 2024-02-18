@@ -27,6 +27,7 @@ class ArtistPostList extends ConsumerWidget {
           return Column(
             children: [
               ListTile(
+                visualDensity: VisualDensity.compact,
                 onTap: () => goToArtistPage(context, tag),
                 title: Text(tag.replaceAll('_', ' ')),
                 trailing: const Icon(
@@ -34,7 +35,7 @@ class ArtistPostList extends ConsumerWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(4),
+                padding: const EdgeInsets.symmetric(horizontal: 4),
                 child: builder(tag),
               ),
             ],

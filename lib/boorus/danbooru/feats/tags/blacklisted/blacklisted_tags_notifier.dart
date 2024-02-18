@@ -41,6 +41,8 @@ class BlacklistedTagsNotifier
             blacklistedTags: tags,
           );
 
+      onSuccess?.call(tags);
+
       state = AsyncData(tags);
     } catch (e) {
       onFailure?.call(e);
@@ -67,6 +69,8 @@ class BlacklistedTagsNotifier
       await ref
           .read(danbooruClientProvider(arg))
           .setBlacklistedTags(id: user.id, blacklistedTags: tags);
+
+      onSuccess?.call(tags);
 
       state = AsyncData(tags);
     } catch (e) {
@@ -98,6 +102,8 @@ class BlacklistedTagsNotifier
       await ref
           .read(danbooruClientProvider(arg))
           .setBlacklistedTags(id: user.id, blacklistedTags: tags);
+
+      onSuccess?.call(tags);
 
       state = AsyncData(tags);
     } catch (e) {

@@ -9,4 +9,3 @@ export 'search.dart';
 export 'tags_provider.dart';
 export 'trending_tag_notifier.dart';
 export 'user_metatags_notifier.dart';
-export 'utils.dart';

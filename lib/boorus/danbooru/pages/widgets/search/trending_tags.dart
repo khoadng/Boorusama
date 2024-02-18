@@ -40,7 +40,7 @@ class TrendingTags extends ConsumerWidget {
                       );
 
               return BooruChip(
-                visualDensity: VisualDensity.comfortable,
+                visualDensity: VisualDensity.compact,
                 color: color,
                 onPressed: () => onTagTap?.call(e.keyword),
                 label: Text(

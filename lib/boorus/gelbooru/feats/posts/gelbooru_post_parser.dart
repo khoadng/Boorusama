@@ -28,5 +28,6 @@ GelbooruPost gelbooruPostDtoToGelbooruPost(PostDto dto) {
     createdAt: dto.createdAt != null ? parseRFC822String(dto.createdAt!) : null,
     parentId: dto.parentId != 0 ? dto.parentId : null,
     uploaderId: dto.creatorId,
+    uploaderName: dto.owner,
   );
 }

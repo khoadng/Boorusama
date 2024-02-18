@@ -232,7 +232,13 @@ class UserDetailsPage extends ConsumerWidget {
                           ),
                         ),
                       _UserUploads(uid: uid, user: user),
-                      _UserFavorites(uid: uid, user: user),
+                      if (!isSelf)
+                        _UserFavorites(
+                          favorites: ref
+                              .watch(danbooruUserFavoritesProvider(uid))
+                              .value,
+                          user: user,
+                        ),
                     ],
                   ),
                 ),
@@ -399,37 +405,34 @@ class UserDetailsPage extends ConsumerWidget {
 
 class _UserFavorites extends ConsumerWidget {
   const _UserFavorites({
-    required this.uid,
+    required this.favorites,
     required this.user,
   });
 
-  final int uid;
+  final List<DanbooruPost>? favorites;
+
   final User user;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ref.watch(danbooruUserFavoritesProvider(uid)).when(
-          data: (favorites) => favorites.isNotEmpty
-              ? Column(
-                  children: [
-                    const Divider(
-                      thickness: 1,
-                      height: 36,
-                    ),
-                    _PreviewList(
-                      posts: favorites,
-                      onViewMore: () => goToSearchPage(
-                        context,
-                        tag: buildFavoriteQuery(user.name),
-                      ),
-                      title: 'Favorites',
-                    ),
-                  ],
-                )
-              : const SizedBox.shrink(),
-          error: (error, stackTrace) => const SizedBox.shrink(),
-          loading: () => const SizedBox.shrink(),
-        );
+    return favorites != null && favorites!.isNotEmpty
+        ? Column(
+            children: [
+              const Divider(
+                thickness: 1,
+                height: 36,
+              ),
+              _PreviewList(
+                posts: favorites!,
+                onViewMore: () => goToSearchPage(
+                  context,
+                  tag: buildFavoriteQuery(user.name),
+                ),
+                title: 'Favorites',
+              ),
+            ],
+          )
+        : const SizedBox.shrink();
   }
 }
 

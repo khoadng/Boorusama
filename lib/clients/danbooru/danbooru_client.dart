@@ -21,8 +21,8 @@ import 'danbooru_client_tags.dart';
 import 'danbooru_client_uploads.dart';
 import 'danbooru_client_users.dart';
 import 'danbooru_client_versions.dart';
-import 'types/autocomplete_dto.dart';
-import 'types/wiki_dto.dart';
+import 'types/source_dto.dart';
+import 'types/types.dart';
 
 String _encodeAuthHeader(String login, String apiKey) =>
     base64Encode(utf8.encode('$login:$apiKey'));
@@ -115,6 +115,38 @@ class DanbooruClient
 
     return (response.data as List)
         .map((item) => AutocompleteDto.fromJson(item))
+        .toList();
+  }
+
+  Future<SourceDto> getSource(String source) async {
+    final response = await dio.get(
+      '/source.json',
+      queryParameters: {
+        'url': source,
+      },
+    );
+
+    return SourceDto.fromJson(response.data);
+  }
+
+  Future<List<IqdbResultDto>> iqdb({
+    required int mediaAssetId,
+    double? similarity = 50,
+    double? highSimilarity = 70,
+    int? limit = 5,
+  }) async {
+    final response = await dio.get(
+      '/iqdb_queries.json',
+      queryParameters: {
+        'media_asset_id': mediaAssetId,
+        'similarity': similarity,
+        'high_similarity': highSimilarity,
+        'limit': limit,
+      },
+    );
+
+    return (response.data as List)
+        .map((item) => IqdbResultDto.fromJson(item))
         .toList();
   }
 }

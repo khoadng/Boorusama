@@ -33,7 +33,12 @@ class FileDetailsSection extends StatelessWidget {
         post.fileSize > 0 ? '• ${filesize(post.fileSize, 1)}' : '';
 
     return Theme(
-      data: context.theme.copyWith(dividerColor: Colors.transparent),
+      data: context.theme.copyWith(
+        listTileTheme: context.theme.listTileTheme.copyWith(
+          visualDensity: VisualDensity.compact,
+        ),
+        dividerColor: Colors.transparent,
+      ),
       child: ExpansionTile(
         title: Text(
           'post.detail.file_details'.tr(),

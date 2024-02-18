@@ -135,6 +135,17 @@ extension BooruX on Booru {
             false,
         _ => null,
       };
+
+  T whenMoebooru<T>({
+    required T Function(Moebooru moe) data,
+    required T Function() orElse,
+  }) {
+    if (this is Moebooru) {
+      return data(this as Moebooru);
+    } else {
+      return orElse();
+    }
+  }
 }
 
 typedef DanbooruSite = ({
@@ -285,8 +296,15 @@ class Zerochan extends Booru {
 typedef MoebooruSite = ({
   String url,
   String salt,
+  bool? favoriteSupport,
   NetworkProtocol? overrideProtocol,
 });
+
+extension MoebooruX on Moebooru {
+  bool supportsFavorite(String url) =>
+      sites.firstWhereOrNull((e) => url.contains(e.url))?.favoriteSupport ??
+      false;
+}
 
 final class Moebooru extends Booru {
   const Moebooru({
@@ -301,11 +319,13 @@ final class Moebooru extends Booru {
     for (final item in data['sites']) {
       final url = item['url'] as String;
       final salt = item['salt'] as String;
+      final favoriteSupport = item['favorite-support'] as bool?;
       final overrideProtocol = item['protocol'];
 
       sites.add((
         url: url,
         salt: salt,
+        favoriteSupport: favoriteSupport,
         overrideProtocol:
             overrideProtocol != null ? _parseProtocol(overrideProtocol) : null,
       ));

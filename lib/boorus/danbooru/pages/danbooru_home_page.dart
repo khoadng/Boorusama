@@ -23,6 +23,7 @@ import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/utils/flutter_utils.dart';
 import '../feats/users/users.dart';
@@ -142,9 +143,9 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
       mobileMenuBuilder: (context, controller) => [
         if (widget.config.hasLoginDetails() && userId != null)
           SideMenuTile(
-            icon: const Icon(
+            icon: Icon(
               Symbols.account_box,
-              fill: 1,
+              fill: context.themeMode.isLight ? 0 : 1,
             ),
             title: const Text('Profile'),
             onTap: () {
@@ -158,9 +159,9 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
             },
           ),
         SideMenuTile(
-          icon: const Icon(
+          icon: Icon(
             Symbols.explore,
-            fill: 1,
+            fill: context.themeMode.isLight ? 0 : 1,
           ),
           title: const Text('Explore'),
           onTap: () => context.navigator.push(CupertinoPageRoute(
@@ -172,9 +173,9 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
                   ))),
         ),
         SideMenuTile(
-          icon: const Icon(
+          icon: Icon(
             Symbols.photo_album,
-            fill: 1,
+            fill: context.themeMode.isLight ? 0 : 1,
           ),
           title: const Text('Pools'),
           onTap: () {
@@ -182,9 +183,9 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
           },
         ),
         SideMenuTile(
-          icon: const Icon(
+          icon: Icon(
             Symbols.forum,
-            fill: 1,
+            fill: context.themeMode.isLight ? 0 : 1,
           ),
           title: const Text('forum.forum').tr(),
           onTap: () {
@@ -203,9 +204,9 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
         ),
         if (widget.config.hasLoginDetails()) ...[
           SideMenuTile(
-            icon: const Icon(
+            icon: Icon(
               Symbols.favorite,
-              fill: 1,
+              fill: context.themeMode.isLight ? 0 : 1,
             ),
             title: Text('profile.favorites'.tr()),
             onTap: () {
@@ -213,9 +214,9 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
             },
           ),
           SideMenuTile(
-            icon: const Icon(
+            icon: Icon(
               Symbols.collections,
-              fill: 1,
+              fill: context.themeMode.isLight ? 0 : 1,
             ),
             title: const Text('favorite_groups.favorite_groups').tr(),
             onTap: () {

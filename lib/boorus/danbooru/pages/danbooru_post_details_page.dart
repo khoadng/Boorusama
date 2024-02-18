@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
@@ -24,8 +23,8 @@ import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/post_details_page_scaffold.dart';
 import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/core/widgets/posts/character_post_list.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'widgets/danbooru_tags_tile.dart';
 import 'widgets/details/danbooru_more_action_button.dart';
@@ -61,7 +60,7 @@ class _DanbooruPostDetailsPageState
         posts: posts,
         initialIndex: widget.intitialIndex,
         onExit: widget.onExit,
-        showSourceTile: false,
+        sourceSectionBuilder: (context, post) => const SizedBox.shrink(),
         onTagTap: (tag) => goToSearchPage(context, tag: tag),
         toolbarBuilder: (context, post) =>
             DanbooruPostActionToolbar(post: post),
@@ -87,11 +86,11 @@ class _DanbooruPostDetailsPageState
               )
             : const SliverSizedBox.shrink(),
         sliverCharacterPostsBuilder: (context, post) => post.artistTags.isEmpty
-            ? DanbooruCharacterPostList(post: post)
+            ? CharacterPostList(tags: post.characterTags)
             : ref
                 .watch(danbooruPostDetailsArtistProvider(post.artistTags.first))
                 .maybeWhen(
-                  data: (_) => DanbooruCharacterPostList(post: post),
+                  data: (_) => CharacterPostList(tags: post.characterTags),
                   orElse: () => const SliverSizedBox.shrink(),
                 ),
         sliverRelatedPostsBuilder: (context, post) =>
@@ -289,65 +288,6 @@ final danbooruTagGroupsProvider = FutureProvider.autoDispose
 
 final danbooruCharacterExpandStateProvider =
     StateProvider.autoDispose.family<bool, String>((ref, tag) => false);
-
-class DanbooruCharacterPostList extends ConsumerWidget {
-  const DanbooruCharacterPostList({
-    super.key,
-    required this.post,
-  });
-
-  final DanbooruPost post;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final tags = post.characterTags;
-
-    if (tags.isEmpty) return const SliverSizedBox.shrink();
-
-    return SliverPadding(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      sliver: MultiSliver(
-        children: [
-          SliverToBoxAdapter(
-            child: Container(
-              margin: const EdgeInsets.only(top: 20),
-              child: Row(
-                children: [
-                  Text(
-                    'Characters',
-                    style: context.textTheme.titleMedium!.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SliverSizedBox(height: 8),
-          SliverGrid.count(
-            crossAxisCount: 2,
-            childAspectRatio: 4.5,
-            mainAxisSpacing: 4,
-            crossAxisSpacing: 4,
-            children: tags
-                .map(
-                  (tag) => BooruChip(
-                    borderRadius: BorderRadius.circular(4),
-                    color: ref.getTagColor(context, 'character'),
-                    onPressed: () => goToCharacterPage(context, tag),
-                    label: Text(
-                      tag.replaceAll('_', ' '),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                )
-                .toList(),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 class DanbooruRelatedPostsSection extends ConsumerWidget {
   const DanbooruRelatedPostsSection({

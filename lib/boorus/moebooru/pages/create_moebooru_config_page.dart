@@ -49,9 +49,12 @@ class _CreateMoebooruConfigPageState
   late var customBulkDownloadFileNameFormat =
       widget.config.customBulkDownloadFileNameFormat;
   late var imageDetaisQuality = widget.config.imageDetaisQuality;
+  late var granularRatingFilters = widget.config.granularRatingFilters;
 
   late var hashedPassword = widget.config.apiKey ?? '';
   var password = '';
+
+  final passwordController = TextEditingController();
 
   BooruFactory get booruFactory => ref.read(booruFactoryProvider);
 
@@ -160,6 +163,7 @@ class _CreateMoebooruConfigPageState
           ),
           const SizedBox(height: 16),
           CreateBooruPasswordField(
+            controller: passwordController,
             onChanged: (value) => setState(() {
               if (value.isEmpty) {
                 hashedPassword = '';
@@ -195,6 +199,20 @@ class _CreateMoebooruConfigPageState
                       ),
                     ),
                   ),
+                  IconButton(
+                    splashRadius: 12,
+                    onPressed: () =>
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                      setState(() {
+                        password = '';
+                        hashedPassword = '';
+                        apiKey = '';
+
+                        passwordController.clear();
+                      });
+                    }),
+                    icon: const Icon(Symbols.close),
+                  ),
                 ],
               ),
             ),
@@ -219,9 +237,14 @@ class _CreateMoebooruConfigPageState
         children: [
           const SizedBox(height: 16),
           CreateBooruRatingOptionsTile(
+            singleSelection: true,
+            config: widget.config,
+            initialGranularRatingFilters: granularRatingFilters,
             value: ratingFilter,
             onChanged: (value) =>
                 value != null ? setState(() => ratingFilter = value) : null,
+            onGranularRatingFiltersChanged: (value) =>
+                setState(() => granularRatingFilters = value),
           ),
           const SizedBox(height: 16),
           CreateBooruGeneralPostDetailsResolutionOptionTile(
@@ -246,6 +269,7 @@ class _CreateMoebooruConfigPageState
       customDownloadFileNameFormat: customDownloadFileNameFormat,
       customBulkDownloadFileNameFormat: customBulkDownloadFileNameFormat,
       imageDetaisQuality: imageDetaisQuality,
+      granularRatingFilters: granularRatingFilters,
     );
 
     ref

@@ -6,6 +6,7 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/pages/comment_page.dart';
+import 'package:boorusama/boorus/danbooru/pages/danbooru_character_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/danbooru_post_statistics_page.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
@@ -68,7 +69,12 @@ const kDanbooruPostSamples = [
   }
 ];
 
-class DanbooruBuilder with DefaultTagColorMixin implements BooruBuilder {
+class DanbooruBuilder
+    with
+        DefaultTagColorMixin,
+        NewGranularRatingOptionsBuilderMixin,
+        NewGranularRatingQueryBuilderMixin
+    implements BooruBuilder {
   const DanbooruBuilder({
     required this.postRepo,
     required this.autocompleteRepo,
@@ -139,7 +145,7 @@ class DanbooruBuilder with DefaultTagColorMixin implements BooruBuilder {
 
   @override
   PostCountFetcher? get postCountFetcher =>
-      (config, tags) => postCountRepo.count(tags);
+      (config, tags, _) => postCountRepo.count(tags);
 
   @override
   SearchPageBuilder get searchPageBuilder =>
@@ -177,6 +183,11 @@ class DanbooruBuilder with DefaultTagColorMixin implements BooruBuilder {
   @override
   ArtistPageBuilder? get artistPageBuilder => (context, artistName) =>
       DanbooruArtistPage(artistName: artistName, backgroundImageUrl: '');
+
+  @override
+  CharacterPageBuilder? get characterPageBuilder =>
+      (context, characterName) => DanbooruCharacterPage(
+          characterName: characterName, backgroundImageUrl: '');
 
   @override
   GridThumbnailUrlBuilder get gridThumbnailUrlBuilder => (settings, post) =>
@@ -260,4 +271,17 @@ class DanbooruBuilder with DefaultTagColorMixin implements BooruBuilder {
           );
         }
       };
+
+  @override
+  GranularRatingFilterer? get granularRatingFilterer =>
+      (post, config) => switch (config.ratingFilter) {
+            BooruConfigRatingFilter.none => false,
+            BooruConfigRatingFilter.hideNSFW => post.rating != Rating.general,
+            BooruConfigRatingFilter.hideExplicit => post.rating.isNSFW(),
+            BooruConfigRatingFilter.custom =>
+              config.granularRatingFiltersWithoutUnknown.toOption().fold(
+                    () => false,
+                    (ratings) => !ratings.contains(post.rating),
+                  ),
+          };
 }

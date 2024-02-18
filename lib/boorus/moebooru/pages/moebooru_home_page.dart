@@ -46,25 +46,55 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
           _buildMobileHomeView(controller, widget.config),
       mobileMenuBuilder: (context, controller) => [
         SideMenuTile(
-          icon: const Icon(Symbols.explore),
+          icon: const Icon(
+            Symbols.explore,
+            fill: 1,
+          ),
           title: const Text('Popular'),
-          onTap: () => context.navigator.push(CupertinoPageRoute(
+          onTap: () => context.navigator.push(
+            CupertinoPageRoute(
               builder: (_) => Scaffold(
-                    appBar: AppBar(),
-                    body: const CustomContextMenuOverlay(
-                        child: MoebooruPopularPage()),
-                  ))),
+                appBar: AppBar(
+                  title: const Text('Popular'),
+                ),
+                body: const CustomContextMenuOverlay(
+                  child: MoebooruPopularPage(),
+                ),
+              ),
+            ),
+          ),
         ),
         SideMenuTile(
-          icon: const Icon(Symbols.local_fire_department),
+          icon: const Icon(
+            Symbols.local_fire_department,
+            fill: 1,
+          ),
           title: const Text('Hot'),
-          onTap: () => context.navigator.push(CupertinoPageRoute(
+          onTap: () => context.navigator.push(
+            CupertinoPageRoute(
               builder: (_) => Scaffold(
-                    appBar: AppBar(),
-                    body: const CustomContextMenuOverlay(
-                        child: MoebooruPopularRecentPage()),
-                  ))),
+                appBar: AppBar(
+                  title: const Text('Hot'),
+                ),
+                body: const CustomContextMenuOverlay(
+                  child: MoebooruPopularRecentPage(),
+                ),
+              ),
+            ),
+          ),
         ),
+        if (widget.config.hasLoginDetails()) ...[
+          SideMenuTile(
+            icon: const Icon(
+              Symbols.favorite,
+              fill: 1,
+            ),
+            title: Text('profile.favorites'.tr()),
+            onTap: () {
+              goToFavoritesPage(context);
+            },
+          ),
+        ],
       ],
       desktopMenuBuilder: (context, controller, constraints) => [
         HomeNavigationTile(
@@ -81,7 +111,7 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
           constraints: constraints,
           selectedIcon: Symbols.explore,
           icon: Symbols.explore,
-          title: 'Explore',
+          title: 'Popular',
         ),
         HomeNavigationTile(
           value: 2,

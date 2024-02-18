@@ -56,3 +56,7 @@ ChipColors? generateChipColorsFromColorScheme(
         : neutralDarkColor,
   );
 }
+
+extension ColorX on Color {
+  bool get isWhite => computeLuminance() > 0.6;
+}

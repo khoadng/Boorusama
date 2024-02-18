@@ -35,7 +35,10 @@ class Shimmie2Client {
       },
     );
 
-    return _parsePosts(response);
+    return _parsePosts(
+      response,
+      baseUrl: _dio.options.baseUrl,
+    );
   }
 
   Future<List<AutocompleteDto>> getAutocomplete({
@@ -60,12 +63,18 @@ class Shimmie2Client {
   }
 }
 
-FutureOr<List<PostDto>> _parsePosts(value) {
+FutureOr<List<PostDto>> _parsePosts(
+  value, {
+  String? baseUrl,
+}) {
   final dtos = <PostDto>[];
   final xmlDocument = XmlDocument.parse(value.data);
   final posts = xmlDocument.findAllElements('tag');
   for (final item in posts) {
-    dtos.add(PostDto.fromXml(item));
+    dtos.add(PostDto.fromXml(
+      item,
+      baseUrl: baseUrl,
+    ));
   }
   return dtos;
 }

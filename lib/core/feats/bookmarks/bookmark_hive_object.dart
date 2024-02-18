@@ -38,6 +38,9 @@ class BookmarkHiveObject extends HiveObject {
   @HiveField(10)
   List<String>? tags;
 
+  @HiveField(11)
+  String? realSourceUrl;
+
   BookmarkHiveObject({
     required this.booruId,
     required this.createdAt,
@@ -50,5 +53,6 @@ class BookmarkHiveObject extends HiveObject {
     required this.height,
     required this.md5,
     required this.tags,
+    required this.realSourceUrl,
   });
 }

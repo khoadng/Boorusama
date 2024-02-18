@@ -1,24 +1,9 @@
 // Project imports:
-import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/clients/danbooru/types/post_dto.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/string.dart';
 import 'danbooru_post.dart';
 import 'post_variant.dart';
-
-// convert a BooruConfig and an orignal tag list to List<String>
-List<String> getTags(BooruConfig booruConfig, List<String> tags) {
-  final ratingTag = booruFilterConfigToDanbooruTag(booruConfig.ratingFilter);
-  final deletedStatusTag = booruConfigDeletedBehaviorToDanbooruTag(
-    booruConfig.deletedItemBehavior,
-  );
-  return [
-    ...tags,
-    if (ratingTag != null) ratingTag,
-    if (deletedStatusTag != null) deletedStatusTag,
-  ];
-}
 
 DanbooruPost postDtoToPost(
   PostDto dto,
@@ -63,6 +48,7 @@ DanbooruPost postDtoToPost(
       duration: dto.mediaAsset?.duration ?? 0,
       variants:
           dto.mediaAsset?.variants?.map(variantDtoToVariant).toList() ?? [],
+      pixelHash: dto.mediaAsset?.pixelHash ?? '',
     );
   } catch (e) {
     return DanbooruPost.empty();

@@ -105,11 +105,15 @@ class BulkDownloadTile extends ConsumerWidget {
                       ),
                       contentPadding: const EdgeInsets.symmetric(horizontal: 8),
                       trailing: IconButton(
-                          onPressed: () => ref
-                              .read(bulkDownloaderManagerProvider(config)
-                                  .notifier)
-                              .pause(d.url),
-                          icon: const Icon(Symbols.pause)),
+                        onPressed: () => ref
+                            .read(
+                                bulkDownloaderManagerProvider(config).notifier)
+                            .pause(d.url),
+                        icon: const Icon(
+                          Symbols.pause,
+                          fill: 1,
+                        ),
+                      ),
                       title: _Title(data: data),
                       subtitle: LinearPercentIndicator(
                         lineHeight: 2,
@@ -129,11 +133,15 @@ class BulkDownloadTile extends ConsumerWidget {
                       ),
                       contentPadding: const EdgeInsets.symmetric(horizontal: 8),
                       trailing: IconButton(
-                          onPressed: () => ref
-                              .read(bulkDownloaderManagerProvider(config)
-                                  .notifier)
-                              .resume(d.url),
-                          icon: const Icon(Symbols.play_arrow)),
+                        onPressed: () => ref
+                            .read(
+                                bulkDownloaderManagerProvider(config).notifier)
+                            .resume(d.url),
+                        icon: const Icon(
+                          Symbols.play_arrow,
+                          fill: 1,
+                        ),
+                      ),
                       title: _Title(data: data),
                       subtitle: LinearPercentIndicator(
                         lineHeight: 2,

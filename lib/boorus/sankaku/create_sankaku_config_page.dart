@@ -195,6 +195,7 @@ class _CreateDanbooruConfigPageState
       customDownloadFileNameFormat: customDownloadFileNameFormat,
       customBulkDownloadFileNameFormat: customBulkDownloadFileNameFormat,
       imageDetaisQuality: imageDetaisQuality,
+      granularRatingFilters: null,
     );
 
     ref

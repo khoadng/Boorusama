@@ -49,7 +49,10 @@ class _GelbooruHomePageState extends ConsumerState<GelbooruHomePage> {
       mobileMenuBuilder: (context, controller) => [
         if (favoritePageBuilder != null && ref.watchConfig.hasLoginDetails())
           SideMenuTile(
-            icon: const Icon(Symbols.favorite),
+            icon: const Icon(
+              Symbols.favorite,
+              fill: 1,
+            ),
             title: Text('profile.favorites'.tr()),
             onTap: () {
               goToFavoritesPage(context);

@@ -72,6 +72,7 @@ class SimplePost extends Equatable
     required this.width,
     required Function(String baseUrl) getLink,
     required this.uploaderId,
+    this.uploaderName,
   }) : _getLink = getLink;
 
   @override
@@ -124,6 +125,8 @@ class SimplePost extends Equatable
   @override
   final int? uploaderId;
 
+  final String? uploaderName;
+
   final Function(String baseUrl) _getLink;
 
   @override
@@ -172,6 +175,11 @@ extension PostX on Post {
           score: score,
           downvotes: downvotes,
           uploaderId: uploaderId,
+          source: switch (source) {
+            WebSource w => w.url,
+            NonWebSource nw => nw.value,
+            _ => null,
+          },
         ),
         pattern,
       );
@@ -257,12 +265,14 @@ class TagFilterData {
     required this.score,
     this.downvotes,
     this.uploaderId,
+    this.source,
   });
 
   TagFilterData.tags({
     required this.tags,
   })  : rating = Rating.general,
         score = 0,
+        source = null,
         uploaderId = null,
         downvotes = null;
 
@@ -271,6 +281,7 @@ class TagFilterData {
   final int score;
   final int? downvotes;
   final int? uploaderId;
+  final String? source;
 }
 
 bool checkIfTagsContainsTagExpression(
@@ -294,6 +305,40 @@ bool checkIfTagsContainsTagExpression(
     else if (expression.startsWith('uploaderid:')) {
       final targetUploaderId = int.tryParse(expression.split(':')[1]) ?? -1;
       if (filterData.uploaderId != targetUploaderId) {
+        return false;
+      }
+    }
+    // Handle source "source"
+    else if (expression.startsWith('source:') && filterData.source != null) {
+      // find the first index of ':' and get the substring after it
+      final source = filterData.source!.toLowerCase();
+      final firstColonIndex = expression.indexOf(':');
+
+      // if first colon is the last character, then the expression is invalid
+      if (firstColonIndex == expression.length - 1) return false;
+
+      final targetSource =
+          expression.substring(firstColonIndex + 1).toLowerCase();
+
+      // *aaa* is a wildcard for any string
+      // *aaa is a wildcard for any string that ends with "aaa"
+      // aaa* is a wildcard for any string that starts with "aaa"
+      // aaa is a exact match
+      if (targetSource.startsWith('*') && targetSource.endsWith('*')) {
+        if (!source
+            .contains(targetSource.substring(1, targetSource.length - 1))) {
+          return false;
+        }
+      } else if (targetSource.startsWith('*')) {
+        if (!source.endsWith(targetSource.substring(1))) {
+          return false;
+        }
+      } else if (targetSource.endsWith('*')) {
+        if (!source
+            .startsWith(targetSource.substring(0, targetSource.length - 1))) {
+          return false;
+        }
+      } else if (filterData.source != targetSource) {
         return false;
       }
     }

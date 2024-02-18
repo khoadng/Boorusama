@@ -17,14 +17,20 @@ class SideMenuTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: Colors.transparent,
-      child: Ink(
-        child: ListTile(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-          visualDensity: VisualDensity.compact,
-          minVerticalPadding: 0,
-          leading: icon,
-          title: title,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4),
+        child: InkWell(
           onTap: onTap,
+          customBorder: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: ListTile(
+            contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+            visualDensity: VisualDensity.compact,
+            minVerticalPadding: 0,
+            leading: icon,
+            title: title,
+          ),
         ),
       ),
     );

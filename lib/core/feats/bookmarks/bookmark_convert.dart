@@ -29,6 +29,7 @@ Either<BookmarkGetError, List<Bookmark>> tryMapBookmarkHiveObjectsToBookmarks(
                 height: hiveObject.height!,
                 md5: hiveObject.md5!,
                 tags: hiveObject.tags ?? [],
+                realSourceUrl: hiveObject.realSourceUrl,
               ))
           .toList(),
       (o, s) {
@@ -54,6 +55,7 @@ Either<BookmarkGetError, Bookmark> tryMapBookmarkHiveObjectToBookmark(
         height: hiveObject.height!,
         md5: hiveObject.md5!,
         tags: hiveObject.tags ?? [],
+        realSourceUrl: hiveObject.realSourceUrl,
       ),
       (o, s) => BookmarkGetError.nullField,
     );
@@ -71,11 +73,42 @@ BookmarkHiveObject favoriteToHiveObject(Bookmark bookmark) {
     height: bookmark.height,
     md5: bookmark.md5,
     tags: bookmark.tags,
+    realSourceUrl: bookmark.realSourceUrl,
   );
 }
 
+class BookmarkPost extends SimplePost {
+  BookmarkPost({
+    required super.id,
+    required super.thumbnailImageUrl,
+    required super.sampleImageUrl,
+    required super.originalImageUrl,
+    required super.tags,
+    required super.rating,
+    required super.hasComment,
+    required super.isTranslated,
+    required super.hasParentOrChildren,
+    required super.source,
+    required super.score,
+    required super.duration,
+    required super.fileSize,
+    required super.format,
+    required super.hasSound,
+    required super.height,
+    required super.md5,
+    required super.videoThumbnailUrl,
+    required super.videoUrl,
+    required super.width,
+    required super.getLink,
+    required super.uploaderId,
+    required this.realSourceUrl,
+  });
+
+  final PostSource realSourceUrl;
+}
+
 extension BookmarkToPost on Bookmark {
-  SimplePost toPost() => SimplePost(
+  BookmarkPost toPost() => BookmarkPost(
         id: id,
         thumbnailImageUrl: thumbnailUrl,
         sampleImageUrl: sampleUrl,
@@ -98,6 +131,7 @@ extension BookmarkToPost on Bookmark {
         width: width,
         getLink: (_) => sourceUrl,
         uploaderId: null,
+        realSourceUrl: PostSource.from(realSourceUrl),
       );
 }
 
@@ -115,5 +149,6 @@ extension PostToBookmark on Post {
         height: height,
         md5: md5,
         tags: tags,
+        realSourceUrl: source.url,
       );
 }

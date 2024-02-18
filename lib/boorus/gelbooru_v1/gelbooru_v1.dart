@@ -27,11 +27,15 @@ class GelbooruV1Builder
         FavoriteNotSupportedMixin,
         PostCountNotSupportedMixin,
         ArtistNotSupportedMixin,
+        CharacterNotSupportedMixin,
         CommentNotSupportedMixin,
         NoteNotSupportedMixin,
         DefaultThumbnailUrlMixin,
         DefaultTagColorMixin,
         DefaultPostImageDetailsUrlMixin,
+        DefaultGranularRatingFiltererMixin,
+        LegacyGranularRatingOptionsBuilderMixin,
+        NoGranularRatingQueryBuilderMixin,
         DefaultPostStatisticsPageBuilderMixin,
         DefaultBooruUIMixin
     implements BooruBuilder {

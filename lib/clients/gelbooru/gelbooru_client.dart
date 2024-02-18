@@ -105,7 +105,7 @@ class GelbooruClient with RequestDeduplicator<GelbooruPosts> {
 
         final data = response.data;
 
-        return switch (data) {
+        final result = switch (data) {
           List l => (
               posts: l.map((item) => PostDto.fromJson(item, baseUrl)).toList(),
               count: null
@@ -130,6 +130,13 @@ class GelbooruClient with RequestDeduplicator<GelbooruPosts> {
             ),
           _ => (posts: <PostDto>[], count: null),
         };
+
+        final filterNulls = result.posts.where((e) => e.md5 != null).toList();
+
+        return (
+          posts: filterNulls,
+          count: result.count,
+        );
       },
     );
   }

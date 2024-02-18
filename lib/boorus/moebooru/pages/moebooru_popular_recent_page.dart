@@ -32,30 +32,26 @@ class _MoebooruPopularPageState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: PostScope(
-          fetcher: (page) => page > 1
-              ? TaskEither.of(<Post>[])
-              : repo.getPopularPostsRecent(selectedPeriod.value),
-          builder: (context, controller, errors) => Column(
-            children: [
-              PeriodToggleSwitch(
-                onToggle: (period) {
-                  selectedPeriod.value = period;
-                  controller.refresh();
-                },
-              ),
-              const SizedBox(height: 12),
-              Expanded(
-                child: InfinitePostListScaffold(
-                  errors: errors,
-                  controller: controller,
-                ),
-              ),
-            ],
+    return PostScope(
+      fetcher: (page) => page > 1
+          ? TaskEither.of(<Post>[])
+          : repo.getPopularPostsRecent(selectedPeriod.value),
+      builder: (context, controller, errors) => Column(
+        children: [
+          PeriodToggleSwitch(
+            onToggle: (period) {
+              selectedPeriod.value = period;
+              controller.refresh();
+            },
           ),
-        ),
+          const SizedBox(height: 12),
+          Expanded(
+            child: InfinitePostListScaffold(
+              errors: errors,
+              controller: controller,
+            ),
+          ),
+        ],
       ),
     );
   }

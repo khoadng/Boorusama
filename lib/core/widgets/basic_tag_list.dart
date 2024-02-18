@@ -17,39 +17,63 @@ class BasicTagList extends ConsumerWidget {
     super.key,
     required this.tags,
     required this.onTap,
+    this.unknownCategoryColor,
   });
 
   final List<String> tags;
   final void Function(String tag) onTap;
+  final Color? unknownCategoryColor;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Wrap(
-      spacing: 4,
-      runSpacing: 4,
-      children: tags.sorted((a, b) => a.compareTo(b)).map((tag) {
-        final categoryAsync = ref.watch(booruTagTypeProvider(tag));
+    return Container(
+      margin: const EdgeInsets.all(8),
+      child: Wrap(
+        spacing: 4,
+        runSpacing: 4,
+        children: tags.sorted((a, b) => a.compareTo(b)).map((tag) {
+          final categoryAsync = ref.watch(booruTagTypeProvider(tag));
 
-        return GestureDetector(
-          onTap: () => onTap(tag),
-          child: categoryAsync.maybeWhen(
-            data: (category) {
-              final colors = category != null
-                  ? context.generateChipColors(
-                      ref.getTagColor(context, category),
-                      ref.watch(settingsProvider),
-                    )
-                  : null;
+          return GestureDetector(
+            onTap: () => onTap(tag),
+            child: categoryAsync.maybeWhen(
+              data: (category) {
+                final colors = context.generateChipColors(
+                  category != null
+                      ? ref.getTagColor(context, category)
+                      : unknownCategoryColor,
+                  ref.watch(settingsProvider),
+                );
 
-              return Chip(
+                return Chip(
+                  visualDensity: const ShrinkVisualDensity(),
+                  backgroundColor: colors?.backgroundColor,
+                  side: colors != null
+                      ? BorderSide(
+                          width: 1,
+                          color: colors.borderColor,
+                        )
+                      : null,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(8)),
+                  ),
+                  label: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxWidth: context.screenWidth * 0.7,
+                    ),
+                    child: Text(
+                      _getTagStringDisplayName(tag),
+                      overflow: TextOverflow.fade,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: colors?.foregroundColor,
+                      ),
+                    ),
+                  ),
+                );
+              },
+              orElse: () => Chip(
                 visualDensity: const ShrinkVisualDensity(),
-                backgroundColor: colors?.backgroundColor,
-                side: colors != null
-                    ? BorderSide(
-                        width: 1,
-                        color: colors.borderColor,
-                      )
-                    : null,
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(8)),
                 ),
@@ -60,35 +84,16 @@ class BasicTagList extends ConsumerWidget {
                   child: Text(
                     _getTagStringDisplayName(tag),
                     overflow: TextOverflow.fade,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.bold,
-                      color: colors?.foregroundColor,
                     ),
-                  ),
-                ),
-              );
-            },
-            orElse: () => Chip(
-              visualDensity: const ShrinkVisualDensity(),
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(8)),
-              ),
-              label: ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxWidth: context.screenWidth * 0.7,
-                ),
-                child: Text(
-                  _getTagStringDisplayName(tag),
-                  overflow: TextOverflow.fade,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
             ),
-          ),
-        );
-      }).toList(),
+          );
+        }).toList(),
+      ),
     );
   }
 }

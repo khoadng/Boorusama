@@ -23,7 +23,7 @@ import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'boorus/entry_page.dart';
-import 'core/pages/bookmarks/bookmark_details.dart';
+import 'core/pages/bookmarks/bookmark_details_page.dart';
 import 'core/pages/bookmarks/bookmark_page.dart';
 import 'core/pages/boorus/add_booru_page.dart';
 import 'core/pages/settings/settings.dart';
@@ -253,6 +253,7 @@ class SettingsRoutes {
 
 const kInitialQueryKey = 'query';
 const kArtistNameKey = 'name';
+const kCharacterNameKey = 'name';
 
 typedef DetailsPayload<T extends Post> = ({
   int initialIndex,
@@ -286,6 +287,7 @@ class Routes {
           postDetails(ref),
           favorites(ref),
           artists(ref),
+          characters(ref),
           settings(),
           settingsDesktop(),
           bookmarks(),
@@ -379,6 +381,27 @@ class Routes {
                     ? builder(context, artistName)
                     : const Scaffold(
                         body: Center(child: Text('Invalid artist name')))
+                : const Scaffold(body: Center(child: Text('Not implemented'))),
+          );
+        },
+      );
+
+  static GoRoute characters(Ref ref) => GoRoute(
+        path: 'characters',
+        name: '/characters',
+        pageBuilder: (context, state) {
+          final booruBuilder = ref.readCurrentBooruBuilder();
+          final builder = booruBuilder?.characterPageBuilder;
+          final characterName = state.uri.queryParameters[kCharacterNameKey];
+
+          return createPage(
+            key: state.pageKey,
+            name: state.name,
+            child: builder != null
+                ? characterName != null
+                    ? builder(context, characterName)
+                    : const Scaffold(
+                        body: Center(child: Text('Invalid character name')))
                 : const Scaffold(body: Center(child: Text('Not implemented'))),
           );
         },

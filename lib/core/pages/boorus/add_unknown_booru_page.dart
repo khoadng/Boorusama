@@ -222,6 +222,7 @@ class _AddUnknownBooruPageState extends ConsumerState<AddUnknownBooruPage> {
                 ),
                 const SizedBox(height: 16),
                 CreateBooruRatingOptionsTile(
+                  config: widget.config,
                   onChanged: (value) {
                     if (value == null) return;
                     ref.read(booruRatingFilterProvider.notifier).state = value;

@@ -81,6 +81,7 @@ class _CreateAnonConfigPageState extends ConsumerState<CreateAnonConfigPage> {
       customDownloadFileNameFormat: null,
       customBulkDownloadFileNameFormat: null,
       imageDetaisQuality: null,
+      granularRatingFilters: null,
     );
 
     ref

@@ -14,11 +14,16 @@ import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
+import 'package:boorusama/core/widgets/posts/character_post_list.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 final gelbooruPostDetailsArtistMapProvider = StateProvider.autoDispose(
+  (ref) => <int, List<String>>{},
+);
+
+final gelbooruPostDetailsCharacterMapProvider = StateProvider.autoDispose(
   (ref) => <int, List<String>>{},
 );
 
@@ -53,6 +58,19 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailsPage> {
       onTagTap: (tag) => goToSearchPage(context, tag: tag),
       toolbarBuilder: (context, post) => SimplePostActionToolbar(post: post),
       swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
+      fileDetailsBuilder: (context, post) => FileDetailsSection(
+        post: post,
+        rating: post.rating,
+        uploader: post.uploaderName != null
+            ? Text(
+                post.uploaderName!.replaceAll('_', ' '),
+                maxLines: 1,
+                style: const TextStyle(
+                  fontSize: 14,
+                ),
+              )
+            : null,
+      ),
       sliverArtistPostsBuilder: (context, post) => ref
           .watch(gelbooruPostDetailsArtistMapProvider)
           .lookup(post.id)
@@ -79,6 +97,17 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailsPage> {
                   )
                 : const SliverSizedBox.shrink(),
           ),
+      sliverCharacterPostsBuilder: (context, post) => ref
+          .watch(gelbooruPostDetailsCharacterMapProvider)
+          .lookup(post.id)
+          .fold(
+            () => const SliverSizedBox.shrink(),
+            (tags) => tags.isNotEmpty
+                ? CharacterPostList(
+                    tags: tags,
+                  )
+                : const SliverSizedBox.shrink(),
+          ),
       tagListBuilder: (context, post) =>
           ref.watchConfig.booruType == BooruType.gelbooru
               ? TagsTile(
@@ -86,20 +115,35 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailsPage> {
                   post: post,
                   onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
                 )
-              : GelbooruV1TagsTile(post: post),
+              : GelbooruV1TagsTile(
+                  post: post,
+                  onTagsLoaded: (tags) => _setTags(post, tags),
+                ),
       onExpanded: (post) => ref.watchConfig.booruType == BooruType.gelbooru
           ? ref.read(tagsProvider(booruConfig).notifier).load(
-              post.tags,
-              onSuccess: (tags) {
-                if (!mounted) return;
-                ref.setGelbooruPostDetailsArtistMap(
-                  post: post,
-                  tags: tags,
-                );
-              },
-            )
+                post.tags,
+                onSuccess: (tags) => _setTags(post, tags),
+              )
           : null,
     );
+  }
+
+  void _setTags(
+    GelbooruPost post,
+    List<TagGroupItem> tags,
+  ) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (!mounted) return;
+      ref.setGelbooruPostDetailsArtistMap(
+        post: post,
+        tags: tags,
+      );
+
+      ref.setGelbooruPostDetailsCharacterMap(
+        post: post,
+        tags: tags,
+      );
+    });
   }
 }
 
@@ -120,15 +164,35 @@ extension GelbooruArtistMapProviderX on WidgetRef {
       ...map,
     };
   }
+
+  void setGelbooruPostDetailsCharacterMap({
+    required Post post,
+    required List<TagGroupItem> tags,
+  }) {
+    final group = tags.firstWhereOrNull(
+      (tag) => tag.groupName.toLowerCase() == 'character',
+    );
+
+    if (group == null) return;
+    final map = read(gelbooruPostDetailsCharacterMapProvider);
+
+    map[post.id] = group.tags.map((e) => e.rawName).toList();
+
+    read(gelbooruPostDetailsCharacterMapProvider.notifier).state = {
+      ...map,
+    };
+  }
 }
 
 class GelbooruV1TagsTile extends ConsumerStatefulWidget {
   const GelbooruV1TagsTile({
     super.key,
     required this.post,
+    this.onTagsLoaded,
   });
 
   final Post post;
+  final void Function(List<TagGroupItem> tags)? onTagsLoaded;
 
   @override
   ConsumerState<GelbooruV1TagsTile> createState() => _GelbooruV1TagsTileState();
@@ -146,6 +210,13 @@ class _GelbooruV1TagsTileState extends ConsumerState<GelbooruV1TagsTile> {
         next.when(
           data: (data) {
             if (!mounted) return;
+
+            if (data.isNotEmpty) {
+              if (widget.onTagsLoaded != null) {
+                widget.onTagsLoaded!(createTagGroupItems(data));
+              }
+            }
+
             if (data.isEmpty && widget.post.tags.isNotEmpty) {
               // Just a dummy data so the check below will branch into the else block
               setState(() => error = 'No tags found');

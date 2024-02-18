@@ -97,7 +97,10 @@ class _MoebooruPostDetailsDesktopPageState
               SliverList(
                 delegate: SliverChildListDelegate(
                   [
-                    MoebooruInformationSection(post: post),
+                    MoebooruInformationSection(
+                      post: post,
+                      tags: ref.watch(tagsProvider(booruConfig)),
+                    ),
                     const Divider(
                       thickness: 1.5,
                     ),

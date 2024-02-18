@@ -25,6 +25,10 @@ class PhilomenaBuilder
         DefaultThumbnailUrlMixin,
         CommentNotSupportedMixin,
         ArtistNotSupportedMixin,
+        CharacterNotSupportedMixin,
+        LegacyGranularRatingOptionsBuilderMixin,
+        NoGranularRatingQueryBuilderMixin,
+        DefaultGranularRatingFiltererMixin,
         DefaultPostStatisticsPageBuilderMixin,
         DefaultBooruUIMixin
     implements BooruBuilder {

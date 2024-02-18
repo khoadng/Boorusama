@@ -105,6 +105,9 @@ class HiveBooruConfigRepository implements BooruConfigRepository {
         customBulkDownloadFileNameFormat:
             booruConfig.customBulkDownloadFileNameFormat ?? '',
         imageDetaisQuality: booruConfig.imageDetaisQuality ?? '',
+        granularRatingFilterString: granularRatingFilterToString(
+          booruConfig.granularRatingFilters,
+        ),
       );
       final json = data.toJson();
       final jsonString = jsonEncode(json);

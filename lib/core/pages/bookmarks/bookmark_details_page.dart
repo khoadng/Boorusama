@@ -10,6 +10,7 @@ import 'package:boorusama/core/feats/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -37,6 +38,23 @@ class _BookmarkDetailsPageState extends ConsumerState<BookmarkDetailsPage> {
       posts: bookmarks.map((e) => e.toPost()).toList(),
       swipeImageUrlBuilder: (post) => post.sampleImageUrl,
       toolbarBuilder: (context, post) => BookmarkPostActionToolbar(post: post),
+      sourceSectionBuilder: (context, post) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          post.source.whenWeb(
+            (source) => SourceSection(source: source),
+            () => const SizedBox.shrink(),
+          ),
+          post.realSourceUrl.whenWeb(
+            (source) => SourceSection(
+              title: 'Original Source',
+              source: source,
+            ),
+            () => const SizedBox.shrink(),
+          ),
+        ],
+      ),
       topRightButtonsBuilder: (context, _, post) => [
         GeneralMoreActionButton(
           post: post,
@@ -52,9 +70,7 @@ class _BookmarkDetailsPageState extends ConsumerState<BookmarkDetailsPage> {
       onExit: (page) {
         // TODO: implement onExit
       },
-      onTagTap: (tag) {
-        // TODO: implement onTagTap
-      },
+      onTagTap: (tag) => goToSearchPage(context, tag: tag),
     );
   }
 }

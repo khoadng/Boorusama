@@ -2,33 +2,34 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
-import 'package:boorusama/boorus/moebooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/moebooru/moebooru.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/moebooru/types/types.dart';
+import 'package:boorusama/core/feats/blacklists/blacklists.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/utils.dart';
+import 'package:boorusama/foundation/caching/caching.dart';
 
 final moebooruPostRepoProvider =
     Provider.family<PostRepository<MoebooruPost>, BooruConfig>(
   (ref, config) {
     final client = ref.watch(moebooruClientProvider(config));
 
-    getTags(List<String> tags) {
-      final tag = booruFilterConfigToMoebooruTag(config.ratingFilter);
-
-      return [
-        ...tags,
-        if (tag != null) tag,
-      ];
-    }
-
     return PostRepositoryBuilder(
       fetch: (tags, page, {limit}) => client
           .getPosts(
             page: page,
-            tags: getTags(tags),
+            tags: getTags(
+              config,
+              tags,
+              granularRatingQueries: (tags) => ref
+                  .readCurrentBooruBuilder()
+                  ?.granularRatingQueryBuilder
+                  ?.call(tags, config),
+            ),
             limit: limit,
           )
           .then((value) => value.map(postDtoToPost).toList()),
@@ -45,6 +46,16 @@ final moebooruPopularRepoProvider =
     return MoebooruPopularRepositoryApi(
       client,
       config,
+    );
+  },
+);
+
+final moebooruArtistCharacterPostRepoProvider =
+    Provider.family<PostRepository, BooruConfig>(
+  (ref, config) {
+    return PostRepositoryCacher(
+      repository: ref.watch(moebooruPostRepoProvider(config)),
+      cache: LruCacher<String, List<Post>>(capacity: 100),
     );
   },
 );
@@ -67,6 +78,48 @@ final moebooruPostDetailsChildrenProvider =
     );
   },
 );
+
+final moebooruPostDetailsArtistProvider =
+    FutureProvider.family.autoDispose<List<Post>, String>((ref, tag) async {
+  final config = ref.watchConfig;
+  final repo = ref.watch(moebooruArtistCharacterPostRepoProvider(config));
+  final globalBlacklistedTags = ref.watch(globalBlacklistedTagsProvider);
+
+  final posts = await repo.getPosts([tag], 1).run().then(
+        (value) => value.fold(
+          (l) => <Post>[],
+          (r) => r,
+        ),
+      );
+
+  return filterTags(
+    posts.take(30).where((e) => !e.isFlash).toList(),
+    {
+      ...globalBlacklistedTags.map((e) => e.name),
+    },
+  );
+});
+
+final moebooruPostDetailsCharacterProvider =
+    FutureProvider.family.autoDispose<List<Post>, String>((ref, tag) async {
+  final config = ref.watchConfig;
+  final repo = ref.watch(moebooruArtistCharacterPostRepoProvider(config));
+  final globalBlacklistedTags = ref.watch(globalBlacklistedTagsProvider);
+
+  final posts = await repo.getPosts([tag], 1).run().then(
+        (value) => value.fold(
+          (l) => <Post>[],
+          (r) => r,
+        ),
+      );
+
+  return filterTags(
+    posts.take(30).where((e) => !e.isFlash).toList(),
+    {
+      ...globalBlacklistedTags.map((e) => e.name),
+    },
+  );
+});
 
 MoebooruPost postDtoToPost(PostDto postDto) {
   final hasChildren = postDto.hasChildren ?? false;
@@ -95,5 +148,6 @@ MoebooruPost postDtoToPost(PostDto postDto) {
         : null,
     parentId: postDto.parentId,
     uploaderId: postDto.creatorId,
+    uploaderName: postDto.author,
   );
 }

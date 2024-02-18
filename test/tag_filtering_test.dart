@@ -343,6 +343,76 @@ void main() {
           false,
         );
       });
+
+      test('positive (source exact match)', () {
+        expect(
+          checkIfTagsContainsTagExpression(
+              TagFilterData(
+                tags: ['a', 'b', 'c'],
+                rating: Rating.explicit,
+                score: 0,
+                source: 'https://example.com',
+              ),
+              'a source:https://example.com'),
+          true,
+        );
+      });
+
+      test('negative (source exact match)', () {
+        expect(
+          checkIfTagsContainsTagExpression(
+              TagFilterData(
+                tags: ['a', 'b', 'c'],
+                rating: Rating.explicit,
+                score: 0,
+                source: 'https://example.com',
+              ),
+              'd source:https://example.com'),
+          false,
+        );
+      });
+
+      test('positive (source start match)', () {
+        expect(
+          checkIfTagsContainsTagExpression(
+              TagFilterData(
+                tags: ['a', 'b', 'c'],
+                rating: Rating.explicit,
+                score: 0,
+                source: 'https://example.com/abc',
+              ),
+              'a source:https://example.com*'),
+          true,
+        );
+      });
+
+      test('positive (source end match)', () {
+        expect(
+          checkIfTagsContainsTagExpression(
+              TagFilterData(
+                tags: ['a', 'b', 'c'],
+                rating: Rating.explicit,
+                score: 0,
+                source: 'https://example.com/abc',
+              ),
+              'a source:*example.com/abc'),
+          true,
+        );
+      });
+
+      test('positive (source middle match)', () {
+        expect(
+          checkIfTagsContainsTagExpression(
+              TagFilterData(
+                tags: ['a', 'b', 'c'],
+                rating: Rating.explicit,
+                score: 0,
+                source: 'https://example.com/abc',
+              ),
+              'a source:*example.com*'),
+          true,
+        );
+      });
     });
 
     group('NOT + Metatags', () {

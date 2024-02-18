@@ -8,6 +8,7 @@ import 'package:hive/hive.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/uploads/danbooru_upload.dart';
+import 'package:boorusama/clients/danbooru/types/types.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 
 final danbooruUploadRepoProvider =
@@ -25,6 +26,15 @@ final danbooruUploadHideBoxProvider =
 
   return box;
 });
+
+final danbooruIqdbResultProvider =
+    FutureProvider.autoDispose.family<List<IqdbResultDto>, int>(
+  (ref, mediaAssetId) async {
+    final client = ref.watch(danbooruClientProvider(ref.watchConfig));
+
+    return client.iqdb(mediaAssetId: mediaAssetId);
+  },
+);
 
 final danbooruUploadHideMapProvider = AsyncNotifierProvider.autoDispose<
     DanbooruUploadHideNotifier, Map<int, bool>>(DanbooruUploadHideNotifier.new);

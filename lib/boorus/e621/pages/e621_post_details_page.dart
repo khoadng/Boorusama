@@ -102,7 +102,7 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage> {
           ),
         ];
       },
-      showSourceTile: false,
+      sourceSectionBuilder: (context, post) => const SizedBox.shrink(),
       artistInfoBuilder: (context, post) => E621ArtistSection(post: post),
     );
   }
@@ -145,7 +145,12 @@ class E621TagsTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Theme(
-      data: context.theme.copyWith(dividerColor: Colors.transparent),
+      data: context.theme.copyWith(
+        listTileTheme: context.theme.listTileTheme.copyWith(
+          visualDensity: VisualDensity.compact,
+        ),
+        dividerColor: Colors.transparent,
+      ),
       child: ExpansionTile(
         title: Text('${post.tags.length} tags'),
         controlAffinity: ListTileControlAffinity.leading,

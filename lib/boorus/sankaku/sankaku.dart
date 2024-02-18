@@ -35,8 +35,12 @@ class SankakuBuilder
         NoteNotSupportedMixin,
         DefaultThumbnailUrlMixin,
         CommentNotSupportedMixin,
+        CharacterNotSupportedMixin,
+        LegacyGranularRatingOptionsBuilderMixin,
+        NoGranularRatingQueryBuilderMixin,
         DefaultTagColorMixin,
         DefaultPostImageDetailsUrlMixin,
+        DefaultGranularRatingFiltererMixin,
         DefaultPostStatisticsPageBuilderMixin,
         DefaultBooruUIMixin
     implements BooruBuilder {
@@ -104,7 +108,7 @@ class SankakuBuilder
               post: post,
               showSource: true,
             ),
-            showSourceTile: false,
+            sourceSectionBuilder: (context, post) => const SizedBox.shrink(),
             sliverArtistPostsBuilder: (context, post) =>
                 post.artistTags.isNotEmpty
                     ? ArtistPostList(

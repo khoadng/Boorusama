@@ -22,6 +22,7 @@ import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/core/widgets/posts/character_post_list.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -195,12 +196,16 @@ class _DanbooruPostDetailsDesktopPageState
                       : const SliverSizedBox.shrink(),
                 if (allowFetch)
                   post.artistTags.isEmpty
-                      ? DanbooruCharacterPostList(post: post)
+                      ? CharacterPostList(
+                          tags: post.characterTags,
+                        )
                       : ref
                           .watch(danbooruPostDetailsArtistProvider(
                               post.artistTags.first))
                           .maybeWhen(
-                            data: (_) => DanbooruCharacterPostList(post: post),
+                            data: (_) => CharacterPostList(
+                              tags: post.characterTags,
+                            ),
                             orElse: () => const SliverSizedBox.shrink(),
                           ),
                 const SliverSizedBox(height: 24),

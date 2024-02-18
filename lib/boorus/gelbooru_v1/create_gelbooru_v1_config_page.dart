@@ -99,6 +99,7 @@ class _CreateGelbooruV1ConfigPageState
       customDownloadFileNameFormat: customDownloadFileNameFormat,
       customBulkDownloadFileNameFormat: customBulkDownloadFileNameFormat,
       imageDetaisQuality: imageDetaisQuality,
+      granularRatingFilters: null,
     );
 
     ref

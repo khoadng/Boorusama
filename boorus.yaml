@@ -18,15 +18,19 @@
     sites:
       - url: https://konachan.com/
         salt: So-I-Heard-You-Like-Mupkids-?--{0}--
+        favorite-support: true
         protocol: https_2
       - url: https://konachan.net/
         salt: So-I-Heard-You-Like-Mupkids-?--{0}--
+        favorite-support: true
         protocol: https_2
       - url: https://yande.re/
         salt: choujin-steiner--{0}--
+        favorite-support: true
         protocol: https_2
       - url: https://sakugabooru.com/
         salt: er@!$rjiajd0$!dkaopc350!Y%)--{0}--
+        favorite-support: true
         protocol: https_2
       - url: https://lolibooru.moe/
         salt: --{0}--

@@ -48,7 +48,12 @@ class DanbooruTagsTile extends ConsumerWidget {
         ref.watch(danbooruTagTileExpansionStateProvider(initialExpanded));
 
     return Theme(
-      data: context.theme.copyWith(dividerColor: Colors.transparent),
+      data: context.theme.copyWith(
+        listTileTheme: context.theme.listTileTheme.copyWith(
+          visualDensity: VisualDensity.compact,
+        ),
+        dividerColor: Colors.transparent,
+      ),
       child: ExpansionTile(
         initiallyExpanded: initialExpanded,
         onExpansionChanged: (value) {
