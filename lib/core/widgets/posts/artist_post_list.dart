@@ -35,7 +35,7 @@ class ArtistPostList extends ConsumerWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(4),
+                padding: const EdgeInsets.symmetric(horizontal: 4),
                 child: builder(tag),
               ),
             ],

@@ -35,6 +35,7 @@ class GeneralMoreActionButton extends ConsumerWidget {
           color: Colors.black.withOpacity(0.5),
           shape: const CircleBorder(),
           child: BooruPopupMenuButton(
+            iconColor: Colors.white,
             onSelected: (value) {
               switch (value) {
                 case 'download':
