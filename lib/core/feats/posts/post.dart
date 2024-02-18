@@ -72,6 +72,7 @@ class SimplePost extends Equatable
     required this.width,
     required Function(String baseUrl) getLink,
     required this.uploaderId,
+    this.uploaderName,
   }) : _getLink = getLink;
 
   @override
@@ -123,6 +124,8 @@ class SimplePost extends Equatable
 
   @override
   final int? uploaderId;
+
+  final String? uploaderName;
 
   final Function(String baseUrl) _getLink;
 

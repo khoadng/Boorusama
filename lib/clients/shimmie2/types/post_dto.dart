@@ -36,7 +36,12 @@ class PostDto {
     this.author,
   });
 
-  factory PostDto.fromXml(XmlElement xml) {
+  factory PostDto.fromXml(
+    XmlElement xml, {
+    String? baseUrl,
+  }) {
+    final previewUrl = xml.getAttribute('preview_url');
+
     return PostDto(
       id: int.tryParse(xml.getAttribute('id') ?? ''),
       md5: xml.getAttribute('md5'),
@@ -44,7 +49,11 @@ class PostDto {
       fileUrl: xml.getAttribute('file_url'),
       height: int.tryParse(xml.getAttribute('height') ?? ''),
       width: int.tryParse(xml.getAttribute('width') ?? ''),
-      previewUrl: xml.getAttribute('preview_url'),
+      previewUrl: previewUrl?.startsWith('http') == true
+          ? previewUrl
+          : baseUrl != null
+              ? '$baseUrl$previewUrl'
+              : null,
       previewHeight: int.tryParse(xml.getAttribute('preview_height') ?? ''),
       previewWidth: int.tryParse(xml.getAttribute('preview_width') ?? ''),
       rating: xml.getAttribute('rating'),

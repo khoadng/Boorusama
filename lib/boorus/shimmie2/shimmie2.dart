@@ -1,3 +1,6 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
@@ -5,7 +8,11 @@ import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/pages/boorus/create_anon_config_page.dart';
+import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/scaffolds/scaffolds.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/path.dart';
+import 'package:boorusama/functional.dart';
 
 class Shimmie2Builder
     with
@@ -66,6 +73,41 @@ class Shimmie2Builder
   @override
   PostFetcher get postFetcher =>
       (page, tags, {limit}) => postRepo.getPosts(tags, page, limit: limit);
+
+  @override
+  PostDetailsPageBuilder get postDetailsPageBuilder =>
+      (context, config, payload) => BooruProvider(
+            builder: (booruBuilder, ref) => PostDetailsPageScaffold(
+              posts: payload.posts,
+              initialIndex: payload.initialIndex,
+              swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
+              onExit: (page) => payload.scrollController?.scrollToIndex(page),
+              onTagTap: (tag) => goToSearchPage(context, tag: tag),
+              tagListBuilder: (context, post) => BasicTagList(
+                tags: post.tags,
+                unknownCategoryColor: ref.getTagColor(
+                  context,
+                  'general',
+                ),
+                onTap: (tag) => goToSearchPage(context, tag: tag),
+              ),
+              fileDetailsBuilder: (context, post) => FileDetailsSection(
+                post: post,
+                rating: post.rating,
+                uploader: (post as SimplePost).toOption().fold(
+                    () => null,
+                    (t) => t.uploaderName != null
+                        ? Text(
+                            post.uploaderName!.replaceAll('_', ' '),
+                            maxLines: 1,
+                            style: const TextStyle(
+                              fontSize: 14,
+                            ),
+                          )
+                        : null),
+              ),
+            ),
+          );
 
   @override
   DownloadFilenameGenerator<Post> get downloadFilenameBuilder =>
