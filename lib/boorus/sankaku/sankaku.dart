@@ -158,9 +158,6 @@ class SankakuBuilder
   FavoriteAdder? get favoriteAdder => null;
 
   @override
-  FavoriteChecker? get favoriteChecker => null;
-
-  @override
   FavoriteRemover? get favoriteRemover => null;
 
   @override

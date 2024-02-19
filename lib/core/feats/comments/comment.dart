@@ -8,6 +8,7 @@ abstract class Comment {
   int get id;
   String get body;
   DateTime get createdAt;
+  DateTime get updatedAt;
   String? get creatorName;
   int? get creatorId;
 }
@@ -59,6 +60,7 @@ class SimpleComment extends Equatable implements Comment {
     required this.id,
     required this.body,
     required this.createdAt,
+    required this.updatedAt,
     this.creatorName,
     this.creatorId,
   });
@@ -69,6 +71,8 @@ class SimpleComment extends Equatable implements Comment {
   final String body;
   @override
   final DateTime createdAt;
+  @override
+  final DateTime updatedAt;
   @override
   final String? creatorName;
   @override

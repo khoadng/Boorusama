@@ -55,20 +55,25 @@ class _CommentPageScaffoldState extends ConsumerState<CommentPageScaffold> {
       ),
       body: comments != null
           ? comments!.isNotEmpty
-              ? ListView.builder(
-                  itemCount: comments!.length,
-                  itemBuilder: (context, index) => Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: widget.commentItemBuilder != null
-                        ? widget.commentItemBuilder!(context, comments![index])
-                        : _CommentItem(
-                            comment: comments![index],
-                            config: config,
-                          ),
+              ? Padding(
+                  padding:
+                      const EdgeInsetsDirectional.symmetric(horizontal: 12),
+                  child: ListView.builder(
+                    itemCount: comments!.length,
+                    itemBuilder: (context, index) => Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: widget.commentItemBuilder != null
+                          ? widget.commentItemBuilder!(
+                              context, comments![index])
+                          : _CommentItem(
+                              comment: comments![index],
+                              config: config,
+                            ),
+                    ),
                   ),
                 )
               : const NoDataBox()
-          : const Center(child: CircularProgressIndicator.adaptive()),
+          : const Center(child: CircularProgressIndicator()),
     );
   }
 }

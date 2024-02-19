@@ -93,7 +93,6 @@ class _InfinitePostListScaffoldState<T extends Post>
     final booruBuilder = ref.watch(booruBuilderProvider);
     final favoriteAdder = booruBuilder?.favoriteAdder;
     final favoriteRemover = booruBuilder?.favoriteRemover;
-    final favoriteChecker = booruBuilder?.favoriteChecker;
     final gridThumbnailUrlBuilder = booruBuilder?.gridThumbnailUrlBuilder;
     final canFavorite = booruBuilder?.canFavorite(config) ?? false;
 
@@ -171,7 +170,7 @@ class _InfinitePostListScaffoldState<T extends Post>
                         );
                       }
                     : null,
-                isFaved: favoriteChecker?.call(post.id) ?? false,
+                isFaved: ref.watch(favoriteProvider(post.id)),
                 enableFav: !multiSelect && canFavorite,
                 onFavToggle: (isFaved) async {
                   if (isFaved) {

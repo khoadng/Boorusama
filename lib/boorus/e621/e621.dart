@@ -120,7 +120,6 @@ class E621Builder
   E621Builder({
     required this.postRepo,
     required this.client,
-    required this.favoriteChecker,
     required this.autocompleteRepo,
     required this.noteRepo,
   });
@@ -180,9 +179,6 @@ class E621Builder
       .removeFromFavorites(postId: postId)
       .then((value) => true)
       .catchError((obj) => false);
-
-  @override
-  final FavoriteChecker? favoriteChecker;
 
   @override
   SearchPageBuilder get searchPageBuilder =>
@@ -288,6 +284,7 @@ class E621CommentPage extends ConsumerWidget {
                       id: e.id ?? 0,
                       body: e.body ?? '',
                       createdAt: e.createdAt ?? DateTime(1),
+                      updatedAt: e.updatedAt ?? DateTime(1),
                       creatorName: e.creatorName ?? '',
                       creatorId: e.creatorId ?? 0,
                     ))

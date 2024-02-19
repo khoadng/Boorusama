@@ -10,7 +10,6 @@ import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/e621/e621.dart';
-import 'package:boorusama/boorus/e621/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
@@ -42,6 +41,8 @@ import 'e621/feats/notes/notes.dart';
 import 'philomena/philomena.dart';
 import 'philomena/providers.dart';
 import 'shimmie2/shimmie2.dart';
+import 'szurubooru/providers.dart';
+import 'szurubooru/szurubooru.dart';
 
 typedef CreateConfigPageBuilder = Widget Function(
   BuildContext context,
@@ -106,7 +107,6 @@ typedef NoteFetcher = Future<List<Note>> Function(int postId);
 
 typedef FavoriteAdder = Future<bool> Function(int postId);
 typedef FavoriteRemover = Future<bool> Function(int postId);
-typedef FavoriteChecker = bool Function(int postId);
 
 typedef GranularRatingFilterer = bool Function(Post post, BooruConfig config);
 typedef GranularRatingQueryBuilder = List<String> Function(
@@ -177,7 +177,6 @@ abstract class BooruBuilder {
   // Action Builders
   FavoriteAdder? get favoriteAdder;
   FavoriteRemover? get favoriteRemover;
-  FavoriteChecker? get favoriteChecker;
 
   PostCountFetcher? get postCountFetcher;
 }
@@ -187,8 +186,7 @@ mixin FavoriteNotSupportedMixin implements BooruBuilder {
   FavoriteAdder? get favoriteAdder => null;
   @override
   FavoriteRemover? get favoriteRemover => null;
-  @override
-  FavoriteChecker? get favoriteChecker => null;
+
   @override
   FavoritesPageBuilder? get favoritesPageBuilder => null;
 }
@@ -442,7 +440,6 @@ final booruBuildersProvider =
                     ref.read(e621AutocompleteRepoProvider(config)),
                 postRepo: ref.read(e621PostRepoProvider(config)),
                 client: ref.read(e621ClientProvider(config)),
-                favoriteChecker: ref.read(e621FavoriteCheckerProvider(config)),
                 noteRepo: ref.read(e621NoteRepoProvider(config)),
               ),
           BooruType.danbooru: (config) => DanbooruBuilder(
@@ -450,8 +447,6 @@ final booruBuildersProvider =
                 autocompleteRepo:
                     ref.read(danbooruAutocompleteRepoProvider(config)),
                 favoriteRepo: ref.read(danbooruFavoriteRepoProvider(config)),
-                favoriteChecker:
-                    ref.read(danbooruFavoriteCheckerProvider(config)),
                 postCountRepo: ref.read(danbooruPostCountRepoProvider(config)),
                 noteRepo: ref.read(danbooruNoteRepoProvider(config)),
               ),
@@ -474,6 +469,12 @@ final booruBuildersProvider =
                 autocompleteRepo:
                     ref.read(shimmie2AutocompleteRepoProvider(config)),
               ),
+          BooruType.szurubooru: (config) => SzurubooruBuilder(
+                postRepo: ref.read(szurubooruPostRepoProvider(config)),
+                autocompleteRepo:
+                    ref.read(szurubooruAutocompleteRepoProvider(config)),
+                client: ref.read(szurubooruClientProvider(config)),
+              ),
         });
 
 extension BooruBuilderFeatureCheck on BooruBuilder {
@@ -482,7 +483,6 @@ extension BooruBuilderFeatureCheck on BooruBuilder {
   bool canFavorite(BooruConfig config) =>
       favoriteAdder != null &&
       favoriteRemover != null &&
-      favoriteChecker != null &&
       config.hasLoginDetails();
 }
 

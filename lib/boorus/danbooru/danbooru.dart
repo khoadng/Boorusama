@@ -79,7 +79,6 @@ class DanbooruBuilder
     required this.postRepo,
     required this.autocompleteRepo,
     required this.favoriteRepo,
-    required this.favoriteChecker,
     required this.postCountRepo,
     required this.noteRepo,
   });
@@ -139,9 +138,6 @@ class DanbooruBuilder
   @override
   FavoriteRemover? get favoriteRemover =>
       (postId) => favoriteRepo.removeFromFavorites(postId);
-
-  @override
-  final FavoriteChecker? favoriteChecker;
 
   @override
   PostCountFetcher? get postCountFetcher =>

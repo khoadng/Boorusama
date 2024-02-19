@@ -91,12 +91,18 @@ class _CustomDownloadFileNameSectionState
       children: [
         const SizedBox(height: 16),
         RichText(
-          text: const TextSpan(
+          text: TextSpan(
             text: 'Custom filename format ',
+            style: TextStyle(
+              color: context.colorScheme.onBackground,
+            ),
             children: [
               TextSpan(
                 text: '(Experimental)',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: context.colorScheme.onBackground,
+                ),
               ),
             ],
           ),

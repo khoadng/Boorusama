@@ -43,15 +43,15 @@ class SzurubooruClient {
 
   Future<List<PostDto>> getPosts({
     int? limit,
-    int? offset,
-    String? query,
+    int? page,
+    List<String>? tags,
   }) async {
     final response = await _dio.get(
       '/api/posts',
       queryParameters: {
-        'limit': limit,
-        'offset': offset,
-        'query': query,
+        if (limit != null) 'limit': limit,
+        if (page != null && page > 0) 'offset': (page - 1) * (limit ?? 100),
+        if (tags != null && tags.isNotEmpty) 'query': tags.join(' '),
       },
     );
 
@@ -69,10 +69,15 @@ class SzurubooruClient {
     required String query,
     int limit = 15,
   }) async {
+    final q = query.length < 3 ? '$query*' : '*$query*';
+
     final response = await _dio.get(
       '/api/tags',
       queryParameters: {
-        'query': '*$query* sort:usages',
+        'query': [
+          q,
+          'sort:usages',
+        ].join(' '),
         'limit': limit,
       },
     );
@@ -80,5 +85,46 @@ class SzurubooruClient {
     final results = response.data['results'] as List;
 
     return results.map((e) => TagDto.fromJson(e)).toList();
+  }
+
+  Future<List<CommentDto>> getComments({
+    required int postId,
+  }) async {
+    final response = await _dio.get(
+      '/api/comments',
+      queryParameters: {
+        'query': 'post:$postId',
+      },
+    );
+
+    final results = response.data['results'] as List;
+
+    return results.map((e) => CommentDto.fromJson(e)).toList();
+  }
+
+  Future<PostDto> addToFavorites({
+    required int postId,
+  }) async {
+    final response = await _dio.post(
+      '/api/post/$postId/favorite',
+    );
+
+    return PostDto.fromJson(
+      response.data,
+      baseUrl: _dio.options.baseUrl,
+    );
+  }
+
+  Future<PostDto> removeFromFavorites({
+    required int postId,
+  }) async {
+    final response = await _dio.delete(
+      '/api/post/$postId/favorite',
+    );
+
+    return PostDto.fromJson(
+      response.data,
+      baseUrl: _dio.options.baseUrl,
+    );
   }
 }
