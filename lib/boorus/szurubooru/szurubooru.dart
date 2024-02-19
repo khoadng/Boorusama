@@ -127,20 +127,8 @@ class SzurubooruBuilder
       );
 
   @override
-  SearchPageBuilder get searchPageBuilder =>
-      (context, initialQuery) => BooruProvider(
-            builder: (booruBuilder, _) => SearchPageScaffold(
-              noticeBuilder: (context) => InfoContainer(
-                contentBuilder: (context) => Html(
-                    data:
-                        'You need to log in to use <b>Szurubooru</b> tag completion.'),
-              ),
-              initialQuery: initialQuery,
-              fetcher: (page, tags) =>
-                  booruBuilder?.postFetcher.call(page, tags) ??
-                  TaskEither.of(<Post>[]),
-            ),
-          );
+  SearchPageBuilder get searchPageBuilder => (context, initialQuery) =>
+      SzurubooruSearchPage(initialQuery: initialQuery);
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
@@ -202,6 +190,33 @@ class SzurubooruBuilder
       LegacyFilenameBuilder(
         generateFileName: (post, downloadUrl) => basename(downloadUrl),
       );
+}
+
+class SzurubooruSearchPage extends ConsumerWidget {
+  const SzurubooruSearchPage({
+    super.key,
+    required this.initialQuery,
+  });
+
+  final String? initialQuery;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
+
+    return SearchPageScaffold(
+      noticeBuilder: (context) => !config.hasLoginDetails()
+          ? InfoContainer(
+              contentBuilder: (context) => Html(
+                  data:
+                      'You need to log in to use <b>Szurubooru</b> tag completion.'),
+            )
+          : const SizedBox.shrink(),
+      initialQuery: initialQuery,
+      fetcher: (page, tags) =>
+          ref.read(szurubooruPostRepoProvider(config)).getPosts(tags, page),
+    );
+  }
 }
 
 class SzurubooruCommentPage extends ConsumerWidget {
