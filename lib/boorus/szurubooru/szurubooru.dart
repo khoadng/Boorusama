@@ -9,7 +9,6 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/szurubooru/favorites/favorites.dart';
 import 'package:boorusama/boorus/szurubooru/providers.dart';
-import 'package:boorusama/clients/szurubooru/szurubooru_client.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/comments/comments.dart';
@@ -19,6 +18,7 @@ import 'package:boorusama/core/pages/home/side_menu_tile.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/functional.dart';
@@ -43,12 +43,10 @@ class SzurubooruBuilder
   const SzurubooruBuilder({
     required this.postRepo,
     required this.autocompleteRepo,
-    required this.client,
   });
 
   final AutocompleteRepository autocompleteRepo;
   final PostRepository postRepo;
-  final SzurubooruClient client;
 
   @override
   AutocompleteFetcher get autocompleteFetcher =>
@@ -94,16 +92,16 @@ class SzurubooruBuilder
       (context, config) => SzurubooruFavoritesPage(username: config.name);
 
   @override
-  FavoriteAdder? get favoriteAdder => (postId) => client
-      .addToFavorites(postId: postId)
-      .then((value) => true)
-      .catchError((obj) => false);
+  FavoriteAdder? get favoriteAdder => (postId, ref) => ref
+      .read(szurubooruFavoritesProvider(ref.readConfig).notifier)
+      .add(postId)
+      .then((value) => true);
 
   @override
-  FavoriteRemover? get favoriteRemover => (postId) => client
-      .removeFromFavorites(postId: postId)
-      .then((value) => true)
-      .catchError((obj) => false);
+  FavoriteRemover? get favoriteRemover => (postId, ref) => ref
+      .read(szurubooruFavoritesProvider(ref.readConfig).notifier)
+      .remove(postId)
+      .then((value) => true);
 
   @override
   HomePageBuilder get homePageBuilder => (context, config) => HomePageScaffold(
@@ -135,6 +133,20 @@ class SzurubooruBuilder
               swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
               onExit: (page) => payload.scrollController?.scrollToIndex(page),
               onTagTap: (tag) => goToSearchPage(context, tag: tag),
+              statsTileBuilder: (context, rawPost) =>
+                  castOrNull<SzurubooruPost>(rawPost).toOption().fold(
+                        () => const SizedBox.shrink(),
+                        (post) => Column(
+                          children: [
+                            const Divider(height: 8, thickness: 0.5),
+                            SimplePostStatsTile(
+                              totalComments: post.commentCount,
+                              favCount: post.favoriteCount,
+                              score: post.score,
+                            ),
+                          ],
+                        ),
+                      ),
               tagListBuilder: (context, post) => BasicTagList(
                 tags: post.tags,
                 unknownCategoryColor: ref.getTagColor(
@@ -143,25 +155,26 @@ class SzurubooruBuilder
                 ),
                 onTap: (tag) => goToSearchPage(context, tag: tag),
               ),
-              toolbarBuilder: (context, post) =>
-                  (post as SzurubooruPost).toOption().fold(
-                        () => SimplePostActionToolbar(post: post),
+              toolbarBuilder: (context, rawPost) =>
+                  castOrNull<SzurubooruPost>(rawPost).toOption().fold(
+                        () => SimplePostActionToolbar(post: rawPost),
                         (post) => SzurubooruPostActionToolbar(post: post),
                       ),
-              fileDetailsBuilder: (context, post) => FileDetailsSection(
-                post: post,
-                rating: post.rating,
-                uploader: (post as SimplePost).toOption().fold(
-                    () => null,
-                    (t) => t.uploaderName != null
-                        ? Text(
-                            post.uploaderName!.replaceAll('_', ' '),
-                            maxLines: 1,
-                            style: const TextStyle(
-                              fontSize: 14,
-                            ),
-                          )
-                        : null),
+              fileDetailsBuilder: (context, rawPost) => FileDetailsSection(
+                post: rawPost,
+                rating: rawPost.rating,
+                uploader: castOrNull<SzurubooruPost>(rawPost).toOption().fold(
+                      () => null,
+                      (post) => post.uploaderName != null
+                          ? Text(
+                              post.uploaderName!.replaceAll('_', ' '),
+                              maxLines: 1,
+                              style: const TextStyle(
+                                fontSize: 14,
+                              ),
+                            )
+                          : null,
+                    ),
               ),
             ),
           );

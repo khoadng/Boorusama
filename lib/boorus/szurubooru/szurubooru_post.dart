@@ -39,10 +39,11 @@ class SzurubooruPost extends Equatable
     required this.videoThumbnailUrl,
     required this.videoUrl,
     required this.width,
-    required Function(String baseUrl) getLink,
     required this.ownFavorite,
     required this.uploaderName,
-  }) : _getLink = getLink;
+    required this.favoriteCount,
+    required this.commentCount,
+  });
 
   @override
   final int id;
@@ -96,15 +97,16 @@ class SzurubooruPost extends Equatable
 
   final String? uploaderName;
 
-  final Function(String baseUrl) _getLink;
-
   @override
-  String getLink(String baseUrl) => _getLink(baseUrl);
+  String getLink(String baseUrl) =>
+      baseUrl.endsWith('/') ? '${baseUrl}post/$id' : '$baseUrl/post/$id';
 
   @override
   Uri getUriLink(String baseUrl) => Uri.parse(getLink(baseUrl));
 
   final bool ownFavorite;
+  final int favoriteCount;
+  final int commentCount;
 
   @override
   List<Object?> get props => [id];

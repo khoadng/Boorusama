@@ -16,6 +16,7 @@ import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/pages/post_statistics_page.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/functional.dart';
 import 'pages/create_danbooru_config_page.dart';
@@ -133,11 +134,11 @@ class DanbooruBuilder
 
   @override
   FavoriteAdder? get favoriteAdder =>
-      (postId) => favoriteRepo.addToFavorites(postId);
+      (postId, ref) => ref.danbooruFavorites.add(postId).then((_) => true);
 
   @override
   FavoriteRemover? get favoriteRemover =>
-      (postId) => favoriteRepo.removeFromFavorites(postId);
+      (postId, ref) => ref.danbooruFavorites.remove(postId).then((_) => true);
 
   @override
   PostCountFetcher? get postCountFetcher =>
@@ -186,8 +187,11 @@ class DanbooruBuilder
           characterName: characterName, backgroundImageUrl: '');
 
   @override
-  GridThumbnailUrlBuilder get gridThumbnailUrlBuilder => (settings, post) =>
-      (post as DanbooruPost).thumbnailFromSettings(settings);
+  GridThumbnailUrlBuilder get gridThumbnailUrlBuilder =>
+      (settings, post) => castOrNull<DanbooruPost>(post).toOption().fold(
+            () => post.thumbnailImageUrl,
+            (post) => post.thumbnailFromSettings(settings),
+          );
 
   @override
   CommentPageBuilder? get commentPageBuilder =>
@@ -228,9 +232,10 @@ class DanbooruBuilder
       );
 
   @override
-  PostImageDetailsUrlBuilder get postImageDetailsUrlBuilder =>
-      (settings, post, config) => (post as DanbooruPost).toOption().fold(
-            () => post.sampleImageUrl,
+  PostImageDetailsUrlBuilder get postImageDetailsUrlBuilder => (settings,
+          rawPost, config) =>
+      castOrNull<DanbooruPost>(rawPost).toOption().fold(
+            () => rawPost.sampleImageUrl,
             (post) => post.isGif
                 ? post.sampleImageUrl
                 : config.imageDetaisQuality.toOption().fold(

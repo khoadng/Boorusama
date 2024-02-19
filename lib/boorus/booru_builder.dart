@@ -105,8 +105,8 @@ typedef AutocompleteFetcher = Future<List<AutocompleteData>> Function(
 
 typedef NoteFetcher = Future<List<Note>> Function(int postId);
 
-typedef FavoriteAdder = Future<bool> Function(int postId);
-typedef FavoriteRemover = Future<bool> Function(int postId);
+typedef FavoriteAdder = Future<bool> Function(int postId, WidgetRef ref);
+typedef FavoriteRemover = Future<bool> Function(int postId, WidgetRef ref);
 
 typedef GranularRatingFilterer = bool Function(Post post, BooruConfig config);
 typedef GranularRatingQueryBuilder = List<String> Function(
@@ -439,7 +439,6 @@ final booruBuildersProvider =
                 autocompleteRepo:
                     ref.read(e621AutocompleteRepoProvider(config)),
                 postRepo: ref.read(e621PostRepoProvider(config)),
-                client: ref.read(e621ClientProvider(config)),
                 noteRepo: ref.read(e621NoteRepoProvider(config)),
               ),
           BooruType.danbooru: (config) => DanbooruBuilder(
@@ -473,7 +472,6 @@ final booruBuildersProvider =
                 postRepo: ref.read(szurubooruPostRepoProvider(config)),
                 autocompleteRepo:
                     ref.read(szurubooruAutocompleteRepoProvider(config)),
-                client: ref.read(szurubooruClientProvider(config)),
               ),
         });
 

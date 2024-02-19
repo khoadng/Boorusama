@@ -70,14 +70,13 @@ final szurubooruPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
                   videoThumbnailUrl: e.thumbnailUrl ?? '',
                   videoUrl: e.contentUrl ?? '',
                   width: e.canvasWidth?.toDouble() ?? 0,
-                  getLink: (baseUrl) => baseUrl.endsWith('/')
-                      ? '${baseUrl}post/view/${e.id}'
-                      : '$baseUrl/post/view/${e.id}',
                   createdAt: e.creationTime != null
                       ? DateTime.tryParse(e.creationTime!)
                       : null,
                   uploaderName: e.user?.name,
                   ownFavorite: e.ownFavorite ?? false,
+                  favoriteCount: e.favoriteCount ?? 0,
+                  commentCount: e.commentCount ?? 0,
                 ))
             .toList();
 

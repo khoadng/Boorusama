@@ -175,10 +175,10 @@ class _InfinitePostListScaffoldState<T extends Post>
                 onFavToggle: (isFaved) async {
                   if (isFaved) {
                     if (favoriteAdder == null) return;
-                    await favoriteAdder(post.id);
+                    await favoriteAdder(post.id, ref);
                   } else {
                     if (favoriteRemover == null) return;
-                    await favoriteRemover(post.id);
+                    await favoriteRemover(post.id, ref);
                   }
                 },
                 autoScrollOptions: AutoScrollOptions(
