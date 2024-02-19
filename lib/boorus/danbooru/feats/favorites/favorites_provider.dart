@@ -2,7 +2,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
@@ -30,10 +29,3 @@ final danbooruFavoriteProvider = Provider.autoDispose.family<bool, int>(
     return ref.watch(danbooruFavoritesProvider(config))[postId] ?? false;
   },
 );
-
-final danbooruFavoriteCheckerProvider =
-    Provider.family<FavoriteChecker, BooruConfig>((ref, config) {
-  final favorites = ref.watch(danbooruFavoritesProvider(config));
-
-  return (postId) => favorites[postId] ?? false;
-});

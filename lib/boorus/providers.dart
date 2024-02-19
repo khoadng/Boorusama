@@ -6,8 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
+import 'package:boorusama/boorus/e621/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/e621/feats/posts/e621_post_provider.dart';
 import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
@@ -15,6 +17,7 @@ import 'package:boorusama/boorus/gelbooru_v1/gelbooru_v1.dart';
 import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/moebooru/feats/tags/moebooru_tag_provider.dart';
 import 'package:boorusama/boorus/sankaku/sankaku.dart';
+import 'package:boorusama/boorus/szurubooru/favorites/favorites.dart';
 import 'package:boorusama/boorus/zerochan/zerochan.dart';
 import 'package:boorusama/clients/boorusama/boorusama_client.dart';
 import 'package:boorusama/clients/danbooru/danbooru_client.dart';
@@ -25,6 +28,7 @@ import 'package:boorusama/clients/moebooru/moebooru_client.dart';
 import 'package:boorusama/clients/philomena/philomena_client.dart';
 import 'package:boorusama/clients/sankaku/sankaku_client.dart';
 import 'package:boorusama/clients/shimmie2/shimmie2_client.dart';
+import 'package:boorusama/clients/szurubooru/szurubooru_client.dart';
 import 'package:boorusama/clients/zerochan/zerochan_client.dart';
 import 'package:boorusama/core/feats/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
@@ -42,6 +46,7 @@ import 'package:boorusama/foundation/package_info.dart';
 import 'package:boorusama/functional.dart';
 import 'philomena/providers.dart';
 import 'shimmie2/providers.dart';
+import 'szurubooru/providers.dart';
 
 final booruFactoryProvider =
     Provider<BooruFactory>((ref) => throw UnimplementedError());
@@ -74,6 +79,7 @@ final postRepoProvider = Provider.family<PostRepository, BooruConfig>(
           BooruType.philomena => ref.watch(philomenaPostRepoProvider(config)),
           BooruType.shimmie2 => ref.watch(shimmie2PostRepoProvider(config)),
           BooruType.zerochan => ref.watch(zerochanPostRepoProvider(config)),
+          BooruType.szurubooru => ref.watch(szurubooruPostRepoProvider(config)),
           BooruType.unknown => ref.watch(emptyPostRepoProvider),
         });
 
@@ -90,6 +96,7 @@ final postArtistCharacterRepoProvider =
               BooruType.moebooru ||
               BooruType.e621 ||
               BooruType.philomena ||
+              BooruType.szurubooru ||
               BooruType.sankaku ||
               BooruType.shimmie2 ||
               BooruType.zerochan ||
@@ -197,9 +204,28 @@ final tagRepoProvider = Provider.family<TagRepository, BooruConfig>(
           BooruType.zerochan ||
           BooruType.sankaku ||
           BooruType.philomena ||
+          BooruType.szurubooru ||
           BooruType.shimmie2 ||
           BooruType.unknown =>
             ref.watch(emptyTagRepoProvider),
+        });
+
+final favoriteProvider = Provider.autoDispose
+    .family<bool, int>((ref, postId) => switch (ref.watchConfig.booruType) {
+          BooruType.danbooru => ref.watch(danbooruFavoriteProvider(postId)),
+          BooruType.e621 => ref.watch(e621FavoriteProvider(postId)),
+          BooruType.szurubooru => ref.watch(szurubooruFavoriteProvider(postId)),
+          BooruType.gelbooru ||
+          BooruType.gelbooruV1 ||
+          BooruType.gelbooruV2 ||
+          BooruType.zerochan ||
+          BooruType.sankaku ||
+          BooruType.moebooru ||
+          BooruType.philomena ||
+          BooruType.szurubooru ||
+          BooruType.shimmie2 ||
+          BooruType.unknown =>
+            false,
         });
 
 final booruSiteValidatorProvider =
@@ -254,6 +280,12 @@ final booruSiteValidatorProvider =
         dio: dio,
         login: login,
         apiKey: apiKey,
+      ).getPosts().then((value) => true),
+    BooruType.szurubooru => SzurubooruClient(
+        baseUrl: config.url,
+        dio: dio,
+        username: login,
+        token: apiKey,
       ).getPosts().then((value) => true),
     BooruType.unknown => Future.value(false),
   };

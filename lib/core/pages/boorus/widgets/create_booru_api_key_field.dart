@@ -13,12 +13,14 @@ class CreateBooruApiKeyField extends StatefulWidget {
     super.key,
     this.onChanged,
     this.hintText,
+    this.labelText,
     this.text,
     this.controller,
   });
 
   final void Function(String value)? onChanged;
   final String? text;
+  final String? labelText;
   final String? hintText;
   final TextEditingController? controller;
 
@@ -51,7 +53,7 @@ class _CreateBooruApiKeyFieldState extends State<CreateBooruApiKeyField> {
         obscureText: !revealKey,
         onChanged: widget.onChanged,
         decoration: InputDecoration(
-          labelText: 'booru.password_api_key_label'.tr(),
+          labelText: widget.labelText ?? 'booru.password_api_key_label'.tr(),
           hintText: widget.hintText,
           suffixIcon: IconButton(
             splashColor: Colors.transparent,

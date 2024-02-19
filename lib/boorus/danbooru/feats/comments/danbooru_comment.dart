@@ -48,6 +48,7 @@ class DanbooruComment extends Equatable implements Comment {
   final CommentPostId postId;
   @override
   final DateTime createdAt;
+  @override
   final DateTime updatedAt;
   final bool isDeleted;
   final User? creator;
