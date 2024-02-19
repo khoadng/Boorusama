@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
@@ -22,6 +23,7 @@ import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/functional.dart';
+import 'package:boorusama/widgets/widgets.dart';
 import 'create_szurubooru_config_page.dart';
 import 'szurubooru_post.dart';
 
@@ -123,6 +125,22 @@ class SzurubooruBuilder
         ],
         onSearchTap: () => goToSearchPage(context),
       );
+
+  @override
+  SearchPageBuilder get searchPageBuilder =>
+      (context, initialQuery) => BooruProvider(
+            builder: (booruBuilder, _) => SearchPageScaffold(
+              noticeBuilder: (context) => InfoContainer(
+                contentBuilder: (context) => Html(
+                    data:
+                        'You need to log in to use <b>Szurubooru</b> tag completion.'),
+              ),
+              initialQuery: initialQuery,
+              fetcher: (page, tags) =>
+                  booruBuilder?.postFetcher.call(page, tags) ??
+                  TaskEither.of(<Post>[]),
+            ),
+          );
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>

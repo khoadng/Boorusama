@@ -98,6 +98,9 @@ final szurubooruAutocompleteRepoProvider =
       persistentStorageKey:
           '${Uri.encodeComponent(config.url)}_autocomplete_cache_v1',
       autocomplete: (query) async {
+        // if not logged in, don't autocomplete
+        if (!config.hasLoginDetails()) return [];
+
         final tags = await client.autocomplete(query: query);
 
         return tags

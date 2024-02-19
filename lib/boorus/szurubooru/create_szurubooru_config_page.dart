@@ -125,7 +125,7 @@ class _CreateSzurubooruConfigPageState
             onChanged: (value) => setState(() => apiKey = value),
           ),
           Text(
-            '*Log in to your account on the browser, visit Account > Login tokens. Copy your token or create a new one if needed and paste it here.',
+            '*Log in to your account on the browser, visit Account > Login tokens. Copy your "Web Login Token" or create a new one if needed and paste it here. If you use the "Web Login Token", logout from the browser will make the token invalid.',
             style: context.textTheme.titleSmall!.copyWith(
               color: context.theme.hintColor,
               fontSize: 14,
