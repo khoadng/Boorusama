@@ -56,7 +56,8 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
   late final controller = ExprollablePageController(
     initialPage: widget.intitialIndex,
     viewportConfiguration: ViewportConfiguration(
-      minFraction: 0.99,
+      minFraction: 1.0,
+      maxFraction: 1.01,
       extendPage: true,
     ),
   );

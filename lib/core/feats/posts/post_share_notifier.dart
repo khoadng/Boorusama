@@ -15,16 +15,8 @@ class PostShareNotifier
 
     return PostShareState(
       booruLink: booruLink,
-      booruImagePath: '',
-      sourceLink: switch (arg.source) {
-        WebSource s => s.uri.toString(),
-        _ => booruLink,
-      },
+      sourceLink: arg.source,
     );
-  }
-
-  void setImagePath(String imagePath) {
-    state = state.copyWith(booruImagePath: imagePath);
   }
 
   void updateInformation(Post post) {
@@ -33,45 +25,37 @@ class PostShareNotifier
 
     state = state.copyWith(
       booruLink: booruLink,
-      sourceLink: switch (arg.source) {
-        WebSource s => s.uri.toString(),
-        _ => booruLink,
-      },
+      sourceLink: arg.source,
     );
   }
 }
 
 class PostShareState extends Equatable {
   final String booruLink;
-  final String booruImagePath;
-  final String sourceLink;
+  final PostSource sourceLink;
 
   const PostShareState({
     required this.booruLink,
-    required this.booruImagePath,
     required this.sourceLink,
   });
 
   static PostShareState initial() {
-    return const PostShareState(
+    return PostShareState(
       booruLink: '',
-      booruImagePath: '',
-      sourceLink: '',
+      sourceLink: PostSource.none(),
     );
   }
 
   PostShareState copyWith({
     String? booruLink,
-    String? booruImagePath,
-    String? sourceLink,
+    PostSource? sourceLink,
   }) {
     return PostShareState(
       booruLink: booruLink ?? this.booruLink,
-      booruImagePath: booruImagePath ?? this.booruImagePath,
       sourceLink: sourceLink ?? this.sourceLink,
     );
   }
 
   @override
-  List<Object?> get props => [booruLink, booruImagePath, sourceLink];
+  List<Object?> get props => [booruLink, sourceLink];
 }

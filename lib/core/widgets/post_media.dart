@@ -118,9 +118,6 @@ class PostMedia extends ConsumerWidget {
             imageUrl: imageUrl,
             placeholderImageUrl: placeholderImageUrl,
             onTap: onImageTap,
-            onCached: (path) => ref
-                .read(postShareProvider(post).notifier)
-                .setImagePath(path ?? ''),
             imageOverlayBuilder: (constraints) =>
                 imageOverlayBuilder?.call(constraints) ?? [],
             width: post.width,

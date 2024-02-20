@@ -30,7 +30,6 @@ export 'info_container.dart';
 export 'lazy_indexed_stack.dart';
 export 'modal.dart';
 export 'modal_options.dart';
-export 'modal_share.dart';
 export 'multi_select_controller.dart';
 export 'multi_select_widget.dart';
 export 'multi_selectable_mixin.dart';

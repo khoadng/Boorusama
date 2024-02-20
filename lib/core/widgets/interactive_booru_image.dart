@@ -22,7 +22,6 @@ class InteractiveBooruImage extends ConsumerStatefulWidget {
     required this.imageUrl,
     this.placeholderImageUrl,
     this.previewCacheManager,
-    this.onCached,
     this.imageOverlayBuilder,
     this.width,
     this.height,
@@ -36,7 +35,6 @@ class InteractiveBooruImage extends ConsumerStatefulWidget {
   final String imageUrl;
   final String? placeholderImageUrl;
   final CacheManager? previewCacheManager;
-  final void Function(String? path)? onCached;
   final List<Widget> Function(BoxConstraints constraints)? imageOverlayBuilder;
   final double? width;
   final double? height;
