@@ -51,7 +51,7 @@ class PostMedia extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return post.isVideo
+    final media = post.isVideo
         ? !inFocus
             ? BooruImage(
                 imageUrl: post.videoThumbnailUrl,
@@ -127,5 +127,16 @@ class PostMedia extends ConsumerWidget {
             height: post.height,
             onZoomUpdated: onImageZoomUpdated,
           );
+
+    return OrientationBuilder(
+      builder: (_, orientation) => Padding(
+        padding: orientation == Orientation.portrait
+            ? EdgeInsets.zero
+            : EdgeInsets.only(
+                bottom: 8 + MediaQuery.viewPaddingOf(context).bottom,
+              ),
+        child: media,
+      ),
+    );
   }
 }
