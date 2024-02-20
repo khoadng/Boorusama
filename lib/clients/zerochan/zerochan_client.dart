@@ -56,6 +56,10 @@ class ZerochanClient {
 
       final json = jsonDecode(response.data);
 
+      if (json case Map m) {
+        if (m.isEmpty) return [];
+      }
+
       final data = json['items'];
 
       return (data as List).map((e) => PostDto.fromJson(e)).toList();
