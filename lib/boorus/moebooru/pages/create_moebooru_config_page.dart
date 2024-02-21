@@ -13,7 +13,6 @@ import 'package:boorusama/core/pages/boorus/widgets/create_booru_login_field.dar
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_passworld_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_post_details_resolution_option_tile.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_rating_options_tile.dart';
-import 'package:boorusama/core/pages/boorus/widgets/custom_download_file_name_section.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/crypto.dart';
@@ -41,10 +40,6 @@ class _CreateMoebooruConfigPageState
   late var login = widget.config.login ?? '';
   late var apiKey = widget.config.apiKey ?? '';
   late var ratingFilter = widget.config.ratingFilter;
-  late String? customDownloadFileNameFormat =
-      widget.config.customDownloadFileNameFormat;
-  late var customBulkDownloadFileNameFormat =
-      widget.config.customBulkDownloadFileNameFormat;
   late var imageDetaisQuality = widget.config.imageDetaisQuality;
   late var granularRatingFilters = widget.config.granularRatingFilters;
 
@@ -60,32 +55,13 @@ class _CreateMoebooruConfigPageState
     return CreateBooruConfigScaffold(
       backgroundColor: widget.backgroundColor,
       config: widget.config,
+      authTabBuilder: (context) => _buildAuthTab(),
+      hasDownloadTab: true,
       tabsBuilder: (context) => {
-        'Authentication': _buildAuthTab(),
-        'Download': _buildDownloadTab(),
         'Misc': _buildMiscTab(),
       },
       allowSubmit: allowSubmit,
       submit: submit,
-    );
-  }
-
-  Widget _buildDownloadTab() {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          CustomDownloadFileNameSection(
-            config: widget.config,
-            format: customDownloadFileNameFormat,
-            onIndividualDownloadChanged: (value) =>
-                setState(() => customDownloadFileNameFormat = value),
-            onBulkDownloadChanged: (value) =>
-                setState(() => customBulkDownloadFileNameFormat = value),
-          ),
-        ],
-      ),
     );
   }
 
@@ -207,8 +183,8 @@ class _CreateMoebooruConfigPageState
       hideDeleted: false,
       ratingFilter: ratingFilter,
       url: widget.config.url,
-      customDownloadFileNameFormat: customDownloadFileNameFormat,
-      customBulkDownloadFileNameFormat: customBulkDownloadFileNameFormat,
+      customDownloadFileNameFormat: data.customDownloadFileNameFormat,
+      customBulkDownloadFileNameFormat: data.customBulkDownloadFileNameFormat,
       imageDetaisQuality: imageDetaisQuality,
       granularRatingFilters: granularRatingFilters,
     );

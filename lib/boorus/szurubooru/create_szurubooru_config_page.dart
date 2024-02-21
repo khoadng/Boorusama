@@ -37,9 +37,8 @@ class _CreateSzurubooruConfigPageState
     return CreateBooruConfigScaffold(
       backgroundColor: widget.backgroundColor,
       config: widget.config,
-      tabsBuilder: (context) => {
-        'Authentication': _buildAuthTab(),
-      },
+      authTabBuilder: (context) => _buildAuthTab(),
+      tabsBuilder: (context) => {},
       allowSubmit: allowSubmit,
       submit: submit,
     );

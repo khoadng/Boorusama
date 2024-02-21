@@ -9,12 +9,15 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_config_name_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_submit_button.dart';
+import 'package:boorusama/core/pages/boorus/widgets/custom_download_file_name_section.dart';
 import 'package:boorusama/core/pages/boorus/widgets/selected_booru_chip.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 
 typedef CreateConfigData = ({
   String configName,
+  String? customDownloadFileNameFormat,
+  String? customBulkDownloadFileNameFormat,
 });
 
 class CreateBooruConfigScaffold extends ConsumerStatefulWidget {
@@ -25,6 +28,8 @@ class CreateBooruConfigScaffold extends ConsumerStatefulWidget {
     required this.tabsBuilder,
     required this.allowSubmit,
     required this.submit,
+    this.authTabBuilder,
+    this.hasDownloadTab = false,
   });
 
   final Color? backgroundColor;
@@ -32,6 +37,9 @@ class CreateBooruConfigScaffold extends ConsumerStatefulWidget {
   final Map<String, Widget> Function(BuildContext context) tabsBuilder;
   final bool Function(CreateConfigData data) allowSubmit;
   final void Function(CreateConfigData data) submit;
+
+  final Widget Function(BuildContext context)? authTabBuilder;
+  final bool hasDownloadTab;
 
   @override
   ConsumerState<CreateBooruConfigScaffold> createState() =>
@@ -41,10 +49,25 @@ class CreateBooruConfigScaffold extends ConsumerStatefulWidget {
 class _CreateBooruConfigScaffoldState
     extends ConsumerState<CreateBooruConfigScaffold> {
   late var configName = widget.config.name;
+  late String? customDownloadFileNameFormat =
+      widget.config.customDownloadFileNameFormat;
+  late var customBulkDownloadFileNameFormat =
+      widget.config.customBulkDownloadFileNameFormat;
 
   @override
   Widget build(BuildContext context) {
-    final tabMap = widget.tabsBuilder(context);
+    final tabMap = {
+      if (widget.authTabBuilder != null)
+        'Authentication': widget.authTabBuilder!(context),
+      if (widget.hasDownloadTab) 'Download': _buildDownloadTab(),
+      ...widget.tabsBuilder(context),
+    };
+
+    final params = (
+      configName: configName,
+      customDownloadFileNameFormat: customDownloadFileNameFormat,
+      customBulkDownloadFileNameFormat: customBulkDownloadFileNameFormat,
+    );
 
     return Material(
       color: widget.backgroundColor,
@@ -109,8 +132,8 @@ class _CreateBooruConfigScaffoldState
                         vertical: 8,
                       ),
                       child: CreateBooruSubmitButton(
-                        onSubmit: widget.allowSubmit((configName: configName,))
-                            ? () => widget.submit((configName: configName,))
+                        onSubmit: widget.allowSubmit(params)
+                            ? () => widget.submit(params)
                             : null,
                       ),
                     ),
@@ -120,6 +143,25 @@ class _CreateBooruConfigScaffoldState
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildDownloadTab() {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CustomDownloadFileNameSection(
+            config: widget.config,
+            format: customDownloadFileNameFormat,
+            onIndividualDownloadChanged: (value) =>
+                setState(() => customDownloadFileNameFormat = value),
+            onBulkDownloadChanged: (value) =>
+                setState(() => customBulkDownloadFileNameFormat = value),
+          ),
+        ],
       ),
     );
   }

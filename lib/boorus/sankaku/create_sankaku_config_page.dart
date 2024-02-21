@@ -9,7 +9,6 @@ import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_login_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_passworld_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_post_details_resolution_option_tile.dart';
-import 'package:boorusama/core/pages/boorus/widgets/custom_download_file_name_section.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
@@ -34,10 +33,6 @@ class _CreateDanbooruConfigPageState
     extends ConsumerState<CreateSankakuConfigPage> {
   late var login = widget.config.login ?? '';
   late var password = widget.config.apiKey ?? '';
-  late String? customDownloadFileNameFormat =
-      widget.config.customDownloadFileNameFormat;
-  late var customBulkDownloadFileNameFormat =
-      widget.config.customBulkDownloadFileNameFormat;
   late var imageDetaisQuality = widget.config.imageDetaisQuality;
 
   @override
@@ -45,32 +40,13 @@ class _CreateDanbooruConfigPageState
     return CreateBooruConfigScaffold(
       backgroundColor: widget.backgroundColor,
       config: widget.config,
+      authTabBuilder: (context) => _buildAuthTab(),
+      hasDownloadTab: true,
       tabsBuilder: (context) => {
-        'Authentication': _buildAuthTab(),
-        'Download': _buildDownloadTab(),
         'Misc': _buildMiscTab(),
       },
       allowSubmit: allowSubmit,
       submit: submit,
-    );
-  }
-
-  Widget _buildDownloadTab() {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          CustomDownloadFileNameSection(
-            config: widget.config,
-            format: customDownloadFileNameFormat,
-            onIndividualDownloadChanged: (value) =>
-                setState(() => customDownloadFileNameFormat = value),
-            onBulkDownloadChanged: (value) =>
-                setState(() => customBulkDownloadFileNameFormat = value),
-          ),
-        ],
-      ),
     );
   }
 
@@ -132,8 +108,8 @@ class _CreateDanbooruConfigPageState
       hideDeleted: false,
       ratingFilter: BooruConfigRatingFilter.none,
       url: widget.config.url,
-      customDownloadFileNameFormat: customDownloadFileNameFormat,
-      customBulkDownloadFileNameFormat: customBulkDownloadFileNameFormat,
+      customDownloadFileNameFormat: data.customDownloadFileNameFormat,
+      customBulkDownloadFileNameFormat: data.customBulkDownloadFileNameFormat,
       imageDetaisQuality: imageDetaisQuality,
       granularRatingFilters: null,
     );

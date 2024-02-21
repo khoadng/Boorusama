@@ -31,8 +31,6 @@ class CreatePhilomenaConfigPage extends ConsumerStatefulWidget {
 class _CreatePhilomenaConfigPageState
     extends ConsumerState<CreatePhilomenaConfigPage> {
   late String key = widget.config.apiKey ?? '';
-  late String? customDownloadFileNameFormat =
-      widget.config.customDownloadFileNameFormat;
   late var imageDetaisQuality = widget.config.imageDetaisQuality;
 
   @override
@@ -40,8 +38,8 @@ class _CreatePhilomenaConfigPageState
     return CreateBooruConfigScaffold(
       backgroundColor: widget.backgroundColor,
       config: widget.config,
+      authTabBuilder: (context) => _buildAuthTab(),
       tabsBuilder: (context) => {
-        'Authentication': _buildAuthTab(),
         'Misc': _buildMiscTab(),
       },
       allowSubmit: allowSubmit,
@@ -109,7 +107,7 @@ class _CreatePhilomenaConfigPageState
       hideDeleted: false,
       ratingFilter: BooruConfigRatingFilter.none,
       url: widget.config.url,
-      customDownloadFileNameFormat: customDownloadFileNameFormat,
+      customDownloadFileNameFormat: null,
       customBulkDownloadFileNameFormat: null,
       imageDetaisQuality: imageDetaisQuality,
       granularRatingFilters: null,
