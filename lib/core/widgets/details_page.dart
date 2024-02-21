@@ -29,6 +29,7 @@ class DetailsPage<T> extends ConsumerStatefulWidget {
     this.bottomSheet,
     required this.onExit,
     this.controller,
+    this.onSwipeDownEnd,
   });
 
   final void Function(int page)? onPageChanged;
@@ -43,6 +44,7 @@ class DetailsPage<T> extends ConsumerStatefulWidget {
   final Widget? Function(int currentPage)? bottomSheet;
   final void Function(int index) onExit;
   final DetailsPageController? controller;
+  final void Function()? onSwipeDownEnd;
 
   @override
   ConsumerState<DetailsPage> createState() => _DetailsPageState();
@@ -72,7 +74,14 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
   PageController get pageController => controller;
 
   @override
-  Function() get popper => () => _onBackButtonPressed();
+  Function() get popper => () {
+        if (widget.onSwipeDownEnd != null) {
+          widget.onSwipeDownEnd!();
+        } else {
+          _onBackButtonPressed();
+        }
+      };
+
   bool get _isSwiping {
     if (!controller.hasClients) return false;
     return controller.page != controller.page?.round();
