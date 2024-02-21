@@ -8,8 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_api_key_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_login_field.dart';
-import 'package:boorusama/core/pages/boorus/widgets/create_booru_post_details_resolution_option_tile.dart';
-import 'package:boorusama/core/pages/boorus/widgets/create_booru_rating_options_tile.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
@@ -33,11 +31,6 @@ class _CreateDanbooruConfigPageState
     extends ConsumerState<CreateE621ConfigPage> {
   late var login = widget.config.login ?? '';
   late var apiKey = widget.config.apiKey ?? '';
-  late var ratingFilter = widget.config.ratingFilter;
-  late var hideDeleted =
-      widget.config.deletedItemBehavior == BooruConfigDeletedItemBehavior.hide;
-  late var imageDetaisQuality = widget.config.imageDetaisQuality;
-  late var granularRatingFilters = widget.config.granularRatingFilters;
 
   @override
   Widget build(BuildContext context) {
@@ -46,37 +39,10 @@ class _CreateDanbooruConfigPageState
       config: widget.config,
       authTabBuilder: (context) => _buildAuthTab(),
       hasDownloadTab: true,
-      tabsBuilder: (context) => {
-        'Misc': _buildMiscTab(),
-      },
+      hasRatingFilter: true,
+      tabsBuilder: (context) => {},
       allowSubmit: allowSubmit,
       submit: submit,
-    );
-  }
-
-  Widget _buildMiscTab() {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const SizedBox(height: 16),
-          CreateBooruRatingOptionsTile(
-            config: widget.config,
-            initialGranularRatingFilters: granularRatingFilters,
-            value: ratingFilter,
-            onChanged: (value) =>
-                value != null ? setState(() => ratingFilter = value) : null,
-            onGranularRatingFiltersChanged: (value) =>
-                setState(() => granularRatingFilters = value),
-          ),
-          const SizedBox(height: 16),
-          CreateBooruGeneralPostDetailsResolutionOptionTile(
-            value: imageDetaisQuality,
-            onChanged: (value) => setState(() => imageDetaisQuality = value),
-          ),
-        ],
-      ),
     );
   }
 
@@ -111,13 +77,13 @@ class _CreateDanbooruConfigPageState
       booru: widget.config.booruType,
       booruHint: widget.config.booruType,
       configName: data.configName,
-      hideDeleted: hideDeleted,
-      ratingFilter: ratingFilter,
+      hideDeleted: false,
+      ratingFilter: data.ratingFilter ?? BooruConfigRatingFilter.none,
       url: widget.config.url,
       customDownloadFileNameFormat: data.customDownloadFileNameFormat,
       customBulkDownloadFileNameFormat: data.customBulkDownloadFileNameFormat,
-      imageDetaisQuality: imageDetaisQuality,
-      granularRatingFilters: granularRatingFilters,
+      imageDetaisQuality: data.imageDetaisQuality,
+      granularRatingFilters: data.granularRatingFilters,
     );
 
     ref

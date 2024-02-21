@@ -8,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_login_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_passworld_field.dart';
-import 'package:boorusama/core/pages/boorus/widgets/create_booru_post_details_resolution_option_tile.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
@@ -33,7 +32,6 @@ class _CreateDanbooruConfigPageState
     extends ConsumerState<CreateSankakuConfigPage> {
   late var login = widget.config.login ?? '';
   late var password = widget.config.apiKey ?? '';
-  late var imageDetaisQuality = widget.config.imageDetaisQuality;
 
   @override
   Widget build(BuildContext context) {
@@ -42,27 +40,9 @@ class _CreateDanbooruConfigPageState
       config: widget.config,
       authTabBuilder: (context) => _buildAuthTab(),
       hasDownloadTab: true,
-      tabsBuilder: (context) => {
-        'Misc': _buildMiscTab(),
-      },
+      tabsBuilder: (context) => {},
       allowSubmit: allowSubmit,
       submit: submit,
-    );
-  }
-
-  Widget _buildMiscTab() {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const SizedBox(height: 16),
-          CreateBooruGeneralPostDetailsResolutionOptionTile(
-            value: imageDetaisQuality,
-            onChanged: (value) => setState(() => imageDetaisQuality = value),
-          ),
-        ],
-      ),
     );
   }
 
@@ -110,7 +90,7 @@ class _CreateDanbooruConfigPageState
       url: widget.config.url,
       customDownloadFileNameFormat: data.customDownloadFileNameFormat,
       customBulkDownloadFileNameFormat: data.customBulkDownloadFileNameFormat,
-      imageDetaisQuality: imageDetaisQuality,
+      imageDetaisQuality: data.imageDetaisQuality,
       granularRatingFilters: null,
     );
 

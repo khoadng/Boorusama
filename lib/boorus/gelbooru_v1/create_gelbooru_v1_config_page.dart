@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/pages/boorus/widgets/create_booru_post_details_resolution_option_tile.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/router.dart';
 
@@ -27,35 +26,15 @@ class CreateGelbooruV1ConfigPage extends ConsumerStatefulWidget {
 
 class _CreateGelbooruV1ConfigPageState
     extends ConsumerState<CreateGelbooruV1ConfigPage> {
-  late var imageDetaisQuality = widget.config.imageDetaisQuality;
-
   @override
   Widget build(BuildContext context) {
     return CreateBooruConfigScaffold(
       backgroundColor: widget.backgroundColor,
       config: widget.config,
       hasDownloadTab: true,
-      tabsBuilder: (context) => {
-        'Misc': _buildMiscTab(),
-      },
+      tabsBuilder: (context) => {},
       allowSubmit: allowSubmit,
       submit: submit,
-    );
-  }
-
-  Widget _buildMiscTab() {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const SizedBox(height: 16),
-          CreateBooruGeneralPostDetailsResolutionOptionTile(
-            value: imageDetaisQuality,
-            onChanged: (value) => setState(() => imageDetaisQuality = value),
-          ),
-        ],
-      ),
     );
   }
 
@@ -75,7 +54,7 @@ class _CreateGelbooruV1ConfigPageState
       url: widget.config.url,
       customDownloadFileNameFormat: data.customDownloadFileNameFormat,
       customBulkDownloadFileNameFormat: data.customBulkDownloadFileNameFormat,
-      imageDetaisQuality: imageDetaisQuality,
+      imageDetaisQuality: data.imageDetaisQuality,
       granularRatingFilters: null,
     );
 

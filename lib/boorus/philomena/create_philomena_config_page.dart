@@ -1,17 +1,18 @@
 // Flutter imports:
+import 'package:boorusama/core/pages/boorus/widgets/create_booru_post_details_resolution_option_tile.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/philomena/philomena_post.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_api_key_field.dart';
-import 'package:boorusama/core/pages/boorus/widgets/create_booru_post_details_resolution_option_tile.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
+
+import 'philomena_post.dart';
 
 class CreatePhilomenaConfigPage extends ConsumerStatefulWidget {
   const CreatePhilomenaConfigPage({
@@ -39,9 +40,14 @@ class _CreatePhilomenaConfigPageState
       backgroundColor: widget.backgroundColor,
       config: widget.config,
       authTabBuilder: (context) => _buildAuthTab(),
-      tabsBuilder: (context) => {
-        'Misc': _buildMiscTab(),
-      },
+      postDetailsResolutionBuilder: (context) =>
+          CreateBooruImageDetailsResolutionOptionTile(
+        value: imageDetaisQuality,
+        items:
+            PhilomenaPostQualityType.values.map((e) => e.stringify()).toList(),
+        onChanged: (value) => setState(() => imageDetaisQuality = value),
+      ),
+      tabsBuilder: (context) => {},
       allowSubmit: allowSubmit,
       submit: submit,
     );
@@ -69,25 +75,6 @@ class _CreatePhilomenaConfigPageState
             ),
           ),
           const SizedBox(height: 16),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildMiscTab() {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const SizedBox(height: 16),
-          CreateBooruImageDetailsResolutionOptionTile(
-            value: imageDetaisQuality,
-            items: PhilomenaPostQualityType.values
-                .map((e) => e.stringify())
-                .toList(),
-            onChanged: (value) => setState(() => imageDetaisQuality = value),
-          ),
         ],
       ),
     );

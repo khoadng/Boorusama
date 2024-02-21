@@ -6,8 +6,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import 'package:boorusama/core/feats/boorus/booru_config.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_config_name_field.dart';
+import 'package:boorusama/core/pages/boorus/widgets/create_booru_post_details_resolution_option_tile.dart';
+import 'package:boorusama/core/pages/boorus/widgets/create_booru_rating_options_tile.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_submit_button.dart';
 import 'package:boorusama/core/pages/boorus/widgets/custom_download_file_name_section.dart';
 import 'package:boorusama/core/pages/boorus/widgets/selected_booru_chip.dart';
@@ -18,6 +22,9 @@ typedef CreateConfigData = ({
   String configName,
   String? customDownloadFileNameFormat,
   String? customBulkDownloadFileNameFormat,
+  Set<Rating>? granularRatingFilters,
+  BooruConfigRatingFilter? ratingFilter,
+  String? imageDetaisQuality,
 });
 
 class CreateBooruConfigScaffold extends ConsumerStatefulWidget {
@@ -29,7 +36,10 @@ class CreateBooruConfigScaffold extends ConsumerStatefulWidget {
     required this.allowSubmit,
     required this.submit,
     this.authTabBuilder,
+    this.postDetailsResolutionBuilder,
     this.hasDownloadTab = false,
+    this.hasRatingFilter = false,
+    this.miscOptionBuilder,
   });
 
   final Color? backgroundColor;
@@ -39,7 +49,13 @@ class CreateBooruConfigScaffold extends ConsumerStatefulWidget {
   final void Function(CreateConfigData data) submit;
 
   final Widget Function(BuildContext context)? authTabBuilder;
+
+  final Widget Function(BuildContext context)? postDetailsResolutionBuilder;
+
   final bool hasDownloadTab;
+  final bool hasRatingFilter;
+
+  final List<Widget> Function(BuildContext context)? miscOptionBuilder;
 
   @override
   ConsumerState<CreateBooruConfigScaffold> createState() =>
@@ -53,6 +69,9 @@ class _CreateBooruConfigScaffoldState
       widget.config.customDownloadFileNameFormat;
   late var customBulkDownloadFileNameFormat =
       widget.config.customBulkDownloadFileNameFormat;
+  late var ratingFilter = widget.config.ratingFilter;
+  late var granularRatingFilters = widget.config.granularRatingFilters;
+  late var imageDetaisQuality = widget.config.imageDetaisQuality;
 
   @override
   Widget build(BuildContext context) {
@@ -61,12 +80,16 @@ class _CreateBooruConfigScaffoldState
         'Authentication': widget.authTabBuilder!(context),
       if (widget.hasDownloadTab) 'Download': _buildDownloadTab(),
       ...widget.tabsBuilder(context),
+      'Misc': _buildMiscTab(),
     };
 
     final params = (
       configName: configName,
       customDownloadFileNameFormat: customDownloadFileNameFormat,
       customBulkDownloadFileNameFormat: customBulkDownloadFileNameFormat,
+      granularRatingFilters: granularRatingFilters,
+      ratingFilter: ratingFilter,
+      imageDetaisQuality: imageDetaisQuality,
     );
 
     return Material(
@@ -100,6 +123,7 @@ class _CreateBooruConfigScaffoldState
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    const SizedBox(height: 4),
                     TabBar(
                       tabAlignment: TabAlignment.start,
                       isScrollable: true,
@@ -161,6 +185,38 @@ class _CreateBooruConfigScaffoldState
             onBulkDownloadChanged: (value) =>
                 setState(() => customBulkDownloadFileNameFormat = value),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMiscTab() {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          if (widget.hasRatingFilter) ...[
+            const SizedBox(height: 12),
+            CreateBooruRatingOptionsTile(
+              config: widget.config,
+              initialGranularRatingFilters: granularRatingFilters,
+              value: ratingFilter,
+              onChanged: (value) =>
+                  value != null ? setState(() => ratingFilter = value) : null,
+              onGranularRatingFiltersChanged: (value) =>
+                  setState(() => granularRatingFilters = value),
+            ),
+          ],
+          if (widget.postDetailsResolutionBuilder != null)
+            widget.postDetailsResolutionBuilder!(context)
+          else
+            CreateBooruGeneralPostDetailsResolutionOptionTile(
+              value: imageDetaisQuality,
+              onChanged: (value) => setState(() => imageDetaisQuality = value),
+            ),
+          if (widget.miscOptionBuilder != null)
+            ...widget.miscOptionBuilder!(context),
         ],
       ),
     );
