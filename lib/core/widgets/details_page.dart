@@ -95,6 +95,9 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
     isSwipingDown.addListener(_updateShouldSlideDown);
     isExpanded.addListener(_updateShouldSlideDown);
 
+    if (_controller._hideOverlay.value) {
+      _shouldSlideDownNotifier.value = true;
+    }
     _controller.addListener(_onPageDetailsChanged);
 
     super.initState();

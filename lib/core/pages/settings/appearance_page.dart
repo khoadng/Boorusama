@@ -235,6 +235,24 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
                 ],
               ),
             ),
+            const Divider(thickness: 1),
+            const SettingsHeader(label: 'Image details'),
+            SettingsTile<PostDetailsOverlayInitialState>(
+              title: const Text('UI overlay'),
+              selectedOption: settings.postDetailsOverlayInitialState,
+              items: PostDetailsOverlayInitialState.values,
+              onChanged: (value) => ref.updateSettings(
+                  settings.copyWith(postDetailsOverlayInitialState: value)),
+              optionBuilder: (value) => Text(
+                switch (value) {
+                  PostDetailsOverlayInitialState.show => 'Show',
+                  PostDetailsOverlayInitialState.hide => 'Hide',
+                },
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
           ],
         ),
       ),

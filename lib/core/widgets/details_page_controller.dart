@@ -3,12 +3,15 @@ part of 'details_page.dart';
 class DetailsPageController extends ChangeNotifier {
   DetailsPageController({
     bool swipeDownToDismiss = true,
-  }) : _enableSwipeDownToDismiss = swipeDownToDismiss;
+    bool hideOverlay = false,
+  })  : _enableSwipeDownToDismiss = swipeDownToDismiss,
+        _hideOverlay = ValueNotifier(hideOverlay);
 
   var _enableSwipeDownToDismiss = false;
+
   var _enablePageSwipe = true;
   final _slideShow = ValueNotifier((false, <int>[]));
-  final _hideOverlay = ValueNotifier(false);
+  late final ValueNotifier<bool> _hideOverlay;
 
   bool get swipeDownToDismiss => _enableSwipeDownToDismiss;
   bool get pageSwipe => _enablePageSwipe;

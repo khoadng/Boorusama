@@ -57,6 +57,11 @@ enum PageIndicatorPosition {
   both,
 }
 
+enum PostDetailsOverlayInitialState {
+  hide,
+  show,
+}
+
 class Settings extends Equatable {
   const Settings({
     required this.safeMode,
@@ -86,6 +91,7 @@ class Settings extends Equatable {
     required this.appLockType,
     required this.bookmarkFilterType,
     required this.pageIndicatorPosition,
+    required this.postDetailsOverlayInitialState,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
@@ -139,6 +145,11 @@ class Settings extends Equatable {
         pageIndicatorPosition = json['pageIndicatorPosition'] != null
             ? PageIndicatorPosition.values[json['pageIndicatorPosition']]
             : PageIndicatorPosition.bottom,
+        postDetailsOverlayInitialState =
+            json['postDetailsOverlayInitialState'] != null
+                ? PostDetailsOverlayInitialState
+                    .values[json['postDetailsOverlayInitialState']]
+                : PostDetailsOverlayInitialState.show,
         imageGridPadding = json['imageGridPadding'] ?? 16,
         imageGridSpacing = json['imageGridSpacing'] ?? 4;
 
@@ -170,6 +181,7 @@ class Settings extends Equatable {
     appLockType: AppLockType.none,
     bookmarkFilterType: BookmarkFilterType.none,
     pageIndicatorPosition: PageIndicatorPosition.bottom,
+    postDetailsOverlayInitialState: PostDetailsOverlayInitialState.show,
   );
 
   final String blacklistedTags;
@@ -219,6 +231,8 @@ class Settings extends Equatable {
 
   final PageIndicatorPosition pageIndicatorPosition;
 
+  final PostDetailsOverlayInitialState postDetailsOverlayInitialState;
+
   Settings copyWith({
     String? blacklistedTags,
     String? language,
@@ -247,6 +261,7 @@ class Settings extends Equatable {
     AppLockType? appLockType,
     BookmarkFilterType? bookmarkFilterType,
     PageIndicatorPosition? pageIndicatorPosition,
+    PostDetailsOverlayInitialState? postDetailsOverlayInitialState,
   }) =>
       Settings(
         safeMode: safeMode ?? this.safeMode,
@@ -282,6 +297,8 @@ class Settings extends Equatable {
         bookmarkFilterType: bookmarkFilterType ?? this.bookmarkFilterType,
         pageIndicatorPosition:
             pageIndicatorPosition ?? this.pageIndicatorPosition,
+        postDetailsOverlayInitialState: postDetailsOverlayInitialState ??
+            this.postDetailsOverlayInitialState,
       );
 
   Map<String, dynamic> toJson() => {
@@ -312,6 +329,7 @@ class Settings extends Equatable {
         'appLockType': appLockType.index,
         'bookmarkFilterType': bookmarkFilterType.index,
         'pageIndicatorPosition': pageIndicatorPosition.index,
+        'postDetailsOverlayInitialState': postDetailsOverlayInitialState.index,
       };
 
   @override
@@ -343,6 +361,7 @@ class Settings extends Equatable {
         appLockType,
         bookmarkFilterType,
         pageIndicatorPosition,
+        postDetailsOverlayInitialState,
       ];
 }
 
@@ -350,6 +369,9 @@ extension SettingsX on Settings {
   bool get appLockEnabled => appLockType == AppLockType.biometrics;
   bool get shouldFilterBookmarks =>
       bookmarkFilterType != BookmarkFilterType.none;
+
+  bool get hidePostDetailsOverlay =>
+      postDetailsOverlayInitialState == PostDetailsOverlayInitialState.hide;
 }
 
 extension PageIndicatorPositionX on PageIndicatorPosition {

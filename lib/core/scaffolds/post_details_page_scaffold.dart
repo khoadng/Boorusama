@@ -6,7 +6,9 @@ import 'package:exprollable_page_view/exprollable_page_view.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/feats/video/videos_provider.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
@@ -77,7 +79,9 @@ class _PostDetailPageScaffoldState<T extends Post>
     extends ConsumerState<PostDetailsPageScaffold<T>>
     with PostDetailsPageMixin<PostDetailsPageScaffold<T>, T> {
   late final _controller = DetailsPageController(
-      swipeDownToDismiss: !widget.posts[widget.initialIndex].isVideo);
+    swipeDownToDismiss: !widget.posts[widget.initialIndex].isVideo,
+    hideOverlay: ref.read(settingsProvider).hidePostDetailsOverlay,
+  );
 
   @override
   DetailsPageController get controller => _controller;
