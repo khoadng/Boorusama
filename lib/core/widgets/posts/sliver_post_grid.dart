@@ -42,10 +42,11 @@ class SliverPostGrid extends ConsumerWidget {
     final imageListType = ref.watch(imageListTypeSettingsProvider);
     final gridSize = ref.watch(gridSizeSettingsProvider);
     final imageGridSpacing = ref.watch(gridSpacingSettingsProvider);
+    final imageGridPadding = ref.watch(gridPaddingSettingsProvider);
 
     return SliverPadding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 18,
+      padding: EdgeInsets.symmetric(
+        horizontal: imageGridPadding,
       ),
       sliver: Builder(
         builder: (context) {

@@ -68,6 +68,7 @@ class Settings extends Equatable {
     required this.downloadPath,
     required this.imageBorderRadius,
     required this.imageGridSpacing,
+    required this.imageGridPadding,
     required this.imageQuality,
     required this.imageQualityInFullView,
     required this.imageListType,
@@ -138,7 +139,8 @@ class Settings extends Equatable {
         pageIndicatorPosition = json['pageIndicatorPosition'] != null
             ? PageIndicatorPosition.values[json['pageIndicatorPosition']]
             : PageIndicatorPosition.bottom,
-        imageGridSpacing = json['imageGridSpacing'];
+        imageGridPadding = json['imageGridPadding'] ?? 16,
+        imageGridSpacing = json['imageGridSpacing'] ?? 4;
 
   static const defaultSettings = Settings(
     safeMode: true,
@@ -150,6 +152,7 @@ class Settings extends Equatable {
     downloadPath: null,
     imageBorderRadius: 4,
     imageGridSpacing: 4,
+    imageGridPadding: 16,
     imageQuality: ImageQuality.automatic,
     imageQualityInFullView: ImageQuality.automatic,
     imageListType: ImageListType.masonry,
@@ -180,6 +183,7 @@ class Settings extends Equatable {
 
   final double imageBorderRadius;
   final double imageGridSpacing;
+  final double imageGridPadding;
 
   final ImageQuality imageQuality;
 
@@ -225,6 +229,7 @@ class Settings extends Equatable {
     String? downloadPath,
     double? imageBorderRadius,
     double? imageGridSpacing,
+    double? imageGridPadding,
     ImageQuality? imageQuality,
     ImageQuality? imageQualityInFullView,
     ImageListType? imageListType,
@@ -253,6 +258,7 @@ class Settings extends Equatable {
         downloadPath: downloadPath ?? this.downloadPath,
         imageBorderRadius: imageBorderRadius ?? this.imageBorderRadius,
         imageGridSpacing: imageGridSpacing ?? this.imageGridSpacing,
+        imageGridPadding: imageGridPadding ?? this.imageGridPadding,
         imageQuality: imageQuality ?? this.imageQuality,
         imageQualityInFullView:
             imageQualityInFullView ?? this.imageQualityInFullView,
@@ -288,6 +294,7 @@ class Settings extends Equatable {
         'downloadPath': downloadPath,
         'imageBorderRadius': imageBorderRadius,
         'imageGridSpacing': imageGridSpacing,
+        'imageGridPadding': imageGridPadding,
         'imageQuality': imageQuality.index,
         'imageQualityInFullView': imageQualityInFullView.index,
         'imageListType': imageListType.index,
@@ -318,6 +325,7 @@ class Settings extends Equatable {
         downloadPath,
         imageBorderRadius,
         imageGridSpacing,
+        imageGridPadding,
         imageQuality,
         imageQualityInFullView,
         imageListType,

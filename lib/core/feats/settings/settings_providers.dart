@@ -19,6 +19,9 @@ final pageModeSettingsProvider = Provider<PageMode>(
 final gridSpacingSettingsProvider = Provider<double>((ref) => ref.watch(
     settingsProvider.select((value) => value.imageGridSpacing.toDouble())));
 
+final gridPaddingSettingsProvider = Provider<double>((ref) => ref.watch(
+    settingsProvider.select((value) => value.imageGridPadding.toDouble())));
+
 final imageBorderRadiusSettingsProvider = Provider<double>((ref) => ref.watch(
     settingsProvider.select((value) => value.imageBorderRadius.toDouble())));
 
