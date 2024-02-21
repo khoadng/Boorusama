@@ -55,3 +55,25 @@ class BookmarkPostButton extends ConsumerWidget {
           );
   }
 }
+
+extension BookmarkPostX on WidgetRef {
+  void toggleBookmark(Post post) {
+    final booruConfig = readConfig;
+    final bookmarkState = read(bookmarkProvider);
+
+    final isBookmarked =
+        bookmarkState.isBookmarked(post, booruConfig.booruType);
+
+    if (isBookmarked) {
+      bookmarks.removeBookmarkWithToast(
+        bookmarkState.getBookmark(post, booruConfig.booruType)!,
+      );
+    } else {
+      bookmarks.addBookmarkWithToast(
+        booruConfig.booruId,
+        booruConfig.url,
+        post,
+      );
+    }
+  }
+}

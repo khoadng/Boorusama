@@ -28,37 +28,49 @@ class SharePostButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(postShareProvider(post));
-
     return IconButton(
       splashRadius: 16,
-      onPressed: () => Screen.of(context).size == ScreenSize.small
-          ? showMaterialModalBottomSheet(
-              expand: false,
-              context: context,
-              barrierColor: Colors.black45,
-              backgroundColor: Colors.transparent,
-              builder: (context) => ModalShare(
-                booruLink: state.booruLink,
-                sourceLink: state.sourceLink,
-                imageUrl: () => defaultPostImageUrlBuilder(ref)(post),
-              ),
-            )
-          : showDialog(
-              context: context,
-              builder: (context) => AlertDialog(
-                contentPadding: EdgeInsets.zero,
-                content: ModalShare(
-                  booruLink: state.booruLink,
-                  sourceLink: state.sourceLink,
-                  imageUrl: () => defaultPostImageUrlBuilder(ref)(post),
-                ),
-              ),
-            ),
+      onPressed: () => ref.sharePost(
+        post,
+        context: context,
+        state: ref.watch(postShareProvider(post)),
+      ),
       icon: const Icon(
         Symbols.share,
       ),
     );
+  }
+}
+
+extension PostShareX on WidgetRef {
+  void sharePost(
+    Post post, {
+    required BuildContext context,
+    required PostShareState state,
+  }) {
+    Screen.of(context).size == ScreenSize.small
+        ? showMaterialModalBottomSheet(
+            expand: false,
+            context: context,
+            barrierColor: Colors.black45,
+            backgroundColor: Colors.transparent,
+            builder: (context) => ModalShare(
+              booruLink: state.booruLink,
+              sourceLink: state.sourceLink,
+              imageUrl: () => defaultPostImageUrlBuilder(this)(post),
+            ),
+          )
+        : showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              contentPadding: EdgeInsets.zero,
+              content: ModalShare(
+                booruLink: state.booruLink,
+                sourceLink: state.sourceLink,
+                imageUrl: () => defaultPostImageUrlBuilder(this)(post),
+              ),
+            ),
+          );
   }
 }
 

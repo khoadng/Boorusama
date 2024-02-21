@@ -152,6 +152,21 @@ class SettingsPage extends ConsumerWidget {
                       ),
                       onTap: () => context.go('/settings/privacy'),
                     ),
+                    // gestures
+                    ListTile(
+                      title: const Text(
+                        'Gestures',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      leading: FaIcon(
+                        FontAwesomeIcons.hand,
+                        color: context.iconTheme.color,
+                        size: 20,
+                      ),
+                      onTap: () => context.go('/settings/gestures'),
+                    ),
                     const Divider(),
                     _SettingsSection(
                       label: 'settings.other_settings'.tr(),

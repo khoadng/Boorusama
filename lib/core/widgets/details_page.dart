@@ -44,7 +44,7 @@ class DetailsPage<T> extends ConsumerStatefulWidget {
   final Widget? Function(int currentPage)? bottomSheet;
   final void Function(int index) onExit;
   final DetailsPageController? controller;
-  final void Function()? onSwipeDownEnd;
+  final void Function(int currentPage)? onSwipeDownEnd;
 
   @override
   ConsumerState<DetailsPage> createState() => _DetailsPageState();
@@ -76,7 +76,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
   @override
   Function() get popper => () {
         if (widget.onSwipeDownEnd != null) {
-          widget.onSwipeDownEnd!();
+          widget.onSwipeDownEnd!(controller.currentPage.value);
         } else {
           _onBackButtonPressed();
         }
