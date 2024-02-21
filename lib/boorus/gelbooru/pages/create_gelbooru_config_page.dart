@@ -9,13 +9,8 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_api_key_field.dart';
-import 'package:boorusama/core/pages/boorus/widgets/create_booru_config_name_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_login_field.dart';
-import 'package:boorusama/core/pages/boorus/widgets/create_booru_post_details_resolution_option_tile.dart';
-import 'package:boorusama/core/pages/boorus/widgets/create_booru_rating_options_tile.dart';
-import 'package:boorusama/core/pages/boorus/widgets/create_booru_submit_button.dart';
-import 'package:boorusama/core/pages/boorus/widgets/custom_download_file_name_section.dart';
-import 'package:boorusama/core/pages/boorus/widgets/selected_booru_chip.dart';
+import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 
@@ -36,150 +31,20 @@ class CreateGelbooruConfigPage extends ConsumerStatefulWidget {
 
 class _CreateGelbooruConfigPageState
     extends ConsumerState<CreateGelbooruConfigPage> {
-  late var loginController =
-      TextEditingController(text: widget.config.login ?? '');
-  late var apiKeyController =
-      TextEditingController(text: widget.config.apiKey ?? '');
-  late var configName = widget.config.name;
-  late var ratingFilter = widget.config.ratingFilter;
-  late String? customDownloadFileNameFormat =
-      widget.config.customDownloadFileNameFormat;
-  late var customBulkDownloadFileNameFormat =
-      widget.config.customBulkDownloadFileNameFormat;
-  late var imageDetaisQuality = widget.config.imageDetaisQuality;
-  late var granularRatingFilters = widget.config.granularRatingFilters;
-
-  @override
-  void dispose() {
-    loginController.dispose();
-    apiKeyController.dispose();
-    super.dispose();
-  }
+  late var login = widget.config.login ?? '';
+  late var apiKey = widget.config.apiKey ?? '';
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: widget.backgroundColor,
-      child: SafeArea(
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: SelectedBooruChip(
-                    booruType: widget.config.booruType,
-                    url: widget.config.url,
-                  ),
-                ),
-                IconButton(
-                  splashRadius: 20,
-                  onPressed: context.navigator.pop,
-                  icon: const Icon(Symbols.close),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            CreateBooruConfigNameField(
-              text: configName,
-              onChanged: (value) => setState(() => configName = value),
-            ),
-            Expanded(
-              child: DefaultTabController(
-                length: 3,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    TabBar(
-                      indicatorColor: context.colorScheme.primary,
-                      tabs: const [
-                        Tab(text: 'Authentication'),
-                        Tab(text: 'Download'),
-                        Tab(text: 'Misc'),
-                      ],
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: TabBarView(
-                          children: [
-                            _buildAuthTab(),
-                            _buildDownloadTab(),
-                            _buildMiscTab(),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 8,
-                      ),
-                      child: ValueListenableBuilder(
-                        valueListenable: loginController,
-                        builder: (context, login, child) =>
-                            ValueListenableBuilder(
-                          valueListenable: apiKeyController,
-                          builder: (context, apiKey, child) =>
-                              CreateBooruSubmitButton(
-                            onSubmit: allowSubmit(login.text, apiKey.text)
-                                ? submit
-                                : null,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMiscTab() {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const SizedBox(height: 16),
-          CreateBooruRatingOptionsTile(
-            config: widget.config,
-            initialGranularRatingFilters: granularRatingFilters,
-            value: ratingFilter,
-            onChanged: (value) =>
-                value != null ? setState(() => ratingFilter = value) : null,
-            onGranularRatingFiltersChanged: (value) =>
-                setState(() => granularRatingFilters = value),
-          ),
-          const SizedBox(height: 16),
-          CreateBooruGeneralPostDetailsResolutionOptionTile(
-            value: imageDetaisQuality,
-            onChanged: (value) => setState(() => imageDetaisQuality = value),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDownloadTab() {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          CustomDownloadFileNameSection(
-            config: widget.config,
-            format: customDownloadFileNameFormat,
-            onIndividualDownloadChanged: (value) =>
-                setState(() => customDownloadFileNameFormat = value),
-            onBulkDownloadChanged: (value) =>
-                setState(() => customBulkDownloadFileNameFormat = value),
-          ),
-        ],
-      ),
+    return CreateBooruConfigScaffold(
+      backgroundColor: widget.backgroundColor,
+      config: widget.config,
+      authTabBuilder: (context) => _buildAuthTab(),
+      hasDownloadTab: true,
+      hasRatingFilter: true,
+      tabsBuilder: (context) => {},
+      allowSubmit: allowSubmit,
+      submit: submit,
     );
   }
 
@@ -191,15 +56,17 @@ class _CreateGelbooruConfigPageState
         children: [
           const SizedBox(height: 24),
           CreateBooruLoginField(
-            controller: loginController,
+            text: login,
             labelText: 'User ID',
             hintText: '1234567',
+            onChanged: (value) => setState(() => login = value),
           ),
           const SizedBox(height: 16),
           CreateBooruApiKeyField(
-            controller: apiKeyController,
+            text: apiKey,
             hintText:
                 '2e89f79b593ed40fd8641235f002221374e50d6343d3afe1687fc70decae58dcf',
+            onChanged: (value) => setState(() => apiKey = value),
           ),
           const SizedBox(height: 8),
           Text(
@@ -228,8 +95,8 @@ class _CreateGelbooruConfigPageState
                     if (value == null) return;
                     final (uid, key) = extractValues(value.text);
                     setState(() {
-                      loginController.text = uid;
-                      apiKeyController.text = key;
+                      login = uid;
+                      apiKey = key;
                     });
                   },
                 ),
@@ -243,20 +110,20 @@ class _CreateGelbooruConfigPageState
     );
   }
 
-  void submit() {
+  void submit(CreateConfigData data) {
     final config = AddNewBooruConfig(
-      login: loginController.text,
-      apiKey: apiKeyController.text,
+      login: login,
+      apiKey: apiKey,
       booru: widget.config.booruType,
       booruHint: widget.config.booruType,
-      configName: configName,
+      configName: data.configName,
       hideDeleted: false,
-      ratingFilter: ratingFilter,
+      ratingFilter: data.ratingFilter ?? BooruConfigRatingFilter.none,
       url: widget.config.url,
-      customDownloadFileNameFormat: customDownloadFileNameFormat,
-      customBulkDownloadFileNameFormat: customBulkDownloadFileNameFormat,
-      imageDetaisQuality: imageDetaisQuality,
-      granularRatingFilters: granularRatingFilters,
+      customDownloadFileNameFormat: data.customDownloadFileNameFormat,
+      customBulkDownloadFileNameFormat: data.customBulkDownloadFileNameFormat,
+      imageDetaisQuality: data.imageDetaisQuality,
+      granularRatingFilters: data.granularRatingFilters,
     );
 
     ref
@@ -266,8 +133,8 @@ class _CreateGelbooruConfigPageState
     context.navigator.pop();
   }
 
-  bool allowSubmit(String login, String apiKey) {
-    if (configName.isEmpty) return false;
+  bool allowSubmit(CreateConfigData data) {
+    if (data.configName.isEmpty) return false;
 
     return (login.isNotEmpty && apiKey.isNotEmpty) ||
         (login.isEmpty && apiKey.isEmpty);
