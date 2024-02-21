@@ -8,10 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/philomena/philomena_post.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_api_key_field.dart';
-import 'package:boorusama/core/pages/boorus/widgets/create_booru_config_name_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_post_details_resolution_option_tile.dart';
-import 'package:boorusama/core/pages/boorus/widgets/create_booru_scaffold.dart';
-import 'package:boorusama/core/pages/boorus/widgets/create_booru_submit_button.dart';
+import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
 
@@ -32,7 +30,6 @@ class CreatePhilomenaConfigPage extends ConsumerStatefulWidget {
 
 class _CreatePhilomenaConfigPageState
     extends ConsumerState<CreatePhilomenaConfigPage> {
-  late String configName = widget.config.name;
   late String key = widget.config.apiKey ?? '';
   late String? customDownloadFileNameFormat =
       widget.config.customDownloadFileNameFormat;
@@ -40,75 +37,75 @@ class _CreatePhilomenaConfigPageState
 
   @override
   Widget build(BuildContext context) {
-    return CreateBooruScaffold(
+    return CreateBooruConfigScaffold(
       backgroundColor: widget.backgroundColor,
-      booruType: widget.config.booruType,
-      url: widget.config.url,
-      children: [
-        CreateBooruConfigNameField(
-          text: configName,
-          onChanged: (value) => setState(() => configName = value),
-        ),
-        const SizedBox(height: 16),
-        Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 12,
-            vertical: 8,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              CreateBooruApiKeyField(
-                text: key,
-                hintText: 'e.g: AC8gZrxKsDpWy3unU0jB',
-                onChanged: (value) => setState(() => key = value),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                '*You can find your authentication token in your account settings in the browser',
-                style: context.textTheme.titleSmall!.copyWith(
-                  color: context.theme.hintColor,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-              const SizedBox(height: 16),
-              CreateBooruImageDetailsResolutionOptionTile(
-                value: imageDetaisQuality,
-                items: PhilomenaPostQualityType.values
-                    .map((e) => e.stringify())
-                    .toList(),
-                onChanged: (value) =>
-                    setState(() => imageDetaisQuality = value),
-              ),
-              // const SizedBox(height: 16),
-              // CreateBooruCustomDownloadFileNameField(
-              //   format: customDownloadFileNameFormat,
-              //   onChanged: (value) =>
-              //       setState(() => customDownloadFileNameFormat = value),
-              // ),
-              const SizedBox(height: 16),
-              CreateBooruSubmitButton(
-                onSubmit: allowSubmit() ? submit : null,
-              ),
-            ],
-          ),
-        ),
-      ],
+      config: widget.config,
+      tabsBuilder: (context) => {
+        'Authentication': _buildAuthTab(),
+        'Misc': _buildMiscTab(),
+      },
+      allowSubmit: allowSubmit,
+      submit: submit,
     );
   }
 
-  bool allowSubmit() {
-    return configName.isNotEmpty;
+  Widget _buildAuthTab() {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const SizedBox(height: 24),
+          CreateBooruApiKeyField(
+            text: key,
+            hintText: 'e.g: AC8gZrxKsDpWy3unU0jB',
+            onChanged: (value) => setState(() => key = value),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            '*You can find your authentication token in your account settings in the browser',
+            style: context.textTheme.titleSmall!.copyWith(
+              color: context.theme.hintColor,
+              fontSize: 14,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+          const SizedBox(height: 16),
+        ],
+      ),
+    );
   }
 
-  void submit() {
+  Widget _buildMiscTab() {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const SizedBox(height: 16),
+          CreateBooruImageDetailsResolutionOptionTile(
+            value: imageDetaisQuality,
+            items: PhilomenaPostQualityType.values
+                .map((e) => e.stringify())
+                .toList(),
+            onChanged: (value) => setState(() => imageDetaisQuality = value),
+          ),
+        ],
+      ),
+    );
+  }
+
+  bool allowSubmit(CreateConfigData data) {
+    return data.configName.isNotEmpty;
+  }
+
+  void submit(CreateConfigData data) {
     final config = AddNewBooruConfig(
       login: '',
       apiKey: key,
       booru: widget.config.booruType,
       booruHint: widget.config.booruType,
-      configName: configName,
+      configName: data.configName,
       hideDeleted: false,
       ratingFilter: BooruConfigRatingFilter.none,
       url: widget.config.url,
