@@ -12,6 +12,7 @@ import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/feats/video/videos_provider.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -115,8 +116,8 @@ class _PostDetailPageScaffoldState<T extends Post>
             onSwiped(page);
             widget.onPageChanged?.call(posts[page]);
           },
-          onSwipeDownEnd: switch (ref.watch(
-              settingsProvider.select((e) => e.postDetailsSwipeDownAction))) {
+          onSwipeDownEnd: switch (ref.watch(settingsProvider.select((e) =>
+              toPostDetailsAction(e.postGestures.fullview?.swipeDown)))) {
             PostDetailsAction.share => (page) => ref.sharePost(
                   posts[page],
                   context: context,
@@ -127,6 +128,7 @@ class _PostDetailPageScaffoldState<T extends Post>
                   posts[page],
                 ),
             PostDetailsAction.goBack => null,
+            null => null,
           },
           bottomSheet: (page) {
             final bottomSheet = Column(

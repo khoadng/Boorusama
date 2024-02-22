@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'package:boorusama/dart.dart';
+import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/theme/theme_mode.dart';
 
 enum ImageQuality {
@@ -62,13 +63,6 @@ enum PostDetailsOverlayInitialState {
   show,
 }
 
-enum PostDetailsAction {
-  download,
-  share,
-  goBack,
-  toggleBookmark,
-}
-
 class Settings extends Equatable {
   const Settings({
     required this.safeMode,
@@ -99,7 +93,7 @@ class Settings extends Equatable {
     required this.bookmarkFilterType,
     required this.pageIndicatorPosition,
     required this.postDetailsOverlayInitialState,
-    required this.postDetailsSwipeDownAction,
+    required this.postGestures,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
@@ -158,9 +152,9 @@ class Settings extends Equatable {
                 ? PostDetailsOverlayInitialState
                     .values[json['postDetailsOverlayInitialState']]
                 : PostDetailsOverlayInitialState.show,
-        postDetailsSwipeDownAction = json['postDetailsSwipeDownAction'] != null
-            ? PostDetailsAction.values[json['postDetailsSwipeDownAction']]
-            : PostDetailsAction.goBack,
+        postGestures = json['postGestures'] != null
+            ? PostGestureConfig.fromJson(json['postGestures'])
+            : const PostGestureConfig.undefined(),
         imageGridPadding = json['imageGridPadding'] ?? 16,
         imageGridSpacing = json['imageGridSpacing'] ?? 4;
 
@@ -193,7 +187,7 @@ class Settings extends Equatable {
     bookmarkFilterType: BookmarkFilterType.none,
     pageIndicatorPosition: PageIndicatorPosition.bottom,
     postDetailsOverlayInitialState: PostDetailsOverlayInitialState.show,
-    postDetailsSwipeDownAction: PostDetailsAction.goBack,
+    postGestures: PostGestureConfig.undefined(),
   );
 
   final String blacklistedTags;
@@ -245,7 +239,7 @@ class Settings extends Equatable {
 
   final PostDetailsOverlayInitialState postDetailsOverlayInitialState;
 
-  final PostDetailsAction postDetailsSwipeDownAction;
+  final PostGestureConfig postGestures;
 
   Settings copyWith({
     String? blacklistedTags,
@@ -276,7 +270,7 @@ class Settings extends Equatable {
     BookmarkFilterType? bookmarkFilterType,
     PageIndicatorPosition? pageIndicatorPosition,
     PostDetailsOverlayInitialState? postDetailsOverlayInitialState,
-    PostDetailsAction? postDetailsSwipeDownAction,
+    PostGestureConfig? postGestures,
   }) =>
       Settings(
         safeMode: safeMode ?? this.safeMode,
@@ -314,8 +308,7 @@ class Settings extends Equatable {
             pageIndicatorPosition ?? this.pageIndicatorPosition,
         postDetailsOverlayInitialState: postDetailsOverlayInitialState ??
             this.postDetailsOverlayInitialState,
-        postDetailsSwipeDownAction:
-            postDetailsSwipeDownAction ?? this.postDetailsSwipeDownAction,
+        postGestures: postGestures ?? this.postGestures,
       );
 
   Map<String, dynamic> toJson() => {
@@ -347,7 +340,7 @@ class Settings extends Equatable {
         'bookmarkFilterType': bookmarkFilterType.index,
         'pageIndicatorPosition': pageIndicatorPosition.index,
         'postDetailsOverlayInitialState': postDetailsOverlayInitialState.index,
-        'postDetailsSwipeDownAction': postDetailsSwipeDownAction.index,
+        'postGestures': postGestures.toJson(),
       };
 
   @override
@@ -380,7 +373,7 @@ class Settings extends Equatable {
         bookmarkFilterType,
         pageIndicatorPosition,
         postDetailsOverlayInitialState,
-        postDetailsSwipeDownAction,
+        postGestures,
       ];
 }
 

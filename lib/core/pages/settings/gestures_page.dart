@@ -9,6 +9,7 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/pages/settings/widgets/settings_header.dart';
 import 'package:boorusama/core/pages/settings/widgets/settings_tile.dart';
+import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class GesturesPage extends ConsumerWidget {
@@ -37,18 +38,25 @@ class GesturesPage extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SettingsHeader(label: 'Image viewer'),
-              SettingsTile<PostDetailsAction>(
+              SettingsTile<PostDetailsAction?>(
                 title: const Text('Swipe image down'),
-                selectedOption: settings.postDetailsSwipeDownAction,
+                selectedOption: toPostDetailsAction(
+                    settings.postGestures.fullview?.swipeDown),
                 items: PostDetailsAction.values,
                 onChanged: (value) => ref.updateSettings(
-                    settings.copyWith(postDetailsSwipeDownAction: value)),
+                  settings.copyWith(
+                    postGestures: settings.postGestures.withSwipeDown(
+                      mapPostDetailsActionToString(value),
+                    ),
+                  ),
+                ),
                 optionBuilder: (value) => Text(
                   switch (value) {
                     PostDetailsAction.goBack => 'Go back',
                     PostDetailsAction.download => 'Download',
                     PostDetailsAction.share => 'Share',
                     PostDetailsAction.toggleBookmark => 'Toggle bookmark',
+                    null => 'None',
                   },
                 ),
               ),
