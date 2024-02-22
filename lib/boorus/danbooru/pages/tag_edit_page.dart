@@ -224,6 +224,7 @@ class _TagEditPageInternalState extends ConsumerState<TagEditPageInternal> {
         _pop();
       },
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         extendBodyBehindAppBar: isMobilePlatform() && expandMode != null,
         appBar: AppBar(
           leading: IconButton(
