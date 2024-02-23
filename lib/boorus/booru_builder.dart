@@ -145,7 +145,7 @@ typedef PostStatisticsPageBuilder = Widget Function(
   Iterable<Post> posts,
 );
 
-typedef PostDetailsGestureHandlerBuilder = bool Function(
+typedef PostGestureHandlerBuilder = bool Function(
   WidgetRef ref,
   String? action,
   Post post,
@@ -178,7 +178,7 @@ abstract class BooruBuilder {
   GranularRatingQueryBuilder? get granularRatingQueryBuilder;
   GranularRatingOptionsBuilder? get granularRatingOptionsBuilder;
 
-  PostDetailsGestureHandlerBuilder get postDetailsGestureHandlerBuilder;
+  PostGestureHandlerBuilder get postGestureHandlerBuilder;
 
   // Data Builders
   PostFetcher get postFetcher;
@@ -299,9 +299,9 @@ mixin DefaultGranularRatingFiltererMixin on BooruBuilder {
   GranularRatingFilterer? get granularRatingFilterer => null;
 }
 
-mixin DefaultPostDetailsGesturesHandlerMixin on BooruBuilder {
+mixin DefaultPostGesturesHandlerMixin on BooruBuilder {
   @override
-  PostDetailsGestureHandlerBuilder get postDetailsGestureHandlerBuilder =>
+  PostGestureHandlerBuilder get postGestureHandlerBuilder =>
       (ref, action, post, downloader) => handleDefaultGestureAction(
             action,
             onDownload: () => downloader(post),
@@ -315,7 +315,7 @@ mixin DefaultPostDetailsGesturesHandlerMixin on BooruBuilder {
 }
 
 extension BooruBuilderGestures on BooruBuilder {
-  bool canHandlePostDetailsGesture(
+  bool canHandlePostGesture(
     GestureType gesture,
     GestureConfig? gestures,
   ) =>

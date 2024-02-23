@@ -38,7 +38,7 @@ class SzurubooruBuilder
         NoGranularRatingQueryBuilderMixin,
         DefaultTagColorMixin,
         DefaultPostImageDetailsUrlMixin,
-        DefaultPostDetailsGesturesHandlerMixin,
+        DefaultPostGesturesHandlerMixin,
         DefaultGranularRatingFiltererMixin,
         DefaultPostStatisticsPageBuilderMixin,
         DefaultBooruUIMixin

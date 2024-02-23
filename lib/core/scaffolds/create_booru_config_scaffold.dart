@@ -208,7 +208,6 @@ class _CreateBooruConfigScaffoldState
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const SizedBox(height: 12),
           const BooruConfigSettingsHeader(label: 'Image viewer'),
           WarningContainer(
             contentBuilder: (_) => const Text(
@@ -277,6 +276,59 @@ class _CreateBooruConfigScaffoldState
                             : describeDefaultGestureAction(value)),
                       ))
                   .toList(),
+            ),
+          ),
+          const BooruConfigSettingsHeader(label: 'Image preview'),
+          // tap
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            visualDensity: VisualDensity.compact,
+            title: const Text('Tap'),
+            trailing: OptionDropDownButton(
+              alignment: AlignmentDirectional.centerStart,
+              value: postGestures.preview?.tap,
+              onChanged: (value) {
+                setState(
+                    () => postGestures = postGestures.withPreviewTap(value));
+              },
+              items: widget.postDetailsGestureActions
+                  .map((value) => DropdownMenuItem(
+                        value: value,
+                        child: Text(widget.describePostDetailsAction != null
+                            ? widget.describePostDetailsAction!(value)
+                            : describeDefaultGestureAction(value)),
+                      ))
+                  .toList(),
+            ),
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            visualDensity: VisualDensity.compact,
+            title: const Text('Long press'),
+            trailing: OptionDropDownButton(
+              alignment: AlignmentDirectional.centerStart,
+              value: postGestures.preview?.longPress,
+              onChanged: (value) {
+                setState(() =>
+                    postGestures = postGestures.withPreviewLongPress(value));
+              },
+              items: widget.postDetailsGestureActions
+                  .map((value) => DropdownMenuItem(
+                        value: value,
+                        child: Text(widget.describePostDetailsAction != null
+                            ? widget.describePostDetailsAction!(value)
+                            : describeDefaultGestureAction(value)),
+                      ))
+                  .toList(),
+            ),
+          ),
+          const SizedBox(height: 32),
+          Text(
+            'Override the default gestures for this profile, select "None" to keep the original behavior.',
+            style: context.textTheme.titleSmall?.copyWith(
+              color: context.theme.hintColor,
+              fontSize: 14,
+              fontWeight: FontWeight.w400,
             ),
           ),
         ],

@@ -16,6 +16,7 @@ import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/error.dart';
+import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -90,7 +91,8 @@ class _InfinitePostListScaffoldState<T extends Post>
     final globalBlacklist = ref.watch(globalBlacklistedTagsProvider);
 
     final config = ref.watchConfig;
-    final booruBuilder = ref.watch(booruBuilderProvider);
+    final booruBuilder = ref.watchBooruBuilder(config);
+    final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
     final favoriteAdder = booruBuilder?.favoriteAdder;
     final favoriteRemover = booruBuilder?.favoriteRemover;
     final gridThumbnailUrlBuilder = booruBuilder?.gridThumbnailUrlBuilder;
@@ -158,48 +160,64 @@ class _InfinitePostListScaffoldState<T extends Post>
                     post: post,
                   ),
             child: LayoutBuilder(
-              builder: (context, constraints) => ImageGridItem(
-                isGif: post.isGif,
-                isAI: post.isAI,
-                onTap: !multiSelect
-                    ? () {
-                        goToPostDetailsPage(
-                          context: context,
-                          posts: items,
-                          initialIndex: index,
-                        );
-                      }
-                    : null,
-                isFaved: ref.watch(favoriteProvider(post.id)),
-                enableFav: !multiSelect && canFavorite,
-                onFavToggle: (isFaved) async {
-                  if (isFaved) {
-                    if (favoriteAdder == null) return;
-                    await favoriteAdder(post.id, ref);
-                  } else {
-                    if (favoriteRemover == null) return;
-                    await favoriteRemover(post.id, ref);
-                  }
-                },
-                autoScrollOptions: AutoScrollOptions(
-                  controller: _autoScrollController,
-                  index: index,
-                ),
-                isAnimated: post.isAnimated,
-                isTranslated: post.isTranslated,
-                hasComments: post.hasComment,
-                hasParentOrChildren: post.hasParentOrChildren,
-                score: settings.showScoresInGrid ? post.score : null,
-                image: BooruImage(
-                  aspectRatio: post.aspectRatio,
-                  imageUrl: gridThumbnailUrlBuilder != null
-                      ? gridThumbnailUrlBuilder(settings, post)
-                      : post.thumbnailImageUrl,
-                  borderRadius: BorderRadius.circular(
-                    settings.imageBorderRadius,
+              builder: (context, constraints) => DownloadProviderWidget(
+                builder: (context, download) => ImageGridItem(
+                  isGif: post.isGif,
+                  isAI: post.isAI,
+                  onTap: !multiSelect
+                      ? () {
+                          if (booruBuilder?.canHandlePostGesture(
+                                      GestureType.tap,
+                                      config.postGestures?.preview) ==
+                                  true &&
+                              postGesturesHandler != null) {
+                            postGesturesHandler(
+                              ref,
+                              ref.watchConfig.postGestures?.preview?.tap,
+                              post,
+                              download,
+                            );
+                          } else {
+                            goToPostDetailsPage(
+                              context: context,
+                              posts: items,
+                              initialIndex: index,
+                              scrollController: _autoScrollController,
+                            );
+                          }
+                        }
+                      : null,
+                  isFaved: ref.watch(favoriteProvider(post.id)),
+                  enableFav: !multiSelect && canFavorite,
+                  onFavToggle: (isFaved) async {
+                    if (isFaved) {
+                      if (favoriteAdder == null) return;
+                      await favoriteAdder(post.id, ref);
+                    } else {
+                      if (favoriteRemover == null) return;
+                      await favoriteRemover(post.id, ref);
+                    }
+                  },
+                  autoScrollOptions: AutoScrollOptions(
+                    controller: _autoScrollController,
+                    index: index,
                   ),
-                  forceFill: settings.imageListType == ImageListType.standard,
-                  placeholderUrl: post.thumbnailImageUrl,
+                  isAnimated: post.isAnimated,
+                  isTranslated: post.isTranslated,
+                  hasComments: post.hasComment,
+                  hasParentOrChildren: post.hasParentOrChildren,
+                  score: settings.showScoresInGrid ? post.score : null,
+                  image: BooruImage(
+                    aspectRatio: post.aspectRatio,
+                    imageUrl: gridThumbnailUrlBuilder != null
+                        ? gridThumbnailUrlBuilder(settings, post)
+                        : post.thumbnailImageUrl,
+                    borderRadius: BorderRadius.circular(
+                      settings.imageBorderRadius,
+                    ),
+                    forceFill: settings.imageListType == ImageListType.standard,
+                    placeholderUrl: post.thumbnailImageUrl,
+                  ),
                 ),
               ),
             ),

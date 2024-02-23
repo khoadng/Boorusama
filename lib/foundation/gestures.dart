@@ -158,7 +158,6 @@ class PostGestureConfig extends Equatable {
 
 const kDownloadAction = 'download';
 const kShareAction = 'share';
-const kGoBackAction = 'goBack';
 const kToggleBookmarkAction = 'toggleBookmark';
 
 const kToggleFavoriteAction = 'toggleFavorite';
@@ -169,14 +168,12 @@ const kDefaultGestureActions = {
   null,
   kDownloadAction,
   kShareAction,
-  kGoBackAction,
   kToggleBookmarkAction,
 };
 
 String describeDefaultGestureAction(String? action) => switch (action) {
       kDownloadAction => 'Download',
       kShareAction => 'Share',
-      kGoBackAction => 'Go back',
       kToggleBookmarkAction => 'Toggle bookmark',
       _ => 'None'
     };
@@ -185,7 +182,6 @@ bool handleDefaultGestureAction(
   String? action, {
   void Function()? onDownload,
   void Function()? onShare,
-  void Function()? onGoBack,
   void Function()? onToggleBookmark,
 }) {
   switch (action) {
@@ -195,9 +191,7 @@ bool handleDefaultGestureAction(
     case kShareAction:
       onShare?.call();
       break;
-    case kGoBackAction:
-      onGoBack?.call();
-      break;
+
     case kToggleBookmarkAction:
       onToggleBookmark?.call();
       break;
@@ -231,6 +225,24 @@ extension PostGestureConfigX on PostGestureConfig {
     final fv = fullview ?? const GestureConfig.undefined();
     return copyWith(
       fullview: () => fv.copyWith(
+        longPress: () => value,
+      ),
+    );
+  }
+
+  PostGestureConfig withPreviewTap(String? value) {
+    final pv = preview ?? const GestureConfig.undefined();
+    return copyWith(
+      preview: () => pv.copyWith(
+        tap: () => value,
+      ),
+    );
+  }
+
+  PostGestureConfig withPreviewLongPress(String? value) {
+    final pv = preview ?? const GestureConfig.undefined();
+    return copyWith(
+      preview: () => pv.copyWith(
         longPress: () => value,
       ),
     );

@@ -33,7 +33,7 @@ class GelbooruV1Builder
         DefaultThumbnailUrlMixin,
         DefaultTagColorMixin,
         DefaultPostImageDetailsUrlMixin,
-        DefaultPostDetailsGesturesHandlerMixin,
+        DefaultPostGesturesHandlerMixin,
         DefaultGranularRatingFiltererMixin,
         LegacyGranularRatingOptionsBuilderMixin,
         NoGranularRatingQueryBuilderMixin,

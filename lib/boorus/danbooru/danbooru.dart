@@ -205,7 +205,7 @@ class DanbooruBuilder
   NoteFetcher? get noteFetcher => (postId) => noteRepo.getNotes(postId);
 
   @override
-  PostDetailsGestureHandlerBuilder get postDetailsGestureHandlerBuilder =>
+  PostGestureHandlerBuilder get postGestureHandlerBuilder =>
       (ref, action, post, downloader) => handleDanbooruGestureAction(
             action,
             onDownload: () => downloader(post),
@@ -329,7 +329,6 @@ bool handleDanbooruGestureAction(
         action,
         onDownload: onDownload,
         onShare: onShare,
-        onGoBack: onGoBack,
         onToggleBookmark: onToggleBookmark,
       );
   }

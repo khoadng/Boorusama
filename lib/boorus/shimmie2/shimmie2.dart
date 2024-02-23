@@ -27,7 +27,7 @@ class Shimmie2Builder
         LegacyGranularRatingOptionsBuilderMixin,
         NoGranularRatingQueryBuilderMixin,
         DefaultTagColorMixin,
-        DefaultPostDetailsGesturesHandlerMixin,
+        DefaultPostGesturesHandlerMixin,
         DefaultPostImageDetailsUrlMixin,
         DefaultGranularRatingFiltererMixin,
         DefaultPostStatisticsPageBuilderMixin,

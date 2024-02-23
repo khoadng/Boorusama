@@ -110,8 +110,7 @@ class _PostDetailPageScaffoldState<T extends Post>
   Widget build(BuildContext context) {
     final config = ref.watchConfig;
     final booruBuilder = ref.watchBooruBuilder(config);
-    final postDetailsGesturesHandler =
-        booruBuilder?.postDetailsGestureHandlerBuilder;
+    final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
 
     return LayoutBuilder(
       builder: (context, constraints) => DownloadProviderWidget(
@@ -123,13 +122,13 @@ class _PostDetailPageScaffoldState<T extends Post>
             onSwiped(page);
             widget.onPageChanged?.call(posts[page]);
           },
-          onSwipeDownEnd: booruBuilder?.canHandlePostDetailsGesture(
+          onSwipeDownEnd: booruBuilder?.canHandlePostGesture(
                         GestureType.swipeDown,
                         config.postGestures?.fullview,
                       ) ==
                       true &&
-                  postDetailsGesturesHandler != null
-              ? (page) => postDetailsGesturesHandler(
+                  postGesturesHandler != null
+              ? (page) => postGesturesHandler(
                     ref,
                     config.postGestures?.fullview?.swipeDown,
                     posts[page],
@@ -199,7 +198,7 @@ class _PostDetailPageScaffoldState<T extends Post>
               currentPage,
               ref,
               booruBuilder,
-              postDetailsGesturesHandler,
+              postGesturesHandler,
               download,
             );
 
@@ -256,7 +255,7 @@ class _PostDetailPageScaffoldState<T extends Post>
     int currentPage,
     WidgetRef ref,
     BooruBuilder? booruBuilder,
-    PostDetailsGestureHandlerBuilder? postDetailsGesturesHandler,
+    PostGestureHandlerBuilder? postDetailsGesturesHandler,
     DownloadDelegate download,
   ) {
     final post = posts[page];
@@ -269,7 +268,7 @@ class _PostDetailPageScaffoldState<T extends Post>
           ? widget.placeholderImageUrlBuilder!(post, currentPage)
           : post.thumbnailImageUrl,
       onImageTap: onImageTap,
-      onDoubleTap: booruBuilder?.canHandlePostDetailsGesture(
+      onDoubleTap: booruBuilder?.canHandlePostGesture(
                     GestureType.doubleTap,
                     ref.watchConfig.postGestures?.fullview,
                   ) ==
@@ -282,7 +281,7 @@ class _PostDetailPageScaffoldState<T extends Post>
                 download,
               )
           : null,
-      onLongPress: booruBuilder?.canHandlePostDetailsGesture(
+      onLongPress: booruBuilder?.canHandlePostGesture(
                     GestureType.longPress,
                     ref.watchConfig.postGestures?.fullview,
                   ) ==
