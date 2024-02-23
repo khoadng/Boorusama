@@ -163,6 +163,7 @@ const kToggleBookmarkAction = 'toggleBookmark';
 const kToggleFavoriteAction = 'toggleFavorite';
 const kUpvoteAction = 'upvote';
 const kDownvoteAction = 'downvote';
+const kEditAction = 'edit';
 
 const kDefaultGestureActions = {
   null,

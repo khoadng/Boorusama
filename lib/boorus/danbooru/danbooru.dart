@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
@@ -8,6 +11,7 @@ import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/pages/comment_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/danbooru_character_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/danbooru_post_statistics_page.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/downloads/downloads.dart';
@@ -15,9 +19,11 @@ import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/pages/post_statistics_page.dart';
+import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/gestures.dart';
+import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/functional.dart';
 import 'pages/create_danbooru_config_page.dart';
@@ -218,6 +224,10 @@ class DanbooruBuilder
             onToggleFavorite: () => ref.danbooruToggleFavorite(post.id),
             onUpvote: () => ref.danbooruUpvote(post.id),
             onDownvote: () => ref.danbooruDownvote(post.id),
+            onEdit: () => castOrNull<DanbooruPost>(post).toOption().fold(
+                  () => false,
+                  (post) => ref.danbooruEdit(post),
+                ),
           );
 
   @override
@@ -313,6 +323,7 @@ bool handleDanbooruGestureAction(
   void Function()? onToggleFavorite,
   void Function()? onUpvote,
   void Function()? onDownvote,
+  void Function()? onEdit,
 }) {
   switch (action) {
     case kToggleFavoriteAction:
@@ -324,6 +335,9 @@ bool handleDanbooruGestureAction(
     case kDownvoteAction:
       onDownvote?.call();
       break;
+    case kEditAction:
+      onEdit?.call();
+      break;
     default:
       return handleDefaultGestureAction(
         action,
@@ -334,4 +348,52 @@ bool handleDanbooruGestureAction(
   }
 
   return true;
+}
+
+extension DanbooruX on WidgetRef {
+  void danbooruToggleFavorite(int postId) {
+    _guardLogin(() {
+      final isFaved = read(danbooruFavoriteProvider(postId));
+      if (isFaved) {
+        danbooruFavorites.remove(postId);
+      } else {
+        danbooruFavorites.add(postId);
+      }
+    });
+  }
+
+  void danbooruUpvote(int postId) {
+    _guardLogin(() {
+      read(danbooruPostVotesProvider(readConfig).notifier).upvote(postId);
+    });
+  }
+
+  void danbooruDownvote(int postId) {
+    _guardLogin(() {
+      read(danbooruPostVotesProvider(readConfig).notifier).downvote(postId);
+    });
+  }
+
+  void _guardLogin(void Function() action) {
+    if (!readConfig.hasLoginDetails()) {
+      showSimpleSnackBar(
+        context: this.context,
+        content: const Text(
+          'post.detail.login_required_notice',
+        ).tr(),
+        duration: const Duration(seconds: 1),
+      );
+
+      return;
+    }
+
+    action();
+  }
+
+  void danbooruEdit(DanbooruPost post) {
+    goToTagEditPage(
+      this.context,
+      post: post,
+    );
+  }
 }

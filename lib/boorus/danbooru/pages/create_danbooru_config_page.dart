@@ -54,18 +54,14 @@ class _CreateDanbooruConfigPageState
         kToggleFavoriteAction,
         kUpvoteAction,
         kDownvoteAction,
+        kEditAction,
       },
-      describePostDetailsAction: (action) {
-        switch (action) {
-          case kToggleFavoriteAction:
-            return 'Toggle favorite';
-          case kUpvoteAction:
-            return 'Upvote';
-          case kDownvoteAction:
-            return 'Downvote';
-          default:
-            return describeDefaultGestureAction(action);
-        }
+      describePostDetailsAction: (action) => switch (action) {
+        kToggleFavoriteAction => 'Toggle favorite',
+        kUpvoteAction => 'Upvote',
+        kDownvoteAction => 'Downvote',
+        kEditAction => 'Edit',
+        _ => describeDefaultGestureAction(action),
       },
       postDetailsResolutionBuilder: (context) =>
           CreateBooruImageDetailsResolutionOptionTile(
