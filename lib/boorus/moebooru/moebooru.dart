@@ -47,6 +47,7 @@ class MoebooruBuilder
         LegacyGranularRatingQueryBuilderMixin,
         DefaultThumbnailUrlMixin,
         DefaultTagColorMixin,
+        DefaultPostGesturesHandlerMixin,
         DefaultPostImageDetailsUrlMixin,
         DefaultGranularRatingFiltererMixin,
         DefaultPostStatisticsPageBuilderMixin

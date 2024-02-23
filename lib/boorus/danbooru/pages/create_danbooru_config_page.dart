@@ -13,6 +13,7 @@ import 'package:boorusama/core/pages/boorus/widgets/create_booru_login_field.dar
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_post_details_resolution_option_tile.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -48,6 +49,20 @@ class _CreateDanbooruConfigPageState
       authTabBuilder: (context) => _buildAuthTab(),
       hasDownloadTab: true,
       hasRatingFilter: true,
+      postDetailsGestureActions: const {
+        ...kDefaultGestureActions,
+        kToggleFavoriteAction,
+        kUpvoteAction,
+        kDownvoteAction,
+        kEditAction,
+      },
+      describePostDetailsAction: (action) => switch (action) {
+        kToggleFavoriteAction => 'Toggle favorite',
+        kUpvoteAction => 'Upvote',
+        kDownvoteAction => 'Downvote',
+        kEditAction => 'Edit',
+        _ => describeDefaultGestureAction(action),
+      },
       postDetailsResolutionBuilder: (context) =>
           CreateBooruImageDetailsResolutionOptionTile(
         value: imageDetaisQuality,
@@ -117,6 +132,7 @@ class _CreateDanbooruConfigPageState
       customBulkDownloadFileNameFormat: data.customBulkDownloadFileNameFormat,
       imageDetaisQuality: imageDetaisQuality,
       granularRatingFilters: data.granularRatingFilters,
+      postGestures: data.postGestures,
     );
 
     ref

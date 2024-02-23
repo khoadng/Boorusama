@@ -124,6 +124,7 @@ class _CreateGelbooruConfigPageState
       customBulkDownloadFileNameFormat: data.customBulkDownloadFileNameFormat,
       imageDetaisQuality: data.imageDetaisQuality,
       granularRatingFilters: data.granularRatingFilters,
+      postGestures: data.postGestures,
     );
 
     ref

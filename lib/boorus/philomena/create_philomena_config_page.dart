@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/core/pages/boorus/widgets/create_booru_post_details_resolution_option_tile.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -8,10 +7,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_api_key_field.dart';
+import 'package:boorusama/core/pages/boorus/widgets/create_booru_post_details_resolution_option_tile.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
-
 import 'philomena_post.dart';
 
 class CreatePhilomenaConfigPage extends ConsumerStatefulWidget {
@@ -98,6 +97,7 @@ class _CreatePhilomenaConfigPageState
       customBulkDownloadFileNameFormat: null,
       imageDetaisQuality: imageDetaisQuality,
       granularRatingFilters: null,
+      postGestures: data.postGestures,
     );
 
     ref

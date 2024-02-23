@@ -92,6 +92,7 @@ class _CreateDanbooruConfigPageState
       customBulkDownloadFileNameFormat: data.customBulkDownloadFileNameFormat,
       imageDetaisQuality: data.imageDetaisQuality,
       granularRatingFilters: null,
+      postGestures: data.postGestures,
     );
 
     ref

@@ -54,7 +54,6 @@ class GeneralMoreActionButton extends ConsumerWidget {
                 case 'show_tag_list':
                   goToShowTaglistPage(
                     ref,
-                    context,
                     post.extractTags(),
                   );
                   break;

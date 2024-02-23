@@ -8,6 +8,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
@@ -21,6 +22,7 @@ import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/error.dart';
+import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class DanbooruInfinitePostList extends ConsumerStatefulWidget {
@@ -94,6 +96,13 @@ class _DanbooruInfinitePostListState
     final settings = ref.watch(settingsProvider);
 
     final booruConfig = ref.watchConfig;
+    final booruBuilder = ref.watchBooruBuilder(booruConfig);
+    final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
+    final canHandleLongPress = booruBuilder?.canHandlePostGesture(
+          GestureType.longPress,
+          booruConfig.postGestures?.preview,
+        ) ??
+        false;
     final globalBlacklist = ref.watch(globalBlacklistedTagsProvider);
     final danbooruBlacklist =
         ref.watch(danbooruBlacklistedTagsProvider(booruConfig)).maybeWhen(
@@ -145,43 +154,79 @@ class _DanbooruInfinitePostListState
         itemBuilder: (context, items, index) {
           final post = items[index];
 
-          return ContextMenuRegion(
-            isEnabled: !post.isBanned && !multiSelect,
-            contextMenu: DanbooruPostContextMenu(
-              hasAccount: booruConfig.hasLoginDetails(),
-              onMultiSelect: () {
-                _multiSelectController.enableMultiSelect();
-              },
-              post: post,
+          return ConditionalParentWidget(
+            condition: !canHandleLongPress,
+            conditionalBuilder: (child) => ContextMenuRegion(
+              isEnabled: !post.isBanned && !multiSelect,
+              contextMenu: DanbooruPostContextMenu(
+                hasAccount: booruConfig.hasLoginDetails(),
+                onMultiSelect: () {
+                  _multiSelectController.enableMultiSelect();
+                },
+                post: post,
+              ),
+              child: child,
             ),
             child: LayoutBuilder(
-              builder: (context, constraints) => DanbooruImageGridItem(
-                post: post,
-                hideOverlay: false,
-                autoScrollOptions: AutoScrollOptions(
-                  controller: _autoScrollController,
-                  index: index,
-                ),
-                onTap: !multiSelect
-                    ? () {
-                        goToPostDetailsPage(
-                          context: context,
-                          posts: items,
-                          initialIndex: index,
-                          scrollController: _autoScrollController,
+              builder: (context, constraints) => DownloadProviderWidget(
+                builder: (context, download) => ConditionalParentWidget(
+                  condition: canHandleLongPress,
+                  conditionalBuilder: (child) => GestureDetector(
+                    onLongPress: () {
+                      if (postGesturesHandler != null) {
+                        postGesturesHandler(
+                          ref,
+                          ref.watchConfig.postGestures?.preview?.longPress,
+                          post,
+                          download,
                         );
                       }
-                    : null,
-                enableFav: !multiSelect && booruConfig.hasLoginDetails(),
-                image: BooruImage(
-                  aspectRatio: post.isBanned ? 0.8 : post.aspectRatio,
-                  imageUrl: post.thumbnailFromSettings(settings),
-                  borderRadius: BorderRadius.circular(
-                    settings.imageBorderRadius,
+                    },
+                    child: child,
                   ),
-                  forceFill: settings.imageListType == ImageListType.standard,
-                  placeholderUrl: post.thumbnailImageUrl,
-                  // null, // Will cause error sometimes, disabled for now
+                  child: DanbooruImageGridItem(
+                    post: post,
+                    hideOverlay: false,
+                    autoScrollOptions: AutoScrollOptions(
+                      controller: _autoScrollController,
+                      index: index,
+                    ),
+                    onTap: !multiSelect
+                        ? () {
+                            if (booruBuilder?.canHandlePostGesture(
+                                        GestureType.tap,
+                                        booruConfig.postGestures?.preview) ==
+                                    true &&
+                                postGesturesHandler != null) {
+                              postGesturesHandler(
+                                ref,
+                                ref.watchConfig.postGestures?.preview?.tap,
+                                post,
+                                download,
+                              );
+                            } else {
+                              goToPostDetailsPage(
+                                context: context,
+                                posts: items,
+                                initialIndex: index,
+                                scrollController: _autoScrollController,
+                              );
+                            }
+                          }
+                        : null,
+                    enableFav: !multiSelect && booruConfig.hasLoginDetails(),
+                    image: BooruImage(
+                      aspectRatio: post.isBanned ? 0.8 : post.aspectRatio,
+                      imageUrl: post.thumbnailFromSettings(settings),
+                      borderRadius: BorderRadius.circular(
+                        settings.imageBorderRadius,
+                      ),
+                      forceFill:
+                          settings.imageListType == ImageListType.standard,
+                      placeholderUrl: post.thumbnailImageUrl,
+                      // null, // Will cause error sometimes, disabled for now
+                    ),
+                  ),
                 ),
               ),
             ),

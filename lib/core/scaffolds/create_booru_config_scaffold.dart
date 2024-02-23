@@ -16,7 +16,9 @@ import 'package:boorusama/core/pages/boorus/widgets/create_booru_submit_button.d
 import 'package:boorusama/core/pages/boorus/widgets/custom_download_file_name_section.dart';
 import 'package:boorusama/core/pages/boorus/widgets/selected_booru_chip.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 typedef CreateConfigData = ({
   String configName,
@@ -25,6 +27,7 @@ typedef CreateConfigData = ({
   Set<Rating>? granularRatingFilters,
   BooruConfigRatingFilter? ratingFilter,
   String? imageDetaisQuality,
+  PostGestureConfig? postGestures,
 });
 
 class CreateBooruConfigScaffold extends ConsumerStatefulWidget {
@@ -40,6 +43,8 @@ class CreateBooruConfigScaffold extends ConsumerStatefulWidget {
     this.hasDownloadTab = false,
     this.hasRatingFilter = false,
     this.miscOptionBuilder,
+    this.postDetailsGestureActions = kDefaultGestureActions,
+    this.describePostDetailsAction,
   });
 
   final Color? backgroundColor;
@@ -57,6 +62,9 @@ class CreateBooruConfigScaffold extends ConsumerStatefulWidget {
 
   final List<Widget> Function(BuildContext context)? miscOptionBuilder;
 
+  final Set<String?> postDetailsGestureActions;
+  final String Function(String? action)? describePostDetailsAction;
+
   @override
   ConsumerState<CreateBooruConfigScaffold> createState() =>
       _CreateBooruConfigScaffoldState();
@@ -72,6 +80,8 @@ class _CreateBooruConfigScaffoldState
   late var ratingFilter = widget.config.ratingFilter;
   late var granularRatingFilters = widget.config.granularRatingFilters;
   late var imageDetaisQuality = widget.config.imageDetaisQuality;
+  late var postGestures =
+      widget.config.postGestures ?? const PostGestureConfig.undefined();
 
   @override
   Widget build(BuildContext context) {
@@ -80,6 +90,7 @@ class _CreateBooruConfigScaffoldState
         'Authentication': widget.authTabBuilder!(context),
       if (widget.hasDownloadTab) 'Download': _buildDownloadTab(),
       ...widget.tabsBuilder(context),
+      'Gestures': _buildGesturesTab(),
       'Misc': _buildMiscTab(),
     };
 
@@ -90,6 +101,7 @@ class _CreateBooruConfigScaffoldState
       granularRatingFilters: granularRatingFilters,
       ratingFilter: ratingFilter,
       imageDetaisQuality: imageDetaisQuality,
+      postGestures: postGestures,
     );
 
     return Material(
@@ -190,6 +202,142 @@ class _CreateBooruConfigScaffoldState
     );
   }
 
+  Widget _buildGesturesTab() {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const BooruConfigSettingsHeader(label: 'Image viewer'),
+          WarningContainer(
+            contentBuilder: (_) => const Text(
+              'Images only, not applicable to videos.',
+            ),
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            visualDensity: VisualDensity.compact,
+            title: const Text('Swipe down'),
+            trailing: OptionDropDownButton(
+              alignment: AlignmentDirectional.centerStart,
+              value: postGestures.fullview?.swipeDown,
+              onChanged: (value) {
+                setState(() =>
+                    postGestures = postGestures.withFulviewSwipeDown(value));
+              },
+              items: widget.postDetailsGestureActions
+                  .map((value) => DropdownMenuItem(
+                        value: value,
+                        child: Text(widget.describePostDetailsAction != null
+                            ? widget.describePostDetailsAction!(value)
+                            : describeDefaultGestureAction(value)),
+                      ))
+                  .toList(),
+            ),
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            visualDensity: VisualDensity.compact,
+            title: const Text('Double tap'),
+            trailing: OptionDropDownButton(
+              alignment: AlignmentDirectional.centerStart,
+              value: postGestures.fullview?.doubleTap,
+              onChanged: (value) {
+                setState(() =>
+                    postGestures = postGestures.withFulviewDoubleTap(value));
+              },
+              items: widget.postDetailsGestureActions
+                  .map((value) => DropdownMenuItem(
+                        value: value,
+                        child: Text(widget.describePostDetailsAction != null
+                            ? widget.describePostDetailsAction!(value)
+                            : describeDefaultGestureAction(value)),
+                      ))
+                  .toList(),
+            ),
+          ),
+          //long press
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            visualDensity: VisualDensity.compact,
+            title: const Text('Long press'),
+            trailing: OptionDropDownButton(
+              alignment: AlignmentDirectional.centerStart,
+              value: postGestures.fullview?.longPress,
+              onChanged: (value) {
+                setState(() =>
+                    postGestures = postGestures.withFulviewLongPress(value));
+              },
+              items: widget.postDetailsGestureActions
+                  .map((value) => DropdownMenuItem(
+                        value: value,
+                        child: Text(widget.describePostDetailsAction != null
+                            ? widget.describePostDetailsAction!(value)
+                            : describeDefaultGestureAction(value)),
+                      ))
+                  .toList(),
+            ),
+          ),
+
+          const Divider(thickness: 0.5, height: 32),
+          const BooruConfigSettingsHeader(label: 'Image preview'),
+          // tap
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            visualDensity: VisualDensity.compact,
+            title: const Text('Tap'),
+            trailing: OptionDropDownButton(
+              alignment: AlignmentDirectional.centerStart,
+              value: postGestures.preview?.tap,
+              onChanged: (value) {
+                setState(
+                    () => postGestures = postGestures.withPreviewTap(value));
+              },
+              items: widget.postDetailsGestureActions
+                  .map((value) => DropdownMenuItem(
+                        value: value,
+                        child: Text(widget.describePostDetailsAction != null
+                            ? widget.describePostDetailsAction!(value)
+                            : describeDefaultGestureAction(value)),
+                      ))
+                  .toList(),
+            ),
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            visualDensity: VisualDensity.compact,
+            title: const Text('Long press'),
+            trailing: OptionDropDownButton(
+              alignment: AlignmentDirectional.centerStart,
+              value: postGestures.preview?.longPress,
+              onChanged: (value) {
+                setState(() =>
+                    postGestures = postGestures.withPreviewLongPress(value));
+              },
+              items: widget.postDetailsGestureActions
+                  .map((value) => DropdownMenuItem(
+                        value: value,
+                        child: Text(widget.describePostDetailsAction != null
+                            ? widget.describePostDetailsAction!(value)
+                            : describeDefaultGestureAction(value)),
+                      ))
+                  .toList(),
+            ),
+          ),
+          const SizedBox(height: 32),
+          Text(
+            'Override the default gestures for this profile, select "None" to keep the original behavior.',
+            style: context.textTheme.titleSmall?.copyWith(
+              color: context.theme.hintColor,
+              fontSize: 14,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildMiscTab() {
     return SingleChildScrollView(
       child: Column(
@@ -218,6 +366,29 @@ class _CreateBooruConfigScaffoldState
           if (widget.miscOptionBuilder != null)
             ...widget.miscOptionBuilder!(context),
         ],
+      ),
+    );
+  }
+}
+
+class BooruConfigSettingsHeader extends StatelessWidget {
+  const BooruConfigSettingsHeader({
+    super.key,
+    required this.label,
+  });
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+      child: Text(
+        label,
+        style: TextStyle(
+          color: context.colorScheme.primary,
+          fontWeight: FontWeight.w500,
+        ),
       ),
     );
   }

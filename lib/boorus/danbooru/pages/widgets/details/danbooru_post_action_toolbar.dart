@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
@@ -48,11 +49,7 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
                 color: voteState.isUpvoted ? Colors.redAccent : null,
               ),
               splashRadius: 16,
-              onPressed: () {
-                ref
-                    .read(danbooruPostVotesProvider(config).notifier)
-                    .upvote(post.id);
-              },
+              onPressed: () => ref.danbooruUpvote(post.id),
             ),
           if (config.hasLoginDetails())
             IconButton(
@@ -61,11 +58,7 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
                 color: voteState.isDownvoted ? Colors.blueAccent : null,
               ),
               splashRadius: 16,
-              onPressed: () {
-                ref
-                    .read(danbooruPostVotesProvider(config).notifier)
-                    .downvote(post.id);
-              },
+              onPressed: () => ref.danbooruDownvote(post.id),
             ),
           BookmarkPostButton(post: post),
           CommentPostButton(

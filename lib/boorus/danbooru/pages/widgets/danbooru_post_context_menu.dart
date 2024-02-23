@@ -6,6 +6,7 @@ import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/feats/bookmarks/bookmarks.dart';
@@ -92,7 +93,7 @@ class DanbooruPostContextMenu extends ConsumerWidget {
           ContextMenuButtonConfig(
             'View tags',
             onPressed: () {
-              goToDanbooruShowTaglistPage(ref, context, post.extractTags());
+              goToDanbooruShowTaglistPage(ref, post.extractTags());
             },
           ),
           ContextMenuButtonConfig(
@@ -102,12 +103,7 @@ class DanbooruPostContextMenu extends ConsumerWidget {
           if (hasAccount)
             ContextMenuButtonConfig(
               'Edit',
-              onPressed: () {
-                goToTagEditPage(
-                  context,
-                  post: post,
-                );
-              },
+              onPressed: () => ref.danbooruEdit(post),
             ),
           if (onMultiSelect != null)
             ContextMenuButtonConfig(

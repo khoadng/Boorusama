@@ -16,6 +16,8 @@ class InteractiveBooruImage extends ConsumerStatefulWidget {
   const InteractiveBooruImage({
     super.key,
     this.onTap,
+    this.onDoubleTap,
+    this.onLongPress,
     required this.useHero,
     required this.heroTag,
     required this.aspectRatio,
@@ -29,6 +31,8 @@ class InteractiveBooruImage extends ConsumerStatefulWidget {
   });
 
   final VoidCallback? onTap;
+  final VoidCallback? onDoubleTap;
+  final VoidCallback? onLongPress;
   final bool useHero;
   final String heroTag;
   final double? aspectRatio;
@@ -82,6 +86,8 @@ class _InteractiveBooruImageState extends ConsumerState<InteractiveBooruImage> {
     return InteractiveImage(
       useOriginalSize: false,
       onTap: widget.onTap,
+      onDoubleTap: widget.onDoubleTap,
+      onLongPress: widget.onLongPress,
       transformationController: transformationController,
       image: ConditionalParentWidget(
         condition: widget.useHero,

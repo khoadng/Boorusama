@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'package:boorusama/dart.dart';
+import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/theme/theme_mode.dart';
 
 enum ImageQuality {
@@ -262,6 +263,7 @@ class Settings extends Equatable {
     BookmarkFilterType? bookmarkFilterType,
     PageIndicatorPosition? pageIndicatorPosition,
     PostDetailsOverlayInitialState? postDetailsOverlayInitialState,
+    PostGestureConfig? postGestures,
   }) =>
       Settings(
         safeMode: safeMode ?? this.safeMode,

@@ -453,18 +453,17 @@ Future<bool?> goToAddToFavoriteGroupSelectionPage(
 
 Future<bool?> goToDanbooruShowTaglistPage(
   WidgetRef ref,
-  BuildContext context,
   List<Tag> tags,
 ) {
   final config = ref.readConfig;
   final notifier = ref.read(danbooruBlacklistedTagsProvider(config).notifier);
   final globalNotifier = ref.read(globalBlacklistedTagsProvider.notifier);
   final favoriteNotifier = ref.read(favoriteTagsProvider.notifier);
-  final color = context.colorScheme.onBackground;
-  final textColor = context.colorScheme.background;
+  final color = ref.context.colorScheme.onBackground;
+  final textColor = ref.context.colorScheme.background;
 
   return showMaterialModalBottomSheet<bool>(
-    context: navigatorKey.currentContext ?? context,
+    context: navigatorKey.currentContext ?? ref.context,
     duration: const Duration(milliseconds: 200),
     expand: true,
     builder: (dialogContext) => ShowTagListPage(

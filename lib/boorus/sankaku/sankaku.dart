@@ -40,6 +40,7 @@ class SankakuBuilder
         NoGranularRatingQueryBuilderMixin,
         DefaultTagColorMixin,
         DefaultPostImageDetailsUrlMixin,
+        DefaultPostGesturesHandlerMixin,
         DefaultGranularRatingFiltererMixin,
         DefaultPostStatisticsPageBuilderMixin,
         DefaultBooruUIMixin

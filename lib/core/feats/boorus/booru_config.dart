@@ -5,6 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/functional.dart';
 
@@ -23,6 +24,7 @@ class BooruConfig extends Equatable {
     required this.customBulkDownloadFileNameFormat,
     required this.imageDetaisQuality,
     required this.granularRatingFilters,
+    required this.postGestures,
   });
 
   static const BooruConfig empty = BooruConfig(
@@ -39,6 +41,7 @@ class BooruConfig extends Equatable {
     customBulkDownloadFileNameFormat: null,
     imageDetaisQuality: null,
     granularRatingFilters: null,
+    postGestures: null,
   );
 
   static BooruConfig defaultConfig({
@@ -60,6 +63,7 @@ class BooruConfig extends Equatable {
         customBulkDownloadFileNameFormat: customDownloadFileNameFormat,
         imageDetaisQuality: null,
         granularRatingFilters: null,
+        postGestures: null,
       );
 
   final int id;
@@ -75,6 +79,7 @@ class BooruConfig extends Equatable {
   final String? customBulkDownloadFileNameFormat;
   final String? imageDetaisQuality;
   final Set<Rating>? granularRatingFilters;
+  final PostGestureConfig? postGestures;
 
   BooruConfig copyWith({
     String? url,
@@ -96,6 +101,7 @@ class BooruConfig extends Equatable {
       customBulkDownloadFileNameFormat: customBulkDownloadFileNameFormat,
       imageDetaisQuality: imageDetaisQuality,
       granularRatingFilters: granularRatingFilters,
+      postGestures: postGestures,
     );
   }
 
@@ -114,6 +120,7 @@ class BooruConfig extends Equatable {
         customBulkDownloadFileNameFormat,
         imageDetaisQuality,
         granularRatingFilters,
+        postGestures,
       ];
 
   factory BooruConfig.fromJson(Map<String, dynamic> json) {
@@ -141,6 +148,10 @@ class BooruConfig extends Equatable {
       granularRatingFilters: parseGranularRatingFilters(
         json['granularRatingFilterString'] as String?,
       ),
+      postGestures: json['postGestures'] == null
+          ? null
+          : PostGestureConfig.fromJson(
+              json['postGestures'] as Map<String, dynamic>),
     );
   }
 
@@ -161,6 +172,7 @@ class BooruConfig extends Equatable {
       'granularRatingFilterString': granularRatingFilterToString(
         granularRatingFilters,
       ),
+      'postGestures': postGestures?.toJson(),
     };
   }
 }

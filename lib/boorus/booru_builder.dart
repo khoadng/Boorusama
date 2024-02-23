@@ -32,6 +32,9 @@ import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/pages/post_statistics_page.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
+import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/routes.dart';
@@ -143,6 +146,13 @@ typedef PostStatisticsPageBuilder = Widget Function(
   Iterable<Post> posts,
 );
 
+typedef PostGestureHandlerBuilder = bool Function(
+  WidgetRef ref,
+  String? action,
+  Post post,
+  DownloadDelegate downloader,
+);
+
 abstract class BooruBuilder {
   // UI Builders
   HomePageBuilder get homePageBuilder;
@@ -168,6 +178,8 @@ abstract class BooruBuilder {
   GranularRatingFilterer? get granularRatingFilterer;
   GranularRatingQueryBuilder? get granularRatingQueryBuilder;
   GranularRatingOptionsBuilder? get granularRatingOptionsBuilder;
+
+  PostGestureHandlerBuilder get postGestureHandlerBuilder;
 
   // Data Builders
   PostFetcher get postFetcher;
@@ -286,6 +298,43 @@ mixin DefaultPostStatisticsPageBuilderMixin on BooruBuilder {
 mixin DefaultGranularRatingFiltererMixin on BooruBuilder {
   @override
   GranularRatingFilterer? get granularRatingFilterer => null;
+}
+
+mixin DefaultPostGesturesHandlerMixin on BooruBuilder {
+  @override
+  PostGestureHandlerBuilder get postGestureHandlerBuilder =>
+      (ref, action, post, downloader) => handleDefaultGestureAction(
+            action,
+            onDownload: () => downloader(post),
+            onShare: () => ref.sharePost(
+              post,
+              context: ref.context,
+              state: ref.read(postShareProvider(post)),
+            ),
+            onToggleBookmark: () => ref.toggleBookmark(post),
+            onViewTags: () => goToShowTaglistPage(ref, post.extractTags()),
+            onViewOriginal: () => goToOriginalImagePage(ref.context, post),
+            onOpenSource: () => post.source.whenWeb(
+              (source) => launchExternalUrlString(source.url),
+              () => false,
+            ),
+          );
+}
+
+extension BooruBuilderGestures on BooruBuilder {
+  bool canHandlePostGesture(
+    GestureType gesture,
+    GestureConfig? gestures,
+  ) =>
+      switch (gesture) {
+        GestureType.swipeDown => gestures?.swipeDown != null,
+        GestureType.swipeUp => gestures?.swipeUp != null,
+        GestureType.swipeLeft => gestures?.swipeLeft != null,
+        GestureType.swipeRight => gestures?.swipeRight != null,
+        GestureType.doubleTap => gestures?.doubleTap != null,
+        GestureType.longPress => gestures?.longPress != null,
+        GestureType.tap => gestures?.tap != null,
+      };
 }
 
 mixin LegacyGranularRatingOptionsBuilderMixin on BooruBuilder {
