@@ -43,6 +43,8 @@ class CreateBooruConfigScaffold extends ConsumerStatefulWidget {
     this.hasDownloadTab = false,
     this.hasRatingFilter = false,
     this.miscOptionBuilder,
+    this.postDetailsGestureActions = kDefaultGestureActions,
+    this.describePostDetailsAction,
   });
 
   final Color? backgroundColor;
@@ -59,6 +61,9 @@ class CreateBooruConfigScaffold extends ConsumerStatefulWidget {
   final bool hasRatingFilter;
 
   final List<Widget> Function(BuildContext context)? miscOptionBuilder;
+
+  final Set<String?> postDetailsGestureActions;
+  final String Function(String? action)? describePostDetailsAction;
 
   @override
   ConsumerState<CreateBooruConfigScaffold> createState() =>
@@ -211,28 +216,17 @@ class _CreateBooruConfigScaffoldState
             title: const Text('Swipe image down'),
             trailing: OptionDropDownButton(
               alignment: AlignmentDirectional.centerStart,
-              value: toPostDetailsAction(postGestures.fullview?.swipeDown),
+              value: postGestures.fullview?.swipeDown,
               onChanged: (value) {
-                setState(() => postGestures = postGestures.withSwipeDown(
-                      mapPostDetailsActionToString(value),
-                    ));
+                setState(
+                    () => postGestures = postGestures.withSwipeDown(value));
               },
-              items: [
-                ...PostDetailsAction.values,
-                null,
-              ]
+              items: widget.postDetailsGestureActions
                   .map((value) => DropdownMenuItem(
                         value: value,
-                        child: Text(
-                          switch (value) {
-                            PostDetailsAction.goBack => 'Go back',
-                            PostDetailsAction.download => 'Download',
-                            PostDetailsAction.share => 'Share',
-                            PostDetailsAction.toggleBookmark =>
-                              'Toggle bookmark',
-                            null => 'None',
-                          },
-                        ),
+                        child: Text(widget.describePostDetailsAction != null
+                            ? widget.describePostDetailsAction!(value)
+                            : describeDefaultGestureAction(value)),
                       ))
                   .toList(),
             ),

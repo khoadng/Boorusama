@@ -4,6 +4,16 @@ import 'dart:convert';
 // Package imports:
 import 'package:equatable/equatable.dart';
 
+enum GestureType {
+  swipeUp,
+  swipeDown,
+  swipeLeft,
+  swipeRight,
+  doubleTap,
+  longPress,
+  tap,
+}
+
 class GestureConfig extends Equatable {
   final String? swipeUp;
   final String? swipeDown;
@@ -146,28 +156,52 @@ class PostGestureConfig extends Equatable {
   List<Object?> get props => [preview, fullview];
 }
 
-PostDetailsAction? toPostDetailsAction(String? value) => switch (value) {
-      'download' => PostDetailsAction.download,
-      'share' => PostDetailsAction.share,
-      'goBack' => PostDetailsAction.goBack,
-      'toggleBookmark' => PostDetailsAction.toggleBookmark,
-      _ => null
+const kDownloadAction = 'download';
+const kShareAction = 'share';
+const kGoBackAction = 'goBack';
+const kToggleBookmarkAction = 'toggleBookmark';
+
+const kToggleFavoriteAction = 'toggleFavorite';
+const kUpvoteAction = 'upvote';
+const kDownvoteAction = 'downvote';
+
+const kDefaultGestureActions = {
+  null,
+  kDownloadAction,
+  kShareAction,
+  kGoBackAction,
+  kToggleBookmarkAction,
+};
+
+String describeDefaultGestureAction(String? action) => switch (action) {
+      kDownloadAction => 'Download',
+      kShareAction => 'Share',
+      kGoBackAction => 'Go back',
+      kToggleBookmarkAction => 'Toggle bookmark',
+      _ => 'None'
     };
 
-String? mapPostDetailsActionToString(PostDetailsAction? value) =>
-    switch (value) {
-      PostDetailsAction.goBack => 'goBack',
-      PostDetailsAction.download => 'download',
-      PostDetailsAction.share => 'share',
-      PostDetailsAction.toggleBookmark => 'toggleBookmark',
-      null => null,
-    };
-
-enum PostDetailsAction {
-  download,
-  share,
-  goBack,
-  toggleBookmark,
+void handleDefaultGestureAction(
+  String? action, {
+  void Function()? onDownload,
+  void Function()? onShare,
+  void Function()? onGoBack,
+  void Function()? onToggleBookmark,
+}) {
+  switch (action) {
+    case kDownloadAction:
+      onDownload?.call();
+      break;
+    case kShareAction:
+      onShare?.call();
+      break;
+    case kGoBackAction:
+      onGoBack?.call();
+      break;
+    case kToggleBookmarkAction:
+      onToggleBookmark?.call();
+      break;
+  }
 }
 
 extension PostGestureConfigX on PostGestureConfig {

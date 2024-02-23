@@ -30,6 +30,7 @@ class PhilomenaBuilder
         LegacyGranularRatingOptionsBuilderMixin,
         NoGranularRatingQueryBuilderMixin,
         DefaultGranularRatingFiltererMixin,
+        DefaultPostDetailsGesturesHandlerMixin,
         DefaultPostStatisticsPageBuilderMixin,
         DefaultBooruUIMixin
     implements BooruBuilder {

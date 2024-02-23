@@ -114,6 +114,7 @@ class E621Builder
         LegacyGranularRatingOptionsBuilderMixin,
         LegacyGranularRatingQueryBuilderMixin,
         DefaultThumbnailUrlMixin,
+        DefaultPostDetailsGesturesHandlerMixin,
         DefaultPostStatisticsPageBuilderMixin,
         DefaultGranularRatingFiltererMixin,
         DefaultPostImageDetailsUrlMixin

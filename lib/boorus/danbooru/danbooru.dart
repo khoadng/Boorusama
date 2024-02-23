@@ -17,6 +17,7 @@ import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/pages/post_statistics_page.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
+import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/functional.dart';
 import 'pages/create_danbooru_config_page.dart';
@@ -204,6 +205,25 @@ class DanbooruBuilder
   NoteFetcher? get noteFetcher => (postId) => noteRepo.getNotes(postId);
 
   @override
+  PostDetailsGestureHandlerBuilder get postDetailsGestureHandlerBuilder =>
+      (ref, gesture, postGestures, post, downloader) => switch (gesture) {
+            GestureType.swipeDown => handleDanbooruGestureAction(
+                postGestures?.swipeDown,
+                onDownload: () => downloader(post),
+                onShare: () => ref.sharePost(
+                  post,
+                  context: ref.context,
+                  state: ref.read(postShareProvider(post)),
+                ),
+                onToggleBookmark: () => ref.toggleBookmark(post),
+                onToggleFavorite: () => ref.danbooruToggleFavorite(post.id),
+                onUpvote: () => ref.danbooruUpvote(post.id),
+                onDownvote: () => ref.danbooruDownvote(post.id),
+              ),
+            _ => null,
+          };
+
+  @override
   DownloadFilenameGenerator get downloadFilenameBuilder =>
       DownloadFileNameBuilder<DanbooruPost>(
         defaultFileNameFormat: kBoorusamaCustomDownloadFileNameFormat,
@@ -285,4 +305,35 @@ class DanbooruBuilder
                     (ratings) => !ratings.contains(post.rating),
                   ),
           };
+}
+
+void handleDanbooruGestureAction(
+  String? action, {
+  void Function()? onDownload,
+  void Function()? onShare,
+  void Function()? onGoBack,
+  void Function()? onToggleBookmark,
+  void Function()? onToggleFavorite,
+  void Function()? onUpvote,
+  void Function()? onDownvote,
+}) {
+  switch (action) {
+    case kToggleFavoriteAction:
+      onToggleFavorite?.call();
+      break;
+    case kUpvoteAction:
+      onUpvote?.call();
+      break;
+    case kDownvoteAction:
+      onDownvote?.call();
+      break;
+    default:
+      handleDefaultGestureAction(
+        action,
+        onDownload: onDownload,
+        onShare: onShare,
+        onGoBack: onGoBack,
+        onToggleBookmark: onToggleBookmark,
+      );
+  }
 }

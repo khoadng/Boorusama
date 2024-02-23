@@ -6,6 +6,7 @@ import 'package:exprollable_page_view/exprollable_page_view.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
@@ -108,6 +109,8 @@ class _PostDetailPageScaffoldState<T extends Post>
   @override
   Widget build(BuildContext context) {
     final config = ref.watchConfig;
+    final postDetailsGesturesHandler =
+        ref.watchBooruBuilder(config)?.postDetailsGestureHandlerBuilder;
 
     return LayoutBuilder(
       builder: (context, constraints) => DownloadProviderWidget(
@@ -119,20 +122,15 @@ class _PostDetailPageScaffoldState<T extends Post>
             onSwiped(page);
             widget.onPageChanged?.call(posts[page]);
           },
-          onSwipeDownEnd: switch (
-              toPostDetailsAction(config.postGestures?.fullview?.swipeDown)) {
-            PostDetailsAction.share => (page) => ref.sharePost(
+          onSwipeDownEnd: (page) => postDetailsGesturesHandler != null
+              ? postDetailsGesturesHandler(
+                  ref,
+                  GestureType.swipeDown,
+                  config.postGestures?.fullview,
                   posts[page],
-                  context: context,
-                  state: ref.read(postShareProvider(posts[page])),
-                ),
-            PostDetailsAction.download => (page) => download(posts[page]),
-            PostDetailsAction.toggleBookmark => (page) => ref.toggleBookmark(
-                  posts[page],
-                ),
-            PostDetailsAction.goBack => null,
-            null => null,
-          },
+                  download,
+                )
+              : null,
           bottomSheet: (page) {
             final bottomSheet = Column(
               mainAxisSize: MainAxisSize.min,

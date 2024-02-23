@@ -13,6 +13,7 @@ import 'package:boorusama/core/pages/boorus/widgets/create_booru_login_field.dar
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_post_details_resolution_option_tile.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -48,6 +49,24 @@ class _CreateDanbooruConfigPageState
       authTabBuilder: (context) => _buildAuthTab(),
       hasDownloadTab: true,
       hasRatingFilter: true,
+      postDetailsGestureActions: const {
+        ...kDefaultGestureActions,
+        kToggleFavoriteAction,
+        kUpvoteAction,
+        kDownvoteAction,
+      },
+      describePostDetailsAction: (action) {
+        switch (action) {
+          case kToggleFavoriteAction:
+            return 'Toggle favorite';
+          case kUpvoteAction:
+            return 'Upvote';
+          case kDownvoteAction:
+            return 'Downvote';
+          default:
+            return describeDefaultGestureAction(action);
+        }
+      },
       postDetailsResolutionBuilder: (context) =>
           CreateBooruImageDetailsResolutionOptionTile(
         value: imageDetaisQuality,

@@ -168,6 +168,7 @@ class GelbooruBuilder
         DefaultThumbnailUrlMixin,
         DefaultPostImageDetailsUrlMixin,
         DefaultGranularRatingFiltererMixin,
+        DefaultPostDetailsGesturesHandlerMixin,
         DefaultPostStatisticsPageBuilderMixin,
         DefaultTagColorMixin
     implements BooruBuilder {

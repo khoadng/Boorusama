@@ -48,11 +48,7 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
                 color: voteState.isUpvoted ? Colors.redAccent : null,
               ),
               splashRadius: 16,
-              onPressed: () {
-                ref
-                    .read(danbooruPostVotesProvider(config).notifier)
-                    .upvote(post.id);
-              },
+              onPressed: () => ref.danbooruUpvote(post.id),
             ),
           if (config.hasLoginDetails())
             IconButton(
@@ -61,11 +57,7 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
                 color: voteState.isDownvoted ? Colors.blueAccent : null,
               ),
               splashRadius: 16,
-              onPressed: () {
-                ref
-                    .read(danbooruPostVotesProvider(config).notifier)
-                    .downvote(post.id);
-              },
+              onPressed: () => ref.danbooruDownvote(post.id),
             ),
           BookmarkPostButton(post: post),
           CommentPostButton(

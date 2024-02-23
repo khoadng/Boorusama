@@ -79,4 +79,23 @@ class FavoritesNotifier extends FamilyNotifier<Map<int, bool>, BooruConfig> {
 extension DanbooruFavoritesX on WidgetRef {
   FavoritesNotifier get danbooruFavorites => read(
       danbooruFavoritesProvider(read(currentBooruConfigProvider)).notifier);
+
+  void danbooruToggleFavorite(int postId) {
+    if (!readConfig.hasLoginDetails()) return;
+
+    final isFaved = read(danbooruFavoriteProvider(postId));
+    if (isFaved) {
+      danbooruFavorites.remove(postId);
+    } else {
+      danbooruFavorites.add(postId);
+    }
+  }
+
+  void danbooruUpvote(int postId) {
+    read(danbooruPostVotesProvider(readConfig).notifier).upvote(postId);
+  }
+
+  void danbooruDownvote(int postId) {
+    read(danbooruPostVotesProvider(readConfig).notifier).downvote(postId);
+  }
 }

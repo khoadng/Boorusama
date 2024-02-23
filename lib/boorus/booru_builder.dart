@@ -32,6 +32,8 @@ import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/pages/post_statistics_page.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/routes.dart';
@@ -143,6 +145,14 @@ typedef PostStatisticsPageBuilder = Widget Function(
   Iterable<Post> posts,
 );
 
+typedef PostDetailsGestureHandlerBuilder = void Function(
+  WidgetRef ref,
+  GestureType gesture,
+  GestureConfig? gestures,
+  Post post,
+  DownloadDelegate downloader,
+);
+
 abstract class BooruBuilder {
   // UI Builders
   HomePageBuilder get homePageBuilder;
@@ -168,6 +178,8 @@ abstract class BooruBuilder {
   GranularRatingFilterer? get granularRatingFilterer;
   GranularRatingQueryBuilder? get granularRatingQueryBuilder;
   GranularRatingOptionsBuilder? get granularRatingOptionsBuilder;
+
+  PostDetailsGestureHandlerBuilder get postDetailsGestureHandlerBuilder;
 
   // Data Builders
   PostFetcher get postFetcher;
@@ -286,6 +298,24 @@ mixin DefaultPostStatisticsPageBuilderMixin on BooruBuilder {
 mixin DefaultGranularRatingFiltererMixin on BooruBuilder {
   @override
   GranularRatingFilterer? get granularRatingFilterer => null;
+}
+
+mixin DefaultPostDetailsGesturesHandlerMixin on BooruBuilder {
+  @override
+  PostDetailsGestureHandlerBuilder get postDetailsGestureHandlerBuilder =>
+      (ref, gesture, postGestures, post, downloader) => switch (gesture) {
+            GestureType.swipeDown => handleDefaultGestureAction(
+                postGestures?.swipeDown,
+                onDownload: () => downloader(post),
+                onShare: () => ref.sharePost(
+                  post,
+                  context: ref.context,
+                  state: ref.read(postShareProvider(post)),
+                ),
+                onToggleBookmark: () => ref.toggleBookmark(post),
+              ),
+            _ => null,
+          };
 }
 
 mixin LegacyGranularRatingOptionsBuilderMixin on BooruBuilder {
