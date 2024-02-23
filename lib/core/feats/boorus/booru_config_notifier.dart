@@ -8,6 +8,7 @@ import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/analytics.dart';
+import 'package:boorusama/foundation/gestures.dart';
 
 class BooruConfigNotifier extends Notifier<List<BooruConfig>?> {
   @override
@@ -54,6 +55,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?> {
           copyData.customBulkDownloadFileNameFormat,
       imageDetaisQuality: copyData.imageDetaisQuality,
       granularRatingFilters: copyData.granularRatingFilters,
+      postGestures: copyData.postGestures,
     ));
   }
 
@@ -105,6 +107,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?> {
             imageDetaisQuality: config.imageDetaisQuality,
             granularRatingFilterString:
                 granularRatingFilterToString(config.granularRatingFilters),
+            postGestures: config.postGestures?.toJsonString(),
           )
         : BooruConfigData(
             login: config.login,
@@ -123,6 +126,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?> {
             imageDetaisQuality: config.imageDetaisQuality,
             granularRatingFilterString:
                 granularRatingFilterToString(config.granularRatingFilters),
+            postGestures: config.postGestures?.toJsonString(),
           );
     final updatedConfig =
         await ref.read(booruConfigRepoProvider).update(id, booruConfigData);
@@ -196,6 +200,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?> {
           imageDetaisQuality: newConfig.imageDetaisQuality,
           granularRatingFilterString:
               granularRatingFilterToString(newConfig.granularRatingFilters),
+          postGestures: newConfig.postGestures?.toJsonString(),
         );
 
         final config =
@@ -352,6 +357,7 @@ class AddNewBooruConfig {
     required this.customBulkDownloadFileNameFormat,
     required this.imageDetaisQuality,
     required this.granularRatingFilters,
+    required this.postGestures,
   });
 
   final String login;
@@ -366,4 +372,5 @@ class AddNewBooruConfig {
   final String? customBulkDownloadFileNameFormat;
   final String? imageDetaisQuality;
   final Set<Rating>? granularRatingFilters;
+  final PostGestureConfig? postGestures;
 }

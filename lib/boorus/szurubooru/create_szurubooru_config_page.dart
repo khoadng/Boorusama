@@ -91,6 +91,7 @@ class _CreateSzurubooruConfigPageState
       customBulkDownloadFileNameFormat: null,
       imageDetaisQuality: null,
       granularRatingFilters: null,
+      postGestures: data.postGestures,
     );
 
     ref

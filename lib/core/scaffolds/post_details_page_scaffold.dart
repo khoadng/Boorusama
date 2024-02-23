@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/feats/video/videos_provider.dart';
@@ -106,6 +107,8 @@ class _PostDetailPageScaffoldState<T extends Post>
 
   @override
   Widget build(BuildContext context) {
+    final config = ref.watchConfig;
+
     return LayoutBuilder(
       builder: (context, constraints) => DownloadProviderWidget(
         builder: (context, download) => DetailsPage(
@@ -116,8 +119,8 @@ class _PostDetailPageScaffoldState<T extends Post>
             onSwiped(page);
             widget.onPageChanged?.call(posts[page]);
           },
-          onSwipeDownEnd: switch (ref.watch(settingsProvider.select((e) =>
-              toPostDetailsAction(e.postGestures.fullview?.swipeDown)))) {
+          onSwipeDownEnd: switch (
+              toPostDetailsAction(config.postGestures?.fullview?.swipeDown)) {
             PostDetailsAction.share => (page) => ref.sharePost(
                   posts[page],
                   context: context,

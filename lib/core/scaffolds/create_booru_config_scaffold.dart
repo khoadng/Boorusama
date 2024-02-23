@@ -16,7 +16,9 @@ import 'package:boorusama/core/pages/boorus/widgets/create_booru_submit_button.d
 import 'package:boorusama/core/pages/boorus/widgets/custom_download_file_name_section.dart';
 import 'package:boorusama/core/pages/boorus/widgets/selected_booru_chip.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 typedef CreateConfigData = ({
   String configName,
@@ -25,6 +27,7 @@ typedef CreateConfigData = ({
   Set<Rating>? granularRatingFilters,
   BooruConfigRatingFilter? ratingFilter,
   String? imageDetaisQuality,
+  PostGestureConfig? postGestures,
 });
 
 class CreateBooruConfigScaffold extends ConsumerStatefulWidget {
@@ -72,6 +75,8 @@ class _CreateBooruConfigScaffoldState
   late var ratingFilter = widget.config.ratingFilter;
   late var granularRatingFilters = widget.config.granularRatingFilters;
   late var imageDetaisQuality = widget.config.imageDetaisQuality;
+  late var postGestures =
+      widget.config.postGestures ?? const PostGestureConfig.undefined();
 
   @override
   Widget build(BuildContext context) {
@@ -80,6 +85,7 @@ class _CreateBooruConfigScaffoldState
         'Authentication': widget.authTabBuilder!(context),
       if (widget.hasDownloadTab) 'Download': _buildDownloadTab(),
       ...widget.tabsBuilder(context),
+      'Gestures': _buildGesturesTab(),
       'Misc': _buildMiscTab(),
     };
 
@@ -90,6 +96,7 @@ class _CreateBooruConfigScaffoldState
       granularRatingFilters: granularRatingFilters,
       ratingFilter: ratingFilter,
       imageDetaisQuality: imageDetaisQuality,
+      postGestures: postGestures,
     );
 
     return Material(
@@ -190,6 +197,51 @@ class _CreateBooruConfigScaffoldState
     );
   }
 
+  Widget _buildGesturesTab() {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const SizedBox(height: 12),
+          const BooruConfigSettingsHeader(label: 'Image viewer'),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            visualDensity: VisualDensity.compact,
+            title: const Text('Swipe image down'),
+            trailing: OptionDropDownButton(
+              alignment: AlignmentDirectional.centerStart,
+              value: toPostDetailsAction(postGestures.fullview?.swipeDown),
+              onChanged: (value) {
+                setState(() => postGestures = postGestures.withSwipeDown(
+                      mapPostDetailsActionToString(value),
+                    ));
+              },
+              items: [
+                ...PostDetailsAction.values,
+                null,
+              ]
+                  .map((value) => DropdownMenuItem(
+                        value: value,
+                        child: Text(
+                          switch (value) {
+                            PostDetailsAction.goBack => 'Go back',
+                            PostDetailsAction.download => 'Download',
+                            PostDetailsAction.share => 'Share',
+                            PostDetailsAction.toggleBookmark =>
+                              'Toggle bookmark',
+                            null => 'None',
+                          },
+                        ),
+                      ))
+                  .toList(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildMiscTab() {
     return SingleChildScrollView(
       child: Column(
@@ -218,6 +270,29 @@ class _CreateBooruConfigScaffoldState
           if (widget.miscOptionBuilder != null)
             ...widget.miscOptionBuilder!(context),
         ],
+      ),
+    );
+  }
+}
+
+class BooruConfigSettingsHeader extends StatelessWidget {
+  const BooruConfigSettingsHeader({
+    super.key,
+    required this.label,
+  });
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+      child: Text(
+        label,
+        style: TextStyle(
+          color: context.colorScheme.primary,
+          fontWeight: FontWeight.w500,
+        ),
       ),
     );
   }

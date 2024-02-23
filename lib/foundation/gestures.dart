@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:convert';
+
 // Package imports:
 import 'package:equatable/equatable.dart';
 
@@ -73,6 +76,8 @@ class GestureConfig extends Equatable {
     };
   }
 
+  String toJsonString() => jsonEncode(toJson());
+
   @override
   List<Object?> get props => [
         swipeUp,
@@ -109,6 +114,15 @@ class PostGestureConfig extends Equatable {
     );
   }
 
+  // fromJsonString
+  factory PostGestureConfig.fromJsonString(String? jsonString) {
+    if (jsonString == null) {
+      return const PostGestureConfig.undefined();
+    }
+    return PostGestureConfig.fromJson(
+        jsonDecode(jsonString) as Map<String, dynamic>);
+  }
+
   PostGestureConfig copyWith({
     GestureConfig? Function()? preview,
     GestureConfig? Function()? fullview,
@@ -125,6 +139,8 @@ class PostGestureConfig extends Equatable {
       if (fullview != null) 'fullview': fullview!.toJson(),
     };
   }
+
+  String toJsonString() => jsonEncode(toJson());
 
   @override
   List<Object?> get props => [preview, fullview];

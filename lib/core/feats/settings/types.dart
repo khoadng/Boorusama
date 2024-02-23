@@ -93,7 +93,6 @@ class Settings extends Equatable {
     required this.bookmarkFilterType,
     required this.pageIndicatorPosition,
     required this.postDetailsOverlayInitialState,
-    required this.postGestures,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
@@ -152,9 +151,6 @@ class Settings extends Equatable {
                 ? PostDetailsOverlayInitialState
                     .values[json['postDetailsOverlayInitialState']]
                 : PostDetailsOverlayInitialState.show,
-        postGestures = json['postGestures'] != null
-            ? PostGestureConfig.fromJson(json['postGestures'])
-            : const PostGestureConfig.undefined(),
         imageGridPadding = json['imageGridPadding'] ?? 16,
         imageGridSpacing = json['imageGridSpacing'] ?? 4;
 
@@ -187,7 +183,6 @@ class Settings extends Equatable {
     bookmarkFilterType: BookmarkFilterType.none,
     pageIndicatorPosition: PageIndicatorPosition.bottom,
     postDetailsOverlayInitialState: PostDetailsOverlayInitialState.show,
-    postGestures: PostGestureConfig.undefined(),
   );
 
   final String blacklistedTags;
@@ -238,8 +233,6 @@ class Settings extends Equatable {
   final PageIndicatorPosition pageIndicatorPosition;
 
   final PostDetailsOverlayInitialState postDetailsOverlayInitialState;
-
-  final PostGestureConfig postGestures;
 
   Settings copyWith({
     String? blacklistedTags,
@@ -308,7 +301,6 @@ class Settings extends Equatable {
             pageIndicatorPosition ?? this.pageIndicatorPosition,
         postDetailsOverlayInitialState: postDetailsOverlayInitialState ??
             this.postDetailsOverlayInitialState,
-        postGestures: postGestures ?? this.postGestures,
       );
 
   Map<String, dynamic> toJson() => {
@@ -340,7 +332,6 @@ class Settings extends Equatable {
         'bookmarkFilterType': bookmarkFilterType.index,
         'pageIndicatorPosition': pageIndicatorPosition.index,
         'postDetailsOverlayInitialState': postDetailsOverlayInitialState.index,
-        'postGestures': postGestures.toJson(),
       };
 
   @override
@@ -373,7 +364,6 @@ class Settings extends Equatable {
         bookmarkFilterType,
         pageIndicatorPosition,
         postDetailsOverlayInitialState,
-        postGestures,
       ];
 }
 

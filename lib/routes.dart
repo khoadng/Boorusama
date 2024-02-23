@@ -26,7 +26,6 @@ import 'boorus/entry_page.dart';
 import 'core/pages/bookmarks/bookmark_details_page.dart';
 import 'core/pages/bookmarks/bookmark_page.dart';
 import 'core/pages/boorus/add_booru_page.dart';
-import 'core/pages/settings/gestures_page.dart';
 import 'core/pages/settings/settings.dart';
 import 'foundation/rating/rating.dart';
 import 'router.dart';
@@ -228,17 +227,6 @@ class SettingsRoutes {
           key: state.pageKey,
           name: state.name,
           child: const PrivacyPage(),
-        ),
-      );
-
-  // gestures
-  static GoRoute gestures() => GoRoute(
-        path: 'gestures',
-        name: '/settings/gestures',
-        pageBuilder: (context, state) => CupertinoPage(
-          key: state.pageKey,
-          name: state.name,
-          child: const GesturesPage(),
         ),
       );
 
@@ -505,7 +493,6 @@ class Routes {
           SettingsRoutes.privacy(),
           SettingsRoutes.search(),
           SettingsRoutes.changelog(),
-          SettingsRoutes.gestures(),
         ],
       );
 

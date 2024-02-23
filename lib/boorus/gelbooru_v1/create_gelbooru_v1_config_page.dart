@@ -56,6 +56,7 @@ class _CreateGelbooruV1ConfigPageState
       customBulkDownloadFileNameFormat: data.customBulkDownloadFileNameFormat,
       imageDetaisQuality: data.imageDetaisQuality,
       granularRatingFilters: null,
+      postGestures: data.postGestures,
     );
 
     ref
