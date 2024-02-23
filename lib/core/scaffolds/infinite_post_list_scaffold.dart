@@ -93,6 +93,11 @@ class _InfinitePostListScaffoldState<T extends Post>
     final config = ref.watchConfig;
     final booruBuilder = ref.watchBooruBuilder(config);
     final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
+    final canHandleLongPress = booruBuilder?.canHandlePostGesture(
+          GestureType.longPress,
+          config.postGestures?.preview,
+        ) ??
+        false;
     final favoriteAdder = booruBuilder?.favoriteAdder;
     final favoriteRemover = booruBuilder?.favoriteRemover;
     final gridThumbnailUrlBuilder = booruBuilder?.gridThumbnailUrlBuilder;
@@ -143,80 +148,101 @@ class _InfinitePostListScaffoldState<T extends Post>
         itemBuilder: (context, items, index) {
           final post = items[index];
 
-          return ContextMenuRegion(
-            isEnabled: !multiSelect,
-            contextMenu: widget.contextMenuBuilder != null
-                ? widget.contextMenuBuilder!.call(
-                    post,
-                    () {
-                      _multiSelectController.enableMultiSelect();
-                    },
-                  )
-                : GeneralPostContextMenu(
-                    hasAccount: false,
-                    onMultiSelect: () {
-                      _multiSelectController.enableMultiSelect();
-                    },
-                    post: post,
-                  ),
+          return ConditionalParentWidget(
+            condition: !canHandleLongPress,
+            conditionalBuilder: (child) => ContextMenuRegion(
+              isEnabled: !multiSelect,
+              contextMenu: widget.contextMenuBuilder != null
+                  ? widget.contextMenuBuilder!.call(
+                      post,
+                      () {
+                        _multiSelectController.enableMultiSelect();
+                      },
+                    )
+                  : GeneralPostContextMenu(
+                      hasAccount: false,
+                      onMultiSelect: () {
+                        _multiSelectController.enableMultiSelect();
+                      },
+                      post: post,
+                    ),
+              child: child,
+            ),
             child: LayoutBuilder(
               builder: (context, constraints) => DownloadProviderWidget(
-                builder: (context, download) => ImageGridItem(
-                  isGif: post.isGif,
-                  isAI: post.isAI,
-                  onTap: !multiSelect
-                      ? () {
-                          if (booruBuilder?.canHandlePostGesture(
-                                      GestureType.tap,
-                                      config.postGestures?.preview) ==
-                                  true &&
-                              postGesturesHandler != null) {
-                            postGesturesHandler(
-                              ref,
-                              ref.watchConfig.postGestures?.preview?.tap,
-                              post,
-                              download,
-                            );
-                          } else {
-                            goToPostDetailsPage(
-                              context: context,
-                              posts: items,
-                              initialIndex: index,
-                              scrollController: _autoScrollController,
-                            );
-                          }
-                        }
-                      : null,
-                  isFaved: ref.watch(favoriteProvider(post.id)),
-                  enableFav: !multiSelect && canFavorite,
-                  onFavToggle: (isFaved) async {
-                    if (isFaved) {
-                      if (favoriteAdder == null) return;
-                      await favoriteAdder(post.id, ref);
-                    } else {
-                      if (favoriteRemover == null) return;
-                      await favoriteRemover(post.id, ref);
-                    }
-                  },
-                  autoScrollOptions: AutoScrollOptions(
-                    controller: _autoScrollController,
-                    index: index,
+                builder: (context, download) => ConditionalParentWidget(
+                  condition: canHandleLongPress,
+                  conditionalBuilder: (child) => GestureDetector(
+                    onLongPress: () {
+                      if (postGesturesHandler != null) {
+                        postGesturesHandler(
+                          ref,
+                          ref.watchConfig.postGestures?.preview?.longPress,
+                          post,
+                          download,
+                        );
+                      }
+                    },
+                    child: child,
                   ),
-                  isAnimated: post.isAnimated,
-                  isTranslated: post.isTranslated,
-                  hasComments: post.hasComment,
-                  hasParentOrChildren: post.hasParentOrChildren,
-                  score: settings.showScoresInGrid ? post.score : null,
-                  image: BooruImage(
-                    aspectRatio: post.aspectRatio,
-                    imageUrl: gridThumbnailUrlBuilder != null
-                        ? gridThumbnailUrlBuilder(settings, post)
-                        : post.thumbnailImageUrl,
-                    borderRadius: BorderRadius.circular(
-                      settings.imageBorderRadius,
+                  child: ImageGridItem(
+                    isGif: post.isGif,
+                    isAI: post.isAI,
+                    onTap: !multiSelect
+                        ? () {
+                            if (booruBuilder?.canHandlePostGesture(
+                                        GestureType.tap,
+                                        config.postGestures?.preview) ==
+                                    true &&
+                                postGesturesHandler != null) {
+                              postGesturesHandler(
+                                ref,
+                                ref.watchConfig.postGestures?.preview?.tap,
+                                post,
+                                download,
+                              );
+                            } else {
+                              goToPostDetailsPage(
+                                context: context,
+                                posts: items,
+                                initialIndex: index,
+                                scrollController: _autoScrollController,
+                              );
+                            }
+                          }
+                        : null,
+                    isFaved: ref.watch(favoriteProvider(post.id)),
+                    enableFav: !multiSelect && canFavorite,
+                    onFavToggle: (isFaved) async {
+                      if (isFaved) {
+                        if (favoriteAdder == null) return;
+                        await favoriteAdder(post.id, ref);
+                      } else {
+                        if (favoriteRemover == null) return;
+                        await favoriteRemover(post.id, ref);
+                      }
+                    },
+                    autoScrollOptions: AutoScrollOptions(
+                      controller: _autoScrollController,
+                      index: index,
                     ),
-                    forceFill: settings.imageListType == ImageListType.standard,
-                    placeholderUrl: post.thumbnailImageUrl,
+                    isAnimated: post.isAnimated,
+                    isTranslated: post.isTranslated,
+                    hasComments: post.hasComment,
+                    hasParentOrChildren: post.hasParentOrChildren,
+                    score: settings.showScoresInGrid ? post.score : null,
+                    image: BooruImage(
+                      aspectRatio: post.aspectRatio,
+                      imageUrl: gridThumbnailUrlBuilder != null
+                          ? gridThumbnailUrlBuilder(settings, post)
+                          : post.thumbnailImageUrl,
+                      borderRadius: BorderRadius.circular(
+                        settings.imageBorderRadius,
+                      ),
+                      forceFill:
+                          settings.imageListType == ImageListType.standard,
+                      placeholderUrl: post.thumbnailImageUrl,
+                    ),
                   ),
                 ),
               ),

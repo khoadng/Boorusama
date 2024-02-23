@@ -222,13 +222,6 @@ class DanbooruBuilder
               state: ref.read(postShareProvider(post)),
             ),
             onToggleBookmark: () => ref.toggleBookmark(post),
-            onToggleFavorite: () => ref.danbooruToggleFavorite(post.id),
-            onUpvote: () => ref.danbooruUpvote(post.id),
-            onDownvote: () => ref.danbooruDownvote(post.id),
-            onEdit: () => castOrNull<DanbooruPost>(post).toOption().fold(
-                  () => false,
-                  (post) => ref.danbooruEdit(post),
-                ),
             onViewTags: () => castOrNull<DanbooruPost>(post).toOption().fold(
                   () => goToShowTaglistPage(
                     ref,
@@ -244,6 +237,13 @@ class DanbooruBuilder
               (source) => launchExternalUrlString(source.url),
               () => false,
             ),
+            onToggleFavorite: () => ref.danbooruToggleFavorite(post.id),
+            onUpvote: () => ref.danbooruUpvote(post.id),
+            onDownvote: () => ref.danbooruDownvote(post.id),
+            onEdit: () => castOrNull<DanbooruPost>(post).toOption().fold(
+                  () => false,
+                  (post) => ref.danbooruEdit(post),
+                ),
           );
 
   @override
@@ -395,6 +395,15 @@ extension DanbooruX on WidgetRef {
     });
   }
 
+  void danbooruEdit(DanbooruPost post) {
+    _guardLogin(() {
+      goToTagEditPage(
+        this.context,
+        post: post,
+      );
+    });
+  }
+
   void _guardLogin(void Function() action) {
     if (!readConfig.hasLoginDetails()) {
       showSimpleSnackBar(
@@ -409,12 +418,5 @@ extension DanbooruX on WidgetRef {
     }
 
     action();
-  }
-
-  void danbooruEdit(DanbooruPost post) {
-    goToTagEditPage(
-      this.context,
-      post: post,
-    );
   }
 }
