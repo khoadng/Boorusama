@@ -19,6 +19,7 @@ import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/pages/post_statistics_page.dart';
+import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
@@ -228,6 +229,21 @@ class DanbooruBuilder
                   () => false,
                   (post) => ref.danbooruEdit(post),
                 ),
+            onViewTags: () => castOrNull<DanbooruPost>(post).toOption().fold(
+                  () => goToShowTaglistPage(
+                    ref,
+                    post.extractTags(),
+                  ),
+                  (post) => goToDanbooruShowTaglistPage(
+                    ref,
+                    post.extractTags(),
+                  ),
+                ),
+            onViewOriginal: () => goToOriginalImagePage(ref.context, post),
+            onOpenSource: () => post.source.whenWeb(
+              (source) => launchExternalUrlString(source.url),
+              () => false,
+            ),
           );
 
   @override
@@ -318,8 +334,10 @@ bool handleDanbooruGestureAction(
   String? action, {
   void Function()? onDownload,
   void Function()? onShare,
-  void Function()? onGoBack,
   void Function()? onToggleBookmark,
+  void Function()? onViewTags,
+  void Function()? onViewOriginal,
+  void Function()? onOpenSource,
   void Function()? onToggleFavorite,
   void Function()? onUpvote,
   void Function()? onDownvote,
@@ -344,6 +362,9 @@ bool handleDanbooruGestureAction(
         onDownload: onDownload,
         onShare: onShare,
         onToggleBookmark: onToggleBookmark,
+        onViewTags: onViewTags,
+        onViewOriginal: onViewOriginal,
+        onOpenSource: onOpenSource,
       );
   }
 

@@ -32,6 +32,7 @@ import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/pages/post_statistics_page.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
+import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -311,6 +312,12 @@ mixin DefaultPostGesturesHandlerMixin on BooruBuilder {
               state: ref.read(postShareProvider(post)),
             ),
             onToggleBookmark: () => ref.toggleBookmark(post),
+            onViewTags: () => goToShowTaglistPage(ref, post.extractTags()),
+            onViewOriginal: () => goToOriginalImagePage(ref.context, post),
+            onOpenSource: () => post.source.whenWeb(
+              (source) => launchExternalUrlString(source.url),
+              () => false,
+            ),
           );
 }
 

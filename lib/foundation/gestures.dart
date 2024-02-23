@@ -159,6 +159,9 @@ class PostGestureConfig extends Equatable {
 const kDownloadAction = 'download';
 const kShareAction = 'share';
 const kToggleBookmarkAction = 'toggleBookmark';
+const kViewTagsAction = 'viewTags';
+const kViewOriginalAction = 'viewOriginal';
+const kOpenSourceAction = 'openSource';
 
 const kToggleFavoriteAction = 'toggleFavorite';
 const kUpvoteAction = 'upvote';
@@ -170,12 +173,18 @@ const kDefaultGestureActions = {
   kDownloadAction,
   kShareAction,
   kToggleBookmarkAction,
+  kViewTagsAction,
+  kViewOriginalAction,
+  kOpenSourceAction,
 };
 
 String describeDefaultGestureAction(String? action) => switch (action) {
       kDownloadAction => 'Download',
       kShareAction => 'Share',
       kToggleBookmarkAction => 'Toggle bookmark',
+      kViewTagsAction => 'View tags',
+      kViewOriginalAction => 'View original',
+      kOpenSourceAction => 'Open source',
       _ => 'None'
     };
 
@@ -184,6 +193,9 @@ bool handleDefaultGestureAction(
   void Function()? onDownload,
   void Function()? onShare,
   void Function()? onToggleBookmark,
+  void Function()? onViewTags,
+  void Function()? onViewOriginal,
+  void Function()? onOpenSource,
 }) {
   switch (action) {
     case kDownloadAction:
@@ -192,9 +204,17 @@ bool handleDefaultGestureAction(
     case kShareAction:
       onShare?.call();
       break;
-
+    case kViewTagsAction:
+      onViewTags?.call();
+      break;
     case kToggleBookmarkAction:
       onToggleBookmark?.call();
+      break;
+    case kViewOriginalAction:
+      onViewOriginal?.call();
+      break;
+    case kOpenSourceAction:
+      onOpenSource?.call();
       break;
     default:
       return false;

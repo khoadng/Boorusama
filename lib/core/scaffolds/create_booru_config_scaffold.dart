@@ -278,6 +278,8 @@ class _CreateBooruConfigScaffoldState
                   .toList(),
             ),
           ),
+
+          const Divider(thickness: 0.5, height: 32),
           const BooruConfigSettingsHeader(label: 'Image preview'),
           // tap
           ListTile(

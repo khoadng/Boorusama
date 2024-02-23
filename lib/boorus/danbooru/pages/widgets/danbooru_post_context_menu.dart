@@ -93,7 +93,7 @@ class DanbooruPostContextMenu extends ConsumerWidget {
           ContextMenuButtonConfig(
             'View tags',
             onPressed: () {
-              goToDanbooruShowTaglistPage(ref, context, post.extractTags());
+              goToDanbooruShowTaglistPage(ref, post.extractTags());
             },
           ),
           ContextMenuButtonConfig(
