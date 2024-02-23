@@ -1,3 +1,6 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -5,6 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/foundation/i18n.dart';
 import 'favorites_provider.dart';
 
 class FavoritesNotifier extends FamilyNotifier<Map<int, bool>, BooruConfig> {
@@ -81,21 +86,41 @@ extension DanbooruFavoritesX on WidgetRef {
       danbooruFavoritesProvider(read(currentBooruConfigProvider)).notifier);
 
   void danbooruToggleFavorite(int postId) {
-    if (!readConfig.hasLoginDetails()) return;
-
-    final isFaved = read(danbooruFavoriteProvider(postId));
-    if (isFaved) {
-      danbooruFavorites.remove(postId);
-    } else {
-      danbooruFavorites.add(postId);
-    }
+    _guardLogin(() {
+      final isFaved = read(danbooruFavoriteProvider(postId));
+      if (isFaved) {
+        danbooruFavorites.remove(postId);
+      } else {
+        danbooruFavorites.add(postId);
+      }
+    });
   }
 
   void danbooruUpvote(int postId) {
-    read(danbooruPostVotesProvider(readConfig).notifier).upvote(postId);
+    _guardLogin(() {
+      read(danbooruPostVotesProvider(readConfig).notifier).upvote(postId);
+    });
   }
 
   void danbooruDownvote(int postId) {
-    read(danbooruPostVotesProvider(readConfig).notifier).downvote(postId);
+    _guardLogin(() {
+      read(danbooruPostVotesProvider(readConfig).notifier).downvote(postId);
+    });
+  }
+
+  void _guardLogin(void Function() action) {
+    if (!readConfig.hasLoginDetails()) {
+      showSimpleSnackBar(
+        context: context,
+        content: const Text(
+          'post.detail.login_required_notice',
+        ).tr(),
+        duration: const Duration(seconds: 1),
+      );
+
+      return;
+    }
+
+    action();
   }
 }

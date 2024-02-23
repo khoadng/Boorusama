@@ -7,12 +7,14 @@ class InteractiveImage extends StatefulWidget {
     required this.useOriginalSize,
     required this.image,
     this.onTap,
+    this.onDoubleTap,
     required this.transformationController,
   });
 
   final bool useOriginalSize;
   final Widget image;
   final VoidCallback? onTap;
+  final VoidCallback? onDoubleTap;
   final TransformationController transformationController;
 
   @override
@@ -56,7 +58,13 @@ class _InteractiveImageState extends State<InteractiveImage>
           children: [
             GestureDetector(
               onDoubleTapDown: (details) => _doubleTapDetails = details,
-              onDoubleTap: _handleDoubleTap,
+              onDoubleTap: () {
+                if (widget.onDoubleTap != null) {
+                  widget.onDoubleTap!();
+                } else {
+                  _handleDoubleTap();
+                }
+              },
               onTap: () => widget.onTap?.call(),
               child: child,
             ),

@@ -145,10 +145,9 @@ typedef PostStatisticsPageBuilder = Widget Function(
   Iterable<Post> posts,
 );
 
-typedef PostDetailsGestureHandlerBuilder = void Function(
+typedef PostDetailsGestureHandlerBuilder = bool Function(
   WidgetRef ref,
-  GestureType gesture,
-  GestureConfig? gestures,
+  String? action,
   Post post,
   DownloadDelegate downloader,
 );
@@ -303,19 +302,32 @@ mixin DefaultGranularRatingFiltererMixin on BooruBuilder {
 mixin DefaultPostDetailsGesturesHandlerMixin on BooruBuilder {
   @override
   PostDetailsGestureHandlerBuilder get postDetailsGestureHandlerBuilder =>
-      (ref, gesture, postGestures, post, downloader) => switch (gesture) {
-            GestureType.swipeDown => handleDefaultGestureAction(
-                postGestures?.swipeDown,
-                onDownload: () => downloader(post),
-                onShare: () => ref.sharePost(
-                  post,
-                  context: ref.context,
-                  state: ref.read(postShareProvider(post)),
-                ),
-                onToggleBookmark: () => ref.toggleBookmark(post),
-              ),
-            _ => null,
-          };
+      (ref, action, post, downloader) => handleDefaultGestureAction(
+            action,
+            onDownload: () => downloader(post),
+            onShare: () => ref.sharePost(
+              post,
+              context: ref.context,
+              state: ref.read(postShareProvider(post)),
+            ),
+            onToggleBookmark: () => ref.toggleBookmark(post),
+          );
+}
+
+extension BooruBuilderGestures on BooruBuilder {
+  bool canHandlePostDetailsGesture(
+    GestureType gesture,
+    GestureConfig? gestures,
+  ) =>
+      switch (gesture) {
+        GestureType.swipeDown => gestures?.swipeDown != null,
+        GestureType.swipeUp => gestures?.swipeUp != null,
+        GestureType.swipeLeft => gestures?.swipeLeft != null,
+        GestureType.swipeRight => gestures?.swipeRight != null,
+        GestureType.doubleTap => gestures?.doubleTap != null,
+        GestureType.longPress => gestures?.longPress != null,
+        GestureType.tap => gestures?.tap != null,
+      };
 }
 
 mixin LegacyGranularRatingOptionsBuilderMixin on BooruBuilder {

@@ -218,8 +218,29 @@ class _CreateBooruConfigScaffoldState
               alignment: AlignmentDirectional.centerStart,
               value: postGestures.fullview?.swipeDown,
               onChanged: (value) {
-                setState(
-                    () => postGestures = postGestures.withSwipeDown(value));
+                setState(() =>
+                    postGestures = postGestures.withFulviewSwipeDown(value));
+              },
+              items: widget.postDetailsGestureActions
+                  .map((value) => DropdownMenuItem(
+                        value: value,
+                        child: Text(widget.describePostDetailsAction != null
+                            ? widget.describePostDetailsAction!(value)
+                            : describeDefaultGestureAction(value)),
+                      ))
+                  .toList(),
+            ),
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            visualDensity: VisualDensity.compact,
+            title: const Text('Double tap image'),
+            trailing: OptionDropDownButton(
+              alignment: AlignmentDirectional.centerStart,
+              value: postGestures.fullview?.doubleTap,
+              onChanged: (value) {
+                setState(() =>
+                    postGestures = postGestures.withFulviewDoubleTap(value));
               },
               items: widget.postDetailsGestureActions
                   .map((value) => DropdownMenuItem(

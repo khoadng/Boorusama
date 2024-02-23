@@ -109,8 +109,9 @@ class _PostDetailPageScaffoldState<T extends Post>
   @override
   Widget build(BuildContext context) {
     final config = ref.watchConfig;
+    final booruBuilder = ref.watchBooruBuilder(config);
     final postDetailsGesturesHandler =
-        ref.watchBooruBuilder(config)?.postDetailsGestureHandlerBuilder;
+        booruBuilder?.postDetailsGestureHandlerBuilder;
 
     return LayoutBuilder(
       builder: (context, constraints) => DownloadProviderWidget(
@@ -122,14 +123,18 @@ class _PostDetailPageScaffoldState<T extends Post>
             onSwiped(page);
             widget.onPageChanged?.call(posts[page]);
           },
-          onSwipeDownEnd: (page) => postDetailsGesturesHandler != null
-              ? postDetailsGesturesHandler(
-                  ref,
-                  GestureType.swipeDown,
-                  config.postGestures?.fullview,
-                  posts[page],
-                  download,
-                )
+          onSwipeDownEnd: booruBuilder?.canHandlePostDetailsGesture(
+                        GestureType.swipeDown,
+                        config.postGestures?.fullview,
+                      ) ==
+                      true &&
+                  postDetailsGesturesHandler != null
+              ? (page) => postDetailsGesturesHandler(
+                    ref,
+                    config.postGestures?.fullview?.swipeDown,
+                    posts[page],
+                    download,
+                  )
               : null,
           bottomSheet: (page) {
             final bottomSheet = Column(
@@ -187,8 +192,16 @@ class _PostDetailPageScaffoldState<T extends Post>
             aspectRatio: posts[page].aspectRatio,
           ),
           expandedBuilder: (context, page, currentPage, expanded, enableSwipe) {
-            final widgets =
-                _buildWidgets(context, expanded, page, currentPage, ref);
+            final widgets = _buildWidgets(
+              context,
+              expanded,
+              page,
+              currentPage,
+              ref,
+              booruBuilder,
+              postDetailsGesturesHandler,
+              download,
+            );
 
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -242,6 +255,9 @@ class _PostDetailPageScaffoldState<T extends Post>
     int page,
     int currentPage,
     WidgetRef ref,
+    BooruBuilder? booruBuilder,
+    PostDetailsGestureHandlerBuilder? postDetailsGesturesHandler,
+    DownloadDelegate download,
   ) {
     final post = posts[page];
     final expandedOnCurrentPage = expanded && page == currentPage;
@@ -253,6 +269,19 @@ class _PostDetailPageScaffoldState<T extends Post>
           ? widget.placeholderImageUrlBuilder!(post, currentPage)
           : post.thumbnailImageUrl,
       onImageTap: onImageTap,
+      onDoubleTap: booruBuilder?.canHandlePostDetailsGesture(
+                    GestureType.doubleTap,
+                    ref.watchConfig.postGestures?.fullview,
+                  ) ==
+                  true &&
+              postDetailsGesturesHandler != null
+          ? () => postDetailsGesturesHandler(
+                ref,
+                ref.watchConfig.postGestures?.fullview?.doubleTap,
+                post,
+                download,
+              )
+          : null,
       onCurrentVideoPositionChanged: onCurrentPositionChanged,
       onVideoVisibilityChanged: onVisibilityChanged,
       imageOverlayBuilder: (constraints) => widget.imageOverlayBuilder != null

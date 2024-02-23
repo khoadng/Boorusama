@@ -206,22 +206,19 @@ class DanbooruBuilder
 
   @override
   PostDetailsGestureHandlerBuilder get postDetailsGestureHandlerBuilder =>
-      (ref, gesture, postGestures, post, downloader) => switch (gesture) {
-            GestureType.swipeDown => handleDanbooruGestureAction(
-                postGestures?.swipeDown,
-                onDownload: () => downloader(post),
-                onShare: () => ref.sharePost(
-                  post,
-                  context: ref.context,
-                  state: ref.read(postShareProvider(post)),
-                ),
-                onToggleBookmark: () => ref.toggleBookmark(post),
-                onToggleFavorite: () => ref.danbooruToggleFavorite(post.id),
-                onUpvote: () => ref.danbooruUpvote(post.id),
-                onDownvote: () => ref.danbooruDownvote(post.id),
-              ),
-            _ => null,
-          };
+      (ref, action, post, downloader) => handleDanbooruGestureAction(
+            action,
+            onDownload: () => downloader(post),
+            onShare: () => ref.sharePost(
+              post,
+              context: ref.context,
+              state: ref.read(postShareProvider(post)),
+            ),
+            onToggleBookmark: () => ref.toggleBookmark(post),
+            onToggleFavorite: () => ref.danbooruToggleFavorite(post.id),
+            onUpvote: () => ref.danbooruUpvote(post.id),
+            onDownvote: () => ref.danbooruDownvote(post.id),
+          );
 
   @override
   DownloadFilenameGenerator get downloadFilenameBuilder =>
@@ -307,7 +304,7 @@ class DanbooruBuilder
           };
 }
 
-void handleDanbooruGestureAction(
+bool handleDanbooruGestureAction(
   String? action, {
   void Function()? onDownload,
   void Function()? onShare,
@@ -328,7 +325,7 @@ void handleDanbooruGestureAction(
       onDownvote?.call();
       break;
     default:
-      handleDefaultGestureAction(
+      return handleDefaultGestureAction(
         action,
         onDownload: onDownload,
         onShare: onShare,
@@ -336,4 +333,6 @@ void handleDanbooruGestureAction(
         onToggleBookmark: onToggleBookmark,
       );
   }
+
+  return true;
 }

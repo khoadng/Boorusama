@@ -181,7 +181,7 @@ String describeDefaultGestureAction(String? action) => switch (action) {
       _ => 'None'
     };
 
-void handleDefaultGestureAction(
+bool handleDefaultGestureAction(
   String? action, {
   void Function()? onDownload,
   void Function()? onShare,
@@ -201,15 +201,28 @@ void handleDefaultGestureAction(
     case kToggleBookmarkAction:
       onToggleBookmark?.call();
       break;
+    default:
+      return false;
   }
+
+  return true;
 }
 
 extension PostGestureConfigX on PostGestureConfig {
-  PostGestureConfig withSwipeDown(String? value) {
+  PostGestureConfig withFulviewSwipeDown(String? value) {
     final fv = fullview ?? const GestureConfig.undefined();
     return copyWith(
       fullview: () => fv.copyWith(
         swipeDown: () => value,
+      ),
+    );
+  }
+
+  PostGestureConfig withFulviewDoubleTap(String? value) {
+    final fv = fullview ?? const GestureConfig.undefined();
+    return copyWith(
+      fullview: () => fv.copyWith(
+        doubleTap: () => value,
       ),
     );
   }
