@@ -226,4 +226,13 @@ extension PostGestureConfigX on PostGestureConfig {
       ),
     );
   }
+
+  PostGestureConfig withFulviewLongPress(String? value) {
+    final fv = fullview ?? const GestureConfig.undefined();
+    return copyWith(
+      fullview: () => fv.copyWith(
+        longPress: () => value,
+      ),
+    );
+  }
 }

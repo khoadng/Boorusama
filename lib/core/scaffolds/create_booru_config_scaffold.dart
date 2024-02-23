@@ -210,10 +210,15 @@ class _CreateBooruConfigScaffoldState
         children: [
           const SizedBox(height: 12),
           const BooruConfigSettingsHeader(label: 'Image viewer'),
+          WarningContainer(
+            contentBuilder: (_) => const Text(
+              'Images only, not applicable to videos.',
+            ),
+          ),
           ListTile(
             contentPadding: EdgeInsets.zero,
             visualDensity: VisualDensity.compact,
-            title: const Text('Swipe image down'),
+            title: const Text('Swipe down'),
             trailing: OptionDropDownButton(
               alignment: AlignmentDirectional.centerStart,
               value: postGestures.fullview?.swipeDown,
@@ -234,13 +239,35 @@ class _CreateBooruConfigScaffoldState
           ListTile(
             contentPadding: EdgeInsets.zero,
             visualDensity: VisualDensity.compact,
-            title: const Text('Double tap image'),
+            title: const Text('Double tap'),
             trailing: OptionDropDownButton(
               alignment: AlignmentDirectional.centerStart,
               value: postGestures.fullview?.doubleTap,
               onChanged: (value) {
                 setState(() =>
                     postGestures = postGestures.withFulviewDoubleTap(value));
+              },
+              items: widget.postDetailsGestureActions
+                  .map((value) => DropdownMenuItem(
+                        value: value,
+                        child: Text(widget.describePostDetailsAction != null
+                            ? widget.describePostDetailsAction!(value)
+                            : describeDefaultGestureAction(value)),
+                      ))
+                  .toList(),
+            ),
+          ),
+          //long press
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            visualDensity: VisualDensity.compact,
+            title: const Text('Long press'),
+            trailing: OptionDropDownButton(
+              alignment: AlignmentDirectional.centerStart,
+              value: postGestures.fullview?.longPress,
+              onChanged: (value) {
+                setState(() =>
+                    postGestures = postGestures.withFulviewLongPress(value));
               },
               items: widget.postDetailsGestureActions
                   .map((value) => DropdownMenuItem(

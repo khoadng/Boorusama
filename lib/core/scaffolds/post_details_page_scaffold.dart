@@ -282,6 +282,19 @@ class _PostDetailPageScaffoldState<T extends Post>
                 download,
               )
           : null,
+      onLongPress: booruBuilder?.canHandlePostDetailsGesture(
+                    GestureType.longPress,
+                    ref.watchConfig.postGestures?.fullview,
+                  ) ==
+                  true &&
+              postDetailsGesturesHandler != null
+          ? () => postDetailsGesturesHandler(
+                ref,
+                ref.watchConfig.postGestures?.fullview?.longPress,
+                post,
+                download,
+              )
+          : null,
       onCurrentVideoPositionChanged: onCurrentPositionChanged,
       onVideoVisibilityChanged: onVisibilityChanged,
       imageOverlayBuilder: (constraints) => widget.imageOverlayBuilder != null

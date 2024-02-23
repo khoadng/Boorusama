@@ -24,6 +24,7 @@ class PostMedia extends ConsumerWidget {
     required this.imageUrl,
     this.onImageTap,
     this.onDoubleTap,
+    this.onLongPress,
     this.onImageZoomUpdated,
     this.onCurrentVideoPositionChanged,
     this.onVideoVisibilityChanged,
@@ -40,6 +41,7 @@ class PostMedia extends ConsumerWidget {
   final String imageUrl;
   final VoidCallback? onImageTap;
   final VoidCallback? onDoubleTap;
+  final VoidCallback? onLongPress;
   final bool useHero;
   final void Function(bool value)? onImageZoomUpdated;
   final void Function(double current, double total, String url)?
@@ -121,6 +123,7 @@ class PostMedia extends ConsumerWidget {
             placeholderImageUrl: placeholderImageUrl,
             onTap: onImageTap,
             onDoubleTap: onDoubleTap,
+            onLongPress: onLongPress,
             imageOverlayBuilder: (constraints) =>
                 imageOverlayBuilder?.call(constraints) ?? [],
             width: post.width,
