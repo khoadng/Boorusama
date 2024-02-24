@@ -35,8 +35,10 @@ class InfinitePostListScaffold<T extends Post> extends ConsumerStatefulWidget {
     this.refreshAtStart = true,
     this.errors,
     this.safeArea = true,
+    this.initialConfig,
   });
 
+  final BooruConfig? initialConfig;
   final VoidCallback? onLoadMore;
   final void Function()? onRefresh;
   final List<Widget> Function(BuildContext context)? sliverHeaderBuilder;
@@ -90,7 +92,7 @@ class _InfinitePostListScaffoldState<T extends Post>
     final settings = ref.watch(settingsProvider);
     final globalBlacklist = ref.watch(globalBlacklistedTagsProvider);
 
-    final config = ref.watchConfig;
+    final config = widget.initialConfig ?? ref.watchConfig;
     final booruBuilder = ref.watchBooruBuilder(config);
     final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
     final canHandleLongPress = booruBuilder?.canHandlePostGesture(
@@ -177,7 +179,7 @@ class _InfinitePostListScaffoldState<T extends Post>
                       if (postGesturesHandler != null) {
                         postGesturesHandler(
                           ref,
-                          ref.watchConfig.postGestures?.preview?.longPress,
+                          config.postGestures?.preview?.longPress,
                           post,
                           download,
                         );
@@ -197,7 +199,7 @@ class _InfinitePostListScaffoldState<T extends Post>
                                 postGesturesHandler != null) {
                               postGesturesHandler(
                                 ref,
-                                ref.watchConfig.postGestures?.preview?.tap,
+                                config.postGestures?.preview?.tap,
                                 post,
                                 download,
                               );
