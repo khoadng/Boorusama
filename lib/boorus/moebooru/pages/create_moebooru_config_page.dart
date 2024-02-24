@@ -154,6 +154,7 @@ class _CreateMoebooruConfigPageState
       imageDetaisQuality: data.imageDetaisQuality,
       granularRatingFilters: data.granularRatingFilters,
       postGestures: data.postGestures,
+      defaultPreviewImageButtonAction: data.defaultPreviewImageButtonAction,
     );
 
     ref

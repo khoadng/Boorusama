@@ -168,6 +168,8 @@ const kUpvoteAction = 'upvote';
 const kDownvoteAction = 'downvote';
 const kEditAction = 'edit';
 
+const kDefaultAction = 'default';
+
 const kDefaultGestureActions = {
   null,
   kDownloadAction,
@@ -185,7 +187,15 @@ String describeDefaultGestureAction(String? action) => switch (action) {
       kViewTagsAction => 'View tags',
       kViewOriginalAction => 'View original',
       kOpenSourceAction => 'Open source',
+      kDefaultAction => 'Default',
       _ => 'None'
+    };
+
+String describeImagePreviewQuickAction(String? action) => switch (action) {
+      kDownloadAction => 'Download',
+      kToggleBookmarkAction => 'Bookmark',
+      '' => 'None',
+      _ => 'Use Default'
     };
 
 bool handleDefaultGestureAction(

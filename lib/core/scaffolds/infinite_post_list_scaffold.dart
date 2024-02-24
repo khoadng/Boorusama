@@ -188,6 +188,7 @@ class _InfinitePostListScaffoldState<T extends Post>
                   child: ImageGridItem(
                     isGif: post.isGif,
                     isAI: post.isAI,
+                    hideOverlay: multiSelect,
                     onTap: !multiSelect
                         ? () {
                             if (booruBuilder?.canHandlePostGesture(
@@ -213,6 +214,8 @@ class _InfinitePostListScaffoldState<T extends Post>
                         : null,
                     isFaved: ref.watch(favoriteProvider(post.id)),
                     enableFav: !multiSelect && canFavorite,
+                    quickActionButtonBuilder:
+                        defaultImagePreviewButtonBuilder(ref, post),
                     onFavToggle: (isFaved) async {
                       if (isFaved) {
                         if (favoriteAdder == null) return;

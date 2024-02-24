@@ -84,5 +84,6 @@ final newbooruConfigProvider =
     imageDetaisQuality: ref.watch(booruImageDetaisQualityProvider),
     granularRatingFilters: null,
     postGestures: null,
+    defaultPreviewImageButtonAction: null,
   );
 });

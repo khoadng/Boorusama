@@ -92,6 +92,7 @@ class _CreateSzurubooruConfigPageState
       imageDetaisQuality: null,
       granularRatingFilters: null,
       postGestures: data.postGestures,
+      defaultPreviewImageButtonAction: data.defaultPreviewImageButtonAction,
     );
 
     ref

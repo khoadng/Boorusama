@@ -596,6 +596,26 @@ String Function(
             ref.watch(settingsProvider), post, ref.watchConfig) ??
         post.sampleImageUrl;
 
+Widget Function(
+  BuildContext context,
+)? defaultImagePreviewButtonBuilder(
+  WidgetRef ref,
+  Post post,
+) =>
+    switch (ref.watchConfig.defaultPreviewImageButtonActionType) {
+      ImageQuickActionType.bookmark => (context) =>
+          BookmarkPostLikeButtonButton(
+            post: post,
+          ),
+      ImageQuickActionType.download => (context) => DownloadPostButton(
+            post: post,
+            small: true,
+          ),
+      ImageQuickActionType.none => (context) => const SizedBox.shrink(),
+      ImageQuickActionType.defaultAction => null,
+      _ => null,
+    };
+
 extension BooruRef on Ref {
   BooruBuilder? readBooruBuilder(BooruConfig? config) {
     if (config == null) return null;

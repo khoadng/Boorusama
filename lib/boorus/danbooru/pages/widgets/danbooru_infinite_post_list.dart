@@ -186,7 +186,7 @@ class _DanbooruInfinitePostListState
                   ),
                   child: DanbooruImageGridItem(
                     post: post,
-                    hideOverlay: false,
+                    hideOverlay: multiSelect,
                     autoScrollOptions: AutoScrollOptions(
                       controller: _autoScrollController,
                       index: index,

@@ -133,6 +133,7 @@ class _CreateDanbooruConfigPageState
       imageDetaisQuality: imageDetaisQuality,
       granularRatingFilters: data.granularRatingFilters,
       postGestures: data.postGestures,
+      defaultPreviewImageButtonAction: data.defaultPreviewImageButtonAction,
     );
 
     ref

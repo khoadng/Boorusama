@@ -14,23 +14,41 @@ class DownloadPostButton extends ConsumerWidget {
   const DownloadPostButton({
     super.key,
     required this.post,
+    this.small = false,
   });
 
   final Post post;
+  final bool small;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return DownloadProviderWidget(
-      builder: (context, download) => IconButton(
-        splashRadius: 16,
-        onPressed: () {
-          showDownloadStartToast(context);
-          download(post);
-        },
-        icon: const Icon(
-          Symbols.download,
-        ),
-      ),
+      builder: (context, download) => !small
+          ? IconButton(
+              splashRadius: 16,
+              onPressed: () {
+                showDownloadStartToast(context);
+                download(post);
+              },
+              icon: const Icon(
+                Symbols.download,
+              ),
+            )
+          : Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () {
+                  showDownloadStartToast(context);
+                  download(post);
+                },
+                child: const Padding(
+                  padding: EdgeInsets.all(4),
+                  child: Icon(
+                    Symbols.download,
+                  ),
+                ),
+              ),
+            ),
     );
   }
 }

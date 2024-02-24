@@ -55,6 +55,7 @@ class _CreateAnonConfigPageState extends ConsumerState<CreateAnonConfigPage> {
       imageDetaisQuality: data.imageDetaisQuality,
       granularRatingFilters: null,
       postGestures: data.postGestures,
+      defaultPreviewImageButtonAction: data.defaultPreviewImageButtonAction,
     );
 
     ref

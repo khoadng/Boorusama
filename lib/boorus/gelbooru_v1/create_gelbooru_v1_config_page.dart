@@ -57,6 +57,7 @@ class _CreateGelbooruV1ConfigPageState
       imageDetaisQuality: data.imageDetaisQuality,
       granularRatingFilters: null,
       postGestures: data.postGestures,
+      defaultPreviewImageButtonAction: data.defaultPreviewImageButtonAction,
     );
 
     ref

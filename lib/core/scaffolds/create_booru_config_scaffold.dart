@@ -28,7 +28,15 @@ typedef CreateConfigData = ({
   BooruConfigRatingFilter? ratingFilter,
   String? imageDetaisQuality,
   PostGestureConfig? postGestures,
+  String? defaultPreviewImageButtonAction,
 });
+
+const kDefaultPreviewImageButtonAction = {
+  '',
+  null,
+  kToggleBookmarkAction,
+  kDownloadAction,
+};
 
 class CreateBooruConfigScaffold extends ConsumerStatefulWidget {
   const CreateBooruConfigScaffold({
@@ -44,7 +52,9 @@ class CreateBooruConfigScaffold extends ConsumerStatefulWidget {
     this.hasRatingFilter = false,
     this.miscOptionBuilder,
     this.postDetailsGestureActions = kDefaultGestureActions,
+    this.postPreviewQuickActionButtonActions = kDefaultPreviewImageButtonAction,
     this.describePostDetailsAction,
+    this.describePostPreviewQuickAction,
   });
 
   final Color? backgroundColor;
@@ -65,6 +75,9 @@ class CreateBooruConfigScaffold extends ConsumerStatefulWidget {
   final Set<String?> postDetailsGestureActions;
   final String Function(String? action)? describePostDetailsAction;
 
+  final Set<String?> postPreviewQuickActionButtonActions;
+  final String Function(String? action)? describePostPreviewQuickAction;
+
   @override
   ConsumerState<CreateBooruConfigScaffold> createState() =>
       _CreateBooruConfigScaffoldState();
@@ -82,6 +95,8 @@ class _CreateBooruConfigScaffoldState
   late var imageDetaisQuality = widget.config.imageDetaisQuality;
   late var postGestures =
       widget.config.postGestures ?? const PostGestureConfig.undefined();
+  late var defaultPreviewImageButtonAction =
+      widget.config.defaultPreviewImageButtonAction;
 
   @override
   Widget build(BuildContext context) {
@@ -102,6 +117,7 @@ class _CreateBooruConfigScaffoldState
       ratingFilter: ratingFilter,
       imageDetaisQuality: imageDetaisQuality,
       postGestures: postGestures,
+      defaultPreviewImageButtonAction: defaultPreviewImageButtonAction,
     );
 
     return Material(
@@ -344,8 +360,32 @@ class _CreateBooruConfigScaffoldState
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          const SizedBox(height: 12),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            visualDensity: VisualDensity.compact,
+            title: const Text("Thumbnail's button"),
+            subtitle: const Text(
+              'Change the default button at the right bottom of the thumbnail.',
+            ),
+            trailing: OptionDropDownButton(
+              alignment: AlignmentDirectional.centerStart,
+              value: defaultPreviewImageButtonAction,
+              onChanged: (value) {
+                setState(() => defaultPreviewImageButtonAction = value);
+              },
+              items: widget.postPreviewQuickActionButtonActions
+                  .map((value) => DropdownMenuItem(
+                        value: value,
+                        child: Text(
+                            widget.describePostPreviewQuickAction != null
+                                ? widget.describePostPreviewQuickAction!(value)
+                                : describeImagePreviewQuickAction(value)),
+                      ))
+                  .toList(),
+            ),
+          ),
           if (widget.hasRatingFilter) ...[
-            const SizedBox(height: 12),
             CreateBooruRatingOptionsTile(
               config: widget.config,
               initialGranularRatingFilters: granularRatingFilters,

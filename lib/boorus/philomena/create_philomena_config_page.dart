@@ -98,6 +98,7 @@ class _CreatePhilomenaConfigPageState
       imageDetaisQuality: imageDetaisQuality,
       granularRatingFilters: null,
       postGestures: data.postGestures,
+      defaultPreviewImageButtonAction: data.defaultPreviewImageButtonAction,
     );
 
     ref

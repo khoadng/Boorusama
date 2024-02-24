@@ -17,6 +17,7 @@ class BooruConfigData {
     required this.imageDetaisQuality,
     required this.granularRatingFilterString,
     required this.postGestures,
+    required this.defaultPreviewImageButtonAction,
   });
 
   factory BooruConfigData.anonymous({
@@ -43,6 +44,7 @@ class BooruConfigData {
         imageDetaisQuality: imageDetaisQuality,
         granularRatingFilterString: null,
         postGestures: null,
+        defaultPreviewImageButtonAction: null,
       );
 
   static BooruConfigData? fromJson(Map<String, dynamic> json) {
@@ -64,6 +66,8 @@ class BooruConfigData {
         granularRatingFilterString:
             json['granularRatingFilterString'] as String?,
         postGestures: json['postGestures'] as String?,
+        defaultPreviewImageButtonAction:
+            json['defaultPreviewImageButtonAction'] as String?,
       );
     } catch (e) {
       return null;
@@ -85,6 +89,7 @@ class BooruConfigData {
       'imageDetaisQuality': imageDetaisQuality,
       'granularRatingFilterString': granularRatingFilterString,
       'postGestures': postGestures,
+      'defaultPreviewImageButtonAction': defaultPreviewImageButtonAction,
     };
   }
 
@@ -101,6 +106,7 @@ class BooruConfigData {
   final String? imageDetaisQuality;
   final String? granularRatingFilterString;
   final String? postGestures;
+  final String? defaultPreviewImageButtonAction;
 }
 
 BooruConfig? convertToBooruConfig({
@@ -130,5 +136,7 @@ BooruConfig? convertToBooruConfig({
     postGestures: booruConfigData.postGestures == null
         ? null
         : PostGestureConfig.fromJsonString(booruConfigData.postGestures),
+    defaultPreviewImageButtonAction:
+        booruConfigData.defaultPreviewImageButtonAction,
   );
 }
