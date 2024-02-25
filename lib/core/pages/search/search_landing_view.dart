@@ -128,7 +128,6 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
                         histories: histories.histories,
                         onHistoryTap: (history) {
                           _onHistoryTap(history, ref);
-                          widget.onHistoryTap?.call(history);
                         },
                         onFullHistoryRequested: () {
                           goToSearchHistoryPage(
@@ -153,12 +152,10 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
   }
 
   void _onTagTap(String value, WidgetRef ref) {
-    FocusManager.instance.primaryFocus?.unfocus();
     widget.onTagTap?.call(value);
   }
 
   void _onHistoryTap(String value, WidgetRef ref) {
-    FocusManager.instance.primaryFocus?.unfocus();
     widget.onHistoryTap?.call(value);
   }
 

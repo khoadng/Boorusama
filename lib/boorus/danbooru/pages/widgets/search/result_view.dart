@@ -22,9 +22,12 @@ class ResultView extends ConsumerStatefulWidget {
     this.backgroundColor,
     required this.selectedTagController,
     required this.onRelatedTagSelected,
+    required this.selectedTagString,
   });
 
-  final List<Widget> Function()? headerBuilder;
+  final List<Widget> Function(
+    PostGridController<DanbooruPost> postController,
+  )? headerBuilder;
   final AutoScrollController? scrollController;
   final SelectedTagController selectedTagController;
   final Color? backgroundColor;
@@ -32,6 +35,8 @@ class ResultView extends ConsumerStatefulWidget {
     RelatedTagItem tag,
     PostGridController<DanbooruPost> postController,
   ) onRelatedTagSelected;
+
+  final ValueNotifier<String> selectedTagString;
 
   @override
   ConsumerState<ResultView> createState() => _ResultViewState();
@@ -60,10 +65,11 @@ class _ResultViewState extends ConsumerState<ResultView> {
           ),
       builder: (context, controller, errors) {
         return DanbooruInfinitePostList(
+          scrollController: scrollController,
           controller: controller,
           errors: errors,
           sliverHeaderBuilder: (context) => [
-            ...widget.headerBuilder?.call() ?? [],
+            ...widget.headerBuilder?.call(controller) ?? [],
             SliverToBoxAdapter(
               child: ValueListenableBuilder(
                 valueListenable: widget.selectedTagController,
@@ -78,10 +84,10 @@ class _ResultViewState extends ConsumerState<ResultView> {
               child: Row(
                 children: [
                   ValueListenableBuilder(
-                    valueListenable: widget.selectedTagController,
+                    valueListenable: widget.selectedTagString,
                     builder: (context, selectedTags, _) =>
                         ResultHeaderWithProvider(
-                      selectedTags: selectedTags.toRawStringList(),
+                      selectedTags: selectedTags.split(' '),
                       onRefresh: null,
                     ),
                   ),
