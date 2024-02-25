@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/core/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -76,8 +77,15 @@ class ShowTagListPage extends ConsumerWidget {
                     title: Text(
                       tag.displayName,
                       style: TextStyle(
-                        color: ref.getTagColor(context, tag.category.name),
+                        color: ref.getTagColor(
+                          context,
+                          tag.category.name,
+                        ),
                       ),
+                    ),
+                    onTap: () => goToSearchPage(
+                      context,
+                      tag: tag.rawName,
                     ),
                     trailing: BooruPopupMenuButton(
                       onSelected: (value) {
