@@ -24,7 +24,6 @@ class SearchScope extends ConsumerStatefulWidget {
   final SelectedTagController? selectedTagController;
   final String? initialQuery;
   final Widget Function(
-    DisplayState state,
     FocusNode focus,
     RichTextController controller,
     SelectedTagController selectedTagController,
@@ -52,11 +51,8 @@ class _SearchScopeState extends ConsumerState<SearchScope> {
     textEditingController: queryEditingController,
     searchHistory: ref.read(searchHistoryProvider.notifier),
     selectedTagController: selectedTagController,
-    searchStateController: displayState,
     suggestions: ref.read(suggestionsProvider(ref.readConfig).notifier),
   );
-
-  final displayState = ValueNotifier(DisplayState.options);
 
   @override
   void initState() {
@@ -91,18 +87,12 @@ class _SearchScopeState extends ConsumerState<SearchScope> {
           return ValueListenableBuilder(
             valueListenable: selectedTagController,
             builder: (context, tags, child) {
-              return ValueListenableBuilder(
-                valueListenable: displayState,
-                builder: (context, state, child) {
-                  return widget.builder(
-                    state,
-                    focus,
-                    queryEditingController,
-                    selectedTagController,
-                    searchController,
-                    allowSearch(state, tags),
-                  );
-                },
+              return widget.builder(
+                focus,
+                queryEditingController,
+                selectedTagController,
+                searchController,
+                allowSearch(tags),
               );
             },
           );
@@ -111,9 +101,5 @@ class _SearchScopeState extends ConsumerState<SearchScope> {
     );
   }
 
-  bool allowSearch(DisplayState state, List<TagSearchItem> tags) =>
-      switch (state) {
-        DisplayState.options => tags.isNotEmpty,
-        _ => false,
-      };
+  bool allowSearch(List<TagSearchItem> tags) => tags.isNotEmpty;
 }

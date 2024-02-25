@@ -93,7 +93,7 @@ class _SearchPageScaffoldState<T extends Post>
     return CustomContextMenuOverlay(
       child: SearchScope(
         initialQuery: widget.initialQuery,
-        builder: (state, focus, textController, selectedTagController,
+        builder: (focus, textController, selectedTagController,
                 searchController, allowSearch) =>
             ValueListenableBuilder(
           valueListenable: textController,
@@ -146,10 +146,6 @@ class _SearchPageScaffoldState<T extends Post>
                               children: [
                                 SelectedTagListWithData(
                                   controller: selectedTagController,
-                                  onClear: () =>
-                                      searchController.resetToOptions(),
-                                  onDeleted: (value) =>
-                                      searchController.resetToOptions(),
                                 ),
                                 Expanded(
                                   child: SearchLandingView(

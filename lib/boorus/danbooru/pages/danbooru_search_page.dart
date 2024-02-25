@@ -89,7 +89,7 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
           color: context.colorScheme.primary,
         ),
       },
-      builder: (_, focus, controller, selectedTagController, searchController,
+      builder: (focus, controller, selectedTagController, searchController,
               allowSearch) =>
           ValueListenableBuilder(
         valueListenable: controller,
@@ -145,10 +145,6 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
                             children: [
                               SelectedTagListWithData(
                                 controller: selectedTagController,
-                                onClear: () =>
-                                    searchController.resetToOptions(),
-                                onDeleted: (value) =>
-                                    searchController.resetToOptions(),
                               ),
                               Expanded(
                                 child: SearchLandingView(
