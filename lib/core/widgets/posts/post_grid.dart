@@ -318,8 +318,8 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                         enableKeyboardScrolling: false,
                         enableMMBScrolling: true,
                         child: ConditionalParentWidget(
-                          condition:
-                              pageMode == PageMode.paginated && !refreshing,
+                          // Should remove this later
+                          condition: true,
                           conditionalBuilder: (child) =>
                               _buildPaginatedSwipe(context, child),
                           child: CustomScrollView(
@@ -426,6 +426,7 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
 
   Widget _buildPaginatedSwipe(BuildContext context, Widget child) {
     return SwipeTo(
+      enabled: pageMode == PageMode.paginated && !refreshing,
       swipeRightEnabled: controller.hasPreviousPage(),
       swipeLeftEnabled: controller.hasNextPage(),
       rightSwipeWidget: Chip(
