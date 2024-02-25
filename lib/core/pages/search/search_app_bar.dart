@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/widgets/booru_search_bar.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/router.dart';
 
 class SearchAppBar extends ConsumerWidget {
   const SearchAppBar({
@@ -16,7 +16,7 @@ class SearchAppBar extends ConsumerWidget {
     required this.queryEditingController,
     required this.onSubmitted,
     this.focusNode,
-    required this.onBack,
+    required this.leading,
     this.onClear,
     this.onChanged,
     this.trailingSearchButton,
@@ -25,15 +25,17 @@ class SearchAppBar extends ConsumerWidget {
     this.height,
     this.onTapOutside,
     this.onFocusChanged,
+    this.innerSearchButton,
   });
 
   final TextEditingController queryEditingController;
   final FocusNode? focusNode;
-  final VoidCallback? onBack;
+  final Widget? leading;
   final void Function(String value) onSubmitted;
   final VoidCallback? onClear;
   final void Function(String value)? onChanged;
   final Widget? trailingSearchButton;
+  final Widget? innerSearchButton;
   final bool? autofocus;
   final bool? dense;
   final double? height;
@@ -42,22 +44,14 @@ class SearchAppBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final settings = ref.watch(settingsProvider);
-
     final searchAppBar = BooruSearchBar(
       dense: dense,
-      autofocus: autofocus ?? settings.autoFocusSearchBar,
+      autofocus: autofocus ?? false,
       onTapOutside: onTapOutside,
       focus: focusNode,
       queryEditingController: queryEditingController,
       onFocusChanged: onFocusChanged,
-      leading: onBack != null
-          ? IconButton(
-              splashRadius: 16,
-              icon: const Icon(Symbols.arrow_back),
-              onPressed: onBack,
-            )
-          : null,
+      leading: leading,
       trailing: ValueListenableBuilder(
         valueListenable: queryEditingController,
         builder: (context, value, child) {
@@ -70,7 +64,7 @@ class SearchAppBar extends ConsumerWidget {
                     onClear?.call();
                   },
                 )
-              : const SizedBox.shrink();
+              : innerSearchButton ?? const SizedBox.shrink();
         },
       ),
       onChanged: onChanged,
@@ -107,6 +101,21 @@ class SearchAppBar extends ConsumerWidget {
               ),
             )
           : searchAppBar,
+    );
+  }
+}
+
+class SearchAppBarBackButton extends StatelessWidget {
+  const SearchAppBarBackButton({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      splashRadius: 16,
+      icon: const Icon(Symbols.arrow_back),
+      onPressed: () => context.pop(),
     );
   }
 }

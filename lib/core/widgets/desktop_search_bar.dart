@@ -173,7 +173,7 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
 
                   widget.onSearch();
                 },
-                onBack: null,
+                leading: null,
                 trailingSearchButton: MaterialButton(
                   minWidth: 0,
                   elevation: 0,

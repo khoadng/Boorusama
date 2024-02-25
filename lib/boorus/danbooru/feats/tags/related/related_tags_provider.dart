@@ -4,10 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
+import 'package:boorusama/boorus/danbooru/feats/tags/related/related_tag_notifier.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/danbooru/types/types.dart' as danbooru;
-import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/tags/booru_tag_type_store.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
@@ -54,34 +53,8 @@ final danbooruRelatedTagRepProvider =
 });
 
 final danbooruRelatedTagProvider =
-    FutureProvider.autoDispose.family<RelatedTag, String>(
-  (ref, tag) async {
-    final config = ref.watchConfig;
-    final nsfwTags = ref.watch(tagInfoProvider).r18Tags;
-    final sfwTags = filterNsfwRawTagString(
-      tag,
-      nsfwTags,
-      shouldFilter: config.hasStrictSFW,
-    );
-
-    if (sfwTags.isEmpty) return const RelatedTag.empty();
-    if (tag.isEmpty) return const RelatedTag.empty();
-
-    final repo = ref.watch(danbooruRelatedTagRepProvider(config));
-
-    final relatedTag = await repo.getRelatedTag(tag);
-
-    return config.hasStrictSFW
-        ? relatedTag.copyWith(
-            tags: relatedTag.tags
-                .where((e) => isSfwTag(
-                      value: e.tag,
-                      nsfwTags: nsfwTags,
-                    ))
-                .toList())
-        : relatedTag;
-  },
-);
+    AsyncNotifierProvider.autoDispose<DanbooruRelatedTagNotifier, RelatedTag>(
+        DanbooruRelatedTagNotifier.new);
 
 final danbooruWikiTagsProvider = FutureProvider.family<List<Tag>, String>(
   (ref, tag) async {
@@ -131,7 +104,8 @@ int _tagCategoryToOrder(TagCategory category) => switch (category) {
 final danbooruRelatedTagCosineSimilarityProvider =
     FutureProvider.autoDispose.family<RelatedTag, String>(
   (ref, tag) async {
-    final relatedTag = await ref.watch(danbooruRelatedTagProvider(tag).future);
+    final repo = ref.watch(danbooruRelatedTagRepProvider(ref.watchConfig));
+    final relatedTag = await repo.getRelatedTag(tag);
 
     return relatedTag.copyWith(
       tags: relatedTag.tags

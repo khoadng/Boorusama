@@ -613,7 +613,6 @@ Widget Function(
           ),
       ImageQuickActionType.none => (context) => const SizedBox.shrink(),
       ImageQuickActionType.defaultAction => null,
-      _ => null,
     };
 
 extension BooruRef on Ref {
