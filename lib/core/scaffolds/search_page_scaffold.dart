@@ -18,6 +18,7 @@ import 'package:boorusama/core/pages/search/search_landing_view.dart';
 import 'package:boorusama/core/pages/search/selected_tag_list_with_data.dart';
 import 'package:boorusama/core/scaffolds/infinite_post_list_scaffold.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
 
 class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
@@ -216,8 +217,14 @@ class _SearchPageScaffoldState<T extends Post>
         }
 
         final slivers = [
-          SliverToBoxAdapter(
-            child: SearchAppBar(
+          SliverAppBar(
+            floating: true,
+            snap: true,
+            automaticallyImplyLeading: false,
+            titleSpacing: 0,
+            toolbarHeight: kToolbarHeight * 1.2,
+            backgroundColor: context.theme.scaffoldBackgroundColor,
+            title: SearchAppBar(
               focusNode: focus,
               autofocus: false,
               queryEditingController: textController,

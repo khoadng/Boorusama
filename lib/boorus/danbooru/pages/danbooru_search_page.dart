@@ -238,8 +238,14 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
         }
 
         return [
-          SliverToBoxAdapter(
-            child: SearchAppBar(
+          SliverAppBar(
+            floating: true,
+            snap: true,
+            automaticallyImplyLeading: false,
+            titleSpacing: 0,
+            toolbarHeight: kToolbarHeight * 1.2,
+            backgroundColor: context.theme.scaffoldBackgroundColor,
+            title: SearchAppBar(
               focusNode: focus,
               autofocus: false,
               queryEditingController: controller,
