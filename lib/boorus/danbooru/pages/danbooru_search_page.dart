@@ -291,12 +291,6 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
                                 searchController.tapTag(value);
                                 context.pop();
                               },
-                              trendingBuilder: (context) => TrendingSection(
-                                onTagTap: (value) {
-                                  searchController.tapTag(value);
-                                  context.pop();
-                                },
-                              ),
                               metatagsBuilder: (context) =>
                                   DanbooruMetatagsSection(
                                 onOptionTap: (value) {
