@@ -121,6 +121,7 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
     if (oldWidget.blacklistedTags != widget.blacklistedTags) {
       _updateFilter();
       _updateData();
+      _countTags();
     }
 
     if (oldWidget.blacklistedIds != widget.blacklistedIds) {
@@ -193,7 +194,7 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
   }
 
   void _countTags() {
-    tagCounts = controller.items.countTagPattern(widget.blacklistedTags);
+    tagCounts = controller.items.countTagPattern(filters.keys);
     _hasBlacklistedTags = tagCounts.values.any((c) => c > 0);
   }
 
