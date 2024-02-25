@@ -479,7 +479,7 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
       postCount: items.length + filteredItems.length,
       initiallyExpanded: axis == Axis.vertical,
       hasBlacklist: _hasBlacklistedTags,
-      tags: widget.blacklistedTags
+      tags: filters.keys
           .map((e) => (
                 name: e,
                 count: tagCounts[e] ?? 0,
