@@ -27,6 +27,7 @@ import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/functional.dart';
+import 'package:boorusama/widgets/widgets.dart';
 import 'pages/create_danbooru_config_page.dart';
 import 'pages/danbooru_artist_page.dart';
 import 'pages/danbooru_home_page.dart';
@@ -376,22 +377,32 @@ extension DanbooruX on WidgetRef {
     _guardLogin(() {
       final isFaved = read(danbooruFavoriteProvider(postId));
       if (isFaved) {
-        danbooruFavorites.remove(postId);
+        danbooruFavorites.remove(postId).then(
+              (_) => _showSuccessSnackBar('Removed from favorites'),
+            );
       } else {
-        danbooruFavorites.add(postId);
+        danbooruFavorites.add(postId).then(
+              (_) => _showSuccessSnackBar('Added to favorites'),
+            );
       }
     });
   }
 
   void danbooruUpvote(int postId) {
     _guardLogin(() {
-      read(danbooruPostVotesProvider(readConfig).notifier).upvote(postId);
+      read(danbooruPostVotesProvider(readConfig).notifier).upvote(postId).then(
+            (_) => _showSuccessSnackBar('Upvoted'),
+          );
     });
   }
 
   void danbooruDownvote(int postId) {
     _guardLogin(() {
-      read(danbooruPostVotesProvider(readConfig).notifier).downvote(postId);
+      read(danbooruPostVotesProvider(readConfig).notifier)
+          .downvote(postId)
+          .then(
+            (_) => _showSuccessSnackBar('Downvoted'),
+          );
     });
   }
 
@@ -402,6 +413,17 @@ extension DanbooruX on WidgetRef {
         post: post,
       );
     });
+  }
+
+  void _showSuccessSnackBar(
+    String message, {
+    Color? backgroundColor,
+  }) {
+    showSuccessToast(
+      message,
+      backgroundColor: backgroundColor,
+      duration: const Duration(seconds: 1, milliseconds: 500),
+    );
   }
 
   void _guardLogin(void Function() action) {
