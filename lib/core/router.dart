@@ -45,6 +45,14 @@ void goToHomePage(
 }
 
 void goToOriginalImagePage(BuildContext context, Post post) {
+  if (post.isMp4) {
+    showSimpleSnackBar(
+      context: context,
+      content: const Text('This is a video post, cannot view original image'),
+    );
+    return;
+  }
+
   context.navigator.push(PageTransition(
     type: PageTransitionType.fade,
     settings: const RouteSettings(
