@@ -20,12 +20,14 @@ class RelatedTagCloudChip extends ConsumerWidget {
     this.isDummy = false,
     required this.onPressed,
     super.key,
+    this.color,
   });
 
   final int index;
   final RelatedTagItem tag;
   final bool isDummy;
   final VoidCallback? onPressed;
+  final Color? color;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -47,7 +49,7 @@ class RelatedTagCloudChip extends ConsumerWidget {
           horizontal: 8,
           vertical: 4,
         ),
-        color: ref.getTagColor(context, tag.category.name),
+        color: color ?? ref.getTagColor(context, tag.category.name),
         onPressed: onPressed,
       ),
     );

@@ -2,20 +2,21 @@
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_scatter/flutter_scatter.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/widgets.dart';
-import 'package:boorusama/core/feats/boorus/providers.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'related_tag_cloud_chip.dart';
 
@@ -60,10 +61,7 @@ class _DanbooruTagDetailsPageState
           const SizedBox(height: 36),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: ArtistTagCloud(
-              tagName: widget.tagName,
-              dummyTags: _dummyTags,
-            ),
+            child: _buildTagCloud(),
           ),
         ],
       ),
@@ -96,10 +94,7 @@ class _DanbooruTagDetailsPageState
               ),
               const SliverToBoxAdapter(child: SizedBox(height: 20)),
               SliverToBoxAdapter(
-                child: ArtistTagCloud(
-                  tagName: widget.tagName,
-                  dummyTags: _dummyTags,
-                ),
+                child: _buildTagCloud(),
               ),
               const SliverToBoxAdapter(child: SizedBox(height: 20)),
             ],
@@ -119,7 +114,66 @@ class _DanbooruTagDetailsPageState
       ),
     );
   }
+
+  Widget _buildTagCloud() {
+    return ArtistTagCloud(
+      tagName: widget.tagName,
+      dummyTags: _dummyTags,
+    );
+  }
 }
+
+final danbooruRelatedTagCloudProvider =
+    FutureProvider.autoDispose.family<List<RelatedTagItem>, String>(
+  (ref, tag) async {
+    final repo = ref.watch(danbooruRelatedTagRepProvider(ref.watchConfig));
+    final relatedTag = await repo.getRelatedTag(tag);
+
+    final sorted = relatedTag.tags.sorted(
+      (a, b) => b.cosineSimilarity.compareTo(a.cosineSimilarity),
+    );
+
+    return sorted.take(_kTagCloudTotal).toList();
+  },
+);
+
+typedef TagColorParams = ({
+  Color primaryColor,
+  ThemeMode themeMode,
+  String categories,
+});
+
+final _tagCategoryColorsProvider =
+    FutureProvider.autoDispose.family<Map<String, Color?>, TagColorParams>(
+  (ref, params) async {
+    final colors = <String, Color?>{};
+
+    final config = ref.watchConfig;
+    final booruBuilders = ref.watch(booruBuildersProvider);
+    final booruBuilderFunc = booruBuilders[config.booruType];
+
+    final booruBuilder =
+        booruBuilderFunc != null ? booruBuilderFunc(config) : null;
+
+    final tagColorBuilder = booruBuilder?.tagColorBuilder;
+
+    final categories = params.categories.split('|');
+
+    for (var category in categories) {
+      colors[category] = getTagColorCore(
+        category,
+        primaryColor: params.primaryColor,
+        themeMode: params.themeMode,
+        color: tagColorBuilder?.call(
+          params.themeMode,
+          category,
+        ),
+      );
+    }
+
+    return colors;
+  },
+);
 
 class ArtistTagCloud extends ConsumerWidget {
   const ArtistTagCloud({
@@ -133,45 +187,51 @@ class ArtistTagCloud extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final async =
-        ref.watch(danbooruRelatedTagCosineSimilarityProvider(tagName));
+    return ref.watch(danbooruRelatedTagCloudProvider(tagName)).when(
+          data: (tags) {
+            if (tags.isEmpty) return const SizedBox.shrink();
 
-    return async.when(
-      data: (related) {
-        final tags = related.tags.take(_kTagCloudTotal).toList();
+            final params = (
+              primaryColor: context.colorScheme.primary,
+              themeMode: context.themeMode,
+              categories: tags
+                  .map((e) => e.category.name)
+                  .toSet()
+                  .sorted((a, b) => a.compareTo(b))
+                  .join('|'),
+            );
 
-        if (tags.isEmpty) return const SizedBox.shrink();
-
-        return TagCloud(
-          itemCount: tags.length,
-          itemBuilder: (context, i) => RelatedTagCloudChip(
-            index: i,
-            tag: tags[i],
-            onPressed: () => goToSearchPage(
-              context,
-              tag: tags[i].tag,
-            ),
-          ),
+            return ref.watch(_tagCategoryColorsProvider(params)).when(
+                  data: (tagColors) => TagCloud(
+                    itemCount: tags.length,
+                    itemBuilder: (context, i) => RelatedTagCloudChip(
+                      index: i,
+                      tag: tags[i],
+                      color: tagColors[tags[i].category.name],
+                      onPressed: () => goToSearchPage(
+                        context,
+                        tag: tags[i].tag,
+                      ),
+                    ),
+                  ),
+                  error: (error, stackTrace) => const SizedBox.shrink(),
+                  loading: () => _buildDummy(context),
+                );
+          },
+          error: (error, stackTrace) => const SizedBox.shrink(),
+          loading: () => _buildDummy(context),
         );
-      },
-      error: (error, stackTrace) => const SizedBox.shrink(),
-      loading: () => ConstrainedBox(
-        constraints: const BoxConstraints(minHeight: 180),
-        child: FittedBox(
-          child: Scatter(
-            fillGaps: true,
-            delegate: FermatSpiralScatterDelegate(
-              ratio: context.screenAspectRatio,
-            ),
-            children: [
-              for (var i = 0; i < _kTagCloudTotal; i++)
-                RelatedTagCloudChip(
-                  index: i,
-                  tag: dummyTags[i],
-                  isDummy: true,
-                  onPressed: () {},
-                ),
-            ],
+  }
+
+  Widget _buildDummy(BuildContext context) {
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: 180),
+      child: const Center(
+        child: SizedBox(
+          width: 20,
+          height: 20,
+          child: CircularProgressIndicator(
+            strokeWidth: 1.5,
           ),
         ),
       ),

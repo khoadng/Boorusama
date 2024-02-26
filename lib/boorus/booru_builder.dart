@@ -418,17 +418,27 @@ extension BooruBuilderWidgetRef on WidgetRef {
     String tagType, {
     ThemeMode? themeMode,
   }) {
-    final dynamicColor =
-        watch(settingsProvider.select((value) => value.enableDynamicColoring));
+    final tm = themeMode ?? context.themeMode;
 
-    final color = watchBooruBuilder(watchConfig)
-        ?.tagColorBuilder(themeMode ?? context.themeMode, tagType);
-
-    return dynamicColor
-        ? color?.harmonizeWith(context.colorScheme.primary)
-        : color;
+    return getTagColorCore(
+      tagType,
+      primaryColor: context.colorScheme.primary,
+      themeMode: tm,
+      dynamicColor: watch(
+          settingsProvider.select((value) => value.enableDynamicColoring)),
+      color: watchBooruBuilder(watchConfig)?.tagColorBuilder(tm, tagType),
+    );
   }
 }
+
+Color? getTagColorCore(
+  String tagType, {
+  required Color primaryColor,
+  required ThemeMode themeMode,
+  bool dynamicColor = false,
+  required Color? color,
+}) =>
+    dynamicColor ? color?.harmonizeWith(primaryColor) : color;
 
 final booruBuilderProvider = Provider<BooruBuilder?>((ref) {
   final config = ref.watchConfig;

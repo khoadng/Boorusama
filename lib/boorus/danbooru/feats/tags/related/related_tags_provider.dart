@@ -1,5 +1,4 @@
 // Package imports:
-import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -100,19 +99,6 @@ int _tagCategoryToOrder(TagCategory category) => switch (category) {
       TagCategory.meta => 4,
       TagCategory.invalid_ => 5,
     };
-
-final danbooruRelatedTagCosineSimilarityProvider =
-    FutureProvider.autoDispose.family<RelatedTag, String>(
-  (ref, tag) async {
-    final repo = ref.watch(danbooruRelatedTagRepProvider(ref.watchConfig));
-    final relatedTag = await repo.getRelatedTag(tag);
-
-    return relatedTag.copyWith(
-      tags: relatedTag.tags
-          .sorted((a, b) => b.cosineSimilarity.compareTo(a.cosineSimilarity)),
-    );
-  },
-);
 
 RelatedTag relatedTagDtoToRelatedTag(danbooru.RelatedTagDto dto) => RelatedTag(
       query: dto.query ?? '',
