@@ -115,6 +115,17 @@ class _PostDetailPageScaffoldState<T extends Post>
     return LayoutBuilder(
       builder: (context, constraints) => DownloadProviderWidget(
         builder: (context, download) => DetailsPage(
+          sharedChildBuilder: (page) => Column(
+            children: [
+              if (widget.infoBuilder != null)
+                constraints.maxHeight > 450
+                    ? widget.infoBuilder!(context, posts[page])
+                    : const SizedBox.shrink(),
+              widget.toolbarBuilder != null
+                  ? widget.toolbarBuilder!(context, posts[page])
+                  : SimplePostActionToolbar(post: posts[page]),
+            ],
+          ),
           controller: controller,
           intitialIndex: widget.initialIndex,
           onExit: widget.onExit,
@@ -135,7 +146,7 @@ class _PostDetailPageScaffoldState<T extends Post>
                     download,
                   )
               : null,
-          bottomSheet: (page) {
+          bottomSheet: (page, sharedChild) {
             final bottomSheet = Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -152,19 +163,14 @@ class _PostDetailPageScaffoldState<T extends Post>
                       ),
                     ),
                   ),
-                if (widget.infoBuilder != null)
-                  constraints.maxHeight > 450
-                      ? widget.infoBuilder!(context, posts[page])
-                      : const SizedBox.shrink(),
-                Container(
-                  color: context.colorScheme.surface,
-                  padding: EdgeInsets.only(
-                    bottom: MediaQuery.paddingOf(context).bottom,
+                if (sharedChild != null)
+                  Container(
+                    color: context.colorScheme.surface,
+                    padding: EdgeInsets.only(
+                      bottom: MediaQuery.paddingOf(context).bottom,
+                    ),
+                    child: sharedChild,
                   ),
-                  child: widget.toolbarBuilder != null
-                      ? widget.toolbarBuilder!(context, posts[page])
-                      : SimplePostActionToolbar(post: posts[page]),
-                ),
               ],
             );
 
@@ -190,7 +196,8 @@ class _PostDetailPageScaffoldState<T extends Post>
                 : widget.swipeImageUrlBuilder(posts[page]),
             aspectRatio: posts[page].aspectRatio,
           ),
-          expandedBuilder: (context, page, currentPage, expanded, enableSwipe) {
+          expandedBuilder:
+              (context, page, currentPage, expanded, enableSwipe, sharedChild) {
             final widgets = _buildWidgets(
               context,
               expanded,
@@ -200,6 +207,7 @@ class _PostDetailPageScaffoldState<T extends Post>
               booruBuilder,
               postGesturesHandler,
               download,
+              sharedChild,
             );
 
             return Padding(
@@ -257,6 +265,7 @@ class _PostDetailPageScaffoldState<T extends Post>
     BooruBuilder? booruBuilder,
     PostGestureHandlerBuilder? postDetailsGesturesHandler,
     DownloadDelegate download,
+    Widget? sharedChild,
   ) {
     final post = posts[page];
     final expandedOnCurrentPage = expanded && page == currentPage;
@@ -320,12 +329,7 @@ class _PostDetailPageScaffoldState<T extends Post>
       if (expandedOnCurrentPage) ...[
         if (widget.poolTileBuilder != null)
           widget.poolTileBuilder!(context, post),
-        if (widget.infoBuilder != null) widget.infoBuilder!(context, post),
-        const Divider(height: 8, thickness: 0.5),
-        if (widget.toolbarBuilder != null)
-          widget.toolbarBuilder!(context, post)
-        else
-          SimplePostActionToolbar(post: post),
+        if (sharedChild != null) sharedChild,
         if (widget.artistInfoBuilder != null) ...[
           const Divider(height: 8, thickness: 0.5),
           widget.artistInfoBuilder!(context, post),
