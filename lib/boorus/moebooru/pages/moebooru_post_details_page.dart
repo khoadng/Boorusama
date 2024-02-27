@@ -125,18 +125,21 @@ class _MoebooruPostDetailsPageState
       ),
       sliverRelatedPostsBuilder: (context, post) =>
           MoebooruRelatedPostsSection(post: post),
-      sliverArtistPostsBuilder: (context, post) =>
-          ref.watch(moebooruPostDetailTagGroupProvider(post)).maybeWhen(
-                data: (tags) {
-                  final artistTags = _extractArtist(config, tags);
+      sliverArtistPostsBuilder: (context, post) => ref
+          .watch(moebooruPostDetailTagGroupProvider(post))
+          .maybeWhen(
+            data: (tags) {
+              final artistTags = _extractArtist(config, tags);
 
-                  return artistTags != null && artistTags.isNotEmpty
-                      ? ArtistPostList(
-                          artists: artistTags,
+              return artistTags != null && artistTags.isNotEmpty
+                  ? artistTags
+                      .map(
+                        (tag) => ArtistPostList2(
+                          tag: tag,
                           builder: (tag) => ref
                               .watch(moebooruPostDetailsArtistProvider(tag))
                               .maybeWhen(
-                                data: (data) => PreviewPostGrid(
+                                data: (data) => SliverPreviewPostGrid(
                                   posts: data,
                                   onTap: (postIdx) => goToPostDetailsPage(
                                     context: context,
@@ -145,15 +148,18 @@ class _MoebooruPostDetailsPageState
                                   ),
                                   imageUrl: (item) => item.thumbnailImageUrl,
                                 ),
-                                orElse: () => const PreviewPostGridPlaceholder(
-                                  imageCount: 30,
+                                orElse: () =>
+                                    const SliverPreviewPostGridPlaceholder(
+                                  itemCount: 30,
                                 ),
                               ),
-                        )
-                      : const SliverSizedBox.shrink();
-                },
-                orElse: () => const SliverSizedBox.shrink(),
-              ),
+                        ),
+                      )
+                      .toList()
+                  : [];
+            },
+            orElse: () => [],
+          ),
       sliverCharacterPostsBuilder: (context, post) {
         return ref.watch(moebooruPostDetailTagGroupProvider(post)).maybeWhen(
               data: (tags) {

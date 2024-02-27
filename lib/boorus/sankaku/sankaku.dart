@@ -24,7 +24,6 @@ import 'package:boorusama/core/scaffolds/post_details_page_scaffold.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
-import 'package:boorusama/widgets/sliver_sized_box.dart';
 import 'sankaku_post.dart';
 
 part 'sankaku_provider.dart';
@@ -112,27 +111,30 @@ class SankakuBuilder
             sourceSectionBuilder: (context, post) => const SizedBox.shrink(),
             sliverArtistPostsBuilder: (context, post) =>
                 post.artistTags.isNotEmpty
-                    ? ArtistPostList(
-                        artists: post.artistTags,
-                        builder: (tag) => ref
-                            .watch(sankakuArtistPostsProvider(
-                                post.artistTags.firstOrNull))
-                            .maybeWhen(
-                              data: (data) => PreviewPostGrid(
-                                posts: data,
-                                onTap: (postIdx) => goToPostDetailsPage(
-                                  context: context,
-                                  posts: data,
-                                  initialIndex: postIdx,
-                                ),
-                                imageUrl: (item) => item.sampleImageUrl,
-                              ),
-                              orElse: () => const PreviewPostGridPlaceholder(
-                                imageCount: 30,
-                              ),
-                            ),
-                      )
-                    : const SliverSizedBox.shrink(),
+                    ? post.artistTags
+                        .map((tag) => ArtistPostList2(
+                              tag: tag,
+                              builder: (tag) => ref
+                                  .watch(sankakuArtistPostsProvider(
+                                      post.artistTags.firstOrNull))
+                                  .maybeWhen(
+                                    data: (data) => SliverPreviewPostGrid(
+                                      posts: data,
+                                      onTap: (postIdx) => goToPostDetailsPage(
+                                        context: context,
+                                        posts: data,
+                                        initialIndex: postIdx,
+                                      ),
+                                      imageUrl: (item) => item.sampleImageUrl,
+                                    ),
+                                    orElse: () =>
+                                        const SliverPreviewPostGridPlaceholder(
+                                      itemCount: 30,
+                                    ),
+                                  ),
+                            ))
+                        .toList()
+                    : [],
             tagListBuilder: (context, post) => TagsTile(
               post: post,
               initialExpanded: true,

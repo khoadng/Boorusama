@@ -66,25 +66,29 @@ class _DanbooruPostDetailsPageState
             DanbooruPostActionToolbar(post: post),
         swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
         sliverArtistPostsBuilder: (context, post) => post.artistTags.isNotEmpty
-            ? ArtistPostList(
-                artists: post.artistTags,
-                builder: (tag) =>
-                    ref.watch(danbooruPostDetailsArtistProvider(tag)).maybeWhen(
-                          data: (data) => PreviewPostGrid(
-                            posts: data,
-                            onTap: (postIdx) => goToPostDetailsPage(
-                              context: context,
+            ? post.artistTags
+                .map((tag) => ArtistPostList2(
+                      tag: tag,
+                      builder: (tag) => ref
+                          .watch(danbooruPostDetailsArtistProvider(tag))
+                          .maybeWhen(
+                            data: (data) => SliverPreviewPostGrid(
                               posts: data,
-                              initialIndex: postIdx,
+                              onTap: (postIdx) => goToPostDetailsPage(
+                                context: context,
+                                posts: data,
+                                initialIndex: postIdx,
+                              ),
+                              imageUrl: (item) => item.url360x360,
                             ),
-                            imageUrl: (item) => item.url360x360,
+                            orElse: () =>
+                                const SliverPreviewPostGridPlaceholder(
+                              itemCount: 30,
+                            ),
                           ),
-                          orElse: () => const PreviewPostGridPlaceholder(
-                            imageCount: 30,
-                          ),
-                        ),
-              )
-            : const SliverSizedBox.shrink(),
+                    ))
+                .toList()
+            : [],
         sliverCharacterPostsBuilder: (context, post) => post.artistTags.isEmpty
             ? CharacterPostList(tags: post.characterTags)
             : ref

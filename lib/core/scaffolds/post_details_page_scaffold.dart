@@ -58,7 +58,8 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   final String Function(T post) swipeImageUrlBuilder;
   final String? Function(T post, int currentPage)? placeholderImageUrlBuilder;
   final Widget Function(BuildContext context, T post)? toolbarBuilder;
-  final Widget Function(BuildContext context, T post)? sliverArtistPostsBuilder;
+  final List<Widget> Function(BuildContext context, T post)?
+      sliverArtistPostsBuilder;
   final Widget Function(BuildContext context, T post)?
       sliverCharacterPostsBuilder;
   final Widget Function(BuildContext context, T post)? tagListBuilder;
@@ -214,6 +215,9 @@ class _PostDetailPageScaffoldState<T extends Post>
               sharedChild,
             );
 
+            final artistPosts =
+                widget.sliverArtistPostsBuilder?.call(context, posts[page]);
+
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: CustomScrollView(
@@ -234,10 +238,7 @@ class _PostDetailPageScaffoldState<T extends Post>
                   if (ref.watch(_visibleProvider(currentPage)) &&
                       expanded &&
                       page == currentPage)
-                    if (widget.sliverArtistPostsBuilder != null &&
-                        expanded &&
-                        page == currentPage)
-                      widget.sliverArtistPostsBuilder!(context, posts[page]),
+                    if (artistPosts != null) ...artistPosts,
                   if (widget.sliverCharacterPostsBuilder != null &&
                       expanded &&
                       page == currentPage)
