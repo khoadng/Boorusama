@@ -9,7 +9,6 @@ import 'package:rich_text_controller/rich_text_controller.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/search/search.dart';
 import 'package:boorusama/core/pages/search/metatags/danbooru_metatags_section.dart';
@@ -106,9 +105,6 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
                     searchController.search();
                     selectedTagString.value =
                         selectedTagController.rawTagsString;
-                    ref
-                        .read(danbooruRelatedTagProvider.notifier)
-                        .getRelatedTag(selectedTagController.rawTagsString);
                   }
 
                   return searchOnce
@@ -232,9 +228,6 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
           searchController.search();
           postController.refresh();
           selectedTagString.value = selectedTagController.rawTagsString;
-          ref
-              .read(danbooruRelatedTagProvider.notifier)
-              .getRelatedTag(selectedTagController.rawTagsString);
         }
 
         return [

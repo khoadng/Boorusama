@@ -72,9 +72,9 @@ class _ResultViewState extends ConsumerState<ResultView> {
             ...widget.headerBuilder?.call(controller) ?? [],
             SliverToBoxAdapter(
               child: ValueListenableBuilder(
-                valueListenable: widget.selectedTagController,
+                valueListenable: widget.selectedTagString,
                 builder: (context, selectedTags, _) => RelatedTagSection(
-                  query: selectedTags.toRawString(),
+                  query: selectedTags,
                   onSelected: (tag) =>
                       widget.onRelatedTagSelected(tag, controller),
                 ),

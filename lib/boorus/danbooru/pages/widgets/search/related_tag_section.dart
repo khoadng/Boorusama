@@ -23,22 +23,20 @@ class RelatedTagSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tagAsync = ref.watch(danbooruRelatedTagProvider);
-
     if (query.isEmpty) return const SizedBox();
 
-    return tagAsync.when(
-      data: (tag) => tag.tags.isNotEmpty
-          ? RelatedTagHeader(
-              backgroundColor: backgroundColor,
-              relatedTag: tag,
-              onSelected: onSelected,
-            )
-          : const SizedBox.shrink(),
-      loading: () => TagChipsPlaceholder(
-        backgroundColor: backgroundColor,
-      ),
-      error: (e, s) => const SizedBox(),
-    );
+    return ref.watch(danbooruRelatedTagProvider(query)).when(
+          data: (tag) => tag.tags.isNotEmpty
+              ? RelatedTagHeader(
+                  backgroundColor: backgroundColor,
+                  relatedTag: tag,
+                  onSelected: onSelected,
+                )
+              : const SizedBox.shrink(),
+          loading: () => TagChipsPlaceholder(
+            backgroundColor: backgroundColor,
+          ),
+          error: (e, s) => const SizedBox.shrink(),
+        );
   }
 }
