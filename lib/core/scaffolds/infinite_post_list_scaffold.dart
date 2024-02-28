@@ -142,9 +142,9 @@ class _InfinitePostListScaffoldState<T extends Post>
         multiSelectController: _multiSelectController,
         onLoadMore: widget.onLoadMore,
         onRefresh: widget.onRefresh,
-        blacklistedTags: {
+        blacklistedTagString: {
           ...globalBlacklist.map((e) => e.name),
-        },
+        }.join('\n'),
         itemBuilder: (context, items, index) {
           final post = items[index];
 

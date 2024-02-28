@@ -45,8 +45,8 @@ class PostGrid<T extends Post> extends ConsumerStatefulWidget {
     required this.itemBuilder,
     this.footerBuilder,
     this.headerBuilder,
-    this.blacklistedTags = const {},
-    this.blacklistedIds = const {},
+    this.blacklistedTagString,
+    this.blacklistedIdString,
     required this.bodyBuilder,
     this.multiSelectController,
     required this.controller,
@@ -78,8 +78,8 @@ class PostGrid<T extends Post> extends ConsumerStatefulWidget {
     List<T> data,
   ) bodyBuilder;
 
-  final Set<String> blacklistedTags;
-  final Set<int> blacklistedIds;
+  final String? blacklistedTagString;
+  final String? blacklistedIdString;
 
   final MultiSelectController<T>? multiSelectController;
 
@@ -118,21 +118,22 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
   @override
   void didUpdateWidget(PostGrid<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.blacklistedTags != widget.blacklistedTags) {
+    if (oldWidget.blacklistedTagString != widget.blacklistedTagString) {
       _updateFilter();
       _updateData();
       _countTags();
     }
 
-    if (oldWidget.blacklistedIds != widget.blacklistedIds) {
+    if (oldWidget.blacklistedIdString != widget.blacklistedIdString) {
       _updateData();
     }
   }
 
   void _updateFilter() {
     setState(() {
+      final blacklistedTags = widget.blacklistedTagString?.split('\n') ?? [];
       filters = {
-        for (final tag in widget.blacklistedTags) tag: true,
+        for (final tag in blacklistedTags) tag: true,
       };
     });
   }
@@ -185,8 +186,9 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
         !bookmarks.any((e) => e.originalUrl == element.originalImageUrl));
 
     // Dirty hack to filter out ids
+    final blacklistedIds = widget.blacklistedIdString?.split('\n') ?? [];
     final dataWithoutBookmarksAndIds = dataWithoutBookmarks
-        .where((element) => !widget.blacklistedIds.contains(element.id));
+        .where((element) => !blacklistedIds.contains(element.id.toString()));
 
     items = dataWithoutBookmarksAndIds.toList();
 

@@ -134,7 +134,7 @@ class _DanbooruInfinitePostListState
         multiSelectController: _multiSelectController,
         onLoadMore: widget.onLoadMore,
         onRefresh: widget.onRefresh,
-        blacklistedTags: currentUser.maybeWhen(
+        blacklistedTagString: currentUser.maybeWhen(
           data: (user) => {
             ...globalBlacklist.map((e) => e.name),
             if (danbooruBlacklist != null) ...danbooruBlacklist,
@@ -145,11 +145,11 @@ class _DanbooruInfinitePostListState
                 user != null &&
                 !isBooruGoldPlusAccount(user.level))
               ...kCensoredTags,
-          },
+          }.join('\n'),
           orElse: () => {
             ...globalBlacklist.map((e) => e.name),
             if (danbooruBlacklist != null) ...danbooruBlacklist,
-          },
+          }.join('\n'),
         ),
         itemBuilder: (context, items, index) {
           final post = items[index];
