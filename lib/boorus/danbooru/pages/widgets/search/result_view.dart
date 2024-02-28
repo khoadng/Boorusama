@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/widgets.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/search/search.dart';
+import 'package:boorusama/core/pages/search/selected_tag_list_with_data.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'related_tag_section.dart';
 
@@ -70,14 +71,11 @@ class _ResultViewState extends ConsumerState<ResultView> {
             page,
           ),
       builder: (context, controller, errors) {
-        return DanbooruInfinitePostList(
-          scrollController: scrollController,
-          controller: controller,
-          errors: errors,
-          sliverHeaderBuilder: (context) => [
-            ...widget.headerBuilder?.call(controller) ?? [],
-            SliverToBoxAdapter(
-              child: ValueListenableBuilder(
+        final widgets = [
+          () => SelectedTagListWithData(
+                controller: widget.selectedTagController,
+              ),
+          () => ValueListenableBuilder(
                 valueListenable: widget.selectedTagString,
                 builder: (context, selectedTags, _) => RelatedTagSection(
                   query: selectedTags,
@@ -86,9 +84,7 @@ class _ResultViewState extends ConsumerState<ResultView> {
                       widget.onRelatedTagNegated(tag, controller),
                 ),
               ),
-            ),
-            SliverToBoxAdapter(
-              child: Row(
+          () => Row(
                 children: [
                   ValueListenableBuilder(
                     valueListenable: widget.selectedTagString,
@@ -101,6 +97,17 @@ class _ResultViewState extends ConsumerState<ResultView> {
                   const Spacer(),
                 ],
               ),
+        ];
+
+        return DanbooruInfinitePostList(
+          scrollController: scrollController,
+          controller: controller,
+          errors: errors,
+          sliverHeaderBuilder: (context) => [
+            ...widget.headerBuilder?.call(controller) ?? [],
+            SliverList.builder(
+              itemCount: widgets.length,
+              itemBuilder: (context, index) => widgets[index](),
             ),
           ],
         );

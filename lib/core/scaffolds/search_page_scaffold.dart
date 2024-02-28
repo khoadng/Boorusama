@@ -170,28 +170,29 @@ class _SearchPageScaffoldState<T extends Post>
                   },
                 ),
               ),
-              Offstage(
-                offstage: value.text.isEmpty,
-                child: Scaffold(
-                  appBar: PreferredSize(
-                    preferredSize: const Size.fromHeight(kToolbarHeight * 1.2),
-                    child: SearchAppBar(
-                      focusNode: focus,
-                      queryEditingController: textController,
-                      onSubmitted: (value) => searchController.submit(value),
-                      leading: widget.searchBarLeading ??
-                          (!context.canPop()
-                              ? null
-                              : const SearchAppBarBackButton()),
-                    ),
-                  ),
-                  body: DefaultSearchSuggestionView(
-                    textEditingController: textController,
-                    searchController: searchController,
-                    selectedTagController: selectedTagController,
-                  ),
-                ),
-              )
+              value.text.isNotEmpty
+                  ? Scaffold(
+                      appBar: PreferredSize(
+                        preferredSize:
+                            const Size.fromHeight(kToolbarHeight * 1.2),
+                        child: SearchAppBar(
+                          focusNode: focus,
+                          queryEditingController: textController,
+                          onSubmitted: (value) =>
+                              searchController.submit(value),
+                          leading: widget.searchBarLeading ??
+                              (!context.canPop()
+                                  ? null
+                                  : const SearchAppBarBackButton()),
+                        ),
+                      ),
+                      body: DefaultSearchSuggestionView(
+                        textEditingController: textController,
+                        searchController: searchController,
+                        selectedTagController: selectedTagController,
+                      ),
+                    )
+                  : const SizedBox.shrink()
             ],
           ),
         ),
