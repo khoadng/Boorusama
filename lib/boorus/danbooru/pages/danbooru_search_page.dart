@@ -216,8 +216,14 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
       scrollController: _scrollController,
       selectedTagString: selectedTagString,
       selectedTagController: selectedTagController,
-      onRelatedTagSelected: (tag, postController) {
+      onRelatedTagAdded: (tag, postController) {
         selectedTagController.addTag(tag.tag);
+        postController.refresh();
+        selectedTagString.value = selectedTagController.rawTagsString;
+        searchController.search();
+      },
+      onRelatedTagNegated: (tag, postController) {
+        selectedTagController.negateTag(tag.tag);
         postController.refresh();
         selectedTagString.value = selectedTagController.rawTagsString;
         searchController.search();

@@ -13,12 +13,14 @@ class RelatedTagSection extends ConsumerWidget {
   const RelatedTagSection({
     super.key,
     required this.query,
-    required this.onSelected,
+    required this.onAdded,
+    required this.onNegated,
     this.backgroundColor,
   });
 
   final String query;
-  final void Function(RelatedTagItem tag) onSelected;
+  final void Function(RelatedTagItem tag) onAdded;
+  final void Function(RelatedTagItem tag) onNegated;
   final Color? backgroundColor;
 
   @override
@@ -30,7 +32,8 @@ class RelatedTagSection extends ConsumerWidget {
               ? RelatedTagHeader(
                   backgroundColor: backgroundColor,
                   relatedTag: tag,
-                  onSelected: onSelected,
+                  onAdded: onAdded,
+                  onNegated: onNegated,
                 )
               : const SizedBox.shrink(),
           loading: () => TagChipsPlaceholder(

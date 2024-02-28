@@ -7,81 +7,84 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
 import 'related_tag_chip.dart';
-import 'view_more_tag_button.dart';
 
-class RelatedTagHeader extends StatefulWidget {
+class RelatedTagHeader extends ConsumerStatefulWidget {
   const RelatedTagHeader({
     super.key,
     required this.relatedTag,
-    required this.onSelected,
+    required this.onAdded,
+    required this.onNegated,
     this.backgroundColor,
   });
 
   final RelatedTag relatedTag;
-  final void Function(RelatedTagItem item) onSelected;
+  final void Function(RelatedTagItem item) onAdded;
+  final void Function(RelatedTagItem item) onNegated;
   final Color? backgroundColor;
 
   @override
-  State<RelatedTagHeader> createState() => _RelatedTagHeaderState();
+  ConsumerState<RelatedTagHeader> createState() => _RelatedTagHeaderState();
 }
 
-class _RelatedTagHeaderState extends State<RelatedTagHeader> {
+class _RelatedTagHeaderState extends ConsumerState<RelatedTagHeader> {
   @override
   Widget build(BuildContext context) {
+    final data = [
+      ...widget.relatedTag.tags.take(15),
+      null,
+      '',
+    ];
+
     return Container(
+      margin: const EdgeInsets.only(top: 12, bottom: 7),
       color: widget.backgroundColor,
-      height: 50,
-      child: ListView(
-        shrinkWrap: true,
+      height: 28,
+      child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        children: [
-          const SizedBox(width: 8),
-          ...widget.relatedTag.tags.take(15).map((item) => _RelatedTagChip(
-                relatedTag: item,
-                onPressed: () => widget.onSelected(item),
-              )),
-          const VerticalDivider(
-            indent: 12,
-            endIndent: 12,
-            thickness: 2,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 8,
-              vertical: 10,
+        itemCount: data.length,
+        itemBuilder: (context, index) => switch (data[index]) {
+          RelatedTagItem item => RelatedTagButton(
+              backgroundColor: ref.getTagColor(context, item.category.name),
+              onAdd: () => widget.onAdded(item),
+              onRemove: () => widget.onNegated(item),
+              label: Text(
+                item.tag.replaceUnderscoreWithSpace(),
+                overflow: TextOverflow.fade,
+                maxLines: 1,
+                softWrap: false,
+              ),
             ),
-            child: ViewMoreTagButton(
-              relatedTag: widget.relatedTag,
-              onSelected: widget.onSelected,
+          String _ => Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 8,
+              ),
+              child: FilledButton(
+                style: FilledButton.styleFrom(
+                  foregroundColor: context.iconTheme.color,
+                  backgroundColor: context.colorScheme.surfaceVariant,
+                  side: BorderSide(
+                    color: context.theme.hintColor,
+                  ),
+                ),
+                onPressed: () => goToRelatedTagsPage(
+                  context,
+                  relatedTag: widget.relatedTag,
+                  onAdded: widget.onAdded,
+                  onNegated: widget.onNegated,
+                ),
+                child: const Text('tag.related.more').tr(),
+              ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _RelatedTagChip extends ConsumerWidget {
-  const _RelatedTagChip({
-    required this.relatedTag,
-    required this.onPressed,
-  });
-
-  final RelatedTagItem relatedTag;
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return RelatedTagButton(
-      backgroundColor: ref.getTagColor(context, relatedTag.category.name),
-      onPressed: onPressed,
-      label: Text(
-        relatedTag.tag.replaceUnderscoreWithSpace(),
-        overflow: TextOverflow.fade,
-        maxLines: 1,
-        softWrap: false,
+          null => const VerticalDivider(
+              thickness: 2,
+            ),
+          _ => const SizedBox.shrink(),
+        },
       ),
     );
   }

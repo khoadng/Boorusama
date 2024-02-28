@@ -21,7 +21,8 @@ class ResultView extends ConsumerStatefulWidget {
     this.scrollController,
     this.backgroundColor,
     required this.selectedTagController,
-    required this.onRelatedTagSelected,
+    required this.onRelatedTagAdded,
+    required this.onRelatedTagNegated,
     required this.selectedTagString,
   });
 
@@ -34,7 +35,12 @@ class ResultView extends ConsumerStatefulWidget {
   final void Function(
     RelatedTagItem tag,
     PostGridController<DanbooruPost> postController,
-  ) onRelatedTagSelected;
+  ) onRelatedTagAdded;
+
+  final void Function(
+    RelatedTagItem tag,
+    PostGridController<DanbooruPost> postController,
+  ) onRelatedTagNegated;
 
   final ValueNotifier<String> selectedTagString;
 
@@ -75,8 +81,9 @@ class _ResultViewState extends ConsumerState<ResultView> {
                 valueListenable: widget.selectedTagString,
                 builder: (context, selectedTags, _) => RelatedTagSection(
                   query: selectedTags,
-                  onSelected: (tag) =>
-                      widget.onRelatedTagSelected(tag, controller),
+                  onAdded: (tag) => widget.onRelatedTagAdded(tag, controller),
+                  onNegated: (tag) =>
+                      widget.onRelatedTagNegated(tag, controller),
                 ),
               ),
             ),

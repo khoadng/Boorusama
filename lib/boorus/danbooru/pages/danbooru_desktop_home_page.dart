@@ -110,7 +110,8 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruDesktopHomePage> {
         child: RelatedTagSection(
           backgroundColor: Colors.transparent,
           query: value,
-          onSelected: (tag) => selectedTagController.addTag(tag.tag),
+          onAdded: (tag) => selectedTagController.addTag(tag.tag),
+          onNegated: (tag) => selectedTagController.negateTag(tag.tag),
         ),
       ),
     );

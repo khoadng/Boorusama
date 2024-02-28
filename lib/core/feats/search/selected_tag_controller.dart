@@ -30,6 +30,8 @@ class SelectedTagController extends ValueNotifier<List<TagSearchItem>> {
     value = _tags.toList();
   }
 
+  void negateTag(String tag) => addTag(tag, operator: FilterOperator.not);
+
   void addTags(
     List<String> tags, {
     FilterOperator operator = FilterOperator.none,
