@@ -798,6 +798,10 @@ class TagEditTagListSection extends ConsumerWidget {
                             Expanded(
                               child: BooruSearchBar(
                                 autofocus: true,
+                                dense: true,
+                                contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 8,
+                                ),
                                 hintText: 'Filter...',
                                 onChanged: (value) => ref
                                     .read(tagEditCurrentFilterProvider.notifier)
