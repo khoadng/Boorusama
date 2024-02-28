@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:exprollable_page_view/exprollable_page_view.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:visibility_detector/visibility_detector.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
@@ -18,9 +17,6 @@ import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
-
-final _visibleProvider =
-    StateProvider.autoDispose.family<bool, int>((ref, key) => false);
 
 class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   const PostDetailsPageScaffold({
@@ -235,9 +231,7 @@ class _PostDetailPageScaffoldState<T extends Post>
                       expanded &&
                       page == currentPage)
                     widget.sliverRelatedPostsBuilder!(context, posts[page]),
-                  if (ref.watch(_visibleProvider(currentPage)) &&
-                      expanded &&
-                      page == currentPage)
+                  if (expanded && page == currentPage)
                     if (artistPosts != null) ...artistPosts,
                   if (widget.sliverCharacterPostsBuilder != null &&
                       expanded &&
@@ -373,20 +367,6 @@ class _PostDetailPageScaffoldState<T extends Post>
               ),
         if (widget.commentsBuilder != null)
           widget.commentsBuilder!(context, post),
-        VisibilityDetector(
-          key: ValueKey(page),
-          onVisibilityChanged: (info) {
-            if (!mounted) return;
-
-            final visibilityState = ref.read(_visibleProvider(page));
-            if (!visibilityState && info.visibleFraction == 1.0) {
-              ref.read(_visibleProvider(page).notifier).state = true;
-            }
-          },
-          child: const SizedBox(
-            height: 4,
-          ),
-        ),
       ],
     ];
   }
