@@ -356,13 +356,12 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                                     child: PageSelector(
                                       currentPage: page,
                                       onPrevious: controller.hasPreviousPage()
-                                          ? () => controller.goToPreviousPage()
+                                          ? () => _goToPreviousPage()
                                           : null,
                                       onNext: controller.hasNextPage()
-                                          ? () => controller.goToNextPage()
+                                          ? () => _goToNextPage()
                                           : null,
-                                      onPageSelect: (page) =>
-                                          controller.jumpToPage(page),
+                                      onPageSelect: (page) => _goToPage(page),
                                     ),
                                   ),
                                 ),
@@ -405,6 +404,21 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
         ));
   }
 
+  Future<void> _goToNextPage() async {
+    await controller.goToNextPage();
+    _autoScrollController.jumpTo(0);
+  }
+
+  Future<void> _goToPreviousPage() async {
+    await controller.goToPreviousPage();
+    _autoScrollController.jumpTo(0);
+  }
+
+  Future<void> _goToPage(int page) async {
+    await controller.jumpToPage(page);
+    _autoScrollController.jumpTo(0);
+  }
+
   Widget _buildPageIndicator() {
     return SliverToBoxAdapter(
       child: Padding(
@@ -414,12 +428,10 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
         ),
         child: PageSelector(
           currentPage: page,
-          onPrevious: controller.hasPreviousPage()
-              ? () => controller.goToPreviousPage()
-              : null,
-          onNext:
-              controller.hasNextPage() ? () => controller.goToNextPage() : null,
-          onPageSelect: (page) => controller.jumpToPage(page),
+          onPrevious:
+              controller.hasPreviousPage() ? () => _goToPreviousPage() : null,
+          onNext: controller.hasNextPage() ? () => _goToNextPage() : null,
+          onPageSelect: (page) => _goToPage(page),
         ),
       ),
     );
@@ -468,8 +480,8 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
           ],
         ),
       ),
-      onLeftSwipe: (_) => controller.goToNextPage(),
-      onRightSwipe: (_) => controller.goToPreviousPage(),
+      onLeftSwipe: (_) => _goToNextPage(),
+      onRightSwipe: (_) => _goToPreviousPage(),
       child: child,
     );
   }
