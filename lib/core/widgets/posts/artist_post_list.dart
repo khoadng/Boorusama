@@ -67,12 +67,28 @@ class ArtistPostList2 extends ConsumerWidget {
     return MultiSliver(
       children: [
         SliverToBoxAdapter(
-          child: ListTile(
-            visualDensity: VisualDensity.compact,
-            onTap: () => goToArtistPage(context, tag),
-            title: Text(tag.replaceAll('_', ' ')),
-            trailing: const Icon(
-              Symbols.arrow_right_alt,
+          child: Material(
+            color: Colors.transparent,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 4,
+                vertical: 8,
+              ),
+              child: InkWell(
+                onTap: () => goToArtistPage(context, tag),
+                customBorder: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: ListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+                  visualDensity: VisualDensity.compact,
+                  minVerticalPadding: 0,
+                  trailing: const Icon(
+                    Symbols.arrow_right_alt,
+                  ),
+                  title: Text(tag.replaceAll('_', ' ')),
+                ),
+              ),
             ),
           ),
         ),

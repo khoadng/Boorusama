@@ -249,7 +249,10 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
               focusNode: focus,
               autofocus: false,
               queryEditingController: controller,
-              onSubmitted: (value) => searchController.submit(value),
+              onSubmitted: (value) {
+                searchController.submit(value);
+                controller.clear();
+              },
               leading: widget.searchBarLeading ??
                   (!context.canPop() ? null : const SearchAppBarBackButton()),
               innerSearchButton: value.text.isEmpty
