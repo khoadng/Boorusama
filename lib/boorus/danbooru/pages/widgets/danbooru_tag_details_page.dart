@@ -77,39 +77,56 @@ class _DanbooruTagDetailsPageState
         builder: (context, controller, errors) => DanbooruInfinitePostList(
           errors: errors,
           controller: controller,
-          sliverHeaderBuilder: (context) => [
-            if (isMobilePlatform() && context.orientation.isPortrait) ...[
-              TagDetailsSlilverAppBar(
-                tagName: widget.tagName,
-              ),
-              SliverToBoxAdapter(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    TagTitleName(tagName: widget.tagName),
-                    widget.otherNamesBuilder(context),
-                    ...widget.extraBuilder?.call(context) ?? [],
-                  ],
+          sliverHeaderBuilder: (context) {
+            final widgets = [
+              () => TagTitleName(tagName: widget.tagName),
+              () => Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      widget.otherNamesBuilder(context),
+                    ],
+                  ),
+              if (widget.extraBuilder != null)
+                for (final extra in widget.extraBuilder!.call(context))
+                  () => extra,
+              () => const SizedBox(height: 20),
+              () => _buildTagCloud(),
+              () => const SizedBox(height: 20),
+              () => Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: CategoryToggleSwitch(
+                      onToggle: (category) {
+                        selectedCategory.value = category;
+                        controller.refresh();
+                      },
+                    ),
+                  ),
+            ];
+
+            return [
+              if (isMobilePlatform() && context.orientation.isPortrait) ...[
+                TagDetailsSlilverAppBar(
+                  tagName: widget.tagName,
                 ),
-              ),
-              const SliverToBoxAdapter(child: SizedBox(height: 20)),
-              SliverToBoxAdapter(
-                child: _buildTagCloud(),
-              ),
-              const SliverToBoxAdapter(child: SizedBox(height: 20)),
-            ],
-            SliverPadding(
-              padding: const EdgeInsets.only(bottom: 10),
-              sliver: SliverToBoxAdapter(
-                child: CategoryToggleSwitch(
-                  onToggle: (category) {
-                    selectedCategory.value = category;
-                    controller.refresh();
-                  },
+                SliverList.builder(
+                  itemCount: widgets.length,
+                  itemBuilder: (context, index) => widgets[index].call(),
                 ),
-              ),
-            ),
-          ],
+              ] else
+                SliverPadding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  sliver: SliverToBoxAdapter(
+                    child: CategoryToggleSwitch(
+                      onToggle: (category) {
+                        selectedCategory.value = category;
+                        controller.refresh();
+                      },
+                    ),
+                  ),
+                ),
+            ];
+          },
         ),
       ),
     );

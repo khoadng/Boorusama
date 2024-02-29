@@ -50,39 +50,53 @@ class _DanbooruTagDetailsPageState<T extends Post>
             const SizedBox(height: 36),
           ],
         ),
-        builder: (_) {
-          final slivers = [
-            if (isMobilePlatform() && context.orientation.isPortrait) ...[
-              TagDetailsSlilverAppBar(
-                tagName: widget.tagName,
-              ),
-              SliverToBoxAdapter(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
+        builder: (context) {
+          final widgets = [
+            () => TagTitleName(tagName: widget.tagName),
+            () => Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    TagTitleName(tagName: widget.tagName),
                     widget.otherNamesBuilder(context),
-                    ...widget.extraBuilder?.call(context) ?? [],
                   ],
                 ),
-              ),
-              const SliverToBoxAdapter(child: SizedBox(height: 20)),
-            ],
-            SliverPadding(
-              padding: const EdgeInsets.only(bottom: 10),
-              sliver: SliverToBoxAdapter(
-                child: CategoryToggleSwitch(
-                  onToggle: (category) {
-                    widget.onCategoryToggle?.call(category);
-                  },
+            if (widget.extraBuilder != null)
+              for (final extra in widget.extraBuilder!.call(context))
+                () => extra,
+            () => const SizedBox(height: 20),
+            () => Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: CategoryToggleSwitch(
+                    onToggle: (category) {
+                      widget.onCategoryToggle?.call(category);
+                    },
+                  ),
                 ),
-              ),
-            ),
           ];
 
           return widget.gridBuilder.call(
             context,
-            slivers,
+            [
+              if (isMobilePlatform() && context.orientation.isPortrait) ...[
+                TagDetailsSlilverAppBar(
+                  tagName: widget.tagName,
+                ),
+                SliverList.builder(
+                  itemCount: widgets.length,
+                  itemBuilder: (context, index) => widgets[index].call(),
+                ),
+              ] else
+                SliverPadding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  sliver: SliverToBoxAdapter(
+                    child: CategoryToggleSwitch(
+                      onToggle: (category) {
+                        widget.onCategoryToggle?.call(category);
+                      },
+                    ),
+                  ),
+                ),
+            ],
           );
         },
       ),
