@@ -109,10 +109,13 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
   var refreshing = false;
   var items = <T>[];
   var filteredItems = <T>[];
+  var _currentFilteredIds = <int>{};
+  var _currentNonFilteredIds = <int>{};
   late var pageMode = controller.pageMode;
 
   var filters = <String, bool>{};
   var tagCounts = <String, int>{};
+  var _countedPostIds = <int>{};
   var _hasBlacklistedTags = false;
 
   @override
@@ -168,6 +171,8 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
 
   void _updateData() {
     final d = filter(
+      _currentFilteredIds,
+      _currentNonFilteredIds,
       controller.items,
       [
         for (final tag in filters.keys)
@@ -196,13 +201,23 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
   }
 
   void _countTags() {
-    tagCounts = controller.items.countTagPattern(filters.keys);
+    tagCounts = controller.items.countTagPattern(
+      _countedPostIds,
+      tagCounts,
+      filters.keys,
+    );
     _hasBlacklistedTags = tagCounts.values.any((c) => c > 0);
   }
 
   void _onControllerChange() {
     if (!mounted) return;
     setState(() {
+      if (refreshing) {
+        _countedPostIds = {};
+        _currentFilteredIds = {};
+        _currentNonFilteredIds = {};
+      }
+
       _updateData();
       _countTags();
 

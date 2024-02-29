@@ -9,7 +9,6 @@ import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/booru_chip.dart';
-
 import 'trending_section.dart';
 
 class TrendingTags extends ConsumerWidget {
