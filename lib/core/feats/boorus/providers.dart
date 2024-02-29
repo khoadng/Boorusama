@@ -38,7 +38,7 @@ final configIdOrdersProvider = Provider<List<int>>((ref) {
   }
 });
 
-final configsProvider = Provider<IList<BooruConfig>>((ref) {
+final configsProvider = FutureProvider.autoDispose<IList<BooruConfig>>((ref) {
   final configs = ref.watch(booruConfigProvider);
   if (configs == null) return <BooruConfig>[].lock;
 
