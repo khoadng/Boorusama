@@ -216,6 +216,7 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
         _countedPostIds = {};
         _currentFilteredIds = {};
         _currentNonFilteredIds = {};
+        tagCounts = {};
       }
 
       _updateData();
