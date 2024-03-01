@@ -238,13 +238,9 @@ extension PostsX on Iterable<Post> {
   }
 
   Map<String, int> countTagPattern(
-    Set<int> countedPostIds,
-    Map<String, int> currentTagCounts,
     Iterable<String> patterns,
   ) {
-    final tagCounts = <String, int>{
-      ...currentTagCounts,
-    };
+    final tagCounts = <String, int>{};
 
     // add the new patterns to the tagCounts if they don't exist
     for (final pattern in patterns) {
@@ -254,14 +250,11 @@ extension PostsX on Iterable<Post> {
     }
 
     for (final item in this) {
-      if (countedPostIds.contains(item.id)) continue;
-
       for (final pattern in patterns) {
         if (item.containsTagPattern(pattern)) {
           tagCounts[pattern] = tagCounts[pattern]! + 1;
         }
       }
-      countedPostIds.add(item.id);
     }
 
     return tagCounts;

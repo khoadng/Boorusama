@@ -53,6 +53,7 @@ class RelatedTagButton extends ConsumerWidget {
         child: DefaultTextStyle(
           style: TextStyle(
             color: colors?.foregroundColor,
+            fontWeight: FontWeight.bold,
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
