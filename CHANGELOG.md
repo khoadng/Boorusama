@@ -1,3 +1,10 @@
+# 3.12.0
+- Support Szurubooru
+- Allow gestures and preview image's thumbnail button to be customized for each profile
+- Add options to adjust the image grid padding and image viewer's UI overlay
+- Improve the search page to make it more convenient to use
+- Bug fixes and performance improvements
+
 # 3.11.0
 - Show original source for bookmarked posts and allow tapping on a tag to search for it
 - Add a custom option for advance rating filtering
