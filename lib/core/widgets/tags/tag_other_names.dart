@@ -25,7 +25,6 @@ class TagOtherNames extends StatelessWidget {
                 margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 height: 32,
                 child: ListView.builder(
-                  shrinkWrap: true,
                   scrollDirection: Axis.horizontal,
                   itemCount: otherNames!.length,
                   itemBuilder: (context, index) =>
