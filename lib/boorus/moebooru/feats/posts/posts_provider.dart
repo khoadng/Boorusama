@@ -7,7 +7,6 @@ import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/moebooru/moebooru.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/moebooru/types/types.dart';
-import 'package:boorusama/core/feats/blacklists/blacklists.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/utils.dart';
@@ -83,7 +82,7 @@ final moebooruPostDetailsArtistProvider =
     FutureProvider.family.autoDispose<List<Post>, String>((ref, tag) async {
   final config = ref.watchConfig;
   final repo = ref.watch(moebooruArtistCharacterPostRepoProvider(config));
-  final globalBlacklistedTags = ref.watch(globalBlacklistedTagsProvider);
+  final blacklistedTags = ref.watch(blacklistTagsProvider(config));
 
   final posts = await repo.getPosts([tag], 1).run().then(
         (value) => value.fold(
@@ -94,9 +93,7 @@ final moebooruPostDetailsArtistProvider =
 
   return filterTags(
     posts.take(30).where((e) => !e.isFlash).toList(),
-    {
-      ...globalBlacklistedTags.map((e) => e.name),
-    },
+    blacklistedTags,
   );
 });
 
@@ -104,7 +101,7 @@ final moebooruPostDetailsCharacterProvider =
     FutureProvider.family.autoDispose<List<Post>, String>((ref, tag) async {
   final config = ref.watchConfig;
   final repo = ref.watch(moebooruArtistCharacterPostRepoProvider(config));
-  final globalBlacklistedTags = ref.watch(globalBlacklistedTagsProvider);
+  final blacklistedTags = ref.watch(blacklistTagsProvider(config));
 
   final posts = await repo.getPosts([tag], 1).run().then(
         (value) => value.fold(
@@ -115,9 +112,7 @@ final moebooruPostDetailsCharacterProvider =
 
   return filterTags(
     posts.take(30).where((e) => !e.isFlash).toList(),
-    {
-      ...globalBlacklistedTags.map((e) => e.name),
-    },
+    blacklistedTags,
   );
 });
 

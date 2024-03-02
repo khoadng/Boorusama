@@ -9,6 +9,7 @@ import 'package:hive/hive.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
+import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/boorus/e621/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/e621/feats/posts/e621_post_provider.dart';
 import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
@@ -30,6 +31,7 @@ import 'package:boorusama/clients/sankaku/sankaku_client.dart';
 import 'package:boorusama/clients/shimmie2/shimmie2_client.dart';
 import 'package:boorusama/clients/szurubooru/szurubooru_client.dart';
 import 'package:boorusama/clients/zerochan/zerochan_client.dart';
+import 'package:boorusama/core/feats/blacklists/global_blacklisted_tags_provider.dart';
 import 'package:boorusama/core/feats/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
@@ -226,6 +228,67 @@ final favoriteProvider = Provider.autoDispose
           BooruType.shimmie2 ||
           BooruType.unknown =>
             false,
+        });
+
+final blacklistTagsProvider = Provider.autoDispose
+    .family<Set<String>, BooruConfig>((ref, config) =>
+        switch (config.booruType) {
+          BooruType.danbooru =>
+            ref.watch(danbooruCurrentUserProvider(config)).maybeWhen(
+                  data: (user) {
+                    final isUnverified = config.isUnverified();
+                    final booruFactory = ref.watch(booruFactoryProvider);
+                    final censoredTagsBanned = booruFactory
+                            .create(type: config.booruType)
+                            ?.hasCensoredTagsBanned(config.url) ??
+                        false;
+
+                    return {
+                      ...ref
+                          .watch(globalBlacklistedTagsProvider)
+                          .map((e) => e.name),
+                      if (ref
+                              .watch(danbooruBlacklistedTagsProvider(config))
+                              .value !=
+                          null)
+                        ...ref
+                            .watch(danbooruBlacklistedTagsProvider(config))
+                            .value!,
+                      if (!isUnverified && censoredTagsBanned && user == null)
+                        ...kCensoredTags,
+                      if (!isUnverified &&
+                          censoredTagsBanned &&
+                          user != null &&
+                          !isBooruGoldPlusAccount(user.level))
+                        ...kCensoredTags,
+                    };
+                  },
+                  orElse: () => {
+                    ...ref
+                        .watch(globalBlacklistedTagsProvider)
+                        .map((e) => e.name),
+                    if (ref
+                            .watch(danbooruBlacklistedTagsProvider(config))
+                            .value !=
+                        null)
+                      ...ref
+                          .watch(danbooruBlacklistedTagsProvider(config))
+                          .value!,
+                  },
+                ),
+          BooruType.e621 ||
+          BooruType.szurubooru ||
+          BooruType.gelbooru ||
+          BooruType.gelbooruV1 ||
+          BooruType.gelbooruV2 ||
+          BooruType.zerochan ||
+          BooruType.sankaku ||
+          BooruType.moebooru ||
+          BooruType.philomena ||
+          BooruType.szurubooru ||
+          BooruType.shimmie2 ||
+          BooruType.unknown =>
+            ref.watch(globalBlacklistedTagsProvider).map((e) => e.name).toSet(),
         });
 
 final booruSiteValidatorProvider =
