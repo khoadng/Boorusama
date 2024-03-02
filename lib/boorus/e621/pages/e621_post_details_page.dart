@@ -16,7 +16,6 @@ import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
-import 'package:boorusama/widgets/widgets.dart';
 import 'widgets/e621_post_action_toolbar.dart';
 import 'widgets/e621_post_tag_list.dart';
 
@@ -50,26 +49,29 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage> {
       toolbarBuilder: (context, post) => E621PostActionToolbar(post: post),
       swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
       sliverArtistPostsBuilder: (context, post) => post.artistTags.isNotEmpty
-          ? ArtistPostList(
-              artists: post.artistTags,
-              builder: (tag) =>
-                  ref.watch(e621ArtistPostsProvider(tag)).maybeWhen(
-                        data: (data) => PreviewPostGrid(
-                          posts: data,
-                          onTap: (postIdx) => goToPostDetailsPage(
-                            context: context,
+          ? post.artistTags
+              .map((tag) => ArtistPostList2(
+                    tag: tag,
+                    builder: (tag) => ref
+                        .watch(e621ArtistPostsProvider(tag))
+                        .maybeWhen(
+                          data: (data) => SliverPreviewPostGrid(
                             posts: data,
-                            initialIndex: postIdx,
+                            onTap: (postIdx) => goToPostDetailsPage(
+                              context: context,
+                              posts: data,
+                              initialIndex: postIdx,
+                            ),
+                            imageUrl: (item) => item.thumbnailFromSettings(
+                                ref.watch(settingsProvider)),
                           ),
-                          imageUrl: (item) => item.thumbnailFromSettings(
-                              ref.watch(settingsProvider)),
+                          orElse: () => const SliverPreviewPostGridPlaceholder(
+                            itemCount: 30,
+                          ),
                         ),
-                        orElse: () => const PreviewPostGridPlaceholder(
-                          imageCount: 30,
-                        ),
-                      ),
-            )
-          : const SliverSizedBox.shrink(),
+                  ))
+              .toList()
+          : [],
       tagListBuilder: (context, post) => E621TagsTile(post: post),
       infoBuilder: (context, post) => SimpleInformationSection(
         post: post,

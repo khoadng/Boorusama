@@ -30,23 +30,25 @@ class FavoriteTagLabelDetailsPage extends ConsumerWidget {
           FavoriteTagAddTagToLabelButton(label: label),
         ],
       ),
-      body: ListView(
-        children: [
-          for (final tag in filtered)
-            ListTile(
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-              title: Text(tag.name),
-              trailing: IconButton(
-                onPressed: () {
-                  ref.read(favoriteTagsProvider.notifier).update(
-                        tag.name,
-                        tag.removeLabel(label),
-                      );
-                },
-                icon: const Icon(Symbols.close),
-              ),
+      body: ListView.builder(
+        itemCount: filtered.length,
+        itemBuilder: (context, index) {
+          final tag = filtered[index];
+
+          return ListTile(
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+            title: Text(tag.name),
+            trailing: IconButton(
+              onPressed: () {
+                ref.read(favoriteTagsProvider.notifier).update(
+                      tag.name,
+                      tag.removeLabel(label),
+                    );
+              },
+              icon: const Icon(Symbols.close),
             ),
-        ],
+          );
+        },
       ),
     );
   }

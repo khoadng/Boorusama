@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:like_button/like_button.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -53,5 +54,71 @@ class BookmarkPostButton extends ConsumerWidget {
               Symbols.bookmark,
             ),
           );
+  }
+}
+
+class BookmarkPostLikeButtonButton extends ConsumerWidget {
+  const BookmarkPostLikeButtonButton({
+    super.key,
+    required this.post,
+  });
+
+  final Post post;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final booruConfig = ref.watchConfig;
+    final bookmarkState = ref.watch(bookmarkProvider);
+
+    final isBookmarked =
+        bookmarkState.isBookmarked(post, booruConfig.booruType);
+
+    return LikeButton(
+      isLiked: isBookmarked,
+      onTap: (isLiked) {
+        if (isLiked) {
+          ref.bookmarks.removeBookmarkWithToast(
+            bookmarkState.getBookmark(post, booruConfig.booruType)!,
+          );
+        } else {
+          ref.bookmarks.addBookmarkWithToast(
+            booruConfig.booruId,
+            booruConfig.url,
+            post,
+          );
+        }
+
+        return Future.value(!isLiked);
+      },
+      likeBuilder: (bool isLiked) {
+        return Icon(
+          isLiked ? Symbols.bookmark : Symbols.bookmark,
+          color: isLiked ? Colors.redAccent : Colors.white,
+          fill: isLiked ? 1 : 0,
+        );
+      },
+    );
+  }
+}
+
+extension BookmarkPostX on WidgetRef {
+  void toggleBookmark(Post post) {
+    final booruConfig = readConfig;
+    final bookmarkState = read(bookmarkProvider);
+
+    final isBookmarked =
+        bookmarkState.isBookmarked(post, booruConfig.booruType);
+
+    if (isBookmarked) {
+      bookmarks.removeBookmarkWithToast(
+        bookmarkState.getBookmark(post, booruConfig.booruType)!,
+      );
+    } else {
+      bookmarks.addBookmarkWithToast(
+        booruConfig.booruId,
+        booruConfig.url,
+        post,
+      );
+    }
   }
 }

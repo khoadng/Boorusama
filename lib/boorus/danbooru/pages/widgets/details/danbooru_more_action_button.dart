@@ -50,7 +50,6 @@ class DanbooruMoreActionButton extends ConsumerWidget {
                   case 'show_tag_list':
                     goToDanbooruShowTaglistPage(
                       ref,
-                      context,
                       post.extractTags(),
                     );
                     break;

@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:oktoast/oktoast.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/providers.dart';
@@ -118,6 +119,7 @@ class DanbooruImageGridItem extends ConsumerWidget {
             ref.danbooruFavorites.add(post.id);
           }
         },
+        quickActionButtonBuilder: defaultImagePreviewButtonBuilder(ref, post),
         autoScrollOptions: autoScrollOptions,
         onTap: post.isBanned
             ? switch (post.source) {

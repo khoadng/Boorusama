@@ -5,6 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/functional.dart';
 
@@ -23,6 +24,8 @@ class BooruConfig extends Equatable {
     required this.customBulkDownloadFileNameFormat,
     required this.imageDetaisQuality,
     required this.granularRatingFilters,
+    required this.postGestures,
+    required this.defaultPreviewImageButtonAction,
   });
 
   static const BooruConfig empty = BooruConfig(
@@ -39,6 +42,8 @@ class BooruConfig extends Equatable {
     customBulkDownloadFileNameFormat: null,
     imageDetaisQuality: null,
     granularRatingFilters: null,
+    postGestures: null,
+    defaultPreviewImageButtonAction: null,
   );
 
   static BooruConfig defaultConfig({
@@ -60,6 +65,8 @@ class BooruConfig extends Equatable {
         customBulkDownloadFileNameFormat: customDownloadFileNameFormat,
         imageDetaisQuality: null,
         granularRatingFilters: null,
+        postGestures: null,
+        defaultPreviewImageButtonAction: null,
       );
 
   final int id;
@@ -75,6 +82,8 @@ class BooruConfig extends Equatable {
   final String? customBulkDownloadFileNameFormat;
   final String? imageDetaisQuality;
   final Set<Rating>? granularRatingFilters;
+  final PostGestureConfig? postGestures;
+  final String? defaultPreviewImageButtonAction;
 
   BooruConfig copyWith({
     String? url,
@@ -96,6 +105,8 @@ class BooruConfig extends Equatable {
       customBulkDownloadFileNameFormat: customBulkDownloadFileNameFormat,
       imageDetaisQuality: imageDetaisQuality,
       granularRatingFilters: granularRatingFilters,
+      postGestures: postGestures,
+      defaultPreviewImageButtonAction: defaultPreviewImageButtonAction,
     );
   }
 
@@ -114,6 +125,8 @@ class BooruConfig extends Equatable {
         customBulkDownloadFileNameFormat,
         imageDetaisQuality,
         granularRatingFilters,
+        postGestures,
+        defaultPreviewImageButtonAction,
       ];
 
   factory BooruConfig.fromJson(Map<String, dynamic> json) {
@@ -141,6 +154,12 @@ class BooruConfig extends Equatable {
       granularRatingFilters: parseGranularRatingFilters(
         json['granularRatingFilterString'] as String?,
       ),
+      postGestures: json['postGestures'] == null
+          ? null
+          : PostGestureConfig.fromJson(
+              json['postGestures'] as Map<String, dynamic>),
+      defaultPreviewImageButtonAction:
+          json['defaultPreviewImageButtonAction'] as String?,
     );
   }
 
@@ -161,6 +180,8 @@ class BooruConfig extends Equatable {
       'granularRatingFilterString': granularRatingFilterToString(
         granularRatingFilters,
       ),
+      'postGestures': postGestures?.toJson(),
+      'defaultPreviewImageButtonAction': defaultPreviewImageButtonAction,
     };
   }
 }
@@ -235,4 +256,19 @@ extension BooruConfigX on BooruConfig {
 
     return granularRatingFilters!.where((e) => e != Rating.unknown).toSet();
   }
+
+  ImageQuickActionType get defaultPreviewImageButtonActionType =>
+      switch (defaultPreviewImageButtonAction) {
+        kDownloadAction => ImageQuickActionType.download,
+        kToggleBookmarkAction => ImageQuickActionType.bookmark,
+        '' => ImageQuickActionType.none,
+        _ => ImageQuickActionType.defaultAction,
+      };
+}
+
+enum ImageQuickActionType {
+  none,
+  defaultAction,
+  download,
+  bookmark,
 }

@@ -45,6 +45,14 @@ void goToHomePage(
 }
 
 void goToOriginalImagePage(BuildContext context, Post post) {
+  if (post.isMp4) {
+    showSimpleSnackBar(
+      context: context,
+      content: const Text('This is a video post, cannot view original image'),
+    );
+    return;
+  }
+
   context.navigator.push(PageTransition(
     type: PageTransitionType.fade,
     settings: const RouteSettings(
@@ -224,14 +232,13 @@ void goToSearchHistoryPage(
 
 Future<bool?> goToShowTaglistPage(
   WidgetRef ref,
-  BuildContext context,
   List<Tag> tags,
 ) {
   final globalNotifier = ref.read(globalBlacklistedTagsProvider.notifier);
   final favoriteNotifier = ref.read(favoriteTagsProvider.notifier);
 
   return showMaterialModalBottomSheet<bool>(
-    context: navigatorKey.currentContext ?? context,
+    context: navigatorKey.currentContext ?? ref.context,
     duration: const Duration(milliseconds: 200),
     expand: true,
     builder: (dialogContext) => ShowTagListPage(

@@ -55,6 +55,7 @@ String _imageListToString(ImageListType imageListType) =>
 class _AppearancePageState extends ConsumerState<AppearancePage> {
   late final ValueNotifier<double> _spacingSliderValue = ValueNotifier(0);
   late final ValueNotifier<double> _borderRadiusSliderValue = ValueNotifier(0);
+  late final ValueNotifier<double> _paddingSliderValue = ValueNotifier(0);
 
   @override
   void initState() {
@@ -62,6 +63,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
     final settings = ref.read(settingsProvider);
     _spacingSliderValue.value = settings.imageGridSpacing;
     _borderRadiusSliderValue.value = settings.imageBorderRadius;
+    _paddingSliderValue.value = settings.imageGridPadding;
   }
 
   @override
@@ -219,6 +221,38 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
                 ],
               ),
             ),
+            const SizedBox(height: 10),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8),
+                    child: Text('Padding'),
+                  ),
+                  _buildPaddingSlider(settings),
+                ],
+              ),
+            ),
+            const Divider(thickness: 1),
+            const SettingsHeader(label: 'Image details'),
+            SettingsTile<PostDetailsOverlayInitialState>(
+              title: const Text('UI overlay'),
+              selectedOption: settings.postDetailsOverlayInitialState,
+              items: PostDetailsOverlayInitialState.values,
+              onChanged: (value) => ref.updateSettings(
+                  settings.copyWith(postDetailsOverlayInitialState: value)),
+              optionBuilder: (value) => Text(
+                switch (value) {
+                  PostDetailsOverlayInitialState.show => 'Show',
+                  PostDetailsOverlayInitialState.hide => 'Hide',
+                },
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
           ],
         ),
       ),
@@ -254,6 +288,23 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
           onChangeEnd: (value) =>
               ref.updateSettings(settings.copyWith(imageGridSpacing: value)),
           onChanged: (value) => _spacingSliderValue.value = value,
+        );
+      },
+    );
+  }
+
+  Widget _buildPaddingSlider(Settings settings) {
+    return ValueListenableBuilder(
+      valueListenable: _paddingSliderValue,
+      builder: (context, value, child) {
+        return Slider(
+          label: value.toInt().toString(),
+          divisions: 8,
+          max: 32,
+          value: value,
+          onChangeEnd: (value) =>
+              ref.updateSettings(settings.copyWith(imageGridPadding: value)),
+          onChanged: (value) => _paddingSliderValue.value = value,
         );
       },
     );

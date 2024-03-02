@@ -10,7 +10,6 @@ import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/e621/e621.dart';
-import 'package:boorusama/boorus/e621/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
@@ -33,6 +32,9 @@ import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/pages/post_statistics_page.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
+import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/routes.dart';
@@ -42,6 +44,8 @@ import 'e621/feats/notes/notes.dart';
 import 'philomena/philomena.dart';
 import 'philomena/providers.dart';
 import 'shimmie2/shimmie2.dart';
+import 'szurubooru/providers.dart';
+import 'szurubooru/szurubooru.dart';
 
 typedef CreateConfigPageBuilder = Widget Function(
   BuildContext context,
@@ -104,9 +108,8 @@ typedef AutocompleteFetcher = Future<List<AutocompleteData>> Function(
 
 typedef NoteFetcher = Future<List<Note>> Function(int postId);
 
-typedef FavoriteAdder = Future<bool> Function(int postId);
-typedef FavoriteRemover = Future<bool> Function(int postId);
-typedef FavoriteChecker = bool Function(int postId);
+typedef FavoriteAdder = Future<bool> Function(int postId, WidgetRef ref);
+typedef FavoriteRemover = Future<bool> Function(int postId, WidgetRef ref);
 
 typedef GranularRatingFilterer = bool Function(Post post, BooruConfig config);
 typedef GranularRatingQueryBuilder = List<String> Function(
@@ -143,6 +146,13 @@ typedef PostStatisticsPageBuilder = Widget Function(
   Iterable<Post> posts,
 );
 
+typedef PostGestureHandlerBuilder = bool Function(
+  WidgetRef ref,
+  String? action,
+  Post post,
+  DownloadDelegate downloader,
+);
+
 abstract class BooruBuilder {
   // UI Builders
   HomePageBuilder get homePageBuilder;
@@ -169,6 +179,8 @@ abstract class BooruBuilder {
   GranularRatingQueryBuilder? get granularRatingQueryBuilder;
   GranularRatingOptionsBuilder? get granularRatingOptionsBuilder;
 
+  PostGestureHandlerBuilder get postGestureHandlerBuilder;
+
   // Data Builders
   PostFetcher get postFetcher;
   AutocompleteFetcher get autocompleteFetcher;
@@ -177,7 +189,6 @@ abstract class BooruBuilder {
   // Action Builders
   FavoriteAdder? get favoriteAdder;
   FavoriteRemover? get favoriteRemover;
-  FavoriteChecker? get favoriteChecker;
 
   PostCountFetcher? get postCountFetcher;
 }
@@ -187,8 +198,7 @@ mixin FavoriteNotSupportedMixin implements BooruBuilder {
   FavoriteAdder? get favoriteAdder => null;
   @override
   FavoriteRemover? get favoriteRemover => null;
-  @override
-  FavoriteChecker? get favoriteChecker => null;
+
   @override
   FavoritesPageBuilder? get favoritesPageBuilder => null;
 }
@@ -290,6 +300,43 @@ mixin DefaultGranularRatingFiltererMixin on BooruBuilder {
   GranularRatingFilterer? get granularRatingFilterer => null;
 }
 
+mixin DefaultPostGesturesHandlerMixin on BooruBuilder {
+  @override
+  PostGestureHandlerBuilder get postGestureHandlerBuilder =>
+      (ref, action, post, downloader) => handleDefaultGestureAction(
+            action,
+            onDownload: () => downloader(post),
+            onShare: () => ref.sharePost(
+              post,
+              context: ref.context,
+              state: ref.read(postShareProvider(post)),
+            ),
+            onToggleBookmark: () => ref.toggleBookmark(post),
+            onViewTags: () => goToShowTaglistPage(ref, post.extractTags()),
+            onViewOriginal: () => goToOriginalImagePage(ref.context, post),
+            onOpenSource: () => post.source.whenWeb(
+              (source) => launchExternalUrlString(source.url),
+              () => false,
+            ),
+          );
+}
+
+extension BooruBuilderGestures on BooruBuilder {
+  bool canHandlePostGesture(
+    GestureType gesture,
+    GestureConfig? gestures,
+  ) =>
+      switch (gesture) {
+        GestureType.swipeDown => gestures?.swipeDown != null,
+        GestureType.swipeUp => gestures?.swipeUp != null,
+        GestureType.swipeLeft => gestures?.swipeLeft != null,
+        GestureType.swipeRight => gestures?.swipeRight != null,
+        GestureType.doubleTap => gestures?.doubleTap != null,
+        GestureType.longPress => gestures?.longPress != null,
+        GestureType.tap => gestures?.tap != null,
+      };
+}
+
 mixin LegacyGranularRatingOptionsBuilderMixin on BooruBuilder {
   @override
   GranularRatingOptionsBuilder? get granularRatingOptionsBuilder => () => {
@@ -371,17 +418,27 @@ extension BooruBuilderWidgetRef on WidgetRef {
     String tagType, {
     ThemeMode? themeMode,
   }) {
-    final dynamicColor =
-        watch(settingsProvider.select((value) => value.enableDynamicColoring));
+    final tm = themeMode ?? context.themeMode;
 
-    final color = watchBooruBuilder(watchConfig)
-        ?.tagColorBuilder(themeMode ?? context.themeMode, tagType);
-
-    return dynamicColor
-        ? color?.harmonizeWith(context.colorScheme.primary)
-        : color;
+    return getTagColorCore(
+      tagType,
+      primaryColor: context.colorScheme.primary,
+      themeMode: tm,
+      dynamicColor: watch(
+          settingsProvider.select((value) => value.enableDynamicColoring)),
+      color: watchBooruBuilder(watchConfig)?.tagColorBuilder(tm, tagType),
+    );
   }
 }
+
+Color? getTagColorCore(
+  String tagType, {
+  required Color primaryColor,
+  required ThemeMode themeMode,
+  bool dynamicColor = false,
+  required Color? color,
+}) =>
+    dynamicColor ? color?.harmonizeWith(primaryColor) : color;
 
 final booruBuilderProvider = Provider<BooruBuilder?>((ref) {
   final config = ref.watchConfig;
@@ -441,8 +498,6 @@ final booruBuildersProvider =
                 autocompleteRepo:
                     ref.read(e621AutocompleteRepoProvider(config)),
                 postRepo: ref.read(e621PostRepoProvider(config)),
-                client: ref.read(e621ClientProvider(config)),
-                favoriteChecker: ref.read(e621FavoriteCheckerProvider(config)),
                 noteRepo: ref.read(e621NoteRepoProvider(config)),
               ),
           BooruType.danbooru: (config) => DanbooruBuilder(
@@ -450,8 +505,6 @@ final booruBuildersProvider =
                 autocompleteRepo:
                     ref.read(danbooruAutocompleteRepoProvider(config)),
                 favoriteRepo: ref.read(danbooruFavoriteRepoProvider(config)),
-                favoriteChecker:
-                    ref.read(danbooruFavoriteCheckerProvider(config)),
                 postCountRepo: ref.read(danbooruPostCountRepoProvider(config)),
                 noteRepo: ref.read(danbooruNoteRepoProvider(config)),
               ),
@@ -474,6 +527,11 @@ final booruBuildersProvider =
                 autocompleteRepo:
                     ref.read(shimmie2AutocompleteRepoProvider(config)),
               ),
+          BooruType.szurubooru: (config) => SzurubooruBuilder(
+                postRepo: ref.read(szurubooruPostRepoProvider(config)),
+                autocompleteRepo:
+                    ref.read(szurubooruAutocompleteRepoProvider(config)),
+              ),
         });
 
 extension BooruBuilderFeatureCheck on BooruBuilder {
@@ -482,7 +540,6 @@ extension BooruBuilderFeatureCheck on BooruBuilder {
   bool canFavorite(BooruConfig config) =>
       favoriteAdder != null &&
       favoriteRemover != null &&
-      favoriteChecker != null &&
       config.hasLoginDetails();
 }
 
@@ -548,6 +605,25 @@ String Function(
         ref.watchBooruBuilder(ref.watchConfig)?.postImageDetailsUrlBuilder(
             ref.watch(settingsProvider), post, ref.watchConfig) ??
         post.sampleImageUrl;
+
+Widget Function(
+  BuildContext context,
+)? defaultImagePreviewButtonBuilder(
+  WidgetRef ref,
+  Post post,
+) =>
+    switch (ref.watchConfig.defaultPreviewImageButtonActionType) {
+      ImageQuickActionType.bookmark => (context) =>
+          BookmarkPostLikeButtonButton(
+            post: post,
+          ),
+      ImageQuickActionType.download => (context) => DownloadPostButton(
+            post: post,
+            small: true,
+          ),
+      ImageQuickActionType.none => (context) => const SizedBox.shrink(),
+      ImageQuickActionType.defaultAction => null,
+    };
 
 extension BooruRef on Ref {
   BooruBuilder? readBooruBuilder(BooruConfig? config) {

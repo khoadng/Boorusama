@@ -23,6 +23,8 @@ class BooruSearchBar extends StatefulWidget {
     this.dense,
     this.onTapOutside,
     this.onFocusChanged,
+    this.contentPadding,
+    this.cursorHeight,
   });
 
   final VoidCallback? onTap;
@@ -39,6 +41,8 @@ class BooruSearchBar extends StatefulWidget {
   final bool? dense;
   final VoidCallback? onTapOutside;
   final void Function(bool value)? onFocusChanged;
+  final EdgeInsetsGeometry? contentPadding;
+  final double? cursorHeight;
 
   @override
   State<BooruSearchBar> createState() => _BooruSearchBarState();
@@ -79,6 +83,7 @@ class _BooruSearchBarState extends State<BooruSearchBar> {
                   focusNode: widget.focus,
                   onFocusChange: widget.onFocusChanged,
                   child: BooruTextFormField(
+                    cursorHeight: widget.cursorHeight,
                     keyboardType: TextInputType.text,
                     autocorrect: false,
                     onTapOutside: (event) {
@@ -102,11 +107,12 @@ class _BooruSearchBarState extends State<BooruSearchBar> {
                       enabledBorder: InputBorder.none,
                       errorBorder: InputBorder.none,
                       disabledBorder: InputBorder.none,
-                      contentPadding: const EdgeInsets.only(
-                        bottom: 11,
-                        top: 11,
-                        right: 15,
-                      ),
+                      contentPadding: widget.contentPadding ??
+                          const EdgeInsets.only(
+                            bottom: 11,
+                            top: 11,
+                            right: 15,
+                          ),
                       hintText: widget.hintText ?? 'search.hint'.tr(),
                     ),
                     autofocus: widget.autofocus,

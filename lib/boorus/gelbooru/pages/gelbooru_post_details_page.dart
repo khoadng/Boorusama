@@ -71,32 +71,34 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailsPage> {
               )
             : null,
       ),
-      sliverArtistPostsBuilder: (context, post) => ref
-          .watch(gelbooruPostDetailsArtistMapProvider)
-          .lookup(post.id)
-          .fold(
-            () => const SliverSizedBox.shrink(),
-            (tags) => tags.isNotEmpty
-                ? ArtistPostList(
-                    artists: tags,
-                    builder: (tag) =>
-                        ref.watch(gelbooruArtistPostsProvider(tag)).maybeWhen(
-                              data: (data) => PreviewPostGrid(
-                                posts: data,
-                                onTap: (postIdx) => goToPostDetailsPage(
-                                  context: context,
-                                  posts: data,
-                                  initialIndex: postIdx,
-                                ),
-                                imageUrl: (item) => item.sampleImageUrl,
-                              ),
-                              orElse: () => const PreviewPostGridPlaceholder(
-                                imageCount: 30,
-                              ),
-                            ),
-                  )
-                : const SliverSizedBox.shrink(),
-          ),
+      sliverArtistPostsBuilder: (context, post) =>
+          ref.watch(gelbooruPostDetailsArtistMapProvider).lookup(post.id).fold(
+                () => [],
+                (tags) => tags.isNotEmpty
+                    ? tags
+                        .map((tag) => ArtistPostList2(
+                              tag: tag,
+                              builder: (tag) => ref
+                                  .watch(gelbooruArtistPostsProvider(tag))
+                                  .maybeWhen(
+                                    data: (data) => SliverPreviewPostGrid(
+                                      posts: data,
+                                      onTap: (postIdx) => goToPostDetailsPage(
+                                        context: context,
+                                        posts: data,
+                                        initialIndex: postIdx,
+                                      ),
+                                      imageUrl: (item) => item.sampleImageUrl,
+                                    ),
+                                    orElse: () =>
+                                        const SliverPreviewPostGridPlaceholder(
+                                      itemCount: 30,
+                                    ),
+                                  ),
+                            ))
+                        .toList()
+                    : [],
+              ),
       sliverCharacterPostsBuilder: (context, post) => ref
           .watch(gelbooruPostDetailsCharacterMapProvider)
           .lookup(post.id)

@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
@@ -72,10 +73,7 @@ class DanbooruTagsTile extends ConsumerWidget {
                   shape: const CircleBorder(),
                   backgroundColor: context.colorScheme.surfaceVariant,
                 ),
-                onPressed: () => goToTagEditPage(
-                  context,
-                  post: post,
-                ),
+                onPressed: () => ref.danbooruEdit(post),
                 child: Icon(
                   Symbols.edit,
                   size: 16,

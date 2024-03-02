@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
@@ -8,6 +11,7 @@ import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/pages/comment_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/danbooru_character_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/danbooru_post_statistics_page.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/downloads/downloads.dart';
@@ -15,9 +19,15 @@ import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/pages/post_statistics_page.dart';
+import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/dart.dart';
+import 'package:boorusama/foundation/gestures.dart';
+import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/functional.dart';
+import 'package:boorusama/widgets/widgets.dart';
 import 'pages/create_danbooru_config_page.dart';
 import 'pages/danbooru_artist_page.dart';
 import 'pages/danbooru_home_page.dart';
@@ -79,7 +89,6 @@ class DanbooruBuilder
     required this.postRepo,
     required this.autocompleteRepo,
     required this.favoriteRepo,
-    required this.favoriteChecker,
     required this.postCountRepo,
     required this.noteRepo,
   });
@@ -134,14 +143,11 @@ class DanbooruBuilder
 
   @override
   FavoriteAdder? get favoriteAdder =>
-      (postId) => favoriteRepo.addToFavorites(postId);
+      (postId, ref) => ref.danbooruFavorites.add(postId).then((_) => true);
 
   @override
   FavoriteRemover? get favoriteRemover =>
-      (postId) => favoriteRepo.removeFromFavorites(postId);
-
-  @override
-  final FavoriteChecker? favoriteChecker;
+      (postId, ref) => ref.danbooruFavorites.remove(postId).then((_) => true);
 
   @override
   PostCountFetcher? get postCountFetcher =>
@@ -190,8 +196,11 @@ class DanbooruBuilder
           characterName: characterName, backgroundImageUrl: '');
 
   @override
-  GridThumbnailUrlBuilder get gridThumbnailUrlBuilder => (settings, post) =>
-      (post as DanbooruPost).thumbnailFromSettings(settings);
+  GridThumbnailUrlBuilder get gridThumbnailUrlBuilder =>
+      (settings, post) => castOrNull<DanbooruPost>(post).toOption().fold(
+            () => post.thumbnailImageUrl,
+            (post) => post.thumbnailFromSettings(settings),
+          );
 
   @override
   CommentPageBuilder? get commentPageBuilder =>
@@ -202,6 +211,41 @@ class DanbooruBuilder
 
   @override
   NoteFetcher? get noteFetcher => (postId) => noteRepo.getNotes(postId);
+
+  @override
+  PostGestureHandlerBuilder get postGestureHandlerBuilder =>
+      (ref, action, post, downloader) => handleDanbooruGestureAction(
+            action,
+            onDownload: () => downloader(post),
+            onShare: () => ref.sharePost(
+              post,
+              context: ref.context,
+              state: ref.read(postShareProvider(post)),
+            ),
+            onToggleBookmark: () => ref.toggleBookmark(post),
+            onViewTags: () => castOrNull<DanbooruPost>(post).toOption().fold(
+                  () => goToShowTaglistPage(
+                    ref,
+                    post.extractTags(),
+                  ),
+                  (post) => goToDanbooruShowTaglistPage(
+                    ref,
+                    post.extractTags(),
+                  ),
+                ),
+            onViewOriginal: () => goToOriginalImagePage(ref.context, post),
+            onOpenSource: () => post.source.whenWeb(
+              (source) => launchExternalUrlString(source.url),
+              () => false,
+            ),
+            onToggleFavorite: () => ref.danbooruToggleFavorite(post.id),
+            onUpvote: () => ref.danbooruUpvote(post.id),
+            onDownvote: () => ref.danbooruDownvote(post.id),
+            onEdit: () => castOrNull<DanbooruPost>(post).toOption().fold(
+                  () => false,
+                  (post) => ref.danbooruEdit(post),
+                ),
+          );
 
   @override
   DownloadFilenameGenerator get downloadFilenameBuilder =>
@@ -232,9 +276,10 @@ class DanbooruBuilder
       );
 
   @override
-  PostImageDetailsUrlBuilder get postImageDetailsUrlBuilder =>
-      (settings, post, config) => (post as DanbooruPost).toOption().fold(
-            () => post.sampleImageUrl,
+  PostImageDetailsUrlBuilder get postImageDetailsUrlBuilder => (settings,
+          rawPost, config) =>
+      castOrNull<DanbooruPost>(rawPost).toOption().fold(
+            () => rawPost.sampleImageUrl,
             (post) => post.isGif
                 ? post.sampleImageUrl
                 : config.imageDetaisQuality.toOption().fold(
@@ -284,4 +329,116 @@ class DanbooruBuilder
                     (ratings) => !ratings.contains(post.rating),
                   ),
           };
+}
+
+bool handleDanbooruGestureAction(
+  String? action, {
+  void Function()? onDownload,
+  void Function()? onShare,
+  void Function()? onToggleBookmark,
+  void Function()? onViewTags,
+  void Function()? onViewOriginal,
+  void Function()? onOpenSource,
+  void Function()? onToggleFavorite,
+  void Function()? onUpvote,
+  void Function()? onDownvote,
+  void Function()? onEdit,
+}) {
+  switch (action) {
+    case kToggleFavoriteAction:
+      onToggleFavorite?.call();
+      break;
+    case kUpvoteAction:
+      onUpvote?.call();
+      break;
+    case kDownvoteAction:
+      onDownvote?.call();
+      break;
+    case kEditAction:
+      onEdit?.call();
+      break;
+    default:
+      return handleDefaultGestureAction(
+        action,
+        onDownload: onDownload,
+        onShare: onShare,
+        onToggleBookmark: onToggleBookmark,
+        onViewTags: onViewTags,
+        onViewOriginal: onViewOriginal,
+        onOpenSource: onOpenSource,
+      );
+  }
+
+  return true;
+}
+
+extension DanbooruX on WidgetRef {
+  void danbooruToggleFavorite(int postId) {
+    _guardLogin(() {
+      final isFaved = read(danbooruFavoriteProvider(postId));
+      if (isFaved) {
+        danbooruFavorites.remove(postId).then(
+              (_) => _showSuccessSnackBar('Removed from favorites'),
+            );
+      } else {
+        danbooruFavorites.add(postId).then(
+              (_) => _showSuccessSnackBar('Added to favorites'),
+            );
+      }
+    });
+  }
+
+  void danbooruUpvote(int postId) {
+    _guardLogin(() {
+      read(danbooruPostVotesProvider(readConfig).notifier).upvote(postId).then(
+            (_) => _showSuccessSnackBar('Upvoted'),
+          );
+    });
+  }
+
+  void danbooruDownvote(int postId) {
+    _guardLogin(() {
+      read(danbooruPostVotesProvider(readConfig).notifier)
+          .downvote(postId)
+          .then(
+            (_) => _showSuccessSnackBar('Downvoted'),
+          );
+    });
+  }
+
+  void danbooruEdit(DanbooruPost post) {
+    _guardLogin(() {
+      goToTagEditPage(
+        this.context,
+        post: post,
+      );
+    });
+  }
+
+  void _showSuccessSnackBar(
+    String message, {
+    Color? backgroundColor,
+  }) {
+    showSuccessToast(
+      message,
+      backgroundColor: backgroundColor,
+      duration: const Duration(seconds: 1, milliseconds: 500),
+    );
+  }
+
+  void _guardLogin(void Function() action) {
+    if (!readConfig.hasLoginDetails()) {
+      showSimpleSnackBar(
+        context: this.context,
+        content: const Text(
+          'post.detail.login_required_notice',
+        ).tr(),
+        duration: const Duration(seconds: 1),
+      );
+
+      return;
+    }
+
+    action();
+  }
 }

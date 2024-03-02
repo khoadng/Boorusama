@@ -32,12 +32,15 @@ class GelbooruCommentRepositoryApi implements GelbooruCommentRepository {
 }
 
 Comment gelboorucommentDtoToGelbooruComment(CommentDto dto) {
+  final createdAt =
+      DateFormat('yyyy-MM-dd HH:mm').tryParse(dto.createdAt ?? '') ??
+          DateTime.now();
   return SimpleComment(
     id: int.tryParse(dto.id ?? '') ?? 0,
     body: dto.body ?? '',
     creatorName: dto.creator ?? '',
     creatorId: int.tryParse(dto.creatorId ?? '') ?? 0,
-    createdAt: DateFormat('yyyy-MM-dd HH:mm').tryParse(dto.createdAt ?? '') ??
-        DateTime.now(),
+    createdAt: createdAt,
+    updatedAt: createdAt,
   );
 }

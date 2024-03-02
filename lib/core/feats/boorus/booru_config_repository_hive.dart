@@ -108,6 +108,9 @@ class HiveBooruConfigRepository implements BooruConfigRepository {
         granularRatingFilterString: granularRatingFilterToString(
           booruConfig.granularRatingFilters,
         ),
+        postGestures: booruConfig.postGestures?.toJsonString(),
+        defaultPreviewImageButtonAction:
+            booruConfig.defaultPreviewImageButtonAction,
       );
       final json = data.toJson();
       final jsonString = jsonEncode(json);

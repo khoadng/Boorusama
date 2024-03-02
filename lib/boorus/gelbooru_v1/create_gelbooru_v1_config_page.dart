@@ -6,11 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/pages/boorus/widgets/create_booru_config_name_field.dart';
-import 'package:boorusama/core/pages/boorus/widgets/create_booru_post_details_resolution_option_tile.dart';
-import 'package:boorusama/core/pages/boorus/widgets/create_booru_scaffold.dart';
-import 'package:boorusama/core/pages/boorus/widgets/create_booru_submit_button.dart';
-import 'package:boorusama/core/pages/boorus/widgets/custom_download_file_name_section.dart';
+import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/router.dart';
 
 class CreateGelbooruV1ConfigPage extends ConsumerStatefulWidget {
@@ -30,76 +26,38 @@ class CreateGelbooruV1ConfigPage extends ConsumerStatefulWidget {
 
 class _CreateGelbooruV1ConfigPageState
     extends ConsumerState<CreateGelbooruV1ConfigPage> {
-  late String configName = widget.config.name;
-  late String? customDownloadFileNameFormat =
-      widget.config.customDownloadFileNameFormat;
-  late var customBulkDownloadFileNameFormat =
-      widget.config.customBulkDownloadFileNameFormat;
-  late var imageDetaisQuality = widget.config.imageDetaisQuality;
-
   @override
   Widget build(BuildContext context) {
-    return CreateBooruScaffold(
+    return CreateBooruConfigScaffold(
       backgroundColor: widget.backgroundColor,
-      booruType: widget.config.booruType,
-      url: widget.config.url,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 8,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              CreateBooruConfigNameField(
-                text: configName,
-                onChanged: (value) => setState(() => configName = value),
-              ),
-              const SizedBox(height: 8),
-              CustomDownloadFileNameSection(
-                config: widget.config,
-                format: customDownloadFileNameFormat,
-                onIndividualDownloadChanged: (value) =>
-                    setState(() => customDownloadFileNameFormat = value),
-                onBulkDownloadChanged: (value) =>
-                    setState(() => customBulkDownloadFileNameFormat = value),
-              ),
-              const SizedBox(height: 16),
-              CreateBooruGeneralPostDetailsResolutionOptionTile(
-                value: imageDetaisQuality,
-                onChanged: (value) =>
-                    setState(() => imageDetaisQuality = value),
-              ),
-              const SizedBox(height: 16),
-              CreateBooruSubmitButton(
-                onSubmit: allowSubmit() ? submit : null,
-              ),
-            ],
-          ),
-        ),
-      ],
+      config: widget.config,
+      hasDownloadTab: true,
+      tabsBuilder: (context) => {},
+      allowSubmit: allowSubmit,
+      submit: submit,
     );
   }
 
-  bool allowSubmit() {
-    return configName.isNotEmpty;
+  bool allowSubmit(CreateConfigData data) {
+    return data.configName.isNotEmpty;
   }
 
-  void submit() {
+  void submit(CreateConfigData data) {
     final config = AddNewBooruConfig(
       login: '',
       apiKey: '',
       booru: widget.config.booruType,
       booruHint: widget.config.booruType,
-      configName: configName,
+      configName: data.configName,
       hideDeleted: false,
       ratingFilter: BooruConfigRatingFilter.none,
       url: widget.config.url,
-      customDownloadFileNameFormat: customDownloadFileNameFormat,
-      customBulkDownloadFileNameFormat: customBulkDownloadFileNameFormat,
-      imageDetaisQuality: imageDetaisQuality,
+      customDownloadFileNameFormat: data.customDownloadFileNameFormat,
+      customBulkDownloadFileNameFormat: data.customBulkDownloadFileNameFormat,
+      imageDetaisQuality: data.imageDetaisQuality,
       granularRatingFilters: null,
+      postGestures: data.postGestures,
+      defaultPreviewImageButtonAction: data.defaultPreviewImageButtonAction,
     );
 
     ref

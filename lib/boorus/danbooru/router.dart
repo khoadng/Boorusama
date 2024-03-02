@@ -247,11 +247,13 @@ void goToPoolSearchPage(BuildContext context, WidgetRef ref) {
 void goToRelatedTagsPage(
   BuildContext context, {
   required RelatedTag relatedTag,
-  required void Function(RelatedTagItem tag) onSelected,
+  required void Function(RelatedTagItem tag) onAdded,
+  required void Function(RelatedTagItem tag) onNegated,
 }) {
   final page = RelatedTagActionSheet(
     relatedTag: relatedTag,
-    onSelected: onSelected,
+    onAdded: onAdded,
+    onNegated: onNegated,
   );
   if (Screen.of(context).size == ScreenSize.small) {
     showBarModalBottomSheet(
@@ -453,18 +455,17 @@ Future<bool?> goToAddToFavoriteGroupSelectionPage(
 
 Future<bool?> goToDanbooruShowTaglistPage(
   WidgetRef ref,
-  BuildContext context,
   List<Tag> tags,
 ) {
   final config = ref.readConfig;
   final notifier = ref.read(danbooruBlacklistedTagsProvider(config).notifier);
   final globalNotifier = ref.read(globalBlacklistedTagsProvider.notifier);
   final favoriteNotifier = ref.read(favoriteTagsProvider.notifier);
-  final color = context.colorScheme.onBackground;
-  final textColor = context.colorScheme.background;
+  final color = ref.context.colorScheme.onBackground;
+  final textColor = ref.context.colorScheme.background;
 
   return showMaterialModalBottomSheet<bool>(
-    context: navigatorKey.currentContext ?? context,
+    context: navigatorKey.currentContext ?? ref.context,
     duration: const Duration(milliseconds: 200),
     expand: true,
     builder: (dialogContext) => ShowTagListPage(

@@ -16,6 +16,7 @@ import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/error.dart';
+import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -90,10 +91,15 @@ class _InfinitePostListScaffoldState<T extends Post>
     final globalBlacklist = ref.watch(globalBlacklistedTagsProvider);
 
     final config = ref.watchConfig;
-    final booruBuilder = ref.watch(booruBuilderProvider);
+    final booruBuilder = ref.watchBooruBuilder(config);
+    final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
+    final canHandleLongPress = booruBuilder?.canHandlePostGesture(
+          GestureType.longPress,
+          config.postGestures?.preview,
+        ) ??
+        false;
     final favoriteAdder = booruBuilder?.favoriteAdder;
     final favoriteRemover = booruBuilder?.favoriteRemover;
-    final favoriteChecker = booruBuilder?.favoriteChecker;
     final gridThumbnailUrlBuilder = booruBuilder?.gridThumbnailUrlBuilder;
     final canFavorite = booruBuilder?.canFavorite(config) ?? false;
 
@@ -136,71 +142,111 @@ class _InfinitePostListScaffoldState<T extends Post>
         multiSelectController: _multiSelectController,
         onLoadMore: widget.onLoadMore,
         onRefresh: widget.onRefresh,
-        blacklistedTags: {
+        blacklistedTagString: {
           ...globalBlacklist.map((e) => e.name),
-        },
+        }.join('\n'),
         itemBuilder: (context, items, index) {
           final post = items[index];
 
-          return ContextMenuRegion(
-            isEnabled: !multiSelect,
-            contextMenu: widget.contextMenuBuilder != null
-                ? widget.contextMenuBuilder!.call(
-                    post,
-                    () {
-                      _multiSelectController.enableMultiSelect();
-                    },
-                  )
-                : GeneralPostContextMenu(
-                    hasAccount: false,
-                    onMultiSelect: () {
-                      _multiSelectController.enableMultiSelect();
-                    },
-                    post: post,
-                  ),
+          return ConditionalParentWidget(
+            condition: !canHandleLongPress,
+            conditionalBuilder: (child) => ContextMenuRegion(
+              isEnabled: !multiSelect,
+              contextMenu: widget.contextMenuBuilder != null
+                  ? widget.contextMenuBuilder!.call(
+                      post,
+                      () {
+                        _multiSelectController.enableMultiSelect();
+                      },
+                    )
+                  : GeneralPostContextMenu(
+                      hasAccount: false,
+                      onMultiSelect: () {
+                        _multiSelectController.enableMultiSelect();
+                      },
+                      post: post,
+                    ),
+              child: child,
+            ),
             child: LayoutBuilder(
-              builder: (context, constraints) => ImageGridItem(
-                isGif: post.isGif,
-                isAI: post.isAI,
-                onTap: !multiSelect
-                    ? () {
-                        goToPostDetailsPage(
-                          context: context,
-                          posts: items,
-                          initialIndex: index,
+              builder: (context, constraints) => DownloadProviderWidget(
+                builder: (context, download) => ConditionalParentWidget(
+                  condition: canHandleLongPress,
+                  conditionalBuilder: (child) => GestureDetector(
+                    onLongPress: () {
+                      if (postGesturesHandler != null) {
+                        postGesturesHandler(
+                          ref,
+                          ref.watchConfig.postGestures?.preview?.longPress,
+                          post,
+                          download,
                         );
                       }
-                    : null,
-                isFaved: favoriteChecker?.call(post.id) ?? false,
-                enableFav: !multiSelect && canFavorite,
-                onFavToggle: (isFaved) async {
-                  if (isFaved) {
-                    if (favoriteAdder == null) return;
-                    await favoriteAdder(post.id);
-                  } else {
-                    if (favoriteRemover == null) return;
-                    await favoriteRemover(post.id);
-                  }
-                },
-                autoScrollOptions: AutoScrollOptions(
-                  controller: _autoScrollController,
-                  index: index,
-                ),
-                isAnimated: post.isAnimated,
-                isTranslated: post.isTranslated,
-                hasComments: post.hasComment,
-                hasParentOrChildren: post.hasParentOrChildren,
-                score: settings.showScoresInGrid ? post.score : null,
-                image: BooruImage(
-                  aspectRatio: post.aspectRatio,
-                  imageUrl: gridThumbnailUrlBuilder != null
-                      ? gridThumbnailUrlBuilder(settings, post)
-                      : post.thumbnailImageUrl,
-                  borderRadius: BorderRadius.circular(
-                    settings.imageBorderRadius,
+                    },
+                    child: child,
                   ),
-                  forceFill: settings.imageListType == ImageListType.standard,
-                  placeholderUrl: post.thumbnailImageUrl,
+                  child: ImageGridItem(
+                    isGif: post.isGif,
+                    isAI: post.isAI,
+                    hideOverlay: multiSelect,
+                    onTap: !multiSelect
+                        ? () {
+                            if (booruBuilder?.canHandlePostGesture(
+                                        GestureType.tap,
+                                        config.postGestures?.preview) ==
+                                    true &&
+                                postGesturesHandler != null) {
+                              postGesturesHandler(
+                                ref,
+                                ref.watchConfig.postGestures?.preview?.tap,
+                                post,
+                                download,
+                              );
+                            } else {
+                              goToPostDetailsPage(
+                                context: context,
+                                posts: items,
+                                initialIndex: index,
+                                scrollController: _autoScrollController,
+                              );
+                            }
+                          }
+                        : null,
+                    isFaved: ref.watch(favoriteProvider(post.id)),
+                    enableFav: !multiSelect && canFavorite,
+                    quickActionButtonBuilder:
+                        defaultImagePreviewButtonBuilder(ref, post),
+                    onFavToggle: (isFaved) async {
+                      if (isFaved) {
+                        if (favoriteAdder == null) return;
+                        await favoriteAdder(post.id, ref);
+                      } else {
+                        if (favoriteRemover == null) return;
+                        await favoriteRemover(post.id, ref);
+                      }
+                    },
+                    autoScrollOptions: AutoScrollOptions(
+                      controller: _autoScrollController,
+                      index: index,
+                    ),
+                    isAnimated: post.isAnimated,
+                    isTranslated: post.isTranslated,
+                    hasComments: post.hasComment,
+                    hasParentOrChildren: post.hasParentOrChildren,
+                    score: settings.showScoresInGrid ? post.score : null,
+                    image: BooruImage(
+                      aspectRatio: post.aspectRatio,
+                      imageUrl: gridThumbnailUrlBuilder != null
+                          ? gridThumbnailUrlBuilder(settings, post)
+                          : post.thumbnailImageUrl,
+                      borderRadius: BorderRadius.circular(
+                        settings.imageBorderRadius,
+                      ),
+                      forceFill:
+                          settings.imageListType == ImageListType.standard,
+                      placeholderUrl: post.thumbnailImageUrl,
+                    ),
+                  ),
                 ),
               ),
             ),

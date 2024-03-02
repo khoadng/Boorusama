@@ -224,6 +224,7 @@ class _TagEditPageInternalState extends ConsumerState<TagEditPageInternal> {
         _pop();
       },
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         extendBodyBehindAppBar: isMobilePlatform() && expandMode != null,
         appBar: AppBar(
           leading: IconButton(
@@ -797,6 +798,10 @@ class TagEditTagListSection extends ConsumerWidget {
                             Expanded(
                               child: BooruSearchBar(
                                 autofocus: true,
+                                dense: true,
+                                contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 8,
+                                ),
                                 hintText: 'Filter...',
                                 onChanged: (value) => ref
                                     .read(tagEditCurrentFilterProvider.notifier)

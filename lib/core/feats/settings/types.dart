@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'package:boorusama/dart.dart';
+import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/theme/theme_mode.dart';
 
 enum ImageQuality {
@@ -57,6 +58,11 @@ enum PageIndicatorPosition {
   both,
 }
 
+enum PostDetailsOverlayInitialState {
+  hide,
+  show,
+}
+
 class Settings extends Equatable {
   const Settings({
     required this.safeMode,
@@ -68,6 +74,7 @@ class Settings extends Equatable {
     required this.downloadPath,
     required this.imageBorderRadius,
     required this.imageGridSpacing,
+    required this.imageGridPadding,
     required this.imageQuality,
     required this.imageQualityInFullView,
     required this.imageListType,
@@ -85,6 +92,7 @@ class Settings extends Equatable {
     required this.appLockType,
     required this.bookmarkFilterType,
     required this.pageIndicatorPosition,
+    required this.postDetailsOverlayInitialState,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
@@ -138,7 +146,13 @@ class Settings extends Equatable {
         pageIndicatorPosition = json['pageIndicatorPosition'] != null
             ? PageIndicatorPosition.values[json['pageIndicatorPosition']]
             : PageIndicatorPosition.bottom,
-        imageGridSpacing = json['imageGridSpacing'];
+        postDetailsOverlayInitialState =
+            json['postDetailsOverlayInitialState'] != null
+                ? PostDetailsOverlayInitialState
+                    .values[json['postDetailsOverlayInitialState']]
+                : PostDetailsOverlayInitialState.show,
+        imageGridPadding = json['imageGridPadding'] ?? 16,
+        imageGridSpacing = json['imageGridSpacing'] ?? 4;
 
   static const defaultSettings = Settings(
     safeMode: true,
@@ -150,6 +164,7 @@ class Settings extends Equatable {
     downloadPath: null,
     imageBorderRadius: 4,
     imageGridSpacing: 4,
+    imageGridPadding: 16,
     imageQuality: ImageQuality.automatic,
     imageQualityInFullView: ImageQuality.automatic,
     imageListType: ImageListType.masonry,
@@ -167,6 +182,7 @@ class Settings extends Equatable {
     appLockType: AppLockType.none,
     bookmarkFilterType: BookmarkFilterType.none,
     pageIndicatorPosition: PageIndicatorPosition.bottom,
+    postDetailsOverlayInitialState: PostDetailsOverlayInitialState.show,
   );
 
   final String blacklistedTags;
@@ -180,6 +196,7 @@ class Settings extends Equatable {
 
   final double imageBorderRadius;
   final double imageGridSpacing;
+  final double imageGridPadding;
 
   final ImageQuality imageQuality;
 
@@ -215,6 +232,8 @@ class Settings extends Equatable {
 
   final PageIndicatorPosition pageIndicatorPosition;
 
+  final PostDetailsOverlayInitialState postDetailsOverlayInitialState;
+
   Settings copyWith({
     String? blacklistedTags,
     String? language,
@@ -225,6 +244,7 @@ class Settings extends Equatable {
     String? downloadPath,
     double? imageBorderRadius,
     double? imageGridSpacing,
+    double? imageGridPadding,
     ImageQuality? imageQuality,
     ImageQuality? imageQualityInFullView,
     ImageListType? imageListType,
@@ -242,6 +262,8 @@ class Settings extends Equatable {
     AppLockType? appLockType,
     BookmarkFilterType? bookmarkFilterType,
     PageIndicatorPosition? pageIndicatorPosition,
+    PostDetailsOverlayInitialState? postDetailsOverlayInitialState,
+    PostGestureConfig? postGestures,
   }) =>
       Settings(
         safeMode: safeMode ?? this.safeMode,
@@ -253,6 +275,7 @@ class Settings extends Equatable {
         downloadPath: downloadPath ?? this.downloadPath,
         imageBorderRadius: imageBorderRadius ?? this.imageBorderRadius,
         imageGridSpacing: imageGridSpacing ?? this.imageGridSpacing,
+        imageGridPadding: imageGridPadding ?? this.imageGridPadding,
         imageQuality: imageQuality ?? this.imageQuality,
         imageQualityInFullView:
             imageQualityInFullView ?? this.imageQualityInFullView,
@@ -276,6 +299,8 @@ class Settings extends Equatable {
         bookmarkFilterType: bookmarkFilterType ?? this.bookmarkFilterType,
         pageIndicatorPosition:
             pageIndicatorPosition ?? this.pageIndicatorPosition,
+        postDetailsOverlayInitialState: postDetailsOverlayInitialState ??
+            this.postDetailsOverlayInitialState,
       );
 
   Map<String, dynamic> toJson() => {
@@ -288,6 +313,7 @@ class Settings extends Equatable {
         'downloadPath': downloadPath,
         'imageBorderRadius': imageBorderRadius,
         'imageGridSpacing': imageGridSpacing,
+        'imageGridPadding': imageGridPadding,
         'imageQuality': imageQuality.index,
         'imageQualityInFullView': imageQualityInFullView.index,
         'imageListType': imageListType.index,
@@ -305,6 +331,7 @@ class Settings extends Equatable {
         'appLockType': appLockType.index,
         'bookmarkFilterType': bookmarkFilterType.index,
         'pageIndicatorPosition': pageIndicatorPosition.index,
+        'postDetailsOverlayInitialState': postDetailsOverlayInitialState.index,
       };
 
   @override
@@ -318,6 +345,7 @@ class Settings extends Equatable {
         downloadPath,
         imageBorderRadius,
         imageGridSpacing,
+        imageGridPadding,
         imageQuality,
         imageQualityInFullView,
         imageListType,
@@ -335,6 +363,7 @@ class Settings extends Equatable {
         appLockType,
         bookmarkFilterType,
         pageIndicatorPosition,
+        postDetailsOverlayInitialState,
       ];
 }
 
@@ -342,6 +371,9 @@ extension SettingsX on Settings {
   bool get appLockEnabled => appLockType == AppLockType.biometrics;
   bool get shouldFilterBookmarks =>
       bookmarkFilterType != BookmarkFilterType.none;
+
+  bool get hidePostDetailsOverlay =>
+      postDetailsOverlayInitialState == PostDetailsOverlayInitialState.hide;
 }
 
 extension PageIndicatorPositionX on PageIndicatorPosition {

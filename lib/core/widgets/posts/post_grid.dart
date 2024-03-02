@@ -45,8 +45,8 @@ class PostGrid<T extends Post> extends ConsumerStatefulWidget {
     required this.itemBuilder,
     this.footerBuilder,
     this.headerBuilder,
-    this.blacklistedTags = const {},
-    this.blacklistedIds = const {},
+    this.blacklistedTagString,
+    this.blacklistedIdString,
     required this.bodyBuilder,
     this.multiSelectController,
     required this.controller,
@@ -78,8 +78,8 @@ class PostGrid<T extends Post> extends ConsumerStatefulWidget {
     List<T> data,
   ) bodyBuilder;
 
-  final Set<String> blacklistedTags;
-  final Set<int> blacklistedIds;
+  final String? blacklistedTagString;
+  final String? blacklistedIdString;
 
   final MultiSelectController<T>? multiSelectController;
 
@@ -118,20 +118,22 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
   @override
   void didUpdateWidget(PostGrid<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.blacklistedTags != widget.blacklistedTags) {
+    if (oldWidget.blacklistedTagString != widget.blacklistedTagString) {
       _updateFilter();
       _updateData();
+      _countTags();
     }
 
-    if (oldWidget.blacklistedIds != widget.blacklistedIds) {
+    if (oldWidget.blacklistedIdString != widget.blacklistedIdString) {
       _updateData();
     }
   }
 
   void _updateFilter() {
     setState(() {
+      final blacklistedTags = widget.blacklistedTagString?.split('\n') ?? [];
       filters = {
-        for (final tag in widget.blacklistedTags) tag: true,
+        for (final tag in blacklistedTags) tag: true,
       };
     });
   }
@@ -184,8 +186,9 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
         !bookmarks.any((e) => e.originalUrl == element.originalImageUrl));
 
     // Dirty hack to filter out ids
+    final blacklistedIds = widget.blacklistedIdString?.split('\n') ?? [];
     final dataWithoutBookmarksAndIds = dataWithoutBookmarks
-        .where((element) => !widget.blacklistedIds.contains(element.id));
+        .where((element) => !blacklistedIds.contains(element.id.toString()));
 
     items = dataWithoutBookmarksAndIds.toList();
 
@@ -193,7 +196,9 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
   }
 
   void _countTags() {
-    tagCounts = controller.items.countTagPattern(widget.blacklistedTags);
+    tagCounts = controller.items.countTagPattern(
+      filters.keys,
+    );
     _hasBlacklistedTags = tagCounts.values.any((c) => c > 0);
   }
 
@@ -318,8 +323,8 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                         enableKeyboardScrolling: false,
                         enableMMBScrolling: true,
                         child: ConditionalParentWidget(
-                          condition:
-                              pageMode == PageMode.paginated && !refreshing,
+                          // Should remove this later
+                          condition: true,
                           conditionalBuilder: (child) =>
                               _buildPaginatedSwipe(context, child),
                           child: CustomScrollView(
@@ -355,13 +360,12 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                                     child: PageSelector(
                                       currentPage: page,
                                       onPrevious: controller.hasPreviousPage()
-                                          ? () => controller.goToPreviousPage()
+                                          ? () => _goToPreviousPage()
                                           : null,
                                       onNext: controller.hasNextPage()
-                                          ? () => controller.goToNextPage()
+                                          ? () => _goToNextPage()
                                           : null,
-                                      onPageSelect: (page) =>
-                                          controller.jumpToPage(page),
+                                      onPageSelect: (page) => _goToPage(page),
                                     ),
                                   ),
                                 ),
@@ -404,6 +408,21 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
         ));
   }
 
+  Future<void> _goToNextPage() async {
+    await controller.goToNextPage();
+    _autoScrollController.jumpTo(0);
+  }
+
+  Future<void> _goToPreviousPage() async {
+    await controller.goToPreviousPage();
+    _autoScrollController.jumpTo(0);
+  }
+
+  Future<void> _goToPage(int page) async {
+    await controller.jumpToPage(page);
+    _autoScrollController.jumpTo(0);
+  }
+
   Widget _buildPageIndicator() {
     return SliverToBoxAdapter(
       child: Padding(
@@ -413,12 +432,10 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
         ),
         child: PageSelector(
           currentPage: page,
-          onPrevious: controller.hasPreviousPage()
-              ? () => controller.goToPreviousPage()
-              : null,
-          onNext:
-              controller.hasNextPage() ? () => controller.goToNextPage() : null,
-          onPageSelect: (page) => controller.jumpToPage(page),
+          onPrevious:
+              controller.hasPreviousPage() ? () => _goToPreviousPage() : null,
+          onNext: controller.hasNextPage() ? () => _goToNextPage() : null,
+          onPageSelect: (page) => _goToPage(page),
         ),
       ),
     );
@@ -426,6 +443,7 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
 
   Widget _buildPaginatedSwipe(BuildContext context, Widget child) {
     return SwipeTo(
+      enabled: pageMode == PageMode.paginated && !refreshing,
       swipeRightEnabled: controller.hasPreviousPage(),
       swipeLeftEnabled: controller.hasNextPage(),
       rightSwipeWidget: Chip(
@@ -466,8 +484,8 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
           ],
         ),
       ),
-      onLeftSwipe: (_) => controller.goToNextPage(),
-      onRightSwipe: (_) => controller.goToPreviousPage(),
+      onLeftSwipe: (_) => _goToNextPage(),
+      onRightSwipe: (_) => _goToPreviousPage(),
       child: child,
     );
   }
@@ -478,7 +496,7 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
       postCount: items.length + filteredItems.length,
       initiallyExpanded: axis == Axis.vertical,
       hasBlacklist: _hasBlacklistedTags,
-      tags: widget.blacklistedTags
+      tags: filters.keys
           .map((e) => (
                 name: e,
                 count: tagCounts[e] ?? 0,

@@ -7,6 +7,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/entry_page.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
@@ -25,6 +26,7 @@ class HomePageScaffold extends ConsumerStatefulWidget {
     super.key,
     required this.onPostTap,
     required this.onSearchTap,
+    this.mobileMenuBuilder,
   });
 
   final void Function(
@@ -36,6 +38,11 @@ class HomePageScaffold extends ConsumerStatefulWidget {
     int initialIndex,
   ) onPostTap;
   final void Function() onSearchTap;
+
+  final List<Widget> Function(
+    BuildContext context,
+    HomePageController controller,
+  )? mobileMenuBuilder;
 
   @override
   ConsumerState<HomePageScaffold> createState() => _HomePageScaffoldState();
@@ -52,7 +59,10 @@ class _HomePageScaffoldState extends ConsumerState<HomePageScaffold> {
         controller: controller,
         onSearchTap: widget.onSearchTap,
       ),
-      mobileMenuBuilder: (context, controller) => [],
+      mobileMenuBuilder: (context, controller) =>
+          widget.mobileMenuBuilder != null
+              ? widget.mobileMenuBuilder!(context, controller)
+              : [],
       desktopMenuBuilder: (context, controller, constraints) => [
         HomeNavigationTile(
           value: 0,

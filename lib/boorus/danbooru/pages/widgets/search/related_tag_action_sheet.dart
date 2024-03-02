@@ -20,11 +20,13 @@ class RelatedTagActionSheet extends ConsumerStatefulWidget {
   const RelatedTagActionSheet({
     super.key,
     required this.relatedTag,
-    required this.onSelected,
+    required this.onAdded,
+    required this.onNegated,
   });
 
   final RelatedTag relatedTag;
-  final void Function(RelatedTagItem tag) onSelected;
+  final void Function(RelatedTagItem tag) onAdded;
+  final void Function(RelatedTagItem tag) onNegated;
 
   @override
   ConsumerState<RelatedTagActionSheet> createState() =>
@@ -62,9 +64,12 @@ class _RelatedTagActionSheetState extends ConsumerState<RelatedTagActionSheet> {
           ),
           trailing: BooruPopupMenuButton(
             onSelected: (value) {
-              if (value == 'add_to_current_search') {
+              if (value == 'add') {
                 context.navigator.pop();
-                widget.onSelected(tags[index]);
+                widget.onAdded(tags[index]);
+              } else if (value == 'negate') {
+                context.navigator.pop();
+                widget.onNegated(tags[index]);
               } else if (value == 'open_wiki') {
                 context.navigator.pop();
                 launchWikiPage(
@@ -74,8 +79,8 @@ class _RelatedTagActionSheetState extends ConsumerState<RelatedTagActionSheet> {
               }
             },
             itemBuilder: {
-              'add_to_current_search':
-                  const Text('tag.related.add_to_current_search').tr(),
+              'add': const Text('Add'),
+              'negate': const Text('Negate'),
               'open_wiki': const Text('tag.related.open_wiki').tr(),
             },
           ),

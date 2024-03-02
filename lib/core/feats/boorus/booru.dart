@@ -12,6 +12,7 @@ const int kZerochanId = 26;
 const int kSankaku = 27;
 const int kPhilomenaId = 28;
 const int kShimmie2Id = 29;
+const int kSzurubooruId = 30;
 
 enum NetworkProtocol {
   https_1_1,
@@ -59,6 +60,7 @@ sealed class Booru extends Equatable {
         'sankaku' => Sankaku.from(name, data),
         'philomena' => Philomena.from(name, data),
         'shimmie2' => Shimmie2.from(name, data),
+        'szurubooru' => Szurubooru.from(name, data),
         _ => throw Exception('Unknown booru: $name'),
       };
 
@@ -86,6 +88,7 @@ extension BooruX on Booru {
         Sankaku _ => kSankaku,
         Philomena _ => kPhilomenaId,
         Shimmie2 _ => kShimmie2Id,
+        Szurubooru _ => kSzurubooruId,
       };
 
   bool hasSite(String url) => switch (this) {
@@ -99,6 +102,7 @@ extension BooruX on Booru {
         Sankaku s => s.sites.contains(url),
         Philomena p => p.sites.contains(url),
         Shimmie2 s => s.sites.contains(url),
+        Szurubooru s => s.sites.contains(url),
       };
 
   NetworkProtocol? getSiteProtocol(String url) => switch (this) {
@@ -409,6 +413,24 @@ class Shimmie2 extends Booru {
   final List<String> sites;
 }
 
+class Szurubooru extends Booru {
+  const Szurubooru({
+    required super.name,
+    required super.protocol,
+    required this.sites,
+  });
+
+  factory Szurubooru.from(String name, dynamic data) {
+    return Szurubooru(
+      name: name,
+      protocol: _parseProtocol(data['protocol']),
+      sites: List.from(data['sites']),
+    );
+  }
+
+  final List<String> sites;
+}
+
 enum BooruType {
   unknown,
   danbooru,
@@ -421,6 +443,7 @@ enum BooruType {
   sankaku,
   philomena,
   shimmie2,
+  szurubooru,
 }
 
 extension BooruTypeX on BooruType {
@@ -436,6 +459,7 @@ extension BooruTypeX on BooruType {
         BooruType.sankaku => 'Sankaku',
         BooruType.philomena => 'Philomena',
         BooruType.shimmie2 => 'Shimmie2',
+        BooruType.szurubooru => 'Szurubooru',
       };
 
   bool get isGelbooruBased =>
@@ -469,6 +493,7 @@ extension BooruTypeX on BooruType {
         BooruType.sankaku => kSankaku,
         BooruType.philomena => kPhilomenaId,
         BooruType.shimmie2 => kShimmie2Id,
+        BooruType.szurubooru => kSzurubooruId,
         BooruType.unknown => 0,
       };
 }
@@ -484,5 +509,6 @@ BooruType intToBooruType(int? value) => switch (value) {
       kSankaku => BooruType.sankaku,
       kPhilomenaId => BooruType.philomena,
       kShimmie2Id => BooruType.shimmie2,
+      kSzurubooruId => BooruType.szurubooru,
       _ => BooruType.unknown
     };

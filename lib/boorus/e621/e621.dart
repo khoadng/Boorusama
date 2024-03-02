@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/boorus/e621/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 import 'package:boorusama/boorus/e621/feats/tags/e621_tag_category.dart';
 import 'package:boorusama/boorus/providers.dart';
@@ -113,20 +114,18 @@ class E621Builder
         LegacyGranularRatingOptionsBuilderMixin,
         LegacyGranularRatingQueryBuilderMixin,
         DefaultThumbnailUrlMixin,
+        DefaultPostGesturesHandlerMixin,
         DefaultPostStatisticsPageBuilderMixin,
         DefaultGranularRatingFiltererMixin,
         DefaultPostImageDetailsUrlMixin
     implements BooruBuilder {
   E621Builder({
     required this.postRepo,
-    required this.client,
-    required this.favoriteChecker,
     required this.autocompleteRepo,
     required this.noteRepo,
   });
 
   final PostRepository<E621Post> postRepo;
-  final E621Client client;
   final AutocompleteRepository autocompleteRepo;
   final NoteRepository noteRepo;
 
@@ -170,19 +169,16 @@ class E621Builder
       (query) => autocompleteRepo.getAutocomplete(query);
 
   @override
-  FavoriteAdder? get favoriteAdder => (postId) => client
-      .addToFavorites(postId: postId)
-      .then((value) => true)
-      .catchError((obj) => false);
+  FavoriteAdder? get favoriteAdder => (postId, ref) => ref
+      .read(e621FavoritesProvider(ref.readConfig).notifier)
+      .add(postId)
+      .then((value) => true);
 
   @override
-  FavoriteRemover? get favoriteRemover => (postId) => client
-      .removeFromFavorites(postId: postId)
-      .then((value) => true)
-      .catchError((obj) => false);
-
-  @override
-  final FavoriteChecker? favoriteChecker;
+  FavoriteRemover? get favoriteRemover => (postId, ref) => ref
+      .read(e621FavoritesProvider(ref.readConfig).notifier)
+      .remove(postId)
+      .then((value) => true);
 
   @override
   SearchPageBuilder get searchPageBuilder =>
@@ -288,6 +284,7 @@ class E621CommentPage extends ConsumerWidget {
                       id: e.id ?? 0,
                       body: e.body ?? '',
                       createdAt: e.createdAt ?? DateTime(1),
+                      updatedAt: e.updatedAt ?? DateTime(1),
                       creatorName: e.creatorName ?? '',
                       creatorId: e.creatorId ?? 0,
                     ))

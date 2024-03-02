@@ -41,6 +41,7 @@ class ImageGridItem extends StatelessWidget {
     this.score,
     this.isAI = false,
     this.isGif = false,
+    this.quickActionButtonBuilder,
   });
 
   final AutoScrollOptions? autoScrollOptions;
@@ -60,6 +61,7 @@ class ImageGridItem extends StatelessWidget {
   final int? score;
   final bool isAI;
   final bool isGif;
+  final Widget Function(BuildContext context)? quickActionButtonBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -74,38 +76,57 @@ class ImageGridItem extends StatelessWidget {
       child: Stack(
         children: [
           _buildImage(context),
-          if ((enableFav) && !hideOverlay)
-            Positioned(
-              bottom: 4,
-              right: 4,
-              child: Container(
-                padding: const EdgeInsets.only(
-                  top: 2,
-                  bottom: 1,
-                  right: 1,
-                  left: 3,
+          if (!hideOverlay)
+            if (quickActionButtonBuilder != null)
+              Positioned(
+                bottom: 4,
+                right: 4,
+                child: Container(
+                  padding: const EdgeInsets.only(
+                    top: 2,
+                    bottom: 1,
+                    right: 1,
+                    left: 3,
+                  ),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.black.withOpacity(0.5),
+                  ),
+                  child: quickActionButtonBuilder!(context),
                 ),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.black.withOpacity(0.5),
-                ),
-                child: LikeButton(
-                  isLiked: isFaved,
-                  onTap: (isLiked) {
-                    onFavToggle?.call(!isLiked);
+              )
+            else if (enableFav)
+              Positioned(
+                bottom: 4,
+                right: 4,
+                child: Container(
+                  padding: const EdgeInsets.only(
+                    top: 2,
+                    bottom: 1,
+                    right: 1,
+                    left: 3,
+                  ),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.black.withOpacity(0.5),
+                  ),
+                  child: LikeButton(
+                    isLiked: isFaved,
+                    onTap: (isLiked) {
+                      onFavToggle?.call(!isLiked);
 
-                    return Future.value(!isLiked);
-                  },
-                  likeBuilder: (bool isLiked) {
-                    return Icon(
-                      isLiked ? Symbols.favorite : Symbols.favorite,
-                      color: isLiked ? Colors.redAccent : Colors.white,
-                      fill: isLiked ? 1 : 0,
-                    );
-                  },
+                      return Future.value(!isLiked);
+                    },
+                    likeBuilder: (bool isLiked) {
+                      return Icon(
+                        isLiked ? Symbols.favorite : Symbols.favorite,
+                        color: isLiked ? Colors.redAccent : Colors.white,
+                        fill: isLiked ? 1 : 0,
+                      );
+                    },
+                  ),
                 ),
               ),
-            ),
           if (score != null)
             Positioned(
               bottom: 4,

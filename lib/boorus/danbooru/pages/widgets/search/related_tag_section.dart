@@ -13,32 +13,33 @@ class RelatedTagSection extends ConsumerWidget {
   const RelatedTagSection({
     super.key,
     required this.query,
-    required this.onSelected,
+    required this.onAdded,
+    required this.onNegated,
     this.backgroundColor,
   });
 
   final String query;
-  final void Function(RelatedTagItem tag) onSelected;
+  final void Function(RelatedTagItem tag) onAdded;
+  final void Function(RelatedTagItem tag) onNegated;
   final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tagAsync = ref.watch(danbooruRelatedTagProvider(query));
-
     if (query.isEmpty) return const SizedBox();
 
-    return tagAsync.when(
-      data: (tag) => tag.tags.isNotEmpty
-          ? RelatedTagHeader(
-              backgroundColor: backgroundColor,
-              relatedTag: tag,
-              onSelected: onSelected,
-            )
-          : const SizedBox.shrink(),
-      loading: () => TagChipsPlaceholder(
-        backgroundColor: backgroundColor,
-      ),
-      error: (e, s) => const SizedBox(),
-    );
+    return ref.watch(danbooruRelatedTagProvider(query)).when(
+          data: (tag) => tag.tags.isNotEmpty
+              ? RelatedTagHeader(
+                  backgroundColor: backgroundColor,
+                  relatedTag: tag,
+                  onAdded: onAdded,
+                  onNegated: onNegated,
+                )
+              : const SizedBox.shrink(),
+          loading: () => TagChipsPlaceholder(
+            backgroundColor: backgroundColor,
+          ),
+          error: (e, s) => const SizedBox.shrink(),
+        );
   }
 }

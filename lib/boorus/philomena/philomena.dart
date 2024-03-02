@@ -13,6 +13,7 @@ import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
 import 'philomena_post.dart';
@@ -29,6 +30,7 @@ class PhilomenaBuilder
         LegacyGranularRatingOptionsBuilderMixin,
         NoGranularRatingQueryBuilderMixin,
         DefaultGranularRatingFiltererMixin,
+        DefaultPostGesturesHandlerMixin,
         DefaultPostStatisticsPageBuilderMixin,
         DefaultBooruUIMixin
     implements BooruBuilder {
@@ -95,12 +97,16 @@ class PhilomenaBuilder
               swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
               infoBuilder: (context, post) =>
                   SimpleInformationSection(post: post),
-              statsTileBuilder: (context, post) => SimplePostStatsTile(
-                totalComments: post is PhilomenaPost ? post.commentCount : 0,
-                favCount: post is PhilomenaPost ? post.favCount : 0,
-                score: post.score,
-                votePercentText: _generatePercentText(post as PhilomenaPost),
-              ),
+              statsTileBuilder: (context, rawPost) =>
+                  castOrNull<PhilomenaPost>(rawPost).toOption().fold(
+                        () => const SizedBox(),
+                        (post) => SimplePostStatsTile(
+                          totalComments: post.commentCount,
+                          favCount: post.favCount,
+                          score: post.score,
+                          votePercentText: _generatePercentText(post),
+                        ),
+                      ),
               onExit: (page) => payload.scrollController?.scrollToIndex(page),
               onTagTap: (tag) => goToSearchPage(context, tag: tag),
             ),
@@ -146,9 +152,10 @@ class PhilomenaBuilder
       );
 
   @override
-  PostImageDetailsUrlBuilder get postImageDetailsUrlBuilder =>
-      (settings, post, config) => (post as PhilomenaPost).toOption().fold(
-            () => post.sampleImageUrl,
+  PostImageDetailsUrlBuilder get postImageDetailsUrlBuilder => (settings,
+          rawPost, config) =>
+      castOrNull<PhilomenaPost>(rawPost).toOption().fold(
+            () => rawPost.sampleImageUrl,
             (post) => config.imageDetaisQuality.toOption().fold(
                 () => switch (settings.imageQuality) {
                       ImageQuality.highest ||

@@ -9,6 +9,7 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
+import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
@@ -76,8 +77,15 @@ class ShowTagListPage extends ConsumerWidget {
                     title: Text(
                       tag.displayName,
                       style: TextStyle(
-                        color: ref.getTagColor(context, tag.category.name),
+                        color: ref.getTagColor(
+                          context,
+                          tag.category.name,
+                        ),
                       ),
+                    ),
+                    onTap: () => goToSearchPage(
+                      context,
+                      tag: tag.rawName,
                     ),
                     trailing: BooruPopupMenuButton(
                       onSelected: (value) {

@@ -11,6 +11,7 @@ import 'package:boorusama/core/pages/boorus/create_anon_config_page.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/functional.dart';
 
@@ -26,6 +27,7 @@ class Shimmie2Builder
         LegacyGranularRatingOptionsBuilderMixin,
         NoGranularRatingQueryBuilderMixin,
         DefaultTagColorMixin,
+        DefaultPostGesturesHandlerMixin,
         DefaultPostImageDetailsUrlMixin,
         DefaultGranularRatingFiltererMixin,
         DefaultPostStatisticsPageBuilderMixin,
@@ -94,11 +96,11 @@ class Shimmie2Builder
               fileDetailsBuilder: (context, post) => FileDetailsSection(
                 post: post,
                 rating: post.rating,
-                uploader: (post as SimplePost).toOption().fold(
+                uploader: castOrNull<SimplePost>(post).toOption().fold(
                     () => null,
                     (t) => t.uploaderName != null
                         ? Text(
-                            post.uploaderName!.replaceAll('_', ' '),
+                            t.uploaderName!.replaceAll('_', ' '),
                             maxLines: 1,
                             style: const TextStyle(
                               fontSize: 14,

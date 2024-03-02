@@ -126,6 +126,20 @@ class _PageSelectorState extends State<PageSelector> {
               },
               child: TextField(
                 autofocus: true,
+                cursorHeight: 14,
+                onTapOutside: (_) {
+                  setState(() {
+                    pageInputMode = false;
+                  });
+                },
+                decoration: const InputDecoration(
+                  isDense: true,
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 2,
+                  ),
+                ),
+                textInputAction: TextInputAction.done,
                 keyboardType: TextInputType.number,
                 onSubmitted: onSubmit,
               ),

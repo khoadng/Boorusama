@@ -23,6 +23,8 @@ class PostMedia extends ConsumerWidget {
     required this.placeholderImageUrl,
     required this.imageUrl,
     this.onImageTap,
+    this.onDoubleTap,
+    this.onLongPress,
     this.onImageZoomUpdated,
     this.onCurrentVideoPositionChanged,
     this.onVideoVisibilityChanged,
@@ -38,6 +40,8 @@ class PostMedia extends ConsumerWidget {
   final String? placeholderImageUrl;
   final String imageUrl;
   final VoidCallback? onImageTap;
+  final VoidCallback? onDoubleTap;
+  final VoidCallback? onLongPress;
   final bool useHero;
   final void Function(bool value)? onImageZoomUpdated;
   final void Function(double current, double total, String url)?
@@ -51,7 +55,7 @@ class PostMedia extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return post.isVideo
+    final media = post.isVideo
         ? !inFocus
             ? BooruImage(
                 imageUrl: post.videoThumbnailUrl,
@@ -118,14 +122,24 @@ class PostMedia extends ConsumerWidget {
             imageUrl: imageUrl,
             placeholderImageUrl: placeholderImageUrl,
             onTap: onImageTap,
-            onCached: (path) => ref
-                .read(postShareProvider(post).notifier)
-                .setImagePath(path ?? ''),
+            onDoubleTap: onDoubleTap,
+            onLongPress: onLongPress,
             imageOverlayBuilder: (constraints) =>
                 imageOverlayBuilder?.call(constraints) ?? [],
             width: post.width,
             height: post.height,
             onZoomUpdated: onImageZoomUpdated,
           );
+
+    return OrientationBuilder(
+      builder: (_, orientation) => Padding(
+        padding: orientation == Orientation.portrait
+            ? EdgeInsets.zero
+            : EdgeInsets.only(
+                bottom: 8 + MediaQuery.viewPaddingOf(context).bottom,
+              ),
+        child: media,
+      ),
+    );
   }
 }

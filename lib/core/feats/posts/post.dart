@@ -237,10 +237,17 @@ extension PostsX on Iterable<Post> {
     return tagCounts;
   }
 
-  Map<String, int> countTagPattern(Iterable<String> patterns) {
-    final tagCounts = <String, int>{
-      for (final pattern in patterns) pattern: 0,
-    };
+  Map<String, int> countTagPattern(
+    Iterable<String> patterns,
+  ) {
+    final tagCounts = <String, int>{};
+
+    // add the new patterns to the tagCounts if they don't exist
+    for (final pattern in patterns) {
+      if (!tagCounts.containsKey(pattern)) {
+        tagCounts[pattern] = 0;
+      }
+    }
 
     for (final item in this) {
       for (final pattern in patterns) {
@@ -290,6 +297,7 @@ bool checkIfTagsContainsTagExpression(
 ) {
   // Split the tagExpression by spaces to handle multiple tags
   final expressions = tagExpression.split(' ');
+  final tags = filterData.tags.toSet();
 
   // Process each tag in the expression
   for (final expression in expressions) {
@@ -367,13 +375,12 @@ bool checkIfTagsContainsTagExpression(
     }
     // Handle NOT operator
     else if (expression.startsWith('-')) {
-      if (filterData.tags.contains(expression.substring(1))) {
+      if (tags.contains(expression.substring(1))) {
         return false;
       }
     }
     // Default AND operation
-    else if (!filterData.tags.contains(expression) &&
-        !expression.startsWith('~')) {
+    else if (!tags.contains(expression) && !expression.startsWith('~')) {
       return false;
     }
   }
@@ -382,7 +389,7 @@ bool checkIfTagsContainsTagExpression(
   if (expressions.any((exp) => exp.startsWith('~')) &&
       !expressions
           .where((exp) => exp.startsWith('~'))
-          .any((orExp) => filterData.tags.contains(orExp.substring(1)))) {
+          .any((orExp) => tags.contains(orExp.substring(1)))) {
     return false;
   }
 

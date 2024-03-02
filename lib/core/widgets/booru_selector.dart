@@ -31,7 +31,6 @@ class BooruSelector extends ConsumerStatefulWidget {
 class _BooruSelectorState extends ConsumerState<BooruSelector> {
   @override
   Widget build(BuildContext context) {
-    final configs = ref.watch(configsProvider);
     final currentConfig = ref.watchConfig;
 
     void show(BooruConfig config) {
@@ -101,56 +100,59 @@ class _BooruSelectorState extends ConsumerState<BooruSelector> {
       color: context.colorScheme.secondaryContainer,
       child: ScrollConfiguration(
         behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
-        child: CustomScrollView(
-          slivers: [
-            ReorderableSliverList(
-                onReorderStarted: (index) => show(configs[index]),
-                onHover: (start, current) => hide(),
-                delegate: ReorderableSliverChildBuilderDelegate(
-                  (context, index) {
-                    final config = configs[index];
+        child: ref.watch(configsProvider).maybeWhen(
+              data: (configs) => CustomScrollView(
+                slivers: [
+                  ReorderableSliverList(
+                      onReorderStarted: (index) => show(configs[index]),
+                      onHover: (start, current) => hide(),
+                      delegate: ReorderableSliverChildBuilderDelegate(
+                        (context, index) {
+                          final config = configs[index];
 
-                    return BooruSelectorItem(
-                      config: config,
-                      show: () => show(config),
-                      onTap: () => ref
-                          .read(currentBooruConfigProvider.notifier)
-                          .update(config),
-                      selected: currentConfig == config,
-                    );
-                  },
-                  childCount: configs.length,
-                ),
-                onReorder: (oldIndex, newIndex) {
-                  if (oldIndex == newIndex) return;
+                          return BooruSelectorItem(
+                            config: config,
+                            show: () => show(config),
+                            onTap: () => ref
+                                .read(currentBooruConfigProvider.notifier)
+                                .update(config),
+                            selected: currentConfig == config,
+                          );
+                        },
+                        childCount: configs.length,
+                      ),
+                      onReorder: (oldIndex, newIndex) {
+                        if (oldIndex == newIndex) return;
 
-                  final orders = ref.read(configIdOrdersProvider);
-                  final newOrders =
-                      (orders.isEmpty || orders.length != configs.length
-                              ? [for (final config in configs) config.id]
-                              : orders)
-                          .toList();
+                        final orders = ref.read(configIdOrdersProvider);
+                        final newOrders =
+                            (orders.isEmpty || orders.length != configs.length
+                                    ? [for (final config in configs) config.id]
+                                    : orders)
+                                .toList();
 
-                  newOrders.reorder(oldIndex, newIndex);
+                        newOrders.reorder(oldIndex, newIndex);
 
-                  ref.setBooruConfigOrder(newOrders);
-                }),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.all(4),
-                child: Column(
-                  children: [
-                    IconButton(
-                      splashRadius: 20,
-                      onPressed: () => context.go('/boorus/add'),
-                      icon: const Icon(Symbols.add),
+                        ref.setBooruConfigOrder(newOrders);
+                      }),
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.all(4),
+                      child: Column(
+                        children: [
+                          IconButton(
+                            splashRadius: 20,
+                            onPressed: () => context.go('/boorus/add'),
+                            icon: const Icon(Symbols.add),
+                          ),
+                        ],
+                      ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
+              orElse: () => const SizedBox.shrink(),
             ),
-          ],
-        ),
       ),
     );
   }

@@ -29,20 +29,30 @@ class DetailsPage<T> extends ConsumerStatefulWidget {
     this.bottomSheet,
     required this.onExit,
     this.controller,
+    this.onSwipeDownEnd,
+    this.sharedChildBuilder,
   });
 
   final void Function(int page)? onPageChanged;
   final int intitialIndex;
   final Widget Function(BuildContext context, int index) targetSwipeDownBuilder;
-  final Widget Function(BuildContext context, int page, int currentPage,
-      bool expanded, bool enableSwipe) expandedBuilder;
+  final Widget Function(
+    BuildContext context,
+    int page,
+    int currentPage,
+    bool expanded,
+    bool enableSwipe,
+    Widget? sharedChild,
+  ) expandedBuilder;
   final int pageCount;
   final List<Widget> Function(int currentPage, bool expanded)
       topRightButtonsBuilder;
   final void Function(int currentPage)? onExpanded;
-  final Widget? Function(int currentPage)? bottomSheet;
+  final Widget? Function(int currentPage, Widget? sharedChild)? bottomSheet;
   final void Function(int index) onExit;
   final DetailsPageController? controller;
+  final void Function(int currentPage)? onSwipeDownEnd;
+  final Widget Function(int currentPage)? sharedChildBuilder;
 
   @override
   ConsumerState<DetailsPage> createState() => _DetailsPageState();
@@ -56,7 +66,8 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
   late final controller = ExprollablePageController(
     initialPage: widget.intitialIndex,
     viewportConfiguration: ViewportConfiguration(
-      minFraction: 0.99,
+      minFraction: 1.0,
+      maxFraction: 1.01,
       extendPage: true,
     ),
   );
@@ -71,7 +82,14 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
   PageController get pageController => controller;
 
   @override
-  Function() get popper => () => _onBackButtonPressed();
+  Function() get popper => () {
+        if (widget.onSwipeDownEnd != null) {
+          widget.onSwipeDownEnd!(controller.currentPage.value);
+        } else {
+          _onBackButtonPressed();
+        }
+      };
+
   bool get _isSwiping {
     if (!controller.hasClients) return false;
     return controller.page != controller.page?.round();
@@ -85,6 +103,9 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
     isSwipingDown.addListener(_updateShouldSlideDown);
     isExpanded.addListener(_updateShouldSlideDown);
 
+    if (_controller._hideOverlay.value) {
+      _shouldSlideDownNotifier.value = true;
+    }
     _controller.addListener(_onPageDetailsChanged);
 
     super.initState();
@@ -203,86 +224,104 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
                   )
                 : const SizedBox.shrink(),
           ),
-          body: Stack(
-            children: [
-              _buildScrollContent(),
-              _buildNavigationButtonGroup(context),
-              _buildTopRightButtonGroup(),
-              _buildBottomSheet(),
-            ],
+          body: ValueListenableBuilder(
+            valueListenable: controller.currentPage,
+            builder: (context, currentPage, navButtonGroup) {
+              final sharedChild = widget.sharedChildBuilder?.call(
+                currentPage,
+              );
+              return ValueListenableBuilder(
+                valueListenable: isExpanded,
+                builder: (context, expanded, bottomSheet) => Stack(
+                  children: [
+                    _buildScrollContent(currentPage, expanded, sharedChild),
+                    navButtonGroup!,
+                    _buildBottomSheet(currentPage, sharedChild),
+                    _buildTopRightButtonGroup(currentPage, expanded),
+                  ],
+                ),
+              );
+            },
+            child: _buildNavigationButtonGroup(context),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildBottomSheet() {
+  Widget _buildBottomSheet(int currentPage, Widget? sharedChild) {
     return Align(
       alignment: Alignment.bottomCenter,
       child: widget.bottomSheet != null
           ? ValueListenableBuilder(
               valueListenable: _shouldSlideDownNotifier,
-              builder: (context, shouldSlideDown, _) => ValueListenableBuilder(
-                valueListenable: controller.currentPage,
-                builder: (_, page, __) => _BottomSheet(
-                  shouldSlideDown: shouldSlideDown,
-                  bottomSheet: widget.bottomSheet,
-                  page: page,
-                ),
+              builder: (context, shouldSlideDown, _) => _BottomSheet(
+                shouldSlideDown: shouldSlideDown,
+                bottomSheet: (page) =>
+                    widget.bottomSheet?.call(page, sharedChild),
+                page: currentPage,
               ),
             )
           : const SizedBox.shrink(),
     );
   }
 
-  Widget _buildScrollContent() {
+  Widget _buildScrollContent(
+    int currentPage,
+    bool expanded,
+    Widget? sharedChild,
+  ) {
     return ValueListenableBuilder(
-      valueListenable: controller.currentPage,
-      builder: (context, currentPage, _) => ValueListenableBuilder(
-        valueListenable: isSwipingDown,
-        builder: (_, swipingDown, __) => ValueListenableBuilder(
-          valueListenable: isExpanded,
-          builder: (context, expanded, _) {
-            final offstage = swipingDown && !expanded;
-            return ValueListenableBuilder(
-              valueListenable: _keepBottomSheetDown,
-              builder: (_, keepDown, __) => Stack(
-                children: [
-                  ValueListenableBuilder(
-                    valueListenable: dragDistance,
-                    builder: (_, drag, __) => drag > 0 && keepDown
-                        ? const SizedBox.shrink()
-                        : Offstage(
-                            offstage: offstage,
-                            child: _buildPageView(expanded, currentPage),
+      valueListenable: isSwipingDown,
+      builder: (_, swipingDown, __) => Builder(
+        builder: (context) {
+          final offstage = swipingDown && !expanded;
+          return ValueListenableBuilder(
+            valueListenable: _keepBottomSheetDown,
+            builder: (_, keepDown, __) => Stack(
+              children: [
+                ValueListenableBuilder(
+                  valueListenable: dragDistance,
+                  builder: (_, drag, __) => drag > 0 && keepDown
+                      ? const SizedBox.shrink()
+                      : Offstage(
+                          offstage: offstage,
+                          child: _buildPageView(
+                            expanded,
+                            currentPage,
+                            sharedChild,
                           ),
-                  ),
-                  ValueListenableBuilder(
-                    valueListenable: dragDistance,
-                    builder: (_, drag, __) => drag > 0
-                        ? ConditionalParentWidget(
-                            condition: !keepDown,
-                            conditionalBuilder: (child) => Offstage(
-                              offstage: !offstage,
-                              child: child,
-                            ),
-                            child: _buildSwipeTarget(expanded, currentPage),
-                          )
-                        : Offstage(
+                        ),
+                ),
+                ValueListenableBuilder(
+                  valueListenable: dragDistance,
+                  builder: (_, drag, __) => drag > 0
+                      ? ConditionalParentWidget(
+                          condition: !keepDown,
+                          conditionalBuilder: (child) => Offstage(
                             offstage: !offstage,
-                            child: _buildSwipeTarget(expanded, currentPage),
+                            child: child,
                           ),
-                  ),
-                ],
-              ),
-            );
-          },
-        ),
+                          child: _buildSwipeTarget(expanded, currentPage),
+                        )
+                      : Offstage(
+                          offstage: !offstage,
+                          child: _buildSwipeTarget(expanded, currentPage),
+                        ),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
 
-  Widget _buildPageView(bool expanded, int currentPage) {
+  Widget _buildPageView(
+    bool expanded,
+    int currentPage,
+    Widget? sharedChild,
+  ) {
     return Listener(
       onPointerMove: (event) => _handlePointerMove(event, expanded),
       onPointerUp: (event) => _handlePointerUp(event, expanded),
@@ -303,18 +342,14 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
             ? const DefaultPageViewScrollPhysics()
             : const NeverScrollableScrollPhysics(),
         itemCount: widget.pageCount,
-        itemBuilder: (context, page) {
-          return ValueListenableBuilder(
-            valueListenable: isExpanded,
-            builder: (context, value, child) => widget.expandedBuilder(
-              context,
-              page,
-              currentPage,
-              value,
-              _pageSwipe,
-            ),
-          );
-        },
+        itemBuilder: (context, page) => widget.expandedBuilder(
+          context,
+          page,
+          currentPage,
+          expanded,
+          _pageSwipe,
+          sharedChild,
+        ),
       ),
     );
   }
@@ -371,34 +406,30 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
     );
   }
 
-  Widget _buildTopRightButtonGroup() {
+  Widget _buildTopRightButtonGroup(int currentPage, bool expanded) {
     return ValueListenableBuilder(
-      valueListenable: isExpanded,
-      builder: (_, expanded, __) => ValueListenableBuilder(
-        valueListenable: _controller.hideOverlay,
-        builder: (_, hide, __) => !hide
-            ? Align(
-                alignment: Alignment(
-                  0.9,
-                  getTopActionIconAlignValue(),
-                ),
-                child: ValueListenableBuilder(
-                    valueListenable: _shouldSlideDownNotifier,
-                    builder: (context, value, child) => _SlideUpContainer(
-                          shouldSlideUp: value && !expanded,
-                          child: ValueListenableBuilder(
-                            valueListenable: controller.currentPage,
-                            builder: (_, page, __) => ButtonBar(
-                              children: [
-                                ...widget.topRightButtonsBuilder(
-                                    page, expanded),
-                              ],
+      valueListenable: _controller.hideOverlay,
+      builder: (_, hide, __) => !hide
+          ? Align(
+              alignment: Alignment(
+                0.9,
+                getTopActionIconAlignValue(),
+              ),
+              child: ValueListenableBuilder(
+                  valueListenable: _shouldSlideDownNotifier,
+                  builder: (context, value, child) => _SlideUpContainer(
+                        shouldSlideUp: value && !expanded,
+                        child: ButtonBar(
+                          children: [
+                            ...widget.topRightButtonsBuilder(
+                              currentPage,
+                              expanded,
                             ),
-                          ),
-                        )),
-              )
-            : const SizedBox.shrink(),
-      ),
+                          ],
+                        ),
+                      )),
+            )
+          : const SizedBox.shrink(),
     );
   }
 }

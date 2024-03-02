@@ -51,14 +51,25 @@ class PostListConfigurationHeader extends StatefulWidget {
 
 class _PostListConfigurationHeaderState
     extends State<PostListConfigurationHeader> {
+  late var hiddenTags = widget.tags;
   var expanded = false;
 
-  bool get allTagsHidden => widget.tags.every((e) => !e.active);
+  bool get allTagsHidden => hiddenTags.every((e) => !e.active);
+
+  @override
+  void didUpdateWidget(covariant PostListConfigurationHeader oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.tags != oldWidget.tags) {
+      setState(() {
+        hiddenTags = widget.tags;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     var tags = [
-      for (var tag in widget.tags)
+      for (var tag in hiddenTags)
         _BadgedChip(
           label: tag.name.replaceUnderscoreWithSpace(),
           count: tag.count,

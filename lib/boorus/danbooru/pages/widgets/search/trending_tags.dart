@@ -5,22 +5,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/booru_chip.dart';
+import 'trending_section.dart';
 
 class TrendingTags extends ConsumerWidget {
   const TrendingTags({
     super.key,
     required this.onTagTap,
     required this.tags,
+    required this.colorBuilder,
   });
 
   final ValueChanged<String>? onTagTap;
-  final List<Search>? tags;
+  final List<TrendingTag>? tags;
+  final Color? Function(BuildContext context, String name)? colorBuilder;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -30,21 +31,17 @@ class TrendingTags extends ConsumerWidget {
         ? Wrap(
             spacing: 6,
             runSpacing: isMobilePlatform() ? -2 : 8,
-            children: tags!.take(20).map((e) {
-              final color =
-                  ref.watch(danbooruTagCategoryProvider(e.keyword)).maybeWhen(
-                        data: (data) => data != null
-                            ? ref.getTagColor(context, data.name)
-                            : null,
-                        orElse: () => null,
-                      );
+            children: tags!.map((e) {
+              final color = e.category == null
+                  ? null
+                  : colorBuilder?.call(context, e.category!.name);
 
               return BooruChip(
                 visualDensity: VisualDensity.compact,
                 color: color,
-                onPressed: () => onTagTap?.call(e.keyword),
+                onPressed: () => onTagTap?.call(e.name.keyword),
                 label: Text(
-                  e.keyword.replaceUnderscoreWithSpace(),
+                  e.name.keyword.replaceUnderscoreWithSpace(),
                   style: TextStyle(
                     color: theme.isDark ? color : null,
                   ),

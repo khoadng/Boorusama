@@ -1,5 +1,6 @@
 // Project imports:
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/foundation/gestures.dart';
 
 class BooruConfigData {
   const BooruConfigData({
@@ -15,6 +16,8 @@ class BooruConfigData {
     required this.customBulkDownloadFileNameFormat,
     required this.imageDetaisQuality,
     required this.granularRatingFilterString,
+    required this.postGestures,
+    required this.defaultPreviewImageButtonAction,
   });
 
   factory BooruConfigData.anonymous({
@@ -40,6 +43,8 @@ class BooruConfigData {
         customBulkDownloadFileNameFormat: customBulkDownloadFileNameFormat,
         imageDetaisQuality: imageDetaisQuality,
         granularRatingFilterString: null,
+        postGestures: null,
+        defaultPreviewImageButtonAction: null,
       );
 
   static BooruConfigData? fromJson(Map<String, dynamic> json) {
@@ -60,6 +65,9 @@ class BooruConfigData {
         imageDetaisQuality: json['imageDetaisQuality'] as String?,
         granularRatingFilterString:
             json['granularRatingFilterString'] as String?,
+        postGestures: json['postGestures'] as String?,
+        defaultPreviewImageButtonAction:
+            json['defaultPreviewImageButtonAction'] as String?,
       );
     } catch (e) {
       return null;
@@ -80,6 +88,8 @@ class BooruConfigData {
       'customBulkDownloadFileNameFormat': customBulkDownloadFileNameFormat,
       'imageDetaisQuality': imageDetaisQuality,
       'granularRatingFilterString': granularRatingFilterString,
+      'postGestures': postGestures,
+      'defaultPreviewImageButtonAction': defaultPreviewImageButtonAction,
     };
   }
 
@@ -95,6 +105,8 @@ class BooruConfigData {
   final String? customBulkDownloadFileNameFormat;
   final String? imageDetaisQuality;
   final String? granularRatingFilterString;
+  final String? postGestures;
+  final String? defaultPreviewImageButtonAction;
 }
 
 BooruConfig? convertToBooruConfig({
@@ -121,5 +133,10 @@ BooruConfig? convertToBooruConfig({
     granularRatingFilters: parseGranularRatingFilters(
       booruConfigData.granularRatingFilterString,
     ),
+    postGestures: booruConfigData.postGestures == null
+        ? null
+        : PostGestureConfig.fromJsonString(booruConfigData.postGestures),
+    defaultPreviewImageButtonAction:
+        booruConfigData.defaultPreviewImageButtonAction,
   );
 }
