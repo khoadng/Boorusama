@@ -16,7 +16,7 @@ abstract class Post extends Equatable
   String get sampleImageUrl;
   String get originalImageUrl;
   @override
-  List<String> get tags;
+  Set<String> get tags;
   Rating get rating;
   bool get hasComment;
   bool get isTranslated;
@@ -32,9 +32,9 @@ abstract class Post extends Equatable
 }
 
 abstract interface class TagDetails {
-  List<String>? get artistTags;
-  List<String>? get characterTags;
-  List<String>? get copyrightTags;
+  Set<String>? get artistTags;
+  Set<String>? get characterTags;
+  Set<String>? get copyrightTags;
 }
 
 class SimplePost extends Equatable
@@ -86,7 +86,7 @@ class SimplePost extends Equatable
   @override
   final String originalImageUrl;
   @override
-  final List<String> tags;
+  final Set<String> tags;
   @override
   final Rating rating;
   @override
@@ -141,11 +141,11 @@ class SimplePost extends Equatable
 
 mixin NoTagDetailsMixin implements Post {
   @override
-  List<String>? get artistTags => null;
+  Set<String>? get artistTags => null;
   @override
-  List<String>? get characterTags => null;
+  Set<String>? get characterTags => null;
   @override
-  List<String>? get copyrightTags => null;
+  Set<String>? get copyrightTags => null;
 }
 
 extension PostImageX on Post {
@@ -208,7 +208,7 @@ GeneralPostQualityType stringToGeneralPostQualityType(String? value) =>
     };
 
 mixin TagListCheckMixin {
-  List<String> get tags;
+  Set<String> get tags;
 
   bool get isAI => tags.any((e) => _kAiTags.contains(e.toLowerCase()));
 }
@@ -261,7 +261,7 @@ extension PostsX on Iterable<Post> {
   }
 }
 
-extension TagFilterDataX on List<String> {
+extension TagFilterDataX on Set<String> {
   TagFilterData toTagFilterData() => TagFilterData.tags(tags: this);
 }
 
@@ -283,7 +283,7 @@ class TagFilterData {
         uploaderId = null,
         downvotes = null;
 
-  final List<String> tags;
+  final Set<String> tags;
   final Rating rating;
   final int score;
   final int? downvotes;
@@ -297,7 +297,7 @@ bool checkIfTagsContainsTagExpression(
 ) {
   // Split the tagExpression by spaces to handle multiple tags
   final expressions = tagExpression.split(' ');
-  final tags = filterData.tags.toSet();
+  final tags = filterData.tags;
 
   // Process each tag in the expression
   for (final expression in expressions) {

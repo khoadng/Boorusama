@@ -24,7 +24,7 @@ void main() {
     );
     test(
       'anything',
-      () => expect(mapStringToRating('anything'), equals(Rating.sensitive)),
+      () => expect(mapStringToRating('anything'), equals(Rating.unknown)),
     );
   });
 }

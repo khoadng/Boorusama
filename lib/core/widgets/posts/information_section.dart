@@ -19,9 +19,9 @@ class InformationSection extends ConsumerWidget {
   const InformationSection({
     super.key,
     this.padding,
-    this.characterTags = const [],
-    this.artistTags = const [],
-    this.copyrightTags = const [],
+    this.characterTags = const {},
+    this.artistTags = const {},
+    this.copyrightTags = const {},
     this.createdAt,
     this.source,
     this.onArtistTagTap,
@@ -30,9 +30,9 @@ class InformationSection extends ConsumerWidget {
 
   final EdgeInsetsGeometry? padding;
   final bool showSource;
-  final List<String> characterTags;
-  final List<String> artistTags;
-  final List<String> copyrightTags;
+  final Set<String> characterTags;
+  final Set<String> artistTags;
+  final Set<String> copyrightTags;
   final DateTime? createdAt;
   final PostSource? source;
 
@@ -124,7 +124,7 @@ class InformationSection extends ConsumerWidget {
   }
 }
 
-String chooseArtistTag(List<String> artistTags) {
+String chooseArtistTag(Set<String> artistTags) {
   if (artistTags.isEmpty) return artistTags.first;
 
   // find the first artist name that not contains 'voice_actor'
@@ -152,9 +152,9 @@ class SimpleInformationSection extends ConsumerWidget {
     final supportArtist = booruBuilder?.isArtistSupported ?? false;
 
     return InformationSection(
-      characterTags: post.characterTags ?? [],
-      artistTags: post.artistTags ?? [],
-      copyrightTags: post.copyrightTags ?? [],
+      characterTags: post.characterTags ?? {},
+      artistTags: post.artistTags ?? {},
+      copyrightTags: post.copyrightTags ?? {},
       createdAt: post.createdAt,
       source: post.source,
       showSource: showSource,

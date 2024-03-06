@@ -55,7 +55,7 @@ class E621Post extends Equatable
   @override
   final int id;
   @override
-  List<String> get tags => [
+  Set<String> get tags => {
         ...characterTags,
         ...artistTags,
         ...generalTags,
@@ -64,18 +64,18 @@ class E621Post extends Equatable
         ...speciesTags,
         ...invalidTags,
         ...loreTags,
-      ];
+      };
   @override
-  final List<String> copyrightTags;
+  final Set<String> copyrightTags;
   @override
-  final List<String> characterTags;
+  final Set<String> characterTags;
   @override
-  final List<String> artistTags;
-  final List<String> generalTags;
-  final List<String> metaTags;
-  final List<String> loreTags;
-  final List<String> invalidTags;
-  final List<String> speciesTags;
+  final Set<String> artistTags;
+  final Set<String> generalTags;
+  final Set<String> metaTags;
+  final Set<String> loreTags;
+  final Set<String> invalidTags;
+  final Set<String> speciesTags;
   @override
   final PostSource source;
   final List<PostSource> sources;

@@ -52,24 +52,24 @@ class DanbooruPost extends Equatable
     required this.duration,
     required this.variants,
     required this.pixelHash,
-  }) : tags = [
+  }) : tags = {
           ...artistTags,
           ...copyrightTags,
           ...characterTags,
           ...generalTags,
           ...metaTags,
-        ];
+        };
 
   factory DanbooruPost.empty() => DanbooruPost(
         id: 0,
         thumbnailImageUrl: '',
         sampleImageUrl: '',
         originalImageUrl: '',
-        copyrightTags: const [],
-        characterTags: const [],
-        artistTags: const [],
-        generalTags: const [],
-        metaTags: const [],
+        copyrightTags: const {},
+        characterTags: const {},
+        artistTags: const {},
+        generalTags: const {},
+        metaTags: const {},
         width: 1,
         height: 1,
         format: 'png',
@@ -103,17 +103,17 @@ class DanbooruPost extends Equatable
   @override
   final String originalImageUrl;
   @override
-  final List<String> copyrightTags;
+  final Set<String> copyrightTags;
   @override
-  final List<String> characterTags;
+  final Set<String> characterTags;
   @override
-  final List<String> artistTags;
+  final Set<String> artistTags;
   @override
-  final List<String> generalTags;
+  final Set<String> generalTags;
   @override
-  final List<String> metaTags;
+  final Set<String> metaTags;
   @override
-  final List<String> tags;
+  final Set<String> tags;
   @override
   final double width;
   @override
@@ -284,11 +284,11 @@ extension PostX on DanbooruPost {
 
   DanbooruPost copyWith({
     int? id,
-    List<String>? copyrightTags,
-    List<String>? characterTags,
-    List<String>? artistTags,
-    List<String>? generalTags,
-    List<String>? metaTags,
+    Set<String>? copyrightTags,
+    Set<String>? characterTags,
+    Set<String>? artistTags,
+    Set<String>? generalTags,
+    Set<String>? metaTags,
     String? format,
     String? md5,
     DateTime? lastCommentAt,
@@ -353,19 +353,19 @@ extension DanbooruPostImageX on DanbooruPost {
 }
 
 abstract interface class DanbooruTagDetails implements TagDetails {
-  List<String>? get generalTags;
-  List<String>? get metaTags;
+  Set<String>? get generalTags;
+  Set<String>? get metaTags;
   Rating get rating;
 }
 
 extension DanbooruTagDetailsX on DanbooruTagDetails {
-  List<String> get allTags => [
-        ...artistTags ?? [],
-        ...characterTags ?? [],
-        ...copyrightTags ?? [],
-        ...generalTags ?? [],
-        ...metaTags ?? [],
-      ];
+  Set<String> get allTags => {
+        ...artistTags ?? {},
+        ...characterTags ?? {},
+        ...copyrightTags ?? {},
+        ...generalTags ?? {},
+        ...metaTags ?? {},
+      };
 }
 
 extension DanbooruIdsX on List<DanbooruPost> {

@@ -6,9 +6,9 @@ import 'package:boorusama/core/feats/tags/tag_info_service.dart';
 TagSearchItem tagSearchItemFromString(String value) => TagSearchItem.fromString(
       value,
       const TagInfo(
-        metatags: [],
-        defaultBlacklistedTags: [],
-        r18Tags: [],
+        metatags: {},
+        defaultBlacklistedTags: {},
+        r18Tags: {},
       ),
     );
 

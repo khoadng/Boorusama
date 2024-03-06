@@ -7,7 +7,7 @@ import 'tag.dart';
 
 abstract class TagRepository {
   Future<List<Tag>> getTagsByName(
-    List<String> tags,
+    Set<String> tags,
     int page, {
     CancelToken? cancelToken,
   });
@@ -38,14 +38,14 @@ class TagRepositoryBuilder
   }
 
   final Future<List<Tag>> Function(
-    List<String> tags,
+    Set<String> tags,
     int page, {
     CancelToken? cancelToken,
   }) getTags;
 
   @override
   Future<List<Tag>> getTagsByName(
-    List<String> tags,
+    Set<String> tags,
     int page, {
     CancelToken? cancelToken,
   }) =>

@@ -34,7 +34,7 @@ final moebooruPostDetailTagGroupProvider = FutureProvider.autoDispose
 });
 
 List<TagGroupItem> createMoebooruTagGroupItems(
-  List<String> tagStrings,
+  Set<String> tagStrings,
   Map<String, Tag> allTagsMap,
 ) {
   final tags = <Tag>[];
@@ -259,7 +259,7 @@ class _MoebooruPostDetailsPageState
     return artistTags;
   }
 
-  List<String>? _extractCharacter(
+  Set<String>? _extractCharacter(
     BooruConfig booruConfig,
     List<TagGroupItem>? tagGroups,
   ) {
@@ -267,7 +267,7 @@ class _MoebooruPostDetailsPageState
 
     final tag = tagGroups.firstWhereOrNull(
         (e) => intToTagCategory(e.category) == TagCategory.character);
-    final characterTags = tag?.tags.map((e) => e.rawName).toList();
+    final characterTags = tag?.tags.map((e) => e.rawName).toSet();
     return characterTags;
   }
 }

@@ -196,7 +196,7 @@ class GelbooruClient with RequestDeduplicator<GelbooruPosts> {
   }
 
   Future<List<TagDto>> getTags({
-    required List<String> tags,
+    required Set<String> tags,
     int? page,
   }) async {
     if (tags.isEmpty) {

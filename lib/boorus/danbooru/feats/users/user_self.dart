@@ -18,14 +18,14 @@ class UserSelf extends Equatable implements core.User {
         id: 0,
         level: UserLevel.member,
         name: 'User',
-        blacklistedTags: [],
+        blacklistedTags: {},
       );
 
   @override
   final UserId id;
   final UserLevel level;
   final Username name;
-  final List<String> blacklistedTags;
+  final Set<String> blacklistedTags;
 
   @override
   List<Object?> get props => [id, level, name, blacklistedTags];

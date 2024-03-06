@@ -347,7 +347,7 @@ class _PostDetailPageScaffoldState<T extends Post>
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 12),
             child: BasicTagList(
-              tags: post.tags,
+              tags: post.tags.toList(),
               onTap: widget.onTagTap,
             ),
           ),

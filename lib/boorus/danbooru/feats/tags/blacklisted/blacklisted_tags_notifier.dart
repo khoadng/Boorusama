@@ -16,7 +16,7 @@ class BlacklistedTagsNotifier
 
     if (user == null) return null;
 
-    return user.blacklistedTags;
+    return user.blacklistedTags.toList();
   }
 
   Future<void> add({

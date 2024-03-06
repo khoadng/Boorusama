@@ -56,7 +56,7 @@ class SzurubooruPost extends Equatable
   @override
   final String originalImageUrl;
   @override
-  final List<String> tags;
+  final Set<String> tags;
   @override
   final Rating rating;
   @override

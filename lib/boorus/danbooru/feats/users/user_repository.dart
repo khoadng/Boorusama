@@ -24,7 +24,7 @@ class UserRepositoryApi implements UserRepository {
   );
 
   final DanbooruClient client;
-  final List<String> defaultBlacklistedTags;
+  final Set<String> defaultBlacklistedTags;
 
   @override
   Future<List<User>> getUsersByIds(

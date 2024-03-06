@@ -13,7 +13,7 @@ GelbooruPost gelbooruPostDtoToGelbooruPost(PostDto dto) {
     thumbnailImageUrl: dto.previewUrl ?? '',
     sampleImageUrl: dto.sampleUrl ?? dto.fileUrl ?? '',
     originalImageUrl: dto.fileUrl ?? '',
-    tags: dto.tags?.split(' ').toList() ?? [],
+    tags: dto.tags?.split(' ').toSet() ?? {},
     width: dto.width?.toDouble() ?? 0,
     height: dto.height?.toDouble() ?? 0,
     format: path.extension(dto.fileUrl ?? 'foo.png').substring(1),

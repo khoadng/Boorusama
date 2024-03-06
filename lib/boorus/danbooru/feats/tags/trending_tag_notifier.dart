@@ -46,7 +46,7 @@ class TrendingTagNotifier
 
     final tags = await ref
         .read(tagRepoProvider(arg))
-        .getTagsByName(filtered.map((e) => e.keyword).toList(), 1);
+        .getTagsByName(filtered.map((e) => e.keyword).toSet(), 1);
 
     await ref
         .read(booruTagTypeStoreProvider)

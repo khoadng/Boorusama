@@ -45,9 +45,9 @@ class SankakuPost extends Equatable
     required this.copyrightDetailsTags,
     required this.uploaderId,
   })  : _getLink = getLink,
-        artistTags = artistDetailsTags.map((e) => e.name).toList(),
-        characterTags = characterDetailsTags.map((e) => e.name).toList(),
-        copyrightTags = copyrightDetailsTags.map((e) => e.name).toList();
+        artistTags = artistDetailsTags.map((e) => e.name).toSet(),
+        characterTags = characterDetailsTags.map((e) => e.name).toSet(),
+        copyrightTags = copyrightDetailsTags.map((e) => e.name).toSet();
 
   @override
   final int id;
@@ -60,7 +60,7 @@ class SankakuPost extends Equatable
   @override
   final String originalImageUrl;
   @override
-  final List<String> tags;
+  final Set<String> tags;
   @override
   final Rating rating;
   @override
@@ -110,13 +110,13 @@ class SankakuPost extends Equatable
   List<Object?> get props => [id];
 
   @override
-  final List<String> artistTags;
+  final Set<String> artistTags;
 
   @override
-  final List<String> characterTags;
+  final Set<String> characterTags;
 
   @override
-  final List<String> copyrightTags;
+  final Set<String> copyrightTags;
 
   final List<Tag> artistDetailsTags;
 

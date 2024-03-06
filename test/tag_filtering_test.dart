@@ -6,20 +6,20 @@ import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 
 void main() {
+  final simpleTestData = {'a', 'b', 'c'}.toTagFilterData();
+
   group('single', () {
     group('no operator', () {
       test('positive', () {
         expect(
-          checkIfTagsContainsTagExpression(
-              ['a', 'b', 'c'].toTagFilterData(), 'a'),
+          checkIfTagsContainsTagExpression(simpleTestData, 'a'),
           true,
         );
       });
 
       test('negative', () {
         expect(
-          checkIfTagsContainsTagExpression(
-              ['a', 'b', 'c'].toTagFilterData(), 'd'),
+          checkIfTagsContainsTagExpression(simpleTestData, 'd'),
           false,
         );
       });
@@ -28,16 +28,14 @@ void main() {
     group('NOT', () {
       test('positive', () {
         expect(
-          checkIfTagsContainsTagExpression(
-              ['a', 'b', 'c'].toTagFilterData(), '-d'),
+          checkIfTagsContainsTagExpression(simpleTestData, '-d'),
           true,
         );
       });
 
       test('negative', () {
         expect(
-          checkIfTagsContainsTagExpression(
-              ['a', 'b', 'c'].toTagFilterData(), '-a'),
+          checkIfTagsContainsTagExpression(simpleTestData, '-a'),
           false,
         );
       });
@@ -46,16 +44,14 @@ void main() {
     group('OR', () {
       test('positive', () {
         expect(
-          checkIfTagsContainsTagExpression(
-              ['a', 'b', 'c'].toTagFilterData(), '~a'),
+          checkIfTagsContainsTagExpression(simpleTestData, '~a'),
           true,
         );
       });
 
       test('negative', () {
         expect(
-          checkIfTagsContainsTagExpression(
-              ['a', 'b', 'c'].toTagFilterData(), '~d'),
+          checkIfTagsContainsTagExpression(simpleTestData, '~d'),
           false,
         );
       });
@@ -68,7 +64,10 @@ void main() {
             expect(
               checkIfTagsContainsTagExpression(
                 TagFilterData(
-                    tags: ['a', 'b', 'c'], rating: Rating.general, score: 0),
+                  tags: {'a', 'b', 'c'},
+                  rating: Rating.general,
+                  score: 0,
+                ),
                 'rating:general',
               ),
               true,
@@ -79,7 +78,10 @@ void main() {
             expect(
               checkIfTagsContainsTagExpression(
                 TagFilterData(
-                    tags: ['a', 'b', 'c'], rating: Rating.general, score: 0),
+                  tags: {'a', 'b', 'c'},
+                  rating: Rating.general,
+                  score: 0,
+                ),
                 'rating:explicit',
               ),
               false,
@@ -93,7 +95,10 @@ void main() {
           expect(
             checkIfTagsContainsTagExpression(
               TagFilterData(
-                  tags: ['a', 'b', 'c'], rating: Rating.general, score: -10),
+                tags: {'a', 'b', 'c'},
+                rating: Rating.general,
+                score: -10,
+              ),
               'score:<-4',
             ),
             true,
@@ -104,7 +109,10 @@ void main() {
           expect(
             checkIfTagsContainsTagExpression(
               TagFilterData(
-                  tags: ['a', 'b', 'c'], rating: Rating.general, score: 0),
+                tags: {'a', 'b', 'c'},
+                rating: Rating.general,
+                score: 0,
+              ),
               'score:<-4',
             ),
             false,
@@ -118,16 +126,14 @@ void main() {
     group('AND', () {
       test('positive', () {
         expect(
-          checkIfTagsContainsTagExpression(
-              ['a', 'b', 'c'].toTagFilterData(), 'a b'),
+          checkIfTagsContainsTagExpression(simpleTestData, 'a b'),
           true,
         );
       });
 
       test('negative', () {
         expect(
-          checkIfTagsContainsTagExpression(
-              ['a', 'b', 'c'].toTagFilterData(), 'a d'),
+          checkIfTagsContainsTagExpression(simpleTestData, 'a d'),
           false,
         );
       });
@@ -136,16 +142,14 @@ void main() {
     group('OR', () {
       test('positive', () {
         expect(
-          checkIfTagsContainsTagExpression(
-              ['a', 'b', 'c'].toTagFilterData(), '~a ~b'),
+          checkIfTagsContainsTagExpression(simpleTestData, '~a ~b'),
           true,
         );
       });
 
       test('negative', () {
         expect(
-          checkIfTagsContainsTagExpression(
-              ['a', 'b', 'c'].toTagFilterData(), '~d ~e'),
+          checkIfTagsContainsTagExpression(simpleTestData, '~d ~e'),
           false,
         );
       });
@@ -156,7 +160,7 @@ void main() {
       test('positive 1', () {
         expect(
           checkIfTagsContainsTagExpression(
-              ['a', 'b', 'q', 'w'].toTagFilterData(), 'a b -c -d'),
+              {'a', 'b', 'q', 'w'}.toTagFilterData(), 'a b -c -d'),
           true,
         );
       });
@@ -164,15 +168,14 @@ void main() {
       test('negative 1', () {
         expect(
           checkIfTagsContainsTagExpression(
-              ['a', 'b', 'c', 'd'].toTagFilterData(), 'a b -c -d'),
+              {'a', 'b', 'c', 'd'}.toTagFilterData(), 'a b -c -d'),
           false,
         );
       });
 
       test('negative 2', () {
         expect(
-          checkIfTagsContainsTagExpression(
-              ['a', 'b', 'c'].toTagFilterData(), 'a b -c -d'),
+          checkIfTagsContainsTagExpression(simpleTestData, 'a b -c -d'),
           false,
         );
       });
@@ -180,7 +183,7 @@ void main() {
       test('negative 3', () {
         expect(
           checkIfTagsContainsTagExpression(
-              ['a', 'b', 'd'].toTagFilterData(), 'a b -c -d'),
+              {'a', 'b', 'd'}.toTagFilterData(), 'a b -c -d'),
           false,
         );
       });
@@ -188,7 +191,7 @@ void main() {
       test('negative 4', () {
         expect(
           checkIfTagsContainsTagExpression(
-              ['q', 'w', 'e', 'r'].toTagFilterData(), 'a b -c -d'),
+              {'q', 'w', 'e', 'r'}.toTagFilterData(), 'a b -c -d'),
           false,
         );
       });
@@ -197,8 +200,7 @@ void main() {
     group('AND + OR', () {
       test('positive 1', () {
         expect(
-          checkIfTagsContainsTagExpression(
-              ['a', 'b', 'c'].toTagFilterData(), 'a ~b ~d'),
+          checkIfTagsContainsTagExpression(simpleTestData, 'a ~b ~d'),
           true,
         );
       });
@@ -206,31 +208,28 @@ void main() {
       test('positive 2 ', () {
         expect(
           checkIfTagsContainsTagExpression(
-              ['a', 'b', 'd'].toTagFilterData(), 'a ~b ~d'),
+              {'a', 'b', 'd'}.toTagFilterData(), 'a ~b ~d'),
           true,
         );
       });
 
       test('negative 1 (AND exists, OR not exists)', () {
         expect(
-          checkIfTagsContainsTagExpression(
-              ['a', 'b', 'c'].toTagFilterData(), 'a ~d ~e'),
+          checkIfTagsContainsTagExpression(simpleTestData, 'a ~d ~e'),
           false,
         );
       });
 
       test('negative 2 (AND not exists, OR exists)', () {
         expect(
-          checkIfTagsContainsTagExpression(
-              ['a', 'b', 'c'].toTagFilterData(), 'd ~a ~b'),
+          checkIfTagsContainsTagExpression(simpleTestData, 'd ~a ~b'),
           false,
         );
       });
 
       test('negative 3 (AND and OR not exists)', () {
         expect(
-          checkIfTagsContainsTagExpression(
-              ['a', 'b', 'c'].toTagFilterData(), 'd ~e'),
+          checkIfTagsContainsTagExpression(simpleTestData, 'd ~e'),
           false,
         );
       });
@@ -241,7 +240,10 @@ void main() {
         expect(
           checkIfTagsContainsTagExpression(
               TagFilterData(
-                  tags: ['a', 'b', 'c'], rating: Rating.explicit, score: 0),
+                tags: {'a', 'b', 'c'},
+                rating: Rating.explicit,
+                score: 0,
+              ),
               'a rating:explicit'),
           true,
         );
@@ -251,7 +253,10 @@ void main() {
         expect(
           checkIfTagsContainsTagExpression(
               TagFilterData(
-                  tags: ['a', 'b', 'c'], rating: Rating.explicit, score: -10),
+                tags: {'a', 'b', 'c'},
+                rating: Rating.explicit,
+                score: -10,
+              ),
               'a score:<-5'),
           true,
         );
@@ -261,10 +266,11 @@ void main() {
         expect(
           checkIfTagsContainsTagExpression(
               TagFilterData(
-                  tags: ['a', 'b', 'c'],
-                  rating: Rating.explicit,
-                  score: -10,
-                  downvotes: 10),
+                tags: {'a', 'b', 'c'},
+                rating: Rating.explicit,
+                score: -10,
+                downvotes: 10,
+              ),
               'a downvotes:>5'),
           true,
         );
@@ -274,7 +280,10 @@ void main() {
         expect(
           checkIfTagsContainsTagExpression(
               TagFilterData(
-                  tags: ['a', 'b', 'c'], rating: Rating.explicit, score: 0),
+                tags: {'a', 'b', 'c'},
+                rating: Rating.explicit,
+                score: 0,
+              ),
               'a rating:general'),
           false,
         );
@@ -284,7 +293,10 @@ void main() {
         expect(
           checkIfTagsContainsTagExpression(
               TagFilterData(
-                  tags: ['a', 'b', 'c'], rating: Rating.explicit, score: -1),
+                tags: {'a', 'b', 'c'},
+                rating: Rating.explicit,
+                score: -1,
+              ),
               'a score:<-5'),
           false,
         );
@@ -294,10 +306,11 @@ void main() {
         expect(
           checkIfTagsContainsTagExpression(
               TagFilterData(
-                  tags: ['a', 'b', 'c'],
-                  rating: Rating.explicit,
-                  score: -10,
-                  downvotes: 10),
+                tags: {'a', 'b', 'c'},
+                rating: Rating.explicit,
+                score: -10,
+                downvotes: 10,
+              ),
               'a downvotes:>15'),
           false,
         );
@@ -307,10 +320,11 @@ void main() {
         expect(
           checkIfTagsContainsTagExpression(
               TagFilterData(
-                  tags: ['a', 'b', 'c'],
-                  rating: Rating.explicit,
-                  score: -10,
-                  downvotes: null),
+                tags: {'a', 'b', 'c'},
+                rating: Rating.explicit,
+                score: -10,
+                downvotes: null,
+              ),
               'a downvotes:<5'),
           false,
         );
@@ -320,7 +334,7 @@ void main() {
         expect(
           checkIfTagsContainsTagExpression(
               TagFilterData(
-                tags: ['a', 'b', 'c'],
+                tags: {'a', 'b', 'c'},
                 rating: Rating.explicit,
                 score: 0,
                 uploaderId: 123,
@@ -334,7 +348,7 @@ void main() {
         expect(
           checkIfTagsContainsTagExpression(
               TagFilterData(
-                tags: ['a', 'b', 'c'],
+                tags: {'a', 'b', 'c'},
                 rating: Rating.explicit,
                 score: 0,
                 uploaderId: 123,
@@ -348,7 +362,7 @@ void main() {
         expect(
           checkIfTagsContainsTagExpression(
               TagFilterData(
-                tags: ['a', 'b', 'c'],
+                tags: {'a', 'b', 'c'},
                 rating: Rating.explicit,
                 score: 0,
                 source: 'https://example.com',
@@ -362,7 +376,7 @@ void main() {
         expect(
           checkIfTagsContainsTagExpression(
               TagFilterData(
-                tags: ['a', 'b', 'c'],
+                tags: {'a', 'b', 'c'},
                 rating: Rating.explicit,
                 score: 0,
                 source: 'https://example.com',
@@ -376,7 +390,7 @@ void main() {
         expect(
           checkIfTagsContainsTagExpression(
               TagFilterData(
-                tags: ['a', 'b', 'c'],
+                tags: {'a', 'b', 'c'},
                 rating: Rating.explicit,
                 score: 0,
                 source: 'https://example.com/abc',
@@ -390,7 +404,7 @@ void main() {
         expect(
           checkIfTagsContainsTagExpression(
               TagFilterData(
-                tags: ['a', 'b', 'c'],
+                tags: {'a', 'b', 'c'},
                 rating: Rating.explicit,
                 score: 0,
                 source: 'https://example.com/abc',
@@ -404,7 +418,7 @@ void main() {
         expect(
           checkIfTagsContainsTagExpression(
               TagFilterData(
-                tags: ['a', 'b', 'c'],
+                tags: {'a', 'b', 'c'},
                 rating: Rating.explicit,
                 score: 0,
                 source: 'https://example.com/abc',
@@ -420,7 +434,7 @@ void main() {
         expect(
           checkIfTagsContainsTagExpression(
               TagFilterData(
-                  tags: ['a', 'b', 'c'], rating: Rating.explicit, score: 0),
+                  tags: {'a', 'b', 'c'}, rating: Rating.explicit, score: 0),
               'a -rating:general'),
           true,
         );
@@ -430,7 +444,7 @@ void main() {
         expect(
           checkIfTagsContainsTagExpression(
               TagFilterData(
-                  tags: ['a', 'b', 'c'], rating: Rating.general, score: -10),
+                  tags: {'a', 'b', 'c'}, rating: Rating.general, score: -10),
               'a score:<-5 -rating:explicit'),
           true,
         );
@@ -440,7 +454,7 @@ void main() {
         expect(
           checkIfTagsContainsTagExpression(
               TagFilterData(
-                  tags: ['a', 'b', 'c'], rating: Rating.general, score: 0),
+                  tags: {'a', 'b', 'c'}, rating: Rating.general, score: 0),
               'a -rating:general'),
           false,
         );
@@ -450,7 +464,7 @@ void main() {
         expect(
           checkIfTagsContainsTagExpression(
               TagFilterData(
-                  tags: ['a', 'b', 'c'], rating: Rating.explicit, score: -100),
+                  tags: {'a', 'b', 'c'}, rating: Rating.explicit, score: -100),
               'a score:<-5 -rating:explicit'),
           false,
         );
@@ -465,7 +479,7 @@ void main() {
           AutocompleteData.fromJson(const {'value': 'a', 'label': 'a'}),
           AutocompleteData.fromJson(const {'value': 'b', 'label': 'b'}),
         ],
-        ['a'],
+        {'a'},
         shouldFilter: true,
       );
 
@@ -481,7 +495,7 @@ void main() {
               const {'value': 'xyz', 'label': 'xyz', 'antecedent': 'a_b'}),
           AutocompleteData.fromJson(const {'value': 'b', 'label': 'b'}),
         ],
-        ['a_b'],
+        {'a_b'},
         shouldFilter: true,
       );
 
@@ -497,7 +511,7 @@ void main() {
           AutocompleteData.fromJson(const {'value': 'xyz_a', 'label': 'xyz_a'}),
           AutocompleteData.fromJson(const {'value': 'b', 'label': 'b'}),
         ],
-        ['a'],
+        {'a'},
         shouldFilter: true,
       );
 
@@ -514,7 +528,7 @@ void main() {
               const {'value': 'foo', 'label': 'foo', 'antecedent': 'b_(a)'}),
           AutocompleteData.fromJson(const {'value': 'b', 'label': 'b'}),
         ],
-        ['a'],
+        {'a'},
         shouldFilter: true,
       );
 

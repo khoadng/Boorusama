@@ -41,7 +41,7 @@ class MoebooruPost extends Equatable
   @override
   final int id;
   @override
-  final List<String> tags;
+  final Set<String> tags;
   @override
   final PostSource source;
   @override

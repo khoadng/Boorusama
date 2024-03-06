@@ -49,7 +49,7 @@ final philomenaPostRepoProvider =
               : e.representations?.thumb ?? '',
           sampleImageUrl: e.representations?.medium ?? '',
           originalImageUrl: e.representations?.full ?? '',
-          tags: e.tags?.map((e) => e.replaceAll('+', '_')).toList() ?? [],
+          tags: e.tags?.map((e) => e.replaceAll('+', '_')).toSet() ?? {},
           rating: Rating.general,
           commentCount: e.commentCount ?? 0,
           isTranslated: false,

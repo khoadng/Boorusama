@@ -16,7 +16,7 @@ class MoebooruTagRepository extends TagRepository {
 
   @override
   Future<List<Tag>> getTagsByName(
-    List<String> tags,
+    Set<String> tags,
     int page, {
     CancelToken? cancelToken,
   }) async {

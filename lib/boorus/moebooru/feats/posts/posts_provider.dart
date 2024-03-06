@@ -126,7 +126,7 @@ MoebooruPost postDtoToPost(PostDto postDto) {
     thumbnailImageUrl: postDto.previewUrl ?? '',
     sampleImageUrl: postDto.sampleUrl ?? '',
     originalImageUrl: postDto.fileUrl ?? '',
-    tags: postDto.tags != null ? postDto.tags!.split(' ') : [],
+    tags: postDto.tags != null ? postDto.tags!.split(' ').toSet() : {},
     source: PostSource.from(postDto.source),
     rating: mapStringToRating(postDto.rating ?? ''),
     hasComment: false,

@@ -81,11 +81,11 @@ extension StringNullX on String? {
 
   bool isNotBlank() => !isBlank();
 
-  List<String> splitByWhitespace() {
-    if (this == null) return [];
-    if (this!.isEmpty) return [];
+  Set<String> splitByWhitespace() {
+    if (this == null) return {};
+    if (this!.isEmpty) return {};
 
-    return this!.split(' ');
+    return this!.split(' ').toSet();
   }
 }
 

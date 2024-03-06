@@ -155,7 +155,7 @@ class SzurubooruBuilder
                         ),
                       ),
               tagListBuilder: (context, post) => BasicTagList(
-                tags: post.tags,
+                tags: post.tags.toList(),
                 unknownCategoryColor: ref.getTagColor(
                   context,
                   'general',

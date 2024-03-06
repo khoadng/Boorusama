@@ -80,7 +80,7 @@ void main() {
 
   group('[translated test]', () {
     test('translated', () {
-      final post = DanbooruPost.empty().copyWith(metaTags: ['translated']);
+      final post = DanbooruPost.empty().copyWith(metaTags: {'translated'});
 
       expect(post.isTranslated, isTrue);
     });

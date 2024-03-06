@@ -169,10 +169,10 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
   void _updateData() {
     final d = filter(
       controller.items,
-      [
+      {
         for (final tag in filters.keys)
           if (filters[tag]!) tag
-      ],
+      },
     );
 
     // Dirty hack to filter out bookmarked posts

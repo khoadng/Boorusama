@@ -39,7 +39,7 @@ final shimmie2PostRepoProvider = Provider.family<PostRepository, BooruConfig>(
                   thumbnailImageUrl: e.previewUrl ?? '',
                   sampleImageUrl: e.fileUrl ?? '',
                   originalImageUrl: e.fileUrl ?? '',
-                  tags: e.tags ?? [],
+                  tags: e.tags?.toSet() ?? {},
                   rating: mapStringToRating(e.rating),
                   hasComment: false,
                   isTranslated: false,

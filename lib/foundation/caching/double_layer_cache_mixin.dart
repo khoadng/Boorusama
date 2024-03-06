@@ -27,8 +27,8 @@ mixin DoubleLayerCacheMixin<TData> {
   /// - [onTempStorageCheck]: An optional callback for checking data in temp storage.
   /// - [onPersistentStorageCheck]: An optional callback for checking data in persistent storage.
   Future<List<TData>> retrieve({
-    required List<String> keys,
-    required Future<List<TData>> Function(List<String> freshKeys) fetcher,
+    required Set<String> keys,
+    required Future<List<TData>> Function(Set<String> freshKeys) fetcher,
     void Function(List<TData> data)? onTempStorageCheck,
     void Function(List<TData> data)? onPersistentStorageCheck,
   }) async {
@@ -49,7 +49,7 @@ mixin DoubleLayerCacheMixin<TData> {
 
     final notInPersistentKeys = notInMemKeys
         .where((key) => !persistentData.any((d) => getKey(d) == key))
-        .toList();
+        .toSet();
 
     var freshData = <TData>[];
 
@@ -94,7 +94,7 @@ mixin DoubleLayerCacheMixin<TData> {
     tempCache.set(key, data);
   }
 
-  List<TData> _checkTempStorage(List<String> keys) {
+  List<TData> _checkTempStorage(Set<String> keys) {
     final cachedData = <TData>[];
 
     for (final key in keys) {
