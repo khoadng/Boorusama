@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 
 // Project imports:
+import 'autocomplete.dart';
 import 'types/types.dart';
 
 const _kZerochanUrl = 'https://www.zerochan.net';
@@ -38,14 +39,16 @@ class ZerochanClient {
         '';
 
     try {
-      final response = await _dio.get('/$tagString?json',
-          queryParameters: {
-            if (page != null) 'p': page,
-            if (limit != null) 'l': limit,
-          },
-          options: Options(
-            responseType: ResponseType.plain,
-          ));
+      final response = await _dio.get(
+        '/$tagString?json',
+        queryParameters: {
+          if (page != null) 'p': page,
+          if (limit != null) 'l': limit,
+        },
+        options: Options(
+          responseType: ResponseType.plain,
+        ),
+      );
 
       // return empty if response is HTML
       if (response.data.toString().startsWith('<!DOCTYPE html>')) {
@@ -54,7 +57,7 @@ class ZerochanClient {
         return [];
       }
 
-      final json = jsonDecode(response.data);
+      final json = _parsePostResponse(response.data);
 
       if (json case Map m) {
         if (m.isEmpty) return [];
@@ -77,10 +80,48 @@ class ZerochanClient {
       queryParameters: {
         'q': query,
       },
+      options: Options(
+        responseType: ResponseType.plain,
+      ),
     );
 
-    final data = response.data['suggestions'];
+    final data = response.data;
 
-    return (data as List).map((e) => AutocompleteDto.fromJson(e)).toList();
+    return parseAutocomplete(data);
   }
+}
+
+dynamic _parsePostResponse(dynamic data) {
+  // parse json first if there is a FormatException then clean the html and parse again
+  try {
+    return jsonDecode(data);
+  } on FormatException {
+    final cleanned = _removeUnwantedHtmlElementFromJson(data);
+
+    return jsonDecode(cleanned);
+  }
+}
+
+// This is a workaround for the fact that the Zerochan API returns HTML
+String _removeUnwantedHtmlElementFromJson(String jsonString) {
+  // Split the JSON string into lines
+  final lines = jsonString.split('\n');
+
+  var markerFound = false;
+
+  // Initialize a result string with the first line
+  final result = StringBuffer(lines.first);
+
+  // Iterate through the lines, starting from the second line
+  for (var i = 1; i < lines.length; i++) {
+    final line = lines[i];
+
+    // Check if the line contains the marker
+    if (line.contains('"items": [')) markerFound = true;
+
+    // If the marker is found, add the line to the result
+    if (markerFound) result.write('$line\n');
+  }
+
+  return result.toString();
 }
