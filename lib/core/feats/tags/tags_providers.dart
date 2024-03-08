@@ -1,5 +1,6 @@
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive/hive.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/boorus/boorus.dart';
@@ -17,8 +18,16 @@ final tagsProvider =
 final emptyTagRepoProvider =
     Provider<TagRepository>((ref) => EmptyTagRepository());
 
-final booruTagTypeStoreProvider = Provider<BooruTagTypeStore>((ref) {
-  return BooruTagTypeStore();
+final booruTagTypeStoreProvider = Provider<BooruTagTypeStore>(
+  (ref) {
+    return BooruTagTypeStore(
+      box: ref.watch(booruTagTypeBoxProvider),
+    );
+  },
+);
+
+final booruTagTypeBoxProvider = Provider<Box<String>?>((ref) {
+  return null;
 });
 
 final booruTagTypeProvider =
