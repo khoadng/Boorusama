@@ -1,11 +1,11 @@
 // Flutter imports:
-import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/widgets/widgets.dart';
 

@@ -1,5 +1,7 @@
+// Dart imports:
 import 'dart:convert';
 
+// Project imports:
 import 'package:boorusama/clients/zerochan/types/types.dart';
 
 List<AutocompleteDto> parseAutocomplete(dynamic data) {
