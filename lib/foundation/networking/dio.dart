@@ -6,6 +6,7 @@ import 'package:dio_http2_adapter/dio_http2_adapter.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/foundation/http/dio_logger_interceptor.dart';
 
@@ -25,7 +26,8 @@ Dio newDio(
   final apiUrl = booru?.getApiUrl(baseUrl) ?? baseUrl;
 
   final dio = Dio(BaseOptions(
-    baseUrl: apiUrl,
+    // This is a hack to clean the url, if there are more sites that need this we should refactor this into something more generic
+    baseUrl: GelbooruClient.cleanUrl(apiUrl),
     headers: {
       'User-Agent': generator.generate(),
     },
