@@ -12,14 +12,14 @@ void main() {
     group('no operator', () {
       test('positive', () {
         expect(
-          checkIfTagsContainsTagExpression(simpleTestData, 'a'),
+          checkIfTagsContainsRawTagExpression(simpleTestData, 'a'),
           true,
         );
       });
 
       test('negative', () {
         expect(
-          checkIfTagsContainsTagExpression(simpleTestData, 'd'),
+          checkIfTagsContainsRawTagExpression(simpleTestData, 'd'),
           false,
         );
       });
@@ -28,14 +28,14 @@ void main() {
     group('NOT', () {
       test('positive', () {
         expect(
-          checkIfTagsContainsTagExpression(simpleTestData, '-d'),
+          checkIfTagsContainsRawTagExpression(simpleTestData, '-d'),
           true,
         );
       });
 
       test('negative', () {
         expect(
-          checkIfTagsContainsTagExpression(simpleTestData, '-a'),
+          checkIfTagsContainsRawTagExpression(simpleTestData, '-a'),
           false,
         );
       });
@@ -44,14 +44,14 @@ void main() {
     group('OR', () {
       test('positive', () {
         expect(
-          checkIfTagsContainsTagExpression(simpleTestData, '~a'),
+          checkIfTagsContainsRawTagExpression(simpleTestData, '~a'),
           true,
         );
       });
 
       test('negative', () {
         expect(
-          checkIfTagsContainsTagExpression(simpleTestData, '~d'),
+          checkIfTagsContainsRawTagExpression(simpleTestData, '~d'),
           false,
         );
       });
@@ -62,7 +62,7 @@ void main() {
         group('General', () {
           test('positive', () {
             expect(
-              checkIfTagsContainsTagExpression(
+              checkIfTagsContainsRawTagExpression(
                 TagFilterData(
                   tags: {'a', 'b', 'c'},
                   rating: Rating.general,
@@ -76,7 +76,7 @@ void main() {
 
           test('negative', () {
             expect(
-              checkIfTagsContainsTagExpression(
+              checkIfTagsContainsRawTagExpression(
                 TagFilterData(
                   tags: {'a', 'b', 'c'},
                   rating: Rating.general,
@@ -93,7 +93,7 @@ void main() {
       group('Score', () {
         test('positive', () {
           expect(
-            checkIfTagsContainsTagExpression(
+            checkIfTagsContainsRawTagExpression(
               TagFilterData(
                 tags: {'a', 'b', 'c'},
                 rating: Rating.general,
@@ -107,7 +107,7 @@ void main() {
 
         test('negative', () {
           expect(
-            checkIfTagsContainsTagExpression(
+            checkIfTagsContainsRawTagExpression(
               TagFilterData(
                 tags: {'a', 'b', 'c'},
                 rating: Rating.general,
@@ -126,14 +126,14 @@ void main() {
     group('AND', () {
       test('positive', () {
         expect(
-          checkIfTagsContainsTagExpression(simpleTestData, 'a b'),
+          checkIfTagsContainsRawTagExpression(simpleTestData, 'a b'),
           true,
         );
       });
 
       test('negative', () {
         expect(
-          checkIfTagsContainsTagExpression(simpleTestData, 'a d'),
+          checkIfTagsContainsRawTagExpression(simpleTestData, 'a d'),
           false,
         );
       });
@@ -142,14 +142,14 @@ void main() {
     group('OR', () {
       test('positive', () {
         expect(
-          checkIfTagsContainsTagExpression(simpleTestData, '~a ~b'),
+          checkIfTagsContainsRawTagExpression(simpleTestData, '~a ~b'),
           true,
         );
       });
 
       test('negative', () {
         expect(
-          checkIfTagsContainsTagExpression(simpleTestData, '~d ~e'),
+          checkIfTagsContainsRawTagExpression(simpleTestData, '~d ~e'),
           false,
         );
       });
@@ -159,7 +159,7 @@ void main() {
     group('NOT', () {
       test('positive 1', () {
         expect(
-          checkIfTagsContainsTagExpression(
+          checkIfTagsContainsRawTagExpression(
               {'a', 'b', 'q', 'w'}.toTagFilterData(), 'a b -c -d'),
           true,
         );
@@ -167,7 +167,7 @@ void main() {
 
       test('negative 1', () {
         expect(
-          checkIfTagsContainsTagExpression(
+          checkIfTagsContainsRawTagExpression(
               {'a', 'b', 'c', 'd'}.toTagFilterData(), 'a b -c -d'),
           false,
         );
@@ -175,14 +175,14 @@ void main() {
 
       test('negative 2', () {
         expect(
-          checkIfTagsContainsTagExpression(simpleTestData, 'a b -c -d'),
+          checkIfTagsContainsRawTagExpression(simpleTestData, 'a b -c -d'),
           false,
         );
       });
 
       test('negative 3', () {
         expect(
-          checkIfTagsContainsTagExpression(
+          checkIfTagsContainsRawTagExpression(
               {'a', 'b', 'd'}.toTagFilterData(), 'a b -c -d'),
           false,
         );
@@ -190,7 +190,7 @@ void main() {
 
       test('negative 4', () {
         expect(
-          checkIfTagsContainsTagExpression(
+          checkIfTagsContainsRawTagExpression(
               {'q', 'w', 'e', 'r'}.toTagFilterData(), 'a b -c -d'),
           false,
         );
@@ -200,14 +200,14 @@ void main() {
     group('AND + OR', () {
       test('positive 1', () {
         expect(
-          checkIfTagsContainsTagExpression(simpleTestData, 'a ~b ~d'),
+          checkIfTagsContainsRawTagExpression(simpleTestData, 'a ~b ~d'),
           true,
         );
       });
 
       test('positive 2 ', () {
         expect(
-          checkIfTagsContainsTagExpression(
+          checkIfTagsContainsRawTagExpression(
               {'a', 'b', 'd'}.toTagFilterData(), 'a ~b ~d'),
           true,
         );
@@ -215,21 +215,21 @@ void main() {
 
       test('negative 1 (AND exists, OR not exists)', () {
         expect(
-          checkIfTagsContainsTagExpression(simpleTestData, 'a ~d ~e'),
+          checkIfTagsContainsRawTagExpression(simpleTestData, 'a ~d ~e'),
           false,
         );
       });
 
       test('negative 2 (AND not exists, OR exists)', () {
         expect(
-          checkIfTagsContainsTagExpression(simpleTestData, 'd ~a ~b'),
+          checkIfTagsContainsRawTagExpression(simpleTestData, 'd ~a ~b'),
           false,
         );
       });
 
       test('negative 3 (AND and OR not exists)', () {
         expect(
-          checkIfTagsContainsTagExpression(simpleTestData, 'd ~e'),
+          checkIfTagsContainsRawTagExpression(simpleTestData, 'd ~e'),
           false,
         );
       });
@@ -238,7 +238,7 @@ void main() {
     group('AND + Metatags', () {
       test('positive 1 (rating)', () {
         expect(
-          checkIfTagsContainsTagExpression(
+          checkIfTagsContainsRawTagExpression(
               TagFilterData(
                 tags: {'a', 'b', 'c'},
                 rating: Rating.explicit,
@@ -251,7 +251,7 @@ void main() {
 
       test('positive 2 (score)', () {
         expect(
-          checkIfTagsContainsTagExpression(
+          checkIfTagsContainsRawTagExpression(
               TagFilterData(
                 tags: {'a', 'b', 'c'},
                 rating: Rating.explicit,
@@ -264,7 +264,7 @@ void main() {
 
       test('positive 3 (downvotes)', () {
         expect(
-          checkIfTagsContainsTagExpression(
+          checkIfTagsContainsRawTagExpression(
               TagFilterData(
                 tags: {'a', 'b', 'c'},
                 rating: Rating.explicit,
@@ -278,7 +278,7 @@ void main() {
 
       test('negative 1 (rating)', () {
         expect(
-          checkIfTagsContainsTagExpression(
+          checkIfTagsContainsRawTagExpression(
               TagFilterData(
                 tags: {'a', 'b', 'c'},
                 rating: Rating.explicit,
@@ -291,7 +291,7 @@ void main() {
 
       test('negative 2 (score)', () {
         expect(
-          checkIfTagsContainsTagExpression(
+          checkIfTagsContainsRawTagExpression(
               TagFilterData(
                 tags: {'a', 'b', 'c'},
                 rating: Rating.explicit,
@@ -304,7 +304,7 @@ void main() {
 
       test('negative 3 (downvotes)', () {
         expect(
-          checkIfTagsContainsTagExpression(
+          checkIfTagsContainsRawTagExpression(
               TagFilterData(
                 tags: {'a', 'b', 'c'},
                 rating: Rating.explicit,
@@ -318,7 +318,7 @@ void main() {
 
       test('negative 4 (downvotes null)', () {
         expect(
-          checkIfTagsContainsTagExpression(
+          checkIfTagsContainsRawTagExpression(
               TagFilterData(
                 tags: {'a', 'b', 'c'},
                 rating: Rating.explicit,
@@ -332,7 +332,7 @@ void main() {
 
       test('positive (uploaderid)', () {
         expect(
-          checkIfTagsContainsTagExpression(
+          checkIfTagsContainsRawTagExpression(
               TagFilterData(
                 tags: {'a', 'b', 'c'},
                 rating: Rating.explicit,
@@ -346,7 +346,7 @@ void main() {
 
       test('negative (uploaderid)', () {
         expect(
-          checkIfTagsContainsTagExpression(
+          checkIfTagsContainsRawTagExpression(
               TagFilterData(
                 tags: {'a', 'b', 'c'},
                 rating: Rating.explicit,
@@ -360,7 +360,7 @@ void main() {
 
       test('positive (source exact match)', () {
         expect(
-          checkIfTagsContainsTagExpression(
+          checkIfTagsContainsRawTagExpression(
               TagFilterData(
                 tags: {'a', 'b', 'c'},
                 rating: Rating.explicit,
@@ -374,7 +374,7 @@ void main() {
 
       test('negative (source exact match)', () {
         expect(
-          checkIfTagsContainsTagExpression(
+          checkIfTagsContainsRawTagExpression(
               TagFilterData(
                 tags: {'a', 'b', 'c'},
                 rating: Rating.explicit,
@@ -388,7 +388,7 @@ void main() {
 
       test('positive (source start match)', () {
         expect(
-          checkIfTagsContainsTagExpression(
+          checkIfTagsContainsRawTagExpression(
               TagFilterData(
                 tags: {'a', 'b', 'c'},
                 rating: Rating.explicit,
@@ -402,7 +402,7 @@ void main() {
 
       test('positive (source end match)', () {
         expect(
-          checkIfTagsContainsTagExpression(
+          checkIfTagsContainsRawTagExpression(
               TagFilterData(
                 tags: {'a', 'b', 'c'},
                 rating: Rating.explicit,
@@ -416,7 +416,7 @@ void main() {
 
       test('positive (source middle match)', () {
         expect(
-          checkIfTagsContainsTagExpression(
+          checkIfTagsContainsRawTagExpression(
               TagFilterData(
                 tags: {'a', 'b', 'c'},
                 rating: Rating.explicit,
@@ -432,7 +432,7 @@ void main() {
     group('NOT + Metatags', () {
       test('positive 1 (rating)', () {
         expect(
-          checkIfTagsContainsTagExpression(
+          checkIfTagsContainsRawTagExpression(
               TagFilterData(
                   tags: {'a', 'b', 'c'}, rating: Rating.explicit, score: 0),
               'a -rating:general'),
@@ -442,7 +442,7 @@ void main() {
 
       test('positive 2 (score + rating)', () {
         expect(
-          checkIfTagsContainsTagExpression(
+          checkIfTagsContainsRawTagExpression(
               TagFilterData(
                   tags: {'a', 'b', 'c'}, rating: Rating.general, score: -10),
               'a score:<-5 -rating:explicit'),
@@ -452,7 +452,7 @@ void main() {
 
       test('negative 1 (rating)', () {
         expect(
-          checkIfTagsContainsTagExpression(
+          checkIfTagsContainsRawTagExpression(
               TagFilterData(
                   tags: {'a', 'b', 'c'}, rating: Rating.general, score: 0),
               'a -rating:general'),
@@ -462,7 +462,7 @@ void main() {
 
       test('negative 2 (score + rating)', () {
         expect(
-          checkIfTagsContainsTagExpression(
+          checkIfTagsContainsRawTagExpression(
               TagFilterData(
                   tags: {'a', 'b', 'c'}, rating: Rating.explicit, score: -100),
               'a score:<-5 -rating:explicit'),

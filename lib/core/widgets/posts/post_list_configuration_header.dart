@@ -32,13 +32,13 @@ class PostListConfigurationHeader extends StatefulWidget {
     this.axis = Axis.horizontal,
   });
 
-  final List<HiddenData> tags;
+  final List<HiddenData>? tags;
   final void Function(String tag, bool value) onChanged;
   final VoidCallback onClosed;
   final Widget? trailing;
   final VoidCallback onDisableAll;
   final VoidCallback onEnableAll;
-  final int hiddenCount;
+  final int? hiddenCount;
   final bool hasBlacklist;
   final bool initiallyExpanded;
   final Axis axis;
@@ -54,7 +54,7 @@ class _PostListConfigurationHeaderState
   late var hiddenTags = widget.tags;
   var expanded = false;
 
-  bool get allTagsHidden => hiddenTags.every((e) => !e.active);
+  bool? get allTagsHidden => hiddenTags?.every((e) => !e.active);
 
   @override
   void didUpdateWidget(covariant PostListConfigurationHeader oldWidget) {
@@ -68,32 +68,36 @@ class _PostListConfigurationHeaderState
 
   @override
   Widget build(BuildContext context) {
-    var tags = [
-      for (var tag in hiddenTags)
-        _BadgedChip(
-          label: tag.name.replaceUnderscoreWithSpace(),
-          count: tag.count,
-          active: tag.active,
-          onChanged: (value) => widget.onChanged(tag.name, value),
-        ),
-      ActionChip(
-        visualDensity: const ShrinkVisualDensity(),
-        side: BorderSide(
-          width: 1,
-          color: context.theme.hintColor,
-        ),
-        shape: StadiumBorder(
-          side: BorderSide(
-            width: 1,
-            color: context.theme.hintColor,
-          ),
-        ),
-        label: allTagsHidden
-            ? const Text('Re-enable all')
-            : const Text('Disable all'),
-        onPressed: allTagsHidden ? widget.onEnableAll : widget.onDisableAll,
-      ),
-    ];
+    var tags = hiddenTags != null
+        ? [
+            for (var tag in hiddenTags!)
+              _BadgedChip(
+                label: tag.name.replaceUnderscoreWithSpace(),
+                count: tag.count,
+                active: tag.active,
+                onChanged: (value) => widget.onChanged(tag.name, value),
+              ),
+            if (allTagsHidden != null)
+              ActionChip(
+                visualDensity: const ShrinkVisualDensity(),
+                side: BorderSide(
+                  width: 1,
+                  color: context.theme.hintColor,
+                ),
+                shape: StadiumBorder(
+                  side: BorderSide(
+                    width: 1,
+                    color: context.theme.hintColor,
+                  ),
+                ),
+                label: allTagsHidden!
+                    ? const Text('Re-enable all')
+                    : const Text('Disable all'),
+                onPressed:
+                    allTagsHidden! ? widget.onEnableAll : widget.onDisableAll,
+              ),
+          ]
+        : null;
 
     return Card(
       color: widget.axis == Axis.horizontal && expanded
@@ -142,8 +146,9 @@ class _PostListConfigurationHeaderState
                     const SizedBox(width: 8),
                     const Text('Blacklisted'),
                     const SizedBox(width: 8),
-                    if (widget.hiddenCount > 0)
-                      Chip(
+                    if (widget.hiddenCount != null)
+                      if (widget.hiddenCount! > 0)
+                        Chip(
                           padding: EdgeInsets.zero,
                           visualDensity: const ShrinkVisualDensity(),
                           backgroundColor: context.colorScheme.primary,
@@ -153,7 +158,8 @@ class _PostListConfigurationHeaderState
                               color: context.colorScheme.onPrimary,
                               fontWeight: FontWeight.bold,
                             ),
-                          )),
+                          ),
+                        ),
                     const Spacer(),
                     expanded
                         ? const SizedBox.shrink()
@@ -164,28 +170,34 @@ class _PostListConfigurationHeaderState
                 ),
                 expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                    child: widget.axis == Axis.horizontal
-                        ? Wrap(
-                            spacing: 4,
-                            runSpacing: 4,
-                            children: tags,
-                          )
-                        : Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              for (var tag in tags)
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 4,
+                  if (tags != null)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 8),
+                      child: widget.axis == Axis.horizontal
+                          ? Wrap(
+                              spacing: 4,
+                              runSpacing: 4,
+                              children: tags,
+                            )
+                          : Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                for (var tag in tags)
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 4,
+                                    ),
+                                    child: tag,
                                   ),
-                                  child: tag,
-                                ),
-                            ],
-                          ),
-                  )
+                              ],
+                            ),
+                    )
+                  else
+                    const SizedBox(
+                      height: 36,
+                      width: 36,
+                    ),
                 ],
               )
             : ListTile(
