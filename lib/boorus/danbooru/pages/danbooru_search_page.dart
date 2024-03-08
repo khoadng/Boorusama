@@ -125,8 +125,10 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
                                   .watch(settingsProvider)
                                   .autoFocusSearchBar,
                               queryEditingController: controller,
-                              onSubmitted: (value) =>
-                                  searchController.submit(value),
+                              onSubmitted: (value) {
+                                searchController.submit(value);
+                                controller.clear();
+                              },
                               leading: widget.searchBarLeading ??
                                   (!context.canPop()
                                       ? null

@@ -131,8 +131,10 @@ class _SearchPageScaffoldState<T extends Post>
                                     .watch(settingsProvider)
                                     .autoFocusSearchBar,
                                 queryEditingController: textController,
-                                onSubmitted: (value) =>
-                                    searchController.submit(value),
+                                onSubmitted: (value) {
+                                  searchController.submit(value);
+                                  textController.clear();
+                                },
                                 leading: widget.searchBarLeading ??
                                     (!context.canPop()
                                         ? null
