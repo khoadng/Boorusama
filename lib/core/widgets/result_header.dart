@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -20,6 +21,10 @@ class ResultHeaderWithProvider extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final fetcher = ref.watch(booruBuilderProvider)?.postCountFetcher;
+
+    if (fetcher == null) return const SizedBox.shrink();
+
     return ref.watch(postCountProvider(selectedTags.join(' '))).when(
           data: (data) => data != null
               ? ResultHeader(
