@@ -326,7 +326,7 @@ class DanbooruBuilder
             BooruConfigRatingFilter.custom =>
               config.granularRatingFiltersWithoutUnknown.toOption().fold(
                     () => false,
-                    (ratings) => !ratings.contains(post.rating),
+                    (ratings) => ratings.contains(post.rating),
                   ),
           };
 }
