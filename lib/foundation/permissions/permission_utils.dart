@@ -48,9 +48,11 @@ Future<PermissionStatus> _requestMediaPermissionsAndroid(
       ? await [
           Permission.photos,
           Permission.videos,
-          Permission.notification,
         ].request()
       : await [Permission.storage].request();
+
+  // request notification permission separately
+  await Permission.notification.request();
 
   final allAccepted =
       statuses.values.every((e) => e == PermissionStatus.granted);
@@ -66,8 +68,10 @@ Future<PermissionStatus> _requestMediaPermissionsAndroid(
 Future<PermissionStatus> _requestMediaPermissionsIos() async {
   final statuses = await [
     Permission.storage,
-    Permission.notification,
   ].request();
+
+  // request notification permission separately
+  await Permission.notification.request();
 
   final allAccepted =
       statuses.values.every((e) => e == PermissionStatus.granted);
@@ -82,7 +86,6 @@ Future<PermissionStatus> _requestMediaPermissionsIos() async {
 Future<PermissionStatus> _checkMediaPermissionsIos() async {
   final statuses = await Future.wait([
     Permission.storage.status,
-    Permission.notification.status,
   ]);
 
   final allAccepted = statuses.every((e) => e == PermissionStatus.granted);
@@ -101,11 +104,9 @@ Future<PermissionStatus> _checkMediaPermissionsAndroid(
       ? await Future.wait([
           Permission.photos.status,
           Permission.videos.status,
-          Permission.notification.status,
         ])
       : await Future.wait([
           Permission.storage.status,
-          Permission.notification.status,
         ]);
 
   final allAccepted = statuses.every((e) => e == PermissionStatus.granted);
