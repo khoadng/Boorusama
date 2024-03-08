@@ -17,6 +17,7 @@ import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   const PostDetailsPageScaffold({
@@ -227,12 +228,13 @@ class _PostDetailPageScaffoldState<T extends Post>
                       childCount: widgets.length,
                     ),
                   ),
+                  if (expanded && page == currentPage)
+                    if (artistPosts != null) ...artistPosts,
                   if (widget.sliverRelatedPostsBuilder != null &&
+                      ref.watch(_visibleProvider(currentPage)) &&
                       expanded &&
                       page == currentPage)
                     widget.sliverRelatedPostsBuilder!(context, posts[page]),
-                  if (expanded && page == currentPage)
-                    if (artistPosts != null) ...artistPosts,
                   if (widget.sliverCharacterPostsBuilder != null &&
                       expanded &&
                       page == currentPage)
@@ -367,7 +369,24 @@ class _PostDetailPageScaffoldState<T extends Post>
               ),
         if (widget.commentsBuilder != null)
           widget.commentsBuilder!(context, post),
+        VisibilityDetector(
+          key: ValueKey(page),
+          onVisibilityChanged: (info) {
+            if (!mounted) return;
+
+            final visibilityState = ref.read(_visibleProvider(page));
+            if (!visibilityState && info.visibleFraction == 1.0) {
+              ref.read(_visibleProvider(page).notifier).state = true;
+            }
+          },
+          child: const SizedBox(
+            height: 4,
+          ),
+        ),
       ],
     ];
   }
 }
+
+final _visibleProvider =
+    StateProvider.autoDispose.family<bool, int>((ref, key) => false);
