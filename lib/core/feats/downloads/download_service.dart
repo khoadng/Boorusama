@@ -96,18 +96,20 @@ extension DownloadWithSettingsX on DownloadService {
     required String url,
     String? folderName,
     required DownloadFilenameBuilder fileNameBuilder,
-  }) =>
-      settings.downloadPath.toOption().fold(
-            () => download(
-              url: url,
-              fileNameBuilder: fileNameBuilder,
-            ),
-            (path) => downloadCustomLocation(
-              url: url,
-              path: join(path, folderName),
-              fileNameBuilder: fileNameBuilder,
-            ),
+  }) {
+    final downloadPath = settings.downloadPath;
+
+    return downloadPath != null && downloadPath.isNotEmpty
+        ? downloadCustomLocation(
+            url: url,
+            path: join(downloadPath, folderName),
+            fileNameBuilder: fileNameBuilder,
+          )
+        : download(
+            url: url,
+            fileNameBuilder: fileNameBuilder,
           );
+  }
 }
 
 // map DownloadError to message

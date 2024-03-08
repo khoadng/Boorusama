@@ -59,7 +59,7 @@ class _DownloadPageState extends ConsumerState<DownloadPage>
                 ),
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 8),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Material(
@@ -75,7 +75,7 @@ class _DownloadPageState extends ConsumerState<DownloadPage>
                     visualDensity: VisualDensity.compact,
                     minVerticalPadding: 0,
                     onTap: () => _pickFolder(settings),
-                    title: storagePath != null && storagePath!.isNotEmpty
+                    title: showPath()
                         ? Text(
                             storagePath!,
                             overflow: TextOverflow.fade,
@@ -86,10 +86,17 @@ class _DownloadPageState extends ConsumerState<DownloadPage>
                             style: context.textTheme.titleMedium!
                                 .copyWith(color: context.theme.hintColor),
                           ),
-                    trailing: IconButton(
-                      onPressed: () => _pickFolder(settings),
-                      icon: const Icon(Symbols.folder),
-                    ),
+                    trailing: !showPath()
+                        ? IconButton(
+                            onPressed: () => _pickFolder(settings),
+                            icon: const Icon(Symbols.folder),
+                          )
+                        : IconButton(
+                            onPressed: () => ref.updateSettings(
+                              settings.copyWith(downloadPath: ''),
+                            ),
+                            icon: const Icon(Symbols.clear),
+                          ),
                   ),
                 ),
               ),
@@ -113,6 +120,7 @@ class _DownloadPageState extends ConsumerState<DownloadPage>
                       allowedFolders: allowedFolders,
                     )
                   : const SizedBox.shrink(),
+            const SizedBox(height: 16),
             SettingsTile<DownloadQuality>(
               title: const Text('settings.download.quality').tr(),
               selectedOption: settings.downloadQuality,
@@ -127,6 +135,8 @@ class _DownloadPageState extends ConsumerState<DownloadPage>
       ),
     );
   }
+
+  bool showPath() => storagePath != null && storagePath!.isNotEmpty;
 
   Future<void> _pickFolder(Settings settings) async {
     final selectedDirectory = await FilePicker.platform.getDirectoryPath();
