@@ -238,6 +238,8 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
       precomputedFilter: precomputedFilter,
     );
 
+    if (!mounted) return;
+
     // Dirty hack to filter out bookmarked posts
     final settings = ref.read(settingsProvider);
 
