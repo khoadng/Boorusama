@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/search/search.dart';
-import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/pages/search/favorite_tags/favorite_tags_section.dart';
 import 'package:boorusama/core/pages/search/search_history_section.dart';
 import 'package:boorusama/core/router.dart';
@@ -68,7 +67,6 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
 
   @override
   Widget build(BuildContext context) {
-    final favoritesNotifier = ref.watch(favoriteTagsProvider.notifier);
     final selectedLabel =
         ref.watch(miscDataProvider(kSearchSelectedFavoriteTagLabelKey));
 
@@ -94,27 +92,6 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
                 ],
                 FavoriteTagsSection(
                   selectedLabel: selectedLabel,
-                  onAddTagRequest: () {
-                    goToQuickSearchPage(
-                      context,
-                      ref: ref,
-                      onSubmitted: (context, text) {
-                        context.navigator.pop();
-                        favoritesNotifier.add(
-                          text,
-                          labels: [
-                            selectedLabel,
-                          ],
-                        );
-                      },
-                      onSelected: (tag) => favoritesNotifier.add(
-                        tag.value,
-                        labels: [
-                          selectedLabel,
-                        ],
-                      ),
-                    );
-                  },
                   onTagTap: (value) {
                     _onTagTap(value, ref);
                   },

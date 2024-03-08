@@ -13,9 +13,8 @@ import 'package:boorusama/core/pages/favorite_tags/favorite_tags_page.dart';
 import 'package:boorusama/core/widgets/favorite_tag_label_selector_field.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/router.dart';
 import 'package:boorusama/string.dart';
-import '../common/option_tags_arena.dart';
-import 'add_tag_button.dart';
 import 'import_tag_button.dart';
 
 const kSearchSelectedFavoriteTagLabelKey = 'search_selected_favorite_tag';
@@ -25,22 +24,19 @@ class FavoriteTagsSection extends ConsumerWidget {
     super.key,
     required this.selectedLabel,
     required this.onTagTap,
-    required this.onAddTagRequest,
   });
 
   final String selectedLabel;
   final ValueChanged<String>? onTagTap;
-  final VoidCallback onAddTagRequest;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return FavoriteTagsFilterScope(
       initialValue: selectedLabel,
       sortType: FavoriteTagsSortType.nameAZ,
-      builder: (_, tags, labels, selected) => OptionTagsArena(
-        editable: tags.isNotEmpty,
+      builder: (_, tags, labels, selected) => OptionTagsArenaNoEdit(
         title: 'favorite_tags.favorites'.tr(),
-        titleTrailing: (editMode) => FavoriteTagLabelSelectorField(
+        titleTrailing: () => FavoriteTagLabelSelectorField(
           selected: selected,
           labels: labels,
           onSelect: (value) => ref
@@ -48,28 +44,25 @@ class FavoriteTagsSection extends ConsumerWidget {
                   miscDataProvider(kSearchSelectedFavoriteTagLabelKey).notifier)
               .put(value),
         ),
-        childrenBuilder: (editMode) =>
-            _buildFavoriteTags(context, ref, tags, editMode),
+        childrenBuilder: () => _buildFavoriteTags(ref, tags),
       ),
     );
   }
 
   List<Widget> _buildFavoriteTags(
-    BuildContext context,
     WidgetRef ref,
     List<FavoriteTag> tags,
-    bool editMode,
   ) {
     return [
       ...tags.mapIndexed((index, tag) {
-        final colors = context.generateChipColors(
-          context.themeMode.isDark ? Colors.white : Colors.black,
+        final colors = ref.context.generateChipColors(
+          ref.context.themeMode.isDark ? Colors.white : Colors.black,
           ref.watch(settingsProvider),
         );
 
         return RawChip(
           visualDensity: VisualDensity.compact,
-          onPressed: editMode ? null : () => onTagTap?.call(tag.name),
+          onPressed: () => onTagTap?.call(tag.name),
           label: Text(
             tag.name.replaceUnderscoreWithSpace(),
             style: TextStyle(
@@ -88,29 +81,73 @@ class FavoriteTagsSection extends ConsumerWidget {
             size: 18,
             color: colors?.foregroundColor,
           ),
-          onDeleted: editMode
-              ? () => ref.read(favoriteTagsProvider.notifier).remove(tag.name)
-              : null,
         );
       }),
       if (tags.isEmpty) ...[
-        Container(
-          padding: const EdgeInsets.only(top: 4, right: 8),
-          child: AddTagButton(onPressed: onAddTagRequest),
-        ),
-        Container(
-          padding: const EdgeInsets.only(top: 8, right: 8),
-          child: Text(
-            'favorite_tags.or'.tr(),
-            style: context.textTheme.titleLarge,
-          ),
-        ),
         const ImportTagButton(),
       ],
-      if (editMode && tags.isNotEmpty)
-        AddTagButton(
-          onPressed: onAddTagRequest,
-        ),
     ];
+  }
+}
+
+class OptionTagsArenaNoEdit extends StatelessWidget {
+  const OptionTagsArenaNoEdit({
+    super.key,
+    required this.title,
+    this.titleTrailing,
+    required this.childrenBuilder,
+  });
+
+  final String title;
+  final Widget Function()? titleTrailing;
+  final List<Widget> Function() childrenBuilder;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 1),
+          child: SizedBox(
+            height: 48,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      title.toUpperCase(),
+                      style: context.textTheme.titleSmall!.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    FilledButton(
+                      style: FilledButton.styleFrom(
+                        visualDensity: VisualDensity.compact,
+                        shape: const CircleBorder(),
+                        backgroundColor: context.colorScheme.surfaceVariant,
+                      ),
+                      onPressed: () => context.push('/favorite_tags'),
+                      child: Icon(
+                        Symbols.settings,
+                        size: 16,
+                        color: context.colorScheme.onSurfaceVariant,
+                        fill: 1,
+                      ),
+                    ),
+                  ],
+                ),
+                titleTrailing?.call() ?? const SizedBox.shrink(),
+              ],
+            ),
+          ),
+        ),
+        Wrap(
+          spacing: 4,
+          children: childrenBuilder(),
+        ),
+      ],
+    );
   }
 }
