@@ -359,17 +359,12 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                                 bottom: widget.extendBodyHeight ??
                                     kBottomNavigationBarHeight,
                               ),
-                              child: FloatingActionButton(
-                                heroTag: null,
-                                child: const FaIcon(FontAwesomeIcons.angleUp),
-                                onPressed: () =>
-                                    _autoScrollController.jumpTo(0),
+                              child: _ScrollToTopButton(
+                                controller: _autoScrollController,
                               ),
                             )
-                          : FloatingActionButton(
-                              heroTag: null,
-                              child: const FaIcon(FontAwesomeIcons.angleUp),
-                              onPressed: () => _autoScrollController.jumpTo(0),
+                          : _ScrollToTopButton(
+                              controller: _autoScrollController,
                             ),
                     ),
                     body: ConditionalParentWidget(
@@ -649,6 +644,29 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
     if (multiSelect) {
       _multiSelectController.disableMultiSelect();
     }
+  }
+}
+
+class _ScrollToTopButton extends StatelessWidget {
+  const _ScrollToTopButton({
+    required this.controller,
+  });
+
+  final AutoScrollController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return isMobilePlatform()
+        ? FloatingActionButton(
+            heroTag: null,
+            child: const FaIcon(FontAwesomeIcons.angleUp),
+            onPressed: () => controller.jumpTo(0),
+          )
+        : FloatingActionButton.small(
+            heroTag: null,
+            child: const FaIcon(FontAwesomeIcons.angleUp),
+            onPressed: () => controller.jumpTo(0),
+          );
   }
 }
 
