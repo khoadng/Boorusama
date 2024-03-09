@@ -75,6 +75,7 @@ class Settings extends Equatable {
     required this.imageBorderRadius,
     required this.imageGridSpacing,
     required this.imageGridPadding,
+    required this.imageGridAspectRatio,
     required this.imageQuality,
     required this.imageQualityInFullView,
     required this.imageListType,
@@ -151,6 +152,7 @@ class Settings extends Equatable {
                 ? PostDetailsOverlayInitialState
                     .values[json['postDetailsOverlayInitialState']]
                 : PostDetailsOverlayInitialState.show,
+        imageGridAspectRatio = json['imageGridAspectRatio'] ?? 0.7,
         imageGridPadding = json['imageGridPadding'] ?? 16,
         imageGridSpacing = json['imageGridSpacing'] ?? 4;
 
@@ -165,6 +167,7 @@ class Settings extends Equatable {
     imageBorderRadius: 4,
     imageGridSpacing: 4,
     imageGridPadding: 16,
+    imageGridAspectRatio: 0.7,
     imageQuality: ImageQuality.automatic,
     imageQualityInFullView: ImageQuality.automatic,
     imageListType: ImageListType.masonry,
@@ -197,6 +200,7 @@ class Settings extends Equatable {
   final double imageBorderRadius;
   final double imageGridSpacing;
   final double imageGridPadding;
+  final double imageGridAspectRatio;
 
   final ImageQuality imageQuality;
 
@@ -245,6 +249,7 @@ class Settings extends Equatable {
     double? imageBorderRadius,
     double? imageGridSpacing,
     double? imageGridPadding,
+    double? imageGridAspectRatio,
     ImageQuality? imageQuality,
     ImageQuality? imageQualityInFullView,
     ImageListType? imageListType,
@@ -276,6 +281,7 @@ class Settings extends Equatable {
         imageBorderRadius: imageBorderRadius ?? this.imageBorderRadius,
         imageGridSpacing: imageGridSpacing ?? this.imageGridSpacing,
         imageGridPadding: imageGridPadding ?? this.imageGridPadding,
+        imageGridAspectRatio: imageGridAspectRatio ?? this.imageGridAspectRatio,
         imageQuality: imageQuality ?? this.imageQuality,
         imageQualityInFullView:
             imageQualityInFullView ?? this.imageQualityInFullView,
@@ -314,6 +320,7 @@ class Settings extends Equatable {
         'imageBorderRadius': imageBorderRadius,
         'imageGridSpacing': imageGridSpacing,
         'imageGridPadding': imageGridPadding,
+        'imageGridAspectRatio': imageGridAspectRatio,
         'imageQuality': imageQuality.index,
         'imageQualityInFullView': imageQualityInFullView.index,
         'imageListType': imageListType.index,
@@ -346,6 +353,7 @@ class Settings extends Equatable {
         imageBorderRadius,
         imageGridSpacing,
         imageGridPadding,
+        imageGridAspectRatio,
         imageQuality,
         imageQualityInFullView,
         imageListType,

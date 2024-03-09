@@ -56,6 +56,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
   late final ValueNotifier<double> _spacingSliderValue = ValueNotifier(0);
   late final ValueNotifier<double> _borderRadiusSliderValue = ValueNotifier(0);
   late final ValueNotifier<double> _paddingSliderValue = ValueNotifier(0);
+  late final ValueNotifier<double> _aspectRatioSliderValue = ValueNotifier(0);
 
   @override
   void initState() {
@@ -64,6 +65,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
     _spacingSliderValue.value = settings.imageGridSpacing;
     _borderRadiusSliderValue.value = settings.imageBorderRadius;
     _paddingSliderValue.value = settings.imageGridPadding;
+    _aspectRatioSliderValue.value = settings.imageGridAspectRatio;
   }
 
   @override
@@ -132,6 +134,23 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
                   ref.updateSettings(settings.copyWith(imageListType: value)),
               optionBuilder: (value) => Text(_imageListToString(value)).tr(),
             ),
+            if (settings.imageListType == ImageListType.standard)
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8),
+                      child: Text('Aspect ratio'),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    _buildAspectRatioSlider(settings),
+                  ],
+                ),
+              ),
             SettingsTile<ImageQuality>(
               title: const Text(
                 'settings.image_grid.image_quality.image_quality',
@@ -305,6 +324,24 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
           onChangeEnd: (value) =>
               ref.updateSettings(settings.copyWith(imageGridPadding: value)),
           onChanged: (value) => _paddingSliderValue.value = value,
+        );
+      },
+    );
+  }
+
+  Widget _buildAspectRatioSlider(Settings settings) {
+    return ValueListenableBuilder(
+      valueListenable: _aspectRatioSliderValue,
+      builder: (context, value, child) {
+        return Slider(
+          label: value.toStringAsFixed(1),
+          divisions: 10,
+          max: 1.5,
+          min: 0.5,
+          value: value,
+          onChangeEnd: (value) => ref
+              .updateSettings(settings.copyWith(imageGridAspectRatio: value)),
+          onChanged: (value) => _aspectRatioSliderValue.value = value,
         );
       },
     );
