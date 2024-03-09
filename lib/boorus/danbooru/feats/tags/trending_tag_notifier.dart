@@ -14,25 +14,19 @@ import 'package:boorusama/core/feats/tags/tags.dart';
 class TrendingTagNotifier
     extends AutoDisposeFamilyAsyncNotifier<List<Search>, BooruConfig> {
   @override
-  FutureOr<List<Search>> build(BooruConfig arg) async {
-    final config = arg;
-    final r18Tags = ref.watch(tagInfoProvider).r18Tags;
-    final blacklistedTags = ref.watch(blacklistTagsProvider(config));
-
-    return fetch(
-      excludedTags: {
-        ...r18Tags,
-        ...blacklistedTags,
-      },
-    );
+  FutureOr<List<Search>> build(BooruConfig arg) {
+    return fetch();
   }
 
   PopularSearchRepository get popularSearchRepository =>
       ref.read(popularSearchProvider(arg));
 
-  Future<List<Search>> fetch({
-    required Set<String> excludedTags,
-  }) async {
+  Future<List<Search>> fetch() async {
+    final excludedTags = {
+      ...ref.read(tagInfoProvider).r18Tags,
+      ...ref.read(blacklistTagsProvider(arg)),
+    };
+
     var searches =
         await popularSearchRepository.getSearchByDate(DateTime.now());
     if (searches.isEmpty) {
