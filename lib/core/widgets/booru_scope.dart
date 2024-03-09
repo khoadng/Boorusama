@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 
 // Project imports:
@@ -11,14 +12,18 @@ import 'package:boorusama/app.dart';
 import 'package:boorusama/boorus/entry_page.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/pages/blacklists/blacklisted_tag_page.dart';
+import 'package:boorusama/core/pages/bookmarks/bookmark_page.dart';
+import 'package:boorusama/core/pages/downloads/bulk_download_page.dart';
+import 'package:boorusama/core/pages/favorite_tags/favorite_tags_page.dart';
 import 'package:boorusama/core/pages/home/side_bar_menu.dart';
-import 'package:boorusama/core/widgets/custom_context_menu_overlay.dart';
-import 'package:boorusama/core/widgets/network_indicator_with_state.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/display.dart';
+import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/lazy_indexed_stack.dart';
-import 'current_booru_tile.dart';
 
 class BooruScope extends ConsumerStatefulWidget {
   const BooruScope({
@@ -43,7 +48,7 @@ class BooruScope extends ConsumerStatefulWidget {
     HomePageController controller,
   ) mobileMenuBuilder;
 
-  final List<Widget> desktopViews;
+  final List<Widget> Function() desktopViews;
   final Widget Function(HomePageController controller) mobileView;
 
   @override
@@ -123,7 +128,7 @@ class BooruDesktopScope extends ConsumerStatefulWidget {
   final List<Widget> Function(BuildContext context, BoxConstraints constraints)
       menuBuilder;
 
-  final List<Widget> views;
+  final List<Widget> Function() views;
   final bool resizable;
   final bool grooveDivider;
 
@@ -134,12 +139,18 @@ class BooruDesktopScope extends ConsumerStatefulWidget {
 class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
   @override
   Widget build(BuildContext context) {
-    final content = ValueListenableBuilder(
-      valueListenable: widget.controller,
-      builder: (context, value, child) => LazyIndexedStack(
-        index: value,
-        children: widget.views,
-      ),
+    final content = Builder(
+      builder: (context) {
+        final views = widget.views();
+
+        return ValueListenableBuilder(
+          valueListenable: widget.controller,
+          builder: (context, value, child) => LazyIndexedStack(
+            index: value,
+            children: views,
+          ),
+        );
+      },
     );
 
     final menu = SafeArea(
@@ -280,4 +291,77 @@ class BooruMobileScope extends ConsumerWidget {
       ),
     );
   }
+}
+
+const _kPlaceholderOffset = 100;
+
+int _v(int value) => _kPlaceholderOffset + value;
+
+List<Widget> coreDesktopViewBuilder({
+  required int previousItemCount,
+}) {
+  // skip previousItemCount to prevent access the wrong index
+  final totalPlaceholder = _kPlaceholderOffset - previousItemCount + 1;
+
+  final views = [
+    for (int i = 0; i < totalPlaceholder; i++) const SizedBox.shrink(),
+    const BookmarkPage(),
+    const BlacklistedTagPage(),
+    const FavoriteTagsPage(),
+    const BulkDownloadPage(),
+  ];
+
+  return views;
+}
+
+List<Widget> coreDesktopTabBuilder(
+  BuildContext context,
+  BoxConstraints constraints,
+  HomePageController controller,
+) {
+  return [
+    const Divider(),
+    HomeNavigationTile(
+      value: _v(1),
+      controller: controller,
+      constraints: constraints,
+      selectedIcon: Symbols.bookmark,
+      icon: Symbols.bookmark,
+      title: 'sideMenu.your_bookmarks'.tr(),
+    ),
+    HomeNavigationTile(
+      value: _v(2),
+      controller: controller,
+      constraints: constraints,
+      selectedIcon: Symbols.list_alt,
+      icon: Symbols.list_alt,
+      title: 'sideMenu.your_blacklist'.tr(),
+    ),
+    HomeNavigationTile(
+      value: _v(3),
+      controller: controller,
+      constraints: constraints,
+      selectedIcon: Symbols.tag,
+      icon: Symbols.tag,
+      title: 'Favorite tags',
+    ),
+    HomeNavigationTile(
+      value: _v(4),
+      controller: controller,
+      constraints: constraints,
+      selectedIcon: Symbols.download,
+      icon: Symbols.download,
+      title: 'sideMenu.bulk_download'.tr(),
+    ),
+    const Divider(),
+    HomeNavigationTile(
+      value: 99999,
+      controller: controller,
+      constraints: constraints,
+      selectedIcon: Symbols.settings,
+      icon: Symbols.settings,
+      title: 'sideMenu.settings'.tr(),
+      onTap: () => context.go('/settings'),
+    ),
+  ];
 }

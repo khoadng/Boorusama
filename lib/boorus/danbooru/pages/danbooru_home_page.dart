@@ -14,10 +14,6 @@ import 'package:share_handler/share_handler.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/pages/blacklists/blacklisted_tag_page.dart';
-import 'package:boorusama/core/pages/bookmarks/bookmark_page.dart';
-import 'package:boorusama/core/pages/downloads/bulk_download_page.dart';
-import 'package:boorusama/core/pages/favorite_tags/favorite_tags_page.dart';
 import 'package:boorusama/core/pages/home/side_menu_tile.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
@@ -25,7 +21,6 @@ import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
-import 'package:boorusama/router.dart';
 import 'package:boorusama/utils/flutter_utils.dart';
 import '../feats/users/users.dart';
 import 'blacklisted_tags_page.dart';
@@ -298,9 +293,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
               selectedIcon: Symbols.account_box,
               icon: Symbols.account_box,
               title: 'Profile',
-            )
-          else
-            const SizedBox(),
+            ),
           HomeNavigationTile(
             value: 6,
             controller: controller,
@@ -333,86 +326,51 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
             icon: Symbols.tag,
             title: 'blacklisted_tags.blacklisted_tags'.tr(),
           ),
-          const SizedBox.shrink(),
         ],
-        const Divider(),
-        HomeNavigationTile(
-          value: 11,
-          controller: controller,
-          constraints: constraints,
-          selectedIcon: Symbols.bookmark,
-          icon: Symbols.bookmark,
-          title: 'sideMenu.your_bookmarks'.tr(),
-        ),
-        HomeNavigationTile(
-          value: 12,
-          controller: controller,
-          constraints: constraints,
-          selectedIcon: Symbols.list_alt,
-          icon: Symbols.list_alt,
-          title: 'sideMenu.your_blacklist'.tr(),
-        ),
-        HomeNavigationTile(
-          value: 13,
-          controller: controller,
-          constraints: constraints,
-          selectedIcon: Symbols.tag,
-          icon: Symbols.tag,
-          title: 'Favorite tags',
-        ),
-        HomeNavigationTile(
-          value: 14,
-          controller: controller,
-          constraints: constraints,
-          selectedIcon: Symbols.download,
-          icon: Symbols.download,
-          title: 'sideMenu.bulk_download'.tr(),
-        ),
-        const Divider(),
-        HomeNavigationTile(
-          value: 999,
-          controller: controller,
-          constraints: constraints,
-          selectedIcon: Symbols.settings,
-          icon: Symbols.settings,
-          title: 'sideMenu.settings'.tr(),
-          onTap: () => context.go('/settings'),
+        ...coreDesktopTabBuilder(
+          context,
+          constraints,
+          controller,
         ),
       ],
-      desktopViews: [
-        const DanbooruDesktopHomePage(),
-        const ExplorePageDesktop(),
-        const PoolPage(),
-        const DanbooruForumPage(),
-        const DanbooruArtistSearchPage(),
-        if (widget.config.hasLoginDetails()) ...[
-          if (userId != null)
-            UserDetailsPage(
-              uid: userId,
-              username: widget.config.login!,
-              hasAppBar: false,
-            )
-          else
-            const SizedBox(),
-          DanbooruFavoritesPage(username: widget.config.login!),
-          const FavoriteGroupsPage(),
-          const SavedSearchFeedPage(),
-          const BlacklistedTagsPage(),
-          const SizedBox.shrink(),
-        ] else ...[
-          //TODO: hacky way to prevent accessing wrong index... Will need better solution
-          const SizedBox(),
-          const SizedBox(),
-          const SizedBox(),
-          const SizedBox(),
-          const SizedBox(),
-          const SizedBox(),
-        ],
-        const BookmarkPage(),
-        const BlacklistedTagPage(),
-        const FavoriteTagsPage(),
-        const BulkDownloadPage(),
-      ],
+      desktopViews: () {
+        final danbooruTabs = [
+          // 0
+          const DanbooruDesktopHomePage(),
+          // 1
+          const ExplorePageDesktop(),
+          // 2
+          const PoolPage(),
+          // 3
+          const DanbooruForumPage(),
+          // 4
+          const DanbooruArtistSearchPage(),
+          if (widget.config.hasLoginDetails()) ...[
+            if (userId != null)
+              // 5
+              UserDetailsPage(
+                uid: userId,
+                username: widget.config.login!,
+                hasAppBar: false,
+              ),
+            // 6
+            DanbooruFavoritesPage(username: widget.config.login!),
+            // 7
+            const FavoriteGroupsPage(),
+            // 8
+            const SavedSearchFeedPage(),
+            // 9
+            const BlacklistedTagsPage(),
+          ],
+        ];
+
+        return [
+          ...danbooruTabs,
+          ...coreDesktopViewBuilder(
+            previousItemCount: danbooruTabs.length,
+          ),
+        ];
+      },
     );
   }
 }

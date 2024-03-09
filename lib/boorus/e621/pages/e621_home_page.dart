@@ -9,16 +9,12 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/pages/blacklists/blacklisted_tag_page.dart';
-import 'package:boorusama/core/pages/bookmarks/bookmark_page.dart';
-import 'package:boorusama/core/pages/downloads/bulk_download_page.dart';
 import 'package:boorusama/core/pages/home/side_menu_tile.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
-import 'package:boorusama/router.dart';
 import 'package:boorusama/utils/flutter_utils.dart';
 import 'e621_desktop_home_page.dart';
 import 'e621_favorites_page.dart';
@@ -114,57 +110,30 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
             title: 'Favorites',
           ),
         ],
-        const Divider(),
-        HomeNavigationTile(
-          value: 3,
-          controller: controller,
-          constraints: constraints,
-          selectedIcon: Symbols.bookmark,
-          icon: Symbols.bookmark,
-          title: 'sideMenu.your_bookmarks'.tr(),
-        ),
-        HomeNavigationTile(
-          value: 4,
-          controller: controller,
-          constraints: constraints,
-          selectedIcon: Symbols.list_alt,
-          icon: Symbols.list_alt,
-          title: 'sideMenu.your_blacklist'.tr(),
-        ),
-        HomeNavigationTile(
-          value: 5,
-          controller: controller,
-          constraints: constraints,
-          selectedIcon: Symbols.download,
-          icon: Symbols.download,
-          title: 'sideMenu.bulk_download'.tr(),
-        ),
-        const Divider(),
-        HomeNavigationTile(
-          value: 999,
-          controller: controller,
-          constraints: constraints,
-          selectedIcon: Symbols.settings,
-          icon: Symbols.settings,
-          title: 'sideMenu.settings'.tr(),
-          onTap: () => context.go('/settings'),
+        ...coreDesktopTabBuilder(
+          context,
+          constraints,
+          controller,
         ),
       ],
-      desktopViews: [
-        const E621DesktopHomePage(),
-        const E621PopularPage(),
-        if (config.hasLoginDetails()) ...[
-          E621FavoritesPage(
-            username: config.login!,
+      desktopViews: () {
+        final e621Tabs = [
+          const E621DesktopHomePage(),
+          const E621PopularPage(),
+          if (config.hasLoginDetails()) ...[
+            E621FavoritesPage(
+              username: config.login!,
+            ),
+          ],
+        ];
+
+        return [
+          ...e621Tabs,
+          ...coreDesktopViewBuilder(
+            previousItemCount: e621Tabs.length,
           ),
-        ] else ...[
-          //TODO: hacky way to prevent accessing wrong index... Will need better solution
-          const SizedBox(),
-        ],
-        const BookmarkPage(),
-        const BlacklistedTagPage(),
-        const BulkDownloadPage(),
-      ],
+        ];
+      },
     );
   }
 }

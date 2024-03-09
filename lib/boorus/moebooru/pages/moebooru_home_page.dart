@@ -9,10 +9,6 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import 'package:boorusama/boorus/entry_page.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/pages/blacklists/blacklisted_tag_page.dart';
-import 'package:boorusama/core/pages/bookmarks/bookmark_page.dart';
-import 'package:boorusama/core/pages/downloads/bulk_download_page.dart';
-import 'package:boorusama/core/pages/favorite_tags/favorite_tags_page.dart';
 import 'package:boorusama/core/pages/home/side_menu_tile.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/infinite_post_list_scaffold.dart';
@@ -20,7 +16,6 @@ import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
-import 'package:boorusama/router.dart';
 import '../feats/posts/posts.dart';
 import 'moebooru_desktop_home_page.dart';
 import 'moebooru_popular_page.dart';
@@ -122,59 +117,26 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
           icon: Symbols.local_fire_department,
           title: 'Hot',
         ),
-        const Divider(),
-        HomeNavigationTile(
-          value: 3,
-          controller: controller,
-          constraints: constraints,
-          selectedIcon: Symbols.bookmark,
-          icon: Symbols.bookmark,
-          title: 'sideMenu.your_bookmarks'.tr(),
-        ),
-        HomeNavigationTile(
-          value: 4,
-          controller: controller,
-          constraints: constraints,
-          selectedIcon: Symbols.list_alt,
-          icon: Symbols.list_alt,
-          title: 'sideMenu.your_blacklist'.tr(),
-        ),
-        HomeNavigationTile(
-          value: 5,
-          controller: controller,
-          constraints: constraints,
-          selectedIcon: Symbols.tag,
-          icon: Symbols.tag,
-          title: 'Favorite tags',
-        ),
-        HomeNavigationTile(
-          value: 6,
-          controller: controller,
-          constraints: constraints,
-          selectedIcon: Symbols.download,
-          icon: Symbols.download,
-          title: 'sideMenu.bulk_download'.tr(),
-        ),
-        const Divider(),
-        HomeNavigationTile(
-          value: 999,
-          controller: controller,
-          constraints: constraints,
-          selectedIcon: Symbols.settings,
-          icon: Symbols.settings,
-          title: 'sideMenu.settings'.tr(),
-          onTap: () => context.go('/settings'),
+        ...coreDesktopTabBuilder(
+          context,
+          constraints,
+          controller,
         ),
       ],
-      desktopViews: const [
-        MoebooruDesktopHomePage(),
-        MoebooruPopularPage(),
-        MoebooruPopularRecentPage(),
-        BookmarkPage(),
-        BlacklistedTagPage(),
-        FavoriteTagsPage(),
-        BulkDownloadPage(),
-      ],
+      desktopViews: () {
+        final moebooruTabs = [
+          const MoebooruDesktopHomePage(),
+          const MoebooruPopularPage(),
+          const MoebooruPopularRecentPage(),
+        ];
+
+        return [
+          ...moebooruTabs,
+          ...coreDesktopViewBuilder(
+            previousItemCount: moebooruTabs.length,
+          ),
+        ];
+      },
     );
   }
 

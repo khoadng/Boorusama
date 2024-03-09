@@ -11,14 +11,8 @@ import 'package:boorusama/boorus/entry_page.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
-import 'package:boorusama/core/pages/blacklists/blacklisted_tag_page.dart';
-import 'package:boorusama/core/pages/bookmarks/bookmark_page.dart';
-import 'package:boorusama/core/pages/downloads/bulk_download_page.dart';
-import 'package:boorusama/core/pages/favorite_tags/favorite_tags_page.dart';
 import 'package:boorusama/core/widgets/booru_scope.dart';
 import 'package:boorusama/core/widgets/home_navigation_tile.dart';
-import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/router.dart';
 import 'desktop_home_page_scaffold.dart';
 import 'mobile_home_page_scaffold.dart';
 
@@ -28,6 +22,8 @@ class HomePageScaffold extends ConsumerStatefulWidget {
     required this.onPostTap,
     required this.onSearchTap,
     this.mobileMenuBuilder,
+    this.desktopMenuBuilder,
+    this.desktopViews,
   });
 
   final void Function(
@@ -44,6 +40,14 @@ class HomePageScaffold extends ConsumerStatefulWidget {
     BuildContext context,
     HomePageController controller,
   )? mobileMenuBuilder;
+
+  final List<Widget> Function(
+    BuildContext context,
+    HomePageController controller,
+    BoxConstraints constraints,
+  )? desktopMenuBuilder;
+
+  final List<Widget> Function()? desktopViews;
 
   @override
   ConsumerState<HomePageScaffold> createState() => _HomePageScaffoldState();
@@ -64,66 +68,38 @@ class _HomePageScaffoldState extends ConsumerState<HomePageScaffold> {
           widget.mobileMenuBuilder != null
               ? widget.mobileMenuBuilder!(context, controller)
               : [],
-      desktopMenuBuilder: (context, controller, constraints) => [
-        HomeNavigationTile(
-          value: 0,
-          controller: controller,
-          constraints: constraints,
-          selectedIcon: Symbols.dashboard,
-          icon: Symbols.dashboard,
-          title: 'Home',
-        ),
-        const Divider(),
-        HomeNavigationTile(
-          value: 1,
-          controller: controller,
-          constraints: constraints,
-          selectedIcon: Symbols.bookmark,
-          icon: Symbols.bookmark,
-          title: 'sideMenu.your_bookmarks'.tr(),
-        ),
-        HomeNavigationTile(
-          value: 2,
-          controller: controller,
-          constraints: constraints,
-          selectedIcon: Symbols.list_alt,
-          icon: Symbols.list_alt,
-          title: 'sideMenu.your_blacklist'.tr(),
-        ),
-        HomeNavigationTile(
-          value: 3,
-          controller: controller,
-          constraints: constraints,
-          selectedIcon: Symbols.tag,
-          icon: Symbols.tag,
-          title: 'Favorite tags',
-        ),
-        HomeNavigationTile(
-          value: 4,
-          controller: controller,
-          constraints: constraints,
-          selectedIcon: Symbols.download,
-          icon: Symbols.download,
-          title: 'sideMenu.bulk_download'.tr(),
-        ),
-        const Divider(),
-        HomeNavigationTile(
-          value: 999,
-          controller: controller,
-          constraints: constraints,
-          selectedIcon: Symbols.settings,
-          icon: Symbols.settings,
-          title: 'sideMenu.settings'.tr(),
-          onTap: () => context.go('/settings'),
-        ),
-      ],
-      desktopViews: const [
-        DesktopHomePageScaffold(),
-        BookmarkPage(),
-        BlacklistedTagPage(),
-        FavoriteTagsPage(),
-        BulkDownloadPage(),
-      ],
+      desktopMenuBuilder: (context, controller, constraints) =>
+          widget.desktopMenuBuilder != null
+              ? widget.desktopMenuBuilder!(context, controller, constraints)
+              : [
+                  HomeNavigationTile(
+                    value: 0,
+                    controller: controller,
+                    constraints: constraints,
+                    selectedIcon: Symbols.dashboard,
+                    icon: Symbols.dashboard,
+                    title: 'Home',
+                  ),
+                  ...coreDesktopTabBuilder(
+                    context,
+                    constraints,
+                    controller,
+                  ),
+                ],
+      desktopViews: widget.desktopViews != null
+          ? widget.desktopViews!
+          : () {
+              final tabs = [
+                const DesktopHomePageScaffold(),
+              ];
+
+              return [
+                ...tabs,
+                ...coreDesktopViewBuilder(
+                  previousItemCount: tabs.length,
+                ),
+              ];
+            },
     );
   }
 }

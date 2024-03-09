@@ -11,17 +11,12 @@ import 'package:boorusama/boorus/entry_page.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/pages/blacklists/blacklisted_tag_page.dart';
-import 'package:boorusama/core/pages/bookmarks/bookmark_page.dart';
-import 'package:boorusama/core/pages/downloads/bulk_download_page.dart';
-import 'package:boorusama/core/pages/favorite_tags/favorite_tags_page.dart';
 import 'package:boorusama/core/pages/home/side_menu_tile.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
-import 'package:boorusama/router.dart';
 import 'gelbooru_desktop_home_page.dart';
 
 class GelbooruHomePage extends ConsumerStatefulWidget {
@@ -69,68 +64,35 @@ class _GelbooruHomePageState extends ConsumerState<GelbooruHomePage> {
           icon: Symbols.dashboard,
           title: 'Home',
         ),
-        const Divider(),
-        HomeNavigationTile(
-          value: 1,
-          controller: controller,
-          constraints: constraints,
-          selectedIcon: Symbols.bookmark,
-          icon: Symbols.bookmark,
-          title: 'sideMenu.your_bookmarks'.tr(),
-        ),
-        HomeNavigationTile(
-          value: 2,
-          controller: controller,
-          constraints: constraints,
-          selectedIcon: Symbols.list_alt,
-          icon: Symbols.list_alt,
-          title: 'sideMenu.your_blacklist'.tr(),
-        ),
-        HomeNavigationTile(
-          value: 3,
-          controller: controller,
-          constraints: constraints,
-          selectedIcon: Symbols.tag,
-          icon: Symbols.tag,
-          title: 'Favorite tags',
-        ),
-        HomeNavigationTile(
-          value: 4,
-          controller: controller,
-          constraints: constraints,
-          selectedIcon: Symbols.download,
-          icon: Symbols.download,
-          title: 'sideMenu.bulk_download'.tr(),
-        ),
-        const Divider(),
-        if (favoritePageBuilder != null)
+        if (favoritePageBuilder != null && ref.watchConfig.hasLoginDetails())
           HomeNavigationTile(
-            value: 5,
+            value: 1,
             controller: controller,
             constraints: constraints,
             selectedIcon: Symbols.favorite,
             icon: Symbols.favorite,
             title: 'Favorites',
           ),
-        HomeNavigationTile(
-          value: 999,
-          controller: controller,
-          constraints: constraints,
-          selectedIcon: Symbols.settings,
-          icon: Symbols.settings,
-          title: 'sideMenu.settings'.tr(),
-          onTap: () => context.go('/settings'),
+        ...coreDesktopTabBuilder(
+          context,
+          constraints,
+          controller,
         ),
       ],
-      desktopViews: [
-        const GelbooruDesktopHomePage(),
-        const BookmarkPage(),
-        const BlacklistedTagPage(),
-        const FavoriteTagsPage(),
-        const BulkDownloadPage(),
-        if (favoritePageBuilder != null && ref.watchConfig.hasLoginDetails())
-          GelbooruFavoritesPage(uid: ref.watchConfig.login!)
-      ],
+      desktopViews: () {
+        final gelbooruTabs = [
+          const GelbooruDesktopHomePage(),
+          if (favoritePageBuilder != null && ref.watchConfig.hasLoginDetails())
+            GelbooruFavoritesPage(uid: ref.watchConfig.login!),
+        ];
+
+        return [
+          ...gelbooruTabs,
+          ...coreDesktopViewBuilder(
+            previousItemCount: gelbooruTabs.length,
+          ),
+        ];
+      },
     );
   }
 }
