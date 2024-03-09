@@ -21,7 +21,7 @@ class TagsNotifier extends FamilyNotifier<List<TagGroupItem>?, BooruConfig> {
   TagRepository get repo => ref.read(tagRepoProvider(arg));
 
   Future<void> load(
-    List<String> tagList, {
+    Set<String> tagList, {
     void Function(List<TagGroupItem> tags)? onSuccess,
   }) async {
     state = null;
@@ -40,11 +40,11 @@ class TagsNotifier extends FamilyNotifier<List<TagGroupItem>?, BooruConfig> {
 }
 
 Future<List<Tag>> loadTags({
-  required List<String> tagList,
+  required Set<String> tagList,
   required TagRepository repo,
 }) async {
   // filter tagList to remove invalid tags
-  final filtered = tagList.where((e) => !invalidTags.contains(e)).toList();
+  final filtered = tagList.where((e) => !invalidTags.contains(e)).toSet();
 
   if (filtered.isEmpty) return [];
 

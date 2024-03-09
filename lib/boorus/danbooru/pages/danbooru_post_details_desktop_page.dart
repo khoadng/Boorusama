@@ -175,7 +175,7 @@ class _DanbooruPostDetailsDesktopPageState
                 if (allowFetch)
                   post.artistTags.isNotEmpty
                       ? ArtistPostList(
-                          artists: post.artistTags,
+                          artists: post.artistTags.toList(),
                           builder: (tag) => ref
                               .watch(danbooruPostDetailsArtistProvider(tag))
                               .maybeWhen(

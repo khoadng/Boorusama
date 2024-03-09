@@ -97,7 +97,7 @@ Widget createRandomPlaceholderContainer(
   );
 }
 
-String generateCopyrightOnlyReadableName(List<String> copyrightTags) {
+String generateCopyrightOnlyReadableName(Set<String> copyrightTags) {
   final copyrights = copyrightTags;
   final copyright = copyrights.isEmpty ? 'original' : copyrights.first;
 
@@ -108,7 +108,7 @@ String generateCopyrightOnlyReadableName(List<String> copyrightTags) {
   return '$copyright$remainedCopyrightString';
 }
 
-String generateCharacterOnlyReadableName(List<String> characterTags) {
+String generateCharacterOnlyReadableName(Set<String> characterTags) {
   final charaters = characterTags;
   final cleanedCharacterList = [];
 

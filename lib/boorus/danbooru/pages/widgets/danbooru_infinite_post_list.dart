@@ -10,11 +10,8 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
-import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/widgets.dart';
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/feats/blacklists/global_blacklisted_tags_provider.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
@@ -103,19 +100,7 @@ class _DanbooruInfinitePostListState
           booruConfig.postGestures?.preview,
         ) ??
         false;
-    final globalBlacklist = ref.watch(globalBlacklistedTagsProvider);
-    final danbooruBlacklist =
-        ref.watch(danbooruBlacklistedTagsProvider(booruConfig)).maybeWhen(
-              data: (data) => data,
-              orElse: () => null,
-            );
-    final currentUser = ref.watch(danbooruCurrentUserProvider(booruConfig));
-    final isUnverified = booruConfig.isUnverified();
-    final booruFactory = ref.watch(booruFactoryProvider);
-    final censoredTagsBanned = booruFactory
-            .create(type: booruConfig.booruType)
-            ?.hasCensoredTagsBanned(booruConfig.url) ??
-        false;
+    final blacklistedTags = ref.watch(blacklistTagsProvider(booruConfig));
 
     return LayoutBuilder(
       builder: (context, constraints) => PostGrid(
@@ -134,23 +119,7 @@ class _DanbooruInfinitePostListState
         multiSelectController: _multiSelectController,
         onLoadMore: widget.onLoadMore,
         onRefresh: widget.onRefresh,
-        blacklistedTagString: currentUser.maybeWhen(
-          data: (user) => {
-            ...globalBlacklist.map((e) => e.name),
-            if (danbooruBlacklist != null) ...danbooruBlacklist,
-            if (!isUnverified && censoredTagsBanned && user == null)
-              ...kCensoredTags,
-            if (!isUnverified &&
-                censoredTagsBanned &&
-                user != null &&
-                !isBooruGoldPlusAccount(user.level))
-              ...kCensoredTags,
-          }.join('\n'),
-          orElse: () => {
-            ...globalBlacklist.map((e) => e.name),
-            if (danbooruBlacklist != null) ...danbooruBlacklist,
-          }.join('\n'),
-        ),
+        blacklistedTagString: blacklistedTags.join('\n'),
         itemBuilder: (context, items, index) {
           final post = items[index];
 

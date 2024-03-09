@@ -23,7 +23,7 @@ class TagInfoService {
       final metatags = <String>[...json['metatags']];
       final freeMetatags = <String>{...json['free_metatags']};
       final defaultBlacklistedTags = json['default_blacklisted_tags'];
-      final r18Tags = <String>[...json['r18_tags']];
+      final r18Tags = <String>{...json['r18_tags']};
 
       return TagInfoService(
         metatags: metatags
@@ -33,22 +33,22 @@ class TagInfoService {
                   example: '',
                   isFree: freeMetatags.contains(t),
                 ))
-            .toList(),
-        defaultBlacklistedTags: [...defaultBlacklistedTags],
+            .toSet(),
+        defaultBlacklistedTags: {...defaultBlacklistedTags},
         r18Tags: r18Tags,
       );
     } catch (e) {
       return const TagInfoService(
-        metatags: [],
-        defaultBlacklistedTags: [],
-        r18Tags: [],
+        metatags: {},
+        defaultBlacklistedTags: {},
+        r18Tags: {},
       );
     }
   }
 
-  final List<Metatag> metatags;
-  final List<String> defaultBlacklistedTags;
-  final List<String> r18Tags;
+  final Set<Metatag> metatags;
+  final Set<String> defaultBlacklistedTags;
+  final Set<String> r18Tags;
 
   TagInfo getInfo() {
     return TagInfo(
@@ -66,7 +66,7 @@ class TagInfo {
     required this.r18Tags,
   });
 
-  final List<Metatag> metatags;
-  final List<String> defaultBlacklistedTags;
-  final List<String> r18Tags;
+  final Set<Metatag> metatags;
+  final Set<String> defaultBlacklistedTags;
+  final Set<String> r18Tags;
 }

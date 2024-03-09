@@ -9,7 +9,6 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/feats/blacklists/blacklists.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
@@ -88,9 +87,8 @@ class _InfinitePostListScaffoldState<T extends Post>
   @override
   Widget build(BuildContext context) {
     final settings = ref.watch(settingsProvider);
-    final globalBlacklist = ref.watch(globalBlacklistedTagsProvider);
-
     final config = ref.watchConfig;
+    final blacklistedTags = ref.watch(blacklistTagsProvider(config));
     final booruBuilder = ref.watchBooruBuilder(config);
     final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
     final canHandleLongPress = booruBuilder?.canHandlePostGesture(
@@ -142,9 +140,7 @@ class _InfinitePostListScaffoldState<T extends Post>
         multiSelectController: _multiSelectController,
         onLoadMore: widget.onLoadMore,
         onRefresh: widget.onRefresh,
-        blacklistedTagString: {
-          ...globalBlacklist.map((e) => e.name),
-        }.join('\n'),
+        blacklistedTagString: blacklistedTags.join('\n'),
         itemBuilder: (context, items, index) {
           final post = items[index];
 

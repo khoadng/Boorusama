@@ -10,9 +10,11 @@ import 'tag.dart';
 
 /// This class is a kitchen sink for all sites, use as last resort
 class BooruTagTypeStore {
-  BooruTagTypeStore();
+  BooruTagTypeStore({
+    required Box<String>? box,
+  }) : _box = box;
 
-  Box<String>? _box;
+  final Box<String>? _box;
 
   static String get dataKey => 'general_tag_type_store_v1';
 
@@ -21,45 +23,36 @@ class BooruTagTypeStore {
     return join(dir.path, '$dataKey.hive');
   }
 
-  Future<Box<String>> getBox() async {
-    if (_box != null) {
-      return Future.value(_box!);
-    }
-
-    final dir = await getApplicationSupportDirectory();
-
-    _box = await Hive.openBox(dataKey, path: dir.path);
-    return _box!;
-  }
-
   Future<void> save(BooruType booruType, String tag, String category) async {
-    final box = await getBox();
+    if (_box == null) return;
+
     final keyForSpecificBooru = '${booruType.name}%%%$tag';
     final keyForGeneralBooru = 'generic%%%$tag';
-    await box.put(keyForSpecificBooru, category.toString());
-    await box.put(keyForGeneralBooru, category.toString());
+    await _box.put(keyForSpecificBooru, category.toString());
+    await _box.put(keyForGeneralBooru, category.toString());
   }
 
   Future<String?> get(BooruType booruType, String tag) async {
-    final box = await getBox();
+    if (_box == null) return null;
 
     // Get key for specific booru first
     final keyForSpecificBooru = '${booruType.name}%%%$tag';
-    final dataForSpecificBooru = box.get(keyForSpecificBooru);
+    final dataForSpecificBooru = _box.get(keyForSpecificBooru);
     if (dataForSpecificBooru != null) {
       return dataForSpecificBooru;
     }
 
     // Get key for general booru
     final keyForGeneralBooru = 'generic%%%$tag';
-    final dataForGeneralBooru = box.get(keyForGeneralBooru);
+    final dataForGeneralBooru = _box.get(keyForGeneralBooru);
 
     return dataForGeneralBooru;
   }
 
   Future<void> clear() async {
-    final box = await getBox();
-    await box.clear();
+    if (_box == null) return;
+
+    await _box.clear();
   }
 }
 

@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/feats/blacklists/blacklists.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/tags/booru_tag_type_store.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
@@ -16,16 +15,14 @@ class TrendingTagNotifier
     extends AutoDisposeFamilyAsyncNotifier<List<Search>, BooruConfig> {
   @override
   FutureOr<List<Search>> build(BooruConfig arg) async {
+    final config = arg;
     final r18Tags = ref.watch(tagInfoProvider).r18Tags;
-    final blacklistTags =
-        await ref.watch(danbooruBlacklistedTagsProvider(arg).future);
-    final globalBlacklistTags = ref.watch(globalBlacklistedTagsProvider);
+    final blacklistedTags = ref.watch(blacklistTagsProvider(config));
 
     return fetch(
       excludedTags: {
         ...r18Tags,
-        if (blacklistTags != null) ...blacklistTags,
-        ...globalBlacklistTags.map((e) => e.name),
+        ...blacklistedTags,
       },
     );
   }
@@ -49,7 +46,7 @@ class TrendingTagNotifier
 
     final tags = await ref
         .read(tagRepoProvider(arg))
-        .getTagsByName(filtered.map((e) => e.keyword).toList(), 1);
+        .getTagsByName(filtered.map((e) => e.keyword).toSet(), 1);
 
     await ref
         .read(booruTagTypeStoreProvider)

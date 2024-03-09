@@ -40,12 +40,14 @@ final danbooruExploreRepoProvider =
         client: ref.watch(danbooruClientProvider(config)),
         postRepository: ref.watch(danbooruPostRepoProvider(config)),
         settingsRepository: ref.watch(settingsRepoProvider),
-        shouldFilter: (post) =>
-            ref
-                .readCurrentBooruBuilder()
-                ?.granularRatingFilterer
-                ?.call(post, config) ??
-            false,
+        shouldFilter: (post) {
+          final filterer =
+              ref.readCurrentBooruBuilder()?.granularRatingFilterer;
+
+          if (filterer == null) return false;
+
+          return filterer(post, config);
+        },
       ),
       popularStaleDuration: const Duration(minutes: 20),
       mostViewedStaleDuration: const Duration(hours: 1),

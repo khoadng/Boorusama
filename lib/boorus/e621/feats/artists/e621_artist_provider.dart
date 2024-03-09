@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/e621/e621.dart';
 import 'package:boorusama/boorus/e621/feats/artists/artists.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
-import 'package:boorusama/core/feats/blacklists/blacklists.dart';
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/functional.dart';
@@ -30,15 +30,13 @@ final e621ArtistPostsProvider = FutureProvider.autoDispose
   if (name == null) return [];
   final config = ref.watchConfig;
 
-  final globalBlacklistedTags = ref.watch(globalBlacklistedTagsProvider);
+  final blacklistedTags = ref.watch(blacklistTagsProvider(config));
 
   final repo = ref.read(e621PostRepoProvider(config));
   final posts = await repo.getPostsFromTagsOrEmpty([name], 1);
 
   return filterTags(
     posts.take(30).where((e) => !e.isFlash).toList(),
-    {
-      ...globalBlacklistedTags.map((e) => e.name),
-    },
+    blacklistedTags,
   );
 });

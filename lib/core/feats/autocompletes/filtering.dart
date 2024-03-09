@@ -5,7 +5,7 @@ import 'autocomplete.dart';
 bool isSfwTag({
   required String value,
   String? antecedent,
-  required List<String> nsfwTags,
+  required Set<String> nsfwTags,
 }) {
   for (final tag in nsfwTags) {
     if (value.contains(tag)) {
@@ -39,7 +39,7 @@ bool isSfwTag({
 
 List<String> filterNsfwRawTagString(
   String tag,
-  List<String> nsfwTags, {
+  Set<String> nsfwTags, {
   bool shouldFilter = true,
 }) {
   final tags = tag.split(' ').toList();
@@ -56,7 +56,7 @@ List<String> filterNsfwRawTagString(
 
 IList<AutocompleteData> filterNsfw(
   List<AutocompleteData> data,
-  List<String> nsfwTags, {
+  Set<String> nsfwTags, {
   bool shouldFilter = true,
 }) {
   return shouldFilter

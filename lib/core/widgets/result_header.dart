@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -20,6 +21,10 @@ class ResultHeaderWithProvider extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final fetcher = ref.watch(booruBuilderProvider)?.postCountFetcher;
+
+    if (fetcher == null) return const SizedBox.shrink();
+
     return ref.watch(postCountProvider(selectedTags.join(' '))).when(
           data: (data) => data != null
               ? ResultHeader(

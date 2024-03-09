@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:isolate';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -27,6 +30,52 @@ import 'package:boorusama/widgets/widgets.dart';
 import 'post_grid_config_icon_button.dart';
 import 'post_grid_controller.dart';
 import 'post_list_configuration_header.dart';
+
+final _tagCountProvider =
+    AsyncNotifierProvider.autoDispose<_TagCountNotifier, Map<String, int>?>(
+        _TagCountNotifier.new);
+
+final _hasBlacklistedTagsProvider =
+    FutureProvider.autoDispose<bool>((ref) async {
+  final tags = await ref.watch(_tagCountProvider.future);
+  return tags?.values.any((e) => e > 0) ?? false;
+});
+
+class _TagCountNotifier extends AutoDisposeAsyncNotifier<Map<String, int>?> {
+  @override
+  Future<Map<String, int>?> build() async {
+    return null;
+  }
+
+  Future<void> count<T extends Post>(
+    Iterable<T> posts,
+    Iterable<String> tags,
+  ) async {
+    state = const AsyncValue.data(null);
+    state = const AsyncValue.loading();
+
+    final data = await Isolate.run(
+      () {
+        final Map<String, int> tagCounts = {};
+        final preprocessed =
+            tags.map((tag) => tag.split(' ').map(TagExpression.parse).toList());
+
+        for (final item in posts) {
+          for (final pattern in preprocessed) {
+            if (item.containsTagPattern(pattern)) {
+              final key = pattern.join(' ');
+              tagCounts[key] = (tagCounts[key] ?? 0) + 1;
+            }
+          }
+        }
+
+        return tagCounts;
+      },
+    );
+
+    state = AsyncValue.data(data);
+  }
+}
 
 typedef ItemWidgetBuilder<T> = Widget Function(
     BuildContext context, List<T> items, int index);
@@ -112,20 +161,24 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
   late var pageMode = controller.pageMode;
 
   var filters = <String, bool>{};
-  var tagCounts = <String, int>{};
-  var _hasBlacklistedTags = false;
 
   @override
   void didUpdateWidget(PostGrid<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.blacklistedTagString != widget.blacklistedTagString) {
       _updateFilter();
-      _updateData();
+      _updateData(
+        filters: filters,
+        bustCache: true,
+      );
       _countTags();
     }
 
     if (oldWidget.blacklistedIdString != widget.blacklistedIdString) {
-      _updateData();
+      _updateData(
+        filters: filters,
+        bustCache: true,
+      );
     }
   }
 
@@ -166,14 +219,26 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
     super.dispose();
   }
 
-  void _updateData() {
+  final precomputedFilter = <int, bool>{};
+
+  void _updateData({
+    required Map<String, bool> filters,
+    bool bustCache = false,
+  }) {
+    if (bustCache) {
+      precomputedFilter.clear();
+    }
+
     final d = filter(
       controller.items,
-      [
+      {
         for (final tag in filters.keys)
           if (filters[tag]!) tag
-      ],
+      },
+      precomputedFilter: precomputedFilter,
     );
+
+    if (!mounted) return;
 
     // Dirty hack to filter out bookmarked posts
     final settings = ref.read(settingsProvider);
@@ -195,17 +260,22 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
     filteredItems = d.filtered;
   }
 
-  void _countTags() {
-    tagCounts = controller.items.countTagPattern(
-      filters.keys,
-    );
-    _hasBlacklistedTags = tagCounts.values.any((c) => c > 0);
+  Future<void> _countTags() async {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      ref.read(_tagCountProvider.notifier).count(
+            controller.items,
+            filters.keys,
+          );
+    });
   }
 
   void _onControllerChange() {
     if (!mounted) return;
     setState(() {
-      _updateData();
+      _updateData(
+        filters: filters,
+        bustCache: controller.refreshing,
+      );
       _countTags();
 
       hasMore = controller.hasMore;
@@ -338,8 +408,9 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                                 if (isMobilePlatform())
                                   SliverPinnedHeader(
                                     child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 16),
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: settings.imageGridPadding,
+                                      ),
                                       child: header,
                                     ),
                                   ),
@@ -491,19 +562,24 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
   }
 
   Widget _buildConfigHeader(Axis axis) {
+    final tagCounts = ref.watch(_tagCountProvider);
+    final hasBlacklistedTags = ref.watch(_hasBlacklistedTagsProvider);
+
     return PostListConfigurationHeader(
       axis: axis,
       postCount: items.length + filteredItems.length,
       initiallyExpanded: axis == Axis.vertical,
-      hasBlacklist: _hasBlacklistedTags,
-      tags: filters.keys
-          .map((e) => (
-                name: e,
-                count: tagCounts[e] ?? 0,
-                active: filters[e] ?? false,
-              ))
-          .where((element) => element.count > 0)
-          .toList(),
+      hasBlacklist: hasBlacklistedTags.value ?? false,
+      tags: tagCounts.value != null
+          ? filters.keys
+              .map((e) => (
+                    name: e,
+                    count: tagCounts.value![e] ?? 0,
+                    active: filters[e] ?? false,
+                  ))
+              .where((element) => element.count > 0)
+              .toList()
+          : null,
       trailing: axis == Axis.horizontal
           ? ButtonBar(
               children: [
@@ -538,7 +614,10 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
   void _update(tag, hide) {
     setState(() {
       filters[tag] = hide;
-      _updateData();
+      _updateData(
+        filters: filters,
+        bustCache: true,
+      );
     });
   }
 
@@ -547,7 +626,10 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
       filters = filters.map(
         (key, value) => MapEntry(key, true),
       );
-      _updateData();
+      _updateData(
+        filters: filters,
+        bustCache: true,
+      );
     });
   }
 
@@ -556,7 +638,10 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
       filters = filters.map(
         (key, value) => MapEntry(key, false),
       );
-      _updateData();
+      _updateData(
+        filters: filters,
+        bustCache: true,
+      );
     });
   }
 

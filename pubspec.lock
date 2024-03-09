@@ -1430,10 +1430,10 @@ packages:
     dependency: "direct main"
     description:
       name: rate_my_app
-      sha256: e448dc27f8e821824fe7f67c2dba22f67b18de08054efa746defd1cd1657d882
+      sha256: fe210e9e6068095945f89fc2310a71b1cc2caae7f64fa65b83fc796badcb05e3
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.0"
+    version: "1.1.4"
   recase:
     dependency: "direct main"
     description:

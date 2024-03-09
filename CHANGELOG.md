@@ -1,3 +1,11 @@
+# 3.12.1
+- Remove redundant phone permission
+- Notification permission is now not required to download images
+- Allow user to remove custom download location.
+- Fix an issue where notifications stop showing after a while. Clear the app's data or reinstall the app are required.
+- Fix performance issues when the user has a lot of blacklisted tags
+- Minor bug fixes and UI adjustments
+
 # 3.12.0
 - Support Szurubooru
 - Allow gestures and preview image's thumbnail button to be customized for each profile

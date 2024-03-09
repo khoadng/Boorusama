@@ -91,7 +91,7 @@ class PhilomenaBuilder
                         translatedDescription: '',
                       )
                     : ArtistCommentary.empty(),
-                artistTags: post.artistTags ?? [],
+                artistTags: post.artistTags ?? {},
                 source: post.source,
               ),
               swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),

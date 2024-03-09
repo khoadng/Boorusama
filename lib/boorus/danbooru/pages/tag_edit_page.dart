@@ -128,7 +128,7 @@ class TagEditPageInternal extends ConsumerStatefulWidget {
   final int postId;
   final String imageUrl;
   final double aspectRatio;
-  final List<String> tags;
+  final Set<String> tags;
   final Widget Function() ratingSelectorBuilder;
   final Widget Function(
     List<String> addedTags,
@@ -373,7 +373,7 @@ class _TagEditPageInternalState extends ConsumerState<TagEditPageInternal> {
 
   Widget _buildTagListSection() {
     return TagEditTagListSection(
-      tags: tags.toList(),
+      tags: tags.toSet(),
       toBeAdded: toBeAdded.toSet(),
       toBeRemoved: toBeRemoved.toSet(),
       initialTags: widget.tags,
@@ -738,10 +738,10 @@ final tagEditCurrentFilterProvider = StateProvider.autoDispose<String>((ref) {
 });
 
 final tagEditFilteredListProvider =
-    Provider.autoDispose.family<List<String>, List<String>>((ref, tags) {
+    Provider.autoDispose.family<List<String>, Set<String>>((ref, tags) {
   final filter = ref.watch(tagEditCurrentFilterProvider);
 
-  if (filter.isEmpty) return tags;
+  if (filter.isEmpty) return tags.toList();
 
   return tags.where((tag) => tag.contains(filter)).toList();
 });
@@ -757,8 +757,8 @@ class TagEditTagListSection extends ConsumerWidget {
     required this.toBeRemoved,
   });
 
-  final List<String> initialTags;
-  final List<String> tags;
+  final Set<String> initialTags;
+  final Set<String> tags;
   final void Function(String tag) onTagTap;
   final void Function(String tag) onDeleted;
   final Set<String> toBeAdded;

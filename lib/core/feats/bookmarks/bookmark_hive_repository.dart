@@ -24,7 +24,7 @@ class BookmarkHiveRepository implements BookmarkRepository {
       width: post.width,
       height: post.height,
       md5: post.md5,
-      tags: post.tags,
+      tags: post.tags.toList(),
       realSourceUrl: post.source.url,
     );
     await _box.add(favoriteHiveObject);

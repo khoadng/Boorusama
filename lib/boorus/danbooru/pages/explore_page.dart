@@ -7,9 +7,8 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/feats/blacklists/blacklists.dart';
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
@@ -223,15 +222,10 @@ class ExploreList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final height = context.screen.size == ScreenSize.small ? 200.0 : 250.0;
-    final blacklistTags =
-        ref.watch(danbooruBlacklistedTagsProvider(ref.watchConfig)).value;
-    final globalBlacklistTags = ref.watch(globalBlacklistedTagsProvider);
-    final bl = [
-      if (blacklistTags != null) ...blacklistTags,
-      ...globalBlacklistTags.map((e) => e.name)
-    ];
+    final config = ref.watchConfig;
+    final blacklistedTags = ref.watch(blacklistTagsProvider(config));
     final filteredPosts = posts
-        .where((post) => !bl.any((tag) => post.tags.contains(tag)))
+        .where((post) => !blacklistedTags.any((tag) => post.tags.contains(tag)))
         .toList();
 
     return filteredPosts.isNotEmpty

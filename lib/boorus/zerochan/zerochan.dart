@@ -46,7 +46,7 @@ final zerochanPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
                   thumbnailImageUrl: e.thumbnail ?? '',
                   sampleImageUrl: e.sampleUrl() ?? '',
                   originalImageUrl: e.fileUrl() ?? '',
-                  tags: e.tags ?? [],
+                  tags: e.tags?.toSet() ?? {},
                   rating: Rating.general,
                   hasComment: false,
                   isTranslated: false,

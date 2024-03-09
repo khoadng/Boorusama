@@ -16,7 +16,7 @@ mixin DanbooruClientTags {
   Future<List<TagDto>> getTagsByName({
     int? page,
     bool? hideEmpty,
-    required List<String> tags,
+    required Set<String> tags,
     int limit = 1000,
     CancelToken? cancelToken,
   }) async {

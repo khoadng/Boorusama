@@ -9,6 +9,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/tags/tags.dart';
+import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme_utils.dart';
@@ -44,6 +45,8 @@ class FavoriteTagsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final favoritesNotifier = ref.watch(favoriteTagsProvider.notifier);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Favorite tags'),
@@ -63,6 +66,36 @@ class FavoriteTagsPage extends ConsumerWidget {
             ),
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          goToQuickSearchPage(
+            context,
+            ref: ref,
+            onSubmitted: (context, text) {
+              context.navigator.pop();
+              favoritesNotifier.add(
+                text,
+                onDuplicate: (tag) => showErrorToast(
+                  '$tag already exists',
+                ),
+                // labels: [
+                //   selectedLabel,
+                // ],
+              );
+            },
+            onSelected: (tag) => favoritesNotifier.add(
+              tag.value,
+              onDuplicate: (tag) => showErrorToast(
+                '$tag already exists',
+              ),
+              // labels: [
+              //   selectedLabel,
+              // ],
+            ),
+          );
+        },
+        child: const Icon(Icons.add),
       ),
       body: FavoriteTagsFilterScope(
         sortType: ref.watch(selectedFavoriteTagsSortTypeProvider),

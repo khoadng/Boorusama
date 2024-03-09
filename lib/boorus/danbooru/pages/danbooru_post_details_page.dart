@@ -277,7 +277,7 @@ final danbooruTagGroupsProvider = FutureProvider.autoDispose
           .extractTagDetails()
           .where((e) => e.postId == post.id)
           .map((e) => e.name)
-          .toList();
+          .toSet();
 
   final repo = ref.watch(tagRepoProvider(config));
 

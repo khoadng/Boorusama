@@ -58,7 +58,7 @@ class PhilomenaPost extends Equatable
   @override
   final String originalImageUrl;
   @override
-  final List<String> tags;
+  final Set<String> tags;
   @override
   final Rating rating;
   @override
@@ -106,13 +106,13 @@ class PhilomenaPost extends Equatable
   List<Object?> get props => [id];
 
   @override
-  List<String>? get artistTags => _findArtistFromTags(tags);
+  Set<String>? get artistTags => _findArtistFromTags(tags);
 
   @override
-  List<String>? get characterTags => null;
+  Set<String>? get characterTags => null;
 
   @override
-  List<String>? get copyrightTags => null;
+  Set<String>? get copyrightTags => null;
 
   final String description;
   final int commentCount;
@@ -125,10 +125,10 @@ class PhilomenaPost extends Equatable
   final int? uploaderId;
 }
 
-List<String>? _findArtistFromTags(List<String> tags) {
+Set<String>? _findArtistFromTags(Set<String> tags) {
   const metaTag = 'artist:';
   final artistTag = tags.firstWhereOrNull((e) => e.startsWith(metaTag));
-  return artistTag != null ? [artistTag.substring(metaTag.length)] : null;
+  return artistTag != null ? {artistTag.substring(metaTag.length)} : null;
 }
 
 class PhilomenaRepresentation extends Equatable {

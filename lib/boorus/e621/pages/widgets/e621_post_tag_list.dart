@@ -45,37 +45,37 @@ class E621PostTagList extends ConsumerWidget {
         (
           groupName: 'Artist',
           category: E621TagCategory.artist,
-          tags: post.artistTags,
+          tags: post.artistTags.toList(),
         ),
       if (post.characterTags.isNotEmpty)
         (
           groupName: 'Character',
           category: E621TagCategory.character,
-          tags: post.characterTags,
+          tags: post.characterTags.toList(),
         ),
       if (post.copyrightTags.isNotEmpty)
         (
           groupName: 'Copyright',
           category: E621TagCategory.copyright,
-          tags: post.copyrightTags,
+          tags: post.copyrightTags.toList(),
         ),
       if (post.speciesTags.isNotEmpty)
         (
           groupName: 'Species',
           category: E621TagCategory.species,
-          tags: post.speciesTags,
+          tags: post.speciesTags.toList(),
         ),
       if (post.generalTags.isNotEmpty)
         (
           groupName: 'General',
           category: E621TagCategory.general,
-          tags: post.generalTags,
+          tags: post.generalTags.toList(),
         ),
       if (post.metaTags.isNotEmpty)
         (
           groupName: 'Meta',
           category: E621TagCategory.meta,
-          tags: post.metaTags,
+          tags: post.metaTags.toList(),
         ),
     ];
 

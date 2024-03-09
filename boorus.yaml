@@ -77,6 +77,6 @@
       - https://ponybooru.org/
 
 - shimmie2:
-    protocol: https_2
+    protocol: https_1
     sites:
       - https://rule34.paheal.net/

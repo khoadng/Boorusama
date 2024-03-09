@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -23,12 +24,21 @@ class FavoriteTagsNotifier extends Notifier<List<FavoriteTag>> {
   Future<void> add(
     String tag, {
     List<String>? labels,
+    void Function(String tag)? onDuplicate,
   }) async {
     if (tag.isEmpty) return;
 
     // If a tag length is larger than 255 characters, we will not add it.
     // This is a limitation of Hive.
     if (tag.length > 255) return;
+
+    // check for existing tag
+    final existing = state.firstWhereOrNull((e) => e.name == tag);
+
+    if (existing != null) {
+      onDuplicate?.call(existing.name);
+      return;
+    }
 
     await repo.create(
       name: tag,

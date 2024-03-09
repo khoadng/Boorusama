@@ -24,7 +24,7 @@ final gelbooruPostDetailsArtistMapProvider = StateProvider.autoDispose(
 );
 
 final gelbooruPostDetailsCharacterMapProvider = StateProvider.autoDispose(
-  (ref) => <int, List<String>>{},
+  (ref) => <int, Set<String>>{},
 );
 
 class GelbooruPostDetailsPage extends ConsumerStatefulWidget {
@@ -178,7 +178,7 @@ extension GelbooruArtistMapProviderX on WidgetRef {
     if (group == null) return;
     final map = read(gelbooruPostDetailsCharacterMapProvider);
 
-    map[post.id] = group.tags.map((e) => e.rawName).toList();
+    map[post.id] = group.tags.map((e) => e.rawName).toSet();
 
     read(gelbooruPostDetailsCharacterMapProvider.notifier).state = {
       ...map,
@@ -252,7 +252,7 @@ class _GelbooruV1TagsTileState extends ConsumerState<GelbooruV1TagsTile> {
             onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
           )
         : BasicTagList(
-            tags: widget.post.tags,
+            tags: widget.post.tags.toList(),
             onTap: (tag) => goToSearchPage(context, tag: tag),
           );
   }

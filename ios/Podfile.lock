@@ -205,7 +205,7 @@ PODS:
   - PromisesObjC (2.3.1)
   - PromisesSwift (2.3.1):
     - PromisesObjC (= 2.3.1)
-  - rate_my_app (2.0.0):
+  - rate_my_app (1.1.4):
     - Flutter
   - ReachabilitySwift (5.0.0)
   - SDWebImage (5.18.11):
@@ -381,7 +381,7 @@ SPEC CHECKSUMS:
   permission_handler_apple: 036b856153a2b1f61f21030ff725f3e6fece2b78
   PromisesObjC: c50d2056b5253dadbd6c2bea79b0674bd5a52fa4
   PromisesSwift: 28dca69a9c40779916ac2d6985a0192a5cb4a265
-  rate_my_app: 80fba94c4885cd31738231b7b1f51c1ad726f5c7
+  rate_my_app: e249ec0751c276811746ff89558c23dc0da39f0c
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   SDWebImage: a3ba0b8faac7228c3c8eadd1a55c9c9fe5e16457
   share_handler_ios: 83934899a7ad80e435607a0302a7e5b257f8e2f9

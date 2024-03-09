@@ -47,8 +47,8 @@ final szurubooruPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
                   tags: e.tags
                           ?.map((e) => e.names?.firstOrNull)
                           .whereNotNull()
-                          .toList() ??
-                      [],
+                          .toSet() ??
+                      {},
                   rating: switch (e.safety?.toLowerCase()) {
                     'safe' => Rating.general,
                     'questionable' => Rating.questionable,

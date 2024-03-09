@@ -46,7 +46,7 @@ class GelbooruPost extends Equatable
         rating: Rating.general,
         sampleImageUrl: '',
         source: PostSource.none(),
-        tags: const [],
+        tags: const {},
         thumbnailImageUrl: '',
         width: 0.0,
         hasComment: false,
@@ -98,7 +98,7 @@ class GelbooruPost extends Equatable
   final PostSource source;
 
   @override
-  final List<String> tags;
+  final Set<String> tags;
 
   @override
   final String thumbnailImageUrl;

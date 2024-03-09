@@ -26,6 +26,7 @@ import 'package:boorusama/core/feats/metatags/metatags.dart';
 import 'package:boorusama/core/feats/search/search.dart';
 import 'package:boorusama/core/feats/search_histories/search_histories.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
+import 'package:boorusama/core/feats/tags/booru_tag_type_store.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
@@ -33,6 +34,7 @@ import 'package:boorusama/foundation/analytics.dart';
 import 'package:boorusama/foundation/app_info.dart';
 import 'package:boorusama/foundation/device_info_service.dart';
 import 'package:boorusama/foundation/error.dart';
+import 'package:boorusama/foundation/hive.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
 import 'package:boorusama/foundation/package_info.dart';
 import 'package:boorusama/foundation/path.dart';
@@ -187,6 +189,17 @@ void main() async {
     path: tempPath.path,
   );
 
+  final appSupportDir = await getApplicationSupportDirectory();
+
+  final booruTagTypeBox = await tryOpenBox<String>(
+    BooruTagTypeStore.dataKey,
+    path: appSupportDir.path,
+  );
+
+  if (booruTagTypeBox == null) {
+    logger.logE('Start up', 'Failed to open booru tag type box');
+  }
+
   final packageInfo = await PackageInfo.fromPlatform();
   final tagInfo =
       await TagInfoService.create().then((value) => value.getInfo());
@@ -251,6 +264,7 @@ void main() async {
               danbooruCreatorHiveBoxProvider
                   .overrideWithValue(danbooruCreatorBox),
               miscDataBoxProvider.overrideWithValue(miscDataBox),
+              booruTagTypeBoxProvider.overrideWithValue(booruTagTypeBox),
             ],
             child: App(
               appName: appInfo.appName,

@@ -23,19 +23,15 @@ class MoebooruInformationSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return InformationSection(
-      characterTags: tags
-              ?.map((e) => e.extractCharacterTags())
-              .expand((e) => e)
-              .toList() ??
-          [],
+      characterTags:
+          tags?.map((e) => e.extractCharacterTags()).expand((e) => e).toSet() ??
+              {},
       artistTags:
-          tags?.map((e) => e.extractArtistTags()).expand((e) => e).toList() ??
-              [],
-      copyrightTags: tags
-              ?.map((e) => e.extractCopyRightTags())
-              .expand((e) => e)
-              .toList() ??
-          [],
+          tags?.map((e) => e.extractArtistTags()).expand((e) => e).toSet() ??
+              {},
+      copyrightTags:
+          tags?.map((e) => e.extractCopyRightTags()).expand((e) => e).toSet() ??
+              {},
       createdAt: post.createdAt,
       source: post.source,
       onArtistTagTap: (context, artist) => goToArtistPage(

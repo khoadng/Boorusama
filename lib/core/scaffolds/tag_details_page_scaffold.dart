@@ -57,7 +57,9 @@ class _DanbooruTagDetailsPageState<T extends Post>
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    widget.otherNamesBuilder(context),
+                    Expanded(
+                      child: widget.otherNamesBuilder(context),
+                    ),
                   ],
                 ),
             if (widget.extraBuilder != null)

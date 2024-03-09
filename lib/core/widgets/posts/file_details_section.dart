@@ -32,6 +32,17 @@ class FileDetailsSection extends StatelessWidget {
     final fileSizeText =
         post.fileSize > 0 ? '• ${filesize(post.fileSize, 1)}' : '';
 
+    final resolutionText = post.width > 0 && post.height > 0
+        ? '${post.width.toInt()}x${post.height.toInt()} • '
+        : '';
+
+    // if start with a dot, remove it
+    final fileFormatText = post.format.startsWith('.')
+        ? post.format.substring(1).toUpperCase()
+        : post.format.toUpperCase();
+
+    final ratingText = rating.name.getFirstCharacter().toUpperCase();
+
     return Theme(
       data: context.theme.copyWith(
         listTileTheme: context.theme.listTileTheme.copyWith(
@@ -44,7 +55,7 @@ class FileDetailsSection extends StatelessWidget {
           'post.detail.file_details'.tr(),
         ),
         subtitle: Text(
-          '${post.width.toInt()}x${post.height.toInt()} • ${post.format.toUpperCase()} $fileSizeText • ${rating.name.getFirstCharacter().toUpperCase()}',
+          '$resolutionText$fileFormatText$fileSizeText • $ratingText',
           style: TextStyle(
             color: context.theme.hintColor,
           ),

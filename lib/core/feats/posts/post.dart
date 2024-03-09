@@ -16,7 +16,7 @@ abstract class Post extends Equatable
   String get sampleImageUrl;
   String get originalImageUrl;
   @override
-  List<String> get tags;
+  Set<String> get tags;
   Rating get rating;
   bool get hasComment;
   bool get isTranslated;
@@ -32,9 +32,9 @@ abstract class Post extends Equatable
 }
 
 abstract interface class TagDetails {
-  List<String>? get artistTags;
-  List<String>? get characterTags;
-  List<String>? get copyrightTags;
+  Set<String>? get artistTags;
+  Set<String>? get characterTags;
+  Set<String>? get copyrightTags;
 }
 
 class SimplePost extends Equatable
@@ -86,7 +86,7 @@ class SimplePost extends Equatable
   @override
   final String originalImageUrl;
   @override
-  final List<String> tags;
+  final Set<String> tags;
   @override
   final Rating rating;
   @override
@@ -141,11 +141,11 @@ class SimplePost extends Equatable
 
 mixin NoTagDetailsMixin implements Post {
   @override
-  List<String>? get artistTags => null;
+  Set<String>? get artistTags => null;
   @override
-  List<String>? get characterTags => null;
+  Set<String>? get characterTags => null;
   @override
-  List<String>? get copyrightTags => null;
+  Set<String>? get copyrightTags => null;
 }
 
 extension PostImageX on Post {
@@ -168,7 +168,8 @@ extension PostX on Post {
     return tags;
   }
 
-  bool containsTagPattern(String pattern) => checkIfTagsContainsTagExpression(
+  bool containsTagPattern(List<TagExpression> pattern) =>
+      checkIfTagsContainsTagExpression(
         TagFilterData(
           tags: tags,
           rating: rating,
@@ -208,7 +209,7 @@ GeneralPostQualityType stringToGeneralPostQualityType(String? value) =>
     };
 
 mixin TagListCheckMixin {
-  List<String> get tags;
+  Set<String> get tags;
 
   bool get isAI => tags.any((e) => _kAiTags.contains(e.toLowerCase()));
 }
@@ -236,162 +237,4 @@ extension PostsX on Iterable<Post> {
 
     return tagCounts;
   }
-
-  Map<String, int> countTagPattern(
-    Iterable<String> patterns,
-  ) {
-    final tagCounts = <String, int>{};
-
-    // add the new patterns to the tagCounts if they don't exist
-    for (final pattern in patterns) {
-      if (!tagCounts.containsKey(pattern)) {
-        tagCounts[pattern] = 0;
-      }
-    }
-
-    for (final item in this) {
-      for (final pattern in patterns) {
-        if (item.containsTagPattern(pattern)) {
-          tagCounts[pattern] = tagCounts[pattern]! + 1;
-        }
-      }
-    }
-
-    return tagCounts;
-  }
-}
-
-extension TagFilterDataX on List<String> {
-  TagFilterData toTagFilterData() => TagFilterData.tags(tags: this);
-}
-
-class TagFilterData {
-  TagFilterData({
-    required this.tags,
-    required this.rating,
-    required this.score,
-    this.downvotes,
-    this.uploaderId,
-    this.source,
-  });
-
-  TagFilterData.tags({
-    required this.tags,
-  })  : rating = Rating.general,
-        score = 0,
-        source = null,
-        uploaderId = null,
-        downvotes = null;
-
-  final List<String> tags;
-  final Rating rating;
-  final int score;
-  final int? downvotes;
-  final int? uploaderId;
-  final String? source;
-}
-
-bool checkIfTagsContainsTagExpression(
-  final TagFilterData filterData,
-  final String tagExpression,
-) {
-  // Split the tagExpression by spaces to handle multiple tags
-  final expressions = tagExpression.split(' ');
-  final tags = filterData.tags.toSet();
-
-  // Process each tag in the expression
-  for (final expression in expressions) {
-    // Handle metatag "rating"
-    if (expression.startsWith('rating:')) {
-      final targetRating =
-          expression.endsWith('explicit') ? Rating.explicit : Rating.general;
-      if (filterData.rating != targetRating) {
-        return false;
-      }
-    }
-    // Handle uploaderid "uploaderid"
-    else if (expression.startsWith('uploaderid:')) {
-      final targetUploaderId = int.tryParse(expression.split(':')[1]) ?? -1;
-      if (filterData.uploaderId != targetUploaderId) {
-        return false;
-      }
-    }
-    // Handle source "source"
-    else if (expression.startsWith('source:') && filterData.source != null) {
-      // find the first index of ':' and get the substring after it
-      final source = filterData.source!.toLowerCase();
-      final firstColonIndex = expression.indexOf(':');
-
-      // if first colon is the last character, then the expression is invalid
-      if (firstColonIndex == expression.length - 1) return false;
-
-      final targetSource =
-          expression.substring(firstColonIndex + 1).toLowerCase();
-
-      // *aaa* is a wildcard for any string
-      // *aaa is a wildcard for any string that ends with "aaa"
-      // aaa* is a wildcard for any string that starts with "aaa"
-      // aaa is a exact match
-      if (targetSource.startsWith('*') && targetSource.endsWith('*')) {
-        if (!source
-            .contains(targetSource.substring(1, targetSource.length - 1))) {
-          return false;
-        }
-      } else if (targetSource.startsWith('*')) {
-        if (!source.endsWith(targetSource.substring(1))) {
-          return false;
-        }
-      } else if (targetSource.endsWith('*')) {
-        if (!source
-            .startsWith(targetSource.substring(0, targetSource.length - 1))) {
-          return false;
-        }
-      } else if (filterData.source != targetSource) {
-        return false;
-      }
-    }
-    // Handle NOT operator with metatag "rating"
-    else if (expression.startsWith('-rating:')) {
-      final targetRating =
-          expression.endsWith('explicit') ? Rating.explicit : Rating.general;
-      if (filterData.rating == targetRating) {
-        return false;
-      }
-    }
-    // Handle metatag "score"
-    else if (expression.startsWith('score:') && expression.contains('<')) {
-      final targetScore = int.tryParse(expression.split('<')[1]) ?? 0;
-      if (!(filterData.score < targetScore)) {
-        return false;
-      }
-      // Handle metatag "downvotes"
-    } else if (expression.startsWith('downvotes:') &&
-        expression.contains('>')) {
-      final targetDownvotes = int.tryParse(expression.split('>')[1]) ?? 0;
-      if (filterData.downvotes == null ||
-          !(filterData.downvotes! > targetDownvotes)) {
-        return false;
-      }
-    }
-    // Handle NOT operator
-    else if (expression.startsWith('-')) {
-      if (tags.contains(expression.substring(1))) {
-        return false;
-      }
-    }
-    // Default AND operation
-    else if (!tags.contains(expression) && !expression.startsWith('~')) {
-      return false;
-    }
-  }
-
-  // OR operation check
-  if (expressions.any((exp) => exp.startsWith('~')) &&
-      !expressions
-          .where((exp) => exp.startsWith('~'))
-          .any((orExp) => tags.contains(orExp.substring(1)))) {
-    return false;
-  }
-
-  return true; // If all checks pass, return true
 }

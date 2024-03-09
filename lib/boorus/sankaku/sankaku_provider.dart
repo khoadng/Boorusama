@@ -72,7 +72,7 @@ final sankakuPostRepoProvider =
             thumbnailImageUrl: e.previewUrl ?? '',
             sampleImageUrl: e.sampleUrl ?? '',
             originalImageUrl: e.fileUrl ?? '',
-            tags: e.tags?.map((e) => e.name).whereNotNull().toList() ?? [],
+            tags: e.tags?.map((e) => e.name).whereNotNull().toSet() ?? {},
             rating: mapStringToRating(e.rating),
             hasComment: e.hasComments ?? false,
             isTranslated: false,
@@ -135,17 +135,16 @@ final sankakuArtistPostRepo =
 final sankakuArtistPostsProvider = FutureProvider.autoDispose
     .family<List<SankakuPost>, String?>((ref, artistName) async {
   if (artistName == null) return [];
+  final config = ref.watchConfig;
 
-  final globalBlacklistedTags = ref.watch(globalBlacklistedTagsProvider);
+  final blacklistedTags = ref.watch(blacklistTagsProvider(config));
 
   final repo = ref.watch(sankakuArtistPostRepo(ref.watchConfig));
   final posts = await repo.getPostsFromTagsOrEmpty([artistName], 1);
 
   return filterTags(
     posts.take(30).where((e) => !e.isFlash).toList(),
-    {
-      ...globalBlacklistedTags.map((e) => e.name),
-    },
+    blacklistedTags,
   );
 });
 

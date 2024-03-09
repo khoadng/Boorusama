@@ -6,7 +6,7 @@ import 'package:boorusama/core/feats/search/filter_operator.dart';
 import 'package:boorusama/core/feats/search/tag_search_item.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 
-final _defaultMetatags = [
+final _defaultMetatags = {
   const Metatag(
     name: 'foo',
     description: '',
@@ -17,7 +17,7 @@ final _defaultMetatags = [
     description: '',
     example: '',
   ),
-];
+};
 
 void main() {
   group('[parse tests]', () {
@@ -26,8 +26,8 @@ void main() {
         'tag',
         TagInfo(
           metatags: _defaultMetatags,
-          defaultBlacklistedTags: [],
-          r18Tags: [],
+          defaultBlacklistedTags: {},
+          r18Tags: {},
         ),
       );
 
@@ -45,8 +45,8 @@ void main() {
         '',
         TagInfo(
           metatags: _defaultMetatags,
-          defaultBlacklistedTags: [],
-          r18Tags: [],
+          defaultBlacklistedTags: {},
+          r18Tags: {},
         ),
       );
 
@@ -64,8 +64,8 @@ void main() {
         ':p',
         TagInfo(
           metatags: _defaultMetatags,
-          defaultBlacklistedTags: [],
-          r18Tags: [],
+          defaultBlacklistedTags: {},
+          r18Tags: {},
         ),
       );
 
@@ -83,8 +83,8 @@ void main() {
         '-tag',
         TagInfo(
           metatags: _defaultMetatags,
-          defaultBlacklistedTags: [],
-          r18Tags: [],
+          defaultBlacklistedTags: {},
+          r18Tags: {},
         ),
       );
 
@@ -102,8 +102,8 @@ void main() {
         'foo:tag',
         TagInfo(
           metatags: _defaultMetatags,
-          defaultBlacklistedTags: [],
-          r18Tags: [],
+          defaultBlacklistedTags: {},
+          r18Tags: {},
         ),
       );
 
@@ -122,8 +122,8 @@ void main() {
         'foo:>10',
         TagInfo(
           metatags: _defaultMetatags,
-          defaultBlacklistedTags: [],
-          r18Tags: [],
+          defaultBlacklistedTags: {},
+          r18Tags: {},
         ),
       );
 
@@ -142,8 +142,8 @@ void main() {
         'wrong:tag',
         TagInfo(
           metatags: _defaultMetatags,
-          defaultBlacklistedTags: [],
-          r18Tags: [],
+          defaultBlacklistedTags: {},
+          r18Tags: {},
         ),
       );
 

@@ -57,15 +57,17 @@ class DownloadNotifications {
     //TODO: implement custom notification for windows
     if (isWindows()) return;
 
-    final androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      title,
-      title,
+    const androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      'download',
+      'Download',
       playSound: false,
       enableVibration: false,
+      category: AndroidNotificationCategory.progress,
     );
-    final platformChannelSpecifics = NotificationDetails(
+
+    const platformChannelSpecifics = NotificationDetails(
       android: androidPlatformChannelSpecifics,
-      iOS: const DarwinNotificationDetails(
+      iOS: DarwinNotificationDetails(
         presentSound: false,
       ),
     );

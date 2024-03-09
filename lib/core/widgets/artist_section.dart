@@ -27,7 +27,7 @@ class ArtistSection extends StatefulWidget {
   });
 
   final ArtistCommentary commentary;
-  final List<String> artistTags;
+  final Set<String> artistTags;
   final PostSource source;
 
   @override
@@ -46,7 +46,7 @@ class _ArtistSectionState extends State<ArtistSection> {
   }
 
   ArtistCommentary get commentary => widget.commentary;
-  List<String> get artistTags => widget.artistTags;
+  Set<String> get artistTags => widget.artistTags;
 
   @override
   Widget build(BuildContext context) {
@@ -132,7 +132,7 @@ class _Link extends StatelessWidget {
 
   final ArtistCommentary commentary;
   final TranlationState display;
-  final List<String> artistTags;
+  final Set<String> artistTags;
   final String? url;
   final void Function(TranlationState state) onChanged;
 

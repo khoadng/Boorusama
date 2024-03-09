@@ -23,7 +23,7 @@ User userDtoToUser(
 
 UserSelf userDtoToUserSelf(
   UserSelfDto d,
-  List<String> defaultBlacklistedTags,
+  Set<String> defaultBlacklistedTags,
 ) {
   return UserSelf(
     id: d.id ?? 0,

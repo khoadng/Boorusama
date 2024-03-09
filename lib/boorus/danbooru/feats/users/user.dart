@@ -83,7 +83,7 @@ extension UserX on User {
 typedef UserId = int;
 typedef Username = String;
 
-List<String> tagStringToListTagString(String str) => str.split('\n');
+Set<String> tagStringToListTagString(String str) => str.split('\n').toSet();
 
 Future<List<User>> Function(List<Favorite> favs) createUserWith(
   UserRepository userRepository,
