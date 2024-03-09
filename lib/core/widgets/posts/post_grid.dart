@@ -262,6 +262,7 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
 
   Future<void> _countTags() async {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (!mounted) return;
       ref.read(_tagCountProvider.notifier).count(
             controller.items,
             filters.keys,

@@ -21,17 +21,28 @@ class TagOtherNames extends StatelessWidget {
   Widget build(BuildContext context) {
     return Screen.of(context).size == ScreenSize.small
         ? otherNames != null
-            ? Container(
-                margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                height: 32,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: otherNames!.length,
-                  itemBuilder: (context, index) =>
-                      OtherNameChip(otherName: otherNames![index]),
-                ),
-              )
-            : const TagChipsPlaceholder(height: 42, itemCount: 4)
+            ? otherNames!.length > 4
+                ? Container(
+                    margin:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    height: 32,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: otherNames!.length,
+                      itemBuilder: (context, index) =>
+                          OtherNameChip(otherName: otherNames![index]),
+                    ),
+                  )
+                : Wrap(
+                    spacing: 4,
+                    runSpacing: 6,
+                    alignment: WrapAlignment.center,
+                    runAlignment: WrapAlignment.center,
+                    children: otherNames!
+                        .map((e) => OtherNameChip(otherName: e))
+                        .toList(),
+                  )
+            : const TagChipsPlaceholder(height: 42, itemCount: 10)
         : SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 2),
