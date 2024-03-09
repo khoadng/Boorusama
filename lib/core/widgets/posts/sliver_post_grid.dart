@@ -183,6 +183,7 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
     final gridSize = ref.watch(gridSizeSettingsProvider);
     final imageGridSpacing = ref.watch(gridSpacingSettingsProvider);
     final imageBorderRadius = ref.watch(imageBorderRadiusSettingsProvider);
+    final imageGridAspectRatio = ref.watch(gridAspectRatioSettingsProvider);
 
     return Builder(
       builder: (context) {
@@ -194,7 +195,7 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
         return switch (imageListType) {
           ImageListType.standard => SliverGrid(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                childAspectRatio: 0.65,
+                childAspectRatio: imageGridAspectRatio,
                 crossAxisCount: crossAxisCount,
                 mainAxisSpacing: imageGridSpacing,
                 crossAxisSpacing: imageGridSpacing,
