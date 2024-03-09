@@ -25,6 +25,8 @@ import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/lazy_indexed_stack.dart';
 
+const double _kDefaultMenuSize = 280;
+
 class BooruScope extends ConsumerStatefulWidget {
   const BooruScope({
     super.key,
@@ -137,6 +139,24 @@ class BooruDesktopScope extends ConsumerStatefulWidget {
 }
 
 class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
+  final splitController = MultiSplitViewController(
+    areas: [
+      Area(
+        minimalSize: kMinSideBarWidth,
+        size: _kDefaultMenuSize,
+      ),
+      Area(
+        minimalSize: 500,
+      ),
+    ],
+  );
+
+  @override
+  void dispose() {
+    splitController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final content = Builder(
@@ -222,24 +242,59 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
                       ),
               ),
               child: MultiSplitView(
+                controller: splitController,
+                onDividerDoubleTap: (divider) {
+                  setState(() {
+                    if (menuWidth == kMinSideBarWidth) {
+                      _setDefaultSplit();
+                    } else if (menuWidth <= _kDefaultMenuSize) {
+                      _setMinSplit();
+                    } else {
+                      _setDefaultSplit();
+                    }
+                  });
+                },
                 axis: Axis.horizontal,
-                initialAreas: [
-                  Area(
-                    minimalSize: kMinSideBarWidth,
-                    size: 280,
-                  ),
-                  Area(
-                    minimalSize: 500,
-                  ),
-                ],
                 children: [
-                  menu,
+                  LayoutBuilder(
+                    builder: (_, c) {
+                      // no need to set state here, just a quick hack to get the current width of the menu
+                      menuWidth = c.maxWidth;
+                      return menu;
+                    },
+                  ),
                   content,
                 ],
               ),
             ),
     );
   }
+
+  void _setMinSplit() {
+    splitController.areas = [
+      Area(
+        minimalSize: kMinSideBarWidth,
+        size: kMinSideBarWidth,
+      ),
+      Area(
+        minimalSize: 500,
+      ),
+    ];
+  }
+
+  void _setDefaultSplit() {
+    splitController.areas = [
+      Area(
+        minimalSize: kMinSideBarWidth,
+        size: _kDefaultMenuSize,
+      ),
+      Area(
+        minimalSize: 500,
+      ),
+    ];
+  }
+
+  var menuWidth = _kDefaultMenuSize;
 }
 
 class BooruMobileScope extends ConsumerWidget {
@@ -363,5 +418,6 @@ List<Widget> coreDesktopTabBuilder(
       title: 'sideMenu.settings'.tr(),
       onTap: () => context.go('/settings'),
     ),
+    const SizedBox(height: 8),
   ];
 }
