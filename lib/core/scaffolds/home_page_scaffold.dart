@@ -14,6 +14,7 @@ import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/pages/blacklists/blacklisted_tag_page.dart';
 import 'package:boorusama/core/pages/bookmarks/bookmark_page.dart';
 import 'package:boorusama/core/pages/downloads/bulk_download_page.dart';
+import 'package:boorusama/core/pages/favorite_tags/favorite_tags_page.dart';
 import 'package:boorusama/core/widgets/booru_scope.dart';
 import 'package:boorusama/core/widgets/home_navigation_tile.dart';
 import 'package:boorusama/foundation/i18n.dart';
@@ -93,6 +94,14 @@ class _HomePageScaffoldState extends ConsumerState<HomePageScaffold> {
           value: 3,
           controller: controller,
           constraints: constraints,
+          selectedIcon: Symbols.tag,
+          icon: Symbols.tag,
+          title: 'Favorite tags',
+        ),
+        HomeNavigationTile(
+          value: 4,
+          controller: controller,
+          constraints: constraints,
           selectedIcon: Symbols.download,
           icon: Symbols.download,
           title: 'sideMenu.bulk_download'.tr(),
@@ -112,6 +121,7 @@ class _HomePageScaffoldState extends ConsumerState<HomePageScaffold> {
         DesktopHomePageScaffold(),
         BookmarkPage(),
         BlacklistedTagPage(),
+        FavoriteTagsPage(),
         BulkDownloadPage(),
       ],
     );

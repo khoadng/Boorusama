@@ -12,6 +12,7 @@ import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/pages/blacklists/blacklisted_tag_page.dart';
 import 'package:boorusama/core/pages/bookmarks/bookmark_page.dart';
 import 'package:boorusama/core/pages/downloads/bulk_download_page.dart';
+import 'package:boorusama/core/pages/favorite_tags/favorite_tags_page.dart';
 import 'package:boorusama/core/pages/home/side_menu_tile.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/infinite_post_list_scaffold.dart';
@@ -142,6 +143,14 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
           value: 5,
           controller: controller,
           constraints: constraints,
+          selectedIcon: Symbols.tag,
+          icon: Symbols.tag,
+          title: 'Favorite tags',
+        ),
+        HomeNavigationTile(
+          value: 6,
+          controller: controller,
+          constraints: constraints,
           selectedIcon: Symbols.download,
           icon: Symbols.download,
           title: 'sideMenu.bulk_download'.tr(),
@@ -163,6 +172,7 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
         MoebooruPopularRecentPage(),
         BookmarkPage(),
         BlacklistedTagPage(),
+        FavoriteTagsPage(),
         BulkDownloadPage(),
       ],
     );
