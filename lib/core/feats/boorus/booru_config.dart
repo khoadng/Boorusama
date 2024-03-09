@@ -261,6 +261,7 @@ extension BooruConfigX on BooruConfig {
       switch (defaultPreviewImageButtonAction) {
         kDownloadAction => ImageQuickActionType.download,
         kToggleBookmarkAction => ImageQuickActionType.bookmark,
+        kViewArtistAction => ImageQuickActionType.artist,
         '' => ImageQuickActionType.none,
         _ => ImageQuickActionType.defaultAction,
       };
@@ -271,4 +272,5 @@ enum ImageQuickActionType {
   defaultAction,
   download,
   bookmark,
+  artist,
 }

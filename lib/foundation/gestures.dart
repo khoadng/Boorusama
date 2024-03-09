@@ -167,6 +167,7 @@ const kToggleFavoriteAction = 'toggleFavorite';
 const kUpvoteAction = 'upvote';
 const kDownvoteAction = 'downvote';
 const kEditAction = 'edit';
+const kViewArtistAction = 'viewArtist';
 
 const kDefaultAction = 'default';
 
@@ -194,6 +195,7 @@ String describeDefaultGestureAction(String? action) => switch (action) {
 String describeImagePreviewQuickAction(String? action) => switch (action) {
       kDownloadAction => 'Download',
       kToggleBookmarkAction => 'Bookmark',
+      kViewArtistAction => 'Artist',
       '' => 'None',
       _ => 'Use Default'
     };

@@ -608,20 +608,52 @@ String Function(
 
 Widget Function(
   BuildContext context,
+  BoxConstraints constraints,
 )? defaultImagePreviewButtonBuilder(
   WidgetRef ref,
   Post post,
 ) =>
     switch (ref.watchConfig.defaultPreviewImageButtonActionType) {
-      ImageQuickActionType.bookmark => (context) =>
+      ImageQuickActionType.bookmark => (context, _) =>
           BookmarkPostLikeButtonButton(
             post: post,
           ),
-      ImageQuickActionType.download => (context) => DownloadPostButton(
+      ImageQuickActionType.download => (context, _) => DownloadPostButton(
             post: post,
             small: true,
           ),
-      ImageQuickActionType.none => (context) => const SizedBox.shrink(),
+      ImageQuickActionType.artist => (context, constraints) => Builder(
+            builder: (context) {
+              final artist =
+                  post.artistTags != null && post.artistTags!.isNotEmpty
+                      ? chooseArtistTag(post.artistTags!)
+                      : null;
+              if (artist == null) return const SizedBox.shrink();
+
+              return SizedBox(
+                width: constraints.maxWidth * 0.9,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Flexible(
+                      child: PostTagListChip(
+                        tag: Tag(
+                          name: artist,
+                          category: TagCategory.artist,
+                          postCount: 0,
+                        ),
+                        onTap: () => goToArtistPage(
+                          context,
+                          artist,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+      ImageQuickActionType.none => (context, _) => const SizedBox.shrink(),
       ImageQuickActionType.defaultAction => null,
     };
 
