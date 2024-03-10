@@ -1,429 +1,429 @@
 {
     "generic": {
-        "done": "",
+        "done": "เสร็จ",
         "errors": {
-            "no_data": "",
-            "unknown": ""
+            "no_data": "ไม่มีข้อมูลในขณะนี้",
+            "unknown": "มีบางอย่างผิดปรกติ"
         },
         "action": {
-            "add": "",
-            "delete": "",
-            "edit": "",
-            "ok": "",
-            "cancel": ""
+            "add": "เพิ่ม",
+            "delete": "ลบ",
+            "edit": "แก้ไข",
+            "ok": "ตกลง",
+            "cancel": "ยกเลิก"
         },
-        "view": ""
+        "view": "ดู"
     },
     "profile": {
-        "favorites": ""
+        "favorites": "รายการโปรด"
     },
     "network": {
-        "unavailable": ""
+        "unavailable": "ระบบเน็ตไม่พร้อมใช้งาน"
     },
     "tag": {
         "related": {
-            "more": "",
-            "related": "",
-            "add_to_current_search": "",
-            "open_wiki": ""
+            "more": "เพื่มเติม",
+            "related": "ที่เกี่ยวข้อง",
+            "add_to_current_search": "เพิ่มเข้าในการค้นหาปัจจุบัน",
+            "open_wiki": "เปิดดูในคลังวิกิ"
         },
         "explore": {
-            "new": "",
-            "popular": ""
+            "new": "ใหม่ๆ",
+            "popular": "ยอดนิยม"
         }
     },
     "post": {
         "detail": {
-            "view": "",
-            "view_in_browser": "",
-            "file_details": "",
-            "size": "",
-            "resolution": "",
-            "rating": "",
-            "file_format": "",
+            "view": "ดูรายละเอียด",
+            "view_in_browser": "ดูรายละเอียดบนเบราเซอร์",
+            "file_details": "รายละเอียดไฟล์",
+            "size": "ขนาด",
+            "resolution": "ขนาดความละเอียด",
+            "rating": "การโหวต",
+            "file_format": "ประเภทไฟล์",
             "share": {
-                "source": "",
-                "booru": "",
-                "image": ""
+                "source": "แชร์ลิงค์ต้นทาง",
+                "booru": "แชร์ลิงค์จากเว็บ Booru",
+                "image": "แชร์ภาพ"
             },
-            "copied": "",
-            "show_original": "",
-            "show_translated": "",
-            "login_required_notice": "",
-            "open_wiki": "",
-            "add_to_blacklist": "",
-            "add_to_favorites": "",
-            "copy_and_open_saved_search": "",
+            "copied": "คัดลอกเรียบร้อย",
+            "show_original": "แสดงขนาดต้นฉบับ",
+            "show_translated": "แสดงที่แปลมาแล้ว",
+            "login_required_notice": "คุณต้องเข้าสู่ระบบก่อนเพื่อดำเนินการ",
+            "open_wiki": "เปิดคลังวิกิ",
+            "add_to_blacklist": "เพิ่มเป็นคำต้องห้ามแสดง",
+            "add_to_favorites": "เพิ่มเป็นรายการโปรด",
+            "copy_and_open_saved_search": "คัดลอกและเปิดการค้นหาที่บันทึกไว้",
             "score": {
-                "one": "",
-                "other": ""
+                "one": "คะแนน",
+                "other": "คะแนน"
             },
-            "source_label": "",
-            "related_posts": "",
-            "add_to_bookmark": "",
-            "remove_from_bookmark": ""
+            "source_label": "แหล่งที่มา",
+            "related_posts": "โพสต์ที่เกี่ยวข้อง",
+            "add_to_bookmark": "เพิ่มเข้าในบุ๊กมาร์ก",
+            "remove_from_bookmark": "ลบออกจากบุ๊กมาร์ก"
         },
         "parent_child": {
-            "children_of": ""
+            "children_of": "โพสต์ของภายใต้"
         },
         "action": {
-            "preview": "",
-            "view_comments": "",
-            "add_to_favorite_group": "",
-            "select": ""
+            "preview": "แสดงตัวอย่าง",
+            "view_comments": "ดูความคิดเห็น",
+            "add_to_favorite_group": "เพิ่มเข้าในกลุ่มรายการโปรด",
+            "select": "เลือก"
         },
         "image_fullview": {
-            "view_original": "",
-            "view_resized": ""
+            "view_original": "ดูขนาดต้นฉบับ",
+            "view_resized": "ดูขนาดที่ย่อแล้ว"
         }
     },
     "comment": {
-        "comments": "",
+        "comments": "ความคิดเห็น",
         "create": {
-            "hint": "",
-            "loading": "",
-            "error": ""
+            "hint": "ความคิดเห็น",
+            "loading": "โปรดรอสักครู่...",
+            "error": "พบข้อผิดพลาด"
         },
         "list": {
-            "edit": "",
-            "reply": "",
-            "reply_to": "",
-            "delete": "",
-            "noComments": "",
-            "last_updated": "",
-            "send": ""
+            "edit": "แก้ไข",
+            "reply": "ตอบกลับ",
+            "reply_to": "กำลังตอบกลับถึง",
+            "delete": "ลบ",
+            "noComments": "ไม่มีการแสดงความคิดเห็น",
+            "last_updated": "แก้ไขล่าสุด",
+            "send": "ส่ง"
         },
         "counter": {
-            "one": "",
-            "other": ""
+            "one": "ความคิดเห็น",
+            "other": "ความคิดเห็น"
         }
     },
     "explore": {
-        "latest": "",
-        "popular": "",
-        "hot": "",
-        "most_viewed": "",
-        "see_more": ""
+        "latest": "ใหม่ล่าสุด",
+        "popular": "ยอดนิยม",
+        "hot": "ร้องแรงอย่างสุด",
+        "most_viewed": "ดูเยอะที่สุด",
+        "see_more": "ดูเพิ่มเติม"
     },
     "search": {
         "errors": {
-            "generic": "",
-            "tag_limit": "",
-            "database_timeout": "",
-            "rate_limited": "",
-            "pagination_limit": "",
-            "max_capacity": "",
-            "down": "",
-            "access_denied": "",
-            "forbidden": "",
-            "unknown": ""
+            "generic": "มีบางอย่างแปลกๆ",
+            "tag_limit": "การเพิ่มแท็กเกินลิมิตที่กำหนดแล้ว โปรดอัปเกรดบัญชีของคุณเพื่อเพิ่มแท็กค้นหาได้มากขึ้นในการค้นหาครั้งเดียว",
+            "database_timeout": "การค้นหาของคุณใช้เวลาหานานเกินไป และการค้นหาถูกยกเลิกแล้ว",
+            "rate_limited": "คุณใช้งานเกินลิมิตที่กำหนด กรุณาลองอีกครั้งในภายหลัง",
+            "pagination_limit": "คุณเลื่อนการค้นหาเกินจำนวนที่กำหนด นั้นแปลว่าคุณไม่สามารถเลื่อนหาได้มากกว่านี้แล้ว",
+            "max_capacity": "ขณะนี้มีการใช้งานเซิร์ฟเวอร์เข้ามาเป็นจำนวนมาก และไม่สามารถดำเนินการตามที่ขอไว้ได้ โปรดลองอีกครั้งในภายหลัง",
+            "down": "ขณะนี้เซิร์ฟเวอร์ล่ม โปรดลองอีกครั้งในภายหลัง",
+            "access_denied": "ไม่มีสิทธิ์เข้าถึง",
+            "forbidden": "การยืนยันใบรับรองล้มเหลว",
+            "unknown": "เกิดข้อผิดพลาดของระบบที่ไม่สามารถระบุได้ โปรดติดต่อและรายงานปัญหานี้กับทางนักพัฒนา"
         },
-        "hint": "",
-        "no_result": "",
-        "empty": "",
-        "search_options": "",
-        "metatags_notice": "",
+        "hint": "ค้นหา...",
+        "no_result": "พวกเราได้ค้นหาในทุกๆทางและในหลายๆท่าแล้ว แต่ไม่พบการค้นหา",
+        "empty": "ไม่มี ไม่มีเลยเจ้าค่ะ",
+        "search_options": "ตัวเลือกในการค้นหา",
+        "metatags_notice": "Metatag ที่มีให้ฟรี และมีมาให้จะไม่ถูกนับรวมกับลิมิตการค้นหาด้วยแท็ก",
         "history": {
-            "history": "",
-            "clear": "",
-            "recent": ""
+            "history": "ประวัติ",
+            "clear": "ล้างประวัติ",
+            "recent": "การค้นหาล่าสุด"
         },
-        "trending": "",
-        "remove_all_selected": "",
+        "trending": "กำลังเป็นที่นิยม",
+        "remove_all_selected": "ลบแท็กที่เลือกไว้ทั้งหมด",
         "result_counter": {
-            "one": "",
-            "other": ""
+            "one": "พบ {} รายการ",
+            "other": "พบ {} รายการ"
         },
-        "no_result_notice": "",
-        "search_in_progress_notice": ""
+        "no_result_notice": "ไม่พบรายการ",
+        "search_in_progress_notice": "กำลังค้นหา..."
     },
     "pool": {
-        "pool": "",
-        "pool_gallery": "",
+        "pool": "อัลบั้ม",
+        "pool_gallery": "แกลลอรี่อัลบั้ม",
         "order": {
-            "recent": "",
-            "new": "",
-            "post_count": "",
-            "name": ""
+            "recent": "ล่าสุด",
+            "new": "ใหม่",
+            "post_count": "จำนวนโพสต์",
+            "name": "ชื่อ"
         },
         "category": {
-            "series": "",
-            "collection": ""
+            "series": "ซีรี่ย์",
+            "collection": "คอลเลกชัน"
         },
         "search": {
-            "hint": ""
+            "hint": "ค้นหาอัลบั้ม"
         },
         "detail": {
-            "last_updated": ""
+            "last_updated": "อัปเดตล่าสุด"
         }
     },
     "settings": {
-        "settings": "",
-        "app_settings": "",
+        "settings": "การตั้งค่า",
+        "app_settings": "การตั้งค่าแอป",
         "appearance": {
-            "appearance": "",
-            "show_scores": ""
+            "appearance": "รูปร่างหน้าตา",
+            "show_scores": "แสดงคะแนน"
         },
-        "general": "",
+        "general": "ทั่วไป",
         "search": {
-            "search": "",
-            "auto_focus_search_bar": ""
+            "search": "การค้นหา",
+            "auto_focus_search_bar": "ปรับให้โฟกัสแถบค้นหาอัตโนมัติเมื่อแตะการค้นหาในครั้งแรก"
         },
-        "information": "",
-        "changelog": "",
-        "infinite_scroll_warning": "",
+        "information": "ข้อมูลแอป",
+        "changelog": "ประวัติการอัปเดต",
+        "infinite_scroll_warning": "อาจทำให้แอปค้างได้ หากคุณใช้เวลาเลื่อนหานานๆ",
         "result_layout": {
-            "result_layout": "",
-            "infinite_scroll": "",
-            "pagination": ""
+            "result_layout": "โหมดแสดงผล",
+            "infinite_scroll": "การเลื่อนแบบไม่สิ้นสุด",
+            "pagination": "แบ่งเป็นหน้าๆ"
         },
         "image_list": {
-            "image_list": "",
-            "standard": "",
-            "masonry": ""
+            "image_list": "การแสดงผลภาพ",
+            "standard": "มาตรฐาน",
+            "masonry": "กำแพงอิฐ"
         },
         "image_grid": {
-            "image_grid": "",
+            "image_grid": "การจัดองค์ประกอบของภาพ",
             "grid_size": {
-                "grid_size": "",
-                "small": "",
-                "medium": "",
-                "large": ""
+                "grid_size": "ขนาด",
+                "small": "เล็ก",
+                "medium": "กลาง",
+                "large": "ใหญ่"
             },
             "image_quality": {
-                "image_quality": "",
-                "high_quality_notice": "",
-                "high": "",
-                "low": "",
-                "original": "",
-                "automatic": "",
-                "highest": ""
+                "image_quality": "คุณภาพของภาพ",
+                "high_quality_notice": "การคุณภาพสูงสุงจะทำให้ใช้เวลาโหลดภาพนานขึ้น",
+                "high": "สูง",
+                "low": "ต่ำ",
+                "original": "ต้นฉบับ",
+                "automatic": "ปรับอัตโนมัติ",
+                "highest": "สูงที่สุด"
             },
-            "spacing": "",
-            "corner_radius": ""
+            "spacing": "การเว้นระยะ",
+            "corner_radius": "ความมนโค้งของมุม"
         },
         "image_viewer": {
-            "image_viewer": "",
-            "full_res_as_default": "",
-            "full_res_notice": ""
+            "image_viewer": "โปรแกรมในการดูภาพ",
+            "full_res_as_default": "แสดงภาพขนาดเต็มเป็นค่าเริ่มต้น",
+            "full_res_notice": "จะใช้เวลาในการโหลดนานขึ้น ขึ้นอยู่กับขนาดของรูปภาพ"
         },
         "image_detail": {
-            "image_detail": ""
+            "image_detail": "รายละเอียดภาพ"
         },
         "language": {
-            "language": "",
-            "language_name": ""
+            "language": "ภาษา",
+            "language_name": "English"
         },
         "theme": {
-            "theme": "",
-            "dark": "",
-            "light": "",
-            "amoled_dark": ""
+            "theme": "ธีม",
+            "dark": "มืด",
+            "light": "สว่าง",
+            "amoled_dark": "มืดแบบ AMOLED"
         },
         "privacy": {
-            "privacy": "",
-            "send_error_data_notice": ""
+            "privacy": "ความเป็นส่วนตัว",
+            "send_error_data_notice": "ส่งข้อมูลที่ไม่ระบุตัวตนสำหรับข้อมูลข้อผิดพลาดต่างๆ"
         },
         "performance": {
-            "performance": "",
-            "posts_per_page": "",
-            "posts_per_page_explain": "",
-            "cache_size": "",
-            "clear_cache": "",
-            "cache_size_info": ""
+            "performance": "ประสิทธิภาพ",
+            "posts_per_page": "รายการโพสต์ต่อหนึ่งหน้า",
+            "posts_per_page_explain": "จำนวนตัวอย่างภาพที่จะแสดงในหนึ่งๆหน้า",
+            "cache_size": "ขนาดไฟล์แคช",
+            "clear_cache": "ล้างไฟล์แคช",
+            "cache_size_info": "ขนาด {0} MB ใน {1} ไฟล์"
         },
         "debug_logs": {
-            "debug_logs": "",
-            "logs_copied": ""
+            "debug_logs": "รายการ Debug",
+            "logs_copied": "คัดลอกประวัติไว้ในคลิปบอร์ดเรียบร้อยแล้ว"
         },
         "download": {
-            "path": "",
-            "select_a_folder": "",
-            "quality": "",
+            "path": "เส้นทางที่เก็บดาวน์โหลด",
+            "select_a_folder": "เลือกโฟลเดอร์",
+            "quality": "คุณภาพในการดาวน์โหลดภาพ",
             "qualities": {
-                "original": "",
-                "sample": "",
-                "preview": ""
+                "original": "ขนาดต้นฉบับ",
+                "sample": "ขนาดตัวอย่าง",
+                "preview": "ขนาดที่แสดงผล"
             }
         },
-        "help_us_translate": "",
-        "other_settings": ""
+        "help_us_translate": "ช่วยพวกเราในการแปลภาษา",
+        "other_settings": "การตั้งค่าอื่นๆ"
     },
     "blacklisted_tags": {
-        "remove": "",
-        "edit": "",
-        "blacklisted_tags": "",
-        "load_error": "",
-        "updated": "",
+        "remove": "ลบ",
+        "edit": "แก้ไข",
+        "blacklisted_tags": "แท็กต้องห้าม",
+        "load_error": "การโหลดรายการแท็กต้องห้ามล้มเหลว",
+        "updated": "แท็กต้องห้ามได้อัปเดตแล้ว",
         "limitation_notice": "",
-        "failed_to_add": "",
-        "failed_to_remove": ""
+        "failed_to_add": "ไม่สามารถเพิ่มแท็กได้",
+        "failed_to_remove": "ไม่สามารถลบแท็กได้"
     },
     "download": {
-        "download": "",
-        "bulk_download": "",
-        "bulk_download_tag_confirmation": "",
-        "bulk_download_save_to_folder": "",
-        "bulk_download_total_count": "",
-        "bulk_download_done_count": "",
-        "bulk_download_done_confirm": "",
-        "bulk_download_cancel": "",
-        "bulk_download_duplicate": "",
-        "bulk_download_invalid_folder_name_error": "",
-        "bulk_download_folder_select_warning": "",
-        "bulk_download_select_a_folder": "",
+        "download": "ดาวน์โหลด",
+        "bulk_download": "การดาวน์โหลดเป็นชุด",
+        "bulk_download_tag_confirmation": "แท็กที่อยู่ด้านล่างนี้จะถูกดาวน์โหลดทั้งหมด",
+        "bulk_download_save_to_folder": "บันทึกไปที่โฟลเดอร์",
+        "bulk_download_total_count": "จำนวนทั้งหมด",
+        "bulk_download_done_count": "เสร็จสิ้นแล้ว",
+        "bulk_download_done_confirm": "เสร็จ",
+        "bulk_download_cancel": "ยกเลิก",
+        "bulk_download_duplicate": "ซ้ำกัน",
+        "bulk_download_invalid_folder_name_error": "โฟลเดอร์จะต้องไม่มีตัวอักษรตามที่ระบุดังนี้: ",
+        "bulk_download_folder_select_warning": "แอปสามารถบันทึกไฟล์ไว้ในโฟลเดอร์ที่เข้าถึงได้อย่างสาธารณะได้แก่ <b>({0})</b> ในตั้งแต่ Android เวอร์ชั่น 11 เป็นต้นไป <div>และไม่รองรับการบันทึกไฟล์ลงเมมโมรี่การ์ด (SD การ์ด) ด้วยเช่นกัน</div> <div>โปรดเลือกที่จะบันทึกในที่อื่น</div> <div>อุปกรณ์นี้ใช้งาน Android เวอร์ชั่น {1}</div>",
+        "bulk_download_select_a_folder": "เลือกโฟลเดอร์",
         "bulk_download_downloaded_counter": {
-            "one": "",
-            "other": ""
+            "one": "ดาวน์โหลดภาพจำนวน {} ภาพเรียบร้อย",
+            "other": "ดาวน์โหลดภาพจำนวน {} ภาพเรียบร้อย"
         },
         "bulk_download_skipped_counter": {
-            "one": "",
-            "other": ""
+            "one": "มีภาพจำนวน {} ภาพที่ถูกข้าม",
+            "other": "มีภาพจำนวน {} ภาพที่ถูกข้าม"
         },
-        "bulk_download_download_more": "",
-        "open_app_settings": "",
-        "storage_permission_explanation": "",
-        "app_restart_request": "",
+        "bulk_download_download_more": "ดาวน์โหลดเพิ่มเติม",
+        "open_app_settings": "ตั้งค่าการเปิด",
+        "storage_permission_explanation": "จำเป็นต้องให้การอนุญาตเข้าถึงพื้นที่จัดเก็บบนเครื่องเพื่อบันทึกไฟล์ที่ดาวน์โหลด",
+        "app_restart_request": "คุณจำเป็นต้องรีสตาร์ทแอปเพื่อให้การเปลี่ยนแปลงนี้มีผล",
         "image_counter": {
-            "one": "",
-            "other": ""
+            "one": "ดาวน์โหลดภาพจำนวน {} ภาพ",
+            "other": "ดาวน์โหลดภาพจำนวน {} ภาพ"
         },
         "bulk": {
-            "all_done_notification_message": ""
+            "all_done_notification_message": "การดาวน์โหลดทั้งหมดเสร็จเรียบร้อย"
         }
     },
     "saved_search": {
-        "saved_search": "",
+        "saved_search": "การค้นหาที่บันทึกไว้",
         "saved_search_counter": {
-            "one": "",
-            "other": ""
+            "one": "การค้นหา {} รายการ",
+            "other": "การค้นหา {} รายการ"
         },
-        "add_saved_search": "",
-        "saved_search_added": "",
-        "empty_saved_search": "",
-        "update_saved_search": "",
-        "saved_search_updated": "",
-        "saved_search_feed": "",
-        "saved_search_help": "",
-        "saved_search_examples": "",
-        "saved_search_try": "",
+        "add_saved_search": "บันทึกการค้นหา",
+        "saved_search_added": "คำค้นหาถูกบันทึกเรียบร้อย",
+        "empty_saved_search": "คุณยังไม่ได้เพิ่มคำค้นหาที่ต้องการ",
+        "update_saved_search": "อัปเดตคำค้นหาที่บันทึก",
+        "saved_search_updated": "อัปเดตคำค้นหาที่บันทึกไว้เรียบร้อย",
+        "saved_search_feed": "หน้าฟีด",
+        "saved_search_help": "นี้คืออะไรนะ?",
+        "saved_search_examples": "ตัวอย่าง",
+        "saved_search_try": "ลองสิ",
         "saved_search_query": "",
-        "saved_search_labels": "",
-        "saved_search_labels_description": ""
+        "saved_search_labels": "ป้ายกำกับ*",
+        "saved_search_labels_description": "*เป็นรายการของแท็กที่ช่วยให้จัดกลุ่มในการค้นหา คั่นกลางด้วยการเว้นวรรค"
     },
     "favorites": {
         "counter": {
-            "one": "",
-            "other": ""
+            "one": "รายการโปรด",
+            "other": "รายการโปรด"
         },
         "favorited": "",
         "favorite": "",
         "unfavorited": "",
         "unfavorite": "",
-        "failed_to_unfavorite": "",
-        "failed_to_favorite": ""
+        "failed_to_unfavorite": "ไม่สามารถยกเลิกรายการโปรดโพสต์นี้ได้",
+        "failed_to_favorite": "ไม่สามารถบันทึกเป็นรายการโปรดโพสต์นี้ได้"
     },
     "favorite_groups": {
-        "favorite_groups": "",
-        "empty_group_notice": "",
-        "create_group": "",
-        "edit_group": "",
-        "add_to_group_dialog_title": "",
-        "add_to": "",
-        "create": "",
-        "private": "",
-        "view_more_popup": "",
-        "items_added_notification_popup": "",
-        "group_name": "",
-        "group_name_hint": "",
-        "all_posts": "",
-        "initial_posts_hint": "",
-        "is_private_group_option": "",
-        "create_group_cancel": "",
-        "create_group_confirm": "",
-        "max_limit_warning": "",
-        "duplicate_items_warning_notification": "",
-        "detete_confirmation": "",
+        "favorite_groups": "กลุ่มรายการโปรด",
+        "empty_group_notice": "ไม่มีกลุ่มรายการโปรด",
+        "create_group": "สร้างกลุ่มรายการโปรด",
+        "edit_group": "แก้ไขกลุ่ม",
+        "add_to_group_dialog_title": "เพิ่มเข้าไว้ในกลุ่มรายการโปรด",
+        "add_to": "เพิ่มเข้าไปที่",
+        "create": "สร้าง",
+        "private": "ส่วนตัว",
+        "view_more_popup": "ดู",
+        "items_added_notification_popup": "โพสต์จำนวน {0} ถูกเพิ่มเข้าไปที่ {1}",
+        "group_name": "ชื่อกลุ่ม",
+        "group_name_hint": "กลุ่มใหม่",
+        "all_posts": "โพสต์",
+        "initial_posts_hint": "ระบุเลข ID แยกหมายเลขกันโดยเว้นวรรค์ (ไม่สำคัญ)",
+        "is_private_group_option": "กลุ่มส่วนตัว",
+        "create_group_cancel": "ยกเลิก",
+        "create_group_confirm": "ตกลง",
+        "max_limit_warning": "สมาชิกสามารถสร้างกลุ่มรายการโปรดได้ 10 กลุ่มเท่านั้น",
+        "duplicate_items_warning_notification": "โพสต์ที่เพิ่มมามีอยู่แล้วในกลุ่มนี้",
+        "detete_confirmation": "คุณยืนยันที่จะลบกลุ่มรายการโปรดนี้จริงๆใช้ไหม",
         "group_item_counter": {
-            "one": "",
-            "other": ""
+            "one": "{} โพสต์",
+            "other": "{} โพสต์"
         }
     },
     "favorite_tags": {
-        "favorites": "",
-        "or": "",
-        "import": "",
-        "import_hint": "",
-        "cancel": "",
-        "export": "",
-        "export_notification": ""
+        "favorites": "รายการโปรด",
+        "or": "หรือ",
+        "import": "นำเข้า",
+        "import_hint": "ใส่คำเฉพาะของแท็กของคุณที่นี่ แยกคำโดยการเว้นวรรค",
+        "cancel": "ยกเลิก",
+        "export": "นำออก",
+        "export_notification": "คัดลอกคำเฉพาะของแท็กไว้ในคลิปบอร์ดเรียบร้อย"
     },
     "rating": {
-        "rate_request": "",
-        "rate": "",
-        "cancel": "",
-        "later": "",
-        "rationale": ""
+        "rate_request": "ให้คะแนนกับแอปนี้",
+        "rate": "ให้คะแนน",
+        "cancel": "ไม่เป็นไร",
+        "later": "ไว้ทีหลัง",
+        "rationale": "หากคุณชอบแอปนี้ ขอเวลาเพียงนิดเดียวรีวิวให้กับแอปนี้ด้วยนะ\nใช้เวลาไม่นานจริงๆนะ แถมยังช่วยพัฒนาโปรเจคนี้ด้วย"
     },
     "sideMenu": {
-        "settings": "",
-        "your_bookmarks": "",
-        "your_blacklist": "",
-        "bulk_download": ""
+        "settings": "การตั้งค่า",
+        "your_bookmarks": "บุ๊กมาร์กของคุณ",
+        "your_blacklist": "คำต้องห้ามของคุณ",
+        "bulk_download": "การดาวน์โหลดเป็นชุด"
     },
     "dateRange": {
-        "day": "",
-        "week": "",
-        "month": ""
+        "day": "วัน",
+        "week": "อาทิตย์",
+        "month": "เดือน"
     },
     "booru": {
-        "addNew": "",
-        "booru_engine_input_label": "",
-        "config_name_label": "",
-        "site_url_label": "",
-        "login_name_label": "",
-        "password_api_key_label": "",
-        "password_hashed_label": "",
-        "password_label": "",
-        "content_filtering_label": "",
-        "hide_deleted_label": "",
-        "config_booru_confirm": "",
-        "add_a_booru_site": "",
-        "next_step": "",
-        "site_url": "",
-        "unsupported_warning": "",
-        "validation_empty_url": "",
-        "validation_invalid_url": "",
-        "validation_invalid_http_url": "",
-        "validation_missing_trailing_slash": "",
-        "validation_redundant_www": "",
-        "validation_contains_spaces": "",
-        "validation_missing_scheme": ""
+        "addNew": "เพิ่มเว็บไซต์ booru ใหม่",
+        "booru_engine_input_label": "เอนจินของ Booru (*)",
+        "config_name_label": "ชื่อโปรไฟล์ (*)",
+        "site_url_label": "ลิงค์เว็บไซต์",
+        "login_name_label": "เข้าสู่ระบบ",
+        "password_api_key_label": "คีย์ API",
+        "password_hashed_label": "รหัสผ่านที่เข้ารหัสแล้ว (อ่านได้เท่านั้น)",
+        "password_label": "รหัสผ่าน",
+        "content_filtering_label": "การกรองเนื้อหา",
+        "hide_deleted_label": "ซ่อนโพสต์ที่ถูกลบ",
+        "config_booru_confirm": "ตกลง",
+        "add_a_booru_site": "เพิ่มเว็บไซต์ booru",
+        "next_step": "ถัดไป",
+        "site_url": "ลิงค์เว็บไซต์",
+        "unsupported_warning": "เว็บไซต์ booru นี้ยังไม่รองรับกับแอป",
+        "validation_empty_url": "ช่องลิงค์เว็บไซค์ว่างเปล่า",
+        "validation_invalid_url": "ลิงค์ \"{0}\" ไม่ใช่ลิงค์ที่ถูกต้อง",
+        "validation_invalid_http_url": "ลิงค์ \"{0}\" ไม่ใช่ลิงค์รูปแบบของ HTTP หรือ HTTPS",
+        "validation_missing_trailing_slash": "ไม่พบเครื่องหมายสแลช (/) ต่อท้ายในลิงค์ \"{0}\"",
+        "validation_redundant_www": "พบคำว่า \"www\" อยู่ในลิงค์ \"{0}\"",
+        "validation_contains_spaces": "ลิงค์ \"{0}\" มีการเว้นวรรคอยู่",
+        "validation_missing_scheme": "ไม่พบการระบุโปรโตคอลของเว็บ (เช่น https://) ในลิงค์ \"{0}\""
     },
     "blacklist": {
         "manage": {
-            "title": "",
-            "empty_blacklist": ""
+            "title": "คำต้องห้าม",
+            "empty_blacklist": "ไม่มีแท็กต้องห้าม"
         }
     },
     "bookmark": {
-        "added": "",
-        "failed_to_add": "",
-        "many_added": "",
-        "failed_to_add_many": "",
-        "removed": "",
-        "updated": "",
-        "failed_to_remove": "",
-        "failed_to_update": "",
-        "failed_to_load": ""
+        "added": "เพิ่มบุ๊กมาร์กแล้ว",
+        "failed_to_add": "ไม่สามารถเพิ่มบุ๊กมาร์กได้",
+        "many_added": "เพิ่มบุ๊กมาร์กจำนวน {0} แล้ว",
+        "failed_to_add_many": "ไม่สามารถเพิ่มบุ๊กมาร์กได้",
+        "removed": "ลบบุ๊กมาร์กแล้ว",
+        "updated": "บุ๊กมาร์กได้รับการอัปเดตแล้ว",
+        "failed_to_remove": "ไม่สามารถลบบุ๊กมาร์กได้",
+        "failed_to_update": "ไม่สามารถอัปเดตบุ๊กมาร์กได้",
+        "failed_to_load": "ไม่สามารถโหลดบุ๊กมาร์กได้: {0}"
     },
     "app_update": {
-        "update": "",
-        "later": "",
-        "whats_new": "",
-        "update_available": ""
+        "update": "อัปเดต",
+        "later": "ภายหลัง",
+        "whats_new": "มีอะไรมาใหม่บ้าง?",
+        "update_available": "มีอัปเดตใหม่พร้อมให้โหลดใช้งาน"
     },
     "forum": {
-        "forum": ""
+        "forum": "กระดานสนทนา"
     }
 }
