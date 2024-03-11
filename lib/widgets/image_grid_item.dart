@@ -83,19 +83,7 @@ class ImageGridItem extends StatelessWidget {
                 Positioned(
                   bottom: 4,
                   right: 4,
-                  child: Container(
-                    padding: const EdgeInsets.only(
-                      top: 2,
-                      bottom: 1,
-                      right: 1,
-                      left: 3,
-                    ),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.black.withOpacity(0.5),
-                    ),
-                    child: quickActionButtonBuilder!(context, constraints),
-                  ),
+                  child: quickActionButtonBuilder!(context, constraints),
                 )
               else if (enableFav)
                 Positioned(

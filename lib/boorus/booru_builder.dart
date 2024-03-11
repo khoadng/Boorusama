@@ -614,9 +614,20 @@ Widget Function(
   Post post,
 ) =>
     switch (ref.watchConfig.defaultPreviewImageButtonActionType) {
-      ImageQuickActionType.bookmark => (context, _) =>
-          BookmarkPostLikeButtonButton(
-            post: post,
+      ImageQuickActionType.bookmark => (context, _) => Container(
+            padding: const EdgeInsets.only(
+              top: 2,
+              bottom: 1,
+              right: 1,
+              left: 3,
+            ),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.black.withOpacity(0.5),
+            ),
+            child: BookmarkPostLikeButtonButton(
+              post: post,
+            ),
           ),
       ImageQuickActionType.download => (context, _) => DownloadPostButton(
             post: post,
