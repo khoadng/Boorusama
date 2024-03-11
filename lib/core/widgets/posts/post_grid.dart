@@ -41,6 +41,30 @@ final _hasBlacklistedTagsProvider =
   return tags?.values.any((e) => e > 0) ?? false;
 });
 
+Map<String, int> _countInIsolate<T extends Post>(
+  Iterable<T> posts,
+  Iterable<String> tags,
+) {
+  final Map<String, int> tagCounts = {};
+  try {
+    final preprocessed =
+        tags.map((tag) => tag.split(' ').map(TagExpression.parse).toList());
+
+    for (final item in posts) {
+      for (final pattern in preprocessed) {
+        if (item.containsTagPattern(pattern)) {
+          final key = pattern.join(' ');
+          tagCounts[key] = (tagCounts[key] ?? 0) + 1;
+        }
+      }
+    }
+
+    return tagCounts;
+  } catch (e) {
+    return {};
+  }
+}
+
 class _TagCountNotifier extends AutoDisposeAsyncNotifier<Map<String, int>?> {
   @override
   Future<Map<String, int>?> build() async {
@@ -55,22 +79,7 @@ class _TagCountNotifier extends AutoDisposeAsyncNotifier<Map<String, int>?> {
     state = const AsyncValue.loading();
 
     final data = await Isolate.run(
-      () {
-        final Map<String, int> tagCounts = {};
-        final preprocessed =
-            tags.map((tag) => tag.split(' ').map(TagExpression.parse).toList());
-
-        for (final item in posts) {
-          for (final pattern in preprocessed) {
-            if (item.containsTagPattern(pattern)) {
-              final key = pattern.join(' ');
-              tagCounts[key] = (tagCounts[key] ?? 0) + 1;
-            }
-          }
-        }
-
-        return tagCounts;
-      },
+      () => _countInIsolate(posts, tags),
     );
 
     state = AsyncValue.data(data);
@@ -238,35 +247,43 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
       precomputedFilter: precomputedFilter,
     );
 
+    filteredItems = d.filtered;
+    items = d.data;
+
     if (!mounted) return;
 
     // Dirty hack to filter out bookmarked posts
-    final settings = ref.read(settingsProvider);
+    try {
+      final settings = ref.read(settingsProvider);
 
-    final bookmarks = settings.shouldFilterBookmarks
-        ? ref.read(bookmarkProvider).bookmarks
-        : <Bookmark>[].lock;
+      final bookmarks = settings.shouldFilterBookmarks
+          ? ref.read(bookmarkProvider).bookmarks
+          : <Bookmark>[].lock;
 
-    final dataWithoutBookmarks = d.data.where((element) =>
-        !bookmarks.any((e) => e.originalUrl == element.originalImageUrl));
+      if (bookmarks.isEmpty) return;
 
-    // Dirty hack to filter out ids
-    final blacklistedIds = widget.blacklistedIdString?.split('\n') ?? [];
-    final dataWithoutBookmarksAndIds = dataWithoutBookmarks
-        .where((element) => !blacklistedIds.contains(element.id.toString()));
+      final dataWithoutBookmarks = d.data.where((element) =>
+          !bookmarks.any((e) => e.originalUrl == element.originalImageUrl));
 
-    items = dataWithoutBookmarksAndIds.toList();
+      // Dirty hack to filter out ids
+      final blacklistedIds = widget.blacklistedIdString?.split('\n') ?? [];
+      final dataWithoutBookmarksAndIds = dataWithoutBookmarks
+          .where((element) => !blacklistedIds.contains(element.id.toString()));
 
-    filteredItems = d.filtered;
+      items = dataWithoutBookmarksAndIds.toList();
+    } catch (e) {
+      // Do nothing
+    }
   }
 
   Future<void> _countTags() async {
+    if (!mounted) return;
+    final notifier = ref.read(_tagCountProvider.notifier);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      if (!mounted) return;
-      ref.read(_tagCountProvider.notifier).count(
-            controller.items,
-            filters.keys,
-          );
+      notifier.count(
+        controller.items,
+        filters.keys,
+      );
     });
   }
 

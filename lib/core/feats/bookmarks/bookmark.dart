@@ -1,4 +1,5 @@
-// Package imports:
+// Dart imports:
+import 'dart:convert';
 
 // Package imports:
 import 'package:equatable/equatable.dart';
@@ -139,7 +140,7 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
       'width': width,
       'height': height,
       'md5': md5,
-      'tags': tags,
+      'tags': jsonEncode(tags.toList()),
     };
   }
 }
