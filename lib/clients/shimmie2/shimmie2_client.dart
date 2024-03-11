@@ -53,6 +53,11 @@ class Shimmie2Client {
       },
     );
 
+    if (response.data! is Map<String, dynamic>) {
+      throw Exception(
+          'Invalid response: expected Map<String, dynamic> but got ${response.data.runtimeType}\n $response');
+    }
+
     return (response.data as Map<String, dynamic>)
         .entries
         .map((e) => AutocompleteDto(
