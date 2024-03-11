@@ -608,20 +608,63 @@ String Function(
 
 Widget Function(
   BuildContext context,
+  BoxConstraints constraints,
 )? defaultImagePreviewButtonBuilder(
   WidgetRef ref,
   Post post,
 ) =>
     switch (ref.watchConfig.defaultPreviewImageButtonActionType) {
-      ImageQuickActionType.bookmark => (context) =>
-          BookmarkPostLikeButtonButton(
-            post: post,
+      ImageQuickActionType.bookmark => (context, _) => Container(
+            padding: const EdgeInsets.only(
+              top: 2,
+              bottom: 1,
+              right: 1,
+              left: 3,
+            ),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.black.withOpacity(0.5),
+            ),
+            child: BookmarkPostLikeButtonButton(
+              post: post,
+            ),
           ),
-      ImageQuickActionType.download => (context) => DownloadPostButton(
+      ImageQuickActionType.download => (context, _) => DownloadPostButton(
             post: post,
             small: true,
           ),
-      ImageQuickActionType.none => (context) => const SizedBox.shrink(),
+      ImageQuickActionType.artist => (context, constraints) => Builder(
+            builder: (context) {
+              final artist =
+                  post.artistTags != null && post.artistTags!.isNotEmpty
+                      ? chooseArtistTag(post.artistTags!)
+                      : null;
+              if (artist == null) return const SizedBox.shrink();
+
+              return SizedBox(
+                width: constraints.maxWidth * 0.9,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Flexible(
+                      child: PostTagListChip(
+                        tag: Tag(
+                          name: artist,
+                          category: TagCategory.artist,
+                          postCount: 0,
+                        ),
+                        onTap: () => goToArtistPage(
+                          context,
+                          artist,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+      ImageQuickActionType.none => (context, _) => const SizedBox.shrink(),
       ImageQuickActionType.defaultAction => null,
     };
 

@@ -79,8 +79,10 @@ class GelbooruClient with RequestDeduplicator<GelbooruPosts> {
 
   // Some user might input the url with /index.php/ or /index.php so we need to clean it
   static String cleanUrl(String url) {
-    // if it's not gelbooru, don't clean it
-    if (!url.startsWith(_kGelbooruUrl)) return url;
+    // if it's not the target url, return it as is
+    if (!url.startsWith(_kGelbooruUrl) && !url.startsWith(_kRule34XXXUrl)) {
+      return url;
+    }
 
     // if /index.php/ or /index.php is present, remove it
     if (url.endsWith('/index.php/')) {

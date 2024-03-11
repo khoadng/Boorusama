@@ -1,3 +1,9 @@
+# 3.12.2
+- Add a new profile option to show artist name in the image grid
+- Included an option to adjust the image's aspect ratio for standard grid
+- Expanded the range of values for posts per page selection.
+- Bug fixes.
+
 # 3.12.1
 - Remove redundant phone permission
 - Notification permission is now not required to download images

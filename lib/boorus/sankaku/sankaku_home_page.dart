@@ -8,15 +8,11 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import 'package:boorusama/boorus/sankaku/sankaku.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/pages/blacklists/blacklisted_tag_page.dart';
-import 'package:boorusama/core/pages/bookmarks/bookmark_page.dart';
-import 'package:boorusama/core/pages/downloads/bulk_download_page.dart';
 import 'package:boorusama/core/pages/home/side_menu_tile.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/router.dart';
 
 class SankakuHomePage extends ConsumerWidget {
   const SankakuHomePage({super.key});
@@ -50,58 +46,34 @@ class SankakuHomePage extends ConsumerWidget {
           icon: Symbols.dashboard,
           title: 'Home',
         ),
-        const Divider(),
-        HomeNavigationTile(
-          value: 1,
-          controller: controller,
-          constraints: constraints,
-          selectedIcon: Symbols.bookmark,
-          icon: Symbols.bookmark,
-          title: 'sideMenu.your_bookmarks'.tr(),
-        ),
-        HomeNavigationTile(
-          value: 2,
-          controller: controller,
-          constraints: constraints,
-          selectedIcon: Symbols.list_alt,
-          icon: Symbols.list_alt,
-          title: 'sideMenu.your_blacklist'.tr(),
-        ),
-        HomeNavigationTile(
-          value: 3,
-          controller: controller,
-          constraints: constraints,
-          selectedIcon: Symbols.download,
-          icon: Symbols.download,
-          title: 'sideMenu.bulk_download'.tr(),
-        ),
-        const Divider(),
         if (login != null)
           HomeNavigationTile(
-            value: 4,
+            value: 1,
             controller: controller,
             constraints: constraints,
             selectedIcon: Symbols.favorite,
             icon: Symbols.favorite,
             title: 'Favorites',
           ),
-        HomeNavigationTile(
-          value: 999,
-          controller: controller,
-          constraints: constraints,
-          selectedIcon: Symbols.settings,
-          icon: Symbols.settings,
-          title: 'sideMenu.settings'.tr(),
-          onTap: () => context.go('/settings'),
+        ...coreDesktopTabBuilder(
+          context,
+          constraints,
+          controller,
         ),
       ],
-      desktopViews: [
-        const DesktopHomePageScaffold(),
-        const BookmarkPage(),
-        const BlacklistedTagPage(),
-        const BulkDownloadPage(),
-        if (login != null) SankakuFavoritesPage(username: login)
-      ],
+      desktopViews: () {
+        final sankakuTabs = [
+          const DesktopHomePageScaffold(),
+          if (login != null) SankakuFavoritesPage(username: login)
+        ];
+
+        return [
+          ...sankakuTabs,
+          ...coreDesktopViewBuilder(
+            previousItemCount: sankakuTabs.length,
+          ),
+        ];
+      },
     );
   }
 }

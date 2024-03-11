@@ -125,13 +125,19 @@ class InformationSection extends ConsumerWidget {
 }
 
 String chooseArtistTag(Set<String> artistTags) {
-  if (artistTags.isEmpty) return artistTags.first;
+  if (artistTags.isEmpty) return 'Unknown artist';
 
-  // find the first artist name that not contains 'voice_actor'
-  return artistTags.firstWhereOrNull(
-        (artist) => !artist.contains('(voice_actor)'),
-      ) ??
-      artistTags.first;
+  final excludedTags = {
+    'banned_artist',
+    'voice_actor',
+  };
+
+  // find the first artist name that not contains excludedTags
+  final artist = artistTags.firstWhereOrNull(
+    (tag) => !excludedTags.contains(tag),
+  );
+
+  return artist ?? 'Unknown artist';
 }
 
 class SimpleInformationSection extends ConsumerWidget {

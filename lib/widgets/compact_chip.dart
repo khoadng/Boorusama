@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:auto_size_text/auto_size_text.dart';
+
 class CompactChip extends StatelessWidget {
   const CompactChip({
     super.key,
@@ -28,9 +31,9 @@ class CompactChip extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(
             vertical: 2,
-            horizontal: 4,
+            horizontal: 6,
           ),
-          child: Text(
+          child: AutoSizeText(
             label,
             softWrap: false,
             maxLines: 1,

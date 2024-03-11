@@ -36,6 +36,7 @@ const kDefaultPreviewImageButtonAction = {
   null,
   kToggleBookmarkAction,
   kDownloadAction,
+  kViewArtistAction,
 };
 
 class CreateBooruConfigScaffold extends ConsumerStatefulWidget {

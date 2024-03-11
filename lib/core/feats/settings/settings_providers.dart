@@ -22,6 +22,9 @@ final gridSpacingSettingsProvider = Provider<double>((ref) => ref.watch(
 final gridPaddingSettingsProvider = Provider<double>((ref) => ref.watch(
     settingsProvider.select((value) => value.imageGridPadding.toDouble())));
 
+final gridAspectRatioSettingsProvider = Provider<double>((ref) =>
+    ref.watch(settingsProvider.select((value) => value.imageGridAspectRatio)));
+
 final imageBorderRadiusSettingsProvider = Provider<double>((ref) => ref.watch(
     settingsProvider.select((value) => value.imageBorderRadius.toDouble())));
 

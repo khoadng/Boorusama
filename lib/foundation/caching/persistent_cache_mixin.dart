@@ -14,13 +14,23 @@ mixin PersistentCacheMixin {
   bool _isStale(DateTime timestamp, Duration staleDuration) =>
       DateTime.now().difference(timestamp) > staleDuration;
 
+  var _failedToOpenBox = false;
+
   Future<Box<String>?> openBox() async {
     if (_box != null) return _box!;
-    final dir = await getTemporaryDirectory();
+    // If we failed to open the box once, we won't try again
+    if (_failedToOpenBox) return null;
 
-    _box = await Hive.openBox(persistentStorageKey, path: dir.path);
+    try {
+      final dir = await getTemporaryDirectory();
 
-    return _box;
+      _box = await Hive.openBox(persistentStorageKey, path: dir.path);
+
+      return _box;
+    } catch (e) {
+      _failedToOpenBox = true;
+      return null;
+    }
   }
 
   Future<String?> load(String key) async {

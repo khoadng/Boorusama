@@ -11,7 +11,7 @@ import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/platform.dart';
 
 final postGridSideBarVisibleProvider = StateProvider<bool>((ref) {
-  return true;
+  return false;
 });
 
 class PostGridConfigRegion extends ConsumerWidget {

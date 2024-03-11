@@ -5,6 +5,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+// Project imports:
+import 'package:boorusama/foundation/theme/theme.dart';
+
 class BooruDialog extends StatelessWidget {
   const BooruDialog({
     super.key,
@@ -44,7 +47,10 @@ class BooruDialog extends StatelessWidget {
             ),
           ),
           Material(
-            color: Colors.transparent,
+            color: context.colorScheme.background,
+            shape: RoundedRectangleBorder(
+              borderRadius: borderRadius ?? BorderRadius.circular(8),
+            ),
             child: Container(
               constraints: BoxConstraints(
                 maxWidth:

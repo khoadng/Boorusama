@@ -124,6 +124,46 @@ class SzurubooruBuilder
             ),
           ]
         ],
+        desktopMenuBuilder: (context, controller, constraints) => [
+          HomeNavigationTile(
+            value: 0,
+            controller: controller,
+            constraints: constraints,
+            selectedIcon: Symbols.dashboard,
+            icon: Symbols.dashboard,
+            title: 'Home',
+          ),
+          if (config.hasLoginDetails()) ...[
+            HomeNavigationTile(
+              value: 1,
+              controller: controller,
+              constraints: constraints,
+              selectedIcon: Symbols.favorite,
+              icon: Symbols.favorite,
+              title: 'Favorites',
+            ),
+          ],
+          ...coreDesktopTabBuilder(
+            context,
+            constraints,
+            controller,
+          ),
+        ],
+        desktopViews: () {
+          final tabs = [
+            const DesktopHomePageScaffold(),
+            if (config.hasLoginDetails()) ...[
+              SzurubooruFavoritesPage(username: config.name),
+            ],
+          ];
+
+          return [
+            ...tabs,
+            ...coreDesktopViewBuilder(
+              previousItemCount: tabs.length,
+            ),
+          ];
+        },
         onSearchTap: () => goToSearchPage(context),
       );
 
