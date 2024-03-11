@@ -42,7 +42,6 @@
 - gelbooru_v2:
     sites:
       - url: https://rule34.xxx/
-        api-url: https://api.rule34.xxx/
       - url: https://hypnohub.net/
 
 - gelbooru_v1: 
