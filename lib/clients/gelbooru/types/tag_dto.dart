@@ -32,10 +32,15 @@ class TagDto {
   }
 
   factory TagDto.fromHtml(Element element, int type) {
+    final nodes = element.nodes
+        .map((e) => e.text?.trim())
+        .where((e) => e != null && e.isNotEmpty && e != '?')
+        .toList();
+
     return TagDto(
       id: null,
-      name: _parseNameFromElement(element),
-      count: _parseCountFromElement(element),
+      name: _parseNameFromElement(nodes),
+      count: _parseCountFromElement(nodes),
       type: type,
       ambiguous: null,
     );
@@ -51,8 +56,8 @@ class TagDto {
   String toString() => name ?? '';
 }
 
-String? _parseNameFromElement(Element tag) =>
-    tag.nodes.length >= 4 ? tag.nodes[3].text?.replaceAll(' ', '_') : null;
+String? _parseNameFromElement(List<String?> nodes) =>
+    nodes.length >= 2 ? nodes[0]?.replaceAll(' ', '_') : null;
 
-int? _parseCountFromElement(Element tag) =>
-    tag.nodes.length >= 6 ? int.tryParse(tag.nodes[5].text ?? '') : null;
+int? _parseCountFromElement(List<String?> nodes) =>
+    nodes.length >= 2 ? int.tryParse(nodes[1] ?? '') : null;
