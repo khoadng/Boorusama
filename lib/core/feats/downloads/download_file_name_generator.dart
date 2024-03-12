@@ -85,15 +85,23 @@ class LegacyFilenameBuilder<T extends Post>
   ) {
     final downloadUrl = getDownloadFileUrl(post, settings);
 
-    return generateFileName(post, downloadUrl);
+    final fileName = generateFileName(post, downloadUrl);
+
+    return _joinFileWithExtension(fileName, post.format);
   }
 
   @override
-  String generateForBulkDownload(Settings settings, BooruConfig config, T post,
-      {int? index}) {
+  String generateForBulkDownload(
+    Settings settings,
+    BooruConfig config,
+    T post, {
+    int? index,
+  }) {
     final downloadUrl = getDownloadFileUrl(post, settings);
 
-    return generateFileName(post, downloadUrl);
+    final fileName = generateFileName(post, downloadUrl);
+
+    return _joinFileWithExtension(fileName, post.format);
   }
 
   @override
@@ -117,6 +125,18 @@ class LegacyFilenameBuilder<T extends Post>
 
   @override
   String get defaultFileNameFormat => '';
+}
+
+String _joinFileWithExtension(String fileName, String fileExt) {
+  // check if file already has extension
+  final fileNameExt = extension(fileName);
+  if (fileNameExt.isNotEmpty) return fileName;
+
+  if (fileExt.isEmpty) return fileName;
+
+  final ext = fileExt.startsWith('.') ? fileExt : '.$fileExt';
+
+  return fileName.endsWith(ext) ? fileName : '$fileName$ext';
 }
 
 class DownloadFileNameBuilder<T extends Post>
