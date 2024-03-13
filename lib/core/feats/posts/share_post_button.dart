@@ -6,7 +6,6 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:path/path.dart';
 import 'package:share_plus/share_plus.dart';
 
 // Project imports:
@@ -16,6 +15,7 @@ import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class SharePostButton extends ConsumerWidget {
@@ -74,12 +74,20 @@ extension PostShareX on WidgetRef {
   }
 }
 
-final _cachedImagePathProvider =
-    FutureProvider.autoDispose.family<String, String>(
+final _cachedImageFileProvider =
+    FutureProvider.autoDispose.family<XFile?, String>(
   (ref, imageUrl) async {
-    final path = await getCachedImageFilePath(imageUrl);
+    final ext = extension(imageUrl);
+    final file = await getCachedImageFile(imageUrl);
 
-    return path ?? '';
+    if (file == null) return null;
+
+    // attach the extension to the file
+    final newPath = file.path + ext;
+    final newFile = await file.rename(newPath);
+    final xFile = XFile(newFile.path);
+
+    return xFile;
   },
 );
 
@@ -130,9 +138,9 @@ class ModalShare extends ConsumerWidget {
                 );
               },
             ),
-            ref.watch(_cachedImagePathProvider(imageUrl())).when(
-                  data: (imagePath) {
-                    return imagePath.isNotEmpty
+            ref.watch(_cachedImageFileProvider(imageUrl())).when(
+                  data: (file) {
+                    return file != null
                         ? ListTile(
                             title: const Text('post.detail.share.image').tr(),
                             leading: const Icon(
@@ -144,10 +152,8 @@ class ModalShare extends ConsumerWidget {
                             onTap: () {
                               context.navigator.pop();
                               Share.shareXFiles(
-                                [
-                                  XFile(imagePath),
-                                ],
-                                subject: basename(imagePath),
+                                [file],
+                                subject: file.name,
                               );
                             },
                           )
