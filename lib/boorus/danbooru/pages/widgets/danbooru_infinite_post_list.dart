@@ -20,6 +20,7 @@ import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/gestures.dart';
+import 'package:boorusama/foundation/image.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class DanbooruInfinitePostList extends ConsumerStatefulWidget {
@@ -122,6 +123,11 @@ class _DanbooruInfinitePostListState
         blacklistedTagString: blacklistedTags.join('\n'),
         itemBuilder: (context, items, index) {
           final post = items[index];
+          final (width, height, cacheWidth, cacheHeight) =
+              context.sizeFromConstraints(
+            constraints,
+            post.aspectRatio,
+          );
 
           return ConditionalParentWidget(
             condition: !canHandleLongPress,
@@ -136,65 +142,66 @@ class _DanbooruInfinitePostListState
               ),
               child: child,
             ),
-            child: LayoutBuilder(
-              builder: (context, constraints) => DownloadProviderWidget(
-                builder: (context, download) => ConditionalParentWidget(
-                  condition: canHandleLongPress,
-                  conditionalBuilder: (child) => GestureDetector(
-                    onLongPress: () {
-                      if (postGesturesHandler != null) {
-                        postGesturesHandler(
-                          ref,
-                          ref.watchConfig.postGestures?.preview?.longPress,
-                          post,
-                          download,
-                        );
-                      }
-                    },
-                    child: child,
+            child: DownloadProviderWidget(
+              builder: (context, download) => ConditionalParentWidget(
+                condition: canHandleLongPress,
+                conditionalBuilder: (child) => GestureDetector(
+                  onLongPress: () {
+                    if (postGesturesHandler != null) {
+                      postGesturesHandler(
+                        ref,
+                        ref.watchConfig.postGestures?.preview?.longPress,
+                        post,
+                        download,
+                      );
+                    }
+                  },
+                  child: child,
+                ),
+                child: DanbooruImageGridItem(
+                  post: post,
+                  hideOverlay: multiSelect,
+                  autoScrollOptions: AutoScrollOptions(
+                    controller: _autoScrollController,
+                    index: index,
                   ),
-                  child: DanbooruImageGridItem(
-                    post: post,
-                    hideOverlay: multiSelect,
-                    autoScrollOptions: AutoScrollOptions(
-                      controller: _autoScrollController,
-                      index: index,
-                    ),
-                    onTap: !multiSelect
-                        ? () {
-                            if (booruBuilder?.canHandlePostGesture(
-                                        GestureType.tap,
-                                        booruConfig.postGestures?.preview) ==
-                                    true &&
-                                postGesturesHandler != null) {
-                              postGesturesHandler(
-                                ref,
-                                ref.watchConfig.postGestures?.preview?.tap,
-                                post,
-                                download,
-                              );
-                            } else {
-                              goToPostDetailsPage(
-                                context: context,
-                                posts: items,
-                                initialIndex: index,
-                                scrollController: _autoScrollController,
-                              );
-                            }
+                  onTap: !multiSelect
+                      ? () {
+                          if (booruBuilder?.canHandlePostGesture(
+                                      GestureType.tap,
+                                      booruConfig.postGestures?.preview) ==
+                                  true &&
+                              postGesturesHandler != null) {
+                            postGesturesHandler(
+                              ref,
+                              ref.watchConfig.postGestures?.preview?.tap,
+                              post,
+                              download,
+                            );
+                          } else {
+                            goToPostDetailsPage(
+                              context: context,
+                              posts: items,
+                              initialIndex: index,
+                              scrollController: _autoScrollController,
+                            );
                           }
-                        : null,
-                    enableFav: !multiSelect && booruConfig.hasLoginDetails(),
-                    image: BooruImage(
-                      aspectRatio: post.isBanned ? 0.8 : post.aspectRatio,
-                      imageUrl: post.thumbnailFromSettings(settings),
-                      borderRadius: BorderRadius.circular(
-                        settings.imageBorderRadius,
-                      ),
-                      forceFill:
-                          settings.imageListType == ImageListType.standard,
-                      placeholderUrl: post.thumbnailImageUrl,
-                      // null, // Will cause error sometimes, disabled for now
+                        }
+                      : null,
+                  enableFav: !multiSelect && booruConfig.hasLoginDetails(),
+                  image: BooruImage(
+                    aspectRatio: post.isBanned ? 0.8 : post.aspectRatio,
+                    imageUrl: post.thumbnailFromSettings(settings),
+                    borderRadius: BorderRadius.circular(
+                      settings.imageBorderRadius,
                     ),
+                    forceFill: settings.imageListType == ImageListType.standard,
+                    placeholderUrl: post.thumbnailImageUrl,
+                    width: width,
+                    height: height,
+                    cacheHeight: cacheHeight,
+                    cacheWidth: cacheWidth,
+                    // null, // Will cause error sometimes, disabled for now
                   ),
                 ),
               ),

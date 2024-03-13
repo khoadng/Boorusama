@@ -76,6 +76,8 @@ class BooruImage extends ConsumerWidget {
         imageUrl,
         width: width,
         height: height,
+        cacheHeight: cacheHeight,
+        cacheWidth: cacheWidth,
         headers: {
           'User-Agent':
               ref.watch(userAgentGeneratorProvider(config)).generate(),
@@ -99,6 +101,8 @@ class BooruImage extends ConsumerWidget {
           imageUrl,
           width: width,
           height: height,
+          cacheHeight: cacheHeight,
+          cacheWidth: cacheWidth,
           headers: {
             'User-Agent':
                 ref.watch(userAgentGeneratorProvider(config)).generate(),
@@ -125,6 +129,8 @@ class BooruImage extends ConsumerWidget {
             },
             width: width ?? double.infinity,
             height: height ?? double.infinity,
+            cacheHeight: cacheHeight,
+            cacheWidth: cacheWidth,
             shape: BoxShape.rectangle,
             fit: BoxFit.cover,
             borderRadius:
@@ -148,6 +154,8 @@ class BooruImage extends ConsumerWidget {
                       url,
                       width: width ?? double.infinity,
                       height: height ?? double.infinity,
+                      cacheHeight: cacheHeight,
+                      cacheWidth: cacheWidth,
                       shape: BoxShape.rectangle,
                       fit: BoxFit.cover,
                       borderRadius: borderRadius ??
