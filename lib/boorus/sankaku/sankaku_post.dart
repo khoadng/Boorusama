@@ -39,13 +39,11 @@ class SankakuPost extends Equatable
     required this.videoThumbnailUrl,
     required this.videoUrl,
     required this.width,
-    required Function(String baseUrl) getLink,
     required this.artistDetailsTags,
     required this.characterDetailsTags,
     required this.copyrightDetailsTags,
     required this.uploaderId,
-  })  : _getLink = getLink,
-        artistTags = artistDetailsTags.map((e) => e.name).toSet(),
+  })  : artistTags = artistDetailsTags.map((e) => e.name).toSet(),
         characterTags = characterDetailsTags.map((e) => e.name).toSet(),
         copyrightTags = copyrightDetailsTags.map((e) => e.name).toSet();
 
@@ -96,12 +94,10 @@ class SankakuPost extends Equatable
   @override
   final double width;
 
-  final Function(String baseUrl) _getLink;
-
-  get posts => null;
-
   @override
-  String getLink(String baseUrl) => _getLink(baseUrl);
+  String getLink(String baseUrl) => baseUrl.endsWith('/')
+      ? '${baseUrl}post/show/$id'
+      : '$baseUrl/post/show/$md5';
 
   @override
   Uri getUriLink(String baseUrl) => Uri.parse(getLink(baseUrl));

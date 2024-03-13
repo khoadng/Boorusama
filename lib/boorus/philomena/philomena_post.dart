@@ -37,7 +37,6 @@ class PhilomenaPost extends Equatable
     required this.videoThumbnailUrl,
     required this.videoUrl,
     required this.width,
-    required Function(String baseUrl) getLink,
     required this.description,
     required this.commentCount,
     required this.favCount,
@@ -45,7 +44,7 @@ class PhilomenaPost extends Equatable
     required this.downvotes,
     required this.representation,
     required this.uploaderId,
-  }) : _getLink = getLink;
+  });
 
   @override
   final int id;
@@ -94,10 +93,9 @@ class PhilomenaPost extends Equatable
   @override
   final double width;
 
-  final Function(String baseUrl) _getLink;
-
   @override
-  String getLink(String baseUrl) => _getLink(baseUrl);
+  String getLink(String baseUrl) =>
+      baseUrl.endsWith('/') ? '${baseUrl}images/$id' : '$baseUrl/images/$id';
 
   @override
   Uri getUriLink(String baseUrl) => Uri.parse(getLink(baseUrl));

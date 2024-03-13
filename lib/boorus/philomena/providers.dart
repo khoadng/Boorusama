@@ -65,9 +65,6 @@ final philomenaPostRepoProvider =
           videoThumbnailUrl: isVideo ? _parseVideoThumbnail(e) ?? '' : '',
           videoUrl: e.representations?.full ?? '',
           width: e.width?.toDouble() ?? 0,
-          getLink: (baseUrl) => baseUrl.endsWith('/')
-              ? '${baseUrl}images/${e.id}'
-              : '$baseUrl/images/${e.id}',
           description: e.description ?? '',
           createdAt: e.createdAt,
           favCount: e.faves ?? 0,

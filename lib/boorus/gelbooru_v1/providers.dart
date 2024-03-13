@@ -13,7 +13,7 @@ final gelbooruV1PostRepoProvider = Provider.family<PostRepository, BooruConfig>(
         );
 
         return posts
-            .map((e) => SimplePost(
+            .map((e) => GelbooruV1Post(
                   id: e.id ?? 0,
                   thumbnailImageUrl: sanitizedUrl(e.previewUrl ?? ''),
                   sampleImageUrl: sanitizedUrl(e.sampleUrl ?? ''),
@@ -34,9 +34,9 @@ final gelbooruV1PostRepoProvider = Provider.family<PostRepository, BooruConfig>(
                   videoThumbnailUrl: e.previewUrl ?? '',
                   videoUrl: e.fileUrl ?? '',
                   width: 0,
-                  getLink: (baseUrl) =>
-                      '$baseUrl/index.php?page=post&s=view&id=${e.id}',
                   uploaderId: null,
+                  createdAt: null,
+                  uploaderName: null,
                 ))
             .toList();
       },
@@ -53,3 +53,38 @@ final gelbooruV1ClientProvider =
     dio: dio,
   );
 });
+
+class GelbooruV1Post extends SimplePost {
+  GelbooruV1Post({
+    required super.id,
+    required super.thumbnailImageUrl,
+    required super.sampleImageUrl,
+    required super.originalImageUrl,
+    required super.tags,
+    required super.rating,
+    required super.hasComment,
+    required super.isTranslated,
+    required super.hasParentOrChildren,
+    required super.source,
+    required super.score,
+    required super.duration,
+    required super.fileSize,
+    required super.format,
+    required super.hasSound,
+    required super.height,
+    required super.md5,
+    required super.videoThumbnailUrl,
+    required super.videoUrl,
+    required super.width,
+    required super.uploaderId,
+    required super.createdAt,
+    required super.uploaderName,
+  });
+
+  @override
+  String getLink(String baseUrl) {
+    return baseUrl.endsWith('/')
+        ? '${baseUrl}index.php?page=post&s=view&id=$id'
+        : '$baseUrl/index.php?page=post&s=view&id=$id';
+  }
+}

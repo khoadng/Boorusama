@@ -88,7 +88,6 @@ final sankakuPostRepoProvider =
             videoThumbnailUrl: e.previewUrl ?? '',
             videoUrl: e.fileUrl ?? '',
             width: e.width?.toDouble() ?? 0,
-            getLink: (_) => '${client.originalUrl}/post/show/${e.md5}',
             artistDetailsTags: artistTags,
             characterDetailsTags: characterTags,
             copyrightDetailsTags: copyrightTags,
