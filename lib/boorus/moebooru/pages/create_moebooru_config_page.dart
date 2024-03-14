@@ -22,11 +22,12 @@ class CreateMoebooruConfigPage extends ConsumerStatefulWidget {
     super.key,
     required this.config,
     this.backgroundColor,
+    this.isNewConfig = false,
   });
 
   final BooruConfig config;
-
   final Color? backgroundColor;
+  final bool isNewConfig;
 
   @override
   ConsumerState<CreateMoebooruConfigPage> createState() =>
@@ -47,6 +48,7 @@ class _CreateMoebooruConfigPageState
   @override
   Widget build(BuildContext context) {
     return CreateBooruConfigScaffold(
+      isNewConfig: widget.isNewConfig,
       backgroundColor: widget.backgroundColor,
       config: widget.config,
       authTabBuilder: (context) => _buildAuthTab(),

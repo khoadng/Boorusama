@@ -144,6 +144,7 @@ class E621Builder
                   kBoorusamaCustomDownloadFileNameFormat,
             ),
             backgroundColor: backgroundColor,
+            isNewConfig: true,
           );
 
   @override

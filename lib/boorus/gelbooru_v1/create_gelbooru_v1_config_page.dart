@@ -14,10 +14,12 @@ class CreateGelbooruV1ConfigPage extends ConsumerStatefulWidget {
     super.key,
     required this.config,
     this.backgroundColor,
+    this.isNewConfig = false,
   });
 
   final BooruConfig config;
   final Color? backgroundColor;
+  final bool isNewConfig;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -29,6 +31,7 @@ class _CreateGelbooruV1ConfigPageState
   @override
   Widget build(BuildContext context) {
     return CreateBooruConfigScaffold(
+      isNewConfig: widget.isNewConfig,
       backgroundColor: widget.backgroundColor,
       config: widget.config,
       hasDownloadTab: true,

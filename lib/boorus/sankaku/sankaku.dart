@@ -70,6 +70,7 @@ class SankakuBuilder
                   kBoorusamaCustomDownloadFileNameFormat,
             ),
             backgroundColor: backgroundColor,
+            isNewConfig: true,
           );
 
   @override

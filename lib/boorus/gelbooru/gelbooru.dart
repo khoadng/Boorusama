@@ -197,6 +197,7 @@ class GelbooruBuilder
                   kGelbooruCustomDownloadFileNameFormat,
             ),
             backgroundColor: backgroundColor,
+            isNewConfig: true,
           );
 
   @override

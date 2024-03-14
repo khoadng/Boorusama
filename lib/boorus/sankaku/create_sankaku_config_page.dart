@@ -18,10 +18,12 @@ class CreateSankakuConfigPage extends ConsumerStatefulWidget {
     super.key,
     this.backgroundColor,
     required this.config,
+    this.isNewConfig = false,
   });
 
   final Color? backgroundColor;
   final BooruConfig config;
+  final bool isNewConfig;
 
   @override
   ConsumerState<CreateSankakuConfigPage> createState() =>
@@ -36,6 +38,7 @@ class _CreateDanbooruConfigPageState
   @override
   Widget build(BuildContext context) {
     return CreateBooruConfigScaffold(
+      isNewConfig: widget.isNewConfig,
       backgroundColor: widget.backgroundColor,
       config: widget.config,
       authTabBuilder: (context) => _buildAuthTab(),

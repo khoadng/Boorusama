@@ -138,6 +138,7 @@ class ZerochanBuilder
               customDownloadFileNameFormat: null,
             ),
             backgroundColor: backgroundColor,
+            isNewConfig: true,
           );
 
   @override

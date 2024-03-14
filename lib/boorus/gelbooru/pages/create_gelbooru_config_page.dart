@@ -19,10 +19,12 @@ class CreateGelbooruConfigPage extends ConsumerStatefulWidget {
     super.key,
     required this.config,
     this.backgroundColor,
+    this.isNewConfig = false,
   });
 
   final BooruConfig config;
   final Color? backgroundColor;
+  final bool isNewConfig;
 
   @override
   ConsumerState<CreateGelbooruConfigPage> createState() =>
@@ -37,6 +39,7 @@ class _CreateGelbooruConfigPageState
   @override
   Widget build(BuildContext context) {
     return CreateBooruConfigScaffold(
+      isNewConfig: widget.isNewConfig,
       backgroundColor: widget.backgroundColor,
       config: widget.config,
       authTabBuilder: (context) => _buildAuthTab(),
@@ -90,6 +93,9 @@ class _CreateGelbooruConfigPageState
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               FilledButton.icon(
+                style: FilledButton.styleFrom(
+                  backgroundColor: context.colorScheme.secondaryContainer,
+                ),
                 onPressed: () => Clipboard.getData('text/plain').then(
                   (value) {
                     if (value == null) return;
