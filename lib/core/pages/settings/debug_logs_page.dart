@@ -47,11 +47,8 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
 
     // Function to copy logs to clipboard
     void copyLogsToClipboard() {
-      final buffer = StringBuffer();
-      for (final log in logs) {
-        buffer.write('[${log.dateTime}][${log.serviceName}]: ${log.message}\n');
-      }
-      Clipboard.setData(ClipboardData(text: buffer.toString()));
+      final data = ref.read(uiLoggerProvider).dump();
+      Clipboard.setData(ClipboardData(text: data));
 
       showSimpleSnackBar(
         context: context,

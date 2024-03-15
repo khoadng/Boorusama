@@ -64,4 +64,12 @@ class UILogger implements LoggerService {
   }
 
   List<LogData> get logs => _logs;
+
+  String dump() {
+    final buffer = StringBuffer();
+    for (final log in logs) {
+      buffer.write('[${log.dateTime}][${log.serviceName}]: ${log.message}\n');
+    }
+    return buffer.toString();
+  }
 }

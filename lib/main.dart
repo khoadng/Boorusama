@@ -43,12 +43,41 @@ import 'app.dart';
 import 'foundation/i18n.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  try {
+    await bootstrap();
+  } catch (e, st) {
+    await failsafe(e, st);
+  }
+}
+
+Future<void> failsafe(Object e, StackTrace st) async {
+  final deviceInfo =
+      await DeviceInfoService(plugin: DeviceInfoPlugin()).getDeviceInfo();
+
+  runApp(
+    ProviderScope(
+      overrides: [
+        deviceInfoProvider.overrideWithValue(deviceInfo),
+      ],
+      child: MaterialApp(
+        theme: ThemeData.dark(),
+        debugShowCheckedModeBanner: false,
+        home: AppFailedToInitialize(
+          error: e,
+          stackTrace: st,
+        ),
+      ),
+    ),
+  );
+}
+
+Future<void> bootstrap() async {
   final uiLogger = UILogger();
   final logger = await loggerWith(uiLogger);
   final stopwatch = Stopwatch()..start();
   logger.logI('Start up', 'App Start up');
-
-  WidgetsFlutterBinding.ensureInitialized();
 
   if (!isWeb()) {
     final dbDirectory = isAndroid()

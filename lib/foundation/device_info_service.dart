@@ -35,6 +35,16 @@ class DeviceInfo extends Equatable {
   final AndroidDeviceInfo? androidDeviceInfo;
   final IosDeviceInfo? iosDeviceInfo;
 
+  String dump() {
+    if (androidDeviceInfo != null) {
+      return androidDeviceInfo!.data.toString();
+    } else if (iosDeviceInfo != null) {
+      return iosDeviceInfo!.data.toString();
+    } else {
+      return 'Unknown platform';
+    }
+  }
+
   @override
   List<Object?> get props => [androidDeviceInfo, iosDeviceInfo];
 }
