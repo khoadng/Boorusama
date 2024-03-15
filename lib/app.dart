@@ -60,11 +60,7 @@ class App extends StatelessWidget {
                             weight: isWindows() ? 200 : 400,
                           ),
                     ),
-                    child: ScrollConfiguration(
-                      behavior: const MaterialScrollBehavior()
-                          .copyWith(overscroll: false),
-                      child: child!,
-                    ),
+                    child: child!,
                   ),
                 ),
                 theme: theme,
