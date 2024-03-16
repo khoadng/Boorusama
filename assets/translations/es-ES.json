@@ -317,8 +317,7 @@
             "other": "Favoritos"
         },
         "favorited": "Favoritos",
-        "favorite": "Favorito",
-        "failed_to_favorite": "No se pudo eliminar de favoritos este tema"
+        "favorite": "Favorito"
     },
     "favorite_groups": {
         "favorite_groups": "Grupos Favoritos",
