@@ -318,7 +318,6 @@
         },
         "favorited": "Favorited",
         "favorite": "Favorite",
-        "unfavorited": "Unfavorited",
         "unfavorite": "Unfavorite",
         "failed_to_unfavorite": "Could not unfavorite this post",
         "failed_to_favorite": "Could not favorite this post"
