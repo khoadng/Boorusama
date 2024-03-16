@@ -227,7 +227,7 @@
             "posts_per_page_explain": "Number of thumbnails per page",
             "cache_size": "Cache size",
             "clear_cache": "Clear",
-            "cache_size_info": "{0} Mb in {1} files"
+            "cache_size_info": "{0} in {1} files"
         },
         "debug_logs": {
             "debug_logs": "Debug logs",
