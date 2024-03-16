@@ -377,7 +377,6 @@
         "month": "Mois"
     },
     "booru": {
-        "addNew": "Ajouter un nouveau booru",
         "booru_engine_input_label": "Moteur booru (*)",
         "config_name_label": "Nom de la configuration (*)",
         "site_url_label": "URL du site",
