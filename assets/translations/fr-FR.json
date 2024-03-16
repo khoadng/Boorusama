@@ -325,7 +325,6 @@
         },
         "favorited": "Mis en favoris",
         "favorite": "Mettre en favoris",
-        "unfavorite": "Enlever des favoris",
         "failed_to_unfavorite": "Échec de l'enlèvement des favoris",
         "failed_to_favorite": "Échec de l'ajout aux favoris"
     },
