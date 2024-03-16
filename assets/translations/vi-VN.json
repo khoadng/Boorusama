@@ -310,7 +310,6 @@
         },
         "favorited": "Đã yêu thích",
         "favorite": "Yêu thích",
-        "unfavorited": "Đã xoá yêu thích",
         "unfavorite": "Xoá yêu thích",
         "failed_to_unfavorite": "Xảy ra lỗi khi thích ảnh này",
         "failed_to_favorite": "Xảy ra lỗi khi xoá yêu thích ảnh này"
