@@ -344,7 +344,6 @@
     },
     "favorite_tags": {
         "favorites": "Favoritos",
-        "or": "o",
         "import": "Importar",
         "import_hint": "Introduzca su etiqueta aqui. Espacio delimitado.",
         "cancel": "Cancelar",
