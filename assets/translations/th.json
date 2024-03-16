@@ -317,8 +317,7 @@
             "other": "รายการโปรด"
         },
         "favorited": "",
-        "favorite": "",
-        "failed_to_favorite": "ไม่สามารถบันทึกเป็นรายการโปรดโพสต์นี้ได้"
+        "favorite": ""
     },
     "favorite_groups": {
         "favorite_groups": "กลุ่มรายการโปรด",
