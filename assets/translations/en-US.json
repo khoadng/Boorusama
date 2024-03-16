@@ -344,7 +344,6 @@
     },
     "favorite_tags": {
         "favorites": "Favorites",
-        "or": "or",
         "import": "Import",
         "import_hint": "Enter your tag string here. Space delimited.",
         "cancel": "Cancel",
