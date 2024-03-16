@@ -61,9 +61,6 @@
             "add_to_bookmark": "添加到书签",
             "remove_from_bookmark": "从书签移除"
         },
-        "parent_child": {
-            "children_of": "的孩子"
-        },
         "action": {
             "preview": "预览",
             "view_comments": "查看评论",
