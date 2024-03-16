@@ -352,7 +352,6 @@
     },
     "favorite_tags": {
         "favorites": "Favories",
-        "or": "ou",
         "import": "Importer",
         "import_hint": "Entrez votre série de tags ici. Espace limité.",
         "cancel": "Annuler",
