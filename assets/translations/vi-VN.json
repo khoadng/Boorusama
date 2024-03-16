@@ -62,9 +62,6 @@
             "add_to_bookmark": "Thêm đánh dấu",
             "remove_from_bookmark": "Xoá đánh dấu"
         },
-        "parent_child": {
-            "children_of": "Ảnh chung bộ với"
-        },
         "action": {
             "preview": "Xem nhanh",
             "view_comments": "Xem bình luận",
