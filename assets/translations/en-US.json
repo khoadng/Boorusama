@@ -317,8 +317,7 @@
             "other": "Favorites"
         },
         "favorited": "Favorited",
-        "favorite": "Favorite",
-        "failed_to_favorite": "Could not favorite this post"
+        "favorite": "Favorite"
     },
     "favorite_groups": {
         "favorite_groups": "Favorite Groups",
