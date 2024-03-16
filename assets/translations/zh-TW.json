@@ -62,9 +62,6 @@
             "add_to_bookmark": "新增至書籤",
             "remove_from_bookmark": "從書籤中移除"
         },
-        "parent_child": {
-            "children_of": "Children of"
-        },
         "action": {
             "preview": "預覽",
             "view_comments": "查看評論",
