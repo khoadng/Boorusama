@@ -63,9 +63,6 @@
             "add_to_bookmark": "Lesezeichen hinzufügen",
             "remove_from_bookmark": "Lesezeichen entfernen"
         },
-        "parent_child": {
-            "children_of": "Children von"
-        },
         "action": {
             "preview": "Vorschau",
             "view_comments": "Kommentare anzeigen",
