@@ -358,6 +358,11 @@
         "or": "ou",
         "favorites": "Favoritos",
         "import": "Importar",
-        "import_hint": "Preencha sua linha de tag aqui. Espaço delimitado."
+        "import_hint": "Preencha sua linha de tag aqui. Espaço delimitado.",
+        "export_notification": "Linha de tag copiada para a área de transferência"
+    },
+    "rating": {
+        "rate_request": "Avalie este aplicativo",
+        "rate": "Avaliar"
     }
 }
