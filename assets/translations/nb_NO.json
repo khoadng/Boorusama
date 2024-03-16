@@ -63,9 +63,6 @@
             "add_to_bookmark": "Bokmerk",
             "remove_from_bookmark": "Fjern bokmerke"
         },
-        "parent_child": {
-            "children_of": ""
-        },
         "action": {
             "preview": "Forhåndsvis",
             "view_comments": "Vis kommentarer",
