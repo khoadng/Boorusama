@@ -63,9 +63,6 @@
             "add_to_bookmark": "เพิ่มเข้าในบุ๊กมาร์ก",
             "remove_from_bookmark": "ลบออกจากบุ๊กมาร์ก"
         },
-        "parent_child": {
-            "children_of": "โพสต์ของภายใต้"
-        },
         "action": {
             "preview": "แสดงตัวอย่าง",
             "view_comments": "ดูความคิดเห็น",
