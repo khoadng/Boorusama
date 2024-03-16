@@ -359,7 +359,6 @@
         "month": "月"
     },
     "booru": {
-        "addNew": "添加新booru",
         "booru_engine_input_label": "Booru引擎 (*)",
         "config_name_label": "配置名 (*)",
         "site_url_label": "网站地址",
