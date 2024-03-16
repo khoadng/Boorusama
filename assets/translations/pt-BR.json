@@ -363,6 +363,65 @@
     },
     "rating": {
         "rate_request": "Avalie este aplicativo",
-        "rate": "Avaliar"
+        "rate": "Avaliar",
+        "rationale": "Se você gosta deste aplicativo, por favor use um pouco do seu tempo para avaliar ele. Não levaria mais que algums segundos e realmente ajuda com o projeto.",
+        "later": "Talvez mais tarde",
+        "cancel": "Não obrigado"
+    },
+    "booru": {
+        "config_booru_confirm": "OK",
+        "validation_invalid_url": "\"{0}\" não é uma URL válida",
+        "password_label": "Senha",
+        "login_name_label": "Login",
+        "content_filtering_label": "Filtração de conteúdo",
+        "hide_deleted_label": "Esconder posts deletados",
+        "addNew": "Adicionar um novo booru",
+        "next_step": "Próximo",
+        "booru_engine_input_label": "Motor de booru (*)",
+        "validation_invalid_http_url": "\"{0}\" não é uma URL HTTP ou HTTPS",
+        "validation_missing_trailing_slash": "\"{0}\" está faltando uma barra final",
+        "site_url": "URL do site",
+        "unsupported_warning": "Este booru ainda não é suportado.",
+        "site_url_label": "URL do site",
+        "password_api_key_label": "Chave de API",
+        "add_a_booru_site": "Adicionar site booru",
+        "validation_redundant_www": "\"{0}\" contém um \"www\" redundante",
+        "validation_missing_scheme": "\"{0}\" está faltando um esquema (e.g. https://)",
+        "validation_empty_url": "A URL esta vazia",
+        "config_name_label": "Nome de perfil (*)"
+    },
+    "bookmark": {
+        "failed_to_add_many": "Falha ao adicionar marcações",
+        "removed": "Marcação removida",
+        "many_added": "{0} marcações adicionadas",
+        "updated": "Marcação atualizada",
+        "failed_to_remove": "Falha ao remover marcação",
+        "failed_to_add": "Falha ao adicionar marcação",
+        "failed_to_update": "Falha ao atualizar marcação",
+        "failed_to_load": "Falha ao carregar marcações: {0}",
+        "added": "Marcação adicionada"
+    },
+    "app_update": {
+        "update_available": "Atualização disponível",
+        "whats_new": "Oque há de novo?",
+        "update": "Atualizar",
+        "later": "Mais tarde"
+    },
+    "sideMenu": {
+        "settings": "Configurações",
+        "your_bookmarks": "Suas marcações",
+        "your_blacklist": "Sua lista negra",
+        "bulk_download": "Download em massa"
+    },
+    "dateRange": {
+        "week": "Semana",
+        "month": "Mês",
+        "day": "Dia"
+    },
+    "blacklist": {
+        "manage": {
+            "empty_blacklist": "Nenhuma tag na lista negra",
+            "title": "Lista negra"
+        }
     }
 }
