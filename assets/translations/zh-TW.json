@@ -302,7 +302,6 @@
         },
         "favorited": "已新增至最愛",
         "favorite": "新增至最愛",
-        "failed_to_unfavorite": "從最愛中移除失敗",
         "failed_to_favorite": "從最愛中新增失敗"
     },
     "favorite_groups": {
