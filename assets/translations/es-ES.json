@@ -63,9 +63,6 @@
             "add_to_bookmark": "Añadir a favoritos",
             "remove_from_bookmark": "Eliminar de favoritos"
         },
-        "parent_child": {
-            "children_of": "Niño de"
-        },
         "action": {
             "preview": "Vista previa",
             "view_comments": "Ver comentarios",
