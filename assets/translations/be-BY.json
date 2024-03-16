@@ -252,7 +252,6 @@
     "favorites": {
         "favorited": "У любімых",
         "favorite": "Любімае",
-        "unfavorited": "Не ў любімых",
         "unfavorite": "Выдаліць з любімых",
         "failed_to_unfavorite": "Памылка выдалення з любімых",
         "failed_to_favorite": "Памылка дабаўлення у любімыя"
