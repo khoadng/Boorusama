@@ -251,8 +251,7 @@
     },
     "favorites": {
         "favorited": "У любімых",
-        "favorite": "Любімае",
-        "failed_to_favorite": "Памылка дабаўлення у любімыя"
+        "favorite": "Любімае"
     },
     "favorite_groups": {
         "favorite_groups": "Favorite Groups",
