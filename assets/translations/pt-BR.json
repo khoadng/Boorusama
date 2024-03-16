@@ -367,7 +367,6 @@
         "login_name_label": "Login",
         "content_filtering_label": "Filtração de conteúdo",
         "hide_deleted_label": "Esconder posts deletados",
-        "addNew": "Adicionar um novo booru",
         "next_step": "Próximo",
         "booru_engine_input_label": "Motor de booru (*)",
         "validation_invalid_http_url": "\"{0}\" não é uma URL HTTP ou HTTPS",
