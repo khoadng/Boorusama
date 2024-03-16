@@ -360,7 +360,6 @@
         "month": "Tháng"
     },
     "booru": {
-        "addNew": "Tạo thêm booru",
         "booru_engine_input_label": "Booru engine (*)",
         "config_name_label": "Tên profile  (*)",
         "site_url_label": "URL của web",
