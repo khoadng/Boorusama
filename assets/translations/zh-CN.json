@@ -309,7 +309,6 @@
         },
         "favorited": "已加进喜爱中",
         "favorite": "喜爱",
-        "unfavorited": "已从喜爱中移除",
         "unfavorite": "从喜爱中移除",
         "failed_to_unfavorite": "从喜爱中移除失败",
         "failed_to_favorite": "添加到喜爱中失败"
