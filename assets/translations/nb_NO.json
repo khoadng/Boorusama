@@ -317,8 +317,7 @@
             "other": "Favoritter"
         },
         "favorited": "Favorittmerket",
-        "favorite": "Favoritt",
-        "failed_to_favorite": ""
+        "favorite": "Favoritt"
     },
     "favorite_groups": {
         "favorite_groups": "",
