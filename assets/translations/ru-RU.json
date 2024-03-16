@@ -344,7 +344,6 @@
         "month": "Месяц"
     },
     "booru": {
-        "addNew": "Добавить новый источник",
         "booru_engine_input_label": "Движок источника (*)",
         "site_url_label": "Ссылка на сайт",
         "login_name_label": "Логин",
