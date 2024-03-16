@@ -375,7 +375,7 @@
         "unsupported_warning": "Este booru ainda não é suportado.",
         "site_url_label": "URL do site",
         "password_api_key_label": "Chave de API",
-        "add_a_booru_site": "Adicionar site booru",
+        "add_a_booru_site": "Criar um novo perfil",
         "validation_redundant_www": "\"{0}\" contém um \"www\" redundante",
         "validation_missing_scheme": "\"{0}\" está faltando um esquema (e.g. https://)",
         "validation_empty_url": "A URL esta vazia",
