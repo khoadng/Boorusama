@@ -335,7 +335,6 @@
     },
     "favorite_tags": {
         "favorites": "Yêu thích",
-        "or": "hoặc",
         "import": "Nhập tay",
         "import_hint": "Điền tag vào đây. Mỗi tag cách nhau bằng khoảng trắng.",
         "cancel": "Huỷ",
