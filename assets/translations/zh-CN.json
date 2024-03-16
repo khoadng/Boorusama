@@ -308,8 +308,7 @@
             "other": "喜爱"
         },
         "favorited": "已加进喜爱中",
-        "favorite": "喜爱",
-        "failed_to_favorite": "添加到喜爱中失败"
+        "favorite": "喜爱"
     },
     "favorite_groups": {
         "favorite_groups": "喜爱组",
