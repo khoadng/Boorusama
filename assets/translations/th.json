@@ -318,7 +318,6 @@
         },
         "favorited": "",
         "favorite": "",
-        "failed_to_unfavorite": "ไม่สามารถยกเลิกรายการโปรดโพสต์นี้ได้",
         "failed_to_favorite": "ไม่สามารถบันทึกเป็นรายการโปรดโพสต์นี้ได้"
     },
     "favorite_groups": {
