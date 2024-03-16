@@ -63,9 +63,6 @@
             },
             "source_label": "Источник"
         },
-        "parent_child": {
-            "children_of": "Дочерний для"
-        },
         "action": {
             "preview": "Предпросмотр",
             "view_comments": "Просмотреть комментарии",
