@@ -296,8 +296,7 @@
     },
     "favorites": {
         "favorited": "В любимых",
-        "favorite": "Любимое",
-        "failed_to_favorite": "Не удалось добавить в избранные"
+        "favorite": "Любимое"
     },
     "favorite_groups": {
         "favorite_groups": "Сборники",
