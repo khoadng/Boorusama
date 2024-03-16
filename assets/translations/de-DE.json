@@ -344,7 +344,6 @@
     },
     "favorite_tags": {
         "favorites": "Favoriten",
-        "or": "oder",
         "import": "Importieren",
         "import_hint": "Tag-String hier eingeben. Durch Leerzeichen getrennt.",
         "cancel": "Abbrechen",
