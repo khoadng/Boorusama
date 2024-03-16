@@ -318,7 +318,6 @@
         },
         "favorited": "Favorisiert",
         "favorite": "Favorit",
-        "failed_to_unfavorite": "Post konnte nicht aus den Favoriten entfernt werden",
         "failed_to_favorite": "Post konnte nicht zu den Favoriten hinzugefügt werden"
     },
     "favorite_groups": {
