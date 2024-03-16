@@ -324,8 +324,7 @@
             "other": "Favoris"
         },
         "favorited": "Mis en favoris",
-        "favorite": "Mettre en favoris",
-        "failed_to_favorite": "Échec de l'ajout aux favoris"
+        "favorite": "Mettre en favoris"
     },
     "favorite_groups": {
         "favorite_groups": "Groupes de favoris",
