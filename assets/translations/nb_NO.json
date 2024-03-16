@@ -344,7 +344,6 @@
     },
     "favorite_tags": {
         "favorites": "Favoritter",
-        "or": "eller",
         "import": "Importer",
         "import_hint": "",
         "cancel": "Avbryt",
