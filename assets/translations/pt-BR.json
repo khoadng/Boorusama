@@ -320,7 +320,6 @@
             "one": "Favorito"
         },
         "failed_to_favorite": "Não foi possível favoritar este post",
-        "unfavorite": "Desfavoritar",
         "failed_to_unfavorite": "Não foi possível desfavoritar este post",
         "favorited": "Favoritado",
         "favorite": "Favoritar"
