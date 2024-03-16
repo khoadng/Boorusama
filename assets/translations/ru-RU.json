@@ -297,7 +297,6 @@
     "favorites": {
         "favorited": "В любимых",
         "favorite": "Любимое",
-        "unfavorite": "Удалить из любимых",
         "failed_to_unfavorite": "Не удалось удалить из избранных",
         "failed_to_favorite": "Не удалось добавить в избранные"
     },
