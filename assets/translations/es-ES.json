@@ -318,7 +318,6 @@
         },
         "favorited": "Favoritos",
         "favorite": "Favorito",
-        "unfavorite": "No Favorito",
         "failed_to_unfavorite": "No se pudo eliminar de favoritos esta publicación",
         "failed_to_favorite": "No se pudo eliminar de favoritos este tema"
     },
