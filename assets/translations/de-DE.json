@@ -317,8 +317,7 @@
             "other": "Favoriten"
         },
         "favorited": "Favorisiert",
-        "favorite": "Favorit",
-        "failed_to_favorite": "Post konnte nicht zu den Favoriten hinzugefügt werden"
+        "favorite": "Favorit"
     },
     "favorite_groups": {
         "favorite_groups": "Gruppen",
