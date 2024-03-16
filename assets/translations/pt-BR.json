@@ -63,9 +63,6 @@
             "add_to_bookmark": "Adicionar marcador",
             "remove_from_bookmark": "Remover do marcador"
         },
-        "parent_child": {
-            "children_of": "Filho de"
-        },
         "action": {
             "preview": "Pré-visualização",
             "view_comments": "Ver comentários",
