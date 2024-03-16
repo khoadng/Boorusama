@@ -63,9 +63,6 @@
             "add_to_bookmark": "Add to bookmark",
             "remove_from_bookmark": "Remove from bookmark"
         },
-        "parent_child": {
-            "children_of": "Children of"
-        },
         "action": {
             "preview": "Preview",
             "view_comments": "View comments",
