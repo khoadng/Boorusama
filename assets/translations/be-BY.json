@@ -54,9 +54,6 @@
             "add_to_favorites": "Add to favorites",
             "copy_and_open_saved_search": "Copy and open saved search"
         },
-        "parent_child": {
-            "children_of": "Дачэрны для"
-        },
         "action": {
             "preview": "Preview",
             "view_comments": "View comments",
