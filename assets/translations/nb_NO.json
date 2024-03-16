@@ -318,7 +318,6 @@
         },
         "favorited": "Favorittmerket",
         "favorite": "Favoritt",
-        "unfavorited": "Avfavorisert",
         "unfavorite": "Avfavoriser",
         "failed_to_unfavorite": "Kunne ikke avfavorisere innlegget",
         "failed_to_favorite": ""
