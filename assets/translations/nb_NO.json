@@ -369,7 +369,6 @@
         "month": "Måned"
     },
     "booru": {
-        "addNew": "",
         "booru_engine_input_label": "Booru-motor (*)",
         "config_name_label": "Profilnavn (*)",
         "site_url_label": "",
