@@ -334,7 +334,6 @@
     },
     "favorite_tags": {
         "favorites": "喜爱",
-        "or": "或",
         "import": "导入",
         "import_hint": "在此输入标签。使用空格分隔。",
         "cancel": "取消",
