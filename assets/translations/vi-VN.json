@@ -62,9 +62,6 @@
             "add_to_bookmark": "Thêm đánh dấu",
             "remove_from_bookmark": "Xoá đánh dấu"
         },
-        "parent_child": {
-            "children_of": "Ảnh chung bộ với"
-        },
         "action": {
             "preview": "Xem nhanh",
             "view_comments": "Xem bình luận",
@@ -137,7 +134,6 @@
     "pool": {
         "pool": "Ảnh bộ",
         "pool_gallery": "Ảnh bộ",
-        "mature_banned_content": "Nội dung người lớn",
         "order": {
             "recent": "Gần đây",
             "new": "Mới",
@@ -310,11 +306,7 @@
             "other": "Lượt thích"
         },
         "favorited": "Đã yêu thích",
-        "favorite": "Yêu thích",
-        "unfavorited": "Đã xoá yêu thích",
-        "unfavorite": "Xoá yêu thích",
-        "failed_to_unfavorite": "Xảy ra lỗi khi thích ảnh này",
-        "failed_to_favorite": "Xảy ra lỗi khi xoá yêu thích ảnh này"
+        "favorite": "Yêu thích"
     },
     "favorite_groups": {
         "favorite_groups": "Nhóm yêu thích",
@@ -343,7 +335,6 @@
     },
     "favorite_tags": {
         "favorites": "Yêu thích",
-        "or": "hoặc",
         "import": "Nhập tay",
         "import_hint": "Điền tag vào đây. Mỗi tag cách nhau bằng khoảng trắng.",
         "cancel": "Huỷ",
@@ -369,7 +360,6 @@
         "month": "Tháng"
     },
     "booru": {
-        "addNew": "Tạo thêm booru",
         "booru_engine_input_label": "Booru engine (*)",
         "config_name_label": "Tên profile  (*)",
         "site_url_label": "URL của web",

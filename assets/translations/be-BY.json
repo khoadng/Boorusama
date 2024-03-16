@@ -54,9 +54,6 @@
             "add_to_favorites": "Add to favorites",
             "copy_and_open_saved_search": "Copy and open saved search"
         },
-        "parent_child": {
-            "children_of": "Дачэрны для"
-        },
         "action": {
             "preview": "Preview",
             "view_comments": "View comments",
@@ -121,7 +118,6 @@
     "pool": {
         "pool": "Альбом",
         "pool_gallery": "Альбомы",
-        "mature_banned_content": "Дарослы/Заблакаваны кантэнт",
         "order": {
             "recent": "Нядаўняе",
             "new": "Новае",
@@ -252,11 +248,7 @@
     },
     "favorites": {
         "favorited": "У любімых",
-        "favorite": "Любімае",
-        "unfavorited": "Не ў любімых",
-        "unfavorite": "Выдаліць з любімых",
-        "failed_to_unfavorite": "Памылка выдалення з любімых",
-        "failed_to_favorite": "Памылка дабаўлення у любімыя"
+        "favorite": "Любімае"
     },
     "favorite_groups": {
         "favorite_groups": "Favorite Groups",
@@ -282,7 +274,6 @@
     },
     "favorite_tags": {
         "favorites": "Любімае",
-        "or": "ці",
         "import": "Імпарт",
         "import_hint": "Увядзіце тэгі(абмежавана)",
         "cancel": "Адмена",

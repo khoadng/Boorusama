@@ -62,9 +62,6 @@
             "add_to_bookmark": "新增至書籤",
             "remove_from_bookmark": "從書籤中移除"
         },
-        "parent_child": {
-            "children_of": "Children of"
-        },
         "action": {
             "preview": "預覽",
             "view_comments": "查看評論",
@@ -132,7 +129,6 @@
     "pool": {
         "pool": "貼圖",
         "pool_gallery": "貼圖畫廊",
-        "mature_banned_content": "成人/禁止內容",
         "order": {
             "recent": "最近",
             "new": "新的",
@@ -302,11 +298,7 @@
             "other": "最愛"
         },
         "favorited": "已新增至最愛",
-        "favorite": "新增至最愛",
-        "unfavorited": "已從最愛中移除",
-        "unfavorite": "從最愛中移除",
-        "failed_to_unfavorite": "從最愛中移除失敗",
-        "failed_to_favorite": "從最愛中新增失敗"
+        "favorite": "新增至最愛"
     },
     "favorite_groups": {
         "favorite_groups": "最愛群組",
@@ -335,7 +327,6 @@
     },
     "favorite_tags": {
         "favorites": "最愛",
-        "or": "或",
         "import": "匯入",
         "import_hint": "在此輸入標籤，以空格分隔",
         "cancel": "取消",
@@ -361,7 +352,6 @@
         "month": "月"
     },
     "booru": {
-        "addNew": "新增 booru",
         "booru_engine_input_label": "Booru Engine (*)",
         "config_name_label": "設定檔名稱 (*)",
         "site_url_label": "網址",

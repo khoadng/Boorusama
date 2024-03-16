@@ -63,9 +63,6 @@
             "add_to_bookmark": "Add to bookmark",
             "remove_from_bookmark": "Remove from bookmark"
         },
-        "parent_child": {
-            "children_of": "Children of"
-        },
         "action": {
             "preview": "Preview",
             "view_comments": "View comments",
@@ -140,7 +137,6 @@
     "pool": {
         "pool": "Pool",
         "pool_gallery": "Pool Gallery",
-        "mature_banned_content": "Mature/Banned content",
         "order": {
             "recent": "Recent",
             "new": "New",
@@ -219,7 +215,7 @@
             "theme": "Theme",
             "dark": "Dark",
             "light": "Light",
-            "amoled_dark": "AMOLED Dark"
+            "amoled_dark": "Black"
         },
         "privacy": {
             "privacy": "Privacy",
@@ -231,7 +227,7 @@
             "posts_per_page_explain": "Number of thumbnails per page",
             "cache_size": "Cache size",
             "clear_cache": "Clear",
-            "cache_size_info": "{0} Mb in {1} files"
+            "cache_size_info": "{0} in {1} files"
         },
         "debug_logs": {
             "debug_logs": "Debug logs",
@@ -318,11 +314,7 @@
             "other": "Favorites"
         },
         "favorited": "Favorited",
-        "favorite": "Favorite",
-        "unfavorited": "Unfavorited",
-        "unfavorite": "Unfavorite",
-        "failed_to_unfavorite": "Fail to unfavorite this post",
-        "failed_to_favorite": "Fail to favorite this post"
+        "favorite": "Favorite"
     },
     "favorite_groups": {
         "favorite_groups": "Favorite Groups",
@@ -352,7 +344,6 @@
     },
     "favorite_tags": {
         "favorites": "Favorites",
-        "or": "or",
         "import": "Import",
         "import_hint": "Enter your tag string here. Space delimited.",
         "cancel": "Cancel",
@@ -378,7 +369,6 @@
         "month": "Month"
     },
     "booru": {
-        "addNew": "Add new booru",
         "booru_engine_input_label": "Booru engine (*)",
         "config_name_label": "Profile name (*)",
         "site_url_label": "Site URL",
@@ -389,7 +379,7 @@
         "content_filtering_label": "Content filtering",
         "hide_deleted_label": "Hide deleted posts",
         "config_booru_confirm": "OK",
-        "add_a_booru_site": "Add a booru site",
+        "add_a_booru_site": "Create a new profile",
         "next_step": "Next",
         "site_url": "Site URL",
         "unsupported_warning": "This booru is not supported yet.",

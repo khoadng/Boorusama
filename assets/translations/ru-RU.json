@@ -11,10 +11,11 @@
             "edit": "Изменить",
             "ok": "OK",
             "cancel": "Отмена"
-        }
+        },
+        "view": "Посмотреть"
     },
     "profile": {
-        "favorites": "Любимое"
+        "favorites": "Избранные"
     },
     "network": {
         "unavailable": "Нет доступа к интернету"
@@ -52,10 +53,15 @@
             "open_wiki": "Открыть wiki",
             "add_to_blacklist": "Добавить в чёрный список",
             "add_to_favorites": "Добавить в любимое",
-            "copy_and_open_saved_search": "Сохранить и открыть сохранённый запрос"
-        },
-        "parent_child": {
-            "children_of": "Дочерний для"
+            "copy_and_open_saved_search": "Сохранить и открыть сохранённый запрос",
+            "related_posts": "Похожие посты",
+            "add_to_bookmark": "Добавить в закладки",
+            "remove_from_bookmark": "Убрать из закладок",
+            "score": {
+                "one": "Очко",
+                "other": "Очки"
+            },
+            "source_label": "Источник"
         },
         "action": {
             "preview": "Предпросмотр",
@@ -83,6 +89,10 @@
             "noComments": "Ещё нет коментареев",
             "last_updated": "Обновленно",
             "send": "Отправить"
+        },
+        "counter": {
+            "one": "Комментарий",
+            "other": "Коментарии"
         }
     },
     "explore": {
@@ -95,8 +105,8 @@
     "search": {
         "errors": {
             "generic": "Что-то пошло не так",
-            "tag_limit": "Максимальное количество тегов. Обновите свой аккаунт для расширения лимита",
-            "database_timeout": "Запрос прерван из-за слишком долгой обработки",
+            "tag_limit": "Максимальное количество тегов. Обновите свой аккаунт для расширения лимита.",
+            "database_timeout": "Запрос прерван из-за слишком долгой обработки.",
             "rate_limited": "Вы были ограниченны в количестве запросов, попробуйте позже",
             "pagination_limit": "Вы достигли предела разбивки на страницы, и теперь вы не можете прокручивать дальше",
             "max_capacity": "Сервер находится под нагрузкой и не может обработать запрос. Попробуйте позже",
@@ -107,21 +117,26 @@
         },
         "hint": "Поиск...",
         "no_result": "Мы искали и там, и тут, но ничего не нашли.",
-        "empty": "Пусто...",
+        "empty": "Пустовато",
         "search_options": "Параметры поиска",
-        "metatags_notice": "Лимит тегов для поиска не влияет на бесплатные метатеги.",
+        "metatags_notice": "Бесплатные метатеги не будут учитываться при поиске по тегам",
         "history": {
             "history": "История",
             "clear": "Очистить",
             "recent": "Последнее"
         },
         "trending": "Популярное",
-        "remove_all_selected": "Удалить все выбранные теги"
+        "remove_all_selected": "Удалить все выбранные теги",
+        "search_in_progress_notice": "Поиск...",
+        "no_result_notice": "Нет результатов",
+        "result_counter": {
+            "other": "{} Результатов",
+            "one": "{} Результат"
+        }
     },
     "pool": {
         "pool": "Альбом",
         "pool_gallery": "Альбомы",
-        "mature_banned_content": "Взрослый/Заблокированный контент",
         "order": {
             "recent": "Недавнее",
             "new": "Новое",
@@ -143,7 +158,8 @@
         "settings": "Настройки",
         "app_settings": "Настройки приложения",
         "appearance": {
-            "appearance": "Внешний вид"
+            "appearance": "Внешний вид",
+            "show_scores": "Показать баллы"
         },
         "general": "Генеральные",
         "search": {
@@ -172,7 +188,7 @@
             },
             "image_quality": {
                 "image_quality": "Качество изображения",
-                "high_quality_notice": "Лучшее качество изображения займёт больше времени для загрузки",
+                "high_quality_notice": "Лучшее качество изображения займёт больше времени для загрузки.",
                 "high": "Высокое",
                 "low": "Низкое",
                 "original": "Оригинальное",
@@ -197,7 +213,7 @@
             "theme": "Тема",
             "dark": "Тёмная",
             "light": "Светлая",
-            "amoled_dark": "AMOLED Тёмная"
+            "amoled_dark": "Чёрная"
         },
         "privacy": {
             "privacy": "Приватность",
@@ -212,15 +228,21 @@
             "cache_size_info": "{0} МБ в {1} файле"
         },
         "debug_logs": {
-            "logs_copied": "Логи скопированны в буфер обмена"
+            "logs_copied": "Логи скопированны в буфер обмена",
+            "debug_logs": "Журналы отладки"
         },
         "download": {
             "qualities": {
                 "original": "Оригинал",
-                "preview": "Превью"
-            }
+                "preview": "Превью",
+                "sample": "Пример"
+            },
+            "select_a_folder": "Выберите папку",
+            "path": "Путь загрузки",
+            "quality": "Качество загружаемых изображений"
         },
-        "help_us_translate": "помогите нам перевести"
+        "help_us_translate": "помогите нам перевести",
+        "other_settings": "Другие настройки"
     },
     "blacklisted_tags": {
         "remove": "Удалить",
@@ -228,7 +250,9 @@
         "blacklisted_tags": "Чёрный список тегов",
         "load_error": "Ошибка загрузки чёрного списка",
         "updated": "Чёрный список обновлён",
-        "limitation_notice": "Поддерживает только <b>НЕ</b> оператор и <b>ИЛИ</b> оператор.\n\nИспользование чёрного списка с метатегами не работает в текущей версии."
+        "limitation_notice": "Поддерживает только <b>НЕ</b> оператор и <b>ИЛИ</b> оператор, <b>score</b> метатег и <b>rating</b> метатег\n\nИспользование чёрного списка с другими метатегами не работает в текущей версии.",
+        "failed_to_add": "Не удалось добавить тег",
+        "failed_to_remove": "Не удалось убрать тег"
     },
     "download": {
         "download": "Скачать",
@@ -237,7 +261,7 @@
         "bulk_download_save_to_folder": "Сохранить в",
         "bulk_download_total_count": "Всего",
         "bulk_download_done_count": "Загружено",
-        "bulk_download_done_confirm": "ОК",
+        "bulk_download_done_confirm": "Готово",
         "bulk_download_cancel": "Отмена",
         "bulk_download_duplicate": "Дубликат",
         "bulk_download_invalid_folder_name_error": "Название папки не может содержать следующие символы: ",
@@ -246,7 +270,11 @@
         "bulk_download_download_more": "Скачать больше",
         "open_app_settings": "Открыть настройки",
         "storage_permission_explanation": "Разрешение на доступ к хранилищу необхдимо для сохранения загруженных файлов.",
-        "app_restart_request": "Перезагрузите приложение для того, чтобы изменения вступили в силу"
+        "app_restart_request": "Перезагрузите приложение для того, чтобы изменения вступили в силу",
+        "bulk_download_downloaded_counter": {
+            "other": "{} изображений загружено",
+            "one": "{} изображение загружено"
+        }
     },
     "saved_search": {
         "saved_search": "Поисковые запросы",
@@ -255,21 +283,17 @@
         "empty_saved_search": "У вас нет ни одного сохранённого запроса",
         "update_saved_search": "Обновить",
         "saved_search_updated": "Запрос был обноволён",
-        "saved_search_feed": "Feed",
+        "saved_search_feed": "Лента",
         "saved_search_help": "Что это?",
         "saved_search_examples": "Примеры",
         "saved_search_try": "Попробывать",
         "saved_search_query": "Запрос",
         "saved_search_labels": "Labels*",
-        "saved_search_labels_description": "*A list of tags to help categorize this search. Space delimited."
+        "saved_search_labels_description": "*Список тегов, которые помогут упорядочить данный поиск. Разделение пробелом."
     },
     "favorites": {
         "favorited": "В любимых",
-        "favorite": "Любимое",
-        "unfavorited": "Не в любимых",
-        "unfavorite": "Удалить из любимых",
-        "failed_to_unfavorite": "Ошибка удаления из любимых",
-        "failed_to_favorite": "Ошибка добавления в любимые"
+        "favorite": "Любимое"
     },
     "favorite_groups": {
         "favorite_groups": "Сборники",
@@ -291,13 +315,12 @@
         "create_group_confirm": "OK",
         "max_limit_warning": "Учасники могут создать только 10 сборников",
         "duplicate_items_warning_notification": "Это изображение уже присутствует в сборнике",
-        "detete_confirmation": "Вы уверенны в том, что хотите удалить этот сборник?"
+        "detete_confirmation": "Вы уверенны в том, что хотите удалить этот сборник"
     },
     "favorite_tags": {
         "favorites": "Любимые",
-        "or": "или",
         "import": "Импорт",
-        "import_hint": "Введите теги(ограниченно)",
+        "import_hint": "Введите теги. Разделение пробелом.",
         "cancel": "Отмена",
         "export": "Экспорт",
         "export_notification": "Строка с тегами скопирована в буфер обмена"
@@ -321,7 +344,6 @@
         "month": "Месяц"
     },
     "booru": {
-        "addNew": "Добавить новый источник",
         "booru_engine_input_label": "Движок источника (*)",
         "site_url_label": "Ссылка на сайт",
         "login_name_label": "Логин",
