@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/core/feats/blacklists/blacklists.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
@@ -33,6 +34,8 @@ class TagsTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final globalNotifier = ref.watch(globalBlacklistedTagsProvider.notifier);
+
     return Theme(
       data: context.theme.copyWith(
         listTileTheme: context.theme.listTileTheme.copyWith(
@@ -61,6 +64,10 @@ class TagsTile extends ConsumerWidget {
                     value: 'add_to_favorites',
                     child: const Text('post.detail.add_to_favorites').tr(),
                   ),
+                  const PopupMenuItem(
+                    value: 'add_to_global_blacklist',
+                    child: Text('Add to global blacklist'),
+                  ),
                 ],
                 onSelected: (value) {
                   if (value == 'add_to_favorites') {
@@ -69,6 +76,8 @@ class TagsTile extends ConsumerWidget {
                     Clipboard.setData(
                       ClipboardData(text: tag.rawName),
                     ).then((value) => showSuccessToast('Copied'));
+                  } else if (value == 'add_to_global_blacklist') {
+                    globalNotifier.addTagWithToast(tag.rawName);
                   }
                 },
                 child: PostTagListChip(
