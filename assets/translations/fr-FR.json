@@ -64,9 +64,6 @@
             "add_to_bookmark": "Ajouter à un marque-page",
             "remove_from_bookmark": "Supprimé du marque-page"
         },
-        "parent_child": {
-            "children_of": "En lien avec"
-        },
         "action": {
             "preview": "Aperçu",
             "view_comments": "Afficher les commentaires",
