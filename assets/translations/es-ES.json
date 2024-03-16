@@ -227,7 +227,7 @@
             "posts_per_page_explain": "Numero de miniaturas por pagina",
             "cache_size": "Tamaño del cache",
             "clear_cache": "Liberar cache",
-            "cache_size_info": "{0} Mb en {1} archivos"
+            "cache_size_info": "{0} en {1} archivos"
         },
         "debug_logs": {
             "debug_logs": "Registro DEBUG",
@@ -379,7 +379,7 @@
         "content_filtering_label": "Filtracion de Contenidos",
         "hide_deleted_label": "Esconder posts borrados",
         "config_booru_confirm": "OK",
-        "add_a_booru_site": "Añadir un sitio booru",
+        "add_a_booru_site": "Añadir un nuevo perfil",
         "next_step": "Siguiente",
         "site_url": "URL del sitio",
         "unsupported_warning": "Este booru aún no está soportado.",
