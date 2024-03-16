@@ -369,7 +369,6 @@
         "month": "เดือน"
     },
     "booru": {
-        "addNew": "เพิ่มเว็บไซต์ booru ใหม่",
         "booru_engine_input_label": "เอนจินของ Booru (*)",
         "config_name_label": "ชื่อโปรไฟล์ (*)",
         "site_url_label": "ลิงค์เว็บไซต์",
