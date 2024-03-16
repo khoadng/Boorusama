@@ -69,10 +69,14 @@ class PostGridController<T> extends ChangeNotifier {
   Future<void> refresh() async {
     if (_refreshing) return;
     _refreshing = true;
-    _page = 1;
+    _page = switch (_pageMode) {
+      PageMode.infinite => 1,
+      PageMode.paginated => _page,
+    };
     notifyListeners();
 
-    final newItems = await refresher();
+    final newItems =
+        await (_pageMode == PageMode.infinite ? refresher() : fetcher(_page));
     _clear();
     _addAll(newItems);
     _hasMore = newItems.isNotEmpty;

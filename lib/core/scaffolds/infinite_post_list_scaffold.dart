@@ -16,6 +16,7 @@ import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/gestures.dart';
+import 'package:boorusama/foundation/image.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -143,6 +144,11 @@ class _InfinitePostListScaffoldState<T extends Post>
         blacklistedTagString: blacklistedTags.join('\n'),
         itemBuilder: (context, items, index) {
           final post = items[index];
+          final (width, height, cacheWidth, cacheHeight) =
+              context.sizeFromConstraints(
+            constraints,
+            post.aspectRatio,
+          );
 
           return ConditionalParentWidget(
             condition: !canHandleLongPress,
@@ -164,84 +170,85 @@ class _InfinitePostListScaffoldState<T extends Post>
                     ),
               child: child,
             ),
-            child: LayoutBuilder(
-              builder: (context, constraints) => DownloadProviderWidget(
-                builder: (context, download) => ConditionalParentWidget(
-                  condition: canHandleLongPress,
-                  conditionalBuilder: (child) => GestureDetector(
-                    onLongPress: () {
-                      if (postGesturesHandler != null) {
-                        postGesturesHandler(
-                          ref,
-                          ref.watchConfig.postGestures?.preview?.longPress,
-                          post,
-                          download,
-                        );
-                      }
-                    },
-                    child: child,
-                  ),
-                  child: ImageGridItem(
-                    isGif: post.isGif,
-                    isAI: post.isAI,
-                    hideOverlay: multiSelect,
-                    onTap: !multiSelect
-                        ? () {
-                            if (booruBuilder?.canHandlePostGesture(
-                                        GestureType.tap,
-                                        config.postGestures?.preview) ==
-                                    true &&
-                                postGesturesHandler != null) {
-                              postGesturesHandler(
-                                ref,
-                                ref.watchConfig.postGestures?.preview?.tap,
-                                post,
-                                download,
-                              );
-                            } else {
-                              goToPostDetailsPage(
-                                context: context,
-                                posts: items,
-                                initialIndex: index,
-                                scrollController: _autoScrollController,
-                              );
-                            }
+            child: DownloadProviderWidget(
+              builder: (context, download) => ConditionalParentWidget(
+                condition: canHandleLongPress,
+                conditionalBuilder: (child) => GestureDetector(
+                  onLongPress: () {
+                    if (postGesturesHandler != null) {
+                      postGesturesHandler(
+                        ref,
+                        ref.watchConfig.postGestures?.preview?.longPress,
+                        post,
+                        download,
+                      );
+                    }
+                  },
+                  child: child,
+                ),
+                child: ImageGridItem(
+                  isGif: post.isGif,
+                  isAI: post.isAI,
+                  hideOverlay: multiSelect,
+                  onTap: !multiSelect
+                      ? () {
+                          if (booruBuilder?.canHandlePostGesture(
+                                      GestureType.tap,
+                                      config.postGestures?.preview) ==
+                                  true &&
+                              postGesturesHandler != null) {
+                            postGesturesHandler(
+                              ref,
+                              ref.watchConfig.postGestures?.preview?.tap,
+                              post,
+                              download,
+                            );
+                          } else {
+                            goToPostDetailsPage(
+                              context: context,
+                              posts: items,
+                              initialIndex: index,
+                              scrollController: _autoScrollController,
+                            );
                           }
-                        : null,
-                    isFaved: ref.watch(favoriteProvider(post.id)),
-                    enableFav: !multiSelect && canFavorite,
-                    quickActionButtonBuilder:
-                        defaultImagePreviewButtonBuilder(ref, post),
-                    onFavToggle: (isFaved) async {
-                      if (isFaved) {
-                        if (favoriteAdder == null) return;
-                        await favoriteAdder(post.id, ref);
-                      } else {
-                        if (favoriteRemover == null) return;
-                        await favoriteRemover(post.id, ref);
-                      }
-                    },
-                    autoScrollOptions: AutoScrollOptions(
-                      controller: _autoScrollController,
-                      index: index,
+                        }
+                      : null,
+                  isFaved: ref.watch(favoriteProvider(post.id)),
+                  enableFav: !multiSelect && canFavorite,
+                  quickActionButtonBuilder:
+                      defaultImagePreviewButtonBuilder(ref, post),
+                  onFavToggle: (isFaved) async {
+                    if (isFaved) {
+                      if (favoriteAdder == null) return;
+                      await favoriteAdder(post.id, ref);
+                    } else {
+                      if (favoriteRemover == null) return;
+                      await favoriteRemover(post.id, ref);
+                    }
+                  },
+                  autoScrollOptions: AutoScrollOptions(
+                    controller: _autoScrollController,
+                    index: index,
+                  ),
+                  isAnimated: post.isAnimated,
+                  isTranslated: post.isTranslated,
+                  hasComments: post.hasComment,
+                  hasParentOrChildren: post.hasParentOrChildren,
+                  score: settings.showScoresInGrid ? post.score : null,
+                  image: BooruImage(
+                    aspectRatio: post.aspectRatio,
+                    imageUrl: gridThumbnailUrlBuilder != null
+                        ? gridThumbnailUrlBuilder(settings, post)
+                        : post.thumbnailImageUrl,
+                    borderRadius: BorderRadius.circular(
+                      settings.imageBorderRadius,
                     ),
-                    isAnimated: post.isAnimated,
-                    isTranslated: post.isTranslated,
-                    hasComments: post.hasComment,
-                    hasParentOrChildren: post.hasParentOrChildren,
-                    score: settings.showScoresInGrid ? post.score : null,
-                    image: BooruImage(
-                      aspectRatio: post.aspectRatio,
-                      imageUrl: gridThumbnailUrlBuilder != null
-                          ? gridThumbnailUrlBuilder(settings, post)
-                          : post.thumbnailImageUrl,
-                      borderRadius: BorderRadius.circular(
-                        settings.imageBorderRadius,
-                      ),
-                      forceFill:
-                          settings.imageListType == ImageListType.standard,
-                      placeholderUrl: post.thumbnailImageUrl,
-                    ),
+                    forceFill: settings.imageListType == ImageListType.standard,
+                    placeholderUrl: post.thumbnailImageUrl,
+                    width: width,
+                    height: height,
+                    cacheHeight: cacheHeight,
+                    cacheWidth: cacheWidth,
                   ),
                 ),
               ),

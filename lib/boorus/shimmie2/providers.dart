@@ -34,7 +34,7 @@ final shimmie2PostRepoProvider = Provider.family<PostRepository, BooruConfig>(
         );
 
         return posts
-            .map((e) => SimplePost(
+            .map((e) => Shimmie2Post(
                   id: e.id ?? 0,
                   thumbnailImageUrl: e.previewUrl ?? '',
                   sampleImageUrl: e.fileUrl ?? '',
@@ -55,9 +55,6 @@ final shimmie2PostRepoProvider = Provider.family<PostRepository, BooruConfig>(
                   videoThumbnailUrl: e.previewUrl ?? '',
                   videoUrl: e.fileUrl ?? '',
                   width: e.width?.toDouble() ?? 0,
-                  getLink: (baseUrl) => baseUrl.endsWith('/')
-                      ? '${baseUrl}post/view/${e.id}'
-                      : '$baseUrl/post/view/${e.id}',
                   createdAt: e.date,
                   uploaderId: null,
                   uploaderName: e.author,
@@ -91,3 +88,38 @@ final shimmie2AutocompleteRepoProvider =
     );
   },
 );
+
+class Shimmie2Post extends SimplePost {
+  Shimmie2Post({
+    required super.id,
+    required super.thumbnailImageUrl,
+    required super.sampleImageUrl,
+    required super.originalImageUrl,
+    required super.tags,
+    required super.rating,
+    required super.hasComment,
+    required super.isTranslated,
+    required super.hasParentOrChildren,
+    required super.source,
+    required super.score,
+    required super.duration,
+    required super.fileSize,
+    required super.format,
+    required super.hasSound,
+    required super.height,
+    required super.md5,
+    required super.videoThumbnailUrl,
+    required super.videoUrl,
+    required super.width,
+    required super.uploaderId,
+    required super.createdAt,
+    required super.uploaderName,
+  });
+
+  @override
+  String getLink(String baseUrl) {
+    return baseUrl.endsWith('/')
+        ? '$baseUrl/post/view/$id'
+        : '$baseUrl/post/view/$id';
+  }
+}

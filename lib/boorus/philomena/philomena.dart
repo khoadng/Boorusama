@@ -60,6 +60,7 @@ class PhilomenaBuilder
               customDownloadFileNameFormat: null,
             ),
             backgroundColor: backgroundColor,
+            isNewConfig: true,
           );
 
   @override

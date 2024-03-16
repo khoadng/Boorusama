@@ -41,7 +41,7 @@ final zerochanPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
         );
 
         return posts
-            .map((e) => SimplePost(
+            .map((e) => ZerochanPost(
                   id: e.id ?? 0,
                   thumbnailImageUrl: e.thumbnail ?? '',
                   sampleImageUrl: e.sampleUrl() ?? '',
@@ -62,10 +62,9 @@ final zerochanPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
                   videoThumbnailUrl: '',
                   videoUrl: '',
                   width: e.width?.toDouble() ?? 0,
-                  getLink: (baseUrl) => baseUrl.endsWith('/')
-                      ? '$baseUrl${e.id}'
-                      : '$baseUrl/${e.id}',
                   uploaderId: null,
+                  uploaderName: null,
+                  createdAt: null,
                 ))
             .toList();
       },
@@ -139,6 +138,7 @@ class ZerochanBuilder
               customDownloadFileNameFormat: null,
             ),
             backgroundColor: backgroundColor,
+            isNewConfig: true,
           );
 
   @override
@@ -188,4 +188,37 @@ class ZerochanBuilder
       LegacyFilenameBuilder(
         generateFileName: (post, downloadUrl) => basename(downloadUrl),
       );
+}
+
+class ZerochanPost extends SimplePost {
+  ZerochanPost({
+    required super.id,
+    required super.thumbnailImageUrl,
+    required super.sampleImageUrl,
+    required super.originalImageUrl,
+    required super.tags,
+    required super.rating,
+    required super.hasComment,
+    required super.isTranslated,
+    required super.hasParentOrChildren,
+    required super.source,
+    required super.score,
+    required super.duration,
+    required super.fileSize,
+    required super.format,
+    required super.hasSound,
+    required super.height,
+    required super.md5,
+    required super.videoThumbnailUrl,
+    required super.videoUrl,
+    required super.width,
+    required super.uploaderId,
+    required super.createdAt,
+    required super.uploaderName,
+  });
+
+  @override
+  String getLink(String baseUrl) {
+    return baseUrl.endsWith('/') ? '$baseUrl$id' : '$baseUrl/$id';
+  }
 }

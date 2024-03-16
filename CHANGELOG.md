@@ -1,3 +1,10 @@
+# 3.12.3
+- Add an error screen with information when the app fail to start up
+- Fix an issue in shimmie2 where images are downloaded without an file extension
+- Fix a bug that prevents grid's header from showing up in some sites
+- Sharing image will now include the image's extension properly
+- In paginated mode,refreshing the page will refresh the current page instead of going back to the first page
+
 # 3.12.2
 - Add a new profile option to show artist name in the image grid
 - Included an option to adjust the image's aspect ratio for standard grid

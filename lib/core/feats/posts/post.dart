@@ -37,7 +37,7 @@ abstract interface class TagDetails {
   Set<String>? get copyrightTags;
 }
 
-class SimplePost extends Equatable
+abstract class SimplePost extends Equatable
     with
         MediaInfoMixin,
         TranslatedMixin,
@@ -70,10 +70,9 @@ class SimplePost extends Equatable
     required this.videoThumbnailUrl,
     required this.videoUrl,
     required this.width,
-    required Function(String baseUrl) getLink,
     required this.uploaderId,
     this.uploaderName,
-  }) : _getLink = getLink;
+  });
 
   @override
   final int id;
@@ -127,10 +126,8 @@ class SimplePost extends Equatable
 
   final String? uploaderName;
 
-  final Function(String baseUrl) _getLink;
-
   @override
-  String getLink(String baseUrl) => _getLink(baseUrl);
+  String getLink(String baseUrl);
 
   @override
   Uri getUriLink(String baseUrl) => Uri.parse(getLink(baseUrl));

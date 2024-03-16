@@ -99,12 +99,15 @@ class BookmarkPost extends SimplePost {
     required super.videoThumbnailUrl,
     required super.videoUrl,
     required super.width,
-    required super.getLink,
     required super.uploaderId,
     required this.realSourceUrl,
   });
 
   final PostSource realSourceUrl;
+
+  @override
+  String getLink(String baseUrl) =>
+      source.url ?? realSourceUrl.url ?? originalImageUrl;
 }
 
 extension BookmarkToPost on Bookmark {
@@ -129,7 +132,6 @@ extension BookmarkToPost on Bookmark {
         videoThumbnailUrl: thumbnailUrl,
         videoUrl: originalUrl,
         width: width,
-        getLink: (_) => sourceUrl,
         uploaderId: null,
         realSourceUrl: PostSource.from(realSourceUrl),
       );

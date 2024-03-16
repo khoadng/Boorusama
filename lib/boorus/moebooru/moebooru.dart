@@ -75,6 +75,7 @@ class MoebooruBuilder
                   kGelbooruCustomDownloadFileNameFormat,
             ),
             backgroundColor: backgroundColor,
+            isNewConfig: true,
           );
 
   @override

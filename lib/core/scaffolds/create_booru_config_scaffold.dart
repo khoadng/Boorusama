@@ -47,6 +47,7 @@ class CreateBooruConfigScaffold extends ConsumerStatefulWidget {
     required this.tabsBuilder,
     required this.allowSubmit,
     required this.submit,
+    required this.isNewConfig,
     this.authTabBuilder,
     this.postDetailsResolutionBuilder,
     this.hasDownloadTab = false,
@@ -78,6 +79,7 @@ class CreateBooruConfigScaffold extends ConsumerStatefulWidget {
 
   final Set<String?> postPreviewQuickActionButtonActions;
   final String Function(String? action)? describePostPreviewQuickAction;
+  final bool isNewConfig;
 
   @override
   ConsumerState<CreateBooruConfigScaffold> createState() =>
@@ -184,10 +186,30 @@ class _CreateBooruConfigScaffoldState
                         horizontal: 12,
                         vertical: 8,
                       ),
-                      child: CreateBooruSubmitButton(
-                        onSubmit: widget.allowSubmit(params)
-                            ? () => widget.submit(params)
-                            : null,
+                      child: Column(
+                        children: [
+                          if (widget.isNewConfig)
+                            Text(
+                              'Not sure? Leave it as it is, you can change it later.',
+                              style: context.textTheme.titleSmall?.copyWith(
+                                color: context.theme.hintColor,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          const SizedBox(height: 8),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: CreateBooruSubmitButton(
+                                  onSubmit: widget.allowSubmit(params)
+                                      ? () => widget.submit(params)
+                                      : null,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
                   ],

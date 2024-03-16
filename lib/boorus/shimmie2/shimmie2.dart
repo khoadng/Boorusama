@@ -59,6 +59,7 @@ class Shimmie2Builder
               customDownloadFileNameFormat: null,
             ),
             backgroundColor: backgroundColor,
+            isNewConfig: true,
           );
 
   @override

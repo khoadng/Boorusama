@@ -1,6 +1,3 @@
-// Dart imports:
-import 'dart:convert';
-
 // Project imports:
 import 'package:boorusama/foundation/error.dart';
 
@@ -29,19 +26,3 @@ String translateBooruError(BooruError error) => switch (error) {
         },
       UnknownError e => e.error.toString(),
     };
-
-String prettyPrintJson(dynamic json) {
-  if (json == null) return '';
-
-  if (json is Map<String, dynamic>) {
-    return const JsonEncoder.withIndent('  ').convert(json);
-  }
-  final jsonStr = json.toString();
-
-  final jsonObj = json.decode(jsonStr);
-  return const JsonEncoder.withIndent('  ').convert(jsonObj);
-}
-
-String wrapIntoJsonToCodeBlock(String json) {
-  return '```json\n$json\n```';
-}

@@ -114,6 +114,7 @@ class DanbooruBuilder
                   kBoorusamaCustomDownloadFileNameFormat,
             ),
             backgroundColor: backgroundColor,
+            isNewConfig: true,
           );
 
   @override

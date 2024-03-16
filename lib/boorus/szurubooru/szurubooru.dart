@@ -69,6 +69,7 @@ class SzurubooruBuilder
               customDownloadFileNameFormat: null,
             ),
             backgroundColor: backgroundColor,
+            isNewConfig: true,
           );
 
   @override
