@@ -348,7 +348,6 @@
     "favorite_tags": {
         "export": "Exportar",
         "cancel": "Cancelar",
-        "or": "ou",
         "favorites": "Favoritos",
         "import": "Importar",
         "import_hint": "Preencha sua linha de tag aqui. Espaço delimitado.",
