@@ -309,8 +309,7 @@
             "other": "Lượt thích"
         },
         "favorited": "Đã yêu thích",
-        "favorite": "Yêu thích",
-        "failed_to_favorite": "Xảy ra lỗi khi xoá yêu thích ảnh này"
+        "favorite": "Yêu thích"
     },
     "favorite_groups": {
         "favorite_groups": "Nhóm yêu thích",
