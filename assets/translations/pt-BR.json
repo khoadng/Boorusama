@@ -182,7 +182,7 @@
         },
         "performance": {
             "posts_per_page_explain": "Número de miniaturas por página",
-            "cache_size_info": "{0} mb em {1} arquivos",
+            "cache_size_info": "{0} em {1} arquivos",
             "clear_cache": "Limpar",
             "cache_size": "Tamanho do cache",
             "posts_per_page": "Posts por página",
@@ -379,7 +379,9 @@
         "validation_redundant_www": "\"{0}\" contém um \"www\" redundante",
         "validation_missing_scheme": "\"{0}\" está faltando um esquema (e.g. https://)",
         "validation_empty_url": "A URL esta vazia",
-        "config_name_label": "Nome de perfil (*)"
+        "config_name_label": "Nome de perfil (*)",
+        "validation_contains_spaces": "\"{0}\" contém espaços entre linhas",
+        "password_hashed_label": "Senha em Hash (somente leitura)"
     },
     "bookmark": {
         "failed_to_add_many": "Falha ao adicionar marcações",
