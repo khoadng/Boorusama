@@ -98,11 +98,14 @@ class NoErrorReporter implements ErrorReporter {
   void recordFlutterFatalError(FlutterErrorDetails details) {}
 }
 
-void initializeErrorHandlers(Settings settings, ErrorReporter reporter) {
+void initializeErrorHandlers(Settings settings, ErrorReporter? reporter) {
+  final isRemoteErrorReportingSupported =
+      reporter?.isRemoteErrorReportingSupported ?? false;
+
   // Pass all uncaught "fatal" errors from the framework to Crashlytics
   FlutterError.onError = (details) {
     if (kReleaseMode &&
-        reporter.isRemoteErrorReportingSupported &&
+        isRemoteErrorReportingSupported &&
         settings.dataCollectingStatus == DataCollectingStatus.allow) {
       // Ignore 304 errors
       if (details.exception is DioException) {
@@ -113,7 +116,7 @@ void initializeErrorHandlers(Settings settings, ErrorReporter reporter) {
       // Ignore image service errors
       if (details.library == 'image resource service') return;
 
-      reporter.recordFlutterFatalError(details);
+      reporter?.recordFlutterFatalError(details);
 
       return;
     }
@@ -124,14 +127,14 @@ void initializeErrorHandlers(Settings settings, ErrorReporter reporter) {
   // Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics
   PlatformDispatcher.instance.onError = (error, stack) {
     if (kReleaseMode &&
-        reporter.isRemoteErrorReportingSupported &&
+        isRemoteErrorReportingSupported &&
         settings.dataCollectingStatus == DataCollectingStatus.allow) {
       // Ignore 304 errors
       if (error is DioException) {
         if (error.response?.statusCode == 304) return true;
       }
 
-      reporter.recordError(error, stack);
+      reporter?.recordError(error, stack);
     }
 
     return true;

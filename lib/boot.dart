@@ -43,7 +43,7 @@ import 'package:boorusama/foundation/platform.dart';
 import 'app.dart';
 import 'foundation/i18n.dart';
 
-Future<void> failsafe(Object e, Chain st, BootLogger logger) async {
+Future<void> failsafe(Object e, StackTrace st, BootLogger logger) async {
   final deviceInfo =
       await DeviceInfoService(plugin: DeviceInfoPlugin()).getDeviceInfo();
   final logs = logger.dump();
@@ -276,9 +276,7 @@ Future<void> boot(BootLogger bootLogger) async {
 
   bootLogger.l("Initialize analytics");
   final (firebaseAnalytics, crashlyticsReporter) =
-      await ensureFirebaseInitialized();
-
-  await initializeAnalytics(settings, firebaseAnalytics);
+      await ensureFirebaseInitialized(settings);
 
   bootLogger.l("Initialize error handlers");
   initializeErrorHandlers(settings, crashlyticsReporter);
@@ -336,13 +334,14 @@ Future<void> boot(BootLogger bootLogger) async {
                   .overrideWithValue(danbooruCreatorBox),
               miscDataBoxProvider.overrideWithValue(miscDataBox),
               booruTagTypeBoxProvider.overrideWithValue(booruTagTypeBox),
-              analyticsProvider.overrideWithValue(firebaseAnalytics),
-              errorReporterProvider.overrideWithValue(crashlyticsReporter),
+              if (firebaseAnalytics != null)
+                analyticsProvider.overrideWithValue(firebaseAnalytics),
+              if (crashlyticsReporter != null)
+                errorReporterProvider.overrideWithValue(crashlyticsReporter),
             ],
             child: App(
               appName: appInfo.appName,
               initialSettings: settings,
-              analytics: firebaseAnalytics,
             ),
           ),
         ),

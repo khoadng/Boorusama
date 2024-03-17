@@ -36,7 +36,7 @@ class FirebaseCrashlyticsReporter implements ErrorReporter {
     await FirebaseCrashlytics.instance
         .setCustomKey('time-zone-name', DateTime.now().timeZoneName);
 
-    await FirebaseCrashlytics.instance
-        .setCustomKey('time-zone-offset', DateTime.now().timeZoneOffset);
+    await FirebaseCrashlytics.instance.setCustomKey(
+        'time-zone-offset', DateTime.now().timeZoneOffset.inHours);
   }
 }

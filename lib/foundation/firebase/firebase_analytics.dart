@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -12,12 +13,24 @@ import 'package:boorusama/foundation/analytics.dart';
 import 'package:boorusama/foundation/platform.dart';
 
 class FirebaseAnalyticsImpl implements AnalyticsInterface {
+  FirebaseAnalyticsImpl({
+    required this.dataCollectingStatus,
+  });
+
+  final DataCollectingStatus dataCollectingStatus;
+
+  @override
+  bool get enabled =>
+      dataCollectingStatus == DataCollectingStatus.allow &&
+      kReleaseMode &&
+      isPlatformSupported();
+
   @override
   bool isPlatformSupported() => isAndroid() || isIOS() || isMacOS() || isWeb();
 
   @override
   Future<void> ensureInitialized() async {
-    await FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(!kDebugMode);
+    await FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(enabled);
   }
 
   @override
@@ -26,9 +39,11 @@ class FirebaseAnalyticsImpl implements AnalyticsInterface {
   }
 
   @override
-  NavigatorObserver getAnalyticsObserver() => FirebaseAnalyticsObserver(
-        analytics: FirebaseAnalytics.instance,
-      );
+  NavigatorObserver getAnalyticsObserver() => enabled
+      ? FirebaseAnalyticsObserver(
+          analytics: FirebaseAnalytics.instance,
+        )
+      : NavigatorObserver();
 
   @override
   Future<void> sendBooruAddedEvent({
