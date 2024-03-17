@@ -74,8 +74,8 @@ Future<void> failsafe(Object e, StackTrace st) async {
 }
 
 Future<void> bootstrap() async {
-  final uiLogger = UILogger();
-  final logger = await loggerWith(uiLogger);
+  final appLogger = AppLogger();
+  final logger = await loggerWith(appLogger);
   final stopwatch = Stopwatch()..start();
   logger.logI('Start up', 'App Start up');
 
@@ -288,7 +288,7 @@ Future<void> bootstrap() async {
                   .overrideWithValue(userMetatagRepo),
               packageInfoProvider.overrideWithValue(packageInfo),
               appInfoProvider.overrideWithValue(appInfo),
-              uiLoggerProvider.overrideWithValue(uiLogger),
+              appLoggerProvider.overrideWithValue(appLogger),
               supportedLanguagesProvider.overrideWithValue(supportedLanguages),
               danbooruCreatorHiveBoxProvider
                   .overrideWithValue(danbooruCreatorBox),
