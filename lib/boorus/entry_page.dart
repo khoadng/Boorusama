@@ -134,7 +134,7 @@ class _Boorus extends ConsumerWidget {
       return Scaffold(
         appBar: AppBar(),
         body: const Center(
-          child: Text('Not implemented'),
+          child: Text('No booru found for this configuration'),
         ),
       );
     }

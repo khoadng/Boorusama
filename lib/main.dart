@@ -7,14 +7,14 @@ import 'boot.dart';
 
 void main() async {
   final bootLogger = BootLogger();
+
   bootLogger.l("Initialize Flutter's widgets binding");
   WidgetsFlutterBinding.ensureInitialized();
-
   try {
-    bootLogger.l("Bootstrap the app");
-
+    bootLogger.l("Booting...");
     await boot(bootLogger);
   } catch (e, st) {
+    bootLogger.l("An error occurred during booting");
     await failsafe(e, st, bootLogger);
   }
 }

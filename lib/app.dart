@@ -43,9 +43,7 @@ class App extends StatelessWidget {
     return Portal(
       child: OKToast(
         child: AnalyticsScope(
-          settings: initialSettings,
           builder: (analyticsEnabled) => RouterBuilder(
-            analyticsEnabled: analyticsEnabled,
             builder: (context, router) => ThemeBuilder(
               builder: (theme, themeMode) => MaterialApp.router(
                 builder: (context, child) => ConditionalParentWidget(
