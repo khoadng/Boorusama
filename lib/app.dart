@@ -10,6 +10,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_portal/flutter_portal.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:oktoast/oktoast.dart';
+import 'package:stack_trace/stack_trace.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
@@ -85,15 +86,17 @@ class AppFailedToInitialize extends ConsumerWidget {
     super.key,
     required this.error,
     required this.stackTrace,
+    required this.logs,
   });
 
   final Object error;
-  final StackTrace? stackTrace;
+  final Chain? stackTrace;
+  final String logs;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final deviceInfo = ref.watch(deviceInfoProvider);
-    final stackString = stackTrace?.prettyPrinted(maxFrames: 10);
+    final stackString = stackTrace?.terse.toString();
     final errorString = '$error\n\n$stackString';
     final data = wrapIntoCodeBlock(errorString);
 
@@ -195,7 +198,7 @@ class AppFailedToInitialize extends ConsumerWidget {
   String composeError(String errorString, DeviceInfo deviceInfo) {
     final data = deviceInfo.dump();
 
-    return '$errorString\n\n$data';
+    return '$errorString\n\n$logs\n\n$data';
   }
 
   Future<void> _saveTo(
