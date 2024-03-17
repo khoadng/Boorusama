@@ -220,12 +220,12 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?> {
         }
 
         onSuccess?.call(config);
-        sendBooruAddedEvent(
-          url: config.url,
-          hintSite: config.booruType.name,
-          totalSites: state!.length,
-          hasLogin: config.hasLoginDetails(),
-        );
+        ref.read(analyticsProvider).sendBooruAddedEvent(
+              url: config.url,
+              hintSite: config.booruType.name,
+              totalSites: state!.length,
+              hasLogin: config.hasLoginDetails(),
+            );
 
         _add(config);
       }

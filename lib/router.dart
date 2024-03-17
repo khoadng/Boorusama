@@ -13,9 +13,10 @@ import 'routes.dart';
 export 'package:go_router/go_router.dart';
 
 final routerProvider = Provider.family<GoRouter, bool>((ref, analyticsEnabled) {
+  final analytics = ref.watch(analyticsProvider);
   return GoRouter(
     observers: [
-      if (analyticsEnabled) getAnalyticsObserver(),
+      if (analyticsEnabled) analytics.getAnalyticsObserver(),
     ],
     routes: [
       Routes.home(ref),

@@ -7,11 +7,14 @@ import 'package:flutter/foundation.dart';
 // Package imports:
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/settings/settings.dart';
-import 'firebase/firebase.dart';
+
+final errorReporterProvider = Provider<ErrorReporter>(
+  (ref) => NoErrorReporter(),
+);
 
 enum AppErrorType {
   failedToLoadBooruConfig,
@@ -78,11 +81,28 @@ extension ServerErrorX on ServerError {
   bool get isServerError => httpStatusCode! >= 500 && httpStatusCode! < 600;
 }
 
-void initializeErrorHandlers(Settings settings) {
+abstract interface class ErrorReporter {
+  void recordError(dynamic error, dynamic stackTrace);
+  void recordFlutterFatalError(FlutterErrorDetails details);
+  bool get isRemoteErrorReportingSupported;
+}
+
+class NoErrorReporter implements ErrorReporter {
+  @override
+  bool get isRemoteErrorReportingSupported => false;
+
+  @override
+  void recordError(error, stackTrace) {}
+
+  @override
+  void recordFlutterFatalError(FlutterErrorDetails details) {}
+}
+
+void initializeErrorHandlers(Settings settings, ErrorReporter reporter) {
   // Pass all uncaught "fatal" errors from the framework to Crashlytics
   FlutterError.onError = (details) {
     if (kReleaseMode &&
-        isFirebaseCrashlyticsSupportedPlatforms() &&
+        reporter.isRemoteErrorReportingSupported &&
         settings.dataCollectingStatus == DataCollectingStatus.allow) {
       // Ignore 304 errors
       if (details.exception is DioException) {
@@ -93,7 +113,7 @@ void initializeErrorHandlers(Settings settings) {
       // Ignore image service errors
       if (details.library == 'image resource service') return;
 
-      FirebaseCrashlytics.instance.recordFlutterFatalError(details);
+      reporter.recordFlutterFatalError(details);
 
       return;
     }
@@ -104,14 +124,14 @@ void initializeErrorHandlers(Settings settings) {
   // Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics
   PlatformDispatcher.instance.onError = (error, stack) {
     if (kReleaseMode &&
-        isFirebaseCrashlyticsSupportedPlatforms() &&
+        reporter.isRemoteErrorReportingSupported &&
         settings.dataCollectingStatus == DataCollectingStatus.allow) {
       // Ignore 304 errors
       if (error is DioException) {
         if (error.response?.statusCode == 304) return true;
       }
 
-      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+      reporter.recordError(error, stack);
     }
 
     return true;

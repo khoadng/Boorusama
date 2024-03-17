@@ -34,6 +34,8 @@ import 'package:boorusama/foundation/analytics.dart';
 import 'package:boorusama/foundation/app_info.dart';
 import 'package:boorusama/foundation/device_info_service.dart';
 import 'package:boorusama/foundation/error.dart';
+import 'package:boorusama/foundation/firebase/analytics_impl.dart';
+import 'package:boorusama/foundation/firebase/error_reporter_impl.dart';
 import 'package:boorusama/foundation/hive.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
 import 'package:boorusama/foundation/package_info.dart';
@@ -274,10 +276,13 @@ Future<void> boot(BootLogger bootLogger) async {
   final supportedLanguages = await loadLanguageNames();
 
   bootLogger.l("Initialize analytics");
-  await initializeAnalytics(settings);
+  final firebaseAnalytics = FirebaseAnalyticsImpl();
+  final crashlyticsReporter = FirebaseCrashlyticsReporter();
+
+  await initializeAnalytics(settings, firebaseAnalytics);
 
   bootLogger.l("Initialize error handlers");
-  initializeErrorHandlers(settings);
+  initializeErrorHandlers(settings, crashlyticsReporter);
 
   bootLogger.l("Initialize download notifications");
   final downloadNotifications = await DownloadNotifications.create();
@@ -332,10 +337,13 @@ Future<void> boot(BootLogger bootLogger) async {
                   .overrideWithValue(danbooruCreatorBox),
               miscDataBoxProvider.overrideWithValue(miscDataBox),
               booruTagTypeBoxProvider.overrideWithValue(booruTagTypeBox),
+              analyticsProvider.overrideWithValue(firebaseAnalytics),
+              errorReporterProvider.overrideWithValue(crashlyticsReporter),
             ],
             child: App(
               appName: appInfo.appName,
               initialSettings: settings,
+              analytics: firebaseAnalytics,
             ),
           ),
         ),

@@ -34,10 +34,12 @@ class App extends StatelessWidget {
     super.key,
     required this.appName,
     required this.initialSettings,
+    required this.analytics,
   });
 
   final String appName;
   final Settings initialSettings;
+  final AnalyticsInterface analytics;
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +47,7 @@ class App extends StatelessWidget {
       child: OKToast(
         child: AnalyticsScope(
           settings: initialSettings,
+          analytics: analytics,
           builder: (analyticsEnabled) => RouterBuilder(
             analyticsEnabled: analyticsEnabled,
             builder: (context, router) => ThemeBuilder(
