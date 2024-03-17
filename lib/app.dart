@@ -10,7 +10,6 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_portal/flutter_portal.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:oktoast/oktoast.dart';
-import 'package:stack_trace/stack_trace.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
@@ -90,13 +89,13 @@ class AppFailedToInitialize extends ConsumerWidget {
   });
 
   final Object error;
-  final Chain? stackTrace;
+  final StackTrace? stackTrace;
   final String logs;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final deviceInfo = ref.watch(deviceInfoProvider);
-    final stackString = stackTrace?.terse.toString();
+    final stackString = stackTrace?.prettyPrinted(maxFrames: 10);
     final errorString = '$error\n\n$stackString';
     final data = wrapIntoCodeBlock(errorString);
 

@@ -42,7 +42,7 @@ import 'package:boorusama/foundation/platform.dart';
 import 'app.dart';
 import 'foundation/i18n.dart';
 
-Future<void> failsafe(Object e, Chain st, BootLogger logger) async {
+Future<void> failsafe(Object e, StackTrace st, BootLogger logger) async {
   final deviceInfo =
       await DeviceInfoService(plugin: DeviceInfoPlugin()).getDeviceInfo();
   final logs = logger.dump();
@@ -152,15 +152,6 @@ Future<void> boot(BootLogger bootLogger) async {
     // ignore errors here, maybe it's already trusted
   }
 
-  bootLogger.l("Load settings");
-  final settings =
-      await settingRepository.load().run().then((value) => value.fold(
-            (l) => Settings.defaultSettings,
-            (r) => r,
-          ));
-
-  bootLogger.l("Settings: ${settings.toJson()}");
-
   Box<String> booruConfigBox;
   bootLogger.l("Initialize booru config box");
   if (await Hive.boxExists('booru_configs')) {
@@ -173,6 +164,12 @@ Future<void> boot(BootLogger bootLogger) async {
     final id = await booruConfigBox
         .add(HiveBooruConfigRepository.defaultValue(booruFactory));
 
+    final settings =
+        await settingRepository.load().run().then((value) => value.fold(
+              (l) => Settings.defaultSettings,
+              (r) => r,
+            ));
+
     bootLogger.l("Save default booru config");
     await settingRepository.save(settings.copyWith(currentBooruConfigId: id));
   }
@@ -181,6 +178,15 @@ Future<void> boot(BootLogger bootLogger) async {
 
   bootLogger.l("Initialize booru user repository");
   final booruUserRepo = HiveBooruConfigRepository(box: booruConfigBox);
+
+  bootLogger.l("Load settings");
+  final settings =
+      await settingRepository.load().run().then((value) => value.fold(
+            (l) => Settings.defaultSettings,
+            (r) => r,
+          ));
+
+  bootLogger.l("Settings: ${settings.toJson()}");
 
   bootLogger.l("Load current booru config");
   final initialConfig = await booruUserRepo.getCurrentBooruConfigFrom(settings);
