@@ -1,12 +1,14 @@
+// Flutter imports:
+import 'package:flutter/foundation.dart';
+
 // Package imports:
-import 'package:boorusama/core/feats/settings/settings.dart';
-import 'package:boorusama/foundation/platform.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 // Project imports:
+import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/foundation/analytics.dart';
 import 'package:boorusama/foundation/error.dart';
-import 'package:flutter/foundation.dart';
+import 'package:boorusama/foundation/platform.dart';
 import 'firebase_analytics.dart';
 import 'firebase_crashlytics.dart';
 import 'firebase_options.dart';
