@@ -16,7 +16,7 @@ final analyticsProvider = Provider<AnalyticsInterface>(
 abstract interface class AnalyticsInterface {
   bool isPlatformSupported();
   Future<void> ensureInitialized();
-  void changeCurrentAnalyticConfig(BooruConfig config);
+  Future<void> changeCurrentAnalyticConfig(BooruConfig config);
   NavigatorObserver getAnalyticsObserver();
   void sendBooruAddedEvent({
     required String url,
@@ -34,7 +34,7 @@ class NoAnalyticsInterface implements AnalyticsInterface {
   Future<void> ensureInitialized() async {}
 
   @override
-  void changeCurrentAnalyticConfig(BooruConfig config) {}
+  Future<void> changeCurrentAnalyticConfig(BooruConfig config) async {}
 
   @override
   NavigatorObserver getAnalyticsObserver() => NavigatorObserver();

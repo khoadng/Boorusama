@@ -34,8 +34,7 @@ import 'package:boorusama/foundation/analytics.dart';
 import 'package:boorusama/foundation/app_info.dart';
 import 'package:boorusama/foundation/device_info_service.dart';
 import 'package:boorusama/foundation/error.dart';
-import 'package:boorusama/foundation/firebase/analytics_impl.dart';
-import 'package:boorusama/foundation/firebase/error_reporter_impl.dart';
+import 'package:boorusama/foundation/firebase/firebase.dart';
 import 'package:boorusama/foundation/hive.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
 import 'package:boorusama/foundation/package_info.dart';
@@ -276,8 +275,8 @@ Future<void> boot(BootLogger bootLogger) async {
   final supportedLanguages = await loadLanguageNames();
 
   bootLogger.l("Initialize analytics");
-  final firebaseAnalytics = FirebaseAnalyticsImpl();
-  final crashlyticsReporter = FirebaseCrashlyticsReporter();
+  final (firebaseAnalytics, crashlyticsReporter) =
+      await ensureFirebaseInitialized();
 
   await initializeAnalytics(settings, firebaseAnalytics);
 
