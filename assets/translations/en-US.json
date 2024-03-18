@@ -256,7 +256,7 @@
         "help_us_translate": "Help us translate",
         "other_settings": "Other settings",
         "data_and_storage": {
-            "data_and_storage": "Backup and Restore",
+            "data_and_storage": "Data and Storage",
             "clear_cache_on_start_up": "Clear image cache on start up"
         },
         "backup_and_restore": {
@@ -372,7 +372,8 @@
         "import_hint": "Enter your tag string here. Space delimited.",
         "cancel": "Cancel",
         "export": "Export",
-        "export_notification": "Tag string copied to clipboard"
+        "export_notification": "Tag string copied to clipboard",
+        "favorite_tags": "Favorite tags"
     },
     "rating": {
         "rate_request": "Rate this app",

@@ -339,7 +339,8 @@
         "import_hint": "Điền tag vào đây. Mỗi tag cách nhau bằng khoảng trắng.",
         "cancel": "Huỷ",
         "export": "Xuất tag",
-        "export_notification": "Tag đã được chép vào clipboard"
+        "export_notification": "Tag đã được chép vào clipboard",
+        "favorite_tags": "Tag yêu thích"
     },
     "rating": {
         "rate_request": "Đánh giá app",
