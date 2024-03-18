@@ -15,7 +15,10 @@
         "view": "View"
     },
     "profile": {
-        "favorites": "Favorites"
+        "favorites": "Favorites",
+        "profile": "Profile",
+        "copy_user_id": "Copy User ID",
+        "messages": "Messages"
     },
     "network": {
         "unavailable": "Network unavailable"
@@ -100,7 +103,8 @@
         "popular": "Popular",
         "hot": "Hot",
         "most_viewed": "Most viewed",
-        "see_more": "See more"
+        "see_more": "See more",
+        "explore": "Explore"
     },
     "search": {
         "errors": {
@@ -164,7 +168,8 @@
         "general": "General",
         "search": {
             "search": "Search",
-            "auto_focus_search_bar": "Auto focus search bar when first open search view"
+            "auto_focus_search_bar": "Auto focus search bar when first open search view",
+            "hide_bookmarked_posts_from_search_results": "Hide bookmarked posts from search results"
         },
         "information": "Information",
         "changelog": "Changelog",
@@ -197,7 +202,8 @@
                 "highest": "Highest"
             },
             "spacing": "Spacing",
-            "corner_radius": "Corner radius"
+            "corner_radius": "Corner radius",
+            "padding": "Padding"
         },
         "image_viewer": {
             "image_viewer": "Image viewer",
@@ -219,7 +225,11 @@
         },
         "privacy": {
             "privacy": "Privacy",
-            "send_error_data_notice": "Send anonymous data for error logging"
+            "send_error_data_notice": "Send anonymous data for error logging",
+            "enable_incognito_keyboard": "Enable incognito keyboard",
+            "enable_incognito_keyboard_notice": "Only affects Android.",
+            "enable_biometric_lock": "Enable biometric lock",
+            "enable_biometric_lock_notice": "Only works on devices with biometrics support and has been set up."
         },
         "performance": {
             "performance": "Performance",
@@ -244,7 +254,21 @@
             }
         },
         "help_us_translate": "Help us translate",
-        "other_settings": "Other settings"
+        "other_settings": "Other settings",
+        "data_and_storage": {
+            "data_and_storage": "Backup and Restore",
+            "clear_cache_on_start_up": "Clear image cache on start up"
+        },
+        "backup_and_restore": {
+            "backup_and_restore": "Backup and Restore"
+        },
+        "image_details": {
+            "image_details": "Image details",
+            "ui_overlay": {
+                "show": "Show",
+                "hide": "Hide"
+            }
+        }
     },
     "blacklisted_tags": {
         "remove": "Remove",
