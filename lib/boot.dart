@@ -280,9 +280,9 @@ Future<void> boot(BootLogger bootLogger) async {
   bootLogger.l("Load supported languages");
   final supportedLanguages = await loadLanguageNames();
 
-  bootLogger.l("Initialize analytics");
+  bootLogger.l("Initialize tracking");
   final (firebaseAnalytics, crashlyticsReporter) =
-      await ensureFirebaseInitialized(settings);
+      await _initializeTracking(settings);
 
   bootLogger.l("Initialize error handlers");
   initializeErrorHandlers(settings, crashlyticsReporter);
@@ -358,3 +358,7 @@ Future<void> boot(BootLogger bootLogger) async {
   bootLogger.l("Run app");
   run();
 }
+
+Future<(AnalyticsInterface? analytics, ErrorReporter? reporter)>
+    _initializeTracking(Settings settings) =>
+        ensureFirebaseInitialized(settings);
