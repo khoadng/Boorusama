@@ -143,7 +143,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
               Symbols.account_box,
               fill: context.themeMode.isLight ? 0 : 1,
             ),
-            title: const Text('Profile'),
+            title: const Text('profile.profile').tr(),
             onTap: () {
               goToUserDetailsPage(
                 ref,
@@ -159,11 +159,11 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
             Symbols.explore,
             fill: context.themeMode.isLight ? 0 : 1,
           ),
-          title: const Text('Explore'),
+          title: const Text('explore.explore').tr(),
           onTap: () => context.navigator.push(CupertinoPageRoute(
               builder: (_) => Scaffold(
                     appBar: AppBar(
-                      title: const Text('Explore'),
+                      title: const Text('explore.explore').tr(),
                     ),
                     body: const ExplorePage(),
                   ))),
@@ -258,7 +258,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
           constraints: constraints,
           selectedIcon: Symbols.explore,
           icon: Symbols.explore,
-          title: 'Explore',
+          title: 'explore.explore'.tr(),
         ),
         HomeNavigationTile(
           value: 2,
@@ -292,7 +292,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
               constraints: constraints,
               selectedIcon: Symbols.account_box,
               icon: Symbols.account_box,
-              title: 'Profile',
+              title: 'profile.profile'.tr(),
             ),
           HomeNavigationTile(
             value: 6,

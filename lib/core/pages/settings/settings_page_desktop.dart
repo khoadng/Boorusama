@@ -124,7 +124,9 @@ class _LargeLayoutState extends ConsumerState<_LargeLayout> {
                         index == 4 ? context.colorScheme.onSecondary : null,
                     tileColor:
                         index == 4 ? context.colorScheme.secondary : null,
-                    title: const Text('Data and Storage'),
+                    title:
+                        const Text('settings.data_and_storage.data_and_storage')
+                            .tr(),
                     onTap: () => currentTab.value = 4,
                   ),
                   ListTile(
@@ -132,7 +134,9 @@ class _LargeLayoutState extends ConsumerState<_LargeLayout> {
                         index == 5 ? context.colorScheme.onSecondary : null,
                     tileColor:
                         index == 5 ? context.colorScheme.secondary : null,
-                    title: const Text('Backup and Restore'),
+                    title: const Text(
+                            'settings.backup_and_restore.backup_and_restore')
+                        .tr(),
                     onTap: () => currentTab.value = 5,
                   ),
                   ListTile(

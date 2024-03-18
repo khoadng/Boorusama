@@ -98,11 +98,11 @@ class SettingsPage extends ConsumerWidget {
                     ),
                     ListTile(
                       title: const Text(
-                        'Data and Storage',
+                        'settings.data_and_storage.data_and_storage',
                         style: TextStyle(
                           fontWeight: FontWeight.w400,
                         ),
-                      ),
+                      ).tr(),
                       leading: FaIcon(
                         FontAwesomeIcons.database,
                         color: context.iconTheme.color,
@@ -112,11 +112,11 @@ class SettingsPage extends ConsumerWidget {
                     ),
                     ListTile(
                       title: const Text(
-                        'Backup and Restore',
+                        'settings.backup_and_restore.backup_and_restore',
                         style: TextStyle(
                           fontWeight: FontWeight.w400,
                         ),
-                      ),
+                      ).tr(),
                       leading: FaIcon(
                         FontAwesomeIcons.cloudArrowDown,
                         color: context.iconTheme.color,

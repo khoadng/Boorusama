@@ -48,8 +48,11 @@ class PrivacyPage extends ConsumerWidget {
               ),
             ),
             ListTile(
-              title: const Text('Enable incognito keyboard'),
-              subtitle: const Text('Only affects Android.'),
+              title:
+                  const Text('settings.privacy.enable_incognito_keyboard').tr(),
+              subtitle: const Text(
+                'settings.privacy.enable_incognito_keyboard_notice',
+              ).tr(),
               trailing: Switch(
                 value: settings.enableIncognitoModeForKeyboard,
                 onChanged: (value) {
@@ -60,10 +63,10 @@ class PrivacyPage extends ConsumerWidget {
               ),
             ),
             ListTile(
-              title: const Text('Enable biometric lock'),
+              title: const Text('settings.privacy.enable_biometric_lock').tr(),
               subtitle: const Text(
-                'Only works on devices with biometrics support and has been set up.',
-              ),
+                'settings.privacy.enable_biometric_lock_notice',
+              ).tr(),
               trailing: Switch(
                 value: settings.appLockType == AppLockType.biometrics,
                 onChanged: (value) {

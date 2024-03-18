@@ -246,26 +246,28 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8),
-                    child: Text('Padding'),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: const Text('settings.image_grid.padding').tr(),
                   ),
                   _buildPaddingSlider(settings),
                 ],
               ),
             ),
             const Divider(thickness: 1),
-            const SettingsHeader(label: 'Image details'),
+            SettingsHeader(label: 'settings.image_details.image_details'.tr()),
             SettingsTile<PostDetailsOverlayInitialState>(
-              title: const Text('UI overlay'),
+              title: const Text('settings.image_details.ui_overlay').tr(),
               selectedOption: settings.postDetailsOverlayInitialState,
               items: PostDetailsOverlayInitialState.values,
               onChanged: (value) => ref.updateSettings(
                   settings.copyWith(postDetailsOverlayInitialState: value)),
               optionBuilder: (value) => Text(
                 switch (value) {
-                  PostDetailsOverlayInitialState.show => 'Show',
-                  PostDetailsOverlayInitialState.hide => 'Hide',
+                  PostDetailsOverlayInitialState.show =>
+                    'settings.image_details.ui_overlay.show',
+                  PostDetailsOverlayInitialState.hide =>
+                    'settings.image_details.ui_overlay.hide',
                 },
               ),
             ),

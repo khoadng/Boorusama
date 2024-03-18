@@ -54,7 +54,9 @@ class _SearchSettingsPageState extends ConsumerState<SearchSettingsPage> {
               ),
             ),
             ListTile(
-              title: const Text('Hide bookmarked posts from search results'),
+              title: const Text(
+                      'settings.search.hide_bookmarked_posts_from_search_results')
+                  .tr(),
               trailing: Switch(
                 activeColor: context.colorScheme.primary,
                 value: settings.shouldFilterBookmarks,

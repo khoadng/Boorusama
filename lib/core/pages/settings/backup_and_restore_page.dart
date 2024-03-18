@@ -44,7 +44,8 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
       condition: widget.hasAppBar,
       conditionalBuilder: (child) => Scaffold(
         appBar: AppBar(
-          title: const Text('Backup and Restore'),
+          title:
+              const Text('settings.backup_and_restore.backup_and_restore').tr(),
         ),
         body: child,
       ),
