@@ -169,7 +169,7 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
 
     return BackupRestoreTile(
       leadingIcon: Symbols.favorite,
-      title: 'Favorite tags',
+      title: 'favorite_tags.favorite_tags'.tr(),
       subtitle: '${tags.length} tags',
       trailing: BooruPopupMenuButton(
         onSelected: (value) {

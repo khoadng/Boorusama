@@ -97,7 +97,7 @@ class SideBarMenu extends ConsumerWidget {
                         ),
                         SideMenuTile(
                           icon: const Icon(Symbols.tag),
-                          title: const Text('Favorite tags'),
+                          title: const Text('favorite_tags.favorite_tags').tr(),
                           onTap: () {
                             if (popOnSelect) context.navigator.pop();
                             context.go('/favorite_tags');
