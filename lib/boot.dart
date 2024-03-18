@@ -34,12 +34,12 @@ import 'package:boorusama/foundation/analytics.dart';
 import 'package:boorusama/foundation/app_info.dart';
 import 'package:boorusama/foundation/device_info_service.dart';
 import 'package:boorusama/foundation/error.dart';
-import 'package:boorusama/foundation/firebase/firebase.dart';
 import 'package:boorusama/foundation/hive.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
 import 'package:boorusama/foundation/package_info.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/foundation/tracking.dart';
 import 'app.dart';
 import 'foundation/i18n.dart';
 
@@ -282,7 +282,7 @@ Future<void> boot(BootLogger bootLogger) async {
 
   bootLogger.l("Initialize tracking");
   final (firebaseAnalytics, crashlyticsReporter) =
-      await _initializeTracking(settings);
+      await initializeTracking(settings);
 
   bootLogger.l("Initialize error handlers");
   initializeErrorHandlers(settings, crashlyticsReporter);
@@ -358,7 +358,3 @@ Future<void> boot(BootLogger bootLogger) async {
   bootLogger.l("Run app");
   run();
 }
-
-Future<(AnalyticsInterface? analytics, ErrorReporter? reporter)>
-    _initializeTracking(Settings settings) =>
-        ensureFirebaseInitialized(settings);
