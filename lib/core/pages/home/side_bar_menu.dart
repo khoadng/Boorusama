@@ -115,6 +115,18 @@ class SideBarMenu extends ConsumerWidget {
                             );
                           },
                         ),
+                        const Divider(),
+                        SideMenuTile(
+                          icon: const Icon(
+                            Symbols.question_mark,
+                            fill: 1,
+                          ),
+                          title: const Text('Get support'),
+                          onTap: () {
+                            if (popOnSelect) context.navigator.pop();
+                            context.go('/settings?scrollTo=support');
+                          },
+                        ),
                         SideMenuTile(
                           icon: const Icon(
                             Symbols.settings,

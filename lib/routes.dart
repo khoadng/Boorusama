@@ -479,10 +479,11 @@ class Routes {
         redirect: (context, state) =>
             !isMobilePlatform() ? '/desktop/settings' : null,
         pageBuilder: (context, state) => CupertinoPage(
-          key: state.pageKey,
-          name: state.name,
-          child: const SettingsPage(),
-        ),
+            key: state.pageKey,
+            name: state.name,
+            child: SettingsPage(
+              scrollTo: state.uri.queryParameters['scrollTo'],
+            )),
         routes: [
           SettingsRoutes.appearance(),
           SettingsRoutes.download(),

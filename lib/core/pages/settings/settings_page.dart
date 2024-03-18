@@ -18,13 +18,46 @@ import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
 
-class SettingsPage extends ConsumerWidget {
+class SettingsPage extends ConsumerStatefulWidget {
   const SettingsPage({
     super.key,
+    this.scrollTo,
   });
 
+  final String? scrollTo;
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SettingsPage> createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends ConsumerState<SettingsPage> {
+  final scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.scrollTo != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (widget.scrollTo == 'support') {
+          scrollController.animateTo(
+            scrollController.position.maxScrollExtent,
+            duration: const Duration(milliseconds: 400),
+            curve: Curves.easeInOut,
+          );
+        }
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    scrollController.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final appInfo = ref.watch(appInfoProvider);
     ref.watch(settingsProvider.select((value) => value.language));
 
@@ -37,6 +70,7 @@ class SettingsPage extends ConsumerWidget {
           children: [
             Expanded(
               child: SingleChildScrollView(
+                controller: scrollController,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -187,20 +221,6 @@ class SettingsPage extends ConsumerWidget {
                     ),
                     ListTile(
                       title: const Text(
-                        'settings.help_us_translate',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ).tr(),
-                      leading: Icon(
-                        Symbols.language,
-                        color: context.iconTheme.color,
-                      ),
-                      onTap: () => launchExternalUrlString(
-                          appInfo.translationProjectUrl),
-                    ),
-                    ListTile(
-                      title: const Text(
                         'settings.information',
                         style: TextStyle(
                           fontWeight: FontWeight.w400,
@@ -215,6 +235,85 @@ class SettingsPage extends ConsumerWidget {
                         builder: (context) => const AboutPage(),
                       ),
                     ),
+                    const Divider(),
+                    const _SettingsSection(
+                      label: 'Contribute',
+                    ),
+                    ListTile(
+                      title: const Text(
+                        'settings.help_us_translate',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ).tr(),
+                      leading: Icon(
+                        Symbols.language,
+                        color: context.iconTheme.color,
+                      ),
+                      onTap: () => launchExternalUrlString(
+                          appInfo.translationProjectUrl),
+                    ),
+                    // Source code
+                    ListTile(
+                      title: const Text(
+                        'Source code',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ).tr(),
+                      leading: FaIcon(
+                        FontAwesomeIcons.code,
+                        color: context.iconTheme.color,
+                        size: 20,
+                      ),
+                      onTap: () => launchExternalUrl(
+                        Uri.parse(appInfo.githubUrl),
+                        mode: LaunchMode.externalApplication,
+                      ),
+                    ),
+                    const Divider(),
+                    const _SettingsSection(
+                      label: 'Support',
+                    ),
+                    ListTile(
+                      title: const Text(
+                        'Contact developer',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      subtitle: const Text(
+                        'If you have any issues or suggestions, feel free to send me an email through this option',
+                      ),
+                      leading: Icon(
+                        Symbols.email,
+                        color: context.iconTheme.color,
+                      ),
+                      onTap: () => launchExternalUrl(
+                        Uri.parse('mailto:${appInfo.supportEmail}'),
+                        mode: LaunchMode.externalApplication,
+                      ),
+                    ),
+                    ListTile(
+                      title: const Text(
+                        'Feature request and bug report',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      subtitle: const Text(
+                        'Suggest features or report bugs through the GitHub repository.',
+                      ),
+                      leading: Icon(
+                        Symbols.bug_report,
+                        color: context.iconTheme.color,
+                      ),
+                      onTap: () => launchExternalUrl(
+                        Uri.parse('${appInfo.githubUrl}/issues'),
+                        mode: LaunchMode.externalApplication,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
                   ],
                 ),
               ),
