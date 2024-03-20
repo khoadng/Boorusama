@@ -110,23 +110,15 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailsPage> {
                   )
                 : const SliverSizedBox.shrink(),
           ),
-      tagListBuilder: (context, post) =>
-          ref.watchConfig.booruType == BooruType.gelbooru
-              ? TagsTile(
-                  tags: ref.watch(tagsProvider(booruConfig)),
-                  post: post,
-                  onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
-                )
-              : GelbooruV1TagsTile(
-                  post: post,
-                  onTagsLoaded: (tags) => _setTags(post, tags),
-                ),
-      onExpanded: (post) => ref.watchConfig.booruType == BooruType.gelbooru
-          ? ref.read(tagsProvider(booruConfig).notifier).load(
-                post.tags,
-                onSuccess: (tags) => _setTags(post, tags),
-              )
-          : null,
+      tagListBuilder: (context, post) => TagsTile(
+        tags: ref.watch(tagsProvider(booruConfig)),
+        post: post,
+        onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
+      ),
+      onExpanded: (post) => ref.read(tagsProvider(booruConfig).notifier).load(
+            post.tags,
+            onSuccess: (tags) => _setTags(post, tags),
+          ),
     );
   }
 
@@ -183,77 +175,5 @@ extension GelbooruArtistMapProviderX on WidgetRef {
     read(gelbooruPostDetailsCharacterMapProvider.notifier).state = {
       ...map,
     };
-  }
-}
-
-class GelbooruV1TagsTile extends ConsumerStatefulWidget {
-  const GelbooruV1TagsTile({
-    super.key,
-    required this.post,
-    this.onTagsLoaded,
-  });
-
-  final Post post;
-  final void Function(List<TagGroupItem> tags)? onTagsLoaded;
-
-  @override
-  ConsumerState<GelbooruV1TagsTile> createState() => _GelbooruV1TagsTileState();
-}
-
-class _GelbooruV1TagsTileState extends ConsumerState<GelbooruV1TagsTile> {
-  var expanded = false;
-  Object? error;
-
-  @override
-  Widget build(BuildContext context) {
-    if (expanded) {
-      ref.listen(gelbooruV2TagsFromIdProvider(widget.post.id),
-          (previous, next) {
-        next.when(
-          data: (data) {
-            if (!mounted) return;
-
-            if (data.isNotEmpty) {
-              if (widget.onTagsLoaded != null) {
-                widget.onTagsLoaded!(createTagGroupItems(data));
-              }
-            }
-
-            if (data.isEmpty && widget.post.tags.isNotEmpty) {
-              // Just a dummy data so the check below will branch into the else block
-              setState(() => error = 'No tags found');
-            }
-          },
-          loading: () {},
-          error: (error, stackTrace) {
-            if (!mounted) return;
-            setState(() => this.error = error);
-          },
-        );
-      });
-    }
-
-    return error == null
-        ? TagsTile(
-            tags: expanded
-                ? ref
-                    .watch(gelbooruV2TagsFromIdProvider(widget.post.id))
-                    .maybeWhen(
-                      data: (data) => createTagGroupItems(data),
-                      orElse: () => null,
-                    )
-                : null,
-            post: widget.post,
-            onExpand: () => setState(() => expanded = true),
-            onCollapse: () {
-              // Don't set expanded to false to prevent rebuilding the tags list
-              setState(() => error = null);
-            },
-            onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
-          )
-        : BasicTagList(
-            tags: widget.post.tags.toList(),
-            onTap: (tag) => goToSearchPage(context, tag: tag),
-          );
   }
 }
