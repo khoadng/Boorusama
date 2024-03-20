@@ -18,7 +18,13 @@ class PostV1Dto {
     var imageElement = linkElement.firstChild!;
 
     final id = linkElement.attributes["id"]!.substring(1);
-    final thumbUrl = imageElement.attributes["src"]!;
+    var thumbUrl = imageElement.attributes["src"]!;
+
+    // if thumbUrl not starts with https, add it
+    if (!thumbUrl.startsWith('https') && thumbUrl.startsWith('//')) {
+      thumbUrl = 'https:$thumbUrl';
+    }
+
     final fileUrl = thumbUrl
         .replaceFirst('thumbs', 'img')
         .replaceFirst('thumbnails', 'images')
