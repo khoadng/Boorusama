@@ -45,11 +45,11 @@
       - url: https://hypnohub.net/
       - url: https://realbooru.com/
       - url: https://xbooru.com/
+      - url: https://tbib.org/
 
 - gelbooru_v1: 
     sites:
       - https://safebooru.org/
-      - https://tbib.org/
 
 - e621:
     protocol: https_2
