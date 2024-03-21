@@ -15,7 +15,10 @@
         "view": "Visualizar"
     },
     "profile": {
-        "favorites": "Favoritos"
+        "favorites": "Favoritos",
+        "profile": "Perfil",
+        "copy_user_id": "Copiar ID do Usuário",
+        "messages": "Mensagens"
     },
     "network": {
         "unavailable": "Conexão indisponível"
@@ -100,7 +103,8 @@
         "popular": "Popular",
         "most_viewed": "Mais visualizados",
         "hot": "Quente",
-        "see_more": "Ver mais"
+        "see_more": "Ver mais",
+        "explore": "Explorar"
     },
     "search": {
         "hint": "Buscar...",
@@ -119,8 +123,8 @@
             "database_timeout": "Sua busca demorou muito para ser executada e foi cancelada.",
             "down": "O servidor fora do ar. Tente novamente mais tarde",
             "tag_limit": "O limite máximo de tag foi atingido. Atualize sua conta para buscar mais tags de uma vez só.",
-            "max_capacity": "O servidor está sobrecarregado e não pode cuidar do seu pedido, por favor tente novamente mais tarde.",
-            "pagination_limit": "Você alcançou o limite de paginação. Isso significa que não pode rolar mais."
+            "max_capacity": "O servidor está sobrecarregado e não pode cuidar do seu pedido, por favor tente novamente mais tarde",
+            "pagination_limit": "Você alcançou o limite de paginação. Isso significa que não pode rolar mais"
         },
         "search_in_progress_notice": "Buscando...",
         "result_counter": {
@@ -131,8 +135,7 @@
         "remove_all_selected": "Remover todas as tags selecionadas",
         "search_options": "Buscar opções",
         "metatags_notice": "Metatags livres não contam com o limite de tags para pesquisa",
-        "no_result": "Nós procuramos do infinito ao além, mas nenhum resultado foi encontrado.",
-        "empty": "Que vazio"
+        "no_result": "Nós procuramos do infinito ao além, mas nenhum resultado foi encontrado."
     },
     "settings": {
         "settings": "Configurações",
@@ -147,7 +150,11 @@
         },
         "privacy": {
             "privacy": "Privacidade",
-            "send_error_data_notice": "Envie dados anônimos de registros de erros"
+            "send_error_data_notice": "Envie dados anônimos de registros de erros",
+            "enable_incognito_keyboard": "Ativar teclado icógnito",
+            "enable_incognito_keyboard_notice": "Só afeta Android.",
+            "enable_biometric_lock": "Ativar desbloqueio biométrico",
+            "enable_biometric_lock_notice": "Só funciona em dispositivos com função biométrica suportada que foi configurada."
         },
         "image_grid": {
             "image_grid": "Grade de imagens",
@@ -167,7 +174,8 @@
                 "grid_size": "Tamanho da grade"
             },
             "spacing": "Espaçamento",
-            "corner_radius": "Raio do canto"
+            "corner_radius": "Raio do canto",
+            "padding": "Preenchimento"
         },
         "information": "Informação",
         "image_list": {
@@ -206,7 +214,8 @@
         "general": "Geral",
         "search": {
             "search": "Buscar",
-            "auto_focus_search_bar": "Auto focar a barra de pesquisa quando abrir a visualização de pesquisa pela primeira vez"
+            "auto_focus_search_bar": "Auto focar a barra de pesquisa quando abrir a visualização de pesquisa pela primeira vez",
+            "hide_bookmarked_posts_from_search_results": "Esconder posts marcados dos resultados de pesquisa"
         },
         "image_detail": {
             "image_detail": "Detalhe da imagem"
@@ -224,7 +233,21 @@
         },
         "infinite_scroll_warning": "Talvez crashe o aplicativo se rolar por muito tempo",
         "help_us_translate": "Nos ajude a traduzir",
-        "other_settings": "Outras opções"
+        "other_settings": "Outras opções",
+        "data_and_storage": {
+            "data_and_storage": "Dados e armazenamento",
+            "clear_cache_on_start_up": "Limpar cache de imagem ao iniciar"
+        },
+        "backup_and_restore": {
+            "backup_and_restore": "Backup e Restaurar"
+        },
+        "image_details": {
+            "ui_overlay": {
+                "hide": "Esconder",
+                "show": "Mostrar"
+            },
+            "image_details": "Detalhes da imagem"
+        }
     },
     "download": {
         "download": "Download",
@@ -351,12 +374,13 @@
         "favorites": "Favoritos",
         "import": "Importar",
         "import_hint": "Preencha sua linha de tag aqui. Espaço delimitado.",
-        "export_notification": "Linha de tag copiada para a área de transferência"
+        "export_notification": "Linha de tag copiada para a área de transferência",
+        "favorite_tags": "Tags favoritas"
     },
     "rating": {
         "rate_request": "Avalie este aplicativo",
         "rate": "Avaliar",
-        "rationale": "Se você gosta deste aplicativo, por favor use um pouco do seu tempo para avaliar ele. Não levaria mais que algums segundos e realmente ajuda com o projeto.",
+        "rationale": "Se você gosta deste aplicativo, por favor use um pouco do seu tempo para avaliar ele.\nNão levaria mais que alguns segundos e realmente ajuda com o projeto.",
         "later": "Talvez mais tarde",
         "cancel": "Não obrigado"
     },

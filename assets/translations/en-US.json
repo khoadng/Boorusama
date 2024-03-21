@@ -121,7 +121,6 @@
         },
         "hint": "Search...",
         "no_result": "We searched far and wide, but no results were found.",
-        "empty": "Such empty",
         "search_options": "Search options",
         "metatags_notice": "Free metatags won't count against the tag search limits",
         "history": {
@@ -266,7 +265,8 @@
             "image_details": "Image details",
             "ui_overlay": {
                 "show": "Show",
-                "hide": "Hide"
+                "hide": "Hide",
+                "ui_overlay": "UI overlay"
             }
         }
     },

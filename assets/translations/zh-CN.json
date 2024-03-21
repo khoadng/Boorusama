@@ -114,7 +114,6 @@
         },
         "hint": "搜索...",
         "no_result": "我们搜遍了，但是没找到任何结果。",
-        "empty": "啥都木有",
         "search_options": "搜索选项",
         "metatags_notice": "免费的元标签不计入搜索标签限制",
         "history": {

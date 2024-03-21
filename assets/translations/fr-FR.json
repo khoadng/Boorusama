@@ -119,7 +119,6 @@
         },
         "hint": "Recherche...",
         "no_result": "Partout nous avons cherché, mais aucun résultat n'a été trouvé.",
-        "empty": "Plutôt vide",
         "search_options": "Options de recherche",
         "metatags_notice": "Les tags meta ne comptent pas dans la limite de recherche",
         "history": {

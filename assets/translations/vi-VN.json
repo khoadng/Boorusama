@@ -115,7 +115,6 @@
         },
         "hint": "Tìm...",
         "no_result": "Không tìm được kết quả phù hợp.",
-        "empty": "Trống",
         "search_options": "Tùy chọn",
         "metatags_notice": "Free metatags không tính vào giới hạn tag search",
         "history": {
@@ -241,7 +240,13 @@
             }
         },
         "help_us_translate": "Hỗ trợ dịch app",
-        "other_settings": "Cài đặt khác"
+        "other_settings": "Cài đặt khác",
+        "data_and_storage": {
+            "data_and_storage": "Dữ liệu and Bộ nhớ"
+        },
+        "backup_and_restore": {
+            "backup_and_restore": "Sao lưu và phục hồi dữ liệu"
+        }
     },
     "blacklisted_tags": {
         "remove": "Xóa",
