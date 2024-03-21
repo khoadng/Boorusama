@@ -257,7 +257,8 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
             const Divider(thickness: 1),
             SettingsHeader(label: 'settings.image_details.image_details'.tr()),
             SettingsTile<PostDetailsOverlayInitialState>(
-              title: const Text('settings.image_details.ui_overlay').tr(),
+              title: const Text('settings.image_details.ui_overlay.ui_overlay')
+                  .tr(),
               selectedOption: settings.postDetailsOverlayInitialState,
               items: PostDetailsOverlayInitialState.values,
               onChanged: (value) => ref.updateSettings(
