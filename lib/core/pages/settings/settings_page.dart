@@ -17,6 +17,7 @@ import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
+import 'help_us_translate_page.dart';
 
 class SettingsPage extends ConsumerStatefulWidget {
   const SettingsPage({
@@ -250,8 +251,11 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                         Symbols.language,
                         color: context.iconTheme.color,
                       ),
-                      onTap: () => launchExternalUrlString(
-                          appInfo.translationProjectUrl),
+                      onTap: () => context.navigator.push(
+                        CupertinoPageRoute(
+                          builder: (_) => const HelpUseTranslatePage(),
+                        ),
+                      ),
                     ),
                     // Source code
                     ListTile(
