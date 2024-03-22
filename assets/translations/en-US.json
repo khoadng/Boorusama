@@ -268,6 +268,12 @@
                 "hide": "Hide",
                 "ui_overlay": "UI overlay"
             }
+        },
+        "page_indicator": {
+            "page_indicator": "Page indicator position",
+            "top": "Top",
+            "bottom": "Bottom",
+            "both": "Both"
         }
     },
     "blacklisted_tags": {
