@@ -43,9 +43,7 @@ class App extends StatelessWidget {
     return Portal(
       child: OKToast(
         child: AnalyticsScope(
-          settings: initialSettings,
           builder: (analyticsEnabled) => RouterBuilder(
-            analyticsEnabled: analyticsEnabled,
             builder: (context, router) => ThemeBuilder(
               builder: (theme, themeMode) => MaterialApp.router(
                 builder: (context, child) => ConditionalParentWidget(
@@ -85,10 +83,12 @@ class AppFailedToInitialize extends ConsumerWidget {
     super.key,
     required this.error,
     required this.stackTrace,
+    required this.logs,
   });
 
   final Object error;
   final StackTrace? stackTrace;
+  final String logs;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -195,7 +195,7 @@ class AppFailedToInitialize extends ConsumerWidget {
   String composeError(String errorString, DeviceInfo deviceInfo) {
     final data = deviceInfo.dump();
 
-    return '$errorString\n\n$data';
+    return '$errorString\n\n$logs\n\n$data';
   }
 
   Future<void> _saveTo(

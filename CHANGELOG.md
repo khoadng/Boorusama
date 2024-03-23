@@ -1,3 +1,8 @@
+# 3.12.4
+- Add translations for Thai and Norwegian Bokmål
+- Add a way for users to report issues and contact the developer
+- Fix an issue with importing/exporting bookmarks
+
 # 3.12.3
 - Add an error screen with information when the app fail to start up
 - Fix an issue in shimmie2 where images are downloaded without an file extension

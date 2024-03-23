@@ -17,6 +17,9 @@ class AppInfo {
     required this.githubUrl,
     required this.appName,
     required this.translationProjectUrl,
+    required this.translationStatusUrl,
+    required this.translationBadgeUrl,
+    required this.supportEmail,
     required this.booruDefUrl,
   })  : copyrightYearRange = (
           start: 2020,
@@ -29,6 +32,9 @@ class AppInfo {
         githubUrl: json['githubUrl'],
         appName: const String.fromEnvironment('APP_NAME'),
         translationProjectUrl: json['translationProjectUrl'],
+        translationStatusUrl: json['translationStatusUrl'],
+        translationBadgeUrl: json['translationBadgeUrl'],
+        supportEmail: json['supportEmail'],
         booruDefUrl: json['booruDefUrl'],
       );
 
@@ -37,6 +43,9 @@ class AppInfo {
     githubUrl: '',
     appName: '',
     translationProjectUrl: '',
+    translationStatusUrl: '',
+    translationBadgeUrl: '',
+    supportEmail: '',
     booruDefUrl: '',
   );
 
@@ -44,6 +53,9 @@ class AppInfo {
   final String githubUrl;
   final String appName;
   final String translationProjectUrl;
+  final String translationStatusUrl;
+  final String translationBadgeUrl;
+  final String supportEmail;
   final String booruDefUrl;
 
   final YearRange copyrightYearRange;

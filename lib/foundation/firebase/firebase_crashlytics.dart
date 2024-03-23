@@ -8,26 +8,35 @@ import 'package:flutter/foundation.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 // Project imports:
-import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/platform.dart';
 
-bool isFirebaseCrashlyticsSupportedPlatforms() =>
-    isAndroid() || isIOS() || isMacOS();
+class FirebaseCrashlyticsReporter implements ErrorReporter {
+  @override
+  bool get isRemoteErrorReportingSupported =>
+      isAndroid() || isIOS() || isMacOS();
 
-Future<void> initializeFirebaseCrashlytics() async {
-  await FirebaseCrashlytics.instance
-      .setCrashlyticsCollectionEnabled(!kDebugMode);
+  @override
+  void recordFlutterFatalError(FlutterErrorDetails details) {
+    FirebaseCrashlytics.instance.recordFlutterFatalError(details);
+  }
 
-  await FirebaseCrashlytics.instance
-      .setCustomKey('locale', Platform.localeName);
+  @override
+  void recordError(error, stackTrace) {
+    FirebaseCrashlytics.instance.recordError(error, stackTrace, fatal: true);
+  }
 
-  await FirebaseCrashlytics.instance
-      .setCustomKey('time-zone-name', DateTime.now().timeZoneName);
+  Future<void> enstureInitialized() async {
+    await FirebaseCrashlytics.instance
+        .setCrashlyticsCollectionEnabled(!kDebugMode);
 
-  await FirebaseCrashlytics.instance
-      .setCustomKey('time-zone-offset', DateTime.now().timeZoneOffset);
-}
+    await FirebaseCrashlytics.instance
+        .setCustomKey('locale', Platform.localeName);
 
-Future<void> changeCurrentAnalyticConfig(BooruConfig config) async {
-  await FirebaseCrashlytics.instance.setCustomKey('url', config.url);
+    await FirebaseCrashlytics.instance
+        .setCustomKey('time-zone-name', DateTime.now().timeZoneName);
+
+    await FirebaseCrashlytics.instance.setCustomKey(
+        'time-zone-offset', DateTime.now().timeZoneOffset.inHours);
+  }
 }

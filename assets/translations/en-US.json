@@ -15,7 +15,10 @@
         "view": "View"
     },
     "profile": {
-        "favorites": "Favorites"
+        "favorites": "Favorites",
+        "profile": "Profile",
+        "copy_user_id": "Copy User ID",
+        "messages": "Messages"
     },
     "network": {
         "unavailable": "Network unavailable"
@@ -63,9 +66,6 @@
             "add_to_bookmark": "Add to bookmark",
             "remove_from_bookmark": "Remove from bookmark"
         },
-        "parent_child": {
-            "children_of": "Children of"
-        },
         "action": {
             "preview": "Preview",
             "view_comments": "View comments",
@@ -103,7 +103,8 @@
         "popular": "Popular",
         "hot": "Hot",
         "most_viewed": "Most viewed",
-        "see_more": "See more"
+        "see_more": "See more",
+        "explore": "Explore"
     },
     "search": {
         "errors": {
@@ -120,7 +121,6 @@
         },
         "hint": "Search...",
         "no_result": "We searched far and wide, but no results were found.",
-        "empty": "Such empty",
         "search_options": "Search options",
         "metatags_notice": "Free metatags won't count against the tag search limits",
         "history": {
@@ -140,7 +140,6 @@
     "pool": {
         "pool": "Pool",
         "pool_gallery": "Pool Gallery",
-        "mature_banned_content": "Mature/Banned content",
         "order": {
             "recent": "Recent",
             "new": "New",
@@ -168,7 +167,8 @@
         "general": "General",
         "search": {
             "search": "Search",
-            "auto_focus_search_bar": "Auto focus search bar when first open search view"
+            "auto_focus_search_bar": "Auto focus search bar when first open search view",
+            "hide_bookmarked_posts_from_search_results": "Hide bookmarked posts from search results"
         },
         "information": "Information",
         "changelog": "Changelog",
@@ -201,7 +201,8 @@
                 "highest": "Highest"
             },
             "spacing": "Spacing",
-            "corner_radius": "Corner radius"
+            "corner_radius": "Corner radius",
+            "padding": "Padding"
         },
         "image_viewer": {
             "image_viewer": "Image viewer",
@@ -219,11 +220,15 @@
             "theme": "Theme",
             "dark": "Dark",
             "light": "Light",
-            "amoled_dark": "AMOLED Dark"
+            "amoled_dark": "Black"
         },
         "privacy": {
             "privacy": "Privacy",
-            "send_error_data_notice": "Send anonymous data for error logging"
+            "send_error_data_notice": "Send anonymous data for error logging",
+            "enable_incognito_keyboard": "Enable incognito keyboard",
+            "enable_incognito_keyboard_notice": "Only affects Android.",
+            "enable_biometric_lock": "Enable biometric lock",
+            "enable_biometric_lock_notice": "Only works on devices with biometrics support and has been set up."
         },
         "performance": {
             "performance": "Performance",
@@ -231,7 +236,7 @@
             "posts_per_page_explain": "Number of thumbnails per page",
             "cache_size": "Cache size",
             "clear_cache": "Clear",
-            "cache_size_info": "{0} Mb in {1} files"
+            "cache_size_info": "{0} in {1} files"
         },
         "debug_logs": {
             "debug_logs": "Debug logs",
@@ -248,7 +253,28 @@
             }
         },
         "help_us_translate": "Help us translate",
-        "other_settings": "Other settings"
+        "other_settings": "Other settings",
+        "data_and_storage": {
+            "data_and_storage": "Data and Storage",
+            "clear_cache_on_start_up": "Clear image cache on start up"
+        },
+        "backup_and_restore": {
+            "backup_and_restore": "Backup and Restore"
+        },
+        "image_details": {
+            "image_details": "Image details",
+            "ui_overlay": {
+                "show": "Show",
+                "hide": "Hide",
+                "ui_overlay": "UI overlay"
+            }
+        },
+        "page_indicator": {
+            "page_indicator": "Page indicator position",
+            "top": "Top",
+            "bottom": "Bottom",
+            "both": "Both"
+        }
     },
     "blacklisted_tags": {
         "remove": "Remove",
@@ -318,11 +344,7 @@
             "other": "Favorites"
         },
         "favorited": "Favorited",
-        "favorite": "Favorite",
-        "unfavorited": "Unfavorited",
-        "unfavorite": "Unfavorite",
-        "failed_to_unfavorite": "Fail to unfavorite this post",
-        "failed_to_favorite": "Fail to favorite this post"
+        "favorite": "Favorite"
     },
     "favorite_groups": {
         "favorite_groups": "Favorite Groups",
@@ -352,12 +374,12 @@
     },
     "favorite_tags": {
         "favorites": "Favorites",
-        "or": "or",
         "import": "Import",
         "import_hint": "Enter your tag string here. Space delimited.",
         "cancel": "Cancel",
         "export": "Export",
-        "export_notification": "Tag string copied to clipboard"
+        "export_notification": "Tag string copied to clipboard",
+        "favorite_tags": "Favorite tags"
     },
     "rating": {
         "rate_request": "Rate this app",
@@ -378,7 +400,6 @@
         "month": "Month"
     },
     "booru": {
-        "addNew": "Add new booru",
         "booru_engine_input_label": "Booru engine (*)",
         "config_name_label": "Profile name (*)",
         "site_url_label": "Site URL",
@@ -389,7 +410,7 @@
         "content_filtering_label": "Content filtering",
         "hide_deleted_label": "Hide deleted posts",
         "config_booru_confirm": "OK",
-        "add_a_booru_site": "Add a booru site",
+        "add_a_booru_site": "Create a new profile",
         "next_step": "Next",
         "site_url": "Site URL",
         "unsupported_warning": "This booru is not supported yet.",

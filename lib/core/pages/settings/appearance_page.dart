@@ -26,32 +26,6 @@ class AppearancePage extends ConsumerStatefulWidget {
   ConsumerState<AppearancePage> createState() => _AppearancePageState();
 }
 
-String _themeModeToString(ThemeMode theme) => switch (theme) {
-      ThemeMode.dark => 'settings.theme.dark',
-      ThemeMode.system || ThemeMode.amoledDark => 'settings.theme.amoled_dark',
-      ThemeMode.light => 'settings.theme.light',
-    };
-
-String _imageQualityToString(ImageQuality quality) => switch (quality) {
-      ImageQuality.highest => 'settings.image_grid.image_quality.highest',
-      ImageQuality.high => 'settings.image_grid.image_quality.high',
-      ImageQuality.low => 'settings.image_grid.image_quality.low',
-      ImageQuality.original => 'settings.image_grid.image_quality.original',
-      ImageQuality.automatic => 'settings.image_grid.image_quality.automatic'
-    };
-
-String _gridSizeToString(GridSize size) => switch (size) {
-      GridSize.large => 'settings.image_grid.grid_size.large',
-      GridSize.small => 'settings.image_grid.grid_size.small',
-      GridSize.normal => 'settings.image_grid.grid_size.medium'
-    };
-
-String _imageListToString(ImageListType imageListType) =>
-    switch (imageListType) {
-      ImageListType.standard => 'settings.image_list.standard',
-      ImageListType.masonry => 'settings.image_list.masonry'
-    };
-
 class _AppearancePageState extends ConsumerState<AppearancePage> {
   late final ValueNotifier<double> _spacingSliderValue = ValueNotifier(0);
   late final ValueNotifier<double> _borderRadiusSliderValue = ValueNotifier(0);
@@ -93,7 +67,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
               items: [...ThemeMode.values]..remove(ThemeMode.system),
               onChanged: (value) =>
                   ref.updateSettings(settings.copyWith(themeMode: value)),
-              optionBuilder: (value) => Text(_themeModeToString(value).tr()),
+              optionBuilder: (value) => Text(value.localize()).tr(),
             ),
             Builder(builder: (context) {
               return SwitchListTile(
@@ -124,7 +98,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
               items: GridSize.values,
               onChanged: (value) =>
                   ref.updateSettings(settings.copyWith(gridSize: value)),
-              optionBuilder: (value) => Text(_gridSizeToString(value).tr()),
+              optionBuilder: (value) => Text(value.localize().tr()),
             ),
             SettingsTile<ImageListType>(
               title: const Text('settings.image_list.image_list').tr(),
@@ -132,7 +106,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
               items: ImageListType.values,
               onChanged: (value) =>
                   ref.updateSettings(settings.copyWith(imageListType: value)),
-              optionBuilder: (value) => Text(_imageListToString(value)).tr(),
+              optionBuilder: (value) => Text(value.localize()).tr(),
             ),
             if (settings.imageListType == ImageListType.standard)
               Container(
@@ -167,7 +141,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
               items: [...ImageQuality.values]..remove(ImageQuality.original),
               onChanged: (value) =>
                   ref.updateSettings(settings.copyWith(imageQuality: value)),
-              optionBuilder: (value) => Text(_imageQualityToString(value)).tr(),
+              optionBuilder: (value) => Text(value.localize()).tr(),
             ),
             SettingsTile<PageMode>(
               title: const Text('settings.result_layout.result_layout').tr(),
@@ -178,22 +152,17 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
               items: const [...PageMode.values],
               onChanged: (value) =>
                   ref.updateSettings(settings.copyWith(pageMode: value)),
-              optionBuilder: (value) => Text(_layoutToString(value)).tr(),
+              optionBuilder: (value) => Text(value.localize()).tr(),
             ),
             if (settings.pageMode == PageMode.paginated)
               SettingsTile<PageIndicatorPosition>(
-                title: const Text('Page indicator position'),
+                title:
+                    const Text('settings.page_indicator.page_indicator').tr(),
                 selectedOption: settings.pageIndicatorPosition,
                 items: const [...PageIndicatorPosition.values],
                 onChanged: (value) => ref.updateSettings(
                     settings.copyWith(pageIndicatorPosition: value)),
-                optionBuilder: (value) => Text(
-                  switch (value) {
-                    PageIndicatorPosition.top => 'Top',
-                    PageIndicatorPosition.bottom => 'Bottom',
-                    PageIndicatorPosition.both => 'Both',
-                  },
-                ),
+                optionBuilder: (value) => Text(value.localize()).tr(),
               ),
             SwitchListTile(
               title: const Text('settings.appearance.show_scores').tr(),
@@ -246,28 +215,24 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8),
-                    child: Text('Padding'),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: const Text('settings.image_grid.padding').tr(),
                   ),
                   _buildPaddingSlider(settings),
                 ],
               ),
             ),
             const Divider(thickness: 1),
-            const SettingsHeader(label: 'Image details'),
+            SettingsHeader(label: 'settings.image_details.image_details'.tr()),
             SettingsTile<PostDetailsOverlayInitialState>(
-              title: const Text('UI overlay'),
+              title: const Text('settings.image_details.ui_overlay.ui_overlay')
+                  .tr(),
               selectedOption: settings.postDetailsOverlayInitialState,
               items: PostDetailsOverlayInitialState.values,
               onChanged: (value) => ref.updateSettings(
                   settings.copyWith(postDetailsOverlayInitialState: value)),
-              optionBuilder: (value) => Text(
-                switch (value) {
-                  PostDetailsOverlayInitialState.show => 'Show',
-                  PostDetailsOverlayInitialState.hide => 'Hide',
-                },
-              ),
+              optionBuilder: (value) => Text(value.localize().tr()),
             ),
             const SizedBox(
               height: 10,
@@ -347,8 +312,3 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
     );
   }
 }
-
-String _layoutToString(PageMode category) => switch (category) {
-      PageMode.infinite => 'settings.result_layout.infinite_scroll',
-      PageMode.paginated => 'settings.result_layout.pagination'
-    };

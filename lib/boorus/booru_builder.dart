@@ -14,6 +14,7 @@ import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
 import 'package:boorusama/boorus/gelbooru_v1/gelbooru_v1.dart';
+import 'package:boorusama/boorus/gelbooru_v2/feats/posts/posts_v2.dart';
 import 'package:boorusama/boorus/moebooru/feats/autocomplete/moebooru_autocomplete_provider.dart';
 import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/moebooru/moebooru.dart';
@@ -41,6 +42,7 @@ import 'package:boorusama/routes.dart';
 import 'danbooru/feats/notes/notes.dart';
 import 'danbooru/feats/posts/posts.dart';
 import 'e621/feats/notes/notes.dart';
+import 'gelbooru_v2/gelbooru_v2.dart';
 import 'philomena/philomena.dart';
 import 'philomena/providers.dart';
 import 'shimmie2/shimmie2.dart';
@@ -487,12 +489,11 @@ final booruBuildersProvider =
                     ref.read(gelbooruAutocompleteRepoProvider(config)),
                 client: ref.read(gelbooruClientProvider(config)),
               ),
-          BooruType.gelbooruV2: (config) => GelbooruBuilder(
-                postRepo: ref.read(gelbooruPostRepoProvider(config)),
+          BooruType.gelbooruV2: (config) => GelbooruV2Builder(
+                postRepo: ref.read(gelbooruV2PostRepoProvider(config)),
                 autocompleteRepo:
-                    ref.read(gelbooruAutocompleteRepoProvider(config)),
-                client: ref.read(gelbooruClientProvider(config)),
-                isV2: true,
+                    ref.read(gelbooruV2AutocompleteRepoProvider(config)),
+                client: ref.read(gelbooruV2ClientProvider(config)),
               ),
           BooruType.e621: (config) => E621Builder(
                 autocompleteRepo:

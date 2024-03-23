@@ -97,24 +97,6 @@ final gelbooruAutocompleteRepoProvider =
   );
 });
 
-final gelbooruV2TagsFromIdProvider =
-    FutureProvider.autoDispose.family<List<Tag>, int>(
-  (ref, id) async {
-    final config = ref.watchConfig;
-    final client = ref.watch(gelbooruClientProvider(config));
-
-    final data = await client.getTagsFromPostId(postId: id);
-
-    return data
-        .map((e) => Tag(
-              name: e.name ?? '',
-              category: intToTagCategory(e.type ?? 0),
-              postCount: e.count ?? 0,
-            ))
-        .toList();
-  },
-);
-
 final gelbooruArtistPostRepo =
     Provider.family<PostRepository<GelbooruPost>, BooruConfig>((ref, config) {
   return PostRepositoryCacher(
@@ -173,14 +155,11 @@ class GelbooruBuilder
     required this.postRepo,
     required this.autocompleteRepo,
     required this.client,
-    this.isV2 = false,
   });
 
   final PostRepository<GelbooruPost> postRepo;
   final AutocompleteRepository autocompleteRepo;
   final GelbooruClient client;
-
-  final bool isV2;
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
@@ -294,7 +273,7 @@ class GelbooruBuilder
             BooruConfigRatingFilter.none => currentQuery,
             BooruConfigRatingFilter.hideNSFW => [
                 ...currentQuery,
-                isV2 ? 'rating:safe' : 'rating:general',
+                'rating:general',
               ],
             BooruConfigRatingFilter.hideExplicit => [
                 ...currentQuery,
@@ -305,9 +284,7 @@ class GelbooruBuilder
                     () => currentQuery,
                     (ratings) => [
                       ...currentQuery,
-                      ...ratings.map((e) => '-rating:${e.toFullString(
-                            legacy: isV2,
-                          )}'),
+                      ...ratings.map((e) => '-rating:${e.toFullString()}'),
                     ],
                   ),
           };
@@ -317,7 +294,7 @@ class GelbooruBuilder
         Rating.explicit,
         Rating.questionable,
         Rating.sensitive,
-        if (!isV2) Rating.general,
+        Rating.general,
       };
 
   @override

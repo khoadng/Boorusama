@@ -12,10 +12,12 @@ import 'routes.dart';
 
 export 'package:go_router/go_router.dart';
 
-final routerProvider = Provider.family<GoRouter, bool>((ref, analyticsEnabled) {
+final routerProvider = Provider<GoRouter>((ref) {
+  final analytics = ref.watch(analyticsProvider);
+
   return GoRouter(
     observers: [
-      if (analyticsEnabled) getAnalyticsObserver(),
+      analytics.getAnalyticsObserver(),
     ],
     routes: [
       Routes.home(ref),
@@ -85,16 +87,14 @@ class DialogPage<T> extends Page<T> {
 class RouterBuilder extends ConsumerWidget {
   const RouterBuilder({
     super.key,
-    required this.analyticsEnabled,
     required this.builder,
   });
 
-  final bool analyticsEnabled;
   final Widget Function(BuildContext context, GoRouter router) builder;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final router = ref.watch(routerProvider(analyticsEnabled));
+    final router = ref.watch(routerProvider);
 
     return builder(context, router);
   }

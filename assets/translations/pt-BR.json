@@ -15,7 +15,10 @@
         "view": "Visualizar"
     },
     "profile": {
-        "favorites": "Favoritos"
+        "favorites": "Favoritos",
+        "profile": "Perfil",
+        "copy_user_id": "Copiar ID do Usuário",
+        "messages": "Mensagens"
     },
     "network": {
         "unavailable": "Conexão indisponível"
@@ -57,10 +60,11 @@
             "score": {
                 "one": "Ponto",
                 "other": "Pontos"
-            }
-        },
-        "parent_child": {
-            "children_of": "Filho de"
+            },
+            "source_label": "Fonte",
+            "related_posts": "Posts relacionados",
+            "add_to_bookmark": "Adicionar marcador",
+            "remove_from_bookmark": "Remover do marcador"
         },
         "action": {
             "preview": "Pré-visualização",
@@ -97,29 +101,344 @@
     "explore": {
         "latest": "Novidades",
         "popular": "Popular",
-        "most_viewed": "Mais visualizados"
+        "most_viewed": "Mais visualizados",
+        "hot": "Quente",
+        "see_more": "Ver mais",
+        "explore": "Explorar"
     },
     "search": {
-        "hint": "Pesquisar..."
+        "hint": "Buscar...",
+        "history": {
+            "clear": "Limpar",
+            "history": "Histórico",
+            "recent": "Recente"
+        },
+        "trending": "Em alta",
+        "errors": {
+            "rate_limited": "Você está com limitação. Tente novamente mais tarde",
+            "unknown": "Erro desconhecido do servidor. Relate este problema ao desenvolvedor",
+            "access_denied": "Acesso negado",
+            "forbidden": "Falha na autenticação",
+            "generic": "Algo deu errado",
+            "database_timeout": "Sua busca demorou muito para ser executada e foi cancelada.",
+            "down": "O servidor fora do ar. Tente novamente mais tarde",
+            "tag_limit": "O limite máximo de tag foi atingido. Atualize sua conta para buscar mais tags de uma vez só.",
+            "max_capacity": "O servidor está sobrecarregado e não pode cuidar do seu pedido, por favor tente novamente mais tarde",
+            "pagination_limit": "Você alcançou o limite de paginação. Isso significa que não pode rolar mais"
+        },
+        "search_in_progress_notice": "Buscando...",
+        "result_counter": {
+            "one": "{} Resultado",
+            "other": "{} Resultados"
+        },
+        "no_result_notice": "Nenhum resultado",
+        "remove_all_selected": "Remover todas as tags selecionadas",
+        "search_options": "Buscar opções",
+        "metatags_notice": "Metatags livres não contam com o limite de tags para pesquisa",
+        "no_result": "Nós procuramos do infinito ao além, mas nenhum resultado foi encontrado."
     },
     "settings": {
         "settings": "Configurações",
         "app_settings": "Config. do aplicativo",
         "appearance": {
-            "appearance": "Aparência"
+            "appearance": "Aparência",
+            "show_scores": "Mostrar resultados"
         },
         "language": {
             "language": "Idioma",
             "language_name": "Português do Brasil"
         },
         "privacy": {
-            "privacy": "Privacidade"
+            "privacy": "Privacidade",
+            "send_error_data_notice": "Envie dados anônimos de registros de erros",
+            "enable_incognito_keyboard": "Ativar teclado icógnito",
+            "enable_incognito_keyboard_notice": "Só afeta Android.",
+            "enable_biometric_lock": "Ativar desbloqueio biométrico",
+            "enable_biometric_lock_notice": "Só funciona em dispositivos com função biométrica suportada que foi configurada."
+        },
+        "image_grid": {
+            "image_grid": "Grade de imagens",
+            "image_quality": {
+                "high_quality_notice": "As imagens de alta qualidade podem demorar para carregar.",
+                "high": "Alta",
+                "automatic": "Automático",
+                "original": "Original",
+                "image_quality": "Qualidade da imagem",
+                "highest": "Melhor",
+                "low": "Baixa"
+            },
+            "grid_size": {
+                "medium": "Média",
+                "small": "Pequena",
+                "large": "Grande",
+                "grid_size": "Tamanho da grade"
+            },
+            "spacing": "Espaçamento",
+            "corner_radius": "Raio do canto",
+            "padding": "Preenchimento"
+        },
+        "information": "Informação",
+        "image_list": {
+            "image_list": "Lista de imagens",
+            "masonry": "Alvenaria",
+            "standard": "Padrão"
+        },
+        "image_viewer": {
+            "full_res_as_default": "Mostrar a resolução completa como padrão",
+            "image_viewer": "Visualizador de imagem",
+            "full_res_notice": "Vai levar um tempo para carregar dependendo do tamanho da imagem"
+        },
+        "performance": {
+            "posts_per_page_explain": "Número de miniaturas por página",
+            "cache_size_info": "{0} em {1} arquivos",
+            "clear_cache": "Limpar",
+            "cache_size": "Tamanho do cache",
+            "posts_per_page": "Posts por página",
+            "performance": "Desempenho"
+        },
+        "theme": {
+            "light": "Claro",
+            "dark": "Escuro",
+            "amoled_dark": "Preto",
+            "theme": "Tema"
+        },
+        "result_layout": {
+            "pagination": "Paginação",
+            "infinite_scroll": "Rolagem infinita",
+            "result_layout": "Modo da página"
+        },
+        "debug_logs": {
+            "debug_logs": "Registros de depuração",
+            "logs_copied": "Logs copiadas para a área de transferência"
+        },
+        "general": "Geral",
+        "search": {
+            "search": "Buscar",
+            "auto_focus_search_bar": "Auto focar a barra de pesquisa quando abrir a visualização de pesquisa pela primeira vez",
+            "hide_bookmarked_posts_from_search_results": "Esconder posts marcados dos resultados de pesquisa"
+        },
+        "image_detail": {
+            "image_detail": "Detalhe da imagem"
+        },
+        "changelog": "Registro de alterações",
+        "download": {
+            "select_a_folder": "Selecione uma pasta",
+            "qualities": {
+                "original": "Original",
+                "sample": "Amostra",
+                "preview": "Pré-visualizar"
+            },
+            "path": "Caminho de download",
+            "quality": "Qualidade de download de imagens"
+        },
+        "infinite_scroll_warning": "Talvez crashe o aplicativo se rolar por muito tempo",
+        "help_us_translate": "Nos ajude a traduzir",
+        "other_settings": "Outras opções",
+        "data_and_storage": {
+            "data_and_storage": "Dados e armazenamento",
+            "clear_cache_on_start_up": "Limpar cache de imagem ao iniciar"
+        },
+        "backup_and_restore": {
+            "backup_and_restore": "Backup e Restaurar"
+        },
+        "image_details": {
+            "ui_overlay": {
+                "hide": "Esconder",
+                "show": "Mostrar"
+            },
+            "image_details": "Detalhes da imagem"
         }
     },
     "download": {
-        "download": "Download"
+        "download": "Download",
+        "bulk_download_invalid_folder_name_error": "Uma pasta não pode conter os seguintes caracteres: ",
+        "open_app_settings": "Abrir configuração",
+        "bulk_download_done_confirm": "Feito",
+        "bulk_download_save_to_folder": "Salvar para a pasta",
+        "bulk_download_downloaded_counter": {
+            "one": "{} imagem baixada",
+            "other": "{} imagens baixadas"
+        },
+        "bulk_download_skipped_counter": {
+            "other": "{} imagens puladas",
+            "one": "{} imagem pulada"
+        },
+        "storage_permission_explanation": "Permissão de armazenamento é necessária para guardar arquivos baixados.",
+        "bulk_download_select_a_folder": "Selecione uma pasta",
+        "image_counter": {
+            "one": "Baixar imagem {}",
+            "other": "Baixar {} imagens"
+        },
+        "bulk": {
+            "all_done_notification_message": "Todos os downloads foram concluídos"
+        },
+        "bulk_download_tag_confirmation": "As tags abaixo vão ser baixadas",
+        "app_restart_request": "Você precisa reiniciar o aplicativo para esta mudança ter efeito",
+        "bulk_download_download_more": "Baixar mais",
+        "bulk_download": "Download em massa",
+        "bulk_download_total_count": "Total",
+        "bulk_download_done_count": "Feito",
+        "bulk_download_cancel": "Cancelar",
+        "bulk_download_duplicate": "Duplicar",
+        "bulk_download_folder_select_warning": "O aplicativo só pode guardar arquivos dentro de pastas públicas <b>({0})</b> no Android 11+. <div>Cartões SD também não são suportados.</div> <div>Por favor escolha outro local.</div> <div>A versão deste dispositivo é {1}.</div>"
     },
     "forum": {
         "forum": "Fórum"
+    },
+    "pool": {
+        "category": {
+            "series": "Séries",
+            "collection": "Coleção"
+        },
+        "order": {
+            "new": "Novo",
+            "post_count": "Contagem de post",
+            "name": "Nome",
+            "recent": "Recente"
+        },
+        "pool": "Conjunto",
+        "pool_gallery": "Galeria de conjunto",
+        "search": {
+            "hint": "Buscar um conjunto"
+        },
+        "detail": {
+            "last_updated": "Última atualização"
+        }
+    },
+    "blacklisted_tags": {
+        "updated": "Tags da lista negra atualizadas",
+        "limitation_notice": "Só suportamos o operador <b>NOT</b>, o operador <b>OR</b>, a metatag <b>score</b> e a metatag <b>rating</b>\n\nUso de outras metatags na lista negra não vai funcionar nesta versão.",
+        "blacklisted_tags": "Tags da lista negra",
+        "load_error": "Falha ao carregar tags da lista negra",
+        "failed_to_add": "Falha ao adicionar tag",
+        "failed_to_remove": "Falha ao remover tag",
+        "remove": "Remover",
+        "edit": "Editar"
+    },
+    "saved_search": {
+        "saved_search_feed": "Feed de pesquisa",
+        "saved_search_counter": {
+            "other": "{} pesquisas",
+            "one": "{} pesquisar"
+        },
+        "update_saved_search": "Atualizar pesquisa salva",
+        "saved_search_help": "Oque é?",
+        "saved_search_query": "Pesquisa",
+        "saved_search_labels": "Rótulos*",
+        "empty_saved_search": "Você não adicionou nenhuma pesquisa ainda",
+        "saved_search_updated": "Pesquisa salva foi atualizada",
+        "saved_search_examples": "Exemplos",
+        "saved_search_try": "Tente",
+        "saved_search": "Pesquisa salva",
+        "saved_search_added": "Pesquisa salva adicionada",
+        "add_saved_search": "Adicionar uma pesquisa salva",
+        "saved_search_labels_description": "*Uma lista de tags para ajudar a categorizar esta pesquisa. Espaço delimitado."
+    },
+    "favorites": {
+        "counter": {
+            "other": "Favoritos",
+            "one": "Favorito"
+        },
+        "favorited": "Favoritado",
+        "favorite": "Favoritar"
+    },
+    "favorite_groups": {
+        "add_to_group_dialog_title": "Adicionar ao grupo favorito",
+        "group_name": "Nome do grupo",
+        "add_to": "Adicionar a",
+        "create": "Criar",
+        "view_more_popup": "Visualizar",
+        "group_name_hint": "Novo grupo",
+        "initial_posts_hint": "Preencha o número de ID, separando por espaços (Opcional)",
+        "is_private_group_option": "Grupo privado",
+        "create_group_cancel": "Cancelar",
+        "max_limit_warning": "Membros só podem criar 10 grupos favoritos",
+        "duplicate_items_warning_notification": "Os posts escolhidos já existem neste grupo",
+        "group_item_counter": {
+            "one": "{} post",
+            "other": "{} posts"
+        },
+        "favorite_groups": "Grupos favoritos",
+        "create_group": "Criar grupo",
+        "edit_group": "Editar grupo",
+        "private": "Privatizar",
+        "items_added_notification_popup": "{0} posts adicionados a {1}",
+        "all_posts": "Posts",
+        "create_group_confirm": "OK",
+        "detete_confirmation": "Tem certeza que quer deletar este grupo favorito",
+        "empty_group_notice": "Nenhum grupo favorito"
+    },
+    "favorite_tags": {
+        "export": "Exportar",
+        "cancel": "Cancelar",
+        "favorites": "Favoritos",
+        "import": "Importar",
+        "import_hint": "Preencha sua linha de tag aqui. Espaço delimitado.",
+        "export_notification": "Linha de tag copiada para a área de transferência",
+        "favorite_tags": "Tags favoritas"
+    },
+    "rating": {
+        "rate_request": "Avalie este aplicativo",
+        "rate": "Avaliar",
+        "rationale": "Se você gosta deste aplicativo, por favor use um pouco do seu tempo para avaliar ele.\nNão levaria mais que alguns segundos e realmente ajuda com o projeto.",
+        "later": "Talvez mais tarde",
+        "cancel": "Não obrigado"
+    },
+    "booru": {
+        "config_booru_confirm": "OK",
+        "validation_invalid_url": "\"{0}\" não é uma URL válida",
+        "password_label": "Senha",
+        "login_name_label": "Login",
+        "content_filtering_label": "Filtração de conteúdo",
+        "hide_deleted_label": "Esconder posts deletados",
+        "next_step": "Próximo",
+        "booru_engine_input_label": "Motor de booru (*)",
+        "validation_invalid_http_url": "\"{0}\" não é uma URL HTTP ou HTTPS",
+        "validation_missing_trailing_slash": "\"{0}\" está faltando uma barra final",
+        "site_url": "URL do site",
+        "unsupported_warning": "Este booru ainda não é suportado.",
+        "site_url_label": "URL do site",
+        "password_api_key_label": "Chave de API",
+        "add_a_booru_site": "Criar um novo perfil",
+        "validation_redundant_www": "\"{0}\" contém um \"www\" redundante",
+        "validation_missing_scheme": "\"{0}\" está faltando um esquema (e.g. https://)",
+        "validation_empty_url": "A URL esta vazia",
+        "config_name_label": "Nome de perfil (*)",
+        "validation_contains_spaces": "\"{0}\" contém espaços entre linhas",
+        "password_hashed_label": "Senha em Hash (somente leitura)"
+    },
+    "bookmark": {
+        "failed_to_add_many": "Falha ao adicionar marcações",
+        "removed": "Marcação removida",
+        "many_added": "{0} marcações adicionadas",
+        "updated": "Marcação atualizada",
+        "failed_to_remove": "Falha ao remover marcação",
+        "failed_to_add": "Falha ao adicionar marcação",
+        "failed_to_update": "Falha ao atualizar marcação",
+        "failed_to_load": "Falha ao carregar marcações: {0}",
+        "added": "Marcação adicionada"
+    },
+    "app_update": {
+        "update_available": "Atualização disponível",
+        "whats_new": "Oque há de novo?",
+        "update": "Atualizar",
+        "later": "Mais tarde"
+    },
+    "sideMenu": {
+        "settings": "Configurações",
+        "your_bookmarks": "Suas marcações",
+        "your_blacklist": "Sua lista negra",
+        "bulk_download": "Download em massa"
+    },
+    "dateRange": {
+        "week": "Semana",
+        "month": "Mês",
+        "day": "Dia"
+    },
+    "blacklist": {
+        "manage": {
+            "empty_blacklist": "Nenhuma tag na lista negra",
+            "title": "Lista negra"
+        }
     }
 }

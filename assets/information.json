@@ -2,5 +2,8 @@
     "discordUrl" : "https://discord.gg/tvyYVxjfBr", 
     "githubUrl" : "https://github.com/khoadng/Boorusama",
     "translationProjectUrl" : "https://hosted.weblate.org/engage/boorusama/",
+    "translationStatusUrl" : "https://hosted.weblate.org/widget/boorusama/multi-auto.svg",
+    "translationBadgeUrl" : "https://hosted.weblate.org/widget/boorusama/287x66-grey.png",
+    "supportEmail" : "degenk.studio@gmail.com",
     "booruDefUrl" : "https://raw.githubusercontent.com/khoadng/boorusama/master/boorus.yaml"
 }

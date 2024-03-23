@@ -63,9 +63,6 @@
             "add_to_bookmark": "Lesezeichen hinzufügen",
             "remove_from_bookmark": "Lesezeichen entfernen"
         },
-        "parent_child": {
-            "children_of": "Children von"
-        },
         "action": {
             "preview": "Vorschau",
             "view_comments": "Kommentare anzeigen",
@@ -120,7 +117,6 @@
         },
         "hint": "Suche...",
         "no_result": "Wir haben weit und breit gesucht, aber keine Ergebnisse gefunden.",
-        "empty": "Solche leere",
         "search_options": "Suchoptionen",
         "metatags_notice": "Freie Metatags werden nicht auf die Tag-Suchgrenzen angerechnet",
         "history": {
@@ -140,7 +136,6 @@
     "pool": {
         "pool": "Pool",
         "pool_gallery": "Pool Gallerie",
-        "mature_banned_content": "Nicht jugendfreier/gesperrter Inhalt",
         "order": {
             "recent": "Neueste",
             "new": "Neu",
@@ -318,11 +313,7 @@
             "other": "Favoriten"
         },
         "favorited": "Favorisiert",
-        "favorite": "Favorit",
-        "unfavorited": "Aus Favoriten entfernt",
-        "unfavorite": "Aus Favoriten entfernen",
-        "failed_to_unfavorite": "Post konnte nicht aus den Favoriten entfernt werden",
-        "failed_to_favorite": "Post konnte nicht zu den Favoriten hinzugefügt werden"
+        "favorite": "Favorit"
     },
     "favorite_groups": {
         "favorite_groups": "Gruppen",
@@ -352,7 +343,6 @@
     },
     "favorite_tags": {
         "favorites": "Favoriten",
-        "or": "oder",
         "import": "Importieren",
         "import_hint": "Tag-String hier eingeben. Durch Leerzeichen getrennt.",
         "cancel": "Abbrechen",
@@ -378,7 +368,6 @@
         "month": "Monat"
     },
     "booru": {
-        "addNew": "Neues Booru hinzufügen",
         "booru_engine_input_label": "Booru Engine (*)",
         "config_name_label": "Konfigurationsname (*)",
         "site_url_label": "Seiten-URL",

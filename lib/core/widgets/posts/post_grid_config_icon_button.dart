@@ -13,6 +13,7 @@ import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
@@ -96,8 +97,8 @@ class PostGridActionSheet extends ConsumerWidget {
 
     var mobileButtons = [
       MobilePostGridConfigTile(
-        value: pageMode.name.sentenceCase,
-        title: 'Page mode',
+        value: pageMode.localize().tr(),
+        title: 'settings.result_layout.result_layout'.tr(),
         onTap: () {
           if (popOnSelect) context.navigator.pop();
           showMaterialModalBottomSheet(
@@ -109,8 +110,8 @@ class PostGridActionSheet extends ConsumerWidget {
         },
       ),
       MobilePostGridConfigTile(
-        value: gridSize.name.sentenceCase,
-        title: 'Grid',
+        value: gridSize.localize().tr(),
+        title: 'settings.image_grid.image_grid'.tr(),
         onTap: () {
           if (popOnSelect) context.navigator.pop();
           showMaterialModalBottomSheet(
@@ -122,30 +123,30 @@ class PostGridActionSheet extends ConsumerWidget {
         },
       ),
       MobilePostGridConfigTile(
-        value: imageListType.name.sentenceCase,
-        title: 'Image list',
+        value: imageListType.localize().tr(),
+        title: 'settings.image_list.image_list'.tr(),
         onTap: () {
           if (popOnSelect) context.navigator.pop();
           showMaterialModalBottomSheet(
             context: context,
             builder: (_) => OptionActionSheet(
               onChanged: onImageListChanged,
-              optionName: (option) => option.name.sentenceCase,
+              optionName: (option) => option.localize().tr(),
               options: ImageListType.values,
             ),
           );
         },
       ),
       MobilePostGridConfigTile(
-        value: imageQuality.name.sentenceCase,
-        title: 'Image quality',
+        value: imageQuality.localize().tr(),
+        title: 'settings.image_grid.image_quality.image_quality'.tr(),
         onTap: () {
           if (popOnSelect) context.navigator.pop();
           showMaterialModalBottomSheet(
             context: context,
             builder: (_) => OptionActionSheet(
               onChanged: onImageQualityChanged,
-              optionName: (option) => option.name.sentenceCase,
+              optionName: (option) => option.localize().tr(),
               options: [...ImageQuality.values]..remove(ImageQuality.original),
             ),
           );
@@ -172,28 +173,28 @@ class PostGridActionSheet extends ConsumerWidget {
 
     final desktopButtons = [
       DesktopPostGridConfigTile(
-        title: 'Page mode',
+        title: 'settings.result_layout.result_layout'.tr(),
         value: pageMode,
         onChanged: (value) => ref.setPageMode(value),
         items: PageMode.values,
-        optionNameBuilder: (option) => option.name.sentenceCase,
+        optionNameBuilder: (option) => option.localize().tr(),
       ),
       DesktopPostGridConfigTile(
-        title: 'Grid',
+        title: 'settings.image_grid.image_grid'.tr(),
         value: gridSize,
         onChanged: (value) => ref.setGridSize(value),
         items: GridSize.values,
         optionNameBuilder: (option) => option.name.sentenceCase,
       ),
       DesktopPostGridConfigTile(
-        title: 'Image list',
+        title: 'settings.image_list.image_list'.tr(),
         value: imageListType,
         onChanged: (value) => ref.setImageListType(value),
         items: ImageListType.values,
         optionNameBuilder: (option) => option.name.sentenceCase,
       ),
       DesktopPostGridConfigTile(
-        title: 'Image quality',
+        title: 'settings.image_grid.image_quality.image_quality'.tr(),
         value: imageQuality,
         onChanged: (value) => ref.setImageQuality(value),
         items: [...ImageQuality.values]..remove(ImageQuality.original),
@@ -308,7 +309,7 @@ class GridSizeActionSheet extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: GridSize.values
               .map((e) => ListTile(
-                    title: Text(e.name.sentenceCase),
+                    title: Text(e.localize()).tr(),
                     onTap: () {
                       context.navigator.pop();
                       onChanged(e);
@@ -341,7 +342,7 @@ class PageModeActionSheet extends StatelessWidget {
           children: PageMode.values
               .map(
                 (e) => ListTile(
-                  title: Text(e.name.sentenceCase),
+                  title: Text(e.localize()).tr(),
                   onTap: () {
                     context.navigator.pop();
                     onModeChanged(e);

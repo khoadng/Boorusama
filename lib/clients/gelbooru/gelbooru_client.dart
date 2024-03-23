@@ -4,7 +4,6 @@ import 'dart:convert';
 
 // Package imports:
 import 'package:dio/dio.dart';
-import 'package:html/parser.dart';
 import 'package:xml/xml.dart';
 
 // Project imports:
@@ -14,7 +13,6 @@ import 'types/post_dto.dart';
 import 'types/tag_dto.dart';
 
 const _kGelbooruUrl = 'https://gelbooru.com/';
-const _kRule34XXXUrl = 'https://rule34.xxx/';
 
 typedef GelbooruPosts = ({
   List<PostDto> posts,
@@ -28,15 +26,13 @@ class GelbooruClient with RequestDeduplicator<GelbooruPosts> {
     this.userId,
     this.apiKey,
     Dio? dio,
-  })  : _dio = dio ??
+  }) : _dio = dio ??
             Dio(BaseOptions(
               baseUrl: baseUrl ?? '',
               headers: headers ?? {},
-            )),
-        _baseUrl = baseUrl;
+            ));
 
   final Dio _dio;
-  final String? _baseUrl;
   final String? userId;
   final String? apiKey;
 
@@ -47,18 +43,6 @@ class GelbooruClient with RequestDeduplicator<GelbooruPosts> {
   }) =>
       GelbooruClient(
         baseUrl: _kGelbooruUrl,
-        dio: dio,
-        userId: login,
-        apiKey: apiKey,
-      );
-
-  factory GelbooruClient.rule34xxx({
-    Dio? dio,
-    String? login,
-    String? apiKey,
-  }) =>
-      GelbooruClient(
-        baseUrl: _kRule34XXXUrl,
         dio: dio,
         userId: login,
         apiKey: apiKey,
@@ -76,23 +60,6 @@ class GelbooruClient with RequestDeduplicator<GelbooruPosts> {
         userId: login,
         apiKey: apiKey,
       );
-
-  // Some user might input the url with /index.php/ or /index.php so we need to clean it
-  static String cleanUrl(String url) {
-    // if it's not the target url, return it as is
-    if (!url.startsWith(_kGelbooruUrl) && !url.startsWith(_kRule34XXXUrl)) {
-      return url;
-    }
-
-    // if /index.php/ or /index.php is present, remove it
-    if (url.endsWith('/index.php/')) {
-      return url.replaceAll('/index.php/', '/');
-    } else if (url.endsWith('/index.php')) {
-      return url.replaceAll('/index.php', '/');
-    } else {
-      return url;
-    }
-  }
 
   Future<GelbooruPosts> getPosts({
     int? page,
@@ -123,10 +90,6 @@ class GelbooruClient with RequestDeduplicator<GelbooruPosts> {
         final data = response.data;
 
         final result = switch (data) {
-          List l => (
-              posts: l.map((item) => PostDto.fromJson(item, baseUrl)).toList(),
-              count: null
-            ),
           Map m => () {
               final count = m['@attributes']['count'] as int?;
 
@@ -139,12 +102,6 @@ class GelbooruClient with RequestDeduplicator<GelbooruPosts> {
                 count: count,
               );
             }(),
-          String s => (
-              posts: (jsonDecode(s) as List<dynamic>)
-                  .map<PostDto>((item) => PostDto.fromJson(item, baseUrl))
-                  .toList(),
-              count: null
-            ),
           _ => (posts: <PostDto>[], count: null),
         };
 
@@ -162,28 +119,17 @@ class GelbooruClient with RequestDeduplicator<GelbooruPosts> {
     required String term,
     int? limit,
   }) async {
-    final baseUrl = _dio.options.baseUrl;
-    final response = await switch (baseUrl) {
-      _kGelbooruUrl => _dio.get(
-          '/index.php',
-          queryParameters: {
-            'page': 'autocomplete2',
-            'type': 'tag_query',
-            'term': term,
-            if (limit != null) 'limit': limit,
-            if (userId != null) 'user_id': userId,
-            if (apiKey != null) 'api_key': apiKey,
-          },
-        ),
-      _ => _dio.get(
-          '/autocomplete.php',
-          queryParameters: {
-            'q': term,
-            if (userId != null) 'user_id': userId,
-            if (apiKey != null) 'api_key': apiKey,
-          },
-        ),
-    };
+    final response = await _dio.get(
+      '/index.php',
+      queryParameters: {
+        'page': 'autocomplete2',
+        'type': 'tag_query',
+        'term': term,
+        if (limit != null) 'limit': limit,
+        if (userId != null) 'user_id': userId,
+        if (apiKey != null) 'api_key': apiKey,
+      },
+    );
 
     return switch (response.data) {
       List l => l.map((item) => AutocompleteDto.fromJson(item)).toList(),
@@ -235,45 +181,6 @@ class GelbooruClient with RequestDeduplicator<GelbooruPosts> {
     );
 
     return _parseTags(response);
-  }
-
-  Future<List<TagDto>> getTagsFromPostId({required int postId}) async {
-    // I'm lazy to implement this for Gelbooru since we can just use getTags
-    if (_dio.options.baseUrl == _kGelbooruUrl) return [];
-
-    final crawlerDio = Dio(
-      BaseOptions(
-        baseUrl: _baseUrl ?? '',
-        headers: _dio.options.headers,
-      ),
-    );
-
-    final response = await crawlerDio.get(
-      '/index.php',
-      queryParameters: {
-        'page': 'post',
-        's': 'view',
-        'id': postId,
-      },
-    );
-
-    final html = parse(response.data);
-    final sideBar = html.getElementById('tag-sidebar');
-    final copyrightTags =
-        sideBar?.getElementsByClassName('tag-type-copyright tag');
-    final characterTags =
-        sideBar?.getElementsByClassName('tag-type-character tag');
-    final artistTags = sideBar?.getElementsByClassName('tag-type-artist tag');
-    final generalTags = sideBar?.getElementsByClassName('tag-type-general tag');
-    final metaTags = sideBar?.getElementsByClassName('tag-type-meta tag');
-
-    return [
-      for (final tag in artistTags ?? []) TagDto.fromHtml(tag, 1),
-      for (final tag in copyrightTags ?? []) TagDto.fromHtml(tag, 3),
-      for (final tag in characterTags ?? []) TagDto.fromHtml(tag, 4),
-      for (final tag in generalTags ?? []) TagDto.fromHtml(tag, 0),
-      for (final tag in metaTags ?? []) TagDto.fromHtml(tag, 5),
-    ];
   }
 }
 

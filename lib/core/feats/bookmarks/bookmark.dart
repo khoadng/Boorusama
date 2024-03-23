@@ -1,6 +1,3 @@
-// Dart imports:
-import 'dart:convert';
-
 // Package imports:
 import 'package:equatable/equatable.dart';
 
@@ -9,6 +6,7 @@ import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/foundation/image.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/video.dart';
+import 'package:boorusama/functional.dart';
 
 class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
   const Bookmark({
@@ -122,7 +120,7 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
       width: (json['width'] as num).toDouble(),
       height: (json['height'] as num).toDouble(),
       md5: json['md5'] as String,
-      tags: (json['tags'] as List<dynamic>).map((e) => e as String).toSet(),
+      tags: _parseTags(json['tags']),
       realSourceUrl: json['realSourceUrl'] as String?,
     );
   }
@@ -140,7 +138,21 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
       'width': width,
       'height': height,
       'md5': md5,
-      'tags': jsonEncode(tags.toList()),
+      'tags': tags.toList(),
     };
   }
 }
+
+Set<String> _parseTags(dynamic tags) => switch (tags) {
+      String s => tryDecodeJson(s).fold(
+          (l) => const {},
+          (r) => _parseJsonTags(r),
+        ),
+      List l => l.map((e) => e.toString()).toSet(),
+      _ => const {},
+    };
+
+Set<String> _parseJsonTags(dynamic tags) => switch (tags) {
+      List l => l.map((e) => e.toString()).toSet(),
+      _ => const {},
+    };

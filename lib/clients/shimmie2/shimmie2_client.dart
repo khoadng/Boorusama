@@ -54,13 +54,15 @@ class Shimmie2Client {
     );
 
     try {
-      return (response.data as Map)
-          .entries
-          .map((e) => AutocompleteDto(
-                value: e.key,
-                count: e.value,
-              ))
-          .toList();
+      return switch (response.data) {
+        Map m => m.entries
+            .map((e) => AutocompleteDto(
+                  value: e.key,
+                  count: e.value,
+                ))
+            .toList(),
+        _ => const [],
+      };
     } catch (e) {
       throw Exception('Failed to parse autocomplete >> $e >> ${response.data}');
     }

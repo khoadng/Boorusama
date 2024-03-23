@@ -61,9 +61,6 @@
             "add_to_bookmark": "添加到书签",
             "remove_from_bookmark": "从书签移除"
         },
-        "parent_child": {
-            "children_of": "的孩子"
-        },
         "action": {
             "preview": "预览",
             "view_comments": "查看评论",
@@ -117,7 +114,6 @@
         },
         "hint": "搜索...",
         "no_result": "我们搜遍了，但是没找到任何结果。",
-        "empty": "啥都木有",
         "search_options": "搜索选项",
         "metatags_notice": "免费的元标签不计入搜索标签限制",
         "history": {
@@ -136,7 +132,6 @@
     "pool": {
         "pool": "图集",
         "pool_gallery": "图集",
-        "mature_banned_content": "成人/禁止内容",
         "order": {
             "recent": "最近",
             "new": "新的",
@@ -309,11 +304,7 @@
             "other": "喜爱"
         },
         "favorited": "已加进喜爱中",
-        "favorite": "喜爱",
-        "unfavorited": "已从喜爱中移除",
-        "unfavorite": "从喜爱中移除",
-        "failed_to_unfavorite": "从喜爱中移除失败",
-        "failed_to_favorite": "添加到喜爱中失败"
+        "favorite": "喜爱"
     },
     "favorite_groups": {
         "favorite_groups": "喜爱组",
@@ -342,7 +333,6 @@
     },
     "favorite_tags": {
         "favorites": "喜爱",
-        "or": "或",
         "import": "导入",
         "import_hint": "在此输入标签。使用空格分隔。",
         "cancel": "取消",
@@ -368,7 +358,6 @@
         "month": "月"
     },
     "booru": {
-        "addNew": "添加新booru",
         "booru_engine_input_label": "Booru引擎 (*)",
         "config_name_label": "配置名 (*)",
         "site_url_label": "网站地址",

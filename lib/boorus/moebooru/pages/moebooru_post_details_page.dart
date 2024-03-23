@@ -209,14 +209,12 @@ class _MoebooruPostDetailsPageState
                             .read(moebooruClientProvider(config))
                             .favoritePost(postId: post.id)
                             .then((value) {
-                          showSuccessToast('Favorited');
                           notifier.clear();
                         }),
                         removeFavorite: () => ref
                             .read(moebooruClientProvider(config))
                             .unfavoritePost(postId: post.id)
                             .then((value) {
-                          showSuccessToast('Unfavorited');
                           notifier.clear();
                         }),
                         isAuthorized: config.hasLoginDetails(),

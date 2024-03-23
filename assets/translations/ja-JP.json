@@ -113,7 +113,8 @@
     },
     "pool": {
         "order": {
-            "recent": "最近"
+            "recent": "最近",
+            "new": "新しい順"
         },
         "detail": {
             "last_updated": "最終更新"
@@ -184,7 +185,13 @@
             }
         },
         "help_us_translate": "翻訳に協力する",
-        "other_settings": "その他の設定"
+        "other_settings": "その他の設定",
+        "data_and_storage": {
+            "data_and_storage": "データとストレージ"
+        },
+        "backup_and_restore": {
+            "backup_and_restore": "バックアップとリストア"
+        }
     },
     "blacklisted_tags": {
         "remove": "削除",
@@ -215,7 +222,8 @@
     "favorite_tags": {
         "import": "インポート",
         "cancel": "キャンセル",
-        "export": "エクスポート"
+        "export": "エクスポート",
+        "favorite_tags": "お気に入りタグ"
     },
     "sideMenu": {
         "settings": "設定",

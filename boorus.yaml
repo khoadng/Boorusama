@@ -43,10 +43,14 @@
     sites:
       - url: https://rule34.xxx/
       - url: https://hypnohub.net/
+      - url: https://realbooru.com/
+      - url: https://xbooru.com/
+      - url: https://tbib.org/
+      - url: https://safebooru.org/
 
 - gelbooru_v1: 
     sites:
-      - https://safebooru.org/
+      - https://illusioncards.booru.org/
 
 - e621:
     protocol: https_2

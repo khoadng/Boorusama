@@ -131,15 +131,13 @@ class _DanbooruPostDetailsDesktopPageState
                     const Divider(height: 8, thickness: 1),
                     SimplePostActionToolbar(post: post),
                     const Divider(height: 8, thickness: 1),
-                    widget.hasDetailsTagList
-                        ? TagsTile(
-                            initialExpanded: true,
-                            tags: ref.watch(tagsProvider(booruConfig)),
-                            post: post,
-                            onTagTap: (tag) =>
-                                goToSearchPage(context, tag: tag.rawName),
-                          )
-                        : GelbooruV1TagsTile(post: post)
+                    TagsTile(
+                      initialExpanded: true,
+                      tags: ref.watch(tagsProvider(booruConfig)),
+                      post: post,
+                      onTagTap: (tag) =>
+                          goToSearchPage(context, tag: tag.rawName),
+                    ),
                   ],
                 ),
               ),

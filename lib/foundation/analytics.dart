@@ -1,57 +1,74 @@
 // Flutter imports:
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 // Package imports:
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/settings/settings.dart';
-import 'firebase/firebase.dart';
 
-export 'firebase/firebase.dart';
+final analyticsProvider = Provider<AnalyticsInterface>(
+  (ref) => NoAnalyticsInterface(),
+);
 
-bool isAnalyticsEnabled({
-  required DataCollectingStatus dataCollectingStatus,
-}) =>
-    dataCollectingStatus == DataCollectingStatus.allow &&
-    kReleaseMode &&
-    isFirebaseAnalyticsSupportedPlatforms();
+abstract interface class AnalyticsInterface {
+  bool get enabled;
+  bool isPlatformSupported();
+  Future<void> ensureInitialized();
+  Future<void> changeCurrentAnalyticConfig(BooruConfig config);
+  NavigatorObserver getAnalyticsObserver();
+  void sendBooruAddedEvent({
+    required String url,
+    required String hintSite,
+    required int totalSites,
+    required bool hasLogin,
+  });
+}
 
-NavigatorObserver getAnalyticsObserver() => FirebaseAnalyticsObserver(
-      analytics: FirebaseAnalytics.instance,
-    );
+class NoAnalyticsInterface implements AnalyticsInterface {
+  @override
+  bool get enabled => false;
 
-Future<void> initializeAnalytics(Settings settings) async {
-  if (isAnalyticsEnabled(dataCollectingStatus: settings.dataCollectingStatus)) {
-    await ensureFirebaseInitialized();
-  }
+  @override
+  bool isPlatformSupported() => false;
+
+  @override
+  Future<void> ensureInitialized() async {}
+
+  @override
+  Future<void> changeCurrentAnalyticConfig(BooruConfig config) async {}
+
+  @override
+  NavigatorObserver getAnalyticsObserver() => NavigatorObserver();
+
+  @override
+  Future<void> sendBooruAddedEvent({
+    required String url,
+    required String hintSite,
+    required int totalSites,
+    required bool hasLogin,
+  }) async {}
 }
 
 class AnalyticsScope extends ConsumerWidget {
   const AnalyticsScope({
     super.key,
-    required this.settings,
     required this.builder,
   });
 
-  final Settings settings;
-  final Widget Function(bool anlyticsEnabled) builder;
+  final Widget Function(bool analyticsEnabled) builder;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final enabled = isAnalyticsEnabled(
-      dataCollectingStatus: settings.dataCollectingStatus,
-    );
+    final analytics = ref.watch(analyticsProvider);
+    final enabled = analytics.enabled;
 
     ref.listen(
       currentBooruConfigProvider,
       (p, c) {
         if (p != c) {
           if (enabled) {
-            changeCurrentAnalyticConfig(c);
+            analytics.changeCurrentAnalyticConfig(c);
           }
         }
       },

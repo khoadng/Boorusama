@@ -6,6 +6,8 @@ import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/theme/theme_mode.dart';
 
+export 'types_l10n.dart';
+
 enum ImageQuality {
   automatic,
   low,

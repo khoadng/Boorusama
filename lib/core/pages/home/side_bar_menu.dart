@@ -97,7 +97,7 @@ class SideBarMenu extends ConsumerWidget {
                         ),
                         SideMenuTile(
                           icon: const Icon(Symbols.tag),
-                          title: const Text('Favorite tags'),
+                          title: const Text('favorite_tags.favorite_tags').tr(),
                           onTap: () {
                             if (popOnSelect) context.navigator.pop();
                             context.go('/favorite_tags');
@@ -113,6 +113,18 @@ class SideBarMenu extends ConsumerWidget {
                               null,
                               ref: ref,
                             );
+                          },
+                        ),
+                        const Divider(),
+                        SideMenuTile(
+                          icon: const Icon(
+                            Symbols.question_mark,
+                            fill: 1,
+                          ),
+                          title: const Text('Get support'),
+                          onTap: () {
+                            if (popOnSelect) context.navigator.pop();
+                            context.go('/settings?scrollTo=support');
                           },
                         ),
                         SideMenuTile(

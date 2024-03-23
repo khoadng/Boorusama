@@ -398,7 +398,7 @@ List<Widget> coreDesktopTabBuilder(
       constraints: constraints,
       selectedIcon: Symbols.tag,
       icon: Symbols.tag,
-      title: 'Favorite tags',
+      title: 'favorite_tags.favorite_tags'.tr(),
     ),
     HomeNavigationTile(
       value: _v(4),

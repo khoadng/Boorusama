@@ -36,10 +36,10 @@ class DataAndStoragePage extends ConsumerStatefulWidget {
   final bool hasAppBar;
 
   @override
-  ConsumerState<DataAndStoragePage> createState() => _PerformancePageState();
+  ConsumerState<DataAndStoragePage> createState() => _DataAndStoragePageState();
 }
 
-class _PerformancePageState extends ConsumerState<DataAndStoragePage> {
+class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
   @override
   Widget build(BuildContext context) {
     final settings = ref.watch(settingsProvider);
@@ -48,7 +48,7 @@ class _PerformancePageState extends ConsumerState<DataAndStoragePage> {
       condition: widget.hasAppBar,
       conditionalBuilder: (child) => Scaffold(
         appBar: AppBar(
-          title: const Text('Data and Storage'),
+          title: const Text('settings.data_and_storage.data_and_storage').tr(),
         ),
         body: child,
       ),
@@ -111,7 +111,9 @@ class _PerformancePageState extends ConsumerState<DataAndStoragePage> {
             ),
             SwitchListTile(
               value: settings.clearImageCacheOnStartup,
-              title: const Text('Clear image cache on start up'),
+              title: const Text(
+                      'settings.data_and_storage.clear_cache_on_start_up')
+                  .tr(),
               onChanged: (value) => ref.updateSettings(
                 settings.copyWith(clearImageCacheOnStartup: value),
               ),

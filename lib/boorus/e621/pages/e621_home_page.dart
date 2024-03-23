@@ -98,7 +98,7 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
           constraints: constraints,
           selectedIcon: Symbols.explore,
           icon: Symbols.explore,
-          title: 'Explore',
+          title: 'Popular',
         ),
         if (config.hasLoginDetails()) ...[
           HomeNavigationTile(

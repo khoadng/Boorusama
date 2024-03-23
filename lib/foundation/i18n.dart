@@ -41,6 +41,8 @@ const supportedLocales = [
   Locale('uk', 'UA'), // Ukrainian (Ukraine)
   Locale('tr', 'TR'), // Turkish (Turkey)
   Locale('fr', 'FR'), // French (France)
+  Locale('th', 'TH'), // Thai (Thailand)
+  Locale('nb', 'NO'), // Norwegian Bokmål (Norway)
 ];
 
 LookupMessages getMessagesForLocale(Locale locale) =>
@@ -59,6 +61,8 @@ LookupMessages getMessagesForLocale(Locale locale) =>
       'uk-UA' => UkMessages(),
       'tr-TR' => TrMessages(),
       'fr-FR' => FrMessages(),
+      'th-TH' => ThMessages(),
+      'nb-NO' => NbNoMessages(),
       _ => throw Exception('Unsupported locale $locale')
     };
 
@@ -147,6 +151,21 @@ Future<BooruLanguage?> loadLanguage(String lang) async {
   return null;
 }
 
+dynamic removeEmptyFields(dynamic json) {
+  if (json is Map) {
+    json.removeWhere((key, value) => value == null || value == "");
+    json.forEach((key, value) {
+      json[key] = removeEmptyFields(value);
+    });
+  } else if (json is List) {
+    json.removeWhere((item) => item == null || item == "");
+    for (var i = 0; i < json.length; i++) {
+      json[i] = removeEmptyFields(json[i]);
+    }
+  }
+  return json;
+}
+
 Future<void> ensureI18nInitialized() async {
   await el.EasyLocalization.ensureInitialized();
 
@@ -173,7 +192,23 @@ class BooruLocalization extends StatelessWidget {
       path: 'assets/translations',
       fallbackLocale: fallbackLocale,
       useFallbackTranslations: true,
+      assetLoader: const RootBundleAssetLoader(),
       child: child,
     );
+  }
+}
+
+class RootBundleAssetLoader extends el.AssetLoader {
+  const RootBundleAssetLoader();
+
+  String getLocalePath(String basePath, Locale locale) {
+    return '$basePath/${locale.toStringWithSeparator(separator: "-")}.json';
+  }
+
+  @override
+  Future<Map<String, dynamic>?> load(String path, Locale locale) async {
+    var localePath = getLocalePath(path, locale);
+    final data = json.decode(await rootBundle.loadString(localePath));
+    return removeEmptyFields(data);
   }
 }

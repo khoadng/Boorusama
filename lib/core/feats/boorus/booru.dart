@@ -450,9 +450,9 @@ extension BooruTypeX on BooruType {
   String stringify() => switch (this) {
         BooruType.unknown => 'UNKNOWN',
         BooruType.danbooru => 'Danbooru',
-        BooruType.gelbooruV1 => 'Gelbooru v1',
-        BooruType.gelbooru => 'Gelbooru',
-        BooruType.gelbooruV2 => 'Gelbooru v2',
+        BooruType.gelbooruV1 => 'Gelbooru 0.1.x',
+        BooruType.gelbooru => 'Gelbooru 0.2.5',
+        BooruType.gelbooruV2 => 'Gelbooru 0.2',
         BooruType.moebooru => 'Moebooru',
         BooruType.e621 => 'e621',
         BooruType.zerochan => 'Zerochan',

@@ -23,6 +23,7 @@ import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/package_info.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -95,11 +96,11 @@ class UserDetailsPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile'),
+        title: const Text('profile.profile').tr(),
         actions: [
           BooruPopupMenuButton(
-            itemBuilder: const {
-              0: Text('Copy User ID'),
+            itemBuilder: {
+              0: const Text('profile.copy_user_id').tr(),
             },
             onSelected: (value) {
               if (value == 0) {
@@ -153,7 +154,7 @@ class UserDetailsPage extends ConsumerWidget {
                                 foregroundColor:
                                     context.colorScheme.onSecondaryContainer,
                               ),
-                              child: const Text('Messages'),
+                              child: const Text('profile.messages').tr(),
                               onPressed: () => goToDmailPage(context),
                             ),
                           ],
@@ -428,7 +429,7 @@ class _UserFavorites extends ConsumerWidget {
                   context,
                   tag: buildFavoriteQuery(user.name),
                 ),
-                title: 'Favorites',
+                title: 'profile.favorites'.tr(),
               ),
             ],
           )

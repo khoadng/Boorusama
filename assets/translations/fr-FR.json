@@ -64,9 +64,6 @@
             "add_to_bookmark": "Ajouter à un marque-page",
             "remove_from_bookmark": "Supprimé du marque-page"
         },
-        "parent_child": {
-            "children_of": "En lien avec"
-        },
         "action": {
             "preview": "Aperçu",
             "view_comments": "Afficher les commentaires",
@@ -122,7 +119,6 @@
         },
         "hint": "Recherche...",
         "no_result": "Partout nous avons cherché, mais aucun résultat n'a été trouvé.",
-        "empty": "Plutôt vide",
         "search_options": "Options de recherche",
         "metatags_notice": "Les tags meta ne comptent pas dans la limite de recherche",
         "history": {
@@ -143,7 +139,6 @@
     "pool": {
         "pool": "Albums",
         "pool_gallery": "Gallerie des albums",
-        "mature_banned_content": "Contenu adulte/banni",
         "order": {
             "recent": "Récent",
             "new": "Nouveau",
@@ -325,11 +320,7 @@
             "other": "Favoris"
         },
         "favorited": "Mis en favoris",
-        "favorite": "Mettre en favoris",
-        "unfavorited": "Enlevé des favoris",
-        "unfavorite": "Enlever des favoris",
-        "failed_to_unfavorite": "Échec de l'enlèvement des favoris",
-        "failed_to_favorite": "Échec de l'ajout aux favoris"
+        "favorite": "Mettre en favoris"
     },
     "favorite_groups": {
         "favorite_groups": "Groupes de favoris",
@@ -360,7 +351,6 @@
     },
     "favorite_tags": {
         "favorites": "Favories",
-        "or": "ou",
         "import": "Importer",
         "import_hint": "Entrez votre série de tags ici. Espace limité.",
         "cancel": "Annuler",
@@ -386,7 +376,6 @@
         "month": "Mois"
     },
     "booru": {
-        "addNew": "Ajouter un nouveau booru",
         "booru_engine_input_label": "Moteur booru (*)",
         "config_name_label": "Nom de la configuration (*)",
         "site_url_label": "URL du site",
