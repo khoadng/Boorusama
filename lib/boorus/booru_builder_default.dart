@@ -256,6 +256,16 @@ mixin DefaultBooruUIMixin implements BooruBuilder {
           );
 }
 
+mixin DefaultSortTokenToQueryMixin implements BooruBuilder {
+  @override
+  SortTokenToQueryBuilder get sortTokenToQueryBuilder =>
+      (token) => switch (token) {
+            SortToken.newest => [],
+            SortToken.popular => null,
+            SortToken.oldest => null,
+          };
+}
+
 String Function(
   Post post,
 ) defaultPostImageUrlBuilder(

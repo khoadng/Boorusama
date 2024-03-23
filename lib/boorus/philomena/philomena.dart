@@ -29,11 +29,13 @@ class PhilomenaBuilder
         CharacterNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
         NoGranularRatingQueryBuilderMixin,
+        DefaultSortTokenToQueryMixin, // TODO: Philomena has a different approach for sorting, they use query params instead of a query string
         DefaultGranularRatingFiltererMixin,
         DefaultPostGesturesHandlerMixin,
         DefaultPostStatisticsPageBuilderMixin,
         DefaultBooruUIMixin
-    implements BooruBuilder {
+    implements
+        BooruBuilder {
   PhilomenaBuilder({
     required this.postRepo,
     required this.autocompleteRepo,

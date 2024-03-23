@@ -17,6 +17,7 @@ import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/search/search.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/pages/post_statistics_page.dart';
 import 'package:boorusama/core/router.dart';
@@ -329,6 +330,14 @@ class DanbooruBuilder
                     () => false,
                     (ratings) => ratings.contains(post.rating),
                   ),
+          };
+
+  @override
+  SortTokenToQueryBuilder get sortTokenToQueryBuilder =>
+      (token) => switch (token) {
+            SortToken.newest => [],
+            SortToken.popular => ['order:score'],
+            SortToken.oldest => ['order:id'],
           };
 }
 

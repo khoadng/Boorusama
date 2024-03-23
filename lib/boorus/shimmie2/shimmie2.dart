@@ -7,6 +7,7 @@ import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/search/search.dart';
 import 'package:boorusama/core/pages/boorus/create_anon_config_page.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
@@ -117,4 +118,12 @@ class Shimmie2Builder
       LegacyFilenameBuilder(
         generateFileName: (post, downloadUrl) => basename(downloadUrl),
       );
+
+  @override
+  SortTokenToQueryBuilder get sortTokenToQueryBuilder =>
+      (token) => switch (token) {
+            SortToken.newest => [],
+            SortToken.popular => ['order:score'],
+            SortToken.oldest => ['order:id'],
+          };
 }

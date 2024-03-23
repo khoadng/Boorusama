@@ -16,6 +16,7 @@ import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/search/search.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/artist_page_scaffold.dart';
@@ -199,6 +200,14 @@ class SankakuBuilder
           'index': (post, config) => config.index?.toString(),
         },
       );
+
+  @override
+  SortTokenToQueryBuilder get sortTokenToQueryBuilder =>
+      (token) => switch (token) {
+            SortToken.newest => [],
+            SortToken.popular => ['order:score'],
+            SortToken.oldest => ['order:id'],
+          };
 }
 
 class SankakuArtistPage extends ConsumerWidget {

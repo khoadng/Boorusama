@@ -13,6 +13,7 @@ import 'package:boorusama/clients/moebooru/moebooru_client.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/search/search.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
@@ -166,6 +167,14 @@ class MoebooruBuilder
           'index': (post, config) => config.index?.toString(),
         },
       );
+
+  @override
+  SortTokenToQueryBuilder get sortTokenToQueryBuilder =>
+      (token) => switch (token) {
+            SortToken.newest => [],
+            SortToken.popular => ['order:score'],
+            SortToken.oldest => ['order:id'],
+          };
 }
 
 class MoebooruFavoritesPage extends ConsumerWidget {

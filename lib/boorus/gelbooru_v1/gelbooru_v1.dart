@@ -32,6 +32,7 @@ class GelbooruV1Builder
         NoteNotSupportedMixin,
         DefaultThumbnailUrlMixin,
         DefaultTagColorMixin,
+        DefaultSortTokenToQueryMixin,
         DefaultPostImageDetailsUrlMixin,
         DefaultPostGesturesHandlerMixin,
         DefaultGranularRatingFiltererMixin,

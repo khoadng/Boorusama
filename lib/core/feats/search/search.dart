@@ -8,5 +8,6 @@ export 'search_history_repository.dart';
 export 'search_mixin.dart';
 export 'search_utils.dart';
 export 'selected_tag_controller.dart';
+export 'sort_token.dart';
 export 'suggestions_notifier.dart';
 export 'tag_search_item.dart';

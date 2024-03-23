@@ -15,6 +15,7 @@ import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/comments/comments.dart';
 import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/search/search.dart';
 import 'package:boorusama/core/pages/home/side_menu_tile.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
@@ -232,6 +233,14 @@ class SzurubooruBuilder
       LegacyFilenameBuilder(
         generateFileName: (post, downloadUrl) => basename(downloadUrl),
       );
+
+  @override
+  SortTokenToQueryBuilder get sortTokenToQueryBuilder =>
+      (token) => switch (token) {
+            SortToken.newest => [],
+            SortToken.popular => ['sort:score'],
+            SortToken.oldest => null,
+          };
 }
 
 class SzurubooruSearchPage extends ConsumerWidget {

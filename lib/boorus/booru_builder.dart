@@ -28,6 +28,7 @@ import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/search/search.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/pages/post_statistics_page.dart';
@@ -80,6 +81,8 @@ abstract class BooruBuilder {
   GranularRatingOptionsBuilder? get granularRatingOptionsBuilder;
 
   PostGestureHandlerBuilder get postGestureHandlerBuilder;
+
+  SortTokenToQueryBuilder? get sortTokenToQueryBuilder;
 
   // Data Builders
   PostFetcher get postFetcher;

@@ -105,3 +105,7 @@ typedef PostGestureHandlerBuilder = bool Function(
   Post post,
   DownloadDelegate downloader,
 );
+
+typedef SortTokenToQueryBuilder = List<String>? Function(
+  SortToken token,
+);

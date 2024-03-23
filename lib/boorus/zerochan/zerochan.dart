@@ -111,11 +111,13 @@ class ZerochanBuilder
         LegacyGranularRatingOptionsBuilderMixin,
         NoGranularRatingQueryBuilderMixin,
         DefaultPostImageDetailsUrlMixin,
+        DefaultSortTokenToQueryMixin, // TODO: Zero has a different approach for sorting, they use query params instead of a query string
         DefaultPostGesturesHandlerMixin,
         DefaultGranularRatingFiltererMixin,
         DefaultPostStatisticsPageBuilderMixin,
         DefaultBooruUIMixin
-    implements BooruBuilder {
+    implements
+        BooruBuilder {
   const ZerochanBuilder({
     required this.postRepo,
     required this.autocompleteRepo,

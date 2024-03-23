@@ -17,6 +17,7 @@ import 'package:boorusama/core/feats/comments/comment.dart';
 import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/search/search.dart';
 import 'package:boorusama/core/scaffolds/comment_page_scaffold.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/path.dart';
@@ -263,6 +264,14 @@ class E621Builder
           'index': (post, config) => config.index?.toString(),
         },
       );
+
+  @override
+  SortTokenToQueryBuilder get sortTokenToQueryBuilder =>
+      (token) => switch (token) {
+            SortToken.newest => [],
+            SortToken.popular => ['order:score'],
+            SortToken.oldest => ['order:id'],
+          };
 }
 
 class E621CommentPage extends ConsumerWidget {

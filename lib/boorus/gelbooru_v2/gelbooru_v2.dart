@@ -15,6 +15,7 @@ import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/search/search.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
@@ -139,6 +140,7 @@ class GelbooruV2Builder
         NoteNotSupportedMixin,
         DefaultThumbnailUrlMixin,
         PostCountNotSupportedMixin,
+        DefaultSortTokenToQueryMixin,
         DefaultPostImageDetailsUrlMixin,
         DefaultGranularRatingFiltererMixin,
         DefaultPostGesturesHandlerMixin,
@@ -298,6 +300,14 @@ class GelbooruV2Builder
           'index': (post, config) => config.index?.toString(),
         },
       );
+
+  @override
+  SortTokenToQueryBuilder get sortTokenToQueryBuilder =>
+      (token) => switch (token) {
+            SortToken.newest => [],
+            SortToken.popular => ['sort:score:desc'],
+            SortToken.oldest => ['sort:id:asc'],
+          };
 }
 
 class GelbooruV2SearchPage extends ConsumerWidget {
