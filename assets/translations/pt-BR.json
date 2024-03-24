@@ -244,9 +244,16 @@
         "image_details": {
             "ui_overlay": {
                 "hide": "Esconder",
-                "show": "Mostrar"
+                "show": "Mostrar",
+                "ui_overlay": "Overlay de IU"
             },
             "image_details": "Detalhes da imagem"
+        },
+        "page_indicator": {
+            "top": "Topo",
+            "bottom": "Inferior",
+            "both": "Ambos",
+            "page_indicator": "Posição do indicador de página"
         }
     },
     "download": {
