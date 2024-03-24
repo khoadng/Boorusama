@@ -15,7 +15,10 @@
         "view": "ดู"
     },
     "profile": {
-        "favorites": "รายการโปรด"
+        "favorites": "รายการโปรด",
+        "profile": "โปรไฟล์",
+        "copy_user_id": "คัดลอก User ID",
+        "messages": "ข้อความ"
     },
     "network": {
         "unavailable": "ระบบเน็ตไม่พร้อมใช้งาน"
@@ -100,7 +103,8 @@
         "popular": "ยอดนิยม",
         "hot": "ร้องแรงอย่างสุด",
         "most_viewed": "ดูเยอะที่สุด",
-        "see_more": "ดูเพิ่มเติม"
+        "see_more": "ดูเพิ่มเติม",
+        "explore": "สำรวจ"
     },
     "search": {
         "errors": {
@@ -163,7 +167,8 @@
         "general": "ทั่วไป",
         "search": {
             "search": "การค้นหา",
-            "auto_focus_search_bar": "ปรับให้โฟกัสแถบค้นหาอัตโนมัติเมื่อแตะการค้นหาในครั้งแรก"
+            "auto_focus_search_bar": "ปรับให้โฟกัสแถบค้นหาอัตโนมัติเมื่อแตะการค้นหาในครั้งแรก",
+            "hide_bookmarked_posts_from_search_results": "ซ่อนโพสค์ที่บุ๊กมาร์กจากผลการค้นหา"
         },
         "information": "ข้อมูลแอป",
         "changelog": "ประวัติการอัปเดต",
@@ -196,7 +201,8 @@
                 "highest": "สูงที่สุด"
             },
             "spacing": "การเว้นระยะ",
-            "corner_radius": "ความมนโค้งของมุม"
+            "corner_radius": "ความมนโค้งของมุม",
+            "padding": "ระยะห่าง"
         },
         "image_viewer": {
             "image_viewer": "โปรแกรมในการดูภาพ",
@@ -218,7 +224,11 @@
         },
         "privacy": {
             "privacy": "ความเป็นส่วนตัว",
-            "send_error_data_notice": "ส่งข้อมูลที่ไม่ระบุตัวตนสำหรับข้อมูลข้อผิดพลาดต่างๆ"
+            "send_error_data_notice": "ส่งข้อมูลที่ไม่ระบุตัวตนสำหรับข้อมูลข้อผิดพลาดต่างๆ",
+            "enable_incognito_keyboard": "เปิดโหมดคีย์บอร์ดไม่เก็บข้อมูล",
+            "enable_biometric_lock": "เปิดการปลดล็อกด้วยสแกนลายนิ้วมือ",
+            "enable_incognito_keyboard_notice": "มีผลใช้งานกับระบบ Android",
+            "enable_biometric_lock_notice": "รองรับเฉพาะมือถือที่มีระบบสแกนนิ้วมือ และได้ตั้งค่าการสแกนนิ้วมือบนเครื่องแล้ว"
         },
         "performance": {
             "performance": "ประสิทธิภาพ",
@@ -226,7 +236,7 @@
             "posts_per_page_explain": "จำนวนตัวอย่างภาพที่จะแสดงในหนึ่งๆหน้า",
             "cache_size": "ขนาดไฟล์แคช",
             "clear_cache": "ล้างไฟล์แคช",
-            "cache_size_info": "ขนาด {0} MB ใน {1} ไฟล์"
+            "cache_size_info": "ขนาด {0} ใน {1} ไฟล์"
         },
         "debug_logs": {
             "debug_logs": "รายการ Debug",
@@ -243,7 +253,28 @@
             }
         },
         "help_us_translate": "ช่วยพวกเราในการแปลภาษา",
-        "other_settings": "การตั้งค่าอื่นๆ"
+        "other_settings": "การตั้งค่าอื่นๆ",
+        "image_details": {
+            "image_details": "รายละเอียดรูปภาพ",
+            "ui_overlay": {
+                "show": "แสดง",
+                "ui_overlay": "การแสดงปุ่มซ้อนทับบนภาพ",
+                "hide": "ซ่อน"
+            }
+        },
+        "backup_and_restore": {
+            "backup_and_restore": "สำรอง และเรียกคืนข้อมูล"
+        },
+        "page_indicator": {
+            "page_indicator": "ตำแหน่งตัวนำทางหน้า",
+            "bottom": "ล่าง",
+            "top": "บน",
+            "both": "ทั้งสองตำแหน่ง"
+        },
+        "data_and_storage": {
+            "clear_cache_on_start_up": "ลบไฟล์แคชตอนเปิดแอป",
+            "data_and_storage": "ข้อมูล และพื้นที่จัดเก็บ"
+        }
     },
     "blacklisted_tags": {
         "remove": "ลบ",
@@ -251,7 +282,7 @@
         "blacklisted_tags": "แท็กต้องห้าม",
         "load_error": "การโหลดรายการแท็กต้องห้ามล้มเหลว",
         "updated": "แท็กต้องห้ามได้อัปเดตแล้ว",
-        "limitation_notice": "",
+        "limitation_notice": "รองรับเฉพาะคำสั่ง <b>NOT</b>, คำสั่ง <b>OR</b>, <b>score</b> Metatag และ <b>rating</b> Metatag\n\nการใช้งานคำต้องห้ามแสดงกับ metatags อื่นๆ จะยังไม่รอบรับในเวอร์ชั่นปัจจุบัน",
         "failed_to_add": "ไม่สามารถเพิ่มแท็กได้",
         "failed_to_remove": "ไม่สามารถลบแท็กได้"
     },
@@ -303,7 +334,7 @@
         "saved_search_help": "นี้คืออะไรนะ?",
         "saved_search_examples": "ตัวอย่าง",
         "saved_search_try": "ลองสิ",
-        "saved_search_query": "",
+        "saved_search_query": "คำ",
         "saved_search_labels": "ป้ายกำกับ*",
         "saved_search_labels_description": "*เป็นรายการของแท็กที่ช่วยให้จัดกลุ่มในการค้นหา คั่นกลางด้วยการเว้นวรรค"
     },
@@ -312,8 +343,8 @@
             "one": "รายการโปรด",
             "other": "รายการโปรด"
         },
-        "favorited": "",
-        "favorite": ""
+        "favorited": "รายการโปรด",
+        "favorite": "รายการโปรด"
     },
     "favorite_groups": {
         "favorite_groups": "กลุ่มรายการโปรด",
@@ -347,7 +378,8 @@
         "import_hint": "ใส่คำเฉพาะของแท็กของคุณที่นี่ แยกคำโดยการเว้นวรรค",
         "cancel": "ยกเลิก",
         "export": "นำออก",
-        "export_notification": "คัดลอกคำเฉพาะของแท็กไว้ในคลิปบอร์ดเรียบร้อย"
+        "export_notification": "คัดลอกคำเฉพาะของแท็กไว้ในคลิปบอร์ดเรียบร้อย",
+        "favorite_tags": "แท็กรายการโปรด"
     },
     "rating": {
         "rate_request": "ให้คะแนนกับแอปนี้",
@@ -378,7 +410,7 @@
         "content_filtering_label": "การกรองเนื้อหา",
         "hide_deleted_label": "ซ่อนโพสต์ที่ถูกลบ",
         "config_booru_confirm": "ตกลง",
-        "add_a_booru_site": "เพิ่มเว็บไซต์ booru",
+        "add_a_booru_site": "สร้างโปรไฟล์เว็บใหม่",
         "next_step": "ถัดไป",
         "site_url": "ลิงค์เว็บไซต์",
         "unsupported_warning": "เว็บไซต์ booru นี้ยังไม่รองรับกับแอป",
