@@ -26,6 +26,7 @@ import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/lazy_indexed_stack.dart';
 
 const double _kDefaultMenuSize = 280;
+const String kMenuWidthCacheKey = 'menu_width';
 
 class BooruScope extends ConsumerStatefulWidget {
   const BooruScope({
@@ -99,6 +100,8 @@ class _BooruScopeState extends ConsumerState<BooruScope> {
     bool resizable = false,
     bool grooveDivider = false,
   }) {
+    final menuWidth = ref.watch(miscDataProvider(kMenuWidthCacheKey));
+
     return BooruDesktopScope(
       controller: controller,
       config: widget.config,
@@ -110,6 +113,7 @@ class _BooruScopeState extends ConsumerState<BooruScope> {
       ),
       views: widget.desktopViews,
       grooveDivider: grooveDivider,
+      menuWidth: double.tryParse(menuWidth),
     );
   }
 }
@@ -123,6 +127,7 @@ class BooruDesktopScope extends ConsumerStatefulWidget {
     required this.views,
     this.resizable = false,
     this.grooveDivider = false,
+    required this.menuWidth,
   });
 
   final HomePageController controller;
@@ -133,27 +138,46 @@ class BooruDesktopScope extends ConsumerStatefulWidget {
   final List<Widget> Function() views;
   final bool resizable;
   final bool grooveDivider;
+  final double? menuWidth;
 
   @override
   ConsumerState<BooruDesktopScope> createState() => _BooruDesktopScopeState();
 }
 
 class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
-  final splitController = MultiSplitViewController(
-    areas: [
-      Area(
-        minimalSize: kMinSideBarWidth,
-        size: _kDefaultMenuSize,
-      ),
-      Area(
-        minimalSize: 500,
-      ),
-    ],
-  );
+  late final MultiSplitViewController splitController;
+
+  @override
+  void initState() {
+    super.initState();
+    splitController = MultiSplitViewController(
+      areas: [
+        Area(
+          minimalSize: kMinSideBarWidth,
+          size: widget.menuWidth ?? _kDefaultMenuSize,
+        ),
+        Area(
+          minimalSize: 500,
+        ),
+      ],
+    );
+
+    menuWidth.addListener(saveWidthToCache);
+  }
+
+  void saveWidthToCache() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      ref
+          .read(miscDataProvider(kMenuWidthCacheKey).notifier)
+          .put(menuWidth.value.toString());
+    });
+  }
 
   @override
   void dispose() {
+    menuWidth.removeListener(saveWidthToCache);
     splitController.dispose();
+    menuWidth.dispose();
     super.dispose();
   }
 
@@ -212,6 +236,7 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
         ),
       ),
     );
+
     return Scaffold(
       backgroundColor: context.colorScheme.surface,
       body: !widget.resizable
@@ -245,9 +270,11 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
                 controller: splitController,
                 onDividerDoubleTap: (divider) {
                   setState(() {
-                    if (menuWidth == kMinSideBarWidth) {
+                    final width = menuWidth.value;
+
+                    if (width == kMinSideBarWidth) {
                       _setDefaultSplit();
-                    } else if (menuWidth <= _kDefaultMenuSize) {
+                    } else if (width <= _kDefaultMenuSize) {
                       _setMinSplit();
                     } else {
                       _setDefaultSplit();
@@ -259,7 +286,8 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
                   LayoutBuilder(
                     builder: (_, c) {
                       // no need to set state here, just a quick hack to get the current width of the menu
-                      menuWidth = c.maxWidth;
+                      menuWidth.value = c.maxWidth;
+
                       return menu;
                     },
                   ),
@@ -294,7 +322,7 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
     ];
   }
 
-  var menuWidth = _kDefaultMenuSize;
+  late final menuWidth = ValueNotifier(widget.menuWidth ?? _kDefaultMenuSize);
 }
 
 class BooruMobileScope extends ConsumerWidget {
