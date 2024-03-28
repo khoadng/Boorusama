@@ -93,7 +93,9 @@ class SankakuClient {
       },
       options: Options(
         headers: {
-          if (token != null)
+          if (token != null &&
+              token.accessToken != null &&
+              token.tokenType != null)
             'Authorization': '${token.tokenType} ${token.accessToken}',
         },
       ),
