@@ -1,3 +1,7 @@
+# 3.12.5
+- Fix data loading issue on some sites
+- Attempt to fix an issue where the app fails to start up on some devices
+
 # 3.12.4
 - Add translations for Thai and Norwegian Bokmål
 - Add a way for users to report issues and contact the developer
