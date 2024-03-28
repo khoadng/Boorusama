@@ -27,10 +27,12 @@ class ZerochanClient {
   final void Function(String message)? logger;
 
   /// Input tag must be in snake case
+  /// Sort is only available when tags is not null or empty
   Future<List<PostDto>> getPosts({
     List<String>? tags,
     int? page,
     int? limit,
+    ZerochanSortOrder? sort,
   }) async {
     final tagString = tags
             ?.map((e) => e.replaceAll('_', ' '))
@@ -44,6 +46,8 @@ class ZerochanClient {
         queryParameters: {
           if (page != null) 'p': page,
           if (limit != null) 'l': limit,
+          if (sort != null && (tags != null && tags.isNotEmpty))
+            's': sort.queryParam,
         },
         options: Options(
           responseType: ResponseType.plain,
