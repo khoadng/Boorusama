@@ -3,6 +3,7 @@ import 'dart:convert';
 
 // Package imports:
 import 'package:dio/dio.dart';
+import 'package:html/parser.dart';
 
 // Project imports:
 import 'autocomplete.dart';
@@ -78,6 +79,32 @@ class ZerochanClient {
       logger?.call('Zerochan Error: $e');
       Error.throwWithStackTrace(e, stackTrace);
     }
+  }
+
+  Future<List<TagDto>> getTagsFromPostId({
+    required int postId,
+  }) async {
+    final response = await _dio.get(
+      '$postId',
+      options: Options(
+        responseType: ResponseType.plain,
+      ),
+    );
+
+    final data = response.data;
+
+    // use flutter_html to parse the html
+    final document = parse(data);
+
+    // query id 'tags' to get the tags
+    final tags = document.getElementById('tags');
+
+    if (tags == null) return [];
+
+    // get all the li tags inside the tags id
+    final tagElements = tags.getElementsByTagName('li');
+
+    return tagElements.map((e) => TagDto.fromHtmlElement(e)).toList();
   }
 
   Future<List<AutocompleteDto>> getAutocomplete({
