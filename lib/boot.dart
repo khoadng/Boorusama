@@ -34,7 +34,6 @@ import 'package:boorusama/foundation/analytics.dart';
 import 'package:boorusama/foundation/app_info.dart';
 import 'package:boorusama/foundation/device_info_service.dart';
 import 'package:boorusama/foundation/error.dart';
-import 'package:boorusama/foundation/hive.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
 import 'package:boorusama/foundation/package_info.dart';
 import 'package:boorusama/foundation/path.dart';
@@ -252,14 +251,10 @@ Future<void> boot(BootLogger bootLogger) async {
   final appSupportDir = await getApplicationSupportDirectory();
 
   bootLogger.l("Initialize booru tag type box");
-  final booruTagTypeBox = await tryOpenBox<String>(
+  final booruTagTypeBox = await Hive.openBox<String>(
     BooruTagTypeStore.dataKey,
     path: appSupportDir.path,
   );
-
-  if (booruTagTypeBox == null) {
-    logger.logE('Start up', 'Failed to open booru tag type box');
-  }
 
   bootLogger.l("Initialize package info");
   final packageInfo = await PackageInfo.fromPlatform();
