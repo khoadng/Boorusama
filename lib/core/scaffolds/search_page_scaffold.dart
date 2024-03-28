@@ -93,6 +93,7 @@ class _SearchPageScaffoldState<T extends Post>
   Widget build(BuildContext context) {
     return CustomContextMenuOverlay(
       child: SearchScope(
+        selectedTagController: _selectedTagController,
         initialQuery: widget.initialQuery,
         builder: (focus, textController, selectedTagController,
                 searchController, allowSearch) =>
