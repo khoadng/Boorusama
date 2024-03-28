@@ -1,9 +1,9 @@
 class Token {
-  final bool success;
-  final String tokenType;
-  final String accessToken;
-  final String refreshToken;
-  final CurrentUser currentUser;
+  final bool? success;
+  final String? tokenType;
+  final String? accessToken;
+  final String? refreshToken;
+  final CurrentUser? currentUser;
 
   Token({
     required this.success,
@@ -19,7 +19,9 @@ class Token {
       tokenType: json['token_type'],
       accessToken: json['access_token'],
       refreshToken: json['refresh_token'],
-      currentUser: CurrentUser.fromJson(json['current_user']),
+      currentUser: json['current_user'] != null
+          ? CurrentUser.fromJson(json['current_user'])
+          : null,
     );
   }
 
@@ -29,7 +31,7 @@ class Token {
       'token_type': tokenType,
       'access_token': accessToken,
       'refresh_token': refreshToken,
-      'current_user': currentUser.toJson(),
+      'current_user': currentUser?.toJson(),
     };
   }
 
@@ -38,30 +40,30 @@ class Token {
 }
 
 class CurrentUser {
-  final int id;
-  final String name;
-  final int level;
-  final String createdAt;
-  final bool favsArePrivate;
-  final String avatarUrl;
-  final String avatarRating;
-  final int postUploadCount;
-  final int poolUploadCount;
-  final int commentCount;
-  final int postUpdateCount;
-  final int noteUpdateCount;
-  final int wikiUpdateCount;
-  final int forumPostCount;
-  final int poolUpdateCount;
-  final int artistUpdateCount;
-  final String lastLoggedInAt;
-  final String emailVerificationStatus;
-  final bool isVerified;
-  final String email;
-  final bool hideAds;
-  final int subscriptionLevel;
-  final bool filterContent;
-  final bool receiveDmails;
+  final int? id;
+  final String? name;
+  final int? level;
+  final String? createdAt;
+  final bool? favsArePrivate;
+  final String? avatarUrl;
+  final String? avatarRating;
+  final int? postUploadCount;
+  final int? poolUploadCount;
+  final int? commentCount;
+  final int? postUpdateCount;
+  final int? noteUpdateCount;
+  final int? wikiUpdateCount;
+  final int? forumPostCount;
+  final int? poolUpdateCount;
+  final int? artistUpdateCount;
+  final String? lastLoggedInAt;
+  final String? emailVerificationStatus;
+  final bool? isVerified;
+  final String? email;
+  final bool? hideAds;
+  final int? subscriptionLevel;
+  final bool? filterContent;
+  final bool? receiveDmails;
 
   CurrentUser({
     required this.id,
