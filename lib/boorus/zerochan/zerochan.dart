@@ -1,3 +1,6 @@
+// Flutter imports:
+import 'package:flutter/material.dart' hide ThemeMode;
+
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -12,6 +15,9 @@ import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/pages/boorus/create_anon_config_page.dart';
+import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/scaffolds/scaffolds.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/path.dart' as path;
 import 'package:boorusama/foundation/path.dart';
@@ -101,6 +107,26 @@ final zerochanAutoCompleteRepoProvider =
   );
 });
 
+final zerochanTagsFromIdProvider =
+    FutureProvider.autoDispose.family<List<Tag>, int>(
+  (ref, id) async {
+    final config = ref.watchConfig;
+    final client = ref.watch(zerochanClientProvider(config));
+
+    final data = await client.getTagsFromPostId(postId: id);
+
+    return data
+        .where((e) => e.value != null)
+        .map((e) => Tag(
+              name: e.value!.toLowerCase().replaceAll(' ', '_'),
+              category: stringToTagCategory(
+                  e.type?.toLowerCase().replaceAll(' ', '_') ?? ''),
+              postCount: 0,
+            ))
+        .toList();
+  },
+);
+
 class ZerochanBuilder
     with
         FavoriteNotSupportedMixin,
@@ -160,6 +186,19 @@ class ZerochanBuilder
   @override
   AutocompleteFetcher get autocompleteFetcher =>
       (query) => autocompleteRepo.getAutocomplete(query.toLowerCase());
+
+  @override
+  PostDetailsPageBuilder get postDetailsPageBuilder =>
+      (context, config, payload) => BooruProvider(
+            builder: (booruBuilder, ref) => PostDetailsPageScaffold(
+              posts: payload.posts,
+              initialIndex: payload.initialIndex,
+              swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
+              tagListBuilder: (context, post) => ZerochanTagsTile(post: post),
+              onExit: (page) => payload.scrollController?.scrollToIndex(page),
+              onTagTap: (tag) => goToSearchPage(context, tag: tag),
+            ),
+          );
 
   @override
   TagColorBuilder get tagColorBuilder => (themeMode, tagType) {
@@ -222,5 +261,76 @@ class ZerochanPost extends SimplePost {
   @override
   String getLink(String baseUrl) {
     return baseUrl.endsWith('/') ? '$baseUrl$id' : '$baseUrl/$id';
+  }
+}
+
+class ZerochanTagsTile extends ConsumerStatefulWidget {
+  const ZerochanTagsTile({
+    super.key,
+    required this.post,
+    this.onTagsLoaded,
+  });
+
+  final Post post;
+  final void Function(List<TagGroupItem> tags)? onTagsLoaded;
+
+  @override
+  ConsumerState<ZerochanTagsTile> createState() => _ZerochanTagsTileState();
+}
+
+class _ZerochanTagsTileState extends ConsumerState<ZerochanTagsTile> {
+  var expanded = false;
+  Object? error;
+
+  @override
+  Widget build(BuildContext context) {
+    if (expanded) {
+      ref.listen(zerochanTagsFromIdProvider(widget.post.id), (previous, next) {
+        next.when(
+          data: (data) {
+            if (!mounted) return;
+
+            if (data.isNotEmpty) {
+              if (widget.onTagsLoaded != null) {
+                widget.onTagsLoaded!(createTagGroupItems(data));
+              }
+            }
+
+            if (data.isEmpty && widget.post.tags.isNotEmpty) {
+              // Just a dummy data so the check below will branch into the else block
+              setState(() => error = 'No tags found');
+            }
+          },
+          loading: () {},
+          error: (error, stackTrace) {
+            if (!mounted) return;
+            setState(() => this.error = error);
+          },
+        );
+      });
+    }
+
+    return error == null
+        ? TagsTile(
+            tags: expanded
+                ? ref
+                    .watch(zerochanTagsFromIdProvider(widget.post.id))
+                    .maybeWhen(
+                      data: (data) => createTagGroupItems(data),
+                      orElse: () => null,
+                    )
+                : null,
+            post: widget.post,
+            onExpand: () => setState(() => expanded = true),
+            onCollapse: () {
+              // Don't set expanded to false to prevent rebuilding the tags list
+              setState(() => error = null);
+            },
+            onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
+          )
+        : BasicTagList(
+            tags: widget.post.tags.toList(),
+            onTap: (tag) => goToSearchPage(context, tag: tag),
+          );
   }
 }
