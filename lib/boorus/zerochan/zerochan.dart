@@ -39,6 +39,7 @@ final zerochanPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
           tags: tags,
           page: page,
           sort: ZerochanSortOrder.popularity,
+          limit: limit,
         );
 
         return posts

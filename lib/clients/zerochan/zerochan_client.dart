@@ -9,6 +9,8 @@ import 'autocomplete.dart';
 import 'types/types.dart';
 
 const _kZerochanUrl = 'https://www.zerochan.net';
+const kZerochanMinPageLimit = 1;
+const kZerochanMaxPageLimit = 250;
 
 class ZerochanClient {
   ZerochanClient({
@@ -40,12 +42,14 @@ class ZerochanClient {
             .join(',') ??
         '';
 
+    final l = _clampPageLimit(limit);
+
     try {
       final response = await _dio.get(
         '/$tagString?json',
         queryParameters: {
           if (page != null) 'p': page,
-          if (limit != null) 'l': limit,
+          if (l != null) 'l': l,
           if (sort != null && (tags != null && tags.isNotEmpty))
             's': sort.queryParam,
         },
@@ -128,4 +132,13 @@ String _removeUnwantedHtmlElementFromJson(String jsonString) {
   }
 
   return result.toString();
+}
+
+int? _clampPageLimit(int? limit) {
+  if (limit == null) return null;
+
+  if (limit < kZerochanMinPageLimit) return kZerochanMinPageLimit;
+  if (limit > kZerochanMaxPageLimit) return kZerochanMaxPageLimit;
+
+  return limit;
 }
