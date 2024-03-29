@@ -18,9 +18,8 @@ class BooruTagTypeStore {
 
   static String get dataKey => 'general_tag_type_store_v1';
 
-  static Future<String> getBoxPath() async {
-    final dir = await getApplicationSupportDirectory();
-    return join(dir.path, '$dataKey.hive');
+  static Future<String> getBoxPath(String dirPath) async {
+    return join(dirPath, '$dataKey.hive');
   }
 
   Future<void> save(BooruType booruType, String tag, String category) async {

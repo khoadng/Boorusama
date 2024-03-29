@@ -72,22 +72,20 @@ Future<void> boot(BootLogger bootLogger) async {
   final stopwatch = Stopwatch()..start();
   logger.logI('Start up', 'App Start up');
 
-  if (!isWeb()) {
-    bootLogger.l("Load database's directory");
-    final dbDirectory = isAndroid()
-        ? await getApplicationDocumentsDirectory()
-        : await getApplicationSupportDirectory();
+  bootLogger.l("Load database's directory");
+  final dbDirectory = isAndroid()
+      ? await getApplicationDocumentsDirectory()
+      : await getApplicationSupportDirectory();
 
-    bootLogger.l("Initialize Hive");
-    Hive.init(dbDirectory.path);
+  bootLogger.l("Initialize Hive");
+  Hive.init(dbDirectory.path);
 
-    bootLogger.l("Register search history adapter");
-    Hive.registerAdapter(SearchHistoryHiveObjectAdapter());
-    bootLogger.l("Register bookmark adapter");
-    Hive.registerAdapter(BookmarkHiveObjectAdapter());
-    bootLogger.l("Register favorite tag adapter");
-    Hive.registerAdapter(FavoriteTagHiveObjectAdapter());
-  }
+  bootLogger.l("Register search history adapter");
+  Hive.registerAdapter(SearchHistoryHiveObjectAdapter());
+  bootLogger.l("Register bookmark adapter");
+  Hive.registerAdapter(BookmarkHiveObjectAdapter());
+  bootLogger.l("Register favorite tag adapter");
+  Hive.registerAdapter(FavoriteTagHiveObjectAdapter());
 
   if (isDesktopPlatform()) {
     bootLogger.l("Initialize window manager");
@@ -248,12 +246,10 @@ Future<void> boot(BootLogger bootLogger) async {
     path: tempPath.path,
   );
 
-  final appSupportDir = await getApplicationSupportDirectory();
-
   bootLogger.l("Initialize booru tag type box");
   final booruTagTypeBox = await Hive.openBox<String>(
     BooruTagTypeStore.dataKey,
-    path: appSupportDir.path,
+    path: dbDirectory.path,
   );
 
   bootLogger.l("Initialize package info");
@@ -335,6 +331,7 @@ Future<void> boot(BootLogger bootLogger) async {
                   .overrideWithValue(danbooruCreatorBox),
               miscDataBoxProvider.overrideWithValue(miscDataBox),
               booruTagTypeBoxProvider.overrideWithValue(booruTagTypeBox),
+              booruTagTypePathProvider.overrideWithValue(dbDirectory.path),
               if (firebaseAnalytics != null)
                 analyticsProvider.overrideWithValue(firebaseAnalytics),
               if (crashlyticsReporter != null)

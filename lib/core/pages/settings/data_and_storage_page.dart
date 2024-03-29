@@ -19,7 +19,11 @@ import 'widgets/settings_header.dart';
 
 final tagHighlightingCacheProvider =
     FutureProvider.autoDispose<int>((ref) async {
-  final path = await BooruTagTypeStore.getBoxPath();
+  final dirPath = ref.watch(booruTagTypePathProvider);
+
+  if (dirPath == null) return 0;
+
+  final path = await BooruTagTypeStore.getBoxPath(dirPath);
   final file = File(path);
 
   if (!file.existsSync()) return 0;
