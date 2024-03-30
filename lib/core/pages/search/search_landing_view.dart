@@ -23,6 +23,7 @@ class SearchLandingView extends ConsumerStatefulWidget {
     required this.onHistoryCleared,
     this.noticeBuilder,
     this.backgroundColor,
+    this.scrollController,
   });
 
   final ValueChanged<String>? onHistoryTap;
@@ -33,6 +34,7 @@ class SearchLandingView extends ConsumerStatefulWidget {
   final Widget Function(BuildContext context)? trendingBuilder;
   final Widget Function(BuildContext context)? noticeBuilder;
   final Color? backgroundColor;
+  final ScrollController? scrollController;
 
   @override
   ConsumerState<SearchLandingView> createState() => _SearchLandingViewState();
@@ -75,6 +77,7 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
       child: FadeTransition(
         opacity: animationController,
         child: SingleChildScrollView(
+          controller: widget.scrollController,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Column(
