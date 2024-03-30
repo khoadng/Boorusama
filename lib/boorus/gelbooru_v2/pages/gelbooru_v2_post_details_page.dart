@@ -68,6 +68,21 @@ class _PostDetailPageState extends ConsumerState<GelbooruV2PostDetailsPage> {
               )
             : null,
       ),
+      sliverRelatedPostsBuilder: (context, post) => post.hasParent
+          ? ref.watch(gelbooruV2ChildPostsProvider(post.parentId!)).maybeWhen(
+                data: (data) => RelatedPostsSection(
+                  title: 'Child posts',
+                  posts: data,
+                  imageUrl: (post) => post.sampleImageUrl,
+                  onTap: (index) => goToPostDetailsPage(
+                    context: context,
+                    posts: data,
+                    initialIndex: index,
+                  ),
+                ),
+                orElse: () => const SliverSizedBox.shrink(),
+              )
+          : const SliverSizedBox.shrink(),
       sliverArtistPostsBuilder: (context, post) => ref
           .watch(gelbooruV2PostDetailsArtistMapProvider)
           .lookup(post.id)

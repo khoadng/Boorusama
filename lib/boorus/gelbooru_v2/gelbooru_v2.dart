@@ -132,6 +132,21 @@ final gelbooruV2CharacterPostsProvider = FutureProvider.autoDispose
   );
 });
 
+final gelbooruV2ChildPostsProvider = FutureProvider.autoDispose
+    .family<List<GelbooruV2Post>, int>((ref, parentId) async {
+  final config = ref.watchConfig;
+
+  final blacklistedTags = ref.watch(blacklistTagsProvider(config));
+
+  final repo = ref.watch(gelbooruV2ArtistPostRepo(ref.watchConfig));
+  final posts = await repo.getPostsFromTagsOrEmpty(['parent:$parentId'], 1);
+
+  return filterTags(
+    posts.take(30).where((e) => !e.isFlash).toList(),
+    blacklistedTags,
+  );
+});
+
 class GelbooruV2Builder
     with
         FavoriteNotSupportedMixin,

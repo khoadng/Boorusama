@@ -152,6 +152,8 @@ extension PostImageX on Post {
       thumbnailImageUrl.isEmpty &&
       sampleImageUrl.isEmpty &&
       originalImageUrl.isEmpty;
+
+  bool get hasParent => parentId != null && parentId! > 0;
 }
 
 extension PostX on Post {
