@@ -139,7 +139,7 @@ class _FileDetailTile extends StatelessWidget {
       visualDensity: VisualDensity.compact,
       leading: Text(
         title,
-        style: context.textTheme.titleLarge!.copyWith(
+        style: context.textTheme.titleLarge?.copyWith(
           fontSize: 14,
           fontWeight: FontWeight.w700,
         ),

@@ -138,7 +138,7 @@ class _DownloadTagSelectionViewState
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Text(
                 'download.bulk_download_save_to_folder'.tr().toUpperCase(),
-                style: context.theme.textTheme.titleSmall!.copyWith(
+                style: context.theme.textTheme.titleSmall?.copyWith(
                   color: context.theme.hintColor,
                   fontWeight: FontWeight.w800,
                 ),

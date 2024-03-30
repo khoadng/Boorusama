@@ -145,7 +145,7 @@ class _EditSavedSearchSheetState extends ConsumerState<EditFavoriteTagSheet> {
               margin: const EdgeInsets.all(8),
               child: Text(
                 "*A list of label to help categorize this tag. Space delimited.",
-                style: context.textTheme.titleSmall!.copyWith(
+                style: context.textTheme.titleSmall?.copyWith(
                   color: context.theme.hintColor,
                   fontSize: 14,
                   fontWeight: FontWeight.w400,

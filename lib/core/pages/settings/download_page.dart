@@ -53,7 +53,7 @@ class _DownloadPageState extends ConsumerState<DownloadPage>
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Text(
                 'settings.download.path'.tr().toUpperCase(),
-                style: context.textTheme.titleSmall!.copyWith(
+                style: context.textTheme.titleSmall?.copyWith(
                   color: context.theme.hintColor,
                   fontWeight: FontWeight.w800,
                 ),

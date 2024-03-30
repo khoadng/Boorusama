@@ -40,7 +40,7 @@ class RelatedPostsSection<T extends Post> extends ConsumerWidget {
             ListTile(
               title: Text(
                 title ?? 'post.detail.related_posts'.tr(),
-                style: context.textTheme.titleLarge!.copyWith(
+                style: context.textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
               ),

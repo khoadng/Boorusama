@@ -34,7 +34,7 @@ class CharacterPostList extends ConsumerWidget {
                 children: [
                   Text(
                     'Characters',
-                    style: context.textTheme.titleMedium!.copyWith(
+                    style: context.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),

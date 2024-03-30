@@ -33,7 +33,7 @@ class SourceSection extends StatelessWidget {
           ),
           child: Text(
             title ?? 'post.detail.source_label'.tr(),
-            style: context.textTheme.titleLarge!.copyWith(
+            style: context.textTheme.titleLarge?.copyWith(
               color: context.theme.hintColor,
               fontSize: 16,
             ),

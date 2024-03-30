@@ -184,7 +184,7 @@ class _TagHeader extends StatelessWidget {
       child: Text(
         title,
         style:
-            context.textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w900),
+            context.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w900),
       ),
     );
   }

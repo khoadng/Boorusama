@@ -70,7 +70,7 @@ class _CreatePhilomenaConfigPageState
           const SizedBox(height: 8),
           Text(
             '*You can find your authentication token in your account settings in the browser',
-            style: context.textTheme.titleSmall!.copyWith(
+            style: context.textTheme.titleSmall?.copyWith(
               color: context.theme.hintColor,
               fontSize: 14,
               fontWeight: FontWeight.w400,

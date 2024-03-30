@@ -68,7 +68,7 @@ class AddToFavoriteGroupPage extends ConsumerWidget {
               visualDensity: VisualDensity.compact,
               title: Text(
                 'favorite_groups.add_to'.tr().toUpperCase(),
-                style: context.theme.textTheme.titleMedium!.copyWith(
+                style: context.theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w800,
                 ),
               ),

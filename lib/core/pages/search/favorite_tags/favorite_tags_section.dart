@@ -118,7 +118,7 @@ class OptionTagsArenaNoEdit extends StatelessWidget {
                   children: [
                     Text(
                       title.toUpperCase(),
-                      style: context.textTheme.titleSmall!.copyWith(
+                      style: context.textTheme.titleSmall?.copyWith(
                         fontWeight: FontWeight.w700,
                       ),
                     ),

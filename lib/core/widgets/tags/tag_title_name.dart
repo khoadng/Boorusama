@@ -20,7 +20,7 @@ class TagTitleName extends StatelessWidget {
       child: Text(
         tagName.replaceUnderscoreWithSpace(),
         textAlign: TextAlign.center,
-        style: context.textTheme.titleLarge!.copyWith(
+        style: context.textTheme.titleLarge?.copyWith(
           fontWeight: FontWeight.w900,
         ),
       ),

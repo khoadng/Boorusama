@@ -94,7 +94,7 @@ class _EditFavoriteGroupDialogState
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 child: Text(
                   'favorite_groups.group_name'.tr().toUpperCase(),
-                  style: context.textTheme.titleMedium!.copyWith(
+                  style: context.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w800,
                   ),
                 ),
@@ -114,7 +114,7 @@ class _EditFavoriteGroupDialogState
               if (widget.enableManualDataInput)
                 Text(
                   'favorite_groups.all_posts'.tr().toUpperCase(),
-                  style: context.textTheme.titleMedium!.copyWith(
+                  style: context.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w800,
                   ),
                 ),

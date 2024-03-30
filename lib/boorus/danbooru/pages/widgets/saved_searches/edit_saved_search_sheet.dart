@@ -161,7 +161,7 @@ class _EditSavedSearchSheetState extends ConsumerState<EditSavedSearchSheet> {
               margin: const EdgeInsets.all(8),
               child: Text(
                 'saved_search.saved_search_labels_description'.tr(),
-                style: context.textTheme.titleSmall!.copyWith(
+                style: context.textTheme.titleSmall?.copyWith(
                   color: context.theme.hintColor,
                   fontSize: 14,
                   fontWeight: FontWeight.w400,

@@ -106,7 +106,7 @@ class _CreateMoebooruConfigPageState
                   Expanded(
                     child: Text(
                       hashedPassword,
-                      style: context.textTheme.titleSmall!.copyWith(
+                      style: context.textTheme.titleSmall?.copyWith(
                         fontWeight: FontWeight.w800,
                       ),
                     ),
@@ -130,7 +130,7 @@ class _CreateMoebooruConfigPageState
             ),
           Text(
             'The app will use the hashed password to authenticate with the site. Your password will not be stored.',
-            style: context.textTheme.titleSmall!.copyWith(
+            style: context.textTheme.titleSmall?.copyWith(
               color: context.theme.hintColor,
               fontSize: 14,
               fontWeight: FontWeight.w400,

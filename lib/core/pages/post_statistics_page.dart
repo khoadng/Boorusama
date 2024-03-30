@@ -363,7 +363,7 @@ class PostStatsTile extends StatelessWidget {
           Expanded(
             child: Text(
               title,
-              style: context.textTheme.titleLarge!.copyWith(
+              style: context.textTheme.titleLarge?.copyWith(
                 fontSize: 14,
                 fontWeight: FontWeight.w700,
                 color: titleColor,

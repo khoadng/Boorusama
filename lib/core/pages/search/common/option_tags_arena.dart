@@ -55,7 +55,7 @@ class _OptionTagsArenaState extends State<OptionTagsArena> {
             children: [
               Text(
                 widget.title.toUpperCase(),
-                style: context.textTheme.titleSmall!.copyWith(
+                style: context.textTheme.titleSmall?.copyWith(
                   fontWeight: FontWeight.w700,
                 ),
               ),
