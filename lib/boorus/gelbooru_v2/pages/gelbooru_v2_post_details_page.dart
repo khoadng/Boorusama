@@ -9,10 +9,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/gelbooru_v2/feats/posts/posts_v2.dart';
 import 'package:boorusama/boorus/gelbooru_v2/gelbooru_v2.dart';
+import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
+import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/posts/character_post_list.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/functional.dart';
@@ -124,6 +126,29 @@ class _PostDetailPageState extends ConsumerState<GelbooruV2PostDetailsPage> {
                   )
                 : const SliverSizedBox.shrink(),
           ),
+      imageOverlayBuilder: (constraints, post) => noteOverlayBuilderDelegate(
+        constraints,
+        post,
+        ref.watch(notesControllerProvider(post)),
+      ),
+      topRightButtonsBuilder: (page, expanded, post) {
+        final noteState = ref.watch(notesControllerProvider(posts[page]));
+
+        return [
+          if (!noteState.isInvalidNoteState(post))
+            NoteActionButton(
+              post: post,
+              showDownload: !expanded && noteState.notes.isEmpty,
+              enableNotes: noteState.enableNotes,
+              onDownload: () =>
+                  ref.read(notesControllerProvider(post).notifier).load(),
+              onToggleNotes: () => ref
+                  .read(notesControllerProvider(post).notifier)
+                  .toggleNoteVisibility(),
+            ),
+          GeneralMoreActionButton(post: post),
+        ];
+      },
       tagListBuilder: (context, post) => GelbooruV2TagsTile(
         post: post,
         onTagsLoaded: (tags) => _setTags(post, tags),

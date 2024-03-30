@@ -13,10 +13,12 @@ class NotesControllerState extends Equatable {
   const NotesControllerState({
     required this.notes,
     required this.enableNotes,
+    this.alreadyLoaded = false,
   });
 
   final IList<Note> notes;
   final bool enableNotes;
+  final bool alreadyLoaded;
 
   factory NotesControllerState.initial() => NotesControllerState(
         notes: <Note>[].lock,
@@ -26,14 +28,16 @@ class NotesControllerState extends Equatable {
   NotesControllerState copyWith({
     IList<Note>? notes,
     bool? enableNotes,
+    bool? alreadyLoaded,
   }) =>
       NotesControllerState(
         notes: notes ?? this.notes,
         enableNotes: enableNotes ?? this.enableNotes,
+        alreadyLoaded: alreadyLoaded ?? this.alreadyLoaded,
       );
 
   @override
-  List<Object?> get props => [notes, enableNotes];
+  List<Object?> get props => [notes, enableNotes, alreadyLoaded];
 }
 
 class NotesControllerNotifier
@@ -52,6 +56,8 @@ class NotesControllerNotifier
   }
 
   Future<void> load() async {
+    if (state.isInvalidNoteState(arg)) return;
+
     if (state.notes.isEmpty && arg.isTranslated) {
       final fetcher = ref.readCurrentBooruBuilder()?.noteFetcher;
 
@@ -61,7 +67,13 @@ class NotesControllerNotifier
 
       state = state.copyWith(
         notes: notes.lock,
+        alreadyLoaded: true,
       );
     }
   }
+}
+
+extension NotesControllerStateX on NotesControllerState {
+  bool isInvalidNoteState(Post post) =>
+      notes.isEmpty && post.isTranslated && alreadyLoaded;
 }

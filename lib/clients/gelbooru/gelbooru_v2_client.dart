@@ -8,12 +8,7 @@ import 'package:html/parser.dart';
 import 'package:xml/xml.dart';
 
 // Project imports:
-import 'types/autocomplete_dto.dart';
-import 'types/comment_dto.dart';
-import 'types/post_v2_dto.dart';
-import 'types/tag_dto.dart';
-
-const _kRule34XXXUrl = 'https://rule34.xxx/';
+import 'types/types.dart';
 
 class GelbooruV2Client {
   GelbooruV2Client({
@@ -33,18 +28,6 @@ class GelbooruV2Client {
   final String? _baseUrl;
   final String? userId;
   final String? apiKey;
-
-  factory GelbooruV2Client.rule34xxx({
-    Dio? dio,
-    String? login,
-    String? apiKey,
-  }) =>
-      GelbooruV2Client(
-        baseUrl: _kRule34XXXUrl,
-        dio: dio,
-        userId: login,
-        apiKey: apiKey,
-      );
 
   factory GelbooruV2Client.custom({
     Dio? dio,
@@ -134,6 +117,65 @@ class GelbooruV2Client {
     );
 
     return _parseCommentDtos(response);
+  }
+
+  Future<List<NoteDto>> getNotesFromPostId({
+    required int postId,
+  }) async {
+    final crawlerDio = Dio(
+      BaseOptions(
+        baseUrl: _baseUrl ?? '',
+        headers: _dio.options.headers,
+      ),
+    );
+
+    final response = await crawlerDio.get(
+      '/index.php',
+      queryParameters: {
+        'page': 'post',
+        's': 'view',
+        'id': postId,
+      },
+    );
+
+    final html = parse(response.data);
+
+    final noteContainer = html.getElementById('note-container');
+
+    final notes = noteContainer?.getElementsByClassName('note-box').map((e) {
+      final style = e.attributes['style'];
+      final idString = e.attributes['id'];
+
+      if (style == null || idString == null) return null;
+      final width = int.tryParse(
+          RegExp(r'width: (\d+)px;').firstMatch(style)?.group(1) ?? '');
+      final height = int.tryParse(
+          RegExp(r'height: (\d+)px;').firstMatch(style)?.group(1) ?? '');
+      final top = int.tryParse(
+          RegExp(r'top: (\d+)px;').firstMatch(style)?.group(1) ?? '');
+      final left = int.tryParse(
+          RegExp(r'left: (\d+)px;').firstMatch(style)?.group(1) ?? '');
+      final id = int.tryParse(
+          RegExp(r'note-box-(\d+)').firstMatch(idString)?.group(1) ?? '');
+
+      return NoteDto(
+        id: id,
+        width: width,
+        height: height,
+        top: top,
+        left: left,
+      );
+    }).toList();
+    final notesWithBody =
+        notes?.where((e) => e != null).map((e) => e!).map((e) {
+      final body = html.getElementById('note-body-${e.id}')?.text;
+
+      return e.copyWith(
+        body: () => body,
+      );
+    }).toList();
+
+    return notesWithBody ?? [];
   }
 
   Future<List<TagDto>> getTagsFromPostId({required int postId}) async {
