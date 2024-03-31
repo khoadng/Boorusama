@@ -132,20 +132,12 @@ class _PostDetailPageState extends ConsumerState<GelbooruV2PostDetailsPage> {
         ref.watch(notesControllerProvider(post)),
       ),
       topRightButtonsBuilder: (page, expanded, post) {
-        final noteState = ref.watch(notesControllerProvider(posts[page]));
-
         return [
-          if (!noteState.isInvalidNoteState(post))
-            NoteActionButton(
-              post: post,
-              showDownload: !expanded && noteState.notes.isEmpty,
-              enableNotes: noteState.enableNotes,
-              onDownload: () =>
-                  ref.read(notesControllerProvider(post).notifier).load(),
-              onToggleNotes: () => ref
-                  .read(notesControllerProvider(post).notifier)
-                  .toggleNoteVisibility(),
-            ),
+          NoteActionButtonWithProvider(
+            post: post,
+            expanded: expanded,
+            noteState: ref.watch(notesControllerProvider(post)),
+          ),
           GeneralMoreActionButton(post: post),
         ];
       },

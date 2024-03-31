@@ -162,8 +162,8 @@ class GelbooruV2Client {
         id: id,
         width: width,
         height: height,
-        top: top,
-        left: left,
+        y: top,
+        x: left,
       );
     }).toList();
     final notesWithBody =

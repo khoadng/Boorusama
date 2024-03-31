@@ -3,16 +3,16 @@ class NoteDto {
   final String? body;
   final int? width;
   final int? height;
-  final int? top;
-  final int? left;
+  final int? y;
+  final int? x;
 
   NoteDto({
     this.id,
     this.body,
     this.width,
     this.height,
-    this.top,
-    this.left,
+    this.y,
+    this.x,
   });
 
   NoteDto copyWith({
@@ -20,16 +20,16 @@ class NoteDto {
     String? Function()? body,
     int? Function()? width,
     int? Function()? height,
-    int? Function()? top,
-    int? Function()? left,
+    int? Function()? y,
+    int? Function()? x,
   }) {
     return NoteDto(
       id: id != null ? id() : this.id,
       body: body != null ? body() : this.body,
       width: width != null ? width() : this.width,
       height: height != null ? height() : this.height,
-      top: top != null ? top() : this.top,
-      left: left != null ? left() : this.left,
+      y: y != null ? y() : this.y,
+      x: x != null ? x() : this.x,
     );
   }
 }

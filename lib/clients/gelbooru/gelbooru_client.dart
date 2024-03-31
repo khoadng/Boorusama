@@ -4,13 +4,11 @@ import 'dart:convert';
 
 // Package imports:
 import 'package:dio/dio.dart';
+import 'package:html/parser.dart';
 import 'package:xml/xml.dart';
 
 // Project imports:
-import 'types/autocomplete_dto.dart';
-import 'types/comment_dto.dart';
-import 'types/post_dto.dart';
-import 'types/tag_dto.dart';
+import 'types/types.dart';
 
 const _kGelbooruUrl = 'https://gelbooru.com/';
 
@@ -156,6 +154,53 @@ class GelbooruClient with RequestDeduplicator<GelbooruPosts> {
     );
 
     return _parseCommentDtos(response);
+  }
+
+  Future<List<NoteDto>> getNotesFromPostId({
+    required int postId,
+  }) async {
+    final crawlerDio = Dio(
+      BaseOptions(
+        baseUrl: _dio.options.baseUrl,
+        headers: _dio.options.headers,
+      ),
+    );
+
+    final response = await crawlerDio.get(
+      '/index.php',
+      queryParameters: {
+        'page': 'post',
+        's': 'view',
+        'id': postId,
+      },
+    );
+
+    final html = parse(response.data);
+
+    final noteContainer = html.getElementById('notes');
+
+    // grab all article elements
+    final noteElements = noteContainer?.getElementsByTagName('article');
+
+    final notes = noteElements?.map((e) {
+      final id = int.tryParse(e.attributes['data-id'] ?? '');
+      final width = int.tryParse(e.attributes['data-width'] ?? '');
+      final height = int.tryParse(e.attributes['data-height'] ?? '');
+      final x = int.tryParse(e.attributes['data-x'] ?? '');
+      final y = int.tryParse(e.attributes['data-y'] ?? '');
+      final body = e.attributes['data-body'];
+
+      return NoteDto(
+        id: id,
+        width: width,
+        height: height,
+        x: x,
+        y: y,
+        body: body,
+      );
+    }).toList();
+
+    return notes ?? [];
   }
 
   Future<List<TagDto>> getTags({

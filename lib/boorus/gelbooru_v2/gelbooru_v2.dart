@@ -165,8 +165,8 @@ final gelbooruV2NoteRepoProvider =
 Note gelbooruV2NoteToNote(NoteDto note) {
   return Note(
     coordinate: NoteCoordinate(
-      x: note.left?.toDouble() ?? 0,
-      y: note.top?.toDouble() ?? 0,
+      x: note.x?.toDouble() ?? 0,
+      y: note.y?.toDouble() ?? 0,
       height: note.height?.toDouble() ?? 0,
       width: note.width?.toDouble() ?? 0,
     ),
@@ -178,7 +178,6 @@ class GelbooruV2Builder
     with
         FavoriteNotSupportedMixin,
         DefaultThumbnailUrlMixin,
-        NoteNotSupportedMixin,
         DefaultThumbnailUrlMixin,
         PostCountNotSupportedMixin,
         DefaultPostImageDetailsUrlMixin,

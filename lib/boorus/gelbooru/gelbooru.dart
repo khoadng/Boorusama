@@ -11,9 +11,11 @@ import 'package:boorusama/boorus/gelbooru/feats/comments/comments.dart';
 import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
+import 'package:boorusama/clients/gelbooru/types/types.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/downloads/downloads.dart';
+import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/feats/utils.dart';
@@ -139,11 +141,35 @@ final gelbooruCharacterPostsProvider = FutureProvider.autoDispose
   );
 });
 
+final gelbooruNoteRepoProvider =
+    Provider.family<NoteRepository, BooruConfig>((ref, config) {
+  final client = ref.watch(gelbooruClientProvider(config));
+
+  return NoteRepositoryBuilder(
+    fetch: (postId) => client
+        .getNotesFromPostId(
+          postId: postId,
+        )
+        .then((value) => value.map(gelbooruNoteToNote).toList()),
+  );
+});
+
+Note gelbooruNoteToNote(NoteDto note) {
+  return Note(
+    coordinate: NoteCoordinate(
+      x: note.x?.toDouble() ?? 0,
+      y: note.y?.toDouble() ?? 0,
+      height: note.height?.toDouble() ?? 0,
+      width: note.width?.toDouble() ?? 0,
+    ),
+    content: note.body ?? '',
+  );
+}
+
 class GelbooruBuilder
     with
         FavoriteNotSupportedMixin,
         DefaultThumbnailUrlMixin,
-        NoteNotSupportedMixin,
         DefaultThumbnailUrlMixin,
         DefaultPostImageDetailsUrlMixin,
         DefaultGranularRatingFiltererMixin,
@@ -154,11 +180,13 @@ class GelbooruBuilder
   GelbooruBuilder({
     required this.postRepo,
     required this.autocompleteRepo,
+    required this.noteRepo,
     required this.client,
   });
 
   final PostRepository<GelbooruPost> postRepo;
   final AutocompleteRepository autocompleteRepo;
+  final NoteRepository noteRepo;
   final GelbooruClient client;
 
   @override
@@ -199,6 +227,9 @@ class GelbooruBuilder
         tags,
         page,
       );
+
+  @override
+  NoteFetcher? get noteFetcher => (postId) => noteRepo.getNotes(postId);
 
   @override
   AutocompleteFetcher get autocompleteFetcher =>

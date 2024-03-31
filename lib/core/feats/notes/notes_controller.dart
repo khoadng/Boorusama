@@ -1,3 +1,6 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
 // Package imports:
 import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,6 +10,7 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/functional.dart';
 
 class NotesControllerState extends Equatable {
@@ -76,4 +80,31 @@ class NotesControllerNotifier
 extension NotesControllerStateX on NotesControllerState {
   bool isInvalidNoteState(Post post) =>
       notes.isEmpty && post.isTranslated && alreadyLoaded;
+}
+
+class NoteActionButtonWithProvider extends ConsumerWidget {
+  const NoteActionButtonWithProvider({
+    super.key,
+    required this.post,
+    required this.expanded,
+    required this.noteState,
+  });
+  final Post post;
+  final bool expanded;
+  final NotesControllerState noteState;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (noteState.isInvalidNoteState(post)) return const SizedBox.shrink();
+
+    return NoteActionButton(
+      post: post,
+      showDownload: !expanded && noteState.notes.isEmpty,
+      enableNotes: noteState.enableNotes,
+      onDownload: () => ref.read(notesControllerProvider(post).notifier).load(),
+      onToggleNotes: () => ref
+          .read(notesControllerProvider(post).notifier)
+          .toggleNoteVisibility(),
+    );
+  }
 }
