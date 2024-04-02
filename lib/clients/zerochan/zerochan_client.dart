@@ -3,12 +3,15 @@ import 'dart:convert';
 
 // Package imports:
 import 'package:dio/dio.dart';
+import 'package:html/parser.dart';
 
 // Project imports:
 import 'autocomplete.dart';
 import 'types/types.dart';
 
 const _kZerochanUrl = 'https://www.zerochan.net';
+const kZerochanMinPageLimit = 1;
+const kZerochanMaxPageLimit = 250;
 
 class ZerochanClient {
   ZerochanClient({
@@ -27,10 +30,12 @@ class ZerochanClient {
   final void Function(String message)? logger;
 
   /// Input tag must be in snake case
+  /// Sort is only available when tags is not null or empty
   Future<List<PostDto>> getPosts({
     List<String>? tags,
     int? page,
     int? limit,
+    ZerochanSortOrder? sort,
   }) async {
     final tagString = tags
             ?.map((e) => e.replaceAll('_', ' '))
@@ -38,12 +43,16 @@ class ZerochanClient {
             .join(',') ??
         '';
 
+    final l = _clampPageLimit(limit);
+
     try {
       final response = await _dio.get(
         '/$tagString?json',
         queryParameters: {
           if (page != null) 'p': page,
-          if (limit != null) 'l': limit,
+          if (l != null) 'l': l,
+          if (sort != null && (tags != null && tags.isNotEmpty))
+            's': sort.queryParam,
         },
         options: Options(
           responseType: ResponseType.plain,
@@ -70,6 +79,32 @@ class ZerochanClient {
       logger?.call('Zerochan Error: $e');
       Error.throwWithStackTrace(e, stackTrace);
     }
+  }
+
+  Future<List<TagDto>> getTagsFromPostId({
+    required int postId,
+  }) async {
+    final response = await _dio.get(
+      '$postId',
+      options: Options(
+        responseType: ResponseType.plain,
+      ),
+    );
+
+    final data = response.data;
+
+    // use flutter_html to parse the html
+    final document = parse(data);
+
+    // query id 'tags' to get the tags
+    final tags = document.getElementById('tags');
+
+    if (tags == null) return [];
+
+    // get all the li tags inside the tags id
+    final tagElements = tags.getElementsByTagName('li');
+
+    return tagElements.map((e) => TagDto.fromHtmlElement(e)).toList();
   }
 
   Future<List<AutocompleteDto>> getAutocomplete({
@@ -124,4 +159,13 @@ String _removeUnwantedHtmlElementFromJson(String jsonString) {
   }
 
   return result.toString();
+}
+
+int? _clampPageLimit(int? limit) {
+  if (limit == null) return null;
+
+  if (limit < kZerochanMinPageLimit) return kZerochanMinPageLimit;
+  if (limit > kZerochanMaxPageLimit) return kZerochanMaxPageLimit;
+
+  return limit;
 }

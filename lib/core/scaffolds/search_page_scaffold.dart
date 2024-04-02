@@ -93,6 +93,7 @@ class _SearchPageScaffoldState<T extends Post>
   Widget build(BuildContext context) {
     return CustomContextMenuOverlay(
       child: SearchScope(
+        selectedTagController: _selectedTagController,
         initialQuery: widget.initialQuery,
         builder: (focus, textController, selectedTagController,
                 searchController, allowSearch) =>
@@ -257,27 +258,22 @@ class _SearchPageScaffoldState<T extends Post>
                   context: context,
                   builder: (context) => Scaffold(
                     body: SafeArea(
-                      child: CustomScrollView(
-                        slivers: [
-                          SliverToBoxAdapter(
-                            child: SearchLandingView(
-                              onHistoryCleared: () => ref
-                                  .read(searchHistoryProvider.notifier)
-                                  .clearHistories(),
-                              onHistoryRemoved: (value) => ref
-                                  .read(searchHistoryProvider.notifier)
-                                  .removeHistory(value.query),
-                              onHistoryTap: (value) {
-                                searchController.tapHistoryTag(value);
-                                context.pop();
-                              },
-                              onTagTap: (value) {
-                                searchController.tapTag(value);
-                                context.pop();
-                              },
-                            ),
-                          ),
-                        ],
+                      child: SearchLandingView(
+                        scrollController: ModalScrollController.of(context),
+                        onHistoryCleared: () => ref
+                            .read(searchHistoryProvider.notifier)
+                            .clearHistories(),
+                        onHistoryRemoved: (value) => ref
+                            .read(searchHistoryProvider.notifier)
+                            .removeHistory(value.query),
+                        onHistoryTap: (value) {
+                          searchController.tapHistoryTag(value);
+                          context.pop();
+                        },
+                        onTagTap: (value) {
+                          searchController.tapTag(value);
+                          context.pop();
+                        },
                       ),
                     ),
                   ),

@@ -64,13 +64,13 @@ class _ContextMenuTileState extends State<ContextMenuTile> {
               visualDensity: const ShrinkVisualDensity(),
               hoverColor: widget.config.labelStyle == null
                   ? context.colorScheme.primary
-                  : widget.config.labelStyle!.color,
+                  : widget.config.labelStyle?.color,
               onTap: widget.config.onPressed,
               title: isMouseOver
                   ? Text(
                       widget.config.label,
                       style: widget.config.labelStyle != null
-                          ? widget.config.labelStyle!.copyWith(
+                          ? widget.config.labelStyle?.copyWith(
                               color: context.colorScheme.onError,
                             )
                           : TextStyle(

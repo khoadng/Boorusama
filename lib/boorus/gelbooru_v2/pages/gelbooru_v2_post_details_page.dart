@@ -9,10 +9,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/gelbooru_v2/feats/posts/posts_v2.dart';
 import 'package:boorusama/boorus/gelbooru_v2/gelbooru_v2.dart';
+import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
+import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/posts/character_post_list.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/functional.dart';
@@ -68,6 +70,21 @@ class _PostDetailPageState extends ConsumerState<GelbooruV2PostDetailsPage> {
               )
             : null,
       ),
+      sliverRelatedPostsBuilder: (context, post) => post.hasParent
+          ? ref.watch(gelbooruV2ChildPostsProvider(post.parentId!)).maybeWhen(
+                data: (data) => RelatedPostsSection(
+                  title: 'Child posts',
+                  posts: data,
+                  imageUrl: (post) => post.sampleImageUrl,
+                  onTap: (index) => goToPostDetailsPage(
+                    context: context,
+                    posts: data,
+                    initialIndex: index,
+                  ),
+                ),
+                orElse: () => const SliverSizedBox.shrink(),
+              )
+          : const SliverSizedBox.shrink(),
       sliverArtistPostsBuilder: (context, post) => ref
           .watch(gelbooruV2PostDetailsArtistMapProvider)
           .lookup(post.id)
@@ -109,6 +126,21 @@ class _PostDetailPageState extends ConsumerState<GelbooruV2PostDetailsPage> {
                   )
                 : const SliverSizedBox.shrink(),
           ),
+      imageOverlayBuilder: (constraints, post) => noteOverlayBuilderDelegate(
+        constraints,
+        post,
+        ref.watch(notesControllerProvider(post)),
+      ),
+      topRightButtonsBuilder: (page, expanded, post) {
+        return [
+          NoteActionButtonWithProvider(
+            post: post,
+            expanded: expanded,
+            noteState: ref.watch(notesControllerProvider(post)),
+          ),
+          GeneralMoreActionButton(post: post),
+        ];
+      },
       tagListBuilder: (context, post) => GelbooruV2TagsTile(
         post: post,
         onTagsLoaded: (tags) => _setTags(post, tags),

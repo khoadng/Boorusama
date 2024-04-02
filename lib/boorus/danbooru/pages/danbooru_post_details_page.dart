@@ -130,18 +130,11 @@ class _DanbooruPostDetailsPageState
         ),
         fileDetailsBuilder: (context, post) => DanbooruFileDetails(post: post),
         topRightButtonsBuilder: (page, expanded, post) {
-          final noteState = ref.watch(notesControllerProvider(posts[page]));
-
           return [
-            NoteActionButton(
+            NoteActionButtonWithProvider(
               post: post,
-              showDownload: !expanded && noteState.notes.isEmpty,
-              enableNotes: noteState.enableNotes,
-              onDownload: () =>
-                  ref.read(notesControllerProvider(post).notifier).load(),
-              onToggleNotes: () => ref
-                  .read(notesControllerProvider(post).notifier)
-                  .toggleNoteVisibility(),
+              expanded: expanded,
+              noteState: ref.watch(notesControllerProvider(post)),
             ),
             DanbooruMoreActionButton(post: post),
           ];

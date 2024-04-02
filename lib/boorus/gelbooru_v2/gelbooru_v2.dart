@@ -11,9 +11,11 @@ import 'package:boorusama/boorus/gelbooru_v2/feats/comments/comments_v2.dart';
 import 'package:boorusama/boorus/gelbooru_v2/feats/posts/posts_v2.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/gelbooru/gelbooru_v2_client.dart';
+import 'package:boorusama/clients/gelbooru/types/note_dto.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/downloads/downloads.dart';
+import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
@@ -132,11 +134,50 @@ final gelbooruV2CharacterPostsProvider = FutureProvider.autoDispose
   );
 });
 
+final gelbooruV2ChildPostsProvider = FutureProvider.autoDispose
+    .family<List<GelbooruV2Post>, int>((ref, parentId) async {
+  final config = ref.watchConfig;
+
+  final blacklistedTags = ref.watch(blacklistTagsProvider(config));
+
+  final repo = ref.watch(gelbooruV2ArtistPostRepo(ref.watchConfig));
+  final posts = await repo.getPostsFromTagsOrEmpty(['parent:$parentId'], 1);
+
+  return filterTags(
+    posts.take(30).where((e) => !e.isFlash).toList(),
+    blacklistedTags,
+  );
+});
+
+final gelbooruV2NoteRepoProvider =
+    Provider.family<NoteRepository, BooruConfig>((ref, config) {
+  final client = ref.watch(gelbooruV2ClientProvider(config));
+
+  return NoteRepositoryBuilder(
+    fetch: (postId) => client
+        .getNotesFromPostId(
+          postId: postId,
+        )
+        .then((value) => value.map(gelbooruV2NoteToNote).toList()),
+  );
+});
+
+Note gelbooruV2NoteToNote(NoteDto note) {
+  return Note(
+    coordinate: NoteCoordinate(
+      x: note.x?.toDouble() ?? 0,
+      y: note.y?.toDouble() ?? 0,
+      height: note.height?.toDouble() ?? 0,
+      width: note.width?.toDouble() ?? 0,
+    ),
+    content: note.body ?? '',
+  );
+}
+
 class GelbooruV2Builder
     with
         FavoriteNotSupportedMixin,
         DefaultThumbnailUrlMixin,
-        NoteNotSupportedMixin,
         DefaultThumbnailUrlMixin,
         PostCountNotSupportedMixin,
         DefaultPostImageDetailsUrlMixin,
@@ -148,11 +189,13 @@ class GelbooruV2Builder
   GelbooruV2Builder({
     required this.postRepo,
     required this.autocompleteRepo,
+    required this.noteRepo,
     required this.client,
   });
 
   final PostRepository<GelbooruV2Post> postRepo;
   final AutocompleteRepository autocompleteRepo;
+  final NoteRepository noteRepo;
   final GelbooruV2Client client;
 
   @override
@@ -193,6 +236,9 @@ class GelbooruV2Builder
         tags,
         page,
       );
+
+  @override
+  NoteFetcher? get noteFetcher => (postId) => noteRepo.getNotes(postId);
 
   @override
   AutocompleteFetcher get autocompleteFetcher =>

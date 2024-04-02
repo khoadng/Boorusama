@@ -74,7 +74,7 @@ class _CreateGelbooruConfigPageState
           const SizedBox(height: 8),
           Text(
             '*Log in to your account on the browser, visit My Account > Options > API Access Credentials and fill the values manually.',
-            style: context.textTheme.titleSmall!.copyWith(
+            style: context.textTheme.titleSmall?.copyWith(
               color: context.theme.hintColor,
               fontSize: 14,
               fontWeight: FontWeight.w400,

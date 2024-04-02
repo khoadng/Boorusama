@@ -32,8 +32,6 @@
         salt: er@!$rjiajd0$!dkaopc350!Y%)--{0}--
         favorite-support: true
         protocol: https_2
-      - url: https://lolibooru.moe/
-        salt: --{0}--
 
 - gelbooru:
     sites:
@@ -62,6 +60,7 @@
     protocol: https_2
     sites:
       - https://zerochan.net/
+      - https://kpop.asiachan.com/
 
 - sankaku:
     protocol: https_2

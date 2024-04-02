@@ -203,7 +203,7 @@ class _AddUnknownBooruPageState extends ConsumerState<AddUnknownBooruPage> {
                 ),
                 Text(
                   '*These options only be used if the site allows it.',
-                  style: context.textTheme.titleSmall!.copyWith(
+                  style: context.textTheme.titleSmall?.copyWith(
                     color: context.theme.hintColor,
                     fontSize: 14,
                     fontWeight: FontWeight.w400,

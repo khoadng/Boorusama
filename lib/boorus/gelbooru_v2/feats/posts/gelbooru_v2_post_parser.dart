@@ -27,5 +27,17 @@ GelbooruV2Post gelbooruV2PostDtoToGelbooruPost(PostV2Dto dto) {
     parentId: dto.parentId != 0 ? dto.parentId : null,
     uploaderId: null,
     uploaderName: dto.owner,
+    hasNotes: _checkIfHasNotes(dto),
   );
+}
+
+bool _checkIfHasNotes(PostV2Dto dto) {
+  // if data contains hasNotes, return it
+  if (dto.hasNotes != null) {
+    return dto.hasNotes ?? false;
+  }
+
+  // check if tags contains 'translated' and not contains 'hard_translated'
+  final tags = dto.tags?.split(' ') ?? [];
+  return tags.contains('translated') && !tags.contains('hard_translated');
 }

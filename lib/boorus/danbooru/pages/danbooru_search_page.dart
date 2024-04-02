@@ -279,36 +279,30 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
                   context: context,
                   builder: (context) => Scaffold(
                     body: SafeArea(
-                      child: CustomScrollView(
-                        slivers: [
-                          SliverToBoxAdapter(
-                            child: SearchLandingView(
-                              onHistoryCleared: () => ref
-                                  .read(searchHistoryProvider.notifier)
-                                  .clearHistories(),
-                              onHistoryRemoved: (value) => ref
-                                  .read(searchHistoryProvider.notifier)
-                                  .removeHistory(value.query),
-                              onHistoryTap: (value) {
-                                searchController.tapHistoryTag(value);
-                                context.pop();
-                              },
-                              onTagTap: (value) {
-                                searchController.tapTag(value);
-                                context.pop();
-                              },
-                              metatagsBuilder: (context) =>
-                                  DanbooruMetatagsSection(
-                                onOptionTap: (value) {
-                                  searchController.tapRawMetaTag(value);
-                                  focus.requestFocus();
-                                  _onTextChanged(controller, '$value:');
-                                  context.pop();
-                                },
-                              ),
-                            ),
-                          ),
-                        ],
+                      child: SearchLandingView(
+                        scrollController: ModalScrollController.of(context),
+                        onHistoryCleared: () => ref
+                            .read(searchHistoryProvider.notifier)
+                            .clearHistories(),
+                        onHistoryRemoved: (value) => ref
+                            .read(searchHistoryProvider.notifier)
+                            .removeHistory(value.query),
+                        onHistoryTap: (value) {
+                          searchController.tapHistoryTag(value);
+                          context.pop();
+                        },
+                        onTagTap: (value) {
+                          searchController.tapTag(value);
+                          context.pop();
+                        },
+                        metatagsBuilder: (context) => DanbooruMetatagsSection(
+                          onOptionTap: (value) {
+                            searchController.tapRawMetaTag(value);
+                            focus.requestFocus();
+                            _onTextChanged(controller, '$value:');
+                            context.pop();
+                          },
+                        ),
                       ),
                     ),
                   ),

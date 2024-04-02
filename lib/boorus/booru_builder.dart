@@ -130,12 +130,14 @@ final booruBuildersProvider =
                 postRepo: ref.read(gelbooruPostRepoProvider(config)),
                 autocompleteRepo:
                     ref.read(gelbooruAutocompleteRepoProvider(config)),
+                noteRepo: ref.read(gelbooruNoteRepoProvider(config)),
                 client: ref.read(gelbooruClientProvider(config)),
               ),
           BooruType.gelbooruV2: (config) => GelbooruV2Builder(
                 postRepo: ref.read(gelbooruV2PostRepoProvider(config)),
                 autocompleteRepo:
                     ref.read(gelbooruV2AutocompleteRepoProvider(config)),
+                noteRepo: ref.read(gelbooruV2NoteRepoProvider(config)),
                 client: ref.read(gelbooruV2ClientProvider(config)),
               ),
           BooruType.e621: (config) => E621Builder(

@@ -153,6 +153,6 @@ class HomePageController extends ValueNotifier<int> {
   }
 
   void openMenu() {
-    scaffoldKey.currentState!.openDrawer();
+    scaffoldKey.currentState?.openDrawer();
   }
 }

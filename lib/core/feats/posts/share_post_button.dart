@@ -84,7 +84,7 @@ final _cachedImageFileProvider =
 
     // attach the extension to the file
     final newPath = file.path + ext;
-    final newFile = await file.rename(newPath);
+    final newFile = file.copySync(newPath);
     final xFile = XFile(newFile.path);
 
     return xFile;

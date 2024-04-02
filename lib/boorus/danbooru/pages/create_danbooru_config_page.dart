@@ -110,7 +110,7 @@ class _CreateDanbooruConfigPageState
           if (!isApple())
             Text(
               '*Log in to your account on the browser, visit My Account > API Key. Copy your key or create a new one if needed, ensuring all permissions are enabled for proper app functionality.',
-              style: context.textTheme.titleSmall!.copyWith(
+              style: context.textTheme.titleSmall?.copyWith(
                 color: context.theme.hintColor,
                 fontSize: 14,
                 fontWeight: FontWeight.w400,

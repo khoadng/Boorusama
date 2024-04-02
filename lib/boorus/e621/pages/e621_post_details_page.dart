@@ -81,23 +81,17 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage> {
           currentPage == widget.intitialIndex && post.isTranslated
               ? null
               : post.thumbnailImageUrl,
-      imageOverlayBuilder: (constraints, post) {
-        final noteState = ref.watch(notesControllerProvider(post));
-        return noteOverlayBuilderDelegate(constraints, post, noteState);
-      },
+      imageOverlayBuilder: (constraints, post) => noteOverlayBuilderDelegate(
+        constraints,
+        post,
+        ref.watch(notesControllerProvider(post)),
+      ),
       topRightButtonsBuilder: (page, expanded, post) {
-        final noteState = ref.watch(notesControllerProvider(post));
-
         return [
-          NoteActionButton(
+          NoteActionButtonWithProvider(
             post: post,
-            showDownload: !expanded && noteState.notes.isEmpty,
-            enableNotes: noteState.enableNotes,
-            onDownload: () =>
-                ref.read(notesControllerProvider(post).notifier).load(),
-            onToggleNotes: () => ref
-                .read(notesControllerProvider(post).notifier)
-                .toggleNoteVisibility(),
+            expanded: expanded,
+            noteState: ref.watch(notesControllerProvider(post)),
           ),
           GeneralMoreActionButton(
             post: post,

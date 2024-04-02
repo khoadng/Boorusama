@@ -43,7 +43,7 @@ class SearchHistorySection extends StatelessWidget {
                   children: [
                     Text(
                       'search.history.history'.tr().toUpperCase(),
-                      style: context.textTheme.titleSmall!.copyWith(
+                      style: context.textTheme.titleSmall?.copyWith(
                         fontWeight: FontWeight.w700,
                       ),
                     ),

@@ -306,7 +306,7 @@ class FilenamePreview extends StatelessWidget {
           Expanded(
               child: Text(
             filename,
-            style: context.textTheme.bodyMedium!.copyWith(
+            style: context.textTheme.bodyMedium?.copyWith(
               fontWeight: FontWeight.w700,
               color: context.theme.hintColor,
             ),

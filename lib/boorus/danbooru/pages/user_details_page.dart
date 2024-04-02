@@ -210,7 +210,7 @@ class UserDetailsPage extends ConsumerWidget {
                             children: [
                               Text(
                                 'Top 5 copyrights',
-                                style: context.textTheme.titleMedium!.copyWith(
+                                style: context.textTheme.titleMedium?.copyWith(
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -355,13 +355,14 @@ class UserDetailsPage extends ConsumerWidget {
               final date = data[groupIndex].date;
               return BarTooltipItem(
                   '${date.day}/${date.month}/${date.year}',
-                  context.textTheme.bodySmall!.copyWith(
-                    color: context.theme.textTheme.bodyLarge!.color,
-                  ),
+                  context.textTheme.bodySmall?.copyWith(
+                        color: context.theme.textTheme.bodyLarge?.color,
+                      ) ??
+                      const TextStyle(),
                   children: [
                     TextSpan(
                       text: '\n${rod.toY.toInt()} posts',
-                      style: context.textTheme.bodySmall!.copyWith(
+                      style: context.textTheme.bodySmall?.copyWith(
                         color: context.colorScheme.primary,
                         fontWeight: FontWeight.bold,
                       ),

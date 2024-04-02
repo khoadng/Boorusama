@@ -30,6 +30,10 @@ final booruTagTypeBoxProvider = Provider<Box<String>?>((ref) {
   return null;
 });
 
+final booruTagTypePathProvider = Provider<String?>((ref) {
+  return null;
+});
+
 final booruTagTypeProvider =
     FutureProvider.autoDispose.family<String?, String>((ref, tag) async {
   final config = ref.watchConfig;

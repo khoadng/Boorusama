@@ -72,7 +72,7 @@ class _CreateGelbooruV2ConfigPageState
           const SizedBox(height: 8),
           Text(
             '*Log in to your account on the browser, visit My Account > Options > API Access Credentials. Check if it is there. If not, the site does not support credentials, and you can ignore this.',
-            style: context.textTheme.titleSmall!.copyWith(
+            style: context.textTheme.titleSmall?.copyWith(
               color: context.theme.hintColor,
               fontSize: 14,
               fontWeight: FontWeight.w400,

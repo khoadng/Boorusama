@@ -81,7 +81,7 @@ class _SuccessView extends ConsumerWidget {
                         'saved_search.saved_search_counter'
                             .plural(savedSearches.length)
                             .toUpperCase(),
-                        style: context.textTheme.titleMedium!.copyWith(
+                        style: context.textTheme.titleMedium?.copyWith(
                           color: context.theme.hintColor,
                           fontWeight: FontWeight.bold,
                         ),

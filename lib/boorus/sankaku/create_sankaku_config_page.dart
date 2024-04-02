@@ -70,7 +70,7 @@ class _CreateDanbooruConfigPageState
           const SizedBox(height: 8),
           Text(
             '*Without login credentials, some features may not work.',
-            style: context.textTheme.titleSmall!.copyWith(
+            style: context.textTheme.titleSmall?.copyWith(
               color: context.theme.hintColor,
               fontSize: 14,
               fontWeight: FontWeight.w400,
