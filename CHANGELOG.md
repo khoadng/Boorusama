@@ -1,3 +1,11 @@
+# 3.13.0
+- [Gelbooru] Support loading notes and child posts
+- [Zerochan] Initial support for tag coloring
+- [Danbooru] Fix grey screen issue when an API key is missing needed privileges
+- Fix an issue where tapping on a tag won't search automatically
+- Fix sharing image option disappearing on the first time it's used
+- Attempt to fix an issue where the app fails to start up on some devices (again)
+
 # 3.12.5
 - Fix data loading issue on some sites
 - Attempt to fix an issue where the app fails to start up on some devices
