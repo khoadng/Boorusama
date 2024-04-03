@@ -50,8 +50,15 @@ class PostVotesNotifier
     _vote(postVote);
   }
 
-  void removeVote(int postId) {
+  void removeLocalVote(int postId) {
     state = state.remove(postId);
+  }
+
+  Future<void> removeVote(int postId) async {
+    final success = await repo.removeVote(postId);
+    if (success) {
+      removeLocalVote(postId);
+    }
   }
 
   Future<void> getVotes(List<int> postIds) async {

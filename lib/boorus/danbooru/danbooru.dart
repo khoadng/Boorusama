@@ -389,6 +389,16 @@ extension DanbooruX on WidgetRef {
     });
   }
 
+  void danbooruRemoveVote(int postId) {
+    _guardLogin(() {
+      read(danbooruPostVotesProvider(readConfig).notifier)
+          .removeVote(postId)
+          .then(
+            (_) => _showSuccessSnackBar('Vote removed'),
+          );
+    });
+  }
+
   void danbooruUpvote(int postId) {
     _guardLogin(() {
       read(danbooruPostVotesProvider(readConfig).notifier).upvote(postId).then(

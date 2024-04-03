@@ -40,6 +40,9 @@ class PostVoteApiRepositoryApi implements PostVoteRepository {
 
   @override
   Future<PostVote?> upvote(int postId) => _vote(postId, 1);
+
+  @override
+  Future<bool> removeVote(int postId) => client.removePostVote(postId);
 }
 
 PostVote postVoteDtoToPostVote(PostVoteDto d) {

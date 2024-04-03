@@ -35,7 +35,7 @@ class FavoritesNotifier extends FamilyNotifier<Map<int, bool>, BooruConfig> {
         .read(danbooruFavoriteRepoProvider(arg))
         .removeFromFavorites(postId);
     if (success) {
-      ref.read(danbooruPostVotesProvider(arg).notifier).removeVote(postId);
+      ref.read(danbooruPostVotesProvider(arg).notifier).removeLocalVote(postId);
       state = {
         ...state,
         postId: false,
