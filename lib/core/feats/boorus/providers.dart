@@ -13,6 +13,7 @@ final booruConfigProvider =
   dependencies: [
     booruConfigRepoProvider,
     settingsProvider,
+    currentBooruConfigProvider,
   ],
 );
 

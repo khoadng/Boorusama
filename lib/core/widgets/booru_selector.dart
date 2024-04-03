@@ -18,6 +18,7 @@ import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class BooruSelector extends ConsumerStatefulWidget {
   const BooruSelector({
@@ -47,47 +48,51 @@ class _BooruSelectorState extends ConsumerState<BooruSelector> {
                   .read(booruConfigProvider.notifier)
                   .duplicate(config: config),
             ),
-            if (currentConfig != config)
-              ContextMenuButtonConfig(
-                'generic.action.delete'.tr(),
-                labelStyle: TextStyle(
-                  color: context.colorScheme.error,
-                ),
-                onPressed: () {
-                  if (isMobilePlatform()) {
-                    showDialog(
-                      context: context,
-                      builder: (context) => Dialog(
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(8)),
-                        ),
-                        child: RemoveBooruConfigAlertDialog(
-                          title: "Delete '${config.name}'",
-                          description:
-                              'Are you sure you want to delete this profile? This action cannot be undone.',
-                          onConfirm: () => ref
-                              .read(booruConfigProvider.notifier)
-                              .delete(config),
-                        ),
+            ContextMenuButtonConfig(
+              'generic.action.delete'.tr(),
+              labelStyle: TextStyle(
+                color: context.colorScheme.error,
+              ),
+              onPressed: () {
+                if (isMobilePlatform()) {
+                  showDialog(
+                    context: context,
+                    builder: (context) => Dialog(
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
                       ),
-                    );
-                  } else {
-                    showDesktopDialogWindow(
-                      context,
-                      width: 400,
-                      height: 300,
-                      builder: (context) => RemoveBooruConfigAlertDialog(
+                      child: RemoveBooruConfigAlertDialog(
                         title: "Delete '${config.name}'",
                         description:
                             'Are you sure you want to delete this profile? This action cannot be undone.',
                         onConfirm: () => ref
                             .read(booruConfigProvider.notifier)
-                            .delete(config),
+                            .delete(
+                              config,
+                              onFailure: (message) => showErrorToast(message),
+                            ),
                       ),
-                    );
-                  }
-                },
-              ),
+                    ),
+                  );
+                } else {
+                  showDesktopDialogWindow(
+                    context,
+                    width: 400,
+                    height: 300,
+                    builder: (context) => RemoveBooruConfigAlertDialog(
+                      title: "Delete '${config.name}'",
+                      description:
+                          'Are you sure you want to delete this profile? This action cannot be undone.',
+                      onConfirm: () =>
+                          ref.read(booruConfigProvider.notifier).delete(
+                                config,
+                                onFailure: (message) => showErrorToast(message),
+                              ),
+                    ),
+                  );
+                }
+              },
+            ),
           ],
         ),
       );
