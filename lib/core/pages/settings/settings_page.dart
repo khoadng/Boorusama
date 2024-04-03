@@ -10,6 +10,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/feats/boorus/providers.dart';
 import 'package:boorusama/core/pages/settings/about_page.dart';
 import 'package:boorusama/core/pages/settings/debug_logs_page.dart';
 import 'package:boorusama/core/utils.dart';
@@ -125,7 +126,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                         ),
                       ).tr(),
                       leading: FaIcon(
-                        FontAwesomeIcons.gear,
+                        FontAwesomeIcons.gaugeSimpleHigh,
                         color: context.iconTheme.color,
                         size: 20,
                       ),
@@ -186,6 +187,25 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                         size: 20,
                       ),
                       onTap: () => context.go('/settings/privacy'),
+                    ),
+                    const Divider(),
+                    const _SettingsSection(
+                      label: 'Booru settings',
+                    ),
+                    ListTile(
+                      title: const Text(
+                        'Edit current profile',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      leading: FaIcon(
+                        FontAwesomeIcons.gear,
+                        color: context.iconTheme.color,
+                        size: 20,
+                      ),
+                      onTap: () =>
+                          context.push('/boorus/${ref.watchConfig.id}/update'),
                     ),
                     const Divider(),
                     _SettingsSection(
