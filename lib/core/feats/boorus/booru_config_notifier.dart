@@ -78,7 +78,13 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?> {
 
         final firstConfig = state!.first;
 
-        await ref.read(currentBooruConfigProvider.notifier).update(firstConfig);
+        // check if deleting the first config
+        final targetConfig =
+            firstConfig.id == config.id ? state!.skip(1).first : firstConfig;
+
+        await ref
+            .read(currentBooruConfigProvider.notifier)
+            .update(targetConfig);
       }
 
       await ref.read(booruConfigRepoProvider).remove(config);
