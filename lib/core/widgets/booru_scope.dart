@@ -12,6 +12,7 @@ import 'package:boorusama/app.dart';
 import 'package:boorusama/boorus/entry_page.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/pages/blacklists/blacklisted_tag_page.dart';
 import 'package:boorusama/core/pages/bookmarks/bookmark_page.dart';
 import 'package:boorusama/core/pages/downloads/bulk_download_page.dart';
@@ -344,6 +345,8 @@ class BooruMobileScope extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // Only used to force rebuild when language changes
     ref.watch(settingsProvider.select((value) => value.language));
+    final booruConfigSelectorPosition = ref.watch(
+        settingsProvider.select((value) => value.booruConfigSelectorPosition));
 
     return AnnotatedRegion(
       value: SystemUiOverlayStyle(
@@ -357,6 +360,16 @@ class BooruMobileScope extends ConsumerWidget {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         key: controller.scaffoldKey,
+        bottomNavigationBar:
+            booruConfigSelectorPosition == BooruConfigSelectorPosition.bottom
+                ? SizedBox(
+                    height: kBottomNavigationBarHeight +
+                        MediaQuery.paddingOf(context).bottom,
+                    child: const BooruSelector(
+                      direction: Axis.horizontal,
+                    ),
+                  )
+                : null,
         drawer: SideBarMenu(
           width: 300,
           popOnSelect: true,

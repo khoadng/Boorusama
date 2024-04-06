@@ -9,6 +9,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/booru_selector.dart';
 import 'package:boorusama/core/widgets/current_booru_tile.dart';
@@ -36,6 +38,9 @@ class SideBarMenu extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final booruConfigSelectorPosition = ref.watch(
+        settingsProvider.select((value) => value.booruConfigSelectorPosition));
+
     return Container(
       color: context.colorScheme.surface,
       constraints:
@@ -43,13 +48,14 @@ class SideBarMenu extends ConsumerWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            color: context.colorScheme.secondaryContainer,
-            child: const SafeArea(
-              bottom: false,
-              child: BooruSelector(),
+          if (booruConfigSelectorPosition == BooruConfigSelectorPosition.side)
+            Container(
+              color: context.colorScheme.secondaryContainer,
+              child: const SafeArea(
+                bottom: false,
+                child: BooruSelector(),
+              ),
             ),
-          ),
           Expanded(
             child: ColoredBox(
               color: context.colorScheme.surface,

@@ -61,3 +61,10 @@ extension PageIndicatorPositionTranslated on PageIndicatorPosition {
         PageIndicatorPosition.both => 'settings.page_indicator.both',
       };
 }
+
+extension BooruConfigSelectorPositionTranslated on BooruConfigSelectorPosition {
+  String localize() => switch (this) {
+        BooruConfigSelectorPosition.side => 'Side',
+        BooruConfigSelectorPosition.bottom => 'Bottom',
+      };
+}

@@ -65,6 +65,11 @@ enum PostDetailsOverlayInitialState {
   show,
 }
 
+enum BooruConfigSelectorPosition {
+  side,
+  bottom,
+}
+
 class Settings extends Equatable {
   const Settings({
     required this.safeMode,
@@ -96,6 +101,7 @@ class Settings extends Equatable {
     required this.bookmarkFilterType,
     required this.pageIndicatorPosition,
     required this.postDetailsOverlayInitialState,
+    required this.booruConfigSelectorPosition,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
@@ -154,6 +160,11 @@ class Settings extends Equatable {
                 ? PostDetailsOverlayInitialState
                     .values[json['postDetailsOverlayInitialState']]
                 : PostDetailsOverlayInitialState.show,
+        booruConfigSelectorPosition =
+            json['booruConfigSelectorPosition'] != null
+                ? BooruConfigSelectorPosition
+                    .values[json['booruConfigSelectorPosition']]
+                : BooruConfigSelectorPosition.side,
         imageGridAspectRatio = json['imageGridAspectRatio'] ?? 0.7,
         imageGridPadding = json['imageGridPadding'] ?? 16,
         imageGridSpacing = json['imageGridSpacing'] ?? 4;
@@ -188,6 +199,7 @@ class Settings extends Equatable {
     bookmarkFilterType: BookmarkFilterType.none,
     pageIndicatorPosition: PageIndicatorPosition.bottom,
     postDetailsOverlayInitialState: PostDetailsOverlayInitialState.show,
+    booruConfigSelectorPosition: BooruConfigSelectorPosition.side,
   );
 
   final String blacklistedTags;
@@ -240,6 +252,8 @@ class Settings extends Equatable {
 
   final PostDetailsOverlayInitialState postDetailsOverlayInitialState;
 
+  final BooruConfigSelectorPosition booruConfigSelectorPosition;
+
   Settings copyWith({
     String? blacklistedTags,
     String? language,
@@ -271,6 +285,7 @@ class Settings extends Equatable {
     PageIndicatorPosition? pageIndicatorPosition,
     PostDetailsOverlayInitialState? postDetailsOverlayInitialState,
     PostGestureConfig? postGestures,
+    BooruConfigSelectorPosition? booruConfigSelectorPosition,
   }) =>
       Settings(
         safeMode: safeMode ?? this.safeMode,
@@ -309,6 +324,8 @@ class Settings extends Equatable {
             pageIndicatorPosition ?? this.pageIndicatorPosition,
         postDetailsOverlayInitialState: postDetailsOverlayInitialState ??
             this.postDetailsOverlayInitialState,
+        booruConfigSelectorPosition:
+            booruConfigSelectorPosition ?? this.booruConfigSelectorPosition,
       );
 
   Map<String, dynamic> toJson() => {
@@ -341,6 +358,7 @@ class Settings extends Equatable {
         'bookmarkFilterType': bookmarkFilterType.index,
         'pageIndicatorPosition': pageIndicatorPosition.index,
         'postDetailsOverlayInitialState': postDetailsOverlayInitialState.index,
+        'booruConfigSelectorPosition': booruConfigSelectorPosition.index,
       };
 
   @override
@@ -374,6 +392,7 @@ class Settings extends Equatable {
         bookmarkFilterType,
         pageIndicatorPosition,
         postDetailsOverlayInitialState,
+        booruConfigSelectorPosition,
       ];
 }
 

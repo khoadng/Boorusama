@@ -224,6 +224,16 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
               ),
             ),
             const Divider(thickness: 1),
+            const SettingsHeader(label: 'Booru profile'),
+            SettingsTile<BooruConfigSelectorPosition>(
+              title: const Text('Booru profile placement'),
+              selectedOption: settings.booruConfigSelectorPosition,
+              items: const [...BooruConfigSelectorPosition.values],
+              onChanged: (value) => ref.updateSettings(
+                  settings.copyWith(booruConfigSelectorPosition: value)),
+              optionBuilder: (value) => Text(value.localize()),
+            ),
+            const Divider(thickness: 1),
             SettingsHeader(label: 'settings.image_details.image_details'.tr()),
             SettingsTile<PostDetailsOverlayInitialState>(
               title: const Text('settings.image_details.ui_overlay.ui_overlay')

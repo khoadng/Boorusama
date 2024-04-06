@@ -23,7 +23,10 @@ import 'package:boorusama/widgets/widgets.dart';
 class BooruSelector extends ConsumerStatefulWidget {
   const BooruSelector({
     super.key,
+    this.direction = Axis.vertical,
   });
+
+  final Axis direction;
 
   @override
   ConsumerState<BooruSelector> createState() => _BooruSelectorState();
@@ -100,62 +103,107 @@ class _BooruSelectorState extends ConsumerState<BooruSelector> {
 
     void hide() => context.contextMenuOverlay.hide();
 
+    void onReorder(int oldIndex, int newIndex, Iterable<BooruConfig> configs) {
+      final orders = ref.read(configIdOrdersProvider);
+      final newOrders = orders.isEmpty || orders.length != configs.length
+          ? [for (final config in configs) config.id]
+          : orders.toList();
+
+      newOrders.reorder(oldIndex, newIndex);
+
+      ref.setBooruConfigOrder(newOrders);
+    }
+
+    final addButton = IconButton(
+      splashRadius: 20,
+      onPressed: () => context.go('/boorus/add'),
+      icon: const Icon(Symbols.add),
+    );
+
     return Container(
-      width: 68,
+      padding: widget.direction == Axis.horizontal
+          ? const EdgeInsets.only(left: 8)
+          : null,
+      height: widget.direction == Axis.horizontal ? 48 : null,
+      width: widget.direction == Axis.vertical ? 68 : null,
       color: context.colorScheme.secondaryContainer,
       child: ScrollConfiguration(
         behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
         child: ref.watch(configsProvider).maybeWhen(
-              data: (configs) => CustomScrollView(
-                slivers: [
-                  ReorderableSliverList(
-                      onReorderStarted: (index) => show(configs[index]),
-                      onHover: (start, current) => hide(),
-                      delegate: ReorderableSliverChildBuilderDelegate(
-                        (context, index) {
-                          final config = configs[index];
+              data: (configs) {
+                return widget.direction == Axis.vertical
+                    ? CustomScrollView(
+                        scrollDirection: widget.direction,
+                        slivers: [
+                          ReorderableSliverList(
+                            onReorderStarted: (index) => show(configs[index]),
+                            onHover: (start, current) => hide(),
+                            delegate: ReorderableSliverChildBuilderDelegate(
+                              (context, index) {
+                                final config = configs[index];
 
-                          return BooruSelectorItem(
-                            config: config,
-                            show: () => show(config),
-                            onTap: () => ref
-                                .read(currentBooruConfigProvider.notifier)
-                                .update(config),
-                            selected: currentConfig == config,
-                          );
-                        },
-                        childCount: configs.length,
-                      ),
-                      onReorder: (oldIndex, newIndex) {
-                        if (oldIndex == newIndex) return;
-
-                        final orders = ref.read(configIdOrdersProvider);
-                        final newOrders =
-                            (orders.isEmpty || orders.length != configs.length
-                                    ? [for (final config in configs) config.id]
-                                    : orders)
-                                .toList();
-
-                        newOrders.reorder(oldIndex, newIndex);
-
-                        ref.setBooruConfigOrder(newOrders);
-                      }),
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.all(4),
-                      child: Column(
-                        children: [
-                          IconButton(
-                            splashRadius: 20,
-                            onPressed: () => context.go('/boorus/add'),
-                            icon: const Icon(Symbols.add),
+                                return BooruSelectorItem(
+                                  config: config,
+                                  show: () => show(config),
+                                  onTap: () => ref
+                                      .read(currentBooruConfigProvider.notifier)
+                                      .update(config),
+                                  selected: currentConfig == config,
+                                  direction: widget.direction,
+                                );
+                              },
+                              childCount: configs.length,
+                            ),
+                            onReorder: (oldIndex, newIndex) =>
+                                onReorder(oldIndex, newIndex, configs),
+                          ),
+                          SliverToBoxAdapter(
+                            child: Padding(
+                              padding: const EdgeInsets.all(4),
+                              child: Column(
+                                children: [
+                                  addButton,
+                                ],
+                              ),
+                            ),
                           ),
                         ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                      )
+                    : Row(
+                        children: [
+                          Expanded(
+                            child: ReorderableRow(
+                              onReorderStarted: (index) => show(configs[index]),
+                              onReorder: (oldIndex, newIndex) =>
+                                  onReorder(oldIndex, newIndex, configs),
+                              children: [
+                                for (final config in configs)
+                                  Container(
+                                    key: ValueKey(config.id),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 4,
+                                    ),
+                                    child: BooruSelectorItem(
+                                      config: config,
+                                      show: () => show(config),
+                                      onTap: () => ref
+                                          .read(currentBooruConfigProvider
+                                              .notifier)
+                                          .update(config),
+                                      selected: currentConfig == config,
+                                      direction: widget.direction,
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: addButton,
+                          ),
+                        ],
+                      );
+              },
               orElse: () => const SizedBox.shrink(),
             ),
       ),
@@ -170,15 +218,22 @@ class BooruSelectorItem extends StatelessWidget {
     required this.onTap,
     required this.show,
     required this.selected,
+    this.direction = Axis.vertical,
   });
 
   final BooruConfig config;
   final bool selected;
   final void Function() show;
   final void Function() onTap;
+  final Axis direction;
 
   @override
   Widget build(BuildContext context) {
+    final bds = BorderSide(
+      color: selected ? context.colorScheme.primary : Colors.transparent,
+      width: direction == Axis.vertical ? 4 : 6,
+    );
+
     return Material(
       key: ValueKey(config.id),
       color: Colors.transparent,
@@ -191,21 +246,21 @@ class BooruSelectorItem extends StatelessWidget {
         onSecondaryTap: () => show(),
         onTap: onTap,
         child: Container(
-          width: 60,
+          width: direction == Axis.vertical ? 60 : 72,
           padding: const EdgeInsets.symmetric(
             vertical: 4,
           ),
-          margin: const EdgeInsets.symmetric(
-            vertical: 8,
+          margin: EdgeInsets.symmetric(
+            vertical: direction == Axis.vertical ? 8 : 0,
           ),
           decoration: BoxDecoration(
-            border: Border(
-              left: BorderSide(
-                color:
-                    selected ? context.colorScheme.primary : Colors.transparent,
-                width: 4,
-              ),
-            ),
+            border: direction == Axis.vertical
+                ? Border(
+                    left: bds,
+                  )
+                : Border(
+                    top: bds,
+                  ),
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -224,7 +279,7 @@ class BooruSelectorItem extends StatelessWidget {
               Text(
                 config.name,
                 textAlign: TextAlign.center,
-                maxLines: 3,
+                maxLines: direction == Axis.vertical ? 3 : 1,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
                   fontSize: 11,
