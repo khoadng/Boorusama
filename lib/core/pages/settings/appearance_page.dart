@@ -233,6 +233,17 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
                   settings.copyWith(booruConfigSelectorPosition: value)),
               optionBuilder: (value) => Text(value.localize()),
             ),
+            SwitchListTile(
+              title: const Text('Reverse scroll direction'),
+              value: settings.reverseBooruConfigSelectorScrollDirection,
+              onChanged: (value) => ref.updateSettings(
+                settings.copyWith(
+                  booruConfigSelectorScrollDirection: value
+                      ? BooruConfigScrollDirection.reversed
+                      : BooruConfigScrollDirection.normal,
+                ),
+              ),
+            ),
             const Divider(thickness: 1),
             SettingsHeader(label: 'settings.image_details.image_details'.tr()),
             SettingsTile<PostDetailsOverlayInitialState>(

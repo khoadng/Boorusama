@@ -70,6 +70,11 @@ enum BooruConfigSelectorPosition {
   bottom,
 }
 
+enum BooruConfigScrollDirection {
+  normal,
+  reversed,
+}
+
 class Settings extends Equatable {
   const Settings({
     required this.safeMode,
@@ -102,6 +107,7 @@ class Settings extends Equatable {
     required this.pageIndicatorPosition,
     required this.postDetailsOverlayInitialState,
     required this.booruConfigSelectorPosition,
+    required this.booruConfigSelectorScrollDirection,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
@@ -165,6 +171,11 @@ class Settings extends Equatable {
                 ? BooruConfigSelectorPosition
                     .values[json['booruConfigSelectorPosition']]
                 : BooruConfigSelectorPosition.side,
+        booruConfigSelectorScrollDirection =
+            json['booruConfigSelectorScrollDirection'] != null
+                ? BooruConfigScrollDirection
+                    .values[json['booruConfigSelectorScrollDirection']]
+                : BooruConfigScrollDirection.normal,
         imageGridAspectRatio = json['imageGridAspectRatio'] ?? 0.7,
         imageGridPadding = json['imageGridPadding'] ?? 16,
         imageGridSpacing = json['imageGridSpacing'] ?? 4;
@@ -200,6 +211,7 @@ class Settings extends Equatable {
     pageIndicatorPosition: PageIndicatorPosition.bottom,
     postDetailsOverlayInitialState: PostDetailsOverlayInitialState.show,
     booruConfigSelectorPosition: BooruConfigSelectorPosition.side,
+    booruConfigSelectorScrollDirection: BooruConfigScrollDirection.normal,
   );
 
   final String blacklistedTags;
@@ -254,6 +266,8 @@ class Settings extends Equatable {
 
   final BooruConfigSelectorPosition booruConfigSelectorPosition;
 
+  final BooruConfigScrollDirection booruConfigSelectorScrollDirection;
+
   Settings copyWith({
     String? blacklistedTags,
     String? language,
@@ -286,6 +300,7 @@ class Settings extends Equatable {
     PostDetailsOverlayInitialState? postDetailsOverlayInitialState,
     PostGestureConfig? postGestures,
     BooruConfigSelectorPosition? booruConfigSelectorPosition,
+    BooruConfigScrollDirection? booruConfigSelectorScrollDirection,
   }) =>
       Settings(
         safeMode: safeMode ?? this.safeMode,
@@ -326,6 +341,9 @@ class Settings extends Equatable {
             this.postDetailsOverlayInitialState,
         booruConfigSelectorPosition:
             booruConfigSelectorPosition ?? this.booruConfigSelectorPosition,
+        booruConfigSelectorScrollDirection:
+            booruConfigSelectorScrollDirection ??
+                this.booruConfigSelectorScrollDirection,
       );
 
   Map<String, dynamic> toJson() => {
@@ -359,6 +377,8 @@ class Settings extends Equatable {
         'pageIndicatorPosition': pageIndicatorPosition.index,
         'postDetailsOverlayInitialState': postDetailsOverlayInitialState.index,
         'booruConfigSelectorPosition': booruConfigSelectorPosition.index,
+        'booruConfigSelectorScrollDirection':
+            booruConfigSelectorScrollDirection.index,
       };
 
   @override
@@ -393,6 +413,7 @@ class Settings extends Equatable {
         pageIndicatorPosition,
         postDetailsOverlayInitialState,
         booruConfigSelectorPosition,
+        booruConfigSelectorScrollDirection,
       ];
 }
 
@@ -403,6 +424,9 @@ extension SettingsX on Settings {
 
   bool get hidePostDetailsOverlay =>
       postDetailsOverlayInitialState == PostDetailsOverlayInitialState.hide;
+
+  bool get reverseBooruConfigSelectorScrollDirection =>
+      booruConfigSelectorScrollDirection == BooruConfigScrollDirection.reversed;
 }
 
 extension PageIndicatorPositionX on PageIndicatorPosition {

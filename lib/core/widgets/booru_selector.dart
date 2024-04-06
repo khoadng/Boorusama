@@ -8,6 +8,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:reorderables/reorderables.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
@@ -120,6 +121,9 @@ class _BooruSelectorState extends ConsumerState<BooruSelector> {
       icon: const Icon(Symbols.add),
     );
 
+    final reverseScroll = ref.watch(settingsProvider
+        .select((value) => value.reverseBooruConfigSelectorScrollDirection));
+
     return Container(
       padding: widget.direction == Axis.horizontal
           ? const EdgeInsets.only(left: 8)
@@ -133,6 +137,7 @@ class _BooruSelectorState extends ConsumerState<BooruSelector> {
               data: (configs) {
                 return widget.direction == Axis.vertical
                     ? CustomScrollView(
+                        reverse: reverseScroll,
                         scrollDirection: widget.direction,
                         slivers: [
                           ReorderableSliverList(
@@ -171,13 +176,23 @@ class _BooruSelectorState extends ConsumerState<BooruSelector> {
                       )
                     : Row(
                         children: [
+                          if (reverseScroll)
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8),
+                              child: addButton,
+                            ),
                           Expanded(
                             child: ReorderableRow(
                               onReorderStarted: (index) => show(configs[index]),
                               onReorder: (oldIndex, newIndex) =>
                                   onReorder(oldIndex, newIndex, configs),
                               children: [
-                                for (final config in configs)
+                                for (final config in () {
+                                  return reverseScroll
+                                      ? configs.reversed
+                                      : configs;
+                                }())
                                   Container(
                                     key: ValueKey(config.id),
                                     padding: const EdgeInsets.symmetric(
@@ -197,10 +212,12 @@ class _BooruSelectorState extends ConsumerState<BooruSelector> {
                               ],
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                            child: addButton,
-                          ),
+                          if (!reverseScroll)
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8),
+                              child: addButton,
+                            ),
                         ],
                       );
               },
