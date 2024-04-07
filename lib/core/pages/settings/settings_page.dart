@@ -176,7 +176,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     ),
                     ListTile(
                       title: const Text(
-                        'Accessibility',
+                        'settings.accessibility.accessibility',
                         style: TextStyle(
                           fontWeight: FontWeight.w400,
                         ),
@@ -203,12 +203,13 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                       onTap: () => context.go('/settings/privacy'),
                     ),
                     const Divider(),
-                    const _SettingsSection(
-                      label: 'Booru settings',
+                    _SettingsSection(
+                      // label: 'Booru settings',
+                      label: 'settings.booru_settings'.tr(),
                     ),
                     ListTile(
                       title: const Text(
-                        'Edit current profile',
+                        'settings.booru_settings.edit_current_profile',
                         style: TextStyle(
                           fontWeight: FontWeight.w400,
                         ),
@@ -271,8 +272,9 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                       ),
                     ),
                     const Divider(),
-                    const _SettingsSection(
-                      label: 'Contribute',
+                    _SettingsSection(
+                      // label: 'Contribute',
+                      label: 'settings.contribute'.tr(),
                     ),
                     ListTile(
                       title: const Text(
@@ -294,7 +296,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     // Source code
                     ListTile(
                       title: const Text(
-                        'Source code',
+                        'settings.source_code',
                         style: TextStyle(
                           fontWeight: FontWeight.w400,
                         ),
@@ -310,19 +312,19 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                       ),
                     ),
                     const Divider(),
-                    const _SettingsSection(
-                      label: 'Support',
+                    _SettingsSection(
+                      label: 'settings.support'.tr(),
                     ),
                     ListTile(
                       title: const Text(
-                        'Contact developer',
+                        'settings.contact_developer',
                         style: TextStyle(
                           fontWeight: FontWeight.w400,
                         ),
-                      ),
+                      ).tr(),
                       subtitle: const Text(
-                        'If you have any issues or suggestions, feel free to send me an email through this option',
-                      ),
+                        'settings.contact_developer_description',
+                      ).tr(),
                       leading: Icon(
                         Symbols.email,
                         color: context.iconTheme.color,
@@ -334,14 +336,14 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     ),
                     ListTile(
                       title: const Text(
-                        'Feature request and bug report',
+                        'settings.feature_request_and_bug_report',
                         style: TextStyle(
                           fontWeight: FontWeight.w400,
                         ),
-                      ),
+                      ).tr(),
                       subtitle: const Text(
-                        'Suggest features or report bugs through the GitHub repository.',
-                      ),
+                        'settings.feature_request_and_bug_report_description',
+                      ).tr(),
                       leading: Icon(
                         Symbols.bug_report,
                         color: context.iconTheme.color,

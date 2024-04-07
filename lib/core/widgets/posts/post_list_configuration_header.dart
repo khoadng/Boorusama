@@ -7,6 +7,7 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
 
@@ -91,8 +92,8 @@ class _PostListConfigurationHeaderState
                   ),
                 ),
                 label: allTagsHidden!
-                    ? const Text('Re-enable all')
-                    : const Text('Disable all'),
+                    ? const Text('blacklisted_tags.reenable_all').tr()
+                    : const Text('blacklisted_tags.disable_all').tr(),
                 onPressed:
                     allTagsHidden! ? widget.onEnableAll : widget.onDisableAll,
               ),
@@ -144,7 +145,8 @@ class _PostListConfigurationHeaderState
                 title: Row(
                   children: [
                     const SizedBox(width: 8),
-                    const Text('Blacklisted'),
+                    const Text('blacklisted_tags.blacklisted_header_title')
+                        .tr(),
                     const SizedBox(width: 8),
                     if (widget.hiddenCount != null)
                       if (widget.hiddenCount! > 0)

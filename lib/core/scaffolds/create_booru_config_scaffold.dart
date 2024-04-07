@@ -17,6 +17,7 @@ import 'package:boorusama/core/pages/boorus/widgets/custom_download_file_name_se
 import 'package:boorusama/core/pages/boorus/widgets/selected_booru_chip.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/gestures.dart';
+import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -105,11 +106,11 @@ class _CreateBooruConfigScaffoldState
   Widget build(BuildContext context) {
     final tabMap = {
       if (widget.authTabBuilder != null)
-        'Authentication': widget.authTabBuilder!(context),
-      if (widget.hasDownloadTab) 'Download': _buildDownloadTab(),
+        'booru.authentication': widget.authTabBuilder!(context),
+      if (widget.hasDownloadTab) 'booru.download': _buildDownloadTab(),
       ...widget.tabsBuilder(context),
-      'Gestures': _buildGesturesTab(),
-      'Misc': _buildMiscTab(),
+      'booru.gestures': _buildGesturesTab(),
+      'booru.misc': _buildMiscTab(),
     };
 
     final params = (
@@ -167,7 +168,7 @@ class _CreateBooruConfigScaffoldState
                       unselectedLabelColor:
                           context.colorScheme.onBackground.withOpacity(0.5),
                       tabs: [
-                        for (final tab in tabMap.keys) Tab(text: tab),
+                        for (final tab in tabMap.keys) Tab(text: tab.tr()),
                       ],
                     ),
                     Expanded(
@@ -256,7 +257,7 @@ class _CreateBooruConfigScaffoldState
           ListTile(
             contentPadding: EdgeInsets.zero,
             visualDensity: VisualDensity.compact,
-            title: const Text('Swipe down'),
+            title: const Text('gestures.swipe_down').tr(),
             trailing: OptionDropDownButton(
               alignment: AlignmentDirectional.centerStart,
               value: postGestures.fullview?.swipeDown,
@@ -277,7 +278,7 @@ class _CreateBooruConfigScaffoldState
           ListTile(
             contentPadding: EdgeInsets.zero,
             visualDensity: VisualDensity.compact,
-            title: const Text('Double tap'),
+            title: const Text('gestures.double_tap').tr(),
             trailing: OptionDropDownButton(
               alignment: AlignmentDirectional.centerStart,
               value: postGestures.fullview?.doubleTap,
@@ -299,7 +300,7 @@ class _CreateBooruConfigScaffoldState
           ListTile(
             contentPadding: EdgeInsets.zero,
             visualDensity: VisualDensity.compact,
-            title: const Text('Long press'),
+            title: const Text('gestures.long_press').tr(),
             trailing: OptionDropDownButton(
               alignment: AlignmentDirectional.centerStart,
               value: postGestures.fullview?.longPress,
@@ -324,7 +325,7 @@ class _CreateBooruConfigScaffoldState
           ListTile(
             contentPadding: EdgeInsets.zero,
             visualDensity: VisualDensity.compact,
-            title: const Text('Tap'),
+            title: const Text('gestures.tap').tr(),
             trailing: OptionDropDownButton(
               alignment: AlignmentDirectional.centerStart,
               value: postGestures.preview?.tap,
@@ -345,7 +346,7 @@ class _CreateBooruConfigScaffoldState
           ListTile(
             contentPadding: EdgeInsets.zero,
             visualDensity: VisualDensity.compact,
-            title: const Text('Long press'),
+            title: const Text('gestures.long_press').tr(),
             trailing: OptionDropDownButton(
               alignment: AlignmentDirectional.centerStart,
               value: postGestures.preview?.longPress,

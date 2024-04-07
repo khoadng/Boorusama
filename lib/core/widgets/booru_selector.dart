@@ -47,7 +47,7 @@ class _BooruSelectorState extends ConsumerState<BooruSelector> {
               onPressed: () => context.go('/boorus/${config.id}/update'),
             ),
             ContextMenuButtonConfig(
-              'Duplicate',
+              'generic.action.duplicate'.tr(),
               onPressed: () => ref
                   .read(booruConfigProvider.notifier)
                   .duplicate(config: config),
@@ -360,7 +360,7 @@ class RemoveBooruConfigAlertDialog extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 14),
               child: Text(
-                'Delete',
+                'generic.action.delete'.tr(),
                 style: TextStyle(
                   color: context.colorScheme.onErrorContainer,
                   fontWeight: FontWeight.w600,
@@ -381,7 +381,7 @@ class RemoveBooruConfigAlertDialog extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 14),
               child: Text(
-                'Cancel',
+                'generic.action.cancel'.tr(),
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   color: Theme.of(context).colorScheme.onBackground,

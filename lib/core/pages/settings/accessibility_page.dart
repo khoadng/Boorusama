@@ -33,7 +33,7 @@ class _AccessibilityPageState extends ConsumerState<AccessibilityPage> {
       condition: widget.hasAppBar,
       conditionalBuilder: (child) => Scaffold(
         appBar: AppBar(
-          title: const Text('Accessibility'),
+          title: const Text('settings.accessibility.accessibility').tr(),
         ),
         body: child,
       ),
@@ -43,7 +43,9 @@ class _AccessibilityPageState extends ConsumerState<AccessibilityPage> {
           primary: false,
           children: [
             SwitchListTile(
-              title: const Text('Reverse scroll direction of booru profiles'),
+              title: const Text(
+                      'settings.accessibility.reverseBooruConfigSelectorScrollDirection')
+                  .tr(),
               value: settings.reverseBooruConfigSelectorScrollDirection,
               onChanged: (value) => ref.updateSettings(
                 settings.copyWith(
@@ -54,9 +56,10 @@ class _AccessibilityPageState extends ConsumerState<AccessibilityPage> {
               ),
             ),
             SettingsTile(
-              title: const Text("Sidebar's swiping area"),
+              title: const Text('settings.accessibility.swipeAreaToOpenSidebar')
+                  .tr(),
               subtitle: Text(
-                'The amount of area on the left side of the screen that can be used to trigger a swipe. Large values will block all horizontal gestures like the pagination swipe gesture.',
+                'settings.accessibility.swipeAreaToOpenSidebarDescription',
                 style: TextStyle(
                   color: context.theme.hintColor,
                 ),

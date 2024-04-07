@@ -127,7 +127,7 @@ class SideBarMenu extends ConsumerWidget {
                             Symbols.question_mark,
                             fill: 1,
                           ),
-                          title: const Text('Get support'),
+                          title: const Text('sideMenu.get_support').tr(),
                           onTap: () {
                             if (popOnSelect) context.navigator.pop();
                             context.go('/settings?scrollTo=support');
