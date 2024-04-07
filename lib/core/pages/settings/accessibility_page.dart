@@ -56,7 +56,7 @@ class _AccessibilityPageState extends ConsumerState<AccessibilityPage> {
             SettingsTile(
               title: const Text("Sidebar's swiping area"),
               subtitle: Text(
-                'The amount of area on the left side of the screen that can be used to trigger a swipe to open the sidebar. Large values may interfere with the pagination swipe gesture.',
+                'The amount of area on the left side of the screen that can be used to trigger a swipe. Large values will block all horizontal gestures like the pagination swipe gesture.',
                 style: TextStyle(
                   color: context.theme.hintColor,
                 ),
