@@ -204,13 +204,12 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     ),
                     const Divider(),
                     _SettingsSection(
-                      // label: 'Booru settings',
-                      label: 'settings.booru_settings'.tr(),
+                      label: 'settings.booru_settings.booru_settings'.tr(),
                     ),
                     ListTile(
-                      title: const Text(
-                        'settings.booru_settings.edit_current_profile',
-                        style: TextStyle(
+                      title: Text(
+                        'settings.booru_settings.edit_current_profile'.tr(),
+                        style: const TextStyle(
                           fontWeight: FontWeight.w400,
                         ),
                       ),
