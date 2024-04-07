@@ -108,6 +108,7 @@ class Settings extends Equatable {
     required this.postDetailsOverlayInitialState,
     required this.booruConfigSelectorPosition,
     required this.booruConfigSelectorScrollDirection,
+    required this.swipeAreaToOpenSidebarPercentage,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
@@ -176,6 +177,8 @@ class Settings extends Equatable {
                 ? BooruConfigScrollDirection
                     .values[json['booruConfigSelectorScrollDirection']]
                 : BooruConfigScrollDirection.normal,
+        swipeAreaToOpenSidebarPercentage =
+            json['swipeAreaToOpenSidebarPercentage'] ?? 5,
         imageGridAspectRatio = json['imageGridAspectRatio'] ?? 0.7,
         imageGridPadding = json['imageGridPadding'] ?? 16,
         imageGridSpacing = json['imageGridSpacing'] ?? 4;
@@ -212,6 +215,7 @@ class Settings extends Equatable {
     postDetailsOverlayInitialState: PostDetailsOverlayInitialState.show,
     booruConfigSelectorPosition: BooruConfigSelectorPosition.side,
     booruConfigSelectorScrollDirection: BooruConfigScrollDirection.normal,
+    swipeAreaToOpenSidebarPercentage: 5,
   );
 
   final String blacklistedTags;
@@ -268,6 +272,8 @@ class Settings extends Equatable {
 
   final BooruConfigScrollDirection booruConfigSelectorScrollDirection;
 
+  final int swipeAreaToOpenSidebarPercentage;
+
   Settings copyWith({
     String? blacklistedTags,
     String? language,
@@ -301,6 +307,7 @@ class Settings extends Equatable {
     PostGestureConfig? postGestures,
     BooruConfigSelectorPosition? booruConfigSelectorPosition,
     BooruConfigScrollDirection? booruConfigSelectorScrollDirection,
+    int? swipeAreaToOpenSidebarPercentage,
   }) =>
       Settings(
         safeMode: safeMode ?? this.safeMode,
@@ -344,6 +351,8 @@ class Settings extends Equatable {
         booruConfigSelectorScrollDirection:
             booruConfigSelectorScrollDirection ??
                 this.booruConfigSelectorScrollDirection,
+        swipeAreaToOpenSidebarPercentage: swipeAreaToOpenSidebarPercentage ??
+            this.swipeAreaToOpenSidebarPercentage,
       );
 
   Map<String, dynamic> toJson() => {
@@ -379,6 +388,7 @@ class Settings extends Equatable {
         'booruConfigSelectorPosition': booruConfigSelectorPosition.index,
         'booruConfigSelectorScrollDirection':
             booruConfigSelectorScrollDirection.index,
+        'swipeAreaToOpenSidebarPercentage': swipeAreaToOpenSidebarPercentage,
       };
 
   @override
@@ -414,6 +424,7 @@ class Settings extends Equatable {
         postDetailsOverlayInitialState,
         booruConfigSelectorPosition,
         booruConfigSelectorScrollDirection,
+        swipeAreaToOpenSidebarPercentage,
       ];
 }
 

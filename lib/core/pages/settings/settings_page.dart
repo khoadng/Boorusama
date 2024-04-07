@@ -176,6 +176,20 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     ),
                     ListTile(
                       title: const Text(
+                        'Accessibility',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ).tr(),
+                      leading: FaIcon(
+                        FontAwesomeIcons.universalAccess,
+                        color: context.iconTheme.color,
+                        size: 20,
+                      ),
+                      onTap: () => context.go('/settings/accessibility'),
+                    ),
+                    ListTile(
+                      title: const Text(
                         'settings.privacy.privacy',
                         style: TextStyle(
                           fontWeight: FontWeight.w400,

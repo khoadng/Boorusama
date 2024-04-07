@@ -24,6 +24,7 @@ import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
+import 'package:boorusama/utils/flutter_utils.dart';
 import 'package:boorusama/widgets/lazy_indexed_stack.dart';
 
 const double _kDefaultMenuSize = 280;
@@ -347,6 +348,8 @@ class BooruMobileScope extends ConsumerWidget {
     ref.watch(settingsProvider.select((value) => value.language));
     final booruConfigSelectorPosition = ref.watch(
         settingsProvider.select((value) => value.booruConfigSelectorPosition));
+    final swipeArea = ref.watch(settingsProvider
+        .select((value) => value.swipeAreaToOpenSidebarPercentage));
 
     return AnnotatedRegion(
       value: SystemUiOverlayStyle(
@@ -359,6 +362,7 @@ class BooruMobileScope extends ConsumerWidget {
       ),
       child: Scaffold(
         resizeToAvoidBottomInset: false,
+        drawerEdgeDragWidth: _calculateDrawerEdgeDragWidth(context, swipeArea),
         key: controller.scaffoldKey,
         bottomNavigationBar:
             booruConfigSelectorPosition == BooruConfigSelectorPosition.bottom
@@ -387,6 +391,16 @@ class BooruMobileScope extends ConsumerWidget {
       ),
     );
   }
+}
+
+double _calculateDrawerEdgeDragWidth(BuildContext context, int areaPercentage) {
+  final minValue = 20 + MediaQuery.paddingOf(context).left;
+  final screenWidth = context.screenWidth;
+  final value = (areaPercentage / 100).clamp(0.05, 1);
+  final width = screenWidth * value;
+
+  // if the width is less than the minimum value, return the minimum value
+  return width < minValue ? minValue : width;
 }
 
 const _kPlaceholderOffset = 100;
