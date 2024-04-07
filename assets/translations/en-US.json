@@ -291,7 +291,8 @@
             "swipeAreaToOpenSidebarDescription": "The amount of area on the left side of the screen that can be used to trigger a swipe. Large values will block all horizontal gestures like the pagination swipe gesture."
         },
         "booru_settings": {
-            "edit_current_profile": "Edit current profile"
+            "edit_current_profile": "Edit current profile",
+            "booru_settings": "Booru settings"
         },
         "contribute": "Contribute",
         "source_code": "Source code",
