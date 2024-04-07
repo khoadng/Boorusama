@@ -10,7 +10,8 @@
             "delete": "Delete",
             "edit": "Edit",
             "ok": "OK",
-            "cancel": "Cancel"
+            "cancel": "Cancel",
+            "duplicate": "Duplicate"
         },
         "view": "View"
     },
@@ -162,7 +163,10 @@
         "app_settings": "App Settings",
         "appearance": {
             "appearance": "Appearance",
-            "show_scores": "Show scores"
+            "show_scores": "Show scores",
+            "show_post_list_config_header": "Show posts configuration header",
+            "booru_config": "Booru profile",
+            "booru_config_placement": "Booru profile placement"
         },
         "general": "General",
         "search": {
@@ -202,7 +206,8 @@
             },
             "spacing": "Spacing",
             "corner_radius": "Corner radius",
-            "padding": "Padding"
+            "padding": "Padding",
+            "aspect_ratio": "Aspect ratio"
         },
         "image_viewer": {
             "image_viewer": "Image viewer",
@@ -220,7 +225,11 @@
             "theme": "Theme",
             "dark": "Dark",
             "light": "Light",
-            "amoled_dark": "Black"
+            "amoled_dark": "Black",
+            "dynamic_color": "Dynamic theme color",
+            "dynamic_color_mobile_description": "Sync theme color with wallpaper",
+            "dynamic_color_desktop_description": "Sync theme color with OS's accent color",
+            "dynamic_color_unsupported_description": "This device does not support dynamic color."
         },
         "privacy": {
             "privacy": "Privacy",
@@ -274,7 +283,23 @@
             "top": "Top",
             "bottom": "Bottom",
             "both": "Both"
-        }
+        },
+        "accessibility": {
+            "accessibility": "Accessibility",
+            "reverseBooruConfigSelectorScrollDirection": "Reverse scroll direction of booru profiles",
+            "swipeAreaToOpenSidebar": "Sidebar's swiping area",
+            "swipeAreaToOpenSidebarDescription": "The amount of area on the left side of the screen that can be used to trigger a swipe. Large values will block all horizontal gestures like the pagination swipe gesture."
+        },
+        "booru_settings": {
+            "edit_current_profile": "Edit current profile"
+        },
+        "contribute": "Contribute",
+        "source_code": "Source code",
+        "support": "Support",
+        "contact_developer": "Contact developer",
+        "contact_developer_description": "If you have any issues or suggestions, feel free to send me an email through this option",
+        "feature_request_and_bug_report": "Feature request and bug report",
+        "feature_request_and_bug_report_description": "Suggest features or report bugs through the GitHub repository"
     },
     "blacklisted_tags": {
         "remove": "Remove",
@@ -284,7 +309,10 @@
         "updated": "Blacklisted tags updated",
         "limitation_notice": "Only support <b>NOT</b> operator, <b>OR</b> operator, <b>score</b> metatag and <b>rating</b> metatag\n\nBlacklisting using other metatags won't work for current version.",
         "failed_to_add": "Failed to add tag",
-        "failed_to_remove": "Failed to remove tag"
+        "failed_to_remove": "Failed to remove tag",
+        "blacklisted_header_title": "Blacklisted",
+        "disable_all": "Disable all",
+        "reenable_all": "Re-enable all"
     },
     "download": {
         "download": "Download",
@@ -392,7 +420,8 @@
         "settings": "Settings",
         "your_bookmarks": "Your bookmarks",
         "your_blacklist": "Your blacklist",
-        "bulk_download": "Bulk download"
+        "bulk_download": "Bulk download",
+        "get_support": "Get support"
     },
     "dateRange": {
         "day": "Day",
@@ -420,7 +449,11 @@
         "validation_missing_trailing_slash": "\"{0}\" is missing a trailing slash",
         "validation_redundant_www": "\"{0}\" contains redundant \"www\"",
         "validation_contains_spaces": "\"{0}\" contains in-between spaces",
-        "validation_missing_scheme": "\"{0}\" is missing a scheme (e.g. https://)"
+        "validation_missing_scheme": "\"{0}\" is missing a scheme (e.g. https://)",
+        "authentication": "Authentication",
+        "download": "Download",
+        "gestures": "Gestures",
+        "misc": "Misc"
     },
     "blacklist": {
         "manage": {
@@ -447,5 +480,11 @@
     },
     "forum": {
         "forum": "Forum"
+    },
+    "gestures": {
+        "swipe_down": "Swipe down",
+        "double_tap": "Double tap",
+        "long_press": "Long press",
+        "tap": "Tap"
     }
 }
