@@ -26,7 +26,6 @@ import 'package:boorusama/core/feats/metatags/metatags.dart';
 import 'package:boorusama/core/feats/search/search.dart';
 import 'package:boorusama/core/feats/search_histories/search_histories.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
-import 'package:boorusama/core/feats/tags/booru_tag_type_store.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
@@ -246,12 +245,6 @@ Future<void> boot(BootLogger bootLogger) async {
     path: tempPath.path,
   );
 
-  bootLogger.l("Initialize booru tag type box");
-  final booruTagTypeBox = await Hive.openBox<String>(
-    BooruTagTypeStore.dataKey,
-    path: dbDirectory.path,
-  );
-
   bootLogger.l("Initialize package info");
   final packageInfo = await PackageInfo.fromPlatform();
 
@@ -330,7 +323,6 @@ Future<void> boot(BootLogger bootLogger) async {
               danbooruCreatorHiveBoxProvider
                   .overrideWithValue(danbooruCreatorBox),
               miscDataBoxProvider.overrideWithValue(miscDataBox),
-              booruTagTypeBoxProvider.overrideWithValue(booruTagTypeBox),
               booruTagTypePathProvider.overrideWithValue(dbDirectory.path),
               if (firebaseAnalytics != null)
                 analyticsProvider.overrideWithValue(firebaseAnalytics),
