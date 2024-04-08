@@ -26,8 +26,8 @@ class BooruLogo extends StatelessWidget {
       child: source.faviconType == FaviconType.network
           ? ExtendedImage.network(
               source.faviconUrl,
-              width: 24,
-              height: 24,
+              width: width ?? 24,
+              height: height ?? 24,
               fit: BoxFit.cover,
               clearMemoryCacheIfFailed: false,
               loadStateChanged: (state) =>
@@ -44,8 +44,8 @@ class BooruLogo extends StatelessWidget {
             )
           : Image.asset(
               source.faviconUrl,
-              width: 28,
-              height: 28,
+              width: width ?? 28,
+              height: height ?? 28,
               fit: BoxFit.cover,
             ),
     );

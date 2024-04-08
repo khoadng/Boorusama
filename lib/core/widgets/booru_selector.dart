@@ -236,6 +236,7 @@ class BooruSelectorItem extends StatelessWidget {
     required this.show,
     required this.selected,
     this.direction = Axis.vertical,
+    this.hideLabel = false,
   });
 
   final BooruConfig config;
@@ -243,6 +244,7 @@ class BooruSelectorItem extends StatelessWidget {
   final void Function() show;
   final void Function() onTap;
   final Axis direction;
+  final bool hideLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -251,91 +253,99 @@ class BooruSelectorItem extends StatelessWidget {
       color: Colors.transparent,
       borderRadius: BorderRadius.circular(8),
       child: InkWell(
-          hoverColor: context.theme.hoverColor.withOpacity(0.1),
-          customBorder: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-          onSecondaryTap: () => show(),
-          onTap: onTap,
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              if (direction == Axis.horizontal)
-                Align(
-                  alignment: Alignment.topCenter,
-                  child: Container(
-                    width: 48,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(4),
-                        bottomRight: Radius.circular(4),
+        hoverColor: context.theme.hoverColor.withOpacity(0.1),
+        customBorder: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        onSecondaryTap: () => show(),
+        onTap: onTap,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            if (direction == Axis.horizontal)
+              Align(
+                alignment: Alignment.topCenter,
+                child: Container(
+                  width: 48,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(4),
+                      bottomRight: Radius.circular(4),
+                    ),
+                    border: Border(
+                      top: BorderSide(
+                        color: selected
+                            ? context.colorScheme.primary
+                            : Colors.transparent,
+                        width: 4,
                       ),
-                      border: Border(
-                        top: BorderSide(
-                          color: selected
-                              ? context.colorScheme.primary
-                              : Colors.transparent,
+                    ),
+                  ),
+                ),
+              )
+            else
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Container(
+                  width: 4,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.only(
+                      topRight: Radius.circular(4),
+                      bottomRight: Radius.circular(4),
+                    ),
+                    border: Border(
+                      top: BorderSide(
+                        color: selected
+                            ? context.colorScheme.primary
+                            : Colors.transparent,
+                        width: 48,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            Container(
+              width: direction == Axis.vertical ? 60 : 72,
+              padding: const EdgeInsets.symmetric(
+                vertical: 4,
+              ),
+              margin: EdgeInsets.symmetric(
+                vertical: direction == Axis.vertical ? 8 : 0,
+              ),
+              decoration: BoxDecoration(
+                border: direction == Axis.vertical
+                    ? const Border(
+                        left: BorderSide(
+                          color: Colors.transparent,
                           width: 4,
                         ),
-                      ),
-                    ),
-                  ),
-                )
-              else
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Container(
-                    width: 4,
-                    height: 48,
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.only(
-                        topRight: Radius.circular(4),
-                        bottomRight: Radius.circular(4),
-                      ),
-                      border: Border(
-                        top: BorderSide(
-                          color: selected
-                              ? context.colorScheme.primary
-                              : Colors.transparent,
-                          width: 48,
+                      )
+                    : null,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  switch (PostSource.from(config.url)) {
+                    WebSource source => ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: BooruLogo(
+                          source: source,
+                          width: hideLabel ? 32 : null,
+                          height: hideLabel ? 32 : null,
                         ),
                       ),
-                    ),
-                  ),
-                ),
-              Container(
-                width: direction == Axis.vertical ? 60 : 72,
-                padding: const EdgeInsets.symmetric(
-                  vertical: 4,
-                ),
-                margin: EdgeInsets.symmetric(
-                  vertical: direction == Axis.vertical ? 8 : 0,
-                ),
-                decoration: BoxDecoration(
-                  border: direction == Axis.vertical
-                      ? const Border(
-                          left: BorderSide(
-                            color: Colors.transparent,
-                            width: 4,
-                          ),
-                        )
-                      : null,
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    switch (PostSource.from(config.url)) {
-                      WebSource source => BooruLogo(source: source),
-                      _ => const Card(
-                          child: SizedBox(
-                            width: 32,
-                            height: 32,
-                          ),
+                    _ => const Card(
+                        child: SizedBox(
+                          width: 32,
+                          height: 32,
                         ),
-                    },
-                    const SizedBox(height: 4),
+                      ),
+                  },
+                  if (!hideLabel) const SizedBox(height: 4),
+                  if (!hideLabel)
                     Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 4,
@@ -350,11 +360,12 @@ class BooruSelectorItem extends StatelessWidget {
                         ),
                       ),
                     ),
-                  ],
-                ),
+                ],
               ),
-            ],
-          )),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
