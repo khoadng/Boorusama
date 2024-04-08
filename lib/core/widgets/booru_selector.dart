@@ -248,7 +248,7 @@ class BooruSelectorItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final bds = BorderSide(
       color: selected ? context.colorScheme.primary : Colors.transparent,
-      width: direction == Axis.vertical ? 4 : 6,
+      width: direction == Axis.vertical ? 3 : 4,
     );
 
     return Material(
@@ -293,13 +293,18 @@ class BooruSelectorItem extends StatelessWidget {
                   ),
               },
               const SizedBox(height: 4),
-              Text(
-                config.name,
-                textAlign: TextAlign.center,
-                maxLines: direction == Axis.vertical ? 3 : 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontSize: 11,
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 4,
+                ),
+                child: Text(
+                  config.name,
+                  textAlign: TextAlign.center,
+                  maxLines: direction == Axis.vertical ? 3 : 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 10,
+                  ),
                 ),
               ),
             ],

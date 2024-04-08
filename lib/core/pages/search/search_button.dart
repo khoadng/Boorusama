@@ -50,8 +50,9 @@ class SearchButton2 extends StatelessWidget {
         onTap: onTap,
         child: Container(
           margin: const EdgeInsets.all(4),
-          child: const Icon(
+          child: Icon(
             Symbols.search,
+            color: context.colorScheme.onPrimary,
           ),
         ),
       ),
