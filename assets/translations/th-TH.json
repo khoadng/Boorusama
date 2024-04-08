@@ -10,7 +10,8 @@
             "delete": "ลบ",
             "edit": "แก้ไข",
             "ok": "ตกลง",
-            "cancel": "ยกเลิก"
+            "cancel": "ยกเลิก",
+            "duplicate": "ทำสำเนา"
         },
         "view": "ดู"
     },
@@ -162,7 +163,10 @@
         "app_settings": "การตั้งค่าแอป",
         "appearance": {
             "appearance": "รูปร่างหน้าตา",
-            "show_scores": "แสดงคะแนน"
+            "show_scores": "แสดงคะแนน",
+            "booru_config": "โปรไฟล์ Booru",
+            "show_post_list_config_header": "แสดงการกำหนดค่าโพสต์ที่ด้านบน",
+            "booru_config_placement": "การปรับตำแหน่งโปรไฟล์ Booru"
         },
         "general": "ทั่วไป",
         "search": {
@@ -202,7 +206,8 @@
             },
             "spacing": "การเว้นระยะ",
             "corner_radius": "ความมนโค้งของมุม",
-            "padding": "ระยะห่าง"
+            "padding": "ระยะห่าง",
+            "aspect_ratio": "อัตราส่วนภาพ"
         },
         "image_viewer": {
             "image_viewer": "โปรแกรมในการดูภาพ",
@@ -220,7 +225,11 @@
             "theme": "ธีม",
             "dark": "มืด",
             "light": "สว่าง",
-            "amoled_dark": "มืดแบบ AMOLED"
+            "amoled_dark": "มืดแบบ AMOLED",
+            "dynamic_color": "ธีมสีไดนามิก",
+            "dynamic_color_unsupported_description": "อุปกรณ์นี้ไม่รองรับระบบสีไดนามิก",
+            "dynamic_color_desktop_description": "เปลี่ยนธีมสีตามสีหลักของระบบปฏิบัติการ",
+            "dynamic_color_mobile_description": "เปลี่ยนธีมสีตามหน้าภาพหน้าจอ"
         },
         "privacy": {
             "privacy": "ความเป็นส่วนตัว",
@@ -274,7 +283,24 @@
         "data_and_storage": {
             "clear_cache_on_start_up": "ลบไฟล์แคชตอนเปิดแอป",
             "data_and_storage": "ข้อมูล และพื้นที่จัดเก็บ"
-        }
+        },
+        "accessibility": {
+            "accessibility": "การช่วยเหลือพิเศษ",
+            "reverseBooruConfigSelectorScrollDirection": "เลื่อนสลับทิศทางของโปรไฟล์ Booru",
+            "swipeAreaToOpenSidebarDescription": "ขนาดพื้นที่ของแถบด้านซ้ายบนหน้าจอจะสามารถใช้เป็นพื้นที่ในการปัด จำนวนพื้นที่ใหญ่จะปิดกั้นท่าทางสัมผัสในแนวนอนทั้งหมดเช่นทาทางการปัดเลื่อนไปหน้าอื่น",
+            "swipeAreaToOpenSidebar": "พื้นที่การปัดของแถบด้านข้าง"
+        },
+        "booru_settings": {
+            "edit_current_profile": "แก้ไขโปรไฟล์ปัจจุบัน",
+            "booru_settings": "ตั้งค่า Booru"
+        },
+        "contact_developer_description": "หากพบปัญหาในการใช้งานต่างๆ หรือต้องการให้ขอเสนอแนะ สามารถส่งอีเมลมาหาเราได้ผ่านช่องทางนี้",
+        "feature_request_and_bug_report_description": "แนะนำฟังก์ชั่นต่างๆ หรือรายงานปัญหาผ่านโปรเจกต์ใน GitHub",
+        "source_code": "ซอร์สโค้ด",
+        "contribute": "การมีส่วนร่วม",
+        "contact_developer": "ติดต่อนักพัฒนาแอพ",
+        "feature_request_and_bug_report": "ร้องขอฟังกชั่นต่างๆ และรายงานปัญหา",
+        "support": "การสนับสนุน"
     },
     "blacklisted_tags": {
         "remove": "ลบ",
@@ -284,7 +310,10 @@
         "updated": "แท็กต้องห้ามได้อัปเดตแล้ว",
         "limitation_notice": "รองรับเฉพาะคำสั่ง <b>NOT</b>, คำสั่ง <b>OR</b>, <b>score</b> Metatag และ <b>rating</b> Metatag\n\nการใช้งานคำต้องห้ามแสดงกับ metatags อื่นๆ จะยังไม่รอบรับในเวอร์ชั่นปัจจุบัน",
         "failed_to_add": "ไม่สามารถเพิ่มแท็กได้",
-        "failed_to_remove": "ไม่สามารถลบแท็กได้"
+        "failed_to_remove": "ไม่สามารถลบแท็กได้",
+        "disable_all": "ปิดทั้งหมด",
+        "reenable_all": "เปิดกลับมาใหม่ทั้งหมด",
+        "blacklisted_header_title": "แท็กต้องห้ามที่ใช้"
     },
     "download": {
         "download": "ดาวน์โหลด",
@@ -392,7 +421,8 @@
         "settings": "การตั้งค่า",
         "your_bookmarks": "บุ๊กมาร์กของคุณ",
         "your_blacklist": "คำต้องห้ามของคุณ",
-        "bulk_download": "การดาวน์โหลดเป็นชุด"
+        "bulk_download": "การดาวน์โหลดเป็นชุด",
+        "get_support": "ขอความช่วยเหลือ"
     },
     "dateRange": {
         "day": "วัน",
@@ -420,7 +450,11 @@
         "validation_missing_trailing_slash": "ไม่พบเครื่องหมายสแลช (/) ต่อท้ายในลิงค์ \"{0}\"",
         "validation_redundant_www": "พบคำว่า \"www\" อยู่ในลิงค์ \"{0}\"",
         "validation_contains_spaces": "ลิงค์ \"{0}\" มีการเว้นวรรคอยู่",
-        "validation_missing_scheme": "ไม่พบการระบุโปรโตคอลของเว็บ (เช่น https://) ในลิงค์ \"{0}\""
+        "validation_missing_scheme": "ไม่พบการระบุโปรโตคอลของเว็บ (เช่น https://) ในลิงค์ \"{0}\"",
+        "authentication": "การยืนยันตัวตน",
+        "download": "ดาวน์โหลด",
+        "gestures": "ท่าทางสัมผัส",
+        "misc": "อื่นๆ"
     },
     "blacklist": {
         "manage": {
@@ -447,5 +481,11 @@
     },
     "forum": {
         "forum": "กระดานสนทนา"
+    },
+    "gestures": {
+        "swipe_down": "ปัดลง",
+        "double_tap": "แตะสองครั้ง",
+        "long_press": "แตะค้าง",
+        "tap": "แตะ"
     }
 }
