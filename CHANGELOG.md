@@ -1,3 +1,7 @@
+# 3.13.1
+- Fix some color issues with light theme
+- Attempt to fix an issue where the app fails to start up on some devices (again...)
+
 # 3.13.0
 - [Gelbooru] Support loading notes and child posts
 - [Zerochan] Initial support for tag coloring
