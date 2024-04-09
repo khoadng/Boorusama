@@ -349,7 +349,7 @@ class UserDetailsPage extends ConsumerWidget {
         barTouchData: BarTouchData(
           enabled: true,
           touchTooltipData: BarTouchTooltipData(
-            tooltipBgColor: context.colorScheme.surfaceVariant,
+            getTooltipColor: (_) => context.colorScheme.surfaceVariant,
             fitInsideHorizontally: true,
             getTooltipItem: (group, groupIndex, rod, rodIndex) {
               final date = data[groupIndex].date;
