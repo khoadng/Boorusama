@@ -78,6 +78,7 @@ class PostMedia extends ConsumerWidget {
                                 .watch(
                                     userAgentGeneratorProvider(ref.watchConfig))
                                 .generate(),
+                            onZoomUpdated: onImageZoomUpdated,
                           )
                         : BooruVideo(
                             url: post.videoUrl,
@@ -88,6 +89,7 @@ class PostMedia extends ConsumerWidget {
                             autoPlay: autoPlay,
                             onVideoPlayerCreated: onVideoPlayerCreated,
                             sound: ref.isGlobalVideoSoundOn,
+                            onZoomUpdated: onImageZoomUpdated,
                           )
                     : Stack(
                         children: [
@@ -114,6 +116,7 @@ class PostMedia extends ConsumerWidget {
                     autoPlay: autoPlay,
                     onVideoPlayerCreated: onVideoPlayerCreated,
                     sound: ref.isGlobalVideoSoundOn,
+                    onZoomUpdated: onImageZoomUpdated,
                   )
         : InteractiveBooruImage(
             useHero: useHero,
