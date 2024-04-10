@@ -21,12 +21,17 @@ ChipColors? generateChipColorsFromColorScheme(
 ) {
   if (color == null) return null;
   if (context.themeMode.isLight) {
+    final backgroundColor = settings.enableDynamicColoring
+        ? color.harmonizeWith(context.colorScheme.primary)
+        : color;
     return (
-      backgroundColor: settings.enableDynamicColoring
+      backgroundColor: backgroundColor,
+      foregroundColor: backgroundColor.computeLuminance() > 0.7
+          ? Colors.black
+          : Colors.white,
+      borderColor: settings.enableDynamicColoring
           ? color.harmonizeWith(context.colorScheme.primary)
           : color,
-      foregroundColor: Colors.white,
-      borderColor: color
     );
   }
 
