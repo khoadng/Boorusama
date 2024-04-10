@@ -370,7 +370,7 @@ class BooruMobileScope extends ConsumerWidget {
             booruConfigSelectorPosition == BooruConfigSelectorPosition.bottom
                 ? SizedBox(
                     height: kBottomNavigationBarHeight +
-                        (hideLabel ? 0 : 12) +
+                        (hideLabel ? -4 : 4) +
                         MediaQuery.paddingOf(context).bottom,
                     child: const BooruSelector(
                       direction: Axis.horizontal,

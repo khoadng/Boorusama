@@ -128,9 +128,6 @@ class _BooruSelectorState extends ConsumerState<BooruSelector> {
         .watch(settingsProvider.select((value) => value.hideBooruConfigLabel));
 
     return Container(
-      padding: widget.direction == Axis.horizontal
-          ? const EdgeInsets.only(left: 8)
-          : null,
       height: widget.direction == Axis.horizontal ? 48 : null,
       width: widget.direction == Axis.vertical ? 68 : null,
       color: context.colorScheme.secondaryContainer,
@@ -180,12 +177,7 @@ class _BooruSelectorState extends ConsumerState<BooruSelector> {
                       )
                     : Row(
                         children: [
-                          if (reverseScroll)
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8),
-                              child: addButton,
-                            ),
+                          if (reverseScroll) addButton,
                           Expanded(
                             child: ReorderableRow(
                               onReorderStarted: (index) => show(configs[index]),
@@ -217,12 +209,7 @@ class _BooruSelectorState extends ConsumerState<BooruSelector> {
                               ],
                             ),
                           ),
-                          if (!reverseScroll)
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8),
-                              child: addButton,
-                            ),
+                          if (!reverseScroll) addButton,
                         ],
                       );
               },
@@ -312,9 +299,13 @@ class BooruSelectorItem extends StatelessWidget {
                 ),
               ),
             Container(
-              width: direction == Axis.vertical ? 60 : 72,
-              padding: const EdgeInsets.symmetric(
-                vertical: 4,
+              width: direction == Axis.vertical
+                  ? 60
+                  : hideLabel
+                      ? 52
+                      : 72,
+              padding: const EdgeInsets.only(
+                top: 8,
               ),
               margin: EdgeInsets.symmetric(
                 vertical: direction == Axis.vertical ? 8 : 0,
@@ -349,7 +340,7 @@ class BooruSelectorItem extends StatelessWidget {
                         ),
                       ),
                   },
-                  if (!hideLabel) const SizedBox(height: 4),
+                  const SizedBox(height: 4),
                   if (!hideLabel)
                     Padding(
                       padding: const EdgeInsets.symmetric(
