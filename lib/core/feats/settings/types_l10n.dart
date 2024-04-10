@@ -68,3 +68,10 @@ extension BooruConfigSelectorPositionTranslated on BooruConfigSelectorPosition {
         BooruConfigSelectorPosition.bottom => 'Bottom',
       };
 }
+
+extension BooruConfigLabelVisibilityTranslated on BooruConfigLabelVisibility {
+  String localize() => switch (this) {
+        BooruConfigLabelVisibility.always => 'On',
+        BooruConfigLabelVisibility.never => 'Off',
+      };
+}

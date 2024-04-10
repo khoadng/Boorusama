@@ -75,6 +75,11 @@ enum BooruConfigScrollDirection {
   reversed,
 }
 
+enum BooruConfigLabelVisibility {
+  always,
+  never,
+}
+
 class Settings extends Equatable {
   const Settings({
     required this.safeMode,
@@ -109,6 +114,7 @@ class Settings extends Equatable {
     required this.booruConfigSelectorPosition,
     required this.booruConfigSelectorScrollDirection,
     required this.swipeAreaToOpenSidebarPercentage,
+    required this.booruConfigLabelVisibility,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
@@ -177,6 +183,10 @@ class Settings extends Equatable {
                 ? BooruConfigScrollDirection
                     .values[json['booruConfigSelectorScrollDirection']]
                 : BooruConfigScrollDirection.normal,
+        booruConfigLabelVisibility = json['booruConfigLabelVisibility'] != null
+            ? BooruConfigLabelVisibility
+                .values[json['booruConfigLabelVisibility']]
+            : BooruConfigLabelVisibility.always,
         swipeAreaToOpenSidebarPercentage =
             json['swipeAreaToOpenSidebarPercentage'] ?? 5,
         imageGridAspectRatio = json['imageGridAspectRatio'] ?? 0.7,
@@ -216,6 +226,7 @@ class Settings extends Equatable {
     booruConfigSelectorPosition: BooruConfigSelectorPosition.side,
     booruConfigSelectorScrollDirection: BooruConfigScrollDirection.normal,
     swipeAreaToOpenSidebarPercentage: 5,
+    booruConfigLabelVisibility: BooruConfigLabelVisibility.always,
   );
 
   final String blacklistedTags;
@@ -274,6 +285,8 @@ class Settings extends Equatable {
 
   final int swipeAreaToOpenSidebarPercentage;
 
+  final BooruConfigLabelVisibility booruConfigLabelVisibility;
+
   Settings copyWith({
     String? blacklistedTags,
     String? language,
@@ -308,6 +321,7 @@ class Settings extends Equatable {
     BooruConfigSelectorPosition? booruConfigSelectorPosition,
     BooruConfigScrollDirection? booruConfigSelectorScrollDirection,
     int? swipeAreaToOpenSidebarPercentage,
+    BooruConfigLabelVisibility? booruConfigLabelVisibility,
   }) =>
       Settings(
         safeMode: safeMode ?? this.safeMode,
@@ -353,6 +367,8 @@ class Settings extends Equatable {
                 this.booruConfigSelectorScrollDirection,
         swipeAreaToOpenSidebarPercentage: swipeAreaToOpenSidebarPercentage ??
             this.swipeAreaToOpenSidebarPercentage,
+        booruConfigLabelVisibility:
+            booruConfigLabelVisibility ?? this.booruConfigLabelVisibility,
       );
 
   Map<String, dynamic> toJson() => {
@@ -389,6 +405,7 @@ class Settings extends Equatable {
         'booruConfigSelectorScrollDirection':
             booruConfigSelectorScrollDirection.index,
         'swipeAreaToOpenSidebarPercentage': swipeAreaToOpenSidebarPercentage,
+        'booruConfigLabelVisibility': booruConfigLabelVisibility.index,
       };
 
   @override
@@ -425,6 +442,7 @@ class Settings extends Equatable {
         booruConfigSelectorPosition,
         booruConfigSelectorScrollDirection,
         swipeAreaToOpenSidebarPercentage,
+        booruConfigLabelVisibility,
       ];
 }
 
@@ -435,6 +453,9 @@ extension SettingsX on Settings {
 
   bool get hidePostDetailsOverlay =>
       postDetailsOverlayInitialState == PostDetailsOverlayInitialState.hide;
+
+  bool get hideBooruConfigLabel =>
+      booruConfigLabelVisibility == BooruConfigLabelVisibility.never;
 
   bool get reverseBooruConfigSelectorScrollDirection =>
       booruConfigSelectorScrollDirection == BooruConfigScrollDirection.reversed;

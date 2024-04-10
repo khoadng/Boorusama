@@ -237,6 +237,14 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
                   settings.copyWith(booruConfigSelectorPosition: value)),
               optionBuilder: (value) => Text(value.localize()),
             ),
+            SettingsTile<BooruConfigLabelVisibility>(
+              title: const Text('Label').tr(),
+              selectedOption: settings.booruConfigLabelVisibility,
+              items: const [...BooruConfigLabelVisibility.values],
+              onChanged: (value) => ref.updateSettings(
+                  settings.copyWith(booruConfigLabelVisibility: value)),
+              optionBuilder: (value) => Text(value.localize()),
+            ),
             const Divider(thickness: 1),
             SettingsHeader(label: 'settings.image_details.image_details'.tr()),
             SettingsTile<PostDetailsOverlayInitialState>(

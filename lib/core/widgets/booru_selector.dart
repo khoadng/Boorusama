@@ -124,6 +124,9 @@ class _BooruSelectorState extends ConsumerState<BooruSelector> {
     final reverseScroll = ref.watch(settingsProvider
         .select((value) => value.reverseBooruConfigSelectorScrollDirection));
 
+    final hideLabel = ref
+        .watch(settingsProvider.select((value) => value.hideBooruConfigLabel));
+
     return Container(
       padding: widget.direction == Axis.horizontal
           ? const EdgeInsets.only(left: 8)
@@ -148,6 +151,7 @@ class _BooruSelectorState extends ConsumerState<BooruSelector> {
                                 final config = configs[index];
 
                                 return BooruSelectorItem(
+                                  hideLabel: hideLabel,
                                   config: config,
                                   show: () => show(config),
                                   onTap: () => ref
@@ -199,6 +203,7 @@ class _BooruSelectorState extends ConsumerState<BooruSelector> {
                                       horizontal: 4,
                                     ),
                                     child: BooruSelectorItem(
+                                      hideLabel: hideLabel,
                                       config: config,
                                       show: () => show(config),
                                       onTap: () => ref

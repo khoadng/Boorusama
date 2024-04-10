@@ -350,6 +350,8 @@ class BooruMobileScope extends ConsumerWidget {
         settingsProvider.select((value) => value.booruConfigSelectorPosition));
     final swipeArea = ref.watch(settingsProvider
         .select((value) => value.swipeAreaToOpenSidebarPercentage));
+    final hideLabel = ref
+        .watch(settingsProvider.select((value) => value.hideBooruConfigLabel));
 
     return AnnotatedRegion(
       value: SystemUiOverlayStyle(
@@ -368,7 +370,7 @@ class BooruMobileScope extends ConsumerWidget {
             booruConfigSelectorPosition == BooruConfigSelectorPosition.bottom
                 ? SizedBox(
                     height: kBottomNavigationBarHeight +
-                        12 +
+                        (hideLabel ? 0 : 12) +
                         MediaQuery.paddingOf(context).bottom,
                     child: const BooruSelector(
                       direction: Axis.horizontal,
