@@ -9,13 +9,13 @@ extension PageModeTranslated on PageMode {
       };
 }
 
-extension ThemeModeTranslated on ThemeMode {
+extension ThemeModeTranslated on AppThemeMode {
   String localize() => switch (this) {
-        ThemeMode.dark => 'settings.theme.dark',
-        ThemeMode.system ||
-        ThemeMode.amoledDark =>
+        AppThemeMode.dark => 'settings.theme.dark',
+        AppThemeMode.system ||
+        AppThemeMode.amoledDark =>
           'settings.theme.amoled_dark',
-        ThemeMode.light => 'settings.theme.light',
+        AppThemeMode.light => 'settings.theme.light',
       };
 }
 

@@ -53,8 +53,9 @@ mixin DefaultThumbnailUrlMixin implements BooruBuilder {
 mixin DefaultTagColorMixin implements BooruBuilder {
   @override
   TagColorBuilder get tagColorBuilder => (themeMode, tagType) {
-        final colors =
-            themeMode == ThemeMode.light ? TagColors.dark() : TagColors.light();
+        final colors = themeMode == AppThemeMode.light
+            ? TagColors.dark()
+            : TagColors.light();
 
         return switch (tagType) {
           '0' || 'general' || 'tag' => colors.general,

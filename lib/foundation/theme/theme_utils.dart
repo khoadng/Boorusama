@@ -1,5 +1,5 @@
 // Flutter imports:
-import 'package:flutter/material.dart' hide ThemeMode;
+import 'package:flutter/material.dart';
 
 // Project imports:
 import 'colors.dart';
@@ -12,5 +12,5 @@ extension ThemeX on BuildContext {
   ColorScheme get colorScheme => theme.colorScheme;
 
   BoorusamaColors get colors => Theme.of(this).extension<BoorusamaColors>()!;
-  ThemeMode get themeMode => colors.themeMode;
+  AppThemeMode get themeMode => colors.themeMode;
 }

@@ -1,5 +1,5 @@
 // Flutter imports:
-import 'package:flutter/material.dart' hide ThemeMode;
+import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:dynamic_color/dynamic_color.dart';
@@ -10,8 +10,8 @@ import 'package:boorusama/foundation/theme/theme.dart';
 class AppTheme {
   AppTheme._();
 
-  static ColorScheme defaultColorScheme(ThemeMode mode) => switch (mode) {
-        ThemeMode.light => const ColorScheme(
+  static ColorScheme defaultColorScheme(AppThemeMode mode) => switch (mode) {
+        AppThemeMode.light => const ColorScheme(
             brightness: Brightness.light,
             background: GreyscaleShades.gray242,
             onBackground: kOnBackgroundLightColor,
@@ -29,7 +29,7 @@ class AppTheme {
             surface: GreyscaleShades.gray242,
             onSurface: kOnSurfaceLightColor,
           ),
-        ThemeMode.dark => const ColorScheme(
+        AppThemeMode.dark => const ColorScheme(
             brightness: Brightness.dark,
             background: GreyscaleShades.gray24,
             onBackground: Colors.white,
@@ -70,13 +70,13 @@ class AppTheme {
       };
 
   static ColorScheme generateFromThemeMode(
-    ThemeMode mode, {
+    AppThemeMode mode, {
     ColorScheme? seed,
   }) =>
       switch (mode) {
-        ThemeMode.light =>
+        AppThemeMode.light =>
           seed != null ? seed.harmonized() : defaultColorScheme(mode),
-        ThemeMode.dark =>
+        AppThemeMode.dark =>
           seed != null ? seed.harmonized() : defaultColorScheme(mode),
         _ => seed != null
             ? defaultColorScheme(mode).copyWith(
@@ -87,20 +87,20 @@ class AppTheme {
       };
 
   static ThemeData themeFrom(
-    ThemeMode mode, {
+    AppThemeMode mode, {
     required ColorScheme colorScheme,
   }) =>
       switch (mode) {
-        ThemeMode.light => lightTheme(
+        AppThemeMode.light => lightTheme(
             colorScheme: colorScheme,
           ),
-        ThemeMode.dark => darkTheme(
+        AppThemeMode.dark => darkTheme(
             colorScheme: colorScheme,
           ),
-        ThemeMode.amoledDark => darkAmoledTheme(
+        AppThemeMode.amoledDark => darkAmoledTheme(
             colorScheme: colorScheme,
           ),
-        ThemeMode.system => darkAmoledTheme(
+        AppThemeMode.system => darkAmoledTheme(
             colorScheme: colorScheme,
           ),
       };
@@ -137,7 +137,7 @@ class AppTheme {
           extensions: const [
             BoorusamaColors(
               videoPlayerBackgroundColor: Colors.white,
-              themeMode: ThemeMode.light,
+              themeMode: AppThemeMode.light,
               selectedColor: Colors.grey,
             ),
           ],
@@ -220,7 +220,7 @@ class AppTheme {
           extensions: const [
             BoorusamaColors(
               videoPlayerBackgroundColor: Colors.black,
-              themeMode: ThemeMode.amoledDark,
+              themeMode: AppThemeMode.amoledDark,
               selectedColor: Color.fromARGB(255, 74, 74, 74),
             ),
           ],
@@ -302,7 +302,7 @@ class AppTheme {
           extensions: const [
             BoorusamaColors(
               videoPlayerBackgroundColor: Colors.black,
-              themeMode: ThemeMode.amoledDark,
+              themeMode: AppThemeMode.amoledDark,
               selectedColor: Color.fromARGB(255, 50, 50, 50),
             ),
           ],

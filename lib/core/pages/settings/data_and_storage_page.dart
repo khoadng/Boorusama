@@ -2,7 +2,7 @@
 import 'dart:io';
 
 // Flutter imports:
-import 'package:flutter/material.dart' hide ThemeMode;
+import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:filesize/filesize.dart';

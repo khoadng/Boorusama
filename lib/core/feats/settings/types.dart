@@ -121,8 +121,8 @@ class Settings extends Equatable {
       : safeMode = json['safeMode'] ?? true,
         blacklistedTags = json['hideBlacklist'] ?? [],
         themeMode = json['themeMode'] != null
-            ? ThemeMode.values[json['themeMode']]
-            : ThemeMode.amoledDark,
+            ? AppThemeMode.values[json['themeMode']]
+            : AppThemeMode.amoledDark,
         dataCollectingStatus = json['dataCollectingStatus'] != null
             ? DataCollectingStatus.values[json['dataCollectingStatus']]
             : DataCollectingStatus.allow,
@@ -196,7 +196,7 @@ class Settings extends Equatable {
   static const defaultSettings = Settings(
     safeMode: true,
     blacklistedTags: '',
-    themeMode: ThemeMode.amoledDark,
+    themeMode: AppThemeMode.amoledDark,
     language: 'en-US',
     gridSize: GridSize.normal,
     dataCollectingStatus: DataCollectingStatus.allow,
@@ -232,7 +232,7 @@ class Settings extends Equatable {
   final String blacklistedTags;
   final String language;
   final bool safeMode;
-  final ThemeMode themeMode;
+  final AppThemeMode themeMode;
   final GridSize gridSize;
   final DataCollectingStatus dataCollectingStatus;
 
@@ -291,7 +291,7 @@ class Settings extends Equatable {
     String? blacklistedTags,
     String? language,
     bool? safeMode,
-    ThemeMode? themeMode,
+    AppThemeMode? themeMode,
     GridSize? gridSize,
     DataCollectingStatus? dataCollectingStatus,
     String? downloadPath,

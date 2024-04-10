@@ -1,5 +1,5 @@
 // Flutter imports:
-import 'package:flutter/material.dart' hide ThemeMode;
+import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:collection/collection.dart';
@@ -158,7 +158,7 @@ final danbooruRelatedTagCloudProvider =
 
 typedef TagColorParams = ({
   Color primaryColor,
-  ThemeMode themeMode,
+  AppThemeMode themeMode,
   String categories,
 });
 

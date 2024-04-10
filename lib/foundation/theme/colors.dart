@@ -1,5 +1,5 @@
 // Flutter imports:
-import 'package:flutter/material.dart' hide ThemeMode;
+import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -44,13 +44,13 @@ class BoorusamaColors extends ThemeExtension<BoorusamaColors> {
   });
 
   final Color videoPlayerBackgroundColor;
-  final ThemeMode themeMode;
+  final AppThemeMode themeMode;
   final Color selectedColor;
 
   @override
   ThemeExtension<BoorusamaColors> copyWith({
     Color? videoPlayerBackgroundColor,
-    ThemeMode? themeMode,
+    AppThemeMode? themeMode,
     Color? selectedColor,
   }) =>
       BoorusamaColors(

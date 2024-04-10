@@ -84,7 +84,7 @@ typedef GridThumbnailUrlBuilder = String Function(
 );
 
 typedef TagColorBuilder = Color? Function(
-  ThemeMode themeMode,
+  AppThemeMode themeMode,
   String? tagType,
 );
 

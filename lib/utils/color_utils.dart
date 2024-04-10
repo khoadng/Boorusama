@@ -1,5 +1,5 @@
 // Flutter imports:
-import 'package:flutter/material.dart' hide ThemeMode;
+import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:dynamic_color/dynamic_color.dart';
@@ -20,7 +20,7 @@ ChipColors? generateChipColorsFromColorScheme(
   ColorScheme colorScheme,
 ) {
   if (color == null) return null;
-  if (settings.themeMode == ThemeMode.light) {
+  if (settings.themeMode == AppThemeMode.light) {
     return (
       backgroundColor: settings.enableDynamicColoring
           ? color.harmonizeWith(colorScheme.primary)

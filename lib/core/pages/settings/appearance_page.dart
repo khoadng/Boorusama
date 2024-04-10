@@ -1,5 +1,5 @@
 // Flutter imports:
-import 'package:flutter/material.dart' hide ThemeMode;
+import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -61,10 +61,10 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
           primary: false,
           children: [
             SettingsHeader(label: 'settings.general'.tr()),
-            SettingsTile<ThemeMode>(
+            SettingsTile<AppThemeMode>(
               title: const Text('settings.theme.theme').tr(),
               selectedOption: settings.themeMode,
-              items: [...ThemeMode.values]..remove(ThemeMode.system),
+              items: [...AppThemeMode.values]..remove(AppThemeMode.system),
               onChanged: (value) =>
                   ref.updateSettings(settings.copyWith(themeMode: value)),
               optionBuilder: (value) => Text(value.localize()).tr(),

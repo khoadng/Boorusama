@@ -37,13 +37,13 @@ class ThemeBuilder extends ConsumerWidget {
           seed: enableDynamicColor ? light : null,
         );
         final darkAmoledScheme = AppTheme.generateFromThemeMode(
-          tm.ThemeMode.amoledDark,
+          tm.AppThemeMode.amoledDark,
           seed: enableDynamicColor ? dark : null,
         );
 
-        final colorScheme = theme == tm.ThemeMode.light
+        final colorScheme = theme == tm.AppThemeMode.light
             ? lightScheme
-            : theme == tm.ThemeMode.dark
+            : theme == tm.AppThemeMode.dark
                 ? darkScheme
                 : darkAmoledScheme;
 
