@@ -43,9 +43,9 @@ class App extends StatelessWidget {
     return Portal(
       child: OKToast(
         child: AnalyticsScope(
-          builder: (analyticsEnabled) => RouterBuilder(
-            builder: (context, router) => ThemeBuilder(
-              builder: (theme, themeMode) => MaterialApp.router(
+          builder: (analyticsEnabled) => ThemeBuilder(
+            builder: (theme, themeMode) => RouterBuilder(
+              builder: (context, router) => MaterialApp.router(
                 builder: (context, child) => ConditionalParentWidget(
                   condition: isDesktopPlatform(),
                   conditionalBuilder: (child) => WindowTitleBar(

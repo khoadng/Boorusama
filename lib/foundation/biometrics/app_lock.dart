@@ -81,7 +81,10 @@ class _AppLockState extends ConsumerState<AppLock> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const Text('Please authenticate to use the app'),
+                    Text(
+                      'Please authenticate to use the app',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
                     const SizedBox(height: 16),
                     IconButton(
                       onPressed: () => _authenticate(localAuth),

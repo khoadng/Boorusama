@@ -176,33 +176,33 @@ class AppTheme {
               selectedColor: Colors.grey,
             ),
           ],
-          inputDecorationTheme: const InputDecorationTheme(
+          inputDecorationTheme: InputDecorationTheme(
             floatingLabelBehavior: FloatingLabelBehavior.always,
             filled: true,
-            enabledBorder: OutlineInputBorder(
+            enabledBorder: const OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(8)),
               borderSide: BorderSide.none,
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
+              borderRadius: const BorderRadius.all(Radius.circular(8)),
               borderSide: BorderSide(
-                color: kPrimaryLightColor,
+                color: colorScheme.primary,
                 width: 2,
               ),
             ),
-            errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-              borderSide: BorderSide(
-                width: 2,
-              ),
-            ),
-            focusedErrorBorder: OutlineInputBorder(
+            errorBorder: const OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(8)),
               borderSide: BorderSide(
                 width: 2,
               ),
             ),
-            contentPadding: EdgeInsets.all(12),
+            focusedErrorBorder: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+              borderSide: BorderSide(
+                width: 2,
+              ),
+            ),
+            contentPadding: const EdgeInsets.all(12),
           ),
           listTileTheme: const ListTileThemeData(
             subtitleTextStyle: TextStyle(
@@ -259,33 +259,33 @@ class AppTheme {
               selectedColor: Color.fromARGB(255, 74, 74, 74),
             ),
           ],
-          inputDecorationTheme: const InputDecorationTheme(
+          inputDecorationTheme: InputDecorationTheme(
             floatingLabelBehavior: FloatingLabelBehavior.always,
             filled: true,
-            enabledBorder: OutlineInputBorder(
+            enabledBorder: const OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(8)),
               borderSide: BorderSide.none,
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
+              borderRadius: const BorderRadius.all(Radius.circular(8)),
               borderSide: BorderSide(
-                color: kPrimaryDarkColor,
+                color: colorScheme.primary,
                 width: 2,
               ),
             ),
-            errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-              borderSide: BorderSide(
-                width: 2,
-              ),
-            ),
-            focusedErrorBorder: OutlineInputBorder(
+            errorBorder: const OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(8)),
               borderSide: BorderSide(
                 width: 2,
               ),
             ),
-            contentPadding: EdgeInsets.all(12),
+            focusedErrorBorder: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+              borderSide: BorderSide(
+                width: 2,
+              ),
+            ),
+            contentPadding: const EdgeInsets.all(12),
           ),
           popupMenuTheme: PopupMenuThemeData(
             color: colorScheme.secondaryContainer,
@@ -341,33 +341,33 @@ class AppTheme {
               selectedColor: Color.fromARGB(255, 50, 50, 50),
             ),
           ],
-          inputDecorationTheme: const InputDecorationTheme(
+          inputDecorationTheme: InputDecorationTheme(
             floatingLabelBehavior: FloatingLabelBehavior.always,
             filled: true,
-            enabledBorder: OutlineInputBorder(
+            enabledBorder: const OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(8)),
               borderSide: BorderSide.none,
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
+              borderRadius: const BorderRadius.all(Radius.circular(8)),
               borderSide: BorderSide(
-                color: kPrimaryAmoledDarkColor,
+                color: colorScheme.primary,
                 width: 2,
               ),
             ),
-            errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-              borderSide: BorderSide(
-                width: 2,
-              ),
-            ),
-            focusedErrorBorder: OutlineInputBorder(
+            errorBorder: const OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(8)),
               borderSide: BorderSide(
                 width: 2,
               ),
             ),
-            contentPadding: EdgeInsets.all(12),
+            focusedErrorBorder: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+              borderSide: BorderSide(
+                width: 2,
+              ),
+            ),
+            contentPadding: const EdgeInsets.all(12),
           ),
           listTileTheme: const ListTileThemeData(
             subtitleTextStyle: TextStyle(

@@ -37,8 +37,13 @@ class WarningContainer extends StatelessWidget {
                 color: context.colorScheme.onError,
               ),
             ),
-            Expanded(
-              child: contentBuilder(context),
+            DefaultTextStyle(
+              style: TextStyle(
+                color: context.colorScheme.onError,
+              ),
+              child: Expanded(
+                child: contentBuilder(context),
+              ),
             ),
           ],
         ),
