@@ -10,85 +10,116 @@ import 'package:boorusama/foundation/theme/theme.dart';
 class AppTheme {
   AppTheme._();
 
-  static ColorScheme defaultColorScheme(AppThemeMode mode) => switch (mode) {
-        AppThemeMode.light => const ColorScheme(
-            brightness: Brightness.light,
-            background: GreyscaleShades.gray242,
-            onBackground: kOnBackgroundLightColor,
-            secondaryContainer: GreyscaleShades.gray212,
-            onSecondaryContainer: kOnSurfaceLightColor,
-            tertiaryContainer: GreyscaleShades.gray220,
-            onTertiaryContainer: kOnSurfaceLightColor,
-            surfaceVariant: GreyscaleShades.gray226,
-            primary: kPrimaryLightColor,
-            onPrimary: kOnPrimaryLightColor,
-            secondary: kPrimaryLightColor,
-            onSecondary: kOnPrimaryLightColor,
-            error: kErrorLightColor,
-            onError: kOnErrorLightColor,
-            surface: GreyscaleShades.gray242,
-            onSurface: kOnSurfaceLightColor,
-          ),
-        AppThemeMode.dark => const ColorScheme(
-            brightness: Brightness.dark,
-            background: GreyscaleShades.gray24,
-            onBackground: Colors.white,
-            secondaryContainer: GreyscaleShades.gray52,
-            onSecondaryContainer: Colors.white,
-            tertiaryContainer: GreyscaleShades.gray48,
-            onTertiaryContainer: Colors.white,
-            surfaceVariant: GreyscaleShades.gray46,
-            primary: kPrimaryDarkColor,
-            onPrimary: kOnPrimaryDarkColor,
-            secondary: kPrimaryDarkColor,
-            onSecondary: kOnPrimaryDarkColor,
-            error: kErrorDarkColor,
-            onError: kOnErrorDarkColor,
-            surface: GreyscaleShades.gray24,
-            onSurface: Colors.white,
-          ),
-        _ => const ColorScheme(
-            brightness: Brightness.dark,
-            background: Colors.black,
-            onBackground: Colors.white,
-            secondaryContainer: GreyscaleShades.gray32,
-            onSecondaryContainer: Colors.white,
-            tertiaryContainer: GreyscaleShades.gray28,
-            onTertiaryContainer: Colors.white,
-            surfaceVariant: GreyscaleShades.gray24,
-            primary: kPrimaryAmoledDarkColor,
-            onPrimary: kOnPrimaryAmoledDarkColor,
-            secondary: kPrimaryAmoledDarkColor,
-            onSecondary: kOnPrimaryAmoledDarkColor,
-            error: kErrorAmoledDarkColor,
-            onError: kOnErrorAmoledDarkColor,
-            surface: Colors.black,
-            onSurface: Colors.white,
-            outline: Colors.white,
-            outlineVariant: GreyscaleShades.gray60,
-          ),
-      };
+  static ColorScheme defaultColorScheme(
+    AppThemeMode mode, {
+    required bool systemDarkMode,
+  }) {
+    const light = ColorScheme(
+      brightness: Brightness.light,
+      background: GreyscaleShades.gray242,
+      onBackground: kOnBackgroundLightColor,
+      secondaryContainer: GreyscaleShades.gray212,
+      onSecondaryContainer: kOnSurfaceLightColor,
+      tertiaryContainer: GreyscaleShades.gray220,
+      onTertiaryContainer: kOnSurfaceLightColor,
+      surfaceVariant: GreyscaleShades.gray226,
+      primary: kPrimaryLightColor,
+      onPrimary: kOnPrimaryLightColor,
+      secondary: kPrimaryLightColor,
+      onSecondary: kOnPrimaryLightColor,
+      error: kErrorLightColor,
+      onError: kOnErrorLightColor,
+      surface: GreyscaleShades.gray242,
+      onSurface: kOnSurfaceLightColor,
+    );
+
+    const dark = ColorScheme(
+      brightness: Brightness.dark,
+      background: GreyscaleShades.gray24,
+      onBackground: Colors.white,
+      secondaryContainer: GreyscaleShades.gray52,
+      onSecondaryContainer: Colors.white,
+      tertiaryContainer: GreyscaleShades.gray48,
+      onTertiaryContainer: Colors.white,
+      surfaceVariant: GreyscaleShades.gray46,
+      primary: kPrimaryDarkColor,
+      onPrimary: kOnPrimaryDarkColor,
+      secondary: kPrimaryDarkColor,
+      onSecondary: kOnPrimaryDarkColor,
+      error: kErrorDarkColor,
+      onError: kOnErrorDarkColor,
+      surface: GreyscaleShades.gray24,
+      onSurface: Colors.white,
+    );
+
+    return switch (mode) {
+      AppThemeMode.light => light,
+      AppThemeMode.dark => dark,
+      AppThemeMode.amoledDark => const ColorScheme(
+          brightness: Brightness.dark,
+          background: Colors.black,
+          onBackground: Colors.white,
+          secondaryContainer: GreyscaleShades.gray32,
+          onSecondaryContainer: Colors.white,
+          tertiaryContainer: GreyscaleShades.gray28,
+          onTertiaryContainer: Colors.white,
+          surfaceVariant: GreyscaleShades.gray24,
+          primary: kPrimaryAmoledDarkColor,
+          onPrimary: kOnPrimaryAmoledDarkColor,
+          secondary: kPrimaryAmoledDarkColor,
+          onSecondary: kOnPrimaryAmoledDarkColor,
+          error: kErrorAmoledDarkColor,
+          onError: kOnErrorAmoledDarkColor,
+          surface: Colors.black,
+          onSurface: Colors.white,
+          outline: Colors.white,
+          outlineVariant: GreyscaleShades.gray60,
+        ),
+      AppThemeMode.system => systemDarkMode ? dark : light,
+    };
+  }
 
   static ColorScheme generateFromThemeMode(
     AppThemeMode mode, {
     ColorScheme? seed,
-  }) =>
-      switch (mode) {
-        AppThemeMode.light =>
-          seed != null ? seed.harmonized() : defaultColorScheme(mode),
-        AppThemeMode.dark =>
-          seed != null ? seed.harmonized() : defaultColorScheme(mode),
-        _ => seed != null
-            ? defaultColorScheme(mode).copyWith(
-                primary: seed.primary,
-                onPrimary: seed.onPrimary,
-              )
-            : defaultColorScheme(mode),
-      };
+    required bool systemDarkMode,
+  }) {
+    final dark = seed != null
+        ? seed.harmonized()
+        : defaultColorScheme(
+            mode,
+            systemDarkMode: systemDarkMode,
+          );
+    final light = seed != null
+        ? seed.harmonized()
+        : defaultColorScheme(
+            mode,
+            systemDarkMode: systemDarkMode,
+          );
+
+    return switch (mode) {
+      AppThemeMode.light => light,
+      AppThemeMode.dark => dark,
+      AppThemeMode.amoledDark => seed != null
+          ? defaultColorScheme(
+              mode,
+              systemDarkMode: systemDarkMode,
+            ).copyWith(
+              primary: seed.primary,
+              onPrimary: seed.onPrimary,
+            )
+          : defaultColorScheme(
+              mode,
+              systemDarkMode: systemDarkMode,
+            ),
+      AppThemeMode.system => systemDarkMode ? dark : light,
+    };
+  }
 
   static ThemeData themeFrom(
     AppThemeMode mode, {
     required ColorScheme colorScheme,
+    required bool systemDarkMode,
   }) =>
       switch (mode) {
         AppThemeMode.light => lightTheme(
@@ -100,9 +131,13 @@ class AppTheme {
         AppThemeMode.amoledDark => darkAmoledTheme(
             colorScheme: colorScheme,
           ),
-        AppThemeMode.system => darkAmoledTheme(
-            colorScheme: colorScheme,
-          ),
+        AppThemeMode.system => systemDarkMode
+            ? darkTheme(
+                colorScheme: colorScheme,
+              )
+            : lightTheme(
+                colorScheme: colorScheme,
+              ),
       };
 
   static ThemeData lightTheme({

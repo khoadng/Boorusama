@@ -64,7 +64,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
             SettingsTile<AppThemeMode>(
               title: const Text('settings.theme.theme').tr(),
               selectedOption: settings.themeMode,
-              items: [...AppThemeMode.values]..remove(AppThemeMode.system),
+              items: AppThemeMode.values,
               onChanged: (value) =>
                   ref.updateSettings(settings.copyWith(themeMode: value)),
               optionBuilder: (value) => Text(value.localize()).tr(),

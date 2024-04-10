@@ -15,15 +15,15 @@ typedef ChipColors = ({
 });
 
 ChipColors? generateChipColorsFromColorScheme(
+  BuildContext context,
   Color? color,
   Settings settings,
-  ColorScheme colorScheme,
 ) {
   if (color == null) return null;
-  if (settings.themeMode == AppThemeMode.light) {
+  if (context.themeMode.isLight) {
     return (
       backgroundColor: settings.enableDynamicColoring
-          ? color.harmonizeWith(colorScheme.primary)
+          ? color.harmonizeWith(context.colorScheme.primary)
           : color,
       foregroundColor: Colors.white,
       borderColor: color
@@ -46,13 +46,13 @@ ChipColors? generateChipColorsFromColorScheme(
 
   return (
     foregroundColor: settings.enableDynamicColoring
-        ? color.harmonizeWith(colorScheme.primary)
+        ? color.harmonizeWith(context.colorScheme.primary)
         : color,
     backgroundColor: settings.enableDynamicColoring
-        ? darkColor.harmonizeWith(colorScheme.primary)
+        ? darkColor.harmonizeWith(context.colorScheme.primary)
         : darkColor,
     borderColor: settings.enableDynamicColoring
-        ? neutralDarkColor.harmonizeWith(colorScheme.primary)
+        ? neutralDarkColor.harmonizeWith(context.colorScheme.primary)
         : neutralDarkColor,
   );
 }

@@ -9,7 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'app_theme.dart';
 import 'colors.dart';
-import 'theme_mode.dart' as tm;
+import 'theme_mode.dart';
 
 class ThemeBuilder extends ConsumerWidget {
   const ThemeBuilder({
@@ -26,26 +26,33 @@ class ThemeBuilder extends ConsumerWidget {
     final enableDynamicColor = ref
         .watch(settingsProvider.select((value) => value.enableDynamicColoring));
 
+    final systemDarkMode =
+        MediaQuery.platformBrightnessOf(context) == Brightness.dark;
+
     return DynamicColorBuilder(
       builder: (light, dark) {
         final darkScheme = AppTheme.generateFromThemeMode(
           theme,
           seed: enableDynamicColor ? dark : null,
+          systemDarkMode: systemDarkMode,
         );
         final lightScheme = AppTheme.generateFromThemeMode(
           theme,
           seed: enableDynamicColor ? light : null,
+          systemDarkMode: systemDarkMode,
         );
         final darkAmoledScheme = AppTheme.generateFromThemeMode(
-          tm.AppThemeMode.amoledDark,
+          AppThemeMode.amoledDark,
           seed: enableDynamicColor ? dark : null,
+          systemDarkMode: systemDarkMode,
         );
 
-        final colorScheme = theme == tm.AppThemeMode.light
-            ? lightScheme
-            : theme == tm.AppThemeMode.dark
-                ? darkScheme
-                : darkAmoledScheme;
+        final colorScheme = switch (theme) {
+          AppThemeMode.light => lightScheme,
+          AppThemeMode.dark => darkScheme,
+          AppThemeMode.amoledDark => darkAmoledScheme,
+          AppThemeMode.system => systemDarkMode ? darkScheme : lightScheme,
+        };
 
         return Builder(
           builder: (context) => ProviderScope(
@@ -57,8 +64,9 @@ class ThemeBuilder extends ConsumerWidget {
               AppTheme.themeFrom(
                 theme,
                 colorScheme: colorScheme,
+                systemDarkMode: systemDarkMode,
               ),
-              tm.mapAppThemeModeToSystemThemeMode(theme),
+              mapAppThemeModeToSystemThemeMode(theme),
             ),
           ),
         );

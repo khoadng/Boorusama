@@ -12,5 +12,11 @@ extension ThemeX on BuildContext {
   ColorScheme get colorScheme => theme.colorScheme;
 
   BoorusamaColors get colors => Theme.of(this).extension<BoorusamaColors>()!;
-  AppThemeMode get themeMode => colors.themeMode;
+  AppThemeMode get themeMode => switch (colors.themeMode) {
+        AppThemeMode.system =>
+          MediaQuery.platformBrightnessOf(this) == Brightness.dark
+              ? AppThemeMode.dark
+              : AppThemeMode.light,
+        _ => colors.themeMode,
+      };
 }

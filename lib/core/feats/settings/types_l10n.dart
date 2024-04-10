@@ -12,9 +12,8 @@ extension PageModeTranslated on PageMode {
 extension ThemeModeTranslated on AppThemeMode {
   String localize() => switch (this) {
         AppThemeMode.dark => 'settings.theme.dark',
-        AppThemeMode.system ||
-        AppThemeMode.amoledDark =>
-          'settings.theme.amoled_dark',
+        AppThemeMode.system => 'System',
+        AppThemeMode.amoledDark => 'settings.theme.amoled_dark',
         AppThemeMode.light => 'settings.theme.light',
       };
 }
