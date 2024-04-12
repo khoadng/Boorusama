@@ -1,25 +1,25 @@
 // Flutter imports:
-import 'package:flutter/material.dart' as m;
+import 'package:flutter/material.dart';
 
 // Copy from Flutter ThemeMode enum
-enum ThemeMode {
+enum AppThemeMode {
   system,
   light,
   dark,
   amoledDark,
 }
 
-m.ThemeMode mapAppThemeModeToSystemThemeMode(ThemeMode theme) =>
+ThemeMode mapAppThemeModeToSystemThemeMode(AppThemeMode theme) =>
     switch (theme) {
-      ThemeMode.system => m.ThemeMode.system,
-      ThemeMode.dark => m.ThemeMode.dark,
-      ThemeMode.light => m.ThemeMode.light,
-      ThemeMode.amoledDark => m.ThemeMode.dark
+      AppThemeMode.system => ThemeMode.system,
+      AppThemeMode.dark => ThemeMode.dark,
+      AppThemeMode.light => ThemeMode.light,
+      AppThemeMode.amoledDark => ThemeMode.dark
     };
 
-extension ThemeModeX on ThemeMode {
+extension ThemeModeX on AppThemeMode {
   bool get isDark => switch (this) {
-        ThemeMode.light => false,
+        AppThemeMode.light => false,
         _ => true,
       };
 

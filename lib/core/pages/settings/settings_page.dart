@@ -10,6 +10,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/feats/boorus/providers.dart';
 import 'package:boorusama/core/pages/settings/about_page.dart';
 import 'package:boorusama/core/pages/settings/debug_logs_page.dart';
 import 'package:boorusama/core/utils.dart';
@@ -125,7 +126,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                         ),
                       ).tr(),
                       leading: FaIcon(
-                        FontAwesomeIcons.gear,
+                        FontAwesomeIcons.gaugeSimpleHigh,
                         color: context.iconTheme.color,
                         size: 20,
                       ),
@@ -175,6 +176,20 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     ),
                     ListTile(
                       title: const Text(
+                        'settings.accessibility.accessibility',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ).tr(),
+                      leading: FaIcon(
+                        FontAwesomeIcons.universalAccess,
+                        color: context.iconTheme.color,
+                        size: 20,
+                      ),
+                      onTap: () => context.go('/settings/accessibility'),
+                    ),
+                    ListTile(
+                      title: const Text(
                         'settings.privacy.privacy',
                         style: TextStyle(
                           fontWeight: FontWeight.w400,
@@ -186,6 +201,25 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                         size: 20,
                       ),
                       onTap: () => context.go('/settings/privacy'),
+                    ),
+                    const Divider(),
+                    _SettingsSection(
+                      label: 'settings.booru_settings.booru_settings'.tr(),
+                    ),
+                    ListTile(
+                      title: Text(
+                        'settings.booru_settings.edit_current_profile'.tr(),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      leading: FaIcon(
+                        FontAwesomeIcons.gear,
+                        color: context.iconTheme.color,
+                        size: 20,
+                      ),
+                      onTap: () =>
+                          context.push('/boorus/${ref.watchConfig.id}/update'),
                     ),
                     const Divider(),
                     _SettingsSection(
@@ -237,8 +271,9 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                       ),
                     ),
                     const Divider(),
-                    const _SettingsSection(
-                      label: 'Contribute',
+                    _SettingsSection(
+                      // label: 'Contribute',
+                      label: 'settings.contribute'.tr(),
                     ),
                     ListTile(
                       title: const Text(
@@ -260,7 +295,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     // Source code
                     ListTile(
                       title: const Text(
-                        'Source code',
+                        'settings.source_code',
                         style: TextStyle(
                           fontWeight: FontWeight.w400,
                         ),
@@ -276,19 +311,19 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                       ),
                     ),
                     const Divider(),
-                    const _SettingsSection(
-                      label: 'Support',
+                    _SettingsSection(
+                      label: 'settings.support'.tr(),
                     ),
                     ListTile(
                       title: const Text(
-                        'Contact developer',
+                        'settings.contact_developer',
                         style: TextStyle(
                           fontWeight: FontWeight.w400,
                         ),
-                      ),
+                      ).tr(),
                       subtitle: const Text(
-                        'If you have any issues or suggestions, feel free to send me an email through this option',
-                      ),
+                        'settings.contact_developer_description',
+                      ).tr(),
                       leading: Icon(
                         Symbols.email,
                         color: context.iconTheme.color,
@@ -300,14 +335,14 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     ),
                     ListTile(
                       title: const Text(
-                        'Feature request and bug report',
+                        'settings.feature_request_and_bug_report',
                         style: TextStyle(
                           fontWeight: FontWeight.w400,
                         ),
-                      ),
+                      ).tr(),
                       subtitle: const Text(
-                        'Suggest features or report bugs through the GitHub repository.',
-                      ),
+                        'settings.feature_request_and_bug_report_description',
+                      ).tr(),
                       leading: Icon(
                         Symbols.bug_report,
                         color: context.iconTheme.color,

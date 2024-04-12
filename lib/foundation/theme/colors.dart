@@ -1,5 +1,5 @@
 // Flutter imports:
-import 'package:flutter/material.dart' hide ThemeMode;
+import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/theme/theme_utils.dart';
 import 'theme_mode.dart';
 
 const kLightWhiteColor = Color.fromARGB(255, 220, 220, 220);
@@ -44,13 +43,13 @@ class BoorusamaColors extends ThemeExtension<BoorusamaColors> {
   });
 
   final Color videoPlayerBackgroundColor;
-  final ThemeMode themeMode;
+  final AppThemeMode themeMode;
   final Color selectedColor;
 
   @override
   ThemeExtension<BoorusamaColors> copyWith({
     Color? videoPlayerBackgroundColor,
-    ThemeMode? themeMode,
+    AppThemeMode? themeMode,
     Color? selectedColor,
   }) =>
       BoorusamaColors(
@@ -86,7 +85,7 @@ extension DynamicColorX on BuildContext {
     Color? color,
     Settings settings,
   ) =>
-      generateChipColorsFromColorScheme(color, settings, colorScheme);
+      generateChipColorsFromColorScheme(this, color, settings);
 }
 
 final dynamicColorSupportProvider = Provider<bool>((ref) {

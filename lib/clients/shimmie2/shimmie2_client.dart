@@ -27,7 +27,7 @@ class Shimmie2Client {
     final isEmpty = tags?.join(' ').isEmpty ?? true;
 
     final response = await _dio.get(
-      '/api/danbooru/find_posts/index.xml',
+      '/api/danbooru/find_posts',
       queryParameters: {
         if (!isEmpty) 'tags': tags?.join(' '),
         if (page != null) 'page': page,

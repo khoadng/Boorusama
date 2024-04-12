@@ -90,12 +90,18 @@ mixin DanbooruClientPosts {
         score: -1,
       );
 
-  Future<void> removePostVote(
+  Future<bool> removePostVote(
     int postId,
   ) async {
-    final _ = await dio.delete(
-      '/posts/$postId/votes.json',
-    );
+    try {
+      final _ = await dio.delete(
+        '/posts/$postId/votes.json',
+      );
+
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   Future<List<PostVoteDto>> getPostVotes({

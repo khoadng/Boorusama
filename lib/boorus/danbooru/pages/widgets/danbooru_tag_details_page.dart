@@ -1,5 +1,5 @@
 // Flutter imports:
-import 'package:flutter/material.dart' hide ThemeMode;
+import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:collection/collection.dart';
@@ -10,6 +10,7 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/widgets.dart';
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
@@ -158,7 +159,7 @@ final danbooruRelatedTagCloudProvider =
 
 typedef TagColorParams = ({
   Color primaryColor,
-  ThemeMode themeMode,
+  AppThemeMode themeMode,
   String categories,
 });
 
@@ -178,11 +179,15 @@ final _tagCategoryColorsProvider =
 
     final categories = params.categories.split('|');
 
+    final dynamicColor = ref
+        .watch(settingsProvider.select((value) => value.enableDynamicColoring));
+
     for (var category in categories) {
       colors[category] = getTagColorCore(
         category,
         primaryColor: params.primaryColor,
         themeMode: params.themeMode,
+        dynamicColor: dynamicColor,
         color: tagColorBuilder?.call(
           params.themeMode,
           category,

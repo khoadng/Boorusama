@@ -2,7 +2,7 @@
 import 'dart:math';
 
 // Flutter imports:
-import 'package:flutter/material.dart' hide ThemeMode;
+import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -908,9 +908,9 @@ class TagEditTagListSection extends ConsumerWidget {
     final colors = ref.watch(danbooruTagEditColorProvider(tag)).maybeWhen(
           data: (color) => color != null && color != Colors.white
               ? generateChipColorsFromColorScheme(
+                  context,
                   color,
                   ref.watch(settingsProvider),
-                  context.colorScheme,
                 )
               : null,
           orElse: () => null,

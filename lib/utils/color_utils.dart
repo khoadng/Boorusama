@@ -1,5 +1,5 @@
 // Flutter imports:
-import 'package:flutter/material.dart' hide ThemeMode;
+import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:dynamic_color/dynamic_color.dart';
@@ -15,18 +15,23 @@ typedef ChipColors = ({
 });
 
 ChipColors? generateChipColorsFromColorScheme(
+  BuildContext context,
   Color? color,
   Settings settings,
-  ColorScheme colorScheme,
 ) {
   if (color == null) return null;
-  if (settings.themeMode == ThemeMode.light) {
+  if (context.themeMode.isLight) {
+    final backgroundColor = settings.enableDynamicColoring
+        ? color.harmonizeWith(context.colorScheme.primary)
+        : color;
     return (
-      backgroundColor: settings.enableDynamicColoring
-          ? color.harmonizeWith(colorScheme.primary)
+      backgroundColor: backgroundColor,
+      foregroundColor: backgroundColor.computeLuminance() > 0.7
+          ? Colors.black
+          : Colors.white,
+      borderColor: settings.enableDynamicColoring
+          ? color.harmonizeWith(context.colorScheme.primary)
           : color,
-      foregroundColor: Colors.white,
-      borderColor: color
     );
   }
 
@@ -46,13 +51,13 @@ ChipColors? generateChipColorsFromColorScheme(
 
   return (
     foregroundColor: settings.enableDynamicColoring
-        ? color.harmonizeWith(colorScheme.primary)
+        ? color.harmonizeWith(context.colorScheme.primary)
         : color,
     backgroundColor: settings.enableDynamicColoring
-        ? darkColor.harmonizeWith(colorScheme.primary)
+        ? darkColor.harmonizeWith(context.colorScheme.primary)
         : darkColor,
     borderColor: settings.enableDynamicColoring
-        ? neutralDarkColor.harmonizeWith(colorScheme.primary)
+        ? neutralDarkColor.harmonizeWith(context.colorScheme.primary)
         : neutralDarkColor,
   );
 }

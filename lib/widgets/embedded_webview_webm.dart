@@ -9,6 +9,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 
 // Project imports:
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
 import 'center_play_button.dart';
 
@@ -161,6 +162,7 @@ class EmbeddedWebViewWebm extends StatefulWidget {
     this.autoPlay = false,
     this.sound = true,
     this.userAgent,
+    this.onZoomUpdated,
   });
 
   final String url;
@@ -172,6 +174,7 @@ class EmbeddedWebViewWebm extends StatefulWidget {
   final bool autoPlay;
   final bool sound;
   final String? userAgent;
+  final void Function(bool value)? onZoomUpdated;
 
   @override
   State<EmbeddedWebViewWebm> createState() => _EmbeddedWebViewWebmState();
@@ -184,6 +187,7 @@ class _EmbeddedWebViewWebmState extends State<EmbeddedWebViewWebm> {
     onCurrentPositionChanged: (current, total) =>
         widget.onCurrentPositionChanged?.call(current, total, widget.url),
   );
+  final transformationController = TransformationController();
 
   @override
   void didUpdateWidget(covariant EmbeddedWebViewWebm oldWidget) {
@@ -203,33 +207,48 @@ class _EmbeddedWebViewWebmState extends State<EmbeddedWebViewWebm> {
       muted: !widget.sound,
     ));
     widget.onWebmVideoPlayerCreated?.call(webmVideoController);
+
+    transformationController.addListener(() {
+      final clampedMatrix = Matrix4.diagonal3Values(
+        transformationController.value.right.x,
+        transformationController.value.up.y,
+        transformationController.value.forward.z,
+      );
+
+      widget.onZoomUpdated?.call(!clampedMatrix.isIdentity());
+    });
   }
 
   @override
   void dispose() {
     webmVideoController.dispose();
+    transformationController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          showPlay = !showPlay;
-          widget.onVisibilityChanged?.call(!showPlay);
-        });
-      },
-      child: Stack(
-        children: [
-          Container(
-            color: widget.backgroundColor,
-            height: MediaQuery.sizeOf(context).height,
-            child: WebViewWidget(
-                controller: webmVideoController._webViewController),
-          ),
-          _buildHitArea(),
-        ],
+    return InteractiveImage(
+      useOriginalSize: false,
+      transformationController: transformationController,
+      image: GestureDetector(
+        onTap: () {
+          setState(() {
+            showPlay = !showPlay;
+            widget.onVisibilityChanged?.call(!showPlay);
+          });
+        },
+        child: Stack(
+          children: [
+            Container(
+              color: widget.backgroundColor,
+              height: MediaQuery.sizeOf(context).height,
+              child: WebViewWidget(
+                  controller: webmVideoController._webViewController),
+            ),
+            _buildHitArea(),
+          ],
+        ),
       ),
     );
   }

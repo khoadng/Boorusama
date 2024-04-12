@@ -10,12 +10,16 @@
             "delete": "ลบ",
             "edit": "แก้ไข",
             "ok": "ตกลง",
-            "cancel": "ยกเลิก"
+            "cancel": "ยกเลิก",
+            "duplicate": "ทำสำเนา"
         },
         "view": "ดู"
     },
     "profile": {
-        "favorites": "รายการโปรด"
+        "favorites": "รายการโปรด",
+        "profile": "โปรไฟล์",
+        "copy_user_id": "คัดลอก User ID",
+        "messages": "ข้อความ"
     },
     "network": {
         "unavailable": "ระบบเน็ตไม่พร้อมใช้งาน"
@@ -100,7 +104,8 @@
         "popular": "ยอดนิยม",
         "hot": "ร้องแรงอย่างสุด",
         "most_viewed": "ดูเยอะที่สุด",
-        "see_more": "ดูเพิ่มเติม"
+        "see_more": "ดูเพิ่มเติม",
+        "explore": "สำรวจ"
     },
     "search": {
         "errors": {
@@ -158,12 +163,16 @@
         "app_settings": "การตั้งค่าแอป",
         "appearance": {
             "appearance": "รูปร่างหน้าตา",
-            "show_scores": "แสดงคะแนน"
+            "show_scores": "แสดงคะแนน",
+            "booru_config": "โปรไฟล์ Booru",
+            "show_post_list_config_header": "แสดงการกำหนดค่าโพสต์ที่ด้านบน",
+            "booru_config_placement": "การปรับตำแหน่งโปรไฟล์ Booru"
         },
         "general": "ทั่วไป",
         "search": {
             "search": "การค้นหา",
-            "auto_focus_search_bar": "ปรับให้โฟกัสแถบค้นหาอัตโนมัติเมื่อแตะการค้นหาในครั้งแรก"
+            "auto_focus_search_bar": "ปรับให้โฟกัสแถบค้นหาอัตโนมัติเมื่อแตะการค้นหาในครั้งแรก",
+            "hide_bookmarked_posts_from_search_results": "ซ่อนโพสค์ที่บุ๊กมาร์กจากผลการค้นหา"
         },
         "information": "ข้อมูลแอป",
         "changelog": "ประวัติการอัปเดต",
@@ -196,7 +205,9 @@
                 "highest": "สูงที่สุด"
             },
             "spacing": "การเว้นระยะ",
-            "corner_radius": "ความมนโค้งของมุม"
+            "corner_radius": "ความมนโค้งของมุม",
+            "padding": "ระยะห่าง",
+            "aspect_ratio": "อัตราส่วนภาพ"
         },
         "image_viewer": {
             "image_viewer": "โปรแกรมในการดูภาพ",
@@ -214,11 +225,19 @@
             "theme": "ธีม",
             "dark": "มืด",
             "light": "สว่าง",
-            "amoled_dark": "มืดแบบ AMOLED"
+            "amoled_dark": "มืดแบบ AMOLED",
+            "dynamic_color": "ธีมสีไดนามิก",
+            "dynamic_color_unsupported_description": "อุปกรณ์นี้ไม่รองรับระบบสีไดนามิก",
+            "dynamic_color_desktop_description": "เปลี่ยนธีมสีตามสีหลักของระบบปฏิบัติการ",
+            "dynamic_color_mobile_description": "เปลี่ยนธีมสีตามหน้าภาพหน้าจอ"
         },
         "privacy": {
             "privacy": "ความเป็นส่วนตัว",
-            "send_error_data_notice": "ส่งข้อมูลที่ไม่ระบุตัวตนสำหรับข้อมูลข้อผิดพลาดต่างๆ"
+            "send_error_data_notice": "ส่งข้อมูลที่ไม่ระบุตัวตนสำหรับข้อมูลข้อผิดพลาดต่างๆ",
+            "enable_incognito_keyboard": "เปิดโหมดคีย์บอร์ดไม่เก็บข้อมูล",
+            "enable_biometric_lock": "เปิดการปลดล็อกด้วยสแกนลายนิ้วมือ",
+            "enable_incognito_keyboard_notice": "มีผลใช้งานกับระบบ Android",
+            "enable_biometric_lock_notice": "รองรับเฉพาะมือถือที่มีระบบสแกนนิ้วมือ และได้ตั้งค่าการสแกนนิ้วมือบนเครื่องแล้ว"
         },
         "performance": {
             "performance": "ประสิทธิภาพ",
@@ -226,7 +245,7 @@
             "posts_per_page_explain": "จำนวนตัวอย่างภาพที่จะแสดงในหนึ่งๆหน้า",
             "cache_size": "ขนาดไฟล์แคช",
             "clear_cache": "ล้างไฟล์แคช",
-            "cache_size_info": "ขนาด {0} MB ใน {1} ไฟล์"
+            "cache_size_info": "ขนาด {0} ใน {1} ไฟล์"
         },
         "debug_logs": {
             "debug_logs": "รายการ Debug",
@@ -243,7 +262,45 @@
             }
         },
         "help_us_translate": "ช่วยพวกเราในการแปลภาษา",
-        "other_settings": "การตั้งค่าอื่นๆ"
+        "other_settings": "การตั้งค่าอื่นๆ",
+        "image_details": {
+            "image_details": "รายละเอียดรูปภาพ",
+            "ui_overlay": {
+                "show": "แสดง",
+                "ui_overlay": "การแสดงปุ่มซ้อนทับบนภาพ",
+                "hide": "ซ่อน"
+            }
+        },
+        "backup_and_restore": {
+            "backup_and_restore": "สำรอง และเรียกคืนข้อมูล"
+        },
+        "page_indicator": {
+            "page_indicator": "ตำแหน่งตัวนำทางหน้า",
+            "bottom": "ล่าง",
+            "top": "บน",
+            "both": "ทั้งสองตำแหน่ง"
+        },
+        "data_and_storage": {
+            "clear_cache_on_start_up": "ลบไฟล์แคชตอนเปิดแอป",
+            "data_and_storage": "ข้อมูล และพื้นที่จัดเก็บ"
+        },
+        "accessibility": {
+            "accessibility": "การช่วยเหลือพิเศษ",
+            "reverseBooruConfigSelectorScrollDirection": "เลื่อนสลับทิศทางของโปรไฟล์ Booru",
+            "swipeAreaToOpenSidebarDescription": "ขนาดพื้นที่ของแถบด้านซ้ายบนหน้าจอจะสามารถใช้เป็นพื้นที่ในการปัด จำนวนพื้นที่ใหญ่จะปิดกั้นท่าทางสัมผัสในแนวนอนทั้งหมดเช่นทาทางการปัดเลื่อนไปหน้าอื่น",
+            "swipeAreaToOpenSidebar": "พื้นที่การปัดของแถบด้านข้าง"
+        },
+        "booru_settings": {
+            "edit_current_profile": "แก้ไขโปรไฟล์ปัจจุบัน",
+            "booru_settings": "ตั้งค่า Booru"
+        },
+        "contact_developer_description": "หากพบปัญหาในการใช้งานต่างๆ หรือต้องการให้ขอเสนอแนะ สามารถส่งอีเมลมาหาเราได้ผ่านช่องทางนี้",
+        "feature_request_and_bug_report_description": "แนะนำฟังก์ชั่นต่างๆ หรือรายงานปัญหาผ่านโปรเจกต์ใน GitHub",
+        "source_code": "ซอร์สโค้ด",
+        "contribute": "การมีส่วนร่วม",
+        "contact_developer": "ติดต่อนักพัฒนาแอพ",
+        "feature_request_and_bug_report": "ร้องขอฟังกชั่นต่างๆ และรายงานปัญหา",
+        "support": "การสนับสนุน"
     },
     "blacklisted_tags": {
         "remove": "ลบ",
@@ -251,9 +308,12 @@
         "blacklisted_tags": "แท็กต้องห้าม",
         "load_error": "การโหลดรายการแท็กต้องห้ามล้มเหลว",
         "updated": "แท็กต้องห้ามได้อัปเดตแล้ว",
-        "limitation_notice": "",
+        "limitation_notice": "รองรับเฉพาะคำสั่ง <b>NOT</b>, คำสั่ง <b>OR</b>, <b>score</b> Metatag และ <b>rating</b> Metatag\n\nการใช้งานคำต้องห้ามแสดงกับ metatags อื่นๆ จะยังไม่รอบรับในเวอร์ชั่นปัจจุบัน",
         "failed_to_add": "ไม่สามารถเพิ่มแท็กได้",
-        "failed_to_remove": "ไม่สามารถลบแท็กได้"
+        "failed_to_remove": "ไม่สามารถลบแท็กได้",
+        "disable_all": "ปิดทั้งหมด",
+        "reenable_all": "เปิดกลับมาใหม่ทั้งหมด",
+        "blacklisted_header_title": "แท็กต้องห้ามที่ใช้"
     },
     "download": {
         "download": "ดาวน์โหลด",
@@ -303,7 +363,7 @@
         "saved_search_help": "นี้คืออะไรนะ?",
         "saved_search_examples": "ตัวอย่าง",
         "saved_search_try": "ลองสิ",
-        "saved_search_query": "",
+        "saved_search_query": "คำ",
         "saved_search_labels": "ป้ายกำกับ*",
         "saved_search_labels_description": "*เป็นรายการของแท็กที่ช่วยให้จัดกลุ่มในการค้นหา คั่นกลางด้วยการเว้นวรรค"
     },
@@ -312,8 +372,8 @@
             "one": "รายการโปรด",
             "other": "รายการโปรด"
         },
-        "favorited": "",
-        "favorite": ""
+        "favorited": "รายการโปรด",
+        "favorite": "รายการโปรด"
     },
     "favorite_groups": {
         "favorite_groups": "กลุ่มรายการโปรด",
@@ -347,7 +407,8 @@
         "import_hint": "ใส่คำเฉพาะของแท็กของคุณที่นี่ แยกคำโดยการเว้นวรรค",
         "cancel": "ยกเลิก",
         "export": "นำออก",
-        "export_notification": "คัดลอกคำเฉพาะของแท็กไว้ในคลิปบอร์ดเรียบร้อย"
+        "export_notification": "คัดลอกคำเฉพาะของแท็กไว้ในคลิปบอร์ดเรียบร้อย",
+        "favorite_tags": "แท็กรายการโปรด"
     },
     "rating": {
         "rate_request": "ให้คะแนนกับแอปนี้",
@@ -360,7 +421,8 @@
         "settings": "การตั้งค่า",
         "your_bookmarks": "บุ๊กมาร์กของคุณ",
         "your_blacklist": "คำต้องห้ามของคุณ",
-        "bulk_download": "การดาวน์โหลดเป็นชุด"
+        "bulk_download": "การดาวน์โหลดเป็นชุด",
+        "get_support": "ขอความช่วยเหลือ"
     },
     "dateRange": {
         "day": "วัน",
@@ -378,7 +440,7 @@
         "content_filtering_label": "การกรองเนื้อหา",
         "hide_deleted_label": "ซ่อนโพสต์ที่ถูกลบ",
         "config_booru_confirm": "ตกลง",
-        "add_a_booru_site": "เพิ่มเว็บไซต์ booru",
+        "add_a_booru_site": "สร้างโปรไฟล์เว็บใหม่",
         "next_step": "ถัดไป",
         "site_url": "ลิงค์เว็บไซต์",
         "unsupported_warning": "เว็บไซต์ booru นี้ยังไม่รองรับกับแอป",
@@ -388,7 +450,11 @@
         "validation_missing_trailing_slash": "ไม่พบเครื่องหมายสแลช (/) ต่อท้ายในลิงค์ \"{0}\"",
         "validation_redundant_www": "พบคำว่า \"www\" อยู่ในลิงค์ \"{0}\"",
         "validation_contains_spaces": "ลิงค์ \"{0}\" มีการเว้นวรรคอยู่",
-        "validation_missing_scheme": "ไม่พบการระบุโปรโตคอลของเว็บ (เช่น https://) ในลิงค์ \"{0}\""
+        "validation_missing_scheme": "ไม่พบการระบุโปรโตคอลของเว็บ (เช่น https://) ในลิงค์ \"{0}\"",
+        "authentication": "การยืนยันตัวตน",
+        "download": "ดาวน์โหลด",
+        "gestures": "ท่าทางสัมผัส",
+        "misc": "อื่นๆ"
     },
     "blacklist": {
         "manage": {
@@ -415,5 +481,11 @@
     },
     "forum": {
         "forum": "กระดานสนทนา"
+    },
+    "gestures": {
+        "swipe_down": "ปัดลง",
+        "double_tap": "แตะสองครั้ง",
+        "long_press": "แตะค้าง",
+        "tap": "แตะ"
     }
 }

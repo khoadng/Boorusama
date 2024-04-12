@@ -230,6 +230,17 @@ class SettingsRoutes {
         ),
       );
 
+  // accessiblity
+  static GoRoute accessibility() => GoRoute(
+        path: 'accessibility',
+        name: '/settings/accessibility',
+        pageBuilder: (context, state) => CupertinoPage(
+          key: state.pageKey,
+          name: state.name,
+          child: const AccessibilityPage(),
+        ),
+      );
+
   static GoRoute search() => GoRoute(
         path: 'search',
         name: '/settings/search',
@@ -494,6 +505,7 @@ class Routes {
           SettingsRoutes.privacy(),
           SettingsRoutes.search(),
           SettingsRoutes.changelog(),
+          SettingsRoutes.accessibility(),
         ],
       );
 

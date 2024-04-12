@@ -223,11 +223,11 @@
 				97C146EA1CF9000F007C117D /* Sources */,
 				97C146EB1CF9000F007C117D /* Frameworks */,
 				97C146EC1CF9000F007C117D /* Resources */,
+				D2EDBA4D2A99AC390057D9AF /* Embed Foundation Extensions */,
 				9705A1C41CF9048500538489 /* Embed Frameworks */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				B92D107162F613B83DA35415 /* [CP] Embed Pods Frameworks */,
 				59245E17A2642C06D0DA858C /* [firebase_crashlytics] Crashlytics Upload Symbols */,
-				D2EDBA4D2A99AC390057D9AF /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
@@ -265,7 +265,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1430;
-				LastUpgradeCheck = 1430;
+				LastUpgradeCheck = 1510;
 				ORGANIZATIONNAME = "";
 				TargetAttributes = {
 					97C146ED1CF9000F007C117D = {

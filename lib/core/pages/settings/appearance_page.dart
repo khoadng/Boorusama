@@ -1,5 +1,5 @@
 // Flutter imports:
-import 'package:flutter/material.dart' hide ThemeMode;
+import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -61,27 +61,27 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
           primary: false,
           children: [
             SettingsHeader(label: 'settings.general'.tr()),
-            SettingsTile<ThemeMode>(
+            SettingsTile<AppThemeMode>(
               title: const Text('settings.theme.theme').tr(),
               selectedOption: settings.themeMode,
-              items: [...ThemeMode.values]..remove(ThemeMode.system),
+              items: AppThemeMode.values,
               onChanged: (value) =>
                   ref.updateSettings(settings.copyWith(themeMode: value)),
               optionBuilder: (value) => Text(value.localize()).tr(),
             ),
             Builder(builder: (context) {
               return SwitchListTile(
-                title: const Text('Dynamic theme color'),
+                title: const Text('settings.theme.dynamic_color').tr(),
                 subtitle: dynamicColorSupported
                     ? !isDesktopPlatform()
                         ? const Text(
-                            'Sync theme color with wallpaper',
-                          )
+                            'settings.theme.dynamic_color_mobile_description',
+                          ).tr()
                         : const Text(
-                            "Sync theme color with OS's accent color",
-                          )
+                            'settings.theme.dynamic_color_desktop_description',
+                          ).tr()
                     : Text(
-                        '${!isDesktopPlatform() ? 'Sync theme color with wallpaper.' : 'Sync theme color with OS\'s accent color.'}This device does not support dynamic color.',
+                        '${!isDesktopPlatform() ? 'settings.theme.dynamic_color_mobile_description'.tr() : 'settings.theme.dynamic_color_desktop_description'.tr()}. ${'settings.theme.dynamic_color_unsupported_description'.tr()}',
                       ),
                 value: settings.enableDynamicColoring,
                 onChanged: dynamicColorSupported
@@ -114,9 +114,10 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8),
-                      child: Text('Aspect ratio'),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child:
+                          const Text('settings.image_grid.aspect_ratio').tr(),
                     ),
                     const SizedBox(
                       height: 10,
@@ -171,7 +172,9 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
                   .updateSettings(settings.copyWith(showScoresInGrid: value)),
             ),
             SwitchListTile(
-              title: const Text('Show posts configuration header'),
+              title:
+                  const Text('settings.appearance.show_post_list_config_header')
+                      .tr(),
               value: settings.showPostListConfigHeader,
               onChanged: (value) =>
                   ref.setPostListConfigHeaderStatus(active: value),
@@ -222,6 +225,25 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
                   _buildPaddingSlider(settings),
                 ],
               ),
+            ),
+            const Divider(thickness: 1),
+            SettingsHeader(label: 'settings.appearance.booru_config'.tr()),
+            SettingsTile<BooruConfigSelectorPosition>(
+              title:
+                  const Text('settings.appearance.booru_config_placement').tr(),
+              selectedOption: settings.booruConfigSelectorPosition,
+              items: const [...BooruConfigSelectorPosition.values],
+              onChanged: (value) => ref.updateSettings(
+                  settings.copyWith(booruConfigSelectorPosition: value)),
+              optionBuilder: (value) => Text(value.localize()),
+            ),
+            SettingsTile<BooruConfigLabelVisibility>(
+              title: const Text('Label').tr(),
+              selectedOption: settings.booruConfigLabelVisibility,
+              items: const [...BooruConfigLabelVisibility.values],
+              onChanged: (value) => ref.updateSettings(
+                  settings.copyWith(booruConfigLabelVisibility: value)),
+              optionBuilder: (value) => Text(value.localize()),
             ),
             const Divider(thickness: 1),
             SettingsHeader(label: 'settings.image_details.image_details'.tr()),

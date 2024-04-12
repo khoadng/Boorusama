@@ -49,7 +49,7 @@ extension BooruBuilderWidgetRef on WidgetRef {
   Color? getTagColor(
     BuildContext context,
     String tagType, {
-    ThemeMode? themeMode,
+    AppThemeMode? themeMode,
   }) {
     final tm = themeMode ?? context.themeMode;
 
@@ -67,7 +67,7 @@ extension BooruBuilderWidgetRef on WidgetRef {
 Color? getTagColorCore(
   String tagType, {
   required Color primaryColor,
-  required ThemeMode themeMode,
+  required AppThemeMode themeMode,
   bool dynamicColor = false,
   required Color? color,
 }) =>

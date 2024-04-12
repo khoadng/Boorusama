@@ -8,6 +8,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:reorderables/reorderables.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
@@ -18,11 +19,15 @@ import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class BooruSelector extends ConsumerStatefulWidget {
   const BooruSelector({
     super.key,
+    this.direction = Axis.vertical,
   });
+
+  final Axis direction;
 
   @override
   ConsumerState<BooruSelector> createState() => _BooruSelectorState();
@@ -42,52 +47,56 @@ class _BooruSelectorState extends ConsumerState<BooruSelector> {
               onPressed: () => context.go('/boorus/${config.id}/update'),
             ),
             ContextMenuButtonConfig(
-              'Duplicate',
+              'generic.action.duplicate'.tr(),
               onPressed: () => ref
                   .read(booruConfigProvider.notifier)
                   .duplicate(config: config),
             ),
-            if (currentConfig != config)
-              ContextMenuButtonConfig(
-                'generic.action.delete'.tr(),
-                labelStyle: TextStyle(
-                  color: context.colorScheme.error,
-                ),
-                onPressed: () {
-                  if (isMobilePlatform()) {
-                    showDialog(
-                      context: context,
-                      builder: (context) => Dialog(
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(8)),
-                        ),
-                        child: RemoveBooruConfigAlertDialog(
-                          title: "Delete '${config.name}'",
-                          description:
-                              'Are you sure you want to delete this profile? This action cannot be undone.',
-                          onConfirm: () => ref
-                              .read(booruConfigProvider.notifier)
-                              .delete(config),
-                        ),
+            ContextMenuButtonConfig(
+              'generic.action.delete'.tr(),
+              labelStyle: TextStyle(
+                color: context.colorScheme.error,
+              ),
+              onPressed: () {
+                if (isMobilePlatform()) {
+                  showDialog(
+                    context: context,
+                    builder: (context) => Dialog(
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
                       ),
-                    );
-                  } else {
-                    showDesktopDialogWindow(
-                      context,
-                      width: 400,
-                      height: 300,
-                      builder: (context) => RemoveBooruConfigAlertDialog(
+                      child: RemoveBooruConfigAlertDialog(
                         title: "Delete '${config.name}'",
                         description:
                             'Are you sure you want to delete this profile? This action cannot be undone.',
                         onConfirm: () => ref
                             .read(booruConfigProvider.notifier)
-                            .delete(config),
+                            .delete(
+                              config,
+                              onFailure: (message) => showErrorToast(message),
+                            ),
                       ),
-                    );
-                  }
-                },
-              ),
+                    ),
+                  );
+                } else {
+                  showDesktopDialogWindow(
+                    context,
+                    width: 400,
+                    height: 300,
+                    builder: (context) => RemoveBooruConfigAlertDialog(
+                      title: "Delete '${config.name}'",
+                      description:
+                          'Are you sure you want to delete this profile? This action cannot be undone.',
+                      onConfirm: () =>
+                          ref.read(booruConfigProvider.notifier).delete(
+                                config,
+                                onFailure: (message) => showErrorToast(message),
+                              ),
+                    ),
+                  );
+                }
+              },
+            ),
           ],
         ),
       );
@@ -95,62 +104,115 @@ class _BooruSelectorState extends ConsumerState<BooruSelector> {
 
     void hide() => context.contextMenuOverlay.hide();
 
+    void onReorder(int oldIndex, int newIndex, Iterable<BooruConfig> configs) {
+      final orders = ref.read(configIdOrdersProvider);
+      final newOrders = orders.isEmpty || orders.length != configs.length
+          ? [for (final config in configs) config.id]
+          : orders.toList();
+
+      newOrders.reorder(oldIndex, newIndex);
+
+      ref.setBooruConfigOrder(newOrders);
+    }
+
+    final addButton = IconButton(
+      splashRadius: 20,
+      onPressed: () => context.go('/boorus/add'),
+      icon: const Icon(Symbols.add),
+    );
+
+    final reverseScroll = ref.watch(settingsProvider
+        .select((value) => value.reverseBooruConfigSelectorScrollDirection));
+
+    final hideLabel = ref
+        .watch(settingsProvider.select((value) => value.hideBooruConfigLabel));
+
     return Container(
-      width: 68,
+      height: widget.direction == Axis.horizontal ? 48 : null,
+      width: widget.direction == Axis.vertical ? 68 : null,
       color: context.colorScheme.secondaryContainer,
       child: ScrollConfiguration(
         behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
         child: ref.watch(configsProvider).maybeWhen(
-              data: (configs) => CustomScrollView(
-                slivers: [
-                  ReorderableSliverList(
-                      onReorderStarted: (index) => show(configs[index]),
-                      onHover: (start, current) => hide(),
-                      delegate: ReorderableSliverChildBuilderDelegate(
-                        (context, index) {
-                          final config = configs[index];
+              data: (configs) {
+                return widget.direction == Axis.vertical
+                    ? CustomScrollView(
+                        reverse: reverseScroll,
+                        scrollDirection: widget.direction,
+                        slivers: [
+                          ReorderableSliverList(
+                            onReorderStarted: (index) => show(configs[index]),
+                            onHover: (start, current) => hide(),
+                            delegate: ReorderableSliverChildBuilderDelegate(
+                              (context, index) {
+                                final config = configs[index];
 
-                          return BooruSelectorItem(
-                            config: config,
-                            show: () => show(config),
-                            onTap: () => ref
-                                .read(currentBooruConfigProvider.notifier)
-                                .update(config),
-                            selected: currentConfig == config,
-                          );
-                        },
-                        childCount: configs.length,
-                      ),
-                      onReorder: (oldIndex, newIndex) {
-                        if (oldIndex == newIndex) return;
-
-                        final orders = ref.read(configIdOrdersProvider);
-                        final newOrders =
-                            (orders.isEmpty || orders.length != configs.length
-                                    ? [for (final config in configs) config.id]
-                                    : orders)
-                                .toList();
-
-                        newOrders.reorder(oldIndex, newIndex);
-
-                        ref.setBooruConfigOrder(newOrders);
-                      }),
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.all(4),
-                      child: Column(
-                        children: [
-                          IconButton(
-                            splashRadius: 20,
-                            onPressed: () => context.go('/boorus/add'),
-                            icon: const Icon(Symbols.add),
+                                return BooruSelectorItem(
+                                  hideLabel: hideLabel,
+                                  config: config,
+                                  show: () => show(config),
+                                  onTap: () => ref
+                                      .read(currentBooruConfigProvider.notifier)
+                                      .update(config),
+                                  selected: currentConfig == config,
+                                  direction: widget.direction,
+                                );
+                              },
+                              childCount: configs.length,
+                            ),
+                            onReorder: (oldIndex, newIndex) =>
+                                onReorder(oldIndex, newIndex, configs),
+                          ),
+                          SliverToBoxAdapter(
+                            child: Padding(
+                              padding: const EdgeInsets.all(4),
+                              child: Column(
+                                children: [
+                                  addButton,
+                                ],
+                              ),
+                            ),
                           ),
                         ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                      )
+                    : Row(
+                        children: [
+                          if (reverseScroll) addButton,
+                          Expanded(
+                            child: ReorderableRow(
+                              onReorderStarted: (index) => show(configs[index]),
+                              onReorder: (oldIndex, newIndex) =>
+                                  onReorder(oldIndex, newIndex, configs),
+                              children: [
+                                for (final config in () {
+                                  return reverseScroll
+                                      ? configs.reversed
+                                      : configs;
+                                }())
+                                  Container(
+                                    key: ValueKey(config.id),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 4,
+                                    ),
+                                    child: BooruSelectorItem(
+                                      hideLabel: hideLabel,
+                                      config: config,
+                                      show: () => show(config),
+                                      onTap: () => ref
+                                          .read(currentBooruConfigProvider
+                                              .notifier)
+                                          .update(config),
+                                      selected: currentConfig == config,
+                                      direction: widget.direction,
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                          if (!reverseScroll) addButton,
+                        ],
+                      );
+              },
               orElse: () => const SizedBox.shrink(),
             ),
       ),
@@ -165,12 +227,16 @@ class BooruSelectorItem extends StatelessWidget {
     required this.onTap,
     required this.show,
     required this.selected,
+    this.direction = Axis.vertical,
+    this.hideLabel = false,
   });
 
   final BooruConfig config;
   final bool selected;
   final void Function() show;
   final void Function() onTap;
+  final Axis direction;
+  final bool hideLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -185,48 +251,115 @@ class BooruSelectorItem extends StatelessWidget {
         ),
         onSecondaryTap: () => show(),
         onTap: onTap,
-        child: Container(
-          width: 60,
-          padding: const EdgeInsets.symmetric(
-            vertical: 4,
-          ),
-          margin: const EdgeInsets.symmetric(
-            vertical: 8,
-          ),
-          decoration: BoxDecoration(
-            border: Border(
-              left: BorderSide(
-                color:
-                    selected ? context.colorScheme.primary : Colors.transparent,
-                width: 4,
-              ),
-            ),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              switch (PostSource.from(config.url)) {
-                WebSource source => BooruLogo(source: source),
-                _ => const Card(
-                    child: SizedBox(
-                      width: 32,
-                      height: 32,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            if (direction == Axis.horizontal)
+              Align(
+                alignment: Alignment.topCenter,
+                child: Container(
+                  width: 48,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(4),
+                      bottomRight: Radius.circular(4),
+                    ),
+                    border: Border(
+                      top: BorderSide(
+                        color: selected
+                            ? context.colorScheme.primary
+                            : Colors.transparent,
+                        width: 4,
+                      ),
                     ),
                   ),
-              },
-              const SizedBox(height: 4),
-              Text(
-                config.name,
-                textAlign: TextAlign.center,
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontSize: 11,
+                ),
+              )
+            else
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Container(
+                  width: 4,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.only(
+                      topRight: Radius.circular(4),
+                      bottomRight: Radius.circular(4),
+                    ),
+                    border: Border(
+                      top: BorderSide(
+                        color: selected
+                            ? context.colorScheme.primary
+                            : Colors.transparent,
+                        width: 48,
+                      ),
+                    ),
+                  ),
                 ),
               ),
-            ],
-          ),
+            Container(
+              width: direction == Axis.vertical
+                  ? 60
+                  : hideLabel
+                      ? 52
+                      : 72,
+              padding: const EdgeInsets.only(
+                top: 8,
+              ),
+              margin: EdgeInsets.symmetric(
+                vertical: direction == Axis.vertical ? 8 : 0,
+              ),
+              decoration: BoxDecoration(
+                border: direction == Axis.vertical
+                    ? const Border(
+                        left: BorderSide(
+                          color: Colors.transparent,
+                          width: 4,
+                        ),
+                      )
+                    : null,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  switch (PostSource.from(config.url)) {
+                    WebSource source => ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: BooruLogo(
+                          source: source,
+                          width: hideLabel ? 32 : null,
+                          height: hideLabel ? 32 : null,
+                        ),
+                      ),
+                    _ => const Card(
+                        child: SizedBox(
+                          width: 32,
+                          height: 32,
+                        ),
+                      ),
+                  },
+                  const SizedBox(height: 4),
+                  if (!hideLabel)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 4,
+                      ),
+                      child: Text(
+                        config.name,
+                        textAlign: TextAlign.center,
+                        maxLines: direction == Axis.vertical ? 3 : 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 10,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -283,7 +416,7 @@ class RemoveBooruConfigAlertDialog extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 14),
               child: Text(
-                'Delete',
+                'generic.action.delete'.tr(),
                 style: TextStyle(
                   color: context.colorScheme.onErrorContainer,
                   fontWeight: FontWeight.w600,
@@ -304,7 +437,7 @@ class RemoveBooruConfigAlertDialog extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 14),
               child: Text(
-                'Cancel',
+                'generic.action.cancel'.tr(),
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   color: Theme.of(context).colorScheme.onBackground,

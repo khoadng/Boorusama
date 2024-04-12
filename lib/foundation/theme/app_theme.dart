@@ -1,5 +1,5 @@
 // Flutter imports:
-import 'package:flutter/material.dart' hide ThemeMode;
+import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:dynamic_color/dynamic_color.dart';
@@ -10,99 +10,134 @@ import 'package:boorusama/foundation/theme/theme.dart';
 class AppTheme {
   AppTheme._();
 
-  static ColorScheme defaultColorScheme(ThemeMode mode) => switch (mode) {
-        ThemeMode.light => const ColorScheme(
-            brightness: Brightness.light,
-            background: GreyscaleShades.gray242,
-            onBackground: kOnBackgroundLightColor,
-            secondaryContainer: GreyscaleShades.gray212,
-            onSecondaryContainer: kOnSurfaceLightColor,
-            tertiaryContainer: GreyscaleShades.gray220,
-            onTertiaryContainer: kOnSurfaceLightColor,
-            surfaceVariant: GreyscaleShades.gray226,
-            primary: kPrimaryLightColor,
-            onPrimary: kOnPrimaryLightColor,
-            secondary: kPrimaryLightColor,
-            onSecondary: kOnPrimaryLightColor,
-            error: kErrorLightColor,
-            onError: kOnErrorLightColor,
-            surface: GreyscaleShades.gray242,
-            onSurface: kOnSurfaceLightColor,
-          ),
-        ThemeMode.dark => const ColorScheme(
-            brightness: Brightness.dark,
-            background: GreyscaleShades.gray24,
-            onBackground: Colors.white,
-            secondaryContainer: GreyscaleShades.gray52,
-            onSecondaryContainer: Colors.white,
-            tertiaryContainer: GreyscaleShades.gray48,
-            onTertiaryContainer: Colors.white,
-            surfaceVariant: GreyscaleShades.gray46,
-            primary: kPrimaryDarkColor,
-            onPrimary: kOnPrimaryDarkColor,
-            secondary: kPrimaryDarkColor,
-            onSecondary: kOnPrimaryDarkColor,
-            error: kErrorDarkColor,
-            onError: kOnErrorDarkColor,
-            surface: GreyscaleShades.gray24,
-            onSurface: Colors.white,
-          ),
-        _ => const ColorScheme(
-            brightness: Brightness.dark,
-            background: Colors.black,
-            onBackground: Colors.white,
-            secondaryContainer: GreyscaleShades.gray32,
-            onSecondaryContainer: Colors.white,
-            tertiaryContainer: GreyscaleShades.gray28,
-            onTertiaryContainer: Colors.white,
-            surfaceVariant: GreyscaleShades.gray24,
-            primary: kPrimaryAmoledDarkColor,
-            onPrimary: kOnPrimaryAmoledDarkColor,
-            secondary: kPrimaryAmoledDarkColor,
-            onSecondary: kOnPrimaryAmoledDarkColor,
-            error: kErrorAmoledDarkColor,
-            onError: kOnErrorAmoledDarkColor,
-            surface: Colors.black,
-            onSurface: Colors.white,
-            outline: Colors.white,
-            outlineVariant: GreyscaleShades.gray60,
-          ),
-      };
+  static ColorScheme defaultColorScheme(
+    AppThemeMode mode, {
+    required bool systemDarkMode,
+  }) {
+    const light = ColorScheme(
+      brightness: Brightness.light,
+      background: GreyscaleShades.gray242,
+      onBackground: kOnBackgroundLightColor,
+      secondaryContainer: GreyscaleShades.gray212,
+      onSecondaryContainer: kOnSurfaceLightColor,
+      tertiaryContainer: GreyscaleShades.gray220,
+      onTertiaryContainer: kOnSurfaceLightColor,
+      surfaceVariant: GreyscaleShades.gray226,
+      primary: kPrimaryLightColor,
+      onPrimary: kOnPrimaryLightColor,
+      secondary: kPrimaryLightColor,
+      onSecondary: kOnPrimaryLightColor,
+      error: kErrorLightColor,
+      onError: kOnErrorLightColor,
+      surface: GreyscaleShades.gray242,
+      onSurface: kOnSurfaceLightColor,
+    );
+
+    const dark = ColorScheme(
+      brightness: Brightness.dark,
+      background: GreyscaleShades.gray24,
+      onBackground: Colors.white,
+      secondaryContainer: GreyscaleShades.gray52,
+      onSecondaryContainer: Colors.white,
+      tertiaryContainer: GreyscaleShades.gray48,
+      onTertiaryContainer: Colors.white,
+      surfaceVariant: GreyscaleShades.gray46,
+      primary: kPrimaryDarkColor,
+      onPrimary: kOnPrimaryDarkColor,
+      secondary: kPrimaryDarkColor,
+      onSecondary: kOnPrimaryDarkColor,
+      error: kErrorDarkColor,
+      onError: kOnErrorDarkColor,
+      surface: GreyscaleShades.gray24,
+      onSurface: Colors.white,
+    );
+
+    return switch (mode) {
+      AppThemeMode.light => light,
+      AppThemeMode.dark => dark,
+      AppThemeMode.amoledDark => const ColorScheme(
+          brightness: Brightness.dark,
+          background: Colors.black,
+          onBackground: Colors.white,
+          secondaryContainer: GreyscaleShades.gray32,
+          onSecondaryContainer: Colors.white,
+          tertiaryContainer: GreyscaleShades.gray28,
+          onTertiaryContainer: Colors.white,
+          surfaceVariant: GreyscaleShades.gray24,
+          primary: kPrimaryAmoledDarkColor,
+          onPrimary: kOnPrimaryAmoledDarkColor,
+          secondary: kPrimaryAmoledDarkColor,
+          onSecondary: kOnPrimaryAmoledDarkColor,
+          error: kErrorAmoledDarkColor,
+          onError: kOnErrorAmoledDarkColor,
+          surface: Colors.black,
+          onSurface: Colors.white,
+          outline: Colors.white,
+          outlineVariant: GreyscaleShades.gray60,
+        ),
+      AppThemeMode.system => systemDarkMode ? dark : light,
+    };
+  }
 
   static ColorScheme generateFromThemeMode(
-    ThemeMode mode, {
+    AppThemeMode mode, {
     ColorScheme? seed,
-  }) =>
-      switch (mode) {
-        ThemeMode.light =>
-          seed != null ? seed.harmonized() : defaultColorScheme(mode),
-        ThemeMode.dark =>
-          seed != null ? seed.harmonized() : defaultColorScheme(mode),
-        _ => seed != null
-            ? defaultColorScheme(mode).copyWith(
-                primary: seed.primary,
-                onPrimary: seed.onPrimary,
-              )
-            : defaultColorScheme(mode),
-      };
+    required bool systemDarkMode,
+  }) {
+    final dark = seed != null
+        ? seed.harmonized()
+        : defaultColorScheme(
+            mode,
+            systemDarkMode: systemDarkMode,
+          );
+    final light = seed != null
+        ? seed.harmonized()
+        : defaultColorScheme(
+            mode,
+            systemDarkMode: systemDarkMode,
+          );
+
+    return switch (mode) {
+      AppThemeMode.light => light,
+      AppThemeMode.dark => dark,
+      AppThemeMode.amoledDark => seed != null
+          ? defaultColorScheme(
+              mode,
+              systemDarkMode: systemDarkMode,
+            ).copyWith(
+              primary: seed.primary,
+              onPrimary: seed.onPrimary,
+            )
+          : defaultColorScheme(
+              mode,
+              systemDarkMode: systemDarkMode,
+            ),
+      AppThemeMode.system => systemDarkMode ? dark : light,
+    };
+  }
 
   static ThemeData themeFrom(
-    ThemeMode mode, {
+    AppThemeMode mode, {
     required ColorScheme colorScheme,
+    required bool systemDarkMode,
   }) =>
       switch (mode) {
-        ThemeMode.light => lightTheme(
+        AppThemeMode.light => lightTheme(
             colorScheme: colorScheme,
           ),
-        ThemeMode.dark => darkTheme(
+        AppThemeMode.dark => darkTheme(
             colorScheme: colorScheme,
           ),
-        ThemeMode.amoledDark => darkAmoledTheme(
+        AppThemeMode.amoledDark => darkAmoledTheme(
             colorScheme: colorScheme,
           ),
-        ThemeMode.system => darkAmoledTheme(
-            colorScheme: colorScheme,
-          ),
+        AppThemeMode.system => systemDarkMode
+            ? darkTheme(
+                colorScheme: colorScheme,
+              )
+            : lightTheme(
+                colorScheme: colorScheme,
+              ),
       };
 
   static ThemeData lightTheme({
@@ -137,37 +172,37 @@ class AppTheme {
           extensions: const [
             BoorusamaColors(
               videoPlayerBackgroundColor: Colors.white,
-              themeMode: ThemeMode.light,
+              themeMode: AppThemeMode.light,
               selectedColor: Colors.grey,
             ),
           ],
-          inputDecorationTheme: const InputDecorationTheme(
+          inputDecorationTheme: InputDecorationTheme(
             floatingLabelBehavior: FloatingLabelBehavior.always,
             filled: true,
-            enabledBorder: OutlineInputBorder(
+            enabledBorder: const OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(8)),
               borderSide: BorderSide.none,
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
+              borderRadius: const BorderRadius.all(Radius.circular(8)),
               borderSide: BorderSide(
-                color: kPrimaryLightColor,
+                color: colorScheme.primary,
                 width: 2,
               ),
             ),
-            errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-              borderSide: BorderSide(
-                width: 2,
-              ),
-            ),
-            focusedErrorBorder: OutlineInputBorder(
+            errorBorder: const OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(8)),
               borderSide: BorderSide(
                 width: 2,
               ),
             ),
-            contentPadding: EdgeInsets.all(12),
+            focusedErrorBorder: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+              borderSide: BorderSide(
+                width: 2,
+              ),
+            ),
+            contentPadding: const EdgeInsets.all(12),
           ),
           listTileTheme: const ListTileThemeData(
             subtitleTextStyle: TextStyle(
@@ -220,37 +255,37 @@ class AppTheme {
           extensions: const [
             BoorusamaColors(
               videoPlayerBackgroundColor: Colors.black,
-              themeMode: ThemeMode.amoledDark,
+              themeMode: AppThemeMode.amoledDark,
               selectedColor: Color.fromARGB(255, 74, 74, 74),
             ),
           ],
-          inputDecorationTheme: const InputDecorationTheme(
+          inputDecorationTheme: InputDecorationTheme(
             floatingLabelBehavior: FloatingLabelBehavior.always,
             filled: true,
-            enabledBorder: OutlineInputBorder(
+            enabledBorder: const OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(8)),
               borderSide: BorderSide.none,
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
+              borderRadius: const BorderRadius.all(Radius.circular(8)),
               borderSide: BorderSide(
-                color: kPrimaryDarkColor,
+                color: colorScheme.primary,
                 width: 2,
               ),
             ),
-            errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-              borderSide: BorderSide(
-                width: 2,
-              ),
-            ),
-            focusedErrorBorder: OutlineInputBorder(
+            errorBorder: const OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(8)),
               borderSide: BorderSide(
                 width: 2,
               ),
             ),
-            contentPadding: EdgeInsets.all(12),
+            focusedErrorBorder: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+              borderSide: BorderSide(
+                width: 2,
+              ),
+            ),
+            contentPadding: const EdgeInsets.all(12),
           ),
           popupMenuTheme: PopupMenuThemeData(
             color: colorScheme.secondaryContainer,
@@ -302,37 +337,37 @@ class AppTheme {
           extensions: const [
             BoorusamaColors(
               videoPlayerBackgroundColor: Colors.black,
-              themeMode: ThemeMode.amoledDark,
+              themeMode: AppThemeMode.amoledDark,
               selectedColor: Color.fromARGB(255, 50, 50, 50),
             ),
           ],
-          inputDecorationTheme: const InputDecorationTheme(
+          inputDecorationTheme: InputDecorationTheme(
             floatingLabelBehavior: FloatingLabelBehavior.always,
             filled: true,
-            enabledBorder: OutlineInputBorder(
+            enabledBorder: const OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(8)),
               borderSide: BorderSide.none,
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
+              borderRadius: const BorderRadius.all(Radius.circular(8)),
               borderSide: BorderSide(
-                color: kPrimaryAmoledDarkColor,
+                color: colorScheme.primary,
                 width: 2,
               ),
             ),
-            errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-              borderSide: BorderSide(
-                width: 2,
-              ),
-            ),
-            focusedErrorBorder: OutlineInputBorder(
+            errorBorder: const OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(8)),
               borderSide: BorderSide(
                 width: 2,
               ),
             ),
-            contentPadding: EdgeInsets.all(12),
+            focusedErrorBorder: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+              borderSide: BorderSide(
+                width: 2,
+              ),
+            ),
+            contentPadding: const EdgeInsets.all(12),
           ),
           listTileTheme: const ListTileThemeData(
             subtitleTextStyle: TextStyle(

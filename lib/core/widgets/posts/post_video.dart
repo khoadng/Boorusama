@@ -6,6 +6,7 @@ import 'package:chewie/chewie.dart' hide MaterialDesktopControls;
 import 'package:video_player/video_player.dart';
 
 // Project imports:
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/widgets/platforms/windows/windows.dart';
 
@@ -20,6 +21,7 @@ class BooruVideo extends StatefulWidget {
     this.autoPlay = false,
     this.onVideoPlayerCreated,
     this.sound = true,
+    this.onZoomUpdated,
   });
 
   final String url;
@@ -30,6 +32,7 @@ class BooruVideo extends StatefulWidget {
   final void Function(VideoPlayerController controller)? onVideoPlayerCreated;
   final bool autoPlay;
   final bool sound;
+  final void Function(bool value)? onZoomUpdated;
 
   @override
   State<BooruVideo> createState() => _BooruVideoState();
@@ -38,6 +41,7 @@ class BooruVideo extends StatefulWidget {
 class _BooruVideoState extends State<BooruVideo> {
   late VideoPlayerController _videoPlayerController;
   late ChewieController _chewieController;
+  final transformationController = TransformationController();
 
   @override
   void initState() {
@@ -64,6 +68,16 @@ class _BooruVideoState extends State<BooruVideo> {
 
     _videoPlayerController.setVolume(widget.sound ? 1 : 0);
 
+    transformationController.addListener(() {
+      final clampedMatrix = Matrix4.diagonal3Values(
+        transformationController.value.right.x,
+        transformationController.value.up.y,
+        transformationController.value.forward.z,
+      );
+
+      widget.onZoomUpdated?.call(!clampedMatrix.isIdentity());
+    });
+
     _listenToVideoPosition();
   }
 
@@ -71,6 +85,7 @@ class _BooruVideoState extends State<BooruVideo> {
     _videoPlayerController.removeListener(_onChanged);
     _videoPlayerController.dispose();
     _chewieController.dispose();
+    transformationController.dispose();
   }
 
   // Listen to the video position and report it back to the parent widget
@@ -109,6 +124,10 @@ class _BooruVideoState extends State<BooruVideo> {
 
   @override
   Widget build(BuildContext context) {
-    return Chewie(controller: _chewieController);
+    return InteractiveImage(
+      useOriginalSize: false,
+      transformationController: transformationController,
+      image: Chewie(controller: _chewieController),
+    );
   }
 }

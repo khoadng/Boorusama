@@ -9,13 +9,12 @@ extension PageModeTranslated on PageMode {
       };
 }
 
-extension ThemeModeTranslated on ThemeMode {
+extension ThemeModeTranslated on AppThemeMode {
   String localize() => switch (this) {
-        ThemeMode.dark => 'settings.theme.dark',
-        ThemeMode.system ||
-        ThemeMode.amoledDark =>
-          'settings.theme.amoled_dark',
-        ThemeMode.light => 'settings.theme.light',
+        AppThemeMode.dark => 'settings.theme.dark',
+        AppThemeMode.system => 'System',
+        AppThemeMode.amoledDark => 'settings.theme.amoled_dark',
+        AppThemeMode.light => 'settings.theme.light',
       };
 }
 
@@ -59,5 +58,19 @@ extension PageIndicatorPositionTranslated on PageIndicatorPosition {
         PageIndicatorPosition.top => 'settings.page_indicator.top',
         PageIndicatorPosition.bottom => 'settings.page_indicator.bottom',
         PageIndicatorPosition.both => 'settings.page_indicator.both',
+      };
+}
+
+extension BooruConfigSelectorPositionTranslated on BooruConfigSelectorPosition {
+  String localize() => switch (this) {
+        BooruConfigSelectorPosition.side => 'Side',
+        BooruConfigSelectorPosition.bottom => 'Bottom',
+      };
+}
+
+extension BooruConfigLabelVisibilityTranslated on BooruConfigLabelVisibility {
+  String localize() => switch (this) {
+        BooruConfigLabelVisibility.always => 'On',
+        BooruConfigLabelVisibility.never => 'Off',
       };
 }

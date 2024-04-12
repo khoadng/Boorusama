@@ -12,8 +12,8 @@ import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
-class PerformancePage extends ConsumerStatefulWidget {
-  const PerformancePage({
+class AccessibilityPage extends ConsumerStatefulWidget {
+  const AccessibilityPage({
     super.key,
     this.hasAppBar = true,
   });
@@ -21,10 +21,10 @@ class PerformancePage extends ConsumerStatefulWidget {
   final bool hasAppBar;
 
   @override
-  ConsumerState<PerformancePage> createState() => _PerformancePageState();
+  ConsumerState<AccessibilityPage> createState() => _AccessibilityPageState();
 }
 
-class _PerformancePageState extends ConsumerState<PerformancePage> {
+class _AccessibilityPageState extends ConsumerState<AccessibilityPage> {
   @override
   Widget build(BuildContext context) {
     final settings = ref.watch(settingsProvider);
@@ -33,7 +33,7 @@ class _PerformancePageState extends ConsumerState<PerformancePage> {
       condition: widget.hasAppBar,
       conditionalBuilder: (child) => Scaffold(
         appBar: AppBar(
-          title: const Text('settings.performance.performance').tr(),
+          title: const Text('settings.accessibility.accessibility').tr(),
         ),
         body: child,
       ),
@@ -42,21 +42,36 @@ class _PerformancePageState extends ConsumerState<PerformancePage> {
           shrinkWrap: true,
           primary: false,
           children: [
+            SwitchListTile(
+              title: const Text(
+                      'settings.accessibility.reverseBooruConfigSelectorScrollDirection')
+                  .tr(),
+              value: settings.reverseBooruConfigSelectorScrollDirection,
+              onChanged: (value) => ref.updateSettings(
+                settings.copyWith(
+                  booruConfigSelectorScrollDirection: value
+                      ? BooruConfigScrollDirection.reversed
+                      : BooruConfigScrollDirection.normal,
+                ),
+              ),
+            ),
             SettingsTile(
-              title: const Text('settings.performance.posts_per_page').tr(),
+              title: const Text('settings.accessibility.swipeAreaToOpenSidebar')
+                  .tr(),
               subtitle: Text(
-                'settings.performance.posts_per_page_explain',
+                'settings.accessibility.swipeAreaToOpenSidebarDescription',
                 style: TextStyle(
                   color: context.theme.hintColor,
                 ),
               ).tr(),
-              selectedOption: settings.postsPerPage,
-              items: getPostsPerPagePossibleValue(),
+              selectedOption: settings.swipeAreaToOpenSidebarPercentage,
+              items: getSwipeAreaPossibleValue(),
               onChanged: (newValue) {
-                ref.updateSettings(settings.copyWith(postsPerPage: newValue));
+                ref.updateSettings(settings.copyWith(
+                    swipeAreaToOpenSidebarPercentage: newValue));
               },
               optionBuilder: (value) => Text(
-                value.toString(),
+                '$value%',
               ),
             ),
           ],

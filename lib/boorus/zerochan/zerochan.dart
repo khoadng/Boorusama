@@ -1,5 +1,5 @@
 // Flutter imports:
-import 'package:flutter/material.dart' hide ThemeMode;
+import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -202,8 +202,9 @@ class ZerochanBuilder
 
   @override
   TagColorBuilder get tagColorBuilder => (themeMode, tagType) {
-        final colors =
-            themeMode == ThemeMode.light ? TagColors.dark() : TagColors.light();
+        final colors = themeMode == AppThemeMode.light
+            ? TagColors.dark()
+            : TagColors.light();
 
         return switch (tagType) {
           'mangaka' ||

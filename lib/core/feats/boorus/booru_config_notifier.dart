@@ -67,6 +67,26 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?> {
   }) async {
     if (state == null) return;
     try {
+      // check if deleting current config, if so, set current to the first config
+      // if there is no config left, fail
+      final currentConfig = ref.read(currentBooruConfigProvider);
+      if (currentConfig.id == config.id) {
+        if (state!.length <= 1) {
+          onFailure?.call('Must have at least one profile');
+          return;
+        }
+
+        final firstConfig = state!.first;
+
+        // check if deleting the first config
+        final targetConfig =
+            firstConfig.id == config.id ? state!.skip(1).first : firstConfig;
+
+        await ref
+            .read(currentBooruConfigProvider.notifier)
+            .update(targetConfig);
+      }
+
       await ref.read(booruConfigRepoProvider).remove(config);
       final orders = ref.read(configIdOrdersProvider);
       final newOrders = [...orders..remove(config.id)];

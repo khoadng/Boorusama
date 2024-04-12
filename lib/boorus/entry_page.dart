@@ -8,13 +8,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/downloads/downloads.dart';
+import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
-import 'package:boorusama/core/widgets/booru_selector.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/permissions.dart';
 import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -131,10 +133,51 @@ class _Boorus extends ConsumerWidget {
         builder: (context) => booruBuilder.homePageBuilder(context, config),
       );
     } else {
+      final availableConfigs = ref.watch(booruConfigProvider);
       return Scaffold(
         appBar: AppBar(),
-        body: const Center(
-          child: Text('No booru found for this configuration'),
+        body: Center(
+          child: Column(
+            children: [
+              Text(
+                'Current selected profile is invalid',
+                style: context.textTheme.titleLarge,
+              ),
+              if (availableConfigs?.isNotEmpty == true)
+                Text(
+                  'Select a profile from the list below to continue',
+                  style: context.textTheme.titleMedium?.copyWith(
+                    color: context.theme.hintColor,
+                  ),
+                ),
+              const SizedBox(height: 16),
+              if (availableConfigs != null)
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: availableConfigs.length,
+                    itemBuilder: (context, index) {
+                      final config = availableConfigs[index];
+                      return ListTile(
+                        title: Text(config.name),
+                        subtitle: Text(config.url),
+                        onTap: () {
+                          ref.read(currentBooruConfigProvider.notifier).update(
+                                config,
+                              );
+                        },
+                        leading: PostSource.from(config.url).whenWeb(
+                          (source) => ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: BooruLogo(source: source),
+                          ),
+                          () => const SizedBox.shrink(),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+            ],
+          ),
         ),
       );
     }

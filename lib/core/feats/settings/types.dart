@@ -65,6 +65,21 @@ enum PostDetailsOverlayInitialState {
   show,
 }
 
+enum BooruConfigSelectorPosition {
+  side,
+  bottom,
+}
+
+enum BooruConfigScrollDirection {
+  normal,
+  reversed,
+}
+
+enum BooruConfigLabelVisibility {
+  always,
+  never,
+}
+
 class Settings extends Equatable {
   const Settings({
     required this.safeMode,
@@ -96,14 +111,18 @@ class Settings extends Equatable {
     required this.bookmarkFilterType,
     required this.pageIndicatorPosition,
     required this.postDetailsOverlayInitialState,
+    required this.booruConfigSelectorPosition,
+    required this.booruConfigSelectorScrollDirection,
+    required this.swipeAreaToOpenSidebarPercentage,
+    required this.booruConfigLabelVisibility,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
       : safeMode = json['safeMode'] ?? true,
         blacklistedTags = json['hideBlacklist'] ?? [],
         themeMode = json['themeMode'] != null
-            ? ThemeMode.values[json['themeMode']]
-            : ThemeMode.amoledDark,
+            ? AppThemeMode.values[json['themeMode']]
+            : AppThemeMode.amoledDark,
         dataCollectingStatus = json['dataCollectingStatus'] != null
             ? DataCollectingStatus.values[json['dataCollectingStatus']]
             : DataCollectingStatus.allow,
@@ -154,6 +173,22 @@ class Settings extends Equatable {
                 ? PostDetailsOverlayInitialState
                     .values[json['postDetailsOverlayInitialState']]
                 : PostDetailsOverlayInitialState.show,
+        booruConfigSelectorPosition =
+            json['booruConfigSelectorPosition'] != null
+                ? BooruConfigSelectorPosition
+                    .values[json['booruConfigSelectorPosition']]
+                : BooruConfigSelectorPosition.side,
+        booruConfigSelectorScrollDirection =
+            json['booruConfigSelectorScrollDirection'] != null
+                ? BooruConfigScrollDirection
+                    .values[json['booruConfigSelectorScrollDirection']]
+                : BooruConfigScrollDirection.normal,
+        booruConfigLabelVisibility = json['booruConfigLabelVisibility'] != null
+            ? BooruConfigLabelVisibility
+                .values[json['booruConfigLabelVisibility']]
+            : BooruConfigLabelVisibility.always,
+        swipeAreaToOpenSidebarPercentage =
+            json['swipeAreaToOpenSidebarPercentage'] ?? 5,
         imageGridAspectRatio = json['imageGridAspectRatio'] ?? 0.7,
         imageGridPadding = json['imageGridPadding'] ?? 16,
         imageGridSpacing = json['imageGridSpacing'] ?? 4;
@@ -161,7 +196,7 @@ class Settings extends Equatable {
   static const defaultSettings = Settings(
     safeMode: true,
     blacklistedTags: '',
-    themeMode: ThemeMode.amoledDark,
+    themeMode: AppThemeMode.amoledDark,
     language: 'en-US',
     gridSize: GridSize.normal,
     dataCollectingStatus: DataCollectingStatus.allow,
@@ -188,12 +223,16 @@ class Settings extends Equatable {
     bookmarkFilterType: BookmarkFilterType.none,
     pageIndicatorPosition: PageIndicatorPosition.bottom,
     postDetailsOverlayInitialState: PostDetailsOverlayInitialState.show,
+    booruConfigSelectorPosition: BooruConfigSelectorPosition.side,
+    booruConfigSelectorScrollDirection: BooruConfigScrollDirection.normal,
+    swipeAreaToOpenSidebarPercentage: 5,
+    booruConfigLabelVisibility: BooruConfigLabelVisibility.always,
   );
 
   final String blacklistedTags;
   final String language;
   final bool safeMode;
-  final ThemeMode themeMode;
+  final AppThemeMode themeMode;
   final GridSize gridSize;
   final DataCollectingStatus dataCollectingStatus;
 
@@ -240,11 +279,19 @@ class Settings extends Equatable {
 
   final PostDetailsOverlayInitialState postDetailsOverlayInitialState;
 
+  final BooruConfigSelectorPosition booruConfigSelectorPosition;
+
+  final BooruConfigScrollDirection booruConfigSelectorScrollDirection;
+
+  final int swipeAreaToOpenSidebarPercentage;
+
+  final BooruConfigLabelVisibility booruConfigLabelVisibility;
+
   Settings copyWith({
     String? blacklistedTags,
     String? language,
     bool? safeMode,
-    ThemeMode? themeMode,
+    AppThemeMode? themeMode,
     GridSize? gridSize,
     DataCollectingStatus? dataCollectingStatus,
     String? downloadPath,
@@ -271,6 +318,10 @@ class Settings extends Equatable {
     PageIndicatorPosition? pageIndicatorPosition,
     PostDetailsOverlayInitialState? postDetailsOverlayInitialState,
     PostGestureConfig? postGestures,
+    BooruConfigSelectorPosition? booruConfigSelectorPosition,
+    BooruConfigScrollDirection? booruConfigSelectorScrollDirection,
+    int? swipeAreaToOpenSidebarPercentage,
+    BooruConfigLabelVisibility? booruConfigLabelVisibility,
   }) =>
       Settings(
         safeMode: safeMode ?? this.safeMode,
@@ -309,6 +360,15 @@ class Settings extends Equatable {
             pageIndicatorPosition ?? this.pageIndicatorPosition,
         postDetailsOverlayInitialState: postDetailsOverlayInitialState ??
             this.postDetailsOverlayInitialState,
+        booruConfigSelectorPosition:
+            booruConfigSelectorPosition ?? this.booruConfigSelectorPosition,
+        booruConfigSelectorScrollDirection:
+            booruConfigSelectorScrollDirection ??
+                this.booruConfigSelectorScrollDirection,
+        swipeAreaToOpenSidebarPercentage: swipeAreaToOpenSidebarPercentage ??
+            this.swipeAreaToOpenSidebarPercentage,
+        booruConfigLabelVisibility:
+            booruConfigLabelVisibility ?? this.booruConfigLabelVisibility,
       );
 
   Map<String, dynamic> toJson() => {
@@ -341,6 +401,11 @@ class Settings extends Equatable {
         'bookmarkFilterType': bookmarkFilterType.index,
         'pageIndicatorPosition': pageIndicatorPosition.index,
         'postDetailsOverlayInitialState': postDetailsOverlayInitialState.index,
+        'booruConfigSelectorPosition': booruConfigSelectorPosition.index,
+        'booruConfigSelectorScrollDirection':
+            booruConfigSelectorScrollDirection.index,
+        'swipeAreaToOpenSidebarPercentage': swipeAreaToOpenSidebarPercentage,
+        'booruConfigLabelVisibility': booruConfigLabelVisibility.index,
       };
 
   @override
@@ -374,6 +439,10 @@ class Settings extends Equatable {
         bookmarkFilterType,
         pageIndicatorPosition,
         postDetailsOverlayInitialState,
+        booruConfigSelectorPosition,
+        booruConfigSelectorScrollDirection,
+        swipeAreaToOpenSidebarPercentage,
+        booruConfigLabelVisibility,
       ];
 }
 
@@ -384,6 +453,12 @@ extension SettingsX on Settings {
 
   bool get hidePostDetailsOverlay =>
       postDetailsOverlayInitialState == PostDetailsOverlayInitialState.hide;
+
+  bool get hideBooruConfigLabel =>
+      booruConfigLabelVisibility == BooruConfigLabelVisibility.never;
+
+  bool get reverseBooruConfigSelectorScrollDirection =>
+      booruConfigSelectorScrollDirection == BooruConfigScrollDirection.reversed;
 }
 
 extension PageIndicatorPositionX on PageIndicatorPosition {
