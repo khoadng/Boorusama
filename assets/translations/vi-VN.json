@@ -112,7 +112,7 @@
             "generic": "Có lỗi xảy ra",
             "tag_limit": "Số tag sử dụng vượt mức cho phép. Nâng cấp tài khoản để có thể dùng nhiều tag hơn.",
             "database_timeout": "Search bị hủy do tốn quá nhiều thời gian.",
-            "rate_limited": "You're being rate limited. Please try again later",
+            "rate_limited": "Bạn đã vượt giới hạn. Vui lòng thử lại sau",
             "pagination_limit": "Đã đạt đến giới hạn phân trang, không thể cuộn thêm.",
             "max_capacity": "Server không thể xử lý thêm yêu cầu, vui lòng thử lại sau.",
             "down": "Server đang sập, thử lại sau.",
@@ -149,7 +149,7 @@
         },
         "category": {
             "series": "Series",
-            "collection": "Collection"
+            "collection": "Bộ sưu tập"
         },
         "search": {
             "hint": "Tìm ảnh"
@@ -203,7 +203,9 @@
                 "highest": "Cao nhất"
             },
             "spacing": "Độ dãn cách",
-            "corner_radius": "Bo góc"
+            "corner_radius": "Bo góc",
+            "aspect_ratio": "Tỉ lệ khung hình",
+            "padding": ""
         },
         "image_viewer": {
             "image_viewer": "Trình xem ảnh",
@@ -222,7 +224,10 @@
             "dark": "Tối",
             "light": "Sáng",
             "amoled_dark": "Đen",
-            "dynamic_color_mobile_description": "Đồng bộ tông màu app với ảnh bìa"
+            "dynamic_color_mobile_description": "Đồng bộ tông màu app với ảnh bìa",
+            "dynamic_color": "Màu nền động",
+            "dynamic_color_desktop_description": "Đồng bộ màu nền với màu nhấn của hệ điều hành",
+            "dynamic_color_unsupported_description": "Thiết bị này không hỗ trợ màu sắc động."
         },
         "privacy": {
             "privacy": "Riêng tư",
@@ -267,8 +272,32 @@
             "ui_overlay": {
                 "show": "Hiện",
                 "hide": "Ẩn"
-            }
-        }
+            },
+            "image_details": "Chi tiết hình ảnh"
+        },
+        "contribute": "Đóng góp",
+        "source_code": "Mã nguồn",
+        "page_indicator": {
+            "bottom": "Dưới cùng",
+            "both": "Cả trên và dưới",
+            "page_indicator": "Vị trí thanh điều hướng trang",
+            "top": "Trên cùng"
+        },
+        "contact_developer_description": "Nếu có vấn đề hay góp ý thì liên hệ với mình qua địa chị email này",
+        "feature_request_and_bug_report": "Yêu cầu chức năng và báo cáo lỗi",
+        "feature_request_and_bug_report_description": "Gợi ý chức năng hoặc báo cáo lỗi thông qua GitHub repository",
+        "accessibility": {
+            "accessibility": "Trợ năng",
+            "reverseBooruConfigSelectorScrollDirection": "Đảo hướng cuộn thanh chọn booru profile",
+            "swipeAreaToOpenSidebar": "Khu vực vuốt thanh bên",
+            "swipeAreaToOpenSidebarDescription": "Tinh chỉnh khu vực trống bên trái màn hình để thực hiện thao tác vuốt. Lưu ý nếu giá trị thiết lập quá lớn thì sẽ không thể thực hiện các cử chỉ theo chiều ngang được"
+        },
+        "booru_settings": {
+            "edit_current_profile": "Chỉnh sửa profile hiện tại",
+            "booru_settings": "Cài đặt Booru"
+        },
+        "support": "Hỗ trợ",
+        "contact_developer": "Liên hệ với nhà phát"
     },
     "blacklisted_tags": {
         "remove": "Xóa",
@@ -278,7 +307,10 @@
         "updated": "Tag đã được cập nhật",
         "limitation_notice": "Chỉ hỗ trợ toán tử <b>NOT</b> và toán tử <b>OR</b>. <br><br>Chưa hỗ trợ lọc bằng metatags cho phiên bản hiện tại.",
         "failed_to_add": "Thêm tag thất bại",
-        "failed_to_remove": "Xoá tag thất bại"
+        "failed_to_remove": "Xoá tag thất bại",
+        "blacklisted_header_title": "Đã chặn",
+        "reenable_all": "Hiện hết",
+        "disable_all": "Ẩn hết"
     },
     "download": {
         "download": "Tải ảnh",
@@ -294,17 +326,20 @@
         "bulk_download_folder_select_warning": "Đối với Android 11+, app chỉ có thể lưu files ở thư mục chung <b>({0})</b> . <div>Không hỗ trợ lưu ở thẻ nhớ.</div> <div>Xin hãy chọn thư mục khác.</div> <div>Phiên bản Android của thiết bị này là {1}.</div>",
         "bulk_download_select_a_folder": "Chọn một thư mục",
         "bulk_download_downloaded_counter": {
-            "other": "Đã tải {} ảnh"
+            "other": "Đã tải {} ảnh",
+            "one": "Đã tải {} ảnh"
         },
         "bulk_download_skipped_counter": {
-            "other": "{} ảnh bị lượt bỏ"
+            "other": "{} ảnh bị lượt bỏ",
+            "one": "{} ảnh bị lượt bỏ"
         },
         "bulk_download_download_more": "Tải thêm",
         "open_app_settings": "Mở cài đặt",
         "storage_permission_explanation": "App cần quyền truy cập bộ nhớ ngoài để lưu ảnh.",
-        "app_restart_request": "Cần thoát app để thay đổi được áp dụng",
+        "app_restart_request": "Cần khởi động lại app để thay đổi được áp dụng",
         "image_counter": {
-            "other": "Tải {} ảnh"
+            "other": "Tải {} ảnh",
+            "one": "Tải {} ảnh"
         },
         "bulk": {
             "all_done_notification_message": "Đã tải hết tất cả ảnh"
@@ -313,7 +348,8 @@
     "saved_search": {
         "saved_search": "Saved search",
         "saved_search_counter": {
-            "other": "{} search"
+            "other": "{} search",
+            "one": "{} search"
         },
         "add_saved_search": "Thêm saved search",
         "saved_search_added": "Đã thêm saved search",
@@ -330,7 +366,8 @@
     },
     "favorites": {
         "counter": {
-            "other": "Lượt thích"
+            "other": "Lượt thích",
+            "one": "Lượt thích"
         },
         "favorited": "Đã yêu thích",
         "favorite": "Yêu thích"
@@ -345,7 +382,7 @@
         "create": "Tạo",
         "private": "Private",
         "view_more_popup": "Xem",
-        "items_added_notification_popup": "Đã thêm {0} ảnh vào  {1}",
+        "items_added_notification_popup": "Đã thêm {0} ảnh vào {1}",
         "group_name": "Tên nhóm",
         "group_name_hint": "Nhóm mới",
         "all_posts": "Ảnh",
@@ -357,7 +394,8 @@
         "duplicate_items_warning_notification": "Có ID bị trùng trong nhóm",
         "detete_confirmation": "Bạn có chắc là muốn xoá nhóm này không",
         "group_item_counter": {
-            "other": "{} ảnh"
+            "other": "{} ảnh",
+            "one": "{} ảnh"
         }
     },
     "favorite_tags": {
@@ -379,8 +417,9 @@
     "sideMenu": {
         "settings": "Cài đặt",
         "your_bookmarks": "Đánh dấu",
-        "your_blacklist": "Sổ đen",
-        "bulk_download": "Tải hàng loạt"
+        "your_blacklist": "Tag đã chặn",
+        "bulk_download": "Tải hàng loạt",
+        "get_support": "Nhận hỗ trợ"
     },
     "dateRange": {
         "day": "Ngày",
@@ -398,7 +437,7 @@
         "content_filtering_label": "Lọc nội dung",
         "hide_deleted_label": "Ẩn ảnh bị xoá",
         "config_booru_confirm": "Chốt",
-        "add_a_booru_site": "Thêm booru",
+        "add_a_booru_site": "Tạo profile mới",
         "next_step": "Tiếp",
         "site_url": "Địa chỉ trang web",
         "unsupported_warning": "Trang booru này chưa được hỗ trợ.",
@@ -408,12 +447,16 @@
         "validation_missing_trailing_slash": "\"{0}\" thiếu dấu gạch chéo phía sau",
         "validation_redundant_www": "\"{0}\" chứa \"www\" thừa không cần thiết",
         "validation_contains_spaces": "\"{0}\" chứa khoảng trắng không cần thiết ở giữa.",
-        "validation_missing_scheme": "\"{0}\" thiếu giao thức (ví dụ: https://)"
+        "validation_missing_scheme": "\"{0}\" thiếu giao thức (ví dụ: https://)",
+        "misc": "Linh tinh",
+        "download": "Tải Booru",
+        "authentication": "Xác minh",
+        "gestures": "Cử chỉ"
     },
     "blacklist": {
         "manage": {
-            "title": "Sổ đen",
-            "empty_blacklist": "Sổ đen trống"
+            "title": "Tag đã chặn",
+            "empty_blacklist": "Không có tag đã chặn"
         }
     },
     "bookmark": {
@@ -435,5 +478,11 @@
     },
     "forum": {
         "forum": "Diễn đàn"
+    },
+    "gestures": {
+        "swipe_down": "Vuốt xuống",
+        "double_tap": "Chạm hai lần",
+        "long_press": "Nhấn và giữ",
+        "tap": "Chạm"
     }
 }
