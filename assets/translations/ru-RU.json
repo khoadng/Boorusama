@@ -10,12 +10,16 @@
             "delete": "Удалить",
             "edit": "Изменить",
             "ok": "OK",
-            "cancel": "Отмена"
+            "cancel": "Отмена",
+            "duplicate": "Дубликат"
         },
         "view": "Посмотреть"
     },
     "profile": {
-        "favorites": "Избранные"
+        "favorites": "Избранные",
+        "copy_user_id": "Копировать ID пользователя",
+        "profile": "Профиль",
+        "messages": "Сообщения"
     },
     "network": {
         "unavailable": "Нет доступа к интернету"
@@ -100,7 +104,8 @@
         "popular": "Популярное",
         "hot": "Горячее",
         "most_viewed": "Самое просматриваемое",
-        "see_more": "Просмотреть больше"
+        "see_more": "Просмотреть больше",
+        "explore": "Изучать"
     },
     "search": {
         "errors": {
@@ -158,11 +163,15 @@
         "app_settings": "Настройки приложения",
         "appearance": {
             "appearance": "Внешний вид",
-            "show_scores": "Показать баллы"
+            "show_scores": "Показать баллы",
+            "booru_config": "Профиль Боору",
+            "show_post_list_config_header": "Показать заголовок конфигурации сообщений",
+            "booru_config_placement": "Размещение профиля Booru"
         },
         "general": "Генеральные",
         "search": {
-            "search": "Поиск"
+            "search": "Поиск",
+            "auto_focus_search_bar": "Панель поиска с автофокусом при первом открытии режима поиска"
         },
         "information": "Информация",
         "changelog": "История изменений",
@@ -191,7 +200,8 @@
                 "high": "Высокое",
                 "low": "Низкое",
                 "original": "Оригинальное",
-                "automatic": "Автоматическое"
+                "automatic": "Автоматическое",
+                "highest": "Highest"
             },
             "spacing": "Промежуток",
             "corner_radius": "Количество углов"
