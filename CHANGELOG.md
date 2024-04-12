@@ -1,3 +1,13 @@
+# 3.14.0
+- Allow users to delete the current selected profile
+- Add a new accessibility page in settings
+- Add some new options for boorru profiles
+- Add a sort button for blacklisted tags page
+- Support zooming in on videos using double-tap and pinch-to-zoom gestures
+- Add a System theme
+- Fix an issue with biometric lock not working properly on some devices
+- Bug fixesm UI adjustments and translation updates
+
 # 3.13.1
 - Fix some color issues with light theme
 - Attempt to fix an issue where the app fails to start up on some devices (again...)
