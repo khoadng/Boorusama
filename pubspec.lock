@@ -1053,10 +1053,10 @@ packages:
     dependency: "direct main"
     description:
       name: local_auth
-      sha256: "27679ed8e0d7daab2357db6bb7076359e083a56b295c0c59723845301da6aed9"
+      sha256: "280421b416b32de31405b0a25c3bd42dfcef2538dfbb20c03019e02a5ed55ed0"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.8"
+    version: "2.2.0"
   local_auth_android:
     dependency: transitive
     description:
@@ -1065,14 +1065,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.37"
-  local_auth_ios:
+  local_auth_darwin:
     dependency: transitive
     description:
-      name: local_auth_ios
-      sha256: "6dde47dc852bc0c8343cb58e66a46efb16b62eddf389ce103d4dacb0c6c40c71"
+      name: local_auth_darwin
+      sha256: "33381a15b0de2279523eca694089393bb146baebdce72a404555d03174ebc1e9"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.7"
+    version: "1.2.2"
   local_auth_platform_interface:
     dependency: transitive
     description:
