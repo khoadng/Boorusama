@@ -10,12 +10,16 @@
             "delete": "Xoá",
             "edit": "Sửa",
             "ok": "OK",
-            "cancel": "Huỷ"
+            "cancel": "Huỷ",
+            "duplicate": "Tạo bản sao"
         },
         "view": "Xem"
     },
     "profile": {
-        "favorites": "Yêu thích"
+        "favorites": "Yêu thích",
+        "messages": "Tin nhắn",
+        "profile": "Hồ sơ",
+        "copy_user_id": "Copy ID người dùng"
     },
     "network": {
         "unavailable": "Không có mạng"
@@ -55,7 +59,8 @@
             "add_to_favorites": "Thêm vào yêu thích",
             "copy_and_open_saved_search": "Copy và mở saved search",
             "score": {
-                "other": "Điểm"
+                "other": "Điểm",
+                "one": "Điểm"
             },
             "source_label": "Nguồn",
             "related_posts": "Ảnh liên quan",
@@ -90,7 +95,8 @@
             "send": "Gửi"
         },
         "counter": {
-            "other": "Bình luận"
+            "other": "Bình luận",
+            "one": "Bình luận"
         }
     },
     "explore": {
@@ -98,7 +104,8 @@
         "popular": "Phổ biến",
         "hot": "Hot",
         "most_viewed": "Xem nhiều",
-        "see_more": "Xem thêm"
+        "see_more": "Xem thêm",
+        "explore": "Khám phá"
     },
     "search": {
         "errors": {
@@ -125,7 +132,8 @@
         "trending": "Xu hướng",
         "remove_all_selected": "Xoá tất cả các tag đang chọn",
         "result_counter": {
-            "other": "{} Kết quả"
+            "other": "{} Kết quả",
+            "one": "{} Kết quả"
         },
         "no_result_notice": "Không có kết quả",
         "search_in_progress_notice": "Đang tìm..."
@@ -155,12 +163,14 @@
         "app_settings": "Cài đặt ứng dụng",
         "appearance": {
             "appearance": "Hiển thị",
-            "show_scores": "Hiện điểm"
+            "show_scores": "Hiện điểm",
+            "show_post_list_config_header": "Hiển thị header tuỳ chỉnh"
         },
         "general": "Chung",
         "search": {
             "search": "Tìm kiếm",
-            "auto_focus_search_bar": "Tự động focus vào thanh tìm kiếm khi mở lần đầu"
+            "auto_focus_search_bar": "Tự động focus vào thanh tìm kiếm khi mở lần đầu",
+            "hide_bookmarked_posts_from_search_results": "Không hiện ảnh đã đánh dấu khi tìm kiếm"
         },
         "information": "Thông tin",
         "changelog": "Changelog",
@@ -211,11 +221,16 @@
             "theme": "Nền",
             "dark": "Tối",
             "light": "Sáng",
-            "amoled_dark": "AMOLED"
+            "amoled_dark": "Đen",
+            "dynamic_color_mobile_description": "Đồng bộ tông màu app với ảnh bìa"
         },
         "privacy": {
             "privacy": "Riêng tư",
-            "send_error_data_notice": "Tự động gửi lỗi cho dev"
+            "send_error_data_notice": "Tự động gửi lỗi cho dev",
+            "enable_incognito_keyboard": "Bật bàn phím ẩn danh",
+            "enable_biometric_lock_notice": "Chỉ hoạt động nếu thiết bị có hỗ trợ và kích hoạt.",
+            "enable_biometric_lock": "Bật khoá sinh trắc học",
+            "enable_incognito_keyboard_notice": "Chỉ có tác dụng trên Android."
         },
         "performance": {
             "performance": "Hiệu năng",
@@ -223,7 +238,7 @@
             "posts_per_page_explain": "Tổng số ảnh hiển thị ở mỗi trang",
             "cache_size": "Dung lượng cache",
             "clear_cache": "Dọn",
-            "cache_size_info": "Chiếm {0} Mb trong {1} tệp"
+            "cache_size_info": "Chiếm {0} trong {1} tệp"
         },
         "debug_logs": {
             "debug_logs": "Logs sửa lỗi",
@@ -242,10 +257,17 @@
         "help_us_translate": "Hỗ trợ dịch app",
         "other_settings": "Cài đặt khác",
         "data_and_storage": {
-            "data_and_storage": "Dữ liệu and Bộ nhớ"
+            "data_and_storage": "Dữ liệu and Bộ nhớ",
+            "clear_cache_on_start_up": "Xoá bộ nhớ đệm ảnh khi khởi động app"
         },
         "backup_and_restore": {
             "backup_and_restore": "Sao lưu và phục hồi dữ liệu"
+        },
+        "image_details": {
+            "ui_overlay": {
+                "show": "Hiện",
+                "hide": "Ẩn"
+            }
         }
     },
     "blacklisted_tags": {
