@@ -5,11 +5,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/blacklists/global_blacklisted_tags_provider.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/types.dart';
 
 typedef ScaleAndTime = ({
@@ -41,6 +43,11 @@ final danbooruExploreRepoProvider =
         postRepository: ref.watch(danbooruPostRepoProvider(config)),
         settingsRepository: ref.watch(settingsRepoProvider),
         shouldFilter: (post) {
+          // A special rule for safebooru to make sure inappropriate posts are not shown
+          if (config.url == kDanbooruSafeUrl) {
+            return post.rating != Rating.general;
+          }
+
           final filterer =
               ref.readCurrentBooruBuilder()?.granularRatingFilterer;
 
@@ -49,9 +56,9 @@ final danbooruExploreRepoProvider =
           return filterer(post, config);
         },
       ),
-      popularStaleDuration: const Duration(minutes: 20),
-      mostViewedStaleDuration: const Duration(hours: 1),
-      hotStaleDuration: const Duration(minutes: 5),
+      popularStaleDuration: const Duration(seconds: 10),
+      mostViewedStaleDuration: const Duration(seconds: 30),
+      hotStaleDuration: const Duration(seconds: 5),
     );
   },
   dependencies: [
