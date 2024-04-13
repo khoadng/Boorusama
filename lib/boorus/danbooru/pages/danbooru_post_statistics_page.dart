@@ -70,6 +70,30 @@ class DanbooruPostStatisticsPage extends ConsumerWidget {
           ),
           const Divider(),
           PostStatsSectionTitle(
+            title: 'Resolution',
+            onMore: () {
+              showBarModalBottomSheet(
+                context: context,
+                builder: (context) => StatisticsFromMapPage(
+                  title: 'Resolution',
+                  total: posts.length,
+                  titleFormatter: (value) => value.replaceAll('_', ' '),
+                  data: stats.resolutions.topN(),
+                ),
+              );
+            },
+          ),
+          ...stats.resolutions.topN(5).entries.map(
+            (e) {
+              final percent = (e.value / posts.length) * 100;
+              return PostStatsTile(
+                title: e.key.replaceAll('_', ' '),
+                value: '${e.value} (${percent.toStringAsFixed(1)}%)',
+              );
+            },
+          ),
+          const Divider(),
+          PostStatsSectionTitle(
             title: 'Copyright',
             onMore: () {
               showBarModalBottomSheet(
