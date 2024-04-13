@@ -31,11 +31,6 @@ class SearchHistorySection extends StatelessWidget {
     return histories.isNotEmpty
         ? Column(
             children: [
-              const Divider(
-                thickness: 1,
-                indent: 10,
-                endIndent: 10,
-              ),
               Padding(
                 padding: const EdgeInsets.only(left: 10),
                 child: Row(

@@ -52,7 +52,6 @@ class TrendingSection extends ConsumerWidget {
           data: (tags) => Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Divider(thickness: 1),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 child: Text(
