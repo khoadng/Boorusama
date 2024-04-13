@@ -90,7 +90,7 @@ class _AddUnknownBooruPageState extends ConsumerState<AddUnknownBooruPage> {
                 onPressed: context.navigator.pop,
                 icon: const Icon(Symbols.close),
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -130,22 +130,27 @@ class _AddUnknownBooruPageState extends ConsumerState<AddUnknownBooruPage> {
             Stack(
               children: [
                 WarningContainer(
-                  contentBuilder: (context) => Text(
-                    'This configuration is invalid. Please check again. \n\nError: $error',
-                    style: TextStyle(
-                      color: context.colorScheme.onError,
+                  contentBuilder: (context) => Padding(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: Text(
+                      'This configuration is invalid. Please check again. \n\nError: $error',
+                      style: TextStyle(
+                        color: context.colorScheme.onError,
+                      ),
                     ),
                   ),
                 ),
                 Positioned(
-                  top: 6,
-                  right: 6,
+                  top: 8,
+                  right: 8,
                   child: IconButton(
                     onPressed: () => setState(() {
                       error = null;
                       isValidSite = null;
                     }),
-                    icon: const Icon(Symbols.close),
+                    icon: const Icon(
+                      Symbols.close,
+                    ),
                   ),
                 ),
               ],

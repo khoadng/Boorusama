@@ -126,7 +126,6 @@ class _PageSelectorState extends State<PageSelector> {
               },
               child: TextField(
                 autofocus: true,
-                cursorHeight: 14,
                 onTapOutside: (_) {
                   setState(() {
                     pageInputMode = false;
