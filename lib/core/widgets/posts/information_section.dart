@@ -134,7 +134,7 @@ String chooseArtistTag(Set<String> artistTags) {
 
   // find the first artist name that not contains excludedTags
   final artist = artistTags.firstWhereOrNull(
-    (tag) => !excludedTags.contains(tag),
+    (tag) => !excludedTags.any(tag.contains),
   );
 
   return artist ?? 'Unknown artist';
