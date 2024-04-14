@@ -79,10 +79,11 @@ class _Chip extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4),
       child: ChoiceChip(
+        showCheckmark: false,
         disabledColor: context.theme.chipTheme.disabledColor,
         backgroundColor:
             colors?.backgroundColor ?? context.theme.chipTheme.backgroundColor,
-        selectedColor: context.theme.chipTheme.selectedColor,
+        selectedColor: context.colorScheme.onSurface,
         selected: isSelected,
         side: BorderSide(
           width: 1.5,
@@ -91,13 +92,18 @@ class _Chip extends ConsumerWidget {
               : colors?.borderColor ?? Colors.transparent,
         ),
         onSelected: (selected) => onSelected(search),
-        padding: const EdgeInsets.all(4),
+        padding: const EdgeInsets.symmetric(
+          horizontal: 8,
+          vertical: 4,
+        ),
         labelPadding: const EdgeInsets.all(1),
         visualDensity: VisualDensity.compact,
         label: Text(
           search.keyword.replaceUnderscoreWithSpace(),
           style: TextStyle(
-            color: isSelected ? null : colors?.foregroundColor,
+            color: isSelected
+                ? context.colorScheme.surface
+                : colors?.foregroundColor,
           ),
           overflow: TextOverflow.ellipsis,
         ),
