@@ -271,8 +271,8 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
       builder: (context, value, child) {
         return Slider(
           label: value.toInt().toString(),
-          divisions: 10,
-          max: 10,
+          divisions: 20,
+          max: 20,
           value: value,
           onChangeEnd: (value) =>
               ref.updateSettings(settings.copyWith(imageBorderRadius: value)),
