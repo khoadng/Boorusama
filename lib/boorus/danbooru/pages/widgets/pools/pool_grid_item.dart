@@ -23,7 +23,7 @@ class PoolGridItem extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
-      padding: const EdgeInsets.all(4),
+      padding: const EdgeInsets.all(2),
       child: Stack(
         children: [
           Column(
@@ -33,7 +33,7 @@ class PoolGridItem extends ConsumerWidget {
               Flexible(
                 child: Stack(
                   children: [
-                    PoolImage(pool: pool),
+                    Positioned.fill(child: PoolImage(pool: pool)),
                     Positioned.fill(
                       child: Material(
                         color: Colors.transparent,
@@ -48,14 +48,12 @@ class PoolGridItem extends ConsumerWidget {
                   ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4),
-                child: Text(
-                  pool.name.replaceUnderscoreWithSpace(),
-                  style: const TextStyle(fontWeight: FontWeight.w600),
-                  maxLines: 4,
-                  overflow: TextOverflow.ellipsis,
-                ),
+              const SizedBox(height: 8),
+              Text(
+                pool.name.replaceUnderscoreWithSpace(),
+                style: const TextStyle(fontWeight: FontWeight.w600),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
               ),
             ],
           ),
@@ -63,8 +61,8 @@ class PoolGridItem extends ConsumerWidget {
             left: 4,
             top: 4,
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 4),
-              height: 25,
+              padding: const EdgeInsets.symmetric(horizontal: 6),
+              height: 32,
               decoration: BoxDecoration(
                 color: Colors.black.withOpacity(0.7),
                 borderRadius: const BorderRadius.all(Radius.circular(4)),
@@ -83,6 +81,8 @@ class PoolGridItem extends ConsumerWidget {
                   const Icon(
                     Symbols.photo_library,
                     color: Colors.white,
+                    fill: 1,
+                    size: 20,
                   ),
                 ],
               ),

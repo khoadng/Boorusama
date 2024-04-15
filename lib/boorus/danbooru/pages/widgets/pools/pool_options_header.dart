@@ -16,7 +16,6 @@ class PoolOptionsHeader extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final category = ref.watch(danbooruSelectedPoolCategoryProvider);
     final order = ref.watch(danbooruSelectedPoolOrderProvider);
 
     return Padding(
@@ -27,18 +26,6 @@ class PoolOptionsHeader extends ConsumerWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          BooruSegmentedButton(
-            segments: {
-              for (final category in PoolCategory.values
-                  .where((e) => e != PoolCategory.unknown))
-                category: _poolCategoryToString(category).tr(),
-            },
-            initialValue: category,
-            onChanged: (value) {
-              ref.read(danbooruSelectedPoolCategoryProvider.notifier).state =
-                  value;
-            },
-          ),
           OptionDropDownButton(
             value: order,
             alignment: AlignmentDirectional.centerStart,
@@ -66,6 +53,3 @@ String _poolOrderToString(PoolOrder order) => switch (order) {
       PoolOrder.name => 'pool.order.name',
       PoolOrder.latest => 'pool.order.recent'
     };
-
-String _poolCategoryToString(PoolCategory category) =>
-    'pool.category.${category.name}';
