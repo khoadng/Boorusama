@@ -171,7 +171,8 @@
         "general": "Генеральные",
         "search": {
             "search": "Поиск",
-            "auto_focus_search_bar": "Панель поиска с автофокусом при первом открытии режима поиска"
+            "auto_focus_search_bar": "Панель поиска с автофокусом при первом открытии режима поиска",
+            "hide_bookmarked_posts_from_search_results": "Скрыть посты с закладками из результатов поиска"
         },
         "information": "Информация",
         "changelog": "История изменений",
@@ -204,7 +205,8 @@
                 "highest": "Highest"
             },
             "spacing": "Промежуток",
-            "corner_radius": "Количество углов"
+            "corner_radius": "Количество углов",
+            "aspect_ratio": "Соотношение сторон"
         },
         "image_viewer": {
             "image_viewer": "Просмотр изображений",
@@ -222,11 +224,19 @@
             "theme": "Тема",
             "dark": "Тёмная",
             "light": "Светлая",
-            "amoled_dark": "Чёрная"
+            "amoled_dark": "Чёрная",
+            "dynamic_color_mobile_description": "Синхронизировать цвет темы с обоями",
+            "dynamic_color": "Динамический цвет темы",
+            "dynamic_color_desktop_description": "Синхронизировать цвет темы с акцентным цветом ОС",
+            "dynamic_color_unsupported_description": "Это устройство не поддерживает динамический цвет."
         },
         "privacy": {
             "privacy": "Приватность",
-            "send_error_data_notice": "Отправлять анонимные данные для обработки ошибок"
+            "send_error_data_notice": "Отправлять анонимные данные для обработки ошибок",
+            "enable_incognito_keyboard_notice": "Влияет только на Android.",
+            "enable_biometric_lock_notice": "Работает только на устройствах с настроенной поддержкой биометрии.",
+            "enable_incognito_keyboard": "Включить клавиатуру в режиме инкогнито",
+            "enable_biometric_lock": "Включить биометрическую блокировку"
         },
         "performance": {
             "performance": "Производительность",
@@ -234,7 +244,7 @@
             "posts_per_page_explain": "Количество изображений на одной странице",
             "cache_size": "Размер кеша",
             "clear_cache": "Очистить кеш",
-            "cache_size_info": "{0} МБ в {1} файле"
+            "cache_size_info": "{0} в {1} файле"
         },
         "debug_logs": {
             "logs_copied": "Логи скопированны в буфер обмена",
@@ -251,7 +261,33 @@
             "quality": "Качество загружаемых изображений"
         },
         "help_us_translate": "помогите нам перевести",
-        "other_settings": "Другие настройки"
+        "other_settings": "Другие настройки",
+        "accessibility": {
+            "swipeAreaToOpenSidebar": "Область прокрутки боковой панели",
+            "swipeAreaToOpenSidebarDescription": "Размер области в левой части экрана, которую можно использовать для запуска смахивания. Большие значения будут блокировать все горизонтальные жесты, такие как жест пролистывания по страницам."
+        },
+        "data_and_storage": {
+            "clear_cache_on_start_up": "Очистить кеш изображений при запуске",
+            "data_and_storage": "Данные и хранилище"
+        },
+        "backup_and_restore": {
+            "backup_and_restore": "Резервное копирование и восстановление"
+        },
+        "image_details": {
+            "ui_overlay": {
+                "hide": "Скрыть",
+                "show": "Показать"
+            },
+            "image_details": "Детали изoбражения"
+        },
+        "booru_settings": {
+            "edit_current_profile": "Редактировать текущий профиль"
+        },
+        "source_code": "Исходный код",
+        "feature_request_and_bug_report_description": "Предлагайте функции или сообщайте об ошибках через репозиторий GitHub",
+        "support": "Поддержка",
+        "contact_developer": "Связаться с разработчиком",
+        "contact_developer_description": "Если у вас есть какие-либо вопросы или предложения, напишите мне по электронной почте с помощью этой опции"
     },
     "blacklisted_tags": {
         "remove": "Удалить",
@@ -261,7 +297,8 @@
         "updated": "Чёрный список обновлён",
         "limitation_notice": "Поддерживает только <b>НЕ</b> оператор и <b>ИЛИ</b> оператор, <b>score</b> метатег и <b>rating</b> метатег\n\nИспользование чёрного списка с другими метатегами не работает в текущей версии.",
         "failed_to_add": "Не удалось добавить тег",
-        "failed_to_remove": "Не удалось убрать тег"
+        "failed_to_remove": "Не удалось убрать тег",
+        "disable_all": "Отключить все"
     },
     "download": {
         "download": "Скачать",
@@ -283,6 +320,16 @@
         "bulk_download_downloaded_counter": {
             "other": "{} изображений загружено",
             "one": "{} изображение загружено"
+        },
+        "image_counter": {
+            "other": "Скачать {} изображений"
+        },
+        "bulk_download_skipped_counter": {
+            "one": "{} изображение пропущено",
+            "other": "{} изображений пропущено"
+        },
+        "bulk": {
+            "all_done_notification_message": "Все загрузки завершены"
         }
     },
     "saved_search": {
@@ -301,38 +348,46 @@
         "saved_search_labels_description": "*Список тегов, которые помогут упорядочить данный поиск. Разделение пробелом."
     },
     "favorites": {
-        "favorited": "В любимых",
-        "favorite": "Любимое"
+        "favorited": "В избранных",
+        "favorite": "Избранное",
+        "counter": {
+            "other": "Избранные"
+        }
     },
     "favorite_groups": {
-        "favorite_groups": "Сборники",
-        "empty_group_notice": "Нет сборников",
+        "favorite_groups": "Избранные сборники",
+        "empty_group_notice": "Нет избранных сборников",
         "create_group": "Создать сборник",
         "edit_group": "Изменить сборник",
-        "add_to_group_dialog_title": "Добавить в сборник",
+        "add_to_group_dialog_title": "Добавить в сборник избранного",
         "add_to": "Добавить в",
         "create": "Создать",
         "private": "Private",
         "view_more_popup": "Просмотреть",
         "items_added_notification_popup": "{0} изображений добавленно в {1}",
-        "group_name": "Название группы",
+        "group_name": "Название сборника",
         "group_name_hint": "Новый сборник",
         "all_posts": "Изображения",
         "initial_posts_hint": "Введите индефикаторы изображений, разделяя их пробелом (необязательно)",
         "is_private_group_option": "Приватный сборник",
         "create_group_cancel": "Отмена",
         "create_group_confirm": "OK",
-        "max_limit_warning": "Учасники могут создать только 10 сборников",
+        "max_limit_warning": "Учасник может создать только 10 сборников",
         "duplicate_items_warning_notification": "Это изображение уже присутствует в сборнике",
-        "detete_confirmation": "Вы уверенны в том, что хотите удалить этот сборник"
+        "detete_confirmation": "Вы уверенны в том, что хотите удалить этот сборник избранного",
+        "group_item_counter": {
+            "one": "{} изображение",
+            "other": "{} изображений"
+        }
     },
     "favorite_tags": {
-        "favorites": "Любимые",
+        "favorites": "Избранные",
         "import": "Импорт",
-        "import_hint": "Введите теги. Разделение пробелом.",
+        "import_hint": "Введите теги. Разделяйте пробелом.",
         "cancel": "Отмена",
         "export": "Экспорт",
-        "export_notification": "Строка с тегами скопирована в буфер обмена"
+        "export_notification": "Строка с тегами скопирована в буфер обмена",
+        "favorite_tags": "Избранные теги"
     },
     "rating": {
         "rate_request": "Оценить приложение",
@@ -345,7 +400,8 @@
         "settings": "Настройки",
         "your_bookmarks": "Ваши закладки",
         "your_blacklist": "Ваш чёрный список",
-        "bulk_download": "Массовая загрузка"
+        "bulk_download": "Массовая загрузка",
+        "get_support": "Обратиться в поддержку"
     },
     "dateRange": {
         "day": "День",
@@ -359,9 +415,40 @@
         "password_api_key_label": "API ключ",
         "password_hashed_label": "Хеш пароля (только чтение)",
         "password_label": "Пароль",
-        "config_booru_confirm": "ОК"
+        "config_booru_confirm": "ОК",
+        "authentication": "Аутентификация",
+        "hide_deleted_label": "Скрыть удаленные сообщения",
+        "add_a_booru_site": "Создать новый профиль",
+        "site_url": "Сыллка на сайт",
+        "validation_empty_url": "Ссылка пуста",
+        "next_step": "Далее",
+        "content_filtering_label": "Фильтрация контента",
+        "config_name_label": "Имя профиля (*)"
     },
     "forum": {
-        "forum": "форум"
+        "forum": "Форум"
+    },
+    "blacklist": {
+        "manage": {
+            "title": "Черный список",
+            "empty_blacklist": "Нет тегов в черном списке"
+        }
+    },
+    "app_update": {
+        "whats_new": "Что нового?",
+        "update_available": "Доступно обновление",
+        "later": "Позже",
+        "update": "Обновить приложение"
+    },
+    "bookmark": {
+        "failed_to_add": "Не удалось добавить закладку",
+        "added": "Закладка добавлена",
+        "many_added": "Добавлено {0} закладок",
+        "failed_to_add_many": "Не удалось добавить закладки",
+        "removed": "Закладка удалена",
+        "failed_to_remove": "Не удалось удалить закладку",
+        "failed_to_update": "Не удалось обновить закладку",
+        "updated": "Закладка обновлена",
+        "failed_to_load": "Не удалось загрузить закладок: {0}"
     }
 }
