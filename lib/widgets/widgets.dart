@@ -7,6 +7,7 @@ export 'booru_dialog.dart';
 export 'booru_segmented_button.dart';
 export 'booru_popup_menu_button.dart';
 export 'center_play_button.dart';
+export 'choice_option_selector_list.dart';
 export 'circular_icon_button.dart';
 export 'compact_chip.dart';
 export 'conditional_parent_widget.dart';
