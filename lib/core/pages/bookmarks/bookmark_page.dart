@@ -9,9 +9,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import 'bookmark_appbar.dart';
 import 'bookmark_scroll_view.dart';
-import 'bookmark_search_bar.dart';
 import 'providers.dart';
 
 class BookmarkPage extends ConsumerStatefulWidget {
@@ -50,10 +48,6 @@ class _BookmarkPageState extends ConsumerState<BookmarkPage> {
       onTap: () => focusNode.unfocus(),
       child: CustomContextMenuOverlay(
         child: Scaffold(
-          appBar: const PreferredSize(
-            preferredSize: Size.fromHeight(kToolbarHeight),
-            child: BookmarkAppBar(),
-          ),
           floatingActionButton: ScrollToTop(
             scrollController: scrollController,
             child: FloatingActionButton(
@@ -64,19 +58,10 @@ class _BookmarkPageState extends ConsumerState<BookmarkPage> {
           ),
           body: Container(
             padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                BookmarkSearchBar(
-                  focusNode: focusNode,
-                  controller: _searchController,
-                ),
-                Expanded(
-                  child: BookmarkScrollView(
-                    controller: scrollController,
-                  ),
-                ),
-              ],
+            child: BookmarkScrollView(
+              controller: scrollController,
+              focusNode: focusNode,
+              searchController: _searchController,
             ),
           ),
         ),
