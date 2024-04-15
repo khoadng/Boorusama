@@ -298,7 +298,7 @@ class AppTheme {
           brightness: Brightness.dark,
           listTileTheme: ListTileThemeData(
             subtitleTextStyle: TextStyle(
-              color: colorScheme.outline,
+              color: colorScheme.outlineVariant.withOpacity(0.4),
             ),
           ),
           colorScheme: colorScheme,
