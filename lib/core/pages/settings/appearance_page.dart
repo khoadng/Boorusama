@@ -109,8 +109,6 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
                   ref.updateSettings(settings.copyWith(imageListType: value)),
               optionBuilder: (value) => Text(value.localize()).tr(),
             ),
-            if (settings.imageListType == ImageListType.standard)
-              _buildAspectRatioSlider(settings),
             SettingsTile<ImageQuality>(
               title: const Text(
                 'settings.image_grid.image_quality.image_quality',
@@ -170,6 +168,8 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
             _buildBorderRadiusSlider(settings),
             const SizedBox(height: 10),
             _buildPaddingSlider(settings),
+            const SizedBox(height: 10),
+            _buildAspectRatioSlider(settings),
             const Divider(thickness: 1),
             SettingsHeader(label: 'settings.appearance.booru_config'.tr()),
             SettingsTile<BooruConfigSelectorPosition>(
