@@ -22,6 +22,7 @@ class BookmarkBooruSourceUrlSelector extends ConsumerWidget {
         ref.read(selectedBooruUrlProvider.notifier).state = value;
       },
       selectedOption: ref.watch(selectedBooruUrlProvider),
+      optionLabelBuilder: (value) => value ?? 'All',
     );
   }
 }

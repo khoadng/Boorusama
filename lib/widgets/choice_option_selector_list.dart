@@ -19,15 +19,15 @@ final class ButtonType extends OptionSelectorItem {
   const ButtonType();
 }
 
-final class OptionType extends OptionSelectorItem {
+final class OptionType<T> extends OptionSelectorItem {
   const OptionType({
     required this.data,
   });
 
-  final String data;
+  final T data;
 }
 
-class ChoiceOptionSelectorList extends ConsumerStatefulWidget {
+class ChoiceOptionSelectorList<T> extends ConsumerStatefulWidget {
   const ChoiceOptionSelectorList({
     super.key,
     required this.options,
@@ -35,26 +35,30 @@ class ChoiceOptionSelectorList extends ConsumerStatefulWidget {
     this.icon,
     this.onSelected,
     required this.sheetTitle,
+    required this.optionLabelBuilder,
+    this.hasNullOption = true,
   });
 
-  final List<String> options;
-  final String? selectedOption;
+  final List<T> options;
+  final T? selectedOption;
   final Widget? icon;
-  final void Function(String?)? onSelected;
+  final void Function(T? value)? onSelected;
   final String sheetTitle;
+  final String Function(T? value) optionLabelBuilder;
+  final bool hasNullOption;
 
   @override
-  ConsumerState<ChoiceOptionSelectorList> createState() =>
+  ConsumerState<ChoiceOptionSelectorList<T>> createState() =>
       _ChoiceOptionSelectorListState();
 }
 
-class _ChoiceOptionSelectorListState
-    extends ConsumerState<ChoiceOptionSelectorList> {
+class _ChoiceOptionSelectorListState<T>
+    extends ConsumerState<ChoiceOptionSelectorList<T>> {
   final scrollController = AutoScrollController();
   late var selectedOption = widget.selectedOption;
 
   @override
-  void didUpdateWidget(covariant ChoiceOptionSelectorList oldWidget) {
+  void didUpdateWidget(covariant ChoiceOptionSelectorList<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     if (oldWidget.selectedOption != widget.selectedOption) {
@@ -72,7 +76,7 @@ class _ChoiceOptionSelectorListState
   Widget build(BuildContext context) {
     final options = [
       const ButtonType(),
-      null,
+      if (widget.hasNullOption) null,
       ...widget.options.map((e) => OptionType(data: e)),
     ];
 
@@ -107,7 +111,7 @@ class _ChoiceOptionSelectorListState
                         : context.theme.hintColor,
                     onPressed: () => _onSelect(null, index),
                     label: Text(
-                      'All',
+                      widget.optionLabelBuilder(null),
                       style: TextStyle(
                         color: selected ? null : context.colorScheme.onSurface,
                       ),
@@ -126,7 +130,7 @@ class _ChoiceOptionSelectorListState
                         : context.theme.hintColor,
                     onPressed: () => _onSelect(o.data, index),
                     label: Text(
-                      o.data,
+                      widget.optionLabelBuilder(o.data),
                       style: TextStyle(
                         color: selected ? null : context.colorScheme.onSurface,
                       ),
@@ -135,7 +139,7 @@ class _ChoiceOptionSelectorListState
                 ),
               ButtonType _ => IconButton(
                   onPressed: () {
-                    final items = options.whereType<OptionType>().toList();
+                    final items = options.whereType<OptionType<T>>().toList();
                     showBarModalBottomSheet(
                         context: context,
                         duration: const Duration(milliseconds: 200),
@@ -145,7 +149,7 @@ class _ChoiceOptionSelectorListState
                               scrollController:
                                   ModalScrollController.of(context),
                               onFilter: (query) => items.where((e) {
-                                final value = e.data;
+                                final value = widget.optionLabelBuilder(e.data);
 
                                 return value
                                     .toLowerCase()
@@ -154,7 +158,7 @@ class _ChoiceOptionSelectorListState
                               itemBuilder: (context, option) => ListTile(
                                 minVerticalPadding: 4,
                                 title: Text(
-                                  option.data,
+                                  widget.optionLabelBuilder(option.data),
                                 ),
                                 onTap: () {
                                   Navigator.pop(context);
@@ -173,7 +177,7 @@ class _ChoiceOptionSelectorListState
     );
   }
 
-  void _onSelect(String? value, int index) {
+  void _onSelect(T? value, int index) {
     widget.onSelected?.call(value);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       scrollController.scrollToIndex(
