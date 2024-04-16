@@ -3,19 +3,23 @@
         "done": "完成",
         "errors": {
             "no_data": "无可用数据",
-            "unknown": "发生错误"
+            "unknown": "某些错误"
         },
         "action": {
             "add": "添加",
             "delete": "删除",
             "edit": "编辑",
             "ok": "确定",
-            "cancel": "取消"
+            "cancel": "取消",
+            "duplicate": "复制"
         },
         "view": "显示"
     },
     "profile": {
-        "favorites": "喜爱"
+        "favorites": "喜爱",
+        "messages": "信息",
+        "copy_user_id": "复制用户ID",
+        "profile": "简介"
     },
     "network": {
         "unavailable": "网络不可用"
@@ -54,12 +58,14 @@
             "add_to_favorites": "添加到喜爱中",
             "copy_and_open_saved_search": "复制并打开预设搜索",
             "score": {
-                "other": "分"
+                "other": "分",
+                "one": "分"
             },
             "source_label": "来源",
             "related_posts": "相关帖子",
             "add_to_bookmark": "添加到书签",
-            "remove_from_bookmark": "从书签移除"
+            "remove_from_bookmark": "从书签移除",
+            "view": "打开"
         },
         "action": {
             "preview": "预览",
@@ -89,7 +95,8 @@
             "send": "发送"
         },
         "counter": {
-            "other": "评论"
+            "other": "评论",
+            "one": "评论"
         }
     },
     "explore": {
@@ -97,7 +104,8 @@
         "popular": "最受欢迎的",
         "hot": "热度",
         "most_viewed": "最多观看",
-        "see_more": "查看更多"
+        "see_more": "查看更多",
+        "explore": "探索"
     },
     "search": {
         "errors": {
@@ -124,7 +132,8 @@
         "trending": "趋势",
         "remove_all_selected": "移除所有已选标签",
         "result_counter": {
-            "other": "{} 个结果"
+            "other": "{} 个结果",
+            "one": "{} 个结果"
         },
         "no_result_notice": "啥都木有",
         "search_in_progress_notice": "搜索…"
@@ -154,12 +163,16 @@
         "app_settings": "应用设置",
         "appearance": {
             "appearance": "外观",
-            "show_scores": "显示评分"
+            "show_scores": "显示评分",
+            "booru_config_placement": "Booru配置对齐位置",
+            "booru_config": "Booru配置",
+            "show_post_list_config_header": "显示提交的配置信息"
         },
         "general": "通用",
         "search": {
             "search": "搜索",
-            "auto_focus_search_bar": "首次打开搜索窗口时自动聚焦到搜索栏"
+            "auto_focus_search_bar": "首次打开搜索窗口时自动聚焦到搜索栏",
+            "hide_bookmarked_posts_from_search_results": "搜索结果中隐藏已收藏书签的图片"
         },
         "information": "关于",
         "changelog": "更新日志",
@@ -192,7 +205,9 @@
                 "highest": "最高的"
             },
             "spacing": "间距",
-            "corner_radius": "圆角"
+            "corner_radius": "圆角",
+            "aspect_ratio": "外观比例",
+            "padding": "边距"
         },
         "image_viewer": {
             "image_viewer": "图片查看器",
@@ -210,11 +225,19 @@
             "theme": "主题",
             "dark": "黑暗",
             "light": "明亮",
-            "amoled_dark": "AMOLED黑暗"
+            "amoled_dark": "很黑暗",
+            "dynamic_color_desktop_description": "将主题颜色与系统强调色同步",
+            "dynamic_color": "动态主题颜色",
+            "dynamic_color_mobile_description": "将主题颜色与壁纸同步",
+            "dynamic_color_unsupported_description": "该设备不支持动态颜色。"
         },
         "privacy": {
             "privacy": "隐私",
-            "send_error_data_notice": "发送匿名错误日志"
+            "send_error_data_notice": "发送匿名错误日志",
+            "enable_incognito_keyboard": "启用隐私键盘",
+            "enable_incognito_keyboard_notice": "仅在安卓上生效。",
+            "enable_biometric_lock_notice": "仅在支持并已设置了指纹的设备上可用。",
+            "enable_biometric_lock": "启用指纹锁"
         },
         "performance": {
             "performance": "性能",
@@ -239,7 +262,45 @@
             }
         },
         "help_us_translate": "帮助我们翻译",
-        "other_settings": "其他设置"
+        "other_settings": "其他设置",
+        "accessibility": {
+            "accessibility": "无障碍",
+            "reverseBooruConfigSelectorScrollDirection": "反转booru配置的对齐方向",
+            "swipeAreaToOpenSidebar": "侧边栏滑出宽度",
+            "swipeAreaToOpenSidebarDescription": "从左侧拉出侧边栏的触发区域。设置过大值会使其它水平手势（比如翻页）不可用。"
+        },
+        "contribute": "贡献",
+        "source_code": "源码",
+        "booru_settings": {
+            "edit_current_profile": "编辑当前资料",
+            "booru_settings": "Booru设置"
+        },
+        "support": "支持",
+        "data_and_storage": {
+            "clear_cache_on_start_up": "启动时清理图片缓存",
+            "data_and_storage": "数据和存储"
+        },
+        "image_details": {
+            "image_details": "图片详情",
+            "ui_overlay": {
+                "ui_overlay": "UI叠加",
+                "show": "显示",
+                "hide": "隐藏"
+            }
+        },
+        "page_indicator": {
+            "page_indicator": "页码位置",
+            "top": "顶部",
+            "both": "两者",
+            "bottom": "底部"
+        },
+        "backup_and_restore": {
+            "backup_and_restore": "备份与恢复"
+        },
+        "contact_developer": "联系开发者",
+        "contact_developer_description": "如果你有任何问题和建议，请通过该选项给我发送邮件（最好使用英文）",
+        "feature_request_and_bug_report": "新功能请求和报告bug",
+        "feature_request_and_bug_report_description": "通过Github仓库提交新功能建议或报告bug"
     },
     "blacklisted_tags": {
         "remove": "移除",
@@ -247,9 +308,12 @@
         "blacklisted_tags": "标签黑名单",
         "load_error": "加载标签黑名单失败",
         "updated": "标签黑名单已更新",
-        "limitation_notice": "仅支持 <b>NOT</b> 操作和 <b>OR</b> 操作。\n\n使用元数据的黑名单在当前版本不可用。",
+        "limitation_notice": "仅支持 <b>NOT</b> 操作、 <b>OR</b> 操作、评分元标签和评级元标签\n\n使用其它黑名单在当前版本不可用。",
         "failed_to_add": "添加标签失败",
-        "failed_to_remove": "移除标签失败"
+        "failed_to_remove": "移除标签失败",
+        "blacklisted_header_title": "黑名单",
+        "disable_all": "停用全部",
+        "reenable_all": "启用全部"
     },
     "download": {
         "download": "下载",
@@ -265,17 +329,20 @@
         "bulk_download_folder_select_warning": "在Android 11+上，此应用只能将文件保存在内部公共目录 <b>({0})</b> 中. <div>不支持SD卡。</div> <div>请选择其他路径。</div> <div>此设备的版本是 {1}。</div>",
         "bulk_download_select_a_folder": "选择文件夹",
         "bulk_download_downloaded_counter": {
-            "other": "{} 张图片已下载"
+            "other": "{} 张图片已下载",
+            "one": "{} 张图片已下载"
         },
         "bulk_download_skipped_counter": {
-            "other": "{} 张图片已跳过"
+            "other": "{} 张图片已跳过",
+            "one": "{} 张图片已跳过"
         },
         "bulk_download_download_more": "下载更多",
         "open_app_settings": "打开设置",
         "storage_permission_explanation": "需要存储权限来保存文件。",
         "app_restart_request": "该修改需要重启应用生效",
         "image_counter": {
-            "other": "下载 {} 张图片"
+            "other": "下载 {} 张图片",
+            "one": "下载 {} 张图片"
         },
         "bulk": {
             "all_done_notification_message": "所有下载已完成"
@@ -284,7 +351,8 @@
     "saved_search": {
         "saved_search": "预设搜索",
         "saved_search_counter": {
-            "other": "{} 个搜索"
+            "other": "{} 个搜索",
+            "one": "{} 个搜索"
         },
         "add_saved_search": "添加预设搜索",
         "saved_search_added": "已添加到预设搜索",
@@ -301,7 +369,8 @@
     },
     "favorites": {
         "counter": {
-            "other": "喜爱"
+            "other": "喜爱",
+            "one": "喜爱"
         },
         "favorited": "已加进喜爱中",
         "favorite": "喜爱"
@@ -328,7 +397,8 @@
         "duplicate_items_warning_notification": "输入的帖子已存在组中",
         "detete_confirmation": "是否删除该喜爱组",
         "group_item_counter": {
-            "other": "{} 个提交"
+            "other": "{} 个提交",
+            "one": "{} 个提交"
         }
     },
     "favorite_tags": {
@@ -337,7 +407,8 @@
         "import_hint": "在此输入标签。使用空格分隔。",
         "cancel": "取消",
         "export": "导出",
-        "export_notification": "标签已复制到剪切板"
+        "export_notification": "标签已复制到剪切板",
+        "favorite_tags": "喜爱tag"
     },
     "rating": {
         "rate_request": "评价此应用",
@@ -350,7 +421,8 @@
         "settings": "设置",
         "your_bookmarks": "书签",
         "your_blacklist": "黑名单",
-        "bulk_download": "批量下载"
+        "bulk_download": "批量下载",
+        "get_support": "获取支持"
     },
     "dateRange": {
         "day": "日",
@@ -368,7 +440,7 @@
         "content_filtering_label": "内容过滤",
         "hide_deleted_label": "隐藏已删除帖子",
         "config_booru_confirm": "确认",
-        "add_a_booru_site": "添加booru站点",
+        "add_a_booru_site": "添加新配置",
         "next_step": "下一步",
         "site_url": "网站地址",
         "unsupported_warning": "这个booru尚未支持。",
@@ -378,7 +450,11 @@
         "validation_missing_trailing_slash": "\"{0}\" 缺少尾斜杠",
         "validation_redundant_www": "\"{0}\" 包含了多余的 \"WWW\"",
         "validation_contains_spaces": "\"{0}\" 中包含了空格",
-        "validation_missing_scheme": "\"{0}\" 未指明协议（比如https://）"
+        "validation_missing_scheme": "\"{0}\" 未指明协议（比如https://）",
+        "authentication": "授权",
+        "misc": "混杂",
+        "gestures": "姿势",
+        "download": "下载"
     },
     "blacklist": {
         "manage": {
@@ -405,5 +481,11 @@
     },
     "forum": {
         "forum": "论坛"
+    },
+    "gestures": {
+        "double_tap": "双击",
+        "long_press": "长按",
+        "tap": "点击",
+        "swipe_down": "下滑"
     }
 }
