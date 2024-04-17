@@ -31,6 +31,9 @@ final imageBorderRadiusSettingsProvider = Provider<double>((ref) => ref.watch(
 final imageQualitySettingsProvider = Provider<ImageQuality>(
     (ref) => ref.watch(settingsProvider.select((value) => value.imageQuality)));
 
+final enableDynamicColoringSettingsProvider = Provider<bool>((ref) =>
+    ref.watch(settingsProvider.select((value) => value.enableDynamicColoring)));
+
 final settingIOHandlerProvider = Provider<SettingsIOHandler>(
   (ref) => SettingsIOHandler(
     handler: DataIOHandler.file(

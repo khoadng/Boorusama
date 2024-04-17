@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/feats/settings/settings.dart';
 import 'app_theme.dart';
 import 'colors.dart';
 import 'theme_mode.dart';
@@ -23,8 +24,7 @@ class ThemeBuilder extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme =
         ref.watch(settingsProvider.select((value) => value.themeMode));
-    final enableDynamicColor = ref
-        .watch(settingsProvider.select((value) => value.enableDynamicColoring));
+    final enableDynamicColor = ref.watch(enableDynamicColoringSettingsProvider);
 
     final systemDarkMode =
         MediaQuery.platformBrightnessOf(context) == Brightness.dark;

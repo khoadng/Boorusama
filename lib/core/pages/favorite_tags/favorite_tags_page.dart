@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
@@ -135,9 +136,8 @@ class FavoriteTagsPage extends ConsumerWidget {
                       );
                     },
                     icon: const Icon(
-                      FontAwesomeIcons.sliders,
+                      Symbols.tune,
                       fill: 1,
-                      size: 20,
                     ),
                   ),
                 ],

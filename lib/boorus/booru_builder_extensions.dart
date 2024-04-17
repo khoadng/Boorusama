@@ -57,8 +57,7 @@ extension BooruBuilderWidgetRef on WidgetRef {
       tagType,
       primaryColor: context.colorScheme.primary,
       themeMode: tm,
-      dynamicColor: watch(
-          settingsProvider.select((value) => value.enableDynamicColoring)),
+      dynamicColor: watch(enableDynamicColoringSettingsProvider),
       color: watchBooruBuilder(watchConfig)?.tagColorBuilder(tm, tagType),
     );
   }

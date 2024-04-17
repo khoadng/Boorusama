@@ -2,12 +2,14 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/app.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/settings/settings_providers.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -75,27 +77,7 @@ class CurrentBooruTile extends ConsumerWidget {
                     if (booruConfig.ratingFilter !=
                         BooruConfigRatingFilter.none) ...[
                       const SizedBox(width: 12),
-                      SquareChip(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(4)),
-                        label: Text(
-                          booruConfig.ratingFilter
-                              .getRatingTerm()
-                              .toUpperCase(),
-                          maxLines: 1,
-                          softWrap: false,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        color: booruConfig.ratingFilter ==
-                                BooruConfigRatingFilter.hideNSFW
-                            ? Colors.green
-                            : const Color.fromARGB(255, 154, 138, 0),
-                      ),
+                      CurrentBooruRatingChip(config: booruConfig),
                     ],
                 ],
               ),
@@ -104,6 +86,44 @@ class CurrentBooruTile extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(vertical: 16),
               child: logo,
             ),
+    );
+  }
+}
+
+class CurrentBooruRatingChip extends ConsumerWidget {
+  const CurrentBooruRatingChip({
+    super.key,
+    required this.config,
+  });
+
+  final BooruConfig config;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final enableDynamicColoring =
+        ref.watch(enableDynamicColoringSettingsProvider);
+
+    return SquareChip(
+      borderRadius: const BorderRadius.all(Radius.circular(4)),
+      label: Text(
+        config.ratingFilter.getRatingTerm().toUpperCase(),
+        maxLines: 1,
+        softWrap: false,
+        overflow: TextOverflow.ellipsis,
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 12,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+      color: config.ratingFilter == BooruConfigRatingFilter.hideNSFW
+          ? enableDynamicColoring
+              ? Colors.green.harmonizeWith(context.colorScheme.primary)
+              : Colors.green
+          : enableDynamicColoring
+              ? const Color.fromARGB(255, 154, 138, 0)
+                  .harmonizeWith(context.colorScheme.primary)
+              : const Color.fromARGB(255, 154, 138, 0),
     );
   }
 }

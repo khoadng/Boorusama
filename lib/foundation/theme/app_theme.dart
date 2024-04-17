@@ -296,9 +296,9 @@ class AppTheme {
             ),
           ),
           brightness: Brightness.dark,
-          listTileTheme: ListTileThemeData(
+          listTileTheme: const ListTileThemeData(
             subtitleTextStyle: TextStyle(
-              color: colorScheme.outlineVariant.withOpacity(0.4),
+              color: kHintAmoledDarkColor,
             ),
           ),
           colorScheme: colorScheme,
