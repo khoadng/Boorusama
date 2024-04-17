@@ -63,9 +63,10 @@ class BookmarkScrollView extends ConsumerWidget {
             controller: searchController,
           ),
         ),
-        const SliverPinnedHeader(
-          child: BookmarkBooruSourceUrlSelector(),
-        ),
+        if (hasBookmarks)
+          const SliverPinnedHeader(
+            child: BookmarkBooruSourceUrlSelector(),
+          ),
         if (hasBookmarks)
           SliverToBoxAdapter(
             child: Padding(
