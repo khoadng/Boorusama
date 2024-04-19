@@ -20,6 +20,7 @@ class BooruChip extends ConsumerWidget {
     this.borderRadius,
     this.showBackground = true,
     this.showBorder = true,
+    this.disabled = false,
   });
 
   final Color? color;
@@ -31,6 +32,7 @@ class BooruChip extends ConsumerWidget {
   final BorderRadiusGeometry? borderRadius;
   final bool showBackground;
   final bool showBorder;
+  final bool disabled;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -47,15 +49,21 @@ class BooruChip extends ConsumerWidget {
               visualDensity: visualDensity,
               foregroundColor: colors?.foregroundColor,
               padding: const EdgeInsets.only(left: 6, right: 2),
-              backgroundColor:
-                  showBackground ? colors?.backgroundColor : Colors.transparent,
+              backgroundColor: showBackground
+                  ? !disabled
+                      ? colors?.backgroundColor
+                      : Colors.transparent
+                  : Colors.transparent,
               shape: RoundedRectangleBorder(
                 borderRadius:
                     borderRadius ?? const BorderRadius.all(Radius.circular(8)),
               ),
               side: showBorder
                   ? BorderSide(
-                      color: colors?.borderColor ?? Colors.transparent,
+                      color: !disabled
+                          ? colors?.borderColor ?? Colors.transparent
+                          : colors?.borderColor.withOpacity(0.5) ??
+                              Colors.transparent,
                     )
                   : null,
             ),
@@ -69,15 +77,21 @@ class BooruChip extends ConsumerWidget {
               foregroundColor: colors?.foregroundColor,
               padding:
                   contentPadding ?? const EdgeInsets.symmetric(horizontal: 8),
-              backgroundColor:
-                  showBackground ? colors?.backgroundColor : Colors.transparent,
+              backgroundColor: showBackground
+                  ? !disabled
+                      ? colors?.backgroundColor
+                      : Colors.transparent
+                  : Colors.transparent,
               shape: RoundedRectangleBorder(
                 borderRadius:
                     borderRadius ?? const BorderRadius.all(Radius.circular(16)),
               ),
               side: showBorder
                   ? BorderSide(
-                      color: colors?.borderColor ?? Colors.transparent,
+                      color: !disabled
+                          ? colors?.borderColor ?? Colors.transparent
+                          : colors?.borderColor.withOpacity(0.5) ??
+                              Colors.transparent,
                     )
                   : null,
             ),

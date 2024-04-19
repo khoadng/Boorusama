@@ -58,7 +58,12 @@ class Shimmie2Client {
         Map m => m.entries
             .map((e) => AutocompleteDto(
                   value: e.key,
-                  count: e.value,
+                  count: switch (e.value) {
+                    int n => n,
+                    Map m => _parseCount(m['count']),
+                    _ => throw Exception(
+                        'Failed to parse autocomplete count, unknown type >> ${e.value}'),
+                  },
                 ))
             .toList(),
         _ => const [],
@@ -84,3 +89,10 @@ FutureOr<List<PostDto>> _parsePosts(
   }
   return dtos;
 }
+
+int? _parseCount(dynamic value) => switch (value) {
+      null => null,
+      String s => int.tryParse(s),
+      int n => n,
+      _ => null,
+    };

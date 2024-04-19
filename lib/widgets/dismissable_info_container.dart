@@ -96,7 +96,10 @@ class _DismissableInfoContainerState
               top: 12,
               right: 20,
               child: IconButton(
-                icon: const Icon(Symbols.close),
+                icon: Icon(
+                  Symbols.close,
+                  color: context.colorScheme.onError,
+                ),
                 onPressed: () {
                   setState(() {
                     _isDismissed = true;

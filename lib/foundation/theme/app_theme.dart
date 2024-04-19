@@ -243,7 +243,7 @@ class AppTheme {
             ),
           ),
           dividerTheme: DividerThemeData(
-            color: colorScheme.outlineVariant.withOpacity(0.25),
+            color: colorScheme.outlineVariant.withOpacity(0.1),
             endIndent: 0,
             indent: 0,
           ),
@@ -296,9 +296,9 @@ class AppTheme {
             ),
           ),
           brightness: Brightness.dark,
-          listTileTheme: ListTileThemeData(
+          listTileTheme: const ListTileThemeData(
             subtitleTextStyle: TextStyle(
-              color: colorScheme.outline,
+              color: kHintAmoledDarkColor,
             ),
           ),
           colorScheme: colorScheme,
@@ -325,7 +325,8 @@ class AppTheme {
               borderRadius: BorderRadius.all(Radius.circular(8)),
             ),
           ),
-          dividerTheme: const DividerThemeData(
+          dividerTheme: DividerThemeData(
+            color: colorScheme.outlineVariant.withOpacity(0.8),
             endIndent: 0,
             indent: 0,
           ),

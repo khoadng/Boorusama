@@ -14,6 +14,7 @@ import 'package:boorusama/boorus/e621/feats/posts/e621_post_provider.dart';
 import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
 import 'package:boorusama/boorus/gelbooru_v1/gelbooru_v1.dart';
+import 'package:boorusama/boorus/gelbooru_v2/feats/posts/posts_v2.dart';
 import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/moebooru/feats/tags/moebooru_tag_provider.dart';
 import 'package:boorusama/boorus/sankaku/sankaku.dart';
@@ -24,6 +25,7 @@ import 'package:boorusama/clients/danbooru/danbooru_client.dart';
 import 'package:boorusama/clients/e621/e621_client.dart';
 import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
 import 'package:boorusama/clients/gelbooru/gelbooru_v1_client.dart';
+import 'package:boorusama/clients/gelbooru/gelbooru_v2_client.dart';
 import 'package:boorusama/clients/moebooru/moebooru_client.dart';
 import 'package:boorusama/clients/philomena/philomena_client.dart';
 import 'package:boorusama/clients/sankaku/sankaku_client.dart';
@@ -70,9 +72,8 @@ final announcementProvider = FutureProvider<String>((ref) {
 final postRepoProvider = Provider.family<PostRepository, BooruConfig>(
     (ref, config) => switch (config.booruType) {
           BooruType.danbooru => ref.watch(danbooruPostRepoProvider(config)),
-          BooruType.gelbooru ||
-          BooruType.gelbooruV2 =>
-            ref.watch(gelbooruPostRepoProvider(config)),
+          BooruType.gelbooru => ref.watch(gelbooruPostRepoProvider(config)),
+          BooruType.gelbooruV2 => ref.watch(gelbooruV2PostRepoProvider(config)),
           BooruType.gelbooruV1 => ref.watch(gelbooruV1PostRepoProvider(config)),
           BooruType.moebooru => ref.watch(moebooruPostRepoProvider(config)),
           BooruType.e621 => ref.watch(e621PostRepoProvider(config)),
@@ -89,9 +90,10 @@ final postArtistCharacterRepoProvider =
         (ref, config) => switch (config.booruType) {
               BooruType.danbooru =>
                 ref.watch(danbooruArtistCharacterPostRepoProvider(config)),
-              BooruType.gelbooru ||
-              BooruType.gelbooruV2 =>
+              BooruType.gelbooru =>
                 ref.watch(gelbooruArtistCharacterPostRepoProvider(config)),
+              BooruType.gelbooruV2 =>
+                ref.watch(gelbooruV2ArtistCharacterPostRepoProvider(config)),
               BooruType.gelbooruV1 =>
                 ref.watch(gelbooruV1PostRepoProvider(config)),
               BooruType.moebooru ||
@@ -196,12 +198,11 @@ final appInfoProvider = Provider<AppInfo>((ref) {
 final tagRepoProvider = Provider.family<TagRepository, BooruConfig>(
     (ref, config) => switch (config.booruType) {
           BooruType.danbooru => ref.watch(danbooruTagRepoProvider(config)),
-          BooruType.gelbooru ||
-          BooruType.gelbooruV2 =>
-            ref.watch(gelbooruTagRepoProvider(config)),
+          BooruType.gelbooru => ref.watch(gelbooruTagRepoProvider(config)),
           BooruType.moebooru => ref.watch(moebooruTagRepoProvider(config)),
           BooruType.e621 ||
           BooruType.gelbooruV1 ||
+          BooruType.gelbooruV2 ||
           BooruType.zerochan ||
           BooruType.sankaku ||
           BooruType.philomena ||
@@ -272,7 +273,13 @@ final booruSiteValidatorProvider =
         login: login,
         apiKey: apiKey,
       ).getPosts().then((value) => true),
-    BooruType.gelbooru || BooruType.gelbooruV2 => GelbooruClient(
+    BooruType.gelbooru => GelbooruClient(
+        baseUrl: config.url,
+        dio: dio,
+        userId: config.login,
+        apiKey: config.apiKey,
+      ).getPosts().then((value) => true),
+    BooruType.gelbooruV2 => GelbooruV2Client(
         baseUrl: config.url,
         dio: dio,
         userId: config.login,

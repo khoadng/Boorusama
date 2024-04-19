@@ -29,6 +29,7 @@ class BookmarkSearchBar extends ConsumerWidget {
       padding: const EdgeInsets.all(8),
       child: SearchField(
         focusNode: focusNode,
+        marginColor: Colors.transparent,
         maxSuggestionsInViewPort: 10,
         searchInputDecoration: InputDecoration(
           prefixIcon: const Icon(Symbols.search),
@@ -63,7 +64,7 @@ class BookmarkSearchBar extends ConsumerWidget {
                 e,
                 item: e,
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(4),
                   child: Row(
                     children: [
                       Expanded(

@@ -72,8 +72,7 @@ class _ImportTagsDialogState extends ConsumerState<ImportTagsDialog> {
                   maxLines: null,
                   decoration: InputDecoration(
                     hintMaxLines: 6,
-                    hintText:
-                        '${widget.hint ?? 'favorite_tags.import_hint'.tr()}\n\n\n\n\n',
+                    hintText: widget.hint ?? 'favorite_tags.import_hint'.tr(),
                   ),
                 ),
               ),

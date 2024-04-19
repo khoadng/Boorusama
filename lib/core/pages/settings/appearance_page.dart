@@ -12,6 +12,7 @@ import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'widgets/settings_header.dart';
+import 'widgets/settings_slider_tile.dart';
 import 'widgets/settings_tile.dart';
 
 class AppearancePage extends ConsumerStatefulWidget {
@@ -108,24 +109,6 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
                   ref.updateSettings(settings.copyWith(imageListType: value)),
               optionBuilder: (value) => Text(value.localize()).tr(),
             ),
-            if (settings.imageListType == ImageListType.standard)
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child:
-                          const Text('settings.image_grid.aspect_ratio').tr(),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    _buildAspectRatioSlider(settings),
-                  ],
-                ),
-              ),
             SettingsTile<ImageQuality>(
               title: const Text(
                 'settings.image_grid.image_quality.image_quality',
@@ -179,53 +162,14 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
               onChanged: (value) =>
                   ref.setPostListConfigHeaderStatus(active: value),
             ),
-            const SizedBox(
-              height: 10,
-            ),
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: const Text('settings.image_grid.spacing').tr(),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  _buildSpacingSlider(settings),
-                ],
-              ),
-            ),
+            const SizedBox(height: 4),
+            _buildSpacingSlider(settings),
             const SizedBox(height: 10),
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: const Text('settings.image_grid.corner_radius').tr(),
-                  ),
-                  _buildBorderRadiusSlider(settings),
-                ],
-              ),
-            ),
+            _buildBorderRadiusSlider(settings),
             const SizedBox(height: 10),
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: const Text('settings.image_grid.padding').tr(),
-                  ),
-                  _buildPaddingSlider(settings),
-                ],
-              ),
-            ),
+            _buildPaddingSlider(settings),
+            const SizedBox(height: 10),
+            _buildAspectRatioSlider(settings),
             const Divider(thickness: 1),
             SettingsHeader(label: 'settings.appearance.booru_config'.tr()),
             SettingsTile<BooruConfigSelectorPosition>(
@@ -269,10 +213,10 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
     return ValueListenableBuilder(
       valueListenable: _borderRadiusSliderValue,
       builder: (context, value, child) {
-        return Slider(
-          label: value.toInt().toString(),
-          divisions: 10,
-          max: 10,
+        return SettingsSliderTile(
+          title: 'settings.image_grid.corner_radius',
+          divisions: 20,
+          max: 20,
           value: value,
           onChangeEnd: (value) =>
               ref.updateSettings(settings.copyWith(imageBorderRadius: value)),
@@ -286,8 +230,8 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
     return ValueListenableBuilder(
       valueListenable: _spacingSliderValue,
       builder: (context, value, child) {
-        return Slider(
-          label: value.toInt().toString(),
+        return SettingsSliderTile(
+          title: 'settings.image_grid.spacing',
           divisions: 10,
           max: 10,
           value: value,
@@ -303,8 +247,8 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
     return ValueListenableBuilder(
       valueListenable: _paddingSliderValue,
       builder: (context, value, child) {
-        return Slider(
-          label: value.toInt().toString(),
+        return SettingsSliderTile(
+          title: 'settings.image_grid.padding',
           divisions: 8,
           max: 32,
           value: value,
@@ -320,8 +264,8 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
     return ValueListenableBuilder(
       valueListenable: _aspectRatioSliderValue,
       builder: (context, value, child) {
-        return Slider(
-          label: value.toStringAsFixed(1),
+        return SettingsSliderTile(
+          title: 'settings.image_grid.aspect_ratio',
           divisions: 10,
           max: 1.5,
           min: 0.5,

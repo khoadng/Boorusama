@@ -7,6 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/clients/danbooru/types/tag_category.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
@@ -81,27 +83,20 @@ class InformationSection extends ConsumerWidget {
                 Row(
                   children: [
                     if (artistTags.isNotEmpty)
-                      Builder(
-                        builder: (context) {
-                          final artist = chooseArtistTag(artistTags);
-
-                          return Flexible(
-                            child: CompactChip(
-                              textColor: Colors.white,
-                              label: artist.replaceUnderscoreWithSpace(),
-                              onTap: () =>
-                                  onArtistTagTap?.call(context, artist),
-                              backgroundColor: Colors.red,
-                            ),
-                          );
-                        },
+                      ArtistNameInfoChip(
+                        artistTags: artistTags,
+                        onTap: (artist) =>
+                            onArtistTagTap?.call(context, artist),
                       ),
                     if (artistTags.isNotEmpty) const SizedBox(width: 5),
                     if (createdAt != null)
                       Text(
                         createdAt!
                             .fuzzify(locale: Localizations.localeOf(context)),
-                        style: context.textTheme.bodySmall,
+                        style: context.textTheme.bodySmall?.copyWith(
+                          color: context
+                              .theme.listTileTheme.subtitleTextStyle?.color,
+                        ),
                       ),
                   ],
                 )
@@ -134,10 +129,42 @@ String chooseArtistTag(Set<String> artistTags) {
 
   // find the first artist name that not contains excludedTags
   final artist = artistTags.firstWhereOrNull(
-    (tag) => !excludedTags.contains(tag),
+    (tag) => !excludedTags.any(tag.contains),
   );
 
   return artist ?? 'Unknown artist';
+}
+
+class ArtistNameInfoChip extends ConsumerWidget {
+  const ArtistNameInfoChip({
+    super.key,
+    required this.artistTags,
+    this.onTap,
+  });
+
+  final Set<String> artistTags;
+  final void Function(String artist)? onTap;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final artist = chooseArtistTag(artistTags);
+    final colors = context.generateChipColors(
+      ref.getTagColor(
+        context,
+        tagCategoryToString(TagCategory.artist),
+      ),
+      ref.watch(settingsProvider),
+    );
+
+    return Flexible(
+      child: CompactChip(
+        textColor: colors?.foregroundColor,
+        label: artist.replaceUnderscoreWithSpace(),
+        onTap: () => onTap?.call(artist),
+        backgroundColor: colors?.backgroundColor,
+      ),
+    );
+  }
 }
 
 class SimpleInformationSection extends ConsumerWidget {

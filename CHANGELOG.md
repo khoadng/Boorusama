@@ -1,3 +1,7 @@
+# 3.14.1
+- Fix an issue where bulk download won't start on some sites
+- Minor bug fixes, UI adjustments and translation updates
+
 # 3.14.0
 - Allow users to delete the current selected profile
 - Add a new accessibility page in settings
@@ -6,7 +10,7 @@
 - Support zooming in on videos using double-tap and pinch-to-zoom gestures
 - Add a System theme
 - Fix an issue with biometric lock not working properly on some devices
-- Bug fixesm UI adjustments and translation updates
+- Bug fixes, UI adjustments and translation updates
 
 # 3.13.1
 - Fix some color issues with light theme

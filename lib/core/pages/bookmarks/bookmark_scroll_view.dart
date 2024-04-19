@@ -6,12 +6,14 @@ import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/pages/bookmarks/bookmark_appbar.dart';
 import 'package:boorusama/core/pages/bookmarks/bookmark_sort_button.dart';
 import 'package:boorusama/core/pages/bookmarks/bookmark_update_grid_buttons.dart';
 import 'package:boorusama/core/utils.dart';
@@ -22,15 +24,20 @@ import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'bookmark_booru_type_selector.dart';
+import 'bookmark_search_bar.dart';
 import 'providers.dart';
 
 class BookmarkScrollView extends ConsumerWidget {
   const BookmarkScrollView({
     super.key,
     required this.controller,
+    required this.focusNode,
+    required this.searchController,
   });
 
   final ScrollController controller;
+  final TextEditingController searchController;
+  final FocusNode focusNode;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -41,10 +48,30 @@ class BookmarkScrollView extends ConsumerWidget {
     return CustomScrollView(
       controller: controller,
       slivers: [
+        SliverAppBar(
+          floating: true,
+          snap: true,
+          pinned: true,
+          automaticallyImplyLeading: false,
+          titleSpacing: 0,
+          backgroundColor: context.theme.scaffoldBackgroundColor,
+          title: const BookmarkAppBar(),
+        ),
+        SliverToBoxAdapter(
+          child: BookmarkSearchBar(
+            focusNode: focusNode,
+            controller: searchController,
+          ),
+        ),
+        if (hasBookmarks)
+          const SliverPinnedHeader(
+            child: BookmarkBooruSourceUrlSelector(),
+          ),
+        const SliverSizedBox(height: 8),
         if (hasBookmarks)
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Text(
                 '${ref.watch(filteredBookmarksProvider).length} bookmarks',
                 style: context.textTheme.titleLarge,
@@ -55,7 +82,6 @@ class BookmarkScrollView extends ConsumerWidget {
           const SliverToBoxAdapter(
             child: Row(
               children: [
-                BookmarkBooruSourceUrlSelector(),
                 BookmarkSortButton(),
                 Spacer(),
                 BookmarkGridUpdateButtons(),

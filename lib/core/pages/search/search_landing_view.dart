@@ -78,53 +78,66 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
         opacity: animationController,
         child: SingleChildScrollView(
           controller: widget.scrollController,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (widget.noticeBuilder != null) ...[
-                  widget.noticeBuilder!.call(context),
-                ],
-                if (widget.metatagsBuilder != null) ...[
-                  widget.metatagsBuilder!(context),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  const Divider(thickness: 1),
-                ],
-                FavoriteTagsSection(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (widget.noticeBuilder != null) ...[
+                widget.noticeBuilder!.call(context),
+              ],
+              if (widget.metatagsBuilder != null) ...[
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: widget.metatagsBuilder!(context),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                const Divider(thickness: 1),
+              ],
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: FavoriteTagsSection(
                   selectedLabel: selectedLabel,
                   onTagTap: (value) {
                     _onTagTap(value, ref);
                   },
                 ),
+              ),
+              const SizedBox(height: 8),
+              if (widget.trendingBuilder != null) ...[
+                const Divider(thickness: 1),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: widget.trendingBuilder!.call(context),
+                ),
                 const SizedBox(height: 8),
-                if (widget.trendingBuilder != null) ...[
-                  widget.trendingBuilder!.call(context),
-                ],
-                ref.watch(searchHistoryProvider).maybeWhen(
-                      data: (histories) => SearchHistorySection(
-                        histories: histories.histories,
-                        onHistoryTap: (history) {
-                          _onHistoryTap(history, ref);
-                        },
-                        onFullHistoryRequested: () {
-                          goToSearchHistoryPage(
-                            context,
-                            onClear: () => _onHistoryCleared(),
-                            onRemove: (value) => _onHistoryRemoved(value),
-                            onTap: (value) {
-                              context.navigator.pop();
-                              _onHistoryTap(value, ref);
-                            },
-                          );
-                        },
-                      ),
-                      orElse: () => const SizedBox.shrink(),
-                    ),
               ],
-            ),
+              ref.watch(searchHistoryProvider).maybeWhen(
+                    data: (histories) => Column(
+                      children: [
+                        const Divider(thickness: 1),
+                        SearchHistorySection(
+                          histories: histories.histories,
+                          onHistoryTap: (history) {
+                            _onHistoryTap(history, ref);
+                          },
+                          onFullHistoryRequested: () {
+                            goToSearchHistoryPage(
+                              context,
+                              onClear: () => _onHistoryCleared(),
+                              onRemove: (value) => _onHistoryRemoved(value),
+                              onTap: (value) {
+                                context.navigator.pop();
+                                _onHistoryTap(value, ref);
+                              },
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                    orElse: () => const SizedBox.shrink(),
+                  ),
+            ],
           ),
         ),
       ),
