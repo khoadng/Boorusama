@@ -463,7 +463,9 @@ extension BooruTypeX on BooruType {
       };
 
   bool get isGelbooruBased =>
-      this == BooruType.gelbooru || this == BooruType.gelbooruV2;
+      this == BooruType.gelbooru ||
+      this == BooruType.gelbooruV1 ||
+      this == BooruType.gelbooruV2;
 
   bool get isMoeBooruBased => [
         BooruType.moebooru,
