@@ -8,9 +8,12 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/circular_icon_button.dart';
+
+const String kShowInfoStateCacheKey = 'showInfoCacheStateKey';
 
 class DetailsPageDesktop extends ConsumerStatefulWidget {
   const DetailsPageDesktop({
@@ -41,13 +44,14 @@ class DetailsPageDesktop extends ConsumerStatefulWidget {
 
 class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
   late var currentPage = widget.initialPage;
-  var showInfo = false;
+  bool showInfo = false;
 
   @override
   void initState() {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      showInfo = ref.read(miscDataProvider(kShowInfoStateCacheKey)) == 'true';
       widget.onPageChanged.call(currentPage);
     });
   }
@@ -156,6 +160,11 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                                     onPressed: () => setState(
                                       () {
                                         showInfo = !showInfo;
+                                        ref
+                                            .read(miscDataProvider(
+                                                    kShowInfoStateCacheKey)
+                                                .notifier)
+                                            .put(showInfo.toString());
                                         widget.onShowInfoChanged
                                             ?.call(showInfo);
                                       },

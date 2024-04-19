@@ -51,7 +51,7 @@ class PostGridConfigRegion extends ConsumerWidget {
                         children: [
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 8),
-                            width: 230,
+                            width: 250,
                             child: PostGridActionSheet(
                               postController: postController,
                               popOnSelect: false,
