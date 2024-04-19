@@ -67,10 +67,11 @@ class BookmarkScrollView extends ConsumerWidget {
           const SliverPinnedHeader(
             child: BookmarkBooruSourceUrlSelector(),
           ),
+        const SliverSizedBox(height: 8),
         if (hasBookmarks)
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Text(
                 '${ref.watch(filteredBookmarksProvider).length} bookmarks',
                 style: context.textTheme.titleLarge,

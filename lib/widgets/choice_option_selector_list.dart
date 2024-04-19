@@ -81,9 +81,9 @@ class _ChoiceOptionSelectorListState<T>
     ];
 
     return Container(
-      height: 56,
+      height: 32,
       color: context.colorScheme.surface,
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      margin: const EdgeInsets.symmetric(vertical: 4),
       child: ListView.builder(
         controller: scrollController,
         scrollDirection: Axis.horizontal,
@@ -138,6 +138,7 @@ class _ChoiceOptionSelectorListState<T>
                   ),
                 ),
               ButtonType _ => IconButton(
+                  iconSize: 20,
                   onPressed: () {
                     final items = options.whereType<OptionType<T>>().toList();
                     showBarModalBottomSheet(
