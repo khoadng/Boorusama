@@ -1,4 +1,5 @@
 // Dart imports:
+import 'dart:async';
 import 'dart:io';
 
 // Package imports:
@@ -27,7 +28,17 @@ DownloadPathOrError downloadUrl({
       final path = await $(joinDownloadPath(fileNameBuilder(), dir));
 
       return _wrapWithNotification(
-        () => $(downloadWithDio(dio, url: url, path: path)),
+        () => $(downloadWithDio(
+          dio,
+          url: url,
+          path: path,
+          onReceiveProgress: onReceiveProgress(
+            notifications,
+            fileNameBuilder(),
+            path,
+            enableNotification,
+          ),
+        )),
         notifications: notifications,
         path: path,
         enableNotification: enableNotification,
@@ -53,20 +64,54 @@ DownloadPathOrError downloadUrlCustomLocation({
       final filePath = await $(joinDownloadPath(fileNameBuilder(), dir));
 
       return _wrapWithNotification(
-        () => $(downloadWithDio(dio, url: url, path: filePath)),
+        () => $(downloadWithDio(
+          dio,
+          url: url,
+          path: filePath,
+          onReceiveProgress: onReceiveProgress(
+            notifications,
+            fileNameBuilder(),
+            filePath,
+            enableNotification,
+          ),
+        )),
         notifications: notifications,
         path: filePath,
         enableNotification: enableNotification,
       );
     });
 
+ProgressCallback onReceiveProgress(
+  DownloadNotifications notifications,
+  String fileName,
+  String path,
+  bool enableNotification,
+) =>
+    (received, total) async {
+      if (!enableNotification) return;
+
+      await notifications.showUpdatedProgress(
+        fileName,
+        path,
+        received: received,
+        total: total,
+      );
+    };
+
 DownloadPathOrError downloadWithDio(
   Dio dio, {
   required String url,
   required String path,
+  required ProgressCallback onReceiveProgress,
 }) =>
     TaskEither.tryCatch(
-      () async => dio.download(url, path).then((value) => path),
+      () async => dio
+          .download(
+            url,
+            path,
+            onReceiveProgress: onReceiveProgress,
+          )
+          .then((value) => path),
       (error, stackTrace) {
         final fileName = basename(path);
 
@@ -109,9 +154,6 @@ Future<String> _wrapWithNotification(
   }
 
   final result = await fn();
-  if (enableNotification) {
-    await notifications.showCompleted(fileName, path);
-  }
 
   return result;
 }
