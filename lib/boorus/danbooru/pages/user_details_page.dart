@@ -114,7 +114,6 @@ class UserDetailsPage extends ConsumerWidget {
         bottom: false,
         child: state.when(
           data: (user) => Container(
-            padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(
               color: context.theme.scaffoldBackgroundColor,
               borderRadius: const BorderRadius.all(Radius.circular(8)),
@@ -132,9 +131,23 @@ class UserDetailsPage extends ConsumerWidget {
                       UserStatsGroup(user: user),
                       if (isSelf) const SizedBox(height: 12),
                       if (isSelf)
-                        Wrap(
-                          children: [
-                            if (ref.watch(isDevEnvironmentProvider))
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          child: Wrap(
+                            children: [
+                              if (ref.watch(isDevEnvironmentProvider))
+                                FilledButton(
+                                  style: FilledButton.styleFrom(
+                                    backgroundColor:
+                                        context.colorScheme.secondaryContainer,
+                                    foregroundColor: context
+                                        .colorScheme.onSecondaryContainer,
+                                  ),
+                                  child: const Text('My Uploads'),
+                                  onPressed: () =>
+                                      goToMyUploadsPage(context, uid),
+                                ),
+                              const SizedBox(width: 8),
                               FilledButton(
                                 style: FilledButton.styleFrom(
                                   backgroundColor:
@@ -142,26 +155,15 @@ class UserDetailsPage extends ConsumerWidget {
                                   foregroundColor:
                                       context.colorScheme.onSecondaryContainer,
                                 ),
-                                child: const Text('My Uploads'),
-                                onPressed: () =>
-                                    goToMyUploadsPage(context, uid),
+                                child: const Text('profile.messages').tr(),
+                                onPressed: () => goToDmailPage(context),
                               ),
-                            const SizedBox(width: 8),
-                            FilledButton(
-                              style: FilledButton.styleFrom(
-                                backgroundColor:
-                                    context.colorScheme.secondaryContainer,
-                                foregroundColor:
-                                    context.colorScheme.onSecondaryContainer,
-                              ),
-                              child: const Text('profile.messages').tr(),
-                              onPressed: () => goToDmailPage(context),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       if (user.uploadCount > 0)
                         Padding(
-                          padding: const EdgeInsets.only(top: 24),
+                          padding: const EdgeInsets.only(top: 12, left: 12),
                           child: SizedBox(
                             height: 220,
                             child: ref
@@ -204,7 +206,7 @@ class UserDetailsPage extends ConsumerWidget {
                         ),
                       if (user.uploadCount > 0)
                         Padding(
-                          padding: const EdgeInsets.only(top: 24),
+                          padding: const EdgeInsets.only(top: 24, left: 12),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
@@ -492,16 +494,22 @@ class _PreviewList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Column(
       children: [
-        ListTile(
-          contentPadding: EdgeInsets.zero,
-          title: Text(
-            title,
-            style: const TextStyle(fontWeight: FontWeight.w900),
+        Padding(
+          padding: const EdgeInsets.only(
+            left: 12,
+            right: 8,
           ),
-          visualDensity: const ShrinkVisualDensity(),
-          trailing: TextButton(
-            onPressed: onViewMore,
-            child: const Text('View all'),
+          child: ListTile(
+            contentPadding: EdgeInsets.zero,
+            title: Text(
+              title,
+              style: const TextStyle(fontWeight: FontWeight.w900),
+            ),
+            visualDensity: const ShrinkVisualDensity(),
+            trailing: TextButton(
+              onPressed: onViewMore,
+              child: const Text('View all'),
+            ),
           ),
         ),
         const SizedBox(height: 8),
