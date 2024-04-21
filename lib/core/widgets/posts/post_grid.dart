@@ -541,7 +541,7 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
           children: [
             Icon(
               Symbols.arrow_back,
-              color: context.theme.colorScheme.onPrimary,
+              color: context.theme.colorScheme.onSurface,
               size: 16,
             ),
             const SizedBox(width: 4),
@@ -562,7 +562,7 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
             const SizedBox(width: 4),
             Icon(
               Symbols.arrow_forward,
-              color: context.theme.colorScheme.onPrimary,
+              color: context.theme.colorScheme.onSurface,
               size: 16,
             ),
           ],

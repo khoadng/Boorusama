@@ -17,6 +17,7 @@ import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/feats/tags/booru_tag_type_store.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
@@ -41,16 +42,41 @@ enum TagEditExpandMode {
 
 const kHowToRateUrl = 'https://danbooru.donmai.us/wiki_pages/howto:rate';
 
-final danbooruTagEditColorProvider =
-    FutureProvider.autoDispose.family<Color?, String>((ref, tag) async {
+typedef TagEditColorParams = ({
+  AppThemeMode themeMode,
+  Color primaryColor,
+  String tag,
+});
+
+final danbooruTagEditColorProvider = FutureProvider.autoDispose
+    .family<Color?, TagEditColorParams>((ref, params) async {
+  final tag = params.tag;
   final config = ref.watchConfig;
-  final settings = ref.watch(settingsProvider);
   final tagTypeStore = ref.watch(booruTagTypeStoreProvider);
   final tagType = await tagTypeStore.get(config.booruType, tag);
 
-  final color = ref
-      .watch(booruBuilderProvider)
-      ?.tagColorBuilder(settings.themeMode, tagType);
+  final dynamicColor = ref.watch(enableDynamicColoringSettingsProvider);
+
+  final booruBuilders = ref.watch(booruBuildersProvider);
+  final booruBuilderFunc = booruBuilders[config.booruType];
+
+  final booruBuilder =
+      booruBuilderFunc != null ? booruBuilderFunc(config) : null;
+
+  final tagColorBuilder = booruBuilder?.tagColorBuilder;
+
+  if (tagType == null) return null;
+
+  final color = getTagColorCore(
+    tagType,
+    primaryColor: params.primaryColor,
+    themeMode: params.themeMode,
+    dynamicColor: dynamicColor,
+    color: tagColorBuilder?.call(
+      params.themeMode,
+      tagType,
+    ),
+  );
 
   return color;
 });
@@ -313,7 +339,7 @@ class _TagEditPageInternalState extends ConsumerState<TagEditPageInternal> {
               imageUrl: widget.imageUrl,
             )
           : SizedBox(
-              height: constraints.maxHeight,
+              height: constraints.maxHeight - 4,
             ),
     );
   }
@@ -900,12 +926,23 @@ class TagEditTagListSection extends ConsumerWidget {
         .saveTagIfNotExist(ref.watchConfig.booruType, t);
 
     for (final tag in t) {
-      ref.invalidate(danbooruTagEditColorProvider(tag.rawName));
+      final params = (
+        themeMode: ref.context.themeMode,
+        primaryColor: ref.context.colorScheme.primary,
+        tag: tag.rawName,
+      );
+      ref.invalidate(danbooruTagEditColorProvider(params));
     }
   }
 
   ChipColors? _getColors(String tag, BuildContext context, WidgetRef ref) {
-    final colors = ref.watch(danbooruTagEditColorProvider(tag)).maybeWhen(
+    final params = (
+      themeMode: context.themeMode,
+      primaryColor: context.colorScheme.primary,
+      tag: tag,
+    );
+
+    final colors = ref.watch(danbooruTagEditColorProvider(params)).maybeWhen(
           data: (color) => color != null && color != Colors.white
               ? generateChipColorsFromColorScheme(
                   context,

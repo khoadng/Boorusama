@@ -106,8 +106,16 @@ class _CreateGelbooruConfigPageState
                     });
                   },
                 ),
-                icon: const Icon(Symbols.content_paste),
-                label: const Text('Paste from clipboard'),
+                icon: Icon(
+                  Symbols.content_paste,
+                  color: context.colorScheme.onSecondaryContainer,
+                ),
+                label: Text(
+                  'Paste from clipboard',
+                  style: TextStyle(
+                    color: context.colorScheme.onSecondaryContainer,
+                  ),
+                ),
               ),
             ],
           ),
