@@ -53,7 +53,7 @@ Map<String, int> _countInIsolate<T extends Post>(
     for (final item in posts) {
       for (final pattern in preprocessed) {
         if (item.containsTagPattern(pattern)) {
-          final key = pattern.join(' ');
+          final key = pattern.rawString;
           tagCounts[key] = (tagCounts[key] ?? 0) + 1;
         }
       }
@@ -577,22 +577,23 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
   Widget _buildConfigHeader(Axis axis) {
     final tagCounts = ref.watch(_tagCountProvider);
     final hasBlacklistedTags = ref.watch(_hasBlacklistedTagsProvider);
+    final hiddenTags = tagCounts.value != null
+        ? filters.keys
+            .map((e) => (
+                  name: e,
+                  count: tagCounts.value![e] ?? 0,
+                  active: filters[e] ?? false,
+                ))
+            .where((element) => element.count > 0)
+            .toList()
+        : null;
 
     return PostListConfigurationHeader(
       axis: axis,
       postCount: items.length + filteredItems.length,
       initiallyExpanded: axis == Axis.vertical,
       hasBlacklist: hasBlacklistedTags.value ?? false,
-      tags: tagCounts.value != null
-          ? filters.keys
-              .map((e) => (
-                    name: e,
-                    count: tagCounts.value![e] ?? 0,
-                    active: filters[e] ?? false,
-                  ))
-              .where((element) => element.count > 0)
-              .toList()
-          : null,
+      tags: hiddenTags,
       trailing: axis == Axis.horizontal
           ? ButtonBar(
               children: [

@@ -100,6 +100,19 @@ class TagExpression extends Equatable {
     );
   }
 
+  String get rawString {
+    final operator = switch ((
+      isNegative,
+      isOr,
+    )) {
+      (true, false) => '-',
+      (false, true) => '~',
+      _ => '',
+    };
+
+    return '$operator$expression';
+  }
+
   final String expression;
   final bool isNegative;
   final bool isOr;
@@ -110,6 +123,10 @@ class TagExpression extends Equatable {
 
   @override
   List<Object?> get props => [expression, isNegative, type];
+}
+
+extension TagExpressionX on Iterable<TagExpression> {
+  String get rawString => map((e) => e.rawString).join(' ');
 }
 
 TagExpressionType _getType(String expression) {
