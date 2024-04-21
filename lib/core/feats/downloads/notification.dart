@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:async';
+
 // Package imports:
 import 'package:android_intent_plus/android_intent.dart';
 import 'package:android_intent_plus/flag.dart';
@@ -62,21 +65,26 @@ class DownloadNotifications {
     final progress = received / total;
     final done = progress >= 1;
 
+    Future<void> showProgress() {
+      return _showNotification(
+        fileName,
+        '$receivedReadable / $totalReadable (${(progress * 100).toStringAsFixed(1)}%)',
+        payload: path,
+        progress: received,
+        total: total,
+      );
+    }
+
     if (done) {
-      await Future.delayed(const Duration(seconds: 1));
+      await showProgress();
+      await Future.delayed(const Duration(milliseconds: 500));
       await _showNotification(fileName, 'completed ($totalReadable)',
           payload: path);
 
       return;
     }
 
-    await _showNotification(
-      fileName,
-      '$receivedReadable / $totalReadable (${(progress * 100).toStringAsFixed(1)}%)',
-      payload: path,
-      progress: received,
-      total: total,
-    );
+    showProgress();
   }
 
   Future<void> showFailed(String fileName, String path) {

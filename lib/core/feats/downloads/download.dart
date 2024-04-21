@@ -28,17 +28,19 @@ DownloadPathOrError downloadUrl({
       final path = await $(joinDownloadPath(fileNameBuilder(), dir));
 
       return _wrapWithNotification(
-        () => $(downloadWithDio(
-          dio,
-          url: url,
-          path: path,
-          onReceiveProgress: onReceiveProgress(
-            notifications,
-            fileNameBuilder(),
-            path,
-            enableNotification,
+        () => $(
+          downloadWithDio(
+            dio,
+            url: url,
+            path: path,
+            onReceiveProgress: onReceiveProgress(
+              notifications,
+              fileNameBuilder(),
+              path,
+              enableNotification,
+            ),
           ),
-        )),
+        ),
         notifications: notifications,
         path: path,
         enableNotification: enableNotification,
@@ -64,17 +66,19 @@ DownloadPathOrError downloadUrlCustomLocation({
       final filePath = await $(joinDownloadPath(fileNameBuilder(), dir));
 
       return _wrapWithNotification(
-        () => $(downloadWithDio(
-          dio,
-          url: url,
-          path: filePath,
-          onReceiveProgress: onReceiveProgress(
-            notifications,
-            fileNameBuilder(),
-            filePath,
-            enableNotification,
+        () => $(
+          downloadWithDio(
+            dio,
+            url: url,
+            path: filePath,
+            onReceiveProgress: onReceiveProgress(
+              notifications,
+              fileNameBuilder(),
+              filePath,
+              enableNotification,
+            ),
           ),
-        )),
+        ),
         notifications: notifications,
         path: filePath,
         enableNotification: enableNotification,
@@ -105,13 +109,23 @@ DownloadPathOrError downloadWithDio(
   required ProgressCallback onReceiveProgress,
 }) =>
     TaskEither.tryCatch(
-      () async => dio
-          .download(
-            url,
-            path,
-            onReceiveProgress: onReceiveProgress,
-          )
-          .then((value) => path),
+      () {
+        var previousPercent = 0;
+
+        return dio.download(
+          url,
+          path,
+          onReceiveProgress: (count, total) {
+            final percent = (count / total * 100).toInt();
+
+            if (percent != previousPercent) {
+              previousPercent = percent;
+
+              onReceiveProgress(count, total);
+            }
+          },
+        ).then((value) => path);
+      },
       (error, stackTrace) {
         final fileName = basename(path);
 
