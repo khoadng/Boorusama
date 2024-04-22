@@ -42,17 +42,20 @@ class ExplorePage extends ConsumerWidget {
                 useAppBarPadding ? MediaQuery.viewPaddingOf(context).top : 0,
           ),
           SliverToBoxAdapter(
-              child: _PopularExplore(
-            onPressed: () => goToExplorePopularPage(context),
-          )),
+            child: _PopularExplore(
+              onPressed: () => goToExplorePopularPage(context),
+            ),
+          ),
           SliverToBoxAdapter(
-              child: _HotExplore(
-            onPressed: () => goToExploreHotPage(context),
-          )),
+            child: _HotExplore(
+              onPressed: () => goToExploreHotPage(context),
+            ),
+          ),
           SliverToBoxAdapter(
-              child: _MostViewedExplore(
-            onPressed: () => goToExploreMostViewedPage(context),
-          )),
+            child: _MostViewedExplore(
+              onPressed: () => goToExploreMostViewedPage(context),
+            ),
+          ),
           const SliverSizedBox(height: kBottomNavigationBarHeight + 20),
         ],
       ),
@@ -144,15 +147,13 @@ class _MostViewedExplore extends ConsumerStatefulWidget {
 class _MostViewedExploreState extends ConsumerState<_MostViewedExplore> {
   @override
   Widget build(BuildContext context) {
-    final postAsync = ref.watch(danbooruMostViewedTodayProvider);
-
     return ExploreSection(
       title: 'explore.most_viewed'.tr(),
-      builder: (_) => postAsync.maybeWhen(
-        data: (posts) => ExploreList(posts: posts),
-        orElse: () => const ExploreList(posts: []),
-      ),
-      onPressed: () => widget.onPressed(),
+      builder: (_) => ref.watch(danbooruMostViewedTodayProvider).maybeWhen(
+            data: (posts) => ExploreList(posts: posts),
+            orElse: () => const ExploreList(posts: []),
+          ),
+      onPressed: widget.onPressed,
     );
   }
 }
@@ -171,15 +172,13 @@ class _HotExplore extends ConsumerStatefulWidget {
 class _HotExploreState extends ConsumerState<_HotExplore> {
   @override
   Widget build(BuildContext context) {
-    final posts = ref.watch(danbooruHotTodayProvider);
-
     return ExploreSection(
       title: 'explore.hot'.tr(),
-      builder: (_) => posts.maybeWhen(
-        data: (posts) => ExploreList(posts: posts),
-        orElse: () => const ExploreList(posts: []),
-      ),
-      onPressed: () => widget.onPressed(),
+      builder: (_) => ref.watch(danbooruHotTodayProvider).maybeWhen(
+            data: (posts) => ExploreList(posts: posts),
+            orElse: () => const ExploreList(posts: []),
+          ),
+      onPressed: widget.onPressed,
     );
   }
 }
@@ -198,15 +197,13 @@ class _PopularExplore extends ConsumerStatefulWidget {
 class _PopularExploreState extends ConsumerState<_PopularExplore> {
   @override
   Widget build(BuildContext context) {
-    final postAsync = ref.watch(danbooruPopularTodayProvider);
-
     return ExploreSection(
       title: 'explore.popular'.tr(),
-      builder: (_) => postAsync.maybeWhen(
-        data: (posts) => ExploreList(posts: posts),
-        orElse: () => const ExploreList(posts: []),
-      ),
-      onPressed: () => widget.onPressed(),
+      builder: (_) => ref.watch(danbooruPopularTodayProvider).maybeWhen(
+            data: (posts) => ExploreList(posts: posts),
+            orElse: () => const ExploreList(posts: []),
+          ),
+      onPressed: widget.onPressed,
     );
   }
 }
@@ -241,7 +238,7 @@ class ExploreList extends ConsumerWidget {
                   child: GestureDetector(
                     onTap: () => goToPostDetailsPage(
                       context: context,
-                      posts: posts,
+                      posts: filteredPosts,
                       initialIndex: index,
                     ),
                     child: Stack(
