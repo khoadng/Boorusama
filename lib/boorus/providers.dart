@@ -292,7 +292,9 @@ final booruSiteValidatorProvider =
         passwordHashed: apiKey,
       ).getPosts().then((value) => true),
     BooruType.zerochan => ZerochanClient(dio: dio, baseUrl: config.url)
-        .getPosts()
+        .getPosts(
+          strict: true,
+        )
         .then((value) => true),
     BooruType.gelbooruV1 => GelbooruV1Client(baseUrl: config.url, dio: dio)
         .getPosts()

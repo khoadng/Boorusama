@@ -36,6 +36,7 @@ class ZerochanClient {
     int? page,
     int? limit,
     ZerochanSortOrder? sort,
+    bool strict = false,
   }) async {
     final tagString = tags
             ?.map((e) => e.replaceAll('_', ' '))
@@ -60,7 +61,7 @@ class ZerochanClient {
       );
 
       // return empty if response is HTML
-      if (response.data.toString().startsWith('<!DOCTYPE html>')) {
+      if (response.data.toString().startsWith('<!DOCTYPE html>') && !strict) {
         logger
             ?.call('Response is HTML, returning empty list. Input tags: $tags');
         return [];
