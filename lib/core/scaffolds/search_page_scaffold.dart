@@ -30,6 +30,7 @@ class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     this.noticeBuilder,
     this.searchBarLeading,
     this.searchTrailing,
+    this.metatagsBuilder,
   });
 
   final String? initialQuery;
@@ -46,6 +47,13 @@ class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
 
   final Widget? searchBarLeading;
   final Widget? searchTrailing;
+
+  final Widget Function(
+    BuildContext context,
+    SearchPageController searchController,
+    FocusNode focus,
+    TextEditingController textController,
+  )? metatagsBuilder;
 
   @override
   ConsumerState<SearchPageScaffold<T>> createState() =>
@@ -165,6 +173,15 @@ class _SearchPageScaffoldState<T extends Post>
                                     onTagTap: (value) {
                                       searchController.tapTag(value);
                                     },
+                                    metatagsBuilder: widget.metatagsBuilder !=
+                                            null
+                                        ? (context) => widget.metatagsBuilder!(
+                                              context,
+                                              searchController,
+                                              focus,
+                                              textController,
+                                            )
+                                        : null,
                                   ),
                                 ),
                               ],

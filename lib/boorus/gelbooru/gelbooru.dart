@@ -19,7 +19,9 @@ import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/feats/utils.dart';
+import 'package:boorusama/core/pages/search/metatags_section_readonly.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/path.dart';
@@ -184,6 +186,24 @@ class GelbooruBuilder
     required this.client,
   });
 
+  final metatags = {
+    'sort': {
+      'id',
+      'score',
+      'rating',
+      'user',
+      'height',
+      'width',
+      'parent',
+      'source',
+      'updated',
+    },
+    'rating': Rating.values
+        .map((e) => e.toFullString())
+        .where((e) => e.isNotEmpty)
+        .toSet(),
+  };
+
   final PostRepository<GelbooruPost> postRepo;
   final AutocompleteRepository autocompleteRepo;
   final NoteRepository noteRepo;
@@ -232,8 +252,26 @@ class GelbooruBuilder
   NoteFetcher? get noteFetcher => (postId) => noteRepo.getNotes(postId);
 
   @override
-  AutocompleteFetcher get autocompleteFetcher =>
-      (query) => autocompleteRepo.getAutocomplete(query);
+  AutocompleteFetcher get autocompleteFetcher => (query) {
+        // if query ends with ':', it means it's a metatag, use custom metatags autocomplete instead
+        if (query.endsWith(':')) {
+          final key = query.substring(0, query.length - 1);
+          if (metatags.containsKey(key)) {
+            return Future.value(
+              metatags[key]!
+                  .map((e) => '$key:$e')
+                  .map((e) => AutocompleteData(
+                        type: key,
+                        label: e.replaceAll('$key:', ''),
+                        value: e,
+                      ))
+                  .toList(),
+            );
+          }
+        }
+
+        return autocompleteRepo.getAutocomplete(query);
+      };
 
   @override
   PostCountFetcher? get postCountFetcher =>
@@ -371,6 +409,19 @@ class GelbooruSearchPage extends ConsumerWidget {
       ),
       fetcher: (page, tags) =>
           ref.watch(gelbooruPostRepoProvider(config)).getPosts(tags, page),
+      metatagsBuilder: (context, searchController, focus, textController) =>
+          MetatagsSectionReadonly(
+        metatags: const [
+          Metatag.simple(name: 'sort'),
+          Metatag.simple(name: 'rating'),
+          Metatag.simple(name: 'score'),
+        ],
+        onOptionTap: (value) {
+          searchController.tapRawMetaTag(value);
+          focus.requestFocus();
+          textController.setTextAndCollapseSelection('$value:');
+        },
+      ),
     );
   }
 }
