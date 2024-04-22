@@ -130,21 +130,14 @@ final sankakuArtistPostRepo =
   );
 });
 
-//FIXME: should be handle the same as Danbooru?
 final sankakuArtistPostsProvider = FutureProvider.autoDispose
     .family<List<SankakuPost>, String?>((ref, artistName) async {
-  if (artistName == null) return [];
-  final config = ref.watchConfig;
-
-  final blacklistedTags = ref.watch(blacklistTagsProvider(config));
-
-  final repo = ref.watch(sankakuArtistPostRepo(ref.watchConfig));
-  final posts = await repo.getPostsFromTagsOrEmpty([artistName], 1);
-
-  return filterTags(
-    posts.take(30).where((e) => !e.isFlash).toList(),
-    blacklistedTags,
-  );
+  return ref
+      .watch(sankakuArtistPostRepo(ref.watchConfig))
+      .getPostsFromTagWithBlacklist(
+        tag: artistName,
+        blacklist: ref.watch(blacklistTagsProvider(ref.watchConfig)),
+      );
 });
 
 String? extractFileExtension(String? mimeType) {

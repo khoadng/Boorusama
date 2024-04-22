@@ -108,37 +108,14 @@ final gelbooruArtistPostRepo =
   );
 });
 
-//FIXME: should be handle the same as Danbooru?
 final gelbooruArtistPostsProvider = FutureProvider.autoDispose
     .family<List<GelbooruPost>, String?>((ref, artistName) async {
-  if (artistName == null) return [];
-  final config = ref.watchConfig;
-
-  final blacklistedTags = ref.watch(blacklistTagsProvider(config));
-
-  final repo = ref.watch(gelbooruArtistPostRepo(ref.watchConfig));
-  final posts = await repo.getPostsFromTagsOrEmpty([artistName], 1);
-
-  return filterTags(
-    posts.take(30).where((e) => !e.isFlash).toList(),
-    blacklistedTags,
-  );
-});
-
-final gelbooruCharacterPostsProvider = FutureProvider.autoDispose
-    .family<List<GelbooruPost>, String?>((ref, characterName) async {
-  if (characterName == null) return [];
-  final config = ref.watchConfig;
-
-  final blacklistedTags = ref.watch(blacklistTagsProvider(config));
-
-  final repo = ref.watch(gelbooruArtistPostRepo(ref.watchConfig));
-  final posts = await repo.getPostsFromTagsOrEmpty([characterName], 1);
-
-  return filterTags(
-    posts.take(30).where((e) => !e.isFlash).toList(),
-    blacklistedTags,
-  );
+  return ref
+      .watch(gelbooruArtistPostRepo(ref.watchConfig))
+      .getPostsFromTagWithBlacklist(
+        tag: artistName,
+        blacklist: ref.watch(blacklistTagsProvider(ref.watchConfig)),
+      );
 });
 
 final gelbooruNoteRepoProvider =

@@ -101,52 +101,24 @@ final gelbooruV2ArtistPostRepo =
   );
 });
 
-//FIXME: should be handle the same as Danbooru?
 final gelbooruV2ArtistPostsProvider = FutureProvider.autoDispose
     .family<List<GelbooruV2Post>, String?>((ref, artistName) async {
-  if (artistName == null) return [];
-  final config = ref.watchConfig;
-
-  final blacklistedTags = ref.watch(blacklistTagsProvider(config));
-
-  final repo = ref.watch(gelbooruV2ArtistPostRepo(ref.watchConfig));
-  final posts = await repo.getPostsFromTagsOrEmpty([artistName], 1);
-
-  return filterTags(
-    posts.take(30).where((e) => !e.isFlash).toList(),
-    blacklistedTags,
-  );
-});
-
-final gelbooruV2CharacterPostsProvider = FutureProvider.autoDispose
-    .family<List<GelbooruV2Post>, String?>((ref, characterName) async {
-  if (characterName == null) return [];
-  final config = ref.watchConfig;
-
-  final blacklistedTags = ref.watch(blacklistTagsProvider(config));
-
-  final repo = ref.watch(gelbooruV2ArtistPostRepo(ref.watchConfig));
-  final posts = await repo.getPostsFromTagsOrEmpty([characterName], 1);
-
-  return filterTags(
-    posts.take(30).where((e) => !e.isFlash).toList(),
-    blacklistedTags,
-  );
+  return ref
+      .watch(gelbooruV2ArtistPostRepo(ref.watchConfig))
+      .getPostsFromTagWithBlacklist(
+        tag: artistName,
+        blacklist: ref.watch(blacklistTagsProvider(ref.watchConfig)),
+      );
 });
 
 final gelbooruV2ChildPostsProvider = FutureProvider.autoDispose
     .family<List<GelbooruV2Post>, int>((ref, parentId) async {
-  final config = ref.watchConfig;
-
-  final blacklistedTags = ref.watch(blacklistTagsProvider(config));
-
-  final repo = ref.watch(gelbooruV2ArtistPostRepo(ref.watchConfig));
-  final posts = await repo.getPostsFromTagsOrEmpty(['parent:$parentId'], 1);
-
-  return filterTags(
-    posts.take(30).where((e) => !e.isFlash).toList(),
-    blacklistedTags,
-  );
+  return ref
+      .watch(gelbooruV2ArtistPostRepo(ref.watchConfig))
+      .getPostsFromTagWithBlacklist(
+        tag: 'parent:$parentId',
+        blacklist: ref.watch(blacklistTagsProvider(ref.watchConfig)),
+      );
 });
 
 final gelbooruV2NoteRepoProvider =
