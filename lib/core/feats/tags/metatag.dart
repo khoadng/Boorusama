@@ -9,6 +9,12 @@ class Metatag extends Equatable {
     this.isFree = false,
   });
 
+  const Metatag.simple({
+    required this.name,
+    this.isFree = false,
+  })  : description = '',
+        example = '';
+
   final String name;
   final String description;
   final String example;
