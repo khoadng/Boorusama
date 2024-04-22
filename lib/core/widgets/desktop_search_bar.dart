@@ -123,7 +123,9 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                                       DanbooruMetatagsSection(
                                     onOptionTap: (value) {
                                       textEditingController.text = '$value:';
-                                      _onTextChanged('$value:');
+                                      textEditingController
+                                          .setTextAndCollapseSelection(
+                                              '$value:');
                                     },
                                   ),
                                 ),
@@ -194,14 +196,5 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
         );
       },
     );
-  }
-
-  void _onTextChanged(
-    String text,
-  ) {
-    textEditingController
-      ..text = text
-      ..selection =
-          TextSelection.collapsed(offset: textEditingController.text.length);
   }
 }
