@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/gelbooru_v2/feats/posts/posts_v2.dart';
 import 'package:boorusama/boorus/gelbooru_v2/gelbooru_v2.dart';
+import 'package:boorusama/boorus/gelbooru_v2/posts/posts_v2.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
@@ -45,3 +45,13 @@ final gelbooruV2ArtistCharacterPostRepoProvider =
     );
   },
 );
+
+final gelbooruV2ChildPostsProvider = FutureProvider.autoDispose
+    .family<List<GelbooruV2Post>, int>((ref, parentId) async {
+  return ref
+      .watch(gelbooruV2PostRepoProvider(ref.watchConfig))
+      .getPostsFromTagWithBlacklist(
+        tag: 'parent:$parentId',
+        blacklist: ref.watch(blacklistTagsProvider(ref.watchConfig)),
+      );
+});

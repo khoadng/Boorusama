@@ -7,8 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
-import 'package:boorusama/boorus/gelbooru/feats/comments/comments.dart';
-import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
+import 'package:boorusama/boorus/gelbooru/posts/posts.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
 import 'package:boorusama/clients/gelbooru/types/types.dart';
@@ -20,15 +19,17 @@ import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/feats/utils.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
-import 'package:boorusama/foundation/caching/caching.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/functional.dart';
-import 'pages/create_gelbooru_config_page.dart';
-import 'pages/gelbooru_artist_page.dart';
-import 'pages/gelbooru_home_page.dart';
-import 'pages/gelbooru_post_details_desktop_page.dart';
-import 'pages/gelbooru_post_details_page.dart';
+import 'artists/gelbooru_artist_page.dart';
+import 'comments/gelbooru_comment_page.dart';
+import 'create_gelbooru_config_page.dart';
+import 'home/gelbooru_home_page.dart';
+import 'posts/gelbooru_post_details_desktop_page.dart';
+import 'posts/gelbooru_post_details_page.dart';
+
+export 'posts/posts.dart';
 
 const kGelbooruCustomDownloadFileNameFormat =
     '{id}_{md5:maxlength=8}.{extension}';
@@ -97,25 +98,6 @@ final gelbooruAutocompleteRepoProvider =
     persistentStorageKey:
         '${Uri.encodeComponent(config.url)}_autocomplete_cache_v1',
   );
-});
-
-final gelbooruArtistPostRepo =
-    Provider.family<PostRepository<GelbooruPost>, BooruConfig>((ref, config) {
-  return PostRepositoryCacher(
-    keyBuilder: (tags, page, {limit}) => '${tags.join('-')}_${page}_$limit',
-    repository: ref.watch(gelbooruPostRepoProvider(config)),
-    cache: LruCacher(capacity: 100),
-  );
-});
-
-final gelbooruArtistPostsProvider = FutureProvider.autoDispose
-    .family<List<GelbooruPost>, String?>((ref, artistName) async {
-  return ref
-      .watch(gelbooruArtistPostRepo(ref.watchConfig))
-      .getPostsFromTagWithBlacklist(
-        tag: artistName,
-        blacklist: ref.watch(blacklistTagsProvider(ref.watchConfig)),
-      );
 });
 
 final gelbooruNoteRepoProvider =
@@ -348,25 +330,6 @@ class GelbooruSearchPage extends ConsumerWidget {
       ),
       fetcher: (page, tags) =>
           ref.watch(gelbooruPostRepoProvider(config)).getPosts(tags, page),
-    );
-  }
-}
-
-class GelbooruCommentPage extends ConsumerWidget {
-  const GelbooruCommentPage({
-    super.key,
-    required this.postId,
-  });
-
-  final int postId;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
-    return CommentPageScaffold(
-      postId: postId,
-      fetcher: (postId) =>
-          ref.watch(gelbooruCommentRepoProvider(config)).getComments(postId),
     );
   }
 }
