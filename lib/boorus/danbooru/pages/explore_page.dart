@@ -10,6 +10,8 @@ import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/settings/types.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
@@ -233,51 +235,58 @@ class ExploreList extends ConsumerWidget {
               itemBuilder: (context, index) {
                 final post = filteredPosts[index];
 
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 2),
-                  child: GestureDetector(
-                    onTap: () => goToPostDetailsPage(
-                      context: context,
-                      posts: filteredPosts,
-                      initialIndex: index,
-                    ),
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        BooruImage(
-                          aspectRatio: post.aspectRatio,
-                          imageUrl: post.url720x720,
-                          placeholderUrl: post.thumbnailImageUrl,
-                        ),
-                        if (post.isAnimated)
+                return ExplicitContentBlockOverlay(
+                  block: ref.watch(settingsProvider
+                          .select((value) => value.blurExplicitMedia)) &&
+                      post.isExplicit,
+                  width: post.width,
+                  height: post.height,
+                  childBuilder: (block) => Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 2),
+                    child: GestureDetector(
+                      onTap: () => goToPostDetailsPage(
+                        context: context,
+                        posts: filteredPosts,
+                        initialIndex: index,
+                      ),
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          BooruImage(
+                            aspectRatio: post.aspectRatio,
+                            imageUrl: block ? '' : post.url720x720,
+                            placeholderUrl: block ? '' : post.thumbnailImageUrl,
+                          ),
+                          if (post.isAnimated)
+                            Positioned(
+                              top: 5,
+                              left: 5,
+                              child: VideoPlayDurationIcon(
+                                duration: post.duration,
+                                hasSound: post.hasSound,
+                              ),
+                            ),
+                          Positioned.fill(
+                            child: ShadowGradientOverlay(
+                              alignment: Alignment.bottomCenter,
+                              colors: [
+                                const Color(0xC2000000),
+                                Colors.black12.withOpacity(0),
+                              ],
+                            ),
+                          ),
                           Positioned(
-                            top: 5,
                             left: 5,
-                            child: VideoPlayDurationIcon(
-                              duration: post.duration,
-                              hasSound: post.hasSound,
+                            bottom: 1,
+                            child: Text(
+                              '${index + 1}',
+                              style: context.textTheme.displayMedium?.copyWith(
+                                color: Colors.white,
+                              ),
                             ),
                           ),
-                        Positioned.fill(
-                          child: ShadowGradientOverlay(
-                            alignment: Alignment.bottomCenter,
-                            colors: [
-                              const Color(0xC2000000),
-                              Colors.black12.withOpacity(0),
-                            ],
-                          ),
-                        ),
-                        Positioned(
-                          left: 5,
-                          bottom: 1,
-                          child: Text(
-                            '${index + 1}',
-                            style: context.textTheme.displayMedium?.copyWith(
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 );
