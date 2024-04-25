@@ -88,6 +88,7 @@ class _PostDetailPageScaffoldState<T extends Post>
   late final _controller = DetailsPageController(
     swipeDownToDismiss: !widget.posts[widget.initialIndex].isVideo,
     hideOverlay: ref.read(settingsProvider).hidePostDetailsOverlay,
+    initialPage: widget.initialIndex,
   );
 
   @override
@@ -110,34 +111,21 @@ class _PostDetailPageScaffoldState<T extends Post>
     super.dispose();
   }
 
-  void _nextPost() {
-    controller.nextPage();
-  }
-
-  void _previousPost() {
-    controller.previousPage();
-  }
-
-  void _toggleOverlay() {
-    controller.toggleOverlay();
-  }
-
-  void _exit() {
-    Navigator.of(context).pop();
-  }
-
   @override
   Widget build(BuildContext context) {
     return DownloadProviderWidget(
       builder: (context, download) => CallbackShortcuts(
         bindings: {
           const SingleActivator(LogicalKeyboardKey.arrowRight): () =>
-              _nextPost(),
+              controller.nextPage(),
           const SingleActivator(LogicalKeyboardKey.arrowLeft): () =>
-              _previousPost(),
+              controller.previousPage(),
           const SingleActivator(LogicalKeyboardKey.keyO): () =>
-              _toggleOverlay(),
-          const SingleActivator(LogicalKeyboardKey.escape): () => _exit(),
+              controller.toggleOverlay(),
+          const SingleActivator(LogicalKeyboardKey.escape): () =>
+              Navigator.of(context).pop(),
+          const SingleActivator(LogicalKeyboardKey.keyD): () =>
+              download(posts[controller.currentPage.value]),
         },
         child: Focus(
           autofocus: true,
