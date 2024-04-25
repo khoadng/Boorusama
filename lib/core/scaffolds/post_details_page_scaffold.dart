@@ -1,5 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:exprollable_page_view/exprollable_page_view.dart';
@@ -109,154 +110,187 @@ class _PostDetailPageScaffoldState<T extends Post>
     super.dispose();
   }
 
+  void _nextPost() {
+    controller.nextPage();
+  }
+
+  void _previousPost() {
+    controller.previousPage();
+  }
+
+  void _toggleOverlay() {
+    controller.toggleOverlay();
+  }
+
+  void _exit() {
+    Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
+    return DownloadProviderWidget(
+      builder: (context, download) => CallbackShortcuts(
+        bindings: {
+          const SingleActivator(LogicalKeyboardKey.arrowRight): () =>
+              _nextPost(),
+          const SingleActivator(LogicalKeyboardKey.arrowLeft): () =>
+              _previousPost(),
+          const SingleActivator(LogicalKeyboardKey.keyO): () =>
+              _toggleOverlay(),
+          const SingleActivator(LogicalKeyboardKey.escape): () => _exit(),
+        },
+        child: Focus(
+          autofocus: true,
+          child: _buildPage(download),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPage(DownloadDelegate download) {
     final config = ref.watchConfig;
     final booruBuilder = ref.watchBooruBuilder(config);
     final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
 
     return LayoutBuilder(
-      builder: (context, constraints) => DownloadProviderWidget(
-        builder: (context, download) => DetailsPage(
-          sharedChildBuilder: (page) => Column(
-            children: [
-              if (widget.infoBuilder != null)
-                constraints.maxHeight > 450
-                    ? widget.infoBuilder!(context, posts[page])
-                    : const SizedBox.shrink(),
-              widget.toolbarBuilder != null
-                  ? widget.toolbarBuilder!(context, posts[page])
-                  : SimplePostActionToolbar(post: posts[page]),
-            ],
-          ),
-          controller: controller,
-          intitialIndex: widget.initialIndex,
-          onExit: widget.onExit,
-          onPageChanged: (page) {
-            onSwiped(page);
-            widget.onPageChanged?.call(posts[page]);
-          },
-          onSwipeDownEnd: booruBuilder?.canHandlePostGesture(
-                        GestureType.swipeDown,
-                        config.postGestures?.fullview,
-                      ) ==
-                      true &&
-                  postGesturesHandler != null
-              ? (page) => postGesturesHandler(
-                    ref,
-                    config.postGestures?.fullview?.swipeDown,
-                    posts[page],
-                    download,
-                  )
-              : null,
-          bottomSheet: (page, sharedChild) {
-            final bottomSheet = Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (posts[page].isVideo)
-                  ValueListenableBuilder(
-                    valueListenable: videoProgress,
-                    builder: (_, progress, __) => VideoSoundScope(
-                      builder: (context, soundOn) => BooruVideoProgressBar(
-                        soundOn: soundOn,
-                        progress: progress,
-                        onSeek: (position) => onVideoSeekTo(position, page),
-                        onSoundToggle: (value) =>
-                            ref.setGlobalVideoSound(value),
-                      ),
-                    ),
-                  ),
-                if (sharedChild != null)
-                  Container(
-                    color: context.colorScheme.surface,
-                    padding: EdgeInsets.only(
-                      bottom: MediaQuery.paddingOf(context).bottom,
-                    ),
-                    child: sharedChild,
-                  ),
-              ],
-            );
-
-            return widget.infoBuilder != null
-                ? Container(
-                    decoration: BoxDecoration(
-                      color: context.theme.scaffoldBackgroundColor
-                          .withOpacity(0.8),
-                      border: Border(
-                        top: BorderSide(
-                          color: context.theme.dividerColor,
-                          width: 0.2,
-                        ),
-                      ),
-                    ),
-                    child: bottomSheet,
-                  )
-                : bottomSheet;
-          },
-          targetSwipeDownBuilder: (context, page) => SwipeTargetImage(
-            imageUrl: posts[page].isVideo
-                ? posts[page].videoThumbnailUrl
-                : widget.swipeImageUrlBuilder(posts[page]),
-            aspectRatio: posts[page].aspectRatio,
-          ),
-          expandedBuilder:
-              (context, page, currentPage, expanded, enableSwipe, sharedChild) {
-            final widgets = _buildWidgets(
-              context,
-              expanded,
-              page,
-              currentPage,
-              ref,
-              booruBuilder,
-              postGesturesHandler,
-              download,
-              sharedChild,
-            );
-
-            final artistPosts =
-                widget.sliverArtistPostsBuilder?.call(context, posts[page]);
-
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4),
-              child: CustomScrollView(
-                physics:
-                    enableSwipe ? null : const NeverScrollableScrollPhysics(),
-                controller: PageContentScrollController.of(context),
-                slivers: [
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) => widgets[index],
-                      childCount: widgets.length,
-                    ),
-                  ),
-                  if (expanded && page == currentPage)
-                    if (artistPosts != null) ...artistPosts,
-                  if (widget.sliverRelatedPostsBuilder != null &&
-                      ref.watch(_visibleProvider(currentPage)) &&
-                      expanded &&
-                      page == currentPage)
-                    widget.sliverRelatedPostsBuilder!(context, posts[page]),
-                  if (widget.sliverCharacterPostsBuilder != null &&
-                      expanded &&
-                      page == currentPage)
-                    widget.sliverCharacterPostsBuilder!(context, posts[page]),
-                  SliverSizedBox(
-                    height: MediaQuery.paddingOf(context).bottom + 72,
-                  ),
-                ],
-              ),
-            );
-          },
-          pageCount: widget.posts.length,
-          topRightButtonsBuilder: (page, expanded) =>
-              widget.topRightButtonsBuilder != null
-                  ? widget.topRightButtonsBuilder!(page, expanded, posts[page])
-                  : [
-                      GeneralMoreActionButton(post: widget.posts[page]),
-                    ],
-          onExpanded: (currentPage) =>
-              widget.onExpanded?.call(posts[currentPage]),
+      builder: (context, constraints) => DetailsPage(
+        sharedChildBuilder: (page) => Column(
+          children: [
+            if (widget.infoBuilder != null)
+              constraints.maxHeight > 450
+                  ? widget.infoBuilder!(context, posts[page])
+                  : const SizedBox.shrink(),
+            widget.toolbarBuilder != null
+                ? widget.toolbarBuilder!(context, posts[page])
+                : SimplePostActionToolbar(post: posts[page]),
+          ],
         ),
+        controller: controller,
+        intitialIndex: widget.initialIndex,
+        onExit: widget.onExit,
+        onPageChanged: (page) {
+          onSwiped(page);
+          widget.onPageChanged?.call(posts[page]);
+        },
+        onSwipeDownEnd: booruBuilder?.canHandlePostGesture(
+                      GestureType.swipeDown,
+                      config.postGestures?.fullview,
+                    ) ==
+                    true &&
+                postGesturesHandler != null
+            ? (page) => postGesturesHandler(
+                  ref,
+                  config.postGestures?.fullview?.swipeDown,
+                  posts[page],
+                  download,
+                )
+            : null,
+        bottomSheet: (page, sharedChild) {
+          final bottomSheet = Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (posts[page].isVideo)
+                ValueListenableBuilder(
+                  valueListenable: videoProgress,
+                  builder: (_, progress, __) => VideoSoundScope(
+                    builder: (context, soundOn) => BooruVideoProgressBar(
+                      soundOn: soundOn,
+                      progress: progress,
+                      onSeek: (position) => onVideoSeekTo(position, page),
+                      onSoundToggle: (value) => ref.setGlobalVideoSound(value),
+                    ),
+                  ),
+                ),
+              if (sharedChild != null)
+                Container(
+                  color: context.colorScheme.surface,
+                  padding: EdgeInsets.only(
+                    bottom: MediaQuery.paddingOf(context).bottom,
+                  ),
+                  child: sharedChild,
+                ),
+            ],
+          );
+
+          return widget.infoBuilder != null
+              ? Container(
+                  decoration: BoxDecoration(
+                    color:
+                        context.theme.scaffoldBackgroundColor.withOpacity(0.8),
+                    border: Border(
+                      top: BorderSide(
+                        color: context.theme.dividerColor,
+                        width: 0.2,
+                      ),
+                    ),
+                  ),
+                  child: bottomSheet,
+                )
+              : bottomSheet;
+        },
+        targetSwipeDownBuilder: (context, page) => SwipeTargetImage(
+          imageUrl: posts[page].isVideo
+              ? posts[page].videoThumbnailUrl
+              : widget.swipeImageUrlBuilder(posts[page]),
+          aspectRatio: posts[page].aspectRatio,
+        ),
+        expandedBuilder:
+            (context, page, currentPage, expanded, enableSwipe, sharedChild) {
+          final widgets = _buildWidgets(
+            context,
+            expanded,
+            page,
+            currentPage,
+            ref,
+            booruBuilder,
+            postGesturesHandler,
+            download,
+            sharedChild,
+          );
+
+          final artistPosts =
+              widget.sliverArtistPostsBuilder?.call(context, posts[page]);
+
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: CustomScrollView(
+              physics:
+                  enableSwipe ? null : const NeverScrollableScrollPhysics(),
+              controller: PageContentScrollController.of(context),
+              slivers: [
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) => widgets[index],
+                    childCount: widgets.length,
+                  ),
+                ),
+                if (expanded && page == currentPage)
+                  if (artistPosts != null) ...artistPosts,
+                if (widget.sliverRelatedPostsBuilder != null &&
+                    ref.watch(_visibleProvider(currentPage)) &&
+                    expanded &&
+                    page == currentPage)
+                  widget.sliverRelatedPostsBuilder!(context, posts[page]),
+                if (widget.sliverCharacterPostsBuilder != null &&
+                    expanded &&
+                    page == currentPage)
+                  widget.sliverCharacterPostsBuilder!(context, posts[page]),
+                SliverSizedBox(
+                  height: MediaQuery.paddingOf(context).bottom + 72,
+                ),
+              ],
+            ),
+          );
+        },
+        pageCount: widget.posts.length,
+        topRightButtonsBuilder: (page, expanded) =>
+            widget.topRightButtonsBuilder != null
+                ? widget.topRightButtonsBuilder!(page, expanded, posts[page])
+                : [
+                    GeneralMoreActionButton(post: widget.posts[page]),
+                  ],
+        onExpanded: (currentPage) =>
+            widget.onExpanded?.call(posts[currentPage]),
       ),
     );
   }

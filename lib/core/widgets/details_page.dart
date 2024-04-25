@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:async';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -98,6 +101,8 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
   final _keepBottomSheetDown = ValueNotifier(false);
   var _pageSwipe = true;
 
+  late StreamSubscription<PageDirection> pageSubscription;
+
   @override
   void initState() {
     isSwipingDown.addListener(_updateShouldSlideDown);
@@ -107,6 +112,35 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
       _shouldSlideDownNotifier.value = true;
     }
     _controller.addListener(_onPageDetailsChanged);
+
+    pageSubscription = _controller.pageStream.listen((event) async {
+      // if expanding, shrunk the viewport first
+      if (isExpanded.value) {
+        await controller.animateViewportInsetTo(
+          ViewportInset.shrunk,
+          curve: Curves.easeOut,
+          duration: const Duration(milliseconds: 150),
+        );
+      }
+
+      if (event == PageDirection.next) {
+        // if last page, do nothing
+        if (controller.page == widget.pageCount - 1) return;
+
+        controller.nextPage(
+          duration: const Duration(milliseconds: 150),
+          curve: Curves.easeOut,
+        );
+      } else {
+        // if first page, do nothing
+        if (controller.page == 0) return;
+
+        controller.previousPage(
+          duration: const Duration(milliseconds: 150),
+          curve: Curves.easeOut,
+        );
+      }
+    });
 
     super.initState();
   }
@@ -157,6 +191,9 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
     if (widget.controller == null) {
       _controller.dispose();
     }
+
+    pageSubscription.cancel();
+
     super.dispose();
   }
 
