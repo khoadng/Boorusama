@@ -254,14 +254,14 @@
         "download": {
             "qualities": {
                 "original": "Оригинал",
-                "preview": "Превью",
+                "preview": "Сжатое",
                 "sample": "Пример"
             },
             "select_a_folder": "Выберите папку",
             "path": "Путь загрузки",
             "quality": "Качество загружаемых изображений"
         },
-        "help_us_translate": "помогите нам перевести",
+        "help_us_translate": "Помогите нам перевести",
         "other_settings": "Другие настройки",
         "accessibility": {
             "swipeAreaToOpenSidebar": "Область прокрутки боковой панели",
