@@ -477,4 +477,16 @@ class MockUuid implements Uuid {
       [];
   @override
   UuidValue v8obj({V8Options? config}) => UuidValue.dns;
+
+  @override
+  String v8g({V8GenericOptions? config}) =>
+      '88888888-8888-8888-8888-888888888888';
+
+  @override
+  List<int> v8gbuffer(List<int> buffer,
+          {V8GenericOptions? config, int offset = 0}) =>
+      [];
+
+  @override
+  UuidValue v8gobj({V8GenericOptions? config}) => UuidValue.dns;
 }
