@@ -845,10 +845,10 @@ packages:
     dependency: "direct main"
     description:
       name: fvp
-      sha256: "398f8c342f40005f2f881b926b96a7bbf0b9c0c59267ce5c47377a1d4c324088"
+      sha256: "3ac70b4282489788b7746a029226c24477dbacbf0117a3b20c5daebd21a4c0d1"
       url: "https://pub.dev"
     source: hosted
-    version: "0.17.0"
+    version: "0.15.0"
   gal:
     dependency: "direct main"
     description:
