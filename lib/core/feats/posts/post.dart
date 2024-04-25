@@ -183,6 +183,8 @@ extension PostX on Post {
         ),
         pattern,
       );
+
+  bool get isExplicit => rating == Rating.explicit;
 }
 
 enum GeneralPostQualityType {

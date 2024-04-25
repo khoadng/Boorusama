@@ -186,69 +186,77 @@ class _InfinitePostListScaffoldState<T extends Post>
                   },
                   child: child,
                 ),
-                child: ImageGridItem(
-                  isGif: post.isGif,
-                  isAI: post.isAI,
-                  hideOverlay: multiSelect,
-                  onTap: !multiSelect
-                      ? () {
-                          if (booruBuilder?.canHandlePostGesture(
-                                      GestureType.tap,
-                                      config.postGestures?.preview) ==
-                                  true &&
-                              postGesturesHandler != null) {
-                            postGesturesHandler(
-                              ref,
-                              ref.watchConfig.postGestures?.preview?.tap,
-                              post,
-                              download,
-                            );
-                          } else {
-                            goToPostDetailsPage(
-                              context: context,
-                              posts: items,
-                              initialIndex: index,
-                              scrollController: _autoScrollController,
-                            );
+                child: ExplicitContentBlockOverlay(
+                  width: width ?? 100,
+                  height: height ?? 100,
+                  block: settings.blurExplicitMedia && post.isExplicit,
+                  childBuilder: (block) => ImageGridItem(
+                    isGif: post.isGif,
+                    isAI: post.isAI,
+                    hideOverlay: multiSelect,
+                    onTap: !multiSelect
+                        ? () {
+                            if (booruBuilder?.canHandlePostGesture(
+                                        GestureType.tap,
+                                        config.postGestures?.preview) ==
+                                    true &&
+                                postGesturesHandler != null) {
+                              postGesturesHandler(
+                                ref,
+                                ref.watchConfig.postGestures?.preview?.tap,
+                                post,
+                                download,
+                              );
+                            } else {
+                              goToPostDetailsPage(
+                                context: context,
+                                posts: items,
+                                initialIndex: index,
+                                scrollController: _autoScrollController,
+                              );
+                            }
                           }
-                        }
-                      : null,
-                  isFaved: ref.watch(favoriteProvider(post.id)),
-                  enableFav: !multiSelect && canFavorite,
-                  quickActionButtonBuilder:
-                      defaultImagePreviewButtonBuilder(ref, post),
-                  onFavToggle: (isFaved) async {
-                    if (isFaved) {
-                      if (favoriteAdder == null) return;
-                      await favoriteAdder(post.id, ref);
-                    } else {
-                      if (favoriteRemover == null) return;
-                      await favoriteRemover(post.id, ref);
-                    }
-                  },
-                  autoScrollOptions: AutoScrollOptions(
-                    controller: _autoScrollController,
-                    index: index,
-                  ),
-                  isAnimated: post.isAnimated,
-                  isTranslated: post.isTranslated,
-                  hasComments: post.hasComment,
-                  hasParentOrChildren: post.hasParentOrChildren,
-                  score: settings.showScoresInGrid ? post.score : null,
-                  image: BooruImage(
-                    aspectRatio: post.aspectRatio,
-                    imageUrl: gridThumbnailUrlBuilder != null
-                        ? gridThumbnailUrlBuilder(settings, post)
-                        : post.thumbnailImageUrl,
-                    borderRadius: BorderRadius.circular(
-                      settings.imageBorderRadius,
+                        : null,
+                    isFaved: ref.watch(favoriteProvider(post.id)),
+                    enableFav: !multiSelect && canFavorite && !block,
+                    quickActionButtonBuilder:
+                        defaultImagePreviewButtonBuilder(ref, post),
+                    onFavToggle: (isFaved) async {
+                      if (isFaved) {
+                        if (favoriteAdder == null) return;
+                        await favoriteAdder(post.id, ref);
+                      } else {
+                        if (favoriteRemover == null) return;
+                        await favoriteRemover(post.id, ref);
+                      }
+                    },
+                    autoScrollOptions: AutoScrollOptions(
+                      controller: _autoScrollController,
+                      index: index,
                     ),
-                    forceFill: settings.imageListType == ImageListType.standard,
-                    placeholderUrl: post.thumbnailImageUrl,
-                    width: width,
-                    height: height,
-                    cacheHeight: cacheHeight,
-                    cacheWidth: cacheWidth,
+                    isAnimated: post.isAnimated,
+                    isTranslated: post.isTranslated,
+                    hasComments: post.hasComment,
+                    hasParentOrChildren: post.hasParentOrChildren,
+                    score: settings.showScoresInGrid ? post.score : null,
+                    image: BooruImage(
+                      aspectRatio: post.aspectRatio,
+                      imageUrl: block
+                          ? ''
+                          : gridThumbnailUrlBuilder != null
+                              ? gridThumbnailUrlBuilder(settings, post)
+                              : post.thumbnailImageUrl,
+                      borderRadius: BorderRadius.circular(
+                        settings.imageBorderRadius,
+                      ),
+                      forceFill:
+                          settings.imageListType == ImageListType.standard,
+                      placeholderUrl: post.thumbnailImageUrl,
+                      width: width,
+                      height: height,
+                      cacheHeight: cacheHeight,
+                      cacheWidth: cacheWidth,
+                    ),
                   ),
                 ),
               ),
