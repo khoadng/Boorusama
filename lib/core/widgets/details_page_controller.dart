@@ -9,7 +9,9 @@ class DetailsPageController extends ChangeNotifier {
   DetailsPageController({
     bool swipeDownToDismiss = true,
     bool hideOverlay = false,
+    int initialPage = 0,
   })  : _enableSwipeDownToDismiss = swipeDownToDismiss,
+        _currentPage = ValueNotifier(initialPage),
         _hideOverlay = ValueNotifier(hideOverlay);
 
   var _enableSwipeDownToDismiss = false;
@@ -17,10 +19,12 @@ class DetailsPageController extends ChangeNotifier {
   var _enablePageSwipe = true;
   final _slideShow = ValueNotifier((false, <int>[]));
   late final ValueNotifier<bool> _hideOverlay;
+  late final ValueNotifier<int> _currentPage;
 
   bool get swipeDownToDismiss => _enableSwipeDownToDismiss;
   bool get pageSwipe => _enablePageSwipe;
   ValueNotifier<bool> get hideOverlay => _hideOverlay;
+  ValueNotifier<int> get currentPage => _currentPage;
   ValueNotifier<(bool, List<int>)> get slideShow => _slideShow;
 
 // use stream event to change to next page or previous page

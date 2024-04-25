@@ -111,6 +111,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
     if (_controller._hideOverlay.value) {
       _shouldSlideDownNotifier.value = true;
     }
+    controller.currentPage.addListener(_onCurrentPageChanged);
     _controller.addListener(_onPageDetailsChanged);
 
     pageSubscription = _controller.pageStream.listen((event) async {
@@ -143,6 +144,10 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
     });
 
     super.initState();
+  }
+
+  void _onCurrentPageChanged() {
+    _controller.currentPage.value = controller.currentPage.value;
   }
 
   void _onPageDetailsChanged() {
@@ -182,6 +187,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
 
   @override
   void dispose() {
+    controller.currentPage.removeListener(_onCurrentPageChanged);
     controller.dispose();
 
     isSwipingDown.removeListener(_updateShouldSlideDown);
