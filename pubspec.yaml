@@ -103,10 +103,7 @@ dependencies:
     git:
       url: https://github.com/khoadng/reorderables.git
       ref: 69d1b8b272f3b77dc6a6b7399fa8931cdd660d77
-  rich_text_controller:
-    git:
-      url: https://github.com/khoadng/rich_text_controller.git
-      ref: flutter-3.0
+  rich_text_controller: ^1.4.2
   riverpod_infinite_scroll: ^1.0.9
   rxdart: ^0.27.7
   scroll_to_index: ^3.0.1

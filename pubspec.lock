@@ -1502,12 +1502,11 @@ packages:
   rich_text_controller:
     dependency: "direct main"
     description:
-      path: "."
-      ref: "flutter-3.0"
-      resolved-ref: "1c956b6e43ff78c8c3e8a908cae997f8127574a7"
-      url: "https://github.com/khoadng/rich_text_controller.git"
-    source: git
-    version: "1.4.0"
+      name: rich_text_controller
+      sha256: "2697b0313c03429ac4d924e14f16e07d16e31a234d31c46bcce9f8f8e713f05f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.4.2"
   riverpod:
     dependency: transitive
     description:
