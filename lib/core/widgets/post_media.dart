@@ -91,22 +91,15 @@ class PostMedia extends ConsumerWidget {
                             sound: ref.isGlobalVideoSoundOn,
                             onZoomUpdated: onImageZoomUpdated,
                           )
-                    : Stack(
-                        children: [
-                          Positioned.fill(
-                            child: BooruImage(
-                              aspectRatio: post.aspectRatio,
-                              imageUrl: post.thumbnailImageUrl,
-                              placeholderUrl: post.thumbnailImageUrl,
-                            ),
-                          ),
-                          const Center(
-                            child: Card(
-                              child: Text(
-                                  'Cant play WEBM video on desktop for now'),
-                            ),
-                          ),
-                        ],
+                    : BooruVideo(
+                        url: post.videoUrl,
+                        aspectRatio: post.aspectRatio,
+                        onCurrentPositionChanged: onCurrentVideoPositionChanged,
+                        onVisibilityChanged: onVideoVisibilityChanged,
+                        autoPlay: autoPlay,
+                        onVideoPlayerCreated: onVideoPlayerCreated,
+                        sound: ref.isGlobalVideoSoundOn,
+                        onZoomUpdated: onImageZoomUpdated,
                       )
                 : BooruVideo(
                     url: post.videoUrl,

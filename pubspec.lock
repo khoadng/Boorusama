@@ -651,10 +651,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_cache_manager
-      sha256: "8207f27539deb83732fdda03e259349046a39a4c767269285f449ade355d54ba"
+      sha256: "395d6b7831f21f3b989ebedbb785545932adb9afe2622c1ffacf7f4b53a7e544"
       url: "https://pub.dev"
     source: hosted
-    version: "3.3.1"
+    version: "3.3.2"
   flutter_download_manager:
     dependency: "direct main"
     description:
@@ -845,10 +845,10 @@ packages:
     dependency: "direct main"
     description:
       name: fvp
-      sha256: "3ac70b4282489788b7746a029226c24477dbacbf0117a3b20c5daebd21a4c0d1"
+      sha256: "398f8c342f40005f2f881b926b96a7bbf0b9c0c59267ce5c47377a1d4c324088"
       url: "https://pub.dev"
     source: hosted
-    version: "0.15.0"
+    version: "0.17.0"
   gal:
     dependency: "direct main"
     description:
@@ -869,10 +869,10 @@ packages:
     dependency: "direct main"
     description:
       name: go_router
-      sha256: "28ef8a8320ab3bf5752424e6bca6961ce25108afc344f3127b5155caf7a792c8"
+      sha256: "466425a64508ca00983882f523400d9169365cb9b464e2e2419f3b6545ff9c51"
       url: "https://pub.dev"
     source: hosted
-    version: "14.0.0"
+    version: "14.0.1"
   graphs:
     dependency: transitive
     description:
@@ -2041,14 +2041,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.0"
-  video_player_win:
-    dependency: "direct main"
-    description:
-      name: video_player_win
-      sha256: b99e8dfe7fa87a6732b5c91caef4955ae3453fd6255fb8860a7686beccdcfe43
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.3.6"
   visibility_detector:
     dependency: "direct main"
     description:
@@ -2149,10 +2141,10 @@ packages:
     dependency: transitive
     description:
       name: win32
-      sha256: "0a989dc7ca2bb51eac91e8fd00851297cfffd641aa7538b165c62637ca0eaa4a"
+      sha256: "0eaf06e3446824099858367950a813472af675116bf63f008a4c2a75ae13e9cb"
       url: "https://pub.dev"
     source: hosted
-    version: "5.4.0"
+    version: "5.5.0"
   win32_registry:
     dependency: transitive
     description:
