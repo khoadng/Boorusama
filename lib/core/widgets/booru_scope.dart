@@ -21,6 +21,7 @@ import 'package:boorusama/core/pages/home/side_bar_menu.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/keyboard.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
@@ -72,17 +73,20 @@ class _BooruScopeState extends ConsumerState<BooruScope> {
 
   @override
   Widget build(BuildContext context) {
-    return CustomContextMenuOverlay(
-      child: isMobilePlatform()
-          ? OrientationBuilder(
-              builder: (context, orientation) => orientation.isPortrait
-                  ? _buildMobile()
-                  : _buildDesktop(
-                      resizable: true,
-                      grooveDivider: true,
-                    ),
-            )
-          : _buildDesktop(resizable: true),
+    return HomePageSidebarKeyboardListener(
+      controller: controller,
+      child: CustomContextMenuOverlay(
+        child: isMobilePlatform()
+            ? OrientationBuilder(
+                builder: (context, orientation) => orientation.isPortrait
+                    ? _buildMobile()
+                    : _buildDesktop(
+                        resizable: true,
+                        grooveDivider: true,
+                      ),
+              )
+            : _buildDesktop(resizable: true),
+      ),
     );
   }
 
@@ -117,6 +121,53 @@ class _BooruScopeState extends ConsumerState<BooruScope> {
       grooveDivider: grooveDivider,
       menuWidth: double.tryParse(menuWidth),
     );
+  }
+}
+
+class HomePageSidebarKeyboardListener extends StatefulWidget {
+  const HomePageSidebarKeyboardListener({
+    super.key,
+    required this.controller,
+    required this.child,
+  });
+
+  final HomePageController controller;
+  final Widget child;
+
+  @override
+  State<HomePageSidebarKeyboardListener> createState() =>
+      _HomePageSidebarKeyboardListenerState();
+}
+
+class _HomePageSidebarKeyboardListenerState
+    extends State<HomePageSidebarKeyboardListener> with KeyboardListenerMixin {
+  @override
+  void initState() {
+    super.initState();
+    registerListener(_handleKeyEvent);
+  }
+
+  bool _handleKeyEvent(KeyEvent event) {
+    if (isKeyPressed(
+      LogicalKeyboardKey.keyB,
+      controlOrMeta: true,
+      event: event,
+    )) {
+      widget.controller.toggleMenu();
+    }
+
+    return false;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    removeListener(_handleKeyEvent);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.child;
   }
 }
 
@@ -165,6 +216,16 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
     );
 
     menuWidth.addListener(saveWidthToCache);
+
+    widget.controller.addHandler(_onSidebarStateChanged);
+  }
+
+  void _onSidebarStateChanged(open) {
+    if (open) {
+      _setDefaultSplit();
+    } else {
+      _setMinSplit();
+    }
   }
 
   void saveWidthToCache() {
@@ -180,6 +241,7 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
     menuWidth.removeListener(saveWidthToCache);
     splitController.dispose();
     menuWidth.dispose();
+    widget.controller.removeHandler(_onSidebarStateChanged);
     super.dispose();
   }
 

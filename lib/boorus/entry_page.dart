@@ -184,18 +184,56 @@ class _Boorus extends ConsumerWidget {
   }
 }
 
+typedef HomePageControllerOpenHandler = void Function(bool open);
+
 class HomePageController extends ValueNotifier<int> {
   HomePageController({
     required this.scaffoldKey,
-  }) : super(0);
+  }) : super(0) {
+    _isMenuOpen = scaffoldKey.currentState?.isDrawerOpen ?? false;
+  }
 
   final GlobalKey<ScaffoldState> scaffoldKey;
+
+  final List<HomePageControllerOpenHandler> handlers = [];
+
+  var _isMenuOpen = false;
 
   void goToTab(int index) {
     value = index;
   }
 
+  void addHandler(HomePageControllerOpenHandler handler) {
+    handlers.add(handler);
+  }
+
+  void removeHandler(HomePageControllerOpenHandler handler) {
+    handlers.remove(handler);
+  }
+
+  void toggleMenu() {
+    if (_isMenuOpen) {
+      closeMenu();
+    } else {
+      openMenu();
+    }
+  }
+
   void openMenu() {
     scaffoldKey.currentState?.openDrawer();
+    _isMenuOpen = true;
+
+    for (final handler in handlers) {
+      handler(true);
+    }
+  }
+
+  void closeMenu() {
+    scaffoldKey.currentState?.closeDrawer();
+    _isMenuOpen = false;
+
+    for (final handler in handlers) {
+      handler(false);
+    }
   }
 }

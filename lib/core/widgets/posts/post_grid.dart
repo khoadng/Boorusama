@@ -3,6 +3,7 @@ import 'dart:isolate';
 
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_improved_scrolling/flutter_improved_scrolling.dart';
@@ -21,6 +22,7 @@ import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/feats/utils.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/posts/post_grid_config_region.dart';
+import 'package:boorusama/foundation/keyboard.dart';
 import 'package:boorusama/foundation/networking/network_provider.dart';
 import 'package:boorusama/foundation/networking/network_state.dart';
 import 'package:boorusama/foundation/platform.dart';
@@ -153,7 +155,7 @@ class PostGrid<T extends Post> extends ConsumerStatefulWidget {
 }
 
 class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, KeyboardListenerMixin {
   late final AutoScrollController _autoScrollController;
   late final MultiSelectController<T> _multiSelectController;
 
@@ -213,10 +215,23 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
     }
 
     _updateFilter();
+
+    registerListener(_handleKeyEvent);
+  }
+
+  bool _handleKeyEvent(KeyEvent event) {
+    if (isKeyPressed(LogicalKeyboardKey.f5, event: event)) {
+      widget.onRefresh?.call();
+      controller.refresh();
+    }
+
+    return false;
   }
 
   @override
   void dispose() {
+    removeListener(_handleKeyEvent);
+
     if (widget.scrollController == null) {
       _autoScrollController.dispose();
     }
