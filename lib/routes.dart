@@ -329,12 +329,19 @@ class Routes {
             );
           } else {
             return builder != null
-                ? DialogPage(
-                    builder: (context) => builder(context, config, payload))
-                : DialogPage(
-                    builder: (_) => const Scaffold(
-                          body: Center(child: Text('Not implemented')),
-                        ));
+                ? CustomTransitionPage(
+                    key: state.pageKey,
+                    name: state.name,
+                    child: builder(context, config, payload),
+                    transitionsBuilder: fadeTransitionBuilder(),
+                  )
+                : MaterialPage(
+                    key: state.pageKey,
+                    name: state.name,
+                    child: const Scaffold(
+                      body: Center(child: Text('Not implemented')),
+                    ),
+                  );
           }
         },
       );
