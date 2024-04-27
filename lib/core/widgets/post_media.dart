@@ -110,6 +110,7 @@ class PostMedia extends ConsumerWidget {
                     onVideoPlayerCreated: onVideoPlayerCreated,
                     sound: ref.isGlobalVideoSoundOn,
                     onZoomUpdated: onImageZoomUpdated,
+                    customControlsBuilder: () => null,
                   )
         : InteractiveBooruImage(
             useHero: useHero,

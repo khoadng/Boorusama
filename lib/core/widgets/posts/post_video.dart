@@ -22,6 +22,7 @@ class BooruVideo extends StatefulWidget {
     this.onVideoPlayerCreated,
     this.sound = true,
     this.onZoomUpdated,
+    this.customControlsBuilder,
   });
 
   final String url;
@@ -33,6 +34,7 @@ class BooruVideo extends StatefulWidget {
   final bool autoPlay;
   final bool sound;
   final void Function(bool value)? onZoomUpdated;
+  final Widget? Function()? customControlsBuilder;
 
   @override
   State<BooruVideo> createState() => _BooruVideoState();
@@ -56,9 +58,11 @@ class _BooruVideoState extends State<BooruVideo> {
       videoPlayerController: _videoPlayerController,
       aspectRatio: widget.aspectRatio,
       autoPlay: widget.autoPlay,
-      customControls: MaterialDesktopControls(
-        onVisibilityChanged: widget.onVisibilityChanged,
-      ),
+      customControls: widget.customControlsBuilder != null
+          ? widget.customControlsBuilder!()
+          : MaterialDesktopControls(
+              onVisibilityChanged: widget.onVisibilityChanged,
+            ),
       looping: true,
       autoInitialize: true,
       showControlsOnInitialize: false,
