@@ -109,6 +109,9 @@ class DanbooruImageGridItem extends ConsumerWidget {
         ],
       ),
       child: ImageGridItem(
+        borderRadius: BorderRadius.circular(
+          settings.imageBorderRadius,
+        ),
         isGif: post.isGif,
         isAI: post.isAI,
         hideOverlay: hideOverlay,

@@ -239,6 +239,9 @@ class _InfinitePostListScaffoldState<T extends Post>
                     hasComments: post.hasComment,
                     hasParentOrChildren: post.hasParentOrChildren,
                     score: settings.showScoresInGrid ? post.score : null,
+                    borderRadius: BorderRadius.circular(
+                      settings.imageBorderRadius,
+                    ),
                     image: BooruImage(
                       aspectRatio: post.aspectRatio,
                       imageUrl: block
