@@ -19,6 +19,7 @@ import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/feats/utils.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
+import 'package:boorusama/core/widgets/posts/post_details_page_mixin.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/functional.dart';
@@ -215,18 +216,22 @@ class GelbooruBuilder
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, booruConfig, payload) => payload.isDesktop
-          ? GelbooruPostDetailsDesktopPage(
-              posts: payload.posts,
-              initialIndex: payload.initialIndex,
-              onExit: (page) => payload.scrollController?.scrollToIndex(page),
-              hasDetailsTagList: booruConfig.booruType.supportTagDetails,
-            )
-          : GelbooruPostDetailsPage(
+      (context, config, payload) => PostDetailsLayoutSwitcher(
+            initialIndex: payload.initialIndex,
+            scrollController: payload.scrollController,
+            desktop: (controller) => GelbooruPostDetailsDesktopPage(
+              initialIndex: controller.currentPage.value,
               posts: payload.posts.map((e) => e as GelbooruPost).toList(),
-              initialIndex: payload.initialIndex,
-              onExit: (page) => payload.scrollController?.scrollToIndex(page),
-            );
+              onExit: (page) => controller.onExit(page),
+              onPageChanged: (page) => controller.setPage(page),
+            ),
+            mobile: (controller) => GelbooruPostDetailsPage(
+              initialIndex: controller.currentPage.value,
+              posts: payload.posts.map((e) => e as GelbooruPost).toList(),
+              onExit: (page) => controller.onExit(page),
+              onPageChanged: (page) => controller.setPage(page),
+            ),
+          );
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>

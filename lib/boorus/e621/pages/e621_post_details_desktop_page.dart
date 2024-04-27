@@ -33,11 +33,13 @@ class E621PostDetailsDesktopPage extends ConsumerStatefulWidget {
     required this.initialIndex,
     required this.posts,
     required this.onExit,
+    required this.onPageChanged,
   });
 
   final int initialIndex;
   final List<E621Post> posts;
   final void Function(int index) onExit;
+  final void Function(int page) onPageChanged;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -80,6 +82,7 @@ class _DanbooruPostDetailsDesktopPageState
         initialPage: widget.initialIndex,
         totalPages: widget.posts.length,
         onPageChanged: (page) {
+          widget.onPageChanged(page);
           setState(() {
             this.page = page;
             loading = true;

@@ -37,11 +37,13 @@ class DanbooruPostDetailsPage extends ConsumerStatefulWidget {
     required this.posts,
     required this.intitialIndex,
     required this.onExit,
+    required this.onPageChanged,
   });
 
   final int intitialIndex;
   final List<DanbooruPost> posts;
   final void Function(int page) onExit;
+  final void Function(int page) onPageChanged;
 
   @override
   ConsumerState<DanbooruPostDetailsPage> createState() =>
@@ -62,6 +64,7 @@ class _DanbooruPostDetailsPageState
         onExit: widget.onExit,
         sourceSectionBuilder: (context, post) => const SizedBox.shrink(),
         onTagTap: (tag) => goToSearchPage(context, tag: tag),
+        onPageChangeIndexed: widget.onPageChanged,
         toolbarBuilder: (context, post) =>
             DanbooruPostActionToolbar(post: post),
         swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),

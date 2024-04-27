@@ -31,12 +31,14 @@ class GelbooruPostDetailsDesktopPage extends ConsumerStatefulWidget {
     required this.posts,
     required this.onExit,
     this.hasDetailsTagList = true,
+    required this.onPageChanged,
   });
 
   final int initialIndex;
   final List<Post> posts;
   final void Function(int index) onExit;
   final bool hasDetailsTagList;
+  final void Function(int page) onPageChanged;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -72,6 +74,7 @@ class _DanbooruPostDetailsDesktopPageState
         initialPage: widget.initialIndex,
         totalPages: widget.posts.length,
         onPageChanged: (page) {
+          widget.onPageChanged(page);
           setState(() {
             this.page = page;
 

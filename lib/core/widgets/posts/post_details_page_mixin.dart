@@ -2,11 +2,13 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:video_player/video_player.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/widgets/embedded_webview_webm.dart';
 
 mixin PostDetailsPageMixin<T extends StatefulWidget, E extends Post>
@@ -81,5 +83,83 @@ mixin PostDetailsPageMixin<T extends StatefulWidget, E extends Post>
       controller.stopSlideShow();
     }
     controller.toggleOverlay();
+  }
+}
+
+class FlexibleLayoutSwitcher extends StatelessWidget {
+  const FlexibleLayoutSwitcher({
+    super.key,
+    required this.desktop,
+    required this.mobile,
+  });
+
+  final Widget Function() desktop;
+  final Widget Function() mobile;
+
+  @override
+  Widget build(BuildContext context) {
+    return isMobilePlatform()
+        ? OrientationBuilder(
+            builder: (context, orientation) =>
+                orientation == Orientation.portrait ? mobile() : desktop(),
+          )
+        : desktop();
+  }
+}
+
+class PostDetailsLayoutSwitcher extends StatefulWidget {
+  const PostDetailsLayoutSwitcher({
+    super.key,
+    required this.initialIndex,
+    required this.desktop,
+    required this.mobile,
+    required this.scrollController,
+  });
+
+  final int initialIndex;
+  final AutoScrollController? scrollController;
+  final Widget Function(PostDetailsController controller) desktop;
+  final Widget Function(PostDetailsController controller) mobile;
+
+  @override
+  State<PostDetailsLayoutSwitcher> createState() =>
+      _PostDetailsLayoutSwitcherState();
+}
+
+class _PostDetailsLayoutSwitcherState extends State<PostDetailsLayoutSwitcher> {
+  late PostDetailsController controller = PostDetailsController(
+    scrollController: widget.scrollController,
+    initialPage: widget.initialIndex,
+  );
+
+  @override
+  void dispose() {
+    super.dispose();
+    controller.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FlexibleLayoutSwitcher(
+      desktop: () => widget.desktop(controller),
+      mobile: () => widget.mobile(controller),
+    );
+  }
+}
+
+class PostDetailsController extends ChangeNotifier {
+  PostDetailsController(
+      {required this.scrollController, required int initialPage})
+      : currentPage = ValueNotifier(initialPage);
+  final AutoScrollController? scrollController;
+
+  late ValueNotifier<int> currentPage;
+
+  void setPage(int page) {
+    currentPage.value = page;
+  }
+
+  void onExit(int page) {
+    scrollController?.scrollToIndex(page);
   }
 }

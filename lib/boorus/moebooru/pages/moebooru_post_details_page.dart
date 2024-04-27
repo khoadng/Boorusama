@@ -56,11 +56,13 @@ class MoebooruPostDetailsPage extends ConsumerStatefulWidget {
     required this.posts,
     required this.initialPage,
     required this.onExit,
+    required this.onPageChanged,
   });
 
   final List<MoebooruPost> posts;
   final int initialPage;
   final void Function(int page) onExit;
+  final void Function(int page) onPageChanged;
 
   @override
   ConsumerState<MoebooruPostDetailsPage> createState() =>
@@ -109,6 +111,7 @@ class _MoebooruPostDetailsPageState
         context,
         tag: tag,
       ),
+      onPageChangeIndexed: widget.onPageChanged,
       swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
       fileDetailsBuilder: (context, post) => FileDetailsSection(
         post: post,

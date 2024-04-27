@@ -20,6 +20,7 @@ import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
+import 'package:boorusama/core/widgets/posts/post_details_page_mixin.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/functional.dart';
@@ -192,17 +193,22 @@ class GelbooruV2Builder
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, booruConfig, payload) => payload.isDesktop
-          ? GelbooruV2PostDetailsDesktopPage(
-              posts: payload.posts,
-              initialIndex: payload.initialIndex,
-              onExit: (page) => payload.scrollController?.scrollToIndex(page),
-            )
-          : GelbooruV2PostDetailsPage(
+      (context, config, payload) => PostDetailsLayoutSwitcher(
+            initialIndex: payload.initialIndex,
+            scrollController: payload.scrollController,
+            desktop: (controller) => GelbooruV2PostDetailsDesktopPage(
+              initialIndex: controller.currentPage.value,
               posts: payload.posts.map((e) => e as GelbooruV2Post).toList(),
-              initialIndex: payload.initialIndex,
-              onExit: (page) => payload.scrollController?.scrollToIndex(page),
-            );
+              onExit: (page) => controller.onExit(page),
+              onPageChanged: (page) => controller.setPage(page),
+            ),
+            mobile: (controller) => GelbooruV2PostDetailsPage(
+              initialIndex: controller.currentPage.value,
+              posts: payload.posts.map((e) => e as GelbooruV2Post).toList(),
+              onExit: (page) => controller.onExit(page),
+              onPageChanged: (page) => controller.setPage(page),
+            ),
+          );
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
