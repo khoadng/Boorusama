@@ -163,7 +163,11 @@ class _PostDetailPageScaffoldState<T extends Post>
                       builder: (context, soundOn) => BooruVideoProgressBar(
                         soundOn: soundOn,
                         progress: progress,
+                        playbackSpeed:
+                            ref.watchPlaybackSpeed(posts[page].videoUrl),
                         onSeek: (position) => onVideoSeekTo(position, page),
+                        onSpeedChanged: (speed) =>
+                            ref.setPlaybackSpeed(posts[page].videoUrl, speed),
                         onSoundToggle: (value) =>
                             ref.setGlobalVideoSound(value),
                       ),
