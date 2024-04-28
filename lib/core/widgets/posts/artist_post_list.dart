@@ -86,7 +86,13 @@ class ArtistPostList2 extends ConsumerWidget {
                   trailing: const Icon(
                     Symbols.arrow_right_alt,
                   ),
-                  title: Text(tag.replaceAll('_', ' ')),
+                  title: Text(
+                    tag.replaceAll('_', ' '),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: -0.5,
+                    ),
+                  ),
                 ),
               ),
             ),

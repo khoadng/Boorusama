@@ -52,31 +52,39 @@ class BooruVideoProgressBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const SizedBox(
-          width: 8,
+        const SizedBox(width: 12),
+        Text(
+          formatDurationForMedia(progress.position),
+          style: const TextStyle(
+            fontSize: 16,
+          ),
         ),
-        Text(formatDurationForMedia(progress.position)),
         Expanded(
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             color: Colors.transparent,
-            height: 30,
+            height: 36,
             child: VideoProgressBar(
               duration: progress.duration,
               position: progress.position,
               buffered: const [],
               seekTo: (position) => onSeek?.call(position),
-              barHeight: 2.0,
-              handleHeight: 5.0,
+              barHeight: 4,
+              handleHeight: 8,
               drawShadow: true,
-              backgroundColor: Theme.of(context).hintColor,
+              backgroundColor: Theme.of(context).hintColor.withOpacity(0.2),
               playedColor: Theme.of(context).colorScheme.primary,
               bufferedColor: Theme.of(context).hintColor,
               handleColor: Theme.of(context).colorScheme.primary,
             ),
           ),
         ),
-        Text(formatDurationForMedia(progress.duration)),
+        Text(
+          formatDurationForMedia(progress.duration),
+          style: const TextStyle(
+            fontSize: 16,
+          ),
+        ),
         const SizedBox(
           width: 8,
         ),
@@ -91,9 +99,7 @@ class BooruVideoProgressBar extends StatelessWidget {
           speed: playbackSpeed,
           onSpeedChanged: onSpeedChanged,
         ),
-        const SizedBox(
-          width: 8,
-        )
+        const SizedBox(width: 12)
       ],
     );
   }
@@ -114,6 +120,7 @@ class SoundControlButton extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
+        customBorder: const CircleBorder(),
         onTap: () => onSoundChanged?.call(!soundOn),
         child: Icon(
           soundOn ? Symbols.volume_up : Symbols.volume_off,
@@ -139,6 +146,7 @@ class MoreOptionsControlButton extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
+        customBorder: const CircleBorder(),
         onTap: () => showMaterialModalBottomSheet(
           context: context,
           builder: (_) => BooruVideoOptionSheet(

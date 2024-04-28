@@ -62,23 +62,22 @@ class InformationSection extends ConsumerWidget {
                   overflow: TextOverflow.fade,
                   style: context.textTheme.titleLarge?.copyWith(
                     fontSize: 20,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w800,
                   ),
                   maxLines: 1,
                   softWrap: false,
                 ),
                 const SizedBox(height: 5),
-                Text(
-                  copyrightTags.isEmpty
-                      ? 'Original'
-                      : generateCopyrightOnlyReadableName(copyrightTags)
-                          .replaceUnderscoreWithSpace()
-                          .titleCase,
-                  overflow: TextOverflow.fade,
-                  style: context.textTheme.bodyLarge,
-                  maxLines: 1,
-                  softWrap: false,
-                ),
+                if (copyrightTags.isNotEmpty)
+                  Text(
+                    generateCopyrightOnlyReadableName(copyrightTags)
+                        .replaceUnderscoreWithSpace()
+                        .titleCase,
+                    overflow: TextOverflow.fade,
+                    style: context.textTheme.bodyLarge,
+                    maxLines: 1,
+                    softWrap: false,
+                  ),
                 const SizedBox(height: 5),
                 Row(
                   children: [
