@@ -70,7 +70,7 @@ class DanbooruImageGridItem extends ConsumerWidget {
                       const SizedBox(width: 4),
                       const AutoSizeText(
                         maxLines: 1,
-                        'Banned artist',
+                        'Banned post',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                         ),

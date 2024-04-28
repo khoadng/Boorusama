@@ -50,10 +50,15 @@ class _ExplicitContentBlockOverlayState
               width: widget.width,
               height: widget.height,
               child: ActionChip(
+                side: BorderSide(
+                  color: Theme.of(context).hintColor.withOpacity(0.1),
+                  width: 1,
+                ),
                 label: Text(
                   'Explicit'.toUpperCase(),
                   style: const TextStyle(
                     fontWeight: FontWeight.w900,
+                    letterSpacing: -0.5,
                   ),
                 ),
                 onPressed: () {
