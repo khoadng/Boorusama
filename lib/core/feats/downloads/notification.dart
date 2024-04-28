@@ -1,6 +1,10 @@
+// Dart imports:
+import 'dart:async';
+
 // Package imports:
 import 'package:android_intent_plus/android_intent.dart';
 import 'package:android_intent_plus/flag.dart';
+import 'package:filesize/filesize.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -41,33 +45,78 @@ class DownloadNotifications {
   final FlutterLocalNotificationsPlugin? _flutterLocalNotificationsPlugin;
 
   Future<void> showInProgress(String fileName, String path) {
-    return _showNotification(fileName, 'in progress', payload: path);
+    return _showNotification(
+      fileName,
+      'pending',
+      payload: path,
+      indeterminate: true,
+    );
   }
 
-  Future<void> showCompleted(String fileName, String path) {
-    return _showNotification(fileName, 'completed', payload: path);
+  Future<void> showUpdatedProgress(
+    String fileName,
+    String path, {
+    required int received,
+    required int total,
+  }) async {
+    if (total <= 0) return;
+    final receivedReadable = filesize(received, 1);
+    final totalReadable = filesize(total, 1);
+    final progress = received / total;
+    final done = progress >= 1;
+
+    Future<void> showProgress() {
+      return _showNotification(
+        fileName,
+        '$receivedReadable / $totalReadable (${(progress * 100).toStringAsFixed(1)}%)',
+        payload: path,
+        progress: received,
+        total: total,
+      );
+    }
+
+    if (done) {
+      await showProgress();
+      await Future.delayed(const Duration(milliseconds: 500));
+      await _showNotification(fileName, 'completed ($totalReadable)',
+          payload: path);
+
+      return;
+    }
+
+    showProgress();
   }
 
   Future<void> showFailed(String fileName, String path) {
     return _showNotification(fileName, 'failed', payload: path);
   }
 
-  Future<void> _showNotification(String title, String body,
-      {String? payload}) async {
+  Future<void> _showNotification(
+    String title,
+    String body, {
+    String? payload,
+    int? progress,
+    int? total,
+    bool? indeterminate,
+  }) async {
     //TODO: implement custom notification for windows
     if (isWindows()) return;
 
-    const androidPlatformChannelSpecifics = AndroidNotificationDetails(
+    final androidPlatformChannelSpecifics = AndroidNotificationDetails(
       'download',
       'Download',
       playSound: false,
       enableVibration: false,
       category: AndroidNotificationCategory.progress,
+      showProgress: progress != null && total != null,
+      maxProgress: total ?? 0,
+      progress: progress ?? 0,
+      indeterminate: indeterminate ?? false,
     );
 
-    const platformChannelSpecifics = NotificationDetails(
+    final platformChannelSpecifics = NotificationDetails(
       android: androidPlatformChannelSpecifics,
-      iOS: DarwinNotificationDetails(
+      iOS: const DarwinNotificationDetails(
         presentSound: false,
       ),
     );

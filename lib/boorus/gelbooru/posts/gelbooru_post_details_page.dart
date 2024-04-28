@@ -7,8 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
-import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
+import 'package:boorusama/boorus/gelbooru/artists/artists.dart';
+import 'package:boorusama/boorus/gelbooru/posts/posts.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
@@ -35,11 +35,13 @@ class GelbooruPostDetailsPage extends ConsumerStatefulWidget {
     required this.posts,
     required this.initialIndex,
     required this.onExit,
+    required this.onPageChanged,
   });
 
   final int initialIndex;
   final List<GelbooruPost> posts;
   final void Function(int page) onExit;
+  final void Function(int page) onPageChanged;
 
   @override
   ConsumerState<GelbooruPostDetailsPage> createState() =>
@@ -58,6 +60,7 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailsPage> {
       initialIndex: widget.initialIndex,
       onExit: widget.onExit,
       onTagTap: (tag) => goToSearchPage(context, tag: tag),
+      onPageChangeIndexed: widget.onPageChanged,
       toolbarBuilder: (context, post) => SimplePostActionToolbar(post: post),
       swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
       fileDetailsBuilder: (context, post) => FileDetailsSection(

@@ -139,6 +139,9 @@ class BookmarkScrollView extends ConsumerWidget {
                     child: Stack(
                       children: [
                         ImageGridItem(
+                          borderRadius: BorderRadius.circular(
+                            settings.imageBorderRadius,
+                          ),
                           isAnimated: bookmark.isVideo,
                           isAI: bookmark.isAI,
                           onTap: () =>

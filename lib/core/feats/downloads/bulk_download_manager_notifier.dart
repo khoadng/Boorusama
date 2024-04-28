@@ -31,7 +31,7 @@ class BulkDownloadManagerNotifier extends FamilyNotifier<void, BooruConfig> {
     final options = ref.read(bulkDownloadOptionsProvider);
     return postRepo.getPostsFromTagsOrEmpty(
       tags,
-      page,
+      page: page,
       limit: options.postPerPage,
     );
   }

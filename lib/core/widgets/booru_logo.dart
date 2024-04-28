@@ -32,12 +32,10 @@ class BooruLogo extends StatelessWidget {
               clearMemoryCacheIfFailed: false,
               loadStateChanged: (state) =>
                   switch (state.extendedImageLoadState) {
-                LoadState.failed => const Card(
-                    child: FaIcon(
-                      FontAwesomeIcons.globe,
-                      size: 22,
-                      color: Colors.blue,
-                    ),
+                LoadState.failed => FaIcon(
+                    FontAwesomeIcons.globe,
+                    size: width,
+                    color: Colors.blue,
                   ),
                 _ => state.completedWidget,
               },

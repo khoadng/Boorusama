@@ -18,6 +18,7 @@ import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/comment_page_scaffold.dart';
+import 'package:boorusama/core/widgets/posts/post_details_page_mixin.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'pages/create_e621_config_page.dart';
@@ -187,17 +188,22 @@ class E621Builder
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) => payload.isDesktop
-          ? E621PostDetailsDesktopPage(
-              initialIndex: payload.initialIndex,
+      (context, config, payload) => PostDetailsLayoutSwitcher(
+            initialIndex: payload.initialIndex,
+            scrollController: payload.scrollController,
+            desktop: (controller) => E621PostDetailsDesktopPage(
+              initialIndex: controller.currentPage.value,
               posts: payload.posts.map((e) => e as E621Post).toList(),
-              onExit: (page) => payload.scrollController?.scrollToIndex(page),
-            )
-          : E621PostDetailsPage(
-              intitialIndex: payload.initialIndex,
+              onExit: (page) => controller.onExit(page),
+              onPageChanged: (page) => controller.setPage(page),
+            ),
+            mobile: (controller) => E621PostDetailsPage(
+              intitialIndex: controller.currentPage.value,
               posts: payload.posts.map((e) => e as E621Post).toList(),
-              onExit: (page) => payload.scrollController?.scrollToIndex(page),
-            );
+              onExit: (page) => controller.onExit(page),
+              onPageChanged: (page) => controller.setPage(page),
+            ),
+          );
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>

@@ -7,15 +7,11 @@ import 'package:boorusama/core/feats/search/tag_search_item.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 
 final _defaultMetatags = {
-  const Metatag(
+  const Metatag.simple(
     name: 'foo',
-    description: '',
-    example: '',
   ),
-  const Metatag(
+  const Metatag.simple(
     name: 'bar',
-    description: '',
-    example: '',
   ),
 };
 

@@ -12,7 +12,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fvp/fvp.dart' as fvp;
 import 'package:hive/hive.dart';
 import 'package:stack_trace/stack_trace.dart';
-import 'package:video_player_win/video_player_win.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
@@ -98,24 +97,14 @@ Future<void> boot(BootLogger bootLogger) async {
     });
   }
 
-  if (isLinux()) {
-    bootLogger.l("Register FVP with Linux");
+  if (isLinux() || isWindows() || isIOS()) {
     fvp.registerWith(
       options: {
         'platforms': [
           'linux',
-        ]
-      },
-    );
-  }
-
-  if (isIOS()) {
-    bootLogger.l("Register FVP with iOS");
-    fvp.registerWith(
-      options: {
-        'platforms': [
           'ios',
-        ]
+          'windows',
+        ],
       },
     );
   }
@@ -255,8 +244,6 @@ Future<void> boot(BootLogger bootLogger) async {
   bootLogger.l("Initialize device info");
   final deviceInfo =
       await DeviceInfoService(plugin: DeviceInfoPlugin()).getDeviceInfo();
-
-  if (isWindows()) WindowsVideoPlayer.registerWith();
 
   bootLogger.l("Initialize i18n");
   await ensureI18nInitialized();

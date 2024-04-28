@@ -232,7 +232,10 @@ class _SearchPageScaffoldState<T extends Post>
               focusNode: focus,
               autofocus: false,
               queryEditingController: textController,
-              onSubmitted: (value) => searchController.submit(value),
+              onSubmitted: (value) {
+                searchController.submit(value);
+                textController.clear();
+              },
               leading: widget.searchBarLeading ??
                   (!context.canPop() ? null : const SearchAppBarBackButton()),
               innerSearchButton: value.text.isEmpty

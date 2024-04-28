@@ -17,6 +17,7 @@ import 'package:boorusama/core/pages/search/search_button.dart';
 import 'package:boorusama/core/pages/search/search_landing_view.dart';
 import 'package:boorusama/core/pages/search/selected_tag_list_with_data.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
 import 'widgets/search/result_view.dart';
@@ -168,7 +169,8 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
                                     onOptionTap: (value) {
                                       searchController.tapRawMetaTag(value);
                                       focus.requestFocus();
-                                      _onTextChanged(controller, '$value:');
+                                      controller.setTextAndCollapseSelection(
+                                          '$value:');
                                     },
                                   ),
                                 ),
@@ -299,7 +301,7 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
                           onOptionTap: (value) {
                             searchController.tapRawMetaTag(value);
                             focus.requestFocus();
-                            _onTextChanged(controller, '$value:');
+                            controller.setTextAndCollapseSelection('$value:');
                             context.pop();
                           },
                         ),
@@ -315,13 +317,4 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
       },
     );
   }
-}
-
-void _onTextChanged(
-  TextEditingController controller,
-  String text,
-) {
-  controller
-    ..text = text
-    ..selection = TextSelection.collapsed(offset: controller.text.length);
 }

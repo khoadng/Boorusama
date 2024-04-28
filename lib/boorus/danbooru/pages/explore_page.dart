@@ -10,6 +10,8 @@ import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/settings/types.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
@@ -42,17 +44,20 @@ class ExplorePage extends ConsumerWidget {
                 useAppBarPadding ? MediaQuery.viewPaddingOf(context).top : 0,
           ),
           SliverToBoxAdapter(
-              child: _PopularExplore(
-            onPressed: () => goToExplorePopularPage(context),
-          )),
+            child: _PopularExplore(
+              onPressed: () => goToExplorePopularPage(context),
+            ),
+          ),
           SliverToBoxAdapter(
-              child: _HotExplore(
-            onPressed: () => goToExploreHotPage(context),
-          )),
+            child: _HotExplore(
+              onPressed: () => goToExploreHotPage(context),
+            ),
+          ),
           SliverToBoxAdapter(
-              child: _MostViewedExplore(
-            onPressed: () => goToExploreMostViewedPage(context),
-          )),
+            child: _MostViewedExplore(
+              onPressed: () => goToExploreMostViewedPage(context),
+            ),
+          ),
           const SliverSizedBox(height: kBottomNavigationBarHeight + 20),
         ],
       ),
@@ -144,15 +149,13 @@ class _MostViewedExplore extends ConsumerStatefulWidget {
 class _MostViewedExploreState extends ConsumerState<_MostViewedExplore> {
   @override
   Widget build(BuildContext context) {
-    final postAsync = ref.watch(danbooruMostViewedTodayProvider);
-
     return ExploreSection(
       title: 'explore.most_viewed'.tr(),
-      builder: (_) => postAsync.maybeWhen(
-        data: (posts) => ExploreList(posts: posts),
-        orElse: () => const ExploreList(posts: []),
-      ),
-      onPressed: () => widget.onPressed(),
+      builder: (_) => ref.watch(danbooruMostViewedTodayProvider).maybeWhen(
+            data: (posts) => ExploreList(posts: posts),
+            orElse: () => const ExploreList(posts: []),
+          ),
+      onPressed: widget.onPressed,
     );
   }
 }
@@ -171,15 +174,13 @@ class _HotExplore extends ConsumerStatefulWidget {
 class _HotExploreState extends ConsumerState<_HotExplore> {
   @override
   Widget build(BuildContext context) {
-    final posts = ref.watch(danbooruHotTodayProvider);
-
     return ExploreSection(
       title: 'explore.hot'.tr(),
-      builder: (_) => posts.maybeWhen(
-        data: (posts) => ExploreList(posts: posts),
-        orElse: () => const ExploreList(posts: []),
-      ),
-      onPressed: () => widget.onPressed(),
+      builder: (_) => ref.watch(danbooruHotTodayProvider).maybeWhen(
+            data: (posts) => ExploreList(posts: posts),
+            orElse: () => const ExploreList(posts: []),
+          ),
+      onPressed: widget.onPressed,
     );
   }
 }
@@ -198,15 +199,13 @@ class _PopularExplore extends ConsumerStatefulWidget {
 class _PopularExploreState extends ConsumerState<_PopularExplore> {
   @override
   Widget build(BuildContext context) {
-    final postAsync = ref.watch(danbooruPopularTodayProvider);
-
     return ExploreSection(
       title: 'explore.popular'.tr(),
-      builder: (_) => postAsync.maybeWhen(
-        data: (posts) => ExploreList(posts: posts),
-        orElse: () => const ExploreList(posts: []),
-      ),
-      onPressed: () => widget.onPressed(),
+      builder: (_) => ref.watch(danbooruPopularTodayProvider).maybeWhen(
+            data: (posts) => ExploreList(posts: posts),
+            orElse: () => const ExploreList(posts: []),
+          ),
+      onPressed: widget.onPressed,
     );
   }
 }
@@ -236,51 +235,58 @@ class ExploreList extends ConsumerWidget {
               itemBuilder: (context, index) {
                 final post = filteredPosts[index];
 
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 2),
-                  child: GestureDetector(
-                    onTap: () => goToPostDetailsPage(
-                      context: context,
-                      posts: posts,
-                      initialIndex: index,
-                    ),
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        BooruImage(
-                          aspectRatio: post.aspectRatio,
-                          imageUrl: post.url720x720,
-                          placeholderUrl: post.thumbnailImageUrl,
-                        ),
-                        if (post.isAnimated)
+                return ExplicitContentBlockOverlay(
+                  block: ref.watch(settingsProvider
+                          .select((value) => value.blurExplicitMedia)) &&
+                      post.isExplicit,
+                  width: post.width,
+                  height: post.height,
+                  childBuilder: (block) => Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 2),
+                    child: GestureDetector(
+                      onTap: () => goToPostDetailsPage(
+                        context: context,
+                        posts: filteredPosts,
+                        initialIndex: index,
+                      ),
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          BooruImage(
+                            aspectRatio: post.aspectRatio,
+                            imageUrl: block ? '' : post.url720x720,
+                            placeholderUrl: block ? '' : post.thumbnailImageUrl,
+                          ),
+                          if (post.isAnimated)
+                            Positioned(
+                              top: 5,
+                              left: 5,
+                              child: VideoPlayDurationIcon(
+                                duration: post.duration,
+                                hasSound: post.hasSound,
+                              ),
+                            ),
+                          Positioned.fill(
+                            child: ShadowGradientOverlay(
+                              alignment: Alignment.bottomCenter,
+                              colors: [
+                                const Color(0xC2000000),
+                                Colors.black12.withOpacity(0),
+                              ],
+                            ),
+                          ),
                           Positioned(
-                            top: 5,
                             left: 5,
-                            child: VideoPlayDurationIcon(
-                              duration: post.duration,
-                              hasSound: post.hasSound,
+                            bottom: 1,
+                            child: Text(
+                              '${index + 1}',
+                              style: context.textTheme.displayMedium?.copyWith(
+                                color: Colors.white,
+                              ),
                             ),
                           ),
-                        Positioned.fill(
-                          child: ShadowGradientOverlay(
-                            alignment: Alignment.bottomCenter,
-                            colors: [
-                              const Color(0xC2000000),
-                              Colors.black12.withOpacity(0),
-                            ],
-                          ),
-                        ),
-                        Positioned(
-                          left: 5,
-                          bottom: 1,
-                          child: Text(
-                            '${index + 1}',
-                            style: context.textTheme.displayMedium?.copyWith(
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 );

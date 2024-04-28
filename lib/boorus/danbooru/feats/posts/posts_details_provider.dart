@@ -10,52 +10,25 @@ import 'package:boorusama/core/feats/posts/posts.dart';
 
 final danbooruPostDetailsArtistProvider = FutureProvider.family
     .autoDispose<List<DanbooruPost>, String>((ref, tag) async {
-  final config = ref.watchConfig;
-  final repo = ref.watch(danbooruArtistCharacterPostRepoProvider(config));
-  final blacklistedTags = ref.watch(blacklistTagsProvider(config));
-
-  final posts = await repo.getPosts([tag], 1).run().then(
-        (value) => value.fold(
-          (l) => <DanbooruPost>[],
-          (r) => r,
-        ),
+  return ref
+      .watch(danbooruArtistCharacterPostRepoProvider(ref.watchConfig))
+      .getPostsFromTagWithBlacklist(
+        tag: tag,
+        blacklist: ref.watch(blacklistTagsProvider(ref.watchConfig)),
       );
-
-  return filterTags(
-    posts.take(30).where((e) => !e.isFlash).toList(),
-    blacklistedTags,
-  );
-});
-
-final danbooruPostDetailsCharacterProvider = FutureProvider.family
-    .autoDispose<List<DanbooruPost>, String>((ref, tag) async {
-  final config = ref.watchConfig;
-  final repo = ref.watch(danbooruArtistCharacterPostRepoProvider(config));
-  final blacklistedTags = ref.watch(blacklistTagsProvider(config));
-
-  final posts = await repo.getPostsFromTagsOrEmpty([tag], 1);
-
-  return filterTags(
-    posts.take(30).toList().where((e) => !e.isFlash).toList(),
-    blacklistedTags,
-  );
 });
 
 final danbooruPostDetailsChildrenProvider = FutureProvider.family
     .autoDispose<List<DanbooruPost>, DanbooruPost>((ref, post) async {
   if (!post.hasParentOrChildren) return [];
-  final config = ref.watchConfig;
-  final repo = ref.watch(danbooruPostRepoProvider(config));
 
-  final posts = await repo
-      .getPosts(
-        [post.hasParent ? 'parent:${post.parentId}' : 'parent:${post.id}'],
-        1,
-      )
-      .run()
-      .then((value) => value.fold((l) => <DanbooruPost>[], (r) => r));
-
-  return posts;
+  return ref
+      .watch(danbooruPostRepoProvider(ref.watchConfig))
+      .getPostsFromTagWithBlacklist(
+        tag: post.hasParent ? 'parent:${post.parentId}' : 'parent:${post.id}',
+        blacklist: ref.watch(blacklistTagsProvider(ref.watchConfig)),
+        softLimit: null,
+      );
 });
 
 final danbooruPostDetailsPoolsProvider =

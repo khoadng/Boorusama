@@ -27,10 +27,8 @@ class TagInfoService {
 
       return TagInfoService(
         metatags: metatags
-            .map((t) => Metatag(
+            .map((t) => Metatag.simple(
                   name: t,
-                  description: '',
-                  example: '',
                   isFree: freeMetatags.contains(t),
                 ))
             .toSet(),

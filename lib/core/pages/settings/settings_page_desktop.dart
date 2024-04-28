@@ -9,6 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/pages/settings/accessibility_page.dart';
 import 'package:boorusama/core/pages/settings/appearance_page.dart';
 import 'package:boorusama/core/pages/settings/backup_and_restore_page.dart';
 import 'package:boorusama/core/pages/settings/data_and_storage_page.dart';
@@ -152,7 +153,8 @@ class _LargeLayoutState extends ConsumerState<_LargeLayout> {
                         index == 7 ? context.colorScheme.onSecondary : null,
                     tileColor:
                         index == 7 ? context.colorScheme.secondary : null,
-                    title: const Text('settings.privacy.privacy').tr(),
+                    title:
+                        const Text('settings.accessibility.accessibility').tr(),
                     onTap: () => currentTab.value = 7,
                   ),
                   ListTile(
@@ -160,8 +162,16 @@ class _LargeLayoutState extends ConsumerState<_LargeLayout> {
                         index == 8 ? context.colorScheme.onSecondary : null,
                     tileColor:
                         index == 8 ? context.colorScheme.secondary : null,
-                    title: const Text('settings.debug_logs.debug_logs').tr(),
+                    title: const Text('settings.privacy.privacy').tr(),
                     onTap: () => currentTab.value = 8,
+                  ),
+                  ListTile(
+                    textColor:
+                        index == 9 ? context.colorScheme.onSecondary : null,
+                    tileColor:
+                        index == 9 ? context.colorScheme.secondary : null,
+                    title: const Text('settings.debug_logs.debug_logs').tr(),
+                    onTap: () => currentTab.value = 9,
                   ),
                   const Divider(
                     thickness: 0.8,
@@ -225,6 +235,9 @@ class _LargeLayoutState extends ConsumerState<_LargeLayout> {
                     hasAppBar: false,
                   ),
                   SearchSettingsPage(
+                    hasAppBar: false,
+                  ),
+                  AccessibilityPage(
                     hasAppBar: false,
                   ),
                   PrivacyPage(

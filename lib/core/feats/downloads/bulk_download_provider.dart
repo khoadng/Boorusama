@@ -70,16 +70,6 @@ final bulkDownloaderManagerProvider =
 
 final bulkDownloadManagerStatusProvider =
     StateProvider<BulkDownloadManagerStatus>((ref) {
-  ref.listen(
-    bulkDownloadSelectedTagsProvider,
-    (previous, next) {
-      if (previous == null) return;
-      if (previous.isEmpty && next.isNotEmpty) {
-        ref.controller.state = BulkDownloadManagerStatus.dataSelected;
-      }
-    },
-  );
-
   return BulkDownloadManagerStatus.initial;
 });
 

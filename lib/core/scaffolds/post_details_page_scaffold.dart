@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:exprollable_page_view/exprollable_page_view.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -38,6 +39,7 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     this.imageOverlayBuilder,
     this.artistInfoBuilder,
     this.onPageChanged,
+    this.onPageChangeIndexed,
     this.sliverRelatedPostsBuilder,
     this.commentsBuilder,
     this.poolTileBuilder,
@@ -52,6 +54,7 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   final void Function(String tag) onTagTap;
   final void Function(T post)? onExpanded;
   final void Function(T post)? onPageChanged;
+  final void Function(int index)? onPageChangeIndexed;
   final String Function(T post) swipeImageUrlBuilder;
   final String? Function(T post, int currentPage)? placeholderImageUrlBuilder;
   final Widget Function(BuildContext context, T post)? toolbarBuilder;
@@ -133,6 +136,7 @@ class _PostDetailPageScaffoldState<T extends Post>
           onExit: widget.onExit,
           onPageChanged: (page) {
             onSwiped(page);
+            widget.onPageChangeIndexed?.call(page);
             widget.onPageChanged?.call(posts[page]);
           },
           onSwipeDownEnd: booruBuilder?.canHandlePostGesture(
@@ -159,7 +163,11 @@ class _PostDetailPageScaffoldState<T extends Post>
                       builder: (context, soundOn) => BooruVideoProgressBar(
                         soundOn: soundOn,
                         progress: progress,
+                        playbackSpeed:
+                            ref.watchPlaybackSpeed(posts[page].videoUrl),
                         onSeek: (position) => onVideoSeekTo(position, page),
+                        onSpeedChanged: (speed) =>
+                            ref.setPlaybackSpeed(posts[page].videoUrl, speed),
                         onSoundToggle: (value) =>
                             ref.setGlobalVideoSound(value),
                       ),
@@ -272,6 +280,7 @@ class _PostDetailPageScaffoldState<T extends Post>
     Widget? sharedChild,
   ) {
     final post = posts[page];
+    final nextPost = posts.length > page + 1 ? posts[page + 1] : null;
     final expandedOnCurrentPage = expanded && page == currentPage;
     final media = PostMedia(
       inFocus: !expanded && page == currentPage,
@@ -322,6 +331,18 @@ class _PostDetailPageScaffoldState<T extends Post>
     );
 
     return [
+      // preload next image only, not the post itself
+      if (nextPost != null && !nextPost.isVideo)
+        Offstage(
+          offstage: true,
+          child: ExtendedImage.network(
+            widget.swipeImageUrlBuilder(nextPost),
+            width: 1,
+            height: 1,
+            cacheHeight: 10,
+            cacheWidth: 10,
+          ),
+        ),
       if (!expandedOnCurrentPage)
         SizedBox(
           height: context.screenHeight - MediaQuery.viewPaddingOf(context).top,

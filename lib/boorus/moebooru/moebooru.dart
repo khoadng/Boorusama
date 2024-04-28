@@ -15,6 +15,7 @@ import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
+import 'package:boorusama/core/widgets/posts/post_details_page_mixin.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/functional.dart';
@@ -132,17 +133,22 @@ class MoebooruBuilder
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) => payload.isDesktop
-          ? MoebooruPostDetailsDesktopPage(
-              posts: payload.posts,
-              onExit: (page) => payload.scrollController?.scrollToIndex(page),
-              initialIndex: payload.initialIndex,
-            )
-          : MoebooruPostDetailsPage(
+      (context, config, payload) => PostDetailsLayoutSwitcher(
+            initialIndex: payload.initialIndex,
+            scrollController: payload.scrollController,
+            desktop: (controller) => MoebooruPostDetailsDesktopPage(
+              initialIndex: controller.currentPage.value,
               posts: payload.posts.map((e) => e as MoebooruPost).toList(),
-              onExit: (page) => payload.scrollController?.scrollToIndex(page),
-              initialPage: payload.initialIndex,
-            );
+              onExit: (page) => controller.onExit(page),
+              onPageChanged: (page) => controller.setPage(page),
+            ),
+            mobile: (controller) => MoebooruPostDetailsPage(
+              initialPage: controller.currentPage.value,
+              posts: payload.posts.map((e) => e as MoebooruPost).toList(),
+              onExit: (page) => controller.onExit(page),
+              onPageChanged: (page) => controller.setPage(page),
+            ),
+          );
 
   @override
   DownloadFilenameGenerator get downloadFilenameBuilder =>

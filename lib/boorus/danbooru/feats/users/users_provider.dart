@@ -110,7 +110,6 @@ final danbooruUserFavoritesProvider = FutureProvider.autoDispose
     [
       buildFavoriteQuery(user.name),
     ],
-    1,
     limit: 50,
   );
 

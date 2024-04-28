@@ -21,7 +21,9 @@ class BooruVideo extends StatefulWidget {
     this.autoPlay = false,
     this.onVideoPlayerCreated,
     this.sound = true,
+    this.speed = 1.0,
     this.onZoomUpdated,
+    this.customControlsBuilder,
   });
 
   final String url;
@@ -32,7 +34,9 @@ class BooruVideo extends StatefulWidget {
   final void Function(VideoPlayerController controller)? onVideoPlayerCreated;
   final bool autoPlay;
   final bool sound;
+  final double speed;
   final void Function(bool value)? onZoomUpdated;
+  final Widget? Function()? customControlsBuilder;
 
   @override
   State<BooruVideo> createState() => _BooruVideoState();
@@ -56,9 +60,11 @@ class _BooruVideoState extends State<BooruVideo> {
       videoPlayerController: _videoPlayerController,
       aspectRatio: widget.aspectRatio,
       autoPlay: widget.autoPlay,
-      customControls: MaterialDesktopControls(
-        onVisibilityChanged: widget.onVisibilityChanged,
-      ),
+      customControls: widget.customControlsBuilder != null
+          ? widget.customControlsBuilder!()
+          : MaterialDesktopControls(
+              onVisibilityChanged: widget.onVisibilityChanged,
+            ),
       looping: true,
       autoInitialize: true,
       showControlsOnInitialize: false,
@@ -67,6 +73,7 @@ class _BooruVideoState extends State<BooruVideo> {
     widget.onVideoPlayerCreated?.call(_videoPlayerController);
 
     _videoPlayerController.setVolume(widget.sound ? 1 : 0);
+    _videoPlayerController.setPlaybackSpeed(widget.speed);
 
     transformationController.addListener(() {
       final clampedMatrix = Matrix4.diagonal3Values(
@@ -113,6 +120,10 @@ class _BooruVideoState extends State<BooruVideo> {
 
     if (widget.sound != oldWidget.sound) {
       _videoPlayerController.setVolume(widget.sound ? 1 : 0);
+    }
+
+    if (widget.speed != oldWidget.speed) {
+      _videoPlayerController.setPlaybackSpeed(widget.speed);
     }
   }
 

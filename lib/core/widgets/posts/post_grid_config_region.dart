@@ -83,6 +83,9 @@ class PostGridConfigRegion extends ConsumerWidget {
                         elevation: 0,
                         shadowColor: Colors.transparent,
                         child: InkWell(
+                          customBorder: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
                           onTap: () {
                             ref
                                     .read(postGridSideBarVisibleProvider.notifier)
@@ -94,10 +97,10 @@ class PostGridConfigRegion extends ConsumerWidget {
                           },
                           child: Container(
                             margin: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 4,
+                              horizontal: 6,
+                              vertical: 6,
                             ),
-                            width: 2,
+                            width: 3,
                             height: 32,
                             decoration: BoxDecoration(
                               color: Theme.of(context).dividerColor,
