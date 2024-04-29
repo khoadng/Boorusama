@@ -198,6 +198,10 @@ class GelbooruV2Builder
   Map<String, Set<String>> get metatags => gelbooruV2Metatags;
 
   @override
+  List<AutocompleteSubOption> Function(String value) get subOptionsBuilder =>
+      (token) => token == 'sort' ? gelbooruSortMetatagSubOptions : [];
+
+  @override
   AutocompleteFetcher get baseAutocompleteFetcher =>
       (query) => autocompleteRepo.getAutocomplete(query);
 
@@ -327,14 +331,16 @@ class GelbooruV2SearchPage extends ConsumerWidget {
       ),
       fetcher: (page, tags) =>
           ref.watch(gelbooruV2PostRepoProvider(config)).getPosts(tags, page),
-      metatagsBuilder: (context, searchController, focus, textController) =>
-          BooruMetatagsSection(
+      metatagsBuilder:
+          (context, searchController, focus, textController, popOnTap) =>
+              BooruMetatagsSection(
         metatags: gelbooruV2Metatags.keys
             .map((e) => Metatag.simple(name: e))
             .toList(),
         searchController: searchController,
         focus: focus,
         textController: textController,
+        popOnTap: popOnTap,
       ),
     );
   }

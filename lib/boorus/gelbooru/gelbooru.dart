@@ -146,6 +146,15 @@ final gelbooruMetatags = {
       .toSet(),
 };
 
+final gelbooruSortMetatagSubOptions = ['asc', 'desc']
+    .map(
+      (e) => AutocompleteSubOption(
+        value: e,
+        queryBuildType: AutocompleteSubOptionQueryBuildType.appendWithColon,
+      ),
+    )
+    .toList();
+
 class GelbooruBuilder
     with
         FavoriteNotSupportedMixin,
@@ -214,6 +223,10 @@ class GelbooruBuilder
 
   @override
   Map<String, Set<String>> get metatags => gelbooruMetatags;
+
+  @override
+  List<AutocompleteSubOption> Function(String value) get subOptionsBuilder =>
+      (token) => token == 'sort' ? gelbooruSortMetatagSubOptions : [];
 
   @override
   AutocompleteFetcher get baseAutocompleteFetcher =>
@@ -359,13 +372,15 @@ class GelbooruSearchPage extends ConsumerWidget {
       ),
       fetcher: (page, tags) =>
           ref.watch(gelbooruPostRepoProvider(config)).getPosts(tags, page),
-      metatagsBuilder: (context, searchController, focus, textController) =>
-          BooruMetatagsSection(
+      metatagsBuilder:
+          (context, searchController, focus, textController, popOnTap) =>
+              BooruMetatagsSection(
         metatags:
             gelbooruMetatags.keys.map((e) => Metatag.simple(name: e)).toList(),
         searchController: searchController,
         focus: focus,
         textController: textController,
+        popOnTap: popOnTap,
       ),
     );
   }

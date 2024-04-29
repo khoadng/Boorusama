@@ -17,6 +17,8 @@ class AutocompleteData extends Equatable {
     this.postCount,
     this.level,
     this.antecedent,
+    this.subOptions,
+    this.forceChooseSubOption = false,
   });
 
   final String? type;
@@ -26,6 +28,11 @@ class AutocompleteData extends Equatable {
   final PostCount? postCount;
   final AutocompleteAntecedent? antecedent;
   final String? level;
+
+  // This is used for custom autocomplete options
+  final List<AutocompleteSubOption>? subOptions;
+  final bool forceChooseSubOption;
+  bool get hasSubOptions => subOptions != null && subOptions!.isNotEmpty;
 
   bool get hasAlias => antecedent != null;
   bool get hasCount => postCount != null;
@@ -89,4 +96,43 @@ class AutocompleteData extends Equatable {
   @override
   List<Object?> get props =>
       [label, value, type, category, postCount, level, antecedent];
+}
+
+class AutocompleteSubOption extends Equatable {
+  final String value;
+  final AutocompleteSubOptionQueryBuildType queryBuildType;
+
+  const AutocompleteSubOption({
+    required this.value,
+    required this.queryBuildType,
+  });
+
+  @override
+  List<Object?> get props => [value, queryBuildType];
+}
+
+extension AutocompleteSubOptionX on AutocompleteSubOption {
+  String resolveQuery(String query) => switch (queryBuildType) {
+        AutocompleteSubOptionQueryBuildType.appendWithColon => '$query:$value'
+      };
+}
+
+extension AutocompleteDataX on AutocompleteData {
+  AutocompleteData overrideWithSubOptions(AutocompleteSubOption subOption) {
+    return AutocompleteData(
+      label: subOption.resolveQuery(value),
+      value: subOption.resolveQuery(value),
+      type: type,
+      category: category,
+      postCount: postCount,
+      level: level,
+      antecedent: antecedent,
+      subOptions: null, // clear subOptions
+      forceChooseSubOption: false,
+    );
+  }
+}
+
+enum AutocompleteSubOptionQueryBuildType {
+  appendWithColon,
 }

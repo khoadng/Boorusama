@@ -56,6 +56,7 @@ class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     SearchPageController searchController,
     FocusNode focus,
     TextEditingController textController,
+    bool popOnTap,
   )? metatagsBuilder;
 
   @override
@@ -183,6 +184,7 @@ class _SearchPageScaffoldState<T extends Post>
                                               searchController,
                                               focus,
                                               textController,
+                                              false,
                                             )
                                         : null,
                                   ),
@@ -279,6 +281,7 @@ class _SearchPageScaffoldState<T extends Post>
               trailingSearchButton: IconButton(
                 onPressed: () => showBarModalBottomSheet(
                   context: context,
+                  duration: const Duration(milliseconds: 300),
                   builder: (context) => Scaffold(
                     body: SafeArea(
                       child: SearchLandingView(
@@ -297,6 +300,15 @@ class _SearchPageScaffoldState<T extends Post>
                           searchController.tapTag(value);
                           context.pop();
                         },
+                        metatagsBuilder: widget.metatagsBuilder != null
+                            ? (context) => widget.metatagsBuilder!(
+                                  context,
+                                  searchController,
+                                  focus,
+                                  textController,
+                                  true,
+                                )
+                            : null,
                       ),
                     ),
                   ),
@@ -347,6 +359,7 @@ class BooruMetatagsSection extends StatelessWidget {
     required this.searchController,
     required this.focus,
     required this.textController,
+    required this.popOnTap,
   });
 
   final List<Metatag> metatags;
@@ -354,12 +367,16 @@ class BooruMetatagsSection extends StatelessWidget {
   final SearchPageController searchController;
   final FocusNode focus;
   final TextEditingController textController;
+  final bool popOnTap;
 
   @override
   Widget build(BuildContext context) {
     return MetatagsSectionReadonly(
       metatags: metatags,
       onOptionTap: (value) {
+        if (popOnTap) {
+          context.pop();
+        }
         searchController.tapRawMetaTag(value);
         focus.requestFocus();
         textController.setTextAndCollapseSelection('$value:');

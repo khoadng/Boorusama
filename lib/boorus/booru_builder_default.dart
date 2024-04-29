@@ -329,36 +329,38 @@ Widget Function(
       ImageQuickActionType.defaultAction => null,
     };
 
-
 mixin DefaultCustomMetatagInterceptorMixin on BooruBuilder {
-AutocompleteFetcher customMetatagInterceptor({
-  required AutocompleteFetcher fetcher,
-  required Map<String, Set<String>> metatags,
-}) =>
-    (query) {
-      // if query ends with ':', it means it's a metatag, use custom metatags autocomplete instead
-      if (query.endsWith(':')) {
-        final key = query.substring(0, query.length - 1);
-        if (metatags.containsKey(key)) {
-          return Future.value(
-            metatags[key]!
-                .map((e) => '$key:$e')
-                .map((e) => AutocompleteData(
-                      type: key,
-                      label: e.replaceAll('$key:', ''),
-                      value: e,
-                    ))
-                .toList(),
-          );
+  AutocompleteFetcher customMetatagInterceptor({
+    required AutocompleteFetcher fetcher,
+    required Map<String, Set<String>> metatags,
+  }) =>
+      (query) {
+        // if query ends with ':', it means it's a metatag, use custom metatags autocomplete instead
+        if (query.endsWith(':')) {
+          final key = query.substring(0, query.length - 1);
+          if (metatags.containsKey(key)) {
+            return Future.value(
+              metatags[key]!
+                  .map((e) => '$key:$e')
+                  .map((e) => AutocompleteData(
+                        type: key,
+                        label: e.replaceAll('$key:', ''),
+                        value: e,
+                        subOptions: subOptionsBuilder(key),
+                      ))
+                  .toList(),
+            );
+          }
         }
-      }
 
-      return fetcher(query);
-    };
+        return fetcher(query);
+      };
 
-    Map<String, Set<String>> get metatags;
+  Map<String, Set<String>> get metatags;
 
-    AutocompleteFetcher get baseAutocompleteFetcher;
+  List<AutocompleteSubOption> Function(String value) get subOptionsBuilder;
+
+  AutocompleteFetcher get baseAutocompleteFetcher;
 
   @override
   AutocompleteFetcher get autocompleteFetcher => customMetatagInterceptor(

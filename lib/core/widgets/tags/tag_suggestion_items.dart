@@ -45,7 +45,9 @@ class TagSuggestionItems extends ConsumerWidget {
             final tag = _tags[index];
 
             return InkWell(
-              onTap: () => onItemTap(tag),
+              onTap: tag.forceChooseSubOption && tag.hasSubOptions
+                  ? null
+                  : () => onItemTap(tag),
               child: Container(
                 padding: EdgeInsets.symmetric(
                   horizontal: 8,
@@ -60,6 +62,28 @@ class TagSuggestionItems extends ConsumerWidget {
                         textColorBuilder?.call(tag),
                       ),
                     ),
+                    tag.hasSubOptions
+                        ? Wrap(
+                            spacing: 4,
+                            children: tag.subOptions!
+                                .map(
+                                  (e) => ActionChip(
+                                    visualDensity: VisualDensity.compact,
+                                    side: BorderSide(
+                                      color: context.theme.hintColor
+                                          .withOpacity(0.2),
+                                    ),
+                                    onPressed: () => onItemTap(
+                                      tag.overrideWithSubOptions(e),
+                                    ),
+                                    label: Text(
+                                      e.value,
+                                    ),
+                                  ),
+                                )
+                                .toList(),
+                          )
+                        : const SizedBox(),
                     if (tag.hasCount && !ref.watchConfig.hasStrictSFW)
                       Container(
                         constraints: const BoxConstraints(maxWidth: 100),
