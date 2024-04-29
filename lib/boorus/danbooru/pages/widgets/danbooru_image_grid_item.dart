@@ -26,6 +26,7 @@ class DanbooruImageGridItem extends ConsumerWidget {
     required this.enableFav,
     this.onTap,
     required this.image,
+    this.ignoreBanOverlay = false,
   });
 
   final DanbooruPost post;
@@ -34,6 +35,7 @@ class DanbooruImageGridItem extends ConsumerWidget {
   final VoidCallback? onTap;
   final bool enableFav;
   final Widget image;
+  final bool ignoreBanOverlay;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -43,7 +45,7 @@ class DanbooruImageGridItem extends ConsumerWidget {
     final settings = ref.watch(settingsProvider);
 
     return ConditionalParentWidget(
-      condition: post.isBanned,
+      condition: !ignoreBanOverlay && post.isBanned,
       conditionalBuilder: (child) => Stack(
         children: [
           child,
@@ -68,7 +70,7 @@ class DanbooruImageGridItem extends ConsumerWidget {
                       const SizedBox(width: 4),
                       const AutoSizeText(
                         maxLines: 1,
-                        'Banned artist',
+                        'Banned post',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                         ),
@@ -107,6 +109,9 @@ class DanbooruImageGridItem extends ConsumerWidget {
         ],
       ),
       child: ImageGridItem(
+        borderRadius: BorderRadius.circular(
+          settings.imageBorderRadius,
+        ),
         isGif: post.isGif,
         isAI: post.isAI,
         hideOverlay: hideOverlay,

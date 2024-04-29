@@ -24,25 +24,27 @@ class OptionDropDownButton<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       color: backgroundColor ?? Theme.of(context).colorScheme.surfaceVariant,
-      child: Padding(
-        padding: const EdgeInsets.all(8),
-        child: DropdownButtonHideUnderline(
-          child: DropdownButton(
-            dropdownColor: Theme.of(context).colorScheme.surfaceVariant,
-            alignment: alignment,
-            isDense: true,
-            value: value,
-            icon: Padding(
-              padding: const EdgeInsets.only(left: 5, top: 2),
-              child: Icon(
-                Symbols.keyboard_arrow_down,
-                size: 16,
-                color: Theme.of(context).iconTheme.color,
-              ),
-            ),
-            onChanged: onChanged,
-            items: items,
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton(
+          dropdownColor: Theme.of(context).colorScheme.surfaceVariant,
+          alignment: alignment,
+          isDense: true,
+          value: value,
+          borderRadius: BorderRadius.circular(8),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 8,
+            vertical: 8,
           ),
+          icon: Padding(
+            padding: const EdgeInsets.only(left: 4),
+            child: Icon(
+              Symbols.keyboard_arrow_down,
+              size: 20,
+              color: Theme.of(context).iconTheme.color,
+            ),
+          ),
+          onChanged: onChanged,
+          items: items,
         ),
       ),
     );

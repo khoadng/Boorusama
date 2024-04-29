@@ -80,6 +80,11 @@ enum BooruConfigLabelVisibility {
   never,
 }
 
+enum MediaBlurCondition {
+  none,
+  explicitOnly,
+}
+
 class Settings extends Equatable {
   const Settings({
     required this.safeMode,
@@ -115,6 +120,7 @@ class Settings extends Equatable {
     required this.booruConfigSelectorScrollDirection,
     required this.swipeAreaToOpenSidebarPercentage,
     required this.booruConfigLabelVisibility,
+    required this.mediaBlurCondition,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
@@ -187,6 +193,9 @@ class Settings extends Equatable {
             ? BooruConfigLabelVisibility
                 .values[json['booruConfigLabelVisibility']]
             : BooruConfigLabelVisibility.always,
+        mediaBlurCondition = json['mediaBlurCondition'] != null
+            ? MediaBlurCondition.values[json['mediaBlurCondition']]
+            : MediaBlurCondition.none,
         swipeAreaToOpenSidebarPercentage =
             json['swipeAreaToOpenSidebarPercentage'] ?? 5,
         imageGridAspectRatio = json['imageGridAspectRatio'] ?? 0.7,
@@ -227,6 +236,7 @@ class Settings extends Equatable {
     booruConfigSelectorScrollDirection: BooruConfigScrollDirection.normal,
     swipeAreaToOpenSidebarPercentage: 5,
     booruConfigLabelVisibility: BooruConfigLabelVisibility.always,
+    mediaBlurCondition: MediaBlurCondition.none,
   );
 
   final String blacklistedTags;
@@ -287,6 +297,8 @@ class Settings extends Equatable {
 
   final BooruConfigLabelVisibility booruConfigLabelVisibility;
 
+  final MediaBlurCondition mediaBlurCondition;
+
   Settings copyWith({
     String? blacklistedTags,
     String? language,
@@ -322,6 +334,7 @@ class Settings extends Equatable {
     BooruConfigScrollDirection? booruConfigSelectorScrollDirection,
     int? swipeAreaToOpenSidebarPercentage,
     BooruConfigLabelVisibility? booruConfigLabelVisibility,
+    MediaBlurCondition? mediaBlurCondition,
   }) =>
       Settings(
         safeMode: safeMode ?? this.safeMode,
@@ -369,6 +382,7 @@ class Settings extends Equatable {
             this.swipeAreaToOpenSidebarPercentage,
         booruConfigLabelVisibility:
             booruConfigLabelVisibility ?? this.booruConfigLabelVisibility,
+        mediaBlurCondition: mediaBlurCondition ?? this.mediaBlurCondition,
       );
 
   Map<String, dynamic> toJson() => {
@@ -406,6 +420,7 @@ class Settings extends Equatable {
             booruConfigSelectorScrollDirection.index,
         'swipeAreaToOpenSidebarPercentage': swipeAreaToOpenSidebarPercentage,
         'booruConfigLabelVisibility': booruConfigLabelVisibility.index,
+        'mediaBlurCondition': mediaBlurCondition.index,
       };
 
   @override
@@ -443,6 +458,7 @@ class Settings extends Equatable {
         booruConfigSelectorScrollDirection,
         swipeAreaToOpenSidebarPercentage,
         booruConfigLabelVisibility,
+        mediaBlurCondition,
       ];
 }
 
@@ -459,6 +475,9 @@ extension SettingsX on Settings {
 
   bool get reverseBooruConfigSelectorScrollDirection =>
       booruConfigSelectorScrollDirection == BooruConfigScrollDirection.reversed;
+
+  bool get blurExplicitMedia =>
+      mediaBlurCondition == MediaBlurCondition.explicitOnly;
 }
 
 extension PageIndicatorPositionX on PageIndicatorPosition {

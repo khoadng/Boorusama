@@ -162,6 +162,14 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
               onChanged: (value) =>
                   ref.setPostListConfigHeaderStatus(active: value),
             ),
+            SwitchListTile(
+              title: const Text('Blur explicit content').tr(),
+              value: settings.blurExplicitMedia,
+              onChanged: (value) => ref.updateSettings(settings.copyWith(
+                  mediaBlurCondition: value
+                      ? MediaBlurCondition.explicitOnly
+                      : MediaBlurCondition.none)),
+            ),
             const SizedBox(height: 4),
             _buildSpacingSlider(settings),
             const SizedBox(height: 10),

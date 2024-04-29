@@ -162,17 +162,22 @@ class DanbooruBuilder
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) => payload.isDesktop
-          ? DanbooruPostDetailsDesktopPage(
-              initialIndex: payload.initialIndex,
+      (context, config, payload) => PostDetailsLayoutSwitcher(
+            initialIndex: payload.initialIndex,
+            scrollController: payload.scrollController,
+            desktop: (controller) => DanbooruPostDetailsDesktopPage(
+              initialIndex: controller.currentPage.value,
               posts: payload.posts.map((e) => e as DanbooruPost).toList(),
-              onExit: (page) => payload.scrollController?.scrollToIndex(page),
-            )
-          : DanbooruPostDetailsPage(
-              intitialIndex: payload.initialIndex,
+              onExit: (page) => controller.onExit(page),
+              onPageChanged: (page) => controller.setPage(page),
+            ),
+            mobile: (controller) => DanbooruPostDetailsPage(
+              intitialIndex: controller.currentPage.value,
               posts: payload.posts.map((e) => e as DanbooruPost).toList(),
-              onExit: (page) => payload.scrollController?.scrollToIndex(page),
-            );
+              onExit: (page) => controller.onExit(page),
+              onPageChanged: (page) => controller.setPage(page),
+            ),
+          );
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>

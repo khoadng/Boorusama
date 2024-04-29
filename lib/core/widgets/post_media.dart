@@ -11,6 +11,7 @@ import 'package:boorusama/core/feats/boorus/providers.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/video/videos_provider.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -74,6 +75,8 @@ class PostMedia extends ConsumerWidget {
                             onWebmVideoPlayerCreated: onWebmVideoPlayerCreated,
                             autoPlay: autoPlay,
                             sound: ref.isGlobalVideoSoundOn,
+                            playbackSpeed:
+                                ref.watchPlaybackSpeed(post.videoUrl),
                             userAgent: ref
                                 .watch(
                                     userAgentGeneratorProvider(ref.watchConfig))
@@ -89,34 +92,34 @@ class PostMedia extends ConsumerWidget {
                             autoPlay: autoPlay,
                             onVideoPlayerCreated: onVideoPlayerCreated,
                             sound: ref.isGlobalVideoSoundOn,
+                            speed: ref.watchPlaybackSpeed(post.videoUrl),
                             onZoomUpdated: onImageZoomUpdated,
                           )
-                    : Stack(
-                        children: [
-                          Positioned.fill(
-                            child: BooruImage(
-                              aspectRatio: post.aspectRatio,
-                              imageUrl: post.thumbnailImageUrl,
-                              placeholderUrl: post.thumbnailImageUrl,
-                            ),
-                          ),
-                          const Center(
-                            child: Card(
-                              child: Text(
-                                  'Cant play WEBM video on desktop for now'),
-                            ),
-                          ),
-                        ],
+                    : BooruVideo(
+                        url: post.videoUrl,
+                        aspectRatio: post.aspectRatio,
+                        onCurrentPositionChanged: onCurrentVideoPositionChanged,
+                        onVisibilityChanged: onVideoVisibilityChanged,
+                        autoPlay: autoPlay,
+                        onVideoPlayerCreated: onVideoPlayerCreated,
+                        sound: ref.isGlobalVideoSoundOn,
+                        speed: ref.watchPlaybackSpeed(post.videoUrl),
+                        onZoomUpdated: onImageZoomUpdated,
                       )
-                : BooruVideo(
-                    url: post.videoUrl,
-                    aspectRatio: post.aspectRatio,
-                    onCurrentPositionChanged: onCurrentVideoPositionChanged,
-                    onVisibilityChanged: onVideoVisibilityChanged,
-                    autoPlay: autoPlay,
-                    onVideoPlayerCreated: onVideoPlayerCreated,
-                    sound: ref.isGlobalVideoSoundOn,
-                    onZoomUpdated: onImageZoomUpdated,
+                : OrientationBuilder(
+                    builder: (context, orientation) => BooruVideo(
+                      url: post.videoUrl,
+                      aspectRatio: post.aspectRatio,
+                      onCurrentPositionChanged: onCurrentVideoPositionChanged,
+                      onVisibilityChanged: onVideoVisibilityChanged,
+                      autoPlay: autoPlay,
+                      onVideoPlayerCreated: onVideoPlayerCreated,
+                      sound: ref.isGlobalVideoSoundOn,
+                      speed: ref.watchPlaybackSpeed(post.videoUrl),
+                      onZoomUpdated: onImageZoomUpdated,
+                      customControlsBuilder:
+                          orientation.isPortrait ? null : () => null,
+                    ),
                   )
         : InteractiveBooruImage(
             useHero: useHero,

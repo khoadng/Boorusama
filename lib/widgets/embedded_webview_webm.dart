@@ -103,6 +103,11 @@ class WebmVideoController {
         .runJavaScript('document.getElementById("video").muted = $isMuted;');
   }
 
+  Future<void> setPlaybackSpeed(double speed) async {
+    await _webViewController.runJavaScript(
+        'document.getElementById("video").playbackRate = $speed;');
+  }
+
   Future<void> setAutoplay(bool autoplay) async {
     await _webViewController.runJavaScript(
         'document.getElementById("video").autoplay = $autoplay;');
@@ -161,6 +166,7 @@ class EmbeddedWebViewWebm extends StatefulWidget {
     this.onWebmVideoPlayerCreated,
     this.autoPlay = false,
     this.sound = true,
+    required this.playbackSpeed,
     this.userAgent,
     this.onZoomUpdated,
   });
@@ -173,6 +179,7 @@ class EmbeddedWebViewWebm extends StatefulWidget {
   final void Function(WebmVideoController controller)? onWebmVideoPlayerCreated;
   final bool autoPlay;
   final bool sound;
+  final double playbackSpeed;
   final String? userAgent;
   final void Function(bool value)? onZoomUpdated;
 
@@ -195,6 +202,10 @@ class _EmbeddedWebViewWebmState extends State<EmbeddedWebViewWebm> {
 
     if (oldWidget.sound != widget.sound) {
       webmVideoController.mute(!widget.sound);
+    }
+
+    if (oldWidget.playbackSpeed != widget.playbackSpeed) {
+      webmVideoController.setPlaybackSpeed(widget.playbackSpeed);
     }
   }
 

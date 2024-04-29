@@ -7,20 +7,17 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/entry_page.dart';
-import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
-import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/boorus/gelbooru_v2/gelbooru_v2.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/pages/home/side_menu_tile.dart';
 import 'package:boorusama/core/router.dart';
-import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
-import 'gelbooru_desktop_home_page.dart';
+import 'gelbooru_v2_desktop_home_page.dart';
+import 'gelbooru_v2_mobile_home_page.dart';
 
-class GelbooruHomePage extends ConsumerStatefulWidget {
-  const GelbooruHomePage({
+class GelbooruV2HomePage extends ConsumerStatefulWidget {
+  const GelbooruV2HomePage({
     super.key,
     required this.config,
   });
@@ -28,10 +25,10 @@ class GelbooruHomePage extends ConsumerStatefulWidget {
   final BooruConfig config;
 
   @override
-  ConsumerState<GelbooruHomePage> createState() => _GelbooruHomePageState();
+  ConsumerState<GelbooruV2HomePage> createState() => _GelbooruV2HomePageState();
 }
 
-class _GelbooruHomePageState extends ConsumerState<GelbooruHomePage> {
+class _GelbooruV2HomePageState extends ConsumerState<GelbooruV2HomePage> {
   @override
   Widget build(BuildContext context) {
     final favoritePageBuilder =
@@ -39,7 +36,7 @@ class _GelbooruHomePageState extends ConsumerState<GelbooruHomePage> {
 
     return BooruScope(
       config: widget.config,
-      mobileView: (controller) => _GelbooruMobileHomeView(
+      mobileView: (controller) => GelbooruV2MobileHomePage(
         controller: controller,
       ),
       mobileMenuBuilder: (context, controller) => [
@@ -81,9 +78,9 @@ class _GelbooruHomePageState extends ConsumerState<GelbooruHomePage> {
       ],
       desktopViews: () {
         final gelbooruTabs = [
-          const GelbooruDesktopHomePage(),
+          const GelbooruV2DesktopHomePage(),
           if (favoritePageBuilder != null && ref.watchConfig.hasLoginDetails())
-            GelbooruFavoritesPage(uid: ref.watchConfig.login!),
+            GelbooruV2FavoritesPage(uid: ref.watchConfig.login!),
         ];
 
         return [
@@ -93,42 +90,6 @@ class _GelbooruHomePageState extends ConsumerState<GelbooruHomePage> {
           ),
         ];
       },
-    );
-  }
-}
-
-class _GelbooruMobileHomeView extends ConsumerWidget {
-  const _GelbooruMobileHomeView({
-    required this.controller,
-  });
-
-  final HomePageController controller;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.readConfig;
-
-    return PostScope(
-      // Need to use generic repo here because this is used not only for Gelbooru
-      fetcher: (page) => ref.read(postRepoProvider(config)).getPosts([], page),
-      builder: (context, postController, errors) => InfinitePostListScaffold(
-        errors: errors,
-        controller: postController,
-        sliverHeaderBuilder: (context) => [
-          SliverAppBar(
-            backgroundColor: context.theme.scaffoldBackgroundColor,
-            toolbarHeight: kToolbarHeight * 1.2,
-            title: HomeSearchBar(
-              onMenuTap: controller.openMenu,
-              onTap: () => goToSearchPage(context),
-            ),
-            floating: true,
-            snap: true,
-            automaticallyImplyLeading: false,
-          ),
-          const SliverAppAnnouncementBanner(),
-        ],
-      ),
     );
   }
 }

@@ -27,16 +27,10 @@ final e621ArtistProvider =
 
 final e621ArtistPostsProvider = FutureProvider.autoDispose
     .family<List<E621Post>, String?>((ref, name) async {
-  if (name == null) return [];
-  final config = ref.watchConfig;
-
-  final blacklistedTags = ref.watch(blacklistTagsProvider(config));
-
-  final repo = ref.read(e621PostRepoProvider(config));
-  final posts = await repo.getPostsFromTagsOrEmpty([name], 1);
-
-  return filterTags(
-    posts.take(30).where((e) => !e.isFlash).toList(),
-    blacklistedTags,
-  );
+  return ref
+      .watch(e621PostRepoProvider(ref.watchConfig))
+      .getPostsFromTagWithBlacklist(
+        tag: name,
+        blacklist: ref.watch(blacklistTagsProvider(ref.watchConfig)),
+      );
 });

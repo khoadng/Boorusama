@@ -39,6 +39,7 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     this.imageOverlayBuilder,
     this.artistInfoBuilder,
     this.onPageChanged,
+    this.onPageChangeIndexed,
     this.sliverRelatedPostsBuilder,
     this.commentsBuilder,
     this.poolTileBuilder,
@@ -53,6 +54,7 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   final void Function(String tag) onTagTap;
   final void Function(T post)? onExpanded;
   final void Function(T post)? onPageChanged;
+  final void Function(int index)? onPageChangeIndexed;
   final String Function(T post) swipeImageUrlBuilder;
   final String? Function(T post, int currentPage)? placeholderImageUrlBuilder;
   final Widget Function(BuildContext context, T post)? toolbarBuilder;
@@ -134,6 +136,7 @@ class _PostDetailPageScaffoldState<T extends Post>
           onExit: widget.onExit,
           onPageChanged: (page) {
             onSwiped(page);
+            widget.onPageChangeIndexed?.call(page);
             widget.onPageChanged?.call(posts[page]);
           },
           onSwipeDownEnd: booruBuilder?.canHandlePostGesture(
@@ -160,7 +163,11 @@ class _PostDetailPageScaffoldState<T extends Post>
                       builder: (context, soundOn) => BooruVideoProgressBar(
                         soundOn: soundOn,
                         progress: progress,
+                        playbackSpeed:
+                            ref.watchPlaybackSpeed(posts[page].videoUrl),
                         onSeek: (position) => onVideoSeekTo(position, page),
+                        onSpeedChanged: (speed) =>
+                            ref.setPlaybackSpeed(posts[page].videoUrl, speed),
                         onSoundToggle: (value) =>
                             ref.setGlobalVideoSound(value),
                       ),

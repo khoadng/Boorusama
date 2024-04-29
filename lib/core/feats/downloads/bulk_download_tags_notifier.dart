@@ -7,6 +7,15 @@ import 'package:boorusama/core/feats/downloads/downloads.dart';
 class BulkDownloadTagsNotifier extends Notifier<List<String>> {
   @override
   List<String> build() {
+    ref.listenSelf(
+      (previous, next) {
+        if (previous == null) return;
+        if (previous.isEmpty && next.isNotEmpty) {
+          ref.read(bulkDownloadManagerStatusProvider.notifier).state =
+              BulkDownloadManagerStatus.dataSelected;
+        }
+      },
+    );
     return [];
   }
 

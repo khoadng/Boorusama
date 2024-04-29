@@ -25,7 +25,6 @@ import 'package:boorusama/core/pages/blacklists/blacklisted_tags_search_page.dar
 import 'package:boorusama/core/pages/search/simple_tag_search_view.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -107,7 +106,7 @@ void goToPostDetailsPage<T extends Post>({
       initialIndex: initialIndex,
       posts: posts,
       scrollController: scrollController,
-      isDesktop: !(isMobilePlatform() && context.orientation.isPortrait)
+      isDesktop: isDesktopPlatform(),
     ),
   );
 }

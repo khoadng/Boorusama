@@ -1,3 +1,10 @@
+# 3.15.0
+- Track download progress in notification
+- Add an option to blur explicit content when viewing posts
+- Allow playback speed adjustment for videos
+- Fix an issue where viewing video in landscape mode won't show the video controls
+- Minor bug fixes and UI adjustments
+
 # 3.14.1
 - Fix an issue where bulk download won't start on some sites
 - Minor bug fixes, UI adjustments and translation updates

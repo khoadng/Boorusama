@@ -158,50 +158,59 @@ class _DanbooruInfinitePostListState
                   },
                   child: child,
                 ),
-                child: DanbooruImageGridItem(
-                  post: post,
-                  hideOverlay: multiSelect,
-                  autoScrollOptions: AutoScrollOptions(
-                    controller: _autoScrollController,
-                    index: index,
-                  ),
-                  onTap: !multiSelect
-                      ? () {
-                          if (booruBuilder?.canHandlePostGesture(
-                                      GestureType.tap,
-                                      booruConfig.postGestures?.preview) ==
-                                  true &&
-                              postGesturesHandler != null) {
-                            postGesturesHandler(
-                              ref,
-                              ref.watchConfig.postGestures?.preview?.tap,
-                              post,
-                              download,
-                            );
-                          } else {
-                            goToPostDetailsPage(
-                              context: context,
-                              posts: items,
-                              initialIndex: index,
-                              scrollController: _autoScrollController,
-                            );
-                          }
-                        }
-                      : null,
-                  enableFav: !multiSelect && booruConfig.hasLoginDetails(),
-                  image: BooruImage(
-                    aspectRatio: post.isBanned ? 0.8 : post.aspectRatio,
-                    imageUrl: post.thumbnailFromSettings(settings),
-                    borderRadius: BorderRadius.circular(
-                      settings.imageBorderRadius,
+                child: ExplicitContentBlockOverlay(
+                  block: settings.blurExplicitMedia && post.isExplicit,
+                  width: width ?? 100,
+                  height: height ?? 100,
+                  childBuilder: (block) => DanbooruImageGridItem(
+                    ignoreBanOverlay: block,
+                    post: post,
+                    hideOverlay: multiSelect,
+                    autoScrollOptions: AutoScrollOptions(
+                      controller: _autoScrollController,
+                      index: index,
                     ),
-                    forceFill: settings.imageListType == ImageListType.standard,
-                    placeholderUrl: post.thumbnailImageUrl,
-                    width: width,
-                    height: height,
-                    cacheHeight: cacheHeight,
-                    cacheWidth: cacheWidth,
-                    // null, // Will cause error sometimes, disabled for now
+                    onTap: !multiSelect
+                        ? () {
+                            if (booruBuilder?.canHandlePostGesture(
+                                        GestureType.tap,
+                                        booruConfig.postGestures?.preview) ==
+                                    true &&
+                                postGesturesHandler != null) {
+                              postGesturesHandler(
+                                ref,
+                                ref.watchConfig.postGestures?.preview?.tap,
+                                post,
+                                download,
+                              );
+                            } else {
+                              goToPostDetailsPage(
+                                context: context,
+                                posts: items,
+                                initialIndex: index,
+                                scrollController: _autoScrollController,
+                              );
+                            }
+                          }
+                        : null,
+                    enableFav:
+                        !multiSelect && booruConfig.hasLoginDetails() && !block,
+                    image: BooruImage(
+                      aspectRatio: post.isBanned ? 0.8 : post.aspectRatio,
+                      imageUrl:
+                          block ? '' : post.thumbnailFromSettings(settings),
+                      borderRadius: BorderRadius.circular(
+                        settings.imageBorderRadius,
+                      ),
+                      forceFill:
+                          settings.imageListType == ImageListType.standard,
+                      placeholderUrl: post.thumbnailImageUrl,
+                      width: width,
+                      height: height,
+                      cacheHeight: cacheHeight,
+                      cacheWidth: cacheWidth,
+                      // null, // Will cause error sometimes, disabled for now
+                    ),
                   ),
                 ),
               ),

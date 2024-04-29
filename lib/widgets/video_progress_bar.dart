@@ -44,6 +44,8 @@ class VideoProgressBar extends StatefulWidget {
 }
 
 class _VideoProgressBarState extends State<VideoProgressBar> {
+  final isDragging = ValueNotifier(false);
+
   void _seekToRelativePosition(Offset globalPosition) {
     final box = context.findRenderObject()! as RenderBox;
     final Offset tapPos = box.globalToLocal(globalPosition);
@@ -55,15 +57,17 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onHorizontalDragStart: (DragStartDetails details) {
+      onHorizontalDragStart: (details) {
         widget.onDragStart?.call();
+        isDragging.value = true;
       },
-      onHorizontalDragUpdate: (DragUpdateDetails details) {
+      onHorizontalDragUpdate: (details) {
         _seekToRelativePosition(details.globalPosition);
         widget.onDragUpdate?.call();
       },
-      onHorizontalDragEnd: (DragEndDetails details) {
+      onHorizontalDragEnd: (details) {
         widget.onDragEnd?.call();
+        isDragging.value = false;
       },
       onTapDown: (TapDownDetails details) {
         _seekToRelativePosition(details.globalPosition);
@@ -73,19 +77,23 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
           height: MediaQuery.sizeOf(context).height,
           width: MediaQuery.sizeOf(context).width,
           color: Colors.transparent,
-          child: CustomPaint(
-            painter: _ProgressBarPainter(
-              position: widget.position,
-              duration: widget.duration,
-              buffered: widget.buffered,
-              barHeight: widget.barHeight,
-              handleHeight: widget.handleHeight,
-              drawShadow: widget.drawShadow,
-              backgroundColor: widget.backgroundColor,
-              playedColor: widget.playedColor,
-              bufferedColor: widget.bufferedColor,
-              handleColor: widget.handleColor,
-              useHandle: true,
+          child: ValueListenableBuilder(
+            valueListenable: isDragging,
+            builder: (_, dragging, __) => CustomPaint(
+              painter: _ProgressBarPainter(
+                position: widget.position,
+                duration: widget.duration,
+                buffered: widget.buffered,
+                barHeight: widget.barHeight,
+                handleHeight:
+                    !dragging ? widget.handleHeight : widget.handleHeight * 1.5,
+                drawShadow: widget.drawShadow,
+                backgroundColor: widget.backgroundColor,
+                playedColor: widget.playedColor,
+                bufferedColor: widget.bufferedColor,
+                handleColor: widget.handleColor,
+                useHandle: true,
+              ),
             ),
           ),
         ),

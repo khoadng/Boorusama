@@ -10,6 +10,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class AutoScrollOptions {
@@ -42,6 +43,7 @@ class ImageGridItem extends StatelessWidget {
     this.isAI = false,
     this.isGif = false,
     this.quickActionButtonBuilder,
+    this.borderRadius,
   });
 
   final AutoScrollOptions? autoScrollOptions;
@@ -63,6 +65,7 @@ class ImageGridItem extends StatelessWidget {
   final bool isGif;
   final Widget Function(BuildContext context, BoxConstraints constraints)?
       quickActionButtonBuilder;
+  final BorderRadius? borderRadius;
 
   @override
   Widget build(BuildContext context) {
@@ -211,13 +214,83 @@ class ImageGridItem extends StatelessWidget {
         Positioned.fill(
           child: Material(
             color: Colors.transparent,
-            child: InkWell(
-              highlightColor: Colors.transparent,
-              splashFactory: FasterInkSplash.splashFactory,
-              splashColor: Colors.black38,
+            child: ImageInkWellWithBorderOnFocus(
               onTap: onTap,
+              borderRadius: borderRadius,
             ),
           ),
+        ),
+      ],
+    );
+  }
+}
+
+class ImageInkWellWithBorderOnFocus extends StatefulWidget {
+  const ImageInkWellWithBorderOnFocus({
+    super.key,
+    this.onTap,
+    this.borderRadius,
+  });
+
+  final void Function()? onTap;
+  final BorderRadius? borderRadius;
+
+  @override
+  State<ImageInkWellWithBorderOnFocus> createState() =>
+      _ImageInkWellWithBorderOnFocusState();
+}
+
+class _ImageInkWellWithBorderOnFocusState
+    extends State<ImageInkWellWithBorderOnFocus> {
+  var node = FocusNode();
+  late final isFocused = ValueNotifier(node.hasFocus);
+  @override
+  void initState() {
+    super.initState();
+    node.addListener(_onFocusChange);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    node.removeListener(_onFocusChange);
+    node.dispose();
+  }
+
+  void _onFocusChange() {
+    isFocused.value = node.hasFocus;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        ValueListenableBuilder(
+          valueListenable: isFocused,
+          builder: (context, focused, child) {
+            return focused
+                ? Positioned.fill(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: widget.borderRadius ??
+                            const BorderRadius.all(Radius.circular(8)),
+                        border: Border.all(
+                          color: context.colorScheme.primary,
+                          width: 6,
+                        ),
+                      ),
+                    ),
+                  )
+                : const SizedBox.shrink();
+          },
+        ),
+        InkWell(
+          focusNode: node,
+          focusColor: context.colorScheme.primary.withOpacity(0.2),
+          highlightColor: Colors.transparent,
+          splashFactory: FasterInkSplash.splashFactory,
+          splashColor: Colors.black38,
+          onTap: widget.onTap,
         ),
       ],
     );
