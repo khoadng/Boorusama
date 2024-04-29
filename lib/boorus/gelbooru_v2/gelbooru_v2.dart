@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
+import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
 import 'package:boorusama/boorus/gelbooru_v2/artists/artists.dart';
 import 'package:boorusama/boorus/gelbooru_v2/comments/comments.dart';
 import 'package:boorusama/boorus/gelbooru_v2/posts/posts_v2.dart';
@@ -117,6 +118,15 @@ Note gelbooruV2NoteToNote(NoteDto note) {
   );
 }
 
+final gelbooruV2Metatags = {
+  'sort': gelbooruSortMetatags,
+  'rating': [
+    Rating.explicit,
+    Rating.questionable,
+    Rating.sensitive,
+  ].map((e) => e.toFullString(legacy: true)).where((e) => e.isNotEmpty).toSet(),
+};
+
 class GelbooruV2Builder
     with
         FavoriteNotSupportedMixin,
@@ -127,6 +137,7 @@ class GelbooruV2Builder
         DefaultGranularRatingFiltererMixin,
         DefaultPostGesturesHandlerMixin,
         DefaultPostStatisticsPageBuilderMixin,
+        DefaultCustomMetatagInterceptorMixin,
         DefaultTagColorMixin
     implements BooruBuilder {
   GelbooruV2Builder({
@@ -184,7 +195,10 @@ class GelbooruV2Builder
   NoteFetcher? get noteFetcher => (postId) => noteRepo.getNotes(postId);
 
   @override
-  AutocompleteFetcher get autocompleteFetcher =>
+  Map<String, Set<String>> get metatags => gelbooruV2Metatags;
+
+  @override
+  AutocompleteFetcher get baseAutocompleteFetcher =>
       (query) => autocompleteRepo.getAutocomplete(query);
 
   @override
@@ -313,6 +327,15 @@ class GelbooruV2SearchPage extends ConsumerWidget {
       ),
       fetcher: (page, tags) =>
           ref.watch(gelbooruV2PostRepoProvider(config)).getPosts(tags, page),
+      metatagsBuilder: (context, searchController, focus, textController) =>
+          BooruMetatagsSection(
+        metatags: gelbooruV2Metatags.keys
+            .map((e) => Metatag.simple(name: e))
+            .toList(),
+        searchController: searchController,
+        focus: focus,
+        textController: textController,
+      ),
     );
   }
 }

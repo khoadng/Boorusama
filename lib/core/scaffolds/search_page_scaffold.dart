@@ -12,12 +12,15 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/search/search.dart';
+import 'package:boorusama/core/feats/tags/metatag.dart';
+import 'package:boorusama/core/pages/search/metatags_section_readonly.dart';
 import 'package:boorusama/core/pages/search/search_app_bar.dart';
 import 'package:boorusama/core/pages/search/search_button.dart';
 import 'package:boorusama/core/pages/search/search_landing_view.dart';
 import 'package:boorusama/core/pages/search/selected_tag_list_with_data.dart';
 import 'package:boorusama/core/scaffolds/infinite_post_list_scaffold.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
 
@@ -332,6 +335,34 @@ class _SearchPageScaffoldState<T extends Post>
                 controller: controller,
                 sliverHeaderBuilder: (context) => slivers,
               );
+      },
+    );
+  }
+}
+
+class BooruMetatagsSection extends StatelessWidget {
+  const BooruMetatagsSection({
+    super.key,
+    required this.metatags,
+    required this.searchController,
+    required this.focus,
+    required this.textController,
+  });
+
+  final List<Metatag> metatags;
+
+  final SearchPageController searchController;
+  final FocusNode focus;
+  final TextEditingController textController;
+
+  @override
+  Widget build(BuildContext context) {
+    return MetatagsSectionReadonly(
+      metatags: metatags,
+      onOptionTap: (value) {
+        searchController.tapRawMetaTag(value);
+        focus.requestFocus();
+        textController.setTextAndCollapseSelection('$value:');
       },
     );
   }
