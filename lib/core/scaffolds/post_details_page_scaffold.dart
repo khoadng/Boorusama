@@ -341,6 +341,7 @@ class _PostDetailPageScaffoldState<T extends Post>
             height: 1,
             cacheHeight: 10,
             cacheWidth: 10,
+            cache: true,
           ),
         ),
       if (!expandedOnCurrentPage)
