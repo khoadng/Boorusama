@@ -208,21 +208,10 @@ class SzurubooruBuilder
                         () => SimplePostActionToolbar(post: rawPost),
                         (post) => SzurubooruPostActionToolbar(post: post),
                       ),
-              fileDetailsBuilder: (context, rawPost) => FileDetailsSection(
+              fileDetailsBuilder: (context, rawPost) =>
+                  DefaultFileDetailsSection(
                 post: rawPost,
-                rating: rawPost.rating,
-                uploader: castOrNull<SzurubooruPost>(rawPost).toOption().fold(
-                      () => null,
-                      (post) => post.uploaderName != null
-                          ? Text(
-                              post.uploaderName!.replaceAll('_', ' '),
-                              maxLines: 1,
-                              style: const TextStyle(
-                                fontSize: 14,
-                              ),
-                            )
-                          : null,
-                    ),
+                uploaderName: castOrNull<SzurubooruPost>(rawPost)?.uploaderName,
               ),
             ),
           );
