@@ -78,11 +78,15 @@ extension BooruTagTypeStoreX on BooruTagTypeStore {
       final category = categoryBuilder(item);
 
       if (category == null) continue;
+      try {
+        final cached = await get(booruType, key);
 
-      final cached = await get(booruType, key);
-
-      if (cached == null) {
-        await save(booruType, key, category);
+        if (cached == null) {
+          await save(booruType, key, category);
+        }
+      } catch (e) {
+        // Ignore error, this is a best effort operation
+        // If data is corrupted, we can't do anything
       }
     }
   }
