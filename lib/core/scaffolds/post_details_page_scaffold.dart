@@ -220,9 +220,6 @@ class _PostDetailPageScaffoldState<T extends Post>
               sharedChild,
             );
 
-            final artistPosts =
-                widget.sliverArtistPostsBuilder?.call(context, posts[page]);
-
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: CustomScrollView(
@@ -237,7 +234,8 @@ class _PostDetailPageScaffoldState<T extends Post>
                     ),
                   ),
                   if (expanded && page == currentPage)
-                    if (artistPosts != null) ...artistPosts,
+                    if (widget.sliverArtistPostsBuilder != null)
+                      ...widget.sliverArtistPostsBuilder!(context, posts[page]),
                   if (widget.sliverRelatedPostsBuilder != null &&
                       ref.watch(_visibleProvider(currentPage)) &&
                       expanded &&
@@ -341,6 +339,7 @@ class _PostDetailPageScaffoldState<T extends Post>
             height: 1,
             cacheHeight: 10,
             cacheWidth: 10,
+            cache: true,
           ),
         ),
       if (!expandedOnCurrentPage)

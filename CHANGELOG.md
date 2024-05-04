@@ -1,3 +1,8 @@
+# 3.15.1
+- Fix a bug on landscape tablets that prevents users from searching.
+- Fix a bug that causes autocomplete to not show up on some devices.
+- Fix an issue where download notifications won't show up as completed on some devices.
+
 # 3.15.0
 - Track download progress in notification
 - Add an option to blur explicit content when viewing posts

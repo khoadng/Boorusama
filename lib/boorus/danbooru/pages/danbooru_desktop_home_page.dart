@@ -12,6 +12,7 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/search/search.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 
@@ -42,51 +43,49 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruDesktopHomePage> {
             selectedTagController.rawTags,
             page,
           ),
-      builder: (context, controller, errors) => LayoutBuilder(
-        builder: (context, constraints) => constraints.maxHeight < 450
-            ? _buildList(
-                controller,
-                errors,
-                children: [
-                  SliverToBoxAdapter(
-                    child: _buildSearchbar(controller),
-                  ),
-                  SliverToBoxAdapter(
-                    child: _buildRelatedTags(),
-                  ),
-                ],
-              )
-            : Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  _buildSearchbar(controller),
-                  _buildRelatedTags(),
-                  Expanded(
-                    child: _buildList(
-                      controller,
-                      errors,
-                      children: [
-                        SliverToBoxAdapter(
-                          child: Row(
-                            children: [
-                              ValueListenableBuilder(
-                                valueListenable: selectedTagString,
-                                builder: (context, value, _) =>
-                                    ResultHeaderWithProvider(
-                                  selectedTags: value.split(' '),
-                                  onRefresh: () => controller.refresh(),
-                                ),
+      builder: (context, controller, errors) => context.screenHeight < 450
+          ? _buildList(
+              controller,
+              errors,
+              children: [
+                SliverToBoxAdapter(
+                  child: _buildSearchbar(controller),
+                ),
+                SliverToBoxAdapter(
+                  child: _buildRelatedTags(),
+                ),
+              ],
+            )
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _buildSearchbar(controller),
+                _buildRelatedTags(),
+                Expanded(
+                  child: _buildList(
+                    controller,
+                    errors,
+                    children: [
+                      SliverToBoxAdapter(
+                        child: Row(
+                          children: [
+                            ValueListenableBuilder(
+                              valueListenable: selectedTagString,
+                              builder: (context, value, _) =>
+                                  ResultHeaderWithProvider(
+                                selectedTags: value.split(' '),
+                                onRefresh: () => controller.refresh(),
                               ),
-                              const Spacer(),
-                            ],
-                          ),
+                            ),
+                            const Spacer(),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-      ),
+                ),
+              ],
+            ),
     );
   }
 

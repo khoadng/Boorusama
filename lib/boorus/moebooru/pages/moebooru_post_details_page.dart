@@ -113,18 +113,9 @@ class _MoebooruPostDetailsPageState
       ),
       onPageChangeIndexed: widget.onPageChanged,
       swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
-      fileDetailsBuilder: (context, post) => FileDetailsSection(
+      fileDetailsBuilder: (context, post) => DefaultFileDetailsSection(
         post: post,
-        rating: post.rating,
-        uploader: post.uploaderName != null
-            ? Text(
-                post.uploaderName!.replaceAll('_', ' '),
-                maxLines: 1,
-                style: const TextStyle(
-                  fontSize: 14,
-                ),
-              )
-            : null,
+        uploaderName: post.uploaderName,
       ),
       sliverRelatedPostsBuilder: (context, post) =>
           MoebooruRelatedPostsSection(post: post),

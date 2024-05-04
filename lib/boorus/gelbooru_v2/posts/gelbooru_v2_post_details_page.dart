@@ -61,18 +61,9 @@ class _PostDetailPageState extends ConsumerState<GelbooruV2PostDetailsPage> {
       onPageChangeIndexed: widget.onPageChanged,
       toolbarBuilder: (context, post) => SimplePostActionToolbar(post: post),
       swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
-      fileDetailsBuilder: (context, post) => FileDetailsSection(
+      fileDetailsBuilder: (context, post) => DefaultFileDetailsSection(
         post: post,
-        rating: post.rating,
-        uploader: post.uploaderName != null
-            ? Text(
-                post.uploaderName!.replaceAll('_', ' '),
-                maxLines: 1,
-                style: const TextStyle(
-                  fontSize: 14,
-                ),
-              )
-            : null,
+        uploaderName: post.uploaderName,
       ),
       sliverRelatedPostsBuilder: (context, post) => post.hasParent
           ? ref.watch(gelbooruV2ChildPostsProvider(post.parentId!)).maybeWhen(

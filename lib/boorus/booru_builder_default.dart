@@ -262,10 +262,11 @@ String Function(
 ) defaultPostImageUrlBuilder(
   WidgetRef ref,
 ) =>
-    (post) =>
-        ref.watchBooruBuilder(ref.watchConfig)?.postImageDetailsUrlBuilder(
-            ref.watch(settingsProvider), post, ref.watchConfig) ??
-        post.sampleImageUrl;
+    (post) => isDesktopPlatform()
+        ? post.sampleImageUrl
+        : ref.watchBooruBuilder(ref.watchConfig)?.postImageDetailsUrlBuilder(
+                ref.watch(settingsProvider), post, ref.watchConfig) ??
+            post.sampleImageUrl;
 
 Widget Function(
   BuildContext context,
