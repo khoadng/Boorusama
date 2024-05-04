@@ -12,7 +12,6 @@ import 'package:boorusama/core/pages/boorus/widgets/create_booru_hide_deleted_sw
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_login_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_post_details_resolution_option_tile.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
@@ -46,45 +45,51 @@ class _CreateDanbooruConfigPageState
   @override
   Widget build(BuildContext context) {
     return CreateBooruConfigScaffold(
-      isNewConfig: widget.isNewConfig,
-      backgroundColor: widget.backgroundColor,
-      config: widget.config,
-      authTabBuilder: (context) => _buildAuthTab(),
-      hasDownloadTab: true,
-      hasRatingFilter: true,
-      postDetailsGestureActions: const {
-        ...kDefaultGestureActions,
-        kToggleFavoriteAction,
-        kUpvoteAction,
-        kDownvoteAction,
-        kEditAction,
-      },
-      describePostDetailsAction: (action) => switch (action) {
-        kToggleFavoriteAction => 'Toggle favorite',
-        kUpvoteAction => 'Upvote',
-        kDownvoteAction => 'Downvote',
-        kEditAction => 'Edit',
-        _ => describeDefaultGestureAction(action),
-      },
-      postDetailsResolutionBuilder: (context) =>
-          CreateBooruImageDetailsResolutionOptionTile(
-        value: imageDetaisQuality,
-        items: PostQualityType.values.map((e) => e.stringify()).toList(),
-        onChanged: (value) => setState(() => imageDetaisQuality = value),
-      ),
-      tabsBuilder: (context) => {},
-      miscOptionBuilder: (context) => [
-        CreateBooruHideDeletedSwitch(
-          value: hideDeleted,
-          onChanged: (value) => setState(() => hideDeleted = value),
-          subtitle: const Text(
-            'Hide low-quality images, some decent ones might also be hidden.',
-          ),
-        ),
-      ],
-      allowSubmit: allowSubmit,
-      submit: submit,
-    );
+        isNewConfig: widget.isNewConfig,
+        backgroundColor: widget.backgroundColor,
+        config: widget.config,
+        authTabBuilder: (context) => _buildAuthTab(),
+        hasDownloadTab: true,
+        hasRatingFilter: true,
+        postDetailsGestureActions: const {
+          ...kDefaultGestureActions,
+          kToggleFavoriteAction,
+          kUpvoteAction,
+          kDownvoteAction,
+          kEditAction,
+        },
+        describePostDetailsAction: (action) => switch (action) {
+              kToggleFavoriteAction => 'Toggle favorite',
+              kUpvoteAction => 'Upvote',
+              kDownvoteAction => 'Downvote',
+              kEditAction => 'Edit',
+              _ => describeDefaultGestureAction(action),
+            },
+        postDetailsResolutionBuilder: (context) =>
+            CreateBooruImageDetailsResolutionOptionTile(
+              value: imageDetaisQuality,
+              items: PostQualityType.values.map((e) => e.stringify()).toList(),
+              onChanged: (value) => setState(() => imageDetaisQuality = value),
+            ),
+        tabsBuilder: (context) => {},
+        miscOptionBuilder: (context) => [
+              CreateBooruHideDeletedSwitch(
+                value: hideDeleted,
+                onChanged: (value) => setState(() => hideDeleted = value),
+                subtitle: const Text(
+                  'Hide low-quality images, some decent ones might also be hidden.',
+                ),
+              ),
+            ],
+        allowSubmit: allowSubmit,
+        submit: null,
+        useNewSubmitFlow: true,
+        onSubmit: (data) => data.toBooruConfigDataFromInitialConfig(
+              config: widget.config,
+              login: login,
+              apiKey: apiKey,
+              hideDeleted: hideDeleted,
+            ));
   }
 
   Widget _buildAuthTab() {
@@ -119,31 +124,6 @@ class _CreateDanbooruConfigPageState
         ],
       ),
     );
-  }
-
-  void submit(CreateConfigData data) {
-    final config = AddNewBooruConfig(
-      login: login,
-      apiKey: apiKey,
-      booru: widget.config.booruType,
-      booruHint: widget.config.booruType,
-      configName: data.configName,
-      hideDeleted: hideDeleted,
-      ratingFilter: data.ratingFilter ?? BooruConfigRatingFilter.none,
-      url: widget.config.url,
-      customDownloadFileNameFormat: data.customDownloadFileNameFormat,
-      customBulkDownloadFileNameFormat: data.customBulkDownloadFileNameFormat,
-      imageDetaisQuality: imageDetaisQuality,
-      granularRatingFilters: data.granularRatingFilters,
-      postGestures: data.postGestures,
-      defaultPreviewImageButtonAction: data.defaultPreviewImageButtonAction,
-    );
-
-    ref
-        .read(booruConfigProvider.notifier)
-        .addOrUpdate(config: widget.config, newConfig: config);
-
-    context.navigator.pop();
   }
 
   bool allowSubmit(CreateConfigData data) {

@@ -102,6 +102,31 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?> {
     }
   }
 
+  Future<void> updateFromBooruConfigData({
+    required BooruConfigData booruConfigData,
+    required BooruConfig oldConfig,
+    void Function(String message)? onFailure,
+    void Function(BooruConfig booruConfig)? onSuccess,
+  }) async {
+    if (state == null) return;
+    final updatedConfig = await ref
+        .read(booruConfigRepoProvider)
+        .update(oldConfig.id, booruConfigData);
+
+    if (updatedConfig == null) {
+      onFailure?.call('Failed to update account');
+
+      return;
+    }
+
+    final newConfigs =
+        state!.replaceFirst(updatedConfig, (item) => item.id == oldConfig.id);
+
+    onSuccess?.call(updatedConfig);
+
+    state = newConfigs;
+  }
+
   Future<void> update({
     required AddNewBooruConfig config,
     required BooruConfig oldConfig,
@@ -168,6 +193,41 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?> {
     onSuccess?.call(updatedConfig);
 
     state = newConfigs;
+  }
+
+  Future<void> addFromBooruConfigData({
+    required BooruConfigData booruConfigData,
+    void Function(String message)? onFailure,
+    void Function(BooruConfig booruConfig)? onSuccess,
+    bool setAsCurrent = false,
+  }) async {
+    if (state == null) return;
+    try {
+      final config =
+          await ref.read(booruConfigRepoProvider).add(booruConfigData);
+
+      if (config == null) {
+        onFailure?.call('Fail to add account. Account might be incorrect');
+
+        return;
+      }
+
+      onSuccess?.call(config);
+      ref.read(analyticsProvider).sendBooruAddedEvent(
+            url: config.url,
+            hintSite: config.booruType.name,
+            totalSites: state!.length,
+            hasLogin: config.hasLoginDetails(),
+          );
+
+      _add(config);
+
+      if (setAsCurrent) {
+        ref.read(currentBooruConfigProvider.notifier).update(config);
+      }
+    } catch (e) {
+      onFailure?.call('Failed to add account');
+    }
   }
 
   Future<void> addFromAddBooruConfig({
@@ -355,6 +415,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?> {
 }
 
 extension BooruConfigNotifierX on BooruConfigNotifier {
+  @Deprecated('Use BooruConfigData directly')
   void addOrUpdate({
     required BooruConfig config,
     required AddNewBooruConfig newConfig,
@@ -374,8 +435,28 @@ extension BooruConfigNotifierX on BooruConfigNotifier {
           );
     }
   }
+
+  void addOrUpdateUsingBooruConfigData({
+    required BooruConfig config,
+    required BooruConfigData newConfig,
+  }) {
+    if (config.isDefault()) {
+      ref.read(booruConfigProvider.notifier).addFromBooruConfigData(
+            booruConfigData: newConfig,
+          );
+    } else {
+      ref.read(booruConfigProvider.notifier).updateFromBooruConfigData(
+            booruConfigData: newConfig,
+            oldConfig: config,
+            onSuccess: (booruConfig) => ref
+                .read(currentBooruConfigProvider.notifier)
+                .update(booruConfig),
+          );
+    }
+  }
 }
 
+@Deprecated('Use BooruConfigData directly')
 class AddNewBooruConfig {
   AddNewBooruConfig({
     required this.login,

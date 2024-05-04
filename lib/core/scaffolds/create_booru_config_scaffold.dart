@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -6,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/feats/boorus/booru_config.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_config_name_field.dart';
@@ -21,16 +21,67 @@ import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
-typedef CreateConfigData = ({
-  String configName,
-  String? customDownloadFileNameFormat,
-  String? customBulkDownloadFileNameFormat,
-  Set<Rating>? granularRatingFilters,
-  BooruConfigRatingFilter? ratingFilter,
-  String? imageDetaisQuality,
-  PostGestureConfig? postGestures,
-  String? defaultPreviewImageButtonAction,
-});
+class CreateConfigData extends Equatable {
+  const CreateConfigData({
+    required this.configName,
+    required this.customDownloadFileNameFormat,
+    required this.customBulkDownloadFileNameFormat,
+    required this.granularRatingFilters,
+    required this.ratingFilter,
+    required this.imageDetaisQuality,
+    required this.postGestures,
+    required this.defaultPreviewImageButtonAction,
+  });
+
+  final String configName;
+  final String? customDownloadFileNameFormat;
+  final String? customBulkDownloadFileNameFormat;
+  final Set<Rating>? granularRatingFilters;
+  final BooruConfigRatingFilter? ratingFilter;
+  final String? imageDetaisQuality;
+  final PostGestureConfig? postGestures;
+  final String? defaultPreviewImageButtonAction;
+
+  @override
+  List<Object?> get props => [
+        configName,
+        customDownloadFileNameFormat,
+        customBulkDownloadFileNameFormat,
+        granularRatingFilters,
+        ratingFilter,
+        imageDetaisQuality,
+        postGestures,
+        defaultPreviewImageButtonAction,
+      ];
+}
+
+extension CreateConfigDataX on CreateConfigData {
+  BooruConfigData toBooruConfigDataFromInitialConfig({
+    required BooruConfig config,
+    required String login,
+    required String apiKey,
+    required bool hideDeleted,
+  }) =>
+      BooruConfigData(
+        login: login,
+        apiKey: apiKey,
+        booruId: config.booruType.toBooruId(),
+        booruIdHint: config.booruType.toBooruId(),
+        name: configName,
+        deletedItemBehavior: hideDeleted
+            ? BooruConfigDeletedItemBehavior.hide.index
+            : BooruConfigDeletedItemBehavior.show.index,
+        ratingFilter: ratingFilter?.index ?? BooruConfigRatingFilter.none.index,
+        url: config.url,
+        customDownloadFileNameFormat: customDownloadFileNameFormat,
+        customBulkDownloadFileNameFormat: customBulkDownloadFileNameFormat,
+        imageDetaisQuality: imageDetaisQuality,
+        granularRatingFilterString:
+            granularRatingFilterToString(granularRatingFilters),
+        postGestures: postGestures?.toJsonString(),
+        defaultPreviewImageButtonAction: defaultPreviewImageButtonAction,
+      );
+}
 
 const kDefaultPreviewImageButtonAction = {
   '',
@@ -58,13 +109,15 @@ class CreateBooruConfigScaffold extends ConsumerStatefulWidget {
     this.postPreviewQuickActionButtonActions = kDefaultPreviewImageButtonAction,
     this.describePostDetailsAction,
     this.describePostPreviewQuickAction,
-  });
+    this.useNewSubmitFlow = false,
+    this.onSubmit,
+  }) : assert(useNewSubmitFlow == true || onSubmit == null);
 
   final Color? backgroundColor;
   final BooruConfig config;
   final Map<String, Widget> Function(BuildContext context) tabsBuilder;
   final bool Function(CreateConfigData data) allowSubmit;
-  final void Function(CreateConfigData data) submit;
+  final void Function(CreateConfigData data)? submit;
 
   final Widget Function(BuildContext context)? authTabBuilder;
 
@@ -81,6 +134,10 @@ class CreateBooruConfigScaffold extends ConsumerStatefulWidget {
   final Set<String?> postPreviewQuickActionButtonActions;
   final String Function(String? action)? describePostPreviewQuickAction;
   final bool isNewConfig;
+
+  //TODO: Temp
+  final bool useNewSubmitFlow;
+  final BooruConfigData Function(CreateConfigData data)? onSubmit;
 
   @override
   ConsumerState<CreateBooruConfigScaffold> createState() =>
@@ -113,7 +170,7 @@ class _CreateBooruConfigScaffoldState
       'booru.misc': _buildMiscTab(),
     };
 
-    final params = (
+    final params = CreateConfigData(
       configName: configName,
       customDownloadFileNameFormat: customDownloadFileNameFormat,
       customBulkDownloadFileNameFormat: customBulkDownloadFileNameFormat,
@@ -202,11 +259,31 @@ class _CreateBooruConfigScaffoldState
                           Row(
                             children: [
                               Expanded(
-                                child: CreateBooruSubmitButton(
-                                  onSubmit: widget.allowSubmit(params)
-                                      ? () => widget.submit(params)
-                                      : null,
-                                ),
+                                child: !widget.useNewSubmitFlow
+                                    ? CreateBooruSubmitButton(
+                                        onSubmit: widget.allowSubmit(params)
+                                            ? () => widget.submit?.call(params)
+                                            : null,
+                                      )
+                                    : CreateBooruSubmitButton(
+                                        onSubmit: widget.onSubmit != null &&
+                                                widget.allowSubmit(params)
+                                            ? () {
+                                                final data =
+                                                    widget.onSubmit!(params);
+
+                                                ref
+                                                    .read(booruConfigProvider
+                                                        .notifier)
+                                                    .addOrUpdateUsingBooruConfigData(
+                                                      config: widget.config,
+                                                      newConfig: data,
+                                                    );
+
+                                                context.navigator.pop();
+                                              }
+                                            : null,
+                                      ),
                               ),
                             ],
                           ),
