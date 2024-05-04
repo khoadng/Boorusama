@@ -100,7 +100,7 @@ class CreateBooruConfigScaffold extends ConsumerStatefulWidget {
     required this.allowSubmit,
     required this.submit,
     required this.isNewConfig,
-    this.authTabBuilder,
+    this.authTab,
     this.postDetailsResolutionBuilder,
     this.hasDownloadTab = false,
     this.hasRatingFilter = false,
@@ -119,7 +119,7 @@ class CreateBooruConfigScaffold extends ConsumerStatefulWidget {
   final bool Function(CreateConfigData data) allowSubmit;
   final void Function(CreateConfigData data)? submit;
 
-  final Widget Function(BuildContext context)? authTabBuilder;
+  final Widget? authTab;
 
   final Widget Function(BuildContext context)? postDetailsResolutionBuilder;
 
@@ -162,8 +162,7 @@ class _CreateBooruConfigScaffoldState
   @override
   Widget build(BuildContext context) {
     final tabMap = {
-      if (widget.authTabBuilder != null)
-        'booru.authentication': widget.authTabBuilder!(context),
+      if (widget.authTab != null) 'booru.authentication': widget.authTab!,
       if (widget.hasDownloadTab) 'booru.download': _buildDownloadTab(),
       ...widget.tabsBuilder(context),
       'booru.gestures': _buildGesturesTab(),

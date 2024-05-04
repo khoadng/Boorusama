@@ -51,7 +51,7 @@ class _CreateMoebooruConfigPageState
       isNewConfig: widget.isNewConfig,
       backgroundColor: widget.backgroundColor,
       config: widget.config,
-      authTabBuilder: (context) => _buildAuthTab(),
+      authTab: _buildAuthTab(),
       hasDownloadTab: true,
       hasRatingFilter: true,
       tabsBuilder: (context) => {},

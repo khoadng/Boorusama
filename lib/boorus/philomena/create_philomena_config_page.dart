@@ -41,7 +41,7 @@ class _CreatePhilomenaConfigPageState
       isNewConfig: widget.isNewConfig,
       backgroundColor: widget.backgroundColor,
       config: widget.config,
-      authTabBuilder: (context) => _buildAuthTab(),
+      authTab: _buildAuthTab(),
       postDetailsResolutionBuilder: (context) =>
           CreateBooruImageDetailsResolutionOptionTile(
         value: imageDetaisQuality,
