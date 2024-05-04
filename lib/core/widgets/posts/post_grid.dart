@@ -164,7 +164,7 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
   var page = 1;
   var hasMore = true;
   final loading = ValueNotifier(false);
-  var refreshing = false;
+  final refreshing = ValueNotifier(false);
   var items = <T>[];
   var filteredItems = <T>[];
   late var pageMode = controller.pageMode;
@@ -290,6 +290,13 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
   void _onControllerChange() {
     if (!mounted) return;
 
+    // check if refreshing, don't set state if it is
+    if (controller.refreshing) {
+      refreshing.value = true;
+      precomputedFilter.clear();
+      return;
+    }
+
     // check if loading, don't set state if it is
     if (controller.loading) {
       loading.value = true;
@@ -299,13 +306,12 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
     setState(() {
       _updateData(
         filters: filters,
-        bustCache: controller.refreshing,
       );
       _countTags();
 
       hasMore = controller.hasMore;
       loading.value = controller.loading;
-      refreshing = controller.refreshing;
+      refreshing.value = controller.refreshing;
       pageMode = controller.pageMode;
       page = controller.page;
     });
@@ -415,65 +421,82 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                         child: ConditionalParentWidget(
                           // Should remove this later
                           condition: true,
-                          conditionalBuilder: (child) =>
-                              _buildPaginatedSwipe(context, child),
+                          conditionalBuilder: (child) => ValueListenableBuilder(
+                            valueListenable: refreshing,
+                            builder: (_, refreshing, __) =>
+                                _buildPaginatedSwipe(
+                                    context, child, refreshing),
+                          ),
                           child: CustomScrollView(
                             controller: _autoScrollController,
                             slivers: [
                               if (!multiSelect &&
                                   widget.sliverHeaderBuilder != null)
                                 ...widget.sliverHeaderBuilder!(context),
-                              if (settings.showPostListConfigHeader &&
-                                  !refreshing)
+                              if (settings.showPostListConfigHeader)
                                 if (isMobilePlatform())
-                                  SliverPinnedHeader(
-                                    child: Padding(
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: settings.imageGridPadding,
+                                  ConditionalValueListenableBuilder(
+                                    valueListenable: refreshing,
+                                    useFalseChildAsCache: true,
+                                    trueChild: const SliverSizedBox.shrink(),
+                                    falseChild: SliverPinnedHeader(
+                                      child: Padding(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: settings.imageGridPadding,
+                                        ),
+                                        child: header,
                                       ),
-                                      child: header,
                                     ),
                                   ),
-                              if (!refreshing)
-                                const SliverToBoxAdapter(
+                              ConditionalValueListenableBuilder(
+                                valueListenable: refreshing,
+                                useFalseChildAsCache: true,
+                                trueChild: const SliverSizedBox.shrink(),
+                                falseChild: const SliverToBoxAdapter(
                                   child:
                                       HighresPreviewOnMobileDataWarningBanner(),
                                 ),
+                              ),
                               const SliverSizedBox(
                                 height: 4,
                               ),
-                              if (!refreshing &&
-                                  pageMode == PageMode.paginated &&
+                              if (pageMode == PageMode.paginated &&
                                   settings.pageIndicatorPosition.isVisibleAtTop)
-                                SliverToBoxAdapter(
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(bottom: 8),
-                                    child: PageSelector(
-                                      currentPage: page,
-                                      onPrevious: controller.hasPreviousPage()
-                                          ? () => _goToPreviousPage()
-                                          : null,
-                                      onNext: controller.hasNextPage()
-                                          ? () => _goToNextPage()
-                                          : null,
-                                      onPageSelect: (page) => _goToPage(page),
+                                ConditionalValueListenableBuilder(
+                                  valueListenable: refreshing,
+                                  useFalseChildAsCache: true,
+                                  falseChild: SliverToBoxAdapter(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(bottom: 8),
+                                      child: PageSelector(
+                                        currentPage: page,
+                                        onPrevious: controller.hasPreviousPage()
+                                            ? () => _goToPreviousPage()
+                                            : null,
+                                        onNext: controller.hasNextPage()
+                                            ? () => _goToNextPage()
+                                            : null,
+                                        onPageSelect: (page) => _goToPage(page),
+                                      ),
                                     ),
                                   ),
+                                  trueChild: const SliverSizedBox.shrink(),
                                 ),
-                              widget.bodyBuilder(
-                                context,
-                                itemBuilder,
-                                refreshing,
-                                items,
+                              ValueListenableBuilder(
+                                valueListenable: refreshing,
+                                builder: (context, refreshing, child) =>
+                                    widget.bodyBuilder(
+                                  context,
+                                  itemBuilder,
+                                  refreshing,
+                                  items,
+                                ),
                               ),
                               if (pageMode == PageMode.infinite)
-                                ValueListenableBuilder(
+                                ConditionalValueListenableBuilder(
                                   valueListenable: loading,
-                                  builder: (context, isLoading, child) =>
-                                      isLoading
-                                          ? child!
-                                          : const SliverSizedBox.shrink(),
-                                  child: SliverPadding(
+                                  falseChild: const SliverSizedBox.shrink(),
+                                  trueChild: SliverPadding(
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 20),
                                     sliver: SliverToBoxAdapter(
@@ -486,11 +509,15 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                                     ),
                                   ),
                                 ),
-                              if (!refreshing &&
-                                  pageMode == PageMode.paginated &&
+                              if (pageMode == PageMode.paginated &&
                                   settings
                                       .pageIndicatorPosition.isVisibleAtBottom)
-                                _buildPageIndicator(),
+                                ConditionalValueListenableBuilder(
+                                  valueListenable: refreshing,
+                                  useFalseChildAsCache: true,
+                                  trueChild: const SliverSizedBox.shrink(),
+                                  falseChild: _buildPageIndicator(),
+                                ),
                             ],
                           ),
                         ),
@@ -537,7 +564,11 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
     );
   }
 
-  Widget _buildPaginatedSwipe(BuildContext context, Widget child) {
+  Widget _buildPaginatedSwipe(
+    BuildContext context,
+    Widget child,
+    bool refreshing,
+  ) {
     return SwipeTo(
       enabled: pageMode == PageMode.paginated && !refreshing,
       swipeRightEnabled: controller.hasPreviousPage(),
