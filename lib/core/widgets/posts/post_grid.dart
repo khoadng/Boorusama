@@ -163,7 +163,7 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
 
   var page = 1;
   var hasMore = true;
-  var loading = false;
+  final loading = ValueNotifier(false);
   var refreshing = false;
   var items = <T>[];
   var filteredItems = <T>[];
@@ -289,6 +289,13 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
 
   void _onControllerChange() {
     if (!mounted) return;
+
+    // check if loading, don't set state if it is
+    if (controller.loading) {
+      loading.value = true;
+      return;
+    }
+
     setState(() {
       _updateData(
         filters: filters,
@@ -297,7 +304,7 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
       _countTags();
 
       hasMore = controller.hasMore;
-      loading = controller.loading;
+      loading.value = controller.loading;
       refreshing = controller.refreshing;
       pageMode = controller.pageMode;
       page = controller.page;
@@ -459,21 +466,26 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                                 refreshing,
                                 items,
                               ),
-                              if (pageMode == PageMode.infinite && loading)
-                                SliverPadding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 20),
-                                  sliver: SliverToBoxAdapter(
-                                    child: Center(
-                                      child: SpinKitPulse(
-                                        color: context
-                                            .theme.colorScheme.onBackground,
+                              if (pageMode == PageMode.infinite)
+                                ValueListenableBuilder(
+                                  valueListenable: loading,
+                                  builder: (context, isLoading, child) =>
+                                      isLoading
+                                          ? child!
+                                          : const SliverSizedBox.shrink(),
+                                  child: SliverPadding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 20),
+                                    sliver: SliverToBoxAdapter(
+                                      child: Center(
+                                        child: SpinKitPulse(
+                                          color: context
+                                              .theme.colorScheme.onBackground,
+                                        ),
                                       ),
                                     ),
                                   ),
-                                )
-                              else
-                                const SliverSizedBox.shrink(),
+                                ),
                               if (!refreshing &&
                                   pageMode == PageMode.paginated &&
                                   settings
