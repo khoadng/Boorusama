@@ -111,9 +111,9 @@ mixin DefaultGranularRatingFiltererMixin on BooruBuilder {
 mixin DefaultPostGesturesHandlerMixin on BooruBuilder {
   @override
   PostGestureHandlerBuilder get postGestureHandlerBuilder =>
-      (ref, action, post, downloader) => handleDefaultGestureAction(
+      (ref, action, post) => handleDefaultGestureAction(
             action,
-            onDownload: () => downloader(post),
+            onDownload: () => ref.download(post),
             onShare: () => ref.sharePost(
               post,
               context: ref.context,

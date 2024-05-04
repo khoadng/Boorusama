@@ -103,5 +103,4 @@ typedef PostGestureHandlerBuilder = bool Function(
   WidgetRef ref,
   String? action,
   Post post,
-  DownloadDelegate downloader,
 );
