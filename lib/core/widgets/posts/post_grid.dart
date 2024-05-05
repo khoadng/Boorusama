@@ -430,8 +430,12 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                           child: CustomScrollView(
                             controller: _autoScrollController,
                             slivers: [
-                              if (!multiSelect && widget.sliverHeaders != null)
-                                ...widget.sliverHeaders!,
+                              if (widget.sliverHeaders != null)
+                                ...widget.sliverHeaders!
+                                    .map((e) => SliverOffstage(
+                                          offstage: multiSelect,
+                                          sliver: e,
+                                        )),
                               if (settings.showPostListConfigHeader)
                                 if (isMobilePlatform())
                                   ConditionalValueListenableBuilder(
