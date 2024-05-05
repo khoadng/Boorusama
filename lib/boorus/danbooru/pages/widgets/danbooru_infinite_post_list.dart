@@ -101,7 +101,6 @@ class _DanbooruInfinitePostListState
           booruConfig.postGestures?.preview,
         ) ??
         false;
-    final blacklistedTags = ref.watch(blacklistTagsProvider(booruConfig));
 
     return LayoutBuilder(
       builder: (context, constraints) => PostGrid(
@@ -120,7 +119,6 @@ class _DanbooruInfinitePostListState
         multiSelectController: _multiSelectController,
         onLoadMore: widget.onLoadMore,
         onRefresh: widget.onRefresh,
-        blacklistedTagString: blacklistedTags.join('\n'),
         itemBuilder: (context, items, index) {
           final post = items[index];
           final (width, height, cacheWidth, cacheHeight) =

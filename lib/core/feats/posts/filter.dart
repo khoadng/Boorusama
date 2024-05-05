@@ -60,6 +60,7 @@ class TagFilterData {
     this.downvotes,
     this.uploaderId,
     this.source,
+    this.id,
   });
 
   TagFilterData.tags({
@@ -68,6 +69,7 @@ class TagFilterData {
         score = 0,
         source = null,
         uploaderId = null,
+        id = null,
         downvotes = null;
 
   final Set<String> tags;
@@ -76,6 +78,7 @@ class TagFilterData {
   final int? downvotes;
   final int? uploaderId;
   final String? source;
+  final int? id;
 }
 
 class TagExpression extends Equatable {

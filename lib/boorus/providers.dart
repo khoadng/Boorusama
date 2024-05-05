@@ -239,7 +239,7 @@ final blacklistTagsProvider =
         .watch(danbooruBlacklistedTagsWithCensoredTagsProvider(config))
         .maybeWhen(
           data: (data) => data,
-          orElse: () => globalBlacklistedTags,
+          orElse: () => {},
         ),
     BooruType.e621 ||
     BooruType.szurubooru ||

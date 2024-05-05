@@ -89,7 +89,6 @@ class _InfinitePostListScaffoldState<T extends Post>
   Widget build(BuildContext context) {
     final settings = ref.watch(settingsProvider);
     final config = ref.watchConfig;
-    final blacklistedTags = ref.watch(blacklistTagsProvider(config));
     final booruBuilder = ref.watchBooruBuilder(config);
     final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
     final canHandleLongPress = booruBuilder?.canHandlePostGesture(
@@ -139,7 +138,6 @@ class _InfinitePostListScaffoldState<T extends Post>
         multiSelectController: _multiSelectController,
         onLoadMore: widget.onLoadMore,
         onRefresh: widget.onRefresh,
-        blacklistedTagString: blacklistedTags.join('\n'),
         itemBuilder: (context, items, index) {
           final post = items[index];
           final (width, height, cacheWidth, cacheHeight) =
