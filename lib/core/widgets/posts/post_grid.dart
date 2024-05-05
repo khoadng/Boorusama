@@ -94,7 +94,7 @@ class PostGrid<T extends Post> extends ConsumerStatefulWidget {
     super.key,
     this.onLoadMore,
     this.onRefresh,
-    this.sliverHeaderBuilder,
+    this.sliverHeaders,
     this.scrollController,
     this.contextMenuBuilder,
     this.multiSelectActions,
@@ -115,7 +115,7 @@ class PostGrid<T extends Post> extends ConsumerStatefulWidget {
 
   final VoidCallback? onLoadMore;
   final void Function()? onRefresh;
-  final List<Widget> Function(BuildContext context)? sliverHeaderBuilder;
+  final List<Widget>? sliverHeaders;
   final AutoScrollController? scrollController;
   final Widget Function(Post post, void Function() next)? contextMenuBuilder;
 
@@ -430,9 +430,8 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                           child: CustomScrollView(
                             controller: _autoScrollController,
                             slivers: [
-                              if (!multiSelect &&
-                                  widget.sliverHeaderBuilder != null)
-                                ...widget.sliverHeaderBuilder!(context),
+                              if (!multiSelect && widget.sliverHeaders != null)
+                                ...widget.sliverHeaders!,
                               if (settings.showPostListConfigHeader)
                                 if (isMobilePlatform())
                                   ConditionalValueListenableBuilder(

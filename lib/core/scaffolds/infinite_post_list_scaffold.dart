@@ -108,22 +108,20 @@ class _InfinitePostListScaffoldState<T extends Post>
         refreshAtStart: widget.refreshAtStart,
         scrollController: _autoScrollController,
         safeArea: widget.safeArea,
-        sliverHeaderBuilder: (context) {
-          return [
-            ...widget.sliverHeaderBuilder?.call(context) ?? [],
-            if (settings.imageListType == ImageListType.masonry &&
-                config.booruType == BooruType.gelbooruV1)
-              SliverToBoxAdapter(
-                child: WarningContainer(
-                    contentBuilder: (context) => Text(
-                          'Consider switching to the "Standard" layout. "Masonry" is glitchy on Gelbooru V1.',
-                          style: TextStyle(
-                            color: context.colorScheme.onError,
-                          ),
-                        )),
-              ),
-          ];
-        },
+        sliverHeaders: [
+          ...widget.sliverHeaderBuilder?.call(context) ?? [],
+          if (settings.imageListType == ImageListType.masonry &&
+              config.booruType == BooruType.gelbooruV1)
+            SliverToBoxAdapter(
+              child: WarningContainer(
+                  contentBuilder: (context) => Text(
+                        'Consider switching to the "Standard" layout. "Masonry" is glitchy on Gelbooru V1.',
+                        style: TextStyle(
+                          color: context.colorScheme.onError,
+                        ),
+                      )),
+            ),
+        ],
         footerBuilder: (context, selectedItems) =>
             widget.multiSelectActions != null
                 ? widget.multiSelectActions!.call(

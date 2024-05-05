@@ -83,7 +83,7 @@ class _MostViewedContent extends ConsumerWidget {
                 errors: errors,
                 controller: controller,
                 safeArea: false,
-                sliverHeaderBuilder: (context) => [
+                sliverHeaders: [
                   ExploreSliverAppBar(
                     title: 'explore.most_viewed'.tr(),
                   ),

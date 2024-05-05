@@ -103,7 +103,7 @@ class _ResultViewState extends ConsumerState<ResultView> {
           scrollController: scrollController,
           controller: controller,
           errors: errors,
-          sliverHeaderBuilder: (context) => [
+          sliverHeaders: [
             ...widget.headerBuilder?.call(controller) ?? [],
             SliverList.builder(
               itemCount: widgets.length,
