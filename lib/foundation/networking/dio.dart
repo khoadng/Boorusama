@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:io';
+
 // Package imports:
 import 'package:dio/dio.dart';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
@@ -8,6 +11,8 @@ import 'package:dio_http2_adapter/dio_http2_adapter.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/foundation/http/dio_logger_interceptor.dart';
+import 'package:boorusama/router.dart';
+import 'cloudflare_challenge_interceptor.dart';
 
 // Some user might input the url with /index.php/ or /index.php so we need to clean it
 String _cleanUrl(String url) {
@@ -36,11 +41,13 @@ Dio newDio(
       booru?.getSiteProtocol(baseUrl) == NetworkProtocol.https_2_0;
   final apiUrl = booru?.getApiUrl(baseUrl) ?? baseUrl;
 
+  final context = navigatorKey.currentContext;
+
   final dio = Dio(BaseOptions(
     // This is a hack to clean the url, if there are more sites that need this we should refactor this into something more generic
     baseUrl: _cleanUrl(apiUrl),
     headers: {
-      'User-Agent': generator.generate(),
+      HttpHeaders.userAgentHeader: generator.generate(),
     },
   ));
 
@@ -61,6 +68,15 @@ Dio newDio(
       ),
     ),
   );
+
+  if (context != null) {
+    dio.interceptors.add(
+      CloudflareChallengeInterceptor(
+        storagePath: args.cacheDir.path,
+        context: context,
+      ),
+    );
+  }
 
   dio.interceptors.add(
     LoggingInterceptor(
