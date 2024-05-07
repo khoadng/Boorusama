@@ -31,8 +31,7 @@ class CreateE621ConfigPage extends ConsumerStatefulWidget {
 
 class _CreateDanbooruConfigPageState
     extends ConsumerState<CreateE621ConfigPage> {
-  late var login = widget.config.login ?? '';
-  late var apiKey = widget.config.apiKey ?? '';
+  late final auth = ValueNotifier(AuthConfigData.fromConfig(widget.config));
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +43,7 @@ class _CreateDanbooruConfigPageState
       hasDownloadTab: true,
       hasRatingFilter: true,
       tabsBuilder: (context) => {},
-      allowSubmit: allowSubmit,
+      allowSubmit: defaultAllowSubmitWithAuth(auth.value),
       submit: submit,
     );
   }
@@ -56,17 +55,25 @@ class _CreateDanbooruConfigPageState
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const SizedBox(height: 24),
-          CreateBooruLoginField(
-            text: login,
-            labelText: 'booru.login_name_label'.tr(),
-            hintText: 'e.g: my_login',
-            onChanged: (value) => setState(() => login = value),
+          ValueListenableBuilder(
+            valueListenable: auth,
+            builder: (_, auth, __) => CreateBooruLoginField(
+              text: auth.login,
+              labelText: 'booru.login_name_label'.tr(),
+              hintText: 'e.g: my_login',
+              onChanged: (value) =>
+                  this.auth.value = auth.copyWith(login: value),
+            ),
           ),
           const SizedBox(height: 16),
-          CreateBooruApiKeyField(
-            text: apiKey,
-            hintText: 'e.g: o6H5u8QrxC7dN3KvF9D2bM4p',
-            onChanged: (value) => setState(() => apiKey = value),
+          ValueListenableBuilder(
+            valueListenable: auth,
+            builder: (_, auth, __) => CreateBooruApiKeyField(
+              text: auth.apiKey,
+              hintText: 'e.g: o6H5u8QrxC7dN3KvF9D2bM4p',
+              onChanged: (value) =>
+                  this.auth.value = auth.copyWith(apiKey: value),
+            ),
           ),
         ],
       ),
@@ -75,8 +82,8 @@ class _CreateDanbooruConfigPageState
 
   void submit(CreateConfigData data) {
     final config = AddNewBooruConfig(
-      login: login,
-      apiKey: apiKey,
+      login: auth.value.login,
+      apiKey: auth.value.apiKey,
       booru: widget.config.booruType,
       booruHint: widget.config.booruType,
       configName: data.configName,
@@ -96,10 +103,5 @@ class _CreateDanbooruConfigPageState
         .addOrUpdate(config: widget.config, newConfig: config);
 
     context.navigator.pop();
-  }
-
-  bool allowSubmit(CreateConfigData data) {
-    return (login.isNotEmpty && apiKey.isNotEmpty) ||
-        (login.isEmpty && apiKey.isEmpty);
   }
 }
