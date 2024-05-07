@@ -36,8 +36,7 @@ class CreateDanbooruConfigPage extends ConsumerStatefulWidget {
 
 class _CreateDanbooruConfigPageState
     extends ConsumerState<CreateDanbooruConfigPage> {
-  late var login = widget.config.login ?? '';
-  late var apiKey = widget.config.apiKey ?? '';
+  late final auth = ValueNotifier(AuthConfigData.fromConfig(widget.config));
   late var hideDeleted =
       widget.config.deletedItemBehavior == BooruConfigDeletedItemBehavior.hide;
   late var imageDetaisQuality = widget.config.imageDetaisQuality;
@@ -80,13 +79,12 @@ class _CreateDanbooruConfigPageState
             ),
           ),
         ],
-        allowSubmit: allowSubmit,
+        allowSubmit: defaultAllowSubmitWithAuth(auth.value),
         submit: null,
         useNewSubmitFlow: true,
         onSubmit: (data) => data.toBooruConfigDataFromInitialConfig(
               config: widget.config,
-              login: login,
-              apiKey: apiKey,
+              auth: auth.value,
               hideDeleted: hideDeleted,
             ));
   }
@@ -98,17 +96,25 @@ class _CreateDanbooruConfigPageState
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const SizedBox(height: 24),
-          CreateBooruLoginField(
-            text: login,
-            labelText: 'booru.login_name_label'.tr(),
-            hintText: 'e.g: my_login',
-            onChanged: (value) => setState(() => login = value),
+          ValueListenableBuilder(
+            valueListenable: auth,
+            builder: (_, auth, __) => CreateBooruLoginField(
+              text: auth.login,
+              labelText: 'booru.login_name_label'.tr(),
+              hintText: 'e.g: my_login',
+              onChanged: (value) =>
+                  this.auth.value = auth.copyWith(login: value),
+            ),
           ),
           const SizedBox(height: 16),
-          CreateBooruApiKeyField(
-            text: apiKey,
-            hintText: 'e.g: o6H5u8QrxC7dN3KvF9D2bM4p',
-            onChanged: (value) => setState(() => apiKey = value),
+          ValueListenableBuilder(
+            valueListenable: auth,
+            builder: (_, auth, __) => CreateBooruApiKeyField(
+              text: auth.apiKey,
+              hintText: 'e.g: o6H5u8QrxC7dN3KvF9D2bM4p',
+              onChanged: (value) =>
+                  this.auth.value = auth.copyWith(apiKey: value),
+            ),
           ),
           const SizedBox(height: 8),
           if (!isApple())
@@ -123,10 +129,5 @@ class _CreateDanbooruConfigPageState
         ],
       ),
     );
-  }
-
-  bool allowSubmit(CreateConfigData data) {
-    return (login.isNotEmpty && apiKey.isNotEmpty) ||
-        (login.isEmpty && apiKey.isEmpty);
   }
 }

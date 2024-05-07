@@ -1,8 +1,8 @@
 // Flutter imports:
-import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
@@ -55,16 +55,56 @@ class CreateConfigData extends Equatable {
       ];
 }
 
+class AuthConfigData extends Equatable {
+  const AuthConfigData({
+    required this.login,
+    required this.apiKey,
+  });
+
+  const AuthConfigData.empty()
+      : login = '',
+        apiKey = '';
+
+  factory AuthConfigData.fromConfig(BooruConfig config) => AuthConfigData(
+        login: config.login ?? '',
+        apiKey: config.apiKey ?? '',
+      );
+
+  final String login;
+  final String apiKey;
+
+  @override
+  List<Object?> get props => [login, apiKey];
+}
+
+extension AuthConfigDataX on AuthConfigData {
+  AuthConfigData copyWith({
+    String? login,
+    String? apiKey,
+  }) =>
+      AuthConfigData(
+        login: login ?? this.login,
+        apiKey: apiKey ?? this.apiKey,
+      );
+
+  bool get isEmpty => login.isEmpty && apiKey.isEmpty;
+
+  bool get isValid => isEmpty || (login.isNotEmpty && apiKey.isNotEmpty);
+}
+
+bool Function(CreateConfigData data) defaultAllowSubmitWithAuth(
+        AuthConfigData auth) =>
+    (data) => auth.isValid;
+
 extension CreateConfigDataX on CreateConfigData {
   BooruConfigData toBooruConfigDataFromInitialConfig({
     required BooruConfig config,
-    required String login,
-    required String apiKey,
+    required AuthConfigData auth,
     required bool hideDeleted,
   }) =>
       BooruConfigData(
-        login: login,
-        apiKey: apiKey,
+        login: auth.login,
+        apiKey: auth.apiKey,
         booruId: config.booruType.toBooruId(),
         booruIdHint: config.booruType.toBooruId(),
         name: configName,
