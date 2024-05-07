@@ -49,7 +49,6 @@ class _CreatePhilomenaConfigPageState
         onChanged: (value) => setState(() => imageDetaisQuality = value),
       ),
       tabsBuilder: (context) => {},
-      allowSubmit: allowSubmit,
       submit: submit,
     );
   }
@@ -79,10 +78,6 @@ class _CreatePhilomenaConfigPageState
         ],
       ),
     );
-  }
-
-  bool allowSubmit(CreateConfigData data) {
-    return data.configName.isNotEmpty;
   }
 
   void submit(CreateConfigData data) {

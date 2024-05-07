@@ -36,13 +36,8 @@ class _CreateGelbooruV1ConfigPageState
       config: widget.config,
       hasDownloadTab: true,
       tabsBuilder: (context) => {},
-      allowSubmit: allowSubmit,
       submit: submit,
     );
-  }
-
-  bool allowSubmit(CreateConfigData data) {
-    return data.configName.isNotEmpty;
   }
 
   void submit(CreateConfigData data) {

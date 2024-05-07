@@ -34,13 +34,8 @@ class _CreateAnonConfigPageState extends ConsumerState<CreateAnonConfigPage> {
       backgroundColor: widget.backgroundColor,
       config: widget.config,
       tabsBuilder: (context) => {},
-      allowSubmit: allowSubmit,
       submit: submit,
     );
-  }
-
-  bool allowSubmit(CreateConfigData data) {
-    return data.configName.isNotEmpty;
   }
 
   void submit(CreateConfigData data) {

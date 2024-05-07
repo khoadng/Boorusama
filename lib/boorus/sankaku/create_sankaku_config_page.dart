@@ -107,8 +107,6 @@ class _CreateDanbooruConfigPageState
   }
 
   bool allowSubmit(CreateConfigData data) {
-    if (data.configName.isEmpty) return false;
-
     return (login.isNotEmpty && password.isNotEmpty) ||
         (login.isEmpty && password.isEmpty);
   }

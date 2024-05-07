@@ -99,8 +99,6 @@ class _CreateDanbooruConfigPageState
   }
 
   bool allowSubmit(CreateConfigData data) {
-    if (data.configName.isEmpty) return false;
-
     return (login.isNotEmpty && apiKey.isNotEmpty) ||
         (login.isEmpty && apiKey.isEmpty);
   }

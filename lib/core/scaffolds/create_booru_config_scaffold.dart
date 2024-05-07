@@ -97,7 +97,7 @@ class CreateBooruConfigScaffold extends ConsumerStatefulWidget {
     this.backgroundColor,
     required this.config,
     required this.tabsBuilder,
-    required this.allowSubmit,
+    this.allowSubmit,
     required this.submit,
     required this.isNewConfig,
     this.authTab,
@@ -116,7 +116,7 @@ class CreateBooruConfigScaffold extends ConsumerStatefulWidget {
   final Color? backgroundColor;
   final BooruConfig config;
   final Map<String, Widget> Function(BuildContext context) tabsBuilder;
-  final bool Function(CreateConfigData data) allowSubmit;
+  final bool Function(CreateConfigData data)? allowSubmit;
   final void Function(CreateConfigData data)? submit;
 
   final Widget? authTab;
@@ -158,6 +158,16 @@ class _CreateBooruConfigScaffoldState
       widget.config.postGestures ?? const PostGestureConfig.undefined();
   late var defaultPreviewImageButtonAction =
       widget.config.defaultPreviewImageButtonAction;
+
+  bool allowSubmit(CreateConfigData data) {
+    if (data.configName.isEmpty) return false;
+
+    if (widget.allowSubmit != null) {
+      return widget.allowSubmit!(data);
+    }
+
+    return true;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -260,13 +270,13 @@ class _CreateBooruConfigScaffoldState
                               Expanded(
                                 child: !widget.useNewSubmitFlow
                                     ? CreateBooruSubmitButton(
-                                        onSubmit: widget.allowSubmit(params)
+                                        onSubmit: allowSubmit(params)
                                             ? () => widget.submit?.call(params)
                                             : null,
                                       )
                                     : CreateBooruSubmitButton(
                                         onSubmit: widget.onSubmit != null &&
-                                                widget.allowSubmit(params)
+                                                allowSubmit(params)
                                             ? () {
                                                 final data =
                                                     widget.onSubmit!(params);
