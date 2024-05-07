@@ -42,8 +42,7 @@ class _CreatePhilomenaConfigPageState
       backgroundColor: widget.backgroundColor,
       config: widget.config,
       authTab: _buildAuthTab(),
-      postDetailsResolutionBuilder: (context) =>
-          CreateBooruImageDetailsResolutionOptionTile(
+      postDetailsResolution: CreateBooruImageDetailsResolutionOptionTile(
         value: imageDetaisQuality,
         items:
             PhilomenaPostQualityType.values.map((e) => e.stringify()).toList(),

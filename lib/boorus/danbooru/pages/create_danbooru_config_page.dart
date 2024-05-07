@@ -65,22 +65,21 @@ class _CreateDanbooruConfigPageState
               kEditAction => 'Edit',
               _ => describeDefaultGestureAction(action),
             },
-        postDetailsResolutionBuilder: (context) =>
-            CreateBooruImageDetailsResolutionOptionTile(
-              value: imageDetaisQuality,
-              items: PostQualityType.values.map((e) => e.stringify()).toList(),
-              onChanged: (value) => setState(() => imageDetaisQuality = value),
-            ),
+        postDetailsResolution: CreateBooruImageDetailsResolutionOptionTile(
+          value: imageDetaisQuality,
+          items: PostQualityType.values.map((e) => e.stringify()).toList(),
+          onChanged: (value) => setState(() => imageDetaisQuality = value),
+        ),
         tabsBuilder: (context) => {},
-        miscOptionBuilder: (context) => [
-              CreateBooruHideDeletedSwitch(
-                value: hideDeleted,
-                onChanged: (value) => setState(() => hideDeleted = value),
-                subtitle: const Text(
-                  'Hide low-quality images, some decent ones might also be hidden.',
-                ),
-              ),
-            ],
+        miscOptions: [
+          CreateBooruHideDeletedSwitch(
+            value: hideDeleted,
+            onChanged: (value) => setState(() => hideDeleted = value),
+            subtitle: const Text(
+              'Hide low-quality images, some decent ones might also be hidden.',
+            ),
+          ),
+        ],
         allowSubmit: allowSubmit,
         submit: null,
         useNewSubmitFlow: true,

@@ -101,10 +101,10 @@ class CreateBooruConfigScaffold extends ConsumerStatefulWidget {
     required this.submit,
     required this.isNewConfig,
     this.authTab,
-    this.postDetailsResolutionBuilder,
+    this.postDetailsResolution,
     this.hasDownloadTab = false,
     this.hasRatingFilter = false,
-    this.miscOptionBuilder,
+    this.miscOptions,
     this.postDetailsGestureActions = kDefaultGestureActions,
     this.postPreviewQuickActionButtonActions = kDefaultPreviewImageButtonAction,
     this.describePostDetailsAction,
@@ -121,12 +121,12 @@ class CreateBooruConfigScaffold extends ConsumerStatefulWidget {
 
   final Widget? authTab;
 
-  final Widget Function(BuildContext context)? postDetailsResolutionBuilder;
+  final Widget? postDetailsResolution;
 
   final bool hasDownloadTab;
   final bool hasRatingFilter;
 
-  final List<Widget> Function(BuildContext context)? miscOptionBuilder;
+  final List<Widget>? miscOptions;
 
   final Set<String?> postDetailsGestureActions;
   final String Function(String? action)? describePostDetailsAction;
@@ -496,15 +496,14 @@ class _CreateBooruConfigScaffoldState
                   setState(() => granularRatingFilters = value),
             ),
           ],
-          if (widget.postDetailsResolutionBuilder != null)
-            widget.postDetailsResolutionBuilder!(context)
+          if (widget.postDetailsResolution != null)
+            widget.postDetailsResolution!
           else
             CreateBooruGeneralPostDetailsResolutionOptionTile(
               value: imageDetaisQuality,
               onChanged: (value) => setState(() => imageDetaisQuality = value),
             ),
-          if (widget.miscOptionBuilder != null)
-            ...widget.miscOptionBuilder!(context),
+          if (widget.miscOptions != null) ...widget.miscOptions!,
         ],
       ),
     );
