@@ -97,7 +97,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruDesktopHomePage> {
     return DanbooruInfinitePostList(
       controller: controller,
       errors: errors,
-      sliverHeaderBuilder: (context) => children,
+      sliverHeaders: children,
     );
   }
 

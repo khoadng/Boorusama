@@ -5,10 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/feats/bookmarks/bookmarks.dart';
+import 'package:boorusama/core/feats/boorus/providers.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/error.dart';
+import 'package:boorusama/functional.dart';
 
 typedef PostScopeFetcher<T extends Post> = PostsOrErrorCore<T> Function(
     int page);
@@ -36,7 +40,20 @@ class _PostScopeState<T extends Post> extends ConsumerState<PostScope<T>> {
     fetcher: (page) => fetchPosts(page),
     refresher: () => fetchPosts(1),
     pageMode: ref.read(pageModeSettingsProvider),
-    keySelector: (item) => item.id,
+    blacklistedTags: ref.read(blacklistTagsProvider(ref.readConfig)),
+    blacklistedUrlsFetcher: () {
+      try {
+        final settings = ref.read(settingsProvider);
+
+        final bookmarks = settings.shouldFilterBookmarks
+            ? ref.read(bookmarkProvider).bookmarks
+            : <Bookmark>[].lock;
+
+        return bookmarks.map((e) => e.originalUrl).toSet();
+      } catch (_) {
+        return {};
+      }
+    },
   );
 
   BooruError? errors;
@@ -71,6 +88,17 @@ class _PostScopeState<T extends Post> extends ConsumerState<PostScope<T>> {
       pageModeSettingsProvider,
       (previous, next) {
         _controller.setPageMode(next);
+      },
+    );
+
+    ref.listen(
+      blacklistTagsProvider(ref.watchConfig),
+      (previous, next) {
+        if (previous != next) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _controller.setBlacklistedTags(next);
+          });
+        }
       },
     );
 

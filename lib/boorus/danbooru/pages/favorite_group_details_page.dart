@@ -49,10 +49,10 @@ class _FavoriteGroupDetailsPageState
   List<List<Object>> commands = [];
   bool editing = false;
   final AutoScrollController scrollController = AutoScrollController();
+  //TODO: this part might be broken after the new filtering system, need to check
   late final controller = PostGridController<DanbooruPost>(
     fetcher: (page) => getPostsFromIdQueue(widget.postIds),
     refresher: () => getPostsFromIdQueue(widget.postIds),
-    keySelector: (item) => item.id,
   );
 
   int rowCountEditMode = 2;

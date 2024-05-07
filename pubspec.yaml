@@ -22,6 +22,7 @@ dependencies:
     git:
       url: https://github.com/khoadng/flutter-context-menu.git
       ref: 314d1871b50d5376fa6fa30b81d7279a3734d018
+  cookie_jar: ^4.0.8
   crypto: ^3.0.3
   custom_sliding_segmented_control: ^1.8.1
   device_info_plus: ^10.0.1
@@ -119,6 +120,7 @@ dependencies:
   video_player: ^2.8.6
   video_player_macos: ^2.0.1
   visibility_detector: ^0.4.0+2
+  webview_cookie_manager: ^2.0.6
   webview_flutter: ^4.7.0
   webview_flutter_android: ^3.15.0
   xml: ^6.5.0

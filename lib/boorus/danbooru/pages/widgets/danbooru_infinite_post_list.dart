@@ -28,7 +28,7 @@ class DanbooruInfinitePostList extends ConsumerStatefulWidget {
     super.key,
     this.onLoadMore,
     this.onRefresh,
-    this.sliverHeaderBuilder,
+    this.sliverHeaders,
     this.scrollController,
     this.contextMenuBuilder,
     this.multiSelectActions,
@@ -42,7 +42,7 @@ class DanbooruInfinitePostList extends ConsumerStatefulWidget {
 
   final VoidCallback? onLoadMore;
   final void Function()? onRefresh;
-  final List<Widget> Function(BuildContext context)? sliverHeaderBuilder;
+  final List<Widget>? sliverHeaders;
   final AutoScrollController? scrollController;
   final Widget Function(Post post, void Function() next)? contextMenuBuilder;
 
@@ -101,14 +101,13 @@ class _DanbooruInfinitePostListState
           booruConfig.postGestures?.preview,
         ) ??
         false;
-    final blacklistedTags = ref.watch(blacklistTagsProvider(booruConfig));
 
     return LayoutBuilder(
       builder: (context, constraints) => PostGrid(
         refreshAtStart: widget.refreshAtStart,
         controller: widget.controller,
         scrollController: _autoScrollController,
-        sliverHeaderBuilder: widget.sliverHeaderBuilder,
+        sliverHeaders: widget.sliverHeaders,
         safeArea: widget.safeArea,
         footerBuilder: (context, selectedItems) =>
             DanbooruMultiSelectionActions(
@@ -120,7 +119,6 @@ class _DanbooruInfinitePostListState
         multiSelectController: _multiSelectController,
         onLoadMore: widget.onLoadMore,
         onRefresh: widget.onRefresh,
-        blacklistedTagString: blacklistedTags.join('\n'),
         itemBuilder: (context, items, index) {
           final post = items[index];
           final (width, height, cacheWidth, cacheHeight) =
@@ -142,75 +140,69 @@ class _DanbooruInfinitePostListState
               ),
               child: child,
             ),
-            child: DownloadProviderWidget(
-              builder: (context, download) => ConditionalParentWidget(
-                condition: canHandleLongPress,
-                conditionalBuilder: (child) => GestureDetector(
-                  onLongPress: () {
-                    if (postGesturesHandler != null) {
-                      postGesturesHandler(
-                        ref,
-                        ref.watchConfig.postGestures?.preview?.longPress,
-                        post,
-                        download,
-                      );
-                    }
-                  },
-                  child: child,
-                ),
-                child: ExplicitContentBlockOverlay(
-                  block: settings.blurExplicitMedia && post.isExplicit,
-                  width: width ?? 100,
-                  height: height ?? 100,
-                  childBuilder: (block) => DanbooruImageGridItem(
-                    ignoreBanOverlay: block,
-                    post: post,
-                    hideOverlay: multiSelect,
-                    autoScrollOptions: AutoScrollOptions(
-                      controller: _autoScrollController,
-                      index: index,
-                    ),
-                    onTap: !multiSelect
-                        ? () {
-                            if (booruBuilder?.canHandlePostGesture(
-                                        GestureType.tap,
-                                        booruConfig.postGestures?.preview) ==
-                                    true &&
-                                postGesturesHandler != null) {
-                              postGesturesHandler(
-                                ref,
-                                ref.watchConfig.postGestures?.preview?.tap,
-                                post,
-                                download,
-                              );
-                            } else {
-                              goToPostDetailsPage(
-                                context: context,
-                                posts: items,
-                                initialIndex: index,
-                                scrollController: _autoScrollController,
-                              );
-                            }
+            child: ConditionalParentWidget(
+              condition: canHandleLongPress,
+              conditionalBuilder: (child) => GestureDetector(
+                onLongPress: () {
+                  if (postGesturesHandler != null) {
+                    postGesturesHandler(
+                      ref,
+                      ref.watchConfig.postGestures?.preview?.longPress,
+                      post,
+                    );
+                  }
+                },
+                child: child,
+              ),
+              child: ExplicitContentBlockOverlay(
+                block: settings.blurExplicitMedia && post.isExplicit,
+                width: width ?? 100,
+                height: height ?? 100,
+                childBuilder: (block) => DanbooruImageGridItem(
+                  ignoreBanOverlay: block,
+                  post: post,
+                  hideOverlay: multiSelect,
+                  autoScrollOptions: AutoScrollOptions(
+                    controller: _autoScrollController,
+                    index: index,
+                  ),
+                  onTap: !multiSelect
+                      ? () {
+                          if (booruBuilder?.canHandlePostGesture(
+                                      GestureType.tap,
+                                      booruConfig.postGestures?.preview) ==
+                                  true &&
+                              postGesturesHandler != null) {
+                            postGesturesHandler(
+                              ref,
+                              ref.watchConfig.postGestures?.preview?.tap,
+                              post,
+                            );
+                          } else {
+                            goToPostDetailsPage(
+                              context: context,
+                              posts: items,
+                              initialIndex: index,
+                              scrollController: _autoScrollController,
+                            );
                           }
-                        : null,
-                    enableFav:
-                        !multiSelect && booruConfig.hasLoginDetails() && !block,
-                    image: BooruImage(
-                      aspectRatio: post.isBanned ? 0.8 : post.aspectRatio,
-                      imageUrl:
-                          block ? '' : post.thumbnailFromSettings(settings),
-                      borderRadius: BorderRadius.circular(
-                        settings.imageBorderRadius,
-                      ),
-                      forceFill:
-                          settings.imageListType == ImageListType.standard,
-                      placeholderUrl: post.thumbnailImageUrl,
-                      width: width,
-                      height: height,
-                      cacheHeight: cacheHeight,
-                      cacheWidth: cacheWidth,
-                      // null, // Will cause error sometimes, disabled for now
+                        }
+                      : null,
+                  enableFav:
+                      !multiSelect && booruConfig.hasLoginDetails() && !block,
+                  image: BooruImage(
+                    aspectRatio: post.isBanned ? 0.8 : post.aspectRatio,
+                    imageUrl: block ? '' : post.thumbnailFromSettings(settings),
+                    borderRadius: BorderRadius.circular(
+                      settings.imageBorderRadius,
                     ),
+                    forceFill: settings.imageListType == ImageListType.standard,
+                    placeholderUrl: post.thumbnailImageUrl,
+                    width: width,
+                    height: height,
+                    cacheHeight: cacheHeight,
+                    cacheWidth: cacheWidth,
+                    // null, // Will cause error sometimes, disabled for now
                   ),
                 ),
               ),
@@ -252,21 +244,19 @@ class FavoriteGroupMultiSelectionActions extends ConsumerWidget {
     return ButtonBar(
       alignment: MainAxisAlignment.center,
       children: [
-        DownloadProviderWidget(
-          builder: (context, download) => IconButton(
-            onPressed: selectedPosts.isNotEmpty
-                ? () {
-                    showDownloadStartToast(context);
-                    // ignore: prefer_foreach
-                    for (final p in selectedPosts) {
-                      download(p);
-                    }
-
-                    endMultiSelect();
+        IconButton(
+          onPressed: selectedPosts.isNotEmpty
+              ? () {
+                  showDownloadStartToast(context);
+                  // ignore: prefer_foreach
+                  for (final p in selectedPosts) {
+                    ref.download(p);
                   }
-                : null,
-            icon: const Icon(Symbols.download),
-          ),
+
+                  endMultiSelect();
+                }
+              : null,
+          icon: const Icon(Symbols.download),
         ),
         if (config.hasLoginDetails())
           IconButton(

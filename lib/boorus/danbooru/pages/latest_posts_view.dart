@@ -48,7 +48,7 @@ class _LatestViewState extends ConsumerState<LatestView> {
         errors: errors,
         controller: controller,
         scrollController: _autoScrollController,
-        sliverHeaderBuilder: (context) => [
+        sliverHeaders: [
           SliverAppBar(
             backgroundColor: context.theme.scaffoldBackgroundColor,
             toolbarHeight: kToolbarHeight * 1.2,

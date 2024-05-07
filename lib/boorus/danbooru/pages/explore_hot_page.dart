@@ -34,7 +34,7 @@ class ExploreHotPage extends ConsumerWidget {
             builder: (context, controller, errors) => DanbooruInfinitePostList(
               errors: errors,
               controller: controller,
-              sliverHeaderBuilder: (context) => [
+              sliverHeaders: [
                 ExploreSliverAppBar(
                   title: 'explore.hot'.tr(),
                 ),

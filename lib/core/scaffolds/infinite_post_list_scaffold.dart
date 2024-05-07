@@ -89,7 +89,6 @@ class _InfinitePostListScaffoldState<T extends Post>
   Widget build(BuildContext context) {
     final settings = ref.watch(settingsProvider);
     final config = ref.watchConfig;
-    final blacklistedTags = ref.watch(blacklistTagsProvider(config));
     final booruBuilder = ref.watchBooruBuilder(config);
     final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
     final canHandleLongPress = booruBuilder?.canHandlePostGesture(
@@ -108,22 +107,20 @@ class _InfinitePostListScaffoldState<T extends Post>
         refreshAtStart: widget.refreshAtStart,
         scrollController: _autoScrollController,
         safeArea: widget.safeArea,
-        sliverHeaderBuilder: (context) {
-          return [
-            ...widget.sliverHeaderBuilder?.call(context) ?? [],
-            if (settings.imageListType == ImageListType.masonry &&
-                config.booruType == BooruType.gelbooruV1)
-              SliverToBoxAdapter(
-                child: WarningContainer(
-                    contentBuilder: (context) => Text(
-                          'Consider switching to the "Standard" layout. "Masonry" is glitchy on Gelbooru V1.',
-                          style: TextStyle(
-                            color: context.colorScheme.onError,
-                          ),
-                        )),
-              ),
-          ];
-        },
+        sliverHeaders: [
+          ...widget.sliverHeaderBuilder?.call(context) ?? [],
+          if (settings.imageListType == ImageListType.masonry &&
+              config.booruType == BooruType.gelbooruV1)
+            SliverToBoxAdapter(
+              child: WarningContainer(
+                  contentBuilder: (context) => Text(
+                        'Consider switching to the "Standard" layout. "Masonry" is glitchy on Gelbooru V1.',
+                        style: TextStyle(
+                          color: context.colorScheme.onError,
+                        ),
+                      )),
+            ),
+        ],
         footerBuilder: (context, selectedItems) =>
             widget.multiSelectActions != null
                 ? widget.multiSelectActions!.call(
@@ -141,7 +138,6 @@ class _InfinitePostListScaffoldState<T extends Post>
         multiSelectController: _multiSelectController,
         onLoadMore: widget.onLoadMore,
         onRefresh: widget.onRefresh,
-        blacklistedTagString: blacklistedTags.join('\n'),
         itemBuilder: (context, items, index) {
           final post = items[index];
           final (width, height, cacheWidth, cacheHeight) =
@@ -170,96 +166,91 @@ class _InfinitePostListScaffoldState<T extends Post>
                     ),
               child: child,
             ),
-            child: DownloadProviderWidget(
-              builder: (context, download) => ConditionalParentWidget(
-                condition: canHandleLongPress,
-                conditionalBuilder: (child) => GestureDetector(
-                  onLongPress: () {
-                    if (postGesturesHandler != null) {
-                      postGesturesHandler(
-                        ref,
-                        ref.watchConfig.postGestures?.preview?.longPress,
-                        post,
-                        download,
-                      );
+            child: ConditionalParentWidget(
+              condition: canHandleLongPress,
+              conditionalBuilder: (child) => GestureDetector(
+                onLongPress: () {
+                  if (postGesturesHandler != null) {
+                    postGesturesHandler(
+                      ref,
+                      ref.watchConfig.postGestures?.preview?.longPress,
+                      post,
+                    );
+                  }
+                },
+                child: child,
+              ),
+              child: ExplicitContentBlockOverlay(
+                width: width ?? 100,
+                height: height ?? 100,
+                block: settings.blurExplicitMedia && post.isExplicit,
+                childBuilder: (block) => ImageGridItem(
+                  isGif: post.isGif,
+                  isAI: post.isAI,
+                  hideOverlay: multiSelect,
+                  onTap: !multiSelect
+                      ? () {
+                          if (booruBuilder?.canHandlePostGesture(
+                                      GestureType.tap,
+                                      config.postGestures?.preview) ==
+                                  true &&
+                              postGesturesHandler != null) {
+                            postGesturesHandler(
+                              ref,
+                              ref.watchConfig.postGestures?.preview?.tap,
+                              post,
+                            );
+                          } else {
+                            goToPostDetailsPage(
+                              context: context,
+                              posts: items,
+                              initialIndex: index,
+                              scrollController: _autoScrollController,
+                            );
+                          }
+                        }
+                      : null,
+                  isFaved: ref.watch(favoriteProvider(post.id)),
+                  enableFav: !multiSelect && canFavorite && !block,
+                  quickActionButtonBuilder:
+                      defaultImagePreviewButtonBuilder(ref, post),
+                  onFavToggle: (isFaved) async {
+                    if (isFaved) {
+                      if (favoriteAdder == null) return;
+                      await favoriteAdder(post.id, ref);
+                    } else {
+                      if (favoriteRemover == null) return;
+                      await favoriteRemover(post.id, ref);
                     }
                   },
-                  child: child,
-                ),
-                child: ExplicitContentBlockOverlay(
-                  width: width ?? 100,
-                  height: height ?? 100,
-                  block: settings.blurExplicitMedia && post.isExplicit,
-                  childBuilder: (block) => ImageGridItem(
-                    isGif: post.isGif,
-                    isAI: post.isAI,
-                    hideOverlay: multiSelect,
-                    onTap: !multiSelect
-                        ? () {
-                            if (booruBuilder?.canHandlePostGesture(
-                                        GestureType.tap,
-                                        config.postGestures?.preview) ==
-                                    true &&
-                                postGesturesHandler != null) {
-                              postGesturesHandler(
-                                ref,
-                                ref.watchConfig.postGestures?.preview?.tap,
-                                post,
-                                download,
-                              );
-                            } else {
-                              goToPostDetailsPage(
-                                context: context,
-                                posts: items,
-                                initialIndex: index,
-                                scrollController: _autoScrollController,
-                              );
-                            }
-                          }
-                        : null,
-                    isFaved: ref.watch(favoriteProvider(post.id)),
-                    enableFav: !multiSelect && canFavorite && !block,
-                    quickActionButtonBuilder:
-                        defaultImagePreviewButtonBuilder(ref, post),
-                    onFavToggle: (isFaved) async {
-                      if (isFaved) {
-                        if (favoriteAdder == null) return;
-                        await favoriteAdder(post.id, ref);
-                      } else {
-                        if (favoriteRemover == null) return;
-                        await favoriteRemover(post.id, ref);
-                      }
-                    },
-                    autoScrollOptions: AutoScrollOptions(
-                      controller: _autoScrollController,
-                      index: index,
-                    ),
-                    isAnimated: post.isAnimated,
-                    isTranslated: post.isTranslated,
-                    hasComments: post.hasComment,
-                    hasParentOrChildren: post.hasParentOrChildren,
-                    score: settings.showScoresInGrid ? post.score : null,
+                  autoScrollOptions: AutoScrollOptions(
+                    controller: _autoScrollController,
+                    index: index,
+                  ),
+                  isAnimated: post.isAnimated,
+                  isTranslated: post.isTranslated,
+                  hasComments: post.hasComment,
+                  hasParentOrChildren: post.hasParentOrChildren,
+                  score: settings.showScoresInGrid ? post.score : null,
+                  borderRadius: BorderRadius.circular(
+                    settings.imageBorderRadius,
+                  ),
+                  image: BooruImage(
+                    aspectRatio: post.aspectRatio,
+                    imageUrl: block
+                        ? ''
+                        : gridThumbnailUrlBuilder != null
+                            ? gridThumbnailUrlBuilder(settings, post)
+                            : post.thumbnailImageUrl,
                     borderRadius: BorderRadius.circular(
                       settings.imageBorderRadius,
                     ),
-                    image: BooruImage(
-                      aspectRatio: post.aspectRatio,
-                      imageUrl: block
-                          ? ''
-                          : gridThumbnailUrlBuilder != null
-                              ? gridThumbnailUrlBuilder(settings, post)
-                              : post.thumbnailImageUrl,
-                      borderRadius: BorderRadius.circular(
-                        settings.imageBorderRadius,
-                      ),
-                      forceFill:
-                          settings.imageListType == ImageListType.standard,
-                      placeholderUrl: post.thumbnailImageUrl,
-                      width: width,
-                      height: height,
-                      cacheHeight: cacheHeight,
-                      cacheWidth: cacheWidth,
-                    ),
+                    forceFill: settings.imageListType == ImageListType.standard,
+                    placeholderUrl: post.thumbnailImageUrl,
+                    width: width,
+                    height: height,
+                    cacheHeight: cacheHeight,
+                    cacheWidth: cacheWidth,
                   ),
                 ),
               ),

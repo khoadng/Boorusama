@@ -25,7 +25,6 @@ import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'widgets/platforms/platforms.dart';
 
-final navigatorKey = GlobalKey<NavigatorState>();
 const kMinSideBarWidth = 62.0;
 
 class App extends StatelessWidget {

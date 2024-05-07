@@ -82,7 +82,7 @@ class _PopularContent extends ConsumerWidget {
                 errors: errors,
                 controller: controller,
                 safeArea: false,
-                sliverHeaderBuilder: (context) => [
+                sliverHeaders: [
                   ExploreSliverAppBar(
                     title: 'explore.popular'.tr(),
                   ),

@@ -52,7 +52,7 @@ class _SavedSearchFeedPageState extends ConsumerState<SavedSearchFeedPage> {
                   DanbooruInfinitePostList(
                 errors: errors,
                 controller: controller,
-                sliverHeaderBuilder: (context) => [
+                sliverHeaders: [
                   SliverAppBar(
                     title: const Text('saved_search.saved_search_feed').tr(),
                     floating: true,

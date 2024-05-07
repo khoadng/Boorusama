@@ -13,7 +13,6 @@ import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 class GeneralPostContextMenu extends ConsumerWidget {
@@ -37,64 +36,62 @@ class GeneralPostContextMenu extends ConsumerWidget {
     final commentPageBuilder =
         ref.watchBooruBuilder(booruConfig)?.commentPageBuilder;
 
-    return DownloadProviderWidget(
-      builder: (context, download) => GenericContextMenu(
-        buttonConfigs: [
+    return GenericContextMenu(
+      buttonConfigs: [
+        ContextMenuButtonConfig(
+          'post.action.preview'.tr(),
+          onPressed: () => goToImagePreviewPage(ref, context, post),
+        ),
+        if (commentPageBuilder != null && post.hasComment)
           ContextMenuButtonConfig(
-            'post.action.preview'.tr(),
-            onPressed: () => goToImagePreviewPage(ref, context, post),
+            'post.action.view_comments'.tr(),
+            onPressed: () => goToCommentPage(context, ref, post.id),
           ),
-          if (commentPageBuilder != null && post.hasComment)
-            ContextMenuButtonConfig(
-              'post.action.view_comments'.tr(),
-              onPressed: () => goToCommentPage(context, ref, post.id),
-            ),
+        ContextMenuButtonConfig(
+          'download.download'.tr(),
+          onPressed: () {
+            showDownloadStartToast(context);
+            ref.download(post);
+          },
+        ),
+        if (!isBookmarked)
           ContextMenuButtonConfig(
-            'download.download'.tr(),
+            'post.detail.add_to_bookmark'.tr(),
+            onPressed: () => ref.bookmarks
+              ..addBookmarkWithToast(
+                booruConfig.booruId,
+                booruConfig.url,
+                post,
+              ),
+          )
+        else
+          ContextMenuButtonConfig(
+            'post.detail.remove_from_bookmark'.tr(),
+            onPressed: () => ref.bookmarks
+              ..removeBookmarkWithToast(
+                bookmarkState.getBookmark(post, booruConfig.booruType)!,
+              ),
+          ),
+        ContextMenuButtonConfig(
+          'View tags',
+          onPressed: () {
+            goToShowTaglistPage(ref, post.extractTags());
+          },
+        ),
+        if (!booruConfig.hasStrictSFW)
+          ContextMenuButtonConfig(
+            'Open in browser',
+            onPressed: () =>
+                launchExternalUrlString(post.getLink(booruConfig.url)),
+          ),
+        if (onMultiSelect != null)
+          ContextMenuButtonConfig(
+            'post.action.select'.tr(),
             onPressed: () {
-              showDownloadStartToast(context);
-              download(post);
+              onMultiSelect?.call();
             },
           ),
-          if (!isBookmarked)
-            ContextMenuButtonConfig(
-              'post.detail.add_to_bookmark'.tr(),
-              onPressed: () => ref.bookmarks
-                ..addBookmarkWithToast(
-                  booruConfig.booruId,
-                  booruConfig.url,
-                  post,
-                ),
-            )
-          else
-            ContextMenuButtonConfig(
-              'post.detail.remove_from_bookmark'.tr(),
-              onPressed: () => ref.bookmarks
-                ..removeBookmarkWithToast(
-                  bookmarkState.getBookmark(post, booruConfig.booruType)!,
-                ),
-            ),
-          ContextMenuButtonConfig(
-            'View tags',
-            onPressed: () {
-              goToShowTaglistPage(ref, post.extractTags());
-            },
-          ),
-          if (!booruConfig.hasStrictSFW)
-            ContextMenuButtonConfig(
-              'Open in browser',
-              onPressed: () =>
-                  launchExternalUrlString(post.getLink(booruConfig.url)),
-            ),
-          if (onMultiSelect != null)
-            ContextMenuButtonConfig(
-              'post.action.select'.tr(),
-              onPressed: () {
-                onMultiSelect?.call();
-              },
-            ),
-        ],
-      ),
+      ],
     );
   }
 }

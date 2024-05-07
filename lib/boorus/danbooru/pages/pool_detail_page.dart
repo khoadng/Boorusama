@@ -53,7 +53,7 @@ class PoolDetailPage extends ConsumerWidget {
       builder: (context, controller, errors) => DanbooruInfinitePostList(
         errors: errors,
         controller: controller,
-        sliverHeaderBuilder: (context) => [
+        sliverHeaders: [
           SliverAppBar(
             title: const Text('pool.pool').tr(),
             floating: true,
