@@ -37,7 +37,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
     this.postPreviewQuickActionButtonActions = kDefaultPreviewImageButtonAction,
     this.describePostDetailsAction,
     this.describePostPreviewQuickAction,
-    required this.submitButtonBuilder,
+    this.submitButtonBuilder,
   });
 
   final Color? backgroundColor;
@@ -59,7 +59,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
   final String Function(String? action)? describePostPreviewQuickAction;
   final bool isNewConfig;
 
-  final Widget Function(BooruConfigData data) submitButtonBuilder;
+  final Widget Function(BooruConfigData data)? submitButtonBuilder;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -163,7 +163,14 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
                             children: [
                               Expanded(
                                 child: BooruConfigSubmitButton(
-                                  builder: submitButtonBuilder,
+                                  builder: submitButtonBuilder != null
+                                      ? submitButtonBuilder!
+                                      : (data) =>
+                                          DefaultBooruConfigSubmitButton(
+                                            config: config,
+                                            dataBuilder: () => data,
+                                            enable: true,
+                                          ),
                                 ),
                               ),
                             ],
