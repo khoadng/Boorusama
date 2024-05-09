@@ -6,11 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_api_key_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_hide_deleted_switch.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_login_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_post_details_resolution_option_tile.dart';
-import 'package:boorusama/core/scaffolds/create_booru_config_scaffold2.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'providers.dart';
 

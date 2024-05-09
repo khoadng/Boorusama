@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/scaffolds/create_booru_config_scaffold2.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -76,7 +76,6 @@ class DanbooruBooruConfigSubmitButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watch(initialBooruConfigProvider);
     final auth = ref.watch(authConfigDataProvider);
-    final gestures = ref.watch(postGesturesConfigDataProvider);
     final hideDeleted = ref.watch(hideDeletedProvider(config));
     final imageDetailsQuality = ref.watch(imageDetailsQualityProvider(config));
 
@@ -85,7 +84,6 @@ class DanbooruBooruConfigSubmitButton extends ConsumerWidget {
       dataBuilder: () => data.copyWith(
         login: auth.login,
         apiKey: auth.apiKey,
-        postGestures: () => gestures,
         deletedItemBehavior: hideDeleted
             ? BooruConfigDeletedItemBehavior.hide
             : BooruConfigDeletedItemBehavior.show,
