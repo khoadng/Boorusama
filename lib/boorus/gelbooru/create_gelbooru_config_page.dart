@@ -33,8 +33,7 @@ class CreateGelbooruConfigPage extends ConsumerStatefulWidget {
 
 class _CreateGelbooruConfigPageState
     extends ConsumerState<CreateGelbooruConfigPage> {
-  late var login = widget.config.login ?? '';
-  late var apiKey = widget.config.apiKey ?? '';
+  late final auth = ValueNotifier(AuthConfigData.fromConfig(widget.config));
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +45,7 @@ class _CreateGelbooruConfigPageState
       hasDownloadTab: true,
       hasRatingFilter: true,
       tabsBuilder: (context) => {},
-      allowSubmit: allowSubmit,
+      allowSubmit: defaultAllowSubmitWithAuth(auth.value),
       submit: submit,
     );
   }
@@ -58,18 +57,26 @@ class _CreateGelbooruConfigPageState
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const SizedBox(height: 24),
-          CreateBooruLoginField(
-            text: login,
-            labelText: 'User ID',
-            hintText: '1234567',
-            onChanged: (value) => setState(() => login = value),
+          ValueListenableBuilder(
+            valueListenable: auth,
+            builder: (_, auth, __) => CreateBooruLoginField(
+              text: auth.login,
+              labelText: 'User ID',
+              hintText: '1234567',
+              onChanged: (value) =>
+                  this.auth.value = auth.copyWith(login: value),
+            ),
           ),
           const SizedBox(height: 16),
-          CreateBooruApiKeyField(
-            text: apiKey,
-            hintText:
-                '2e89f79b593ed40fd8641235f002221374e50d6343d3afe1687fc70decae58dcf',
-            onChanged: (value) => setState(() => apiKey = value),
+          ValueListenableBuilder(
+            valueListenable: auth,
+            builder: (_, auth, __) => CreateBooruApiKeyField(
+              text: auth.apiKey,
+              hintText:
+                  '2e89f79b593ed40fd8641235f002221374e50d6343d3afe1687fc70decae58dcf',
+              onChanged: (value) =>
+                  this.auth.value = auth.copyWith(apiKey: value),
+            ),
           ),
           const SizedBox(height: 8),
           Text(
@@ -100,10 +107,7 @@ class _CreateGelbooruConfigPageState
                   (value) {
                     if (value == null) return;
                     final (uid, key) = extractValues(value.text);
-                    setState(() {
-                      login = uid;
-                      apiKey = key;
-                    });
+                    auth.value = auth.value.copyWith(login: uid, apiKey: key);
                   },
                 ),
                 icon: Icon(
@@ -126,8 +130,8 @@ class _CreateGelbooruConfigPageState
 
   void submit(CreateConfigData data) {
     final config = AddNewBooruConfig(
-      login: login,
-      apiKey: apiKey,
+      login: auth.value.login,
+      apiKey: auth.value.apiKey,
       booru: widget.config.booruType,
       booruHint: widget.config.booruType,
       configName: data.configName,
@@ -147,11 +151,6 @@ class _CreateGelbooruConfigPageState
         .addOrUpdate(config: widget.config, newConfig: config);
 
     context.navigator.pop();
-  }
-
-  bool allowSubmit(CreateConfigData data) {
-    return (login.isNotEmpty && apiKey.isNotEmpty) ||
-        (login.isEmpty && apiKey.isEmpty);
   }
 }
 
