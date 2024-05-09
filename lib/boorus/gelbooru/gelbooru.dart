@@ -25,7 +25,7 @@ import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/functional.dart';
 import 'artists/gelbooru_artist_page.dart';
 import 'comments/gelbooru_comment_page.dart';
-import 'create_gelbooru_config_page.dart';
+import 'configs/create_gelbooru_config_page.dart';
 import 'home/gelbooru_home_page.dart';
 import 'posts/gelbooru_post_details_desktop_page.dart';
 import 'posts/gelbooru_post_details_page.dart';
