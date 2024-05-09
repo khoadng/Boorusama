@@ -21,18 +21,12 @@ class DanbooruApiKeyField extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final apiKey =
-        ref.watch(authConfigDataProvider.select((value) => value.apiKey));
-
-    void updateApiKey(String value) {
-      final auth = ref.read(authConfigDataProvider);
-      ref.updateAuthConfigData(auth.copyWith(apiKey: value));
-    }
+    final apiKey = ref.watch(apiKeyProvider);
 
     return CreateBooruApiKeyField(
       text: apiKey,
       hintText: 'e.g: o6H5u8QrxC7dN3KvF9D2bM4p',
-      onChanged: updateApiKey,
+      onChanged: ref.updateApiKey,
     );
   }
 }
@@ -44,19 +38,13 @@ class DanbooruLoginField extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final login =
-        ref.watch(authConfigDataProvider.select((value) => value.login));
-
-    void updateLogin(String value) {
-      final auth = ref.read(authConfigDataProvider);
-      ref.updateAuthConfigData(auth.copyWith(login: value));
-    }
+    final login = ref.watch(loginProvider);
 
     return CreateBooruLoginField(
       text: login,
       labelText: 'booru.login_name_label'.tr(),
       hintText: 'e.g: my_login',
-      onChanged: updateLogin,
+      onChanged: ref.updateLogin,
     );
   }
 }

@@ -21,6 +21,16 @@ final authConfigDataProvider = StateProvider.autoDispose<AuthConfigData>(
   dependencies: [booruConfigDataProvider],
 );
 
+final loginProvider = StateProvider.autoDispose<String?>(
+  (ref) => ref.watch(authConfigDataProvider.select((value) => value.login)),
+  dependencies: [authConfigDataProvider],
+);
+
+final apiKeyProvider = StateProvider.autoDispose<String?>(
+  (ref) => ref.watch(authConfigDataProvider.select((value) => value.apiKey)),
+  dependencies: [authConfigDataProvider],
+);
+
 final postGesturesConfigDataProvider =
     StateProvider.autoDispose<PostGestureConfig?>(
   (ref) => ref.watch(
@@ -102,4 +112,14 @@ extension UpdateDataX on WidgetRef {
 
   void updateName(String data) =>
       read(configNameProvider.notifier).state = data;
+
+  void updateApiKey(String value) {
+    final auth = read(authConfigDataProvider);
+    updateAuthConfigData(auth.copyWith(apiKey: value));
+  }
+
+  void updateLogin(String value) {
+    final auth = read(authConfigDataProvider);
+    updateAuthConfigData(auth.copyWith(login: value));
+  }
 }
