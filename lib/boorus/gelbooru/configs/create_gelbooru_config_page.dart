@@ -116,27 +116,3 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
     );
   }
 }
-
-class GelbooruBooruConfigSubmitButton extends ConsumerWidget {
-  const GelbooruBooruConfigSubmitButton({
-    super.key,
-    required this.data,
-  });
-
-  final BooruConfigData data;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watch(initialBooruConfigProvider);
-    final auth = ref.watch(authConfigDataProvider);
-
-    return DefaultBooruConfigSubmitButton(
-      config: config,
-      dataBuilder: () => data.copyWith(
-        login: auth.login,
-        apiKey: auth.apiKey,
-      ),
-      enable: auth.isValid,
-    );
-  }
-}

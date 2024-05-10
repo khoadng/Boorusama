@@ -8,6 +8,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_api_key_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_login_field.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -88,6 +89,30 @@ class GelbooruConfigPasteFromClipboardButton extends ConsumerWidget {
           color: context.colorScheme.onSecondaryContainer,
         ),
       ),
+    );
+  }
+}
+
+class GelbooruBooruConfigSubmitButton extends ConsumerWidget {
+  const GelbooruBooruConfigSubmitButton({
+    super.key,
+    required this.data,
+  });
+
+  final BooruConfigData data;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watch(initialBooruConfigProvider);
+    final auth = ref.watch(authConfigDataProvider);
+
+    return DefaultBooruConfigSubmitButton(
+      config: config,
+      dataBuilder: () => data.copyWith(
+        login: auth.login,
+        apiKey: auth.apiKey,
+      ),
+      enable: auth.isValid,
     );
   }
 }
