@@ -18,6 +18,9 @@ class CurrentBooruConfigNotifier extends Notifier<BooruConfig> {
   }
 
   Future<void> update(BooruConfig booruConfig) async {
+    // if same config, do nothing
+    if (booruConfig == state) return;
+
     final old = state;
     state = booruConfig;
     final settings = ref
