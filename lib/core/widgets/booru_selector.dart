@@ -244,16 +244,20 @@ class BooruSelectorItem extends StatelessWidget {
       key: ValueKey(config.id),
       color: Colors.transparent,
       borderRadius: BorderRadius.circular(8),
-      child: Tooltip(
-        message: config.name,
-        triggerMode: TooltipTriggerMode.manual,
-        decoration: BoxDecoration(
-          color: context.colorScheme.surface,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        textStyle: TextStyle(
-          color: context.colorScheme.onSurface,
-          fontWeight: FontWeight.w600,
+      child: ConditionalParentWidget(
+        condition: hideLabel,
+        conditionalBuilder: (child) => Tooltip(
+          message: config.name,
+          triggerMode: TooltipTriggerMode.manual,
+          decoration: BoxDecoration(
+            color: context.colorScheme.surface,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          textStyle: TextStyle(
+            color: context.colorScheme.onSurface,
+            fontWeight: FontWeight.w600,
+          ),
+          child: child,
         ),
         child: _build(context),
       ),
