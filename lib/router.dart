@@ -12,10 +12,13 @@ import 'routes.dart';
 
 export 'package:go_router/go_router.dart';
 
+final navigatorKey = GlobalKey<NavigatorState>();
+
 final routerProvider = Provider<GoRouter>((ref) {
   final analytics = ref.watch(analyticsProvider);
 
   return GoRouter(
+    navigatorKey: navigatorKey,
     observers: [
       analytics.getAnalyticsObserver(),
     ],

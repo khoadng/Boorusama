@@ -220,9 +220,9 @@ class DanbooruBuilder
 
   @override
   PostGestureHandlerBuilder get postGestureHandlerBuilder =>
-      (ref, action, post, downloader) => handleDanbooruGestureAction(
+      (ref, action, post) => handleDanbooruGestureAction(
             action,
-            onDownload: () => downloader(post),
+            onDownload: () => ref.download(post),
             onShare: () => ref.sharePost(
               post,
               context: ref.context,

@@ -53,6 +53,10 @@ class DownloadNotifications {
     );
   }
 
+  Future<void> showCompleted(String fileName, String path) {
+    return _showNotification(fileName, 'completed', payload: path);
+  }
+
   Future<void> showUpdatedProgress(
     String fileName,
     String path, {
@@ -63,35 +67,18 @@ class DownloadNotifications {
     final receivedReadable = filesize(received, 1);
     final totalReadable = filesize(total, 1);
     final progress = received / total;
-    final done = progress >= 1;
-    final doneMessage = 'completed ($totalReadable)';
 
-    Future<void> showProgress(bool done) {
+    Future<void> showProgress() {
       return _showNotification(
         fileName,
-        done
-            ? doneMessage
-            : '$receivedReadable / $totalReadable (${(progress * 100).toStringAsFixed(1)}%)',
+        '$receivedReadable / $totalReadable (${(progress * 100).toStringAsFixed(1)}%)',
         payload: path,
-        progress: done ? null : received,
-        total: done ? null : total,
+        progress: received,
+        total: total,
       );
     }
 
-    // Just in case the notification got stuck
-    if (done) {
-      await showProgress(done);
-      await Future.delayed(const Duration(milliseconds: 500));
-      await _showNotification(
-        fileName,
-        doneMessage,
-        payload: path,
-      );
-
-      return;
-    }
-
-    showProgress(done);
+    showProgress();
   }
 
   Future<void> showFailed(String fileName, String path) {

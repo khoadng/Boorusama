@@ -167,20 +167,23 @@ extension PostX on Post {
     return tags;
   }
 
+  TagFilterData extractTagFilterData() => TagFilterData(
+        tags: tags,
+        rating: rating,
+        score: score,
+        downvotes: downvotes,
+        uploaderId: uploaderId,
+        source: switch (source) {
+          WebSource w => w.url,
+          NonWebSource nw => nw.value,
+          _ => null,
+        },
+        id: id,
+      );
+
   bool containsTagPattern(List<TagExpression> pattern) =>
       checkIfTagsContainsTagExpression(
-        TagFilterData(
-          tags: tags,
-          rating: rating,
-          score: score,
-          downvotes: downvotes,
-          uploaderId: uploaderId,
-          source: switch (source) {
-            WebSource w => w.url,
-            NonWebSource nw => nw.value,
-            _ => null,
-          },
-        ),
+        extractTagFilterData(),
         pattern,
       );
 

@@ -12,6 +12,7 @@ export 'circular_icon_button.dart';
 export 'compact_chip.dart';
 export 'conditional_parent_widget.dart';
 export 'conditional_render_widget.dart';
+export 'conditional_value_listenable_builder.dart';
 export 'context_menu.dart';
 export 'dismissable_info_container.dart';
 export 'drag_line.dart';

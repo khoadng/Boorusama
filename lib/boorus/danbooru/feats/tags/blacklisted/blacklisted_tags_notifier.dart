@@ -9,10 +9,10 @@ import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/widgets/toast.dart';
 
 class BlacklistedTagsNotifier
-    extends AutoDisposeFamilyAsyncNotifier<List<String>?, BooruConfig> {
+    extends FamilyNotifier<List<String>?, BooruConfig> {
   @override
-  Future<List<String>?> build(BooruConfig arg) async {
-    final user = await ref.read(danbooruCurrentUserProvider(arg).future);
+  List<String>? build(BooruConfig arg) {
+    final user = ref.watch(danbooruCurrentUserProvider(arg)).value;
 
     if (user == null) return null;
 
@@ -26,14 +26,14 @@ class BlacklistedTagsNotifier
   }) async {
     final user = await ref.read(danbooruCurrentUserProvider(arg).future);
 
-    if (state.value == null || user == null) {
+    if (state == null || user == null) {
       onFailure?.call('Not logged in or no blacklisted tags found');
 
       return;
     }
 
     // Duplicate tags are not allowed
-    final tags = {...state.value!, tag}.toList();
+    final tags = {...state!, tag}.toList();
 
     try {
       await ref.read(danbooruClientProvider(arg)).setBlacklistedTags(
@@ -43,7 +43,7 @@ class BlacklistedTagsNotifier
 
       onSuccess?.call(tags);
 
-      state = AsyncData(tags);
+      state = tags;
     } catch (e) {
       onFailure?.call(e);
     }
@@ -57,13 +57,13 @@ class BlacklistedTagsNotifier
   }) async {
     final user = await ref.read(danbooruCurrentUserProvider(arg).future);
 
-    if (state.value == null || user == null) {
+    if (state == null || user == null) {
       onFailure?.call();
 
       return;
     }
 
-    final tags = [...state.value!]..remove(tag);
+    final tags = [...state!]..remove(tag);
 
     try {
       await ref
@@ -72,7 +72,7 @@ class BlacklistedTagsNotifier
 
       onSuccess?.call(tags);
 
-      state = AsyncData(tags);
+      state = tags;
     } catch (e) {
       onFailure?.call();
     }
@@ -87,14 +87,14 @@ class BlacklistedTagsNotifier
   }) async {
     final user = await ref.read(danbooruCurrentUserProvider(arg).future);
 
-    if (state.value == null || user == null) {
+    if (state == null || user == null) {
       onFailure?.call('Fail to replace tag');
 
       return;
     }
 
     final tags = [
-      ...[...state.value!]..remove(oldTag),
+      ...[...state!]..remove(oldTag),
       newTag,
     ];
 
@@ -105,7 +105,7 @@ class BlacklistedTagsNotifier
 
       onSuccess?.call(tags);
 
-      state = AsyncData(tags);
+      state = tags;
     } catch (e) {
       onFailure?.call('Fail to replace tag');
     }

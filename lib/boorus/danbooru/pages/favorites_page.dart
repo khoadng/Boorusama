@@ -35,7 +35,7 @@ class DanbooruFavoritesPage extends ConsumerWidget {
         builder: (context, controller, errors) => DanbooruInfinitePostList(
           errors: errors,
           controller: controller,
-          sliverHeaderBuilder: (context) => [
+          sliverHeaders: [
             SliverAppBar(
               title: const Text('profile.favorites').tr(),
               floating: true,

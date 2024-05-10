@@ -210,6 +210,7 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
     final showHidden = ref.watch(_danbooruShowUploadHiddenProvider);
 
     return PostGrid(
+      //TODO: this is broken, need to be integrated with the new filter system using the post grid controller
       blacklistedIdString: showHidden ? null : hideMap.keys.toSet().join('\n'),
       controller: controller,
       scrollController: _autoScrollController,

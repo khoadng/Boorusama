@@ -15,7 +15,6 @@ import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 class DanbooruPostContextMenu extends ConsumerWidget {
@@ -37,83 +36,81 @@ class DanbooruPostContextMenu extends ConsumerWidget {
     final isBookmarked =
         bookmarkState.isBookmarked(post, booruConfig.booruType);
 
-    return DownloadProviderWidget(
-      builder: (context, download) => GenericContextMenu(
-        buttonConfigs: [
+    return GenericContextMenu(
+      buttonConfigs: [
+        ContextMenuButtonConfig(
+          'post.action.preview'.tr(),
+          onPressed: () => goToImagePreviewPage(ref, context, post),
+        ),
+        if (post.hasComment)
           ContextMenuButtonConfig(
-            'post.action.preview'.tr(),
-            onPressed: () => goToImagePreviewPage(ref, context, post),
+            'post.action.view_comments'.tr(),
+            onPressed: () => goToCommentPage(context, ref, post.id),
           ),
-          if (post.hasComment)
-            ContextMenuButtonConfig(
-              'post.action.view_comments'.tr(),
-              onPressed: () => goToCommentPage(context, ref, post.id),
-            ),
+        ContextMenuButtonConfig(
+          'download.download'.tr(),
+          onPressed: () {
+            showDownloadStartToast(context);
+            ref.download(post);
+          },
+        ),
+        if (!isBookmarked)
           ContextMenuButtonConfig(
-            'download.download'.tr(),
+            'post.detail.add_to_bookmark'.tr(),
+            onPressed: () => ref.bookmarks
+              ..addBookmarkWithToast(
+                booruConfig.booruId,
+                booruConfig.url,
+                post,
+              ),
+          )
+        else
+          ContextMenuButtonConfig(
+            'post.detail.remove_from_bookmark'.tr(),
+            onPressed: () => ref.bookmarks
+              ..removeBookmarkWithToast(
+                bookmarkState.getBookmark(post, booruConfig.booruType)!,
+              ),
+          ),
+        if (hasAccount)
+          ContextMenuButtonConfig(
+            'post.action.add_to_favorite_group'.tr(),
             onPressed: () {
-              showDownloadStartToast(context);
-              download(post);
+              goToAddToFavoriteGroupSelectionPage(
+                context,
+                [post],
+              );
             },
           ),
-          if (!isBookmarked)
-            ContextMenuButtonConfig(
-              'post.detail.add_to_bookmark'.tr(),
-              onPressed: () => ref.bookmarks
-                ..addBookmarkWithToast(
-                  booruConfig.booruId,
-                  booruConfig.url,
-                  post,
-                ),
-            )
-          else
-            ContextMenuButtonConfig(
-              'post.detail.remove_from_bookmark'.tr(),
-              onPressed: () => ref.bookmarks
-                ..removeBookmarkWithToast(
-                  bookmarkState.getBookmark(post, booruConfig.booruType)!,
-                ),
-            ),
-          if (hasAccount)
-            ContextMenuButtonConfig(
-              'post.action.add_to_favorite_group'.tr(),
-              onPressed: () {
-                goToAddToFavoriteGroupSelectionPage(
-                  context,
-                  [post],
-                );
-              },
-            ),
-          if (!booruConfig.hasStrictSFW)
-            ContextMenuButtonConfig(
-              'Open in browser',
-              onPressed: () =>
-                  launchExternalUrlString(post.getLink(booruConfig.url)),
-            ),
+        if (!booruConfig.hasStrictSFW)
           ContextMenuButtonConfig(
-            'View tags',
+            'Open in browser',
+            onPressed: () =>
+                launchExternalUrlString(post.getLink(booruConfig.url)),
+          ),
+        ContextMenuButtonConfig(
+          'View tags',
+          onPressed: () {
+            goToDanbooruShowTaglistPage(ref, post.extractTags());
+          },
+        ),
+        ContextMenuButtonConfig(
+          'View tag history',
+          onPressed: () => goToPostVersionPage(context, post),
+        ),
+        if (hasAccount)
+          ContextMenuButtonConfig(
+            'Edit',
+            onPressed: () => ref.danbooruEdit(post),
+          ),
+        if (onMultiSelect != null)
+          ContextMenuButtonConfig(
+            'post.action.select'.tr(),
             onPressed: () {
-              goToDanbooruShowTaglistPage(ref, post.extractTags());
+              onMultiSelect?.call();
             },
           ),
-          ContextMenuButtonConfig(
-            'View tag history',
-            onPressed: () => goToPostVersionPage(context, post),
-          ),
-          if (hasAccount)
-            ContextMenuButtonConfig(
-              'Edit',
-              onPressed: () => ref.danbooruEdit(post),
-            ),
-          if (onMultiSelect != null)
-            ContextMenuButtonConfig(
-              'post.action.select'.tr(),
-              onPressed: () {
-                onMultiSelect?.call();
-              },
-            ),
-        ],
-      ),
+      ],
     );
   }
 }
@@ -135,35 +132,33 @@ class FavoriteGroupsPostContextMenu extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfig;
 
-    return DownloadProviderWidget(
-      builder: (context, download) => GenericContextMenu(
-        buttonConfigs: [
+    return GenericContextMenu(
+      buttonConfigs: [
+        ContextMenuButtonConfig(
+          'Preview',
+          onPressed: () => goToImagePreviewPage(ref, context, post),
+        ),
+        ContextMenuButtonConfig(
+          'download.download'.tr(),
+          onPressed: () {
+            showDownloadStartToast(context);
+            ref.download(post);
+          },
+        ),
+        if (config.hasLoginDetails())
           ContextMenuButtonConfig(
-            'Preview',
-            onPressed: () => goToImagePreviewPage(ref, context, post),
-          ),
-          ContextMenuButtonConfig(
-            'download.download'.tr(),
+            'Remove from favorite group',
             onPressed: () {
-              showDownloadStartToast(context);
-              download(post);
+              onRemoveFromFavGroup?.call();
             },
           ),
-          if (config.hasLoginDetails())
-            ContextMenuButtonConfig(
-              'Remove from favorite group',
-              onPressed: () {
-                onRemoveFromFavGroup?.call();
-              },
-            ),
-          ContextMenuButtonConfig(
-            'Select',
-            onPressed: () {
-              onMultiSelect?.call();
-            },
-          ),
-        ],
-      ),
+        ContextMenuButtonConfig(
+          'Select',
+          onPressed: () {
+            onMultiSelect?.call();
+          },
+        ),
+      ],
     );
   }
 }
