@@ -1,3 +1,8 @@
+# 3.15.2
+- Add a way to bypass Cloudflare's anti-bot protection so some sites can be accessed again
+- Attempt to fix blacklisted tags not working properly on some occasions
+- Fix an issue where download notifications got stuck with random progress
+
 # 3.15.1
 - Fix a bug on landscape tablets that prevents users from searching.
 - Fix a bug that causes autocomplete to not show up on some devices.
