@@ -55,7 +55,6 @@ class CreateDanbooruConfigPage extends StatelessWidget {
           _ => describeDefaultGestureAction(action),
         },
         postDetailsResolution: const DanbooruImageDetailsQualityProvider(),
-        tabsBuilder: (context) => {},
         miscOptions: const [
           DanbooruHideDeletedSwitch(),
         ],
@@ -82,7 +81,7 @@ class DanbooruBooruConfigSubmitButton extends ConsumerWidget {
     final hideDeleted = ref.watch(hideDeletedProvider(config));
     final imageDetailsQuality = ref.watch(imageDetailsQualityProvider(config));
 
-    return DefaultBooruConfigSubmitButton(
+    return RawBooruConfigSubmitButton(
       config: config,
       dataBuilder: () => data.copyWith(
         login: auth.login,

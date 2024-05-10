@@ -33,9 +33,6 @@ class CreateGelbooruConfigPage extends ConsumerWidget {
         authTab: const GelbooruAuthView(),
         hasDownloadTab: true,
         hasRatingFilter: true,
-        tabsBuilder: (context) => {},
-        submitButtonBuilder: (data) =>
-            GelbooruBooruConfigSubmitButton(data: data),
       ),
     );
   }

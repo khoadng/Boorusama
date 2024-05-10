@@ -30,7 +30,6 @@ class CreateGelbooruV1ConfigPage extends StatelessWidget {
         isNewConfig: isNewConfig,
         backgroundColor: backgroundColor,
         hasDownloadTab: true,
-        tabsBuilder: (context) => {},
       ),
     );
   }

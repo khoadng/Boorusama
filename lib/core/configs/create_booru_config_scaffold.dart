@@ -26,7 +26,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
   const CreateBooruConfigScaffold({
     super.key,
     this.backgroundColor,
-    required this.tabsBuilder,
+    this.tabsBuilder,
     required this.isNewConfig,
     this.authTab,
     this.postDetailsResolution,
@@ -41,7 +41,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
   });
 
   final Color? backgroundColor;
-  final Map<String, Widget> Function(BuildContext context) tabsBuilder;
+  final Map<String, Widget> Function(BuildContext context)? tabsBuilder;
 
   final Widget? authTab;
 
@@ -69,7 +69,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
       if (authTab != null) 'booru.authentication': authTab!,
       if (hasDownloadTab)
         'booru.download': BooruConfigDownloadView(config: config),
-      ...tabsBuilder(context),
+      if (tabsBuilder != null) ...tabsBuilder!(context),
       'booru.gestures': BooruConfigGesturesView(
         postDetailsGestureActions: postDetailsGestureActions,
         describePostDetailsAction: describePostDetailsAction,
@@ -165,11 +165,8 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
                                 child: BooruConfigSubmitButton(
                                   builder: submitButtonBuilder != null
                                       ? submitButtonBuilder!
-                                      : (data) =>
-                                          DefaultBooruConfigSubmitButton(
-                                            config: config,
-                                            dataBuilder: () => data,
-                                            enable: true,
+                                      : (data) => DefaultBooruSubmitButton(
+                                            data: data,
                                           ),
                                 ),
                               ),

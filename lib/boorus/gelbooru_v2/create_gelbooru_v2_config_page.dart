@@ -33,9 +33,6 @@ class CreateGelbooruV2ConfigPage extends StatelessWidget {
         authTab: const GelbooruV2AuthView(),
         hasDownloadTab: true,
         hasRatingFilter: true,
-        tabsBuilder: (context) => {},
-        submitButtonBuilder: (data) =>
-            GelbooruBooruConfigSubmitButton(data: data),
       ),
     );
   }

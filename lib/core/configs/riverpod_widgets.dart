@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_api_key_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_config_name_field.dart';
@@ -14,7 +15,6 @@ import 'package:boorusama/core/pages/boorus/widgets/create_booru_submit_button.d
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
-import 'providers.dart';
 
 class DefaultImageDetailsQualityTile extends ConsumerWidget {
   const DefaultImageDetailsQualityTile({
@@ -33,8 +33,8 @@ class DefaultImageDetailsQualityTile extends ConsumerWidget {
   }
 }
 
-class DefaultBooruConfigSubmitButton extends ConsumerWidget {
-  const DefaultBooruConfigSubmitButton({
+class RawBooruConfigSubmitButton extends ConsumerWidget {
+  const RawBooruConfigSubmitButton({
     super.key,
     required this.config,
     required this.dataBuilder,
@@ -62,6 +62,30 @@ class DefaultBooruConfigSubmitButton extends ConsumerWidget {
               context.navigator.pop();
             }
           : null,
+    );
+  }
+}
+
+class DefaultBooruSubmitButton extends ConsumerWidget {
+  const DefaultBooruSubmitButton({
+    super.key,
+    required this.data,
+  });
+
+  final BooruConfigData data;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watch(initialBooruConfigProvider);
+    final auth = ref.watch(authConfigDataProvider);
+
+    return RawBooruConfigSubmitButton(
+      config: config,
+      dataBuilder: () => data.copyWith(
+        login: auth.login,
+        apiKey: auth.apiKey,
+      ),
+      enable: auth.isValid,
     );
   }
 }
