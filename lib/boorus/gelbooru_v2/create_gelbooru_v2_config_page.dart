@@ -79,7 +79,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruV2AuthView> {
             controller: apiKeyController,
           ),
           const SizedBox(height: 8),
-          const DefaultBooruWarningText(
+          const DefaultBooruInstructionText(
             '*Log in to your account on the browser, visit My Account > Options > API Access Credentials. Check if it is there. If not, the site does not support credentials, and you can ignore this.',
           ),
         ],

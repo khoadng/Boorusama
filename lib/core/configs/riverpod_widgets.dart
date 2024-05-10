@@ -158,8 +158,8 @@ class DefaultBooruLoginField extends ConsumerWidget {
   }
 }
 
-class DefaultBooruWarningText extends StatelessWidget {
-  const DefaultBooruWarningText(
+class DefaultBooruInstructionText extends StatelessWidget {
+  const DefaultBooruInstructionText(
     this.text, {
     super.key,
   });
@@ -174,6 +174,38 @@ class DefaultBooruWarningText extends StatelessWidget {
         color: context.theme.hintColor,
         fontSize: 14,
         fontWeight: FontWeight.w400,
+      ),
+    );
+  }
+}
+
+class DefaultBooruAuthConfigView extends ConsumerWidget {
+  const DefaultBooruAuthConfigView({
+    super.key,
+    this.instruction,
+    this.showInstructionWhen = true,
+  });
+
+  final String? instruction;
+  final bool showInstructionWhen;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const SizedBox(height: 24),
+          const DefaultBooruLoginField(),
+          const SizedBox(height: 16),
+          const DefaultBooruApiKeyField(),
+          const SizedBox(height: 8),
+          if (showInstructionWhen && instruction != null)
+            DefaultBooruInstructionText(
+              instruction!,
+            ),
+        ],
       ),
     );
   }

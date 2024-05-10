@@ -33,7 +33,11 @@ class CreateDanbooruConfigPage extends StatelessWidget {
       child: CreateBooruConfigScaffold(
         isNewConfig: isNewConfig,
         backgroundColor: backgroundColor,
-        authTab: const DanbooruAuthConfigView(),
+        authTab: DefaultBooruAuthConfigView(
+          showInstructionWhen: !isApple(),
+          instruction:
+              '*Log in to your account on the browser, visit My Account > API Key. Copy your key or create a new one if needed, ensuring all permissions are enabled for proper app functionality.',
+        ),
         hasDownloadTab: true,
         hasRatingFilter: true,
         postDetailsGestureActions: const {
@@ -89,31 +93,6 @@ class DanbooruBooruConfigSubmitButton extends ConsumerWidget {
         imageDetaisQuality: () => imageDetailsQuality,
       ),
       enable: auth.isValid,
-    );
-  }
-}
-
-class DanbooruAuthConfigView extends ConsumerWidget {
-  const DanbooruAuthConfigView({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const SizedBox(height: 24),
-          const DefaultBooruLoginField(),
-          const SizedBox(height: 16),
-          const DefaultBooruApiKeyField(),
-          const SizedBox(height: 8),
-          if (!isApple())
-            const DefaultBooruWarningText(
-              '*Log in to your account on the browser, visit My Account > API Key. Copy your key or create a new one if needed, ensuring all permissions are enabled for proper app functionality.',
-            ),
-        ],
-      ),
     );
   }
 }

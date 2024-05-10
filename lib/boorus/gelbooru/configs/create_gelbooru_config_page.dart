@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
 import 'widgets.dart';
 
 class CreateGelbooruConfigPage extends ConsumerWidget {
@@ -80,13 +79,8 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
             controller: apiKeyController,
           ),
           const SizedBox(height: 8),
-          Text(
+          const DefaultBooruInstructionText(
             '*Log in to your account on the browser, visit My Account > Options > API Access Credentials and fill the values manually.',
-            style: context.textTheme.titleSmall?.copyWith(
-              color: context.theme.hintColor,
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-            ),
           ),
           const SizedBox(height: 16),
           const Row(
