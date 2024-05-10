@@ -9,7 +9,6 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
 import 'providers.dart';
 import 'widgets.dart';
 
@@ -105,18 +104,13 @@ class DanbooruAuthConfigView extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const SizedBox(height: 24),
-          const DanbooruLoginField(),
+          const DefaultBooruLoginField(),
           const SizedBox(height: 16),
-          const DanbooruApiKeyField(),
+          const DefaultBooruApiKeyField(),
           const SizedBox(height: 8),
           if (!isApple())
-            Text(
+            const DefaultBooruWarningText(
               '*Log in to your account on the browser, visit My Account > API Key. Copy your key or create a new one if needed, ensuring all permissions are enabled for proper app functionality.',
-              style: context.textTheme.titleSmall?.copyWith(
-                color: context.theme.hintColor,
-                fontSize: 14,
-                fontWeight: FontWeight.w400,
-              ),
             ),
         ],
       ),

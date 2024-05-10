@@ -8,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/gelbooru/configs/widgets.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
 
 class CreateGelbooruV2ConfigPage extends StatelessWidget {
   const CreateGelbooruV2ConfigPage({
@@ -80,13 +79,8 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruV2AuthView> {
             controller: apiKeyController,
           ),
           const SizedBox(height: 8),
-          Text(
+          const DefaultBooruWarningText(
             '*Log in to your account on the browser, visit My Account > Options > API Access Credentials. Check if it is there. If not, the site does not support credentials, and you can ignore this.',
-            style: context.textTheme.titleSmall?.copyWith(
-              color: context.theme.hintColor,
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-            ),
           ),
         ],
       ),

@@ -7,47 +7,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/pages/boorus/widgets/create_booru_api_key_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_hide_deleted_switch.dart';
-import 'package:boorusama/core/pages/boorus/widgets/create_booru_login_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_post_details_resolution_option_tile.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'providers.dart';
-
-class DanbooruApiKeyField extends ConsumerWidget {
-  const DanbooruApiKeyField({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final apiKey = ref.watch(apiKeyProvider);
-
-    return CreateBooruApiKeyField(
-      text: apiKey,
-      hintText: 'e.g: o6H5u8QrxC7dN3KvF9D2bM4p',
-      onChanged: ref.updateApiKey,
-    );
-  }
-}
-
-class DanbooruLoginField extends ConsumerWidget {
-  const DanbooruLoginField({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final login = ref.watch(loginProvider);
-
-    return CreateBooruLoginField(
-      text: login,
-      labelText: 'booru.login_name_label'.tr(),
-      hintText: 'e.g: my_login',
-      onChanged: ref.updateLogin,
-    );
-  }
-}
 
 class DanbooruHideDeletedSwitch extends ConsumerWidget {
   const DanbooruHideDeletedSwitch({
