@@ -10,6 +10,7 @@ import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_api_key_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_config_name_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_login_field.dart';
+import 'package:boorusama/core/pages/boorus/widgets/create_booru_passworld_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_post_details_resolution_option_tile.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_submit_button.dart';
 import 'package:boorusama/flutter.dart';
@@ -156,6 +157,25 @@ class DefaultBooruApiKeyField extends ConsumerWidget {
     return CreateBooruApiKeyField(
       text: apiKey,
       hintText: hintText ?? 'e.g: o6H5u8QrxC7dN3KvF9D2bM4p',
+      onChanged: ref.updateApiKey,
+    );
+  }
+}
+
+class DefaultBooruPasswordField extends ConsumerWidget {
+  const DefaultBooruPasswordField({
+    super.key,
+    this.hintText,
+  });
+
+  final String? hintText;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final apiKey = ref.watch(apiKeyProvider);
+
+    return CreateBooruPasswordField(
+      text: apiKey,
       onChanged: ref.updateApiKey,
     );
   }
