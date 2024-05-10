@@ -169,5 +169,10 @@ Future<String> _wrapWithNotification(
 
   final result = await fn();
 
+  if (enableNotification) {
+    await Future.delayed(const Duration(milliseconds: 500));
+    await notifications.showCompleted(fileName, path);
+  }
+
   return result;
 }
