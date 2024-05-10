@@ -27,37 +27,34 @@ class BlacklistedTagsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfig;
-    final tagsAsync = ref.watch(danbooruBlacklistedTagsProvider(config));
+    final tags = ref.watch(danbooruBlacklistedTagsProvider(config));
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('blacklisted_tags.blacklisted_tags').tr(),
         actions: [
           _buildAddTagButton(context, ref),
-          tagsAsync.maybeWhen(
-            data: (tags) => tags != null
-                ? ImportExportTagButton(
-                    tags: tags,
-                    onImport: (tagString) {
-                      final tags = sanitizeBlacklistTagString(tagString);
+          tags != null
+              ? ImportExportTagButton(
+                  tags: tags,
+                  onImport: (tagString) {
+                    final tags = sanitizeBlacklistTagString(tagString);
 
-                      if (tags == null) {
-                        showErrorToast('Invalid tag format');
-                        return;
-                      }
+                    if (tags == null) {
+                      showErrorToast('Invalid tag format');
+                      return;
+                    }
 
-                      //FIXME: should be handled inside the provider, not here. I'm just lazy. Also missing error handling
-                      for (final tag in tags) {
-                        ref
-                            .read(danbooruBlacklistedTagsProvider(config)
-                                .notifier)
-                            .add(tag: tag);
-                      }
-                    },
-                  )
-                : const SizedBox.shrink(),
-            orElse: () => const SizedBox.shrink(),
-          ),
+                    //FIXME: should be handled inside the provider, not here. I'm just lazy. Also missing error handling
+                    for (final tag in tags) {
+                      ref
+                          .read(
+                              danbooruBlacklistedTagsProvider(config).notifier)
+                          .add(tag: tag);
+                    }
+                  },
+                )
+              : const SizedBox.shrink(),
         ],
       ),
       body: const SafeArea(child: BlacklistedTagsList()),
@@ -96,66 +93,62 @@ class BlacklistedTagsList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfig;
-    final tagsAsync = ref.watch(danbooruBlacklistedTagsProvider(config));
+    final tags = ref.watch(danbooruBlacklistedTagsProvider(config));
 
-    return tagsAsync.maybeWhen(
-      orElse: () => const Center(child: CircularProgressIndicator()),
-      data: (tags) => tags != null
-          ? CustomScrollView(
-              slivers: [
-                SliverToBoxAdapter(
-                  child: WarningContainer(
-                      contentBuilder: (context) => Html(
-                            style: {
-                              'body': Style(
-                                color: context.colorScheme.onError,
-                              ),
-                            },
-                            data: 'blacklisted_tags.limitation_notice'.tr(),
-                          )),
-                ),
-                SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      final tag = tags[index];
+    return tags != null
+        ? CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: WarningContainer(
+                    contentBuilder: (context) => Html(
+                          style: {
+                            'body': Style(
+                              color: context.colorScheme.onError,
+                            ),
+                          },
+                          data: 'blacklisted_tags.limitation_notice'.tr(),
+                        )),
+              ),
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    final tag = tags[index];
 
-                      return BlacklistedTagTile(
-                        tag: tag,
-                        onRemoveTag: (tag) => ref
-                            .read(
-                                danbooruBlacklistedTagsProvider(ref.readConfig)
+                    return BlacklistedTagTile(
+                      tag: tag,
+                      onRemoveTag: (tag) => ref
+                          .read(danbooruBlacklistedTagsProvider(ref.readConfig)
+                              .notifier)
+                          .removeWithToast(tag: tag),
+                      onEditTap: () {
+                        goToBlacklistedTagsSearchPage(
+                          context,
+                          initialTags: tag.split(' '),
+                          onSelectDone: (tagItems, currentQuery) {
+                            final tagString = [
+                              ...tagItems.map((e) => e.toString()),
+                              if (currentQuery.isNotEmpty) currentQuery,
+                            ].join(' ');
+
+                            ref
+                                .read(danbooruBlacklistedTagsProvider(
+                                        ref.readConfig)
                                     .notifier)
-                            .removeWithToast(tag: tag),
-                        onEditTap: () {
-                          goToBlacklistedTagsSearchPage(
-                            context,
-                            initialTags: tag.split(' '),
-                            onSelectDone: (tagItems, currentQuery) {
-                              final tagString = [
-                                ...tagItems.map((e) => e.toString()),
-                                if (currentQuery.isNotEmpty) currentQuery,
-                              ].join(' ');
-
-                              ref
-                                  .read(danbooruBlacklistedTagsProvider(
-                                          ref.readConfig)
-                                      .notifier)
-                                  .replace(
-                                    oldTag: tag,
-                                    newTag: tagString,
-                                  );
-                              context.navigator.pop();
-                            },
-                          );
-                        },
-                      );
-                    },
-                    childCount: tags.length,
-                  ),
+                                .replace(
+                                  oldTag: tag,
+                                  newTag: tagString,
+                                );
+                            context.navigator.pop();
+                          },
+                        );
+                      },
+                    );
+                  },
+                  childCount: tags.length,
                 ),
-              ],
-            )
-          : const SizedBox.shrink(),
-    );
+              ),
+            ],
+          )
+        : const SizedBox.shrink();
   }
 }

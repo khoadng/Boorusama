@@ -45,7 +45,7 @@ class BooruVideo extends StatefulWidget {
 class _BooruVideoState extends State<BooruVideo> {
   late VideoPlayerController _videoPlayerController;
   late ChewieController _chewieController;
-  final transformationController = TransformationController();
+  late TransformationController transformationController;
 
   @override
   void initState() {
@@ -75,21 +75,25 @@ class _BooruVideoState extends State<BooruVideo> {
     _videoPlayerController.setVolume(widget.sound ? 1 : 0);
     _videoPlayerController.setPlaybackSpeed(widget.speed);
 
-    transformationController.addListener(() {
-      final clampedMatrix = Matrix4.diagonal3Values(
-        transformationController.value.right.x,
-        transformationController.value.up.y,
-        transformationController.value.forward.z,
-      );
-
-      widget.onZoomUpdated?.call(!clampedMatrix.isIdentity());
-    });
+    transformationController = TransformationController();
+    transformationController.addListener(_onTransform);
 
     _listenToVideoPosition();
   }
 
+  void _onTransform() {
+    final clampedMatrix = Matrix4.diagonal3Values(
+      transformationController.value.right.x,
+      transformationController.value.up.y,
+      transformationController.value.forward.z,
+    );
+
+    widget.onZoomUpdated?.call(!clampedMatrix.isIdentity());
+  }
+
   void _disposeVideoPlayerController() {
     _videoPlayerController.removeListener(_onChanged);
+    transformationController.removeListener(_onTransform);
     _videoPlayerController.dispose();
     _chewieController.dispose();
     transformationController.dispose();

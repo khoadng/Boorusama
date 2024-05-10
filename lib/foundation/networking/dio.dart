@@ -64,7 +64,7 @@ Dio newDio(
       options: CacheOptions(
         store: HiveCacheStore(dir.path),
         maxStale: const Duration(days: 7),
-        hitCacheOnErrorExcept: [],
+        hitCacheOnErrorExcept: [403, 401],
       ),
     ),
   );

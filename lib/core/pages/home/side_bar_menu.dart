@@ -60,6 +60,7 @@ class SideBarMenu extends ConsumerWidget {
             child: ColoredBox(
               color: context.colorScheme.surface,
               child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

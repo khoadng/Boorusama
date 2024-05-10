@@ -26,8 +26,8 @@ final danbooruUserRepoProvider =
 
 const _kCurrentUserIdKey = '_current_uid';
 
-final danbooruCurrentUserProvider = FutureProvider.autoDispose
-    .family<UserSelf?, BooruConfig>((ref, config) async {
+final danbooruCurrentUserProvider =
+    FutureProvider.family<UserSelf?, BooruConfig>((ref, config) async {
   if (!config.hasLoginDetails()) return null;
 
   // First, we try to get the user id from the cache

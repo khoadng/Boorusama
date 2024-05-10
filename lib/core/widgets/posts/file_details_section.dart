@@ -61,7 +61,7 @@ class FileDetailsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final fileSizeText =
-        post.fileSize > 0 ? '• ${filesize(post.fileSize, 1)}' : '';
+        post.fileSize > 0 ? ' • ${filesize(post.fileSize, 1)}' : '';
 
     final resolutionText = post.width > 0 && post.height > 0
         ? '${post.width.toInt()}x${post.height.toInt()} • '
