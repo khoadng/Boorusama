@@ -1,6 +1,5 @@
 export 'artist_page_scaffold.dart';
 export 'comment_page_scaffold.dart';
-export 'create_booru_config_scaffold.dart';
 export 'desktop_home_page_scaffold.dart';
 export 'favorite_page_scaffold.dart';
 export 'home_page_scaffold.dart';
