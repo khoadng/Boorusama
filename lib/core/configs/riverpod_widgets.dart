@@ -146,9 +146,11 @@ class DefaultBooruApiKeyField extends ConsumerWidget {
   const DefaultBooruApiKeyField({
     super.key,
     this.hintText,
+    this.labelText,
   });
 
   final String? hintText;
+  final String? labelText;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -156,6 +158,7 @@ class DefaultBooruApiKeyField extends ConsumerWidget {
 
     return CreateBooruApiKeyField(
       text: apiKey,
+      labelText: labelText,
       hintText: hintText ?? 'e.g: o6H5u8QrxC7dN3KvF9D2bM4p',
       onChanged: ref.updateApiKey,
     );
@@ -185,9 +188,11 @@ class DefaultBooruLoginField extends ConsumerWidget {
   const DefaultBooruLoginField({
     super.key,
     this.hintText,
+    this.labelText,
   });
 
   final String? hintText;
+  final String? labelText;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -195,7 +200,7 @@ class DefaultBooruLoginField extends ConsumerWidget {
 
     return CreateBooruLoginField(
       text: login,
-      labelText: 'booru.login_name_label'.tr(),
+      labelText: labelText ?? 'booru.login_name_label'.tr(),
       hintText: hintText ?? 'e.g: my_login',
       onChanged: ref.updateLogin,
     );
