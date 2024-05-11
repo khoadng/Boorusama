@@ -9,6 +9,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
@@ -23,9 +24,9 @@ import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'boorus/entry_page.dart';
+import 'core/configs/create/add_booru_page.dart';
 import 'core/pages/bookmarks/bookmark_details_page.dart';
 import 'core/pages/bookmarks/bookmark_page.dart';
-import 'core/pages/boorus/add_booru_page.dart';
 import 'core/pages/settings/settings.dart';
 import 'foundation/rating/rating.dart';
 import 'router.dart';

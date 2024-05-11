@@ -2,7 +2,7 @@
 import 'package:test/test.dart';
 
 // Project imports:
-import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/functional.dart';
 
 void main() {

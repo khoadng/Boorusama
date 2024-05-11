@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/feats/backup/data_io_handler.dart';
+import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/functional.dart';
 
@@ -14,15 +14,6 @@ final booruConfigProvider =
     booruConfigRepoProvider,
     settingsProvider,
     currentBooruConfigProvider,
-  ],
-);
-
-final currentBooruConfigProvider =
-    NotifierProvider<CurrentBooruConfigNotifier, BooruConfig>(
-  () => throw UnimplementedError(),
-  dependencies: [
-    settingsProvider,
-    loggerProvider,
   ],
 );
 
@@ -55,16 +46,6 @@ final configsProvider = FutureProvider.autoDispose<IList<BooruConfig>>((ref) {
   } catch (e) {
     return configMap.values.toIList();
   }
-});
-
-final booruConfigFileHandlerProvider = Provider<BooruConfigIOHandler>((ref) {
-  return BooruConfigIOHandler(
-    handler: DataIOHandler.file(
-      version: kBooruConfigsExporterImporterVersion,
-      deviceInfo: ref.watch(deviceInfoProvider),
-      prefixName: 'boorusama_profiles',
-    ),
-  );
 });
 
 extension BooruWidgetRef on WidgetRef {

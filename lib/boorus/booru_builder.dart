@@ -22,6 +22,7 @@ import 'package:boorusama/boorus/sankaku/sankaku.dart';
 import 'package:boorusama/boorus/shimmie2/providers.dart';
 import 'package:boorusama/boorus/zerochan/zerochan.dart';
 import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
+import 'package:boorusama/core/configs/manage/providers.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/downloads/downloads.dart';

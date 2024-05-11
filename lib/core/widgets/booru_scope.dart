@@ -11,6 +11,7 @@ import 'package:multi_split_view/multi_split_view.dart';
 import 'package:boorusama/app.dart';
 import 'package:boorusama/boorus/entry_page.dart';
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/pages/blacklists/blacklisted_tag_page.dart';
