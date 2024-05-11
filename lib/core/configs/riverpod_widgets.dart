@@ -7,11 +7,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_api_key_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_config_name_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_login_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_passworld_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_post_details_resolution_option_tile.dart';
+import 'package:boorusama/core/pages/boorus/widgets/create_booru_rating_options_tile.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_submit_button.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
@@ -40,15 +42,20 @@ class RawBooruConfigSubmitButton extends ConsumerWidget {
     required this.config,
     required this.dataBuilder,
     required this.enable,
+    this.backgroundColor,
+    this.child,
   });
 
   final bool enable;
   final BooruConfig config;
   final BooruConfigData Function() dataBuilder;
+  final Color? backgroundColor;
+  final Widget? child;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return CreateBooruSubmitButton(
+      backgroundColor: backgroundColor,
       onSubmit: enable
           ? () {
               final data = dataBuilder();
@@ -63,6 +70,7 @@ class RawBooruConfigSubmitButton extends ConsumerWidget {
               context.navigator.pop();
             }
           : null,
+      child: child,
     );
   }
 }
@@ -86,7 +94,32 @@ class DefaultBooruSubmitButton extends ConsumerWidget {
         login: auth.login,
         apiKey: auth.apiKey,
       ),
-      enable: auth.isValid,
+      enable: auth.isValid && config.name.isNotEmpty,
+    );
+  }
+}
+
+class DefaultBooruRatingOptionsTile extends ConsumerWidget {
+  const DefaultBooruRatingOptionsTile({
+    super.key,
+    this.options,
+  });
+
+  final Set<Rating>? options;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watch(initialBooruConfigProvider);
+
+    return CreateBooruRatingOptionsTile(
+      config: config,
+      initialGranularRatingFilters: ref.watch(granularRatingFilterProvider),
+      value: ref.watch(ratingFilterProvider),
+      onChanged: (value) =>
+          value != null ? ref.updateRatingFilter(value) : null,
+      onGranularRatingFiltersChanged: (value) =>
+          ref.updateGranularRatingFilter(value),
+      options: options,
     );
   }
 }

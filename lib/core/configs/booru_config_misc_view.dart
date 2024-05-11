@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/pages/boorus/widgets/create_booru_rating_options_tile.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/widgets/option_dropdown_button.dart';
 import 'configs.dart';
@@ -66,16 +65,7 @@ class BooruConfigMiscView extends ConsumerWidget {
             ),
           ),
           if (hasRatingFilter) ...[
-            CreateBooruRatingOptionsTile(
-              config: config,
-              initialGranularRatingFilters:
-                  ref.watch(granularRatingFilterProvider),
-              value: ref.watch(ratingFilterProvider),
-              onChanged: (value) =>
-                  value != null ? ref.updateRatingFilter(value) : null,
-              onGranularRatingFiltersChanged: (value) =>
-                  ref.updateGranularRatingFilter(value),
-            ),
+            const DefaultBooruRatingOptionsTile(),
           ],
           if (postDetailsResolution != null)
             postDetailsResolution!

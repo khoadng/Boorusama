@@ -19,6 +19,7 @@ class CreateBooruRatingOptionsTile extends StatelessWidget {
     required this.onChanged,
     this.value,
     this.initialGranularRatingFilters,
+    this.options,
     this.onGranularRatingFiltersChanged,
     this.singleSelection = false,
   });
@@ -28,6 +29,7 @@ class CreateBooruRatingOptionsTile extends StatelessWidget {
   final BooruConfigRatingFilter? value;
 
   final Set<Rating>? initialGranularRatingFilters;
+  final Set<Rating>? options;
   final void Function(Set<Rating>? value)? onGranularRatingFiltersChanged;
 
   final bool singleSelection;
@@ -71,6 +73,7 @@ class CreateBooruRatingOptionsTile extends StatelessWidget {
             singleSelection: singleSelection,
             config: config,
             initialValues: initialGranularRatingFilters,
+            options: options,
             onChanged: (value) => onGranularRatingFiltersChanged?.call(value),
           ),
         ],
@@ -86,10 +89,12 @@ class CreateBooruConfigGranularRatingOptions extends ConsumerStatefulWidget {
     this.initialValues,
     this.onChanged,
     this.singleSelection = false,
+    this.options,
   });
 
   final BooruConfig config;
   final Set<Rating>? initialValues;
+  final Set<Rating>? options;
   final void Function(Set<Rating>? value)? onChanged;
   final bool singleSelection;
 
@@ -104,10 +109,11 @@ class _CreateBooruConfigGranularRatingOptionsState
 
   @override
   Widget build(BuildContext context) {
-    final options = ref
-        .watchBooruBuilder(widget.config)
-        ?.granularRatingOptionsBuilder
-        ?.call();
+    final options = widget.options ??
+        ref
+            .watchBooruBuilder(widget.config)
+            ?.granularRatingOptionsBuilder
+            ?.call();
 
     if (options == null) {
       return const SizedBox.shrink();
