@@ -6,9 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/pages/boorus/widgets/create_booru_hide_deleted_switch.dart';
-import 'package:boorusama/core/pages/boorus/widgets/create_booru_post_details_resolution_option_tile.dart';
+import 'package:boorusama/core/configs/create/create.dart';
 import 'providers.dart';
 
 class DanbooruHideDeletedSwitch extends ConsumerWidget {

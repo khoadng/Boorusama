@@ -5,9 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/pages/boorus/widgets/custom_download_file_name_section.dart';
-import 'configs.dart';
 
 class BooruConfigDownloadView extends ConsumerWidget {
   const BooruConfigDownloadView({

@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/configs/providers.dart';
-import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/configs/create/create.dart';
+import 'package:boorusama/core/configs/create/widgets.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/pages/boorus/widgets/create_booru_post_details_resolution_option_tile.dart';
 import 'philomena_post.dart';
 
 class CreatePhilomenaConfigPage extends StatelessWidget {

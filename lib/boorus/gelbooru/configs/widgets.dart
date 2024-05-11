@@ -7,9 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/pages/boorus/widgets/create_booru_api_key_field.dart';
-import 'package:boorusama/core/pages/boorus/widgets/create_booru_login_field.dart';
+import 'package:boorusama/core/configs/create/create.dart';
+import 'package:boorusama/core/configs/create/widgets.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 
 class GelbooruApiKeyField extends ConsumerWidget {

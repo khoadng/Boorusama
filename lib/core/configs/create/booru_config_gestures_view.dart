@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/option_dropdown_button.dart';
 import 'package:boorusama/widgets/warning_container.dart';
-import 'configs.dart';
 
 class BooruConfigGesturesView extends ConsumerWidget {
   const BooruConfigGesturesView({
