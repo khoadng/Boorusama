@@ -40,7 +40,7 @@ class RawBooruConfigSubmitButton extends ConsumerWidget {
   const RawBooruConfigSubmitButton({
     super.key,
     required this.config,
-    required this.dataBuilder,
+    required this.data,
     required this.enable,
     this.backgroundColor,
     this.child,
@@ -48,7 +48,7 @@ class RawBooruConfigSubmitButton extends ConsumerWidget {
 
   final bool enable;
   final BooruConfig config;
-  final BooruConfigData Function() dataBuilder;
+  final BooruConfigData data;
   final Color? backgroundColor;
   final Widget? child;
 
@@ -58,11 +58,7 @@ class RawBooruConfigSubmitButton extends ConsumerWidget {
       backgroundColor: backgroundColor,
       onSubmit: enable
           ? () {
-              final data = dataBuilder();
-
-              ref
-                  .read(booruConfigProvider.notifier)
-                  .addOrUpdateUsingBooruConfigData(
+              ref.read(booruConfigProvider.notifier).addOrUpdate(
                     config: config,
                     newConfig: data,
                   );
@@ -90,7 +86,7 @@ class DefaultBooruSubmitButton extends ConsumerWidget {
 
     return RawBooruConfigSubmitButton(
       config: config,
-      dataBuilder: () => data.copyWith(
+      data: data.copyWith(
         login: auth.login,
         apiKey: auth.apiKey,
       ),

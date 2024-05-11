@@ -158,9 +158,7 @@ class UnknownBooruSubmitButton extends ConsumerWidget {
                             url: url,
                           );
 
-                          ref
-                              .read(booruConfigProvider.notifier)
-                              .addOrUpdateUsingBooruConfigData(
+                          ref.read(booruConfigProvider.notifier).addOrUpdate(
                                 config: config,
                                 newConfig: finalData,
                               );

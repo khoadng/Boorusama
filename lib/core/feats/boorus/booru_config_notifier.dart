@@ -4,11 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/analytics.dart';
-import 'package:boorusama/foundation/gestures.dart';
 
 class BooruConfigNotifier extends Notifier<List<BooruConfig>?> {
   @override
@@ -39,25 +37,9 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?> {
       name: '${config.name} copy',
     );
 
-    return addFromAddBooruConfig(
-        newConfig: AddNewBooruConfig(
-      login: copyData.login ?? '',
-      apiKey: copyData.apiKey ?? '',
-      booru: copyData.booruType,
-      configName: copyData.name,
-      hideDeleted:
-          copyData.deletedItemBehavior == BooruConfigDeletedItemBehavior.hide,
-      ratingFilter: copyData.ratingFilter,
-      url: copyData.url,
-      booruHint: copyData.booruType,
-      customDownloadFileNameFormat: copyData.customDownloadFileNameFormat,
-      customBulkDownloadFileNameFormat:
-          copyData.customBulkDownloadFileNameFormat,
-      imageDetaisQuality: copyData.imageDetaisQuality,
-      granularRatingFilters: copyData.granularRatingFilters,
-      postGestures: copyData.postGestures,
-      defaultPreviewImageButtonAction: copyData.defaultPreviewImageButtonAction,
-    ));
+    return add(
+      booruConfigData: copyData.toBooruConfigData(),
+    );
   }
 
   Future<void> delete(
@@ -102,7 +84,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?> {
     }
   }
 
-  Future<void> updateFromBooruConfigData({
+  Future<void> update({
     required BooruConfigData booruConfigData,
     required BooruConfig oldConfig,
     void Function(String message)? onFailure,
@@ -127,75 +109,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?> {
     state = newConfigs;
   }
 
-  Future<void> update({
-    required AddNewBooruConfig config,
-    required BooruConfig oldConfig,
-    required int id,
-    void Function(String message)? onFailure,
-    void Function(BooruConfig booruConfig)? onSuccess,
-  }) async {
-    if (state == null) return;
-    final booruConfigData = oldConfig.hasLoginDetails()
-        ? BooruConfigData(
-            login: config.login,
-            apiKey: config.apiKey,
-            deletedItemBehavior: config.hideDeleted
-                ? BooruConfigDeletedItemBehavior.hide.index
-                : BooruConfigDeletedItemBehavior.show.index,
-            ratingFilter: config.ratingFilter.index,
-            name: config.configName,
-            url: config.url,
-            booruId: config.booru.toBooruId(),
-            booruIdHint: config.booruHint.toBooruId(),
-            customDownloadFileNameFormat: config.customDownloadFileNameFormat,
-            customBulkDownloadFileNameFormat:
-                config.customBulkDownloadFileNameFormat,
-            imageDetaisQuality: config.imageDetaisQuality,
-            granularRatingFilterString:
-                granularRatingFilterToString(config.granularRatingFilters),
-            postGestures: config.postGestures?.toJsonString(),
-            defaultPreviewImageButtonAction:
-                config.defaultPreviewImageButtonAction,
-          )
-        : BooruConfigData(
-            login: config.login,
-            apiKey: config.apiKey,
-            booruId: config.booru.toBooruId(),
-            booruIdHint: config.booruHint.toBooruId(),
-            deletedItemBehavior: config.hideDeleted
-                ? BooruConfigDeletedItemBehavior.hide.index
-                : BooruConfigDeletedItemBehavior.show.index,
-            ratingFilter: config.ratingFilter.index,
-            name: config.configName,
-            url: config.url,
-            customDownloadFileNameFormat: config.customDownloadFileNameFormat,
-            customBulkDownloadFileNameFormat:
-                config.customBulkDownloadFileNameFormat,
-            imageDetaisQuality: config.imageDetaisQuality,
-            granularRatingFilterString:
-                granularRatingFilterToString(config.granularRatingFilters),
-            postGestures: config.postGestures?.toJsonString(),
-            defaultPreviewImageButtonAction:
-                config.defaultPreviewImageButtonAction,
-          );
-    final updatedConfig =
-        await ref.read(booruConfigRepoProvider).update(id, booruConfigData);
-
-    if (updatedConfig == null) {
-      onFailure?.call('Failed to update account');
-
-      return;
-    }
-
-    final newConfigs =
-        state!.replaceFirst(updatedConfig, (item) => item.id == id);
-
-    onSuccess?.call(updatedConfig);
-
-    state = newConfigs;
-  }
-
-  Future<void> addFromBooruConfigData({
+  Future<void> add({
     required BooruConfigData booruConfigData,
     void Function(String message)? onFailure,
     void Function(BooruConfig booruConfig)? onSuccess,
@@ -224,96 +138,6 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?> {
 
       if (setAsCurrent) {
         ref.read(currentBooruConfigProvider.notifier).update(config);
-      }
-    } catch (e) {
-      onFailure?.call('Failed to add account');
-    }
-  }
-
-  Future<void> addFromAddBooruConfig({
-    required AddNewBooruConfig newConfig,
-    void Function(String message)? onFailure,
-    void Function(BooruConfig booruConfig)? onSuccess,
-    bool setAsCurrent = false,
-  }) async {
-    if (state == null) return;
-    try {
-      if (newConfig.login.isEmpty && newConfig.apiKey.isEmpty) {
-        final booruConfigData = BooruConfigData.anonymous(
-          booru: newConfig.booru,
-          booruHint: newConfig.booruHint,
-          filter: newConfig.ratingFilter,
-          name: newConfig.configName,
-          url: newConfig.url,
-          customDownloadFileNameFormat: newConfig.customDownloadFileNameFormat,
-          customBulkDownloadFileNameFormat:
-              newConfig.customBulkDownloadFileNameFormat,
-          imageDetaisQuality: newConfig.imageDetaisQuality,
-        );
-
-        final config =
-            await ref.read(booruConfigRepoProvider).add(booruConfigData);
-
-        if (config == null) {
-          onFailure?.call('Fail to add account. Account might be incorrect');
-
-          return;
-        }
-
-        onSuccess?.call(config);
-        ref.read(analyticsProvider).sendBooruAddedEvent(
-              url: config.url,
-              hintSite: config.booruType.name,
-              totalSites: state!.length,
-              hasLogin: true,
-            );
-
-        _add(config);
-
-        if (setAsCurrent) {
-          ref.read(currentBooruConfigProvider.notifier).update(config);
-        }
-      } else {
-        final booruConfigData = BooruConfigData(
-          login: newConfig.login,
-          apiKey: newConfig.apiKey,
-          deletedItemBehavior: newConfig.hideDeleted
-              ? BooruConfigDeletedItemBehavior.hide.index
-              : BooruConfigDeletedItemBehavior.show.index,
-          ratingFilter: newConfig.ratingFilter.index,
-          name: newConfig.configName,
-          url: newConfig.url,
-          booruId: newConfig.booru.toBooruId(),
-          booruIdHint: newConfig.booruHint.toBooruId(),
-          customDownloadFileNameFormat: newConfig.customDownloadFileNameFormat,
-          customBulkDownloadFileNameFormat:
-              newConfig.customBulkDownloadFileNameFormat,
-          imageDetaisQuality: newConfig.imageDetaisQuality,
-          granularRatingFilterString:
-              granularRatingFilterToString(newConfig.granularRatingFilters),
-          postGestures: newConfig.postGestures?.toJsonString(),
-          defaultPreviewImageButtonAction:
-              newConfig.defaultPreviewImageButtonAction,
-        );
-
-        final config =
-            await ref.read(booruConfigRepoProvider).add(booruConfigData);
-
-        if (config == null) {
-          onFailure?.call('Fail to add account. Account might be incorrect');
-
-          return;
-        }
-
-        onSuccess?.call(config);
-        ref.read(analyticsProvider).sendBooruAddedEvent(
-              url: config.url,
-              hintSite: config.booruType.name,
-              totalSites: state!.length,
-              hasLogin: false,
-            );
-
-        _add(config);
       }
     } catch (e) {
       onFailure?.call('Failed to add account');
@@ -415,37 +239,16 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?> {
 }
 
 extension BooruConfigNotifierX on BooruConfigNotifier {
-  @Deprecated('Use BooruConfigData directly')
   void addOrUpdate({
-    required BooruConfig config,
-    required AddNewBooruConfig newConfig,
-  }) {
-    if (config.isDefault()) {
-      ref.read(booruConfigProvider.notifier).addFromAddBooruConfig(
-            newConfig: newConfig,
-          );
-    } else {
-      ref.read(booruConfigProvider.notifier).update(
-            config: newConfig,
-            oldConfig: config,
-            id: config.id,
-            onSuccess: (booruConfig) => ref
-                .read(currentBooruConfigProvider.notifier)
-                .update(booruConfig),
-          );
-    }
-  }
-
-  void addOrUpdateUsingBooruConfigData({
     required BooruConfig config,
     required BooruConfigData newConfig,
   }) {
     if (config.isDefault()) {
-      ref.read(booruConfigProvider.notifier).addFromBooruConfigData(
+      ref.read(booruConfigProvider.notifier).add(
             booruConfigData: newConfig,
           );
     } else {
-      ref.read(booruConfigProvider.notifier).updateFromBooruConfigData(
+      ref.read(booruConfigProvider.notifier).update(
             booruConfigData: newConfig,
             oldConfig: config,
             onSuccess: (booruConfig) => ref
@@ -454,39 +257,4 @@ extension BooruConfigNotifierX on BooruConfigNotifier {
           );
     }
   }
-}
-
-@Deprecated('Use BooruConfigData directly')
-class AddNewBooruConfig {
-  AddNewBooruConfig({
-    required this.login,
-    required this.apiKey,
-    required this.booru,
-    required this.configName,
-    required this.hideDeleted,
-    required this.ratingFilter,
-    required this.url,
-    required this.booruHint,
-    required this.customDownloadFileNameFormat,
-    required this.customBulkDownloadFileNameFormat,
-    required this.imageDetaisQuality,
-    required this.granularRatingFilters,
-    required this.postGestures,
-    required this.defaultPreviewImageButtonAction,
-  });
-
-  final String login;
-  final String apiKey;
-  final BooruType booru;
-  final BooruType booruHint;
-  final String configName;
-  final bool hideDeleted;
-  final BooruConfigRatingFilter ratingFilter;
-  final String url;
-  final String? customDownloadFileNameFormat;
-  final String? customBulkDownloadFileNameFormat;
-  final String? imageDetaisQuality;
-  final Set<Rating>? granularRatingFilters;
-  final PostGestureConfig? postGestures;
-  final String? defaultPreviewImageButtonAction;
 }

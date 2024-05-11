@@ -101,7 +101,7 @@ class PhilomenaConfigSubmitButton extends ConsumerWidget {
 
     return RawBooruConfigSubmitButton(
       config: config,
-      dataBuilder: () => data.copyWith(
+      data: data.copyWith(
         apiKey: auth.apiKey,
         imageDetaisQuality: () => imageDetailsQuality,
       ),

@@ -83,7 +83,7 @@ class DanbooruBooruConfigSubmitButton extends ConsumerWidget {
 
     return RawBooruConfigSubmitButton(
       config: config,
-      dataBuilder: () => data.copyWith(
+      data: data.copyWith(
         login: auth.login,
         apiKey: auth.apiKey,
         deletedItemBehavior: hideDeleted
