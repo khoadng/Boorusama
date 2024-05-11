@@ -11,7 +11,6 @@ import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_api_key_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_config_name_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_login_field.dart';
-import 'package:boorusama/core/pages/boorus/widgets/create_booru_passworld_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_post_details_resolution_option_tile.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_rating_options_tile.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_submit_button.dart';
@@ -176,10 +175,12 @@ class DefaultBooruApiKeyField extends ConsumerWidget {
     super.key,
     this.hintText,
     this.labelText,
+    this.isPassword = false,
   });
 
   final String? hintText;
   final String? labelText;
+  final bool isPassword;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -187,27 +188,8 @@ class DefaultBooruApiKeyField extends ConsumerWidget {
 
     return CreateBooruApiKeyField(
       text: apiKey,
-      labelText: labelText,
+      labelText: isPassword ? 'booru.password_label'.tr() : null,
       hintText: hintText ?? 'e.g: o6H5u8QrxC7dN3KvF9D2bM4p',
-      onChanged: ref.updateApiKey,
-    );
-  }
-}
-
-class DefaultBooruPasswordField extends ConsumerWidget {
-  const DefaultBooruPasswordField({
-    super.key,
-    this.hintText,
-  });
-
-  final String? hintText;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final apiKey = ref.watch(apiKeyProvider);
-
-    return CreateBooruPasswordField(
-      text: apiKey,
       onChanged: ref.updateApiKey,
     );
   }

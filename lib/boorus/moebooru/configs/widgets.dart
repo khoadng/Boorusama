@@ -10,8 +10,9 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/pages/boorus/widgets/create_booru_passworld_field.dart';
+import 'package:boorusama/core/pages/boorus/widgets/create_booru_api_key_field.dart';
 import 'package:boorusama/foundation/crypto.dart';
+import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 
 class MoebooruPasswordField extends ConsumerStatefulWidget {
@@ -48,8 +49,9 @@ class _MoebooruPasswordFieldState extends ConsumerState<MoebooruPasswordField> {
   Widget build(BuildContext context) {
     final config = ref.watch(initialBooruConfigProvider);
 
-    return CreateBooruPasswordField(
+    return CreateBooruApiKeyField(
       controller: passwordController,
+      labelText: 'booru.password_label'.tr(),
       onChanged: (value) => setState(() {
         if (value.isEmpty) {
           ref.updateApiKey(value);

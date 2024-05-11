@@ -51,7 +51,10 @@ class SankakuAuthConfigView extends ConsumerWidget {
           SizedBox(height: 24),
           DefaultBooruLoginField(),
           SizedBox(height: 16),
-          DefaultBooruPasswordField(),
+          DefaultBooruApiKeyField(
+            isPassword: true,
+            hintText: '',
+          ),
           SizedBox(height: 8),
           DefaultBooruInstructionText(
             '*Without login credentials, some features may not work.',
