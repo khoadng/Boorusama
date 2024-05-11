@@ -9,7 +9,6 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/create/create.dart';
-import 'package:boorusama/core/configs/create/widgets.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/foundation/crypto.dart';
 import 'package:boorusama/foundation/i18n.dart';
