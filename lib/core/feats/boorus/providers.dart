@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/feats/backup/data_io_handler.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/functional.dart';
 
@@ -55,16 +54,6 @@ final configsProvider = FutureProvider.autoDispose<IList<BooruConfig>>((ref) {
   } catch (e) {
     return configMap.values.toIList();
   }
-});
-
-final booruConfigFileHandlerProvider = Provider<BooruConfigIOHandler>((ref) {
-  return BooruConfigIOHandler(
-    handler: DataIOHandler.file(
-      version: kBooruConfigsExporterImporterVersion,
-      deviceInfo: ref.watch(deviceInfoProvider),
-      prefixName: 'boorusama_profiles',
-    ),
-  );
 });
 
 extension BooruWidgetRef on WidgetRef {
