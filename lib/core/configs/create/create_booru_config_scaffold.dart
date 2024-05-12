@@ -136,7 +136,13 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
                         child: TabBarView(
                           physics: const NeverScrollableScrollPhysics(),
                           children: [
-                            for (final tab in tabMap.values) tab,
+                            for (final tab in tabMap.values)
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                ),
+                                child: tab,
+                              ),
                           ],
                         ),
                       ),

@@ -33,6 +33,7 @@ class BooruConfigGesturesView extends ConsumerWidget {
         children: [
           const BooruConfigSettingsHeader(label: 'Image viewer'),
           WarningContainer(
+            margin: const EdgeInsets.symmetric(vertical: 12),
             contentBuilder: (_) => const Text(
               'Images only, not applicable to videos.',
             ),
