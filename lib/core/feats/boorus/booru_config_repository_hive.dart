@@ -35,9 +35,8 @@ class HiveBooruConfigRepository implements BooruConfigRepository {
     final jsonString = jsonEncode(json);
     final id = await box.add(jsonString);
 
-    return convertToBooruConfig(
+    return booruConfigData.toBooruConfig(
       id: id,
-      booruConfigData: booruConfigData,
     );
   }
 
@@ -55,9 +54,8 @@ class HiveBooruConfigRepository implements BooruConfigRepository {
           final json = jsonDecode(jsonString);
           final booruConfigData = BooruConfigData.fromJson(json);
 
-          return convertToBooruConfig(
+          return booruConfigData.toBooruConfig(
             id: castOrNull<int>(e),
-            booruConfigData: booruConfigData,
           );
         })
         .whereNotNull()
@@ -72,9 +70,8 @@ class HiveBooruConfigRepository implements BooruConfigRepository {
     try {
       await box.put(id, jsonString);
 
-      return convertToBooruConfig(
+      return booruConfigData.toBooruConfig(
         id: id,
-        booruConfigData: booruConfigData,
       );
     } catch (e) {
       return null;
@@ -116,9 +113,8 @@ class HiveBooruConfigRepository implements BooruConfigRepository {
       final jsonString = jsonEncode(json);
       await box.put(booruConfig.id, jsonString);
 
-      configs.add(convertToBooruConfig(
+      configs.add(data.toBooruConfig(
         id: booruConfig.id,
-        booruConfigData: data,
       )!);
     }
 

@@ -131,61 +131,6 @@ class BooruConfigData extends Equatable {
       ];
 }
 
-BooruConfig? convertToBooruConfig({
-  required int? id,
-  required BooruConfigData? booruConfigData,
-}) {
-  if (booruConfigData == null || id == null) return null;
-
-  return BooruConfig(
-    id: id,
-    booruId: booruConfigData.booruId,
-    booruIdHint: booruConfigData.booruIdHint ?? booruConfigData.booruId,
-    apiKey: booruConfigData.apiKey.isEmpty ? null : booruConfigData.apiKey,
-    login: booruConfigData.login.isEmpty ? null : booruConfigData.login,
-    url: booruConfigData.url,
-    name: booruConfigData.name,
-    ratingFilter: BooruConfigRatingFilter.values[booruConfigData.ratingFilter],
-    deletedItemBehavior: BooruConfigDeletedItemBehavior
-        .values[booruConfigData.deletedItemBehavior],
-    customDownloadFileNameFormat: booruConfigData.customDownloadFileNameFormat,
-    customBulkDownloadFileNameFormat:
-        booruConfigData.customBulkDownloadFileNameFormat,
-    imageDetaisQuality: booruConfigData.imageDetaisQuality,
-    granularRatingFilters: parseGranularRatingFilters(
-      booruConfigData.granularRatingFilterString,
-    ),
-    postGestures: booruConfigData.postGestures == null
-        ? null
-        : PostGestureConfig.fromJsonString(booruConfigData.postGestures),
-    defaultPreviewImageButtonAction:
-        booruConfigData.defaultPreviewImageButtonAction,
-  );
-}
-
-extension BooruConfigDataTransfrom on BooruConfig {
-  BooruConfigData toBooruConfigData() {
-    return BooruConfigData(
-      booruId: booruId,
-      booruIdHint: booruIdHint,
-      apiKey: apiKey ?? '',
-      login: login ?? '',
-      name: name,
-      deletedItemBehavior: deletedItemBehavior.index,
-      ratingFilter: ratingFilter.index,
-      url: url,
-      customDownloadFileNameFormat: customDownloadFileNameFormat,
-      customBulkDownloadFileNameFormat: customBulkDownloadFileNameFormat,
-      imageDetaisQuality: imageDetaisQuality,
-      granularRatingFilterString: granularRatingFilterToString(
-        granularRatingFilters,
-      ),
-      postGestures: postGestures?.toJsonString(),
-      defaultPreviewImageButtonAction: defaultPreviewImageButtonAction,
-    );
-  }
-}
-
 extension BooruConfigDataX on BooruConfigData {
   PostGestureConfig? get postGesturesConfigTyped {
     return PostGestureConfig.fromJsonString(postGestures);
