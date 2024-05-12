@@ -149,7 +149,7 @@ void main() {
         'should add a new config',
         () async {
           await getNotifier().add(
-            booruConfigData: configData,
+            data: configData,
           );
 
           final newData = container.read(booruConfigProvider);
@@ -170,7 +170,7 @@ void main() {
           final successCallback = MockCallback();
 
           await getNotifier().add(
-            booruConfigData: configData,
+            data: configData,
             onSuccess: (booruConfig) => successCallback(),
           );
 
@@ -182,7 +182,7 @@ void main() {
         'should update order',
         () async {
           await getNotifier().add(
-            booruConfigData: configData,
+            data: configData,
           );
 
           verify(
@@ -204,7 +204,7 @@ void main() {
         'should update current booru config if set as current',
         () async {
           await getNotifier().add(
-            booruConfigData: configData,
+            data: configData,
             setAsCurrent: true,
           );
 
@@ -219,7 +219,7 @@ void main() {
         'should call the analytics',
         () async {
           await getNotifier().add(
-            booruConfigData: configData,
+            data: configData,
           );
 
           verify(

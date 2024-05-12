@@ -41,7 +41,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?>
     );
 
     return add(
-      booruConfigData: copyData.toBooruConfigData(),
+      data: copyData.toBooruConfigData(),
     );
   }
 
@@ -113,15 +113,14 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?>
   }
 
   Future<void> add({
-    required BooruConfigData booruConfigData,
+    required BooruConfigData data,
     void Function(String message)? onFailure,
     void Function(BooruConfig booruConfig)? onSuccess,
     bool setAsCurrent = false,
   }) async {
     if (state == null) return;
     try {
-      final config =
-          await ref.read(booruConfigRepoProvider).add(booruConfigData);
+      final config = await ref.read(booruConfigRepoProvider).add(data);
 
       if (config == null) {
         onFailure?.call('Fail to add account. Account might be incorrect');
@@ -155,7 +154,7 @@ extension BooruConfigNotifierX on BooruConfigNotifier {
   }) {
     if (config.isDefault()) {
       ref.read(booruConfigProvider.notifier).add(
-            booruConfigData: newConfig,
+            data: newConfig,
           );
     } else {
       ref.read(booruConfigProvider.notifier).update(
