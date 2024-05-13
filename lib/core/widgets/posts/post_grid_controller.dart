@@ -247,6 +247,7 @@ class PostGridController<T extends Post> extends ChangeNotifier {
     onSuccess?.call();
 
     _items = data;
+    _filteredItems = data;
     notifyListeners();
   }
 
@@ -258,6 +259,7 @@ class PostGridController<T extends Post> extends ChangeNotifier {
     _keys = data.map((e) => itemIdExtractor(e)).toSet();
 
     _items = data;
+    _filteredItems = data;
     notifyListeners();
   }
 
