@@ -141,7 +141,7 @@ class _DanbooruPostDetailsPageState
             ),
             DanbooruMoreActionButton(
               post: post,
-              onStartSlideshow: () => controller.startSlideShow(),
+              onStartSlideshow: () => controller.startSlideshow(),
             ),
           ];
         },

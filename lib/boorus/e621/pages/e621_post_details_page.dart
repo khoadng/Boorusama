@@ -98,7 +98,7 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage> {
           ),
           GeneralMoreActionButton(
             post: post,
-            onStartSlideshow: () => controller.startSlideShow(),
+            onStartSlideshow: () => controller.startSlideshow(),
           ),
         ];
       },

@@ -58,7 +58,7 @@ class _BookmarkDetailsPageState extends ConsumerState<BookmarkDetailsPage> {
       topRightButtonsBuilder: (context, _, post, controller) => [
         GeneralMoreActionButton(
           post: post,
-          onStartSlideshow: () => controller.startSlideShow(),
+          onStartSlideshow: () => controller.startSlideshow(),
           onDownload: (post) {
             ref.bookmarks.downloadBookmarks(
               ref.watchConfig,

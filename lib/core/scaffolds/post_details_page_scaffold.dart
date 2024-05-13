@@ -114,10 +114,10 @@ class _PostDetailPageScaffoldState<T extends Post>
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: controller.slideShow,
+      valueListenable: controller.slideshow,
       builder: (context, slideshow, child) => GestureDetector(
         behavior: slideshow ? HitTestBehavior.opaque : null,
-        onTap: () => controller.stopSlideShow(),
+        onTap: () => controller.stopSlideshow(),
         child: IgnorePointer(
           ignoring: slideshow,
           child: child!,
@@ -272,7 +272,7 @@ class _PostDetailPageScaffoldState<T extends Post>
                 : [
                     GeneralMoreActionButton(
                       post: widget.posts[page],
-                      onStartSlideshow: () => controller.startSlideShow(),
+                      onStartSlideshow: () => controller.startSlideshow(),
                     ),
                   ],
         onExpanded: (currentPage) =>

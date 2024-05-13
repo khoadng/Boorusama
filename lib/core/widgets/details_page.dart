@@ -110,13 +110,13 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
       _shouldSlideDownNotifier.value = true;
     }
     _controller.addListener(_onPageDetailsChanged);
-    _controller.slideShow.addListener(_onSlideShowChanged);
+    _controller.slideshow.addListener(_onSlideShowChanged);
 
     super.initState();
   }
 
   void _onSlideShowChanged() async {
-    final slideShow = _controller.slideShow.value;
+    final slideShow = _controller.slideshow.value;
 
     if (slideShow) {
       // if in expanded mode, scroll to top to exit expanded mode first
@@ -175,7 +175,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
 
     _controller.removeListener(_onPageDetailsChanged);
 
-    _controller.slideShow.removeListener(_onSlideShowChanged);
+    _controller.slideshow.removeListener(_onSlideShowChanged);
     stopAutoSlide();
 
     if (widget.controller == null) {
@@ -189,7 +189,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
         !_controller.swipeDownToDismiss ||
         expanded ||
         context.navigator.userGestureInProgress ||
-        _controller.slideShow.value ||
+        _controller.slideshow.value ||
         _isSwiping) {
       return;
     }

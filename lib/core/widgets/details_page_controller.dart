@@ -10,24 +10,24 @@ class DetailsPageController extends ChangeNotifier {
   var _enableSwipeDownToDismiss = false;
 
   var _enablePageSwipe = true;
-  final _slideShow = ValueNotifier<bool>(false);
+  final _slideshow = ValueNotifier<bool>(false);
   late final ValueNotifier<bool> _hideOverlay;
 
   bool get swipeDownToDismiss => _enableSwipeDownToDismiss;
   bool get pageSwipe => _enablePageSwipe;
   ValueNotifier<bool> get hideOverlay => _hideOverlay;
-  ValueNotifier<bool> get slideShow => _slideShow;
+  ValueNotifier<bool> get slideshow => _slideshow;
 
-  void startSlideShow() {
-    _slideShow.value = true;
+  void startSlideshow() {
+    _slideshow.value = true;
     disablePageSwipe();
     disableSwipeDownToDismiss();
     if (!_hideOverlay.value) setHideOverlay(true);
     notifyListeners();
   }
 
-  void stopSlideShow() {
-    _slideShow.value = false;
+  void stopSlideshow() {
+    _slideshow.value = false;
     enablePageSwipe();
     enableSwipeDownToDismiss();
     setHideOverlay(false);

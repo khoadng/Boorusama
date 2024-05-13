@@ -135,7 +135,7 @@ class _PostDetailPageState extends ConsumerState<GelbooruV2PostDetailsPage> {
           ),
           GeneralMoreActionButton(
             post: post,
-            onStartSlideshow: () => controller.startSlideShow(),
+            onStartSlideshow: () => controller.startSlideshow(),
           ),
         ];
       },
