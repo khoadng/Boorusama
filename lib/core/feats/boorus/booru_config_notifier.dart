@@ -160,6 +160,16 @@ extension BooruConfigNotifierX on BooruConfigNotifier {
       ref.read(booruConfigProvider.notifier).update(
             booruConfigData: newConfig,
             oldConfig: config,
+            onSuccess: (booruConfig) {
+              // if edit current config, update current config
+              final currentConfig = ref.read(currentBooruConfigProvider);
+
+              if (currentConfig.id == booruConfig.id) {
+                ref
+                    .read(currentBooruConfigProvider.notifier)
+                    .update(booruConfig);
+              }
+            },
           );
     }
   }
