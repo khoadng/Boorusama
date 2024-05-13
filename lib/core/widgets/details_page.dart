@@ -103,6 +103,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
   void initState() {
     isSwipingDown.addListener(_updateShouldSlideDown);
     isExpanded.addListener(_updateShouldSlideDown);
+    isExpanded.addListener(_onExpandedChanged);
 
     if (_controller._hideOverlay.value) {
       _shouldSlideDownNotifier.value = true;
@@ -117,6 +118,10 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
 
   void _onPageChanged() {
     _controller.currentPage.value = controller.currentPage.value;
+  }
+
+  void _onExpandedChanged() {
+    _controller.expanded.value = isExpanded.value;
   }
 
   void _onSlideShowChanged() async {
@@ -175,6 +180,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
 
     isSwipingDown.removeListener(_updateShouldSlideDown);
     isExpanded.removeListener(_updateShouldSlideDown);
+    isExpanded.removeListener(_onExpandedChanged);
 
     _controller.removeListener(_onPageDetailsChanged);
 
