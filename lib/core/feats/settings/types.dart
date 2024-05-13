@@ -85,6 +85,11 @@ enum MediaBlurCondition {
   explicitOnly,
 }
 
+enum SlideshowTransitionType {
+  none,
+  natural,
+}
+
 class Settings extends Equatable {
   const Settings({
     required this.safeMode,
@@ -121,6 +126,8 @@ class Settings extends Equatable {
     required this.swipeAreaToOpenSidebarPercentage,
     required this.booruConfigLabelVisibility,
     required this.mediaBlurCondition,
+    required this.slideshowInterval,
+    required this.slideshowTransitionType,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
@@ -196,6 +203,10 @@ class Settings extends Equatable {
         mediaBlurCondition = json['mediaBlurCondition'] != null
             ? MediaBlurCondition.values[json['mediaBlurCondition']]
             : MediaBlurCondition.none,
+        slideshowInterval = json['slideshowInterval'] ?? 6,
+        slideshowTransitionType = json['slideshowTransitionType'] != null
+            ? SlideshowTransitionType.values[json['slideshowTransitionType']]
+            : SlideshowTransitionType.natural,
         swipeAreaToOpenSidebarPercentage =
             json['swipeAreaToOpenSidebarPercentage'] ?? 5,
         imageGridAspectRatio = json['imageGridAspectRatio'] ?? 0.7,
@@ -237,6 +248,8 @@ class Settings extends Equatable {
     swipeAreaToOpenSidebarPercentage: 5,
     booruConfigLabelVisibility: BooruConfigLabelVisibility.always,
     mediaBlurCondition: MediaBlurCondition.none,
+    slideshowInterval: 6,
+    slideshowTransitionType: SlideshowTransitionType.natural,
   );
 
   final String blacklistedTags;
@@ -299,6 +312,10 @@ class Settings extends Equatable {
 
   final MediaBlurCondition mediaBlurCondition;
 
+  final double slideshowInterval;
+
+  final SlideshowTransitionType slideshowTransitionType;
+
   Settings copyWith({
     String? blacklistedTags,
     String? language,
@@ -335,6 +352,8 @@ class Settings extends Equatable {
     int? swipeAreaToOpenSidebarPercentage,
     BooruConfigLabelVisibility? booruConfigLabelVisibility,
     MediaBlurCondition? mediaBlurCondition,
+    double? slideshowInterval,
+    SlideshowTransitionType? slideshowTransitionType,
   }) =>
       Settings(
         safeMode: safeMode ?? this.safeMode,
@@ -383,6 +402,9 @@ class Settings extends Equatable {
         booruConfigLabelVisibility:
             booruConfigLabelVisibility ?? this.booruConfigLabelVisibility,
         mediaBlurCondition: mediaBlurCondition ?? this.mediaBlurCondition,
+        slideshowInterval: slideshowInterval ?? this.slideshowInterval,
+        slideshowTransitionType:
+            slideshowTransitionType ?? this.slideshowTransitionType,
       );
 
   Map<String, dynamic> toJson() => {
@@ -421,6 +443,8 @@ class Settings extends Equatable {
         'swipeAreaToOpenSidebarPercentage': swipeAreaToOpenSidebarPercentage,
         'booruConfigLabelVisibility': booruConfigLabelVisibility.index,
         'mediaBlurCondition': mediaBlurCondition.index,
+        'slideshowInterval': slideshowInterval,
+        'slideshowTransitionType': slideshowTransitionType.index,
       };
 
   @override
@@ -459,6 +483,8 @@ class Settings extends Equatable {
         swipeAreaToOpenSidebarPercentage,
         booruConfigLabelVisibility,
         mediaBlurCondition,
+        slideshowInterval,
+        slideshowTransitionType,
       ];
 }
 
@@ -478,6 +504,16 @@ extension SettingsX on Settings {
 
   bool get blurExplicitMedia =>
       mediaBlurCondition == MediaBlurCondition.explicitOnly;
+
+  bool get skipSlideshowTransition =>
+      slideshowTransitionType == SlideshowTransitionType.none;
+
+  Duration get slideshowDuration {
+    // if less than 1 second, should use milliseconds instead
+    return slideshowInterval < 1
+        ? Duration(milliseconds: (slideshowInterval * 1000).toInt())
+        : Duration(seconds: slideshowInterval.toInt());
+  }
 }
 
 extension PageIndicatorPositionX on PageIndicatorPosition {

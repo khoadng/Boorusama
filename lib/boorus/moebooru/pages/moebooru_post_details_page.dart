@@ -220,6 +220,11 @@ class _MoebooruPostDetailsPageState
             SimplePostActionToolbar(post: post);
       },
       commentsBuilder: (context, post) => MoebooruCommentSection(post: post),
+      topRightButtonsBuilder: (currentPage, expanded, post, controller) => [
+        //FIXME: temporary disable slideshow when user is logged in to prevent server spam
+        if (!ref.watchConfig.hasLoginDetails())
+          GeneralMoreActionButton(post: post),
+      ],
       infoBuilder: (context, post) =>
           ref.watch(moebooruAllTagsProvider(config)).maybeWhen(
                 data: (tags) {

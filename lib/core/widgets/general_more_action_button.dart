@@ -18,10 +18,12 @@ class GeneralMoreActionButton extends ConsumerWidget {
     super.key,
     required this.post,
     this.onDownload,
+    this.onStartSlideshow,
   });
 
   final Post post;
   final void Function(Post post)? onDownload;
+  final void Function()? onStartSlideshow;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -58,6 +60,11 @@ class GeneralMoreActionButton extends ConsumerWidget {
               case 'view_original':
                 goToOriginalImagePage(context, post);
                 break;
+              case 'start_slideshow':
+                if (onStartSlideshow != null) {
+                  onStartSlideshow!();
+                }
+                break;
               // ignore: no_default_cases
               default:
             }
@@ -70,6 +77,8 @@ class GeneralMoreActionButton extends ConsumerWidget {
             if (post.hasFullView)
               'view_original':
                   const Text('post.image_fullview.view_original').tr(),
+            if (onStartSlideshow != null)
+              'start_slideshow': const Text('Slideshow'),
           },
         ),
       ),

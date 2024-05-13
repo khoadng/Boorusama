@@ -116,14 +116,17 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailsPage> {
         post,
         ref.watch(notesControllerProvider(post)),
       ),
-      topRightButtonsBuilder: (page, expanded, post) {
+      topRightButtonsBuilder: (page, expanded, post, controller) {
         return [
           NoteActionButtonWithProvider(
             post: post,
             expanded: expanded,
             noteState: ref.watch(notesControllerProvider(post)),
           ),
-          GeneralMoreActionButton(post: post),
+          GeneralMoreActionButton(
+            post: post,
+            onStartSlideshow: () => controller.startSlideshow(),
+          ),
         ];
       },
       onExpanded: (post) => ref.read(tagsProvider(booruConfig).notifier).load(

@@ -10,34 +10,24 @@ class DetailsPageController extends ChangeNotifier {
   var _enableSwipeDownToDismiss = false;
 
   var _enablePageSwipe = true;
-  final _slideShow = ValueNotifier((false, <int>[]));
+  final _slideshow = ValueNotifier<bool>(false);
   late final ValueNotifier<bool> _hideOverlay;
 
   bool get swipeDownToDismiss => _enableSwipeDownToDismiss;
   bool get pageSwipe => _enablePageSwipe;
   ValueNotifier<bool> get hideOverlay => _hideOverlay;
-  ValueNotifier<(bool, List<int>)> get slideShow => _slideShow;
+  ValueNotifier<bool> get slideshow => _slideshow;
 
-  void toggleSlideShow() {
-    if (_slideShow.value.$1) {
-      stopSlideShow();
-    } else {
-      startSlideShow();
-    }
-  }
-
-  void startSlideShow({
-    List<int>? skipIndexes,
-  }) {
-    _slideShow.value = (true, skipIndexes ?? <int>[]);
+  void startSlideshow() {
+    _slideshow.value = true;
     disablePageSwipe();
     disableSwipeDownToDismiss();
     if (!_hideOverlay.value) setHideOverlay(true);
     notifyListeners();
   }
 
-  void stopSlideShow() {
-    _slideShow.value = (false, <int>[]);
+  void stopSlideshow() {
+    _slideshow.value = false;
     enablePageSwipe();
     enableSwipeDownToDismiss();
     setHideOverlay(false);
