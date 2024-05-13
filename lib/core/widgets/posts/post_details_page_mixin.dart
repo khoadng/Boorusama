@@ -79,7 +79,7 @@ mixin PostDetailsPageMixin<T extends StatefulWidget, E extends Post>
   }
 
   void onImageTap() {
-    if (controller.slideShow.value.$1) {
+    if (controller.slideShow.value) {
       controller.stopSlideShow();
     }
     controller.toggleOverlay();

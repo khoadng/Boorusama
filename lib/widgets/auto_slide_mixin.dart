@@ -13,7 +13,6 @@ mixin AutomaticSlideMixin<T extends StatefulWidget> on State<T> {
   void startAutoSlide(
     int start,
     int end, {
-    List<int>? skipIndexes,
     bool skipAnimation = true,
     Duration? duration,
   }) {

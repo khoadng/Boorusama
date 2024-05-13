@@ -116,10 +116,10 @@ class _PostDetailPageScaffoldState<T extends Post>
     return ValueListenableBuilder(
       valueListenable: controller.slideShow,
       builder: (context, slideshow, child) => GestureDetector(
-        behavior: slideshow.$1 ? HitTestBehavior.opaque : null,
+        behavior: slideshow ? HitTestBehavior.opaque : null,
         onTap: () => controller.stopSlideShow(),
         child: IgnorePointer(
-          ignoring: slideshow.$1,
+          ignoring: slideshow,
           child: child!,
         ),
       ),

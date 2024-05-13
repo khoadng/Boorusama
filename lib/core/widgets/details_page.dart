@@ -116,7 +116,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
   }
 
   void _onSlideShowChanged() async {
-    final (slideShow, skipIndexes) = _controller.slideShow.value;
+    final slideShow = _controller.slideShow.value;
 
     if (slideShow) {
       // if in expanded mode, scroll to top to exit expanded mode first
@@ -133,7 +133,6 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
       startAutoSlide(
         controller.currentPage.value,
         widget.pageCount,
-        skipIndexes: skipIndexes,
         skipAnimation: settings.skipSlideshowTransition,
         duration: Duration(
           seconds: settings.slideshowInterval.toInt(),
@@ -190,7 +189,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
         !_controller.swipeDownToDismiss ||
         expanded ||
         context.navigator.userGestureInProgress ||
-        _controller.slideShow.value.$1 ||
+        _controller.slideShow.value ||
         _isSwiping) {
       return;
     }
