@@ -77,7 +77,8 @@ class GeneralMoreActionButton extends ConsumerWidget {
             if (post.hasFullView)
               'view_original':
                   const Text('post.image_fullview.view_original').tr(),
-            'start_slideshow': const Text('Slideshow'),
+            if (onStartSlideshow != null)
+              'start_slideshow': const Text('Slideshow'),
           },
         ),
       ),
