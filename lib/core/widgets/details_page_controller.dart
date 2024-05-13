@@ -40,7 +40,8 @@ class DetailsPageController extends ChangeNotifier {
     _slideShow.value = (false, <int>[]);
     enablePageSwipe();
     enableSwipeDownToDismiss();
-    setHideOverlay(false);
+    // already changed by image tap
+    // setHideOverlay(false);
 
     notifyListeners();
   }

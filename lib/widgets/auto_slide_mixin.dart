@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 mixin AutomaticSlideMixin<T extends StatefulWidget> on State<T> {
   PageController get pageController;
   Timer? timer;
-  int currentPage = 0;
+  int _currentPage = 0;
   bool _isSliding = false;
 
   void startAutoSlide(
@@ -20,30 +20,27 @@ mixin AutomaticSlideMixin<T extends StatefulWidget> on State<T> {
     if (_isSliding) return;
     _isSliding = true;
     timer?.cancel();
+    _currentPage = start;
 
     timer = Timer.periodic(
       duration ?? const Duration(seconds: 1),
       (timer) {
-        if (currentPage < end - 1) {
-          currentPage++;
-        } else {
-          currentPage = 0;
-        }
-
-        // skip if current page is in skipIndexes
-        if (skipIndexes?.contains(currentPage) ?? false) {
-          return;
-        }
+        _currentPage = (_currentPage + 1) % end;
 
         if (_isSliding) {
           if (skipAnimation) {
-            pageController.jumpToPage(currentPage);
+            pageController.jumpToPage(_currentPage);
           } else {
-            pageController.animateToPage(
-              currentPage,
-              duration: const Duration(milliseconds: 350),
-              curve: Curves.easeIn,
-            );
+            // if last page, just jump to first page without animation
+            if (_currentPage == 0) {
+              pageController.jumpToPage(0);
+            } else {
+              pageController.animateToPage(
+                _currentPage,
+                duration: const Duration(milliseconds: 350),
+                curve: Curves.easeIn,
+              );
+            }
           }
         }
       },

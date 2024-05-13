@@ -208,6 +208,29 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
                   settings.copyWith(postDetailsOverlayInitialState: value)),
               optionBuilder: (value) => Text(value.localize().tr()),
             ),
+            SettingsTile(
+              title: const Text('Slideshow Interval'),
+              selectedOption: settings.slideshowInterval,
+              items: getSlideShowIntervalPossibleValue(),
+              onChanged: (newValue) {
+                ref.updateSettings(
+                    settings.copyWith(slideshowInterval: newValue));
+              },
+              optionBuilder: (value) => Text(
+                '${value.toStringAsFixed(0)} sec',
+              ),
+            ),
+            SwitchListTile(
+              title: const Text('Skip Slideshow Transition'),
+              value: settings.skipSlideshowTransition,
+              onChanged: (value) => ref.updateSettings(
+                settings.copyWith(
+                  slideshowTransitionType: value
+                      ? SlideshowTransitionType.none
+                      : SlideshowTransitionType.natural,
+                ),
+              ),
+            ),
             const SizedBox(
               height: 10,
             ),

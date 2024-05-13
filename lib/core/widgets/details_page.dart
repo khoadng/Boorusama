@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/platform.dart';
@@ -31,6 +32,7 @@ class DetailsPage<T> extends ConsumerStatefulWidget {
     this.controller,
     this.onSwipeDownEnd,
     this.sharedChildBuilder,
+    required this.currentSettings,
   });
 
   final void Function(int page)? onPageChanged;
@@ -53,6 +55,7 @@ class DetailsPage<T> extends ConsumerStatefulWidget {
   final DetailsPageController? controller;
   final void Function(int currentPage)? onSwipeDownEnd;
   final Widget Function(int currentPage)? sharedChildBuilder;
+  final Settings Function() currentSettings;
 
   @override
   ConsumerState<DetailsPage> createState() => _DetailsPageState();
@@ -107,8 +110,38 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
       _shouldSlideDownNotifier.value = true;
     }
     _controller.addListener(_onPageDetailsChanged);
+    _controller.slideShow.addListener(_onSlideShowChanged);
 
     super.initState();
+  }
+
+  void _onSlideShowChanged() async {
+    final (slideShow, skipIndexes) = _controller.slideShow.value;
+
+    if (slideShow) {
+      // if in expanded mode, scroll to top to exit expanded mode first
+      if (isExpanded.value) {
+        await controller.animateViewportInsetTo(
+          ViewportInset.shrunk,
+          curve: Curves.easeOut,
+          duration: const Duration(milliseconds: 150),
+        );
+      }
+
+      final settings = widget.currentSettings();
+
+      startAutoSlide(
+        controller.currentPage.value,
+        widget.pageCount,
+        skipIndexes: skipIndexes,
+        skipAnimation: settings.skipSlideshowTransition,
+        duration: Duration(
+          seconds: settings.slideshowInterval.toInt(),
+        ),
+      );
+    } else {
+      stopAutoSlide();
+    }
   }
 
   void _onPageDetailsChanged() {
@@ -117,18 +150,6 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
       setState(() {
         _pageSwipe = _controller.pageSwipe;
       });
-    }
-
-    final (slideShow, skipIndexes) = _controller.slideShow.value;
-
-    if (slideShow) {
-      startAutoSlide(
-        controller.currentPage.value,
-        widget.pageCount,
-        skipIndexes: skipIndexes,
-      );
-    } else {
-      stopAutoSlide();
     }
   }
 
@@ -154,6 +175,10 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
     isExpanded.removeListener(_updateShouldSlideDown);
 
     _controller.removeListener(_onPageDetailsChanged);
+
+    _controller.slideShow.removeListener(_onSlideShowChanged);
+    stopAutoSlide();
+
     if (widget.controller == null) {
       _controller.dispose();
     }

@@ -73,8 +73,8 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
 
   final Widget Function(BuildContext context, T post)?
       sliverRelatedPostsBuilder;
-  final List<Widget> Function(int currentPage, bool expanded, T post)?
-      topRightButtonsBuilder;
+  final List<Widget> Function(int currentPage, bool expanded, T post,
+      DetailsPageController controller)? topRightButtonsBuilder;
   final List<Widget> Function(BoxConstraints constraints, T post)?
       imageOverlayBuilder;
 
@@ -130,6 +130,7 @@ class _PostDetailPageScaffoldState<T extends Post>
                 : SimplePostActionToolbar(post: posts[page]),
           ],
         ),
+        currentSettings: () => ref.read(settingsProvider),
         controller: controller,
         intitialIndex: widget.initialIndex,
         onExit: widget.onExit,
@@ -251,9 +252,13 @@ class _PostDetailPageScaffoldState<T extends Post>
         pageCount: widget.posts.length,
         topRightButtonsBuilder: (page, expanded) =>
             widget.topRightButtonsBuilder != null
-                ? widget.topRightButtonsBuilder!(page, expanded, posts[page])
+                ? widget.topRightButtonsBuilder!(
+                    page, expanded, posts[page], controller)
                 : [
-                    GeneralMoreActionButton(post: widget.posts[page]),
+                    GeneralMoreActionButton(
+                      post: widget.posts[page],
+                      onStartSlideshow: () => controller.startSlideShow(),
+                    ),
                   ],
         onExpanded: (currentPage) =>
             widget.onExpanded?.call(posts[currentPage]),
