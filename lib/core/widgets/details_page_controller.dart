@@ -4,7 +4,9 @@ class DetailsPageController extends ChangeNotifier {
   DetailsPageController({
     bool swipeDownToDismiss = true,
     bool hideOverlay = false,
+    int initialPage = 0,
   })  : _enableSwipeDownToDismiss = swipeDownToDismiss,
+        currentPage = ValueNotifier(initialPage),
         _hideOverlay = ValueNotifier(hideOverlay);
 
   var _enableSwipeDownToDismiss = false;
@@ -17,6 +19,7 @@ class DetailsPageController extends ChangeNotifier {
   bool get pageSwipe => _enablePageSwipe;
   ValueNotifier<bool> get hideOverlay => _hideOverlay;
   ValueNotifier<bool> get slideshow => _slideshow;
+  late final ValueNotifier<int> currentPage;
 
   void startSlideshow() {
     _slideshow.value = true;

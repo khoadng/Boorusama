@@ -106,6 +106,20 @@ class _PostDetailPageScaffoldState<T extends Post>
   int get initialPage => widget.initialIndex;
 
   @override
+  void initState() {
+    super.initState();
+    _controller.currentPage.addListener(_onPageChanged);
+  }
+
+  void _onPageChanged() {
+    final page = _controller.currentPage.value;
+
+    onSwiped(page);
+    widget.onPageChangeIndexed?.call(page);
+    widget.onPageChanged?.call(posts[page]);
+  }
+
+  @override
   void dispose() {
     _controller.dispose();
     super.dispose();
@@ -149,11 +163,6 @@ class _PostDetailPageScaffoldState<T extends Post>
         controller: controller,
         intitialIndex: widget.initialIndex,
         onExit: widget.onExit,
-        onPageChanged: (page) {
-          onSwiped(page);
-          widget.onPageChangeIndexed?.call(page);
-          widget.onPageChanged?.call(posts[page]);
-        },
         onSwipeDownEnd: booruBuilder?.canHandlePostGesture(
                       GestureType.swipeDown,
                       config.postGestures?.fullview,
