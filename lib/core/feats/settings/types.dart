@@ -507,6 +507,13 @@ extension SettingsX on Settings {
 
   bool get skipSlideshowTransition =>
       slideshowTransitionType == SlideshowTransitionType.none;
+
+  Duration get slideshowDuration {
+    // if less than 1 second, should use milliseconds instead
+    return slideshowInterval < 1
+        ? Duration(milliseconds: (slideshowInterval * 1000).toInt())
+        : Duration(seconds: slideshowInterval.toInt());
+  }
 }
 
 extension PageIndicatorPositionX on PageIndicatorPosition {

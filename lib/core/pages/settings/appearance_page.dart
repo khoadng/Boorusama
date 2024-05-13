@@ -210,6 +210,8 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
             ),
             SettingsTile(
               title: const Text('Slideshow Interval'),
+              subtitle: const Text(
+                  'Value less than 1 second will automatically skip transition'),
               selectedOption: settings.slideshowInterval,
               items: getSlideShowIntervalPossibleValue(),
               onChanged: (newValue) {
@@ -217,7 +219,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
                     settings.copyWith(slideshowInterval: newValue));
               },
               optionBuilder: (value) => Text(
-                '${value.toStringAsFixed(0)} sec',
+                '${value.toStringAsFixed(value < 1 ? 2 : 0)} sec',
               ),
             ),
             SwitchListTile(

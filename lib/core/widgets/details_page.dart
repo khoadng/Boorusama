@@ -134,9 +134,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
         controller.currentPage.value,
         widget.pageCount,
         skipAnimation: settings.skipSlideshowTransition,
-        duration: Duration(
-          seconds: settings.slideshowInterval.toInt(),
-        ),
+        duration: settings.slideshowDuration,
       );
     } else {
       stopAutoSlide();
