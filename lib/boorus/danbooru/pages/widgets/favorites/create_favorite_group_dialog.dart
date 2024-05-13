@@ -8,12 +8,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class EditFavoriteGroupDialog extends ConsumerStatefulWidget {
   const EditFavoriteGroupDialog({
@@ -164,11 +164,8 @@ class _EditFavoriteGroupDialogState
                                       name: value.text,
                                       isPrivate: isPrivate,
                                       onFailure: (message, translatable) =>
-                                          showSimpleSnackBar(
-                                        context: context,
-                                        content: translatable
-                                            ? Text(message).tr()
-                                            : Text(message),
+                                          showErrorToast(
+                                        translatable ? message.tr() : message,
                                       ),
                                     );
                               } else {
@@ -181,10 +178,7 @@ class _EditFavoriteGroupDialogState
                                       isPrivate: isPrivate,
                                       initialIds: textController.text,
                                       onFailure: (message, _) {
-                                        showSimpleSnackBar(
-                                          context: context,
-                                          content: Text(message.toString()),
-                                        );
+                                        showErrorToast(message);
                                       },
                                     );
                               }
