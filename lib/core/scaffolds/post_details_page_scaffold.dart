@@ -113,6 +113,21 @@ class _PostDetailPageScaffoldState<T extends Post>
 
   @override
   Widget build(BuildContext context) {
+    return ValueListenableBuilder(
+      valueListenable: controller.slideShow,
+      builder: (context, slideshow, child) => GestureDetector(
+        behavior: slideshow.$1 ? HitTestBehavior.opaque : null,
+        onTap: () => controller.stopSlideShow(),
+        child: IgnorePointer(
+          ignoring: slideshow.$1,
+          child: child!,
+        ),
+      ),
+      child: _build(),
+    );
+  }
+
+  Widget _build() {
     final config = ref.watchConfig;
     final booruBuilder = ref.watchBooruBuilder(config);
     final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
@@ -342,10 +357,10 @@ class _PostDetailPageScaffoldState<T extends Post>
       if (!expandedOnCurrentPage)
         SizedBox(
           height: context.screenHeight - MediaQuery.viewPaddingOf(context).top,
-          child: RepaintBoundary(child: media),
+          child: media,
         )
       else
-        RepaintBoundary(child: media),
+        media,
       if (!expandedOnCurrentPage) SizedBox(height: context.screenHeight),
       if (expandedOnCurrentPage) ...[
         if (widget.poolTileBuilder != null)

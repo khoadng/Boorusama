@@ -18,14 +18,6 @@ class DetailsPageController extends ChangeNotifier {
   ValueNotifier<bool> get hideOverlay => _hideOverlay;
   ValueNotifier<(bool, List<int>)> get slideShow => _slideShow;
 
-  void toggleSlideShow() {
-    if (_slideShow.value.$1) {
-      stopSlideShow();
-    } else {
-      startSlideShow();
-    }
-  }
-
   void startSlideShow({
     List<int>? skipIndexes,
   }) {
@@ -40,8 +32,7 @@ class DetailsPageController extends ChangeNotifier {
     _slideShow.value = (false, <int>[]);
     enablePageSwipe();
     enableSwipeDownToDismiss();
-    // already changed by image tap
-    // setHideOverlay(false);
+    setHideOverlay(false);
 
     notifyListeners();
   }
