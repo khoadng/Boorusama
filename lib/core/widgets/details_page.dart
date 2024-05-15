@@ -21,7 +21,7 @@ class DetailsPage<T> extends ConsumerStatefulWidget {
   const DetailsPage({
     super.key,
     required this.intitialIndex,
-    required this.targetSwipeDownBuilder,
+    required this.targetSwipeDown,
     required this.expandedBuilder,
     required this.pageCount,
     required this.topRightButtonsBuilder,
@@ -30,29 +30,22 @@ class DetailsPage<T> extends ConsumerStatefulWidget {
     required this.onExit,
     this.controller,
     this.onSwipeDownEnd,
-    this.sharedChildBuilder,
     required this.currentSettings,
   });
 
   final int intitialIndex;
-  final Widget Function(BuildContext context, int index) targetSwipeDownBuilder;
+  final Widget targetSwipeDown;
   final Widget Function(
     BuildContext context,
     int page,
-    int currentPage,
-    bool expanded,
-    bool enableSwipe,
-    Widget? sharedChild,
   ) expandedBuilder;
   final int pageCount;
-  final List<Widget> Function(int currentPage, bool expanded)
-      topRightButtonsBuilder;
-  final void Function(int currentPage)? onExpanded;
-  final Widget? Function(int currentPage, Widget? sharedChild)? bottomSheet;
-  final void Function(int index) onExit;
+  final List<Widget> topRightButtonsBuilder;
+  final void Function()? onExpanded;
+  final Widget? bottomSheet;
+  final void Function() onExit;
   final DetailsPageController? controller;
-  final void Function(int currentPage)? onSwipeDownEnd;
-  final Widget Function(int currentPage)? sharedChildBuilder;
+  final void Function()? onSwipeDownEnd;
   final Settings Function() currentSettings;
 
   @override
@@ -85,7 +78,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
   @override
   Function() get popper => () {
         if (widget.onSwipeDownEnd != null) {
-          widget.onSwipeDownEnd!(controller.currentPage.value);
+          widget.onSwipeDownEnd!();
         } else {
           _onBackButtonPressed();
         }
@@ -217,7 +210,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
   void _onBackButtonPressed() {
     _keepBottomSheetDown.value = true;
     context.navigator.pop();
-    widget.onExit(controller.currentPage.value);
+    widget.onExit();
   }
 
   @override
@@ -260,17 +253,14 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
           body: ValueListenableBuilder(
             valueListenable: controller.currentPage,
             builder: (context, currentPage, navButtonGroup) {
-              final sharedChild = widget.sharedChildBuilder?.call(
-                currentPage,
-              );
               return ValueListenableBuilder(
                 valueListenable: isExpanded,
                 builder: (context, expanded, bottomSheet) => Stack(
                   children: [
-                    _buildScrollContent(currentPage, expanded, sharedChild),
+                    _buildScrollContent(expanded),
                     navButtonGroup!,
-                    _buildBottomSheet(currentPage, sharedChild),
-                    _buildTopRightButtonGroup(currentPage, expanded),
+                    _buildBottomSheet(currentPage),
+                    _buildTopRightButtonGroup(expanded),
                   ],
                 ),
               );
@@ -282,7 +272,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
     );
   }
 
-  Widget _buildBottomSheet(int currentPage, Widget? sharedChild) {
+  Widget _buildBottomSheet(int currentPage) {
     return Align(
       alignment: Alignment.bottomCenter,
       child: widget.bottomSheet != null
@@ -290,8 +280,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
               valueListenable: _shouldSlideDownNotifier,
               builder: (context, shouldSlideDown, _) => _BottomSheet(
                 shouldSlideDown: shouldSlideDown,
-                bottomSheet: (page) =>
-                    widget.bottomSheet?.call(page, sharedChild),
+                bottomSheet: widget.bottomSheet,
                 page: currentPage,
               ),
             )
@@ -300,9 +289,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
   }
 
   Widget _buildScrollContent(
-    int currentPage,
     bool expanded,
-    Widget? sharedChild,
   ) {
     return ValueListenableBuilder(
       valueListenable: isSwipingDown,
@@ -319,11 +306,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
                       ? const SizedBox.shrink()
                       : Offstage(
                           offstage: offstage,
-                          child: _buildPageView(
-                            expanded,
-                            currentPage,
-                            sharedChild,
-                          ),
+                          child: _buildPageView(),
                         ),
                 ),
                 ValueListenableBuilder(
@@ -335,11 +318,11 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
                             offstage: !offstage,
                             child: child,
                           ),
-                          child: _buildSwipeTarget(expanded, currentPage),
+                          child: _buildSwipeTarget(expanded),
                         )
                       : Offstage(
                           offstage: !offstage,
-                          child: _buildSwipeTarget(expanded, currentPage),
+                          child: _buildSwipeTarget(expanded),
                         ),
                 ),
               ],
@@ -350,14 +333,10 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
     );
   }
 
-  Widget _buildPageView(
-    bool expanded,
-    int currentPage,
-    Widget? sharedChild,
-  ) {
+  Widget _buildPageView() {
     return Listener(
-      onPointerMove: (event) => _handlePointerMove(event, expanded),
-      onPointerUp: (event) => _handlePointerUp(event, expanded),
+      onPointerMove: (event) => _handlePointerMove(event, isExpanded.value),
+      onPointerUp: (event) => _handlePointerUp(event, isExpanded.value),
       child: ExprollablePageView(
         controller: controller,
         onViewportChanged: (metrics) {
@@ -367,7 +346,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
 
           isExpanded.value = metrics.isPageExpanded;
           if (isExpanded.value) {
-            widget.onExpanded?.call(currentPage);
+            widget.onExpanded?.call();
           }
         },
         physics: _pageSwipe
@@ -377,16 +356,12 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
         itemBuilder: (context, page) => widget.expandedBuilder(
           context,
           page,
-          currentPage,
-          expanded,
-          _pageSwipe,
-          sharedChild,
         ),
       ),
     );
   }
 
-  Widget _buildSwipeTarget(bool expanded, int currentPage) {
+  Widget _buildSwipeTarget(bool expanded) {
     return ValueListenableBuilder(
       valueListenable: dragDistance,
       builder: (context, dd, child) => ValueListenableBuilder(
@@ -398,10 +373,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
             onPointerUp: (event) => _handlePointerUp(event, expanded),
             child: Transform.scale(
               scale: scale,
-              child: widget.targetSwipeDownBuilder(
-                context,
-                currentPage,
-              ),
+              child: widget.targetSwipeDown,
             ),
           ),
         ),
@@ -438,7 +410,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
     );
   }
 
-  Widget _buildTopRightButtonGroup(int currentPage, bool expanded) {
+  Widget _buildTopRightButtonGroup(bool expanded) {
     return ValueListenableBuilder(
       valueListenable: _controller.hideOverlay,
       builder: (_, hide, __) => !hide
@@ -453,10 +425,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
                         shouldSlideUp: value && !expanded,
                         child: ButtonBar(
                           children: [
-                            ...widget.topRightButtonsBuilder(
-                              currentPage,
-                              expanded,
-                            ),
+                            ...widget.topRightButtonsBuilder,
                           ],
                         ),
                       )),
@@ -510,7 +479,7 @@ class _BottomSheet extends StatefulWidget {
     required this.page,
   });
 
-  final Widget? Function(int page)? bottomSheet;
+  final Widget? bottomSheet;
   final bool shouldSlideDown;
   final int page;
 
@@ -562,7 +531,7 @@ class __BottomSheetState extends State<_BottomSheet>
           curve: Curves.easeOut,
         ),
       ),
-      child: widget.bottomSheet?.call(widget.page) ?? const SizedBox.shrink(),
+      child: widget.bottomSheet ?? const SizedBox.shrink(),
     );
   }
 }

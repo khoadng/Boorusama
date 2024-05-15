@@ -101,7 +101,12 @@ class _DanbooruPostDetailsPageState
                   orElse: () => const SliverSizedBox.shrink(),
                 ),
         sliverRelatedPostsBuilder: (context, post) =>
-            DanbooruRelatedPostsSection(post: post),
+            DanbooruRelatedPostsSection2(
+          posts: ref.watch(danbooruPostDetailsChildrenProvider(post)).maybeWhen(
+                data: (posts) => posts,
+                orElse: () => null,
+              ),
+        ),
         poolTileBuilder: (context, post) =>
             ref.watch(danbooruPostDetailsPoolsProvider(post.id)).maybeWhen(
                   data: (pools) => PoolTiles(pools: pools),
@@ -314,5 +319,31 @@ class DanbooruRelatedPostsSection extends ConsumerWidget {
           ),
           orElse: () => const SliverSizedBox.shrink(),
         );
+  }
+}
+
+class DanbooruRelatedPostsSection2 extends ConsumerWidget {
+  const DanbooruRelatedPostsSection2({
+    super.key,
+    required this.posts,
+  });
+
+  final List<DanbooruPost>? posts;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (posts == null) {
+      return const SliverSizedBox.shrink();
+    }
+
+    return RelatedPostsSection(
+      posts: posts!,
+      imageUrl: (item) => item.url720x720,
+      onTap: (index) => goToPostDetailsPage(
+        context: context,
+        posts: posts!,
+        initialIndex: index,
+      ),
+    );
   }
 }

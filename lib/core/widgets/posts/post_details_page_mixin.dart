@@ -19,35 +19,33 @@ mixin PostDetailsPageMixin<T extends StatefulWidget, E extends Post>
   final Map<int, VideoPlayerController> _videoControllers = {};
   final Map<int, WebmVideoController> _webmVideoControllers = {};
 
-  List<E> get posts;
+  E get post;
   DetailsPageController get controller;
-  Function(int page) get onPageChanged;
   ValueNotifier<VideoProgress> get videoProgress => _videoProgress;
   int get initialPage;
   late var _page = initialPage;
 
   void onSwiped(int page) {
     _videoProgress.value = VideoProgress.zero;
-    if (posts[page].isVideo) {
+    if (post.isVideo) {
       controller.disableSwipeDownToDismiss();
     } else {
       controller.enableSwipeDownToDismiss();
     }
 
     // Pause previous video
-    if (posts[page].videoUrl.endsWith('.webm')) {
+    if (post.videoUrl.endsWith('.webm')) {
       _webmVideoControllers[_page]?.pause();
     } else {
       _videoControllers[_page]?.pause();
     }
 
-    onPageChanged.call(page);
     _page = page;
   }
 
   void onCurrentPositionChanged(double current, double total, String url) {
     // check if the current video is the same as the one being played
-    if (posts[_page].videoUrl != url) return;
+    if (post.videoUrl != url) return;
 
     _videoProgress.value = VideoProgress(
         Duration(milliseconds: (total * 1000).toInt()),
@@ -55,7 +53,7 @@ mixin PostDetailsPageMixin<T extends StatefulWidget, E extends Post>
   }
 
   void onVideoSeekTo(Duration position, int page) {
-    if (posts[page].videoUrl.endsWith('.webm')) {
+    if (post.videoUrl.endsWith('.webm')) {
       _webmVideoControllers[page]?.seek(position.inSeconds.toDouble());
     } else {
       _videoControllers[page]?.seekTo(position);
