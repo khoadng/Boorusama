@@ -139,11 +139,13 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
             default:
           }
         },
-        itemBuilder: const {
-          'export': Text('Export'),
-          'import': Text('Import'),
-          'export_clipboard': Text('Export to clipboard'),
-          'import_clipboard': Text('Import from clipboard'),
+        itemBuilder: {
+          if (configs != null && configs.isNotEmpty)
+            'export': const Text('Export'),
+          'import': const Text('Import'),
+          if (configs != null && configs.isNotEmpty)
+            'export_clipboard': const Text('Export to clipboard'),
+          'import_clipboard': const Text('Import from clipboard'),
         },
       ),
     );
