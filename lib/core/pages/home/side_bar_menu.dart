@@ -64,9 +64,12 @@ class SideBarMenu extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(
-                      height: MediaQuery.viewPaddingOf(context).top,
-                    ),
+                    if (initialContentBuilder != null)
+                      SizedBox(
+                        height: MediaQuery.viewPaddingOf(context).top,
+                      )
+                    else
+                      const SizedBox(height: 24),
                     const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 8),
                       child: CurrentBooruTile(),
@@ -78,7 +81,7 @@ class SideBarMenu extends ConsumerWidget {
                             padding: const EdgeInsets.symmetric(horizontal: 8),
                             child: e,
                           )),
-                    const Divider(),
+                    if (initialContentBuilder != null) const Divider(),
                     if (contentBuilder != null) ...[
                       ...contentBuilder!(context).map((e) => Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 8),
