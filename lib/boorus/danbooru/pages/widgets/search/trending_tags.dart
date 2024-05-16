@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/pages/widgets/danbooru_tag_context_menu.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
@@ -36,14 +37,17 @@ class TrendingTags extends ConsumerWidget {
                   ? null
                   : colorBuilder?.call(context, e.category!.name);
 
-              return BooruChip(
-                visualDensity: VisualDensity.compact,
-                color: color,
-                onPressed: () => onTagTap?.call(e.name.keyword),
-                label: Text(
-                  e.name.keyword.replaceUnderscoreWithSpace(),
-                  style: TextStyle(
-                    color: theme.isDark ? color : null,
+              return DanbooruTagContextMenu(
+                tag: e.name.keyword,
+                child: BooruChip(
+                  visualDensity: VisualDensity.compact,
+                  color: color,
+                  onPressed: () => onTagTap?.call(e.name.keyword),
+                  label: Text(
+                    e.name.keyword.replaceUnderscoreWithSpace(),
+                    style: TextStyle(
+                      color: theme.isDark ? color : null,
+                    ),
                   ),
                 ),
               );
