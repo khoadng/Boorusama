@@ -1,6 +1,5 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,16 +9,12 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/pages/danbooru_post_details_page.dart';
-import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
-import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'danbooru_tag_context_menu.dart';
 
 final danbooruTagTileExpansionStateProvider =
     StateProvider.autoDispose.family<bool, bool>((ref, value) {
@@ -91,25 +86,8 @@ class DanbooruTagsTile extends ConsumerWidget {
                       data: (data) => data,
                       orElse: () => null,
                     ),
-                itemBuilder: (context, tag) => GeneralTagContextMenu(
+                itemBuilder: (context, tag) => DanbooruTagContextMenu(
                   tag: tag.rawName,
-                  itemBindings: {
-                    'post.detail.open_wiki'.tr(): () => launchWikiPage(
-                          config.url,
-                          tag.rawName,
-                        ),
-                    if (config.hasLoginDetails())
-                      'post.detail.add_to_blacklist'.tr(): () => ref
-                          .read(
-                              danbooruBlacklistedTagsProvider(config).notifier)
-                          .addWithToast(tag: tag.rawName),
-                    if (config.hasLoginDetails())
-                      'post.detail.copy_and_open_saved_search'.tr(): () {
-                        Clipboard.setData(
-                          ClipboardData(text: tag.rawName),
-                        ).then((value) => goToSavedSearchEditPage(context));
-                      },
-                  },
                   child: PostTagListChip(
                     tag: tag,
                     onTap: () => goToSearchPage(context, tag: tag.rawName),
