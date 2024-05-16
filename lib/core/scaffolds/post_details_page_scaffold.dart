@@ -113,17 +113,20 @@ class _PostDetailPageScaffoldState<T extends Post>
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: controller.slideshow,
-      builder: (context, slideshow, child) => GestureDetector(
-        behavior: slideshow ? HitTestBehavior.opaque : null,
-        onTap: () => controller.stopSlideshow(),
-        child: IgnorePointer(
-          ignoring: slideshow,
-          child: child!,
+    return CustomContextMenuOverlay(
+      backgroundColor: context.colorScheme.secondaryContainer,
+      child: ValueListenableBuilder(
+        valueListenable: controller.slideshow,
+        builder: (context, slideshow, child) => GestureDetector(
+          behavior: slideshow ? HitTestBehavior.opaque : null,
+          onTap: () => controller.stopSlideshow(),
+          child: IgnorePointer(
+            ignoring: slideshow,
+            child: child!,
+          ),
         ),
+        child: _build(),
       ),
-      child: _build(),
     );
   }
 

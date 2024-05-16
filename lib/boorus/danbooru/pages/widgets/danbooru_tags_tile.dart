@@ -20,7 +20,6 @@ import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
-import 'package:boorusama/widgets/widgets.dart';
 
 final danbooruTagTileExpansionStateProvider =
     StateProvider.autoDispose.family<bool, bool>((ref, value) {
@@ -92,52 +91,24 @@ class DanbooruTagsTile extends ConsumerWidget {
                       data: (data) => data,
                       orElse: () => null,
                     ),
-                itemBuilder: (context, tag) => ContextMenu(
-                  items: [
-                    const PopupMenuItem(
-                      value: 'copy',
-                      child: Text('Copy tag'),
-                    ),
-                    PopupMenuItem(
-                      value: 'wiki',
-                      child: const Text('post.detail.open_wiki').tr(),
-                    ),
-                    PopupMenuItem(
-                      value: 'add_to_favorites',
-                      child: const Text('post.detail.add_to_favorites').tr(),
-                    ),
+                itemBuilder: (context, tag) => GeneralTagContextMenu(
+                  tag: tag.rawName,
+                  itemBindings: {
+                    'post.detail.open_wiki'.tr(): () => launchWikiPage(
+                          config.url,
+                          tag.rawName,
+                        ),
                     if (config.hasLoginDetails())
-                      PopupMenuItem(
-                        value: 'blacklist',
-                        child: const Text('post.detail.add_to_blacklist').tr(),
-                      ),
-                    if (config.hasLoginDetails())
-                      PopupMenuItem(
-                        value: 'copy_and_move_to_saved_search',
-                        child: const Text(
-                          'post.detail.copy_and_open_saved_search',
-                        ).tr(),
-                      ),
-                  ],
-                  onSelected: (value) {
-                    if (value == 'blacklist') {
-                      ref
+                      'post.detail.add_to_blacklist'.tr(): () => ref
                           .read(
                               danbooruBlacklistedTagsProvider(config).notifier)
-                          .addWithToast(tag: tag.rawName);
-                    } else if (value == 'wiki') {
-                      launchWikiPage(config.url, tag.rawName);
-                    } else if (value == 'copy_and_move_to_saved_search') {
-                      Clipboard.setData(
-                        ClipboardData(text: tag.rawName),
-                      ).then((value) => goToSavedSearchEditPage(context));
-                    } else if (value == 'add_to_favorites') {
-                      ref.read(favoriteTagsProvider.notifier).add(tag.rawName);
-                    } else if (value == 'copy') {
-                      Clipboard.setData(
-                        ClipboardData(text: tag.rawName),
-                      ).then((value) => showSuccessToast('Copied'));
-                    }
+                          .addWithToast(tag: tag.rawName),
+                    if (config.hasLoginDetails())
+                      'post.detail.copy_and_open_saved_search'.tr(): () {
+                        Clipboard.setData(
+                          ClipboardData(text: tag.rawName),
+                        ).then((value) => goToSavedSearchEditPage(context));
+                      },
                   },
                   child: PostTagListChip(
                     tag: tag,
