@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -310,4 +311,12 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
       },
     );
   }
+}
+
+Future<void> openAppearancePage(BuildContext context) {
+  return Navigator.of(context).push(
+    CupertinoPageRoute(
+      builder: (context) => const AppearancePage(),
+    ),
+  );
 }

@@ -1,18 +1,14 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/feats/blacklists/blacklists.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
-import 'package:boorusama/widgets/widgets.dart';
 
 class TagsTile extends ConsumerWidget {
   const TagsTile({
@@ -34,8 +30,6 @@ class TagsTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final globalNotifier = ref.watch(globalBlacklistedTagsProvider.notifier);
-
     return Theme(
       data: context.theme.copyWith(
         listTileTheme: context.theme.listTileTheme.copyWith(
@@ -54,32 +48,8 @@ class TagsTile extends ConsumerWidget {
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: PostTagList(
               tags: tags,
-              itemBuilder: (context, tag) => ContextMenu(
-                items: [
-                  const PopupMenuItem(
-                    value: 'copy',
-                    child: Text('Copy tag'),
-                  ),
-                  PopupMenuItem(
-                    value: 'add_to_favorites',
-                    child: const Text('post.detail.add_to_favorites').tr(),
-                  ),
-                  const PopupMenuItem(
-                    value: 'add_to_global_blacklist',
-                    child: Text('Add to global blacklist'),
-                  ),
-                ],
-                onSelected: (value) {
-                  if (value == 'add_to_favorites') {
-                    ref.read(favoriteTagsProvider.notifier).add(tag.rawName);
-                  } else if (value == 'copy') {
-                    Clipboard.setData(
-                      ClipboardData(text: tag.rawName),
-                    ).then((value) => showSuccessToast('Copied'));
-                  } else if (value == 'add_to_global_blacklist') {
-                    globalNotifier.addTagWithToast(tag.rawName);
-                  }
-                },
+              itemBuilder: (context, tag) => GeneralTagContextMenu(
+                tag: tag.rawName,
                 child: PostTagListChip(
                   tag: tag,
                   onTap: () => onTagTap?.call(tag),

@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/feats/boorus/providers.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
+import 'package:boorusama/core/pages/settings/settings.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
@@ -168,7 +169,16 @@ class PostGridActionSheet extends ConsumerWidget {
             );
           },
         ),
+        const SizedBox(height: 12),
       ],
+      FilledButton(
+        onPressed: () {
+          context.navigator.pop();
+          openAppearancePage(context);
+        },
+        child: const Text('More'),
+      ),
+      const SizedBox(height: 12),
     ];
 
     final desktopButtons = [
@@ -213,6 +223,7 @@ class PostGridActionSheet extends ConsumerWidget {
           child: child,
         ),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisSize: MainAxisSize.min,
           children: isMobilePlatform() ? mobileButtons : desktopButtons,
         ),
@@ -235,22 +246,27 @@ class MobilePostGridConfigTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(title),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            value,
-            style: TextStyle(
-              color: context.theme.hintColor,
-              fontSize: 14,
-            ),
-          ),
-          const Icon(Symbols.chevron_right),
-        ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        vertical: 2,
       ),
-      onTap: onTap,
+      child: ListTile(
+        title: Text(title),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              value,
+              style: TextStyle(
+                color: context.theme.hintColor,
+                fontSize: 14,
+              ),
+            ),
+            const Icon(Symbols.chevron_right),
+          ],
+        ),
+        onTap: onTap,
+      ),
     );
   }
 }

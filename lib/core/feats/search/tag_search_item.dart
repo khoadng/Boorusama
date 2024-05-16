@@ -48,6 +48,8 @@ class TagSearchItem extends Equatable {
   final FilterOperator operator;
   final String? metatag;
 
+  String get rawTag => tag.replaceAll(' ', '_');
+
   @override
   List<Object?> get props => [tag, operator, metatag];
   @override

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/search/search.dart';
+import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/pages/search/selected_tag_chip.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -79,9 +80,12 @@ class _SelectedTagChips extends StatelessWidget {
         itemBuilder: (context, index) {
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4),
-            child: SelectedTagChip(
-              tagSearchItem: tags[index],
-              onDeleted: () => onDelete(tags[index]),
+            child: GeneralTagContextMenu(
+              tag: tags[index].rawTag,
+              child: SelectedTagChip(
+                tagSearchItem: tags[index],
+                onDeleted: () => onDelete(tags[index]),
+              ),
             ),
           );
         },

@@ -508,18 +508,20 @@ class _PostDetailPageScaffoldInternaltate<T extends Post>
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: controller.slideshow,
-      builder: (context, slideshow, child) => GestureDetector(
-        behavior: slideshow ? HitTestBehavior.opaque : null,
-        onTap: () => controller.stopSlideshow(),
-        child: IgnorePointer(
-          ignoring: slideshow,
-          child: child!,
+    return CustomContextMenuOverlay(
+      child: ValueListenableBuilder(
+        valueListenable: controller.slideshow,
+        builder: (context, slideshow, child) => GestureDetector(
+          behavior: slideshow ? HitTestBehavior.opaque : null,
+          onTap: () => controller.stopSlideshow(),
+          child: IgnorePointer(
+            ignoring: slideshow,
+            child: child!,
+          ),
         ),
-      ),
-      child: LayoutBuilder(
-        builder: (context, constraints) => _build(constraints),
+        child: LayoutBuilder(
+          builder: (context, constraints) => _build(constraints),
+        ),
       ),
     );
   }

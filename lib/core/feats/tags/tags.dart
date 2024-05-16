@@ -5,6 +5,7 @@ export 'favorite_tag_repository.dart';
 export 'favorite_tag_repository_hive.dart';
 export 'favorite_tags_notifier.dart';
 export 'favorite_tags_provider.dart';
+export 'general_tag_context_menu.dart';
 export 'metatag.dart';
 export 'tag.dart';
 export 'tag_category.dart';

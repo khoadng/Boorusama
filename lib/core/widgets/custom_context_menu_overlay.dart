@@ -11,16 +11,18 @@ import 'package:boorusama/foundation/theme/theme.dart';
 class CustomContextMenuOverlay extends StatelessWidget {
   const CustomContextMenuOverlay({
     super.key,
+    this.backgroundColor,
     required this.child,
   });
 
+  final Color? backgroundColor;
   final Widget child;
 
   @override
   Widget build(BuildContext context) {
     return ContextMenuOverlay(
       cardBuilder: (context, children) => Material(
-        color: context.colorScheme.surface,
+        color: backgroundColor ?? context.colorScheme.secondaryContainer,
         borderRadius: BorderRadius.circular(4),
         elevation: 4,
         child: Container(

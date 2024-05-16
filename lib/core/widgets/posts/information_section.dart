@@ -10,6 +10,7 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/danbooru/types/tag_category.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/tags/general_tag_context_menu.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -119,7 +120,7 @@ class InformationSection extends ConsumerWidget {
 }
 
 String chooseArtistTag(Set<String> artistTags) {
-  if (artistTags.isEmpty) return 'Unknown artist';
+  if (artistTags.isEmpty) return 'Unknownz artist';
 
   final excludedTags = {
     'banned_artist',
@@ -156,11 +157,14 @@ class ArtistNameInfoChip extends ConsumerWidget {
     );
 
     return Flexible(
-      child: CompactChip(
-        textColor: colors?.foregroundColor,
-        label: artist.replaceUnderscoreWithSpace(),
-        onTap: () => onTap?.call(artist),
-        backgroundColor: colors?.backgroundColor,
+      child: GeneralTagContextMenu(
+        tag: artist,
+        child: CompactChip(
+          textColor: colors?.foregroundColor,
+          label: artist.replaceUnderscoreWithSpace(),
+          onTap: () => onTap?.call(artist),
+          backgroundColor: colors?.backgroundColor,
+        ),
       ),
     );
   }

@@ -70,7 +70,8 @@ void goToSearchPage(
   if (tag == null) {
     context.push('/search');
   } else {
-    context.push('/search?$kInitialQueryKey=$tag');
+    final encodedTag = Uri.encodeComponent(tag);
+    context.push('/search?$kInitialQueryKey=$encodedTag');
   }
 }
 
@@ -84,13 +85,15 @@ void goToArtistPage(
 ) {
   if (artistName == null) return;
 
-  context.push('/artists?$kArtistNameKey=$artistName');
+  final encodedArtistName = Uri.encodeComponent(artistName);
+  context.push('/artists?$kArtistNameKey=$encodedArtistName');
 }
 
 void goToCharacterPage(BuildContext context, String character) {
   if (character.isEmpty) return;
 
-  context.push('/characters?$kCharacterNameKey=$character');
+  final encodedCharacter = Uri.encodeComponent(character);
+  context.push('/characters?$kCharacterNameKey=$encodedCharacter');
 }
 
 void goToPostDetailsPage<T extends Post>({
