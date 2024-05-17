@@ -1,12 +1,16 @@
 // Flutter imports:
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
 import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'widgets.dart';
 
 class CreateGelbooruConfigPage extends ConsumerWidget {
@@ -62,6 +66,8 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
 
   @override
   Widget build(BuildContext context) {
+    final config = ref.watch(initialBooruConfigProvider);
+
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,8 +82,34 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
             controller: apiKeyController,
           ),
           const SizedBox(height: 8),
-          const DefaultBooruInstructionText(
-            '*Log in to your account on the browser, visit My Account > Options > API Access Credentials and fill the values manually.',
+          RichText(
+            text: TextSpan(
+              style: context.textTheme.titleSmall?.copyWith(
+                color: context.theme.hintColor,
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+              ),
+              children: [
+                const TextSpan(
+                  text: '*Log in to your account on the browser, visit ',
+                ),
+                TextSpan(
+                  text: 'My Account > Options > API Access Credentials',
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () {
+                      launchExternalUrlString(
+                          getGelbooruProfileUrl(config.url));
+                    },
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: context.colorScheme.primary,
+                  ),
+                ),
+                const TextSpan(
+                  text: ' and fill the values manually.',
+                ),
+              ],
+            ),
           ),
           const SizedBox(height: 16),
           const Row(

@@ -35,6 +35,10 @@ export 'posts/posts.dart';
 const kGelbooruCustomDownloadFileNameFormat =
     '{id}_{md5:maxlength=8}.{extension}';
 
+String getGelbooruProfileUrl(String url) => url.endsWith('/')
+    ? '${url}index.php?page=account&s=options'
+    : '$url/index.php?page=account&s=options';
+
 final gelbooruClientProvider =
     Provider.family<GelbooruClient, BooruConfig>((ref, booruConfig) {
   final dio = newDio(ref.watch(dioArgsProvider(booruConfig)));
