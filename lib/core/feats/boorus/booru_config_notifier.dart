@@ -28,7 +28,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?>
     final orders = ref.read(settingsProvider).booruConfigIdOrderList;
     final newOrders = [...orders, booruConfig.id];
 
-    ref.setBooruConfigOrder(newOrders);
+    await ref.setBooruConfigOrder(newOrders);
 
     state = [...state!, booruConfig];
   }
@@ -76,7 +76,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?>
       final orders = ref.read(settingsProvider).booruConfigIdOrderList;
       final newOrders = [...orders..remove(config.id)];
 
-      ref.setBooruConfigOrder(newOrders);
+      await ref.setBooruConfigOrder(newOrders);
 
       final tmp = [...state!];
       tmp.remove(config);
@@ -136,10 +136,10 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?>
             hasLogin: config.hasLoginDetails(),
           );
 
-      _add(config);
+      await _add(config);
 
       if (setAsCurrent) {
-        ref.read(currentBooruConfigProvider.notifier).update(config);
+        await ref.read(currentBooruConfigProvider.notifier).update(config);
       }
     } catch (e) {
       onFailure?.call('Failed to add account');
