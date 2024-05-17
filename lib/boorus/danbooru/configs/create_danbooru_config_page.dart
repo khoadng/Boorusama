@@ -8,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/foundation/gestures.dart';
-import 'package:boorusama/foundation/platform.dart';
 import 'providers.dart';
 import 'widgets.dart';
 
@@ -34,7 +33,7 @@ class CreateDanbooruConfigPage extends StatelessWidget {
         isNewConfig: isNewConfig,
         backgroundColor: backgroundColor,
         authTab: DefaultBooruAuthConfigView(
-          showInstructionWhen: !isApple(),
+          showInstructionWhen: !config.hasStrictSFW,
           instruction:
               '*Log in to your account on the browser, visit My Account > API Key. Copy your key or create a new one if needed, ensuring all permissions are enabled for proper app functionality.',
         ),
