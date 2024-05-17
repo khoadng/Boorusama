@@ -17,6 +17,10 @@ class CurrentBooruConfigNotifier extends Notifier<BooruConfig> {
     return initialConfig;
   }
 
+  Future<void> setEmpty() async {
+    return update(BooruConfig.empty);
+  }
+
   Future<void> update(BooruConfig booruConfig) async {
     // if same config, do nothing
     if (booruConfig == state) return;

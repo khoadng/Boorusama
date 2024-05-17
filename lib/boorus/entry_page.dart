@@ -1,5 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,6 +11,7 @@ import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/pages/home/side_bar_menu.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
@@ -19,6 +21,7 @@ import 'package:boorusama/foundation/permissions.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
+import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class EntryPage extends ConsumerStatefulWidget {
@@ -135,53 +138,60 @@ class _Boorus extends ConsumerWidget {
       );
     } else {
       final availableConfigs = ref.watch(booruConfigProvider);
-      return Scaffold(
-        appBar: AppBar(),
-        body: Center(
-          child: Column(
-            children: [
-              Text(
-                'Current selected profile is invalid',
-                style: context.textTheme.titleLarge,
-              ),
-              if (availableConfigs?.isNotEmpty == true)
-                Text(
-                  'Select a profile from the list below to continue',
-                  style: context.textTheme.titleMedium?.copyWith(
-                    color: context.theme.hintColor,
-                  ),
-                ),
-              const SizedBox(height: 16),
-              if (availableConfigs != null)
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: availableConfigs.length,
-                    itemBuilder: (context, index) {
-                      final config = availableConfigs[index];
-                      return ListTile(
-                        title: Text(config.name),
-                        subtitle: Text(config.url),
-                        onTap: () {
-                          ref.read(currentBooruConfigProvider.notifier).update(
-                                config,
-                              );
-                        },
-                        leading: PostSource.from(config.url).whenWeb(
-                          (source) => ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: BooruLogo(source: source),
-                          ),
-                          () => const SizedBox.shrink(),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-            ],
-          ),
-        ),
-      );
+      return availableConfigs != null && availableConfigs.isNotEmpty
+          ? _buildInvalid(availableConfigs, ref)
+          : const EmptyBooruConfigHomePage();
     }
+  }
+
+  Widget _buildInvalid(List<BooruConfig> availableConfigs, WidgetRef ref) {
+    final context = ref.context;
+
+    return Scaffold(
+      appBar: AppBar(),
+      body: Center(
+        child: Column(
+          children: [
+            Text(
+              'Current selected profile is invalid',
+              style: context.textTheme.titleLarge,
+            ),
+            if (availableConfigs.isNotEmpty == true)
+              Text(
+                'Select a profile from the list below to continue',
+                style: context.textTheme.titleMedium?.copyWith(
+                  color: context.theme.hintColor,
+                ),
+              ),
+            const SizedBox(height: 16),
+            Expanded(
+              child: ListView.builder(
+                itemCount: availableConfigs.length,
+                itemBuilder: (context, index) {
+                  final config = availableConfigs[index];
+                  return ListTile(
+                    title: Text(config.name),
+                    subtitle: Text(config.url),
+                    onTap: () {
+                      ref.read(currentBooruConfigProvider.notifier).update(
+                            config,
+                          );
+                    },
+                    leading: PostSource.from(config.url).whenWeb(
+                      (source) => ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: BooruLogo(source: source),
+                      ),
+                      () => const SizedBox.shrink(),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
@@ -198,5 +208,82 @@ class HomePageController extends ValueNotifier<int> {
 
   void openMenu() {
     scaffoldKey.currentState?.openDrawer();
+  }
+}
+
+class EmptyBooruConfigHomePage extends ConsumerStatefulWidget {
+  const EmptyBooruConfigHomePage({
+    super.key,
+  });
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _EmptyBooruConfigHomePageState();
+}
+
+class _EmptyBooruConfigHomePageState
+    extends ConsumerState<EmptyBooruConfigHomePage> {
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  Widget build(BuildContext context) {
+    return AnnotatedRegion(
+      value: SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        systemNavigationBarColor: Colors.transparent,
+        statusBarBrightness:
+            context.themeMode.isDark ? Brightness.dark : Brightness.light,
+        statusBarIconBrightness:
+            context.themeMode.isLight ? Brightness.dark : Brightness.light,
+      ),
+      child: Scaffold(
+        key: scaffoldKey,
+        resizeToAvoidBottomInset: false,
+        drawer: const SideBarMenu(
+          width: 300,
+          popOnSelect: true,
+          padding: EdgeInsets.zero,
+        ),
+        body: SafeArea(
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'No profiles available',
+                      style: context.textTheme.titleLarge,
+                    ),
+                    Text(
+                      'Add a profile to continue',
+                      style: context.textTheme.titleMedium?.copyWith(
+                        color: context.theme.hintColor,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    FilledButton(
+                      onPressed: () => context.go('/boorus/add'),
+                      child: const Text('Add Profile'),
+                    ),
+                  ],
+                ),
+              ),
+              Positioned(
+                top: 8,
+                left: 8,
+                child: IconButton(
+                  icon: const Icon(Icons.menu),
+                  onPressed: () {
+                    scaffoldKey.currentState?.openDrawer();
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

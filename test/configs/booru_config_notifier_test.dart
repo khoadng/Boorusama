@@ -14,6 +14,7 @@ import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/foundation/analytics.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
+import 'package:boorusama/functional.dart';
 import '../riverpod_test_utils.dart';
 
 class InMemoryBooruConfigRepository implements BooruConfigRepository {
@@ -77,6 +78,21 @@ class InMemoryBooruConfigRepository implements BooruConfigRepository {
   }
 }
 
+class InMemorySettingsRepository implements SettingsRepository {
+  InMemorySettingsRepository() : _settings = Settings.defaultSettings;
+
+  late Settings _settings;
+
+  @override
+  Future<bool> save(Settings settings) {
+    _settings = settings;
+    return Future.value(true);
+  }
+
+  @override
+  SettingsOrError load() => TaskEither.right(_settings);
+}
+
 class MockAnalytics extends Mock implements AnalyticsInterface {}
 
 class MockSettingsRepository extends Mock implements SettingsRepository {}
@@ -91,19 +107,15 @@ class MockCallback extends Mock {
 
 ProviderContainer createBooruConfigContainer({
   BooruConfigRepository? booruConfigRepository,
-  SettingsRepository? settingsRepository,
+  required SettingsRepository settingsRepository,
 }) {
-  final mockSettingsRepository = MockSettingsRepository();
   final mockLogger = MockLogger();
-
-  when(() => mockSettingsRepository.save(any())).thenAnswer((_) async => true);
 
   return createContainer(
     overrides: [
       booruConfigRepoProvider.overrideWith(
           (ref) => booruConfigRepository ?? InMemoryBooruConfigRepository()),
-      settingsRepoProvider
-          .overrideWithValue(settingsRepository ?? mockSettingsRepository),
+      settingsRepoProvider.overrideWithValue(settingsRepository),
       settingsProvider
           .overrideWith(() => SettingsNotifier(Settings.defaultSettings)),
       currentBooruConfigProvider.overrideWith(
@@ -125,6 +137,7 @@ void main() {
       final mockSettingsRepository = MockSettingsRepository();
       late ProviderContainer container;
       final configData = BooruConfig.empty.toBooruConfigData();
+      final configData2 = BooruConfig.empty.toBooruConfigData();
 
       BooruConfigNotifier getNotifier() =>
           container.read(booruConfigProvider.notifier);
@@ -185,17 +198,12 @@ void main() {
             data: configData,
           );
 
-          verify(
-            () => mockSettingsRepository.save(
-              any(
-                that: isA<Settings>().having(
-                  (settings) => settings.booruConfigIdOrders,
-                  'booruConfigIdOrders',
-                  '1',
-                ),
-              ),
-            ),
-          ).called(1);
+          final settings = container.read(settingsProvider);
+
+          expect(
+            settings.booruConfigIdOrders,
+            '1',
+          );
         },
       );
 
@@ -205,11 +213,31 @@ void main() {
         () async {
           await getNotifier().add(
             data: configData,
+          );
+
+          await getNotifier().add(
+            data: configData2,
             setAsCurrent: true,
           );
 
           expect(
             container.read(currentBooruConfigProvider).id,
+            2,
+          );
+        },
+      );
+
+      test(
+        'should update current config if there is no current config',
+        () async {
+          await getNotifier().add(
+            data: configData,
+          );
+
+          final currentConfig = container.read(currentBooruConfigProvider);
+
+          expect(
+            currentConfig.id,
             1,
           );
         },
@@ -239,6 +267,207 @@ void main() {
     'Update a config',
     () {
       //TODO: Add tests
+    },
+  );
+
+  group(
+    'Delete a config',
+    () {
+      group(
+        'when there is only a single config',
+        () {
+          final config1 = BooruConfig.empty.toBooruConfigData();
+
+          late ProviderContainer container;
+
+          BooruConfigNotifier notifier() =>
+              container.read(booruConfigProvider.notifier);
+
+          setUp(
+            () async {
+              container = createBooruConfigContainer(
+                settingsRepository: InMemorySettingsRepository(),
+              );
+
+              await notifier().add(data: config1);
+            },
+          );
+
+          test(
+            'should clear all configs',
+            () async {
+              await notifier().delete(config1.toBooruConfig(id: 1)!);
+
+              final newConfigs = container.read(booruConfigProvider);
+
+              expect(
+                listEquals(
+                  null,
+                  newConfigs,
+                ),
+                isTrue,
+              );
+            },
+          );
+
+          test(
+            'should clear the order',
+            () async {
+              await notifier().delete(config1.toBooruConfig(id: 1)!);
+
+              final settings = container.read(settingsProvider);
+
+              expect(
+                settings.booruConfigIdOrders,
+                '',
+              );
+            },
+          );
+
+          test(
+            'should clear the current config',
+            () async {
+              await notifier().delete(config1.toBooruConfig(id: 1)!);
+
+              final currentConfig = container.read(currentBooruConfigProvider);
+
+              expect(
+                currentConfig.id,
+                BooruConfig.empty.id,
+              );
+            },
+          );
+        },
+      );
+
+      group(
+        'from a list of 2 or more configs',
+        () {
+          final config1 = BooruConfig.empty.toBooruConfigData();
+          final config2 = BooruConfig.empty.toBooruConfigData();
+          final config3 = BooruConfig.empty.toBooruConfigData();
+
+          late ProviderContainer container;
+
+          BooruConfigNotifier notifier() =>
+              container.read(booruConfigProvider.notifier);
+
+          group(
+            'when it is not the currently selected config',
+            () {
+              setUpAll(
+                () async {
+                  container = createBooruConfigContainer(
+                    settingsRepository: InMemorySettingsRepository(),
+                  );
+                  await notifier().add(data: config1);
+                  await notifier().add(
+                    data: config2,
+                    setAsCurrent: true,
+                  );
+                  await notifier().add(data: config3);
+
+                  await notifier().delete(config1.toBooruConfig(id: 1)!);
+                },
+              );
+
+              test(
+                'should works',
+                () async {
+                  final newConfigs = container.read(booruConfigProvider);
+
+                  expect(
+                    listEquals(
+                      [
+                        config2.toBooruConfig(id: 2),
+                        config3.toBooruConfig(id: 3),
+                      ],
+                      newConfigs,
+                    ),
+                    isTrue,
+                  );
+                },
+              );
+
+              test(
+                'should update order',
+                () async {
+                  final settings = container.read(settingsProvider);
+
+                  expect(
+                    settings.booruConfigIdOrders,
+                    '2 3',
+                  );
+                },
+              );
+            },
+          );
+
+          group(
+            'when it is the currently selected config',
+            () {
+              setUpAll(
+                () async {
+                  container = createBooruConfigContainer(
+                    settingsRepository: InMemorySettingsRepository(),
+                  );
+                  await notifier().add(data: config1);
+                  await notifier().add(
+                    data: config2,
+                    setAsCurrent: true,
+                  );
+                  await notifier().add(data: config3);
+
+                  await notifier().delete(config2.toBooruConfig(id: 2)!);
+                },
+              );
+
+              test(
+                'should works',
+                () async {
+                  final newConfigs = container.read(booruConfigProvider);
+
+                  expect(
+                    listEquals(
+                      [
+                        config1.toBooruConfig(id: 1),
+                        config3.toBooruConfig(id: 3),
+                      ],
+                      newConfigs,
+                    ),
+                    isTrue,
+                  );
+                },
+              );
+
+              test(
+                'should update order',
+                () async {
+                  final settings = container.read(settingsProvider);
+
+                  expect(
+                    settings.booruConfigIdOrders,
+                    '1 3',
+                  );
+                },
+              );
+
+              test(
+                'should update current config to the first config',
+                () async {
+                  final currentConfig =
+                      container.read(currentBooruConfigProvider);
+
+                  expect(
+                    currentConfig.id,
+                    1,
+                  );
+                },
+              );
+            },
+          );
+        },
+      );
     },
   );
 }

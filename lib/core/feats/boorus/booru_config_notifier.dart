@@ -24,13 +24,12 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?>
   }
 
   Future<void> _add(BooruConfig booruConfig) async {
-    if (state == null) return;
     final orders = ref.read(settingsProvider).booruConfigIdOrderList;
     final newOrders = [...orders, booruConfig.id];
 
     await ref.setBooruConfigOrder(newOrders);
 
-    state = [...state!, booruConfig];
+    state = [...state ?? [], booruConfig];
   }
 
   Future<void> duplicate({
@@ -52,15 +51,22 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?>
   }) async {
     if (state == null) return;
     try {
+      // check if deleting the last config
+      if (state!.length == 1) {
+        await ref.read(booruConfigRepoProvider).remove(config);
+        state = null;
+        // reset order
+        await ref.setBooruConfigOrder([]);
+        await ref.read(currentBooruConfigProvider.notifier).setEmpty();
+
+        onSuccess?.call(config);
+
+        return;
+      }
+
       // check if deleting current config, if so, set current to the first config
-      // if there is no config left, fail
       final currentConfig = ref.read(currentBooruConfigProvider);
       if (currentConfig.id == config.id) {
-        if (state!.length <= 1) {
-          onFailure?.call('Must have at least one profile');
-          return;
-        }
-
         final firstConfig = state!.first;
 
         // check if deleting the first config
@@ -118,7 +124,6 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?>
     void Function(BooruConfig booruConfig)? onSuccess,
     bool setAsCurrent = false,
   }) async {
-    if (state == null) return;
     try {
       final config = await ref.read(booruConfigRepoProvider).add(data);
 
@@ -132,13 +137,13 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?>
       ref.read(analyticsProvider).sendBooruAddedEvent(
             url: config.url,
             hintSite: config.booruType.name,
-            totalSites: state!.length,
+            totalSites: state?.length ?? 0,
             hasLogin: config.hasLoginDetails(),
           );
 
       await _add(config);
 
-      if (setAsCurrent) {
+      if (setAsCurrent || state?.length == 1) {
         await ref.read(currentBooruConfigProvider.notifier).update(config);
       }
     } catch (e) {
