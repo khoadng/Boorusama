@@ -25,7 +25,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?>
 
   Future<void> _add(BooruConfig booruConfig) async {
     if (state == null) return;
-    final orders = ref.read(configIdOrdersProvider);
+    final orders = ref.read(settingsProvider).booruConfigIdOrderList;
     final newOrders = [...orders, booruConfig.id];
 
     ref.setBooruConfigOrder(newOrders);
@@ -73,7 +73,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?>
       }
 
       await ref.read(booruConfigRepoProvider).remove(config);
-      final orders = ref.read(configIdOrdersProvider);
+      final orders = ref.read(settingsProvider).booruConfigIdOrderList;
       final newOrders = [...orders..remove(config.id)];
 
       ref.setBooruConfigOrder(newOrders);

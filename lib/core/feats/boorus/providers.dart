@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/functional.dart';
 
 final booruConfigProvider =
@@ -17,25 +18,13 @@ final booruConfigProvider =
   ],
 );
 
-final configIdOrdersProvider = Provider<List<int>>((ref) {
-  final orderString =
-      ref.watch(settingsProvider.select((value) => value.booruConfigIdOrders));
-
-  try {
-    final orders = orderString.split(' ').map((e) => int.parse(e)).toList();
-
-    return orders;
-  } catch (e) {
-    return [];
-  }
-});
-
 final configsProvider = FutureProvider.autoDispose<IList<BooruConfig>>((ref) {
   final configs = ref.watch(booruConfigProvider);
   if (configs == null) return <BooruConfig>[].lock;
 
   final configMap = {for (final config in configs) config.id: config};
-  final orders = ref.watch(configIdOrdersProvider);
+  final orders = ref
+      .watch(settingsProvider.select((value) => value.booruConfigIdOrderList));
 
   if (configMap.length != orders.length) {
     return configMap.values.toIList();

@@ -514,6 +514,16 @@ extension SettingsX on Settings {
         ? Duration(milliseconds: (slideshowInterval * 1000).toInt())
         : Duration(seconds: slideshowInterval.toInt());
   }
+
+  List<int> get booruConfigIdOrderList {
+    try {
+      if (booruConfigIdOrders.isEmpty) return [];
+
+      return booruConfigIdOrders.split(' ').map(int.parse).toList();
+    } catch (e) {
+      return [];
+    }
+  }
 }
 
 extension PageIndicatorPositionX on PageIndicatorPosition {

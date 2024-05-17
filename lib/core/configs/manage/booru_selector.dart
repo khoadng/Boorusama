@@ -106,7 +106,7 @@ class _BooruSelectorState extends ConsumerState<BooruSelector> {
     void hide() => context.contextMenuOverlay.hide();
 
     void onReorder(int oldIndex, int newIndex, Iterable<BooruConfig> configs) {
-      final orders = ref.read(configIdOrdersProvider);
+      final orders = ref.read(settingsProvider).booruConfigIdOrderList;
       final newOrders = orders.isEmpty || orders.length != configs.length
           ? [for (final config in configs) config.id]
           : orders.toList();
