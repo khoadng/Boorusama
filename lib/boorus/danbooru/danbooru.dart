@@ -38,6 +38,9 @@ import 'pages/favorites_page.dart';
 
 const kDanbooruSafeUrl = 'https://safebooru.donmai.us/';
 
+String getDanbooruProfileUrl(String url) =>
+    url.endsWith('/') ? '${url}profile' : '$url/profile';
+
 const kDanbooruPostSamples = [
   {
     'id': '123456',

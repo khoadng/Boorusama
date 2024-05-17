@@ -1,13 +1,17 @@
 // Flutter imports:
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/foundation/gestures.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'providers.dart';
 import 'widgets.dart';
 
@@ -34,8 +38,36 @@ class CreateDanbooruConfigPage extends StatelessWidget {
         backgroundColor: backgroundColor,
         authTab: DefaultBooruAuthConfigView(
           showInstructionWhen: !config.hasStrictSFW,
-          instruction:
-              '*Log in to your account on the browser, visit My Account > API Key. Copy your key or create a new one if needed, ensuring all permissions are enabled for proper app functionality.',
+          customInstruction: RichText(
+            text: TextSpan(
+              style: context.textTheme.titleSmall?.copyWith(
+                color: context.theme.hintColor,
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+              ),
+              children: [
+                const TextSpan(
+                  text: '*Log in to your account on the browser, visit ',
+                ),
+                TextSpan(
+                  text: 'My Account > API Key',
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () {
+                      launchExternalUrlString(
+                          getDanbooruProfileUrl(config.url));
+                    },
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: context.colorScheme.primary,
+                  ),
+                ),
+                const TextSpan(
+                  text:
+                      '. Copy your key or create a new one if needed, ensuring all permissions are enabled for proper app functionality.',
+                ),
+              ],
+            ),
+          ),
         ),
         hasDownloadTab: true,
         hasRatingFilter: true,

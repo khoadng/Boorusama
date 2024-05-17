@@ -240,9 +240,11 @@ class DefaultBooruAuthConfigView extends ConsumerWidget {
     super.key,
     this.instruction,
     this.showInstructionWhen = true,
+    this.customInstruction,
   });
 
   final String? instruction;
+  final Widget? customInstruction;
   final bool showInstructionWhen;
 
   @override
@@ -257,10 +259,15 @@ class DefaultBooruAuthConfigView extends ConsumerWidget {
           const SizedBox(height: 16),
           const DefaultBooruApiKeyField(),
           const SizedBox(height: 8),
-          if (showInstructionWhen && instruction != null)
-            DefaultBooruInstructionText(
-              instruction!,
-            ),
+          if (showInstructionWhen)
+            if (customInstruction != null)
+              customInstruction!
+            else if (instruction != null)
+              DefaultBooruInstructionText(
+                instruction!,
+              )
+            else
+              const SizedBox.shrink(),
         ],
       ),
     );
