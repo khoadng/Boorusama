@@ -198,42 +198,6 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
                   settings.copyWith(booruConfigLabelVisibility: value)),
               optionBuilder: (value) => Text(value.localize()),
             ),
-            const Divider(thickness: 1),
-            SettingsHeader(label: 'settings.image_details.image_details'.tr()),
-            SettingsTile<PostDetailsOverlayInitialState>(
-              title: const Text('settings.image_details.ui_overlay.ui_overlay')
-                  .tr(),
-              selectedOption: settings.postDetailsOverlayInitialState,
-              items: PostDetailsOverlayInitialState.values,
-              onChanged: (value) => ref.updateSettings(
-                  settings.copyWith(postDetailsOverlayInitialState: value)),
-              optionBuilder: (value) => Text(value.localize().tr()),
-            ),
-            SettingsTile(
-              title: const Text('Slideshow Interval'),
-              subtitle: const Text(
-                  'Value less than 1 second will automatically skip transition'),
-              selectedOption: settings.slideshowInterval,
-              items: getSlideShowIntervalPossibleValue(),
-              onChanged: (newValue) {
-                ref.updateSettings(
-                    settings.copyWith(slideshowInterval: newValue));
-              },
-              optionBuilder: (value) => Text(
-                '${value.toStringAsFixed(value < 1 ? 2 : 0)} sec',
-              ),
-            ),
-            SwitchListTile(
-              title: const Text('Skip Slideshow Transition'),
-              value: settings.skipSlideshowTransition,
-              onChanged: (value) => ref.updateSettings(
-                settings.copyWith(
-                  slideshowTransitionType: value
-                      ? SlideshowTransitionType.none
-                      : SlideshowTransitionType.natural,
-                ),
-              ),
-            ),
             const SizedBox(
               height: 10,
             ),

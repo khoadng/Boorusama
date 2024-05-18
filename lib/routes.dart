@@ -27,6 +27,7 @@ import 'boorus/entry_page.dart';
 import 'core/configs/create/add_booru_page.dart';
 import 'core/pages/bookmarks/bookmark_details_page.dart';
 import 'core/pages/bookmarks/bookmark_page.dart';
+import 'core/pages/settings/image_viewer_page.dart';
 import 'core/pages/settings/settings.dart';
 import 'foundation/rating/rating.dart';
 import 'router.dart';
@@ -231,7 +232,6 @@ class SettingsRoutes {
         ),
       );
 
-  // accessiblity
   static GoRoute accessibility() => GoRoute(
         path: 'accessibility',
         name: '/settings/accessibility',
@@ -239,6 +239,16 @@ class SettingsRoutes {
           key: state.pageKey,
           name: state.name,
           child: const AccessibilityPage(),
+        ),
+      );
+
+  static GoRoute imageViewer() => GoRoute(
+        path: 'image_viewer',
+        name: '/settings/image_viewer',
+        pageBuilder: (context, state) => CupertinoPage(
+          key: state.pageKey,
+          name: state.name,
+          child: const ImageViewerPage(),
         ),
       );
 
@@ -514,6 +524,7 @@ class Routes {
           SettingsRoutes.search(),
           SettingsRoutes.changelog(),
           SettingsRoutes.accessibility(),
+          SettingsRoutes.imageViewer(),
         ],
       );
 
