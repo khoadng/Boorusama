@@ -28,7 +28,7 @@ import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import 'pages/create_danbooru_config_page.dart';
+import 'configs/create_danbooru_config_page.dart';
 import 'pages/danbooru_artist_page.dart';
 import 'pages/danbooru_home_page.dart';
 import 'pages/danbooru_post_details_desktop_page.dart';
@@ -37,6 +37,9 @@ import 'pages/danbooru_search_page.dart';
 import 'pages/favorites_page.dart';
 
 const kDanbooruSafeUrl = 'https://safebooru.donmai.us/';
+
+String getDanbooruProfileUrl(String url) =>
+    url.endsWith('/') ? '${url}profile' : '$url/profile';
 
 const kDanbooruPostSamples = [
   {

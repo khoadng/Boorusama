@@ -5,15 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/configs/providers.dart';
+import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/pages/boorus/widgets/create_booru_api_key_field.dart';
-import 'package:boorusama/core/pages/boorus/widgets/create_booru_post_details_resolution_option_tile.dart';
-import 'package:boorusama/core/scaffolds/scaffolds.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
-import 'package:boorusama/router.dart';
 import 'philomena_post.dart';
 
-class CreatePhilomenaConfigPage extends ConsumerStatefulWidget {
+class CreatePhilomenaConfigPage extends StatelessWidget {
   const CreatePhilomenaConfigPage({
     super.key,
     required this.config,
@@ -26,88 +23,88 @@ class CreatePhilomenaConfigPage extends ConsumerStatefulWidget {
   final bool isNewConfig;
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() =>
-      _CreatePhilomenaConfigPageState();
-}
-
-class _CreatePhilomenaConfigPageState
-    extends ConsumerState<CreatePhilomenaConfigPage> {
-  late String key = widget.config.apiKey ?? '';
-  late var imageDetaisQuality = widget.config.imageDetaisQuality;
-
-  @override
   Widget build(BuildContext context) {
-    return CreateBooruConfigScaffold(
-      isNewConfig: widget.isNewConfig,
-      backgroundColor: widget.backgroundColor,
-      config: widget.config,
-      authTabBuilder: (context) => _buildAuthTab(),
-      postDetailsResolutionBuilder: (context) =>
-          CreateBooruImageDetailsResolutionOptionTile(
-        value: imageDetaisQuality,
-        items:
-            PhilomenaPostQualityType.values.map((e) => e.stringify()).toList(),
-        onChanged: (value) => setState(() => imageDetaisQuality = value),
+    return ProviderScope(
+      overrides: [
+        initialBooruConfigProvider.overrideWithValue(config),
+      ],
+      child: CreateBooruConfigScaffold(
+        isNewConfig: isNewConfig,
+        backgroundColor: backgroundColor,
+        authTab: const PhilomenaAuthConfigView(),
+        postDetailsResolution: const PhilomenaImageDetailsQualityProvider(),
+        submitButtonBuilder: (data) => PhilomenaConfigSubmitButton(data: data),
       ),
-      tabsBuilder: (context) => {},
-      allowSubmit: allowSubmit,
-      submit: submit,
     );
   }
+}
 
-  Widget _buildAuthTab() {
-    return SingleChildScrollView(
+class PhilomenaAuthConfigView extends ConsumerWidget {
+  const PhilomenaAuthConfigView({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return const SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const SizedBox(height: 24),
-          CreateBooruApiKeyField(
-            text: key,
+          SizedBox(height: 24),
+          DefaultBooruApiKeyField(
             hintText: 'e.g: AC8gZrxKsDpWy3unU0jB',
-            onChanged: (value) => setState(() => key = value),
           ),
-          const SizedBox(height: 8),
-          Text(
+          SizedBox(height: 8),
+          DefaultBooruInstructionText(
             '*You can find your authentication token in your account settings in the browser',
-            style: context.textTheme.titleSmall?.copyWith(
-              color: context.theme.hintColor,
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-            ),
           ),
-          const SizedBox(height: 16),
         ],
       ),
     );
   }
+}
 
-  bool allowSubmit(CreateConfigData data) {
-    return data.configName.isNotEmpty;
-  }
+class PhilomenaImageDetailsQualityProvider extends ConsumerWidget {
+  const PhilomenaImageDetailsQualityProvider({
+    super.key,
+  });
 
-  void submit(CreateConfigData data) {
-    final config = AddNewBooruConfig(
-      login: '',
-      apiKey: key,
-      booru: widget.config.booruType,
-      booruHint: widget.config.booruType,
-      configName: data.configName,
-      hideDeleted: false,
-      ratingFilter: BooruConfigRatingFilter.none,
-      url: widget.config.url,
-      customDownloadFileNameFormat: null,
-      customBulkDownloadFileNameFormat: null,
-      imageDetaisQuality: imageDetaisQuality,
-      granularRatingFilters: null,
-      postGestures: data.postGestures,
-      defaultPreviewImageButtonAction: data.defaultPreviewImageButtonAction,
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watch(initialBooruConfigProvider);
+    final imageDetailsQuality = ref.watch(imageDetailsQualityProvider(config));
+
+    return CreateBooruImageDetailsResolutionOptionTile(
+      value: imageDetailsQuality,
+      items: PhilomenaPostQualityType.values.map((e) => e.stringify()).toList(),
+      onChanged: (value) =>
+          ref.read(imageDetailsQualityProvider(config).notifier).state = value,
     );
+  }
+}
 
-    ref
-        .read(booruConfigProvider.notifier)
-        .addOrUpdate(config: widget.config, newConfig: config);
+class PhilomenaConfigSubmitButton extends ConsumerWidget {
+  const PhilomenaConfigSubmitButton({
+    super.key,
+    required this.data,
+  });
 
-    context.pop();
+  final BooruConfigData data;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watch(initialBooruConfigProvider);
+    final auth = ref.watch(authConfigDataProvider);
+    final imageDetailsQuality = ref.watch(imageDetailsQualityProvider(config));
+
+    return RawBooruConfigSubmitButton(
+      config: config,
+      data: data.copyWith(
+        apiKey: auth.apiKey,
+        imageDetaisQuality: () => imageDetailsQuality,
+      ),
+      enable: true,
+    );
   }
 }

@@ -410,7 +410,7 @@ void main() {
     };
     Uuid uuid = MockUuid();
 
-    String format = '{character} by {artist} ({uuid:v=1})';
+    String format = '{character} by {artist} ({uuid:version=1})';
 
     // Act
     String filename = generateFileName(metadata, format, uuid: uuid);

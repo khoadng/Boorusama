@@ -12,6 +12,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/configs/export_import/export_import.dart';
 import 'package:boorusama/core/feats/blacklists/blacklists.dart';
 import 'package:boorusama/core/feats/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
@@ -138,11 +139,13 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
             default:
           }
         },
-        itemBuilder: const {
-          'export': Text('Export'),
-          'import': Text('Import'),
-          'export_clipboard': Text('Export to clipboard'),
-          'import_clipboard': Text('Import from clipboard'),
+        itemBuilder: {
+          if (configs != null && configs.isNotEmpty)
+            'export': const Text('Export'),
+          'import': const Text('Import'),
+          if (configs != null && configs.isNotEmpty)
+            'export_clipboard': const Text('Export to clipboard'),
+          'import_clipboard': const Text('Import from clipboard'),
         },
       ),
     );

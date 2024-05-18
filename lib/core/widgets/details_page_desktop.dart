@@ -9,6 +9,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/circular_icon_button.dart';
@@ -65,135 +66,138 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
   Widget build(BuildContext context) {
     final isSmall = Screen.of(context).size == ScreenSize.small;
 
-    return CallbackShortcuts(
-      bindings: {
-        const SingleActivator(LogicalKeyboardKey.arrowRight): () => _nextPost(),
-        const SingleActivator(LogicalKeyboardKey.arrowLeft): () =>
-            _previousPost(),
-        const SingleActivator(LogicalKeyboardKey.escape): () => _onExit(),
-      },
-      child: PopScope(
-        onPopInvoked: (didPop) {
-          if (didPop) return;
-          _onExit();
+    return CustomContextMenuOverlay(
+      child: CallbackShortcuts(
+        bindings: {
+          const SingleActivator(LogicalKeyboardKey.arrowRight): () =>
+              _nextPost(),
+          const SingleActivator(LogicalKeyboardKey.arrowLeft): () =>
+              _previousPost(),
+          const SingleActivator(LogicalKeyboardKey.escape): () => _onExit(),
         },
-        child: Focus(
-          autofocus: true,
-          child: Scaffold(
-            body: Row(
-              children: [
-                Expanded(
-                  child: Stack(
-                    children: [
-                      widget.mediaBuilder(context),
-                      if (currentPage < widget.totalPages - 1)
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: MaterialButton(
-                            color: Colors.black.withOpacity(0.5),
-                            shape: const CircleBorder(),
-                            padding: const EdgeInsets.all(12),
-                            onPressed: () => _nextPost(),
-                            child: const Icon(
-                              Symbols.arrow_forward,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      if (currentPage > 0)
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: MaterialButton(
-                            color: Colors.black.withOpacity(0.5),
-                            shape: const CircleBorder(),
-                            padding: const EdgeInsets.all(12),
-                            onPressed: () => _previousPost(),
-                            child: const Icon(
-                              Symbols.arrow_back,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      SafeArea(
-                        child: Align(
-                          alignment: Alignment.topLeft,
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 8),
+        child: PopScope(
+          onPopInvoked: (didPop) {
+            if (didPop) return;
+            _onExit();
+          },
+          child: Focus(
+            autofocus: true,
+            child: Scaffold(
+              body: Row(
+                children: [
+                  Expanded(
+                    child: Stack(
+                      children: [
+                        widget.mediaBuilder(context),
+                        if (currentPage < widget.totalPages - 1)
+                          Align(
+                            alignment: Alignment.centerRight,
                             child: MaterialButton(
                               color: Colors.black.withOpacity(0.5),
                               shape: const CircleBorder(),
                               padding: const EdgeInsets.all(12),
-                              onPressed: () => _onExit(),
+                              onPressed: () => _nextPost(),
                               child: const Icon(
-                                Symbols.close,
+                                Symbols.arrow_forward,
                                 color: Colors.white,
                               ),
                             ),
                           ),
-                        ),
-                      ),
-                      if (widget.topRightBuilder != null)
-                        Positioned(
-                          top: 8,
-                          right: 12,
-                          child: SafeArea(
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                if (isSmall)
-                                  CircularIconButton(
-                                    onPressed: () =>
-                                        showMaterialModalBottomSheet(
-                                      context: context,
-                                      backgroundColor:
-                                          context.theme.scaffoldBackgroundColor,
-                                      builder: (context) =>
-                                          widget.infoBuilder(context),
-                                    ),
-                                    icon: const Icon(
-                                      Symbols.info,
-                                      color: Colors.white,
-                                    ),
-                                  )
-                                else
-                                  CircularIconButton(
-                                    onPressed: () => setState(
-                                      () {
-                                        showInfo = !showInfo;
-                                        ref
-                                            .read(miscDataProvider(
-                                                    kShowInfoStateCacheKey)
-                                                .notifier)
-                                            .put(showInfo.toString());
-                                        widget.onShowInfoChanged
-                                            ?.call(showInfo);
-                                      },
-                                    ),
-                                    icon: const Icon(
-                                      Symbols.info,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                const SizedBox(width: 8),
-                                widget.topRightBuilder!.call(context),
-                              ],
+                        if (currentPage > 0)
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: MaterialButton(
+                              color: Colors.black.withOpacity(0.5),
+                              shape: const CircleBorder(),
+                              padding: const EdgeInsets.all(12),
+                              onPressed: () => _previousPost(),
+                              child: const Icon(
+                                Symbols.arrow_back,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        SafeArea(
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 8),
+                              child: MaterialButton(
+                                color: Colors.black.withOpacity(0.5),
+                                shape: const CircleBorder(),
+                                padding: const EdgeInsets.all(12),
+                                onPressed: () => _onExit(),
+                                child: const Icon(
+                                  Symbols.close,
+                                  color: Colors.white,
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                    ],
+                        if (widget.topRightBuilder != null)
+                          Positioned(
+                            top: 8,
+                            right: 12,
+                            child: SafeArea(
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  if (isSmall)
+                                    CircularIconButton(
+                                      onPressed: () =>
+                                          showMaterialModalBottomSheet(
+                                        context: context,
+                                        backgroundColor: context
+                                            .theme.scaffoldBackgroundColor,
+                                        builder: (context) =>
+                                            widget.infoBuilder(context),
+                                      ),
+                                      icon: const Icon(
+                                        Symbols.info,
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                  else
+                                    CircularIconButton(
+                                      onPressed: () => setState(
+                                        () {
+                                          showInfo = !showInfo;
+                                          ref
+                                              .read(miscDataProvider(
+                                                      kShowInfoStateCacheKey)
+                                                  .notifier)
+                                              .put(showInfo.toString());
+                                          widget.onShowInfoChanged
+                                              ?.call(showInfo);
+                                        },
+                                      ),
+                                      icon: const Icon(
+                                        Symbols.info,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  const SizedBox(width: 8),
+                                  widget.topRightBuilder!.call(context),
+                                ],
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
                   ),
-                ),
-                const VerticalDivider(
-                  width: 1,
-                  thickness: 1,
-                ),
-                if (showInfo && !isSmall)
-                  Container(
-                    constraints: const BoxConstraints(maxWidth: 400),
-                    color: context.colorScheme.surface,
-                    child: widget.infoBuilder(context),
+                  const VerticalDivider(
+                    width: 1,
+                    thickness: 1,
                   ),
-              ],
+                  if (showInfo && !isSmall)
+                    Container(
+                      constraints: const BoxConstraints(maxWidth: 400),
+                      color: context.colorScheme.surface,
+                      child: widget.infoBuilder(context),
+                    ),
+                ],
+              ),
             ),
           ),
         ),

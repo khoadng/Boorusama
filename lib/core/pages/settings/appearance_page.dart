@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -208,6 +209,31 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
                   settings.copyWith(postDetailsOverlayInitialState: value)),
               optionBuilder: (value) => Text(value.localize().tr()),
             ),
+            SettingsTile(
+              title: const Text('Slideshow Interval'),
+              subtitle: const Text(
+                  'Value less than 1 second will automatically skip transition'),
+              selectedOption: settings.slideshowInterval,
+              items: getSlideShowIntervalPossibleValue(),
+              onChanged: (newValue) {
+                ref.updateSettings(
+                    settings.copyWith(slideshowInterval: newValue));
+              },
+              optionBuilder: (value) => Text(
+                '${value.toStringAsFixed(value < 1 ? 2 : 0)} sec',
+              ),
+            ),
+            SwitchListTile(
+              title: const Text('Skip Slideshow Transition'),
+              value: settings.skipSlideshowTransition,
+              onChanged: (value) => ref.updateSettings(
+                settings.copyWith(
+                  slideshowTransitionType: value
+                      ? SlideshowTransitionType.none
+                      : SlideshowTransitionType.natural,
+                ),
+              ),
+            ),
             const SizedBox(
               height: 10,
             ),
@@ -285,4 +311,12 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
       },
     );
   }
+}
+
+Future<void> openAppearancePage(BuildContext context) {
+  return Navigator.of(context).push(
+    CupertinoPageRoute(
+      builder: (context) => const AppearancePage(),
+    ),
+  );
 }

@@ -132,14 +132,17 @@ class _DanbooruPostDetailsPageState
           ref.watch(notesControllerProvider(post)),
         ),
         fileDetailsBuilder: (context, post) => DanbooruFileDetails(post: post),
-        topRightButtonsBuilder: (page, expanded, post) {
+        topRightButtonsBuilder: (page, expanded, post, controller) {
           return [
             NoteActionButtonWithProvider(
               post: post,
               expanded: expanded,
               noteState: ref.watch(notesControllerProvider(post)),
             ),
-            DanbooruMoreActionButton(post: post),
+            DanbooruMoreActionButton(
+              post: post,
+              onStartSlideshow: () => controller.startSlideshow(),
+            ),
           ];
         },
       ),

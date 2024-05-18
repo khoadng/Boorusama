@@ -29,7 +29,7 @@ class BooruConfig extends Equatable {
   });
 
   static const BooruConfig empty = BooruConfig(
-    id: -1,
+    id: -2,
     booruId: -1,
     booruIdHint: -1,
     apiKey: null,

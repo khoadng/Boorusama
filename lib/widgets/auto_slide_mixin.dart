@@ -4,46 +4,53 @@ import 'dart:async';
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+const kDefaultAutoSlideDuration = Duration(seconds: 5);
+
 mixin AutomaticSlideMixin<T extends StatefulWidget> on State<T> {
   PageController get pageController;
   Timer? timer;
-  int currentPage = 0;
+  int _currentPage = 0;
   bool _isSliding = false;
+
+  bool _shouldSkipAnimation(bool value, Duration duration) {
+    // less than 1 second, skip animation
+    if (duration.inSeconds < 1) return true;
+
+    return value;
+  }
 
   void startAutoSlide(
     int start,
     int end, {
-    List<int>? skipIndexes,
     bool skipAnimation = true,
-    Duration? duration,
+    Duration duration = kDefaultAutoSlideDuration,
   }) {
     if (_isSliding) return;
+    final skip = _shouldSkipAnimation(skipAnimation, duration);
+
     _isSliding = true;
     timer?.cancel();
+    _currentPage = start;
 
     timer = Timer.periodic(
-      duration ?? const Duration(seconds: 1),
+      duration,
       (timer) {
-        if (currentPage < end - 1) {
-          currentPage++;
-        } else {
-          currentPage = 0;
-        }
-
-        // skip if current page is in skipIndexes
-        if (skipIndexes?.contains(currentPage) ?? false) {
-          return;
-        }
+        _currentPage = (_currentPage + 1) % end;
 
         if (_isSliding) {
-          if (skipAnimation) {
-            pageController.jumpToPage(currentPage);
+          if (skip) {
+            pageController.jumpToPage(_currentPage);
           } else {
-            pageController.animateToPage(
-              currentPage,
-              duration: const Duration(milliseconds: 350),
-              curve: Curves.easeIn,
-            );
+            // if last page, just jump to first page without animation
+            if (_currentPage == 0) {
+              pageController.jumpToPage(0);
+            } else {
+              pageController.animateToPage(
+                _currentPage,
+                duration: const Duration(milliseconds: 350),
+                curve: Curves.easeIn,
+              );
+            }
           }
         }
       },

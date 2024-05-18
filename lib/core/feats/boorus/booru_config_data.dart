@@ -1,8 +1,12 @@
+// Package imports:
+import 'package:equatable/equatable.dart';
+
 // Project imports:
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/foundation/gestures.dart';
 
-class BooruConfigData {
+class BooruConfigData extends Equatable {
   const BooruConfigData({
     required this.booruId,
     required this.booruIdHint,
@@ -107,36 +111,93 @@ class BooruConfigData {
   final String? granularRatingFilterString;
   final String? postGestures;
   final String? defaultPreviewImageButtonAction;
+
+  @override
+  List<Object?> get props => [
+        booruId,
+        booruIdHint,
+        apiKey,
+        login,
+        name,
+        deletedItemBehavior,
+        ratingFilter,
+        url,
+        customDownloadFileNameFormat,
+        customBulkDownloadFileNameFormat,
+        imageDetaisQuality,
+        granularRatingFilterString,
+        postGestures,
+        defaultPreviewImageButtonAction,
+      ];
 }
 
-BooruConfig? convertToBooruConfig({
-  required int? id,
-  required BooruConfigData? booruConfigData,
-}) {
-  if (booruConfigData == null || id == null) return null;
+extension BooruConfigDataX on BooruConfigData {
+  PostGestureConfig? get postGesturesConfigTyped {
+    return PostGestureConfig.fromJsonString(postGestures);
+  }
 
-  return BooruConfig(
-    id: id,
-    booruId: booruConfigData.booruId,
-    booruIdHint: booruConfigData.booruIdHint ?? booruConfigData.booruId,
-    apiKey: booruConfigData.apiKey.isEmpty ? null : booruConfigData.apiKey,
-    login: booruConfigData.login.isEmpty ? null : booruConfigData.login,
-    url: booruConfigData.url,
-    name: booruConfigData.name,
-    ratingFilter: BooruConfigRatingFilter.values[booruConfigData.ratingFilter],
-    deletedItemBehavior: BooruConfigDeletedItemBehavior
-        .values[booruConfigData.deletedItemBehavior],
-    customDownloadFileNameFormat: booruConfigData.customDownloadFileNameFormat,
-    customBulkDownloadFileNameFormat:
-        booruConfigData.customBulkDownloadFileNameFormat,
-    imageDetaisQuality: booruConfigData.imageDetaisQuality,
-    granularRatingFilters: parseGranularRatingFilters(
-      booruConfigData.granularRatingFilterString,
-    ),
-    postGestures: booruConfigData.postGestures == null
-        ? null
-        : PostGestureConfig.fromJsonString(booruConfigData.postGestures),
-    defaultPreviewImageButtonAction:
-        booruConfigData.defaultPreviewImageButtonAction,
-  );
+  Set<Rating>? get granularRatingFilterTyped {
+    return parseGranularRatingFilters(granularRatingFilterString);
+  }
+
+  BooruConfigRatingFilter? get ratingFilterTyped {
+    if (ratingFilter < 0 ||
+        ratingFilter >= BooruConfigRatingFilter.values.length) {
+      return null;
+    }
+
+    return BooruConfigRatingFilter.values[ratingFilter];
+  }
+}
+
+extension BooruConfigDataCopyWith on BooruConfigData {
+  BooruConfigData copyWith({
+    int? booruId,
+    int? Function()? booruIdHint,
+    String? apiKey,
+    String? login,
+    String? name,
+    BooruConfigDeletedItemBehavior? deletedItemBehavior,
+    BooruConfigRatingFilter? ratingFilter,
+    String? url,
+    String? Function()? customDownloadFileNameFormat,
+    String? Function()? customBulkDownloadFileNameFormat,
+    String? Function()? imageDetaisQuality,
+    Set<Rating>? Function()? granularRatingFilter,
+    PostGestureConfig? Function()? postGestures,
+    String? Function()? defaultPreviewImageButtonAction,
+  }) {
+    return BooruConfigData(
+      booruId: booruId ?? this.booruId,
+      booruIdHint: booruIdHint != null ? booruIdHint() : this.booruIdHint,
+      apiKey: apiKey ?? this.apiKey,
+      login: login ?? this.login,
+      name: name ?? this.name,
+      deletedItemBehavior: deletedItemBehavior != null
+          ? deletedItemBehavior.index
+          : this.deletedItemBehavior,
+      ratingFilter:
+          ratingFilter != null ? ratingFilter.index : this.ratingFilter,
+      url: url ?? this.url,
+      customDownloadFileNameFormat: customDownloadFileNameFormat != null
+          ? customDownloadFileNameFormat()
+          : this.customDownloadFileNameFormat,
+      customBulkDownloadFileNameFormat: customBulkDownloadFileNameFormat != null
+          ? customBulkDownloadFileNameFormat()
+          : this.customBulkDownloadFileNameFormat,
+      imageDetaisQuality: imageDetaisQuality != null
+          ? imageDetaisQuality()
+          : this.imageDetaisQuality,
+      granularRatingFilterString: granularRatingFilter != null
+          ? granularRatingFilterToString(granularRatingFilter())
+          : granularRatingFilterString,
+      postGestures: postGestures != null
+          ? postGestures()?.toJsonString() ??
+              const PostGestureConfig.undefined().toJsonString()
+          : this.postGestures,
+      defaultPreviewImageButtonAction: defaultPreviewImageButtonAction != null
+          ? defaultPreviewImageButtonAction()
+          : this.defaultPreviewImageButtonAction,
+    );
+  }
 }

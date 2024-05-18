@@ -25,7 +25,7 @@ import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/functional.dart';
 import 'artists/gelbooru_artist_page.dart';
 import 'comments/gelbooru_comment_page.dart';
-import 'create_gelbooru_config_page.dart';
+import 'configs/create_gelbooru_config_page.dart';
 import 'home/gelbooru_home_page.dart';
 import 'posts/gelbooru_post_details_desktop_page.dart';
 import 'posts/gelbooru_post_details_page.dart';
@@ -34,6 +34,10 @@ export 'posts/posts.dart';
 
 const kGelbooruCustomDownloadFileNameFormat =
     '{id}_{md5:maxlength=8}.{extension}';
+
+String getGelbooruProfileUrl(String url) => url.endsWith('/')
+    ? '${url}index.php?page=account&s=options'
+    : '$url/index.php?page=account&s=options';
 
 final gelbooruClientProvider =
     Provider.family<GelbooruClient, BooruConfig>((ref, booruConfig) {

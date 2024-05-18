@@ -9,6 +9,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/providers.dart';
 import 'package:boorusama/core/pages/settings/about_page.dart';
@@ -62,6 +63,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   Widget build(BuildContext context) {
     final appInfo = ref.watch(appInfoProvider);
     ref.watch(settingsProvider.select((value) => value.language));
+    final booruBuilder = ref.watch(booruBuilderProvider);
 
     return Scaffold(
       appBar: AppBar(title: Text('settings.settings'.tr())),
@@ -202,25 +204,27 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                       ),
                       onTap: () => context.go('/settings/privacy'),
                     ),
-                    const Divider(),
-                    _SettingsSection(
-                      label: 'settings.booru_settings.booru_settings'.tr(),
-                    ),
-                    ListTile(
-                      title: Text(
-                        'settings.booru_settings.edit_current_profile'.tr(),
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w400,
+                    if (booruBuilder != null) ...[
+                      const Divider(),
+                      _SettingsSection(
+                        label: 'settings.booru_settings.booru_settings'.tr(),
+                      ),
+                      ListTile(
+                        title: Text(
+                          'settings.booru_settings.edit_current_profile'.tr(),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w400,
+                          ),
                         ),
+                        leading: FaIcon(
+                          FontAwesomeIcons.gear,
+                          color: context.iconTheme.color,
+                          size: 20,
+                        ),
+                        onTap: () => context
+                            .push('/boorus/${ref.watchConfig.id}/update'),
                       ),
-                      leading: FaIcon(
-                        FontAwesomeIcons.gear,
-                        color: context.iconTheme.color,
-                        size: 20,
-                      ),
-                      onTap: () =>
-                          context.push('/boorus/${ref.watchConfig.id}/update'),
-                    ),
+                    ],
                     const Divider(),
                     _SettingsSection(
                       label: 'settings.other_settings'.tr(),

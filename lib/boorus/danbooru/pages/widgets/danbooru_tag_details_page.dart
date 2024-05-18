@@ -19,6 +19,7 @@ import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import 'danbooru_tag_context_menu.dart';
 import 'related_tag_cloud_chip.dart';
 
 const _kTagCloudTotal = 30;
@@ -229,13 +230,16 @@ class ArtistTagCloud extends ConsumerWidget {
             return ref.watch(_tagCategoryColorsProvider(params)).when(
                   data: (tagColors) => TagCloud(
                     itemCount: tags.length,
-                    itemBuilder: (context, i) => RelatedTagCloudChip(
-                      index: i,
-                      tag: tags[i],
-                      color: tagColors[tags[i].category.name],
-                      onPressed: () => goToSearchPage(
-                        context,
-                        tag: tags[i].tag,
+                    itemBuilder: (context, i) => DanbooruTagContextMenu(
+                      tag: tags[i].tag,
+                      child: RelatedTagCloudChip(
+                        index: i,
+                        tag: tags[i],
+                        color: tagColors[tags[i].category.name],
+                        onPressed: () => goToSearchPage(
+                          context,
+                          tag: tags[i].tag,
+                        ),
                       ),
                     ),
                   ),

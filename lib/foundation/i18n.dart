@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:easy_localization/easy_localization.dart' as el;
+import 'package:easy_logger/easy_logger.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -167,6 +168,10 @@ dynamic removeEmptyFields(dynamic json) {
 }
 
 Future<void> ensureI18nInitialized() async {
+  el.EasyLocalization.logger = EasyLogger(
+    enableBuildModes: [],
+  );
+
   await el.EasyLocalization.ensureInitialized();
 
   for (var locale in supportedLocales) {

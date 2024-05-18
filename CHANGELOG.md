@@ -1,3 +1,9 @@
+# 3.16.0
+- Add slideshow
+- Allow users to remove all booru profiles
+- Add a context menu for various places that display tags
+- Various bug fixes and UI adjustments
+
 # 3.15.2
 - Add a way to bypass Cloudflare's anti-bot protection so some sites can be accessed again
 - Attempt to fix blacklisted tags not working properly on some occasions

@@ -89,7 +89,7 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage> {
         post,
         ref.watch(notesControllerProvider(post)),
       ),
-      topRightButtonsBuilder: (page, expanded, post) {
+      topRightButtonsBuilder: (page, expanded, post, controller) {
         return [
           NoteActionButtonWithProvider(
             post: post,
@@ -98,6 +98,7 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage> {
           ),
           GeneralMoreActionButton(
             post: post,
+            onStartSlideshow: () => controller.startSlideshow(),
           ),
         ];
       },

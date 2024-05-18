@@ -12,6 +12,7 @@ import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
+import 'danbooru_tag_context_menu.dart';
 
 class MostSearchTagList extends ConsumerWidget {
   const MostSearchTagList({
@@ -37,10 +38,13 @@ class MostSearchTagList extends ConsumerWidget {
                 scrollDirection: Axis.horizontal,
                 itemCount: searches.length,
                 itemBuilder: (context, index) {
-                  return _Chip(
-                    search: searches[index],
-                    isSelected: selected == searches[index].keyword,
-                    onSelected: onSelected,
+                  return DanbooruTagContextMenu(
+                    tag: searches[index].keyword,
+                    child: _Chip(
+                      search: searches[index],
+                      isSelected: selected == searches[index].keyword,
+                      onSelected: onSelected,
+                    ),
                   );
                 },
               ),

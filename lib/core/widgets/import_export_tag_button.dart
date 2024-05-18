@@ -54,7 +54,7 @@ class ImportExportTagButton extends ConsumerWidget {
       },
       itemBuilder: {
         'import': const Text('favorite_tags.import').tr(),
-        'export': const Text('favorite_tags.export').tr(),
+        if (tags.isNotEmpty) 'export': const Text('favorite_tags.export').tr(),
       },
     );
   }

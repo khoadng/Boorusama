@@ -9,6 +9,7 @@ import 'package:reorderables/reorderables.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
@@ -105,7 +106,7 @@ class _BooruSelectorState extends ConsumerState<BooruSelector> {
     void hide() => context.contextMenuOverlay.hide();
 
     void onReorder(int oldIndex, int newIndex, Iterable<BooruConfig> configs) {
-      final orders = ref.read(configIdOrdersProvider);
+      final orders = ref.read(settingsProvider).booruConfigIdOrderList;
       final newOrders = orders.isEmpty || orders.length != configs.length
           ? [for (final config in configs) config.id]
           : orders.toList();
