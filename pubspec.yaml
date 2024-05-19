@@ -17,7 +17,7 @@ dependencies:
   chewie: ^1.7.1
   clock: ^1.1.1
   collection: ^1.17.0
-  connectivity_plus: ^5.0.1
+  connectivity_plus: ^6.0.3
   context_menus:
     git:
       url: https://github.com/khoadng/flutter-context-menu.git

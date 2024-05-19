@@ -8,23 +8,27 @@ import 'package:boorusama/foundation/networking/networking.dart';
 
 const _serviceName = 'Connectivity';
 
-final connectivityProvider = StreamProvider<ConnectivityResult>((ref) {
+final connectivityProvider = StreamProvider<List<ConnectivityResult>>((ref) {
   final logger = ref.watch(loggerProvider);
   ref.listenSelf(
     (previous, next) {
-      final fn = next.when(
-        data: (data) => switch (data) {
-          ConnectivityResult.none => () =>
-              logger.logW(_serviceName, 'Network disconnected'),
-          _ => () => logger.logI(_serviceName, 'Connected to ${data.name}'),
-        },
-        error: (error, stackTrace) => () => logger.logE(
+      next.when(
+        data: (data) {
+          if (data.isEmpty || data.contains(ConnectivityResult.none)) {
+            logger.logW(_serviceName, 'Network disconnected');
+          } else {
+            logger.logI(
               _serviceName,
-              'Error: $error',
-            ),
-        loading: () => () => logger.logI(_serviceName, 'Network connecting...'),
+              'Connected to ${data.map((e) => e.name).join(', ')}',
+            );
+          }
+        },
+        error: (error, stackTrace) => logger.logE(
+          _serviceName,
+          'Error: $error',
+        ),
+        loading: () => logger.logI(_serviceName, 'Network connecting...'),
       );
-      fn.call();
     },
   );
 
@@ -32,14 +36,15 @@ final connectivityProvider = StreamProvider<ConnectivityResult>((ref) {
 });
 
 final networkStateProvider = Provider<NetworkState>((ref) {
-  final connectivityResult = ref.watch(connectivityProvider);
+  return ref.watch(connectivityProvider).when(
+        data: (result) {
+          if (result.isEmpty || result.contains(ConnectivityResult.none)) {
+            return NetworkDisconnectedState();
+          }
 
-  return connectivityResult.when(
-    data: (result) => switch (result) {
-      ConnectivityResult.none => NetworkDisconnectedState(),
-      _ => NetworkConnectedState(result: result),
-    },
-    loading: () => NetworkDisconnectedState(),
-    error: (_, __) => NetworkDisconnectedState(),
-  );
+          return NetworkConnectedState(result: result);
+        },
+        loading: () => NetworkDisconnectedState(),
+        error: (_, __) => NetworkDisconnectedState(),
+      );
 });
