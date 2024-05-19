@@ -1,7 +1,6 @@
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:html/parser.dart';
-import 'package:riverpod_infinite_scroll/riverpod_infinite_scroll.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
@@ -63,6 +62,20 @@ final danbooruPoolRepoProvider =
   );
 });
 
+final poolSuggestionsProvider =
+    FutureProvider.autoDispose.family<List<Pool>, String>((ref, query) async {
+  if (query.isEmpty) return [];
+
+  final config = ref.watchConfig;
+  final repo = ref.watch(danbooruPoolRepoProvider(config));
+
+  return repo.getPools(
+    1,
+    name: query,
+    order: PoolOrder.postCount,
+  );
+});
+
 final poolDescriptionRepoProvider =
     Provider.family<PoolDescriptionRepository, BooruConfig>((ref, config) {
   return PoolDescriptionRepoBuilder(
@@ -92,22 +105,6 @@ final poolDescriptionProvider = FutureProvider.autoDispose
   return (
     description: desc,
     descriptionEndpointRefUrl: config.url,
-  );
-});
-
-final danbooruPoolsProvider = StateNotifierProvider.autoDispose
-    .family<PoolsNotifier, PagedState<PoolKey, Pool>, BooruConfig>(
-        (ref, config) {
-  final repo = ref.watch(danbooruPoolRepoProvider(config));
-  final category = ref.watch(danbooruSelectedPoolCategoryProvider);
-  final order = ref.watch(danbooruSelectedPoolOrderProvider);
-
-  return PoolsNotifier(
-    ref: ref,
-    repo: repo,
-    category: category,
-    order: order,
-    config: config,
   );
 });
 

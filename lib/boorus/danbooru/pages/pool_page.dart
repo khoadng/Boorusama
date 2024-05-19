@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:riverpod_infinite_scroll/riverpod_infinite_scroll.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
@@ -41,20 +40,8 @@ class _PostList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
-    final imageGridSpacing = ref.watch(gridSpacingSettingsProvider);
-    final imageGridPadding = ref.watch(gridPaddingSettingsProvider);
-    final imageGridAspectRatio =
-        ref.watch(gridAspectRatioSettingsProvider) - _kLabelOffset;
-    final gridSize = ref.watch(gridSizeSettingsProvider);
-
     return LayoutBuilder(
       builder: (context, constraints) {
-        final crossAxisCount = calculateGridCount(
-          constraints.maxWidth,
-          gridSize,
-        );
-
         return CustomScrollView(
           slivers: [
             SliverAppBar(
@@ -108,32 +95,147 @@ class _PostList extends ConsumerWidget {
             const SliverToBoxAdapter(
               child: PoolOptionsHeader(),
             ),
-            SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: imageGridPadding),
-              sliver: RiverPagedBuilder.autoDispose(
-                firstPageProgressIndicatorBuilder: (context, controller) =>
-                    const Center(
-                  child: CircularProgressIndicator.adaptive(),
-                ),
-                pullToRefresh: false,
-                firstPageKey: const PoolKey(page: 1),
-                provider: danbooruPoolsProvider(config),
-                itemBuilder: (context, pool, index) => PoolGridItem(pool: pool),
-                pagedBuilder: (controller, builder) => PagedSliverGrid(
-                  pagingController: controller,
-                  builderDelegate: builder,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: crossAxisCount,
-                    childAspectRatio: imageGridAspectRatio,
-                    mainAxisSpacing: imageGridSpacing,
-                    crossAxisSpacing: imageGridSpacing,
-                  ),
-                ),
-              ),
+            PoolPagedSliverGrid(
+              order: ref.watch(danbooruSelectedPoolOrderProvider),
+              category: ref.watch(danbooruSelectedPoolCategoryProvider),
+              constraints: constraints,
             ),
           ],
         );
       },
+    );
+  }
+}
+
+class PoolPagedSliverGrid extends ConsumerStatefulWidget {
+  const PoolPagedSliverGrid({
+    super.key,
+    required this.constraints,
+    required this.order,
+    required this.category,
+    this.name,
+    this.description,
+  });
+
+  final BoxConstraints constraints;
+  final PoolOrder order;
+  final PoolCategory category;
+  final String? name;
+  final String? description;
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _PoolPagedSliverGridState();
+}
+
+class _PoolPagedSliverGridState extends ConsumerState<PoolPagedSliverGrid> {
+  late var order = widget.order;
+  late var category = widget.category;
+  late var name = widget.name;
+  late var description = widget.description;
+
+  final controller = PagingController<int, Pool>(
+    firstPageKey: 1,
+  );
+
+  @override
+  void initState() {
+    controller.addPageRequestListener((pageKey) {
+      _fetchPage(
+        pageKey,
+        category,
+        order,
+        name: name,
+        description: description,
+      );
+    });
+    super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant PoolPagedSliverGrid oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.order != widget.order ||
+        oldWidget.category != widget.category) {
+      order = widget.order;
+      category = widget.category;
+      controller.refresh();
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    controller.dispose();
+  }
+
+  Future<void> _fetchPage(
+    int pageKey,
+    PoolCategory category,
+    PoolOrder order, {
+    String? name,
+    String? description,
+  }) async {
+    final config = ref.readConfig;
+    final repo = ref.read(danbooruPoolRepoProvider(config));
+    try {
+      final newItems = await repo.getPools(
+        pageKey,
+        category: category,
+        order: order,
+        name: name,
+        description: description,
+      );
+
+      const loadCovers = true;
+
+      if (loadCovers) {
+        ref.read(danbooruPoolCoversProvider(config).notifier).load(newItems);
+      }
+
+      final isLastPage = newItems.isEmpty;
+      if (isLastPage) {
+        controller.appendLastPage(newItems);
+      } else {
+        final nextPageKey = pageKey + 1;
+        controller.appendPage(newItems, nextPageKey);
+      }
+    } catch (error) {
+      controller.error = error;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final imageGridSpacing = ref.watch(gridSpacingSettingsProvider);
+    final imageGridPadding = ref.watch(gridPaddingSettingsProvider);
+    final gridSize = ref.watch(gridSizeSettingsProvider);
+    final imageGridAspectRatio =
+        ref.watch(gridAspectRatioSettingsProvider) - _kLabelOffset;
+
+    final crossAxisCount = calculateGridCount(
+      widget.constraints.maxWidth,
+      gridSize,
+    );
+
+    return SliverPadding(
+      padding: EdgeInsets.symmetric(horizontal: imageGridPadding),
+      sliver: PagedSliverGrid(
+        pagingController: controller,
+        builderDelegate: PagedChildBuilderDelegate<Pool>(
+          itemBuilder: (context, pool, index) => PoolGridItem(pool: pool),
+          firstPageProgressIndicatorBuilder: (context) => const Center(
+            child: CircularProgressIndicator.adaptive(),
+          ),
+        ),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: crossAxisCount,
+          childAspectRatio: imageGridAspectRatio,
+          mainAxisSpacing: imageGridSpacing,
+          crossAxisSpacing: imageGridSpacing,
+        ),
+      ),
     );
   }
 }
