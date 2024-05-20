@@ -26,6 +26,7 @@ import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/foundation/scrolling.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/string.dart';
@@ -678,10 +679,11 @@ class _TagEditPageInternalState extends ConsumerState<TagEditPageInternal> {
         (_) {
           if (!mounted || !scrollController.hasClients) return;
 
-          scrollController.animateTo(
+          scrollController.animateToWithAccessibility(
             scrollController.position.maxScrollExtent + offset,
             duration: const Duration(milliseconds: 200),
             curve: Curves.easeOut,
+            reduceAnimations: ref.read(settingsProvider).reduceAnimations,
           );
         },
       );

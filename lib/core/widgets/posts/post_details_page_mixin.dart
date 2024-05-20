@@ -2,10 +2,12 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:video_player/video_player.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/platform.dart';
@@ -107,7 +109,7 @@ class FlexibleLayoutSwitcher extends StatelessWidget {
   }
 }
 
-class PostDetailsLayoutSwitcher extends StatefulWidget {
+class PostDetailsLayoutSwitcher extends ConsumerStatefulWidget {
   const PostDetailsLayoutSwitcher({
     super.key,
     required this.initialIndex,
@@ -122,14 +124,16 @@ class PostDetailsLayoutSwitcher extends StatefulWidget {
   final Widget Function(PostDetailsController controller) mobile;
 
   @override
-  State<PostDetailsLayoutSwitcher> createState() =>
+  ConsumerState<PostDetailsLayoutSwitcher> createState() =>
       _PostDetailsLayoutSwitcherState();
 }
 
-class _PostDetailsLayoutSwitcherState extends State<PostDetailsLayoutSwitcher> {
+class _PostDetailsLayoutSwitcherState
+    extends ConsumerState<PostDetailsLayoutSwitcher> {
   late PostDetailsController controller = PostDetailsController(
     scrollController: widget.scrollController,
     initialPage: widget.initialIndex,
+    reduceAnimations: ref.read(settingsProvider).reduceAnimations,
   );
 
   @override
@@ -148,10 +152,13 @@ class _PostDetailsLayoutSwitcherState extends State<PostDetailsLayoutSwitcher> {
 }
 
 class PostDetailsController extends ChangeNotifier {
-  PostDetailsController(
-      {required this.scrollController, required int initialPage})
-      : currentPage = ValueNotifier(initialPage);
+  PostDetailsController({
+    required this.scrollController,
+    required int initialPage,
+    required this.reduceAnimations,
+  }) : currentPage = ValueNotifier(initialPage);
   final AutoScrollController? scrollController;
+  final bool reduceAnimations;
 
   late ValueNotifier<int> currentPage;
 
@@ -160,6 +167,10 @@ class PostDetailsController extends ChangeNotifier {
   }
 
   void onExit(int page) {
+    // https://github.com/quire-io/scroll-to-index/issues/44
+    // skip scrolling if reduceAnimations is enabled due to a limitation in the package
+    if (reduceAnimations) return;
+
     scrollController?.scrollToIndex(page);
   }
 }

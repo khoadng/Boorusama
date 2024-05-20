@@ -17,6 +17,7 @@ import 'package:boorusama/core/pages/settings/debug_logs_page.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/scrolling.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
 import 'help_us_translate_page.dart';
@@ -43,10 +44,11 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     if (widget.scrollTo != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (widget.scrollTo == 'support') {
-          scrollController.animateTo(
+          scrollController.animateToWithAccessibility(
             scrollController.position.maxScrollExtent,
             duration: const Duration(milliseconds: 400),
             curve: Curves.easeInOut,
+            reduceAnimations: ref.read(settingsProvider).reduceAnimations,
           );
         }
       });
