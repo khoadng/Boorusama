@@ -76,6 +76,8 @@ class _AccessibilityPageState extends ConsumerState<AccessibilityPage> {
             ),
             SwitchListTile(
               title: const Text('Reduce animations'),
+              subtitle: const Text(
+                  'Some features may not work as expected when this is enabled.'),
               value: settings.reduceAnimations,
               onChanged: (value) => ref.updateSettings(
                 settings.copyWith(
