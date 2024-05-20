@@ -74,6 +74,15 @@ class _AccessibilityPageState extends ConsumerState<AccessibilityPage> {
                 '$value%',
               ),
             ),
+            SwitchListTile(
+              title: const Text('Reduce animations'),
+              value: settings.reduceAnimations,
+              onChanged: (value) => ref.updateSettings(
+                settings.copyWith(
+                  reduceAnimations: value,
+                ),
+              ),
+            ),
           ],
         ),
       ),
