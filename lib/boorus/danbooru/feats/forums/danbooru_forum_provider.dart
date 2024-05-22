@@ -49,20 +49,6 @@ final danbooruForumTopicRepoProvider =
   );
 });
 
-final danbooruForumTopicsProvider = StateNotifierProvider.autoDispose.family<
-    DanbooruForumTopicsNotifier,
-    PagedState<int, DanbooruForumTopic>,
-    BooruConfig>((ref, config) {
-  final notifier = ref.watch(danbooruCreatorsProvider(config).notifier);
-
-  return DanbooruForumTopicsNotifier(
-    repo: ref.watch(danbooruForumTopicRepoProvider(config)),
-    onLoaded: (data) {
-      notifier.load(data.map((e) => e.creatorId).toList());
-    },
-  );
-});
-
 final danbooruForumPostRepoProvider =
     Provider.family<ForumPostRepositoryBuilder<DanbooruForumPost>, BooruConfig>(
         (ref, config) {
