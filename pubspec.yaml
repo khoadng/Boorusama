@@ -13,7 +13,6 @@ dependencies:
   auto_size_text: ^3.0.0
   bitsdojo_window: ^0.1.6
   cached_network_image: ^3.3.0
-  carousel_slider: ^4.2.1
   chewie: ^1.7.1
   clock: ^1.1.1
   collection: ^1.17.0
@@ -47,7 +46,6 @@ dependencies:
   fl_chart: ^0.67.0
   flutter:
     sdk: flutter
-  flutter_advanced_segment: ^3.0.2
   flutter_cache_manager: ^3.3.1
   flutter_download_manager:
     git:
@@ -85,10 +83,6 @@ dependencies:
   media_scanner: ^2.1.0
   modal_bottom_sheet: ^3.0.0-pre
   multi_split_view: ^2.4.0
-  number_inc_dec:
-    git:
-      url: https://github.com/hilalbaig/number_inc_dec.git
-      ref: f66ee872727172ce2fe57f118d569339d54c384d
   oktoast: ^3.4.0
   package_info_plus: ^7.0.0
   path: ^1.8.3
