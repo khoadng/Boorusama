@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
@@ -51,16 +50,10 @@ void goToOriginalImagePage(BuildContext context, Post post) {
     return;
   }
 
-  context.navigator.push(PageTransition(
-    type: PageTransitionType.fade,
-    settings: const RouteSettings(
-      name: RouterPageConstant.originalImage,
-    ),
-    child: OriginalImagePage(
-      post: post,
-      initialOrientation: MediaQuery.orientationOf(context),
-    ),
-  ));
+  context.push(
+    '/original_image_viewer',
+    extra: post,
+  );
 }
 
 void goToSearchPage(

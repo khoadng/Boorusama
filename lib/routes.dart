@@ -316,6 +316,7 @@ class Routes {
           globalBlacklistedTags(),
           bulkDownloads(ref),
           favoriteTags(),
+          originalImageViewer(),
         ],
       );
 
@@ -457,6 +458,34 @@ class Routes {
             ),
           ),
         ],
+      );
+
+  static GoRoute originalImageViewer() => GoRoute(
+        path: 'original_image_viewer',
+        name: '/original_image_viewer',
+        pageBuilder: (context, state) {
+          final post = state.extra as Post?;
+
+          if (post == null) {
+            return const CupertinoPage(
+              child: Scaffold(
+                body: Center(
+                  child: Text('Invalid post'),
+                ),
+              ),
+            );
+          }
+
+          return CustomTransitionPage(
+            key: state.pageKey,
+            name: state.name,
+            transitionsBuilder: fadeTransitionBuilder(),
+            child: OriginalImagePage(
+              initialOrientation: MediaQuery.orientationOf(context),
+              post: post,
+            ),
+          );
+        },
       );
 
   static GoRoute favoriteTags() => GoRoute(
