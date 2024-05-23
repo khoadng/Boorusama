@@ -36,12 +36,13 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
         buttonPadding: EdgeInsets.zero,
         alignment: MainAxisAlignment.spaceEvenly,
         children: [
-          FavoritePostButton(
-            isFaved: isFaved,
-            isAuthorized: config.hasLoginDetails(),
-            addFavorite: () => ref.danbooruFavorites.add(post.id),
-            removeFavorite: () => ref.danbooruFavorites.remove(post.id),
-          ),
+          if (config.hasLoginDetails())
+            FavoritePostButton(
+              isFaved: isFaved,
+              isAuthorized: config.hasLoginDetails(),
+              addFavorite: () => ref.danbooruFavorites.add(post.id),
+              removeFavorite: () => ref.danbooruFavorites.remove(post.id),
+            ),
           if (config.hasLoginDetails())
             IconButton(
               icon: Icon(
