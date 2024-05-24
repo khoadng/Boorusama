@@ -19,10 +19,8 @@ class SearchPageController extends ChangeNotifier with SearchMixin {
 
   final SuggestionsNotifier suggestions;
 
-  @override
   final TextEditingController textEditingController;
 
-  @override
   final SearchHistoryNotifier searchHistory;
 
   @override
@@ -39,4 +37,16 @@ class SearchPageController extends ChangeNotifier with SearchMixin {
     textEditingController.removeListener(_onTextChanged);
     super.dispose();
   }
+
+  @override
+  HistoryAdder get addHistory => searchHistory.addHistory;
+
+  @override
+  QueryClearer get clearQuery => () => textEditingController.clear();
+
+  @override
+  QueryGetter get getQuery => () => textEditingController.text;
+
+  @override
+  QueryUpdater get updateQuery => (query) => textEditingController.text = query;
 }

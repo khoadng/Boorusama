@@ -1,8 +1,12 @@
-// Flutter imports:
-import 'package:flutter/material.dart';
-
 // Project imports:
-import 'package:boorusama/core/feats/search/search.dart';
+import 'filter_operator.dart';
+import 'search_utils.dart';
+import 'selected_tag_controller.dart';
+
+typedef HistoryAdder = void Function(String tag);
+typedef QueryClearer = void Function();
+typedef QueryUpdater = void Function(String query);
+typedef QueryGetter = String Function();
 
 mixin SearchMixin {
   void submit(String value) {
@@ -12,11 +16,11 @@ mixin SearchMixin {
   void skipToResultWithTag(String tag) {
     selectedTagController.clear();
     selectedTagController.addTag(tag);
-    searchHistory.addHistory(selectedTagController.rawTags.join(' '));
+    addHistory(selectedTagController.rawTags.join(' '));
   }
 
   void search() {
-    searchHistory.addHistory(selectedTagController.rawTags.join(' '));
+    addHistory(selectedTagController.rawTags.join(' '));
   }
 
   void tapTag(String tag) {
@@ -24,18 +28,20 @@ mixin SearchMixin {
       tag,
       operator: filterOperator,
     );
-    textEditingController.clear();
+
+    clearQuery();
   }
 
   void tapHistoryTag(String tag) {
     selectedTagController.addTags(tag.split(' '));
   }
 
-  void tapRawMetaTag(String tag) => textEditingController.text = '$tag:';
+  void tapRawMetaTag(String tag) => updateQuery('$tag:');
 
-  SearchHistoryNotifier get searchHistory;
-  TextEditingController get textEditingController;
+  HistoryAdder get addHistory;
+  QueryClearer get clearQuery;
+  QueryUpdater get updateQuery;
+  QueryGetter get getQuery;
   SelectedTagController get selectedTagController;
-  FilterOperator get filterOperator =>
-      getFilterOperator(textEditingController.text);
+  FilterOperator get filterOperator => getFilterOperator(getQuery());
 }
