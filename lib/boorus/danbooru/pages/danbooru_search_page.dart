@@ -89,10 +89,10 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
           color: context.colorScheme.primary,
         ),
       },
-      builder: (focus, controller, selectedTagController, searchController,
+      builder: (focus, textController, selectedTagController, searchController,
               allowSearch) =>
           ValueListenableBuilder(
-        valueListenable: controller,
+        valueListenable: textController,
         builder: (context, value, child) => Stack(
           children: [
             Offstage(
@@ -113,7 +113,7 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
                           selectedTagController,
                           searchController,
                           focus,
-                          controller,
+                          textController,
                           value,
                         )
                       : Scaffold(
@@ -125,10 +125,10 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
                               autofocus: ref
                                   .watch(settingsProvider)
                                   .autoFocusSearchBar,
-                              queryEditingController: controller,
+                              queryEditingController: textController,
                               onSubmitted: (value) {
                                 searchController.submit(value);
-                                controller.clear();
+                                textController.clear();
                               },
                               leading: widget.searchBarLeading ??
                                   (!context.canPop()
@@ -169,8 +169,9 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
                                     onOptionTap: (value) {
                                       searchController.tapRawMetaTag(value);
                                       focus.requestFocus();
-                                      controller.setTextAndCollapseSelection(
-                                          '$value:');
+                                      textController
+                                          .setTextAndCollapseSelection(
+                                              '$value:');
                                     },
                                   ),
                                 ),
@@ -188,7 +189,7 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
                           const Size.fromHeight(kToolbarHeight * 1.2),
                       child: SearchAppBar(
                         focusNode: focus,
-                        queryEditingController: controller,
+                        queryEditingController: textController,
                         onSubmitted: (value) => searchController.submit(value),
                         leading: widget.searchBarLeading ??
                             (!context.canPop()
@@ -197,7 +198,7 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
                       ),
                     ),
                     body: DefaultSearchSuggestionView(
-                      textEditingController: controller,
+                      textEditingController: textController,
                       searchController: searchController,
                       selectedTagController: selectedTagController,
                     ),
@@ -213,7 +214,7 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
     SelectedTagController selectedTagController,
     SearchPageController searchController,
     FocusNode focus,
-    RichTextController controller,
+    RichTextController textController,
     TextEditingValue value,
   ) {
     return ResultView(
@@ -251,10 +252,10 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
             title: SearchAppBar(
               focusNode: focus,
               autofocus: false,
-              queryEditingController: controller,
+              queryEditingController: textController,
               onSubmitted: (value) {
                 searchController.submit(value);
-                controller.clear();
+                textController.clear();
               },
               leading: widget.searchBarLeading ??
                   (!context.canPop() ? null : const SearchAppBarBackButton()),
@@ -301,7 +302,8 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
                           onOptionTap: (value) {
                             searchController.tapRawMetaTag(value);
                             focus.requestFocus();
-                            controller.setTextAndCollapseSelection('$value:');
+                            textController
+                                .setTextAndCollapseSelection('$value:');
                             context.pop();
                           },
                         ),

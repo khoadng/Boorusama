@@ -9,6 +9,7 @@ import 'package:rich_text_controller/rich_text_controller.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/search/search.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 
 class SearchScope extends ConsumerStatefulWidget {
@@ -80,23 +81,25 @@ class _SearchScopeState extends ConsumerState<SearchScope> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => context.focusScope.unfocus(),
-      child: Builder(
-        builder: (context) {
-          return ValueListenableBuilder(
-            valueListenable: selectedTagController,
-            builder: (context, tags, child) {
-              return widget.builder(
-                focus,
-                queryEditingController,
-                selectedTagController,
-                searchController,
-                allowSearch(tags),
-              );
-            },
-          );
-        },
+    return CustomContextMenuOverlay(
+      child: GestureDetector(
+        onTap: () => context.focusScope.unfocus(),
+        child: Builder(
+          builder: (context) {
+            return ValueListenableBuilder(
+              valueListenable: selectedTagController,
+              builder: (context, tags, child) {
+                return widget.builder(
+                  focus,
+                  queryEditingController,
+                  selectedTagController,
+                  searchController,
+                  allowSearch(tags),
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }
