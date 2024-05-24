@@ -57,7 +57,6 @@ class DanbooruSearchPage extends ConsumerWidget {
         scrollController,
         selectedTagController,
         searchController,
-        value,
       ) =>
           _buildDefaultSearchResults(
         ref,
@@ -66,7 +65,6 @@ class DanbooruSearchPage extends ConsumerWidget {
         scrollController,
         selectedTagController,
         searchController,
-        value,
       ),
     );
   }
@@ -97,7 +95,6 @@ class DanbooruSearchPage extends ConsumerWidget {
     AutoScrollController scrollController,
     SelectedTagController selectedTagController,
     SearchPageController searchController,
-    TextEditingValue value,
   ) {
     final context = ref.context;
 
@@ -143,14 +140,12 @@ class DanbooruSearchPage extends ConsumerWidget {
               },
               leading:
                   (!context.canPop() ? null : const SearchAppBarBackButton()),
-              innerSearchButton: value.text.isEmpty
-                  ? Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: SearchButton2(
-                        onTap: search,
-                      ),
-                    )
-                  : null,
+              innerSearchButton: Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: SearchButton2(
+                  onTap: search,
+                ),
+              ),
               trailingSearchButton: IconButton(
                 onPressed: () => showBarModalBottomSheet(
                   context: context,

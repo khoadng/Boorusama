@@ -4,9 +4,20 @@ import 'search_utils.dart';
 import 'selected_tag_controller.dart';
 
 typedef HistoryAdder = void Function(String tag);
+
 typedef QueryClearer = void Function();
 typedef QueryUpdater = void Function(String query);
 typedef QueryGetter = String Function();
+
+typedef SearchStateGetter = SearchState Function();
+typedef SearchStateSetter = void Function(SearchState state);
+
+typedef SuggestionFetcher = void Function(String query);
+
+enum SearchState {
+  initial,
+  suggestions,
+}
 
 mixin SearchMixin {
   void submit(String value) {
@@ -37,6 +48,27 @@ mixin SearchMixin {
   }
 
   void tapRawMetaTag(String tag) => updateQuery('$tag:');
+
+  void onQueryChanged(String previous, String current) {
+    if (previous == current) {
+      return;
+    }
+
+    final currentState = getSearchState();
+    final nextState =
+        current.isEmpty ? SearchState.initial : SearchState.suggestions;
+
+    if (currentState != nextState) {
+      setSearchState(nextState);
+    }
+
+    fetchSuggestions(current);
+  }
+
+  SearchStateGetter get getSearchState;
+  SearchStateSetter get setSearchState;
+
+  SuggestionFetcher get fetchSuggestions;
 
   HistoryAdder get addHistory;
   QueryClearer get clearQuery;

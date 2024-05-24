@@ -53,7 +53,6 @@ class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     AutoScrollController scrollController,
     SelectedTagController selectedTagController,
     SearchPageController searchController,
-    TextEditingValue value,
   )? resultBuilder;
 
   @override
@@ -78,12 +77,15 @@ class _SearchPageScaffoldState<T extends Post>
   );
   final focus = FocusNode();
 
+  final searchState = ValueNotifier(SearchState.initial);
+
   late final searchController = SearchPageController(
     textEditingController: textController,
     searchHistory: ref.read(searchHistoryProvider.notifier),
     selectedTagController: selectedTagController,
     suggestions: ref.read(suggestionsProvider(ref.readConfig).notifier),
     focus: focus,
+    searchState: searchState,
   );
 
   @override
@@ -125,11 +127,11 @@ class _SearchPageScaffoldState<T extends Post>
   Widget build(BuildContext context) {
     return CustomContextMenuOverlay(
       child: ValueListenableBuilder(
-        valueListenable: textController,
-        builder: (context, value, child) => Stack(
+        valueListenable: searchController.searchState,
+        builder: (_, state, __) => Stack(
           children: [
             Offstage(
-              offstage: value.text.isNotEmpty,
+              offstage: state != SearchState.initial,
               child: ValueListenableBuilder(
                 valueListenable: _didSearchOnce,
                 builder: (context, searchOnce, child) {
@@ -149,20 +151,18 @@ class _SearchPageScaffoldState<T extends Post>
                               _scrollController,
                               selectedTagController,
                               searchController,
-                              value,
                             )
                           : _buildDefaultSearchResults(
                               selectedTagController,
                               searchController,
                               focus,
                               textController,
-                              value,
                             )
                       : _buildInitial(context, search);
                 },
               ),
             ),
-            value.text.isNotEmpty
+            state == SearchState.suggestions
                 ? Scaffold(
                     appBar: PreferredSize(
                       preferredSize:
@@ -256,7 +256,6 @@ class _SearchPageScaffoldState<T extends Post>
     SearchPageController searchController,
     FocusNode focus,
     RichTextController textController,
-    TextEditingValue value,
   ) {
     return PostScope(
       fetcher: (page) =>
@@ -286,14 +285,12 @@ class _SearchPageScaffoldState<T extends Post>
               },
               leading:
                   (!context.canPop() ? null : const SearchAppBarBackButton()),
-              innerSearchButton: value.text.isEmpty
-                  ? Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: SearchButton2(
-                        onTap: search,
-                      ),
-                    )
-                  : null,
+              innerSearchButton: Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: SearchButton2(
+                  onTap: search,
+                ),
+              ),
               trailingSearchButton: IconButton(
                 onPressed: () => showBarModalBottomSheet(
                   context: context,

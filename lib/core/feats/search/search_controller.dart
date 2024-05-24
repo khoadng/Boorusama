@@ -1,8 +1,10 @@
 // Flutter imports:
+import 'package:boorusama/utils/stream/text_editing_controller_utils.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/search/search.dart';
+import 'package:rxdart/rxdart.dart';
 
 class SearchPageController extends ChangeNotifier with SearchMixin {
   SearchPageController({
@@ -11,9 +13,14 @@ class SearchPageController extends ChangeNotifier with SearchMixin {
     required this.selectedTagController,
     required this.suggestions,
     required this.focus,
+    required this.searchState,
   }) : super() {
-    textEditingController.addListener(_onTextChanged);
+    textEditingController.textAsStream().pairwise().listen((pair) {
+      onQueryChanged(pair.first, pair.last);
+    }).addTo(_subscriptions);
   }
+
+  final ValueNotifier<SearchState> searchState;
 
   final FocusNode focus;
 
@@ -26,15 +33,11 @@ class SearchPageController extends ChangeNotifier with SearchMixin {
   @override
   final SelectedTagController selectedTagController;
 
-  void _onTextChanged() {
-    final query = textEditingController.text;
-
-    suggestions.getSuggestions(query);
-  }
+  final CompositeSubscription _subscriptions = CompositeSubscription();
 
   @override
   void dispose() {
-    textEditingController.removeListener(_onTextChanged);
+    _subscriptions.dispose();
     super.dispose();
   }
 
@@ -49,4 +52,13 @@ class SearchPageController extends ChangeNotifier with SearchMixin {
 
   @override
   QueryUpdater get updateQuery => (query) => textEditingController.text = query;
+
+  @override
+  SearchStateGetter get getSearchState => () => searchState.value;
+
+  @override
+  SearchStateSetter get setSearchState => (state) => searchState.value = state;
+
+  @override
+  SuggestionFetcher get fetchSuggestions => suggestions.getSuggestions;
 }
