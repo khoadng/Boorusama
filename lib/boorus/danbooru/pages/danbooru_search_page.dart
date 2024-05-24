@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:rich_text_controller/rich_text_controller.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
@@ -52,14 +51,14 @@ class DanbooruSearchPage extends ConsumerWidget {
       ),
       metatagsBuilder: (context, controller) =>
           _buildMetatagSection(ref, controller),
-      resultBuilder: (didSearchOnce,
-              selectedTagString,
-              scrollController,
-              selectedTagController,
-              searchController,
-              focus,
-              textController,
-              value) =>
+      resultBuilder: (
+        didSearchOnce,
+        selectedTagString,
+        scrollController,
+        selectedTagController,
+        searchController,
+        value,
+      ) =>
           _buildDefaultSearchResults(
         ref,
         didSearchOnce,
@@ -67,8 +66,6 @@ class DanbooruSearchPage extends ConsumerWidget {
         scrollController,
         selectedTagController,
         searchController,
-        focus,
-        textController,
         value,
       ),
     );
@@ -100,8 +97,6 @@ class DanbooruSearchPage extends ConsumerWidget {
     AutoScrollController scrollController,
     SelectedTagController selectedTagController,
     SearchPageController searchController,
-    FocusNode focus,
-    RichTextController textController,
     TextEditingValue value,
   ) {
     final context = ref.context;
@@ -139,12 +134,12 @@ class DanbooruSearchPage extends ConsumerWidget {
             toolbarHeight: kToolbarHeight * 1.2,
             backgroundColor: context.theme.scaffoldBackgroundColor,
             title: SearchAppBar(
-              focusNode: focus,
+              focusNode: searchController.focus,
               autofocus: false,
-              queryEditingController: textController,
+              queryEditingController: searchController.textEditingController,
               onSubmitted: (value) {
                 searchController.submit(value);
-                textController.clear();
+                searchController.textEditingController.clear();
               },
               leading:
                   (!context.canPop() ? null : const SearchAppBarBackButton()),
