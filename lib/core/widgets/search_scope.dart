@@ -53,6 +53,7 @@ class _SearchScopeState extends ConsumerState<SearchScope> {
     searchHistory: ref.read(searchHistoryProvider.notifier),
     selectedTagController: selectedTagController,
     suggestions: ref.read(suggestionsProvider(ref.readConfig).notifier),
+    focus: focus,
   );
 
   @override

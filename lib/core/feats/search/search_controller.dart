@@ -10,9 +10,12 @@ class SearchPageController extends ChangeNotifier with SearchMixin {
     required this.searchHistory,
     required this.selectedTagController,
     required this.suggestions,
+    required this.focus,
   }) : super() {
     textEditingController.addListener(_onTextChanged);
   }
+
+  final FocusNode focus;
 
   final SuggestionsNotifier suggestions;
 

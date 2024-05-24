@@ -27,8 +27,10 @@ class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     this.initialQuery,
     required this.fetcher,
     this.noticeBuilder,
-    this.searchBarLeading,
-    this.searchTrailing,
+    this.queryPattern,
+    this.metatagsBuilder,
+    this.trendingBuilder,
+    this.resultBuilder,
   });
 
   final String? initialQuery;
@@ -37,8 +39,23 @@ class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
 
   final PostsOrErrorCore<T> Function(int page, List<String> tags) fetcher;
 
-  final Widget? searchBarLeading;
-  final Widget? searchTrailing;
+  final Map<RegExp, TextStyle>? queryPattern;
+
+  final Widget Function(BuildContext context, SearchPageController controller)?
+      metatagsBuilder;
+  final Widget Function(BuildContext context, SearchPageController controller)?
+      trendingBuilder;
+
+  final Widget Function(
+    ValueNotifier<bool> didSearchOnce,
+    ValueNotifier<String> selectedTagString,
+    AutoScrollController scrollController,
+    SelectedTagController selectedTagController,
+    SearchPageController searchController,
+    FocusNode focus,
+    RichTextController textController,
+    TextEditingValue value,
+  )? resultBuilder;
 
   @override
   ConsumerState<SearchPageScaffold<T>> createState() =>
@@ -87,6 +104,7 @@ class _SearchPageScaffoldState<T extends Post>
     return SearchScope(
       selectedTagController: _selectedTagController,
       initialQuery: widget.initialQuery,
+      pattern: widget.queryPattern,
       builder: (focus, textController, selectedTagController, searchController,
               allowSearch) =>
           ValueListenableBuilder(
@@ -107,13 +125,24 @@ class _SearchPageScaffoldState<T extends Post>
                   }
 
                   return searchOnce
-                      ? _buildSearchResults(
-                          selectedTagController,
-                          searchController,
-                          focus,
-                          textController,
-                          value,
-                        )
+                      ? widget.resultBuilder != null
+                          ? widget.resultBuilder!(
+                              _didSearchOnce,
+                              selectedTagString,
+                              _scrollController,
+                              selectedTagController,
+                              searchController,
+                              focus,
+                              textController,
+                              value,
+                            )
+                          : _buildDefaultSearchResults(
+                              selectedTagController,
+                              searchController,
+                              focus,
+                              textController,
+                              value,
+                            )
                       : Scaffold(
                           appBar: PreferredSize(
                             preferredSize:
@@ -128,10 +157,9 @@ class _SearchPageScaffoldState<T extends Post>
                                 searchController.submit(value);
                                 textController.clear();
                               },
-                              leading: widget.searchBarLeading ??
-                                  (!context.canPop()
-                                      ? null
-                                      : const SearchAppBarBackButton()),
+                              leading: (!context.canPop()
+                                  ? null
+                                  : const SearchAppBarBackButton()),
                             ),
                           ),
                           floatingActionButton: SearchButton(
@@ -157,6 +185,20 @@ class _SearchPageScaffoldState<T extends Post>
                                   onTagTap: (value) {
                                     searchController.tapTag(value);
                                   },
+                                  metatagsBuilder: widget.metatagsBuilder !=
+                                          null
+                                      ? (context) => widget.metatagsBuilder!(
+                                            context,
+                                            searchController,
+                                          )
+                                      : null,
+                                  trendingBuilder: widget.trendingBuilder !=
+                                          null
+                                      ? (context) => widget.trendingBuilder!(
+                                            context,
+                                            searchController,
+                                          )
+                                      : null,
                                 ),
                               ),
                             ],
@@ -174,10 +216,9 @@ class _SearchPageScaffoldState<T extends Post>
                         focusNode: focus,
                         queryEditingController: textController,
                         onSubmitted: (value) => searchController.submit(value),
-                        leading: widget.searchBarLeading ??
-                            (!context.canPop()
-                                ? null
-                                : const SearchAppBarBackButton()),
+                        leading: (!context.canPop()
+                            ? null
+                            : const SearchAppBarBackButton()),
                       ),
                     ),
                     body: DefaultSearchSuggestionView(
@@ -193,7 +234,7 @@ class _SearchPageScaffoldState<T extends Post>
     );
   }
 
-  Widget _buildSearchResults(
+  Widget _buildDefaultSearchResults(
     SelectedTagController selectedTagController,
     SearchPageController searchController,
     FocusNode focus,
@@ -226,25 +267,15 @@ class _SearchPageScaffoldState<T extends Post>
                 searchController.submit(value);
                 textController.clear();
               },
-              leading: widget.searchBarLeading ??
+              leading:
                   (!context.canPop() ? null : const SearchAppBarBackButton()),
               innerSearchButton: value.text.isEmpty
-                  ? widget.searchTrailing != null
-                      ? Row(
-                          children: [
-                            SearchButton2(
-                              onTap: search,
-                            ),
-                            widget.searchTrailing!,
-                            const SizedBox(width: 8),
-                          ],
-                        )
-                      : Padding(
-                          padding: const EdgeInsets.only(right: 8),
-                          child: SearchButton2(
-                            onTap: search,
-                          ),
-                        )
+                  ? Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: SearchButton2(
+                        onTap: search,
+                      ),
+                    )
                   : null,
               trailingSearchButton: IconButton(
                 onPressed: () => showBarModalBottomSheet(

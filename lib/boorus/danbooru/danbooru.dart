@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/pages/comment_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/danbooru_character_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/danbooru_post_statistics_page.dart';
+import 'package:boorusama/boorus/danbooru/pages/danbooru_search_page.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
@@ -33,7 +34,6 @@ import 'pages/danbooru_artist_page.dart';
 import 'pages/danbooru_home_page.dart';
 import 'pages/danbooru_post_details_desktop_page.dart';
 import 'pages/danbooru_post_details_page.dart';
-import 'pages/danbooru_search_page.dart';
 import 'pages/favorites_page.dart';
 
 const kDanbooruSafeUrl = 'https://safebooru.donmai.us/';
@@ -159,9 +159,7 @@ class DanbooruBuilder
 
   @override
   SearchPageBuilder get searchPageBuilder =>
-      (context, initialQuery) => CustomContextMenuOverlay(
-            child: DanbooruSearchPage(initialQuery: initialQuery),
-          );
+      (context, initialQuery) => DanbooruSearchPage(initialQuery: initialQuery);
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
