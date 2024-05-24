@@ -1,10 +1,12 @@
 // Flutter imports:
-import 'package:boorusama/utils/stream/text_editing_controller_utils.dart';
 import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:rxdart/rxdart.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/search/search.dart';
-import 'package:rxdart/rxdart.dart';
+import 'package:boorusama/utils/stream/text_editing_controller_utils.dart';
 
 class SearchPageController extends ChangeNotifier with SearchMixin {
   SearchPageController({

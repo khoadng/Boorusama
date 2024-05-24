@@ -65,6 +65,10 @@ mixin SearchMixin {
     fetchSuggestions(current);
   }
 
+  List<String> getCurrentRawTags() {
+    return selectedTagController.rawTags;
+  }
+
   SearchStateGetter get getSearchState;
   SearchStateSetter get setSearchState;
 

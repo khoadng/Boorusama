@@ -258,8 +258,10 @@ class _SearchPageScaffoldState<T extends Post>
     RichTextController textController,
   ) {
     return PostScope(
-      fetcher: (page) =>
-          widget.fetcher.call(page, selectedTagController.rawTags),
+      fetcher: (page) => widget.fetcher(
+        page,
+        searchController.getCurrentRawTags(),
+      ),
       builder: (context, controller, errors) {
         void search() {
           searchController.search();

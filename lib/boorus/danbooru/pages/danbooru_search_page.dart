@@ -101,7 +101,7 @@ class DanbooruSearchPage extends ConsumerWidget {
     return ResultView(
       scrollController: scrollController,
       selectedTagString: selectedTagString,
-      selectedTagController: selectedTagController,
+      searchController: searchController,
       onRelatedTagAdded: (tag, postController) {
         selectedTagController.addTag(tag.tag);
         postController.refresh();
