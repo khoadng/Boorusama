@@ -22,6 +22,7 @@ enum SearchState {
 mixin SearchMixin {
   void submit(String value) {
     selectedTagController.addTag(value);
+    clearQuery();
   }
 
   void skipToResultWithTag(String tag) {
