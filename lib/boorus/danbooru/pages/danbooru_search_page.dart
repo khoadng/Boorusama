@@ -134,10 +134,6 @@ class DanbooruSearchPage extends ConsumerWidget {
               focusNode: searchController.focus,
               autofocus: false,
               queryEditingController: searchController.textEditingController,
-              onSubmitted: (value) {
-                searchController.submit(value);
-                searchController.textEditingController.clear();
-              },
               leading:
                   (!context.canPop() ? null : const SearchAppBarBackButton()),
               innerSearchButton: Padding(

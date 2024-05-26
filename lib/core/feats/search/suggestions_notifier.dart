@@ -59,8 +59,6 @@ class SuggestionsNotifier
 
     if (sanitized.length == 1 && op != FilterOperator.none) return;
 
-    if (state.containsKey(sanitized)) return;
-
     final fallback = ref.read(fallbackSuggestionsProvider.notifier);
     final booruBuilder = ref.read(booruBuilderProvider);
     final autocompleteFetcher = booruBuilder?.autocompleteFetcher;

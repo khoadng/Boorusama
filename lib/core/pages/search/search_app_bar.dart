@@ -14,7 +14,7 @@ class SearchAppBar extends ConsumerWidget {
   const SearchAppBar({
     super.key,
     required this.queryEditingController,
-    required this.onSubmitted,
+    this.onSubmitted,
     this.focusNode,
     required this.leading,
     this.onClear,
@@ -31,7 +31,7 @@ class SearchAppBar extends ConsumerWidget {
   final TextEditingController queryEditingController;
   final FocusNode? focusNode;
   final Widget? leading;
-  final void Function(String value) onSubmitted;
+  final void Function(String value)? onSubmitted;
   final VoidCallback? onClear;
   final void Function(String value)? onChanged;
   final Widget? trailingSearchButton;
