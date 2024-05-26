@@ -163,24 +163,9 @@ class _SearchPageScaffoldState<T extends Post>
               ),
             ),
             state == SearchState.suggestions
-                ? Scaffold(
-                    appBar: PreferredSize(
-                      preferredSize:
-                          const Size.fromHeight(kToolbarHeight * 1.2),
-                      child: SearchAppBar(
-                        focusNode: focus,
-                        queryEditingController: textController,
-                        onSubmitted: (value) => searchController.submit(value),
-                        leading: (!context.canPop()
-                            ? null
-                            : const SearchAppBarBackButton()),
-                      ),
-                    ),
-                    body: DefaultSearchSuggestionView(
-                      textEditingController: textController,
-                      searchController: searchController,
-                      selectedTagController: selectedTagController,
-                    ),
+                ? SuggestionView(
+                    queryPattern: widget.queryPattern,
+                    searchController: searchController,
                   )
                 : const SizedBox.shrink(),
           ],
@@ -200,10 +185,6 @@ class _SearchPageScaffoldState<T extends Post>
           focusNode: focus,
           autofocus: ref.watch(settingsProvider).autoFocusSearchBar,
           queryEditingController: textController,
-          onSubmitted: (value) {
-            searchController.submit(value);
-            textController.clear();
-          },
           leading: (!context.canPop() ? null : const SearchAppBarBackButton()),
         ),
       ),
@@ -278,7 +259,6 @@ class _SearchPageScaffoldState<T extends Post>
             toolbarHeight: kToolbarHeight * 1.2,
             backgroundColor: context.theme.scaffoldBackgroundColor,
             title: SearchAppBar(
-              focusNode: focus,
               autofocus: false,
               queryEditingController: textController,
               leading:
@@ -347,6 +327,71 @@ class _SearchPageScaffoldState<T extends Post>
           sliverHeaderBuilder: (context) => slivers,
         );
       },
+    );
+  }
+}
+
+class SuggestionView extends StatefulWidget {
+  const SuggestionView({
+    super.key,
+    required this.searchController,
+    this.queryPattern,
+  });
+
+  final Map<RegExp, TextStyle>? queryPattern;
+  final SearchPageController searchController;
+
+  @override
+  State<SuggestionView> createState() => _SuggestionViewState();
+}
+
+class _SuggestionViewState extends State<SuggestionView> {
+  final focus = FocusNode();
+  late final textController = RichTextController(
+    text: widget.searchController.textEditingController.text,
+    patternMatchMap: widget.queryPattern ??
+        {
+          RegExp(''): const TextStyle(color: Colors.white),
+        },
+    onMatch: (match) {},
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    focus.requestFocus();
+    textController.addListener(_onTextChanged);
+  }
+
+  @override
+  void dispose() {
+    textController.removeListener(_onTextChanged);
+    textController.dispose();
+    focus.dispose();
+    super.dispose();
+  }
+
+  void _onTextChanged() {
+    widget.searchController.updateQuery(textController.text);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight * 1.2),
+        child: SearchAppBar(
+          focusNode: focus,
+          queryEditingController: textController,
+          onSubmitted: (value) => widget.searchController.submit(value),
+          leading: (!context.canPop() ? null : const SearchAppBarBackButton()),
+        ),
+      ),
+      body: DefaultSearchSuggestionView(
+        textEditingController: textController,
+        searchController: widget.searchController,
+        selectedTagController: widget.searchController.selectedTagController,
+      ),
     );
   }
 }

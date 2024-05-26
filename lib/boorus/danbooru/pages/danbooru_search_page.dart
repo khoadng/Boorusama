@@ -131,7 +131,6 @@ class DanbooruSearchPage extends ConsumerWidget {
             toolbarHeight: kToolbarHeight * 1.2,
             backgroundColor: context.theme.scaffoldBackgroundColor,
             title: SearchAppBar(
-              focusNode: searchController.focus,
               autofocus: false,
               queryEditingController: searchController.textEditingController,
               leading:
