@@ -16,12 +16,12 @@ class DefaultSearchSuggestionView extends ConsumerWidget {
   const DefaultSearchSuggestionView({
     super.key,
     required this.textEditingController,
-    required this.selectedTagController,
+    this.selectedTagController,
     required this.searchController,
   });
 
   final TextEditingController textEditingController;
-  final SelectedTagController selectedTagController;
+  final SelectedTagController? selectedTagController;
   final SearchPageController searchController;
 
   @override
@@ -29,9 +29,10 @@ class DefaultSearchSuggestionView extends ConsumerWidget {
     return SafeArea(
       child: Column(
         children: [
-          SelectedTagListWithData(
-            controller: selectedTagController,
-          ),
+          if (selectedTagController != null)
+            SelectedTagListWithData(
+              controller: selectedTagController!,
+            ),
           Expanded(
             child: ValueListenableBuilder(
               valueListenable: textEditingController,

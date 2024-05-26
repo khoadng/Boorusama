@@ -75,14 +75,14 @@ class _BooruSearchBarState extends State<BooruSearchBar> {
           onTap: () => widget.onTap?.call(),
           child: Row(
             children: [
-              const SizedBox(width: 10),
+              const SizedBox(width: 4),
               widget.leading ?? const SizedBox.shrink(),
-              const SizedBox(width: 10),
+              const SizedBox(width: 4),
               Expanded(
                 child: Focus(
                   focusNode: widget.focus,
                   onFocusChange: widget.onFocusChanged,
-                  child: BooruTextFormField(
+                  child: BooruTextField(
                     cursorHeight: widget.cursorHeight,
                     keyboardType: TextInputType.text,
                     autocorrect: false,
@@ -93,7 +93,7 @@ class _BooruSearchBarState extends State<BooruSearchBar> {
                         widget.onTapOutside?.call();
                       }
                     },
-                    onFieldSubmitted: (value) => value.isNotEmpty
+                    onSubmitted: (value) => value.isNotEmpty
                         ? widget.onSubmitted?.call(value)
                         : null,
                     onChanged: (value) => widget.onChanged?.call(value),
@@ -111,7 +111,7 @@ class _BooruSearchBarState extends State<BooruSearchBar> {
                           const EdgeInsets.only(
                             bottom: 11,
                             top: 11,
-                            right: 15,
+                            right: 4,
                           ),
                       hintText: widget.hintText ?? 'search.hint'.tr(),
                     ),

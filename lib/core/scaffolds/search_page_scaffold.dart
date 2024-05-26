@@ -281,10 +281,6 @@ class _SearchPageScaffoldState<T extends Post>
               focusNode: focus,
               autofocus: false,
               queryEditingController: textController,
-              onSubmitted: (value) {
-                searchController.submit(value);
-                textController.clear();
-              },
               leading:
                   (!context.canPop() ? null : const SearchAppBarBackButton()),
               innerSearchButton: Padding(
