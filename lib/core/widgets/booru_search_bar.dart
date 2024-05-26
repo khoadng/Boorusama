@@ -1,10 +1,13 @@
 // Flutter imports:
+import 'package:extended_text_field/extended_text_field.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+
+import 'tag_text.dart';
 
 class BooruSearchBar extends StatefulWidget {
   const BooruSearchBar({
@@ -82,7 +85,10 @@ class _BooruSearchBarState extends State<BooruSearchBar> {
                 child: Focus(
                   focusNode: widget.focus,
                   onFocusChange: widget.onFocusChanged,
-                  child: BooruTextFormField(
+                  child: BooruTextField(
+                    useExtendedTextField: true,
+                    specialTextSpanBuilder:
+                        TagSpanBuilder(_textEditingController, context),
                     cursorHeight: widget.cursorHeight,
                     keyboardType: TextInputType.text,
                     autocorrect: false,
@@ -93,9 +99,6 @@ class _BooruSearchBarState extends State<BooruSearchBar> {
                         widget.onTapOutside?.call();
                       }
                     },
-                    onFieldSubmitted: (value) => value.isNotEmpty
-                        ? widget.onSubmitted?.call(value)
-                        : null,
                     onChanged: (value) => widget.onChanged?.call(value),
                     enabled: widget.enabled,
                     decoration: InputDecoration(
@@ -127,5 +130,36 @@ class _BooruSearchBarState extends State<BooruSearchBar> {
         ),
       ),
     );
+  }
+}
+
+class TagSpanBuilder extends SpecialTextSpanBuilder {
+  TagSpanBuilder(
+    this.controller,
+    this.context,
+  );
+
+  final TextEditingController controller;
+  final BuildContext context;
+
+  @override
+  SpecialText? createSpecialText(
+    String flag, {
+    TextStyle? textStyle,
+    SpecialTextGestureTapCallback? onTap,
+    required int index,
+  }) {
+    if (flag == '') {
+      return null;
+    }
+
+    if (!flag.startsWith(' ')) {
+      return TagText(textStyle!, onTap,
+          start: index,
+          context: context,
+          controller: controller,
+          startFlag: flag);
+    }
+    return null;
   }
 }

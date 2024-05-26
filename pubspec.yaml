@@ -36,6 +36,7 @@ dependencies:
   expandable: ^5.0.1
   exprollable_page_view: ^1.0.1
   extended_image: ^8.2.0
+  extended_text_field: ^14.0.0
   fast_immutable_collections: ^10.2.2
   file_picker: ^8.0.2
   filesize: ^2.0.1

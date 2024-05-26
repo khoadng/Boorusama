@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:extended_text_field/extended_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -67,6 +68,9 @@ class BooruTextField extends ConsumerWidget {
     this.canRequestFocus = true,
     this.spellCheckConfiguration,
     this.magnifierConfiguration,
+    // ExtendedTextField
+    this.useExtendedTextField = false,
+    this.specialTextSpanBuilder,
   });
 
   final TextEditingController? controller;
@@ -126,9 +130,76 @@ class BooruTextField extends ConsumerWidget {
   final SpellCheckConfiguration? spellCheckConfiguration;
   final TextMagnifierConfiguration? magnifierConfiguration;
 
+  final bool useExtendedTextField;
+  final SpecialTextSpanBuilder? specialTextSpanBuilder;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(settingsProvider);
+
+    if (useExtendedTextField) {
+      return ExtendedTextField(
+        key: key,
+        controller: controller,
+        focusNode: focusNode,
+        undoController: undoController,
+        decoration: decoration,
+        keyboardType: keyboardType,
+        textInputAction: textInputAction,
+        textCapitalization: textCapitalization,
+        style: style,
+        strutStyle: strutStyle,
+        textAlign: textAlign,
+        textAlignVertical: textAlignVertical,
+        textDirection: textDirection,
+        readOnly: readOnly,
+        showCursor: showCursor,
+        autofocus: autofocus,
+        obscuringCharacter: obscuringCharacter,
+        obscureText: obscureText,
+        autocorrect: autocorrect,
+        smartDashesType: smartDashesType,
+        smartQuotesType: smartQuotesType,
+        enableSuggestions: enableSuggestions,
+        maxLines: maxLines,
+        minLines: minLines,
+        expands: expands,
+        maxLength: maxLength,
+        maxLengthEnforcement: maxLengthEnforcement,
+        onChanged: onChanged,
+        onEditingComplete: onEditingComplete,
+        onSubmitted: onSubmitted,
+        onAppPrivateCommand: onAppPrivateCommand,
+        inputFormatters: inputFormatters,
+        enabled: enabled,
+        cursorWidth: cursorWidth,
+        cursorHeight: cursorHeight,
+        cursorRadius: cursorRadius,
+        cursorOpacityAnimates: cursorOpacityAnimates,
+        cursorColor: cursorColor,
+        keyboardAppearance: keyboardAppearance,
+        scrollPadding: scrollPadding,
+        enableInteractiveSelection: enableInteractiveSelection,
+        selectionControls: selectionControls,
+        onTap: onTap,
+        onTapOutside: onTapOutside,
+        mouseCursor: mouseCursor,
+        buildCounter: buildCounter,
+        scrollController: scrollController,
+        scrollPhysics: scrollPhysics,
+        autofillHints: autofillHints,
+        contentInsertionConfiguration: contentInsertionConfiguration,
+        clipBehavior: clipBehavior,
+        restorationId: restorationId,
+        scribbleEnabled: scribbleEnabled,
+        enableIMEPersonalizedLearning: enableIMEPersonalizedLearning ??
+            !settings.enableIncognitoModeForKeyboard,
+        canRequestFocus: canRequestFocus,
+        // spellCheckConfiguration: spellCheckConfiguration,
+        magnifierConfiguration: magnifierConfiguration,
+        specialTextSpanBuilder: specialTextSpanBuilder,
+      );
+    }
 
     return TextField(
       key: key,
