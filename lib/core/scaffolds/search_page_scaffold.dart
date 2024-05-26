@@ -78,6 +78,7 @@ class _SearchPageScaffoldState<T extends Post>
   final focus = FocusNode();
 
   final searchState = ValueNotifier(SearchState.initial);
+  late final allowSearch = ValueNotifier(false);
 
   late final searchController = SearchPageController(
     textEditingController: textController,
@@ -86,6 +87,7 @@ class _SearchPageScaffoldState<T extends Post>
     suggestions: ref.read(suggestionsProvider(ref.readConfig).notifier),
     focus: focus,
     searchState: searchState,
+    allowSearch: allowSearch,
   );
 
   @override
@@ -120,8 +122,6 @@ class _SearchPageScaffoldState<T extends Post>
 
     focus.dispose();
   }
-
-  bool allowSearch(List<TagSearchItem> tags) => tags.isNotEmpty;
 
   @override
   Widget build(BuildContext context) {
@@ -208,10 +208,10 @@ class _SearchPageScaffoldState<T extends Post>
         ),
       ),
       floatingActionButton: ValueListenableBuilder(
-        valueListenable: selectedTagController,
-        builder: (context, tags, child) => SearchButton(
+        valueListenable: searchController.allowSearch,
+        builder: (context, allow, child) => SearchButton(
           onSearch: search,
-          allowSearch: allowSearch(tags),
+          allowSearch: allow,
         ),
       ),
       body: Column(

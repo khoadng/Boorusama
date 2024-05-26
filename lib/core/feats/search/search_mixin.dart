@@ -14,6 +14,9 @@ typedef SearchStateSetter = void Function(SearchState state);
 
 typedef SuggestionFetcher = void Function(String query);
 
+typedef SetAllowSearch = void Function(bool value);
+typedef GetAllowedSearch = bool Function();
+
 enum SearchState {
   initial,
   suggestions,
@@ -81,4 +84,7 @@ mixin SearchMixin {
   QueryGetter get getQuery;
   SelectedTagController get selectedTagController;
   FilterOperator get filterOperator => getFilterOperator(getQuery());
+
+  SetAllowSearch get setAllowSearch;
+  GetAllowedSearch get getAllowedSearch;
 }

@@ -16,11 +16,16 @@ class SearchPageController extends ChangeNotifier with SearchMixin {
     required this.suggestions,
     required this.focus,
     required this.searchState,
+    required this.allowSearch,
   }) : super() {
     textEditingController.textAsStream().pairwise().listen((pair) {
       onQueryChanged(pair.first, pair.last);
     }).addTo(_subscriptions);
+
+    selectedTagController.addListener(_onSelectedTagChanged);
   }
+
+  final ValueNotifier<bool> allowSearch;
 
   final ValueNotifier<SearchState> searchState;
 
@@ -40,7 +45,12 @@ class SearchPageController extends ChangeNotifier with SearchMixin {
   @override
   void dispose() {
     _subscriptions.dispose();
+    selectedTagController.removeListener(_onSelectedTagChanged);
     super.dispose();
+  }
+
+  void _onSelectedTagChanged() {
+    allowSearch.value = selectedTagController.rawTags.isNotEmpty;
   }
 
   @override
@@ -63,4 +73,10 @@ class SearchPageController extends ChangeNotifier with SearchMixin {
 
   @override
   SuggestionFetcher get fetchSuggestions => suggestions.getSuggestions;
+
+  @override
+  GetAllowedSearch get getAllowedSearch => () => allowSearch.value;
+
+  @override
+  SetAllowSearch get setAllowSearch => (value) => allowSearch.value = value;
 }
