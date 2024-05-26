@@ -16,7 +16,7 @@ import 'package:boorusama/core/feats/search/search.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
 
@@ -27,7 +27,7 @@ void showSimpleTagSearchView(
   RouteSettings? settings,
   required Widget Function(BuildContext context, bool isMobile) builder,
 }) {
-  if (isMobilePlatform()) {
+  if (kPreferredLayout.isMobile) {
     showBarModalBottomSheet(
       context: context,
       settings: settings,

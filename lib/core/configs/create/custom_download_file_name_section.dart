@@ -18,7 +18,7 @@ import 'package:boorusama/core/feats/posts/post.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -330,7 +330,7 @@ class AvailableTokens extends ConsumerWidget {
     final availableTokens = downloadFilenameBuilder?.availableTokens ?? {};
 
     return Wrap(
-      runSpacing: isMobilePlatform() ? -4 : 8,
+      runSpacing: kPreferredLayout.isMobile ? -4 : 8,
       spacing: 4,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [

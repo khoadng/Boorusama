@@ -9,7 +9,6 @@ import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/platform.dart';
 
 class TagDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   const TagDetailsPageScaffold({
@@ -79,7 +78,8 @@ class _DanbooruTagDetailsPageState<T extends Post>
           return widget.gridBuilder.call(
             context,
             [
-              if (isMobilePlatform() && context.orientation.isPortrait) ...[
+              if (kPreferredLayout.isMobile &&
+                  context.orientation.isPortrait) ...[
                 TagDetailsSlilverAppBar(
                   tagName: widget.tagName,
                 ),

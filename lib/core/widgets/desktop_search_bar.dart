@@ -19,7 +19,7 @@ import 'package:boorusama/core/pages/search/search_landing_view.dart';
 import 'package:boorusama/core/pages/search/selected_tag_list_with_data.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 
 class DesktopSearchbar extends ConsumerStatefulWidget {
@@ -130,7 +130,7 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                                   ),
                                 ),
                               ),
-                        if (isMobilePlatform())
+                        if (kPreferredLayout.isMobile)
                           Positioned(
                             top: 4,
                             right: 4,

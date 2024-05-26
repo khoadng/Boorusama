@@ -22,7 +22,6 @@ import 'package:boorusama/core/pages/home/side_bar_menu.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/utils/flutter_utils.dart';
@@ -74,7 +73,7 @@ class _BooruScopeState extends ConsumerState<BooruScope> {
   @override
   Widget build(BuildContext context) {
     return CustomContextMenuOverlay(
-      child: isMobilePlatform()
+      child: kPreferredLayout.isMobile
           ? OrientationBuilder(
               builder: (context, orientation) => orientation.isPortrait
                   ? _buildMobile()

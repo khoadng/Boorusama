@@ -14,8 +14,8 @@ import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/pages/settings/settings.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -213,11 +213,11 @@ class PostGridActionSheet extends ConsumerWidget {
     ];
 
     return Material(
-      color: isDesktopPlatform()
+      color: kPreferredLayout.isDesktop
           ? context.colorScheme.surface
           : context.colorScheme.secondaryContainer,
       child: ConditionalParentWidget(
-        condition: isMobilePlatform(),
+        condition: kPreferredLayout.isMobile,
         conditionalBuilder: (child) => Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           child: child,
@@ -225,7 +225,7 @@ class PostGridActionSheet extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisSize: MainAxisSize.min,
-          children: isMobilePlatform() ? mobileButtons : desktopButtons,
+          children: kPreferredLayout.isMobile ? mobileButtons : desktopButtons,
         ),
       ),
     );

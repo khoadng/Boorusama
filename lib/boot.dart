@@ -32,6 +32,7 @@ import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/analytics.dart';
 import 'package:boorusama/foundation/app_info.dart';
 import 'package:boorusama/foundation/device_info_service.dart';
+import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
 import 'package:boorusama/foundation/package_info.dart';
@@ -89,10 +90,11 @@ Future<void> boot(BootLogger bootLogger) async {
   if (isDesktopPlatform()) {
     bootLogger.l("Initialize window manager");
     doWhenWindowReady(() {
+      const iPhoneSize = Size(375, 812);
       const initialSize = Size(1000, 700);
       const minSize = Size(950, 500);
-      appWindow.minSize = minSize;
-      appWindow.size = initialSize;
+      appWindow.minSize = kPreferredLayout.isMobile ? iPhoneSize : minSize;
+      appWindow.size = kPreferredLayout.isMobile ? iPhoneSize : initialSize;
       appWindow.alignment = Alignment.center;
       appWindow.show();
     });

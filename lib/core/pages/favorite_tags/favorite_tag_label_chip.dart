@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'favorite_tag_label_details_page.dart';
 
@@ -39,7 +39,9 @@ class FavoriteTagLabelChip extends ConsumerWidget {
             ),
           );
         },
-        padding: isMobilePlatform() ? const EdgeInsets.all(4) : EdgeInsets.zero,
+        padding: kPreferredLayout.isMobile
+            ? const EdgeInsets.all(4)
+            : EdgeInsets.zero,
         visualDensity: const ShrinkVisualDensity(),
         backgroundColor: colors?.backgroundColor,
         side: colors != null

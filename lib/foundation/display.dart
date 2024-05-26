@@ -3,12 +3,36 @@ import 'package:flutter/cupertino.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/settings/settings.dart';
+import 'platform.dart';
+
+const _kRawPreferredLayout = String.fromEnvironment('PREFERRED_LAYOUT');
+
+final kPreferredLayout = switch (_kRawPreferredLayout) {
+  'mobile' => PreferredLayout.mobile,
+  'desktop' => PreferredLayout.desktop,
+  _ => PreferredLayout.platform,
+};
 
 enum ScreenSize {
   small,
   medium,
   large,
   veryLarge,
+}
+
+enum PreferredLayout {
+  platform,
+  mobile,
+  desktop,
+}
+
+extension PreferredLayoutX on PreferredLayout {
+  bool get isMobile =>
+      this == PreferredLayout.mobile ||
+      (this == PreferredLayout.platform && isMobilePlatform());
+  bool get isDesktop =>
+      this == PreferredLayout.desktop ||
+      (this == PreferredLayout.platform && isDesktopPlatform());
 }
 
 ScreenSize screenWidthToDisplaySize(double width) => switch (width) {

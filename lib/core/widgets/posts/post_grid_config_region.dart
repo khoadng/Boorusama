@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/foundation/display.dart';
 
 final postGridSideBarVisibleProvider = StateProvider<bool>((ref) {
   return false;
@@ -31,7 +31,7 @@ class PostGridConfigRegion extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return !isMobilePlatform()
+    return !kPreferredLayout.isMobile
         ? Builder(
             builder: (context) {
               final gridSize = ref.watch(gridSizeSettingsProvider);

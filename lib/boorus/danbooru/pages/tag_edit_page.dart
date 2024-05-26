@@ -25,7 +25,6 @@ import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/scrolling.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
@@ -252,7 +251,7 @@ class _TagEditPageInternalState extends ConsumerState<TagEditPageInternal> {
       },
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        extendBodyBehindAppBar: isMobilePlatform() && expandMode != null,
+        extendBodyBehindAppBar: kPreferredLayout.isMobile && expandMode != null,
         appBar: AppBar(
           leading: IconButton(
             onPressed: _pop,
@@ -1004,7 +1003,7 @@ class _TagEditTagTileState extends State<TagEditTagTile> {
               Expanded(
                 child: widget.title,
               ),
-              if (!isMobilePlatform() && !hover)
+              if (!kPreferredLayout.isMobile && !hover)
                 const SizedBox(
                   height: 32,
                 )
@@ -1015,7 +1014,7 @@ class _TagEditTagTileState extends State<TagEditTagTile> {
                   onPressed: widget.onDeleted,
                   icon: Icon(
                     Symbols.close,
-                    size: isDesktopPlatform() ? 16 : 20,
+                    size: kPreferredLayout.isDesktop ? 16 : 20,
                   ),
                 )
             ],

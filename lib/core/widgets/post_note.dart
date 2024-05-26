@@ -7,7 +7,7 @@ import 'package:flutter_portal/flutter_portal.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/notes/notes.dart';
-import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/foundation/display.dart';
 
 class PostNote extends StatelessWidget {
   const PostNote({
@@ -20,7 +20,7 @@ class PostNote extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return isMobilePlatform()
+    return kPreferredLayout.isMobile
         ? PostNoteMobile(
             coordinate: coordinate,
             content: content,

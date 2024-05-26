@@ -262,7 +262,7 @@ String Function(
 ) defaultPostImageUrlBuilder(
   WidgetRef ref,
 ) =>
-    (post) => isDesktopPlatform()
+    (post) => kPreferredLayout.isDesktop
         ? post.sampleImageUrl
         : ref.watchBooruBuilder(ref.watchConfig)?.postImageDetailsUrlBuilder(
                 ref.watch(settingsProvider), post, ref.watchConfig) ??

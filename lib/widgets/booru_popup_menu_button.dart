@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class BooruPopupMenuButton<T> extends StatelessWidget {
@@ -27,13 +27,13 @@ class BooruPopupMenuButton<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     return PopupMenuButton(
       offset: offset ?? Offset.zero,
-      constraints: isDesktopPlatform()
+      constraints: kPreferredLayout.isDesktop
           ? const BoxConstraints(
               minWidth: 2 * 40.0,
               maxWidth: 5 * 40.0,
             )
           : null,
-      icon: isMobilePlatform()
+      icon: kPreferredLayout.isMobile
           ? const Icon(
               Icons.more_vert,
             )
@@ -45,10 +45,10 @@ class BooruPopupMenuButton<T> extends StatelessWidget {
       itemBuilder: (context) => [
         for (final item in itemBuilder.entries)
           PopupMenuItem(
-            height: isMobilePlatform() ? 40 : 32,
+            height: kPreferredLayout.isMobile ? 40 : 32,
             value: item.key,
             child: ConditionalParentWidget(
-              condition: isDesktopPlatform(),
+              condition: kPreferredLayout.isDesktop,
               conditionalBuilder: (child) => Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 4,

@@ -19,7 +19,7 @@ import 'package:boorusama/core/pages/favorite_tags/favorite_tags_page.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/biometrics/app_lock.dart';
-import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -54,7 +54,7 @@ class BoorusRoutes {
   static GoRoute add(Ref ref) => GoRoute(
         path: 'boorus/add',
         redirect: (context, state) =>
-            isMobilePlatform() ? null : '/desktop/boorus/add',
+            kPreferredLayout.isMobile ? null : '/desktop/boorus/add',
         builder: (context, state) => AddBooruPage(
           backgroundColor: context.theme.scaffoldBackgroundColor,
           setCurrentBooruOnSubmit:
@@ -76,7 +76,7 @@ class BoorusRoutes {
 
   static GoRoute update(Ref ref) => GoRoute(
         path: 'boorus/:id/update',
-        redirect: (context, state) => isMobilePlatform()
+        redirect: (context, state) => kPreferredLayout.isMobile
             ? null
             : '/desktop/boorus/${state.pathParameters['id']}/update',
         pageBuilder: (context, state) {
@@ -535,7 +535,7 @@ class Routes {
         path: 'settings',
         name: '/settings',
         redirect: (context, state) =>
-            !isMobilePlatform() ? '/desktop/settings' : null,
+            !kPreferredLayout.isMobile ? '/desktop/settings' : null,
         pageBuilder: (context, state) => CupertinoPage(
             key: state.pageKey,
             name: state.name,
@@ -602,7 +602,7 @@ Page<T> createPage<T>({
   String? name,
   LocalKey? key,
 }) =>
-    isMobilePlatform()
+    kPreferredLayout.isMobile
         ? CupertinoPage<T>(
             key: key,
             name: name,

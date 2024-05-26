@@ -17,9 +17,9 @@ import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/feats/utils.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/posts/post_grid_config_region.dart';
+import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/networking/network_provider.dart';
 import 'package:boorusama/foundation/networking/network_state.dart';
-import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'post_grid_config_icon_button.dart';
@@ -172,7 +172,7 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
           child: PostGridConfigRegion(
             postController: controller,
             blacklistHeader: _buildConfigHeader(
-                !isMobilePlatform() ? Axis.vertical : Axis.horizontal),
+                !kPreferredLayout.isMobile ? Axis.vertical : Axis.horizontal),
             builder: (context, header) => ConditionalParentWidget(
               condition: widget.safeArea,
               conditionalBuilder: (child) => SafeArea(
@@ -239,7 +239,7 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                             ),
                     ),
                     body: ConditionalParentWidget(
-                      condition: isMobilePlatform(),
+                      condition: kPreferredLayout.isMobile,
                       conditionalBuilder: (child) => RefreshIndicator(
                         edgeOffset: 60,
                         displacement: 50,
@@ -277,7 +277,7 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                                           sliver: e,
                                         )),
                               if (settings.showPostListConfigHeader)
-                                if (isMobilePlatform())
+                                if (kPreferredLayout.isMobile)
                                   ConditionalValueListenableBuilder(
                                     valueListenable: refreshing,
                                     useFalseChildAsCache: true,
@@ -555,7 +555,7 @@ class _ScrollToTopButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return isMobilePlatform()
+    return kPreferredLayout.isMobile
         ? FloatingActionButton(
             heroTag: null,
             child: const FaIcon(FontAwesomeIcons.angleUp),

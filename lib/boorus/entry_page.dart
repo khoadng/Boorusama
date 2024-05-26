@@ -91,7 +91,8 @@ class _EntryPageState extends ConsumerState<EntryPage> {
 
     return OrientationBuilder(
       builder: (context, orientation) => ConditionalParentWidget(
-        condition: isDesktopPlatform() || orientation.isLandscape,
+        condition: kPreferredLayout.isDesktop ||
+            (kPreferredLayout.isMobile && orientation.isLandscape),
         conditionalBuilder: (child) => Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
