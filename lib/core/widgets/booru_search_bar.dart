@@ -76,7 +76,7 @@ class _BooruSearchBarState extends State<BooruSearchBar> {
           child: Row(
             children: [
               const SizedBox(width: 4),
-              widget.leading ?? const SizedBox.shrink(),
+              widget.leading ?? const SizedBox(width: 8),
               const SizedBox(width: 4),
               Expanded(
                 child: BooruTextField(
