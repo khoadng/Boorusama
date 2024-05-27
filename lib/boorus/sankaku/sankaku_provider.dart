@@ -40,7 +40,7 @@ final sankakuPostRepoProvider =
           final artistTags = e.tags
                   ?.where((e) => intToTagCategory(e.type) == TagCategory.artist)
                   .map((e) => Tag(
-                      name: e.name ?? '????',
+                      name: e.tagName ?? '????',
                       category: TagCategory.artist,
                       postCount: e.postCount ?? 0))
                   .toList() ??
@@ -50,7 +50,7 @@ final sankakuPostRepoProvider =
                   ?.where(
                       (e) => intToTagCategory(e.type) == TagCategory.character)
                   .map((e) => Tag(
-                      name: e.name ?? '????',
+                      name: e.tagName ?? '????',
                       category: TagCategory.character,
                       postCount: e.postCount ?? 0))
                   .toList() ??
@@ -60,7 +60,7 @@ final sankakuPostRepoProvider =
                   ?.where(
                       (e) => intToTagCategory(e.type) == TagCategory.copyright)
                   .map((e) => Tag(
-                      name: e.name ?? '????',
+                      name: e.tagName ?? '????',
                       category: TagCategory.copyright,
                       postCount: e.postCount ?? 0))
                   .toList() ??
@@ -72,7 +72,7 @@ final sankakuPostRepoProvider =
             thumbnailImageUrl: e.previewUrl ?? '',
             sampleImageUrl: e.sampleUrl ?? '',
             originalImageUrl: e.fileUrl ?? '',
-            tags: e.tags?.map((e) => e.name).whereNotNull().toSet() ?? {},
+            tags: e.tags?.map((e) => e.tagName).whereNotNull().toSet() ?? {},
             rating: mapStringToRating(e.rating),
             hasComment: e.hasComments ?? false,
             isTranslated: false,
@@ -112,8 +112,8 @@ final sankakuAutocompleteRepoProvider =
     autocomplete: (query) =>
         client.getAutocomplete(query: query).then((value) => value
             .map((e) => AutocompleteData(
-                  label: e.name?.replaceAll('_', ' ') ?? '???',
-                  value: e.name ?? '???',
+                  label: e.name?.toLowerCase().replaceAll('_', ' ') ?? '???',
+                  value: e.tagName ?? '???',
                   postCount: e.count,
                   category: e.type?.toString(),
                 ))
