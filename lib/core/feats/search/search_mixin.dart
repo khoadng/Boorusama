@@ -1,7 +1,6 @@
 // Project imports:
 import 'filter_operator.dart';
 import 'search_utils.dart';
-import 'selected_tag_controller.dart';
 
 typedef HistoryAdder = void Function(String tag);
 
@@ -16,6 +15,8 @@ typedef SuggestionFetcher = void Function(String query);
 
 typedef SetAllowSearch = void Function(bool value);
 typedef GetAllowedSearch = bool Function();
+typedef FocusRequester = void Function();
+typedef FocusUnfocuser = void Function();
 
 enum SearchState {
   initial,
@@ -24,53 +25,91 @@ enum SearchState {
 
 mixin SearchMixin {
   void submit(String value) {
-    selectedTagController.addTag(value);
-    clearQuery();
+    // if not end with space, add space
+    var query = value;
+    if (!query.endsWith(' ')) {
+      query += ' ';
+    }
+
+    updateQuery(query);
+  }
+
+  void backToInitial() {
+    setSearchState(SearchState.initial);
   }
 
   void skipToResultWithTag(String tag) {
-    selectedTagController.clear();
-    selectedTagController.addTag(tag);
-    addHistory(selectedTagController.rawTags.join(' '));
+    addHistory(tag);
+    updateQuery('$tag ');
   }
 
   void search() {
-    addHistory(selectedTagController.rawTags.join(' '));
+    final query = getQuery();
+    addHistory(query);
   }
 
   void tapTag(String tag) {
-    selectedTagController.addTag(
-      tag,
-      operator: filterOperator,
-    );
-
-    clearQuery();
+    // example: "tag1 ta" then user tap "tag2", it should be "tag1 tag2 "
+    final query = getQuery();
+    final lastSpaceIndex = query.lastIndexOf(' ');
+    final newQuery = '${query.substring(0, lastSpaceIndex + 1)}$tag ';
+    updateQuery(newQuery);
+    requestFocus();
   }
 
   void tapHistoryTag(String tag) {
-    selectedTagController.addTags(tag.split(' '));
+    // append to the end
+    final query = getQuery();
+    final newQuery = '$query $tag ';
+
+    updateQuery(newQuery);
   }
 
-  void tapRawMetaTag(String tag) => updateQuery('$tag:');
+  void tapRawMetaTag(String tag) {
+    final query = getQuery();
+
+    final newQuery = '$query $tag:';
+
+    updateQuery(newQuery);
+  }
 
   void onQueryChanged(String previous, String current) {
-    if (previous == current) {
-      return;
+    if (current == previous) return;
+
+    setAllowSearch(current.isNotEmpty);
+
+    if (current.isEmpty) {
+      if (!previous.endsWith('(') || !previous.endsWith('{')) {
+        setSearchState(SearchState.initial);
+        unfocus();
+
+        return;
+      }
     }
 
-    final currentState = getSearchState();
-    final nextState =
-        current.isEmpty ? SearchState.initial : SearchState.suggestions;
-
-    if (currentState != nextState) {
-      setSearchState(nextState);
+    if (current.endsWith(' ')) {
+      if (!previous.endsWith('(') || !previous.endsWith('{')) {
+        setSearchState(SearchState.initial);
+        requestFocus();
+        return;
+      }
     }
 
-    fetchSuggestions(current);
+    if (previous.isEmpty && current.isNotEmpty ||
+        previous.endsWith(' ') && !current.endsWith(' ')) {
+      setSearchState(SearchState.suggestions);
+    }
+
+    // only search the last word
+    final query = current.split(' ').lastOrNull;
+
+    if (query != null && query.isNotEmpty) {
+      fetchSuggestions(query);
+    }
   }
 
   List<String> getCurrentRawTags() {
-    return selectedTagController.rawTags;
+    return getQuery().trim().split(' ');
   }
 
   SearchStateGetter get getSearchState;
@@ -78,11 +117,13 @@ mixin SearchMixin {
 
   SuggestionFetcher get fetchSuggestions;
 
+  FocusRequester get requestFocus;
+  FocusUnfocuser get unfocus;
+
   HistoryAdder get addHistory;
   QueryClearer get clearQuery;
   QueryUpdater get updateQuery;
   QueryGetter get getQuery;
-  SelectedTagController get selectedTagController;
   FilterOperator get filterOperator => getFilterOperator(getQuery());
 
   SetAllowSearch get setAllowSearch;

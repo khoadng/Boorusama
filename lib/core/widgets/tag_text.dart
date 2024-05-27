@@ -1,7 +1,80 @@
 import 'dart:ui' as ui show PlaceholderAlignment;
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/utils/flutter_utils.dart';
 import 'package:extended_text_field/extended_text_field.dart';
 import 'package:flutter/material.dart';
+
+class TagText3 extends SpecialText {
+  TagText3(
+    TextStyle textStyle,
+    SpecialTextGestureTapCallback? onTap, {
+    required this.start,
+    required this.controller,
+    required this.context,
+  }) : super('{', '}', textStyle, onTap: onTap);
+
+  final TextEditingController controller;
+  final int start;
+  final BuildContext context;
+
+  @override
+  bool isEnd(String value) {
+    return value.endsWith(endFlag);
+  }
+
+  @override
+  InlineSpan finishText() {
+    final text = toString();
+
+    return ExtendedWidgetSpan(
+      actualText: text,
+      start: start,
+      alignment: ui.PlaceholderAlignment.middle,
+      child: TagTextChip(
+        text: text,
+        controller: controller,
+        start: start,
+      ),
+      deleteAll: true,
+    );
+  }
+}
+
+class TagText2 extends SpecialText {
+  TagText2(
+    TextStyle textStyle,
+    SpecialTextGestureTapCallback? onTap, {
+    required this.start,
+    required this.controller,
+    required this.context,
+  }) : super('(', ')', textStyle, onTap: onTap);
+
+  final TextEditingController controller;
+  final int start;
+  final BuildContext context;
+
+  @override
+  bool isEnd(String value) {
+    return value.endsWith(endFlag);
+  }
+
+  @override
+  InlineSpan finishText() {
+    final text = toString();
+
+    return ExtendedWidgetSpan(
+      actualText: text,
+      start: start,
+      alignment: ui.PlaceholderAlignment.middle,
+      child: TagTextChip(
+        text: text,
+        controller: controller,
+        start: start,
+      ),
+      deleteAll: true,
+    );
+  }
+}
 
 class TagText extends SpecialText {
   TagText(
@@ -19,22 +92,12 @@ class TagText extends SpecialText {
 
   @override
   bool isEnd(String value) {
-    // final index = value.indexOf('@');
-    // final index1 = value.indexOf('.');
-
-    // print('index: $index index1: $index1 value: $value');
-
-    // return index >= 0 &&
-    //     index1 >= 0 &&
-    //     index1 > index + 1 &&
-    //     super.isEnd(value);
-
-    return value.endsWith(' ');
+    return value.endsWith(endFlag);
   }
 
   @override
   InlineSpan finishText() {
-    final String text = toString();
+    final text = toString();
 
     return ExtendedWidgetSpan(
       actualText: text,
@@ -84,8 +147,7 @@ class TagTextChip extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    text.trim().replaceAll('_', ' '),
-                    //style: textStyle?.copyWith(color: Colors.orange),
+                    text.trim(),
                     style: TextStyle(
                       color: context.colorScheme.onSurface,
                       fontWeight: FontWeight.w600,
@@ -101,12 +163,21 @@ class TagTextChip extends StatelessWidget {
                       color: context.colorScheme.onSurface,
                     ),
                     onTap: () {
+                      final newText = controller.text
+                          .replaceRange(start, start + text.length, '');
+
                       controller.value = controller.value.copyWith(
-                        text: controller.text
-                            .replaceRange(start, start + text.length, ''),
+                        text: newText,
                         selection: TextSelection.fromPosition(
                           TextPosition(offset: start),
                         ),
+                      );
+
+                      // move cursor to the end of the text
+                      WidgetsBinding.instance.addPostFrameCallback(
+                        (_) {
+                          controller.setTextAndCollapseSelection(newText);
+                        },
                       );
                     },
                   )

@@ -44,7 +44,6 @@ class DefaultSearchSuggestionView extends ConsumerWidget {
                   tags: suggestionTags,
                   currentQuery: query.text,
                   onItemTap: (tag) {
-                    FocusManager.instance.primaryFocus?.unfocus();
                     searchController.tapTag(tag.value);
                   },
                   textColorBuilder: (tag) =>

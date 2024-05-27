@@ -11,7 +11,6 @@ import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/widgets.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/search/search.dart';
-import 'package:boorusama/core/pages/search/selected_tag_list_with_data.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'related_tag_section.dart';
 
@@ -72,9 +71,6 @@ class _ResultViewState extends ConsumerState<ResultView> {
           ),
       builder: (context, controller, errors) {
         final widgets = [
-          () => SelectedTagListWithData(
-                controller: widget.searchController.selectedTagController,
-              ),
           () => ValueListenableBuilder(
                 valueListenable: widget.selectedTagString,
                 builder: (context, selectedTags, _) => RelatedTagSection(

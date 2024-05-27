@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/flutter.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -12,7 +13,6 @@ class SearchPageController extends ChangeNotifier with SearchMixin {
   SearchPageController({
     required this.textEditingController,
     required this.searchHistory,
-    required this.selectedTagController,
     required this.suggestions,
     required this.focus,
     required this.searchState,
@@ -21,8 +21,6 @@ class SearchPageController extends ChangeNotifier with SearchMixin {
     textEditingController.textAsStream().pairwise().listen((pair) {
       onQueryChanged(pair.first, pair.last);
     }).addTo(_subscriptions);
-
-    selectedTagController.addListener(_onSelectedTagChanged);
   }
 
   final ValueNotifier<bool> allowSearch;
@@ -37,20 +35,12 @@ class SearchPageController extends ChangeNotifier with SearchMixin {
 
   final SearchHistoryNotifier searchHistory;
 
-  @override
-  final SelectedTagController selectedTagController;
-
   final CompositeSubscription _subscriptions = CompositeSubscription();
 
   @override
   void dispose() {
     _subscriptions.dispose();
-    selectedTagController.removeListener(_onSelectedTagChanged);
     super.dispose();
-  }
-
-  void _onSelectedTagChanged() {
-    allowSearch.value = selectedTagController.rawTags.isNotEmpty;
   }
 
   @override
@@ -63,7 +53,8 @@ class SearchPageController extends ChangeNotifier with SearchMixin {
   QueryGetter get getQuery => () => textEditingController.text;
 
   @override
-  QueryUpdater get updateQuery => (query) => textEditingController.text = query;
+  QueryUpdater get updateQuery =>
+      (query) => textEditingController.setTextAndCollapseSelection(query);
 
   @override
   SearchStateGetter get getSearchState => () => searchState.value;
@@ -79,4 +70,10 @@ class SearchPageController extends ChangeNotifier with SearchMixin {
 
   @override
   SetAllowSearch get setAllowSearch => (value) => allowSearch.value = value;
+
+  @override
+  FocusRequester get requestFocus => () => focus.requestFocus();
+
+  @override
+  FocusUnfocuser get unfocus => () => focus.unfocus();
 }

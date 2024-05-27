@@ -83,7 +83,6 @@ class _SearchPageScaffoldState<T extends Post>
   late final searchController = SearchPageController(
     textEditingController: textController,
     searchHistory: ref.read(searchHistoryProvider.notifier),
-    selectedTagController: selectedTagController,
     suggestions: ref.read(suggestionsProvider(ref.readConfig).notifier),
     focus: focus,
     searchState: searchState,
@@ -390,7 +389,6 @@ class _SuggestionViewState extends State<SuggestionView> {
       body: DefaultSearchSuggestionView(
         textEditingController: textController,
         searchController: widget.searchController,
-        selectedTagController: widget.searchController.selectedTagController,
       ),
     );
   }

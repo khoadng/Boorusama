@@ -52,21 +52,7 @@ class SearchAppBar extends ConsumerWidget {
       queryEditingController: queryEditingController,
       onFocusChanged: onFocusChanged,
       leading: leading,
-      trailing: ValueListenableBuilder(
-        valueListenable: queryEditingController,
-        builder: (context, value, child) {
-          return value.text.isNotEmpty
-              ? IconButton(
-                  splashRadius: 16,
-                  icon: const Icon(Symbols.close),
-                  onPressed: () {
-                    queryEditingController.clear();
-                    onClear?.call();
-                  },
-                )
-              : innerSearchButton ?? const SizedBox.shrink();
-        },
-      ),
+      trailing: innerSearchButton ?? const SizedBox.shrink(),
       onChanged: onChanged,
       onSubmitted: onSubmitted,
     );
@@ -108,14 +94,17 @@ class SearchAppBar extends ConsumerWidget {
 class SearchAppBarBackButton extends StatelessWidget {
   const SearchAppBarBackButton({
     super.key,
+    this.onPressed,
   });
+
+  final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
       splashRadius: 16,
       icon: const Icon(Symbols.arrow_back),
-      onPressed: () => context.pop(),
+      onPressed: onPressed ?? () => context.pop(),
     );
   }
 }
