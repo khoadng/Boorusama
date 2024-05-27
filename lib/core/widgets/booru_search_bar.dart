@@ -79,46 +79,42 @@ class _BooruSearchBarState extends State<BooruSearchBar> {
               widget.leading ?? const SizedBox.shrink(),
               const SizedBox(width: 4),
               Expanded(
-                child: Focus(
+                child: BooruTextField(
                   focusNode: widget.focus,
-                  onFocusChange: widget.onFocusChanged,
-                  child: BooruTextField(
-                    cursorHeight: widget.cursorHeight,
-                    keyboardType: TextInputType.text,
-                    autocorrect: false,
-                    onTapOutside: (event) {
-                      if (widget.onTapOutside == null) {
-                        widget.focus?.unfocus();
-                      } else {
-                        widget.onTapOutside?.call();
-                      }
-                    },
-                    onSubmitted: (value) => value.isNotEmpty
-                        ? widget.onSubmitted?.call(value)
-                        : null,
-                    onChanged: (value) => widget.onChanged?.call(value),
-                    enabled: widget.enabled,
-                    decoration: InputDecoration(
-                      isDense: widget.dense,
-                      floatingLabelBehavior: FloatingLabelBehavior.never,
-                      border: InputBorder.none,
-                      fillColor: Colors.transparent,
-                      focusedBorder: InputBorder.none,
-                      enabledBorder: InputBorder.none,
-                      errorBorder: InputBorder.none,
-                      disabledBorder: InputBorder.none,
-                      contentPadding: widget.contentPadding ??
-                          const EdgeInsets.only(
-                            bottom: 11,
-                            top: 11,
-                            right: 4,
-                          ),
-                      hintText: widget.hintText ?? 'search.hint'.tr(),
-                    ),
-                    autofocus: widget.autofocus,
-                    controller: _textEditingController,
-                    style: context.theme.inputDecorationTheme.hintStyle,
+                  cursorHeight: widget.cursorHeight,
+                  keyboardType: TextInputType.text,
+                  autocorrect: false,
+                  onTapOutside: (event) {
+                    if (widget.onTapOutside == null) {
+                      widget.focus?.unfocus();
+                    } else {
+                      widget.onTapOutside?.call();
+                    }
+                  },
+                  onSubmitted: (value) =>
+                      value.isNotEmpty ? widget.onSubmitted?.call(value) : null,
+                  onChanged: (value) => widget.onChanged?.call(value),
+                  enabled: widget.enabled,
+                  decoration: InputDecoration(
+                    isDense: widget.dense,
+                    floatingLabelBehavior: FloatingLabelBehavior.never,
+                    border: InputBorder.none,
+                    fillColor: Colors.transparent,
+                    focusedBorder: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    errorBorder: InputBorder.none,
+                    disabledBorder: InputBorder.none,
+                    contentPadding: widget.contentPadding ??
+                        const EdgeInsets.only(
+                          bottom: 11,
+                          top: 11,
+                          right: 4,
+                        ),
+                    hintText: widget.hintText ?? 'search.hint'.tr(),
                   ),
+                  autofocus: widget.autofocus,
+                  controller: _textEditingController,
+                  style: context.theme.inputDecorationTheme.hintStyle,
                 ),
               ),
               widget.trailing ?? const SizedBox.shrink(),
