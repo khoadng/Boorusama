@@ -269,7 +269,6 @@ class _TagEditPageInternalState extends ConsumerState<TagEditPageInternal> {
             margin: EdgeInsets.only(
               bottom: MediaQuery.paddingOf(context).bottom,
             ),
-            padding: const EdgeInsets.symmetric(horizontal: 8),
             child: Screen.of(context).size == ScreenSize.small
                 ? Column(
                     children: [
@@ -739,7 +738,7 @@ class TagEditRatingSelectorSection extends ConsumerWidget {
               segments: {
                 for (final rating
                     in Rating.values.where((e) => e != Rating.unknown))
-                  rating: constraints.maxWidth > 350
+                  rating: constraints.maxWidth > 400
                       ? rating.name.sentenceCase
                       : rating.name.sentenceCase
                           .getFirstCharacter()
@@ -747,7 +746,7 @@ class TagEditRatingSelectorSection extends ConsumerWidget {
               },
               initialValue: rating,
               onChanged: onChanged,
-              fixedWidth: constraints.maxWidth < 350 ? 36 : null,
+              fixedWidth: constraints.maxWidth < 400 ? 36 : null,
             ),
           ),
         ],
@@ -806,7 +805,10 @@ class TagEditTagListSection extends ConsumerWidget {
         ),
         Container(
           constraints: const BoxConstraints(minHeight: 56),
-          margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+          margin: const EdgeInsets.symmetric(
+            vertical: 4,
+            horizontal: 12,
+          ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -891,6 +893,9 @@ class TagEditTagListSection extends ConsumerWidget {
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemCount: filtered.length,
+            padding: const EdgeInsets.symmetric(
+              horizontal: 8,
+            ),
             itemBuilder: (_, index) {
               final colors = _getColors(filtered[index], context, ref);
 

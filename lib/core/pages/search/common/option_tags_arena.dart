@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 
 class OptionTagsArena extends StatefulWidget {
@@ -39,6 +40,7 @@ class _OptionTagsArenaState extends State<OptionTagsArena> {
         ),
         Wrap(
           spacing: 4,
+          runSpacing: isDesktopPlatform() ? 4 : 0,
           children: widget.childrenBuilder(editMode),
         ),
       ],
