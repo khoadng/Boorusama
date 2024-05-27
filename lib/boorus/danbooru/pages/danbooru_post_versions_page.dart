@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/core/router.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -136,32 +137,26 @@ class DanbooruPostVersionsPage extends ConsumerWidget {
                                   Wrap(
                                     children: [
                                       ...version.addedTags.map(
-                                        (e) => Container(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 4,
+                                        (e) => PostVersionTagText(
+                                          tag: e,
+                                          style: const TextStyle(
+                                            color: Colors.green,
                                           ),
-                                          child: Text(
-                                            e,
-                                            style: const TextStyle(
-                                              color: Colors.green,
-                                            ),
-                                          ),
+                                          onTap: () =>
+                                              goToSearchPage(context, tag: e),
                                         ),
                                       ),
                                       ...version.removedTags.map(
-                                        (e) => Container(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 4,
+                                        (e) => PostVersionTagText(
+                                          tag: e,
+                                          style: const TextStyle(
+                                            color: Colors.red,
+                                            decoration:
+                                                TextDecoration.lineThrough,
+                                            decorationColor: Colors.red,
                                           ),
-                                          child: Text(
-                                            e,
-                                            style: const TextStyle(
-                                              color: Colors.red,
-                                              decoration:
-                                                  TextDecoration.lineThrough,
-                                              decorationColor: Colors.red,
-                                            ),
-                                          ),
+                                          onTap: () =>
+                                              goToSearchPage(context, tag: e),
                                         ),
                                       ),
                                     ],
@@ -200,6 +195,42 @@ class DanbooruPostVersionsPage extends ConsumerWidget {
             ),
           )
         ],
+      ),
+    );
+  }
+}
+
+class PostVersionTagText extends StatelessWidget {
+  const PostVersionTagText({
+    super.key,
+    required this.tag,
+    required this.style,
+    this.onTap,
+  });
+
+  final String tag;
+  final TextStyle style;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        customBorder: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(4)),
+        ),
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 5,
+            vertical: 1,
+          ),
+          child: Text(
+            tag,
+            style: style,
+          ),
+        ),
       ),
     );
   }
