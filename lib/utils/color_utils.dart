@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:math';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -64,4 +67,13 @@ ChipColors? generateChipColorsFromColorScheme(
 
 extension ColorX on Color {
   bool get isWhite => computeLuminance() > 0.6;
+}
+
+final _random = Random();
+
+Color generateRandomColor() {
+  final r = _random.nextInt(255);
+  final g = _random.nextInt(255);
+  final b = _random.nextInt(255);
+  return Color.fromRGBO(r, g, b, 1);
 }
