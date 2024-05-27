@@ -12,6 +12,7 @@ extension FlutterX on BuildContext {
       screenWidth != 0 ? screenHeight / screenWidth : 0;
 
   NavigatorState get navigator => Navigator.of(this);
+  NavigatorState? get maybeNavigator => Navigator.maybeOf(this);
 
   FocusScopeNode get focusScope => FocusScope.of(this);
 
