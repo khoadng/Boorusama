@@ -10,11 +10,11 @@ import 'package:multi_split_view/multi_split_view.dart';
 // Project imports:
 import 'package:boorusama/app.dart';
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/entry_page.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
+import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/pages/blacklists/blacklisted_tag_page.dart';
 import 'package:boorusama/core/pages/bookmarks/bookmark_page.dart';
 import 'package:boorusama/core/pages/downloads/bulk_download_page.dart';
