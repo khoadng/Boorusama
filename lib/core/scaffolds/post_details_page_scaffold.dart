@@ -11,9 +11,11 @@ import 'package:visibility_detector/visibility_detector.dart';
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/feats/video/videos_provider.dart';
+import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/gestures.dart';
@@ -36,7 +38,6 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     required this.swipeImageUrlBuilder,
     this.topRightButtonsBuilder,
     this.placeholderImageUrlBuilder,
-    this.imageOverlayBuilder,
     this.artistInfoBuilder,
     this.onPageChanged,
     this.onPageChangeIndexed,
@@ -75,8 +76,6 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
       sliverRelatedPostsBuilder;
   final List<Widget> Function(int currentPage, bool expanded, T post,
       DetailsPageController controller)? topRightButtonsBuilder;
-  final List<Widget> Function(BoxConstraints constraints, T post)?
-      imageOverlayBuilder;
 
   @override
   ConsumerState<PostDetailsPageScaffold<T>> createState() =>
@@ -273,6 +272,12 @@ class _PostDetailPageScaffoldState<T extends Post>
                 ? widget.topRightButtonsBuilder!(
                     page, expanded, posts[page], controller)
                 : [
+                    NoteActionButtonWithProvider(
+                      post: posts[page],
+                      expanded: expanded,
+                      noteState:
+                          ref.watch(notesControllerProvider(posts[page])),
+                    ),
                     GeneralMoreActionButton(
                       post: widget.posts[page],
                       onStartSlideshow: () => controller.startSlideshow(),
@@ -331,9 +336,11 @@ class _PostDetailPageScaffoldState<T extends Post>
           : null,
       onCurrentVideoPositionChanged: onCurrentPositionChanged,
       onVideoVisibilityChanged: onVisibilityChanged,
-      imageOverlayBuilder: (constraints) => widget.imageOverlayBuilder != null
-          ? widget.imageOverlayBuilder!(constraints, post)
-          : [],
+      imageOverlayBuilder: (constraints) => noteOverlayBuilderDelegate(
+        constraints,
+        post,
+        ref.watch(notesControllerProvider(post)),
+      ),
       useHero: page == currentPage,
       onImageZoomUpdated: onZoomUpdated,
       onVideoPlayerCreated: (controller) =>

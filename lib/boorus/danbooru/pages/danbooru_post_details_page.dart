@@ -22,7 +22,6 @@ import 'package:boorusama/core/feats/tags/booru_tag_type_store.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/post_details_page_scaffold.dart';
-import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/posts/character_post_list.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -126,11 +125,6 @@ class _DanbooruPostDetailsPageState
             currentPage == widget.intitialIndex && post.isTranslated
                 ? null
                 : post.thumbnailImageUrl,
-        imageOverlayBuilder: (constraints, post) => noteOverlayBuilderDelegate(
-          constraints,
-          post,
-          ref.watch(notesControllerProvider(post)),
-        ),
         fileDetailsBuilder: (context, post) => DanbooruFileDetails(post: post),
         topRightButtonsBuilder: (page, expanded, post, controller) {
           return [
