@@ -107,10 +107,6 @@ class _MoebooruPostDetailsPageState
       posts: posts,
       initialIndex: widget.initialPage,
       onExit: widget.onExit,
-      onTagTap: (tag) => goToSearchPage(
-        context,
-        tag: tag,
-      ),
       onPageChangeIndexed: widget.onPageChanged,
       swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
       fileDetailsBuilder: (context, post) => DefaultFileDetailsSection(

@@ -252,7 +252,6 @@ mixin DefaultBooruUIMixin implements BooruBuilder {
               initialIndex: payload.initialIndex,
               swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
               onExit: (page) => payload.scrollController?.scrollToIndex(page),
-              onTagTap: (tag) => goToSearchPage(context, tag: tag),
             ),
           );
 }

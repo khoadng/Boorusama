@@ -180,7 +180,6 @@ class SzurubooruBuilder
               initialIndex: payload.initialIndex,
               swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
               onExit: (page) => payload.scrollController?.scrollToIndex(page),
-              onTagTap: (tag) => goToSearchPage(context, tag: tag),
               statsTileBuilder: (context, rawPost) =>
                   castOrNull<SzurubooruPost>(rawPost).toOption().fold(
                         () => const SizedBox.shrink(),

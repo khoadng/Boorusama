@@ -81,7 +81,6 @@ class Shimmie2Builder
               initialIndex: payload.initialIndex,
               swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
               onExit: (page) => payload.scrollController?.scrollToIndex(page),
-              onTagTap: (tag) => goToSearchPage(context, tag: tag),
               tagListBuilder: (context, post) => BasicTagList(
                 tags: post.tags.toList(),
                 unknownCategoryColor: ref.getTagColor(

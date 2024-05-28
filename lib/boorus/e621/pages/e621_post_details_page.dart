@@ -45,7 +45,6 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage> {
       posts: posts,
       initialIndex: widget.intitialIndex,
       onExit: widget.onExit,
-      onTagTap: (tag) => goToSearchPage(context, tag: tag),
       onPageChangeIndexed: widget.onPageChanged,
       toolbarBuilder: (context, post) => E621PostActionToolbar(post: post),
       swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),

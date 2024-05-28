@@ -15,6 +15,7 @@ import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/feats/video/videos_provider.dart';
+import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
@@ -28,7 +29,6 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     required this.posts,
     required this.initialIndex,
     required this.onExit,
-    required this.onTagTap,
     this.toolbarBuilder,
     this.sliverArtistPostsBuilder,
     this.sliverCharacterPostsBuilder,
@@ -52,7 +52,6 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   final int initialIndex;
   final List<T> posts;
   final void Function(int page) onExit;
-  final void Function(String tag) onTagTap;
   final void Function(T post)? onExpanded;
   final void Function(T post)? onPageChanged;
   final void Function(int index)? onPageChangeIndexed;
@@ -392,7 +391,7 @@ class _PostDetailPageScaffoldState<T extends Post>
             padding: const EdgeInsets.symmetric(vertical: 12),
             child: BasicTagList(
               tags: post.tags.toList(),
-              onTap: widget.onTagTap,
+              onTap: (tag) => goToSearchPage(context, tag: tag),
             ),
           ),
         if (widget.fileDetailsBuilder != null)

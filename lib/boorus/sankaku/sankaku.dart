@@ -146,7 +146,6 @@ class SankakuBuilder
               onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
             ),
             onExit: (page) => scrollController?.scrollToIndex(page),
-            onTagTap: (tag) => goToSearchPage(context, tag: tag),
           ),
         );
       };

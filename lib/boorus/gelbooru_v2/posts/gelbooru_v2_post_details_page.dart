@@ -55,7 +55,6 @@ class _PostDetailPageState extends ConsumerState<GelbooruV2PostDetailsPage> {
       posts: posts,
       initialIndex: widget.initialIndex,
       onExit: widget.onExit,
-      onTagTap: (tag) => goToSearchPage(context, tag: tag),
       onPageChangeIndexed: widget.onPageChanged,
       toolbarBuilder: (context, post) => SimplePostActionToolbar(post: post),
       swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),

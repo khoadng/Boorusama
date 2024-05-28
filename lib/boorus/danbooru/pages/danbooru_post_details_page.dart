@@ -62,7 +62,6 @@ class _DanbooruPostDetailsPageState
         initialIndex: widget.intitialIndex,
         onExit: widget.onExit,
         sourceSectionBuilder: (context, post) => const SizedBox.shrink(),
-        onTagTap: (tag) => goToSearchPage(context, tag: tag),
         onPageChangeIndexed: widget.onPageChanged,
         toolbarBuilder: (context, post) =>
             DanbooruPostActionToolbar(post: post),
