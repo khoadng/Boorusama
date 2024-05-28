@@ -30,6 +30,7 @@ class GelbooruV1Builder
         CharacterNotSupportedMixin,
         CommentNotSupportedMixin,
         NoteNotSupportedMixin,
+        DefaultHomeMixin,
         DefaultThumbnailUrlMixin,
         DefaultTagColorMixin,
         DefaultPostImageDetailsUrlMixin,

@@ -14,7 +14,6 @@ import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/widgets/booru_scope.dart';
 import 'package:boorusama/core/widgets/home_navigation_tile.dart';
 import 'desktop_home_page_scaffold.dart';
-import 'mobile_home_page_scaffold.dart';
 
 class HomePageScaffold extends ConsumerStatefulWidget {
   const HomePageScaffold({
@@ -60,10 +59,6 @@ class _HomePageScaffoldState extends ConsumerState<HomePageScaffold> {
 
     return BooruScope(
       config: config,
-      mobileView: (controller) => MobileHomePageScaffold(
-        controller: controller,
-        onSearchTap: widget.onSearchTap,
-      ),
       mobileMenuBuilder: (context, controller) =>
           widget.mobileMenuBuilder != null
               ? widget.mobileMenuBuilder!(context, controller)

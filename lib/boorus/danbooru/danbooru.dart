@@ -12,6 +12,7 @@ import 'package:boorusama/boorus/danbooru/pages/comment_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/danbooru_character_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/danbooru_post_statistics_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/danbooru_search_page.dart';
+import 'package:boorusama/boorus/danbooru/pages/latest_posts_view.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
@@ -336,6 +337,16 @@ class DanbooruBuilder
                     (ratings) => ratings.contains(post.rating),
                   ),
           };
+
+  @override
+  HomeViewBuilder get homeViewBuilder => (context, config, controller) {
+        return LatestView(
+          searchBar: HomeSearchBar(
+            onMenuTap: controller.openMenu,
+            onTap: () => goToSearchPage(context),
+          ),
+        );
+      };
 }
 
 bool handleDanbooruGestureAction(

@@ -38,8 +38,6 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
   Widget build(BuildContext context) {
     return BooruScope(
       config: widget.config,
-      mobileView: (controller) =>
-          MoebooruMobileHomeView(controller: controller),
       mobileMenuBuilder: (context, controller) => [
         SideMenuTile(
           icon: const Icon(

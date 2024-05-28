@@ -43,6 +43,7 @@ import 'package:boorusama/routes.dart';
 import 'danbooru/feats/notes/notes.dart';
 import 'danbooru/feats/posts/posts.dart';
 import 'e621/feats/notes/notes.dart';
+import 'entry_page.dart';
 import 'gelbooru_v2/gelbooru_v2.dart';
 import 'philomena/philomena.dart';
 import 'philomena/providers.dart';
@@ -65,6 +66,8 @@ abstract class BooruBuilder {
   ArtistPageBuilder? get artistPageBuilder;
   CharacterPageBuilder? get characterPageBuilder;
   CommentPageBuilder? get commentPageBuilder;
+
+  HomeViewBuilder get homeViewBuilder;
 
   GridThumbnailUrlBuilder get gridThumbnailUrlBuilder;
 

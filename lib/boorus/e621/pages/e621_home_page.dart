@@ -40,9 +40,6 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
 
     return BooruScope(
       config: widget.config,
-      mobileView: (controller) => E621MobileHomeView(
-        controller: controller,
-      ),
       mobileMenuBuilder: (context, controller) => [
         SideMenuTile(
           icon: const Icon(Symbols.explore),

@@ -104,3 +104,9 @@ typedef PostGestureHandlerBuilder = bool Function(
   String? action,
   Post post,
 );
+
+typedef HomeViewBuilder = Widget Function(
+  BuildContext context,
+  BooruConfig config,
+  HomePageController controller,
+);

@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
+import 'package:boorusama/boorus/gelbooru/home/home.dart';
 import 'package:boorusama/boorus/gelbooru/posts/posts.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
@@ -26,7 +27,6 @@ import 'package:boorusama/functional.dart';
 import 'artists/gelbooru_artist_page.dart';
 import 'comments/gelbooru_comment_page.dart';
 import 'configs/create_gelbooru_config_page.dart';
-import 'home/gelbooru_home_page.dart';
 import 'posts/gelbooru_post_details_desktop_page.dart';
 import 'posts/gelbooru_post_details_page.dart';
 
@@ -318,6 +318,12 @@ class GelbooruBuilder
           'index': (post, config) => config.index?.toString(),
         },
       );
+
+  @override
+  HomeViewBuilder get homeViewBuilder =>
+      (context, config, controller) => GelbooruMobileHomePage(
+            controller: controller,
+          );
 }
 
 class GelbooruSearchPage extends ConsumerWidget {

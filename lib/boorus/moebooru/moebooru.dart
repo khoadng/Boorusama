@@ -172,6 +172,10 @@ class MoebooruBuilder
           'index': (post, config) => config.index?.toString(),
         },
       );
+
+  @override
+  HomeViewBuilder get homeViewBuilder => (context, config, controller) =>
+      MoebooruMobileHomeView(controller: controller);
 }
 
 class MoebooruFavoritesPage extends ConsumerWidget {

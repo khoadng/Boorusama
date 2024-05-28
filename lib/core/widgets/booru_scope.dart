@@ -9,6 +9,7 @@ import 'package:multi_split_view/multi_split_view.dart';
 
 // Project imports:
 import 'package:boorusama/app.dart';
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/entry_page.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
@@ -37,7 +38,6 @@ class BooruScope extends ConsumerStatefulWidget {
     required this.mobileMenuBuilder,
     required this.desktopMenuBuilder,
     required this.desktopViews,
-    required this.mobileView,
   });
 
   final BooruConfig config;
@@ -54,7 +54,6 @@ class BooruScope extends ConsumerStatefulWidget {
   ) mobileMenuBuilder;
 
   final List<Widget> Function() desktopViews;
-  final Widget Function(HomePageController controller) mobileView;
 
   @override
   ConsumerState<BooruScope> createState() => _BooruScopeState();
@@ -87,6 +86,8 @@ class _BooruScopeState extends ConsumerState<BooruScope> {
   }
 
   Widget _buildMobile() {
+    final customHome = ref.watchBooruBuilder(ref.watchConfig)?.homeViewBuilder;
+
     return BooruMobileScope(
       controller: controller,
       config: widget.config,
@@ -94,7 +95,13 @@ class _BooruScopeState extends ConsumerState<BooruScope> {
         context,
         controller,
       ),
-      home: widget.mobileView(controller),
+      home: customHome != null
+          ? customHome(context, widget.config, controller)
+          : Scaffold(
+              body: Center(
+                child: Text('No View found for ${widget.config.name}'),
+              ),
+            ),
     );
   }
 

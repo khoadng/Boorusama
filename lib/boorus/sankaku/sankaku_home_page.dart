@@ -23,10 +23,6 @@ class SankakuHomePage extends ConsumerWidget {
 
     return BooruScope(
       config: config,
-      mobileView: (controller) => MobileHomePageScaffold(
-        controller: controller,
-        onSearchTap: () => goToSearchPage(context),
-      ),
       mobileMenuBuilder: (context, controller) => [
         if (login != null)
           SideMenuTile(

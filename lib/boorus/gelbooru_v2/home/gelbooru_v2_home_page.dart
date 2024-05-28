@@ -14,7 +14,6 @@ import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'gelbooru_v2_desktop_home_page.dart';
-import 'gelbooru_v2_mobile_home_page.dart';
 
 class GelbooruV2HomePage extends ConsumerStatefulWidget {
   const GelbooruV2HomePage({
@@ -36,9 +35,6 @@ class _GelbooruV2HomePageState extends ConsumerState<GelbooruV2HomePage> {
 
     return BooruScope(
       config: widget.config,
-      mobileView: (controller) => GelbooruV2MobileHomePage(
-        controller: controller,
-      ),
       mobileMenuBuilder: (context, controller) => [
         if (favoritePageBuilder != null && ref.watchConfig.hasLoginDetails())
           SideMenuTile(

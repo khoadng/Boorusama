@@ -137,6 +137,7 @@ class ZerochanBuilder
         DefaultThumbnailUrlMixin,
         CommentNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
+        DefaultHomeMixin,
         NoGranularRatingQueryBuilderMixin,
         DefaultPostImageDetailsUrlMixin,
         DefaultPostGesturesHandlerMixin,
