@@ -240,12 +240,7 @@ class _PostDetailPageScaffoldState<T extends Post>
                   enableSwipe ? null : const NeverScrollableScrollPhysics(),
               controller: PageContentScrollController.of(context),
               slivers: [
-                SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) => widgets[index],
-                    childCount: widgets.length,
-                  ),
-                ),
+                ...widgets.map((widget) => SliverToBoxAdapter(child: widget)),
                 if (expanded && page == currentPage)
                   if (widget.sliverArtistPostsBuilder != null)
                     ...widget.sliverArtistPostsBuilder!(context, posts[page]),
