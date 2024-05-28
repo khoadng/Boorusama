@@ -8,6 +8,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
+import 'package:boorusama/boorus/entry_page.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/pages/home/side_menu_tile.dart';
 import 'package:boorusama/core/router.dart';
@@ -39,27 +40,8 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
 
     return BooruScope(
       config: widget.config,
-      mobileView: (controller) => PostScope(
-        fetcher: (page) =>
-            ref.read(e621PostRepoProvider(config)).getPosts([], page),
-        builder: (context, postController, errors) => InfinitePostListScaffold(
-          errors: errors,
-          controller: postController,
-          sliverHeaderBuilder: (context) => [
-            SliverAppBar(
-              backgroundColor: context.theme.scaffoldBackgroundColor,
-              toolbarHeight: kToolbarHeight * 1.2,
-              title: HomeSearchBar(
-                onMenuTap: controller.openMenu,
-                onTap: () => goToSearchPage(context),
-              ),
-              floating: true,
-              snap: true,
-              automaticallyImplyLeading: false,
-            ),
-            const SliverAppAnnouncementBanner(),
-          ],
-        ),
+      mobileView: (controller) => E621MobileHomeView(
+        controller: controller,
       ),
       mobileMenuBuilder: (context, controller) => [
         SideMenuTile(
@@ -134,6 +116,45 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
           ),
         ];
       },
+    );
+  }
+}
+
+class E621MobileHomeView extends ConsumerWidget {
+  const E621MobileHomeView({
+    super.key,
+    required this.controller,
+  });
+
+  final HomePageController controller;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
+
+    return PostScope(
+      fetcher: (page) => ref.read(e621PostRepoProvider(config)).getPosts(
+        [],
+        page,
+      ),
+      builder: (context, postController, errors) => InfinitePostListScaffold(
+        errors: errors,
+        controller: postController,
+        sliverHeaderBuilder: (context) => [
+          SliverAppBar(
+            backgroundColor: context.theme.scaffoldBackgroundColor,
+            toolbarHeight: kToolbarHeight * 1.2,
+            title: HomeSearchBar(
+              onMenuTap: controller.openMenu,
+              onTap: () => goToSearchPage(context),
+            ),
+            floating: true,
+            snap: true,
+            automaticallyImplyLeading: false,
+          ),
+          const SliverAppAnnouncementBanner(),
+        ],
+      ),
     );
   }
 }

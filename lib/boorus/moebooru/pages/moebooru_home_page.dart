@@ -39,7 +39,7 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
     return BooruScope(
       config: widget.config,
       mobileView: (controller) =>
-          _buildMobileHomeView(controller, widget.config),
+          MoebooruMobileHomeView(controller: controller),
       mobileMenuBuilder: (context, controller) => [
         SideMenuTile(
           icon: const Icon(
@@ -139,12 +139,25 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
       },
     );
   }
+}
 
-  Widget _buildMobileHomeView(
-      HomePageController controller, BooruConfig config) {
+class MoebooruMobileHomeView extends ConsumerWidget {
+  const MoebooruMobileHomeView({
+    super.key,
+    required this.controller,
+  });
+
+  final HomePageController controller;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
+
     return PostScope(
-      fetcher: (page) =>
-          ref.read(moebooruPostRepoProvider(config)).getPosts([], page),
+      fetcher: (page) => ref.read(moebooruPostRepoProvider(config)).getPosts(
+        [],
+        page,
+      ),
       builder: (context, postController, errors) => InfinitePostListScaffold(
         errors: errors,
         controller: postController,
