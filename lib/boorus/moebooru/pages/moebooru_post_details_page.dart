@@ -217,9 +217,11 @@ class _MoebooruPostDetailsPageState
       },
       commentsBuilder: (context, post) => MoebooruCommentSection(post: post),
       topRightButtonsBuilder: (currentPage, expanded, post, controller) => [
-        //FIXME: temporary disable slideshow when user is logged in to prevent server spam
-        if (!ref.watchConfig.hasLoginDetails())
-          GeneralMoreActionButton(post: post),
+        GeneralMoreActionButton(
+          post: post,
+          //FIXME: temporary disable slideshow when user is logged in to prevent server spam
+          onStartSlideshow: null,
+        ),
       ],
       infoBuilder: (context, post) =>
           ref.watch(moebooruAllTagsProvider(config)).maybeWhen(
