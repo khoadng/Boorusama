@@ -36,6 +36,7 @@ class SankakuBuilder
         CharacterNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
         NoGranularRatingQueryBuilderMixin,
+        DefaultHomeMixin,
         DefaultTagColorMixin,
         DefaultPostImageDetailsUrlMixin,
         DefaultPostGesturesHandlerMixin,

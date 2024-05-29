@@ -256,6 +256,15 @@ mixin DefaultBooruUIMixin implements BooruBuilder {
           );
 }
 
+mixin DefaultHomeMixin implements BooruBuilder {
+  @override
+  HomeViewBuilder get homeViewBuilder =>
+      (context, config, controller) => MobileHomePageScaffold(
+            controller: controller,
+            onSearchTap: () => goToSearchPage(context),
+          );
+}
+
 String Function(
   Post post,
 ) defaultPostImageUrlBuilder(

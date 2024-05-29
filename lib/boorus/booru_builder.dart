@@ -30,6 +30,7 @@ import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
+import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/pages/post_statistics_page.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
@@ -65,6 +66,8 @@ abstract class BooruBuilder {
   ArtistPageBuilder? get artistPageBuilder;
   CharacterPageBuilder? get characterPageBuilder;
   CommentPageBuilder? get commentPageBuilder;
+
+  HomeViewBuilder get homeViewBuilder;
 
   GridThumbnailUrlBuilder get gridThumbnailUrlBuilder;
 

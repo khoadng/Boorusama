@@ -28,6 +28,7 @@ class PhilomenaBuilder
         CharacterNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
         NoGranularRatingQueryBuilderMixin,
+        DefaultHomeMixin,
         DefaultGranularRatingFiltererMixin,
         DefaultPostGesturesHandlerMixin,
         DefaultPostStatisticsPageBuilderMixin,

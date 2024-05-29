@@ -7,7 +7,6 @@ export 'booru_image.dart';
 export 'booru_logo.dart';
 export 'booru_text_form_field.dart';
 export 'booru_text_field.dart';
-export 'booru_scope.dart';
 export 'booru_search_bar.dart';
 export 'booru_video_progress_bar.dart';
 export 'comment_header.dart';

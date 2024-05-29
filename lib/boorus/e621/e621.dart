@@ -269,6 +269,12 @@ class E621Builder
           'index': (post, config) => config.index?.toString(),
         },
       );
+
+  @override
+  HomeViewBuilder get homeViewBuilder =>
+      (context, config, controller) => E621MobileHomeView(
+            controller: controller,
+          );
 }
 
 class E621CommentPage extends ConsumerWidget {
