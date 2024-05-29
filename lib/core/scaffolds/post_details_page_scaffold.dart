@@ -222,15 +222,55 @@ class _PostDetailPageScaffoldState<T extends Post>
         ),
         expandedBuilder:
             (context, page, currentPage, expanded, enableSwipe, sharedChild) {
-          final widgets = _buildWidgets(
-            context,
-            expanded,
-            page,
-            currentPage,
-            ref,
-            booruBuilder,
-            postGesturesHandler,
-            sharedChild,
+          final post = posts[page];
+          final nextPost = posts.length > page + 1 ? posts[page + 1] : null;
+          final expandedOnCurrentPage = expanded && page == currentPage;
+          final media = PostMedia(
+            inFocus: !expanded && page == currentPage,
+            post: post,
+            imageUrl: widget.swipeImageUrlBuilder(post),
+            placeholderImageUrl: widget.placeholderImageUrlBuilder != null
+                ? widget.placeholderImageUrlBuilder!(post, currentPage)
+                : post.thumbnailImageUrl,
+            onImageTap: onImageTap,
+            onDoubleTap: booruBuilder?.canHandlePostGesture(
+                          GestureType.doubleTap,
+                          ref.watchConfig.postGestures?.fullview,
+                        ) ==
+                        true &&
+                    postGesturesHandler != null
+                ? () => postGesturesHandler(
+                      ref,
+                      ref.watchConfig.postGestures?.fullview?.doubleTap,
+                      post,
+                    )
+                : null,
+            onLongPress: booruBuilder?.canHandlePostGesture(
+                          GestureType.longPress,
+                          ref.watchConfig.postGestures?.fullview,
+                        ) ==
+                        true &&
+                    postGesturesHandler != null
+                ? () => postGesturesHandler(
+                      ref,
+                      ref.watchConfig.postGestures?.fullview?.longPress,
+                      post,
+                    )
+                : null,
+            onCurrentVideoPositionChanged: onCurrentPositionChanged,
+            onVideoVisibilityChanged: onVisibilityChanged,
+            imageOverlayBuilder: (constraints) => noteOverlayBuilderDelegate(
+              constraints,
+              post,
+              ref.watch(notesControllerProvider(post)),
+            ),
+            useHero: page == currentPage,
+            onImageZoomUpdated: onZoomUpdated,
+            onVideoPlayerCreated: (controller) =>
+                onVideoPlayerCreated(controller, page),
+            onWebmVideoPlayerCreated: (controller) =>
+                onWebmVideoPlayerCreated(controller, page),
+            autoPlay: true,
           );
 
           return Padding(
@@ -240,7 +280,111 @@ class _PostDetailPageScaffoldState<T extends Post>
                   enableSwipe ? null : const NeverScrollableScrollPhysics(),
               controller: PageContentScrollController.of(context),
               slivers: [
-                ...widgets.map((widget) => SliverToBoxAdapter(child: widget)),
+                // preload next image only, not the post itself
+                if (nextPost != null && !nextPost.isVideo)
+                  SliverOffstage(
+                    offstage: true,
+                    sliver: SliverToBoxAdapter(
+                      child: ExtendedImage.network(
+                        widget.swipeImageUrlBuilder(nextPost),
+                        width: 1,
+                        height: 1,
+                        cacheHeight: 10,
+                        cacheWidth: 10,
+                        cache: true,
+                      ),
+                    ),
+                  ),
+                if (!expandedOnCurrentPage)
+                  SliverSizedBox(
+                    height: context.screenHeight -
+                        MediaQuery.viewPaddingOf(context).top,
+                    child: media,
+                  )
+                else
+                  SliverToBoxAdapter(child: media),
+                if (!expandedOnCurrentPage)
+                  SliverSizedBox(height: context.screenHeight),
+                if (expandedOnCurrentPage) ...[
+                  if (widget.poolTileBuilder != null)
+                    SliverToBoxAdapter(
+                      child: widget.poolTileBuilder!(context, post),
+                    ),
+                  if (sharedChild != null)
+                    SliverToBoxAdapter(child: sharedChild),
+                  if (widget.artistInfoBuilder != null) ...[
+                    const SliverDivider(height: 8, thickness: 0.5),
+                    SliverToBoxAdapter(
+                      child: widget.artistInfoBuilder!(context, post),
+                    ),
+                  ],
+                  if (widget.statsTileBuilder != null) ...[
+                    const SliverSizedBox(height: 12),
+                    SliverToBoxAdapter(
+                      child: widget.statsTileBuilder!(context, post),
+                    ),
+                  ],
+                  const SliverDivider(height: 8, thickness: 0.5),
+                  if (widget.tagListBuilder != null)
+                    SliverToBoxAdapter(
+                      child: widget.tagListBuilder!(context, post),
+                    )
+                  else
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        child: BasicTagList(
+                          tags: post.tags.toList(),
+                          onTap: (tag) => goToSearchPage(context, tag: tag),
+                        ),
+                      ),
+                    ),
+                  if (widget.fileDetailsBuilder != null)
+                    SliverToBoxAdapter(
+                      child: widget.fileDetailsBuilder!(context, post),
+                    )
+                  else
+                    SliverToBoxAdapter(
+                      child: FileDetailsSection(
+                        post: post,
+                        rating: post.rating,
+                      ),
+                    ),
+                  const SliverDivider(height: 8, thickness: 0.5),
+                  widget.sourceSectionBuilder != null
+                      ? SliverToBoxAdapter(
+                          child: widget.sourceSectionBuilder!(context, post),
+                        )
+                      : post.source.whenWeb(
+                          (source) => SliverToBoxAdapter(
+                            child: SourceSection(source: source),
+                          ),
+                          () => const SliverSizedBox.shrink(),
+                        ),
+                  if (widget.commentsBuilder != null)
+                    SliverToBoxAdapter(
+                      child: widget.commentsBuilder!(context, post),
+                    ),
+                  SliverToBoxAdapter(
+                    child: VisibilityDetector(
+                      key: ValueKey(page),
+                      onVisibilityChanged: (info) {
+                        if (!mounted) return;
+
+                        final visibilityState =
+                            ref.read(_visibleProvider(page));
+                        if (!visibilityState && info.visibleFraction == 1.0) {
+                          ref.read(_visibleProvider(page).notifier).state =
+                              true;
+                        }
+                      },
+                      child: const SizedBox(
+                        height: 4,
+                      ),
+                    ),
+                  ),
+                ],
+
                 if (expanded && page == currentPage)
                   if (widget.sliverArtistPostsBuilder != null)
                     ...widget.sliverArtistPostsBuilder!(context, posts[page]),
@@ -281,146 +425,6 @@ class _PostDetailPageScaffoldState<T extends Post>
             widget.onExpanded?.call(posts[currentPage]),
       ),
     );
-  }
-
-  List<Widget> _buildWidgets(
-    BuildContext context,
-    bool expanded,
-    int page,
-    int currentPage,
-    WidgetRef ref,
-    BooruBuilder? booruBuilder,
-    PostGestureHandlerBuilder? postDetailsGesturesHandler,
-    Widget? sharedChild,
-  ) {
-    final post = posts[page];
-    final nextPost = posts.length > page + 1 ? posts[page + 1] : null;
-    final expandedOnCurrentPage = expanded && page == currentPage;
-    final media = PostMedia(
-      inFocus: !expanded && page == currentPage,
-      post: post,
-      imageUrl: widget.swipeImageUrlBuilder(post),
-      placeholderImageUrl: widget.placeholderImageUrlBuilder != null
-          ? widget.placeholderImageUrlBuilder!(post, currentPage)
-          : post.thumbnailImageUrl,
-      onImageTap: onImageTap,
-      onDoubleTap: booruBuilder?.canHandlePostGesture(
-                    GestureType.doubleTap,
-                    ref.watchConfig.postGestures?.fullview,
-                  ) ==
-                  true &&
-              postDetailsGesturesHandler != null
-          ? () => postDetailsGesturesHandler(
-                ref,
-                ref.watchConfig.postGestures?.fullview?.doubleTap,
-                post,
-              )
-          : null,
-      onLongPress: booruBuilder?.canHandlePostGesture(
-                    GestureType.longPress,
-                    ref.watchConfig.postGestures?.fullview,
-                  ) ==
-                  true &&
-              postDetailsGesturesHandler != null
-          ? () => postDetailsGesturesHandler(
-                ref,
-                ref.watchConfig.postGestures?.fullview?.longPress,
-                post,
-              )
-          : null,
-      onCurrentVideoPositionChanged: onCurrentPositionChanged,
-      onVideoVisibilityChanged: onVisibilityChanged,
-      imageOverlayBuilder: (constraints) => noteOverlayBuilderDelegate(
-        constraints,
-        post,
-        ref.watch(notesControllerProvider(post)),
-      ),
-      useHero: page == currentPage,
-      onImageZoomUpdated: onZoomUpdated,
-      onVideoPlayerCreated: (controller) =>
-          onVideoPlayerCreated(controller, page),
-      onWebmVideoPlayerCreated: (controller) =>
-          onWebmVideoPlayerCreated(controller, page),
-      autoPlay: true,
-    );
-
-    return [
-      // preload next image only, not the post itself
-      if (nextPost != null && !nextPost.isVideo)
-        Offstage(
-          offstage: true,
-          child: ExtendedImage.network(
-            widget.swipeImageUrlBuilder(nextPost),
-            width: 1,
-            height: 1,
-            cacheHeight: 10,
-            cacheWidth: 10,
-            cache: true,
-          ),
-        ),
-      if (!expandedOnCurrentPage)
-        SizedBox(
-          height: context.screenHeight - MediaQuery.viewPaddingOf(context).top,
-          child: media,
-        )
-      else
-        media,
-      if (!expandedOnCurrentPage) SizedBox(height: context.screenHeight),
-      if (expandedOnCurrentPage) ...[
-        if (widget.poolTileBuilder != null)
-          widget.poolTileBuilder!(context, post),
-        if (sharedChild != null) sharedChild,
-        if (widget.artistInfoBuilder != null) ...[
-          const Divider(height: 8, thickness: 0.5),
-          widget.artistInfoBuilder!(context, post),
-        ],
-        if (widget.statsTileBuilder != null) ...[
-          const SizedBox(height: 12),
-          widget.statsTileBuilder!(context, post),
-        ],
-        const Divider(height: 8, thickness: 0.5),
-        if (widget.tagListBuilder != null)
-          widget.tagListBuilder!(context, post)
-        else
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12),
-            child: BasicTagList(
-              tags: post.tags.toList(),
-              onTap: (tag) => goToSearchPage(context, tag: tag),
-            ),
-          ),
-        if (widget.fileDetailsBuilder != null)
-          widget.fileDetailsBuilder!(context, post)
-        else
-          FileDetailsSection(
-            post: post,
-            rating: post.rating,
-          ),
-        const Divider(height: 8, thickness: 0.5),
-        widget.sourceSectionBuilder != null
-            ? widget.sourceSectionBuilder!(context, post)
-            : post.source.whenWeb(
-                (source) => SourceSection(source: source),
-                () => const SizedBox.shrink(),
-              ),
-        if (widget.commentsBuilder != null)
-          widget.commentsBuilder!(context, post),
-        VisibilityDetector(
-          key: ValueKey(page),
-          onVisibilityChanged: (info) {
-            if (!mounted) return;
-
-            final visibilityState = ref.read(_visibleProvider(page));
-            if (!visibilityState && info.visibleFraction == 1.0) {
-              ref.read(_visibleProvider(page).notifier).state = true;
-            }
-          },
-          child: const SizedBox(
-            height: 4,
-          ),
-        ),
-      ],
-    ];
   }
 }
 
