@@ -61,7 +61,7 @@ class _DanbooruPostDetailsPageState
         posts: posts,
         initialIndex: widget.intitialIndex,
         onExit: widget.onExit,
-        sourceSectionBuilder: (context, post) => const SizedBox.shrink(),
+        parts: kDefaultPostDetailsNoSourceParts,
         onPageChangeIndexed: widget.onPageChanged,
         toolbarBuilder: (context, post) =>
             DanbooruPostActionToolbar(post: post),

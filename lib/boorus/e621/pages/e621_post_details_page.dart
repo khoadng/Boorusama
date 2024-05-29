@@ -81,7 +81,7 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage> {
           currentPage == widget.intitialIndex && post.isTranslated
               ? null
               : post.thumbnailImageUrl,
-      sourceSectionBuilder: (context, post) => const SizedBox.shrink(),
+      parts: kDefaultPostDetailsNoSourceParts,
       artistInfoBuilder: (context, post) => E621ArtistSection(post: post),
     );
   }

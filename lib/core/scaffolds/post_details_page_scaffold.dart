@@ -5,12 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:exprollable_page_view/exprollable_page_view.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:visibility_detector/visibility_detector.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/filename_generators/utils.dart';
 import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
@@ -22,6 +23,50 @@ import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
+
+enum PostDetailsPart {
+  pool,
+  info,
+  toolbar,
+  artistInfo,
+  tags,
+  stats,
+  fileDetails,
+  source,
+  comments,
+  artistPosts,
+  relatedPosts,
+  characterList,
+}
+
+const kDefaultPostDetailsParts = {
+  PostDetailsPart.pool,
+  PostDetailsPart.info,
+  PostDetailsPart.toolbar,
+  PostDetailsPart.artistInfo,
+  PostDetailsPart.stats,
+  PostDetailsPart.tags,
+  PostDetailsPart.fileDetails,
+  PostDetailsPart.source,
+  PostDetailsPart.comments,
+  PostDetailsPart.artistPosts,
+  PostDetailsPart.relatedPosts,
+  PostDetailsPart.characterList,
+};
+
+const kDefaultPostDetailsNoSourceParts = {
+  PostDetailsPart.pool,
+  PostDetailsPart.info,
+  PostDetailsPart.toolbar,
+  PostDetailsPart.artistInfo,
+  PostDetailsPart.stats,
+  PostDetailsPart.tags,
+  PostDetailsPart.fileDetails,
+  PostDetailsPart.comments,
+  PostDetailsPart.artistPosts,
+  PostDetailsPart.relatedPosts,
+  PostDetailsPart.characterList,
+};
 
 class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   const PostDetailsPageScaffold({
@@ -47,6 +92,7 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     this.statsTileBuilder,
     this.fileDetailsBuilder,
     this.sourceSectionBuilder,
+    this.parts = kDefaultPostDetailsParts,
   });
 
   final int initialIndex;
@@ -70,6 +116,8 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   final Widget Function(BuildContext context, T post)? statsTileBuilder;
   final Widget Function(BuildContext context, T post)? fileDetailsBuilder;
   final Widget Function(BuildContext context, T post)? sourceSectionBuilder;
+
+  final Set<PostDetailsPart> parts;
 
   final Widget Function(BuildContext context, T post)?
       sliverRelatedPostsBuilder;
@@ -305,98 +353,124 @@ class _PostDetailPageScaffoldState<T extends Post>
                   SliverToBoxAdapter(child: media),
                 if (!expandedOnCurrentPage)
                   SliverSizedBox(height: context.screenHeight),
-                if (expandedOnCurrentPage) ...[
-                  if (widget.poolTileBuilder != null)
-                    SliverToBoxAdapter(
-                      child: widget.poolTileBuilder!(context, post),
-                    ),
-                  if (sharedChild != null)
-                    SliverToBoxAdapter(child: sharedChild),
-                  if (widget.artistInfoBuilder != null) ...[
-                    const SliverDivider(height: 8, thickness: 0.5),
-                    SliverToBoxAdapter(
-                      child: widget.artistInfoBuilder!(context, post),
-                    ),
-                  ],
-                  if (widget.statsTileBuilder != null) ...[
-                    const SliverSizedBox(height: 12),
-                    SliverToBoxAdapter(
-                      child: widget.statsTileBuilder!(context, post),
-                    ),
-                  ],
-                  const SliverDivider(height: 8, thickness: 0.5),
-                  if (widget.tagListBuilder != null)
-                    SliverToBoxAdapter(
-                      child: widget.tagListBuilder!(context, post),
-                    )
-                  else
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        child: BasicTagList(
-                          tags: post.tags.toList(),
-                          onTap: (tag) => goToSearchPage(context, tag: tag),
-                        ),
-                      ),
-                    ),
-                  if (widget.fileDetailsBuilder != null)
-                    SliverToBoxAdapter(
-                      child: widget.fileDetailsBuilder!(context, post),
-                    )
-                  else
-                    SliverToBoxAdapter(
-                      child: FileDetailsSection(
-                        post: post,
-                        rating: post.rating,
-                      ),
-                    ),
-                  const SliverDivider(height: 8, thickness: 0.5),
-                  widget.sourceSectionBuilder != null
-                      ? SliverToBoxAdapter(
-                          child: widget.sourceSectionBuilder!(context, post),
-                        )
-                      : post.source.whenWeb(
-                          (source) => SliverToBoxAdapter(
-                            child: SourceSection(source: source),
-                          ),
-                          () => const SliverSizedBox.shrink(),
-                        ),
-                  if (widget.commentsBuilder != null)
-                    SliverToBoxAdapter(
-                      child: widget.commentsBuilder!(context, post),
-                    ),
-                  SliverToBoxAdapter(
-                    child: VisibilityDetector(
-                      key: ValueKey(page),
-                      onVisibilityChanged: (info) {
-                        if (!mounted) return;
-
-                        final visibilityState =
-                            ref.read(_visibleProvider(page));
-                        if (!visibilityState && info.visibleFraction == 1.0) {
-                          ref.read(_visibleProvider(page).notifier).state =
-                              true;
-                        }
-                      },
-                      child: const SizedBox(
-                        height: 4,
-                      ),
-                    ),
-                  ),
-                ],
-
-                if (expanded && page == currentPage)
-                  if (widget.sliverArtistPostsBuilder != null)
-                    ...widget.sliverArtistPostsBuilder!(context, posts[page]),
-                if (widget.sliverRelatedPostsBuilder != null &&
-                    ref.watch(_visibleProvider(currentPage)) &&
-                    expanded &&
-                    page == currentPage)
-                  widget.sliverRelatedPostsBuilder!(context, posts[page]),
-                if (widget.sliverCharacterPostsBuilder != null &&
-                    expanded &&
-                    page == currentPage)
-                  widget.sliverCharacterPostsBuilder!(context, posts[page]),
+                if (expandedOnCurrentPage)
+                  ...widget.parts
+                      .map(
+                        (p) => switch (p) {
+                          PostDetailsPart.pool => widget.poolTileBuilder != null
+                              ? SliverToBoxAdapter(
+                                  child: widget.poolTileBuilder!(context, post),
+                                )
+                              : null,
+                          PostDetailsPart.info => widget.infoBuilder != null
+                              ? SliverToBoxAdapter(
+                                  child: widget.infoBuilder!(context, post),
+                                )
+                              : null,
+                          PostDetailsPart.toolbar => widget.toolbarBuilder !=
+                                  null
+                              ? SliverToBoxAdapter(
+                                  child: widget.toolbarBuilder!(context, post),
+                                )
+                              : null,
+                          PostDetailsPart.artistInfo => widget
+                                      .artistInfoBuilder !=
+                                  null
+                              ? SliverToBoxAdapter(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
+                                    children: [
+                                      const Divider(thickness: 0.5, height: 8),
+                                      widget.artistInfoBuilder!(
+                                        context,
+                                        post,
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : null,
+                          PostDetailsPart.stats =>
+                            widget.statsTileBuilder != null
+                                ? SliverToBoxAdapter(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.stretch,
+                                      children: [
+                                        const SizedBox(height: 8),
+                                        widget.statsTileBuilder!(context, post),
+                                        const Divider(thickness: 0.5),
+                                      ],
+                                    ),
+                                  )
+                                : null,
+                          PostDetailsPart.tags => widget.tagListBuilder != null
+                              ? SliverToBoxAdapter(
+                                  child: widget.tagListBuilder!(context, post),
+                                )
+                              : SliverToBoxAdapter(
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 12),
+                                    child: BasicTagList(
+                                      tags: post.tags.toList(),
+                                      onTap: (tag) =>
+                                          goToSearchPage(context, tag: tag),
+                                    ),
+                                  ),
+                                ),
+                          PostDetailsPart.fileDetails =>
+                            widget.fileDetailsBuilder != null
+                                ? SliverToBoxAdapter(
+                                    child: widget.fileDetailsBuilder!(
+                                        context, post),
+                                  )
+                                : SliverToBoxAdapter(
+                                    child: FileDetailsSection(
+                                      post: post,
+                                      rating: post.rating,
+                                    ),
+                                  ),
+                          PostDetailsPart.source =>
+                            widget.sourceSectionBuilder != null
+                                ? SliverToBoxAdapter(
+                                    child: widget.sourceSectionBuilder!(
+                                        context, post),
+                                  )
+                                : post.source.whenWeb(
+                                    (source) => SliverToBoxAdapter(
+                                      child: SourceSection(source: source),
+                                    ),
+                                    () => null,
+                                  ),
+                          PostDetailsPart.comments => widget.commentsBuilder !=
+                                  null
+                              ? SliverToBoxAdapter(
+                                  child: widget.commentsBuilder!(context, post),
+                                )
+                              : null,
+                          PostDetailsPart.artistPosts =>
+                            widget.sliverArtistPostsBuilder != null
+                                ? MultiSliver(
+                                    children: widget.sliverArtistPostsBuilder!(
+                                      context,
+                                      post,
+                                    ),
+                                  )
+                                : null,
+                          PostDetailsPart.relatedPosts => widget
+                                      .sliverRelatedPostsBuilder !=
+                                  null
+                              ? widget.sliverRelatedPostsBuilder!(context, post)
+                              : null,
+                          PostDetailsPart.characterList =>
+                            widget.sliverCharacterPostsBuilder != null
+                                ? widget.sliverCharacterPostsBuilder!(
+                                    context, post)
+                                : null,
+                        },
+                      )
+                      .whereNotNull(),
                 SliverSizedBox(
                   height: MediaQuery.paddingOf(context).bottom + 72,
                 ),
@@ -427,6 +501,3 @@ class _PostDetailPageScaffoldState<T extends Post>
     );
   }
 }
-
-final _visibleProvider =
-    StateProvider.autoDispose.family<bool, int>((ref, key) => false);

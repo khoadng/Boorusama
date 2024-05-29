@@ -109,7 +109,7 @@ class SankakuBuilder
               post: post,
               showSource: true,
             ),
-            sourceSectionBuilder: (context, post) => const SizedBox.shrink(),
+            parts: kDefaultPostDetailsNoSourceParts,
             sliverArtistPostsBuilder: (context, post) =>
                 post.artistTags.isNotEmpty
                     ? post.artistTags
