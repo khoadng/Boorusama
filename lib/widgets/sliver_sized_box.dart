@@ -25,6 +25,7 @@ class SliverSizedBox extends StatelessWidget {
       child: SizedBox(
         height: height,
         width: width,
+        child: child,
       ),
     );
   }
