@@ -99,7 +99,10 @@ class _DanbooruPostDetailsPageState
                   orElse: () => const SliverSizedBox.shrink(),
                 ),
         sliverRelatedPostsBuilder: (context, post) =>
-            DanbooruRelatedPostsSection(post: post),
+            ref.watch(danbooruPostDetailsChildrenProvider(post)).maybeWhen(
+                  data: (posts) => DanbooruRelatedPostsSection(posts: posts),
+                  orElse: () => const SliverSizedBox.shrink(),
+                ),
         poolTileBuilder: (context, post) =>
             ref.watch(danbooruPostDetailsPoolsProvider(post.id)).maybeWhen(
                   data: (pools) => PoolTiles(pools: pools),
@@ -288,24 +291,21 @@ final danbooruCharacterExpandStateProvider =
 class DanbooruRelatedPostsSection extends ConsumerWidget {
   const DanbooruRelatedPostsSection({
     super.key,
-    required this.post,
+    required this.posts,
   });
 
-  final DanbooruPost post;
+  final List<DanbooruPost> posts;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ref.watch(danbooruPostDetailsChildrenProvider(post)).maybeWhen(
-          data: (posts) => RelatedPostsSection(
-            posts: posts,
-            imageUrl: (item) => item.url720x720,
-            onTap: (index) => goToPostDetailsPage(
-              context: context,
-              posts: posts,
-              initialIndex: index,
-            ),
-          ),
-          orElse: () => const SliverSizedBox.shrink(),
-        );
+    return RelatedPostsSection(
+      posts: posts,
+      imageUrl: (item) => item.url720x720,
+      onTap: (index) => goToPostDetailsPage(
+        context: context,
+        posts: posts,
+        initialIndex: index,
+      ),
+    );
   }
 }

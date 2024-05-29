@@ -115,9 +115,11 @@ class _DanbooruPostDetailsDesktopPageState
                 data: (pools) => PoolTiles(pools: pools),
                 orElse: () => const SizedBox.shrink(),
               ),
-      sliverRelatedPostsBuilder: (context, post) => DanbooruRelatedPostsSection(
-        post: post,
-      ),
+      sliverRelatedPostsBuilder: (context, post) =>
+          ref.watch(danbooruPostDetailsChildrenProvider(post)).maybeWhen(
+                data: (posts) => DanbooruRelatedPostsSection(posts: posts),
+                orElse: () => const SliverSizedBox.shrink(),
+              ),
       sliverArtistPostsBuilder: (context, post) => post.artistTags.isNotEmpty
           ? post.artistTags
               .map((tag) => ArtistPostList2(
