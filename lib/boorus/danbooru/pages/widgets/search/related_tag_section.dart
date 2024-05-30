@@ -38,6 +38,7 @@ class RelatedTagSection extends ConsumerWidget {
               : const SizedBox.shrink(),
           loading: () => TagChipsPlaceholder(
             backgroundColor: backgroundColor,
+            height: 44,
           ),
           error: (e, s) => const SizedBox.shrink(),
         );
