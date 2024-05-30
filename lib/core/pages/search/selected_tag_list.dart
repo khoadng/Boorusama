@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:boorusama/core/feats/search/search.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/pages/search/selected_tag_chip.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -24,7 +25,7 @@ class SelectedTagList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedCrossFade(
+    return BooruAnimatedCrossFade(
       firstChild: Row(
         children: [
           BooruPopupMenuButton(

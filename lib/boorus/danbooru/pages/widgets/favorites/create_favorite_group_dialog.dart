@@ -213,7 +213,7 @@ class PrivacyToggle extends ConsumerWidget {
     final config = ref.readConfig;
     final currentUser = ref.watch(danbooruCurrentUserProvider(config));
 
-    return AnimatedCrossFade(
+    return BooruAnimatedCrossFade(
       firstChild: const SizedBox.shrink(),
       secondChild: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 4),
