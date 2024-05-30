@@ -419,18 +419,28 @@ class _PostDetailPageScaffoldState<T extends Post>
                                     ),
                                   ),
                                 ),
-                          PostDetailsPart.fileDetails =>
-                            widget.fileDetailsBuilder != null
-                                ? SliverToBoxAdapter(
-                                    child: widget.fileDetailsBuilder!(
-                                        context, post),
-                                  )
-                                : SliverToBoxAdapter(
-                                    child: FileDetailsSection(
-                                      post: post,
-                                      rating: post.rating,
-                                    ),
+                          PostDetailsPart.fileDetails => widget
+                                      .fileDetailsBuilder !=
+                                  null
+                              ? SliverToBoxAdapter(
+                                  child: Column(
+                                    children: [
+                                      widget.fileDetailsBuilder!(context, post),
+                                      const Divider(thickness: 0.5),
+                                    ],
                                   ),
+                                )
+                              : SliverToBoxAdapter(
+                                  child: Column(
+                                    children: [
+                                      FileDetailsSection(
+                                        post: post,
+                                        rating: post.rating,
+                                      ),
+                                      const Divider(thickness: 0.5),
+                                    ],
+                                  ),
+                                ),
                           PostDetailsPart.source =>
                             widget.sourceSectionBuilder != null
                                 ? SliverToBoxAdapter(

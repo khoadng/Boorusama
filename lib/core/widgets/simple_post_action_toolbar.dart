@@ -37,32 +37,48 @@ class SimplePostActionToolbar extends ConsumerWidget {
         ref.watchBooruBuilder(booruConfig)?.commentPageBuilder;
     final booruBuilder = ref.watch(booruBuilderProvider);
 
-    return Material(
-      color: context.theme.scaffoldBackgroundColor,
-      child: ButtonBar(
-        buttonPadding: EdgeInsets.zero,
-        alignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          if (!forceHideFav)
-            if (isAuthorized != null &&
-                addFavorite != null &&
-                removeFavorite != null &&
-                booruBuilder != null)
-              FavoritePostButton(
-                isFaved: isFaved,
-                isAuthorized: isAuthorized!,
-                addFavorite: addFavorite!,
-                removeFavorite: removeFavorite!,
-              ),
-          BookmarkPostButton(post: post),
-          DownloadPostButton(post: post),
-          if (commentPageBuilder != null)
-            CommentPostButton(
-              post: post,
-              onPressed: () => goToCommentPage(context, ref, post.id),
+    return PostActionToolbar(
+      children: [
+        if (!forceHideFav)
+          if (isAuthorized != null &&
+              addFavorite != null &&
+              removeFavorite != null &&
+              booruBuilder != null)
+            FavoritePostButton(
+              isFaved: isFaved,
+              isAuthorized: isAuthorized!,
+              addFavorite: addFavorite!,
+              removeFavorite: removeFavorite!,
             ),
-          SharePostButton(post: post),
-        ],
+        BookmarkPostButton(post: post),
+        DownloadPostButton(post: post),
+        if (commentPageBuilder != null)
+          CommentPostButton(
+            post: post,
+            onPressed: () => goToCommentPage(context, ref, post.id),
+          ),
+        SharePostButton(post: post),
+      ],
+    );
+  }
+}
+
+class PostActionToolbar extends StatelessWidget {
+  const PostActionToolbar({
+    super.key,
+    required this.children,
+  });
+
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      color: context.theme.scaffoldBackgroundColor,
+      child: OverflowBar(
+        alignment: MainAxisAlignment.spaceEvenly,
+        children: children,
       ),
     );
   }
