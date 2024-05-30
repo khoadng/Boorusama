@@ -91,19 +91,6 @@ class E621PostTagList extends ConsumerWidget {
           ref,
           booru,
           g,
-          // onAddToBlacklisted: (tag) =>
-          //     ref.read(danbooruBlacklistedTagsProvider.notifier).add(
-          //           tag: tag.rawName,
-          //           onFailure: (message) => showSimpleSnackBar(
-          //             context: context,
-          //             content: Text(message),
-          //           ),
-          //           onSuccess: (_) => showSimpleSnackBar(
-          //             context: context,
-          //             duration: const Duration(seconds: 2),
-          //             content: const Text('Blacklisted tags updated'),
-          //           ),
-          //         ),
         ));
     }
 
@@ -120,13 +107,11 @@ class E621PostTagList extends ConsumerWidget {
     WidgetRef ref,
     BooruConfig config,
     E621TagGroup group,
-    // {
-    // required void Function(Tag tag) onAddToBlacklisted,
-    // }
   ) {
     return Tags(
       alignment: WrapAlignment.start,
-      runSpacing: 4,
+      spacing: 4,
+      runSpacing: 6,
       itemCount: group.tags.length,
       itemBuilder: (index) {
         final tag = group.tags[index];
@@ -141,29 +126,19 @@ class E621PostTagList extends ConsumerWidget {
               value: 'add_to_favorites',
               child: const Text('post.detail.add_to_favorites').tr(),
             ),
-            // if (authenticationState.isAuthenticated)
-            //   PopupMenuItem(
-            //     value: 'blacklist',
-            //     child: const Text('post.detail.add_to_blacklist').tr(),
-            //   ),
           ],
           onSelected: (value) {
-            // if (value == 'blacklist') {
-            //   onAddToBlacklisted(tag);
-            // } else
             if (value == 'wiki') {
               launchWikiPage(config.url, tag);
             } else if (value == 'add_to_favorites') {
               ref.read(favoriteTagsProvider.notifier).add(tag);
             }
           },
-          child: GestureDetector(
+          child: _Chip(
+            tag: tag,
             onTap: () => goToSearchPage(context, tag: tag),
-            child: _Chip(
-              tag: tag,
-              tagColor: ref.getTagColor(context, group.category.name),
-              maxTagWidth: maxTagWidth,
-            ),
+            tagColor: ref.getTagColor(context, group.category.name),
+            maxTagWidth: maxTagWidth,
           ),
         );
       },
@@ -176,11 +151,13 @@ class _Chip extends ConsumerWidget {
     required this.tag,
     required this.maxTagWidth,
     this.tagColor,
+    this.onTap,
   });
 
   final String tag;
   final Color? tagColor;
   final double? maxTagWidth;
+  final void Function()? onTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -189,38 +166,38 @@ class _Chip extends ConsumerWidget {
       ref.watch(settingsProvider),
     );
 
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Chip(
-          visualDensity: const ShrinkVisualDensity(),
-          backgroundColor: colors?.backgroundColor,
-          side: colors != null
-              ? BorderSide(
-                  color: colors.borderColor,
-                  width: 1,
-                )
-              : null,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-          ),
-          label: ConstrainedBox(
-            constraints: BoxConstraints(
-              maxWidth: maxTagWidth ?? context.screenWidth * 0.7,
-            ),
-            child: Text(
-              _getTagStringDisplayName(tag.replaceUnderscoreWithSpace()),
-              overflow: TextOverflow.fade,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: colors?.backgroundColor.isWhite == true
-                    ? Colors.black
-                    : colors?.foregroundColor,
-              ),
-            ),
+    return RawCompactChip(
+      onTap: onTap,
+      foregroundColor: colors?.foregroundColor,
+      backgroundColor: colors?.backgroundColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+        side: colors != null
+            ? BorderSide(
+                color: colors.borderColor,
+                width: 1,
+              )
+            : BorderSide.none,
+      ),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 8,
+        vertical: 6,
+      ),
+      label: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxWidth: maxTagWidth ?? context.screenWidth * 0.7,
+        ),
+        child: Text(
+          _getTagStringDisplayName(tag.replaceUnderscoreWithSpace()),
+          overflow: TextOverflow.fade,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: colors?.backgroundColor.isWhite == true
+                ? Colors.black
+                : colors?.foregroundColor,
           ),
         ),
-      ],
+      ),
     );
   }
 }
@@ -239,14 +216,20 @@ class _TagBlockTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      const SizedBox(
-        height: 5,
-      ),
-      _TagHeader(
-        title: title,
-      ),
-    ]);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(
+          height: 8,
+        ),
+        _TagHeader(
+          title: title,
+        ),
+        const SizedBox(
+          height: 4,
+        ),
+      ],
+    );
   }
 }
 

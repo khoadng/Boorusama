@@ -13,8 +13,8 @@ import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class PostTagList extends StatelessWidget {
   const PostTagList({
@@ -62,14 +62,21 @@ class PostTagList extends StatelessWidget {
     BuildContext context,
     List<Tag> tags,
   ) {
-    return Tags(
-      alignment: WrapAlignment.start,
-      runSpacing: 4,
-      itemCount: tags.length,
-      itemBuilder: (index) {
-        final tag = tags[index];
-        return itemBuilder(context, tag);
-      },
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Tags(
+          alignment: WrapAlignment.start,
+          spacing: 4,
+          runSpacing: 6,
+          itemCount: tags.length,
+          itemBuilder: (index) {
+            final tag = tags[index];
+            return itemBuilder(context, tag);
+          },
+        ),
+        const SizedBox(height: 8),
+      ],
     );
   }
 }
@@ -93,48 +100,47 @@ class PostTagListChip extends ConsumerWidget {
       ref.watch(settingsProvider),
     );
 
-    return SizedBox(
-      height: 28,
-      child: RawChip(
-        onPressed: onTap,
-        padding:
-            isDesktopPlatform() ? const EdgeInsets.all(4) : EdgeInsets.zero,
-        visualDensity: const ShrinkVisualDensity(),
-        backgroundColor: colors?.backgroundColor,
+    return RawCompactChip(
+      onTap: onTap,
+      padding: const EdgeInsets.symmetric(
+        horizontal: 8,
+        vertical: 6,
+      ),
+      foregroundColor: colors?.foregroundColor,
+      backgroundColor: colors?.backgroundColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
         side: colors != null
             ? BorderSide(
                 color: colors.borderColor,
                 width: 1,
               )
-            : null,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(8)),
+            : BorderSide.none,
+      ),
+      label: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxWidth: maxTagWidth ?? context.screenWidth * 0.7,
         ),
-        label: ConstrainedBox(
-          constraints: BoxConstraints(
-            maxWidth: maxTagWidth ?? context.screenWidth * 0.7,
-          ),
-          child: RichText(
-            overflow: TextOverflow.ellipsis,
-            text: TextSpan(
-              text: _getTagStringDisplayName(tag),
-              style: TextStyle(
-                color: colors?.foregroundColor,
-                fontWeight: FontWeight.w600,
-              ),
-              children: [
-                if (!ref.watchConfig.hasStrictSFW && tag.postCount > 0)
-                  TextSpan(
-                    text: '  ${NumberFormat.compact().format(tag.postCount)}',
-                    style: context.textTheme.bodySmall?.copyWith(
-                      fontSize: 11,
-                      color: context.themeMode.isLight
-                          ? Colors.white.withOpacity(0.85)
-                          : Colors.grey.withOpacity(0.85),
-                    ),
-                  ),
-              ],
+        child: RichText(
+          overflow: TextOverflow.ellipsis,
+          text: TextSpan(
+            text: _getTagStringDisplayName(tag),
+            style: TextStyle(
+              color: colors?.foregroundColor,
+              fontWeight: FontWeight.w600,
             ),
+            children: [
+              if (!ref.watchConfig.hasStrictSFW && tag.postCount > 0)
+                TextSpan(
+                  text: '  ${NumberFormat.compact().format(tag.postCount)}',
+                  style: context.textTheme.bodySmall?.copyWith(
+                    fontSize: 11,
+                    color: context.themeMode.isLight
+                        ? Colors.white.withOpacity(0.85)
+                        : Colors.grey.withOpacity(0.85),
+                  ),
+                ),
+            ],
           ),
         ),
       ),
@@ -157,17 +163,20 @@ class _TagBlockTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      const SizedBox(
-        height: 8,
-      ),
-      _TagHeader(
-        title: title,
-      ),
-      const SizedBox(
-        height: 4,
-      ),
-    ]);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(
+          height: 8,
+        ),
+        _TagHeader(
+          title: title,
+        ),
+        const SizedBox(
+          height: 4,
+        ),
+      ],
+    );
   }
 }
 

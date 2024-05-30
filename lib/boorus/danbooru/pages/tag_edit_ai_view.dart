@@ -84,7 +84,7 @@ class _TagEditAITagViewState extends ConsumerState<TagEditAITagView> {
                     side: selected
                         ? colors != null
                             ? BorderSide(
-                                width: 2,
+                                width: 1,
                                 color: colors.borderColor,
                               )
                             : null

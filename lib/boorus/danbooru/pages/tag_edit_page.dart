@@ -738,7 +738,7 @@ class TagEditRatingSelectorSection extends ConsumerWidget {
               segments: {
                 for (final rating
                     in Rating.values.where((e) => e != Rating.unknown))
-                  rating: constraints.maxWidth > 400
+                  rating: constraints.maxWidth > 360
                       ? rating.name.sentenceCase
                       : rating.name.sentenceCase
                           .getFirstCharacter()
@@ -746,7 +746,7 @@ class TagEditRatingSelectorSection extends ConsumerWidget {
               },
               initialValue: rating,
               onChanged: onChanged,
-              fixedWidth: constraints.maxWidth < 400 ? 36 : null,
+              fixedWidth: constraints.maxWidth < 360 ? 36 : null,
             ),
           ),
         ],
