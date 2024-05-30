@@ -7,8 +7,6 @@ import 'package:flutter/material.dart';
 // Project imports:
 import 'package:boorusama/foundation/theme/theme.dart';
 
-// Project imports:
-
 class TagChipsPlaceholder extends StatelessWidget {
   const TagChipsPlaceholder({
     super.key,
@@ -25,7 +23,7 @@ class TagChipsPlaceholder extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: backgroundColor,
-      height: height ?? 50,
+      height: height ?? 40,
       child: ListView.builder(
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,

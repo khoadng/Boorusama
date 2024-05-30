@@ -27,32 +27,34 @@ class MostSearchTagList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfig;
-    final asyncData = ref.watch(trendingTagsProvider(config));
 
-    return asyncData.when(
-      data: (searches) => searches.isNotEmpty
-          ? Container(
-              margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              height: 40,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: searches.length,
-                itemBuilder: (context, index) {
-                  return DanbooruTagContextMenu(
-                    tag: searches[index].keyword,
-                    child: _Chip(
-                      search: searches[index],
-                      isSelected: selected == searches[index].keyword,
-                      onSelected: onSelected,
+    return ref.watch(trendingTagsProvider(config)).when(
+          data: (searches) => searches.isNotEmpty
+              ? SizedBox(
+                  height: 40,
+                  child: ListView.builder(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
                     ),
-                  );
-                },
-              ),
-            )
-          : const SizedBox.shrink(),
-      error: (error, stackTrace) => const SizedBox.shrink(),
-      loading: () => const TagChipsPlaceholder(),
-    );
+                    scrollDirection: Axis.horizontal,
+                    itemCount: searches.length,
+                    itemBuilder: (context, index) {
+                      return DanbooruTagContextMenu(
+                        tag: searches[index].keyword,
+                        child: _Chip(
+                          search: searches[index],
+                          isSelected: selected == searches[index].keyword,
+                          onSelected: onSelected,
+                        ),
+                      );
+                    },
+                  ),
+                )
+              : const SizedBox.shrink(),
+          error: (error, stackTrace) => const SizedBox.shrink(),
+          loading: () => const TagChipsPlaceholder(),
+        );
   }
 }
 
@@ -90,7 +92,7 @@ class _Chip extends ConsumerWidget {
         selectedColor: context.colorScheme.onSurface,
         selected: isSelected,
         side: BorderSide(
-          width: 1.5,
+          width: 1,
           color: isSelected
               ? Colors.transparent
               : colors?.borderColor ?? Colors.transparent,
