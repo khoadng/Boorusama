@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_improved_scrolling/flutter_improved_scrolling.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:sliver_tools/sliver_tools.dart';
@@ -16,15 +15,12 @@ import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/feats/utils.dart';
 import 'package:boorusama/core/utils.dart';
-import 'package:boorusama/core/widgets/posts/post_grid_config_region.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/networking/network_provider.dart';
 import 'package:boorusama/foundation/networking/network_state.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import 'post_grid_config_icon_button.dart';
-import 'post_grid_controller.dart';
-import 'post_list_configuration_header.dart';
 
 typedef ItemWidgetBuilder<T> = Widget Function(
     BuildContext context, List<T> items, int index);
@@ -157,6 +153,10 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
     });
   }
 
+  void _onScrollToTop() {
+    _autoScrollController.jumpTo(0);
+  }
+
   @override
   Widget build(BuildContext context) {
     final settings = ref.watch(settingsProvider);
@@ -230,12 +230,12 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                                 bottom: widget.extendBodyHeight ??
                                     kBottomNavigationBarHeight,
                               ),
-                              child: _ScrollToTopButton(
-                                controller: _autoScrollController,
+                              child: BooruScrollToTopButton(
+                                onPressed: _onScrollToTop,
                               ),
                             )
-                          : _ScrollToTopButton(
-                              controller: _autoScrollController,
+                          : BooruScrollToTopButton(
+                              onPressed: _onScrollToTop,
                             ),
                     ),
                     body: ConditionalParentWidget(
@@ -543,29 +543,6 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
     if (multiSelect) {
       _multiSelectController.disableMultiSelect();
     }
-  }
-}
-
-class _ScrollToTopButton extends StatelessWidget {
-  const _ScrollToTopButton({
-    required this.controller,
-  });
-
-  final AutoScrollController controller;
-
-  @override
-  Widget build(BuildContext context) {
-    return kPreferredLayout.isMobile
-        ? FloatingActionButton(
-            heroTag: null,
-            child: const FaIcon(FontAwesomeIcons.angleUp),
-            onPressed: () => controller.jumpTo(0),
-          )
-        : FloatingActionButton.small(
-            heroTag: null,
-            child: const FaIcon(FontAwesomeIcons.angleUp),
-            onPressed: () => controller.jumpTo(0),
-          );
   }
 }
 

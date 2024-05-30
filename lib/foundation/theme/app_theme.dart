@@ -176,6 +176,9 @@ class AppTheme {
               selectedColor: Colors.grey,
             ),
           ],
+          floatingActionButtonTheme: const FloatingActionButtonThemeData(
+            shape: CircleBorder(),
+          ),
           inputDecorationTheme: InputDecorationTheme(
             floatingLabelBehavior: FloatingLabelBehavior.always,
             filled: true,
@@ -259,6 +262,9 @@ class AppTheme {
               selectedColor: Color.fromARGB(255, 74, 74, 74),
             ),
           ],
+          floatingActionButtonTheme: const FloatingActionButtonThemeData(
+            shape: CircleBorder(),
+          ),
           inputDecorationTheme: InputDecorationTheme(
             floatingLabelBehavior: FloatingLabelBehavior.always,
             filled: true,
@@ -342,6 +348,9 @@ class AppTheme {
               selectedColor: Color.fromARGB(255, 50, 50, 50),
             ),
           ],
+          floatingActionButtonTheme: const FloatingActionButtonThemeData(
+            shape: CircleBorder(),
+          ),
           inputDecorationTheme: InputDecorationTheme(
             floatingLabelBehavior: FloatingLabelBehavior.always,
             filled: true,

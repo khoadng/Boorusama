@@ -8,6 +8,7 @@ export 'booru_logo.dart';
 export 'booru_text_form_field.dart';
 export 'booru_text_field.dart';
 export 'booru_search_bar.dart';
+export 'booru_scroll_to_top_button.dart';
 export 'booru_video_progress_bar.dart';
 export 'comment_header.dart';
 export 'comment_post_button.dart';

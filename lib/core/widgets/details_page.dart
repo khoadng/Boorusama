@@ -9,6 +9,7 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -233,14 +234,13 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
                     valueListenable: _scrollNotification,
                     builder: (_, notification, __) => HideOnScroll(
                       scrollNotification: notification,
-                      child: FloatingActionButton.small(
+                      child: BooruScrollToTopButton(
                         onPressed: () {
                           controller.animateViewportInsetTo(
                               ViewportInset.shrunk,
                               curve: Curves.easeOut,
                               duration: const Duration(milliseconds: 150));
                         },
-                        child: const Icon(Symbols.keyboard_arrow_up),
                       ),
                     ),
                   )
