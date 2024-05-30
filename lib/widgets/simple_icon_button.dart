@@ -7,20 +7,19 @@ class SimpleIconButton extends StatelessWidget {
     required this.icon,
     required this.onPressed,
     this.backgroundColor,
-    this.borderRadius,
   });
 
   final Widget icon;
   final VoidCallback onPressed;
   final Color? backgroundColor;
-  final BorderRadius? borderRadius;
 
   @override
   Widget build(BuildContext context) {
     return Material(
       color: backgroundColor ?? Colors.transparent,
+      shape: const CircleBorder(),
       child: InkWell(
-        borderRadius: borderRadius ?? BorderRadius.circular(6),
+        customBorder: const CircleBorder(),
         onTap: onPressed,
         child: icon,
       ),
