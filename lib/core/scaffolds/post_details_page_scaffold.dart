@@ -1,5 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:exprollable_page_view/exprollable_page_view.dart';
@@ -175,19 +176,30 @@ class _PostDetailPageScaffoldState<T extends Post>
 
   @override
   Widget build(BuildContext context) {
-    return CustomContextMenuOverlay(
-      backgroundColor: context.colorScheme.secondaryContainer,
-      child: ValueListenableBuilder(
-        valueListenable: controller.slideshow,
-        builder: (context, slideshow, child) => GestureDetector(
-          behavior: slideshow ? HitTestBehavior.opaque : null,
-          onTap: () => controller.stopSlideshow(),
-          child: IgnorePointer(
-            ignoring: slideshow,
-            child: child!,
+    return CallbackShortcuts(
+      bindings: {
+        LogicalKeySet(LogicalKeyboardKey.escape): () {
+          Navigator.of(context).pop();
+          widget.onExit(controller.currentPage.value);
+        },
+      },
+      child: Focus(
+        autofocus: true,
+        child: CustomContextMenuOverlay(
+          backgroundColor: context.colorScheme.secondaryContainer,
+          child: ValueListenableBuilder(
+            valueListenable: controller.slideshow,
+            builder: (context, slideshow, child) => GestureDetector(
+              behavior: slideshow ? HitTestBehavior.opaque : null,
+              onTap: () => controller.stopSlideshow(),
+              child: IgnorePointer(
+                ignoring: slideshow,
+                child: child!,
+              ),
+            ),
+            child: _build(),
           ),
         ),
-        child: _build(),
       ),
     );
   }
