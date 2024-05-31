@@ -9,7 +9,9 @@ class DetailsPageController extends ChangeNotifier {
   DetailsPageController({
     bool swipeDownToDismiss = true,
     bool hideOverlay = false,
+    int initialPage = 0,
   })  : _enableSwipeDownToDismiss = swipeDownToDismiss,
+        currentPage = ValueNotifier(initialPage),
         _hideOverlay = ValueNotifier(hideOverlay);
 
   var _enableSwipeDownToDismiss = false;
@@ -28,6 +30,8 @@ class DetailsPageController extends ChangeNotifier {
       StreamController<PageDirection>.broadcast();
 
   Stream<PageDirection> get pageStream => _pageController.stream;
+
+  late final ValueNotifier<int> currentPage;
 
   void nextPage() {
     _pageController.add(PageDirection.next);

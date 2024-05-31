@@ -24,7 +24,6 @@ double getTopActionIconAlignValue() => hasStatusBar() ? -0.92 : -1;
 class DetailsPage<T> extends ConsumerStatefulWidget {
   const DetailsPage({
     super.key,
-    this.onPageChanged,
     required this.intitialIndex,
     required this.targetSwipeDownBuilder,
     required this.expandedBuilder,
@@ -39,7 +38,6 @@ class DetailsPage<T> extends ConsumerStatefulWidget {
     required this.currentSettings,
   });
 
-  final void Function(int page)? onPageChanged;
   final int intitialIndex;
   final Widget Function(BuildContext context, int index) targetSwipeDownBuilder;
   final Widget Function(
@@ -118,6 +116,8 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
     _controller.addListener(_onPageDetailsChanged);
     _controller.slideshow.addListener(_onSlideShowChanged);
 
+    controller.currentPage.addListener(_onPageChanged);
+
     pageSubscription = _controller.pageStream.listen((event) async {
       // if expanding, shrunk the viewport first
       if (isExpanded.value) {
@@ -176,6 +176,10 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
     }
   }
 
+  void _onPageChanged() {
+    _controller.currentPage.value = controller.currentPage.value;
+  }
+
   void _onPageDetailsChanged() {
     _updateShouldSlideDown();
     if (_controller.pageSwipe != _pageSwipe) {
@@ -201,6 +205,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
 
   @override
   void dispose() {
+    controller.currentPage.removeListener(_onPageChanged);
     controller.dispose();
 
     isSwipingDown.removeListener(_updateShouldSlideDown);
@@ -396,7 +401,6 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
             widget.onExpanded?.call(currentPage);
           }
         },
-        onPageChanged: widget.onPageChanged,
         physics: _pageSwipe
             ? const DefaultPageViewScrollPhysics()
             : const NeverScrollableScrollPhysics(),
