@@ -953,7 +953,7 @@ class TagEditTagListSection extends ConsumerWidget {
               ? generateChipColorsFromColorScheme(
                   context,
                   color,
-                  ref.watch(settingsProvider),
+                  ref.watch(settingsProvider).enableDynamicColoring,
                 )
               : null,
           orElse: () => null,

@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 
 // Project imports:
-import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 
 typedef ChipColors = ({
@@ -20,11 +19,11 @@ typedef ChipColors = ({
 ChipColors? generateChipColorsFromColorScheme(
   BuildContext context,
   Color? color,
-  Settings settings,
+  bool enableDynamicColoring,
 ) {
   if (color == null) return null;
   if (context.themeMode.isLight) {
-    final backgroundColor = settings.enableDynamicColoring
+    final backgroundColor = enableDynamicColoring
         ? color.harmonizeWith(context.colorScheme.primary)
         : color;
     return (
@@ -32,7 +31,7 @@ ChipColors? generateChipColorsFromColorScheme(
       foregroundColor: backgroundColor.computeLuminance() > 0.7
           ? Colors.black
           : Colors.white,
-      borderColor: settings.enableDynamicColoring
+      borderColor: enableDynamicColoring
           ? color.harmonizeWith(context.colorScheme.primary)
           : color,
     );
@@ -53,13 +52,13 @@ ChipColors? generateChipColorsFromColorScheme(
   );
 
   return (
-    foregroundColor: settings.enableDynamicColoring
+    foregroundColor: enableDynamicColoring
         ? color.harmonizeWith(context.colorScheme.primary)
         : color,
-    backgroundColor: settings.enableDynamicColoring
+    backgroundColor: enableDynamicColoring
         ? darkColor.harmonizeWith(context.colorScheme.primary)
         : darkColor,
-    borderColor: settings.enableDynamicColoring
+    borderColor: enableDynamicColoring
         ? neutralDarkColor.harmonizeWith(context.colorScheme.primary)
         : neutralDarkColor,
   );

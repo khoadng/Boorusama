@@ -85,7 +85,11 @@ extension DynamicColorX on BuildContext {
     Color? color,
     Settings settings,
   ) =>
-      generateChipColorsFromColorScheme(this, color, settings);
+      generateChipColorsFromColorScheme(
+        this,
+        color,
+        settings.enableDynamicColoring,
+      );
 }
 
 final dynamicColorSupportProvider = Provider<bool>((ref) {
