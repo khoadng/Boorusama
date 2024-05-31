@@ -176,6 +176,15 @@ class _PostDetailPageScaffoldState<T extends Post>
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(
+      settingsProvider.select((value) => value.hidePostDetailsOverlay),
+      (previous, next) {
+        if (previous != next && _controller.hideOverlay.value != next) {
+          _controller.setHideOverlay(next);
+        }
+      },
+    );
+
     return CallbackShortcuts(
       bindings: {
         LogicalKeySet(LogicalKeyboardKey.escape): () {
