@@ -951,8 +951,9 @@ class TagEditTagListSection extends ConsumerWidget {
     final colors = ref.watch(danbooruTagEditColorProvider(params)).maybeWhen(
           data: (color) => color != null && color != Colors.white
               ? generateChipColorsFromColorScheme(
-                  context,
                   color,
+                  context.colorScheme,
+                  context.themeMode,
                   ref.watch(settingsProvider).enableDynamicColoring,
                 )
               : null,
