@@ -10,7 +10,8 @@
             "delete": "Deletar",
             "edit": "Editar",
             "ok": "De acordo",
-            "cancel": "Cancelar"
+            "cancel": "Cancelar",
+            "duplicate": "Duplica"
         },
         "view": "Visualizar"
     },
@@ -32,7 +33,7 @@
         },
         "explore": {
             "new": "Novo",
-            "popular": "Popular"
+            "popular": "Populares"
         }
     },
     "post": {
@@ -100,7 +101,7 @@
     },
     "explore": {
         "latest": "Novidades",
-        "popular": "Popular",
+        "popular": "Populares",
         "most_viewed": "Mais visualizados",
         "hot": "Quente",
         "see_more": "Ver mais",
@@ -142,7 +143,10 @@
         "app_settings": "Config. do aplicativo",
         "appearance": {
             "appearance": "Aparência",
-            "show_scores": "Mostrar resultados"
+            "show_scores": "Mostrar resultados",
+            "booru_config": "Perfil Booru",
+            "show_post_list_config_header": "Mostrar barra de configuração dos posts",
+            "booru_config_placement": "Posição dos perfis Booru"
         },
         "language": {
             "language": "Idioma",
@@ -175,7 +179,8 @@
             },
             "spacing": "Espaçamento",
             "corner_radius": "Raio do canto",
-            "padding": "Preenchimento"
+            "padding": "Preenchimento",
+            "aspect_ratio": "Proporção da imagem"
         },
         "information": "Informação",
         "image_list": {
@@ -200,7 +205,11 @@
             "light": "Claro",
             "dark": "Escuro",
             "amoled_dark": "Preto",
-            "theme": "Tema"
+            "theme": "Tema",
+            "dynamic_color_desktop_description": "Sincronize a cor do tema com a cor de destaque do OS",
+            "dynamic_color_unsupported_description": "Este dispositivo não é compatível com cores dinâmicas.",
+            "dynamic_color": "Tema de cores dinâmico",
+            "dynamic_color_mobile_description": "Sincronize a cor do tema com o papel de parede"
         },
         "result_layout": {
             "pagination": "Paginação",
@@ -254,7 +263,24 @@
             "bottom": "Inferior",
             "both": "Ambos",
             "page_indicator": "Posição do indicador de página"
-        }
+        },
+        "accessibility": {
+            "accessibility": "Acessibilidade",
+            "reverseBooruConfigSelectorScrollDirection": "Reverter direção de scroll dos perfis booru",
+            "swipeAreaToOpenSidebar": "Área de deslize da barra lateral",
+            "swipeAreaToOpenSidebarDescription": "Tamanho da área na esquerda que pode ser usada para deslizar. Valores altos irão impedir gestos horizontais como o gesto de deslize de paginação."
+        },
+        "booru_settings": {
+            "booru_settings": "Configurações do Booru",
+            "edit_current_profile": "Editar perfil atual"
+        },
+        "source_code": "Código fonte",
+        "support": "Ajuda",
+        "contact_developer": "Contate o desenvolvedor",
+        "contribute": "Contribua",
+        "contact_developer_description": "Se tiver problemas ou sugestões, sinta-se livre para me mandar um email por essa opção",
+        "feature_request_and_bug_report": "Pedir funções e relatar bugs",
+        "feature_request_and_bug_report_description": "Sugira funções ou relate um bug pelo repositório no Github"
     },
     "download": {
         "download": "Download",
@@ -320,7 +346,10 @@
         "failed_to_add": "Falha ao adicionar tag",
         "failed_to_remove": "Falha ao remover tag",
         "remove": "Remover",
-        "edit": "Editar"
+        "edit": "Editar",
+        "reenable_all": "Reativar todos",
+        "blacklisted_header_title": "Na lista negra",
+        "disable_all": "Desabilitar todos"
     },
     "saved_search": {
         "saved_search_feed": "Feed de pesquisa",
@@ -412,7 +441,11 @@
         "validation_empty_url": "A URL esta vazia",
         "config_name_label": "Nome de perfil (*)",
         "validation_contains_spaces": "\"{0}\" contém espaços entre linhas",
-        "password_hashed_label": "Senha em Hash (somente leitura)"
+        "password_hashed_label": "Senha em Hash (somente leitura)",
+        "authentication": "Autenticação",
+        "download": "Download",
+        "gestures": "Gestos",
+        "misc": "Outros"
     },
     "bookmark": {
         "failed_to_add_many": "Falha ao adicionar marcações",
@@ -435,7 +468,8 @@
         "settings": "Configurações",
         "your_bookmarks": "Suas marcações",
         "your_blacklist": "Sua lista negra",
-        "bulk_download": "Download em massa"
+        "bulk_download": "Download em massa",
+        "get_support": "Consiga Ajuda"
     },
     "dateRange": {
         "week": "Semana",
@@ -447,5 +481,11 @@
             "empty_blacklist": "Nenhuma tag na lista negra",
             "title": "Lista negra"
         }
+    },
+    "gestures": {
+        "tap": "Toque",
+        "long_press": "Toque longo",
+        "swipe_down": "Deslizar para baixo",
+        "double_tap": "Toque duplo"
     }
 }
