@@ -9,6 +9,7 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -55,10 +56,14 @@ class _TagEditAITagViewState extends ConsumerState<TagEditAITagView> {
             },
           ),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 8,
+              vertical: 4,
+            ),
             child: tagAsync.maybeWhen(
               data: (tags) => Wrap(
                 spacing: 4,
+                runSpacing: isDesktopPlatform() ? 4 : 0,
                 children: tags.map((d) {
                   final tag = d.tag;
                   final colors = context.generateChipColors(
@@ -79,7 +84,7 @@ class _TagEditAITagViewState extends ConsumerState<TagEditAITagView> {
                     side: selected
                         ? colors != null
                             ? BorderSide(
-                                width: 2,
+                                width: 1,
                                 color: colors.borderColor,
                               )
                             : null
@@ -105,7 +110,14 @@ class _TagEditAITagViewState extends ConsumerState<TagEditAITagView> {
                           children: [
                             TextSpan(
                               text: '  ${d.score}%',
-                              style: context.textTheme.bodySmall,
+                              style: context.textTheme.bodySmall?.copyWith(
+                                fontSize: 11,
+                                color: context.themeMode.isLight
+                                    ? !selected
+                                        ? null
+                                        : Colors.white.withOpacity(0.85)
+                                    : Colors.grey.withOpacity(0.85),
+                              ),
                             ),
                           ],
                         ),

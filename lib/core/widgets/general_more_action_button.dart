@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/pages/settings/settings.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/foundation/i18n.dart';
@@ -65,6 +66,9 @@ class GeneralMoreActionButton extends ConsumerWidget {
                   onStartSlideshow!();
                 }
                 break;
+              case 'settings':
+                openImageViewerSettingsPage(context);
+                break;
               // ignore: no_default_cases
               default:
             }
@@ -79,6 +83,7 @@ class GeneralMoreActionButton extends ConsumerWidget {
                   const Text('post.image_fullview.view_original').tr(),
             if (onStartSlideshow != null)
               'start_slideshow': const Text('Slideshow'),
+            'settings': const Text('settings.settings').tr(),
           },
         ),
       ),

@@ -22,7 +22,6 @@ import 'package:boorusama/core/feats/tags/booru_tag_type_store.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/post_details_page_scaffold.dart';
-import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/posts/character_post_list.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -62,8 +61,7 @@ class _DanbooruPostDetailsPageState
         posts: posts,
         initialIndex: widget.intitialIndex,
         onExit: widget.onExit,
-        sourceSectionBuilder: (context, post) => const SizedBox.shrink(),
-        onTagTap: (tag) => goToSearchPage(context, tag: tag),
+        parts: kDefaultPostDetailsNoSourceParts,
         onPageChangeIndexed: widget.onPageChanged,
         toolbarBuilder: (context, post) =>
             DanbooruPostActionToolbar(post: post),
@@ -101,7 +99,10 @@ class _DanbooruPostDetailsPageState
                   orElse: () => const SliverSizedBox.shrink(),
                 ),
         sliverRelatedPostsBuilder: (context, post) =>
-            DanbooruRelatedPostsSection(post: post),
+            ref.watch(danbooruPostDetailsChildrenProvider(post)).maybeWhen(
+                  data: (posts) => DanbooruRelatedPostsSection(posts: posts),
+                  orElse: () => const SliverSizedBox.shrink(),
+                ),
         poolTileBuilder: (context, post) =>
             ref.watch(danbooruPostDetailsPoolsProvider(post.id)).maybeWhen(
                   data: (pools) => PoolTiles(pools: pools),
@@ -126,11 +127,6 @@ class _DanbooruPostDetailsPageState
             currentPage == widget.intitialIndex && post.isTranslated
                 ? null
                 : post.thumbnailImageUrl,
-        imageOverlayBuilder: (constraints, post) => noteOverlayBuilderDelegate(
-          constraints,
-          post,
-          ref.watch(notesControllerProvider(post)),
-        ),
         fileDetailsBuilder: (context, post) => DanbooruFileDetails(post: post),
         topRightButtonsBuilder: (page, expanded, post, controller) {
           return [
@@ -295,24 +291,21 @@ final danbooruCharacterExpandStateProvider =
 class DanbooruRelatedPostsSection extends ConsumerWidget {
   const DanbooruRelatedPostsSection({
     super.key,
-    required this.post,
+    required this.posts,
   });
 
-  final DanbooruPost post;
+  final List<DanbooruPost> posts;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ref.watch(danbooruPostDetailsChildrenProvider(post)).maybeWhen(
-          data: (posts) => RelatedPostsSection(
-            posts: posts,
-            imageUrl: (item) => item.url720x720,
-            onTap: (index) => goToPostDetailsPage(
-              context: context,
-              posts: posts,
-              initialIndex: index,
-            ),
-          ),
-          orElse: () => const SliverSizedBox.shrink(),
-        );
+    return RelatedPostsSection(
+      posts: posts,
+      imageUrl: (item) => item.url720x720,
+      onTap: (index) => goToPostDetailsPage(
+        context: context,
+        posts: posts,
+        initialIndex: index,
+      ),
+    );
   }
 }

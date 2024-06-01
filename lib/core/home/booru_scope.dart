@@ -9,11 +9,12 @@ import 'package:multi_split_view/multi_split_view.dart';
 
 // Project imports:
 import 'package:boorusama/app.dart';
-import 'package:boorusama/boorus/entry_page.dart';
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
+import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/pages/blacklists/blacklisted_tag_page.dart';
 import 'package:boorusama/core/pages/bookmarks/bookmark_page.dart';
 import 'package:boorusama/core/pages/downloads/bulk_download_page.dart';
@@ -22,7 +23,6 @@ import 'package:boorusama/core/pages/home/side_bar_menu.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/utils/flutter_utils.dart';
@@ -38,7 +38,6 @@ class BooruScope extends ConsumerStatefulWidget {
     required this.mobileMenuBuilder,
     required this.desktopMenuBuilder,
     required this.desktopViews,
-    required this.mobileView,
   });
 
   final BooruConfig config;
@@ -55,7 +54,6 @@ class BooruScope extends ConsumerStatefulWidget {
   ) mobileMenuBuilder;
 
   final List<Widget> Function() desktopViews;
-  final Widget Function(HomePageController controller) mobileView;
 
   @override
   ConsumerState<BooruScope> createState() => _BooruScopeState();
@@ -74,7 +72,7 @@ class _BooruScopeState extends ConsumerState<BooruScope> {
   @override
   Widget build(BuildContext context) {
     return CustomContextMenuOverlay(
-      child: isMobilePlatform()
+      child: kPreferredLayout.isMobile
           ? OrientationBuilder(
               builder: (context, orientation) => orientation.isPortrait
                   ? _buildMobile()
@@ -88,6 +86,8 @@ class _BooruScopeState extends ConsumerState<BooruScope> {
   }
 
   Widget _buildMobile() {
+    final customHome = ref.watchBooruBuilder(ref.watchConfig)?.homeViewBuilder;
+
     return BooruMobileScope(
       controller: controller,
       config: widget.config,
@@ -95,7 +95,13 @@ class _BooruScopeState extends ConsumerState<BooruScope> {
         context,
         controller,
       ),
-      home: widget.mobileView(controller),
+      home: customHome != null
+          ? customHome(context, widget.config, controller)
+          : Scaffold(
+              body: Center(
+                child: Text('No View found for ${widget.config.name}'),
+              ),
+            ),
     );
   }
 

@@ -10,10 +10,8 @@ import 'package:boorusama/boorus/e621/feats/artists/artists.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/artist_commentaries/artist_commentaries.dart';
-import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
-import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'widgets/e621_post_action_toolbar.dart';
@@ -47,7 +45,6 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage> {
       posts: posts,
       initialIndex: widget.intitialIndex,
       onExit: widget.onExit,
-      onTagTap: (tag) => goToSearchPage(context, tag: tag),
       onPageChangeIndexed: widget.onPageChanged,
       toolbarBuilder: (context, post) => E621PostActionToolbar(post: post),
       swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
@@ -84,25 +81,7 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage> {
           currentPage == widget.intitialIndex && post.isTranslated
               ? null
               : post.thumbnailImageUrl,
-      imageOverlayBuilder: (constraints, post) => noteOverlayBuilderDelegate(
-        constraints,
-        post,
-        ref.watch(notesControllerProvider(post)),
-      ),
-      topRightButtonsBuilder: (page, expanded, post, controller) {
-        return [
-          NoteActionButtonWithProvider(
-            post: post,
-            expanded: expanded,
-            noteState: ref.watch(notesControllerProvider(post)),
-          ),
-          GeneralMoreActionButton(
-            post: post,
-            onStartSlideshow: () => controller.startSlideshow(),
-          ),
-        ];
-      },
-      sourceSectionBuilder: (context, post) => const SizedBox.shrink(),
+      parts: kDefaultPostDetailsNoSourceParts,
       artistInfoBuilder: (context, post) => E621ArtistSection(post: post),
     );
   }

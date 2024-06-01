@@ -1,4 +1,5 @@
 {
     "ENV_NAME": "prod",
+    "PREFERRED_LAYOUT": "platform",
     "APP_NAME" : "Boorusama"
 }

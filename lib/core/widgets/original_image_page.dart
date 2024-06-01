@@ -13,8 +13,8 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/mobile.dart';
-import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class OriginalImagePage extends ConsumerStatefulWidget {
@@ -87,7 +87,7 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
                     )
                   : null,
               actions: [
-                if (isMobilePlatform() && overlay)
+                if (kPreferredLayout.isMobile && overlay)
                   IconButton(
                     onPressed: () {
                       if (currentRotation == Orientation.portrait) {

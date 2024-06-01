@@ -128,6 +128,7 @@ class Settings extends Equatable {
     required this.mediaBlurCondition,
     required this.slideshowInterval,
     required this.slideshowTransitionType,
+    required this.reduceAnimations,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
@@ -207,6 +208,7 @@ class Settings extends Equatable {
         slideshowTransitionType = json['slideshowTransitionType'] != null
             ? SlideshowTransitionType.values[json['slideshowTransitionType']]
             : SlideshowTransitionType.natural,
+        reduceAnimations = json['reduceAnimations'] ?? false,
         swipeAreaToOpenSidebarPercentage =
             json['swipeAreaToOpenSidebarPercentage'] ?? 5,
         imageGridAspectRatio = json['imageGridAspectRatio'] ?? 0.7,
@@ -250,6 +252,7 @@ class Settings extends Equatable {
     mediaBlurCondition: MediaBlurCondition.none,
     slideshowInterval: 6,
     slideshowTransitionType: SlideshowTransitionType.natural,
+    reduceAnimations: false,
   );
 
   final String blacklistedTags;
@@ -316,6 +319,8 @@ class Settings extends Equatable {
 
   final SlideshowTransitionType slideshowTransitionType;
 
+  final bool reduceAnimations;
+
   Settings copyWith({
     String? blacklistedTags,
     String? language,
@@ -354,6 +359,7 @@ class Settings extends Equatable {
     MediaBlurCondition? mediaBlurCondition,
     double? slideshowInterval,
     SlideshowTransitionType? slideshowTransitionType,
+    bool? reduceAnimations,
   }) =>
       Settings(
         safeMode: safeMode ?? this.safeMode,
@@ -405,6 +411,7 @@ class Settings extends Equatable {
         slideshowInterval: slideshowInterval ?? this.slideshowInterval,
         slideshowTransitionType:
             slideshowTransitionType ?? this.slideshowTransitionType,
+        reduceAnimations: reduceAnimations ?? this.reduceAnimations,
       );
 
   Map<String, dynamic> toJson() => {
@@ -445,6 +452,7 @@ class Settings extends Equatable {
         'mediaBlurCondition': mediaBlurCondition.index,
         'slideshowInterval': slideshowInterval,
         'slideshowTransitionType': slideshowTransitionType.index,
+        'reduceAnimations': reduceAnimations,
       };
 
   @override
@@ -485,6 +493,7 @@ class Settings extends Equatable {
         mediaBlurCondition,
         slideshowInterval,
         slideshowTransitionType,
+        reduceAnimations,
       ];
 }
 

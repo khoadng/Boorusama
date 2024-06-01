@@ -8,7 +8,6 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
-import 'package:boorusama/core/feats/blacklists/blacklists.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/pages/blacklists/blacklisted_tag_page.dart';
 import 'package:boorusama/core/router.dart';
@@ -37,22 +36,9 @@ class BlacklistedTagsPage extends ConsumerWidget {
           tags != null
               ? ImportExportTagButton(
                   tags: tags,
-                  onImport: (tagString) {
-                    final tags = sanitizeBlacklistTagString(tagString);
-
-                    if (tags == null) {
-                      showErrorToast('Invalid tag format');
-                      return;
-                    }
-
-                    //FIXME: should be handled inside the provider, not here. I'm just lazy. Also missing error handling
-                    for (final tag in tags) {
-                      ref
-                          .read(
-                              danbooruBlacklistedTagsProvider(config).notifier)
-                          .add(tag: tag);
-                    }
-                  },
+                  onImport: (tagString) => ref
+                      .read(danbooruBlacklistedTagsProvider(config).notifier)
+                      .addFromStringWithToast(tagString: tagString),
                 )
               : const SizedBox.shrink(),
         ],

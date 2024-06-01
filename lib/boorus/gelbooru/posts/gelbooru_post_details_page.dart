@@ -10,12 +10,10 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/gelbooru/artists/artists.dart';
 import 'package:boorusama/boorus/gelbooru/posts/posts.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
-import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/posts/character_post_list.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/functional.dart';
@@ -59,7 +57,6 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailsPage> {
       posts: posts,
       initialIndex: widget.initialIndex,
       onExit: widget.onExit,
-      onTagTap: (tag) => goToSearchPage(context, tag: tag),
       onPageChangeIndexed: widget.onPageChanged,
       toolbarBuilder: (context, post) => SimplePostActionToolbar(post: post),
       swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
@@ -111,24 +108,6 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailsPage> {
         post: post,
         onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
       ),
-      imageOverlayBuilder: (constraints, post) => noteOverlayBuilderDelegate(
-        constraints,
-        post,
-        ref.watch(notesControllerProvider(post)),
-      ),
-      topRightButtonsBuilder: (page, expanded, post, controller) {
-        return [
-          NoteActionButtonWithProvider(
-            post: post,
-            expanded: expanded,
-            noteState: ref.watch(notesControllerProvider(post)),
-          ),
-          GeneralMoreActionButton(
-            post: post,
-            onStartSlideshow: () => controller.startSlideshow(),
-          ),
-        ];
-      },
       onExpanded: (post) => ref.read(tagsProvider(booruConfig).notifier).load(
             post.tags,
             onSuccess: (tags) => _setTags(post, tags),

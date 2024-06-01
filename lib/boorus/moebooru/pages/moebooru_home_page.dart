@@ -7,8 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/entry_page.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/pages/home/side_menu_tile.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/infinite_post_list_scaffold.dart';
@@ -38,8 +38,6 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
   Widget build(BuildContext context) {
     return BooruScope(
       config: widget.config,
-      mobileView: (controller) =>
-          _buildMobileHomeView(controller, widget.config),
       mobileMenuBuilder: (context, controller) => [
         SideMenuTile(
           icon: const Icon(
@@ -139,12 +137,25 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
       },
     );
   }
+}
 
-  Widget _buildMobileHomeView(
-      HomePageController controller, BooruConfig config) {
+class MoebooruMobileHomeView extends ConsumerWidget {
+  const MoebooruMobileHomeView({
+    super.key,
+    required this.controller,
+  });
+
+  final HomePageController controller;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
+
     return PostScope(
-      fetcher: (page) =>
-          ref.read(moebooruPostRepoProvider(config)).getPosts([], page),
+      fetcher: (page) => ref.read(moebooruPostRepoProvider(config)).getPosts(
+        [],
+        page,
+      ),
       builder: (context, postController, errors) => InfinitePostListScaffold(
         errors: errors,
         controller: postController,

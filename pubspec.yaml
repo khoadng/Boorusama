@@ -2,7 +2,7 @@ name: boorusama
 description: A mobile client for Booru sites.
 
 publish_to: "none"
-version: 3.16.0+100
+version: 3.17.0+101
 
 environment:
   sdk: ">=3.2.0 <4.0.0"
@@ -13,11 +13,10 @@ dependencies:
   auto_size_text: ^3.0.0
   bitsdojo_window: ^0.1.6
   cached_network_image: ^3.3.0
-  carousel_slider: ^4.2.1
   chewie: ^1.7.1
   clock: ^1.1.1
   collection: ^1.17.0
-  connectivity_plus: ^5.0.1
+  connectivity_plus: ^6.0.3
   context_menus:
     git:
       url: https://github.com/khoadng/flutter-context-menu.git
@@ -47,7 +46,6 @@ dependencies:
   fl_chart: ^0.67.0
   flutter:
     sdk: flutter
-  flutter_advanced_segment: ^3.0.2
   flutter_cache_manager: ^3.3.1
   flutter_download_manager:
     git:
@@ -85,13 +83,8 @@ dependencies:
   media_scanner: ^2.1.0
   modal_bottom_sheet: ^3.0.0-pre
   multi_split_view: ^2.4.0
-  number_inc_dec:
-    git:
-      url: https://github.com/hilalbaig/number_inc_dec.git
-      ref: f66ee872727172ce2fe57f118d569339d54c384d
   oktoast: ^3.4.0
   package_info_plus: ^7.0.0
-  page_transition: ^2.1.0
   path: ^1.8.3
   path_provider: ^2.1.2
   percent_indicator: ^4.2.3
@@ -106,7 +99,6 @@ dependencies:
       url: https://github.com/khoadng/reorderables.git
       ref: 69d1b8b272f3b77dc6a6b7399fa8931cdd660d77
   rich_text_controller: ^1.4.2
-  riverpod_infinite_scroll: ^1.0.9
   rxdart: ^0.27.7
   scroll_to_index: ^3.0.1
   searchfield: ^1.0.1

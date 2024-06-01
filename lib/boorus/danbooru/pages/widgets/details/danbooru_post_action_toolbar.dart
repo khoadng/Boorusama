@@ -13,7 +13,6 @@ import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
 
 class DanbooruPostActionToolbar extends ConsumerWidget {
   const DanbooruPostActionToolbar({
@@ -30,51 +29,47 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
     final postVote = ref.watch(danbooruPostVoteProvider(post.id));
     final voteState = postVote?.voteState ?? VoteState.unvote;
 
-    return Material(
-      color: context.theme.scaffoldBackgroundColor,
-      child: ButtonBar(
-        buttonPadding: EdgeInsets.zero,
-        alignment: MainAxisAlignment.spaceEvenly,
-        children: [
+    return PostActionToolbar(
+      children: [
+        if (config.hasLoginDetails())
           FavoritePostButton(
             isFaved: isFaved,
             isAuthorized: config.hasLoginDetails(),
             addFavorite: () => ref.danbooruFavorites.add(post.id),
             removeFavorite: () => ref.danbooruFavorites.remove(post.id),
           ),
-          if (config.hasLoginDetails())
-            IconButton(
-              icon: Icon(
-                Symbols.arrow_upward,
-                color: voteState.isUpvoted ? Colors.redAccent : null,
-              ),
-              splashRadius: 16,
-              onPressed: switch (voteState) {
-                VoteState.upvoted => () => ref.danbooruRemoveVote(post.id),
-                _ => () => ref.danbooruUpvote(post.id),
-              },
+        if (config.hasLoginDetails())
+          IconButton(
+            icon: Icon(
+              Symbols.arrow_upward,
+              color: voteState.isUpvoted ? Colors.redAccent : null,
             ),
-          if (config.hasLoginDetails())
-            IconButton(
-              icon: Icon(
-                Symbols.arrow_downward,
-                color: voteState.isDownvoted ? Colors.blueAccent : null,
-              ),
-              splashRadius: 16,
-              onPressed: switch (voteState) {
-                VoteState.downvoted => () => ref.danbooruRemoveVote(post.id),
-                _ => () => ref.danbooruDownvote(post.id),
-              },
-            ),
-          BookmarkPostButton(post: post),
-          CommentPostButton(
-            post: post,
-            onPressed: () => goToCommentPage(context, ref, post.id),
+            splashRadius: 16,
+            onPressed: switch (voteState) {
+              VoteState.upvoted => () => ref.danbooruRemoveVote(post.id),
+              _ => () => ref.danbooruUpvote(post.id),
+            },
           ),
-          DownloadPostButton(post: post),
-          SharePostButton(post: post),
-        ],
-      ),
+        if (config.hasLoginDetails())
+          IconButton(
+            icon: Icon(
+              Symbols.arrow_downward,
+              color: voteState.isDownvoted ? Colors.blueAccent : null,
+            ),
+            splashRadius: 16,
+            onPressed: switch (voteState) {
+              VoteState.downvoted => () => ref.danbooruRemoveVote(post.id),
+              _ => () => ref.danbooruDownvote(post.id),
+            },
+          ),
+        BookmarkPostButton(post: post),
+        CommentPostButton(
+          post: post,
+          onPressed: () => goToCommentPage(context, ref, post.id),
+        ),
+        DownloadPostButton(post: post),
+        SharePostButton(post: post),
+      ],
     );
   }
 }

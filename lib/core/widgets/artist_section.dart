@@ -71,7 +71,7 @@ class _ArtistSectionState extends State<ArtistSection> {
           }
         else
           const SizedBox.shrink(),
-        AnimatedCrossFade(
+        BooruAnimatedCrossFade(
           firstChild: const SizedBox.shrink(),
           secondChild: commentary.isEmpty
               ? const SizedBox.shrink()

@@ -37,8 +37,8 @@ mixin DanbooruClientArtists {
     final response = await dio.get(
       '/artists.json',
       queryParameters: {
-        if (name != null) 'search[any_name_matches]': name,
-        if (url != null) 'search[url_matches]': url,
+        if (name != null && name.isNotEmpty) 'search[any_name_matches]': name,
+        if (url != null && url.isNotEmpty) 'search[url_matches]': url,
         if (isDeleted != null) 'search[is_deleted]': isDeleted,
         if (isBanned != null) 'search[is_banned]': isBanned,
         if (hasTag != null) 'search[has_tag]': hasTag,

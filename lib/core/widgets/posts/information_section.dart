@@ -44,8 +44,13 @@ class InformationSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
-      padding:
-          padding ?? const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+      padding: padding ??
+          const EdgeInsets.only(
+            top: 12,
+            bottom: 4,
+            left: 16,
+            right: 16,
+          ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

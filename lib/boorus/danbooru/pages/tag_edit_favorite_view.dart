@@ -9,6 +9,7 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/pages/favorite_tags/favorite_tags_page.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
 
@@ -68,11 +69,12 @@ class _TagEditFavoriteViewState extends ConsumerState<TagEditFavoriteView> {
               child: tags.isNotEmpty
                   ? Wrap(
                       spacing: 4,
+                      runSpacing: isDesktopPlatform() ? 4 : 0,
                       children: tags.map((tag) {
                         final selected = widget.isSelected(tag.name);
 
                         return FilterChip(
-                          side: selected
+                          side: selected && !context.themeMode.isLight
                               ? BorderSide(
                                   color: context.theme.hintColor,
                                   width: 0.5,

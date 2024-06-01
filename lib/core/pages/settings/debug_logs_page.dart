@@ -10,12 +10,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/loggers/app_logger.dart';
 import 'package:boorusama/foundation/loggers/logger.dart';
 import 'package:boorusama/foundation/path.dart';
+import 'package:boorusama/foundation/scrolling.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/conditional_parent_widget.dart';
 import 'package:boorusama/widgets/toast.dart';
@@ -77,10 +79,11 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              scrollController.animateTo(
+              scrollController.animateToWithAccessibility(
                 scrollController.position.maxScrollExtent,
                 duration: const Duration(milliseconds: 300),
                 curve: Curves.easeOut,
+                reduceAnimations: ref.read(settingsProvider).reduceAnimations,
               );
             });
           },

@@ -1,24 +1,73 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:exprollable_page_view/exprollable_page_view.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:visibility_detector/visibility_detector.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/filename_generators/utils.dart';
+import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/feats/video/videos_provider.dart';
+import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
+
+enum PostDetailsPart {
+  pool,
+  info,
+  toolbar,
+  artistInfo,
+  tags,
+  stats,
+  fileDetails,
+  source,
+  comments,
+  artistPosts,
+  relatedPosts,
+  characterList,
+}
+
+const kDefaultPostDetailsParts = {
+  PostDetailsPart.pool,
+  PostDetailsPart.info,
+  PostDetailsPart.toolbar,
+  PostDetailsPart.artistInfo,
+  PostDetailsPart.stats,
+  PostDetailsPart.tags,
+  PostDetailsPart.fileDetails,
+  PostDetailsPart.source,
+  PostDetailsPart.comments,
+  PostDetailsPart.artistPosts,
+  PostDetailsPart.relatedPosts,
+  PostDetailsPart.characterList,
+};
+
+const kDefaultPostDetailsNoSourceParts = {
+  PostDetailsPart.pool,
+  PostDetailsPart.info,
+  PostDetailsPart.toolbar,
+  PostDetailsPart.artistInfo,
+  PostDetailsPart.stats,
+  PostDetailsPart.tags,
+  PostDetailsPart.fileDetails,
+  PostDetailsPart.comments,
+  PostDetailsPart.artistPosts,
+  PostDetailsPart.relatedPosts,
+  PostDetailsPart.characterList,
+};
 
 class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   const PostDetailsPageScaffold({
@@ -26,7 +75,6 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     required this.posts,
     required this.initialIndex,
     required this.onExit,
-    required this.onTagTap,
     this.toolbarBuilder,
     this.sliverArtistPostsBuilder,
     this.sliverCharacterPostsBuilder,
@@ -36,7 +84,6 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     required this.swipeImageUrlBuilder,
     this.topRightButtonsBuilder,
     this.placeholderImageUrlBuilder,
-    this.imageOverlayBuilder,
     this.artistInfoBuilder,
     this.onPageChanged,
     this.onPageChangeIndexed,
@@ -46,12 +93,12 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     this.statsTileBuilder,
     this.fileDetailsBuilder,
     this.sourceSectionBuilder,
+    this.parts = kDefaultPostDetailsParts,
   });
 
   final int initialIndex;
   final List<T> posts;
   final void Function(int page) onExit;
-  final void Function(String tag) onTagTap;
   final void Function(T post)? onExpanded;
   final void Function(T post)? onPageChanged;
   final void Function(int index)? onPageChangeIndexed;
@@ -71,12 +118,12 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   final Widget Function(BuildContext context, T post)? fileDetailsBuilder;
   final Widget Function(BuildContext context, T post)? sourceSectionBuilder;
 
+  final Set<PostDetailsPart> parts;
+
   final Widget Function(BuildContext context, T post)?
       sliverRelatedPostsBuilder;
   final List<Widget> Function(int currentPage, bool expanded, T post,
       DetailsPageController controller)? topRightButtonsBuilder;
-  final List<Widget> Function(BoxConstraints constraints, T post)?
-      imageOverlayBuilder;
 
   @override
   ConsumerState<PostDetailsPageScaffold<T>> createState() =>
@@ -87,6 +134,7 @@ class _PostDetailPageScaffoldState<T extends Post>
     extends ConsumerState<PostDetailsPageScaffold<T>>
     with PostDetailsPageMixin<PostDetailsPageScaffold<T>, T> {
   late final _controller = DetailsPageController(
+    initialPage: widget.initialIndex,
     swipeDownToDismiss: !widget.posts[widget.initialIndex].isVideo,
     hideOverlay: ref.read(settingsProvider).hidePostDetailsOverlay,
   );
@@ -106,26 +154,61 @@ class _PostDetailPageScaffoldState<T extends Post>
   int get initialPage => widget.initialIndex;
 
   @override
+  void initState() {
+    super.initState();
+    _controller.currentPage.addListener(_onPageChanged);
+  }
+
+  void _onPageChanged() {
+    final page = _controller.currentPage.value;
+
+    onSwiped(page);
+    widget.onPageChangeIndexed?.call(page);
+    widget.onPageChanged?.call(posts[page]);
+  }
+
+  @override
   void dispose() {
+    _controller.currentPage.removeListener(_onPageChanged);
     _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return CustomContextMenuOverlay(
-      backgroundColor: context.colorScheme.secondaryContainer,
-      child: ValueListenableBuilder(
-        valueListenable: controller.slideshow,
-        builder: (context, slideshow, child) => GestureDetector(
-          behavior: slideshow ? HitTestBehavior.opaque : null,
-          onTap: () => controller.stopSlideshow(),
-          child: IgnorePointer(
-            ignoring: slideshow,
-            child: child!,
+    ref.listen(
+      settingsProvider.select((value) => value.hidePostDetailsOverlay),
+      (previous, next) {
+        if (previous != next && _controller.hideOverlay.value != next) {
+          _controller.setHideOverlay(next);
+        }
+      },
+    );
+
+    return CallbackShortcuts(
+      bindings: {
+        LogicalKeySet(LogicalKeyboardKey.escape): () {
+          Navigator.of(context).pop();
+          widget.onExit(controller.currentPage.value);
+        },
+      },
+      child: Focus(
+        autofocus: true,
+        child: CustomContextMenuOverlay(
+          backgroundColor: context.colorScheme.secondaryContainer,
+          child: ValueListenableBuilder(
+            valueListenable: controller.slideshow,
+            builder: (context, slideshow, child) => GestureDetector(
+              behavior: slideshow ? HitTestBehavior.opaque : null,
+              onTap: () => controller.stopSlideshow(),
+              child: IgnorePointer(
+                ignoring: slideshow,
+                child: child!,
+              ),
+            ),
+            child: _build(),
           ),
         ),
-        child: _build(),
       ),
     );
   }
@@ -152,11 +235,6 @@ class _PostDetailPageScaffoldState<T extends Post>
         controller: controller,
         intitialIndex: widget.initialIndex,
         onExit: widget.onExit,
-        onPageChanged: (page) {
-          onSwiped(page);
-          widget.onPageChangeIndexed?.call(page);
-          widget.onPageChanged?.call(posts[page]);
-        },
         onSwipeDownEnd: booruBuilder?.canHandlePostGesture(
                       GestureType.swipeDown,
                       config.postGestures?.fullview,
@@ -224,15 +302,55 @@ class _PostDetailPageScaffoldState<T extends Post>
         ),
         expandedBuilder:
             (context, page, currentPage, expanded, enableSwipe, sharedChild) {
-          final widgets = _buildWidgets(
-            context,
-            expanded,
-            page,
-            currentPage,
-            ref,
-            booruBuilder,
-            postGesturesHandler,
-            sharedChild,
+          final post = posts[page];
+          final nextPost = posts.length > page + 1 ? posts[page + 1] : null;
+          final expandedOnCurrentPage = expanded && page == currentPage;
+          final media = PostMedia(
+            inFocus: !expanded && page == currentPage,
+            post: post,
+            imageUrl: widget.swipeImageUrlBuilder(post),
+            placeholderImageUrl: widget.placeholderImageUrlBuilder != null
+                ? widget.placeholderImageUrlBuilder!(post, currentPage)
+                : post.thumbnailImageUrl,
+            onImageTap: onImageTap,
+            onDoubleTap: booruBuilder?.canHandlePostGesture(
+                          GestureType.doubleTap,
+                          ref.watchConfig.postGestures?.fullview,
+                        ) ==
+                        true &&
+                    postGesturesHandler != null
+                ? () => postGesturesHandler(
+                      ref,
+                      ref.watchConfig.postGestures?.fullview?.doubleTap,
+                      post,
+                    )
+                : null,
+            onLongPress: booruBuilder?.canHandlePostGesture(
+                          GestureType.longPress,
+                          ref.watchConfig.postGestures?.fullview,
+                        ) ==
+                        true &&
+                    postGesturesHandler != null
+                ? () => postGesturesHandler(
+                      ref,
+                      ref.watchConfig.postGestures?.fullview?.longPress,
+                      post,
+                    )
+                : null,
+            onCurrentVideoPositionChanged: onCurrentPositionChanged,
+            onVideoVisibilityChanged: onVisibilityChanged,
+            imageOverlayBuilder: (constraints) => noteOverlayBuilderDelegate(
+              constraints,
+              post,
+              ref.watch(notesControllerProvider(post)),
+            ),
+            useHero: page == currentPage,
+            onImageZoomUpdated: onZoomUpdated,
+            onVideoPlayerCreated: (controller) =>
+                onVideoPlayerCreated(controller, page),
+            onWebmVideoPlayerCreated: (controller) =>
+                onWebmVideoPlayerCreated(controller, page),
+            autoPlay: true,
           );
 
           return Padding(
@@ -242,24 +360,159 @@ class _PostDetailPageScaffoldState<T extends Post>
                   enableSwipe ? null : const NeverScrollableScrollPhysics(),
               controller: PageContentScrollController.of(context),
               slivers: [
-                SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) => widgets[index],
-                    childCount: widgets.length,
+                // preload next image only, not the post itself
+                if (nextPost != null && !nextPost.isVideo)
+                  SliverOffstage(
+                    offstage: true,
+                    sliver: SliverToBoxAdapter(
+                      child: ExtendedImage.network(
+                        widget.swipeImageUrlBuilder(nextPost),
+                        width: 1,
+                        height: 1,
+                        cacheHeight: 10,
+                        cacheWidth: 10,
+                        cache: true,
+                      ),
+                    ),
                   ),
-                ),
-                if (expanded && page == currentPage)
-                  if (widget.sliverArtistPostsBuilder != null)
-                    ...widget.sliverArtistPostsBuilder!(context, posts[page]),
-                if (widget.sliverRelatedPostsBuilder != null &&
-                    ref.watch(_visibleProvider(currentPage)) &&
-                    expanded &&
-                    page == currentPage)
-                  widget.sliverRelatedPostsBuilder!(context, posts[page]),
-                if (widget.sliverCharacterPostsBuilder != null &&
-                    expanded &&
-                    page == currentPage)
-                  widget.sliverCharacterPostsBuilder!(context, posts[page]),
+                if (!expandedOnCurrentPage)
+                  SliverSizedBox(
+                    height: context.screenHeight -
+                        MediaQuery.viewPaddingOf(context).top,
+                    child: media,
+                  )
+                else
+                  SliverToBoxAdapter(child: media),
+                if (!expandedOnCurrentPage)
+                  SliverSizedBox(height: context.screenHeight),
+                if (expandedOnCurrentPage)
+                  ...widget.parts
+                      .map(
+                        (p) => switch (p) {
+                          PostDetailsPart.pool => widget.poolTileBuilder != null
+                              ? SliverToBoxAdapter(
+                                  child: widget.poolTileBuilder!(context, post),
+                                )
+                              : null,
+                          PostDetailsPart.info => widget.infoBuilder != null
+                              ? SliverToBoxAdapter(
+                                  child: widget.infoBuilder!(context, post),
+                                )
+                              : null,
+                          PostDetailsPart.toolbar => widget.toolbarBuilder !=
+                                  null
+                              ? SliverToBoxAdapter(
+                                  child: widget.toolbarBuilder!(context, post),
+                                )
+                              : null,
+                          PostDetailsPart.artistInfo => widget
+                                      .artistInfoBuilder !=
+                                  null
+                              ? SliverToBoxAdapter(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
+                                    children: [
+                                      const Divider(thickness: 0.5, height: 8),
+                                      widget.artistInfoBuilder!(
+                                        context,
+                                        post,
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : null,
+                          PostDetailsPart.stats =>
+                            widget.statsTileBuilder != null
+                                ? SliverToBoxAdapter(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.stretch,
+                                      children: [
+                                        const SizedBox(height: 8),
+                                        widget.statsTileBuilder!(context, post),
+                                        const Divider(thickness: 0.5),
+                                      ],
+                                    ),
+                                  )
+                                : null,
+                          PostDetailsPart.tags => widget.tagListBuilder != null
+                              ? SliverToBoxAdapter(
+                                  child: widget.tagListBuilder!(context, post),
+                                )
+                              : SliverToBoxAdapter(
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 12),
+                                    child: BasicTagList(
+                                      tags: post.tags.toList(),
+                                      onTap: (tag) =>
+                                          goToSearchPage(context, tag: tag),
+                                    ),
+                                  ),
+                                ),
+                          PostDetailsPart.fileDetails => widget
+                                      .fileDetailsBuilder !=
+                                  null
+                              ? SliverToBoxAdapter(
+                                  child: Column(
+                                    children: [
+                                      widget.fileDetailsBuilder!(context, post),
+                                      const Divider(thickness: 0.5),
+                                    ],
+                                  ),
+                                )
+                              : SliverToBoxAdapter(
+                                  child: Column(
+                                    children: [
+                                      FileDetailsSection(
+                                        post: post,
+                                        rating: post.rating,
+                                      ),
+                                      const Divider(thickness: 0.5),
+                                    ],
+                                  ),
+                                ),
+                          PostDetailsPart.source =>
+                            widget.sourceSectionBuilder != null
+                                ? SliverToBoxAdapter(
+                                    child: widget.sourceSectionBuilder!(
+                                        context, post),
+                                  )
+                                : post.source.whenWeb(
+                                    (source) => SliverToBoxAdapter(
+                                      child: SourceSection(source: source),
+                                    ),
+                                    () => null,
+                                  ),
+                          PostDetailsPart.comments => widget.commentsBuilder !=
+                                  null
+                              ? SliverToBoxAdapter(
+                                  child: widget.commentsBuilder!(context, post),
+                                )
+                              : null,
+                          PostDetailsPart.artistPosts =>
+                            widget.sliverArtistPostsBuilder != null
+                                ? MultiSliver(
+                                    children: widget.sliverArtistPostsBuilder!(
+                                      context,
+                                      post,
+                                    ),
+                                  )
+                                : null,
+                          PostDetailsPart.relatedPosts => widget
+                                      .sliverRelatedPostsBuilder !=
+                                  null
+                              ? widget.sliverRelatedPostsBuilder!(context, post)
+                              : null,
+                          PostDetailsPart.characterList =>
+                            widget.sliverCharacterPostsBuilder != null
+                                ? widget.sliverCharacterPostsBuilder!(
+                                    context, post)
+                                : null,
+                        },
+                      )
+                      .whereNotNull(),
                 SliverSizedBox(
                   height: MediaQuery.paddingOf(context).bottom + 72,
                 ),
@@ -273,6 +526,12 @@ class _PostDetailPageScaffoldState<T extends Post>
                 ? widget.topRightButtonsBuilder!(
                     page, expanded, posts[page], controller)
                 : [
+                    NoteActionButtonWithProvider(
+                      post: posts[page],
+                      expanded: expanded,
+                      noteState:
+                          ref.watch(notesControllerProvider(posts[page])),
+                    ),
                     GeneralMoreActionButton(
                       post: widget.posts[page],
                       onStartSlideshow: () => controller.startSlideshow(),
@@ -283,145 +542,4 @@ class _PostDetailPageScaffoldState<T extends Post>
       ),
     );
   }
-
-  List<Widget> _buildWidgets(
-    BuildContext context,
-    bool expanded,
-    int page,
-    int currentPage,
-    WidgetRef ref,
-    BooruBuilder? booruBuilder,
-    PostGestureHandlerBuilder? postDetailsGesturesHandler,
-    Widget? sharedChild,
-  ) {
-    final post = posts[page];
-    final nextPost = posts.length > page + 1 ? posts[page + 1] : null;
-    final expandedOnCurrentPage = expanded && page == currentPage;
-    final media = PostMedia(
-      inFocus: !expanded && page == currentPage,
-      post: post,
-      imageUrl: widget.swipeImageUrlBuilder(post),
-      placeholderImageUrl: widget.placeholderImageUrlBuilder != null
-          ? widget.placeholderImageUrlBuilder!(post, currentPage)
-          : post.thumbnailImageUrl,
-      onImageTap: onImageTap,
-      onDoubleTap: booruBuilder?.canHandlePostGesture(
-                    GestureType.doubleTap,
-                    ref.watchConfig.postGestures?.fullview,
-                  ) ==
-                  true &&
-              postDetailsGesturesHandler != null
-          ? () => postDetailsGesturesHandler(
-                ref,
-                ref.watchConfig.postGestures?.fullview?.doubleTap,
-                post,
-              )
-          : null,
-      onLongPress: booruBuilder?.canHandlePostGesture(
-                    GestureType.longPress,
-                    ref.watchConfig.postGestures?.fullview,
-                  ) ==
-                  true &&
-              postDetailsGesturesHandler != null
-          ? () => postDetailsGesturesHandler(
-                ref,
-                ref.watchConfig.postGestures?.fullview?.longPress,
-                post,
-              )
-          : null,
-      onCurrentVideoPositionChanged: onCurrentPositionChanged,
-      onVideoVisibilityChanged: onVisibilityChanged,
-      imageOverlayBuilder: (constraints) => widget.imageOverlayBuilder != null
-          ? widget.imageOverlayBuilder!(constraints, post)
-          : [],
-      useHero: page == currentPage,
-      onImageZoomUpdated: onZoomUpdated,
-      onVideoPlayerCreated: (controller) =>
-          onVideoPlayerCreated(controller, page),
-      onWebmVideoPlayerCreated: (controller) =>
-          onWebmVideoPlayerCreated(controller, page),
-      autoPlay: true,
-    );
-
-    return [
-      // preload next image only, not the post itself
-      if (nextPost != null && !nextPost.isVideo)
-        Offstage(
-          offstage: true,
-          child: ExtendedImage.network(
-            widget.swipeImageUrlBuilder(nextPost),
-            width: 1,
-            height: 1,
-            cacheHeight: 10,
-            cacheWidth: 10,
-            cache: true,
-          ),
-        ),
-      if (!expandedOnCurrentPage)
-        SizedBox(
-          height: context.screenHeight - MediaQuery.viewPaddingOf(context).top,
-          child: media,
-        )
-      else
-        media,
-      if (!expandedOnCurrentPage) SizedBox(height: context.screenHeight),
-      if (expandedOnCurrentPage) ...[
-        if (widget.poolTileBuilder != null)
-          widget.poolTileBuilder!(context, post),
-        if (sharedChild != null) sharedChild,
-        if (widget.artistInfoBuilder != null) ...[
-          const Divider(height: 8, thickness: 0.5),
-          widget.artistInfoBuilder!(context, post),
-        ],
-        if (widget.statsTileBuilder != null) ...[
-          const SizedBox(height: 12),
-          widget.statsTileBuilder!(context, post),
-        ],
-        const Divider(height: 8, thickness: 0.5),
-        if (widget.tagListBuilder != null)
-          widget.tagListBuilder!(context, post)
-        else
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12),
-            child: BasicTagList(
-              tags: post.tags.toList(),
-              onTap: widget.onTagTap,
-            ),
-          ),
-        if (widget.fileDetailsBuilder != null)
-          widget.fileDetailsBuilder!(context, post)
-        else
-          FileDetailsSection(
-            post: post,
-            rating: post.rating,
-          ),
-        const Divider(height: 8, thickness: 0.5),
-        widget.sourceSectionBuilder != null
-            ? widget.sourceSectionBuilder!(context, post)
-            : post.source.whenWeb(
-                (source) => SourceSection(source: source),
-                () => const SizedBox.shrink(),
-              ),
-        if (widget.commentsBuilder != null)
-          widget.commentsBuilder!(context, post),
-        VisibilityDetector(
-          key: ValueKey(page),
-          onVisibilityChanged: (info) {
-            if (!mounted) return;
-
-            final visibilityState = ref.read(_visibleProvider(page));
-            if (!visibilityState && info.visibleFraction == 1.0) {
-              ref.read(_visibleProvider(page).notifier).state = true;
-            }
-          },
-          child: const SizedBox(
-            height: 4,
-          ),
-        ),
-      ],
-    ];
-  }
 }
-
-final _visibleProvider =
-    StateProvider.autoDispose.family<bool, int>((ref, key) => false);

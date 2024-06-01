@@ -9,7 +9,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 // Project imports:
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/time.dart';
 import 'package:boorusama/widgets/video_progress_bar.dart';
@@ -176,7 +176,7 @@ class BooruVideoOptionSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: isDesktopPlatform()
+      color: kPreferredLayout.isDesktop
           ? context.colorScheme.surface
           : context.colorScheme.secondaryContainer,
       child: Padding(

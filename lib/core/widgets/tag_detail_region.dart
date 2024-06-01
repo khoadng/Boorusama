@@ -11,7 +11,6 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 
 class TagDetailsRegion extends ConsumerWidget {
@@ -26,7 +25,7 @@ class TagDetailsRegion extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return isMobilePlatform() && context.orientation.isPortrait
+    return kPreferredLayout.isMobile && context.orientation.isPortrait
         ? builder(context)
         : Material(
             color: context.colorScheme.surface,

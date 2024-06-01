@@ -8,6 +8,7 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import 'package:boorusama/boorus/sankaku/sankaku.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/pages/home/side_menu_tile.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
@@ -23,10 +24,6 @@ class SankakuHomePage extends ConsumerWidget {
 
     return BooruScope(
       config: config,
-      mobileView: (controller) => MobileHomePageScaffold(
-        controller: controller,
-        onSearchTap: () => goToSearchPage(context),
-      ),
       mobileMenuBuilder: (context, controller) => [
         if (login != null)
           SideMenuTile(

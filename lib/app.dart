@@ -19,6 +19,7 @@ import 'package:boorusama/foundation/device_info_service.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/foundation/scrolling.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/string.dart';
@@ -44,35 +45,54 @@ class App extends StatelessWidget {
         child: AnalyticsScope(
           builder: (analyticsEnabled) => ThemeBuilder(
             builder: (theme, themeMode) => RouterBuilder(
-              builder: (context, router) => MaterialApp.router(
-                builder: (context, child) => ConditionalParentWidget(
-                  condition: isDesktopPlatform(),
-                  conditionalBuilder: (child) => WindowTitleBar(
-                    appName: appName,
-                    child: child,
-                  ),
-                  child: Theme(
-                    data: Theme.of(context).copyWith(
-                      iconTheme: Theme.of(context).iconTheme.copyWith(
-                            weight: isWindows() ? 200 : 400,
-                          ),
-                    ),
-                    child: child!,
-                  ),
+              builder: (context, router) => ScrollBehaviorBuilder(
+                builder: (context, behavior) => _buildApp(
+                  theme,
+                  themeMode,
+                  context,
+                  router,
+                  behavior,
                 ),
-                theme: theme,
-                themeMode: themeMode,
-                localizationsDelegates: context.localizationDelegates,
-                supportedLocales: context.supportedLocales,
-                locale: context.locale,
-                debugShowCheckedModeBanner: false,
-                title: appName,
-                routerConfig: router,
               ),
             ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildApp(
+    ThemeData theme,
+    ThemeMode themeMode,
+    BuildContext context,
+    GoRouter router,
+    ScrollBehavior? scrollBehavior,
+  ) {
+    return MaterialApp.router(
+      builder: (context, child) => ConditionalParentWidget(
+        condition: isDesktopPlatform(),
+        conditionalBuilder: (child) => WindowTitleBar(
+          appName: appName,
+          child: child,
+        ),
+        child: Theme(
+          data: Theme.of(context).copyWith(
+            iconTheme: Theme.of(context).iconTheme.copyWith(
+                  weight: isWindows() ? 200 : 400,
+                ),
+          ),
+          child: child!,
+        ),
+      ),
+      scrollBehavior: scrollBehavior,
+      theme: theme,
+      themeMode: themeMode,
+      localizationsDelegates: context.localizationDelegates,
+      supportedLocales: context.supportedLocales,
+      locale: context.locale,
+      debugShowCheckedModeBanner: false,
+      title: appName,
+      routerConfig: router,
     );
   }
 }

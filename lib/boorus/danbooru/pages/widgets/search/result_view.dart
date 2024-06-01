@@ -21,17 +21,17 @@ class ResultView extends ConsumerStatefulWidget {
     this.headerBuilder,
     this.scrollController,
     this.backgroundColor,
-    required this.selectedTagController,
     required this.onRelatedTagAdded,
     required this.onRelatedTagNegated,
     required this.selectedTagString,
+    required this.searchController,
   });
 
   final List<Widget> Function(
     PostGridController<DanbooruPost> postController,
   )? headerBuilder;
   final AutoScrollController? scrollController;
-  final SelectedTagController selectedTagController;
+  final SearchPageController searchController;
   final Color? backgroundColor;
   final void Function(
     RelatedTagItem tag,
@@ -67,13 +67,13 @@ class _ResultViewState extends ConsumerState<ResultView> {
 
     return PostScope(
       fetcher: (page) => ref.read(danbooruPostRepoProvider(config)).getPosts(
-            widget.selectedTagController.rawTags,
+            widget.searchController.getCurrentRawTags(),
             page,
           ),
       builder: (context, controller, errors) {
         final widgets = [
           () => SelectedTagListWithData(
-                controller: widget.selectedTagController,
+                controller: widget.searchController.selectedTagController,
               ),
           () => ValueListenableBuilder(
                 valueListenable: widget.selectedTagString,

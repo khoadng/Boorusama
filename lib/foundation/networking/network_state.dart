@@ -12,14 +12,11 @@ final class NetworkConnectedState extends NetworkState {
     required this.result,
   });
 
-  final ConnectivityResult result;
+  final List<ConnectivityResult> result;
 }
 
 final class NetworkDisconnectedState extends NetworkState {}
 
-extension ConnectivityResultX on ConnectivityResult {
-  bool get isMobile => switch (this) {
-        ConnectivityResult.mobile => true,
-        _ => false,
-      };
+extension ConnectivityResultX on List<ConnectivityResult> {
+  bool get isMobile => length == 1 && contains(ConnectivityResult.mobile);
 }

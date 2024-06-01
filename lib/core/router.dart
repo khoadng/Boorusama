@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
@@ -24,8 +23,8 @@ import 'package:boorusama/core/pages/blacklists/blacklisted_tags_search_page.dar
 import 'package:boorusama/core/pages/search/simple_tag_search_view.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/routes.dart';
@@ -51,16 +50,10 @@ void goToOriginalImagePage(BuildContext context, Post post) {
     return;
   }
 
-  context.navigator.push(PageTransition(
-    type: PageTransitionType.fade,
-    settings: const RouteSettings(
-      name: RouterPageConstant.originalImage,
-    ),
-    child: OriginalImagePage(
-      post: post,
-      initialOrientation: MediaQuery.orientationOf(context),
-    ),
-  ));
+  context.push(
+    '/original_image_viewer',
+    extra: post,
+  );
 }
 
 void goToSearchPage(
@@ -108,7 +101,7 @@ void goToPostDetailsPage<T extends Post>({
       initialIndex: initialIndex,
       posts: posts,
       scrollController: scrollController,
-      isDesktop: isDesktopPlatform(),
+      isDesktop: kPreferredLayout.isDesktop,
     ),
   );
 }
@@ -156,7 +149,7 @@ Future<Object?> goToFavoriteTagImportPage(
       name: RouterPageConstant.favoriteTagsImport,
     ),
     pageBuilder: (context, _, __) => ImportTagsDialog(
-      padding: isMobilePlatform() ? 0 : 8,
+      padding: kPreferredLayout.isMobile ? 0 : 8,
       onImport: (tagString, ref) =>
           ref.read(favoriteTagsProvider.notifier).import(tagString),
     ),

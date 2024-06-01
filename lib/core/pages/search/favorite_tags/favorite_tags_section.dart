@@ -12,6 +12,7 @@ import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/pages/favorite_tags/favorite_tags_page.dart';
 import 'package:boorusama/core/widgets/favorite_tag_label_selector_field.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/string.dart';
@@ -145,6 +146,7 @@ class OptionTagsArenaNoEdit extends StatelessWidget {
         ),
         Wrap(
           spacing: 4,
+          runSpacing: isDesktopPlatform() ? 4 : 0,
           children: childrenBuilder(),
         ),
       ],

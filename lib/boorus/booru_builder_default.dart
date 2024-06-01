@@ -252,8 +252,16 @@ mixin DefaultBooruUIMixin implements BooruBuilder {
               initialIndex: payload.initialIndex,
               swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
               onExit: (page) => payload.scrollController?.scrollToIndex(page),
-              onTagTap: (tag) => goToSearchPage(context, tag: tag),
             ),
+          );
+}
+
+mixin DefaultHomeMixin implements BooruBuilder {
+  @override
+  HomeViewBuilder get homeViewBuilder =>
+      (context, config, controller) => MobileHomePageScaffold(
+            controller: controller,
+            onSearchTap: () => goToSearchPage(context),
           );
 }
 
@@ -262,7 +270,7 @@ String Function(
 ) defaultPostImageUrlBuilder(
   WidgetRef ref,
 ) =>
-    (post) => isDesktopPlatform()
+    (post) => kPreferredLayout.isDesktop
         ? post.sampleImageUrl
         : ref.watchBooruBuilder(ref.watchConfig)?.postImageDetailsUrlBuilder(
                 ref.watch(settingsProvider), post, ref.watchConfig) ??

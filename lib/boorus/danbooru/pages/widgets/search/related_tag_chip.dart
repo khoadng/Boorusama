@@ -58,17 +58,25 @@ class RelatedTagButton extends ConsumerWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
+              const SizedBox(width: 2),
               SimpleIconButton(
-                icon: const Icon(Symbols.add),
+                icon: const Icon(
+                  Symbols.add,
+                  size: 20,
+                ),
                 onPressed: onAdd,
               ),
               const SizedBox(width: 4),
               label,
               const SizedBox(width: 4),
               SimpleIconButton(
-                icon: const Icon(Symbols.remove),
+                icon: const Icon(
+                  Symbols.remove,
+                  size: 20,
+                ),
                 onPressed: onRemove,
-              )
+              ),
+              const SizedBox(width: 2),
             ],
           ),
         ),

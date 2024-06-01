@@ -53,6 +53,7 @@ export 'shadow_gradient_overlay.dart';
 export 'side_sheet.dart';
 export 'simple_icon_button.dart';
 export 'slide_in_route.dart';
+export 'sliver_divider.dart';
 export 'sliver_sized_box.dart';
 export 'square_chip.dart';
 export 'swipe_down_to_dismiss_mixin.dart';

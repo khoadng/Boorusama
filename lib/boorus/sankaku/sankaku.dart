@@ -36,6 +36,7 @@ class SankakuBuilder
         CharacterNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
         NoGranularRatingQueryBuilderMixin,
+        DefaultHomeMixin,
         DefaultTagColorMixin,
         DefaultPostImageDetailsUrlMixin,
         DefaultPostGesturesHandlerMixin,
@@ -108,7 +109,7 @@ class SankakuBuilder
               post: post,
               showSource: true,
             ),
-            sourceSectionBuilder: (context, post) => const SizedBox.shrink(),
+            parts: kDefaultPostDetailsNoSourceParts,
             sliverArtistPostsBuilder: (context, post) =>
                 post.artistTags.isNotEmpty
                     ? post.artistTags
@@ -146,7 +147,6 @@ class SankakuBuilder
               onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
             ),
             onExit: (page) => scrollController?.scrollToIndex(page),
-            onTagTap: (tag) => goToSearchPage(context, tag: tag),
           ),
         );
       };

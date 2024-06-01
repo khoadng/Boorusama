@@ -10,6 +10,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/search/search.dart';
 import 'package:boorusama/core/pages/search/search_app_bar.dart';
@@ -26,10 +27,11 @@ class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     super.key,
     this.initialQuery,
     required this.fetcher,
-    this.gridBuilder,
     this.noticeBuilder,
-    this.searchBarLeading,
-    this.searchTrailing,
+    this.queryPattern,
+    this.metatagsBuilder,
+    this.trendingBuilder,
+    this.resultBuilder,
   });
 
   final String? initialQuery;
@@ -38,14 +40,20 @@ class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
 
   final PostsOrErrorCore<T> Function(int page, List<String> tags) fetcher;
 
-  final Widget Function(
-    BuildContext context,
-    PostGridController<T> controller,
-    List<Widget> slivers,
-  )? gridBuilder;
+  final Map<RegExp, TextStyle>? queryPattern;
 
-  final Widget? searchBarLeading;
-  final Widget? searchTrailing;
+  final Widget Function(BuildContext context, SearchPageController controller)?
+      metatagsBuilder;
+  final Widget Function(BuildContext context, SearchPageController controller)?
+      trendingBuilder;
+
+  final Widget Function(
+    ValueNotifier<bool> didSearchOnce,
+    ValueNotifier<String> selectedTagString,
+    AutoScrollController scrollController,
+    SelectedTagController selectedTagController,
+    SearchPageController searchController,
+  )? resultBuilder;
 
   @override
   ConsumerState<SearchPageScaffold<T>> createState() =>
@@ -55,11 +63,32 @@ class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
 class _SearchPageScaffoldState<T extends Post>
     extends ConsumerState<SearchPageScaffold<T>> {
   var selectedTagString = ValueNotifier('');
-  late final _selectedTagController = SelectedTagController(
+  late final selectedTagController = SelectedTagController(
     tagInfo: ref.read(tagInfoProvider),
   );
   final _scrollController = AutoScrollController();
   final _didSearchOnce = ValueNotifier(false);
+  late final textController = RichTextController(
+    patternMatchMap: widget.queryPattern ??
+        {
+          RegExp(''): const TextStyle(color: Colors.white),
+        },
+    onMatch: (match) {},
+  );
+  final focus = FocusNode();
+
+  final searchState = ValueNotifier(SearchState.initial);
+  late final allowSearch = ValueNotifier(false);
+
+  late final searchController = SearchPageController(
+    textEditingController: textController,
+    searchHistory: ref.read(searchHistoryProvider.notifier),
+    selectedTagController: selectedTagController,
+    suggestions: ref.read(suggestionsProvider(ref.readConfig).notifier),
+    focus: focus,
+    searchState: searchState,
+    allowSearch: allowSearch,
+  );
 
   @override
   void initState() {
@@ -67,8 +96,9 @@ class _SearchPageScaffoldState<T extends Post>
 
     if (widget.initialQuery != null) {
       selectedTagString.value = widget.initialQuery!;
-      _selectedTagController.addTag(widget.initialQuery!);
+      selectedTagController.addTag(widget.initialQuery!);
       _didSearchOnce.value = true;
+      searchController.skipToResultWithTag(widget.initialQuery!);
     }
 
     selectedTagString.addListener(_onTagChanged);
@@ -87,132 +117,132 @@ class _SearchPageScaffoldState<T extends Post>
     super.dispose();
     _scrollController.dispose();
     selectedTagString.dispose();
+    textController.dispose();
+    searchController.dispose();
+
+    focus.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return CustomContextMenuOverlay(
-      child: SearchScope(
-        selectedTagController: _selectedTagController,
-        initialQuery: widget.initialQuery,
-        builder: (focus, textController, selectedTagController,
-                searchController, allowSearch) =>
-            ValueListenableBuilder(
-          valueListenable: textController,
-          builder: (context, value, child) => Stack(
-            children: [
-              Offstage(
-                offstage: value.text.isNotEmpty,
-                child: ValueListenableBuilder(
-                  valueListenable: _didSearchOnce,
-                  builder: (context, searchOnce, child) {
-                    //TODO: duplicated code
-                    void search() {
-                      _didSearchOnce.value = true;
-                      searchController.search();
-                      selectedTagString.value =
-                          selectedTagController.rawTagsString;
-                    }
+      child: ValueListenableBuilder(
+        valueListenable: searchController.searchState,
+        builder: (_, state, __) => Stack(
+          children: [
+            Offstage(
+              offstage: state != SearchState.initial,
+              child: ValueListenableBuilder(
+                valueListenable: _didSearchOnce,
+                builder: (context, searchOnce, child) {
+                  //TODO: duplicated code
+                  void search() {
+                    _didSearchOnce.value = true;
+                    searchController.search();
+                    selectedTagString.value =
+                        selectedTagController.rawTagsString;
+                  }
 
-                    return searchOnce
-                        ? _buildSearchResults(
-                            selectedTagController,
-                            searchController,
-                            focus,
-                            textController,
-                            value,
-                          )
-                        : Scaffold(
-                            appBar: PreferredSize(
-                              preferredSize:
-                                  const Size.fromHeight(kToolbarHeight * 1.2),
-                              child: SearchAppBar(
-                                focusNode: focus,
-                                autofocus: ref
-                                    .watch(settingsProvider)
-                                    .autoFocusSearchBar,
-                                queryEditingController: textController,
-                                onSubmitted: (value) {
-                                  searchController.submit(value);
-                                  textController.clear();
-                                },
-                                leading: widget.searchBarLeading ??
-                                    (!context.canPop()
-                                        ? null
-                                        : const SearchAppBarBackButton()),
-                              ),
-                            ),
-                            floatingActionButton: SearchButton(
-                              onSearch: search,
-                              allowSearch: allowSearch,
-                            ),
-                            body: Column(
-                              children: [
-                                SelectedTagListWithData(
-                                  controller: selectedTagController,
-                                ),
-                                Expanded(
-                                  child: SearchLandingView(
-                                    onHistoryCleared: () => ref
-                                        .read(searchHistoryProvider.notifier)
-                                        .clearHistories(),
-                                    onHistoryRemoved: (value) => ref
-                                        .read(searchHistoryProvider.notifier)
-                                        .removeHistory(value.query),
-                                    onHistoryTap: (value) {
-                                      searchController.tapHistoryTag(value);
-                                    },
-                                    onTagTap: (value) {
-                                      searchController.tapTag(value);
-                                    },
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                  },
-                ),
+                  return searchOnce
+                      ? widget.resultBuilder != null
+                          ? widget.resultBuilder!(
+                              _didSearchOnce,
+                              selectedTagString,
+                              _scrollController,
+                              selectedTagController,
+                              searchController,
+                            )
+                          : _buildDefaultSearchResults(
+                              selectedTagController,
+                              searchController,
+                              focus,
+                              textController,
+                            )
+                      : _buildInitial(context, search);
+                },
               ),
-              value.text.isNotEmpty
-                  ? Scaffold(
-                      appBar: PreferredSize(
-                        preferredSize:
-                            const Size.fromHeight(kToolbarHeight * 1.2),
-                        child: SearchAppBar(
-                          focusNode: focus,
-                          queryEditingController: textController,
-                          onSubmitted: (value) =>
-                              searchController.submit(value),
-                          leading: widget.searchBarLeading ??
-                              (!context.canPop()
-                                  ? null
-                                  : const SearchAppBarBackButton()),
-                        ),
-                      ),
-                      body: DefaultSearchSuggestionView(
-                        textEditingController: textController,
-                        searchController: searchController,
-                        selectedTagController: selectedTagController,
-                      ),
-                    )
-                  : const SizedBox.shrink()
-            ],
-          ),
+            ),
+            state == SearchState.suggestions
+                ? SuggestionView(
+                    queryPattern: widget.queryPattern,
+                    searchController: searchController,
+                  )
+                : const SizedBox.shrink(),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildSearchResults(
+  Widget _buildInitial(
+    BuildContext context,
+    void Function() search,
+  ) {
+    return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight * 1.2),
+        child: SearchAppBar(
+          focusNode: focus,
+          autofocus: ref.watch(settingsProvider).autoFocusSearchBar,
+          queryEditingController: textController,
+          leading: (!context.canPop() ? null : const SearchAppBarBackButton()),
+        ),
+      ),
+      floatingActionButton: ValueListenableBuilder(
+        valueListenable: searchController.allowSearch,
+        builder: (context, allow, child) => SearchButton(
+          onSearch: search,
+          allowSearch: allow,
+        ),
+      ),
+      body: Column(
+        children: [
+          SelectedTagListWithData(
+            controller: selectedTagController,
+          ),
+          Expanded(
+            child: SearchLandingView(
+              onHistoryCleared: () =>
+                  ref.read(searchHistoryProvider.notifier).clearHistories(),
+              onHistoryRemoved: (value) => ref
+                  .read(searchHistoryProvider.notifier)
+                  .removeHistory(value.query),
+              onHistoryTap: (value) {
+                searchController.tapHistoryTag(value);
+              },
+              onTagTap: (value) {
+                searchController.tapTag(value);
+              },
+              metatagsBuilder: widget.metatagsBuilder != null
+                  ? (context) => widget.metatagsBuilder!(
+                        context,
+                        searchController,
+                      )
+                  : null,
+              trendingBuilder: widget.trendingBuilder != null
+                  ? (context) => widget.trendingBuilder!(
+                        context,
+                        searchController,
+                      )
+                  : null,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDefaultSearchResults(
     SelectedTagController selectedTagController,
     SearchPageController searchController,
     FocusNode focus,
     RichTextController textController,
-    TextEditingValue value,
   ) {
     return PostScope(
-      fetcher: (page) =>
-          widget.fetcher.call(page, selectedTagController.rawTags),
+      fetcher: (page) => widget.fetcher(
+        page,
+        searchController.getCurrentRawTags(),
+      ),
       builder: (context, controller, errors) {
         void search() {
           searchController.search();
@@ -229,33 +259,16 @@ class _SearchPageScaffoldState<T extends Post>
             toolbarHeight: kToolbarHeight * 1.2,
             backgroundColor: context.theme.scaffoldBackgroundColor,
             title: SearchAppBar(
-              focusNode: focus,
               autofocus: false,
               queryEditingController: textController,
-              onSubmitted: (value) {
-                searchController.submit(value);
-                textController.clear();
-              },
-              leading: widget.searchBarLeading ??
+              leading:
                   (!context.canPop() ? null : const SearchAppBarBackButton()),
-              innerSearchButton: value.text.isEmpty
-                  ? widget.searchTrailing != null
-                      ? Row(
-                          children: [
-                            SearchButton2(
-                              onTap: search,
-                            ),
-                            widget.searchTrailing!,
-                            const SizedBox(width: 8),
-                          ],
-                        )
-                      : Padding(
-                          padding: const EdgeInsets.only(right: 8),
-                          child: SearchButton2(
-                            onTap: search,
-                          ),
-                        )
-                  : null,
+              innerSearchButton: Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: SearchButton2(
+                  onTap: search,
+                ),
+              ),
               trailingSearchButton: IconButton(
                 onPressed: () => showBarModalBottomSheet(
                   context: context,
@@ -308,14 +321,77 @@ class _SearchPageScaffoldState<T extends Post>
           ),
         ];
 
-        return widget.gridBuilder != null
-            ? widget.gridBuilder!(context, controller, slivers)
-            : InfinitePostListScaffold(
-                errors: errors,
-                controller: controller,
-                sliverHeaderBuilder: (context) => slivers,
-              );
+        return InfinitePostListScaffold(
+          errors: errors,
+          controller: controller,
+          sliverHeaderBuilder: (context) => slivers,
+        );
       },
+    );
+  }
+}
+
+class SuggestionView extends StatefulWidget {
+  const SuggestionView({
+    super.key,
+    required this.searchController,
+    this.queryPattern,
+  });
+
+  final Map<RegExp, TextStyle>? queryPattern;
+  final SearchPageController searchController;
+
+  @override
+  State<SuggestionView> createState() => _SuggestionViewState();
+}
+
+class _SuggestionViewState extends State<SuggestionView> {
+  final focus = FocusNode();
+  late final textController = RichTextController(
+    text: widget.searchController.textEditingController.text,
+    patternMatchMap: widget.queryPattern ??
+        {
+          RegExp(''): const TextStyle(color: Colors.white),
+        },
+    onMatch: (match) {},
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    focus.requestFocus();
+    textController.addListener(_onTextChanged);
+  }
+
+  @override
+  void dispose() {
+    textController.removeListener(_onTextChanged);
+    textController.dispose();
+    focus.dispose();
+    super.dispose();
+  }
+
+  void _onTextChanged() {
+    widget.searchController.updateQuery(textController.text);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight * 1.2),
+        child: SearchAppBar(
+          focusNode: focus,
+          queryEditingController: textController,
+          onSubmitted: (value) => widget.searchController.submit(value),
+          leading: (!context.canPop() ? null : const SearchAppBarBackButton()),
+        ),
+      ),
+      body: DefaultSearchSuggestionView(
+        textEditingController: textController,
+        searchController: widget.searchController,
+        selectedTagController: widget.searchController.selectedTagController,
+      ),
     );
   }
 }

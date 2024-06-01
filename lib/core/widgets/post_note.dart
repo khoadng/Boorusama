@@ -2,32 +2,57 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:equatable/equatable.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_portal/flutter_portal.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/notes/notes.dart';
-import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/foundation/display.dart';
+
+class NoteStyle extends Equatable {
+  const NoteStyle({
+    this.borderColor,
+    this.backgroundColor,
+    this.foregroundColor,
+  });
+
+  final Color? borderColor;
+  final Color? backgroundColor;
+  final Color? foregroundColor;
+
+  @override
+  List<Object?> get props => [
+        borderColor,
+        backgroundColor,
+        foregroundColor,
+      ];
+}
 
 class PostNote extends StatelessWidget {
   const PostNote({
     super.key,
     required this.coordinate,
     required this.content,
+    this.style,
   });
+
   final NoteCoordinate coordinate;
   final String content;
+  final NoteStyle? style;
 
   @override
   Widget build(BuildContext context) {
-    return isMobilePlatform()
+    return kPreferredLayout.isMobile
         ? PostNoteMobile(
             coordinate: coordinate,
             content: content,
+            style: style,
           )
         : PostNoteDesktop(
             coordinate: coordinate,
             content: content,
+            style: style,
           );
   }
 }
@@ -37,10 +62,12 @@ class PostNoteDesktop extends StatefulWidget {
     super.key,
     required this.coordinate,
     required this.content,
+    this.style,
   });
 
   final NoteCoordinate coordinate;
   final String content;
+  final NoteStyle? style;
 
   @override
   State<PostNoteDesktop> createState() => _PostNoteDesktopState();
@@ -60,6 +87,7 @@ class _PostNoteDesktopState extends State<PostNoteDesktop> {
       child: _NoteContainerDesktop(
         coordinate: widget.coordinate,
         content: widget.content,
+        style: widget.style,
       ),
     );
   }
@@ -69,10 +97,12 @@ class _NoteContainerDesktop extends StatefulWidget {
   const _NoteContainerDesktop({
     required this.coordinate,
     required this.content,
+    this.style,
   });
 
   final NoteCoordinate coordinate;
   final String content;
+  final NoteStyle? style;
 
   @override
   State<_NoteContainerDesktop> createState() => _NoteContainerDesktopState();
@@ -117,9 +147,13 @@ class _NoteContainerDesktopState extends State<_NoteContainerDesktop> {
           child: Container(
             width: widget.coordinate.width,
             height: widget.coordinate.height,
-            decoration: const BoxDecoration(
-              color: Colors.white54,
-              border: Border.fromBorderSide(BorderSide(color: Colors.red)),
+            decoration: BoxDecoration(
+              color: widget.style?.backgroundColor ?? Colors.white54,
+              border: Border.fromBorderSide(
+                BorderSide(
+                  color: widget.style?.borderColor ?? Colors.red,
+                ),
+              ),
             ),
           ),
         ),
@@ -133,10 +167,12 @@ class PostNoteMobile extends StatefulWidget {
     super.key,
     required this.coordinate,
     required this.content,
+    this.style,
   });
 
   final NoteCoordinate coordinate;
   final String content;
+  final NoteStyle? style;
 
   @override
   State<PostNoteMobile> createState() => _PostNoteMobileState();
@@ -147,7 +183,7 @@ class _PostNoteMobileState extends State<PostNoteMobile> {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<bool>(
+    return ValueListenableBuilder(
       valueListenable: _visible,
       builder: (context, visible, _) => PortalTarget(
         visible: visible,
@@ -160,6 +196,7 @@ class _PostNoteMobileState extends State<PostNoteMobile> {
           visible: visible,
           onTap: () => _visible.value = true,
           content: widget.content,
+          style: widget.style,
         ),
       ),
     );
@@ -172,12 +209,14 @@ class _NoteContainerMobile extends StatelessWidget {
     required this.visible,
     required this.onTap,
     required this.content,
+    this.style,
   });
 
   final NoteCoordinate coordinate;
   final bool visible;
   final String content;
   final VoidCallback onTap;
+  final NoteStyle? style;
 
   @override
   Widget build(BuildContext context) {
@@ -214,9 +253,13 @@ class _NoteContainerMobile extends StatelessWidget {
           child: Container(
             width: coordinate.width,
             height: coordinate.height,
-            decoration: const BoxDecoration(
-              color: Colors.white54,
-              border: Border.fromBorderSide(BorderSide(color: Colors.red)),
+            decoration: BoxDecoration(
+              color: style?.backgroundColor ?? Colors.white54,
+              border: Border.fromBorderSide(
+                BorderSide(
+                  color: style?.borderColor ?? Colors.red,
+                ),
+              ),
             ),
           ),
         ),

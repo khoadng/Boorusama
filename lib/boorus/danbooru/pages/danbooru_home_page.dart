@@ -14,6 +14,7 @@ import 'package:share_handler/share_handler.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/pages/home/side_menu_tile.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
@@ -30,7 +31,6 @@ import 'danbooru_forum_page.dart';
 import 'explore_page.dart';
 import 'favorite_groups_page.dart';
 import 'favorites_page.dart';
-import 'latest_posts_view.dart';
 import 'pool_page.dart';
 import 'saved_search_feed_page.dart';
 import 'user_details_page.dart';
@@ -130,12 +130,6 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
 
     return BooruScope(
       config: widget.config,
-      mobileView: (controller) => LatestView(
-        searchBar: HomeSearchBar(
-          onMenuTap: controller.openMenu,
-          onTap: () => goToSearchPage(context),
-        ),
-      ),
       mobileMenuBuilder: (context, controller) => [
         if (widget.config.hasLoginDetails() && userId != null)
           SideMenuTile(

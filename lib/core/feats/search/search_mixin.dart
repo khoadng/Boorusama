@@ -1,22 +1,41 @@
-// Flutter imports:
-import 'package:flutter/material.dart';
-
 // Project imports:
-import 'package:boorusama/core/feats/search/search.dart';
+import 'filter_operator.dart';
+import 'search_utils.dart';
+import 'selected_tag_controller.dart';
+
+typedef HistoryAdder = void Function(String tag);
+
+typedef QueryClearer = void Function();
+typedef QueryUpdater = void Function(String query);
+typedef QueryGetter = String Function();
+
+typedef SearchStateGetter = SearchState Function();
+typedef SearchStateSetter = void Function(SearchState state);
+
+typedef SuggestionFetcher = void Function(String query);
+
+typedef SetAllowSearch = void Function(bool value);
+typedef GetAllowedSearch = bool Function();
+
+enum SearchState {
+  initial,
+  suggestions,
+}
 
 mixin SearchMixin {
   void submit(String value) {
     selectedTagController.addTag(value);
+    clearQuery();
   }
 
   void skipToResultWithTag(String tag) {
     selectedTagController.clear();
     selectedTagController.addTag(tag);
-    searchHistory.addHistory(selectedTagController.rawTags.join(' '));
+    addHistory(selectedTagController.rawTags.join(' '));
   }
 
   void search() {
-    searchHistory.addHistory(selectedTagController.rawTags.join(' '));
+    addHistory(selectedTagController.rawTags.join(' '));
   }
 
   void tapTag(String tag) {
@@ -24,18 +43,48 @@ mixin SearchMixin {
       tag,
       operator: filterOperator,
     );
-    textEditingController.clear();
+
+    clearQuery();
   }
 
   void tapHistoryTag(String tag) {
     selectedTagController.addTags(tag.split(' '));
   }
 
-  void tapRawMetaTag(String tag) => textEditingController.text = '$tag:';
+  void tapRawMetaTag(String tag) => updateQuery('$tag:');
 
-  SearchHistoryNotifier get searchHistory;
-  TextEditingController get textEditingController;
+  void onQueryChanged(String previous, String current) {
+    if (previous == current) {
+      return;
+    }
+
+    final currentState = getSearchState();
+    final nextState =
+        current.isEmpty ? SearchState.initial : SearchState.suggestions;
+
+    if (currentState != nextState) {
+      setSearchState(nextState);
+    }
+
+    fetchSuggestions(current);
+  }
+
+  List<String> getCurrentRawTags() {
+    return selectedTagController.rawTags;
+  }
+
+  SearchStateGetter get getSearchState;
+  SearchStateSetter get setSearchState;
+
+  SuggestionFetcher get fetchSuggestions;
+
+  HistoryAdder get addHistory;
+  QueryClearer get clearQuery;
+  QueryUpdater get updateQuery;
+  QueryGetter get getQuery;
   SelectedTagController get selectedTagController;
-  FilterOperator get filterOperator =>
-      getFilterOperator(textEditingController.text);
+  FilterOperator get filterOperator => getFilterOperator(getQuery());
+
+  SetAllowSearch get setAllowSearch;
+  GetAllowedSearch get getAllowedSearch;
 }

@@ -16,7 +16,6 @@ import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'danbooru_tag_context_menu.dart';
@@ -106,7 +105,8 @@ class _DanbooruTagDetailsPageState
           ];
 
           final headers = [
-            if (isMobilePlatform() && context.orientation.isPortrait) ...[
+            if (kPreferredLayout.isMobile &&
+                context.orientation.isPortrait) ...[
               TagDetailsSlilverAppBar(
                 tagName: widget.tagName,
               ),

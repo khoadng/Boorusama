@@ -9,12 +9,12 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/pages/home/side_menu_tile.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'gelbooru_desktop_home_page.dart';
-import 'gelbooru_mobile_home_page.dart';
 
 class GelbooruHomePage extends ConsumerStatefulWidget {
   const GelbooruHomePage({
@@ -36,9 +36,6 @@ class _GelbooruHomePageState extends ConsumerState<GelbooruHomePage> {
 
     return BooruScope(
       config: widget.config,
-      mobileView: (controller) => GelbooruMobileHomePage(
-        controller: controller,
-      ),
       mobileMenuBuilder: (context, controller) => [
         if (favoritePageBuilder != null && ref.watchConfig.hasLoginDetails())
           SideMenuTile(

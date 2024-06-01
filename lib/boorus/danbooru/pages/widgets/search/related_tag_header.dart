@@ -41,10 +41,13 @@ class _RelatedTagHeaderState extends ConsumerState<RelatedTagHeader> {
     ];
 
     return Container(
-      margin: const EdgeInsets.only(top: 12, bottom: 7),
+      margin: const EdgeInsets.only(top: 8, bottom: 8),
       color: widget.backgroundColor,
       height: 28,
       child: ListView.builder(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 8,
+        ),
         scrollDirection: Axis.horizontal,
         itemCount: data.length,
         itemBuilder: (context, index) => switch (data[index]) {

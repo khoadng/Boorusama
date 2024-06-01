@@ -209,14 +209,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.1"
-  carousel_slider:
-    dependency: "direct main"
-    description:
-      name: carousel_slider
-      sha256: "9c695cc963bf1d04a47bd6021f68befce8970bcd61d24938e1fb0918cf5d9c42"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.2.1"
   characters:
     dependency: transitive
     description:
@@ -277,18 +269,18 @@ packages:
     dependency: "direct main"
     description:
       name: connectivity_plus
-      sha256: "224a77051d52a11fbad53dd57827594d3bd24f945af28bd70bab376d68d437f0"
+      sha256: db7a4e143dc72cc3cb2044ef9b052a7ebfe729513e6a82943bc3526f784365b8
       url: "https://pub.dev"
     source: hosted
-    version: "5.0.2"
+    version: "6.0.3"
   connectivity_plus_platform_interface:
     dependency: transitive
     description:
       name: connectivity_plus_platform_interface
-      sha256: cf1d1c28f4416f8c654d7dc3cd638ec586076255d407cef3ddbdaf178272a71a
+      sha256: b6a56efe1e6675be240de39107281d4034b64ac23438026355b4234042a35adb
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.4"
+    version: "2.0.0"
   context_menus:
     dependency: "direct main"
     description:
@@ -647,14 +639,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_advanced_segment:
-    dependency: "direct main"
-    description:
-      name: flutter_advanced_segment
-      sha256: "58518e2b7229cc4dd98a778f594e54813a4c244bcbf9e702a8fa194bf09509b8"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.2"
   flutter_cache_manager:
     dependency: "direct main"
     description:
@@ -1217,15 +1201,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.2"
-  number_inc_dec:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: f66ee872727172ce2fe57f118d569339d54c384d
-      resolved-ref: f66ee872727172ce2fe57f118d569339d54c384d
-      url: "https://github.com/hilalbaig/number_inc_dec.git"
-    source: git
-    version: "0.8.0"
   numerus:
     dependency: transitive
     description:
@@ -1274,14 +1249,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.0"
-  page_transition:
-    dependency: "direct main"
-    description:
-      name: page_transition
-      sha256: dee976b1f23de9bbef5cd512fe567e9f6278caee11f5eaca9a2115c19dc49ef6
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.1.0"
   path:
     dependency: "direct main"
     description:
@@ -1523,14 +1490,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.5.1"
-  riverpod_infinite_scroll:
-    dependency: "direct main"
-    description:
-      name: riverpod_infinite_scroll
-      sha256: "94f177086c77dc17ca8d1e85117eed346ff6ac651ccbf4d51a449b212d68fd24"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.9"
   rxdart:
     dependency: "direct main"
     description:

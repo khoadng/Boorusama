@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/dart.dart';
-import 'theme_mode.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 
 const kLightWhiteColor = Color.fromARGB(255, 220, 220, 220);
 const kDimWhiteColor = Color.fromARGB(255, 130, 130, 130);
@@ -85,7 +85,12 @@ extension DynamicColorX on BuildContext {
     Color? color,
     Settings settings,
   ) =>
-      generateChipColorsFromColorScheme(this, color, settings);
+      generateChipColorsFromColorScheme(
+        color,
+        colorScheme,
+        themeMode,
+        settings.enableDynamicColoring,
+      );
 }
 
 final dynamicColorSupportProvider = Provider<bool>((ref) {

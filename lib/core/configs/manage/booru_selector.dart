@@ -16,8 +16,8 @@ import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
+import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -59,7 +59,7 @@ class _BooruSelectorState extends ConsumerState<BooruSelector> {
                 color: context.colorScheme.error,
               ),
               onPressed: () {
-                if (isMobilePlatform()) {
+                if (kPreferredLayout.isMobile) {
                   showDialog(
                     context: context,
                     builder: (context) => Dialog(
@@ -267,7 +267,7 @@ class BooruSelectorItem extends StatelessWidget {
 
   Widget _build(BuildContext context) {
     final logoSize = hideLabel
-        ? isMobilePlatform()
+        ? kPreferredLayout.isMobile
             ? 40.0
             : 36.0
         : null;
@@ -275,7 +275,7 @@ class BooruSelectorItem extends StatelessWidget {
     return Container(
       margin: direction == Axis.vertical
           ? EdgeInsets.symmetric(
-              vertical: isMobilePlatform() ? 8 : 4,
+              vertical: kPreferredLayout.isMobile ? 8 : 4,
             )
           : const EdgeInsets.only(
               bottom: 4,
@@ -360,7 +360,7 @@ class BooruSelectorItem extends StatelessWidget {
                   else
                     const SizedBox(height: 4),
                   Container(
-                    padding: isDesktopPlatform()
+                    padding: kPreferredLayout.isDesktop
                         ? EdgeInsets.symmetric(
                             vertical: hideLabel ? 4 : 0,
                           )

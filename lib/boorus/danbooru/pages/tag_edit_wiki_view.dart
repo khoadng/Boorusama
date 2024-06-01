@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/string.dart';
@@ -130,6 +131,7 @@ class _RelatedTagChips extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Wrap(
       spacing: 4,
+      runSpacing: isDesktopPlatform() ? 4 : 0,
       children: tags.map((tag) {
         final selected = isSelected(tag.name);
         final colors = context.generateChipColors(
@@ -149,7 +151,7 @@ class _RelatedTagChips extends ConsumerWidget {
           side: selected
               ? colors != null
                   ? BorderSide(
-                      width: 2,
+                      width: 1,
                       color: colors.borderColor,
                     )
                   : null
@@ -173,7 +175,14 @@ class _RelatedTagChips extends ConsumerWidget {
                 children: [
                   TextSpan(
                     text: '  ${NumberFormat.compact().format(tag.postCount)}',
-                    style: context.textTheme.bodySmall,
+                    style: context.textTheme.bodySmall?.copyWith(
+                      fontSize: 11,
+                      color: context.themeMode.isLight
+                          ? !selected
+                              ? null
+                              : Colors.white.withOpacity(0.85)
+                          : Colors.grey.withOpacity(0.85),
+                    ),
                   ),
                 ],
               ),

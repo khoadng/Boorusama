@@ -137,6 +137,7 @@ class ZerochanBuilder
         DefaultThumbnailUrlMixin,
         CommentNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
+        DefaultHomeMixin,
         NoGranularRatingQueryBuilderMixin,
         DefaultPostImageDetailsUrlMixin,
         DefaultPostGesturesHandlerMixin,
@@ -196,7 +197,6 @@ class ZerochanBuilder
               swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
               tagListBuilder: (context, post) => ZerochanTagsTile(post: post),
               onExit: (page) => payload.scrollController?.scrollToIndex(page),
-              onTagTap: (tag) => goToSearchPage(context, tag: tag),
             ),
           );
 

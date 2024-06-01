@@ -19,7 +19,7 @@ import 'package:boorusama/core/pages/favorite_tags/favorite_tags_page.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/biometrics/app_lock.dart';
-import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -27,6 +27,7 @@ import 'boorus/entry_page.dart';
 import 'core/configs/create/add_booru_page.dart';
 import 'core/pages/bookmarks/bookmark_details_page.dart';
 import 'core/pages/bookmarks/bookmark_page.dart';
+import 'core/pages/settings/image_viewer_page.dart';
 import 'core/pages/settings/settings.dart';
 import 'foundation/rating/rating.dart';
 import 'router.dart';
@@ -53,7 +54,7 @@ class BoorusRoutes {
   static GoRoute add(Ref ref) => GoRoute(
         path: 'boorus/add',
         redirect: (context, state) =>
-            isMobilePlatform() ? null : '/desktop/boorus/add',
+            kPreferredLayout.isMobile ? null : '/desktop/boorus/add',
         builder: (context, state) => AddBooruPage(
           backgroundColor: context.theme.scaffoldBackgroundColor,
           setCurrentBooruOnSubmit:
@@ -75,7 +76,7 @@ class BoorusRoutes {
 
   static GoRoute update(Ref ref) => GoRoute(
         path: 'boorus/:id/update',
-        redirect: (context, state) => isMobilePlatform()
+        redirect: (context, state) => kPreferredLayout.isMobile
             ? null
             : '/desktop/boorus/${state.pathParameters['id']}/update',
         pageBuilder: (context, state) {
@@ -231,7 +232,6 @@ class SettingsRoutes {
         ),
       );
 
-  // accessiblity
   static GoRoute accessibility() => GoRoute(
         path: 'accessibility',
         name: '/settings/accessibility',
@@ -239,6 +239,16 @@ class SettingsRoutes {
           key: state.pageKey,
           name: state.name,
           child: const AccessibilityPage(),
+        ),
+      );
+
+  static GoRoute imageViewer() => GoRoute(
+        path: 'image_viewer',
+        name: '/settings/image_viewer',
+        pageBuilder: (context, state) => CupertinoPage(
+          key: state.pageKey,
+          name: state.name,
+          child: const ImageViewerPage(),
         ),
       );
 
@@ -306,6 +316,7 @@ class Routes {
           globalBlacklistedTags(),
           bulkDownloads(ref),
           favoriteTags(),
+          originalImageViewer(),
         ],
       );
 
@@ -449,6 +460,34 @@ class Routes {
         ],
       );
 
+  static GoRoute originalImageViewer() => GoRoute(
+        path: 'original_image_viewer',
+        name: '/original_image_viewer',
+        pageBuilder: (context, state) {
+          final post = state.extra as Post?;
+
+          if (post == null) {
+            return const CupertinoPage(
+              child: Scaffold(
+                body: Center(
+                  child: Text('Invalid post'),
+                ),
+              ),
+            );
+          }
+
+          return CustomTransitionPage(
+            key: state.pageKey,
+            name: state.name,
+            transitionsBuilder: fadeTransitionBuilder(),
+            child: OriginalImagePage(
+              initialOrientation: MediaQuery.orientationOf(context),
+              post: post,
+            ),
+          );
+        },
+      );
+
   static GoRoute favoriteTags() => GoRoute(
         path: 'favorite_tags',
         name: '/favorite_tags',
@@ -496,7 +535,7 @@ class Routes {
         path: 'settings',
         name: '/settings',
         redirect: (context, state) =>
-            !isMobilePlatform() ? '/desktop/settings' : null,
+            !kPreferredLayout.isMobile ? '/desktop/settings' : null,
         pageBuilder: (context, state) => CupertinoPage(
             key: state.pageKey,
             name: state.name,
@@ -514,6 +553,7 @@ class Routes {
           SettingsRoutes.search(),
           SettingsRoutes.changelog(),
           SettingsRoutes.accessibility(),
+          SettingsRoutes.imageViewer(),
         ],
       );
 
@@ -562,7 +602,7 @@ Page<T> createPage<T>({
   String? name,
   LocalKey? key,
 }) =>
-    isMobilePlatform()
+    kPreferredLayout.isMobile
         ? CupertinoPage<T>(
             key: key,
             name: name,
