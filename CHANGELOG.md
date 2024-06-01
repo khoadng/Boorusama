@@ -1,3 +1,8 @@
+# 3.17.0
+- Add Reduce Animations option in settings
+- Add Image Viewer settings
+- Minor bug fixes, UI adjustments and translation updates
+
 # 3.16.0
 - Add slideshow
 - Allow users to remove all booru profiles
