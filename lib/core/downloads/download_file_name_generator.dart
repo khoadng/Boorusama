@@ -6,8 +6,8 @@ import 'package:equatable/equatable.dart';
 import 'package:path/path.dart';
 
 // Project imports:
+import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/filename_generators/filename_generator.dart';
 import 'package:boorusama/core/feats/filename_generators/token.dart';
 import 'package:boorusama/core/feats/filename_generators/token_option.dart';

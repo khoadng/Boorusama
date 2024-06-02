@@ -9,7 +9,7 @@ import 'package:media_scanner/media_scanner.dart';
 import 'package:rxdart/rxdart.dart';
 
 // Project imports:
-import 'package:boorusama/core/feats/downloads/downloads.dart';
+import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/foundation/http/user_agent_generator.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
 import 'package:boorusama/foundation/path.dart';

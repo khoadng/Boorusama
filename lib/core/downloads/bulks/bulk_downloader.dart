@@ -2,8 +2,8 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
+import '../types.dart';
 import 'bulk_download_status.dart';
-import 'types.dart';
 
 abstract class BulkDownloader {
   Future<void> enqueueDownload({

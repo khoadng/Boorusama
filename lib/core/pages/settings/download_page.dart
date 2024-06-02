@@ -8,9 +8,8 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/feats/downloads/downloads.dart';
+import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
-import 'package:boorusama/core/pages/downloads/widgets/download_tag_selection_view.dart';
 import 'package:boorusama/core/pages/settings/widgets/settings_tile.dart';
 import 'package:boorusama/foundation/android.dart';
 import 'package:boorusama/foundation/i18n.dart';
