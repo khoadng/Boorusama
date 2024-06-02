@@ -19,7 +19,7 @@ class BulkDownloadState extends Equatable {
     this.estimatedDownloadSize = 0,
   });
 
-  final Map<String, BulkDownloadStatus> downloadStatuses;
+  final Map<String, DownloadStatus> downloadStatuses;
   final int estimatedDownloadSize;
 
   factory BulkDownloadState.initial() => const BulkDownloadState(
@@ -27,7 +27,7 @@ class BulkDownloadState extends Equatable {
       );
 
   BulkDownloadState copyWith({
-    Map<String, BulkDownloadStatus>? downloadStatuses,
+    Map<String, DownloadStatus>? downloadStatuses,
     int? doneCount,
     int? estimatedDownloadSize,
   }) =>
@@ -42,6 +42,6 @@ class BulkDownloadState extends Equatable {
 }
 
 extension BulkDownloadStateX on BulkDownloadState {
-  int get doneCount => downloadStatuses.values
-      .fold(0, (a, b) => b is BulkDownloadDone ? a + 1 : a);
+  int get doneCount =>
+      downloadStatuses.values.fold(0, (a, b) => b is DownloadDone ? a + 1 : a);
 }

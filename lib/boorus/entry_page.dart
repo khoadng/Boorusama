@@ -69,9 +69,9 @@ class _EntryPageState extends ConsumerState<EntryPage> {
           .select((value) => value.downloadStatuses),
       (previous, next) {
         if (previous == null) return;
-        if (previous.values.any((e) => e is! BulkDownloadDone) &&
+        if (previous.values.any((e) => e is! DownloadDone) &&
             next.values.isNotEmpty &&
-            next.values.all((t) => t is BulkDownloadDone)) {
+            next.values.all((t) => t is DownloadDone)) {
           showSimpleSnackBar(
             context: context,
             duration: const Duration(seconds: 3),

@@ -49,15 +49,15 @@ final bulkDownloadOptionsProvider = StateProvider<DownloadOptions>((ref) {
 });
 
 final bulkDownloadProvider =
-    Provider.family<BulkDownloader, BooruConfig>((ref, config) {
-  return CrossplatformBulkDownloader(
+    Provider.family<Downloader, BooruConfig>((ref, config) {
+  return CrossplatformDownloader(
     userAgentGenerator: ref.watch(userAgentGeneratorProvider(config)),
     logger: ref.watch(loggerProvider),
   );
 });
 
 final bulkDownloadDataProvider =
-    StreamProvider.family<BulkDownloadStatus, BooruConfig>(
+    StreamProvider.family<DownloadStatus, BooruConfig>(
         (ref, config) => ref.watch(bulkDownloadProvider(config)).stream);
 
 final bulkDownloaderManagerProvider =

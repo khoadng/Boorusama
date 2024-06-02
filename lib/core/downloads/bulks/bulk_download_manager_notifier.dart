@@ -19,7 +19,7 @@ class BulkDownloadManagerNotifier extends FamilyNotifier<void, BooruConfig> {
   BulkDownloadStateNotifier get bulkDownloadState =>
       ref.read(bulkDownloadStateProvider(arg).notifier);
 
-  BulkDownloader get downloader => ref.read(bulkDownloadProvider(arg));
+  Downloader get downloader => ref.read(bulkDownloadProvider(arg));
 
   StateController<BulkDownloadManagerStatus> get bulkDownloadStatus =>
       ref.read(bulkDownloadManagerStatusProvider.notifier);
@@ -167,7 +167,7 @@ class BulkDownloadManagerNotifier extends FamilyNotifier<void, BooruConfig> {
 
   Future<void> retryAll() async {
     final failed = bulkDownloadState.state.downloadStatuses.values
-        .whereType<BulkDownloadFailed>();
+        .whereType<DownloadFailed>();
     for (final download in failed) {
       retry(download.url, download.fileName);
     }

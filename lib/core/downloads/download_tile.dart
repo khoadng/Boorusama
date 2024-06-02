@@ -16,28 +16,44 @@ import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/functional.dart';
 
-class BulkDownloadTile extends ConsumerWidget {
-  const BulkDownloadTile({
+class DownloadTile extends StatelessWidget {
+  const DownloadTile({
     super.key,
     required this.data,
+    this.thumbnails,
+    this.fileSizes,
+    required this.onRetry,
+    required this.onResume,
+    required this.onPause,
   });
 
-  final BulkDownloadStatus data;
+  final DownloadStatus data;
+  final Map<String, String>? thumbnails;
+  final Map<String, int>? fileSizes;
+  final VoidCallback onRetry;
+  final Function(String url) onResume;
+  final void Function(String url) onPause;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
-    final thumbnails = ref.watch(bulkDownloadThumbnailsProvider);
-    final fileSizes = ref.watch(bulkDownloadFileSizeProvider);
-
+  Widget build(BuildContext context) {
     return Card(
       color: context.colorScheme.surface,
       child: Row(
         children: [
           SizedBox(
             width: 60,
-            child: _Thumbnail(url: thumbnails[data.url]),
+            child: thumbnails.toOption().fold(
+                  () => Card(
+                    color: context.colorScheme.tertiaryContainer,
+                    child: const Icon(
+                      Symbols.image,
+                      color: Colors.white,
+                    ),
+                  ),
+                  (t) => _Thumbnail(url: t[data.url]),
+                ),
           ),
           Expanded(
             child: Column(
@@ -49,7 +65,7 @@ class BulkDownloadTile extends ConsumerWidget {
                   child: Wrap(
                     children: [
                       switch (data) {
-                        BulkDownloadDone d when d.alreadyExists => Chip(
+                        DownloadDone d when d.alreadyExists => Chip(
                             visualDensity: const ShrinkVisualDensity(),
                             backgroundColor: context.theme.colorScheme.primary,
                             label: const Text(
@@ -64,19 +80,27 @@ class BulkDownloadTile extends ConsumerWidget {
                         label: Text(sanitizedExtension(data.url)),
                       ),
                       const SizedBox(width: 4),
-                      if (fileSizes[data.url] != null &&
-                          fileSizes[data.url]! > 0)
-                        Chip(
-                          backgroundColor:
-                              context.colorScheme.tertiaryContainer,
-                          visualDensity: const ShrinkVisualDensity(),
-                          label: Text(filesize(fileSizes[data.url], 1)),
-                        ),
+                      fileSizes.toOption().fold(
+                            () => const SizedBox.shrink(),
+                            (fs) => fs[data.url] != null && fs[data.url]! > 0
+                                ? Chip(
+                                    backgroundColor:
+                                        context.colorScheme.tertiaryContainer,
+                                    visualDensity: const ShrinkVisualDensity(),
+                                    label: Text(
+                                      filesize(
+                                        fs[data.url],
+                                        1,
+                                      ),
+                                    ),
+                                  )
+                                : const SizedBox.shrink(),
+                          ),
                     ],
                   ),
                 ),
                 switch (data) {
-                  BulkDownloadInitializing _ => ListTile(
+                  DownloadInitializing _ => ListTile(
                       dense: true,
                       visualDensity: const VisualDensity(
                         vertical: -4,
@@ -89,7 +113,7 @@ class BulkDownloadTile extends ConsumerWidget {
                         child: CircularProgressIndicator(strokeWidth: 2),
                       ),
                     ),
-                  BulkDownloadQueued _ => ListTile(
+                  DownloadQueued _ => ListTile(
                       dense: true,
                       visualDensity: const VisualDensity(
                         vertical: -4,
@@ -98,17 +122,14 @@ class BulkDownloadTile extends ConsumerWidget {
                       title: _Title(data: data),
                       subtitle: const Text('Queued', maxLines: 1),
                     ),
-                  BulkDownloadInProgress d => ListTile(
+                  DownloadInProgress d => ListTile(
                       dense: true,
                       visualDensity: const VisualDensity(
                         vertical: -4,
                       ),
                       contentPadding: const EdgeInsets.symmetric(horizontal: 8),
                       trailing: IconButton(
-                        onPressed: () => ref
-                            .read(
-                                bulkDownloaderManagerProvider(config).notifier)
-                            .pause(d.url),
+                        onPressed: () => onPause(d.url),
                         icon: const Icon(
                           Symbols.pause,
                           fill: 1,
@@ -126,17 +147,14 @@ class BulkDownloadTile extends ConsumerWidget {
                         ),
                       ),
                     ),
-                  BulkDownloadPaused d => ListTile(
+                  DownloadPaused d => ListTile(
                       dense: true,
                       visualDensity: const VisualDensity(
                         vertical: -4,
                       ),
                       contentPadding: const EdgeInsets.symmetric(horizontal: 8),
                       trailing: IconButton(
-                        onPressed: () => ref
-                            .read(
-                                bulkDownloaderManagerProvider(config).notifier)
-                            .resume(d.url),
+                        onPressed: () => onResume(d.url),
                         icon: const Icon(
                           Symbols.play_arrow,
                           fill: 1,
@@ -154,7 +172,7 @@ class BulkDownloadTile extends ConsumerWidget {
                         ),
                       ),
                     ),
-                  BulkDownloadFailed d => ListTile(
+                  DownloadFailed d => ListTile(
                       dense: true,
                       visualDensity: const VisualDensity(
                         vertical: -4,
@@ -167,7 +185,7 @@ class BulkDownloadTile extends ConsumerWidget {
                         fileName: d.fileName,
                       ),
                     ),
-                  BulkDownloadCanceled d => ListTile(
+                  DownloadCanceled d => ListTile(
                       dense: true,
                       visualDensity: const VisualDensity(
                         vertical: -4,
@@ -184,7 +202,7 @@ class BulkDownloadTile extends ConsumerWidget {
                         fileName: d.fileName,
                       ),
                     ),
-                  BulkDownloadDone d => ListTile(
+                  DownloadDone d => ListTile(
                       dense: true,
                       visualDensity: const ShrinkVisualDensity(),
                       minVerticalPadding: 0,
@@ -219,6 +237,35 @@ class BulkDownloadTile extends ConsumerWidget {
   }
 }
 
+class BulkDownloadTile extends ConsumerWidget {
+  const BulkDownloadTile({
+    super.key,
+    required this.data,
+  });
+
+  final DownloadStatus data;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
+    final thumbnails = ref.watch(bulkDownloadThumbnailsProvider);
+    final fileSizes = ref.watch(bulkDownloadFileSizeProvider);
+
+    return DownloadTile(
+      data: data,
+      thumbnails: thumbnails,
+      fileSizes: fileSizes,
+      onRetry: () => ref
+          .read(bulkDownloaderManagerProvider(config).notifier)
+          .retry(data.url, data.fileName),
+      onResume: (url) =>
+          ref.read(bulkDownloaderManagerProvider(config).notifier).resume(url),
+      onPause: (url) =>
+          ref.read(bulkDownloaderManagerProvider(config).notifier).pause(url),
+    );
+  }
+}
+
 class _RetryButton extends ConsumerWidget {
   const _RetryButton({
     required this.url,
@@ -249,7 +296,7 @@ class _Title extends StatelessWidget {
     this.color,
   });
 
-  final BulkDownloadStatus data;
+  final DownloadStatus data;
   final bool strikeThrough;
   final Color? color;
 

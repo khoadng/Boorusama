@@ -4,7 +4,7 @@ import 'dart:io';
 
 // Package imports:
 import 'package:dio/dio.dart';
-import 'package:flutter_download_manager/flutter_download_manager.dart';
+import 'package:flutter_download_manager/flutter_download_manager.dart' as dm;
 import 'package:media_scanner/media_scanner.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -15,17 +15,17 @@ import 'package:boorusama/foundation/loggers/loggers.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/platform.dart';
 
-class CrossplatformBulkDownloader implements BulkDownloader {
-  final DownloadManager _downloadManager;
+class CrossplatformDownloader implements Downloader {
+  final dm.DownloadManager _downloadManager;
   final LoggerService? logger;
-  final _downloadDataController = BehaviorSubject<BulkDownloadStatus>();
+  final _downloadDataController = BehaviorSubject<DownloadStatus>();
   final void Function(Object error)? onError;
 
-  CrossplatformBulkDownloader({
+  CrossplatformDownloader({
     required UserAgentGenerator userAgentGenerator,
     this.logger,
     this.onError,
-  }) : _downloadManager = DownloadManager(
+  }) : _downloadManager = dm.DownloadManager(
           onError: (error) =>
               logger?.logE('Bulk Downloader', 'Download error: $error'),
           dio: Dio(
@@ -45,7 +45,7 @@ class CrossplatformBulkDownloader implements BulkDownloader {
     required DownloadFilenameBuilder fileNameBuilder,
   }) async {
     final fileName = fileNameBuilder();
-    _downloadDataController.add(BulkDownloadInitializing(url, fileName));
+    _downloadDataController.add(DownloadInitializing(url, fileName));
 
     final savePath = path != null
         ? tryGetCustomDownloadDirectory(path)
@@ -61,7 +61,7 @@ class CrossplatformBulkDownloader implements BulkDownloader {
       (t) async {
         final filePath = join(t.path, fileName);
         if (File(filePath).existsSync()) {
-          _downloadDataController.add(BulkDownloadDone(
+          _downloadDataController.add(DownloadDone(
             url,
             fileName,
             t.path,
@@ -73,11 +73,11 @@ class CrossplatformBulkDownloader implements BulkDownloader {
         final task =
             await _downloadManager.addDownload(url, join(t.path, fileName));
 
-        _downloadDataController.add(BulkDownloadQueued(url, fileName));
+        _downloadDataController.add(DownloadQueued(url, fileName));
 
         task?.progress.addListener(() {
-          if (task.status.value == DownloadStatus.downloading) {
-            _downloadDataController.add(BulkDownloadInProgress(
+          if (task.status.value == dm.DownloadStatus.downloading) {
+            _downloadDataController.add(DownloadInProgress(
               url,
               fileName,
               task.progress.value,
@@ -93,22 +93,22 @@ class CrossplatformBulkDownloader implements BulkDownloader {
 
         task?.status.addListener(() {
           final status = switch (task.status.value) {
-            DownloadStatus.queued => BulkDownloadQueued(url, fileName),
-            DownloadStatus.downloading => BulkDownloadInProgress(
+            dm.DownloadStatus.queued => DownloadQueued(url, fileName),
+            dm.DownloadStatus.downloading => DownloadInProgress(
                 url,
                 fileName,
                 task.progress.value,
               ),
-            DownloadStatus.paused => BulkDownloadPaused(
+            dm.DownloadStatus.paused => DownloadPaused(
                 url,
                 fileName,
                 task.progress.value,
               ),
-            DownloadStatus.failed => BulkDownloadFailed(url, fileName),
-            DownloadStatus.canceled => task.progress.value == 1
-                ? BulkDownloadDone(url, fileName, task.request.path)
-                : BulkDownloadCanceled(url, fileName),
-            DownloadStatus.completed => BulkDownloadDone(
+            dm.DownloadStatus.failed => DownloadFailed(url, fileName),
+            dm.DownloadStatus.canceled => task.progress.value == 1
+                ? DownloadDone(url, fileName, task.request.path)
+                : DownloadCanceled(url, fileName),
+            dm.DownloadStatus.completed => DownloadDone(
                 url,
                 fileName,
                 task.request.path,
@@ -130,7 +130,7 @@ class CrossplatformBulkDownloader implements BulkDownloader {
   }
 
   @override
-  Stream<BulkDownloadStatus> get stream => _downloadDataController.stream;
+  Stream<DownloadStatus> get stream => _downloadDataController.stream;
 
   @override
   Future<void> pause(String url) {
