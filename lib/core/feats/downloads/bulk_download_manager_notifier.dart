@@ -7,6 +7,7 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/search/search.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
 import 'package:boorusama/foundation/permissions.dart';
 import 'package:boorusama/utils/duration_utils.dart';
@@ -67,6 +68,9 @@ class BulkDownloadManagerNotifier extends FamilyNotifier<void, BooruConfig> {
         return;
       }
     }
+
+    // saved tags to history
+    ref.read(searchHistoryProvider.notifier).addHistory(tags.join(' '));
 
     bulkDownloadStatus.state = BulkDownloadManagerStatus.downloadInProgress;
 

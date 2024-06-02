@@ -27,7 +27,6 @@ import 'boorus/entry_page.dart';
 import 'core/configs/create/add_booru_page.dart';
 import 'core/pages/bookmarks/bookmark_details_page.dart';
 import 'core/pages/bookmarks/bookmark_page.dart';
-import 'core/pages/settings/image_viewer_page.dart';
 import 'core/pages/settings/settings.dart';
 import 'foundation/rating/rating.dart';
 import 'router.dart';
