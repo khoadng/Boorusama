@@ -174,6 +174,10 @@ class _BooruSelectorState extends ConsumerState<BooruSelector> {
                               ),
                             ),
                           ),
+                          SliverSizedBox(
+                            height:
+                                MediaQuery.viewPaddingOf(context).bottom + 12,
+                          ),
                         ],
                       )
                     : Row(

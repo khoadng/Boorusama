@@ -361,6 +361,11 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                                   trueChild: const SliverSizedBox.shrink(),
                                   falseChild: _buildPageIndicator(),
                                 ),
+                              SliverSizedBox(
+                                height:
+                                    MediaQuery.viewPaddingOf(context).bottom +
+                                        12,
+                              ),
                             ],
                           ),
                         ),

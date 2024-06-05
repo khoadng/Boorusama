@@ -152,6 +152,9 @@ class SideBarMenu extends ConsumerWidget {
                             padding: const EdgeInsets.symmetric(horizontal: 8),
                             child: e,
                           )),
+                    SizedBox(
+                      height: MediaQuery.viewPaddingOf(context).bottom + 12,
+                    ),
                   ],
                 ),
               ),
