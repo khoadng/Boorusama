@@ -1,12 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-// Package imports:
-import 'package:oktoast/oktoast.dart';
-
-// Project imports:
-import 'package:boorusama/foundation/theme/theme.dart';
-
 const String _basePath = '/storage/emulated';
 
 const List<String> _allowedDownloadFolders = [
@@ -92,14 +86,14 @@ mixin DownloadMixin {
 }
 
 void showDownloadStartToast(BuildContext context) {
-  showToast(
-    'Download started',
-    context: context,
-    position: const ToastPosition(
-      align: Alignment.bottomCenter,
-    ),
-    textPadding: const EdgeInsets.all(12),
-    textStyle: TextStyle(color: context.colorScheme.surface),
-    backgroundColor: context.colorScheme.onBackground,
-  );
+  // showToast(
+  //   'Download started',
+  //   context: context,
+  //   position: const ToastPosition(
+  //     align: Alignment.bottomCenter,
+  //   ),
+  //   textPadding: const EdgeInsets.all(12),
+  //   textStyle: TextStyle(color: context.colorScheme.surface),
+  //   backgroundColor: context.colorScheme.onBackground,
+  // );
 }

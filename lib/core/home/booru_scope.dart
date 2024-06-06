@@ -13,6 +13,7 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/core/downloads/bulks/bulk_download_page.dart';
+import 'package:boorusama/core/downloads/download_manager_page.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/home/home.dart';
@@ -431,6 +432,7 @@ List<Widget> coreDesktopViewBuilder({
     const BlacklistedTagPage(),
     const FavoriteTagsPage(),
     const BulkDownloadPage(),
+    const DownloadManagerGatewayPage(),
   ];
 
   return views;
@@ -471,9 +473,17 @@ List<Widget> coreDesktopTabBuilder(
       value: _v(4),
       controller: controller,
       constraints: constraints,
+      selectedIcon: Symbols.sim_card_download,
+      icon: Symbols.sim_card_download,
+      title: 'sideMenu.bulk_download'.tr(),
+    ),
+    HomeNavigationTile(
+      value: _v(5),
+      controller: controller,
+      constraints: constraints,
       selectedIcon: Symbols.download,
       icon: Symbols.download,
-      title: 'sideMenu.bulk_download'.tr(),
+      title: 'Download manager',
     ),
     const Divider(),
     HomeNavigationTile(

@@ -114,7 +114,7 @@ class SideBarMenu extends ConsumerWidget {
                           },
                         ),
                         SideMenuTile(
-                          icon: const Icon(Symbols.download),
+                          icon: const Icon(Symbols.sim_card_download),
                           title: const Text('sideMenu.bulk_download').tr(),
                           onTap: () {
                             if (popOnSelect) context.navigator.pop();
@@ -123,6 +123,14 @@ class SideBarMenu extends ConsumerWidget {
                               null,
                               ref: ref,
                             );
+                          },
+                        ),
+                        SideMenuTile(
+                          icon: const Icon(Symbols.download),
+                          title: const Text('Download manager'),
+                          onTap: () {
+                            if (popOnSelect) context.navigator.pop();
+                            context.go('/download_manager');
                           },
                         ),
                         const Divider(),

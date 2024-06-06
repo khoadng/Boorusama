@@ -10,6 +10,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
+import 'package:boorusama/core/downloads/background_downloader.dart';
 import 'package:boorusama/core/downloads/bulks/bulk_download_page.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
@@ -25,6 +26,7 @@ import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'boorus/entry_page.dart';
 import 'core/configs/create/add_booru_page.dart';
+import 'core/downloads/download_manager_page.dart';
 import 'core/pages/bookmarks/bookmark_details_page.dart';
 import 'core/pages/bookmarks/bookmark_page.dart';
 import 'core/pages/settings/settings.dart';
@@ -291,10 +293,12 @@ class Routes {
           child: ConditionalParentWidget(
             condition: canRate(),
             conditionalBuilder: (child) => createAppRatingWidget(child: child),
-            child: const CustomContextMenuOverlay(
-              child: Focus(
-                autofocus: true,
-                child: EntryPage(),
+            child: const BackgroundDownloaderBuilder(
+              child: CustomContextMenuOverlay(
+                child: Focus(
+                  autofocus: true,
+                  child: EntryPage(),
+                ),
               ),
             ),
           ),
@@ -313,6 +317,7 @@ class Routes {
           settingsDesktop(),
           bookmarks(),
           globalBlacklistedTags(),
+          downloadManager(),
           bulkDownloads(ref),
           favoriteTags(),
           originalImageViewer(),
@@ -504,6 +509,18 @@ class Routes {
           key: state.pageKey,
           name: state.name,
           child: const BlacklistedTagPage(),
+        ),
+      );
+
+  static GoRoute downloadManager() => GoRoute(
+        path: 'download_manager',
+        name: '/download_manager',
+        pageBuilder: (context, state) => CupertinoPage(
+          key: state.pageKey,
+          name: state.name,
+          child: DownloadManagerGatewayPage(
+            filter: state.uri.queryParameters['filter'],
+          ),
         ),
       );
 

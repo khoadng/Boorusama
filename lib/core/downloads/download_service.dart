@@ -81,12 +81,16 @@ abstract class DownloadService {
   DownloadPathOrError download({
     required String url,
     required DownloadFilenameBuilder fileNameBuilder,
+    DownloaderMetadata? metadata,
+    bool? skipIfExists,
   });
 
   DownloadPathOrError downloadCustomLocation({
     required String url,
     required String path,
     required DownloadFilenameBuilder fileNameBuilder,
+    DownloaderMetadata? metadata,
+    bool? skipIfExists,
   });
 }
 
@@ -94,6 +98,7 @@ extension DownloadWithSettingsX on DownloadService {
   DownloadPathOrError downloadWithSettings(
     Settings settings, {
     required String url,
+    DownloaderMetadata? metadata,
     String? folderName,
     required DownloadFilenameBuilder fileNameBuilder,
   }) {
@@ -102,12 +107,16 @@ extension DownloadWithSettingsX on DownloadService {
     return downloadPath != null && downloadPath.isNotEmpty
         ? downloadCustomLocation(
             url: url,
+            metadata: metadata,
             path: join(downloadPath, folderName),
             fileNameBuilder: fileNameBuilder,
+            skipIfExists: settings.skipDownloadIfExists,
           )
         : download(
             url: url,
+            metadata: metadata,
             fileNameBuilder: fileNameBuilder,
+            skipIfExists: settings.skipDownloadIfExists,
           );
   }
 }
@@ -150,6 +159,8 @@ class DioDownloadService implements DownloadService {
   DownloadPathOrError download({
     required String url,
     required DownloadFilenameBuilder fileNameBuilder,
+    DownloaderMetadata? metadata,
+    bool? skipIfExists,
   }) =>
       retryOn404
           ? _download(
@@ -238,6 +249,8 @@ class DioDownloadService implements DownloadService {
     required String url,
     required String path,
     required DownloadFilenameBuilder fileNameBuilder,
+    DownloaderMetadata? metadata,
+    bool? skipIfExists,
   }) =>
       retryOn404
           ? _downloadCustomLocation(
