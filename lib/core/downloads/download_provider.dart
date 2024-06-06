@@ -14,6 +14,7 @@ import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/permissions.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import 'background_downloader.dart';
 
 final downloadNotificationProvider = Provider<DownloadNotifications>((ref) {
   throw UnimplementedError();
@@ -31,6 +32,13 @@ String getDownloadFileUrl(Post post, Settings settings) {
 
 final downloadServiceProvider = Provider.family<DownloadService, BooruConfig>(
   (ref, config) {
+    final useLegacy = ref
+        .watch(settingsProvider.select((value) => value.useLegacyDownloader));
+
+    if (!useLegacy) {
+      return BackgroundDownloader();
+    }
+
     final dio = newDio(ref.watch(dioArgsProvider(config)));
     final notifications = ref.watch(downloadNotificationProvider);
 
@@ -44,6 +52,7 @@ final downloadServiceProvider = Provider.family<DownloadService, BooruConfig>(
     dioArgsProvider,
     downloadNotificationProvider,
     currentBooruConfigProvider,
+    settingsProvider,
   ],
 );
 
@@ -104,6 +113,11 @@ Future<void> _download(
   Future<void> download() async => service
       .downloadWithSettings(
         settings,
+        metadata: DownloaderMetadata(
+          thumbnailUrl: downloadable.thumbnailImageUrl,
+          fileSize: downloadable.fileSize,
+          siteUrl: PostSource.from(downloadable.thumbnailImageUrl).url,
+        ),
         url: downloadUrl,
         fileNameBuilder: () => fileNameBuilder.generate(
           settings,
@@ -116,6 +130,7 @@ Future<void> _download(
   // Platform doesn't require permissions, just download it right away
   if (permission == null) {
     download();
+    return;
   }
 
   if (permission == PermissionStatus.granted) {

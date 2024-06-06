@@ -24,6 +24,7 @@ final bookmarkProvider = NotifierProvider<BookmarkNotifier, BookmarkState>(
   dependencies: [
     bookmarkRepoProvider,
     settingsProvider,
+    downloadServiceProvider,
   ],
 );
 
@@ -186,6 +187,11 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
             .downloadWithSettings(
               settings,
               url: bookmark.originalUrl,
+              metadata: DownloaderMetadata(
+                thumbnailUrl: bookmark.thumbnailUrl,
+                fileSize: null,
+                siteUrl: bookmark.sourceUrl,
+              ),
               folderName: "Bookmarks",
               fileNameBuilder: () =>
                   bookmark.md5 + extension(bookmark.originalUrl),

@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -129,6 +130,44 @@ class _DownloadPageState extends ConsumerState<DownloadPage>
               optionBuilder: (value) =>
                   Text('settings.download.qualities.${value.name}').tr(),
             ),
+            const SizedBox(height: 16),
+            ListTile(
+              title: const Text('Ignore files that already downloaded'),
+              subtitle: const Text(
+                'This will prevent downloading files that already exist in the folder. This is useful when you don\'t want to download the same file multiple times.',
+              ),
+              trailing: Switch(
+                value: settings.skipDownloadIfExists,
+                onChanged: settings.useLegacyDownloader
+                    ? null
+                    : (value) async {
+                        await ref.updateDownloadFileExistedBehavior(
+                            settings, value);
+                      },
+              ),
+            ),
+            const SizedBox(height: 16),
+            ListTile(
+              title: const Text('Use legacy downloader'),
+              subtitle: const Text(
+                'This may be useful if you are experiencing issues with the new download manager. It will be removed in the future when the new download manager is stable.',
+              ),
+              trailing: Switch(
+                value: settings.useLegacyDownloader,
+                onChanged: (value) async {
+                  await ref.updateDownloaderStatus(settings, value);
+                  // Don't allow the user to enable the skipDownloadIfExists
+                  if (value) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      ref.updateDownloadFileExistedBehavior(
+                        ref.read(settingsProvider),
+                        false,
+                      );
+                    });
+                  }
+                },
+              ),
+            ),
           ],
         ),
       ),
@@ -147,4 +186,12 @@ class _DownloadPageState extends ConsumerState<DownloadPage>
 
   @override
   String? get storagePath => ref.read(settingsProvider).downloadPath;
+}
+
+Future<void> openDownloadSettingsPage(BuildContext context) {
+  return Navigator.of(context).push(
+    CupertinoPageRoute(
+      builder: (context) => const DownloadPage(),
+    ),
+  );
 }
