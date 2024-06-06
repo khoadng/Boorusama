@@ -242,6 +242,9 @@ class UserDetailsPage extends ConsumerWidget {
                               .value,
                           user: user,
                         ),
+                      SizedBox(
+                        height: MediaQuery.viewPaddingOf(context).bottom + 12,
+                      ),
                     ],
                   ),
                 ),
