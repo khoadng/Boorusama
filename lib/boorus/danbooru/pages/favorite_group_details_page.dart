@@ -212,7 +212,6 @@ class _FavoriteGroupDetailsPageState
                     child: InfiniteLoadList(
                       scrollController: scrollController,
                       onLoadMore: () => controller.fetchMore(),
-                      enableRefresh: false,
                       enableLoadMore: hasMore,
                       builder: (context, scrollController) {
                         final count = _sizeToGridCount(Screen.of(context).size);

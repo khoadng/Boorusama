@@ -107,12 +107,12 @@ void goToExploreHotPage(BuildContext context) {
       settings: const RouteSettings(
         name: RouterPageConstant.exploreHot,
       ),
-      builder: (_) => ExploreHotPage.routeOf(context),
+      builder: (_) => const ExploreHotPage(),
     ));
   } else {
     showDesktopWindow(
       context,
-      builder: (_) => ExploreHotPage.routeOf(context),
+      builder: (_) => const ExploreHotPage(),
     );
   }
 }
