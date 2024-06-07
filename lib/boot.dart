@@ -279,6 +279,9 @@ Future<void> boot(BootLogger bootLogger) async {
 
   HttpOverrides.global = AppHttpOverrides();
 
+  // Prepare for Android 15
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+
   logger.logI('Start up',
       'Initialization done in ${stopwatch.elapsed.inMilliseconds}ms');
   stopwatch.stop();
