@@ -13,7 +13,7 @@ class ScrollToTop extends StatefulWidget {
     required this.child,
   });
 
-  final AutoScrollController? scrollController;
+  final ScrollController? scrollController;
   final VoidCallback? onBottomReached;
   final Widget child;
 
@@ -23,7 +23,7 @@ class ScrollToTop extends StatefulWidget {
 
 class _ScrollToTopState extends State<ScrollToTop>
     with TickerProviderStateMixin {
-  late final AutoScrollController _autoScrollController;
+  late final ScrollController _scrollController;
   late AnimationController _animationController;
 
   final ValueNotifier<bool> _isOnTop = ValueNotifier(false);
@@ -31,7 +31,7 @@ class _ScrollToTopState extends State<ScrollToTop>
   @override
   void initState() {
     super.initState();
-    _autoScrollController = widget.scrollController ?? AutoScrollController();
+    _scrollController = widget.scrollController ?? AutoScrollController();
 
     _animationController = AnimationController(
       vsync: this,
@@ -39,17 +39,17 @@ class _ScrollToTopState extends State<ScrollToTop>
       reverseDuration: kThemeAnimationDuration,
     );
 
-    _autoScrollController.addListener(_onScroll);
+    _scrollController.addListener(_onScroll);
     _isOnTop.addListener(_onTopReached);
   }
 
   @override
   void dispose() {
     if (widget.scrollController == null) {
-      _autoScrollController.dispose();
+      _scrollController.dispose();
     }
 
-    _autoScrollController.removeListener(_onScroll);
+    _scrollController.removeListener(_onScroll);
     _isOnTop.removeListener(_onTopReached);
 
     _animationController.dispose();
@@ -63,7 +63,7 @@ class _ScrollToTopState extends State<ScrollToTop>
   }
 
   void _onScroll() {
-    switch (_autoScrollController.position.userScrollDirection) {
+    switch (_scrollController.position.userScrollDirection) {
       case ScrollDirection.forward:
         _animationController.forward();
         break;
@@ -73,25 +73,10 @@ class _ScrollToTopState extends State<ScrollToTop>
       case ScrollDirection.idle:
         break;
     }
-    _isOnTop.value = _isTop;
-    if (_isBottom) {
+    _isOnTop.value = _scrollController.isTop;
+    if (_scrollController.isBottom) {
       widget.onBottomReached?.call();
     }
-  }
-
-  bool get _isBottom {
-    if (!_autoScrollController.hasClients) return false;
-    final maxScroll = _autoScrollController.position.maxScrollExtent;
-    final currentScroll = _autoScrollController.offset;
-
-    return currentScroll >= (maxScroll * 0.95);
-  }
-
-  bool get _isTop {
-    if (!_autoScrollController.hasClients) return false;
-    final currentScroll = _autoScrollController.offset;
-
-    return currentScroll == 0;
   }
 
   @override
@@ -103,5 +88,109 @@ class _ScrollToTopState extends State<ScrollToTop>
         child: widget.child,
       ),
     );
+  }
+}
+
+// scroll to bottom
+class ScrollToBottom extends StatefulWidget {
+  const ScrollToBottom({
+    super.key,
+    this.scrollController,
+    this.onTopReached,
+    required this.child,
+  });
+
+  final ScrollController? scrollController;
+  final VoidCallback? onTopReached;
+  final Widget child;
+
+  @override
+  State<ScrollToBottom> createState() => _ScrollToBottomState();
+}
+
+class _ScrollToBottomState extends State<ScrollToBottom>
+    with TickerProviderStateMixin {
+  late final ScrollController _scrollController;
+  late AnimationController _animationController;
+
+  final ValueNotifier<bool> _isOnBottom = ValueNotifier(false);
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = widget.scrollController ?? AutoScrollController();
+
+    _animationController = AnimationController(
+      vsync: this,
+      duration: kThemeAnimationDuration,
+      reverseDuration: kThemeAnimationDuration,
+    );
+
+    _scrollController.addListener(_onScroll);
+    _isOnBottom.addListener(_onBottomReached);
+  }
+
+  @override
+  void dispose() {
+    if (widget.scrollController == null) {
+      _scrollController.dispose();
+    }
+
+    _scrollController.removeListener(_onScroll);
+    _isOnBottom.removeListener(_onBottomReached);
+
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  void _onBottomReached() {
+    if (_isOnBottom.value) {
+      _animationController.reverse();
+    }
+  }
+
+  void _onScroll() {
+    switch (_scrollController.position.userScrollDirection) {
+      case ScrollDirection.forward:
+        _animationController.reverse();
+        break;
+      case ScrollDirection.reverse:
+        _animationController.forward();
+        break;
+      case ScrollDirection.idle:
+        break;
+    }
+    _isOnBottom.value = _scrollController.isBottom;
+    if (_scrollController.isTop) {
+      widget.onTopReached?.call();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _animationController,
+      child: ScaleTransition(
+        scale: _animationController,
+        child: widget.child,
+      ),
+    );
+  }
+}
+
+extension PositionExtensions on ScrollController {
+  bool get isTop {
+    if (!hasClients) return false;
+
+    return offset == 0;
+  }
+
+  bool get isBottom {
+    if (!hasClients) return false;
+
+    final maxScroll = position.maxScrollExtent;
+    final currentScroll = offset;
+
+    return currentScroll >= (maxScroll * 0.95);
   }
 }

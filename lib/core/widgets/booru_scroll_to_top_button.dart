@@ -24,3 +24,24 @@ class BooruScrollToTopButton extends StatelessWidget {
     );
   }
 }
+
+class BooruScrollToBottomButton extends StatelessWidget {
+  const BooruScrollToBottomButton({
+    super.key,
+    this.onPressed,
+  });
+
+  final void Function()? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return FloatingActionButton.small(
+      heroTag: null,
+      onPressed: onPressed,
+      child: const FaIcon(
+        FontAwesomeIcons.angleDown,
+        size: 18,
+      ),
+    );
+  }
+}
