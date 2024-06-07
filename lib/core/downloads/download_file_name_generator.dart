@@ -13,6 +13,7 @@ import 'package:boorusama/core/feats/filename_generators/token.dart';
 import 'package:boorusama/core/feats/filename_generators/token_option.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/functional.dart';
 
 abstract class DownloadFilenameGenerator<T extends Post> {
@@ -26,14 +27,15 @@ abstract class DownloadFilenameGenerator<T extends Post> {
   String generate(
     Settings settings,
     BooruConfig config,
-    T post,
-  );
+    T post, {
+    Map<String, String>? metadata,
+  });
 
   String generateForBulkDownload(
     Settings settings,
     BooruConfig config,
     T post, {
-    int? index,
+    Map<String, String>? metadata,
   });
 
   String generateSample(String format);
@@ -54,16 +56,20 @@ class DownloadFilenameTokenOptions extends Equatable {
     required this.downloadUrl,
     required this.fallbackFilename,
     required this.format,
-    this.index,
+    this.metadata,
   });
 
   final String downloadUrl;
   final String fallbackFilename;
   final String format;
-  final int? index;
+  final Map<String, String>? metadata;
 
   @override
-  List<Object?> get props => [downloadUrl, fallbackFilename, format, index];
+  List<Object?> get props => [downloadUrl, fallbackFilename, format, metadata];
+}
+
+extension DownloadFilenameTokenOptionsX on DownloadFilenameTokenOptions {
+  int? get index => metadata?['index']?.toIntOrNull();
 }
 
 class LegacyFilenameBuilder<T extends Post>
@@ -81,8 +87,9 @@ class LegacyFilenameBuilder<T extends Post>
   String generate(
     Settings settings,
     BooruConfig config,
-    T post,
-  ) {
+    T post, {
+    Map<String, String>? metadata,
+  }) {
     final downloadUrl = getDownloadFileUrl(post, settings);
 
     final fileName = generateFileName(post, downloadUrl);
@@ -95,7 +102,7 @@ class LegacyFilenameBuilder<T extends Post>
     Settings settings,
     BooruConfig config,
     T post, {
-    int? index,
+    Map<String, String>? metadata,
   }) {
     final downloadUrl = getDownloadFileUrl(post, settings);
 
@@ -166,7 +173,7 @@ class DownloadFileNameBuilder<T extends Post>
     BooruConfig config,
     String? format,
     T post, {
-    int? index,
+    required Map<String, String>? metadata,
   }) {
     final downloadUrl = getDownloadFileUrl(post, settings);
     final fallbackName = basename(downloadUrl);
@@ -177,7 +184,7 @@ class DownloadFileNameBuilder<T extends Post>
       downloadUrl: downloadUrl,
       fallbackFilename: fallbackName,
       format: format,
-      index: index,
+      metadata: metadata,
     );
 
     final fileName = generateFileName(
@@ -198,13 +205,15 @@ class DownloadFileNameBuilder<T extends Post>
   String generate(
     Settings settings,
     BooruConfig config,
-    T post,
-  ) =>
+    T post, {
+    Map<String, String>? metadata,
+  }) =>
       _generate(
         settings,
         config,
         config.customDownloadFileNameFormat,
         post,
+        metadata: metadata,
       );
 
   @override
@@ -212,14 +221,14 @@ class DownloadFileNameBuilder<T extends Post>
     Settings settings,
     BooruConfig config,
     T post, {
-    int? index,
+    Map<String, String>? metadata,
   }) =>
       _generate(
         settings,
         config,
         config.customBulkDownloadFileNameFormat,
         post,
-        index: index,
+        metadata: metadata,
       );
 
   @override
