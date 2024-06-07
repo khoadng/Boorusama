@@ -27,11 +27,12 @@ mixin DebounceMixin {
 }
 
 class DebounceText extends StatefulWidget {
-  const DebounceText(
-      {super.key,
-      required this.controller,
-      required this.builder,
-      required this.debounceKey});
+  const DebounceText({
+    super.key,
+    required this.controller,
+    required this.builder,
+    required this.debounceKey,
+  });
 
   final String debounceKey;
   final TextEditingController controller;
@@ -54,9 +55,11 @@ class _DebounceTextState extends State<DebounceText> with DebounceMixin {
     debounce(
       widget.debounceKey,
       () {
-        setState(() {
-          text = widget.controller.text;
-        });
+        if (mounted) {
+          setState(() {
+            text = widget.controller.text;
+          });
+        }
       },
     );
   }
