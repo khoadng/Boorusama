@@ -18,7 +18,7 @@ typedef PostFutureFetcher<T extends Post> = Future<List<T>> Function(
 
 abstract class PostRepository<T extends Post> {
   PostsOrError<T> getPosts(
-    List<String> tags,
+    String tags,
     int page, {
     int? limit,
   });
@@ -34,21 +34,23 @@ class PostRepositoryBuilder<T extends Post> implements PostRepository<T> {
   final Future<Settings> Function() getSettings;
 
   @override
-  PostsOrError<T> getPosts(List<String> tags, int page, {int? limit}) =>
+  PostsOrError<T> getPosts(String tags, int page, {int? limit}) =>
       TaskEither.Do(($) async {
         var lim = limit;
 
         lim ??= await getSettings().then((value) => value.postsPerPage);
 
+        final newTags = tags.isEmpty ? <String>[] : tags.split(' ');
+
         return $(tryFetchRemoteData(
-          fetcher: () => fetch(tags, page, limit: lim),
+          fetcher: () => fetch(newTags, page, limit: lim),
         ));
       });
 }
 
 Future<List<T>> getPostsFromTagsOrEmptyFrom<T extends Post>(
   PostRepository<T> repository,
-  List<String> tags,
+  String tags,
   int page, {
   int? limit,
 }) =>
@@ -66,14 +68,14 @@ Future<List<T>> getPostsFromTagsOrEmptyFrom<T extends Post>(
 
 extension PostRepositoryX<T extends Post> on PostRepository<T> {
   Future<List<T>> getPostsFromTagsOrEmpty(
-    List<String> tags, {
+    String tags, {
     int? limit,
     int page = 1,
   }) =>
       getPostsFromTagsOrEmptyFrom(this, tags, page, limit: limit);
 
   Future<List<T>> getPostsFromTagsWithBlacklist({
-    required List<String> tags,
+    required String tags,
     int page = 1,
     required Set<String> blacklist,
     int? hardLimit,
@@ -104,7 +106,7 @@ extension PostRepositoryX<T extends Post> on PostRepository<T> {
     if (tag == null) return [];
 
     return getPostsFromTagsWithBlacklist(
-      tags: [tag],
+      tags: tag,
       page: page,
       blacklist: blacklist,
       hardLimit: hardLimit,
@@ -117,7 +119,7 @@ mixin PostRepositoryMixin<T extends Post> {
   PostRepository<T> get postRepository;
 
   Future<List<T>> getPostsFromTagsOrEmpty(
-    List<String> tags,
+    String tags,
     int page, {
     int? limit,
   }) =>
@@ -134,7 +136,7 @@ class EmptyPostRepository extends PostRepository {
 
   @override
   PostsOrError getPosts(
-    List<String> tags,
+    String tags,
     int page, {
     int? limit,
   }) =>

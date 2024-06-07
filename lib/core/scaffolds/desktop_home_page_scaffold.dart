@@ -41,7 +41,7 @@ class _DesktopHomePageScaffoldState
 
     return PostScope(
       fetcher: (page) =>
-          fetcher?.call(page, selectedTagController.rawTags) ??
+          fetcher?.call(page, selectedTagController.rawTagsString) ??
           TaskEither.of(<Post>[]),
       builder: (context, controller, errors) => Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

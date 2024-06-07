@@ -35,7 +35,7 @@ class ExploreRepositoryApi
     int? limit,
   }) =>
       postRepository.getPosts(
-        ['order:rank'],
+        'order:rank',
         page,
         limit: limit,
       );

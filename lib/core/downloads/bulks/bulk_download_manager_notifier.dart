@@ -28,7 +28,7 @@ class BulkDownloadManagerNotifier extends FamilyNotifier<void, BooruConfig> {
 
   LoggerService get logger => ref.read(loggerProvider);
 
-  Future<List<Post>> getPosts(List<String> tags, int page) {
+  Future<List<Post>> getPosts(String tags, int page) {
     final options = ref.read(bulkDownloadOptionsProvider);
     return postRepo.getPostsFromTagsOrEmpty(
       tags,
@@ -49,7 +49,7 @@ class BulkDownloadManagerNotifier extends FamilyNotifier<void, BooruConfig> {
   }
 
   Future<void> download({
-    required List<String> tags,
+    required String tags,
   }) async {
     final deviceInfo = ref.read(deviceInfoProvider);
     final permission = await checkMediaPermissions(deviceInfo);
@@ -70,7 +70,7 @@ class BulkDownloadManagerNotifier extends FamilyNotifier<void, BooruConfig> {
     }
 
     // saved tags to history
-    ref.read(searchHistoryProvider.notifier).addHistory(tags.join(' '));
+    ref.read(searchHistoryProvider.notifier).addHistory(tags);
 
     bulkDownloadStatus.state = BulkDownloadManagerStatus.downloadInProgress;
 

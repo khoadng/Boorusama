@@ -12,16 +12,16 @@ class PostRepositoryCacher<T extends Post> implements PostRepository<T> {
 
   final PostRepository<T> repository;
   final Cacher<String, List<T>> cache;
-  final String Function(List<String> tags, int page, {int? limit})? keyBuilder;
+  final String Function(String tags, int page, {int? limit})? keyBuilder;
 
   @override
   PostsOrError<T> getPosts(
-    List<String> tags,
+    String tags,
     int page, {
     int? limit,
   }) =>
       TaskEither.Do(($) async {
-        final tagString = tags.join(' ');
+        final tagString = tags;
         final defaultKey = "$tagString-$page-$limit";
         final name = keyBuilder != null
             ? keyBuilder!(tags, page, limit: limit)

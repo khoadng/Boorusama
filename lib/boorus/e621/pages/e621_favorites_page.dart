@@ -25,6 +25,6 @@ class E621FavoritesPage extends ConsumerWidget {
     return FavoritesPageScaffold(
         favQueryBuilder: () => query,
         fetcher: (page) =>
-            ref.read(e621PostRepoProvider(config)).getPosts([query], page));
+            ref.read(e621PostRepoProvider(config)).getPosts(query, page));
   }
 }

@@ -336,7 +336,7 @@ class GelbooruV2FavoritesPage extends ConsumerWidget {
     return FavoritesPageScaffold(
       favQueryBuilder: () => query,
       fetcher: (page) =>
-          ref.read(gelbooruV2PostRepoProvider(config)).getPosts([query], page),
+          ref.read(gelbooruV2PostRepoProvider(config)).getPosts(query, page),
     );
   }
 }

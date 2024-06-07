@@ -124,7 +124,8 @@ final sankakuAutocompleteRepoProvider =
 final sankakuArtistPostRepo =
     Provider.family<PostRepository<SankakuPost>, BooruConfig>((ref, config) {
   return PostRepositoryCacher(
-    keyBuilder: (tags, page, {limit}) => '${tags.join('-')}_${page}_$limit',
+    keyBuilder: (tags, page, {limit}) =>
+        '${tags.split(' ').join('-')}_${page}_$limit',
     repository: ref.watch(sankakuPostRepoProvider(config)),
     cache: LruCacher(capacity: 100),
   );

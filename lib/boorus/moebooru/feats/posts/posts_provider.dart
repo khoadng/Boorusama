@@ -69,7 +69,7 @@ final moebooruPostDetailsChildrenProvider =
     final query =
         post.parentId != null ? 'parent:${post.parentId}' : 'parent:${post.id}';
 
-    final posts = await repo.getPosts([query], 1).run();
+    final posts = await repo.getPosts(query, 1).run();
 
     return posts.fold(
       (l) => null,
@@ -84,7 +84,7 @@ final moebooruPostDetailsArtistProvider =
   final repo = ref.watch(moebooruArtistCharacterPostRepoProvider(config));
   final blacklistedTags = ref.watch(blacklistTagsProvider(config));
 
-  final posts = await repo.getPosts([tag], 1).run().then(
+  final posts = await repo.getPosts(tag, 1).run().then(
         (value) => value.fold(
           (l) => <Post>[],
           (r) => r,
@@ -103,7 +103,7 @@ final moebooruPostDetailsCharacterProvider =
   final repo = ref.watch(moebooruArtistCharacterPostRepoProvider(config));
   final blacklistedTags = ref.watch(blacklistTagsProvider(config));
 
-  final posts = await repo.getPosts([tag], 1).run().then(
+  final posts = await repo.getPosts(tag, 1).run().then(
         (value) => value.fold(
           (l) => <Post>[],
           (r) => r,

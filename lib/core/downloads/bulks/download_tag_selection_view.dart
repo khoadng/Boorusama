@@ -227,7 +227,7 @@ class _DownloadTagSelectionViewState
                         ? () => ref
                             .read(
                                 bulkDownloaderManagerProvider(config).notifier)
-                            .download(tags: selectedTags)
+                            .download(tags: selectedTags.join(' '))
                         : null,
                     child: const Text('download.download').tr(),
                   );

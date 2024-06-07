@@ -153,9 +153,9 @@ class MoebooruMobileHomeView extends ConsumerWidget {
 
     return PostScope(
       fetcher: (page) => ref.read(moebooruPostRepoProvider(config)).getPosts(
-        [],
-        page,
-      ),
+            '',
+            page,
+          ),
       builder: (context, postController, errors) => InfinitePostListScaffold(
         errors: errors,
         controller: postController,

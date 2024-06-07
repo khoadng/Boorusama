@@ -38,7 +38,7 @@ class _E621DesktopHomePageState extends ConsumerState<E621DesktopHomePage> {
 
     return PostScope(
       fetcher: (page) => ref.read(e621PostRepoProvider(config)).getPosts(
-            selectedTagController.rawTags,
+            selectedTagController.rawTagsString,
             page,
           ),
       builder: (context, controller, errors) => Column(

@@ -300,9 +300,8 @@ class SzurubooruFavoritesPage extends ConsumerWidget {
 
     return FavoritesPageScaffold(
         favQueryBuilder: () => query,
-        fetcher: (page) => ref
-            .read(szurubooruPostRepoProvider(config))
-            .getPosts([query], page));
+        fetcher: (page) =>
+            ref.read(szurubooruPostRepoProvider(config)).getPosts(query, page));
   }
 }
 

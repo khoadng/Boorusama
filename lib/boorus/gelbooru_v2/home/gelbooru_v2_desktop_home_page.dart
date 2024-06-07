@@ -39,7 +39,7 @@ class _GelbooruV2DesktopHomePageState
 
     return PostScope(
       fetcher: (page) => ref.watch(gelbooruV2PostRepoProvider(config)).getPosts(
-            selectedTagController.rawTags,
+            selectedTagController.rawTagsString,
             page,
           ),
       builder: (context, controller, errors) => Column(

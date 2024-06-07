@@ -194,7 +194,7 @@ class MoebooruFavoritesPage extends ConsumerWidget {
     return FavoritesPageScaffold(
       favQueryBuilder: () => query,
       fetcher: (page) =>
-          ref.read(moebooruPostRepoProvider(config)).getPosts([query], page),
+          ref.read(moebooruPostRepoProvider(config)).getPosts(query, page),
     );
   }
 }

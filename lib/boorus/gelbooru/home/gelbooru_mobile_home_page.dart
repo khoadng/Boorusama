@@ -27,7 +27,7 @@ class GelbooruMobileHomePage extends ConsumerWidget {
 
     return PostScope(
       // Need to use generic repo here because this is used not only for Gelbooru
-      fetcher: (page) => ref.read(postRepoProvider(config)).getPosts([], page),
+      fetcher: (page) => ref.read(postRepoProvider(config)).getPosts('', page),
       builder: (context, postController, errors) => InfinitePostListScaffold(
         errors: errors,
         controller: postController,

@@ -47,9 +47,9 @@ class PoolDetailPage extends ConsumerWidget {
 
     return PostScope(
       fetcher: (page) => ref.read(danbooruPostRepoProvider(config)).getPosts(
-        ['pool:${pool.id}'],
-        page,
-      ),
+            'pool:${pool.id}',
+            page,
+          ),
       builder: (context, controller, errors) => DanbooruInfinitePostList(
         errors: errors,
         controller: controller,
