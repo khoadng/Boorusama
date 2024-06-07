@@ -34,6 +34,7 @@
         protocol: https_2
 
 - gelbooru:
+    protocol: https_2
     sites:
       - https://gelbooru.com/
 

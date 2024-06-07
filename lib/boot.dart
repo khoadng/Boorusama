@@ -35,6 +35,7 @@ import 'package:boorusama/foundation/device_info_service.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
+import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/package_info.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/platform.dart';
@@ -275,6 +276,8 @@ Future<void> boot(BootLogger bootLogger) async {
     bootLogger.l("Clear image cache");
     await clearImageCache();
   }
+
+  HttpOverrides.global = AppHttpOverrides();
 
   logger.logI('Start up',
       'Initialization done in ${stopwatch.elapsed.inMilliseconds}ms');
