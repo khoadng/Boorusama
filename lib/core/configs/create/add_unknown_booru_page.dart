@@ -39,75 +39,77 @@ class AddUnknownBooruPage extends ConsumerWidget {
           ),
         ),
       ],
-      child: SafeArea(
-        child: Material(
-          color: backgroundColor,
-          child: Stack(
-            children: [
-              SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const SizedBox(height: 32),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 8,
-                      ),
-                      child: Text(
-                        'Select a booru engine to continue',
-                        style: context.textTheme.headlineSmall!
-                            .copyWith(fontWeight: FontWeight.w900),
-                      ),
+      child: Material(
+        color: backgroundColor,
+        child: Stack(
+          children: [
+            SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height: MediaQuery.viewPaddingOf(context).top,
+                  ),
+                  const SizedBox(height: 32),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
                     ),
-                    const Divider(
-                      thickness: 2,
-                      endIndent: 16,
-                      indent: 16,
+                    child: Text(
+                      'Select a booru engine to continue',
+                      style: context.textTheme.headlineSmall!
+                          .copyWith(fontWeight: FontWeight.w900),
                     ),
-                    const InvalidBooruWarningContainer(),
-                    const UnknownConfigBooruSelector(),
-                    const BooruConfigNameField(),
-                    const SizedBox(height: 16),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 8,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          const BooruUrlField(),
-                          const SizedBox(height: 16),
-                          Text(
-                            'Advanced options (optional)',
-                            style: context.textTheme.titleMedium,
-                          ),
-                          const DefaultBooruInstructionText(
-                            '*These options only be used if the site allows it.',
-                          ),
-                          const SizedBox(height: 16),
-                          const DefaultBooruLoginField(),
-                          const SizedBox(height: 16),
-                          const DefaultBooruApiKeyField(),
-                          const SizedBox(height: 16),
-                          const UnknownBooruSubmitButton(),
-                        ],
-                      ),
+                  ),
+                  const Divider(
+                    thickness: 2,
+                    endIndent: 16,
+                    indent: 16,
+                  ),
+                  const InvalidBooruWarningContainer(),
+                  const UnknownConfigBooruSelector(),
+                  const BooruConfigNameField(),
+                  const SizedBox(height: 16),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
                     ),
-                  ],
-                ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const BooruUrlField(),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Advanced options (optional)',
+                          style: context.textTheme.titleMedium,
+                        ),
+                        const DefaultBooruInstructionText(
+                          '*These options only be used if the site allows it.',
+                        ),
+                        const SizedBox(height: 16),
+                        const DefaultBooruLoginField(),
+                        const SizedBox(height: 16),
+                        const DefaultBooruApiKeyField(),
+                        const SizedBox(height: 16),
+                        const UnknownBooruSubmitButton(),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              Align(
-                alignment: Alignment.topRight,
-                child: IconButton(
-                  onPressed: context.navigator.pop,
-                  icon: const Icon(Symbols.close),
-                ),
+            ),
+            Positioned(
+              top: MediaQuery.viewPaddingOf(context).top,
+              right: 8,
+              child: IconButton(
+                onPressed: context.navigator.pop,
+                icon: const Icon(Symbols.close),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
