@@ -1,3 +1,4 @@
+export 'background_downloader.dart';
 export 'bulks/bulk_download_manager_notifier.dart';
 export 'bulks/bulk_download_page.dart';
 export 'bulks/bulk_download_provider.dart';
@@ -10,6 +11,8 @@ export 'bulks/download_tag_selection_view.dart';
 export 'crossplatform_downloader.dart';
 export 'download.dart';
 export 'download_file_name_generator.dart';
+export 'download_folder_selector_section.dart';
+export 'download_manager_page.dart';
 export 'download_options.dart';
 export 'download_provider.dart';
 export 'download_service.dart';

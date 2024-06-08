@@ -10,7 +10,6 @@ import 'package:readmore/readmore.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/downloads/background_downloader.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/pages/settings/settings.dart';
