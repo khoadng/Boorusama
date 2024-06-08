@@ -47,7 +47,7 @@ final zerochanPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
         final posts = await client.getPosts(
           tags: tags,
           page: page,
-          sort: ZerochanSortOrder.popularity,
+          sort: ZerochanSortOrder.recency,
           limit: limit,
         );
 
