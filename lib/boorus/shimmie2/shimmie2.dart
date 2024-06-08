@@ -1,5 +1,7 @@
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/boorus/danbooru/danbooru.dart';
+import 'package:boorusama/boorus/gelbooru_v2/gelbooru_v2.dart';
 import 'package:boorusama/core/configs/create/create_anon_config_page.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
@@ -9,7 +11,6 @@ import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/path.dart';
 
 class Shimmie2Builder
     with
@@ -30,7 +31,7 @@ class Shimmie2Builder
         DefaultPostStatisticsPageBuilderMixin,
         DefaultBooruUIMixin
     implements BooruBuilder {
-  const Shimmie2Builder({
+  Shimmie2Builder({
     required this.postRepo,
     required this.autocompleteRepo,
   });
@@ -98,8 +99,18 @@ class Shimmie2Builder
           );
 
   @override
-  DownloadFilenameGenerator<Post> get downloadFilenameBuilder =>
-      LegacyFilenameBuilder(
-        generateFileName: (post, downloadUrl) => basename(downloadUrl),
-      );
+  final DownloadFilenameGenerator<Post> downloadFilenameBuilder =
+      DownloadFileNameBuilder<Post>(
+    defaultFileNameFormat: kGelbooruV2CustomDownloadFileNameFormat,
+    defaultBulkDownloadFileNameFormat: kGelbooruV2CustomDownloadFileNameFormat,
+    sampleData: kDanbooruPostSamples,
+    hasRating: false,
+    extensionHandler: (post, config) =>
+        post.format.startsWith('.') ? post.format.substring(1) : post.format,
+    tokenHandlers: {
+      'width': (post, config) => post.width.toString(),
+      'height': (post, config) => post.height.toString(),
+      'source': (post, config) => post.source.url,
+    },
+  );
 }

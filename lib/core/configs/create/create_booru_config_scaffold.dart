@@ -29,7 +29,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
     required this.isNewConfig,
     this.authTab,
     this.postDetailsResolution,
-    this.hasDownloadTab = false,
+    this.hasDownloadTab = true,
     this.hasRatingFilter = false,
     this.miscOptions,
     this.postDetailsGestureActions = kDefaultGestureActions,

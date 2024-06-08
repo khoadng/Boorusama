@@ -30,7 +30,6 @@ class CreateSankakuConfigPage extends ConsumerWidget {
         isNewConfig: isNewConfig,
         backgroundColor: backgroundColor,
         authTab: const SankakuAuthConfigView(),
-        hasDownloadTab: true,
       ),
     );
   }

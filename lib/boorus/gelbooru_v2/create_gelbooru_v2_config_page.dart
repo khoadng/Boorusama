@@ -31,7 +31,6 @@ class CreateGelbooruV2ConfigPage extends StatelessWidget {
         isNewConfig: isNewConfig,
         backgroundColor: backgroundColor,
         authTab: const GelbooruV2AuthView(),
-        hasDownloadTab: true,
         hasRatingFilter: true,
       ),
     );

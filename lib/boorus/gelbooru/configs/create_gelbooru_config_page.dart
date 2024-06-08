@@ -35,7 +35,6 @@ class CreateGelbooruConfigPage extends ConsumerWidget {
         isNewConfig: isNewConfig,
         backgroundColor: backgroundColor,
         authTab: const GelbooruAuthView(),
-        hasDownloadTab: true,
         hasRatingFilter: true,
       ),
     );

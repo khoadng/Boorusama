@@ -72,80 +72,6 @@ extension DownloadFilenameTokenOptionsX on DownloadFilenameTokenOptions {
   int? get index => metadata?['index']?.toIntOrNull();
 }
 
-class LegacyFilenameBuilder<T extends Post>
-    implements DownloadFilenameGenerator<T> {
-  LegacyFilenameBuilder({
-    required this.generateFileName,
-  });
-
-  @override
-  Set<String> get availableTokens => {};
-
-  final String Function(T post, String downloadUrl) generateFileName;
-
-  @override
-  String generate(
-    Settings settings,
-    BooruConfig config,
-    T post, {
-    Map<String, String>? metadata,
-  }) {
-    final downloadUrl = getDownloadFileUrl(post, settings);
-
-    final fileName = generateFileName(post, downloadUrl);
-
-    return _joinFileWithExtension(fileName, post.format);
-  }
-
-  @override
-  String generateForBulkDownload(
-    Settings settings,
-    BooruConfig config,
-    T post, {
-    Map<String, String>? metadata,
-  }) {
-    final downloadUrl = getDownloadFileUrl(post, settings);
-
-    final fileName = generateFileName(post, downloadUrl);
-
-    return _joinFileWithExtension(fileName, post.format);
-  }
-
-  @override
-  String generateSample(String format) => '';
-
-  @override
-  List<String> generateSamples(String format) => [];
-
-  @override
-  List<String> getTokenOptions(String token) => [];
-
-  @override
-  Map<RegExp, TextStyle> get patternMatchMap => {};
-
-  @override
-  TokenOptionDocs? getDocsForTokenOption(String token, String tokenOption) =>
-      null;
-
-  @override
-  String get defaultBulkDownloadFileNameFormat => '';
-
-  @override
-  String get defaultFileNameFormat => '';
-}
-
-String _joinFileWithExtension(String fileName, String fileExt) {
-  // check if file already has extension
-  final fileNameExt = extension(fileName);
-  if (fileNameExt.isNotEmpty) return fileName;
-
-  if (fileExt.isEmpty) return fileName;
-
-  final ext = fileExt.startsWith('.') ? fileExt : '.$fileExt';
-
-  return fileName.endsWith(ext) ? fileName : '$fileName$ext';
-}
-
 class DownloadFileNameBuilder<T extends Post>
     implements DownloadFilenameGenerator<T> {
   DownloadFileNameBuilder({
@@ -153,14 +79,17 @@ class DownloadFileNameBuilder<T extends Post>
     required this.sampleData,
     required this.defaultFileNameFormat,
     required this.defaultBulkDownloadFileNameFormat,
+    bool hasRating = true,
+    bool hasMd5 = true,
+    DownloadFilenameTokenHandler<T>? extensionHandler,
   }) {
     this.tokenHandlers = {
       'id': (post, config) => post.id.toString(),
       'tags': (post, config) => post.tags.join(' '),
-      'extension': (post, config) =>
-          sanitizedExtension(config.downloadUrl).substring(1),
-      'md5': (post, config) => post.md5,
-      'rating': (post, config) => post.rating.name,
+      'extension': extensionHandler ??
+          (post, config) => sanitizedExtension(config.downloadUrl).substring(1),
+      if (hasMd5) 'md5': (post, config) => post.md5,
+      if (hasRating) 'rating': (post, config) => post.rating.name,
       'index': (post, config) => config.index?.toString(),
       ...tokenHandlers,
     };
@@ -179,6 +108,18 @@ class DownloadFileNameBuilder<T extends Post>
 
   final TokenizerConfigs tokenizerConfigs = TokenizerConfigs.defaultConfigs();
 
+  String _joinFileWithExtension(String fileName, String fileExt) {
+    // check if file already has extension
+    final fileNameExt = extension(fileName);
+    if (fileNameExt.isNotEmpty) return fileName;
+
+    if (fileExt.isEmpty) return fileName;
+
+    final ext = fileExt.startsWith('.') ? fileExt : '.$fileExt';
+
+    return fileName.endsWith(ext) ? fileName : '$fileName$ext';
+  }
+
   String _generate(
     Settings settings,
     BooruConfig config,
@@ -189,7 +130,9 @@ class DownloadFileNameBuilder<T extends Post>
     final downloadUrl = getDownloadFileUrl(post, settings);
     final fallbackName = basename(downloadUrl);
 
-    if (format == null || format.isEmpty) return fallbackName;
+    if (format == null || format.isEmpty) {
+      return _joinFileWithExtension(fallbackName, post.format);
+    }
 
     final options = DownloadFilenameTokenOptions(
       downloadUrl: downloadUrl,
@@ -207,7 +150,9 @@ class DownloadFileNameBuilder<T extends Post>
       configs: tokenizerConfigs,
     );
 
-    if (fileName.isEmpty) return fallbackName;
+    if (fileName.isEmpty) {
+      return _joinFileWithExtension(fallbackName, post.format);
+    }
 
     return fileName;
   }

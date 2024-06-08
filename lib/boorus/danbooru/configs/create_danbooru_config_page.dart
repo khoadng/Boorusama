@@ -69,7 +69,6 @@ class CreateDanbooruConfigPage extends StatelessWidget {
             ),
           ),
         ),
-        hasDownloadTab: true,
         hasRatingFilter: true,
         postDetailsGestureActions: const {
           ...kDefaultGestureActions,
