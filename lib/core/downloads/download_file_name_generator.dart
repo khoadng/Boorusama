@@ -149,11 +149,22 @@ String _joinFileWithExtension(String fileName, String fileExt) {
 class DownloadFileNameBuilder<T extends Post>
     implements DownloadFilenameGenerator<T> {
   DownloadFileNameBuilder({
-    required this.tokenHandlers,
+    required Map<String, DownloadFilenameTokenHandler<T>> tokenHandlers,
     required this.sampleData,
     required this.defaultFileNameFormat,
     required this.defaultBulkDownloadFileNameFormat,
-  });
+  }) {
+    this.tokenHandlers = {
+      'id': (post, config) => post.id.toString(),
+      'tags': (post, config) => post.tags.join(' '),
+      'extension': (post, config) =>
+          sanitizedExtension(config.downloadUrl).substring(1),
+      'md5': (post, config) => post.md5,
+      'rating': (post, config) => post.rating.name,
+      'index': (post, config) => config.index?.toString(),
+      ...tokenHandlers,
+    };
+  }
 
   final List<Map<String, String>> sampleData;
 
@@ -164,7 +175,7 @@ class DownloadFileNameBuilder<T extends Post>
         'uuid',
       }.toSet();
 
-  final Map<String, DownloadFilenameTokenHandler<T>> tokenHandlers;
+  late final Map<String, DownloadFilenameTokenHandler<T>> tokenHandlers;
 
   final TokenizerConfigs tokenizerConfigs = TokenizerConfigs.defaultConfigs();
 

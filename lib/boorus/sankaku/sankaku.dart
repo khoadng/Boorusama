@@ -175,30 +175,23 @@ class SankakuBuilder
             );
 
   @override
-  DownloadFilenameGenerator get downloadFilenameBuilder =>
+  final DownloadFilenameGenerator downloadFilenameBuilder =
       DownloadFileNameBuilder<SankakuPost>(
-        defaultFileNameFormat: kBoorusamaCustomDownloadFileNameFormat,
-        defaultBulkDownloadFileNameFormat:
-            kBoorusamaBulkDownloadCustomFileNameFormat,
-        sampleData: kDanbooruPostSamples,
-        tokenHandlers: {
-          'id': (post, config) => post.id.toString(),
-          'artist': (post, config) => post.artistTags.join(' '),
-          'character': (post, config) => post.characterTags.join(' '),
-          'copyright': (post, config) => post.copyrightTags.join(' '),
-          'tags': (post, config) => post.tags.join(' '),
-          'extension': (post, config) =>
-              sanitizedExtension(config.downloadUrl).substring(1),
-          'width': (post, config) => post.width.toString(),
-          'height': (post, config) => post.height.toString(),
-          'mpixels': (post, config) => post.mpixels.toString(),
-          'aspect_ratio': (post, config) => post.aspectRatio.toString(),
-          'md5': (post, config) => post.md5,
-          'source': (post, config) => sanitizedUrl(config.downloadUrl),
-          'rating': (post, config) => post.rating.name,
-          'index': (post, config) => config.index?.toString(),
-        },
-      );
+    defaultFileNameFormat: kBoorusamaCustomDownloadFileNameFormat,
+    defaultBulkDownloadFileNameFormat:
+        kBoorusamaBulkDownloadCustomFileNameFormat,
+    sampleData: kDanbooruPostSamples,
+    tokenHandlers: {
+      'artist': (post, config) => post.artistTags.join(' '),
+      'character': (post, config) => post.characterTags.join(' '),
+      'copyright': (post, config) => post.copyrightTags.join(' '),
+      'width': (post, config) => post.width.toString(),
+      'height': (post, config) => post.height.toString(),
+      'mpixels': (post, config) => post.mpixels.toString(),
+      'aspect_ratio': (post, config) => post.aspectRatio.toString(),
+      'source': (post, config) => sanitizedUrl(config.downloadUrl),
+    },
+  );
 }
 
 class SankakuArtistPage extends ConsumerWidget {

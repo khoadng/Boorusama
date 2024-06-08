@@ -41,7 +41,7 @@ class GelbooruV1Builder
         DefaultPostStatisticsPageBuilderMixin,
         DefaultBooruUIMixin
     implements BooruBuilder {
-  const GelbooruV1Builder({
+  GelbooruV1Builder({
     required this.postRepo,
     required this.client,
   });
@@ -110,21 +110,13 @@ class GelbooruV1Builder
       });
 
   @override
-  DownloadFilenameGenerator get downloadFilenameBuilder =>
+  final DownloadFilenameGenerator downloadFilenameBuilder =
       DownloadFileNameBuilder(
-        defaultFileNameFormat: kGelbooruCustomDownloadFileNameFormat,
-        defaultBulkDownloadFileNameFormat:
-            kGelbooruCustomDownloadFileNameFormat,
-        sampleData: kDanbooruPostSamples,
-        tokenHandlers: {
-          'id': (post, config) => post.id.toString(),
-          'tags': (post, config) => post.tags.join(' '),
-          'extension': (post, config) =>
-              extension(config.downloadUrl).substring(1),
-          'md5': (post, config) => post.md5,
-          'source': (post, config) => config.downloadUrl,
-          'rating': (post, config) => post.rating.name,
-          'index': (post, config) => config.index?.toString(),
-        },
-      );
+    defaultFileNameFormat: kGelbooruCustomDownloadFileNameFormat,
+    defaultBulkDownloadFileNameFormat: kGelbooruCustomDownloadFileNameFormat,
+    sampleData: kDanbooruPostSamples,
+    tokenHandlers: {
+      'source': (post, config) => config.downloadUrl,
+    },
+  );
 }
