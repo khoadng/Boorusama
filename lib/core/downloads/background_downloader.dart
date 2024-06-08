@@ -15,7 +15,11 @@ import 'package:media_scanner/media_scanner.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/downloads/download_service.dart';
 import 'package:boorusama/core/downloads/types.dart';
+import 'package:boorusama/core/feats/boorus/booru.dart';
+import 'package:boorusama/core/feats/boorus/booru_config.dart';
+import 'package:boorusama/core/feats/boorus/providers.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
+import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/functional.dart' as fp;
 import 'package:boorusama/router.dart';
@@ -147,10 +151,6 @@ class _BackgroundDownloaderScopeState
     final index =
         totalTasks.indexWhere((element) => element.task == update.task);
 
-    if (update is TaskProgressUpdate) {
-      if (update.progress >= 100) {}
-    }
-
     if (update case TaskStatusUpdate()) {
       if (update.status case TaskStatus.complete) {
         WidgetsBinding.instance.addPostFrameCallback(
@@ -160,6 +160,44 @@ class _BackgroundDownloaderScopeState
               await MediaScanner.loadMedia(path: path);
             } else if (isIOS()) {
               Gal.putImage(path);
+            }
+          },
+        );
+      } else if (update.status case TaskStatus.notFound) {
+        // retry 404 url
+        WidgetsBinding.instance.addPostFrameCallback(
+          (_) {
+            try {
+              final config = ref.readConfig;
+
+              if (config.booruType.hasUnknownFullImageUrl) {
+                // retry after 1 second
+                Future.delayed(
+                  const Duration(seconds: 1),
+                  () {
+                    final ext = extension(update.task.url);
+                    final newExt = switch (ext.toLowerCase()) {
+                      '.jpg' => '.png',
+                      '.png' => '.webp',
+                      _ => '.jpg',
+                    };
+
+                    final newUrl =
+                        removeFileExtension(update.task.url) + newExt;
+                    final newFileName =
+                        removeFileExtension(update.task.filename) + newExt;
+
+                    final newTask = update.task.copyWith(
+                      url: newUrl,
+                      filename: newFileName,
+                    );
+
+                    FileDownloader().enqueue(newTask);
+                  },
+                );
+              }
+            } catch (e) {
+              // do nothing
             }
           },
         );

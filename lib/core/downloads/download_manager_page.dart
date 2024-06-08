@@ -50,7 +50,8 @@ final downloadFilteredProvider =
         .toList(),
     DownloadFilter2.failed => state
         .whereType<TaskStatusUpdate>()
-        .where((e) => e.status == TaskStatus.failed)
+        .where((e) =>
+            e.status == TaskStatus.failed || e.status == TaskStatus.notFound)
         .toList(),
     DownloadFilter2.canceled => state
         .whereType<TaskStatusUpdate>()
