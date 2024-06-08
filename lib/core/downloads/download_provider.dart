@@ -75,6 +75,11 @@ String sanitizedUrl(String url) {
   }
 }
 
+extension BooruConfigDownloadX on BooruConfig {
+  bool get hasCustomDownloadLocation =>
+      customDownloadLocation != null && customDownloadLocation!.isNotEmpty;
+}
+
 extension PostDownloadX on WidgetRef {
   Future<void> download(Post post) async {
     final perm = await read(deviceStoragePermissionProvider.future);
@@ -112,6 +117,7 @@ Future<void> _download(
   Future<void> download() async => service
       .downloadWithSettings(
         settings,
+        config: booruConfig,
         metadata: DownloaderMetadata(
           thumbnailUrl: downloadable.thumbnailImageUrl,
           fileSize: downloadable.fileSize,

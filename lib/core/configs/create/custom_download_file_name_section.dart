@@ -96,15 +96,6 @@ class _CustomDownloadFileNameSectionState
             style: TextStyle(
               color: context.colorScheme.onBackground,
             ),
-            children: [
-              TextSpan(
-                text: '(Experimental)',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: context.colorScheme.onBackground,
-                ),
-              ),
-            ],
           ),
         ),
         const SizedBox(height: 8),

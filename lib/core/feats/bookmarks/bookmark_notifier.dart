@@ -186,6 +186,7 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
             .read(downloadServiceProvider(config))
             .downloadWithSettings(
               settings,
+              config: config,
               url: bookmark.originalUrl,
               metadata: DownloaderMetadata(
                 thumbnailUrl: bookmark.thumbnailUrl,

@@ -42,13 +42,16 @@ class _DownloadPageState extends ConsumerState<DownloadPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            DownloadFolderSelectorSection(
-              settings: settings,
-              storagePath: () => ref.read(settingsProvider).downloadPath,
-              onPathChanged: (path) =>
-                  ref.updateSettings(settings.copyWith(downloadPath: path)),
-              deviceInfo: ref.watch(deviceInfoProvider),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: DownloadFolderSelectorSection(
+                storagePath: settings.downloadPath,
+                onPathChanged: (path) =>
+                    ref.updateSettings(settings.copyWith(downloadPath: path)),
+                deviceInfo: ref.watch(deviceInfoProvider),
+              ),
             ),
+            const SizedBox(height: 16),
             SettingsTile<DownloadQuality>(
               title: const Text('settings.download.quality').tr(),
               selectedOption: settings.downloadQuality,

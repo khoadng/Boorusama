@@ -7,7 +7,6 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/foundation/android.dart';
 import 'package:boorusama/foundation/device_info_service.dart';
 import 'package:boorusama/foundation/i18n.dart';
@@ -18,15 +17,18 @@ class DownloadFolderSelectorSection extends StatefulWidget {
   const DownloadFolderSelectorSection({
     super.key,
     required this.storagePath,
-    required this.settings,
     required this.deviceInfo,
     required this.onPathChanged,
+    this.hint,
+    this.title,
   });
 
-  final String? Function() storagePath;
+  final String? storagePath;
   final void Function(String path) onPathChanged;
-  final Settings settings;
   final DeviceInfo deviceInfo;
+
+  final String? hint;
+  final String? title;
 
   @override
   State<DownloadFolderSelectorSection> createState() =>
@@ -35,15 +37,16 @@ class DownloadFolderSelectorSection extends StatefulWidget {
 
 class _DownloadFolderSelectorSectionState
     extends State<DownloadFolderSelectorSection> with DownloadMixin {
-  late Settings settings = widget.settings;
+  @override
+  late String? storagePath = widget.storagePath;
 
   @override
   void didUpdateWidget(covariant DownloadFolderSelectorSection oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (oldWidget.settings != widget.settings) {
+    if (oldWidget.storagePath != widget.storagePath) {
       setState(() {
-        settings = widget.settings;
+        storagePath = widget.storagePath;
       });
     }
   }
@@ -54,54 +57,83 @@ class _DownloadFolderSelectorSectionState
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const SizedBox(height: 16),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Text(
-            'settings.download.path'.tr().toUpperCase(),
-            style: context.textTheme.titleSmall?.copyWith(
+        Text(
+          widget.title ?? 'settings.download.path'.tr(),
+        ),
+        const SizedBox(height: 4),
+        Material(
+          color: context.colorScheme.surfaceVariant,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4),
+            side: BorderSide(
               color: context.theme.hintColor,
-              fontWeight: FontWeight.w800,
             ),
           ),
-        ),
-        const SizedBox(height: 8),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Material(
-            child: Ink(
-              decoration: BoxDecoration(
-                color: context.colorScheme.surfaceVariant,
-                border: Border.fromBorderSide(
-                  BorderSide(color: context.theme.hintColor),
+          child: InkWell(
+            customBorder: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(4),
+            ),
+            onTap: () => _pickFolder(),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      left: 12,
+                      top: 4,
+                      bottom: 4,
+                    ),
+                    child: showPath()
+                        ? Text(
+                            storagePath!,
+                            overflow: TextOverflow.fade,
+                          )
+                        : Text(
+                            widget.hint ??
+                                'settings.download.select_a_folder'.tr(),
+                            overflow: TextOverflow.fade,
+                            style: context.textTheme.titleMedium!
+                                .copyWith(color: context.theme.hintColor),
+                          ),
+                  ),
                 ),
-                borderRadius: const BorderRadius.all(Radius.circular(4)),
-              ),
-              child: ListTile(
-                visualDensity: VisualDensity.compact,
-                minVerticalPadding: 0,
-                onTap: () => _pickFolder(settings),
-                title: showPath()
-                    ? Text(
-                        storagePath!,
-                        overflow: TextOverflow.fade,
-                      )
-                    : Text(
-                        'settings.download.select_a_folder'.tr(),
-                        overflow: TextOverflow.fade,
-                        style: context.textTheme.titleMedium!
-                            .copyWith(color: context.theme.hintColor),
-                      ),
-                trailing: !showPath()
+                !showPath()
                     ? IconButton(
-                        onPressed: () => _pickFolder(settings),
+                        onPressed: () => _pickFolder(),
                         icon: const Icon(Symbols.folder),
                       )
                     : IconButton(
                         onPressed: () => widget.onPathChanged(''),
                         icon: const Icon(Symbols.clear),
                       ),
-              ),
+              ],
             ),
+            // ListTile(
+            //   visualDensity: VisualDensity.compact,
+            //   minVerticalPadding: 0,
+            //   onTap: () => _pickFolder(settings),
+            //   title: showPath()
+            //       ? Text(
+            //           storagePath!,
+            //           overflow: TextOverflow.fade,
+            //         )
+            //       : Text(
+            //           widget.hint ?? 'settings.download.select_a_folder'.tr(),
+            //           overflow: TextOverflow.fade,
+            //           style: context.textTheme.titleMedium!
+            //               .copyWith(color: context.theme.hintColor),
+            //         ),
+            //   trailing: !showPath()
+            //       ? IconButton(
+            //           onPressed: () => _pickFolder(settings),
+            //           icon: const Icon(Symbols.folder),
+            //         )
+            //       : IconButton(
+            //           onPressed: () => widget.onPathChanged(''),
+            //           icon: const Icon(Symbols.clear),
+            //         ),
+            // ),
           ),
         ),
         if (isAndroid())
@@ -118,21 +150,17 @@ class _DownloadFolderSelectorSectionState
                   allowedFolders: allowedFolders,
                 )
               : const SizedBox.shrink(),
-        const SizedBox(height: 16),
       ],
     );
   }
 
   bool showPath() => storagePath != null && storagePath!.isNotEmpty;
 
-  Future<void> _pickFolder(Settings settings) async {
+  Future<void> _pickFolder() async {
     final selectedDirectory = await FilePicker.platform.getDirectoryPath();
 
     if (selectedDirectory != null) {
       widget.onPathChanged(selectedDirectory);
     }
   }
-
-  @override
-  String? get storagePath => widget.storagePath();
 }

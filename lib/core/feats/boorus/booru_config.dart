@@ -22,6 +22,7 @@ class BooruConfig extends Equatable {
     required this.url,
     required this.customDownloadFileNameFormat,
     required this.customBulkDownloadFileNameFormat,
+    required this.customDownloadLocation,
     required this.imageDetaisQuality,
     required this.granularRatingFilters,
     required this.postGestures,
@@ -40,6 +41,7 @@ class BooruConfig extends Equatable {
     url: '',
     customDownloadFileNameFormat: null,
     customBulkDownloadFileNameFormat: null,
+    customDownloadLocation: null,
     imageDetaisQuality: null,
     granularRatingFilters: null,
     postGestures: null,
@@ -63,6 +65,7 @@ class BooruConfig extends Equatable {
         url: url,
         customDownloadFileNameFormat: customDownloadFileNameFormat,
         customBulkDownloadFileNameFormat: customDownloadFileNameFormat,
+        customDownloadLocation: null,
         imageDetaisQuality: null,
         granularRatingFilters: null,
         postGestures: null,
@@ -80,6 +83,7 @@ class BooruConfig extends Equatable {
   final BooruConfigRatingFilter ratingFilter;
   final String? customDownloadFileNameFormat;
   final String? customBulkDownloadFileNameFormat;
+  final String? customDownloadLocation;
   final String? imageDetaisQuality;
   final Set<Rating>? granularRatingFilters;
   final PostGestureConfig? postGestures;
@@ -103,6 +107,7 @@ class BooruConfig extends Equatable {
       ratingFilter: ratingFilter,
       customDownloadFileNameFormat: customDownloadFileNameFormat,
       customBulkDownloadFileNameFormat: customBulkDownloadFileNameFormat,
+      customDownloadLocation: customDownloadLocation,
       imageDetaisQuality: imageDetaisQuality,
       granularRatingFilters: granularRatingFilters,
       postGestures: postGestures,
@@ -123,6 +128,7 @@ class BooruConfig extends Equatable {
         url,
         customDownloadFileNameFormat,
         customBulkDownloadFileNameFormat,
+        customDownloadLocation,
         imageDetaisQuality,
         granularRatingFilters,
         postGestures,
@@ -150,6 +156,7 @@ class BooruConfig extends Equatable {
           json['customDownloadFileNameFormat'] as String?,
       customBulkDownloadFileNameFormat:
           json['customBulkDownloadFileNameFormat'] as String?,
+      customDownloadLocation: json['customDownloadLocation'] as String?,
       imageDetaisQuality: json['imageDetaisQuality'] as String?,
       granularRatingFilters: parseGranularRatingFilters(
         json['granularRatingFilterString'] as String?,
@@ -176,6 +183,7 @@ class BooruConfig extends Equatable {
       'ratingFilter': ratingFilter.index,
       'customDownloadFileNameFormat': customDownloadFileNameFormat,
       'customBulkDownloadFileNameFormat': customBulkDownloadFileNameFormat,
+      'customDownloadLocation': customDownloadLocation,
       'imageDetaisQuality': imageDetaisQuality,
       'granularRatingFilterString': granularRatingFilterToString(
         granularRatingFilters,
