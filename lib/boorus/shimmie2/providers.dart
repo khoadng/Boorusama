@@ -58,6 +58,10 @@ final shimmie2PostRepoProvider = Provider.family<PostRepository, BooruConfig>(
                   createdAt: e.date,
                   uploaderId: null,
                   uploaderName: e.author,
+                  metadata: PostMetadata(
+                    page: page,
+                    search: tags.join(' '),
+                  ),
                 ))
             .toList();
       },
@@ -114,6 +118,7 @@ class Shimmie2Post extends SimplePost {
     required super.uploaderId,
     required super.createdAt,
     required super.uploaderName,
+    required super.metadata,
   });
 
   @override

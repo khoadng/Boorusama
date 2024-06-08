@@ -138,8 +138,9 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
               .maybeWhen(
                 data: (results) {
                   final posts = results
-                      .map(
-                          (e) => e.post != null ? postDtoToPost(e.post!) : null)
+                      .map((e) => e.post != null
+                          ? postDtoToPostNoMetadata(e.post!)
+                          : null)
                       .whereNotNull()
                       .toList();
                   final pixelPerfectDup = posts.firstWhereOrNull(
@@ -256,7 +257,7 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
                         ),
                         itemBuilder: (context, index) {
                           final post = results[index].post != null
-                              ? postDtoToPost(results[index].post!)
+                              ? postDtoToPostNoMetadata(results[index].post!)
                               : DanbooruPost.empty();
 
                           final similar = results[index].score ?? 0;

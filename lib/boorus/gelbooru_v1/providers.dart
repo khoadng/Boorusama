@@ -37,6 +37,10 @@ final gelbooruV1PostRepoProvider = Provider.family<PostRepository, BooruConfig>(
                   uploaderId: null,
                   createdAt: null,
                   uploaderName: null,
+                  metadata: PostMetadata(
+                    page: page,
+                    search: tags.join(' '),
+                  ),
                 ))
             .toList();
       },
@@ -79,6 +83,7 @@ class GelbooruV1Post extends SimplePost {
     required super.uploaderId,
     required super.createdAt,
     required super.uploaderName,
+    required super.metadata,
   });
 
   @override

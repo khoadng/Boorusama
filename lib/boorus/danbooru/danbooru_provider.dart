@@ -101,8 +101,9 @@ class DanbooruTagListNotifier
 
     final client = ref.read(danbooruClientProvider(arg));
 
-    final post =
-        await client.putTags(postId: postId, tags: tags).then(postDtoToPost);
+    final post = await client
+        .putTags(postId: postId, tags: tags)
+        .then(postDtoToPostNoMetadata);
 
     ref.read(loggerProvider).logI(
         'Tag Edit',

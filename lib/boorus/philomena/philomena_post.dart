@@ -44,6 +44,7 @@ class PhilomenaPost extends Equatable
     required this.downvotes,
     required this.representation,
     required this.uploaderId,
+    required this.metadata,
   });
 
   @override
@@ -121,6 +122,9 @@ class PhilomenaPost extends Equatable
 
   @override
   final int? uploaderId;
+
+  @override
+  final PostMetadata? metadata;
 }
 
 Set<String>? _findArtistFromTags(Set<String> tags) {

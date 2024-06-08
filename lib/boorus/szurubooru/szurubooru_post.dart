@@ -43,6 +43,7 @@ class SzurubooruPost extends Equatable
     required this.uploaderName,
     required this.favoriteCount,
     required this.commentCount,
+    required this.metadata,
   });
 
   @override
@@ -107,6 +108,9 @@ class SzurubooruPost extends Equatable
   final bool ownFavorite;
   final int favoriteCount;
   final int commentCount;
+
+  @override
+  final PostMetadata? metadata;
 
   @override
   List<Object?> get props => [id];

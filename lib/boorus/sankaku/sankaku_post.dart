@@ -43,6 +43,7 @@ class SankakuPost extends Equatable
     required this.characterDetailsTags,
     required this.copyrightDetailsTags,
     required this.uploaderId,
+    required this.metadata,
   })  : artistTags = artistDetailsTags.map((e) => e.name).toSet(),
         characterTags = characterDetailsTags.map((e) => e.name).toSet(),
         copyrightTags = copyrightDetailsTags.map((e) => e.name).toSet();
@@ -122,4 +123,7 @@ class SankakuPost extends Equatable
 
   @override
   final int? uploaderId;
+
+  @override
+  final PostMetadata? metadata;
 }

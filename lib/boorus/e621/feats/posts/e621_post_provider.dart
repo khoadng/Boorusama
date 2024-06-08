@@ -33,7 +33,15 @@ final e621PostRepoProvider =
             ),
             limit: limit,
           )
-          .then((value) => value.map(postDtoToPost).toList());
+          .then((value) => value
+              .map((e) => postDtoToPost(
+                    e,
+                    PostMetadata(
+                      page: page,
+                      search: tags.join(' '),
+                    ),
+                  ))
+              .toList());
 
       ref.read(e621FavoritesProvider(config).notifier).preload(data);
 
@@ -53,7 +61,11 @@ final e621PopularPostRepoProvider =
   );
 });
 
-E621Post postDtoToPost(PostDto dto) {
+E621Post postDtoToPostNoMetadata(PostDto dto) {
+  return postDtoToPost(dto, null);
+}
+
+E621Post postDtoToPost(PostDto dto, PostMetadata? metadata) {
   final videoUrl = extractSampleVideoUrl(dto);
   final format = videoUrl.isNotEmpty ? extension(videoUrl).substring(1) : '';
 
@@ -93,6 +105,7 @@ E621Post postDtoToPost(PostDto dto) {
     description: dto.description ?? '',
     parentId: dto.relationships?.parentId,
     uploaderId: dto.uploaderId,
+    metadata: metadata,
   );
 }
 

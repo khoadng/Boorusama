@@ -36,7 +36,15 @@ final danbooruPostRepoProvider =
             ),
             limit: limit,
           )
-          .then((value) => value.map(postDtoToPost).toList());
+          .then((value) => value
+              .map((e) => postDtoToPost(
+                    e,
+                    PostMetadata(
+                      page: page,
+                      search: tags.join(' '),
+                    ),
+                  ))
+              .toList());
 
       return ref.read(danbooruPostFetchTransformerProvider(config))(posts);
     },
@@ -85,7 +93,7 @@ class DanbooruPostCreateNotifier
         parentId: parentId,
       );
 
-      state = AsyncData(postDtoToPost(post));
+      state = AsyncData(postDtoToPostNoMetadata(post));
     } catch (e, st) {
       state = AsyncError(e, st);
     }

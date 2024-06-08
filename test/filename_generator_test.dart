@@ -419,6 +419,23 @@ void main() {
     expect(
         filename, equals('bar by foo (11111111-1111-1111-1111-111111111111)'));
   });
+
+  test('generateFileName with search option', () {
+    // Arrange
+    Map<String, String> metadata = {
+      'artist': 'foo',
+      'character': 'bar',
+      'search': 'search',
+    };
+
+    String format = '{character} by {artist} ({search})';
+
+    // Act
+    String filename = generateFileName(metadata, format);
+
+    // Assert
+    expect(filename, equals('bar by foo (search)'));
+  });
 }
 
 class MockUuid implements Uuid {

@@ -91,6 +91,7 @@ class DownloadFileNameBuilder<T extends Post>
       if (hasMd5) 'md5': (post, config) => post.md5,
       if (hasRating) 'rating': (post, config) => post.rating.name,
       'index': (post, config) => config.index?.toString(),
+      'search': (post, config) => post.metadata?.search,
       ...tokenHandlers,
     };
   }

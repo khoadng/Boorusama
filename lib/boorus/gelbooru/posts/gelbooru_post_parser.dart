@@ -7,7 +7,13 @@ import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/time.dart';
 import 'gelbooru_post.dart';
 
-GelbooruPost gelbooruPostDtoToGelbooruPost(PostDto dto) {
+GelbooruPost gelbooruPostDtoToGelbooruPostNoMetadata(PostDto dto) =>
+    gelbooruPostDtoToGelbooruPost(dto, null);
+
+GelbooruPost gelbooruPostDtoToGelbooruPost(
+  PostDto dto,
+  PostMetadata? metadata,
+) {
   return GelbooruPost(
     id: dto.id!,
     thumbnailImageUrl: dto.previewUrl ?? '',
@@ -29,5 +35,6 @@ GelbooruPost gelbooruPostDtoToGelbooruPost(PostDto dto) {
     parentId: dto.parentId != 0 ? dto.parentId : null,
     uploaderId: dto.creatorId,
     uploaderName: dto.owner,
+    metadata: metadata,
   );
 }

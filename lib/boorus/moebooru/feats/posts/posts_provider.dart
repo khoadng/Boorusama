@@ -31,7 +31,15 @@ final moebooruPostRepoProvider =
             ),
             limit: limit,
           )
-          .then((value) => value.map(postDtoToPost).toList()),
+          .then((value) => value
+              .map((e) => postDtoToPost(
+                    e,
+                    PostMetadata(
+                      page: page,
+                      search: tags.join(' '),
+                    ),
+                  ))
+              .toList()),
       getSettings: () async => ref.read(settingsProvider),
     );
   },
@@ -116,7 +124,11 @@ final moebooruPostDetailsCharacterProvider =
   );
 });
 
-MoebooruPost postDtoToPost(PostDto postDto) {
+MoebooruPost postDtoToPostNoMetadata(PostDto postDto) {
+  return postDtoToPost(postDto, null);
+}
+
+MoebooruPost postDtoToPost(PostDto postDto, PostMetadata? metadata) {
   final hasChildren = postDto.hasChildren ?? false;
   final hasParent = postDto.parentId != null;
   final hasParentOrChildren = hasChildren || hasParent;
@@ -144,5 +156,6 @@ MoebooruPost postDtoToPost(PostDto postDto) {
     parentId: postDto.parentId,
     uploaderId: postDto.creatorId,
     uploaderName: postDto.author,
+    metadata: metadata,
   );
 }

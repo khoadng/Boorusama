@@ -49,7 +49,7 @@ class ExploreRepositoryApi
           fetcher: () => client.getMostViewedPosts(date: date),
         ));
 
-        final data = dtos.map(postDtoToPost).toList();
+        final data = dtos.map(postDtoToPostNoMetadata).toList();
 
         final filtered =
             shouldFilter != null ? data.whereNot(shouldFilter!).toList() : data;
@@ -78,7 +78,7 @@ class ExploreRepositoryApi
               )),
         ));
 
-        final data = dtos.map(postDtoToPost).toList();
+        final data = dtos.map(postDtoToPostNoMetadata).toList();
 
         final filtered =
             shouldFilter != null ? data.whereNot(shouldFilter!).toList() : data;

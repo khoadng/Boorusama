@@ -76,6 +76,10 @@ final zerochanPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
                   uploaderId: null,
                   uploaderName: null,
                   createdAt: null,
+                  metadata: PostMetadata(
+                    page: page,
+                    search: tags.join(' '),
+                  ),
                 ))
             .toList();
       },
@@ -269,6 +273,7 @@ class ZerochanPost extends SimplePost {
     required super.uploaderId,
     required super.createdAt,
     required super.uploaderName,
+    required super.metadata,
   });
 
   @override

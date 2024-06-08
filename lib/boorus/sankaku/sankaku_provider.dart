@@ -95,6 +95,10 @@ final sankakuPostRepoProvider =
                 ? DateTime.fromMillisecondsSinceEpoch(timestamp * 1000)
                 : null,
             uploaderId: e.author?.id,
+            metadata: PostMetadata(
+              page: page,
+              search: tags.join(' '),
+            ),
           );
         }).toList();
       },

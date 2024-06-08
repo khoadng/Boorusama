@@ -56,7 +56,7 @@ class E621PopularRepositoryApi
           ),
         ));
 
-        final data = response.map(postDtoToPost).toList();
+        final data = response.map(postDtoToPostNoMetadata).toList();
 
         final filteredNoImage = filterPostWithNoImage(data);
 
