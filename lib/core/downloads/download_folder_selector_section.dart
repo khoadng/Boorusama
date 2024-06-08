@@ -109,31 +109,6 @@ class _DownloadFolderSelectorSectionState
                       ),
               ],
             ),
-            // ListTile(
-            //   visualDensity: VisualDensity.compact,
-            //   minVerticalPadding: 0,
-            //   onTap: () => _pickFolder(settings),
-            //   title: showPath()
-            //       ? Text(
-            //           storagePath!,
-            //           overflow: TextOverflow.fade,
-            //         )
-            //       : Text(
-            //           widget.hint ?? 'settings.download.select_a_folder'.tr(),
-            //           overflow: TextOverflow.fade,
-            //           style: context.textTheme.titleMedium!
-            //               .copyWith(color: context.theme.hintColor),
-            //         ),
-            //   trailing: !showPath()
-            //       ? IconButton(
-            //           onPressed: () => _pickFolder(settings),
-            //           icon: const Icon(Symbols.folder),
-            //         )
-            //       : IconButton(
-            //           onPressed: () => widget.onPathChanged(''),
-            //           icon: const Icon(Symbols.clear),
-            //         ),
-            // ),
           ),
         ),
         if (isAndroid())
@@ -144,6 +119,10 @@ class _DownloadFolderSelectorSectionState
                 true,
           )
               ? DownloadPathWarning(
+                  padding: const EdgeInsets.only(
+                    top: 12,
+                    bottom: 4,
+                  ),
                   releaseName:
                       widget.deviceInfo.androidDeviceInfo?.version.release ??
                           'Unknown',

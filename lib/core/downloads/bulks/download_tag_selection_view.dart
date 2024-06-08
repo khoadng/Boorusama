@@ -260,14 +260,17 @@ class DownloadPathWarning extends StatelessWidget {
     super.key,
     required this.releaseName,
     required this.allowedFolders,
+    this.padding,
   });
 
   final String releaseName;
   final List<String> allowedFolders;
+  final EdgeInsetsGeometry? padding;
 
   @override
   Widget build(BuildContext context) {
     return WarningContainer(
+      margin: padding,
       contentBuilder: (context) => Html(
         style: {
           'body': Style(

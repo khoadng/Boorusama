@@ -11,9 +11,12 @@ class WarningContainer extends StatelessWidget {
   const WarningContainer({
     super.key,
     this.margin,
+    this.padding,
     required this.contentBuilder,
   });
+
   final EdgeInsetsGeometry? margin;
+  final EdgeInsetsGeometry? padding;
 
   final Widget Function(BuildContext context) contentBuilder;
 
@@ -27,7 +30,7 @@ class WarningContainer extends StatelessWidget {
       ),
       width: MediaQuery.sizeOf(context).width,
       child: Padding(
-        padding: const EdgeInsets.all(8),
+        padding: padding ?? const EdgeInsets.all(8),
         child: Row(
           children: [
             Padding(
