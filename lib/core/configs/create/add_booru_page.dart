@@ -120,21 +120,12 @@ class _AddBooruPageInternalState extends ConsumerState<AddBooruPageInternal> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Material(
-        color: widget.backgroundColor,
-        child: Stack(
-          children: [
-            _buildBody(),
-            Align(
-              alignment: Alignment.topRight,
-              child: IconButton(
-                onPressed: context.navigator.pop,
-                icon: const Icon(Symbols.close),
-              ),
-            )
-          ],
-        ),
+    return Material(
+      color: widget.backgroundColor,
+      child: Stack(
+        children: [
+          _buildBody(),
+        ],
       ),
     );
   }
@@ -145,17 +136,29 @@ class _AddBooruPageInternalState extends ConsumerState<AddBooruPageInternal> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
+        SizedBox(
+          height: MediaQuery.viewPaddingOf(context).top,
+        ),
         Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: 12,
-            vertical: 16,
           ),
-          child: Text(
-            'booru.add_a_booru_site'.tr(),
-            style: context.textTheme.headlineSmall!
-                .copyWith(fontWeight: FontWeight.w900),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'booru.add_a_booru_site'.tr(),
+                style: context.textTheme.headlineSmall!
+                    .copyWith(fontWeight: FontWeight.w900),
+              ),
+              IconButton(
+                onPressed: context.navigator.pop,
+                icon: const Icon(Symbols.close),
+              ),
+            ],
           ),
         ),
+        const SizedBox(height: 12),
         const Divider(
           thickness: 2,
           endIndent: 16,

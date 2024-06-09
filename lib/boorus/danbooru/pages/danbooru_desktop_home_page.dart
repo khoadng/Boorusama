@@ -40,7 +40,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruDesktopHomePage> {
 
     return PostScope(
       fetcher: (page) => ref.read(danbooruPostRepoProvider(config)).getPosts(
-            selectedTagController.rawTags,
+            selectedTagController.rawTagsString,
             page,
           ),
       builder: (context, controller, errors) => context.screenHeight < 450

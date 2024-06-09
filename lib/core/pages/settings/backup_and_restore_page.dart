@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
@@ -23,6 +22,7 @@ import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/picker.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -276,97 +276,80 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
     Reboot.start(context, config);
   }
 
-  void _pickBookmarkFolder(WidgetRef ref) async {
-    final path = await FilePicker.platform.getDirectoryPath();
+  Future<void> _pickBookmarkFolder(WidgetRef ref) =>
+      pickDirectoryPathToastOnError(
+        onPick: (path) {
+          ref.bookmarks.exportAllBookmarks(path);
+        },
+      );
 
-    if (path != null) {
-      ref.bookmarks.exportAllBookmarks(path);
-    }
-  }
+  void _pickBookmarkFile(WidgetRef ref) => _pickFile(
+        onPick: (path) {
+          final file = File(path);
+          ref.bookmarks.importBookmarks(file);
+        },
+      );
 
-  void _pickBookmarkFile(WidgetRef ref) async {
-    final path = await _pickFile();
+  Future<void> _pickProfileFolder(WidgetRef ref) =>
+      pickDirectoryPathToastOnError(
+        onPick: (path) {
+          ref.read(booruConfigProvider.notifier).export(
+                path: path,
+                onSuccess: (message) => showSuccessToast(message),
+                onFailure: (message) => showErrorToast(message),
+              );
+        },
+      );
 
-    if (path != null) {
-      final file = File(path);
-      ref.bookmarks.importBookmarks(file);
-    } else {
-      // User canceled the picker
-    }
-  }
+  Future<void> _pickFile({
+    required void Function(String path) onPick,
+  }) =>
+      pickSingleFilePathToastOnError(
+        type: FileType.custom,
+        allowedExtensions: ['json'],
+        onPick: onPick,
+      );
 
-  void _pickProfileFolder(WidgetRef ref) async {
-    final path = await FilePicker.platform.getDirectoryPath();
+  void _pickProfileFile(WidgetRef ref) => _pickFile(
+        onPick: (path) {
+          ref.read(booruConfigProvider.notifier).import(
+                path: path,
+                onSuccess: _onImportSuccess,
+                onWillImport: _showImportBooruConfigsAlertDialog,
+                onFailure: (message) => showErrorToast(message),
+              );
+        },
+      );
 
-    if (path != null) {
-      ref.read(booruConfigProvider.notifier).export(
-            path: path,
-            onSuccess: (message) => showSuccessToast(message),
-            onFailure: (message) => showErrorToast(message),
-          );
-    }
-  }
+  Future<void> _pickSettingsFolder(WidgetRef ref) =>
+      pickDirectoryPathToastOnError(
+        onPick: (path) {
+          ref.read(settingsProvider.notifier).exportSettings(path);
+        },
+      );
 
-  Future<String?> _pickFile() async {
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['json'],
-    );
+  void _pickSettingsFile(WidgetRef ref) => _pickFile(
+        onPick: (path) {
+          ref.read(settingsProvider.notifier).importSettings(path);
+        },
+      );
 
-    return result?.files.singleOrNull?.path;
-  }
+  Future<void> _pickFavoriteTagsFolder(WidgetRef ref) =>
+      pickDirectoryPathToastOnError(
+        onPick: (path) {
+          ref.read(favoriteTagsProvider.notifier).exportWithLabels(
+                path: path,
+              );
+        },
+      );
 
-  void _pickProfileFile(WidgetRef ref) async {
-    final path = await _pickFile();
-    if (path != null) {
-      ref.read(booruConfigProvider.notifier).import(
-            path: path,
-            onSuccess: _onImportSuccess,
-            onWillImport: _showImportBooruConfigsAlertDialog,
-            onFailure: (message) => showErrorToast(message),
-          );
-    }
-  }
-
-  void _pickSettingsFolder(WidgetRef ref) async {
-    final path = await FilePicker.platform.getDirectoryPath();
-
-    if (path != null) {
-      ref.read(settingsProvider.notifier).exportSettings(path);
-    }
-  }
-
-  void _pickSettingsFile(WidgetRef ref) async {
-    final path = await _pickFile();
-
-    if (path != null) {
-      ref.read(settingsProvider.notifier).importSettings(path);
-    } else {
-      // User canceled the picker
-    }
-  }
-
-  void _pickFavoriteTagsFolder(WidgetRef ref) async {
-    final path = await FilePicker.platform.getDirectoryPath();
-
-    if (path != null) {
-      ref.read(favoriteTagsProvider.notifier).exportWithLabels(
-            path: path,
-          );
-    }
-  }
-
-  void _pickFavoriteTagsFile(WidgetRef ref) async {
-    final path = await _pickFile();
-
-    if (path != null) {
-      ref.read(favoriteTagsProvider.notifier).importWithLabels(
-            path: path,
-          );
-    } else {
-      // User canceled the picker
-    }
-  }
+  void _pickFavoriteTagsFile(WidgetRef ref) => _pickFile(
+        onPick: (path) {
+          ref.read(favoriteTagsProvider.notifier).importWithLabels(
+                path: path,
+              );
+        },
+      );
 }
 
 class BackupRestoreTile extends StatelessWidget {

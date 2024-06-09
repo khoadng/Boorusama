@@ -8,19 +8,20 @@ import 'package:flutter/services.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:readmore/readmore.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/loggers/app_logger.dart';
 import 'package:boorusama/foundation/loggers/logger.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/scrolling.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
-import 'package:boorusama/widgets/conditional_parent_widget.dart';
-import 'package:boorusama/widgets/toast.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class DebugLogsPage extends ConsumerStatefulWidget {
   const DebugLogsPage({
@@ -76,18 +77,18 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
             ),
           ],
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
+        floatingActionButton: ScrollToBottom(
+          scrollController: scrollController,
+          child: BooruScrollToBottomButton(
+            onPressed: () {
               scrollController.animateToWithAccessibility(
                 scrollController.position.maxScrollExtent,
                 duration: const Duration(milliseconds: 300),
                 curve: Curves.easeOut,
                 reduceAnimations: ref.read(settingsProvider).reduceAnimations,
               );
-            });
-          },
-          child: const Icon(Symbols.arrow_downward),
+            },
+          ),
         ),
         body: child,
       ),
@@ -115,6 +116,7 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
 
   Widget _buildBody(List<LogData> logs) {
     return ListView.builder(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       controller: scrollController,
       itemCount: logs.length,
       itemBuilder: (context, index) {
@@ -132,30 +134,33 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
                   color: context.theme.hintColor,
                 ),
               ),
-              RichText(
-                text: TextSpan(
-                  children: [
-                    TextSpan(
-                      text: '[${log.serviceName}]: ',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w800,
-                        color: context.colorScheme.primary,
-                      ),
+              Wrap(
+                spacing: 0,
+                children: [
+                  Text(
+                    '[${log.serviceName}]: ',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w800,
+                      color: context.colorScheme.primary,
                     ),
-                    TextSpan(
-                      text: log.message,
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: switch (log.level) {
-                          LogLevel.info =>
-                            context.colorScheme.onBackground.withAlpha(222),
-                          LogLevel.warning => Colors.yellow.withAlpha(222),
-                          LogLevel.error => context.colorScheme.error,
-                        },
-                      ),
+                  ),
+                  ReadMoreText(
+                    log.message,
+                    trimExpandedText: ' less',
+                    trimCollapsedText: ' more',
+                    trimMode: TrimMode.Line,
+                    trimLines: 3,
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: switch (log.level) {
+                        LogLevel.info =>
+                          context.colorScheme.onBackground.withAlpha(222),
+                        LogLevel.warning => Colors.yellow.withAlpha(222),
+                        LogLevel.error => context.colorScheme.error,
+                      },
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ],
           ),

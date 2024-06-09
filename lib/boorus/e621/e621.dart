@@ -11,16 +11,15 @@ import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 import 'package:boorusama/boorus/e621/feats/tags/e621_tag_category.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/e621/e621_client.dart';
+import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/comments/comment.dart';
-import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/comment_page_scaffold.dart';
 import 'package:boorusama/core/widgets/posts/post_details_page_mixin.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
-import 'package:boorusama/foundation/path.dart';
 import 'pages/create_e621_config_page.dart';
 import 'pages/e621_artist_page.dart';
 import 'pages/e621_favorites_page.dart';
@@ -242,33 +241,26 @@ class E621Builder
   NoteFetcher? get noteFetcher => (postId) => noteRepo.getNotes(postId);
 
   @override
-  DownloadFilenameGenerator get downloadFilenameBuilder =>
+  final DownloadFilenameGenerator downloadFilenameBuilder =
       DownloadFileNameBuilder<E621Post>(
-        defaultFileNameFormat: kBoorusamaCustomDownloadFileNameFormat,
-        defaultBulkDownloadFileNameFormat:
-            kBoorusamaBulkDownloadCustomFileNameFormat,
-        sampleData: kE621PostSamples,
-        tokenHandlers: {
-          'id': (post, config) => post.id.toString(),
-          'artist': (post, config) => post.artistTags.join(' '),
-          'character': (post, config) => post.characterTags.join(' '),
-          'copyright': (post, config) => post.copyrightTags.join(' '),
-          'general': (post, config) => post.generalTags.join(' '),
-          'meta': (post, config) => post.metaTags.join(' '),
-          'species': (post, config) => post.speciesTags.join(' '),
-          'tags': (post, config) => post.tags.join(' '),
-          'extension': (post, config) =>
-              extension(config.downloadUrl).substring(1),
-          'width': (post, config) => post.width.toString(),
-          'height': (post, config) => post.height.toString(),
-          'mpixels': (post, config) => post.mpixels.toString(),
-          'aspect_ratio': (post, config) => post.aspectRatio.toString(),
-          'md5': (post, config) => post.md5,
-          'source': (post, config) => config.downloadUrl,
-          'rating': (post, config) => post.rating.name,
-          'index': (post, config) => config.index?.toString(),
-        },
-      );
+    defaultFileNameFormat: kBoorusamaCustomDownloadFileNameFormat,
+    defaultBulkDownloadFileNameFormat:
+        kBoorusamaBulkDownloadCustomFileNameFormat,
+    sampleData: kE621PostSamples,
+    tokenHandlers: {
+      'artist': (post, config) => post.artistTags.join(' '),
+      'character': (post, config) => post.characterTags.join(' '),
+      'copyright': (post, config) => post.copyrightTags.join(' '),
+      'general': (post, config) => post.generalTags.join(' '),
+      'meta': (post, config) => post.metaTags.join(' '),
+      'species': (post, config) => post.speciesTags.join(' '),
+      'width': (post, config) => post.width.toString(),
+      'height': (post, config) => post.height.toString(),
+      'mpixels': (post, config) => post.mpixels.toString(),
+      'aspect_ratio': (post, config) => post.aspectRatio.toString(),
+      'source': (post, config) => config.downloadUrl,
+    },
+  );
 
   @override
   HomeViewBuilder get homeViewBuilder =>

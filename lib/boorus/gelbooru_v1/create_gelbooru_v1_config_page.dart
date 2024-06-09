@@ -29,7 +29,6 @@ class CreateGelbooruV1ConfigPage extends StatelessWidget {
       child: CreateBooruConfigScaffold(
         isNewConfig: isNewConfig,
         backgroundColor: backgroundColor,
-        hasDownloadTab: true,
       ),
     );
   }

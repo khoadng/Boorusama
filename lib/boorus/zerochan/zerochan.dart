@@ -6,13 +6,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/zerochan/types/types.dart';
 import 'package:boorusama/clients/zerochan/zerochan_client.dart';
 import 'package:boorusama/core/configs/create/create_anon_config_page.dart';
+import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
@@ -20,8 +21,10 @@ import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/path.dart' as path;
-import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+
+const kZerochanCustomDownloadFileNameFormat =
+    '{id}_{width}x{height}.{extension}';
 
 final zerochanClientProvider =
     Provider.family<ZerochanClient, BooruConfig>((ref, config) {
@@ -44,7 +47,7 @@ final zerochanPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
         final posts = await client.getPosts(
           tags: tags,
           page: page,
-          sort: ZerochanSortOrder.popularity,
+          sort: ZerochanSortOrder.recency,
           limit: limit,
         );
 
@@ -73,6 +76,10 @@ final zerochanPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
                   uploaderId: null,
                   uploaderName: null,
                   createdAt: null,
+                  metadata: PostMetadata(
+                    page: page,
+                    search: tags.join(' '),
+                  ),
                 ))
             .toList();
       },
@@ -145,7 +152,7 @@ class ZerochanBuilder
         DefaultPostStatisticsPageBuilderMixin,
         DefaultBooruUIMixin
     implements BooruBuilder {
-  const ZerochanBuilder({
+  ZerochanBuilder({
     required this.postRepo,
     required this.autocompleteRepo,
   });
@@ -226,10 +233,19 @@ class ZerochanBuilder
       };
 
   @override
-  DownloadFilenameGenerator<Post> get downloadFilenameBuilder =>
-      LegacyFilenameBuilder(
-        generateFileName: (post, downloadUrl) => basename(downloadUrl),
-      );
+  final DownloadFilenameGenerator<Post> downloadFilenameBuilder =
+      DownloadFileNameBuilder<Post>(
+    defaultFileNameFormat: kZerochanCustomDownloadFileNameFormat,
+    defaultBulkDownloadFileNameFormat: kZerochanCustomDownloadFileNameFormat,
+    sampleData: kDanbooruPostSamples,
+    hasMd5: false,
+    hasRating: false,
+    tokenHandlers: {
+      'width': (post, config) => post.width.toString(),
+      'height': (post, config) => post.height.toString(),
+      'source': (post, config) => post.source.url,
+    },
+  );
 }
 
 class ZerochanPost extends SimplePost {
@@ -257,6 +273,7 @@ class ZerochanPost extends SimplePost {
     required super.uploaderId,
     required super.createdAt,
     required super.uploaderName,
+    required super.metadata,
   });
 
   @override

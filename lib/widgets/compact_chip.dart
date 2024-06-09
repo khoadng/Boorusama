@@ -12,6 +12,7 @@ class CompactChip extends StatelessWidget {
     this.backgroundColor,
     this.textColor,
     this.borderRadius,
+    this.padding,
   });
 
   final void Function()? onTap;
@@ -19,10 +20,12 @@ class CompactChip extends StatelessWidget {
   final Color? backgroundColor;
   final Color? textColor;
   final BorderRadius? borderRadius;
+  final EdgeInsetsGeometry? padding;
 
   @override
   Widget build(BuildContext context) {
     return RawCompactChip(
+      padding: padding,
       onTap: onTap,
       label: AutoSizeText(
         label,

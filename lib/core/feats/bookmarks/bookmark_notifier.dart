@@ -9,9 +9,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/feats/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/path.dart';
@@ -24,6 +24,7 @@ final bookmarkProvider = NotifierProvider<BookmarkNotifier, BookmarkState>(
   dependencies: [
     bookmarkRepoProvider,
     settingsProvider,
+    downloadServiceProvider,
   ],
 );
 
@@ -185,7 +186,13 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
             .read(downloadServiceProvider(config))
             .downloadWithSettings(
               settings,
+              config: config,
               url: bookmark.originalUrl,
+              metadata: DownloaderMetadata(
+                thumbnailUrl: bookmark.thumbnailUrl,
+                fileSize: null,
+                siteUrl: bookmark.sourceUrl,
+              ),
               folderName: "Bookmarks",
               fileNameBuilder: () =>
                   bookmark.md5 + extension(bookmark.originalUrl),

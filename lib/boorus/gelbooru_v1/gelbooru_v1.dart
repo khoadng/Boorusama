@@ -11,9 +11,9 @@ import 'package:boorusama/boorus/gelbooru_v1/create_gelbooru_v1_config_page.dart
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
 import 'package:boorusama/clients/gelbooru/gelbooru_v1_client.dart';
+import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/feats/autocompletes/autocomplete.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
@@ -41,7 +41,7 @@ class GelbooruV1Builder
         DefaultPostStatisticsPageBuilderMixin,
         DefaultBooruUIMixin
     implements BooruBuilder {
-  const GelbooruV1Builder({
+  GelbooruV1Builder({
     required this.postRepo,
     required this.client,
   });
@@ -110,21 +110,13 @@ class GelbooruV1Builder
       });
 
   @override
-  DownloadFilenameGenerator get downloadFilenameBuilder =>
+  final DownloadFilenameGenerator downloadFilenameBuilder =
       DownloadFileNameBuilder(
-        defaultFileNameFormat: kGelbooruCustomDownloadFileNameFormat,
-        defaultBulkDownloadFileNameFormat:
-            kGelbooruCustomDownloadFileNameFormat,
-        sampleData: kDanbooruPostSamples,
-        tokenHandlers: {
-          'id': (post, config) => post.id.toString(),
-          'tags': (post, config) => post.tags.join(' '),
-          'extension': (post, config) =>
-              extension(config.downloadUrl).substring(1),
-          'md5': (post, config) => post.md5,
-          'source': (post, config) => config.downloadUrl,
-          'rating': (post, config) => post.rating.name,
-          'index': (post, config) => config.index?.toString(),
-        },
-      );
+    defaultFileNameFormat: kGelbooruCustomDownloadFileNameFormat,
+    defaultBulkDownloadFileNameFormat: kGelbooruCustomDownloadFileNameFormat,
+    sampleData: kDanbooruPostSamples,
+    tokenHandlers: {
+      'source': (post, config) => config.downloadUrl,
+    },
+  );
 }

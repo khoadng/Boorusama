@@ -5,8 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/create/create.dart';
+import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 
 class BooruConfigDownloadView extends ConsumerWidget {
   const BooruConfigDownloadView({
@@ -20,12 +23,29 @@ class BooruConfigDownloadView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final customDownloadFileNameFormat =
         ref.watch(customDownloadFileNameFormatProvider);
+    final customDownloadLocation = ref.watch(customDownloadLocationProvider);
 
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          DownloadFolderSelectorSection(
+            storagePath: customDownloadLocation,
+            deviceInfo: ref.watch(deviceInfoProvider),
+            onPathChanged: (path) => ref.updateCustomDownloadLocation(path),
+            title: 'Download location',
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'Leave empty to use the download location in settings.',
+            style: ref.context.textTheme.titleSmall?.copyWith(
+              color: ref.context.theme.hintColor,
+              fontSize: 11,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+          const SizedBox(height: 8),
           CustomDownloadFileNameSection(
             config: config,
             format: customDownloadFileNameFormat,

@@ -15,9 +15,12 @@ class DanbooruArtistCharacterPostRepository
   final Cacher<String, List<DanbooruPost>> cache;
 
   @override
-  PostsOrError<DanbooruPost> getPosts(List<String> tags, int page,
-      {int? limit}) {
-    final tagString = tags.join(' ');
+  PostsOrError<DanbooruPost> getPosts(
+    String tags,
+    int page, {
+    int? limit,
+  }) {
+    final tagString = tags;
     final name = "$tagString-$page-$limit";
 
     return cache.get(name).toOption().fold(

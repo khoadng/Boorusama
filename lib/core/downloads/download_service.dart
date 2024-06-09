@@ -7,7 +7,8 @@ import 'package:gal/gal.dart';
 import 'package:media_scanner/media_scanner.dart';
 
 // Project imports:
-import 'package:boorusama/core/feats/downloads/downloads.dart';
+import 'package:boorusama/core/downloads/downloads.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/platform.dart';
@@ -81,12 +82,16 @@ abstract class DownloadService {
   DownloadPathOrError download({
     required String url,
     required DownloadFilenameBuilder fileNameBuilder,
+    DownloaderMetadata? metadata,
+    bool? skipIfExists,
   });
 
   DownloadPathOrError downloadCustomLocation({
     required String url,
     required String path,
     required DownloadFilenameBuilder fileNameBuilder,
+    DownloaderMetadata? metadata,
+    bool? skipIfExists,
   });
 }
 
@@ -94,20 +99,28 @@ extension DownloadWithSettingsX on DownloadService {
   DownloadPathOrError downloadWithSettings(
     Settings settings, {
     required String url,
+    DownloaderMetadata? metadata,
     String? folderName,
     required DownloadFilenameBuilder fileNameBuilder,
+    required BooruConfig config,
   }) {
-    final downloadPath = settings.downloadPath;
+    final downloadPath = config.hasCustomDownloadLocation
+        ? config.customDownloadLocation
+        : settings.downloadPath;
 
     return downloadPath != null && downloadPath.isNotEmpty
         ? downloadCustomLocation(
             url: url,
+            metadata: metadata,
             path: join(downloadPath, folderName),
             fileNameBuilder: fileNameBuilder,
+            skipIfExists: settings.skipDownloadIfExists,
           )
         : download(
             url: url,
+            metadata: metadata,
             fileNameBuilder: fileNameBuilder,
+            skipIfExists: settings.skipDownloadIfExists,
           );
   }
 }
@@ -150,6 +163,8 @@ class DioDownloadService implements DownloadService {
   DownloadPathOrError download({
     required String url,
     required DownloadFilenameBuilder fileNameBuilder,
+    DownloaderMetadata? metadata,
+    bool? skipIfExists,
   }) =>
       retryOn404
           ? _download(
@@ -238,6 +253,8 @@ class DioDownloadService implements DownloadService {
     required String url,
     required String path,
     required DownloadFilenameBuilder fileNameBuilder,
+    DownloaderMetadata? metadata,
+    bool? skipIfExists,
   }) =>
       retryOn404
           ? _downloadCustomLocation(

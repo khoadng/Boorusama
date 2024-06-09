@@ -2,19 +2,19 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/android.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/picker.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
@@ -227,7 +227,7 @@ class _DownloadTagSelectionViewState
                         ? () => ref
                             .read(
                                 bulkDownloaderManagerProvider(config).notifier)
-                            .download(tags: selectedTags)
+                            .download(tags: selectedTags.join(' '))
                         : null,
                     child: const Text('download.download').tr(),
                   );
@@ -243,16 +243,15 @@ class _DownloadTagSelectionViewState
   Future<void> _pickFolder(
     BuildContext context,
     DownloadOptions options,
-  ) async {
-    final selectedDirectory = await FilePicker.platform.getDirectoryPath();
-
-    if (selectedDirectory != null) {
-      final state = ref.read(bulkDownloadOptionsProvider);
-      ref.read(bulkDownloadOptionsProvider.notifier).state = state.copyWith(
-        storagePath: selectedDirectory,
+  ) =>
+      pickDirectoryPathToastOnError(
+        onPick: (path) {
+          final state = ref.read(bulkDownloadOptionsProvider);
+          ref.read(bulkDownloadOptionsProvider.notifier).state = state.copyWith(
+            storagePath: path,
+          );
+        },
       );
-    }
-  }
 }
 
 class DownloadPathWarning extends StatelessWidget {
@@ -260,14 +259,17 @@ class DownloadPathWarning extends StatelessWidget {
     super.key,
     required this.releaseName,
     required this.allowedFolders,
+    this.padding,
   });
 
   final String releaseName;
   final List<String> allowedFolders;
+  final EdgeInsetsGeometry? padding;
 
   @override
   Widget build(BuildContext context) {
     return WarningContainer(
+      margin: padding,
       contentBuilder: (context) => Html(
         style: {
           'body': Style(

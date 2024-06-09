@@ -18,10 +18,10 @@ import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
+import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/feats/blacklists/blacklists.dart';
 import 'package:boorusama/core/feats/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/metatags/metatags.dart';
 import 'package:boorusama/core/feats/search/search.dart';
 import 'package:boorusama/core/feats/search_histories/search_histories.dart';
@@ -35,6 +35,7 @@ import 'package:boorusama/foundation/device_info_service.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
+import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/package_info.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/platform.dart';
@@ -275,6 +276,11 @@ Future<void> boot(BootLogger bootLogger) async {
     bootLogger.l("Clear image cache");
     await clearImageCache();
   }
+
+  HttpOverrides.global = AppHttpOverrides();
+
+  // Prepare for Android 15
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
   logger.logI('Start up',
       'Initialization done in ${stopwatch.elapsed.inMilliseconds}ms');

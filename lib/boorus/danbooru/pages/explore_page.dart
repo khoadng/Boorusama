@@ -122,7 +122,7 @@ class ExplorePageDesktop extends ConsumerWidget {
               ),
             ),
             body: switch (selectedCategory) {
-              ExploreCategory.hot => ExploreHotPage.routeOf(context),
+              ExploreCategory.hot => const ExploreHotPage(),
               ExploreCategory.mostViewed =>
                 ExploreMostViewedPage.routeOf(context),
               ExploreCategory.popular => ExplorePopularPage.routeOf(context),

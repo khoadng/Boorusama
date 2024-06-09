@@ -5,8 +5,11 @@ import 'package:boorusama/string.dart';
 import 'danbooru_post.dart';
 import 'post_variant.dart';
 
+DanbooruPost postDtoToPostNoMetadata(PostDto dto) => postDtoToPost(dto, null);
+
 DanbooruPost postDtoToPost(
   PostDto dto,
+  PostMetadata? metadata,
 ) {
   try {
     return DanbooruPost(
@@ -49,6 +52,7 @@ DanbooruPost postDtoToPost(
       variants:
           dto.mediaAsset?.variants?.map(variantDtoToVariant).toList() ?? [],
       pixelHash: dto.mediaAsset?.pixelHash ?? '',
+      metadata: metadata,
     );
   } catch (e) {
     return DanbooruPost.empty();

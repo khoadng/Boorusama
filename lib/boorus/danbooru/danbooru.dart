@@ -14,9 +14,9 @@ import 'package:boorusama/boorus/danbooru/pages/danbooru_post_statistics_page.da
 import 'package:boorusama/boorus/danbooru/pages/danbooru_search_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/latest_posts_view.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
@@ -27,7 +27,6 @@ import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'configs/create_danbooru_config_page.dart';
@@ -62,6 +61,7 @@ const kDanbooruPostSamples = [
     'source': 'https://example.com/filename.jpg',
     'rating': 'general',
     'index': '0',
+    'search': 'genshin_impact solo',
   },
   {
     'id': '654321',
@@ -80,6 +80,7 @@ const kDanbooruPostSamples = [
     'source': 'https://example.com/example_filename.jpg',
     'rating': 'general',
     'index': '1',
+    'search': '1girl solo',
   }
 ];
 
@@ -89,7 +90,7 @@ class DanbooruBuilder
         NewGranularRatingOptionsBuilderMixin,
         NewGranularRatingQueryBuilderMixin
     implements BooruBuilder {
-  const DanbooruBuilder({
+  DanbooruBuilder({
     required this.postRepo,
     required this.autocompleteRepo,
     required this.favoriteRepo,
@@ -256,32 +257,25 @@ class DanbooruBuilder
           );
 
   @override
-  DownloadFilenameGenerator get downloadFilenameBuilder =>
+  final DownloadFilenameGenerator downloadFilenameBuilder =
       DownloadFileNameBuilder<DanbooruPost>(
-        defaultFileNameFormat: kBoorusamaCustomDownloadFileNameFormat,
-        defaultBulkDownloadFileNameFormat:
-            kBoorusamaBulkDownloadCustomFileNameFormat,
-        sampleData: kDanbooruPostSamples,
-        tokenHandlers: {
-          'id': (post, config) => post.id.toString(),
-          'artist': (post, config) => post.artistTags.join(' '),
-          'character': (post, config) => post.characterTags.join(' '),
-          'copyright': (post, config) => post.copyrightTags.join(' '),
-          'general': (post, config) => post.generalTags.join(' '),
-          'meta': (post, config) => post.metaTags.join(' '),
-          'tags': (post, config) => post.tags.join(' '),
-          'extension': (post, config) =>
-              extension(config.downloadUrl).substring(1),
-          'width': (post, config) => post.width.toString(),
-          'height': (post, config) => post.height.toString(),
-          'mpixels': (post, config) => post.mpixels.toString(),
-          'aspect_ratio': (post, config) => post.aspectRatio.toString(),
-          'md5': (post, config) => post.md5,
-          'source': (post, config) => config.downloadUrl,
-          'rating': (post, config) => post.rating.name,
-          'index': (post, config) => config.index?.toString(),
-        },
-      );
+    defaultFileNameFormat: kBoorusamaCustomDownloadFileNameFormat,
+    defaultBulkDownloadFileNameFormat:
+        kBoorusamaBulkDownloadCustomFileNameFormat,
+    sampleData: kDanbooruPostSamples,
+    tokenHandlers: {
+      'artist': (post, config) => post.artistTags.join(' '),
+      'character': (post, config) => post.characterTags.join(' '),
+      'copyright': (post, config) => post.copyrightTags.join(' '),
+      'general': (post, config) => post.generalTags.join(' '),
+      'meta': (post, config) => post.metaTags.join(' '),
+      'width': (post, config) => post.width.toString(),
+      'height': (post, config) => post.height.toString(),
+      'mpixels': (post, config) => post.mpixels.toString(),
+      'aspect_ratio': (post, config) => post.aspectRatio.toString(),
+      'source': (post, config) => config.downloadUrl,
+    },
+  );
 
   @override
   PostImageDetailsUrlBuilder get postImageDetailsUrlBuilder => (settings,
@@ -437,7 +431,7 @@ extension DanbooruX on WidgetRef {
   void danbooruEdit(DanbooruPost post) {
     _guardLogin(() {
       goToTagEditPage(
-        this.context,
+        context,
         post: post,
       );
     });
@@ -457,7 +451,7 @@ extension DanbooruX on WidgetRef {
   void _guardLogin(void Function() action) {
     if (!readConfig.hasLoginDetails()) {
       showSimpleSnackBar(
-        context: this.context,
+        context: context,
         content: const Text(
           'post.detail.login_required_notice',
         ).tr(),

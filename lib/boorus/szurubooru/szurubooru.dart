@@ -8,12 +8,14 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/boorus/danbooru/danbooru.dart';
+import 'package:boorusama/boorus/gelbooru_v2/gelbooru_v2.dart';
 import 'package:boorusama/boorus/szurubooru/favorites/favorites.dart';
 import 'package:boorusama/boorus/szurubooru/providers.dart';
+import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/comments/comments.dart';
-import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/pages/home/side_menu_tile.dart';
@@ -22,7 +24,6 @@ import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'create_szurubooru_config_page.dart';
@@ -45,7 +46,7 @@ class SzurubooruBuilder
         DefaultPostStatisticsPageBuilderMixin,
         DefaultBooruUIMixin
     implements BooruBuilder {
-  const SzurubooruBuilder({
+  SzurubooruBuilder({
     required this.postRepo,
     required this.autocompleteRepo,
   });
@@ -218,10 +219,17 @@ class SzurubooruBuilder
           );
 
   @override
-  DownloadFilenameGenerator<Post> get downloadFilenameBuilder =>
-      LegacyFilenameBuilder(
-        generateFileName: (post, downloadUrl) => basename(downloadUrl),
-      );
+  final DownloadFilenameGenerator<Post> downloadFilenameBuilder =
+      DownloadFileNameBuilder<Post>(
+    defaultFileNameFormat: kGelbooruV2CustomDownloadFileNameFormat,
+    defaultBulkDownloadFileNameFormat: kGelbooruV2CustomDownloadFileNameFormat,
+    sampleData: kDanbooruPostSamples,
+    tokenHandlers: {
+      'width': (post, config) => post.width.toString(),
+      'height': (post, config) => post.height.toString(),
+      'source': (post, config) => post.source.url,
+    },
+  );
 }
 
 class SzurubooruSearchPage extends ConsumerWidget {
@@ -300,9 +308,8 @@ class SzurubooruFavoritesPage extends ConsumerWidget {
 
     return FavoritesPageScaffold(
         favQueryBuilder: () => query,
-        fetcher: (page) => ref
-            .read(szurubooruPostRepoProvider(config))
-            .getPosts([query], page));
+        fetcher: (page) =>
+            ref.read(szurubooruPostRepoProvider(config)).getPosts(query, page));
   }
 }
 

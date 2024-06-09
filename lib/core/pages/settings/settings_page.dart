@@ -409,27 +409,24 @@ class _Footer extends ConsumerWidget {
       padding: EdgeInsets.only(
         bottom: MediaQuery.paddingOf(context).bottom,
       ),
-      child: SizedBox(
-        height: 50,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            IconButton(
-              onPressed: () => launchExternalUrl(
-                Uri.parse(ref.read(appInfoProvider).githubUrl),
-                mode: LaunchMode.externalApplication,
-              ),
-              icon: const FaIcon(FontAwesomeIcons.squareGithub),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          IconButton(
+            onPressed: () => launchExternalUrl(
+              Uri.parse(ref.read(appInfoProvider).githubUrl),
+              mode: LaunchMode.externalApplication,
             ),
-            IconButton(
-              onPressed: () => launchExternalUrl(
-                Uri.parse(ref.read(appInfoProvider).discordUrl),
-                mode: LaunchMode.externalApplication,
-              ),
-              icon: const FaIcon(FontAwesomeIcons.discord),
+            icon: const FaIcon(FontAwesomeIcons.squareGithub),
+          ),
+          IconButton(
+            onPressed: () => launchExternalUrl(
+              Uri.parse(ref.read(appInfoProvider).discordUrl),
+              mode: LaunchMode.externalApplication,
             ),
-          ],
-        ),
+            icon: const FaIcon(FontAwesomeIcons.discord),
+          ),
+        ],
       ),
     );
   }

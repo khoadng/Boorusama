@@ -2,10 +2,10 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'bulk_download_status.dart';
+import 'download_status.dart';
 import 'types.dart';
 
-abstract class BulkDownloader {
+abstract class Downloader {
   Future<void> enqueueDownload({
     required String url,
     String? path,
@@ -17,7 +17,7 @@ abstract class BulkDownloader {
 
   Future<void> cancelAll();
 
-  Stream<BulkDownloadStatus> get stream;
+  Stream<DownloadStatus> get stream;
 }
 
 class QueueData extends Equatable {

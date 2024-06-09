@@ -17,32 +17,24 @@ class ExploreHotPage extends ConsumerWidget {
     super.key,
   });
 
-  static Widget routeOf(BuildContext context) => const CustomContextMenuOverlay(
-        child: ExploreHotPage(),
-      );
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfig;
 
-    return Column(
-      children: [
-        Expanded(
-          child: PostScope(
-            fetcher: (page) =>
-                ref.read(danbooruExploreRepoProvider(config)).getHotPosts(page),
-            builder: (context, controller, errors) => DanbooruInfinitePostList(
-              errors: errors,
-              controller: controller,
-              sliverHeaders: [
-                ExploreSliverAppBar(
-                  title: 'explore.hot'.tr(),
-                ),
-              ],
+    return CustomContextMenuOverlay(
+      child: PostScope(
+        fetcher: (page) =>
+            ref.read(danbooruExploreRepoProvider(config)).getHotPosts(page),
+        builder: (context, controller, errors) => DanbooruInfinitePostList(
+          errors: errors,
+          controller: controller,
+          sliverHeaders: [
+            ExploreSliverAppBar(
+              title: 'explore.hot'.tr(),
             ),
-          ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }

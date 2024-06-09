@@ -6,13 +6,14 @@ import 'package:equatable/equatable.dart';
 import 'package:path/path.dart';
 
 // Project imports:
+import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/filename_generators/filename_generator.dart';
 import 'package:boorusama/core/feats/filename_generators/token.dart';
 import 'package:boorusama/core/feats/filename_generators/token_option.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/functional.dart';
 
 abstract class DownloadFilenameGenerator<T extends Post> {
@@ -26,14 +27,15 @@ abstract class DownloadFilenameGenerator<T extends Post> {
   String generate(
     Settings settings,
     BooruConfig config,
-    T post,
-  );
+    T post, {
+    Map<String, String>? metadata,
+  });
 
   String generateForBulkDownload(
     Settings settings,
     BooruConfig config,
     T post, {
-    int? index,
+    Map<String, String>? metadata,
   });
 
   String generateSample(String format);
@@ -54,99 +56,45 @@ class DownloadFilenameTokenOptions extends Equatable {
     required this.downloadUrl,
     required this.fallbackFilename,
     required this.format,
-    this.index,
+    this.metadata,
   });
 
   final String downloadUrl;
   final String fallbackFilename;
   final String format;
-  final int? index;
+  final Map<String, String>? metadata;
 
   @override
-  List<Object?> get props => [downloadUrl, fallbackFilename, format, index];
+  List<Object?> get props => [downloadUrl, fallbackFilename, format, metadata];
 }
 
-class LegacyFilenameBuilder<T extends Post>
-    implements DownloadFilenameGenerator<T> {
-  LegacyFilenameBuilder({
-    required this.generateFileName,
-  });
-
-  @override
-  Set<String> get availableTokens => {};
-
-  final String Function(T post, String downloadUrl) generateFileName;
-
-  @override
-  String generate(
-    Settings settings,
-    BooruConfig config,
-    T post,
-  ) {
-    final downloadUrl = getDownloadFileUrl(post, settings);
-
-    final fileName = generateFileName(post, downloadUrl);
-
-    return _joinFileWithExtension(fileName, post.format);
-  }
-
-  @override
-  String generateForBulkDownload(
-    Settings settings,
-    BooruConfig config,
-    T post, {
-    int? index,
-  }) {
-    final downloadUrl = getDownloadFileUrl(post, settings);
-
-    final fileName = generateFileName(post, downloadUrl);
-
-    return _joinFileWithExtension(fileName, post.format);
-  }
-
-  @override
-  String generateSample(String format) => '';
-
-  @override
-  List<String> generateSamples(String format) => [];
-
-  @override
-  List<String> getTokenOptions(String token) => [];
-
-  @override
-  Map<RegExp, TextStyle> get patternMatchMap => {};
-
-  @override
-  TokenOptionDocs? getDocsForTokenOption(String token, String tokenOption) =>
-      null;
-
-  @override
-  String get defaultBulkDownloadFileNameFormat => '';
-
-  @override
-  String get defaultFileNameFormat => '';
-}
-
-String _joinFileWithExtension(String fileName, String fileExt) {
-  // check if file already has extension
-  final fileNameExt = extension(fileName);
-  if (fileNameExt.isNotEmpty) return fileName;
-
-  if (fileExt.isEmpty) return fileName;
-
-  final ext = fileExt.startsWith('.') ? fileExt : '.$fileExt';
-
-  return fileName.endsWith(ext) ? fileName : '$fileName$ext';
+extension DownloadFilenameTokenOptionsX on DownloadFilenameTokenOptions {
+  int? get index => metadata?['index']?.toIntOrNull();
 }
 
 class DownloadFileNameBuilder<T extends Post>
     implements DownloadFilenameGenerator<T> {
   DownloadFileNameBuilder({
-    required this.tokenHandlers,
+    required Map<String, DownloadFilenameTokenHandler<T>> tokenHandlers,
     required this.sampleData,
     required this.defaultFileNameFormat,
     required this.defaultBulkDownloadFileNameFormat,
-  });
+    bool hasRating = true,
+    bool hasMd5 = true,
+    DownloadFilenameTokenHandler<T>? extensionHandler,
+  }) {
+    this.tokenHandlers = {
+      'id': (post, config) => post.id.toString(),
+      'tags': (post, config) => post.tags.join(' '),
+      'extension': extensionHandler ??
+          (post, config) => sanitizedExtension(config.downloadUrl).substring(1),
+      if (hasMd5) 'md5': (post, config) => post.md5,
+      if (hasRating) 'rating': (post, config) => post.rating.name,
+      'index': (post, config) => config.index?.toString(),
+      'search': (post, config) => post.metadata?.search,
+      ...tokenHandlers,
+    };
+  }
 
   final List<Map<String, String>> sampleData;
 
@@ -157,27 +105,41 @@ class DownloadFileNameBuilder<T extends Post>
         'uuid',
       }.toSet();
 
-  final Map<String, DownloadFilenameTokenHandler<T>> tokenHandlers;
+  late final Map<String, DownloadFilenameTokenHandler<T>> tokenHandlers;
 
   final TokenizerConfigs tokenizerConfigs = TokenizerConfigs.defaultConfigs();
+
+  String _joinFileWithExtension(String fileName, String fileExt) {
+    // check if file already has extension
+    final fileNameExt = extension(fileName);
+    if (fileNameExt.isNotEmpty) return fileName;
+
+    if (fileExt.isEmpty) return fileName;
+
+    final ext = fileExt.startsWith('.') ? fileExt : '.$fileExt';
+
+    return fileName.endsWith(ext) ? fileName : '$fileName$ext';
+  }
 
   String _generate(
     Settings settings,
     BooruConfig config,
     String? format,
     T post, {
-    int? index,
+    required Map<String, String>? metadata,
   }) {
     final downloadUrl = getDownloadFileUrl(post, settings);
     final fallbackName = basename(downloadUrl);
 
-    if (format == null || format.isEmpty) return fallbackName;
+    if (format == null || format.isEmpty) {
+      return _joinFileWithExtension(fallbackName, post.format);
+    }
 
     final options = DownloadFilenameTokenOptions(
       downloadUrl: downloadUrl,
       fallbackFilename: fallbackName,
       format: format,
-      index: index,
+      metadata: metadata,
     );
 
     final fileName = generateFileName(
@@ -189,7 +151,9 @@ class DownloadFileNameBuilder<T extends Post>
       configs: tokenizerConfigs,
     );
 
-    if (fileName.isEmpty) return fallbackName;
+    if (fileName.isEmpty) {
+      return _joinFileWithExtension(fallbackName, post.format);
+    }
 
     return fileName;
   }
@@ -198,13 +162,15 @@ class DownloadFileNameBuilder<T extends Post>
   String generate(
     Settings settings,
     BooruConfig config,
-    T post,
-  ) =>
+    T post, {
+    Map<String, String>? metadata,
+  }) =>
       _generate(
         settings,
         config,
         config.customDownloadFileNameFormat,
         post,
+        metadata: metadata,
       );
 
   @override
@@ -212,14 +178,14 @@ class DownloadFileNameBuilder<T extends Post>
     Settings settings,
     BooruConfig config,
     T post, {
-    int? index,
+    Map<String, String>? metadata,
   }) =>
       _generate(
         settings,
         config,
         config.customBulkDownloadFileNameFormat,
         post,
-        index: index,
+        metadata: metadata,
       );
 
   @override

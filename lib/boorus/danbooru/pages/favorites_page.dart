@@ -31,7 +31,7 @@ class DanbooruFavoritesPage extends ConsumerWidget {
     return CustomContextMenuOverlay(
       child: PostScope(
         fetcher: (page) =>
-            ref.read(danbooruPostRepoProvider(config)).getPosts([query], page),
+            ref.read(danbooruPostRepoProvider(config)).getPosts(query, page),
         builder: (context, controller, errors) => DanbooruInfinitePostList(
           errors: errors,
           controller: controller,

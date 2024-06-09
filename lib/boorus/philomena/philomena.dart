@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/boorus/danbooru/danbooru.dart';
+import 'package:boorusama/boorus/gelbooru_v2/gelbooru_v2.dart';
 import 'package:boorusama/boorus/philomena/create_philomena_config_page.dart';
+import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/feats/artist_commentaries/artist_commentaries.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
@@ -145,11 +147,18 @@ class PhilomenaBuilder
           };
 
   @override
-  DownloadFilenameGenerator<Post> get downloadFilenameBuilder =>
-      LegacyFilenameBuilder(
-        generateFileName: (post, downloadUrl) =>
-            generateMd5FileNameFor(post, downloadUrl),
-      );
+  final DownloadFilenameGenerator<Post> downloadFilenameBuilder =
+      DownloadFileNameBuilder<Post>(
+    defaultFileNameFormat: kGelbooruV2CustomDownloadFileNameFormat,
+    defaultBulkDownloadFileNameFormat: kGelbooruV2CustomDownloadFileNameFormat,
+    sampleData: kDanbooruPostSamples,
+    hasRating: false,
+    tokenHandlers: {
+      'width': (post, config) => post.width.toString(),
+      'height': (post, config) => post.height.toString(),
+      'source': (post, config) => post.source.url,
+    },
+  );
 
   @override
   PostImageDetailsUrlBuilder get postImageDetailsUrlBuilder => (settings,

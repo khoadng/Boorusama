@@ -7,13 +7,13 @@ import 'package:boorusama/foundation/http/http_utils.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
 import 'package:boorusama/foundation/path.dart';
 
-const _kImageExtensions = [
+const _kImageExtensions = {
   '.jpg',
   '.jpeg',
   '.png',
   '.gif',
   '.webp',
-];
+};
 
 class LoggingInterceptor extends Interceptor {
   LoggingInterceptor({
@@ -49,11 +49,12 @@ class LoggingInterceptor extends Interceptor {
     }
 
     final duration = getRequestDuration(response.requestOptions);
+    final durationText = _parseRequestDuration(duration);
     final serverRuntime = response.headers.value('x-runtime');
     final serverRuntimeText = _parseServerRuntime(serverRuntime);
 
     logger.logI('Network',
-        'Completed ${response.requestOptions.method} to ${response.requestOptions.uri} with status: ${response.statusCodeOrZero} and took ${duration}ms$serverRuntimeText');
+        'Completed ${response.requestOptions.method} to ${response.requestOptions.uri} with status: ${response.statusCodeOrZero}$durationText$serverRuntimeText');
     super.onResponse(response, handler);
   }
 
@@ -69,10 +70,11 @@ class LoggingInterceptor extends Interceptor {
     }
 
     final duration = getRequestDuration(response?.requestOptions);
+    final durationText = _parseRequestDuration(duration);
 
     if (response != null) {
       logger.logI('Network',
-          'Completed ${response.requestOptions.method} to ${response.requestOptions.uri} with status: ${response.statusCodeOrZero}, body ${response.data} and took ${duration}ms');
+          'Completed ${response.requestOptions.method} to ${response.requestOptions.uri} with status: ${response.statusCodeOrZero}, body ${response.data}$durationText');
 
       if (response.statusCode == 401) {
         logger.logE('Network',
@@ -84,12 +86,13 @@ class LoggingInterceptor extends Interceptor {
     super.onError(err, handler);
   }
 
-  String? getRequestDuration(RequestOptions? requestOptions) {
+  Duration? getRequestDuration(RequestOptions? requestOptions) {
     if (requestOptions == null) return null;
     final startTime = requestTimeLogs.remove(requestOptions.uri.toString());
-    final requestDuration =
-        DateTime.now().difference(startTime ?? DateTime.now()).inMilliseconds;
-    return requestDuration.toString();
+
+    if (startTime == null) return null;
+
+    return DateTime.now().difference(startTime);
   }
 }
 
@@ -103,4 +106,12 @@ String _parseServerRuntime(String? value) {
   return serverRuntimeSeconds < 1
       ? ' (server runtime: ${(serverRuntimeSeconds * 1000).toStringAsFixed(0)}ms)'
       : ' (server runtime: ${serverRuntimeSeconds.toStringAsFixed(3)}s)';
+}
+
+String _parseRequestDuration(Duration? duration) {
+  if (duration == null) return '';
+
+  return duration.inSeconds < 1
+      ? ' and took ${duration.inMilliseconds}ms'
+      : ' and took ${duration.inMilliseconds / 1000}s';
 }

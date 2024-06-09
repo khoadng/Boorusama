@@ -4,8 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
+import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/foundation/android.dart';
 import 'package:boorusama/foundation/platform.dart';
 
@@ -49,15 +49,15 @@ final bulkDownloadOptionsProvider = StateProvider<DownloadOptions>((ref) {
 });
 
 final bulkDownloadProvider =
-    Provider.family<BulkDownloader, BooruConfig>((ref, config) {
-  return CrossplatformBulkDownloader(
+    Provider.family<Downloader, BooruConfig>((ref, config) {
+  return CrossplatformDownloader(
     userAgentGenerator: ref.watch(userAgentGeneratorProvider(config)),
     logger: ref.watch(loggerProvider),
   );
 });
 
 final bulkDownloadDataProvider =
-    StreamProvider.family<BulkDownloadStatus, BooruConfig>(
+    StreamProvider.family<DownloadStatus, BooruConfig>(
         (ref, config) => ref.watch(bulkDownloadProvider(config)).stream);
 
 final bulkDownloaderManagerProvider =

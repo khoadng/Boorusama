@@ -31,7 +31,6 @@ class CreateMoebooruConfigPage extends ConsumerWidget {
         isNewConfig: isNewConfig,
         backgroundColor: backgroundColor,
         authTab: const MoebooruAuthConfigView(),
-        hasDownloadTab: true,
         hasRatingFilter: true,
       ),
     );

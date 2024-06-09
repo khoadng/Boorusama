@@ -87,3 +87,11 @@ Dio newDio(
 
   return dio;
 }
+
+class AppHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..idleTimeout = const Duration(seconds: 30);
+  }
+}

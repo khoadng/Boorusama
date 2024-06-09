@@ -138,6 +138,9 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
                     ),
                     orElse: () => const SizedBox.shrink(),
                   ),
+              SizedBox(
+                height: MediaQuery.viewPaddingOf(context).bottom + 12,
+              ),
             ],
           ),
         ),

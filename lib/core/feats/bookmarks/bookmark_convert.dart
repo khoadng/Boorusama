@@ -101,6 +101,7 @@ class BookmarkPost extends SimplePost {
     required super.width,
     required super.uploaderId,
     required this.realSourceUrl,
+    required super.metadata,
   });
 
   final PostSource realSourceUrl;
@@ -134,6 +135,7 @@ extension BookmarkToPost on Bookmark {
         width: width,
         uploaderId: null,
         realSourceUrl: PostSource.from(realSourceUrl),
+        metadata: null,
       );
 }
 

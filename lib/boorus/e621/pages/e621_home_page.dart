@@ -131,9 +131,9 @@ class E621MobileHomeView extends ConsumerWidget {
 
     return PostScope(
       fetcher: (page) => ref.read(e621PostRepoProvider(config)).getPosts(
-        [],
-        page,
-      ),
+            '',
+            page,
+          ),
       builder: (context, postController, errors) => InfinitePostListScaffold(
         errors: errors,
         controller: postController,

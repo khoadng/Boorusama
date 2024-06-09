@@ -18,6 +18,7 @@ class BooruConfigData extends Equatable {
     required this.url,
     required this.customDownloadFileNameFormat,
     required this.customBulkDownloadFileNameFormat,
+    required this.customDownloadLocation,
     required this.imageDetaisQuality,
     required this.granularRatingFilterString,
     required this.postGestures,
@@ -45,6 +46,7 @@ class BooruConfigData extends Equatable {
         ratingFilter: filter.index,
         customDownloadFileNameFormat: customDownloadFileNameFormat,
         customBulkDownloadFileNameFormat: customBulkDownloadFileNameFormat,
+        customDownloadLocation: null,
         imageDetaisQuality: imageDetaisQuality,
         granularRatingFilterString: null,
         postGestures: null,
@@ -66,6 +68,7 @@ class BooruConfigData extends Equatable {
             json['customDownloadFileNameFormat'] as String?,
         customBulkDownloadFileNameFormat:
             json['customBulkDownloadFileNameFormat'] as String?,
+        customDownloadLocation: json['customDownloadLocation'] as String?,
         imageDetaisQuality: json['imageDetaisQuality'] as String?,
         granularRatingFilterString:
             json['granularRatingFilterString'] as String?,
@@ -90,6 +93,7 @@ class BooruConfigData extends Equatable {
       'ratingFilter': ratingFilter,
       'customDownloadFileNameFormat': customDownloadFileNameFormat,
       'customBulkDownloadFileNameFormat': customBulkDownloadFileNameFormat,
+      'customDownloadLocation': customDownloadLocation,
       'imageDetaisQuality': imageDetaisQuality,
       'granularRatingFilterString': granularRatingFilterString,
       'postGestures': postGestures,
@@ -107,6 +111,7 @@ class BooruConfigData extends Equatable {
   final String url;
   final String? customDownloadFileNameFormat;
   final String? customBulkDownloadFileNameFormat;
+  final String? customDownloadLocation;
   final String? imageDetaisQuality;
   final String? granularRatingFilterString;
   final String? postGestures;
@@ -124,6 +129,7 @@ class BooruConfigData extends Equatable {
         url,
         customDownloadFileNameFormat,
         customBulkDownloadFileNameFormat,
+        customDownloadLocation,
         imageDetaisQuality,
         granularRatingFilterString,
         postGestures,
@@ -162,6 +168,7 @@ extension BooruConfigDataCopyWith on BooruConfigData {
     String? url,
     String? Function()? customDownloadFileNameFormat,
     String? Function()? customBulkDownloadFileNameFormat,
+    String? Function()? customDownloadLocation,
     String? Function()? imageDetaisQuality,
     Set<Rating>? Function()? granularRatingFilter,
     PostGestureConfig? Function()? postGestures,
@@ -185,6 +192,9 @@ extension BooruConfigDataCopyWith on BooruConfigData {
       customBulkDownloadFileNameFormat: customBulkDownloadFileNameFormat != null
           ? customBulkDownloadFileNameFormat()
           : this.customBulkDownloadFileNameFormat,
+      customDownloadLocation: customDownloadLocation != null
+          ? customDownloadLocation()
+          : this.customDownloadLocation,
       imageDetaisQuality: imageDetaisQuality != null
           ? imageDetaisQuality()
           : this.imageDetaisQuality,

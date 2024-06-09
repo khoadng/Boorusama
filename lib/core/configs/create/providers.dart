@@ -76,6 +76,12 @@ final customDownloadFileNameFormatProvider = StateProvider.autoDispose<String?>(
   dependencies: [booruConfigDataProvider],
 );
 
+final customDownloadLocationProvider = StateProvider.autoDispose<String?>(
+  (ref) => ref.watch(
+      booruConfigDataProvider.select((value) => value.customDownloadLocation)),
+  dependencies: [booruConfigDataProvider],
+);
+
 final configNameProvider = StateProvider.autoDispose<String>(
   (ref) => ref.watch(booruConfigDataProvider.select((value) => value.name)),
   dependencies: [booruConfigDataProvider],
@@ -109,6 +115,9 @@ extension UpdateDataX on WidgetRef {
 
   void updateCustomDownloadFileNameFormat(String? data) =>
       read(customDownloadFileNameFormatProvider.notifier).state = data;
+
+  void updateCustomDownloadLocation(String? data) =>
+      read(customDownloadLocationProvider.notifier).state = data;
 
   void updateName(String data) =>
       read(configNameProvider.notifier).state = data;

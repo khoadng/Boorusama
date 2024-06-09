@@ -39,7 +39,7 @@ class _MoebooruDesktopHomePageState
 
     return PostScope(
       fetcher: (page) => ref.watch(moebooruPostRepoProvider(config)).getPosts(
-            selectedTagController.rawTags,
+            selectedTagController.rawTagsString,
             page,
           ),
       builder: (context, controller, errors) => Column(

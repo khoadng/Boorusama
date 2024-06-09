@@ -7,8 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
+import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/router.dart';
@@ -69,9 +69,9 @@ class _EntryPageState extends ConsumerState<EntryPage> {
           .select((value) => value.downloadStatuses),
       (previous, next) {
         if (previous == null) return;
-        if (previous.values.any((e) => e is! BulkDownloadDone) &&
+        if (previous.values.any((e) => e is! DownloadDone) &&
             next.values.isNotEmpty &&
-            next.values.all((t) => t is BulkDownloadDone)) {
+            next.values.all((t) => t is DownloadDone)) {
           showSimpleSnackBar(
             context: context,
             duration: const Duration(seconds: 3),

@@ -5,8 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
+import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
@@ -31,6 +31,13 @@ String getDownloadFileUrl(Post post, Settings settings) {
 
 final downloadServiceProvider = Provider.family<DownloadService, BooruConfig>(
   (ref, config) {
+    final useLegacy = ref
+        .watch(settingsProvider.select((value) => value.useLegacyDownloader));
+
+    if (!useLegacy) {
+      return BackgroundDownloader();
+    }
+
     final dio = newDio(ref.watch(dioArgsProvider(config)));
     final notifications = ref.watch(downloadNotificationProvider);
 
@@ -44,6 +51,7 @@ final downloadServiceProvider = Provider.family<DownloadService, BooruConfig>(
     dioArgsProvider,
     downloadNotificationProvider,
     currentBooruConfigProvider,
+    settingsProvider,
   ],
 );
 
@@ -65,6 +73,11 @@ String sanitizedUrl(String url) {
   } else {
     return url;
   }
+}
+
+extension BooruConfigDownloadX on BooruConfig {
+  bool get hasCustomDownloadLocation =>
+      customDownloadLocation != null && customDownloadLocation!.isNotEmpty;
 }
 
 extension PostDownloadX on WidgetRef {
@@ -104,6 +117,12 @@ Future<void> _download(
   Future<void> download() async => service
       .downloadWithSettings(
         settings,
+        config: booruConfig,
+        metadata: DownloaderMetadata(
+          thumbnailUrl: downloadable.thumbnailImageUrl,
+          fileSize: downloadable.fileSize,
+          siteUrl: PostSource.from(downloadable.thumbnailImageUrl).url,
+        ),
         url: downloadUrl,
         fileNameBuilder: () => fileNameBuilder.generate(
           settings,
@@ -116,6 +135,7 @@ Future<void> _download(
   // Platform doesn't require permissions, just download it right away
   if (permission == null) {
     download();
+    return;
   }
 
   if (permission == PermissionStatus.granted) {

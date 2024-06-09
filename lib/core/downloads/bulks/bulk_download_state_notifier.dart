@@ -2,8 +2,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/downloads/downloads.dart';
 
 class BulkDownloadStateNotifier
     extends FamilyNotifier<BulkDownloadState, BooruConfig> {
@@ -38,7 +38,7 @@ class BulkDownloadStateNotifier
 
   void updateDownloadStatus({
     required String url,
-    required BulkDownloadStatus status,
+    required DownloadStatus status,
   }) {
     state = state.copyWith(
       downloadStatuses: {
@@ -53,7 +53,7 @@ class BulkDownloadStateNotifier
   ) {
     updateDownloadStatus(
       url: url,
-      status: BulkDownloadInitializing(
+      status: DownloadInitializing(
         url,
         state.downloadStatuses[url]!.fileName,
       ),

@@ -77,6 +77,10 @@ final szurubooruPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
                   ownFavorite: e.ownFavorite ?? false,
                   favoriteCount: e.favoriteCount ?? 0,
                   commentCount: e.commentCount ?? 0,
+                  metadata: PostMetadata(
+                    page: page,
+                    search: tags.join(' '),
+                  ),
                 ))
             .toList();
 

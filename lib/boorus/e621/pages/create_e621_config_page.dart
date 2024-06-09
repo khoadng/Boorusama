@@ -30,7 +30,6 @@ class CreateE621ConfigPage extends StatelessWidget {
         isNewConfig: isNewConfig,
         backgroundColor: backgroundColor,
         authTab: const DefaultBooruAuthConfigView(),
-        hasDownloadTab: true,
         hasRatingFilter: true,
       ),
     );

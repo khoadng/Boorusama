@@ -94,11 +94,13 @@ class _DanbooruForumPostsPageState
   }
 
   Widget _buildLoading() {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 20),
-      height: 24,
-      width: 24,
-      child: const CircularProgressIndicator.adaptive(),
+    return Center(
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 20),
+        height: 24,
+        width: 24,
+        child: const CircularProgressIndicator.adaptive(),
+      ),
     );
   }
 

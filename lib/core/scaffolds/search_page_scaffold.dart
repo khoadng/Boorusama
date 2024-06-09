@@ -38,7 +38,7 @@ class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
 
   final Widget Function(BuildContext context)? noticeBuilder;
 
-  final PostsOrErrorCore<T> Function(int page, List<String> tags) fetcher;
+  final PostsOrErrorCore<T> Function(int page, String tags) fetcher;
 
   final Map<RegExp, TextStyle>? queryPattern;
 

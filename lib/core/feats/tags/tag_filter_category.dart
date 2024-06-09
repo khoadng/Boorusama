@@ -9,12 +9,12 @@ enum TagFilterCategory {
 typedef TagFilterCategoryStringBuilder = Option<String> Function(
     TagFilterCategory category);
 
-List<String> queryFromTagFilterCategory({
+String queryFromTagFilterCategory({
   required TagFilterCategory category,
   required TagFilterCategoryStringBuilder builder,
   required String tag,
 }) =>
     builder(category).fold(
-      () => [tag],
-      (query) => [tag, query],
+      () => tag,
+      (query) => [tag, query].join(' '),
     );

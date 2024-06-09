@@ -57,6 +57,9 @@ class FavoriteGroupsPage extends ConsumerWidget {
                           fontSize: 18,
                         ),
                       ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                      ),
                       subtitle: Row(
                         children: [
                           Text(

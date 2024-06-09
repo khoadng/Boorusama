@@ -7,6 +7,19 @@ import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/foundation/image.dart';
 import 'package:boorusama/foundation/video.dart';
 
+class PostMetadata extends Equatable {
+  final int? page;
+  final String? search;
+
+  const PostMetadata({
+    this.page,
+    this.search,
+  });
+
+  @override
+  List<Object?> get props => [page, search];
+}
+
 abstract class Post extends Equatable
     with MediaInfoMixin, ImageInfoMixin, VideoInfoMixin, TagListCheckMixin
     implements TagDetails {
@@ -26,6 +39,8 @@ abstract class Post extends Equatable
   int get score;
   int? get downvotes;
   int? get uploaderId;
+
+  PostMetadata? get metadata;
 
   String getLink(String baseUrl);
   Uri getUriLink(String baseUrl);
@@ -72,6 +87,7 @@ abstract class SimplePost extends Equatable
     required this.width,
     required this.uploaderId,
     this.uploaderName,
+    required this.metadata,
   });
 
   @override
@@ -131,6 +147,9 @@ abstract class SimplePost extends Equatable
 
   @override
   Uri getUriLink(String baseUrl) => Uri.parse(getLink(baseUrl));
+
+  @override
+  final PostMetadata? metadata;
 
   @override
   List<Object?> get props => [id];

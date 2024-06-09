@@ -52,6 +52,7 @@ class DanbooruPost extends Equatable
     required this.duration,
     required this.variants,
     required this.pixelHash,
+    required this.metadata,
   }) : tags = {
           ...artistTags,
           ...copyrightTags,
@@ -92,6 +93,7 @@ class DanbooruPost extends Equatable
         duration: 0,
         variants: const [],
         pixelHash: '',
+        metadata: null,
       );
 
   @override
@@ -187,6 +189,9 @@ class DanbooruPost extends Equatable
 
   @override
   Uri getUriLink(String baseUrl) => Uri.parse(getLink(baseUrl));
+
+  @override
+  final PostMetadata? metadata;
 
   @override
   List<Object?> get props => [
@@ -334,6 +339,7 @@ extension PostX on DanbooruPost {
         duration: duration,
         variants: variants,
         pixelHash: pixelHash,
+        metadata: metadata,
       );
 }
 

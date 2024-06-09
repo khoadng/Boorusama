@@ -11,7 +11,8 @@ import 'package:boorusama/foundation/caching/caching.dart';
 final gelbooruV2ArtistPostRepo =
     Provider.family<PostRepository<GelbooruV2Post>, BooruConfig>((ref, config) {
   return PostRepositoryCacher(
-    keyBuilder: (tags, page, {limit}) => '${tags.join('-')}_${page}_$limit',
+    keyBuilder: (tags, page, {limit}) =>
+        '${tags.split(' ').join('-')}_${page}_$limit',
     repository: ref.watch(gelbooruV2PostRepoProvider(config)),
     cache: LruCacher(capacity: 100),
   );

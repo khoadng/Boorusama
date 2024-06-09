@@ -104,6 +104,9 @@ class TokenizerConfigs {
         'date': [
           'format',
         ],
+        'search': [
+          ...stringTokenOptions,
+        ],
         'uuid': [
           'uuid:version',
         ],

@@ -34,18 +34,22 @@ class ChoiceOptionSelectorList<T> extends ConsumerStatefulWidget {
     required this.selectedOption,
     this.icon,
     this.onSelected,
-    required this.sheetTitle,
+    this.sheetTitle,
     required this.optionLabelBuilder,
     this.hasNullOption = true,
+    this.searchable = true,
+    this.padding,
   });
 
   final List<T> options;
   final T? selectedOption;
   final Widget? icon;
   final void Function(T? value)? onSelected;
-  final String sheetTitle;
+  final String? sheetTitle;
   final String Function(T? value) optionLabelBuilder;
   final bool hasNullOption;
+  final bool searchable;
+  final EdgeInsetsGeometry? padding;
 
   @override
   ConsumerState<ChoiceOptionSelectorList<T>> createState() =>
@@ -75,7 +79,7 @@ class _ChoiceOptionSelectorListState<T>
   @override
   Widget build(BuildContext context) {
     final options = [
-      const ButtonType(),
+      if (widget.searchable) const ButtonType(),
       if (widget.hasNullOption) null,
       ...widget.options.map((e) => OptionType(data: e)),
     ];
@@ -85,6 +89,7 @@ class _ChoiceOptionSelectorListState<T>
       color: context.colorScheme.surface,
       margin: const EdgeInsets.symmetric(vertical: 4),
       child: ListView.builder(
+        padding: widget.padding,
         controller: scrollController,
         scrollDirection: Axis.horizontal,
         itemCount: options.length,

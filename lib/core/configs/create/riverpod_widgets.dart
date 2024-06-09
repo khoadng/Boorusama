@@ -148,6 +148,7 @@ class BooruConfigSubmitButton extends ConsumerWidget {
         ref.watch(customDownloadFileNameFormatProvider);
     final customBulkDownloadFileNameFormat =
         ref.watch(customBulkDownloadFileNameFormatProvider);
+    final customDownloadLocation = ref.watch(customDownloadLocationProvider);
     final configName = ref.watch(configNameProvider);
     final defaultPreviewImageButtonAction =
         ref.watch(defaultPreviewImageButtonActionProvider);
@@ -159,6 +160,7 @@ class BooruConfigSubmitButton extends ConsumerWidget {
       imageDetaisQuality: () => defaultImageDetailsQuality,
       customDownloadFileNameFormat: () => customDownloadFileNameFormat,
       customBulkDownloadFileNameFormat: () => customBulkDownloadFileNameFormat,
+      customDownloadLocation: () => customDownloadLocation,
       defaultPreviewImageButtonAction: () => defaultPreviewImageButtonAction,
       postGestures: () => gestures,
       name: configName,

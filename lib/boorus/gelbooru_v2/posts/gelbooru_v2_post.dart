@@ -36,6 +36,7 @@ class GelbooruV2Post extends Equatable
     required this.uploaderId,
     required this.uploaderName,
     required this.hasNotes,
+    required this.metadata,
   }) : _sampleImageUrl = sampleImageUrl;
 
   factory GelbooruV2Post.empty() => GelbooruV2Post(
@@ -59,6 +60,7 @@ class GelbooruV2Post extends Equatable
         uploaderId: null,
         uploaderName: null,
         hasNotes: false,
+        metadata: null,
       );
 
   final String _sampleImageUrl;
@@ -145,4 +147,7 @@ class GelbooruV2Post extends Equatable
   final String? uploaderName;
 
   final bool hasNotes;
+
+  @override
+  final PostMetadata? metadata;
 }

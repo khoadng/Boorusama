@@ -6,56 +6,42 @@ import 'package:filesize/filesize.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/downloads/downloads.dart';
-import 'package:boorusama/core/pages/downloads/widgets/bulk_download_tile.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
-enum BulkDownloadFilter {
-  all,
-  pending,
-  paused,
-  inProgress,
-  completed,
-  failed,
-}
-
 final bulkDownloadFilterProvider =
-    StateProvider.autoDispose<BulkDownloadFilter>((ref) {
-  return BulkDownloadFilter.all;
+    StateProvider.autoDispose<DownloadFilter>((ref) {
+  return DownloadFilter.all;
 });
 
 final bulkDownloadFilteredProvider = Provider.autoDispose
-    .family<List<BulkDownloadStatus>, BooruConfig>((ref, config) {
+    .family<List<DownloadStatus>, BooruConfig>((ref, config) {
   final filter = ref.watch(bulkDownloadFilterProvider);
   final state = ref.watch(bulkDownloadStateProvider(config)
       .select((value) => value.downloadStatuses));
 
   return switch (filter) {
-    BulkDownloadFilter.all => state.values.toList(),
-    BulkDownloadFilter.pending =>
-      state.values.whereType<BulkDownloadQueued>().toList(),
-    BulkDownloadFilter.paused =>
-      state.values.whereType<BulkDownloadPaused>().toList(),
-    BulkDownloadFilter.inProgress =>
-      state.values.whereType<BulkDownloadInProgress>().toList(),
-    BulkDownloadFilter.completed =>
-      state.values.whereType<BulkDownloadDone>().toList(),
-    BulkDownloadFilter.failed =>
-      state.values.whereType<BulkDownloadFailed>().toList(),
+    DownloadFilter.all => state.values.toList(),
+    DownloadFilter.pending => state.values.whereType<DownloadQueued>().toList(),
+    DownloadFilter.paused => state.values.whereType<DownloadPaused>().toList(),
+    DownloadFilter.inProgress =>
+      state.values.whereType<DownloadInProgress>().toList(),
+    DownloadFilter.completed => state.values.whereType<DownloadDone>().toList(),
+    DownloadFilter.failed => state.values.whereType<DownloadFailed>().toList(),
   };
 });
 
 final bulkDownloadFailedProvider = Provider.autoDispose
-    .family<List<BulkDownloadFailed>, BooruConfig>((ref, config) {
+    .family<List<DownloadFailed>, BooruConfig>((ref, config) {
   final state = ref.watch(bulkDownloadStateProvider(config)
       .select((value) => value.downloadStatuses));
 
-  return state.values.whereType<BulkDownloadFailed>().toList();
+  return state.values.whereType<DownloadFailed>().toList();
 });
 
 class DownloadInProgressView extends ConsumerWidget {
@@ -158,7 +144,7 @@ class DownloadInProgressView extends ConsumerWidget {
                   if (value == null) return;
                   ref.read(bulkDownloadFilterProvider.notifier).state = value;
                 },
-                items: BulkDownloadFilter.values
+                items: DownloadFilter.values
                     .map((value) => DropdownMenuItem(
                           value: value,
                           child: Text(value.name.sentenceCase),
@@ -184,8 +170,7 @@ class DownloadInProgressView extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                if ((data.isNotEmpty &&
-                        data.all((t) => t is BulkDownloadDone)) ||
+                if ((data.isNotEmpty && data.all((t) => t is DownloadDone)) ||
                     status == BulkDownloadManagerStatus.cancel)
                   FilledButton(
                     onPressed: () => ref

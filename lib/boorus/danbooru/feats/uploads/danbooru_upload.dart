@@ -143,6 +143,7 @@ class DanbooruUploadPost extends DanbooruPost {
     required this.uploadMediaAssetId,
     required this.pageUrl,
     required this.sourceRaw,
+    required super.metadata,
   });
 
   final User? uploader;
@@ -218,6 +219,7 @@ extension DanbooruUploadX on DanbooruUpload {
       mediaAssetId: mediaAsset.id ?? 0,
       uploadMediaAssetId: uploadMediaAssets.id ?? 0,
       pixelHash: mediaAsset.pixelHash ?? '',
+      metadata: null,
     );
   }
 }

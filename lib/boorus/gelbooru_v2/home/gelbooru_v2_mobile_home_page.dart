@@ -27,7 +27,7 @@ class GelbooruV2MobileHomePage extends ConsumerWidget {
 
     return PostScope(
       fetcher: (page) =>
-          ref.read(gelbooruV2PostRepoProvider(config)).getPosts([], page),
+          ref.read(gelbooruV2PostRepoProvider(config)).getPosts('', page),
       builder: (context, postController, errors) => InfinitePostListScaffold(
         errors: errors,
         controller: postController,

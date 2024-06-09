@@ -4,9 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/search/search.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
 import 'package:boorusama/foundation/permissions.dart';
 import 'package:boorusama/utils/duration_utils.dart';
@@ -18,7 +19,7 @@ class BulkDownloadManagerNotifier extends FamilyNotifier<void, BooruConfig> {
   BulkDownloadStateNotifier get bulkDownloadState =>
       ref.read(bulkDownloadStateProvider(arg).notifier);
 
-  BulkDownloader get downloader => ref.read(bulkDownloadProvider(arg));
+  Downloader get downloader => ref.read(bulkDownloadProvider(arg));
 
   StateController<BulkDownloadManagerStatus> get bulkDownloadStatus =>
       ref.read(bulkDownloadManagerStatusProvider.notifier);
@@ -27,7 +28,7 @@ class BulkDownloadManagerNotifier extends FamilyNotifier<void, BooruConfig> {
 
   LoggerService get logger => ref.read(loggerProvider);
 
-  Future<List<Post>> getPosts(List<String> tags, int page) {
+  Future<List<Post>> getPosts(String tags, int page) {
     final options = ref.read(bulkDownloadOptionsProvider);
     return postRepo.getPostsFromTagsOrEmpty(
       tags,
@@ -48,7 +49,7 @@ class BulkDownloadManagerNotifier extends FamilyNotifier<void, BooruConfig> {
   }
 
   Future<void> download({
-    required List<String> tags,
+    required String tags,
   }) async {
     final deviceInfo = ref.read(deviceInfoProvider);
     final permission = await checkMediaPermissions(deviceInfo);
@@ -67,6 +68,9 @@ class BulkDownloadManagerNotifier extends FamilyNotifier<void, BooruConfig> {
         return;
       }
     }
+
+    // saved tags to history
+    ref.read(searchHistoryProvider.notifier).addHistory(tags);
 
     bulkDownloadStatus.state = BulkDownloadManagerStatus.downloadInProgress;
 
@@ -98,8 +102,14 @@ class BulkDownloadManagerNotifier extends FamilyNotifier<void, BooruConfig> {
           downloader.enqueueDownload(
             url: downloadUrl,
             path: storagePath,
-            fileNameBuilder: () => fileNameBuilder
-                .generateForBulkDownload(settings, arg, item, index: index),
+            fileNameBuilder: () => fileNameBuilder.generateForBulkDownload(
+              settings,
+              arg,
+              item,
+              metadata: {
+                'index': index.toString(),
+              },
+            ),
           );
 
           ref.read(bulkDownloadThumbnailsProvider.notifier).state = {
@@ -163,7 +173,7 @@ class BulkDownloadManagerNotifier extends FamilyNotifier<void, BooruConfig> {
 
   Future<void> retryAll() async {
     final failed = bulkDownloadState.state.downloadStatuses.values
-        .whereType<BulkDownloadFailed>();
+        .whereType<DownloadFailed>();
     for (final download in failed) {
       retry(download.url, download.fileName);
     }

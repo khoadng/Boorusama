@@ -6,7 +6,11 @@ import 'package:boorusama/clients/gelbooru/types/post_v2_dto.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'gelbooru_v2_post.dart';
 
-GelbooruV2Post gelbooruV2PostDtoToGelbooruPost(PostV2Dto dto) {
+GelbooruV2Post gelbooruV2PostDtoToGelbooruPostNoMetadata(PostV2Dto dto) =>
+    gelbooruV2PostDtoToGelbooruPost(dto, null);
+
+GelbooruV2Post gelbooruV2PostDtoToGelbooruPost(
+    PostV2Dto dto, PostMetadata? metadata) {
   return GelbooruV2Post(
     id: dto.id!,
     thumbnailImageUrl: dto.previewUrl ?? '',
@@ -28,6 +32,7 @@ GelbooruV2Post gelbooruV2PostDtoToGelbooruPost(PostV2Dto dto) {
     uploaderId: null,
     uploaderName: dto.owner,
     hasNotes: _checkIfHasNotes(dto),
+    metadata: metadata,
   );
 }
 

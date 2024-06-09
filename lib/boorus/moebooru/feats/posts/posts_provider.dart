@@ -31,7 +31,15 @@ final moebooruPostRepoProvider =
             ),
             limit: limit,
           )
-          .then((value) => value.map(postDtoToPost).toList()),
+          .then((value) => value
+              .map((e) => postDtoToPost(
+                    e,
+                    PostMetadata(
+                      page: page,
+                      search: tags.join(' '),
+                    ),
+                  ))
+              .toList()),
       getSettings: () async => ref.read(settingsProvider),
     );
   },
@@ -69,7 +77,7 @@ final moebooruPostDetailsChildrenProvider =
     final query =
         post.parentId != null ? 'parent:${post.parentId}' : 'parent:${post.id}';
 
-    final posts = await repo.getPosts([query], 1).run();
+    final posts = await repo.getPosts(query, 1).run();
 
     return posts.fold(
       (l) => null,
@@ -84,7 +92,7 @@ final moebooruPostDetailsArtistProvider =
   final repo = ref.watch(moebooruArtistCharacterPostRepoProvider(config));
   final blacklistedTags = ref.watch(blacklistTagsProvider(config));
 
-  final posts = await repo.getPosts([tag], 1).run().then(
+  final posts = await repo.getPosts(tag, 1).run().then(
         (value) => value.fold(
           (l) => <Post>[],
           (r) => r,
@@ -103,7 +111,7 @@ final moebooruPostDetailsCharacterProvider =
   final repo = ref.watch(moebooruArtistCharacterPostRepoProvider(config));
   final blacklistedTags = ref.watch(blacklistTagsProvider(config));
 
-  final posts = await repo.getPosts([tag], 1).run().then(
+  final posts = await repo.getPosts(tag, 1).run().then(
         (value) => value.fold(
           (l) => <Post>[],
           (r) => r,
@@ -116,7 +124,11 @@ final moebooruPostDetailsCharacterProvider =
   );
 });
 
-MoebooruPost postDtoToPost(PostDto postDto) {
+MoebooruPost postDtoToPostNoMetadata(PostDto postDto) {
+  return postDtoToPost(postDto, null);
+}
+
+MoebooruPost postDtoToPost(PostDto postDto, PostMetadata? metadata) {
   final hasChildren = postDto.hasChildren ?? false;
   final hasParent = postDto.parentId != null;
   final hasParentOrChildren = hasChildren || hasParent;
@@ -144,5 +156,6 @@ MoebooruPost postDtoToPost(PostDto postDto) {
     parentId: postDto.parentId,
     uploaderId: postDto.creatorId,
     uploaderName: postDto.author,
+    metadata: metadata,
   );
 }
