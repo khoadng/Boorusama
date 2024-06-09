@@ -5,7 +5,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_portal/flutter_portal.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,6 +17,7 @@ import 'package:boorusama/foundation/analytics.dart';
 import 'package:boorusama/foundation/device_info_service.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/picker.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/scrolling.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -220,21 +220,20 @@ class AppFailedToInitialize extends ConsumerWidget {
   Future<void> _saveTo(
     BuildContext context,
     String data,
-  ) async {
-    final selectedDirectory = await FilePicker.platform.getDirectoryPath();
+  ) =>
+      pickDirectoryPathToastOnError(
+        onPick: (path) async {
+          final file = File('$path/boorusama_crash.txt');
+          await file.writeAsString(data);
+          if (!context.mounted) return;
 
-    if (selectedDirectory != null) {
-      final file = File('$selectedDirectory/boorusama_crash.txt');
-      await file.writeAsString(data);
-      if (!context.mounted) return;
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          behavior: SnackBarBehavior.floating,
-          content: Text('Copied'),
-          duration: Duration(seconds: 1),
-        ),
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              behavior: SnackBarBehavior.floating,
+              content: Text('Copied'),
+              duration: Duration(seconds: 1),
+            ),
+          );
+        },
       );
-    }
-  }
 }

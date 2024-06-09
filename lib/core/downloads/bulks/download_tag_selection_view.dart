@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -15,6 +14,7 @@ import 'package:boorusama/core/router.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/android.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/picker.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
@@ -243,16 +243,15 @@ class _DownloadTagSelectionViewState
   Future<void> _pickFolder(
     BuildContext context,
     DownloadOptions options,
-  ) async {
-    final selectedDirectory = await FilePicker.platform.getDirectoryPath();
-
-    if (selectedDirectory != null) {
-      final state = ref.read(bulkDownloadOptionsProvider);
-      ref.read(bulkDownloadOptionsProvider.notifier).state = state.copyWith(
-        storagePath: selectedDirectory,
+  ) =>
+      pickDirectoryPathToastOnError(
+        onPick: (path) {
+          final state = ref.read(bulkDownloadOptionsProvider);
+          ref.read(bulkDownloadOptionsProvider.notifier).state = state.copyWith(
+            storagePath: path,
+          );
+        },
       );
-    }
-  }
 }
 
 class DownloadPathWarning extends StatelessWidget {

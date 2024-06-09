@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:file_picker/file_picker.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -10,6 +9,7 @@ import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/foundation/android.dart';
 import 'package:boorusama/foundation/device_info_service.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/picker.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 
@@ -135,11 +135,7 @@ class _DownloadFolderSelectorSectionState
 
   bool showPath() => storagePath != null && storagePath!.isNotEmpty;
 
-  Future<void> _pickFolder() async {
-    final selectedDirectory = await FilePicker.platform.getDirectoryPath();
-
-    if (selectedDirectory != null) {
-      widget.onPathChanged(selectedDirectory);
-    }
-  }
+  Future<void> _pickFolder() => pickDirectoryPathToastOnError(
+        onPick: (path) => widget.onPathChanged(path),
+      );
 }
