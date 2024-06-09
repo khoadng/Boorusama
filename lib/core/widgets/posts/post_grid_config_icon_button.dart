@@ -178,7 +178,9 @@ class PostGridActionSheet extends ConsumerWidget {
         },
         child: const Text('More'),
       ),
-      const SizedBox(height: 12),
+      SizedBox(
+        height: MediaQuery.viewPaddingOf(context).bottom,
+      ),
     ];
 
     final desktopButtons = [
@@ -219,7 +221,7 @@ class PostGridActionSheet extends ConsumerWidget {
       child: ConditionalParentWidget(
         condition: kPreferredLayout.isMobile,
         conditionalBuilder: (child) => Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
           child: child,
         ),
         child: Column(

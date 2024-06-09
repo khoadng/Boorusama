@@ -61,6 +61,7 @@ const kDanbooruPostSamples = [
     'source': 'https://example.com/filename.jpg',
     'rating': 'general',
     'index': '0',
+    'search': 'genshin_impact solo',
   },
   {
     'id': '654321',
@@ -79,6 +80,7 @@ const kDanbooruPostSamples = [
     'source': 'https://example.com/example_filename.jpg',
     'rating': 'general',
     'index': '1',
+    'search': '1girl solo',
   }
 ];
 

@@ -51,7 +51,7 @@ class _DownloadPageState extends ConsumerState<DownloadPage> {
                 deviceInfo: ref.watch(deviceInfoProvider),
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
             SettingsTile<DownloadQuality>(
               title: const Text('settings.download.quality').tr(),
               selectedOption: settings.downloadQuality,
@@ -61,7 +61,7 @@ class _DownloadPageState extends ConsumerState<DownloadPage> {
               optionBuilder: (value) =>
                   Text('settings.download.qualities.${value.name}').tr(),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 4),
             ListTile(
               title: const Text('Ignore files that already downloaded'),
               subtitle: const Text(
@@ -77,7 +77,7 @@ class _DownloadPageState extends ConsumerState<DownloadPage> {
                       },
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 4),
             ListTile(
               title: const Text('Use legacy downloader'),
               subtitle: const Text(

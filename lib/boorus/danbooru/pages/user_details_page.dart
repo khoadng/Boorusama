@@ -26,6 +26,7 @@ import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/package_info.dart';
+import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/string.dart';
@@ -265,6 +266,7 @@ class UserDetailsPage extends ConsumerWidget {
   Widget _buildPlaceHolderTags(BuildContext context) {
     return Wrap(
       spacing: 8,
+      runSpacing: isDesktopPlatform() ? 4 : 0,
       children: [
         'aaaaaaaaaaaaa',
         'fffffffffffffffff',
@@ -294,6 +296,7 @@ class UserDetailsPage extends ConsumerWidget {
   ) {
     return Wrap(
       spacing: 8,
+      runSpacing: isDesktopPlatform() ? 4 : 0,
       children: tags
           .map(
             (e) => BooruChip(

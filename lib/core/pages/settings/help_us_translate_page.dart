@@ -74,7 +74,7 @@ class HelpUseTranslatePage extends ConsumerWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(32),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: FilledButton(
                 onPressed: () {
                   launchExternalUrlString(
@@ -86,6 +86,7 @@ class HelpUseTranslatePage extends ConsumerWidget {
                 ),
               ),
             ),
+            const SizedBox(height: 12),
           ],
         ),
       ),

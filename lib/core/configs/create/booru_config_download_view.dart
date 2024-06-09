@@ -26,38 +26,35 @@ class BooruConfigDownloadView extends ConsumerWidget {
     final customDownloadLocation = ref.watch(customDownloadLocationProvider);
 
     return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            DownloadFolderSelectorSection(
-              storagePath: customDownloadLocation,
-              deviceInfo: ref.watch(deviceInfoProvider),
-              onPathChanged: (path) => ref.updateCustomDownloadLocation(path),
-              title: 'Download location',
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          DownloadFolderSelectorSection(
+            storagePath: customDownloadLocation,
+            deviceInfo: ref.watch(deviceInfoProvider),
+            onPathChanged: (path) => ref.updateCustomDownloadLocation(path),
+            title: 'Download location',
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'Leave empty to use the download location in settings.',
+            style: ref.context.textTheme.titleSmall?.copyWith(
+              color: ref.context.theme.hintColor,
+              fontSize: 11,
+              fontWeight: FontWeight.w400,
             ),
-            const SizedBox(height: 4),
-            Text(
-              'Leave empty to use the download location in settings.',
-              style: ref.context.textTheme.titleSmall?.copyWith(
-                color: ref.context.theme.hintColor,
-                fontSize: 11,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-            const SizedBox(height: 8),
-            CustomDownloadFileNameSection(
-              config: config,
-              format: customDownloadFileNameFormat,
-              onIndividualDownloadChanged: (value) =>
-                  ref.updateCustomDownloadFileNameFormat(value),
-              onBulkDownloadChanged: (value) =>
-                  ref.updateCustomBulkDownloadFileNameFormat(value),
-            ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 8),
+          CustomDownloadFileNameSection(
+            config: config,
+            format: customDownloadFileNameFormat,
+            onIndividualDownloadChanged: (value) =>
+                ref.updateCustomDownloadFileNameFormat(value),
+            onBulkDownloadChanged: (value) =>
+                ref.updateCustomBulkDownloadFileNameFormat(value),
+          ),
+        ],
       ),
     );
   }

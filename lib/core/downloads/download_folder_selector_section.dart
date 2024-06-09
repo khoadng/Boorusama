@@ -81,8 +81,8 @@ class _DownloadFolderSelectorSectionState
                   child: Padding(
                     padding: const EdgeInsets.only(
                       left: 12,
-                      top: 4,
-                      bottom: 4,
+                      top: 8,
+                      bottom: 8,
                     ),
                     child: showPath()
                         ? Text(

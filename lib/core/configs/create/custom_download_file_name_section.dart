@@ -18,7 +18,7 @@ import 'package:boorusama/core/feats/posts/post.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/display.dart';
+import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -321,7 +321,7 @@ class AvailableTokens extends ConsumerWidget {
     final availableTokens = downloadFilenameBuilder?.availableTokens ?? {};
 
     return Wrap(
-      runSpacing: kPreferredLayout.isMobile ? -4 : 8,
+      runSpacing: isDesktopPlatform() ? 4 : -4,
       spacing: 4,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
@@ -371,7 +371,7 @@ class TokenOptionHelpModal extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(token),
+        title: const Text('Available options'),
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
@@ -386,9 +386,9 @@ class TokenOptionHelpModal extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: Text(
-                    'Available options',
+                    token,
                     style: context.textTheme.titleLarge,
                   ),
                 ),
@@ -402,36 +402,27 @@ class TokenOptionHelpModal extends StatelessWidget {
                           ?.getDocsForTokenOption(token, option);
 
                       return ListTile(
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                        ),
                         title: Row(
                           children: [
                             Flexible(child: Text(option)),
-                            const SizedBox(width: 4),
+                            const SizedBox(width: 8),
                             switch (docs?.tokenOption) {
-                              IntegerTokenOption _ => Chip(
-                                  label: const Text('integer'),
-                                  visualDensity: const ShrinkVisualDensity(),
-                                  backgroundColor:
-                                      context.colorScheme.secondaryContainer,
-                                ),
-                              BooleanTokenOption _ => Chip(
-                                  label: const Text('boolean'),
-                                  visualDensity: const ShrinkVisualDensity(),
-                                  backgroundColor:
-                                      context.colorScheme.secondaryContainer,
-                                ),
-                              StringTokenOption _ => Chip(
-                                  label: const Text('string'),
-                                  visualDensity: const ShrinkVisualDensity(),
-                                  backgroundColor:
-                                      context.colorScheme.secondaryContainer,
-                                ),
+                              IntegerTokenOption _ =>
+                                _buildOptionChip(context, 'integer'),
+                              BooleanTokenOption _ =>
+                                _buildOptionChip(context, 'boolean'),
+                              StringTokenOption _ =>
+                                _buildOptionChip(context, 'string'),
                               _ => const SizedBox.shrink(),
                             }
                           ],
                         ),
                         subtitle: docs != null
                             ? Container(
-                                padding: const EdgeInsets.only(top: 6),
+                                padding: const EdgeInsets.only(top: 2),
                                 child: Text(docs.description),
                               )
                             : null,
@@ -451,6 +442,18 @@ class TokenOptionHelpModal extends StatelessWidget {
           : const Center(
               child: Text('No options available'),
             ),
+    );
+  }
+
+  Widget _buildOptionChip(BuildContext context, String label) {
+    return CompactChip(
+      label: label,
+      borderRadius: BorderRadius.circular(12),
+      backgroundColor: context.colorScheme.secondaryContainer,
+      padding: const EdgeInsets.symmetric(
+        horizontal: 10,
+        vertical: 2,
+      ),
     );
   }
 }
