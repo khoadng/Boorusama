@@ -1,3 +1,12 @@
+# 3.18.0
+- Add a Download manager where you can view and manage all your downloads for each session
+- Enable download configuration for Szurubooru, Zerochan, shimmie2 and Philomena
+- Each profile now can have its own download location
+- Add a new `search` token for download filename formatter to include current search
+- Android's Edge to Edge Mode is now enabled by default
+- Improve image loading speed for some sites
+- Minor bug fixes and UI adjustments
+
 # 3.17.0
 - Add Reduce Animations option in settings
 - Add Image Viewer settings
