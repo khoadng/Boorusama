@@ -127,4 +127,14 @@ class SzurubooruClient {
       baseUrl: _dio.options.baseUrl,
     );
   }
+
+  Future<List<TagCategoryDto>> getTagCategories() async {
+    final response = await _dio.get(
+      '/api/tag-categories',
+    );
+
+    final results = response.data['results'] as List;
+
+    return results.map((e) => TagCategoryDto.fromJson(e)).toList();
+  }
 }

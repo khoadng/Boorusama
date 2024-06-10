@@ -39,6 +39,7 @@ class ChoiceOptionSelectorList<T> extends ConsumerStatefulWidget {
     this.hasNullOption = true,
     this.searchable = true,
     this.padding,
+    this.scrollController,
   });
 
   final List<T> options;
@@ -50,6 +51,7 @@ class ChoiceOptionSelectorList<T> extends ConsumerStatefulWidget {
   final bool hasNullOption;
   final bool searchable;
   final EdgeInsetsGeometry? padding;
+  final AutoScrollController? scrollController;
 
   @override
   ConsumerState<ChoiceOptionSelectorList<T>> createState() =>
@@ -58,7 +60,8 @@ class ChoiceOptionSelectorList<T> extends ConsumerStatefulWidget {
 
 class _ChoiceOptionSelectorListState<T>
     extends ConsumerState<ChoiceOptionSelectorList<T>> {
-  final scrollController = AutoScrollController();
+  late final scrollController =
+      widget.scrollController ?? AutoScrollController();
   late var selectedOption = widget.selectedOption;
 
   @override
@@ -73,7 +76,10 @@ class _ChoiceOptionSelectorListState<T>
   @override
   void dispose() {
     super.dispose();
-    scrollController.dispose();
+
+    if (widget.scrollController == null) {
+      scrollController.dispose();
+    }
   }
 
   @override

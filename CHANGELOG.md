@@ -1,3 +1,7 @@
+# 3.18.1
+- Fix an issue where downloaded images won't show up
+- Show file path when a download is completed
+
 # 3.18.0
 - Add a Download manager where you can view and manage all your downloads for each session
 - Enable download configuration for Szurubooru, Zerochan, shimmie2 and Philomena

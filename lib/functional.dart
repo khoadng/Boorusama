@@ -4,10 +4,10 @@
 library;
 
 // Package imports:
-import 'package:fpdart/fpdart.dart' as fpdart show State, Option, Either;
+import 'package:fpdart/fpdart.dart' as fpdart show State, Option, Either, Task;
 
 // The `fpdart` library is used to create functional programming constructs.
-export 'package:fpdart/fpdart.dart' hide State;
+export 'package:fpdart/fpdart.dart' hide State, Task;
 export 'package:fast_immutable_collections/fast_immutable_collections.dart'
     hide Predicate;
 
@@ -20,6 +20,7 @@ export 'package:boorusama/utils/fp_utils.dart';
 
 /// A type alias for the `State` class from the `fpdart` library.
 typedef FpState<S, A> = fpdart.State<S, A>;
+typedef FpTask<A> = fpdart.Task<A>;
 
 extension FpdartOnNullable<T> on T? {
   fpdart.Option<T> toOption() => fpdart.Option.fromNullable(this);

@@ -54,11 +54,18 @@ class BackgroundDownloader implements DownloadService {
   }) =>
       fp.TaskEither.Do(
         ($) async {
+          final downloadDirTask = await tryGetDownloadDirectory().run();
+          final downloadDir = downloadDirTask.fold((l) => null, (r) => r);
+
           final task = DownloadTask(
             url: url,
             filename: fileNameBuilder(),
             allowPause: true,
             retries: 1,
+            baseDirectory: downloadDir != null
+                ? BaseDirectory.root
+                : BaseDirectory.applicationDocuments,
+            directory: downloadDir != null ? downloadDir.path : '',
             updates: Updates.statusAndProgress,
             metaData: metadata?.toJsonString() ?? '',
           );
@@ -234,6 +241,10 @@ class _BackgroundDownloaderScopeState
           running: const TaskNotification(
             '{filename}',
             '{progress}',
+          ),
+          complete: const TaskNotification(
+            '{filename}',
+            'completed',
           ),
           error: const TaskNotification(
             '{filename}',

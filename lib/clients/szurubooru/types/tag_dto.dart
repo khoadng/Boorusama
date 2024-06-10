@@ -18,3 +18,32 @@ class TagDto {
     );
   }
 }
+
+class TagCategoryDto {
+  final String? name;
+  final int? version;
+  final String? color;
+  final int? usages;
+  final bool? isDefault;
+  final int? order;
+
+  TagCategoryDto({
+    required this.name,
+    required this.version,
+    required this.color,
+    required this.usages,
+    required this.isDefault,
+    required this.order,
+  });
+
+  factory TagCategoryDto.fromJson(Map<String, dynamic> json) {
+    return TagCategoryDto(
+      name: json['name'] as String?,
+      version: json['version'] as int?,
+      color: json['color'] as String?,
+      usages: json['usages'] as int?,
+      isDefault: json['default'] as bool?,
+      order: json['order'] as int?,
+    );
+  }
+}
