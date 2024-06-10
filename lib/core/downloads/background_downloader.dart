@@ -242,6 +242,10 @@ class _BackgroundDownloaderScopeState
             '{filename}',
             '{progress}',
           ),
+          complete: const TaskNotification(
+            '{filename}',
+            'completed',
+          ),
           error: const TaskNotification(
             '{filename}',
             'failed',

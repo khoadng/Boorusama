@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:readmore/readmore.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
@@ -21,12 +22,15 @@ import 'package:boorusama/widgets/widgets.dart';
 
 final downloadFilterProvider =
     StateProvider.family<DownloadFilter2, String?>((ref, initialFilter) {
-  return switch (initialFilter) {
-    'error' => DownloadFilter2.failed,
-    'running' => DownloadFilter2.inProgress,
-    _ => DownloadFilter2.all,
-  };
+  return _convertFilter(initialFilter);
 });
+
+DownloadFilter2 _convertFilter(String? filter) => switch (filter) {
+      'error' => DownloadFilter2.failed,
+      'running' => DownloadFilter2.inProgress,
+      'complete' => DownloadFilter2.completed,
+      _ => DownloadFilter2.all,
+    };
 
 final downloadFilteredProvider =
     Provider.family<List<TaskUpdate>, String?>((ref, initialFilter) {
@@ -124,7 +128,17 @@ class DisabledDownloadManagerPage extends StatelessWidget {
   }
 }
 
-class DownloadManagerPage extends ConsumerWidget {
+const _filterOptions = [
+  DownloadFilter2.all,
+  DownloadFilter2.inProgress,
+  DownloadFilter2.pending,
+  DownloadFilter2.paused,
+  DownloadFilter2.failed,
+  DownloadFilter2.canceled,
+  DownloadFilter2.completed,
+];
+
+class DownloadManagerPage extends ConsumerStatefulWidget {
   const DownloadManagerPage({
     super.key,
     this.filter,
@@ -133,8 +147,43 @@ class DownloadManagerPage extends ConsumerWidget {
   final String? filter;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final tasks = ref.watch(downloadFilteredProvider(filter));
+  ConsumerState<DownloadManagerPage> createState() =>
+      _DownloadManagerPageState();
+}
+
+class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
+  final scrollController = AutoScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.filter != null) {
+      // scroll to the selected filter
+      final filterType = _convertFilter(widget.filter);
+      final index = _filterOptions.indexOf(filterType);
+
+      if (index != -1) {
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+          scrollController.scrollToIndex(
+            index,
+            preferPosition: AutoScrollPosition.end,
+            duration: const Duration(milliseconds: 100),
+          );
+        });
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    scrollController.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final tasks = ref.watch(downloadFilteredProvider(widget.filter));
 
     return Scaffold(
       appBar: AppBar(
@@ -161,28 +210,22 @@ class DownloadManagerPage extends ConsumerWidget {
             Builder(
               builder: (context) {
                 final selectedFilter =
-                    ref.watch(downloadFilterProvider(filter));
+                    ref.watch(downloadFilterProvider(widget.filter));
 
                 return ChoiceOptionSelectorList(
+                  scrollController: scrollController,
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   searchable: false,
-                  options: const [
-                    DownloadFilter2.all,
-                    DownloadFilter2.inProgress,
-                    DownloadFilter2.pending,
-                    DownloadFilter2.paused,
-                    DownloadFilter2.failed,
-                    DownloadFilter2.canceled,
-                    DownloadFilter2.completed,
-                  ],
+                  options: _filterOptions,
                   hasNullOption: false,
                   optionLabelBuilder: (value) =>
                       value?.name.sentenceCase ?? 'Unknown',
                   onSelected: (value) {
                     if (value == null) return;
 
-                    ref.read(downloadFilterProvider(filter).notifier).state =
-                        value;
+                    ref
+                        .read(downloadFilterProvider(widget.filter).notifier)
+                        .state = value;
                   },
                   selectedOption: selectedFilter,
                 );
@@ -234,8 +277,8 @@ class DownloadManagerPage extends ConsumerWidget {
                         children: [
                           Container(
                             padding: const EdgeInsets.symmetric(vertical: 24),
-                            child: switch (
-                                ref.watch(downloadFilterProvider(filter))) {
+                            child: switch (ref
+                                .watch(downloadFilterProvider(widget.filter))) {
                               DownloadFilter2.failed =>
                                 const Text('No failed downloads'),
                               DownloadFilter2.inProgress =>
@@ -268,7 +311,7 @@ class DownloadManagerPage extends ConsumerWidget {
                       ),
               ),
             ),
-            RetryAllFailedButton(filter: filter),
+            RetryAllFailedButton(filter: widget.filter),
           ],
         ),
       ),
