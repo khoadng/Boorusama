@@ -193,7 +193,6 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
                 fileSize: null,
                 siteUrl: bookmark.sourceUrl,
               ),
-              folderName: "Bookmarks",
               fileNameBuilder: () =>
                   bookmark.md5 + extension(bookmark.originalUrl),
             )
