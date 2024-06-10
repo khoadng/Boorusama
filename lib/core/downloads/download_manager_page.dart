@@ -14,6 +14,7 @@ import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/pages/settings/settings.dart';
 import 'package:boorusama/dart.dart';
+import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -339,6 +340,9 @@ extension TaskCancelX on TaskUpdate {
       };
 }
 
+final _filePathProvider = FutureProvider.autoDispose
+    .family<String, Task>((ref, task) => task.filePath());
+
 class SimpleDownloadTile extends ConsumerWidget {
   const SimpleDownloadTile({
     super.key,
@@ -444,28 +448,7 @@ class SimpleDownloadTile extends ConsumerWidget {
             ),
         },
         subtitle: switch (task) {
-          TaskStatusUpdate s => ReadMoreText(
-              s.exception?.description == null
-                  ? s.status.name.sentenceCase
-                  : 'Failed: ${s.exception!.description} ',
-              trimLines: 1,
-              trimMode: TrimMode.Line,
-              trimCollapsedText: 'more',
-              trimExpandedText: 'less',
-              lessStyle: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.bold,
-                color: context.colorScheme.primary,
-              ),
-              moreStyle: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.bold,
-                color: context.colorScheme.primary,
-              ),
-              style: TextStyle(
-                color: Theme.of(context).hintColor,
-              ),
-            ),
+          TaskStatusUpdate s => _TaskSubtitle(task: s),
           TaskProgressUpdate p => p.progress >= 0
               ? LinearPercentIndicator(
                   lineHeight: 2,
@@ -480,6 +463,59 @@ class SimpleDownloadTile extends ConsumerWidget {
               : const SizedBox.shrink(),
         },
         url: task.task.url,
+      ),
+    );
+  }
+}
+
+class _TaskSubtitle extends ConsumerWidget {
+  const _TaskSubtitle({
+    required this.task,
+  });
+
+  final TaskStatusUpdate task;
+
+  String _prettifyFilePathIfNeeded(String path) {
+    if (isAndroid()) {
+      if (path.startsWith('/storage/emulated/0/')) {
+        return path.replaceAll('/storage/emulated/0/', '/');
+      }
+    }
+
+    return path;
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final s = task;
+    return ReadMoreText(
+      s.exception?.description == null
+          ? switch (s.status) {
+              TaskStatus.complete =>
+                ref.watch(_filePathProvider(task.task)).maybeWhen(
+                      data: (data) => _prettifyFilePathIfNeeded(data),
+                      orElse: () => '...',
+                    ),
+              _ => s.status.name.sentenceCase,
+            }
+          : 'Failed: ${s.exception!.description} ',
+      trimLines: 1,
+      trimMode: TrimMode.Line,
+      trimCollapsedText: ' more',
+      trimExpandedText: ' less',
+      lessStyle: TextStyle(
+        fontSize: 13,
+        fontWeight: FontWeight.bold,
+        color: context.colorScheme.primary,
+      ),
+      moreStyle: TextStyle(
+        fontSize: 13,
+        fontWeight: FontWeight.bold,
+        color: context.colorScheme.primary,
+      ),
+      style: TextStyle(
+        color: Theme.of(context).hintColor,
+        fontSize: 12,
       ),
     );
   }
