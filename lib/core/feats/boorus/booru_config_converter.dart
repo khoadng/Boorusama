@@ -1,6 +1,7 @@
 // Project imports:
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/foundation/gestures.dart';
+import 'package:boorusama/functional.dart';
 
 extension BooruConfigDataConverter on BooruConfigData? {
   BooruConfig? toBooruConfig({required int? id}) {
@@ -14,6 +15,7 @@ extension BooruConfigDataConverter on BooruConfigData? {
       booruIdHint: booruConfigData.booruIdHint ?? booruConfigData.booruId,
       apiKey: booruConfigData.apiKey.isEmpty ? null : booruConfigData.apiKey,
       login: booruConfigData.login.isEmpty ? null : booruConfigData.login,
+      authType: parseDataToAuthType(booruConfigData.authType),
       url: booruConfigData.url,
       name: booruConfigData.name,
       ratingFilter:
@@ -45,6 +47,7 @@ extension BooruConfigConverter on BooruConfig {
       booruIdHint: booruIdHint,
       apiKey: apiKey ?? '',
       login: login ?? '',
+      authType: authType.index,
       name: name,
       deletedItemBehavior: deletedItemBehavior.index,
       ratingFilter: ratingFilter.index,
@@ -61,3 +64,14 @@ extension BooruConfigConverter on BooruConfig {
     );
   }
 }
+
+AuthType parseDataToAuthType(dynamic data) => switch (data) {
+      int i => intToAuthType(i),
+      _ => AuthType.unspecified,
+    };
+
+AuthType intToAuthType(int? index) => index != null
+    ? AuthType.values.getOrNull(index) ?? AuthType.unspecified
+    : AuthType.unspecified;
+
+int authTypeToInt(AuthType authType) => authType.index;
