@@ -104,8 +104,10 @@ class PostGridActionSheet extends ConsumerWidget {
           if (popOnSelect) context.navigator.pop();
           showMaterialModalBottomSheet(
             context: context,
-            builder: (_) => PageModeActionSheet(
-              onModeChanged: onModeChanged,
+            builder: (_) => OptionActionSheet(
+              onChanged: onModeChanged,
+              optionName: (option) => option.localize().tr(),
+              options: PageMode.values,
             ),
           );
         },
@@ -117,8 +119,10 @@ class PostGridActionSheet extends ConsumerWidget {
           if (popOnSelect) context.navigator.pop();
           showMaterialModalBottomSheet(
             context: context,
-            builder: (_) => GridSizeActionSheet(
+            builder: (_) => OptionActionSheet(
               onChanged: onGridChanged,
+              optionName: (option) => option.localize().tr(),
+              options: GridSize.values,
             ),
           );
         },
@@ -273,7 +277,6 @@ class MobilePostGridConfigTile extends StatelessWidget {
   }
 }
 
-// Image list action sheet
 class OptionActionSheet<T> extends StatelessWidget {
   const OptionActionSheet({
     super.key,
@@ -291,83 +294,24 @@ class OptionActionSheet<T> extends StatelessWidget {
     return Material(
       color: context.colorScheme.secondaryContainer,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: options
-              .map((e) => ListTile(
-                    title: Text(optionName(e)),
-                    onTap: () {
-                      context.navigator.pop();
-                      onChanged(e);
-                    },
-                  ))
-              .toList(),
+        padding: const EdgeInsets.symmetric(
+          vertical: 8,
+          horizontal: 12,
         ),
-      ),
-    );
-  }
-}
-
-class GridSizeActionSheet extends StatelessWidget {
-  const GridSizeActionSheet({
-    super.key,
-    required this.onChanged,
-  });
-
-  final void Function(GridSize mode) onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: context.colorScheme.secondaryContainer,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          children: GridSize.values
-              .map((e) => ListTile(
-                    title: Text(e.localize()).tr(),
-                    onTap: () {
-                      context.navigator.pop();
-                      onChanged(e);
-                    },
-                  ))
-              .toList(),
-        ),
-      ),
-    );
-  }
-}
-
-// Page mode action sheet
-class PageModeActionSheet extends StatelessWidget {
-  const PageModeActionSheet({
-    super.key,
-    required this.onModeChanged,
-  });
-
-  final void Function(PageMode mode) onModeChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: context.colorScheme.secondaryContainer,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: PageMode.values
-              .map(
-                (e) => ListTile(
-                  title: Text(e.localize()).tr(),
+          children: [
+            ...options.map((e) => ListTile(
+                  title: Text(optionName(e)),
                   onTap: () {
                     context.navigator.pop();
-                    onModeChanged(e);
+                    onChanged(e);
                   },
-                ),
-              )
-              .toList(),
+                )),
+            SizedBox(
+              height: MediaQuery.viewPaddingOf(context).bottom,
+            ),
+          ],
         ),
       ),
     );
