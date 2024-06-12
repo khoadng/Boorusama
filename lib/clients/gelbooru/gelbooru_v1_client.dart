@@ -11,6 +11,7 @@ import 'types/post_v1_dto.dart';
 class GelbooruV1Client {
   GelbooruV1Client({
     required String baseUrl,
+    this.passHash,
     Map<String, String>? headers,
     Dio? dio,
   }) : _dio = dio ??
@@ -20,6 +21,7 @@ class GelbooruV1Client {
             ));
 
   final Dio _dio;
+  final String? passHash;
 
   Future<List<PostV1Dto>> getPosts({
     int? page,

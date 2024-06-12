@@ -16,6 +16,7 @@ class GelbooruV2Client {
     Map<String, String>? headers,
     this.userId,
     this.apiKey,
+    this.passHash,
     Dio? dio,
   })  : _dio = dio ??
             Dio(BaseOptions(
@@ -28,11 +29,13 @@ class GelbooruV2Client {
   final String? _baseUrl;
   final String? userId;
   final String? apiKey;
+  final String? passHash;
 
   factory GelbooruV2Client.custom({
     Dio? dio,
     String? login,
     String? apiKey,
+    String? passHash,
     required String baseUrl,
   }) =>
       GelbooruV2Client(
@@ -40,6 +43,7 @@ class GelbooruV2Client {
         dio: dio,
         userId: login,
         apiKey: apiKey,
+        passHash: passHash,
       );
 
   Future<List<PostV2Dto>> getPosts({

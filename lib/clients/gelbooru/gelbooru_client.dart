@@ -23,6 +23,7 @@ class GelbooruClient with RequestDeduplicator<GelbooruPosts> {
     Map<String, String>? headers,
     this.userId,
     this.apiKey,
+    this.passHash,
     Dio? dio,
   }) : _dio = dio ??
             Dio(BaseOptions(
@@ -33,23 +34,27 @@ class GelbooruClient with RequestDeduplicator<GelbooruPosts> {
   final Dio _dio;
   final String? userId;
   final String? apiKey;
+  final String? passHash;
 
   factory GelbooruClient.gelbooru({
     Dio? dio,
     String? login,
     String? apiKey,
+    String? passHash,
   }) =>
       GelbooruClient(
         baseUrl: _kGelbooruUrl,
         dio: dio,
         userId: login,
         apiKey: apiKey,
+        passHash: passHash,
       );
 
   factory GelbooruClient.custom({
     Dio? dio,
     String? login,
     String? apiKey,
+    String? passHash,
     required String baseUrl,
   }) =>
       GelbooruClient(
@@ -57,6 +62,7 @@ class GelbooruClient with RequestDeduplicator<GelbooruPosts> {
         dio: dio,
         userId: login,
         apiKey: apiKey,
+        passHash: passHash,
       );
 
   Future<GelbooruPosts> getPosts({
