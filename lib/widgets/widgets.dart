@@ -36,6 +36,7 @@ export 'modal_options.dart';
 export 'multi_select_controller.dart';
 export 'multi_select_widget.dart';
 export 'multi_selectable_mixin.dart';
+export 'multi_selection_action_bar.dart';
 export 'navigation_tile.dart';
 export 'nullable_aspect_ratio.dart';
 export 'option_dropdown_button.dart';

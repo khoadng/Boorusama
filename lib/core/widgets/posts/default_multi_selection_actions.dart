@@ -9,6 +9,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/pages/bookmarks/add_bookmarks_button.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class DefaultMultiSelectionActions extends ConsumerWidget {
   const DefaultMultiSelectionActions({
@@ -22,35 +23,27 @@ class DefaultMultiSelectionActions extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Padding(
-      padding: const EdgeInsets.only(
-        top: 12,
-        bottom: 20,
-      ),
-      child: OverflowBar(
-        alignment: MainAxisAlignment.center,
-        spacing: 4,
-        children: [
-          IconButton(
-            onPressed: selectedPosts.isNotEmpty
-                ? () {
-                    showDownloadStartToast(context);
-                    // ignore: prefer_foreach
-                    for (final p in selectedPosts) {
-                      ref.download(p);
-                    }
-
-                    endMultiSelect();
+    return MultiSelectionActionBar(
+      children: [
+        IconButton(
+          onPressed: selectedPosts.isNotEmpty
+              ? () {
+                  showDownloadStartToast(context);
+                  // ignore: prefer_foreach
+                  for (final p in selectedPosts) {
+                    ref.download(p);
                   }
-                : null,
-            icon: const Icon(Symbols.download),
-          ),
-          AddBookmarksButton(
-            posts: selectedPosts,
-            onPressed: endMultiSelect,
-          ),
-        ],
-      ),
+
+                  endMultiSelect();
+                }
+              : null,
+          icon: const Icon(Symbols.download),
+        ),
+        AddBookmarksButton(
+          posts: selectedPosts,
+          onPressed: endMultiSelect,
+        ),
+      ],
     );
   }
 }
