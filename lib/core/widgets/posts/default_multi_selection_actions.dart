@@ -22,28 +22,35 @@ class DefaultMultiSelectionActions extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ButtonBar(
-      alignment: MainAxisAlignment.center,
-      children: [
-        IconButton(
-          onPressed: selectedPosts.isNotEmpty
-              ? () {
-                  showDownloadStartToast(context);
-                  // ignore: prefer_foreach
-                  for (final p in selectedPosts) {
-                    ref.download(p);
-                  }
+    return Padding(
+      padding: const EdgeInsets.only(
+        top: 12,
+        bottom: 20,
+      ),
+      child: OverflowBar(
+        alignment: MainAxisAlignment.center,
+        spacing: 4,
+        children: [
+          IconButton(
+            onPressed: selectedPosts.isNotEmpty
+                ? () {
+                    showDownloadStartToast(context);
+                    // ignore: prefer_foreach
+                    for (final p in selectedPosts) {
+                      ref.download(p);
+                    }
 
-                  endMultiSelect();
-                }
-              : null,
-          icon: const Icon(Symbols.download),
-        ),
-        AddBookmarksButton(
-          posts: selectedPosts,
-          onPressed: endMultiSelect,
-        ),
-      ],
+                    endMultiSelect();
+                  }
+                : null,
+            icon: const Icon(Symbols.download),
+          ),
+          AddBookmarksButton(
+            posts: selectedPosts,
+            onPressed: endMultiSelect,
+          ),
+        ],
+      ),
     );
   }
 }

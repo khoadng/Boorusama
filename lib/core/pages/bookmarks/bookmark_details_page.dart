@@ -12,7 +12,6 @@ import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
 import 'providers.dart';
 
 class BookmarkDetailsPage extends ConsumerStatefulWidget {
@@ -84,29 +83,24 @@ class BookmarkPostActionToolbar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Material(
-      color: context.theme.scaffoldBackgroundColor,
-      child: ButtonBar(
-        buttonPadding: EdgeInsets.zero,
-        alignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          BookmarkPostButton(post: post),
-          IconButton(
-            splashRadius: 16,
-            onPressed: () {
-              showDownloadStartToast(context);
-              ref.bookmarks.downloadBookmarks(
-                ref.watchConfig,
-                [post.toBookmark()],
-              );
-            },
-            icon: const Icon(
-              Symbols.download,
-            ),
+    return PostActionToolbar(
+      children: [
+        BookmarkPostButton(post: post),
+        IconButton(
+          splashRadius: 16,
+          onPressed: () {
+            showDownloadStartToast(context);
+            ref.bookmarks.downloadBookmarks(
+              ref.watchConfig,
+              [post.toBookmark()],
+            );
+          },
+          icon: const Icon(
+            Symbols.download,
           ),
-          SharePostButton(post: post),
-        ],
-      ),
+        ),
+        SharePostButton(post: post),
+      ],
     );
   }
 }

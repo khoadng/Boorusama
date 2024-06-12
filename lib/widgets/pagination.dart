@@ -60,8 +60,7 @@ class _PageSelectorState extends State<PageSelector> {
 
   @override
   Widget build(BuildContext context) {
-    return ButtonBar(
-      buttonPadding: EdgeInsets.zero,
+    return OverflowBar(
       alignment: MainAxisAlignment.center,
       children: [
         IconButton(

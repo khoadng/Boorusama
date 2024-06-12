@@ -139,56 +139,67 @@ class _EditFavoriteGroupDialogState
                 isPrivate: isPrivate,
                 onChanged: (value) => setState(() => isPrivate = value),
               ),
-              ButtonBar(
-                children: [
-                  TextButton(
-                    onPressed: () => context.navigator.pop(),
-                    style: TextButton.styleFrom(
-                      foregroundColor: context.colorScheme.onBackground,
-                    ),
-                    child:
-                        const Text('favorite_groups.create_group_cancel').tr(),
-                  ),
-                  ValueListenableBuilder<TextEditingValue>(
-                    valueListenable: nameController,
-                    builder: (context, value, child) => FilledButton(
-                      onPressed: nameController.text.isNotEmpty
-                          ? () {
-                              context.navigator.pop();
-                              if (widget.initialData == null) {
-                                ref
-                                    .read(danbooruFavoriteGroupsProvider(config)
-                                        .notifier)
-                                    .create(
-                                      initialIds: textController.text,
-                                      name: value.text,
-                                      isPrivate: isPrivate,
-                                      onFailure: (message, translatable) =>
-                                          showErrorToast(
-                                        translatable ? message.tr() : message,
-                                      ),
-                                    );
-                              } else {
-                                ref
-                                    .read(danbooruFavoriteGroupsProvider(config)
-                                        .notifier)
-                                    .edit(
-                                      group: widget.initialData!,
-                                      name: value.text,
-                                      isPrivate: isPrivate,
-                                      initialIds: textController.text,
-                                      onFailure: (message, _) {
-                                        showErrorToast(message);
-                                      },
-                                    );
-                              }
-                            }
-                          : null,
-                      child: const Text('favorite_groups.create_group_confirm')
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 12,
+                  horizontal: 12,
+                ),
+                child: OverflowBar(
+                  alignment: MainAxisAlignment.end,
+                  spacing: 4,
+                  children: [
+                    TextButton(
+                      onPressed: () => context.navigator.pop(),
+                      style: TextButton.styleFrom(
+                        foregroundColor: context.colorScheme.onBackground,
+                      ),
+                      child: const Text('favorite_groups.create_group_cancel')
                           .tr(),
                     ),
-                  ),
-                ],
+                    ValueListenableBuilder<TextEditingValue>(
+                      valueListenable: nameController,
+                      builder: (context, value, child) => FilledButton(
+                        onPressed: nameController.text.isNotEmpty
+                            ? () {
+                                context.navigator.pop();
+                                if (widget.initialData == null) {
+                                  ref
+                                      .read(
+                                          danbooruFavoriteGroupsProvider(config)
+                                              .notifier)
+                                      .create(
+                                        initialIds: textController.text,
+                                        name: value.text,
+                                        isPrivate: isPrivate,
+                                        onFailure: (message, translatable) =>
+                                            showErrorToast(
+                                          translatable ? message.tr() : message,
+                                        ),
+                                      );
+                                } else {
+                                  ref
+                                      .read(
+                                          danbooruFavoriteGroupsProvider(config)
+                                              .notifier)
+                                      .edit(
+                                        group: widget.initialData!,
+                                        name: value.text,
+                                        isPrivate: isPrivate,
+                                        initialIds: textController.text,
+                                        onFailure: (message, _) {
+                                          showErrorToast(message);
+                                        },
+                                      );
+                                }
+                              }
+                            : null,
+                        child:
+                            const Text('favorite_groups.create_group_confirm')
+                                .tr(),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),

@@ -170,8 +170,8 @@ class _EditSavedSearchSheetState extends ConsumerState<EditSavedSearchSheet> {
               ),
             ),
             Container(
-              margin: const EdgeInsets.only(top: 8, bottom: 16),
-              child: ButtonBar(
+              margin: const EdgeInsets.only(top: 8, bottom: 28),
+              child: OverflowBar(
                 alignment: MainAxisAlignment.spaceAround,
                 children: [
                   FilledButton(

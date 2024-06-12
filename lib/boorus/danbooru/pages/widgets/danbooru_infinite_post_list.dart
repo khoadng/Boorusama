@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_symbols_icons/symbols.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
@@ -12,7 +11,6 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/widgets.dart';
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
@@ -220,55 +218,6 @@ class _DanbooruInfinitePostListState
           );
         },
       ),
-    );
-  }
-}
-
-// ignore: prefer-single-widget-per-file
-class FavoriteGroupMultiSelectionActions extends ConsumerWidget {
-  const FavoriteGroupMultiSelectionActions({
-    super.key,
-    required this.selectedPosts,
-    required this.endMultiSelect,
-    required this.onRemoveFromFavGroup,
-  });
-
-  final Iterable<Post> selectedPosts;
-  final void Function() endMultiSelect;
-  final void Function() onRemoveFromFavGroup;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
-
-    return ButtonBar(
-      alignment: MainAxisAlignment.center,
-      children: [
-        IconButton(
-          onPressed: selectedPosts.isNotEmpty
-              ? () {
-                  showDownloadStartToast(context);
-                  // ignore: prefer_foreach
-                  for (final p in selectedPosts) {
-                    ref.download(p);
-                  }
-
-                  endMultiSelect();
-                }
-              : null,
-          icon: const Icon(Symbols.download),
-        ),
-        if (config.hasLoginDetails())
-          IconButton(
-            onPressed: selectedPosts.isNotEmpty
-                ? () {
-                    onRemoveFromFavGroup();
-                    endMultiSelect();
-                  }
-                : null,
-            icon: const Icon(Symbols.remove),
-          ),
-      ],
     );
   }
 }

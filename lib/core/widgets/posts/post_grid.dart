@@ -493,12 +493,8 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                   hasBlacklist: hasBlacklist,
                   tags: hiddenTags,
                   trailing: axis == Axis.horizontal
-                      ? ButtonBar(
-                          children: [
-                            PostGridConfigIconButton(
-                              postController: controller,
-                            ),
-                          ],
+                      ? PostGridConfigIconButton(
+                          postController: controller,
                         )
                       : null,
                   onClosed: () {

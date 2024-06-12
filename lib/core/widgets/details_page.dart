@@ -482,13 +482,18 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
                   valueListenable: _shouldSlideDownNotifier,
                   builder: (context, value, child) => _SlideUpContainer(
                         shouldSlideUp: value && !expanded,
-                        child: ButtonBar(
-                          children: [
-                            ...widget.topRightButtonsBuilder(
-                              currentPage,
-                              expanded,
-                            ),
-                          ],
+                        child: Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: OverflowBar(
+                            alignment: MainAxisAlignment.end,
+                            spacing: 4,
+                            children: [
+                              ...widget.topRightButtonsBuilder(
+                                currentPage,
+                                expanded,
+                              ),
+                            ],
+                          ),
                         ),
                       )),
             )

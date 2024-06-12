@@ -22,17 +22,20 @@ class GridSizeAdjustmentButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ButtonBar(
-      children: [
-        IconButton(
-          onPressed: count > minCount ? () => onDecreased(count) : null,
-          icon: const Icon(Symbols.remove),
-        ),
-        IconButton(
-          onPressed: count < maxCount ? () => onAdded(count) : null,
-          icon: const Icon(Symbols.add),
-        ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.all(8),
+      child: OverflowBar(
+        children: [
+          IconButton(
+            onPressed: count > minCount ? () => onDecreased(count) : null,
+            icon: const Icon(Symbols.remove),
+          ),
+          IconButton(
+            onPressed: count < maxCount ? () => onAdded(count) : null,
+            icon: const Icon(Symbols.add),
+          ),
+        ],
+      ),
     );
   }
 }
