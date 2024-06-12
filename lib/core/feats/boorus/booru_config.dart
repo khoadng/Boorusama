@@ -16,7 +16,6 @@ class BooruConfig extends Equatable {
     required this.booruIdHint,
     required this.apiKey,
     required this.login,
-    required this.authType,
     required this.name,
     required this.ratingFilter,
     required this.deletedItemBehavior,
@@ -36,7 +35,6 @@ class BooruConfig extends Equatable {
     booruIdHint: -1,
     apiKey: null,
     login: null,
-    authType: AuthType.unspecified,
     name: '',
     deletedItemBehavior: BooruConfigDeletedItemBehavior.show,
     ratingFilter: BooruConfigRatingFilter.none,
@@ -61,7 +59,6 @@ class BooruConfig extends Equatable {
         booruIdHint: booruType.toBooruId(),
         apiKey: null,
         login: null,
-        authType: AuthType.unspecified,
         name: 'new profile',
         deletedItemBehavior: BooruConfigDeletedItemBehavior.show,
         ratingFilter: BooruConfigRatingFilter.none,
@@ -81,7 +78,6 @@ class BooruConfig extends Equatable {
   final String url;
   final String? apiKey;
   final String? login;
-  final AuthType authType;
   final String name;
   final BooruConfigDeletedItemBehavior deletedItemBehavior;
   final BooruConfigRatingFilter ratingFilter;
@@ -106,7 +102,6 @@ class BooruConfig extends Equatable {
       url: url ?? this.url,
       apiKey: apiKey ?? this.apiKey,
       login: login ?? this.login,
-      authType: authType,
       name: name ?? this.name,
       deletedItemBehavior: deletedItemBehavior,
       ratingFilter: ratingFilter,
@@ -127,7 +122,6 @@ class BooruConfig extends Equatable {
         booruIdHint,
         apiKey,
         login,
-        authType,
         name,
         deletedItemBehavior,
         ratingFilter,
@@ -150,7 +144,6 @@ class BooruConfig extends Equatable {
       booruIdHint: json['booruIdHint'] as int,
       apiKey: json['apiKey'] as String?,
       login: json['login'] as String?,
-      authType: parseDataToAuthType(json['authType']),
       url: json['url'] as String,
       name: json['name'] as String,
       deletedItemBehavior: BooruConfigDeletedItemBehavior
@@ -184,7 +177,6 @@ class BooruConfig extends Equatable {
       'booruIdHint': booruIdHint,
       'apiKey': apiKey,
       'login': login,
-      'authType': authTypeToInt(authType),
       'url': url,
       'name': name,
       'deletedItemBehavior': deletedItemBehavior.index,
@@ -217,11 +209,6 @@ String? granularRatingFilterToString(Set<Rating>? granularRatingFilters) {
   return granularRatingFilters.map((e) => e.toShortString()).join('|');
 }
 
-enum AuthType {
-  unspecified,
-  apiKey,
-}
-
 enum BooruConfigDeletedItemBehavior {
   show,
   hide,
@@ -232,10 +219,6 @@ enum BooruConfigRatingFilter {
   hideExplicit,
   hideNSFW,
   custom,
-}
-
-extension AuthTypeX on AuthType {
-  bool get isApiKey => this == AuthType.apiKey;
 }
 
 extension BooruConfigRatingFilterX on BooruConfigRatingFilter {
