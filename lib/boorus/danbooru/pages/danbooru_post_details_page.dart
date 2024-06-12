@@ -18,6 +18,7 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/artist_commentaries/artist_commentaries.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/notes/notes.dart';
+import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/tags/booru_tag_type_store.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
@@ -100,7 +101,10 @@ class _DanbooruPostDetailsPageState
                 ),
         sliverRelatedPostsBuilder: (context, post) =>
             ref.watch(danbooruPostDetailsChildrenProvider(post)).maybeWhen(
-                  data: (posts) => DanbooruRelatedPostsSection(posts: posts),
+                  data: (posts) => DanbooruRelatedPostsSection(
+                    posts: posts,
+                    currentPost: post,
+                  ),
                   orElse: () => const SliverSizedBox.shrink(),
                 ),
         poolTileBuilder: (context, post) =>
@@ -291,9 +295,11 @@ final danbooruCharacterExpandStateProvider =
 class DanbooruRelatedPostsSection extends ConsumerWidget {
   const DanbooruRelatedPostsSection({
     super.key,
+    required this.currentPost,
     required this.posts,
   });
 
+  final DanbooruPost currentPost;
   final List<DanbooruPost> posts;
 
   @override
@@ -301,6 +307,10 @@ class DanbooruRelatedPostsSection extends ConsumerWidget {
     return RelatedPostsSection(
       posts: posts,
       imageUrl: (item) => item.url720x720,
+      onViewAll: () => goToSearchPage(
+        context,
+        tag: currentPost.relationshipQuery,
+      ),
       onTap: (index) => goToPostDetailsPage(
         context: context,
         posts: posts,

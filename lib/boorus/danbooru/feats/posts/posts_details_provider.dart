@@ -25,7 +25,7 @@ final danbooruPostDetailsChildrenProvider = FutureProvider.family
   return ref
       .watch(danbooruPostRepoProvider(ref.watchConfig))
       .getPostsFromTagWithBlacklist(
-        tag: post.hasParent ? 'parent:${post.parentId}' : 'parent:${post.id}',
+        tag: post.relationshipQuery,
         blacklist: ref.watch(blacklistTagsProvider(ref.watchConfig)),
         softLimit: null,
       );

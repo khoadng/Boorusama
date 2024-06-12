@@ -117,7 +117,10 @@ class _DanbooruPostDetailsDesktopPageState
               ),
       sliverRelatedPostsBuilder: (context, post) =>
           ref.watch(danbooruPostDetailsChildrenProvider(post)).maybeWhen(
-                data: (posts) => DanbooruRelatedPostsSection(posts: posts),
+                data: (posts) => DanbooruRelatedPostsSection(
+                  posts: posts,
+                  currentPost: post,
+                ),
                 orElse: () => const SliverSizedBox.shrink(),
               ),
       sliverArtistPostsBuilder: (context, post) => post.artistTags.isNotEmpty

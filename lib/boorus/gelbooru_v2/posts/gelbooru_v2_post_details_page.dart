@@ -63,11 +63,15 @@ class _PostDetailPageState extends ConsumerState<GelbooruV2PostDetailsPage> {
         uploaderName: post.uploaderName,
       ),
       sliverRelatedPostsBuilder: (context, post) => post.hasParent
-          ? ref.watch(gelbooruV2ChildPostsProvider(post.parentId!)).maybeWhen(
+          ? ref.watch(gelbooruV2ChildPostsProvider(post)).maybeWhen(
                 data: (data) => RelatedPostsSection(
                   title: 'Child posts',
                   posts: data,
                   imageUrl: (post) => post.sampleImageUrl,
+                  onViewAll: () => goToSearchPage(
+                    context,
+                    tag: post.relationshipQuery,
+                  ),
                   onTap: (index) => goToPostDetailsPage(
                     context: context,
                     posts: data,

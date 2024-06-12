@@ -207,6 +207,8 @@ extension PostX on Post {
       );
 
   bool get isExplicit => rating == Rating.explicit;
+
+  String get relationshipQuery => hasParent ? 'parent:$parentId' : 'parent:$id';
 }
 
 enum GeneralPostQualityType {

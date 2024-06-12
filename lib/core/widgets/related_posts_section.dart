@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:filesize/filesize.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/posts/posts.dart';
@@ -19,12 +20,14 @@ class RelatedPostsSection<T extends Post> extends ConsumerWidget {
     required this.posts,
     required this.imageUrl,
     required this.onTap,
+    required this.onViewAll,
     this.title,
   });
 
   final List<T> posts;
   final String Function(T) imageUrl;
   final void Function(int index) onTap;
+  final void Function() onViewAll;
   final String? title;
 
   @override
@@ -37,11 +40,32 @@ class RelatedPostsSection<T extends Post> extends ConsumerWidget {
       delegate: SliverChildListDelegate([
         Column(
           children: [
-            ListTile(
-              title: Text(
-                title ?? 'post.detail.related_posts'.tr(),
-                style: context.textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
+            Material(
+              color: Colors.transparent,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 4,
+                  vertical: 8,
+                ),
+                child: InkWell(
+                  onTap: onViewAll,
+                  customBorder: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+                    visualDensity: VisualDensity.compact,
+                    minVerticalPadding: 0,
+                    trailing: const Icon(
+                      Symbols.arrow_right_alt,
+                    ),
+                    title: Text(
+                      title ?? 'post.detail.related_posts'.tr(),
+                      style: context.textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),

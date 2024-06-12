@@ -55,11 +55,11 @@ final gelbooruV2ArtistCharacterPostRepoProvider =
 );
 
 final gelbooruV2ChildPostsProvider = FutureProvider.autoDispose
-    .family<List<GelbooruV2Post>, int>((ref, parentId) async {
+    .family<List<GelbooruV2Post>, GelbooruV2Post>((ref, post) async {
   return ref
       .watch(gelbooruV2PostRepoProvider(ref.watchConfig))
       .getPostsFromTagWithBlacklist(
-        tag: 'parent:$parentId',
+        tag: post.relationshipQuery,
         blacklist: ref.watch(blacklistTagsProvider(ref.watchConfig)),
       );
 });
