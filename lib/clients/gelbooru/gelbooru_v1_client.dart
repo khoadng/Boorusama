@@ -6,12 +6,14 @@ import 'package:dio/dio.dart';
 import 'package:html/parser.dart';
 
 // Project imports:
+import 'gelbooru_client_favorites.dart';
 import 'types/post_v1_dto.dart';
 
-class GelbooruV1Client {
+class GelbooruV1Client with GelbooruClientFavorites {
   GelbooruV1Client({
     required String baseUrl,
     this.passHash,
+    this.userId,
     Map<String, String>? headers,
     Dio? dio,
   }) : _dio = dio ??
@@ -21,7 +23,15 @@ class GelbooruV1Client {
             ));
 
   final Dio _dio;
+
+  @override
   final String? passHash;
+
+  @override
+  final String? userId;
+
+  @override
+  Dio get dio => _dio;
 
   Future<List<PostV1Dto>> getPosts({
     int? page,

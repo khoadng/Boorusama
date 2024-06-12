@@ -8,6 +8,7 @@ import 'package:html/parser.dart';
 import 'package:xml/xml.dart';
 
 // Project imports:
+import 'package:boorusama/clients/gelbooru/gelbooru_client_favorites.dart';
 import 'types/types.dart';
 
 const _kGelbooruUrl = 'https://gelbooru.com/';
@@ -17,7 +18,8 @@ typedef GelbooruPosts = ({
   int? count,
 });
 
-class GelbooruClient with RequestDeduplicator<GelbooruPosts> {
+class GelbooruClient
+    with GelbooruClientFavorites, RequestDeduplicator<GelbooruPosts> {
   GelbooruClient({
     String? baseUrl,
     Map<String, String>? headers,
@@ -32,9 +34,13 @@ class GelbooruClient with RequestDeduplicator<GelbooruPosts> {
             ));
 
   final Dio _dio;
+  @override
   final String? userId;
   final String? apiKey;
+  @override
   final String? passHash;
+  @override
+  Dio get dio => _dio;
 
   factory GelbooruClient.gelbooru({
     Dio? dio,

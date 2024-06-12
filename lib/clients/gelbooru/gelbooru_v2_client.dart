@@ -8,9 +8,10 @@ import 'package:html/parser.dart';
 import 'package:xml/xml.dart';
 
 // Project imports:
+import 'gelbooru_client_favorites.dart';
 import 'types/types.dart';
 
-class GelbooruV2Client {
+class GelbooruV2Client with GelbooruClientFavorites {
   GelbooruV2Client({
     String? baseUrl,
     Map<String, String>? headers,
@@ -27,9 +28,13 @@ class GelbooruV2Client {
 
   final Dio _dio;
   final String? _baseUrl;
+  @override
   final String? userId;
   final String? apiKey;
+  @override
   final String? passHash;
+  @override
+  Dio get dio => _dio;
 
   factory GelbooruV2Client.custom({
     Dio? dio,
