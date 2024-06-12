@@ -97,7 +97,7 @@ class BulkDownloadManagerNotifier extends FamilyNotifier<void, BooruConfig> {
         for (var index = 0; index < items.length; index++) {
           final item = items[index];
           final downloadUrl = getDownloadFileUrl(item, settings);
-          if (downloadUrl.isEmpty) continue;
+          if (downloadUrl == null || downloadUrl.isEmpty) continue;
 
           downloader.enqueueDownload(
             url: downloadUrl,

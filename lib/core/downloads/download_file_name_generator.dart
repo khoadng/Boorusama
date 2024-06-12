@@ -129,6 +129,9 @@ class DownloadFileNameBuilder<T extends Post>
     required Map<String, String>? metadata,
   }) {
     final downloadUrl = getDownloadFileUrl(post, settings);
+
+    if (downloadUrl == null) return '';
+
     final fallbackName = basename(downloadUrl);
 
     if (format == null || format.isEmpty) {

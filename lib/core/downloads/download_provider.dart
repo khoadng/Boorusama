@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -19,12 +20,19 @@ final downloadNotificationProvider = Provider<DownloadNotifications>((ref) {
   throw UnimplementedError();
 });
 
-String getDownloadFileUrl(Post post, Settings settings) {
+String? getDownloadFileUrl(Post post, Settings settings) {
   if (post.isVideo) return post.videoUrl;
 
+  final urls = [
+    post.originalImageUrl,
+    post.sampleImageUrl,
+    post.thumbnailImageUrl
+  ];
+
   return switch (settings.downloadQuality) {
-    DownloadQuality.original => post.originalImageUrl,
-    DownloadQuality.sample => post.sampleImageUrl,
+    DownloadQuality.original => urls.firstWhereOrNull((e) => e.isNotEmpty),
+    DownloadQuality.sample =>
+      urls.skip(1).firstWhereOrNull((e) => e.isNotEmpty),
     DownloadQuality.preview => post.thumbnailImageUrl,
   };
 }
@@ -111,6 +119,12 @@ Future<void> _download(
   if (fileNameBuilder == null) {
     logger.logE('Single Download', 'No file name builder found, aborting...');
     showErrorToast('Download aborted, cannot create file name');
+    return;
+  }
+
+  if (downloadUrl == null || downloadUrl.isEmpty) {
+    logger.logE('Single Download', 'No download url found, aborting...');
+    showErrorToast('Download aborted, no download url found');
     return;
   }
 
