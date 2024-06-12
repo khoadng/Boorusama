@@ -125,6 +125,8 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
       _multiSelectController.dispose();
     }
 
+    widget.controller.removeListener(_onControllerChange);
+
     super.dispose();
   }
 
