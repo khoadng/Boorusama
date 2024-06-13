@@ -25,13 +25,28 @@ List<int> generatePage({
     ).toSet().toList();
   }
 
-  return List.generate(
+  final pages = List.generate(
     _maxSelectablePage,
     (index) => maxPage != null
         ? math.min(current + index - 1, maxPage)
         : current + index - 1,
   ).toSet().toList();
+
+  return _adjustPageIfNeeded(
+    pages: pages,
+    defaultSelectablePage: _maxSelectablePage,
+  );
 }
+
+List<int> _adjustPageIfNeeded({
+  required List<int> pages,
+  required int defaultSelectablePage,
+}) =>
+    switch (pages.last) {
+      > 100000 => pages.sublist(0, pages.length - 2),
+      > 10000 => pages.sublist(0, pages.length - 1),
+      _ => pages,
+    };
 
 class PageSelector extends StatefulWidget {
   const PageSelector({
