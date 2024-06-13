@@ -51,7 +51,7 @@ class ChangelogDialog extends StatelessWidget {
 
     return Dialog(
       insetPadding: const EdgeInsets.symmetric(
-        horizontal: 20,
+        horizontal: 28,
         vertical: 24,
       ),
       shape: const RoundedRectangleBorder(

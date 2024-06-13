@@ -60,7 +60,9 @@ Future<bool> shouldShowChangelogDialog(
   final currentVersion = Version.parse(packageInfo.version);
 
   // check if the current version is the target version
-  if (currentVersion != targetVersion) {
+  if (currentVersion.major != targetVersion.major ||
+      currentVersion.minor != targetVersion.minor ||
+      currentVersion.patch != targetVersion.patch) {
     return false;
   }
 
