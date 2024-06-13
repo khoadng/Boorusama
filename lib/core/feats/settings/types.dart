@@ -104,6 +104,12 @@ enum DownloadFileExistedBehavior {
   overwrite,
 }
 
+enum VideoAudioDefaultState {
+  unspecified,
+  unmute,
+  mute,
+}
+
 class Settings extends Equatable {
   const Settings({
     required this.safeMode,
@@ -145,6 +151,7 @@ class Settings extends Equatable {
     required this.reduceAnimations,
     required this.downloaderProviderType,
     required this.downloadFileExistedBehavior,
+    required this.videoAudioDefaultState,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
@@ -232,6 +239,9 @@ class Settings extends Equatable {
                 ? DownloadFileExistedBehavior
                     .values[json['downloadFileExistedBehavior']]
                 : DownloadFileExistedBehavior.appDecide,
+        videoAudioDefaultState = json['videoAudioDefaultState'] != null
+            ? VideoAudioDefaultState.values[json['videoAudioDefaultState']]
+            : VideoAudioDefaultState.unspecified,
         reduceAnimations = json['reduceAnimations'] ?? false,
         swipeAreaToOpenSidebarPercentage =
             json['swipeAreaToOpenSidebarPercentage'] ?? 5,
@@ -279,6 +289,7 @@ class Settings extends Equatable {
     reduceAnimations: false,
     downloaderProviderType: DownloaderProviderType.appDecide,
     downloadFileExistedBehavior: DownloadFileExistedBehavior.appDecide,
+    videoAudioDefaultState: VideoAudioDefaultState.unspecified,
   );
 
   final String blacklistedTags;
@@ -351,6 +362,8 @@ class Settings extends Equatable {
 
   final DownloadFileExistedBehavior downloadFileExistedBehavior;
 
+  final VideoAudioDefaultState videoAudioDefaultState;
+
   Settings copyWith({
     String? blacklistedTags,
     String? language,
@@ -392,6 +405,7 @@ class Settings extends Equatable {
     bool? reduceAnimations,
     DownloaderProviderType? downloaderProviderType,
     DownloadFileExistedBehavior? downloadFileExistedBehavior,
+    VideoAudioDefaultState? videoAudioDefaultState,
   }) =>
       Settings(
         safeMode: safeMode ?? this.safeMode,
@@ -448,6 +462,8 @@ class Settings extends Equatable {
             downloaderProviderType ?? this.downloaderProviderType,
         downloadFileExistedBehavior:
             downloadFileExistedBehavior ?? this.downloadFileExistedBehavior,
+        videoAudioDefaultState:
+            videoAudioDefaultState ?? this.videoAudioDefaultState,
       );
 
   Map<String, dynamic> toJson() => {
@@ -491,6 +507,7 @@ class Settings extends Equatable {
         'reduceAnimations': reduceAnimations,
         'downloaderProviderType': downloaderProviderType.index,
         'downloadFileExistedBehavior': downloadFileExistedBehavior.index,
+        'videoAudioDefaultState': videoAudioDefaultState.index,
       };
 
   @override
@@ -534,6 +551,7 @@ class Settings extends Equatable {
         reduceAnimations,
         downloaderProviderType,
         downloadFileExistedBehavior,
+        videoAudioDefaultState,
       ];
 }
 
@@ -562,6 +580,9 @@ extension SettingsX on Settings {
 
   bool get skipDownloadIfExists =>
       downloadFileExistedBehavior == DownloadFileExistedBehavior.skip;
+
+  bool get muteAudioByDefault =>
+      videoAudioDefaultState == VideoAudioDefaultState.mute;
 
   Duration get slideshowDuration {
     // if less than 1 second, should use milliseconds instead

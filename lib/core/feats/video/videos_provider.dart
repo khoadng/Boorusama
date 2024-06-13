@@ -4,8 +4,15 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+// Project imports:
+import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/feats/settings/settings.dart';
+
 final globalSoundStateProvider = StateProvider<bool>((ref) {
-  return true;
+  final isMuteByDefault =
+      ref.watch(settingsProvider.select((s) => s.muteAudioByDefault));
+
+  return !isMuteByDefault;
 });
 
 final playbackSpeedProvider =

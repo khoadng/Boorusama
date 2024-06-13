@@ -53,7 +53,7 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
               optionBuilder: (value) => Text(value.localize().tr()),
             ),
             SettingsTile(
-              title: const Text('Slideshow Interval'),
+              title: const Text('Slideshow interval'),
               subtitle: const Text(
                   'Value less than 1 second will automatically skip transition'),
               selectedOption: settings.slideshowInterval,
@@ -67,13 +67,27 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
               ),
             ),
             SwitchListTile(
-              title: const Text('Skip Slideshow Transition'),
+              title: const Text('Skip slideshow transition'),
               value: settings.skipSlideshowTransition,
               onChanged: (value) => ref.updateSettings(
                 settings.copyWith(
                   slideshowTransitionType: value
                       ? SlideshowTransitionType.none
                       : SlideshowTransitionType.natural,
+                ),
+              ),
+            ),
+            SwitchListTile(
+              title: const Text('Mute video by default'),
+              subtitle: const Text(
+                'Default state when opening a video',
+              ),
+              value: settings.muteAudioByDefault,
+              onChanged: (value) => ref.updateSettings(
+                settings.copyWith(
+                  videoAudioDefaultState: value
+                      ? VideoAudioDefaultState.mute
+                      : VideoAudioDefaultState.unmute,
                 ),
               ),
             ),
