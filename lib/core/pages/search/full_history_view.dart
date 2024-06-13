@@ -12,6 +12,7 @@ import 'package:boorusama/core/feats/search/search.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/time.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class FullHistoryView extends ConsumerWidget {
   const FullHistoryView({
@@ -53,8 +54,13 @@ class FullHistoryView extends ConsumerWidget {
                     animation: animation,
                     child: ListTile(
                       title: Text(history.query),
-                      subtitle: Text(history.createdAt
-                          .fuzzify(locale: Localizations.localeOf(context))),
+                      subtitle: DateTooltip(
+                        date: history.createdAt,
+                        child: Text(
+                          history.createdAt
+                              .fuzzify(locale: Localizations.localeOf(context)),
+                        ),
+                      ),
                       onTap: () {
                         onHistoryTap(history.query);
                       },

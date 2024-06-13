@@ -9,6 +9,7 @@ import 'package:boorusama/core/feats/search/search.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/time.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class SearchHistorySection extends StatelessWidget {
   const SearchHistorySection({
@@ -57,9 +58,12 @@ class SearchHistorySection extends StatelessWidget {
                       contentPadding: const EdgeInsets.only(left: 16),
                       onTap: () => onHistoryTap(item.query),
                       subtitle: showTime
-                          ? Text(
-                              item.createdAt.fuzzify(
-                                  locale: Localizations.localeOf(context)),
+                          ? DateTooltip(
+                              date: item.createdAt,
+                              child: Text(
+                                item.createdAt.fuzzify(
+                                    locale: Localizations.localeOf(context)),
+                              ),
                             )
                           : null,
                     ),

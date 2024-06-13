@@ -95,12 +95,15 @@ class InformationSection extends ConsumerWidget {
                       ),
                     if (artistTags.isNotEmpty) const SizedBox(width: 5),
                     if (createdAt != null)
-                      Text(
-                        createdAt!
-                            .fuzzify(locale: Localizations.localeOf(context)),
-                        style: context.textTheme.bodySmall?.copyWith(
-                          color: context
-                              .theme.listTileTheme.subtitleTextStyle?.color,
+                      DateTooltip(
+                        date: createdAt!,
+                        child: Text(
+                          createdAt!
+                              .fuzzify(locale: Localizations.localeOf(context)),
+                          style: context.textTheme.bodySmall?.copyWith(
+                            color: context
+                                .theme.listTileTheme.subtitleTextStyle?.color,
+                          ),
                         ),
                       ),
                   ],

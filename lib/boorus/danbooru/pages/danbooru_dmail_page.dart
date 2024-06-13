@@ -12,8 +12,7 @@ import 'package:boorusama/core/feats/boorus/providers.dart';
 import 'package:boorusama/core/feats/user_level_colors.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/time.dart';
-import 'package:boorusama/widgets/generic_no_data_box.dart';
-import 'package:boorusama/widgets/option_dropdown_button.dart';
+import 'package:boorusama/widgets/widgets.dart';
 import '../danbooru_provider.dart';
 import '../feats/dmails/dmails.dart';
 import '../feats/users/users_provider.dart';
@@ -78,8 +77,13 @@ class _DanbooruDmailPageState extends ConsumerState<DanbooruDmailPage> {
                         return ListTile(
                             minVerticalPadding: 0,
                             visualDensity: VisualDensity.compact,
-                            trailing: Text(dmail.createdAt.fuzzify(
-                                locale: Localizations.localeOf(context))),
+                            trailing: DateTooltip(
+                              date: dmail.createdAt,
+                              child: Text(
+                                dmail.createdAt.fuzzify(
+                                    locale: Localizations.localeOf(context)),
+                              ),
+                            ),
                             title: Text(
                               fromUser?.name ?? '...',
                               style: dmail.isRead

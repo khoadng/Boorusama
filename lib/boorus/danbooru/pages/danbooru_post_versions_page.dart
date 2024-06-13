@@ -118,12 +118,15 @@ class DanbooruPostVersionsPage extends ConsumerWidget {
                                           fontSize: 18,
                                         ),
                                       ),
-                                      Text(
-                                        version.updatedAt.fuzzify(
-                                          locale: context.locale,
-                                        ),
-                                        style: TextStyle(
-                                          color: context.theme.hintColor,
+                                      DateTooltip(
+                                        date: version.updatedAt,
+                                        child: Text(
+                                          version.updatedAt.fuzzify(
+                                            locale: context.locale,
+                                          ),
+                                          style: TextStyle(
+                                            color: context.theme.hintColor,
+                                          ),
                                         ),
                                       ),
                                       TagChangedText(

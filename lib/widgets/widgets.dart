@@ -14,6 +14,7 @@ export 'conditional_parent_widget.dart';
 export 'conditional_render_widget.dart';
 export 'conditional_value_listenable_builder.dart';
 export 'context_menu.dart';
+export 'date_tooltip.dart';
 export 'dismissable_info_container.dart';
 export 'drag_line.dart';
 export 'editable_mixin.dart';
