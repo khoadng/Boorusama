@@ -17,6 +17,10 @@ typedef ChangelogData = ({
   String content,
 });
 
+extension VersionX on Version {
+  Version withoutPreRelease() => Version(major, minor, patch);
+}
+
 Future<ChangelogData> loadLatestChangelogFromAssets() async {
   final text = await rootBundle.loadString(_assetUrl);
 
@@ -47,7 +51,7 @@ Future<void> markChangelogAsSeen(
   Version version,
   Box<String> dataBox,
 ) async {
-  final key = getChangelogKey(version);
+  final key = getChangelogKey(version.withoutPreRelease());
   final currentTime = DateTime.now();
   await dataBox.put(key, currentTime.toIso8601String());
 }
@@ -57,12 +61,10 @@ Future<bool> shouldShowChangelogDialog(
   Box<String> dataBox,
   Version targetVersion,
 ) async {
-  final currentVersion = Version.parse(packageInfo.version);
+  final currentVersion = Version.parse(packageInfo.version).withoutPreRelease();
 
   // check if the current version is the target version
-  if (currentVersion.major != targetVersion.major ||
-      currentVersion.minor != targetVersion.minor ||
-      currentVersion.patch != targetVersion.patch) {
+  if (currentVersion != targetVersion.withoutPreRelease()) {
     return false;
   }
 
