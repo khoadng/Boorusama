@@ -308,6 +308,7 @@ class PostGridController<T extends Post> extends ChangeNotifier {
 
   void _clear() {
     _items.clear();
+    _filteredItems.clear();
     _keys.clear();
     tagCounts.value = {};
     hasBlacklist.value = false;

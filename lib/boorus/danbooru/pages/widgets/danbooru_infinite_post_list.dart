@@ -118,6 +118,8 @@ class _DanbooruInfinitePostListState
         onLoadMore: widget.onLoadMore,
         onRefresh: widget.onRefresh,
         itemBuilder: (context, items, index) {
+          if (items.isEmpty) return const SizedBox();
+
           final post = items[index];
           final (width, height, cacheWidth, cacheHeight) =
               context.sizeFromConstraints(
