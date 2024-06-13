@@ -272,11 +272,7 @@ final danbooruTagGroupsProvider = FutureProvider.autoDispose
 
   final tagString = tagsNotifier.containsKey(post.id)
       ? tagsNotifier[post.id]!.allTags
-      : post
-          .extractTagDetails()
-          .where((e) => e.postId == post.id)
-          .map((e) => e.name)
-          .toSet();
+      : post.tags;
 
   final repo = ref.watch(tagRepoProvider(config));
 

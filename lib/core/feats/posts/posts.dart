@@ -3,7 +3,6 @@ export 'count/post_count_repository.dart';
 export 'filter.dart';
 export 'media_info_mixin.dart';
 export 'post.dart';
-export 'post_details_tag.dart';
 export 'post_repository.dart';
 export 'post_repository_cacher.dart';
 export 'post_share_notifier.dart';

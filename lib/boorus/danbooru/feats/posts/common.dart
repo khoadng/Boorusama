@@ -17,6 +17,7 @@ DanbooruPost postDtoToPost(
       thumbnailImageUrl: dto.previewFileUrl ?? '',
       sampleImageUrl: dto.largeFileUrl ?? '',
       originalImageUrl: dto.fileUrl ?? '',
+      tags: dto.tagString.splitByWhitespace(),
       copyrightTags: dto.tagStringCopyright.splitByWhitespace(),
       characterTags: dto.tagStringCharacter.splitByWhitespace(),
       artistTags: dto.tagStringArtist.splitByWhitespace(),

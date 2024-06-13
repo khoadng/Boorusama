@@ -25,6 +25,7 @@ class DanbooruPost extends Equatable
     required this.thumbnailImageUrl,
     required this.sampleImageUrl,
     required this.originalImageUrl,
+    required this.tags,
     required this.copyrightTags,
     required this.characterTags,
     required this.artistTags,
@@ -53,19 +54,14 @@ class DanbooruPost extends Equatable
     required this.variants,
     required this.pixelHash,
     required this.metadata,
-  }) : tags = {
-          ...artistTags,
-          ...copyrightTags,
-          ...characterTags,
-          ...generalTags,
-          ...metaTags,
-        };
+  });
 
   factory DanbooruPost.empty() => DanbooruPost(
         id: 0,
         thumbnailImageUrl: '',
         sampleImageUrl: '',
         originalImageUrl: '',
+        tags: const {},
         copyrightTags: const {},
         characterTags: const {},
         artistTags: const {},
@@ -230,37 +226,6 @@ extension PostX on DanbooruPost {
     return kCensoredTags.any(tagSet.contains);
   }
 
-  List<PostDetailTag> extractTagDetails() {
-    final p = this;
-    return [
-      ...p.artistTags.map((e) => PostDetailTag(
-            name: e,
-            category: TagCategory.artist.stringify(),
-            postId: p.id,
-          )),
-      ...p.characterTags.map((e) => PostDetailTag(
-            name: e,
-            category: TagCategory.character.stringify(),
-            postId: p.id,
-          )),
-      ...p.copyrightTags.map((e) => PostDetailTag(
-            name: e,
-            category: TagCategory.copyright.stringify(),
-            postId: p.id,
-          )),
-      ...p.generalTags.map((e) => PostDetailTag(
-            name: e,
-            category: TagCategory.general.stringify(),
-            postId: p.id,
-          )),
-      ...p.metaTags.map((e) => PostDetailTag(
-            name: e,
-            category: TagCategory.meta.stringify(),
-            postId: p.id,
-          )),
-    ];
-  }
-
   List<Tag> extractTags() {
     final tags = <Tag>[];
 
@@ -289,6 +254,7 @@ extension PostX on DanbooruPost {
 
   DanbooruPost copyWith({
     int? id,
+    Set<String>? tags,
     Set<String>? copyrightTags,
     Set<String>? characterTags,
     Set<String>? artistTags,
@@ -312,6 +278,7 @@ extension PostX on DanbooruPost {
         thumbnailImageUrl: thumbnailImageUrl,
         sampleImageUrl: sampleImageUrl ?? this.sampleImageUrl,
         originalImageUrl: originalImageUrl ?? this.originalImageUrl,
+        tags: tags ?? this.tags,
         copyrightTags: copyrightTags ?? this.copyrightTags,
         characterTags: characterTags ?? this.characterTags,
         artistTags: artistTags ?? this.artistTags,
