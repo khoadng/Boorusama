@@ -52,6 +52,8 @@ class _FavoriteGroupDetailsPageState
   //TODO: this part might be broken after the new filtering system, need to check
   late final controller = PostGridController<DanbooruPost>(
     fetcher: (page) => getPostsFromIdQueue(widget.postIds),
+    blacklistedTagsFetcher: () =>
+        ref.read(blacklistTagsProvider(ref.watchConfig).future),
     refresher: () => getPostsFromIdQueue(widget.postIds),
   );
 

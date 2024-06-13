@@ -22,9 +22,10 @@ class TrendingTagNotifier
       ref.read(popularSearchProvider(arg));
 
   Future<List<Search>> fetch() async {
+    final bl = await ref.read(blacklistTagsProvider(arg).future);
     final excludedTags = {
       ...ref.read(tagInfoProvider).r18Tags,
-      ...ref.read(blacklistTagsProvider(arg)),
+      ...bl,
     };
 
     var searches =

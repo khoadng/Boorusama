@@ -77,7 +77,7 @@ extension PostRepositoryX<T extends Post> on PostRepository<T> {
   Future<List<T>> getPostsFromTagsWithBlacklist({
     required String tags,
     int page = 1,
-    required Set<String> blacklist,
+    required Future<Set<String>> blacklist,
     int? hardLimit,
     int? softLimit,
   }) async {
@@ -87,19 +87,21 @@ extension PostRepositoryX<T extends Post> on PostRepository<T> {
       limit: hardLimit,
     );
 
+    final bl = await blacklist;
+
     final postsWithLimit =
         softLimit == null ? posts : posts.take(softLimit).toList();
 
     return filterTags(
       postsWithLimit.where((e) => !e.isFlash).toList(),
-      blacklist,
+      bl,
     );
   }
 
   Future<List<T>> getPostsFromTagWithBlacklist({
     required String? tag,
     int page = 1,
-    required Set<String> blacklist,
+    required Future<Set<String>> blacklist,
     int? hardLimit,
     int? softLimit = 30,
   }) async {

@@ -31,6 +31,6 @@ final e621ArtistPostsProvider = FutureProvider.autoDispose
       .watch(e621PostRepoProvider(ref.watchConfig))
       .getPostsFromTagWithBlacklist(
         tag: name,
-        blacklist: ref.watch(blacklistTagsProvider(ref.watchConfig)),
+        blacklist: ref.watch(blacklistTagsProvider(ref.watchConfig).future),
       );
 });

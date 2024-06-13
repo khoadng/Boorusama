@@ -230,17 +230,13 @@ final favoriteProvider = Provider.autoDispose
         });
 
 final blacklistTagsProvider =
-    Provider.autoDispose.family<Set<String>, BooruConfig>((ref, config) {
+    FutureProvider.autoDispose.family<Set<String>, BooruConfig>((ref, config) {
   final globalBlacklistedTags =
       ref.watch(globalBlacklistedTagsProvider).map((e) => e.name).toSet();
 
   return switch (config.booruType) {
-    BooruType.danbooru => ref
-        .watch(danbooruBlacklistedTagsWithCensoredTagsProvider(config))
-        .maybeWhen(
-          data: (data) => data,
-          orElse: () => {},
-        ),
+    BooruType.danbooru =>
+      ref.watch(danbooruBlacklistedTagsWithCensoredTagsProvider(config).future),
     BooruType.e621 ||
     BooruType.szurubooru ||
     BooruType.gelbooru ||

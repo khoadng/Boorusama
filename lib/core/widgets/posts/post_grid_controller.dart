@@ -21,7 +21,7 @@ class PostGridController<T extends Post> extends ChangeNotifier {
   PostGridController({
     required this.fetcher,
     required this.refresher,
-    this.blacklistedTags = const {},
+    required this.blacklistedTagsFetcher,
     this.debounceDuration = const Duration(milliseconds: 500),
     PageMode pageMode = PageMode.infinite,
     this.blacklistedUrlsFetcher,
@@ -33,7 +33,8 @@ class PostGridController<T extends Post> extends ChangeNotifier {
 
   final Set<String> Function()? blacklistedUrlsFetcher;
 
-  Set<String> blacklistedTags;
+  Set<String>? blacklistedTags;
+  final Future<Set<String>> Function() blacklistedTagsFetcher;
 
   List<T> _items = [];
   List<T> _filteredItems = [];
@@ -65,11 +66,12 @@ class PostGridController<T extends Post> extends ChangeNotifier {
 
   Future<void> setBlacklistedTags(Set<String> tags) async {
     // check if the tags are the same
-    if (blacklistedTags.join(',') == tags.join(',')) return;
+    if (blacklistedTags?.join(',') == tags.join(',')) return;
 
-    blacklistedTags = tags.toSet();
+    final newTags = tags.toSet();
+    blacklistedTags = newTags;
 
-    tagCounts.value = await _count(_items, blacklistedTags);
+    tagCounts.value = await _count(_items, newTags);
 
     hasBlacklist.value = tagCounts.value.values.any((e) => e.isNotEmpty);
     activeFilters.value = {
@@ -112,6 +114,19 @@ class PostGridController<T extends Post> extends ChangeNotifier {
 
     await _filter();
     notifyListeners();
+  }
+
+  Future<Set<String>> _getBlacklistedTags() async {
+    // lazy load blacklisted tags
+    if (blacklistedTags == null) {
+      final tags = await blacklistedTagsFetcher();
+
+      blacklistedTags = tags;
+
+      return tags;
+    } else {
+      return blacklistedTags!;
+    }
   }
 
   Future<void> _filter() async {
@@ -274,7 +289,9 @@ class PostGridController<T extends Post> extends ChangeNotifier {
 
     _total = _items.length;
 
-    tagCounts.value = await _count(_items, blacklistedTags);
+    final bt = await _getBlacklistedTags();
+
+    tagCounts.value = await _count(_items, bt);
     hasBlacklist.value = tagCounts.value.values.any((e) => e.isNotEmpty);
 
     // add unseen tags to activeFilters

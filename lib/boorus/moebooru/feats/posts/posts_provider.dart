@@ -90,7 +90,7 @@ final moebooruPostDetailsArtistProvider =
     FutureProvider.family.autoDispose<List<Post>, String>((ref, tag) async {
   final config = ref.watchConfig;
   final repo = ref.watch(moebooruArtistCharacterPostRepoProvider(config));
-  final blacklistedTags = ref.watch(blacklistTagsProvider(config));
+  final blacklistedTags = await ref.watch(blacklistTagsProvider(config).future);
 
   final posts = await repo.getPosts(tag, 1).run().then(
         (value) => value.fold(
@@ -109,7 +109,7 @@ final moebooruPostDetailsCharacterProvider =
     FutureProvider.family.autoDispose<List<Post>, String>((ref, tag) async {
   final config = ref.watchConfig;
   final repo = ref.watch(moebooruArtistCharacterPostRepoProvider(config));
-  final blacklistedTags = ref.watch(blacklistTagsProvider(config));
+  final blacklistedTags = await ref.watch(blacklistTagsProvider(config).future);
 
   final posts = await repo.getPosts(tag, 1).run().then(
         (value) => value.fold(
