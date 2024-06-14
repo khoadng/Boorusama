@@ -8,10 +8,11 @@ import 'package:oktoast/oktoast.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 
 const String _basePath = '/storage/emulated';
+const String _sdCardBasePath = '/storage';
 
 const List<String> _allowedDownloadFolders = [
   'Download',
-  'Downloads',
+  // 'Downloads',
   'Documents',
   'Pictures',
 ];
@@ -34,6 +35,31 @@ bool isUserspaceInternalStorage(String? path) {
 
   // check if this is on the user space
   return int.tryParse(folders[3]) != null;
+}
+
+bool isSdCardStorage(String? path) {
+  if (path == null) return false;
+
+  final folders = path.split('/');
+
+  if (folders.length < 3) return false;
+
+  // not emulated storage
+  return folders[2] != 'emulated';
+}
+
+bool isSdCardPublicDirectories(String? path) {
+  if (path == null) return false;
+  if (!isSdCardStorage(path)) return false;
+
+  final nonBasePath = path.replaceAll('$_sdCardBasePath/', '');
+  final paths = nonBasePath.split('/');
+
+  if (paths.length < 2) return false;
+
+  final selectedFolder = paths[1];
+
+  return _allowedDownloadFolders.contains(selectedFolder);
 }
 
 bool isPublicDirectories(String? path) {
@@ -87,8 +113,10 @@ mixin DownloadMixin {
   }) =>
       storagePath != null &&
       storagePath!.isNotEmpty &&
-      isUserspaceInternalStorage(storagePath) &&
-      (hasScopeStorage ? isPublicDirectories(storagePath) : true);
+      (hasScopeStorage
+          ? (isPublicDirectories(storagePath) ||
+              isSdCardPublicDirectories(storagePath))
+          : true);
 }
 
 void showDownloadStartToast(BuildContext context) {

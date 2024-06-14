@@ -19,6 +19,52 @@ void main() {
     });
   });
 
+  // sd card storage test
+  group('[SD card storage test]', () {
+    test('SD card', () {
+      expect(isSdCardStorage('/storage/ABCD-6789/Download'), true);
+    });
+
+    test('internal', () {
+      expect(isSdCardStorage('/storage/emulated/0/Download'), false);
+    });
+
+    test('null', () {
+      expect(isSdCardStorage(null), false);
+    });
+
+    test('random string', () {
+      expect(isSdCardStorage('foobar'), false);
+    });
+
+    test('empty string', () {
+      expect(isSdCardStorage(''), false);
+    });
+  });
+
+  // sd card public directories test
+  group('[SD card public directories test]', () {
+    test('SD card', () {
+      expect(isSdCardPublicDirectories('/storage/ABCD-6789/Download'), true);
+    });
+
+    test('internal', () {
+      expect(isSdCardPublicDirectories('/storage/emulated/0/Download'), false);
+    });
+
+    test('null', () {
+      expect(isSdCardPublicDirectories(null), false);
+    });
+
+    test('random string', () {
+      expect(isSdCardPublicDirectories('foobar'), false);
+    });
+
+    test('empty string', () {
+      expect(isSdCardPublicDirectories(''), false);
+    });
+  });
+
   group('[internal storage test]', () {
     test('internal', () {
       expect(isInternalStorage('/storage/emulated/0/Download'), true);
