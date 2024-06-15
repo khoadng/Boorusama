@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/favorites/favorites.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
@@ -60,6 +61,36 @@ class SimplePostActionToolbar extends ConsumerWidget {
           ),
         SharePostButton(post: post),
       ],
+    );
+  }
+}
+
+class DefaultPostActionToolbar extends ConsumerWidget {
+  const DefaultPostActionToolbar({
+    super.key,
+    required this.post,
+    this.forceHideFav = false,
+  });
+
+  final Post post;
+  final bool forceHideFav;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
+    final booruBuilder = ref.watch(booruBuilderProvider);
+    final isFaved = ref.watch(favoriteProvider(post.id));
+    final favoriteAdder = booruBuilder?.favoriteAdder;
+    final favoriteRemover = booruBuilder?.favoriteRemover;
+
+    return SimplePostActionToolbar(
+      post: post,
+      isFaved: isFaved,
+      isAuthorized: config.hasLoginDetails(),
+      addFavorite:
+          favoriteAdder != null ? () => favoriteAdder(post.id, ref) : null,
+      removeFavorite:
+          favoriteRemover != null ? () => favoriteRemover(post.id, ref) : null,
     );
   }
 }

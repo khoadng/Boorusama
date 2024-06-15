@@ -208,7 +208,7 @@ class SzurubooruBuilder
               toolbarBuilder: (context, rawPost) =>
                   castOrNull<SzurubooruPost>(rawPost).toOption().fold(
                         () => SimplePostActionToolbar(post: rawPost),
-                        (post) => SzurubooruPostActionToolbar(post: post),
+                        (post) => DefaultPostActionToolbar(post: post),
                       ),
               fileDetailsBuilder: (context, rawPost) =>
                   DefaultFileDetailsSection(
@@ -310,31 +310,5 @@ class SzurubooruFavoritesPage extends ConsumerWidget {
         favQueryBuilder: () => query,
         fetcher: (page) =>
             ref.read(szurubooruPostRepoProvider(config)).getPosts(query, page));
-  }
-}
-
-class SzurubooruPostActionToolbar extends ConsumerWidget {
-  const SzurubooruPostActionToolbar({
-    super.key,
-    required this.post,
-  });
-
-  final SzurubooruPost post;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
-    final isFaved = ref.watch(szurubooruFavoriteProvider(post.id));
-
-    return SimplePostActionToolbar(
-      post: post,
-      isFaved: isFaved,
-      isAuthorized: config.hasLoginDetails(),
-      addFavorite: () =>
-          ref.read(szurubooruFavoritesProvider(config).notifier).add(post.id),
-      removeFavorite: () => ref
-          .read(szurubooruFavoritesProvider(config).notifier)
-          .remove(post.id),
-    );
   }
 }

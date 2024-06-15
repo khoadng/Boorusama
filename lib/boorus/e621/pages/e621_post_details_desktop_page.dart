@@ -21,7 +21,6 @@ import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'e621_post_details_page.dart';
-import 'widgets/e621_post_action_toolbar.dart';
 
 final allowFetchProvider = StateProvider<bool>((ref) {
   return true;
@@ -121,7 +120,7 @@ class _DanbooruPostDetailsDesktopPageState
                       post: post,
                     ),
                     const Divider(height: 8, thickness: 1),
-                    E621PostActionToolbar(post: post),
+                    DefaultPostActionToolbar(post: post),
                     const Divider(height: 8, thickness: 1),
                     E621ArtistSection(post: post),
                     //FIXME: implement stats tile
