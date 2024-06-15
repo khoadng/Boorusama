@@ -39,7 +39,6 @@ export 'post_media.dart';
 export 'post_note.dart';
 export 'post_tag_list.dart';
 export 'posts/default_multi_selection_actions.dart';
-export 'posts/favorite_post_button.dart';
 export 'posts/file_details_section.dart';
 export 'posts/general_post_context_menu.dart';
 export 'posts/info_chips.dart';
