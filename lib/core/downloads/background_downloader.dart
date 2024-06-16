@@ -43,6 +43,24 @@ extension FileDownloadX on FileDownloader {
   }
 }
 
+extension TaskUpdateX on TaskUpdate {
+  int? get fileSize => switch (this) {
+        TaskStatusUpdate s => () {
+            final defaultSize =
+                DownloaderMetadata.fromJsonString(task.metaData).fileSize;
+            final fileSizeString = s.responseHeaders.toOption().fold(
+                  () => '',
+                  (headers) => headers[HttpHeaders.contentLengthHeader],
+                );
+            final fileSize =
+                fileSizeString != null ? int.tryParse(fileSizeString) : null;
+
+            return fileSize ?? defaultSize;
+          }(),
+        TaskProgressUpdate p => p.expectedFileSize,
+      };
+}
+
 class BackgroundDownloader implements DownloadService {
   @override
   DownloadPathOrError download({
