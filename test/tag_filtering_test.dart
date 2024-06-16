@@ -536,4 +536,41 @@ void main() {
       expect(result.first.value, 'b');
     });
   });
+
+  group(
+    'regression tests',
+    () {
+      // should be case-insensitive
+      group('case-insensitive', () {
+        final data = {'Foo', 'FOO', 'Foo_Bar', 'foobar'}.toTagFilterData();
+        test('Uppercase', () {
+          expect(
+            checkIfTagsContainsRawTagExpression(data, 'foo'),
+            true,
+          );
+        });
+
+        test('Sentence case', () {
+          expect(
+            checkIfTagsContainsRawTagExpression(data, 'foo_bar'),
+            true,
+          );
+        });
+
+        test('Capitalized', () {
+          expect(
+            checkIfTagsContainsRawTagExpression(data, 'foo'),
+            true,
+          );
+        });
+
+        test('Lowercase', () {
+          expect(
+            checkIfTagsContainsRawTagExpression(data, 'Foobar'),
+            true,
+          );
+        });
+      });
+    },
+  );
 }

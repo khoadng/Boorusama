@@ -133,21 +133,21 @@ extension TagExpressionX on Iterable<TagExpression> {
 }
 
 TagExpressionType _getType(String expression) {
-  if (expression.startsWith('rating:')) {
-    final targetRating =
-        mapStringToRating(expression.split(':')[1].toLowerCase());
-    return RatingType(expression, targetRating);
-  } else if (expression.startsWith('uploaderid:')) {
-    final uploaderId = int.tryParse(expression.split(':')[1]) ?? -1;
-    return UploaderIdType(expression, uploaderId);
-  } else if (expression.startsWith('source:')) {
-    final firstColonIndex = expression.indexOf(':');
+  final exp = expression.toLowerCase();
+
+  if (exp.startsWith('rating:')) {
+    final targetRating = mapStringToRating(exp.split(':')[1].toLowerCase());
+    return RatingType(exp, targetRating);
+  } else if (exp.startsWith('uploaderid:')) {
+    final uploaderId = int.tryParse(exp.split(':')[1]) ?? -1;
+    return UploaderIdType(exp, uploaderId);
+  } else if (exp.startsWith('source:')) {
+    final firstColonIndex = exp.indexOf(':');
 
     // if first colon is the last character, then the expression is invalid
-    if (firstColonIndex == expression.length - 1) return TagType(expression);
+    if (firstColonIndex == exp.length - 1) return TagType(exp);
 
-    final targetSource =
-        expression.substring(firstColonIndex + 1).toLowerCase();
+    final targetSource = exp.substring(firstColonIndex + 1).toLowerCase();
 
     // *aaa* is a wildcard for any string
     // *aaa is a wildcard for any string that ends with "aaa"
@@ -172,16 +172,16 @@ TagExpressionType _getType(String expression) {
       WildCardPosition.none => targetSource,
     };
 
-    return SourceType(expression, source, position);
-  } else if (expression.startsWith('score:') && expression.contains('<')) {
-    final score = int.tryParse(expression.split('<')[1]) ?? 0;
+    return SourceType(exp, source, position);
+  } else if (exp.startsWith('score:') && exp.contains('<')) {
+    final score = int.tryParse(exp.split('<')[1]) ?? 0;
 
-    return ScoreType(expression, score);
-  } else if (expression.startsWith('downvotes:') && expression.contains('>')) {
-    final downvotes = int.tryParse(expression.split('>')[1]) ?? 0;
-    return DownvotesType(expression, downvotes);
+    return ScoreType(exp, score);
+  } else if (exp.startsWith('downvotes:') && exp.contains('>')) {
+    final downvotes = int.tryParse(exp.split('>')[1]) ?? 0;
+    return DownvotesType(exp, downvotes);
   } else {
-    return TagType(expression);
+    return TagType(exp);
   }
 }
 
@@ -238,27 +238,37 @@ enum WildCardPosition {
 
 bool checkIfTagsContainsRawTagExpression(
   final TagFilterData filterData,
-  final String tagExpression,
-) {
+  final String tagExpression, {
+  bool caseSensitive = false,
+}) {
   // Split the tagExpression by spaces to handle multiple tags
   final expressions =
       tagExpression.split(' ').map(TagExpression.parse).toList();
 
-  return checkIfTagsContainsTagExpression(filterData, expressions);
+  return checkIfTagsContainsTagExpression(
+    filterData,
+    expressions,
+    caseSensitive: caseSensitive,
+  );
 }
 
 bool checkIfTagsContainsTagExpression(
   final TagFilterData filterData,
-  final List<TagExpression> expressions,
-) {
-  final tags = filterData.tags;
+  final List<TagExpression> expressions, {
+  bool caseSensitive = false,
+}) {
+  final tags = caseSensitive
+      ? filterData.tags
+      : filterData.tags.map((tag) => tag.toLowerCase()).toSet();
 
   // Process each tag in the expression
   for (final expression in expressions) {
     final type = expression.type;
     final isNegative = expression.isNegative;
     final isOr = expression.isOr;
-    final value = expression.expression;
+    final value = caseSensitive
+        ? expression.expression
+        : expression.expression.toLowerCase();
 
     // Handle metatag "rating"
     if (type is RatingType && !isNegative) {
