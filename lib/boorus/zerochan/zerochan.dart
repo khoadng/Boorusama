@@ -57,7 +57,7 @@ final zerochanPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
                   thumbnailImageUrl: e.thumbnail ?? '',
                   sampleImageUrl: e.sampleUrl() ?? '',
                   originalImageUrl: e.fileUrl() ?? '',
-                  tags: e.tags?.toSet() ?? {},
+                  tags: e.tags?.map((e) => e.toLowerCase()).toSet() ?? {},
                   rating: Rating.general,
                   hasComment: false,
                   isTranslated: false,
@@ -126,13 +126,29 @@ final zerochanTagsFromIdProvider =
         .where((e) => e.value != null)
         .map((e) => Tag(
               name: e.value!.toLowerCase().replaceAll(' ', '_'),
-              category: stringToTagCategory(
-                  e.type?.toLowerCase().replaceAll(' ', '_') ?? ''),
+              category: zerochanStringToTagCategory(e.type),
               postCount: 0,
             ))
         .toList();
   },
 );
+
+TagCategory zerochanStringToTagCategory(String? value) {
+  // remove ' fav' and ' primary' from the end of the string
+  var type = value?.toLowerCase().replaceAll(RegExp(r' fav$| primary$'), '');
+
+  return switch (type) {
+    'mangaka' || 'artist' || 'studio' => TagCategory.artist,
+    'series' ||
+    'copyright' ||
+    'game' ||
+    'visual novel' =>
+      TagCategory.copyright,
+    'character' => TagCategory.character,
+    'meta' || 'source' => TagCategory.meta,
+    _ => TagCategory.general
+  };
+}
 
 class ZerochanBuilder
     with
