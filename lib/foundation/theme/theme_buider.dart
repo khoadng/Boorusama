@@ -64,7 +64,7 @@ class ThemeBuilder extends ConsumerWidget {
           builder: (context) => ProviderScope(
             overrides: [
               dynamicColorSupportProvider
-                  .overrideWithValue(light != null && dark != null),
+                  .overrideWithValue(lightOrigin != null && darkOrigin != null),
             ],
             child: builder(
               AppTheme.themeFrom(
