@@ -114,7 +114,7 @@ class HomeSearchBar extends ConsumerWidget {
                                   TextButton(
                                     style: TextButton.styleFrom(
                                       foregroundColor:
-                                          context.colorScheme.onBackground,
+                                          context.colorScheme.onSurface,
                                     ),
                                     onPressed: () {
                                       context.navigator.pop();

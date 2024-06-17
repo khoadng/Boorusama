@@ -214,7 +214,7 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
       child: Container(
         width: 220,
         decoration: BoxDecoration(
-          color: context.colorScheme.surfaceVariant,
+          color: context.colorScheme.surfaceContainerHighest,
         ),
         child: Column(
           children: [

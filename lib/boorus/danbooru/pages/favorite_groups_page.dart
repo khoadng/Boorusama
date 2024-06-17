@@ -115,7 +115,7 @@ class FavoriteGroupsPage extends ConsumerWidget {
             actions: [
               TextButton(
                 style: TextButton.styleFrom(
-                  foregroundColor: context.colorScheme.onBackground,
+                  foregroundColor: context.colorScheme.onSurface,
                 ),
                 onPressed: () => context.navigator.pop(),
                 child: const Text('generic.action.cancel').tr(),

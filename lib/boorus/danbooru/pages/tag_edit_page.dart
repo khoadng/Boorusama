@@ -497,7 +497,7 @@ class _TagEditPageInternalState extends ConsumerState<TagEditPageInternal> {
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(4)),
                   ),
-                  backgroundColor: context.colorScheme.surfaceVariant,
+                  backgroundColor: context.colorScheme.surfaceContainerHighest,
                 ),
                 onPressed: () {
                   goToQuickSearchPage(
@@ -521,7 +521,7 @@ class _TagEditPageInternalState extends ConsumerState<TagEditPageInternal> {
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(4)),
                   ),
-                  backgroundColor: context.colorScheme.surfaceVariant,
+                  backgroundColor: context.colorScheme.surfaceContainerHighest,
                 ),
                 onPressed: () {
                   setState(() {
@@ -542,7 +542,7 @@ class _TagEditPageInternalState extends ConsumerState<TagEditPageInternal> {
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(4)),
                   ),
-                  backgroundColor: context.colorScheme.surfaceVariant,
+                  backgroundColor: context.colorScheme.surfaceContainerHighest,
                 ),
                 onPressed: () {
                   setState(() {
@@ -564,7 +564,7 @@ class _TagEditPageInternalState extends ConsumerState<TagEditPageInternal> {
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(4)),
                     ),
-                    backgroundColor: context.colorScheme.surfaceVariant,
+                    backgroundColor: context.colorScheme.surfaceContainerHighest,
                   ),
                   onPressed: () {
                     setState(() {
@@ -601,7 +601,7 @@ class _TagEditPageInternalState extends ConsumerState<TagEditPageInternal> {
           padding: const EdgeInsets.only(right: 4, top: 8, bottom: 4),
           child: Material(
             shape: const CircleBorder(),
-            color: context.colorScheme.surfaceVariant,
+            color: context.colorScheme.surfaceContainerHighest,
             child: Container(
               padding: const EdgeInsets.all(4),
               child: InkWell(
@@ -628,7 +628,7 @@ class _TagEditPageInternalState extends ConsumerState<TagEditPageInternal> {
           padding: const EdgeInsets.only(right: 16, top: 8, bottom: 4),
           child: Material(
             shape: const CircleBorder(),
-            color: context.colorScheme.surfaceVariant,
+            color: context.colorScheme.surfaceContainerHighest,
             child: Container(
               padding: const EdgeInsets.all(4),
               child: InkWell(

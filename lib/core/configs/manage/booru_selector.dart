@@ -491,7 +491,7 @@ class RemoveBooruConfigAlertDialog extends StatelessWidget {
                 'generic.action.cancel'.tr(),
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
-                  color: Theme.of(context).colorScheme.onBackground,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
             ),

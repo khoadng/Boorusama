@@ -97,10 +97,10 @@ class _DanbooruMyUploadsPageState extends ConsumerState<DanbooruMyUploadsPage>
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
                 ),
-                indicatorColor: context.colorScheme.onBackground,
-                labelColor: context.colorScheme.onBackground,
+                indicatorColor: context.colorScheme.onSurface,
+                labelColor: context.colorScheme.onSurface,
                 unselectedLabelColor:
-                    context.colorScheme.onBackground.withOpacity(0.5),
+                    context.colorScheme.onSurface.withOpacity(0.5),
                 tabs: const [
                   Tab(text: 'Unposted'),
                   Tab(text: 'Posted'),
@@ -448,7 +448,7 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
           vertical: 2,
         ),
         decoration: BoxDecoration(
-          color: context.colorScheme.background.withOpacity(0.8),
+          color: context.colorScheme.surface.withOpacity(0.8),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Builder(

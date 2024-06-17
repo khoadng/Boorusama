@@ -9,7 +9,6 @@ import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
 import 'package:boorusama/clients/gelbooru/types/types.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/comments/comments.dart';
-import 'package:boorusama/time.dart';
 
 abstract interface class GelbooruCommentRepository {
   Future<List<Comment>> getComments(int postId);

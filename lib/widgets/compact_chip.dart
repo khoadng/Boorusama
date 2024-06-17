@@ -87,20 +87,20 @@ class RawCompactChip extends StatelessWidget {
   }
 }
 
-class _FilledButtonDefaultOverlay extends MaterialStateProperty<Color?> {
+class _FilledButtonDefaultOverlay extends WidgetStateProperty<Color?> {
   _FilledButtonDefaultOverlay(this.overlay);
 
   final Color overlay;
 
   @override
-  Color? resolve(Set<MaterialState> states) {
-    if (states.contains(MaterialState.pressed)) {
+  Color? resolve(Set<WidgetState> states) {
+    if (states.contains(WidgetState.pressed)) {
       return overlay.withOpacity(0.12);
     }
-    if (states.contains(MaterialState.hovered)) {
+    if (states.contains(WidgetState.hovered)) {
       return overlay.withOpacity(0.08);
     }
-    if (states.contains(MaterialState.focused)) {
+    if (states.contains(WidgetState.focused)) {
       return overlay.withOpacity(0.12);
     }
     return null;

@@ -348,7 +348,7 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                                       child: Center(
                                         child: SpinKitPulse(
                                           color: context
-                                              .theme.colorScheme.onBackground,
+                                              .theme.colorScheme.onSurface,
                                         ),
                                       ),
                                     ),

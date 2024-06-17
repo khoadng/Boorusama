@@ -65,7 +65,7 @@ class DanbooruTagsTile extends ConsumerWidget {
                 style: FilledButton.styleFrom(
                   visualDensity: VisualDensity.compact,
                   shape: const CircleBorder(),
-                  backgroundColor: context.colorScheme.surfaceVariant,
+                  backgroundColor: context.colorScheme.surfaceContainerHighest,
                 ),
                 onPressed: () => ref.danbooruEdit(post),
                 child: Icon(

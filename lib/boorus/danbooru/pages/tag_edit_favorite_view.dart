@@ -84,7 +84,7 @@ class _TagEditFavoriteViewState extends ConsumerState<TagEditFavoriteView> {
                           showCheckmark: false,
                           visualDensity: VisualDensity.compact,
                           selectedColor: context.colorScheme.primary,
-                          backgroundColor: context.colorScheme.background,
+                          backgroundColor: context.colorScheme.surface,
                           onSelected: (value) => value
                               ? widget.onAdded(tag.name)
                               : widget.onRemoved(tag.name),

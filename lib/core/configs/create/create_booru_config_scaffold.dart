@@ -122,10 +122,10 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
                         fontWeight: FontWeight.bold,
                         fontSize: 14,
                       ),
-                      indicatorColor: context.colorScheme.onBackground,
-                      labelColor: context.colorScheme.onBackground,
+                      indicatorColor: context.colorScheme.onSurface,
+                      labelColor: context.colorScheme.onSurface,
                       unselectedLabelColor:
-                          context.colorScheme.onBackground.withOpacity(0.5),
+                          context.colorScheme.onSurface.withOpacity(0.5),
                       tabs: [
                         for (final tab in tabMap.keys) Tab(text: tab.tr()),
                       ],

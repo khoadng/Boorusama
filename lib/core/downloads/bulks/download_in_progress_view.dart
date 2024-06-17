@@ -88,7 +88,7 @@ class DownloadInProgressView extends ConsumerWidget {
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               borderRadius: const BorderRadius.all(Radius.circular(8)),
-              color: context.colorScheme.surfaceVariant,
+              color: context.colorScheme.surfaceContainerHighest,
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -125,7 +125,7 @@ class DownloadInProgressView extends ConsumerWidget {
                   .map((e) => Chip(
                         visualDensity: VisualDensity.compact,
                         backgroundColor:
-                            context.theme.colorScheme.surfaceVariant,
+                            context.theme.colorScheme.surfaceContainerHighest,
                         label: Text(e.replaceUnderscoreWithSpace()),
                         shape: const StadiumBorder(side: BorderSide()),
                       ))

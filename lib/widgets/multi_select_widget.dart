@@ -200,7 +200,7 @@ class _SelectableItemState extends State<SelectableItem>
                 child: Icon(
                   FontAwesomeIcons.check,
                   size: 18,
-                  color: context.colorScheme.onBackground,
+                  color: context.colorScheme.onSurface,
                 ),
               ),
           ],

@@ -88,7 +88,7 @@ class _DownloadTagSelectionViewState
                     children: [
                       ...selectedTags.map((e) => Chip(
                             backgroundColor:
-                                context.theme.colorScheme.surfaceVariant,
+                                context.theme.colorScheme.surfaceContainerHighest,
                             label: Text(e.replaceUnderscoreWithSpace()),
                             deleteIcon: Icon(
                               Symbols.close,
@@ -156,7 +156,7 @@ class _DownloadTagSelectionViewState
                   return Material(
                     child: Ink(
                       decoration: BoxDecoration(
-                        color: context.colorScheme.surfaceVariant,
+                        color: context.colorScheme.surfaceContainerHighest,
                         border: Border.fromBorderSide(
                           BorderSide(color: context.theme.hintColor),
                         ),

@@ -38,7 +38,7 @@ void showSimpleTagSearchView(
     showDesktopDialogWindow(
       context,
       settings: settings,
-      backgroundColor: context.colorScheme.surfaceVariant,
+      backgroundColor: context.colorScheme.surfaceContainerHighest,
       margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
       width: min(context.screenWidth * 0.7, 600),
       height: min(context.screenHeight * 0.7, 500),

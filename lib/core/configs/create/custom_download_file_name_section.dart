@@ -94,7 +94,7 @@ class _CustomDownloadFileNameSectionState
           text: TextSpan(
             text: 'Custom filename format ',
             style: TextStyle(
-              color: context.colorScheme.onBackground,
+              color: context.colorScheme.onSurface,
             ),
           ),
         ),

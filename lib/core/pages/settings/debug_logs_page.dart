@@ -154,7 +154,7 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
                       fontSize: 13,
                       color: switch (log.level) {
                         LogLevel.info =>
-                          context.colorScheme.onBackground.withAlpha(222),
+                          context.colorScheme.onSurface.withAlpha(222),
                         LogLevel.warning => Colors.yellow.withAlpha(222),
                         LogLevel.error => context.colorScheme.error,
                       },

@@ -196,7 +196,7 @@ void goToSearchHistoryPage(
                 actions: [
                   TextButton(
                     style: TextButton.styleFrom(
-                      foregroundColor: context.colorScheme.onBackground,
+                      foregroundColor: context.colorScheme.onSurface,
                     ),
                     onPressed: () => context.navigator.pop(),
                     child: const Text('generic.action.cancel').tr(),
@@ -325,7 +325,7 @@ Future<T?> showDesktopDialogWindow<T>(
       pageBuilder: (context, _, __) {
         return Dialog(
           backgroundColor:
-              backgroundColor ?? context.colorScheme.surfaceVariant,
+              backgroundColor ?? context.colorScheme.surfaceContainerHighest,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),
           ),

@@ -460,8 +460,8 @@ Future<bool?> goToDanbooruShowTaglistPage(
   final notifier = ref.read(danbooruBlacklistedTagsProvider(config).notifier);
   final globalNotifier = ref.read(globalBlacklistedTagsProvider.notifier);
   final favoriteNotifier = ref.read(favoriteTagsProvider.notifier);
-  final color = ref.context.colorScheme.onBackground;
-  final textColor = ref.context.colorScheme.background;
+  final color = ref.context.colorScheme.onSurface;
+  final textColor = ref.context.colorScheme.surface;
 
   return showMaterialModalBottomSheet<bool>(
     context: navigatorKey.currentContext ?? ref.context,

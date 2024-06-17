@@ -29,7 +29,7 @@ class FavoriteTagLabelSelectorField extends StatelessWidget {
             maxWidth: 160,
           ),
           child: OptionSingleSearchableField(
-            backgroundColor: context.colorScheme.background,
+            backgroundColor: context.colorScheme.surface,
             sheetTitle: 'Select',
             optionValueBuilder: (option) =>
                 option == kSpecialLabelKeyForAll ? '<All>' : option,

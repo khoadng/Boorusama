@@ -75,7 +75,7 @@ dependencies:
   html: ^0.15.4
   http: ^1.1.0
   infinite_scroll_pagination: ^3.2.0
-  intl: ^0.18.1
+  intl: ^0.19.0
   jiffy: ^6.2.1
   like_button: ^2.0.5
   local_auth: ^2.2.0

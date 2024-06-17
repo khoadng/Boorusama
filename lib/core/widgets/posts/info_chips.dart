@@ -27,19 +27,19 @@ class InfoChips extends StatelessWidget {
         _InfoChip(
           leftLabel: const Text('post.detail.rating').tr(),
           rightLabel: Text(post.rating.toString().split('.').last.pascalCase),
-          leftColor: context.colorScheme.surfaceVariant,
+          leftColor: context.colorScheme.surfaceContainerHighest,
           rightColor: context.colorScheme.surface,
         ),
         _InfoChip(
           leftLabel: const Text('post.detail.size').tr(),
           rightLabel: Text(filesize(post.fileSize, 1)),
-          leftColor: context.colorScheme.surfaceVariant,
+          leftColor: context.colorScheme.surfaceContainerHighest,
           rightColor: context.colorScheme.surface,
         ),
         _InfoChip(
           leftLabel: const Text('post.detail.resolution').tr(),
           rightLabel: Text('${post.width.toInt()}x${post.height.toInt()}'),
-          leftColor: context.colorScheme.surfaceVariant,
+          leftColor: context.colorScheme.surfaceContainerHighest,
           rightColor: context.colorScheme.surface,
         ),
       ],

@@ -16,7 +16,7 @@ class Quote extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: context.colorScheme.surfaceVariant,
+        color: context.colorScheme.surfaceContainerHighest,
         border: Border.all(
           color: context.theme.hintColor,
         ),

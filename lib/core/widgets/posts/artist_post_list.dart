@@ -172,7 +172,7 @@ class SliverPreviewPostGridPlaceholder extends StatelessWidget {
       ),
       itemBuilder: (context, index) => Container(
         decoration: BoxDecoration(
-          color: context.colorScheme.surfaceVariant.withOpacity(0.5),
+          color: context.colorScheme.surfaceContainerHighest.withOpacity(0.5),
           borderRadius: const BorderRadius.all(Radius.circular(8)),
         ),
       ),

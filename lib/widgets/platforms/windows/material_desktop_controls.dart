@@ -610,7 +610,7 @@ class _MaterialDesktopControlsState extends State<MaterialDesktopControls>
               playedColor: context.theme.colorScheme.secondary,
               handleColor: context.theme.colorScheme.secondary,
               bufferedColor:
-                  context.theme.colorScheme.background.withOpacity(0.5),
+                  context.theme.colorScheme.surface.withOpacity(0.5),
               backgroundColor: context.theme.disabledColor.withOpacity(0.5),
             ),
       ),

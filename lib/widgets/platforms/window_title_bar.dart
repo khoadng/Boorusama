@@ -24,7 +24,7 @@ class WindowTitleBar extends StatelessWidget {
     return Column(
       children: [
         Container(
-          color: context.colorScheme.background,
+          color: context.colorScheme.surface,
           child: WindowTitleBarBox(
             child: Row(
               children: [

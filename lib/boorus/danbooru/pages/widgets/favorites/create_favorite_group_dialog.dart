@@ -151,7 +151,7 @@ class _EditFavoriteGroupDialogState
                     TextButton(
                       onPressed: () => context.navigator.pop(),
                       style: TextButton.styleFrom(
-                        foregroundColor: context.colorScheme.onBackground,
+                        foregroundColor: context.colorScheme.onSurface,
                       ),
                       child: const Text('favorite_groups.create_group_cancel')
                           .tr(),

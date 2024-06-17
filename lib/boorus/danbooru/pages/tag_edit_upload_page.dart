@@ -811,10 +811,10 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
               fontWeight: FontWeight.bold,
               fontSize: 16,
             ),
-            indicatorColor: context.colorScheme.onBackground,
-            labelColor: context.colorScheme.onBackground,
+            indicatorColor: context.colorScheme.onSurface,
+            labelColor: context.colorScheme.onSurface,
             unselectedLabelColor:
-                context.colorScheme.onBackground.withOpacity(0.5),
+                context.colorScheme.onSurface.withOpacity(0.5),
             tabs: [
               const Tab(text: 'Tags'),
               const Tab(text: 'Source'),

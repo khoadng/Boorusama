@@ -174,7 +174,7 @@ class PreviewPostListPlaceholder extends StatelessWidget {
                     height: height ?? 200,
                     decoration: BoxDecoration(
                       color:
-                          context.colorScheme.surfaceVariant.withOpacity(0.5),
+                          context.colorScheme.surfaceContainerHighest.withOpacity(0.5),
                       borderRadius: const BorderRadius.all(Radius.circular(8)),
                     ),
                   ),
@@ -222,7 +222,7 @@ class PreviewPostGridPlaceholder extends StatelessWidget {
             itemBuilder: (context, index) {
               return Container(
                 decoration: BoxDecoration(
-                  color: context.colorScheme.surfaceVariant.withOpacity(0.5),
+                  color: context.colorScheme.surfaceContainerHighest.withOpacity(0.5),
                   borderRadius: const BorderRadius.all(Radius.circular(8)),
                 ),
               );

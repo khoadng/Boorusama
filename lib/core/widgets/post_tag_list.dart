@@ -33,7 +33,7 @@ class PostTagList extends StatelessWidget {
     if (tags == null) {
       return SpinKitPulse(
         size: 42,
-        color: context.colorScheme.onBackground,
+        color: context.colorScheme.onSurface,
       );
     }
 

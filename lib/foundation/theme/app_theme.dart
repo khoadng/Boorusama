@@ -16,13 +16,11 @@ class AppTheme {
   }) {
     const light = ColorScheme(
       brightness: Brightness.light,
-      background: GreyscaleShades.gray242,
-      onBackground: kOnBackgroundLightColor,
       secondaryContainer: GreyscaleShades.gray212,
       onSecondaryContainer: kOnSurfaceLightColor,
       tertiaryContainer: GreyscaleShades.gray220,
       onTertiaryContainer: kOnSurfaceLightColor,
-      surfaceVariant: GreyscaleShades.gray226,
+      surfaceContainerHighest: GreyscaleShades.gray226,
       primary: kPrimaryLightColor,
       onPrimary: kOnPrimaryLightColor,
       secondary: kPrimaryLightColor,
@@ -35,13 +33,11 @@ class AppTheme {
 
     const dark = ColorScheme(
       brightness: Brightness.dark,
-      background: GreyscaleShades.gray24,
-      onBackground: Colors.white,
       secondaryContainer: GreyscaleShades.gray52,
       onSecondaryContainer: Colors.white,
       tertiaryContainer: GreyscaleShades.gray48,
       onTertiaryContainer: Colors.white,
-      surfaceVariant: GreyscaleShades.gray46,
+      surfaceContainerHighest: GreyscaleShades.gray46,
       primary: kPrimaryDarkColor,
       onPrimary: kOnPrimaryDarkColor,
       secondary: kPrimaryDarkColor,
@@ -57,13 +53,11 @@ class AppTheme {
       AppThemeMode.dark => dark,
       AppThemeMode.amoledDark => const ColorScheme(
           brightness: Brightness.dark,
-          background: Colors.black,
-          onBackground: Colors.white,
           secondaryContainer: GreyscaleShades.gray32,
           onSecondaryContainer: Colors.white,
           tertiaryContainer: GreyscaleShades.gray28,
           onTertiaryContainer: Colors.white,
-          surfaceVariant: GreyscaleShades.gray24,
+          surfaceContainerHighest: GreyscaleShades.gray24,
           primary: kPrimaryAmoledDarkColor,
           onPrimary: kOnPrimaryAmoledDarkColor,
           secondary: kPrimaryAmoledDarkColor,
@@ -214,7 +208,7 @@ class AppTheme {
           ),
           popupMenuTheme: PopupMenuThemeData(
             color: colorScheme.secondaryContainer,
-            labelTextStyle: MaterialStateProperty.all(
+            labelTextStyle: WidgetStateProperty.all(
               TextStyle(
                 color: colorScheme.onSecondaryContainer,
               ),
@@ -223,7 +217,7 @@ class AppTheme {
           brightness: Brightness.light,
           colorScheme: colorScheme,
           scrollbarTheme: ScrollbarThemeData(
-            thickness: MaterialStateProperty.all(4),
+            thickness: WidgetStateProperty.all(4),
           ));
 
   static ThemeData darkTheme({
@@ -295,7 +289,7 @@ class AppTheme {
           ),
           popupMenuTheme: PopupMenuThemeData(
             color: colorScheme.secondaryContainer,
-            labelTextStyle: MaterialStateProperty.all(
+            labelTextStyle: WidgetStateProperty.all(
               TextStyle(
                 color: colorScheme.onSecondaryContainer,
               ),
@@ -309,7 +303,7 @@ class AppTheme {
           ),
           colorScheme: colorScheme,
           scrollbarTheme: ScrollbarThemeData(
-            thickness: MaterialStateProperty.all(4),
+            thickness: WidgetStateProperty.all(4),
           ));
 
   static ThemeData darkAmoledTheme({
@@ -386,7 +380,7 @@ class AppTheme {
           ),
           popupMenuTheme: PopupMenuThemeData(
             color: colorScheme.secondaryContainer,
-            labelTextStyle: MaterialStateProperty.all(
+            labelTextStyle: WidgetStateProperty.all(
               TextStyle(
                 color: colorScheme.onSecondaryContainer,
               ),
@@ -395,6 +389,6 @@ class AppTheme {
           brightness: Brightness.dark,
           colorScheme: colorScheme,
           scrollbarTheme: ScrollbarThemeData(
-            thickness: MaterialStateProperty.all(4),
+            thickness: WidgetStateProperty.all(4),
           ));
 }

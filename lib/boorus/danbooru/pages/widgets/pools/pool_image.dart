@@ -39,7 +39,7 @@ class PoolImage extends ConsumerWidget {
                   child: Container(
                     width: constraints.maxWidth,
                     decoration: BoxDecoration(
-                      color: context.colorScheme.surfaceVariant,
+                      color: context.colorScheme.surfaceContainerHighest,
                       borderRadius:
                           BorderRadius.all(Radius.circular(imageBorderRadius)),
                     ),
@@ -53,7 +53,7 @@ class PoolImage extends ConsumerWidget {
               child: Container(
                 width: constraints.maxWidth,
                 decoration: BoxDecoration(
-                  color: context.colorScheme.surfaceVariant,
+                  color: context.colorScheme.surfaceContainerHighest,
                   borderRadius:
                       BorderRadius.all(Radius.circular(imageBorderRadius)),
                 ),

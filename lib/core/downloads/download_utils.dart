@@ -128,6 +128,6 @@ void showDownloadStartToast(BuildContext context) {
     ),
     textPadding: const EdgeInsets.all(12),
     textStyle: TextStyle(color: context.colorScheme.surface),
-    backgroundColor: context.colorScheme.onBackground,
+    backgroundColor: context.colorScheme.onSurface,
   );
 }

@@ -127,7 +127,7 @@ class OptionTagsArenaNoEdit extends StatelessWidget {
                       style: FilledButton.styleFrom(
                         visualDensity: VisualDensity.compact,
                         shape: const CircleBorder(),
-                        backgroundColor: context.colorScheme.surfaceVariant,
+                        backgroundColor: context.colorScheme.surfaceContainerHighest,
                       ),
                       onPressed: () => context.push('/favorite_tags'),
                       child: Icon(
