@@ -18,7 +18,7 @@ import 'package:boorusama/foundation/picker.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
-import 'package:boorusama/widgets/warning_container.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class DownloadTagSelectionView extends ConsumerStatefulWidget {
   const DownloadTagSelectionView({
@@ -273,7 +273,8 @@ class DownloadPathWarning extends StatelessWidget {
       contentBuilder: (context) => Html(
         style: {
           'body': Style(
-            color: context.colorScheme.onError,
+            color: context.colorScheme.onSurface,
+            margin: EdgeInsets.zero,
           ),
         },
         data:

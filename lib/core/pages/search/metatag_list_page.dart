@@ -36,6 +36,7 @@ class MetatagListPage extends StatelessWidget {
       body: Column(
         children: [
           InfoContainer(
+            title: 'Free tags',
             contentBuilder: (context) =>
                 const Text('search.metatags_notice').tr(),
           ),
@@ -51,7 +52,18 @@ class MetatagListPage extends StatelessWidget {
                     onSelected(tag);
                   },
                   title: Text(tag.name),
-                  trailing: tag.isFree ? const Chip(label: Text('Free')) : null,
+                  trailing: tag.isFree
+                      ? Chip(
+                          backgroundColor:
+                              Theme.of(context).colorScheme.primary,
+                          label: Text(
+                            'Free',
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.onPrimary,
+                            ),
+                          ),
+                        )
+                      : null,
                 );
               },
             ),

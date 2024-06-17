@@ -222,10 +222,11 @@ class InvalidBooruWarningContainer extends ConsumerWidget {
           error: (error, st) => Stack(
             children: [
               WarningContainer(
+                title: 'Error',
                 contentBuilder: (context) => Text(
                   'It seems like the site is not running on the selected engine. Please try with another one.',
                   style: TextStyle(
-                    color: context.colorScheme.onError,
+                    color: context.colorScheme.onSurface,
                   ),
                 ),
               ),

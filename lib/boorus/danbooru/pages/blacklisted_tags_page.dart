@@ -86,10 +86,12 @@ class BlacklistedTagsList extends ConsumerWidget {
             slivers: [
               SliverToBoxAdapter(
                 child: WarningContainer(
+                    title: 'Limitation',
                     contentBuilder: (context) => Html(
                           style: {
                             'body': Style(
-                              color: context.colorScheme.onError,
+                              color: context.colorScheme.onSurface,
+                              margin: EdgeInsets.zero,
                             ),
                           },
                           data: 'blacklisted_tags.limitation_notice'.tr(),

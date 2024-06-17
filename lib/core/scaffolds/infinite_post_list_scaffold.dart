@@ -113,10 +113,11 @@ class _InfinitePostListScaffoldState<T extends Post>
               config.booruType == BooruType.gelbooruV1)
             SliverToBoxAdapter(
               child: WarningContainer(
+                  title: 'Layout',
                   contentBuilder: (context) => Text(
                         'Consider switching to the "Standard" layout. "Masonry" is glitchy on Gelbooru V1.',
                         style: TextStyle(
-                          color: context.colorScheme.onError,
+                          color: context.colorScheme.onSurface,
                         ),
                       )),
             ),
