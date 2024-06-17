@@ -134,7 +134,7 @@ class BlacklistedTagsList extends ConsumerWidget {
                                 style: {
                                   'body': Style(
                                     color: context.colorScheme.onSurface,
-                                    margin: EdgeInsets.zero,
+                                    margin: Margins.zero,
                                   ),
                                 },
                                 data: 'blacklisted_tags.limitation_notice'.tr(),

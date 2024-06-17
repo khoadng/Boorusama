@@ -87,8 +87,7 @@ class PoolDetailPage extends ConsumerWidget {
                 ? SliverToBoxAdapter(
                     child: Html(
                       onLinkTap: !config.hasStrictSFW
-                          ? (url, context, attributes, element) =>
-                              _onHtmlLinkTapped(
+                          ? (url, attributes, element) => _onHtmlLinkTapped(
                                 attributes,
                                 url,
                                 data.descriptionEndpointRefUrl,

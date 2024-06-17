@@ -103,7 +103,7 @@ class _CommentItem extends StatelessWidget {
         Html(
           style: {
             'body': Style(
-              margin: EdgeInsets.zero,
+              margin: Margins.zero,
             ),
           },
           data: dtext(

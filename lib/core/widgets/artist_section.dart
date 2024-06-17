@@ -79,17 +79,19 @@ class _ArtistSectionState extends State<ArtistSection> {
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16,
                   ),
-                  child: SelectableHtml(
+                  child: Html(
                     style: {
                       'body': Style(
-                        whiteSpace: WhiteSpace.PRE,
+                        whiteSpace: WhiteSpace.pre,
+                        margin: Margins.zero,
                       ),
                       'h2': Style(
-                        padding: const EdgeInsets.only(top: 4, bottom: 8),
+                        margin: Margins.zero,
+                        padding: HtmlPaddings.only(top: 4, bottom: 8),
                       ),
                     },
                     data: getDescriptionText(display, commentary),
-                    onLinkTap: (url, context, attributes, element) =>
+                    onLinkTap: (url, attributes, element) =>
                         url != null ? launchExternalUrl(Uri.parse(url)) : null,
                   ),
                 ),

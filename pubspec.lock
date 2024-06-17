@@ -293,11 +293,11 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "314d1871b50d5376fa6fa30b81d7279a3734d018"
-      resolved-ref: "314d1871b50d5376fa6fa30b81d7279a3734d018"
+      ref: "7a310fa2aacfaa95339ee2535f0797fcf84efeca"
+      resolved-ref: "7a310fa2aacfaa95339ee2535f0797fcf84efeca"
       url: "https://github.com/khoadng/flutter-context-menu.git"
     source: git
-    version: "1.0.2"
+    version: "2.0.0+1"
   convert:
     dependency: transitive
     description:
@@ -667,12 +667,11 @@ packages:
   flutter_html:
     dependency: "direct main"
     description:
-      path: "."
-      ref: fix-rebuild
-      resolved-ref: cbca2e86e35ca9f37021f5a1e39e154da7e02eac
-      url: "https://github.com/khoadng/flutter_html.git"
-    source: git
-    version: "3.0.0-alpha.5"
+      name: flutter_html
+      sha256: "02ad69e813ecfc0728a455e4bf892b9379983e050722b1dce00192ee2e41d1ee"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.0-beta.2"
   flutter_improved_scrolling:
     dependency: "direct main"
     description:
@@ -965,10 +964,10 @@ packages:
     dependency: "direct main"
     description:
       name: infinite_scroll_pagination
-      sha256: "9517328f4e373f08f57dbb11c5aac5b05554142024d6b60c903f3b73476d52db"
+      sha256: b68bce20752fcf36c7739e60de4175494f74e99e9a69b4dd2fe3a1dd07a7f16a
       url: "https://pub.dev"
     source: hosted
-    version: "3.2.0"
+    version: "4.0.0"
   intl:
     dependency: "direct main"
     description:
@@ -1049,6 +1048,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.0"
+  list_counter:
+    dependency: transitive
+    description:
+      name: list_counter
+      sha256: c447ae3dfcd1c55f0152867090e67e219d42fe6d4f2807db4bbe8b8d69912237
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.2"
   local_auth:
     dependency: "direct main"
     description:
@@ -1209,14 +1216,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.2"
-  numerus:
-    dependency: transitive
-    description:
-      name: numerus
-      sha256: "0087ef729d63b96cb347a9c44b9c592f21cecb3605b415bbd18710aef80ce5cb"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.1.1"
   octo_image:
     dependency: transitive
     description:

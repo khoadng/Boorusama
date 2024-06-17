@@ -15,16 +15,15 @@ class NonQuote extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SelectableHtml(
+    return Html(
       style: {
         'body': Style(
           fontSize: FontSize.medium,
-          margin: EdgeInsets.zero,
-          padding: EdgeInsets.zero,
+          margin: Margins.zero,
         ),
       },
       data: text,
-      onLinkTap: (url, context, attributes, element) {
+      onLinkTap: (url, attributes, element) {
         if (url != null) launchExternalUrl(Uri.parse(url));
       },
     );

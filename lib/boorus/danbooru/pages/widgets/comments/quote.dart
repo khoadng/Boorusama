@@ -26,16 +26,15 @@ class Quote extends StatelessWidget {
         top: 3,
         bottom: 6,
       ),
-      child: SelectableHtml(
+      child: Html(
         style: {
           'body': Style(
             fontSize: FontSize.medium,
-            margin: EdgeInsets.zero,
-            padding: EdgeInsets.zero,
+            margin: Margins.zero,
           ),
         },
         data: text,
-        onLinkTap: (url, context, attributes, element) {
+        onLinkTap: (url, attributes, element) {
           if (url != null) launchExternalUrl(Uri.parse(url));
         },
       ),

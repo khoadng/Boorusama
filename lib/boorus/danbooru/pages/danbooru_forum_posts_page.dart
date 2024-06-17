@@ -128,16 +128,16 @@ class _DanbooruForumPostsPageState
           ),
           Html(
             onLinkTap: !config.hasStrictSFW
-                ? (url, context, attributes, element) =>
+                ? (url, attributes, element) =>
                     url != null ? launchExternalUrlString(url) : null
                 : null,
             style: {
               'body': Style(
-                margin: const EdgeInsets.symmetric(vertical: 4),
+                margin: Margins.symmetric(vertical: 4),
               ),
               'blockquote': Style(
-                padding: const EdgeInsets.only(left: 8),
-                margin: const EdgeInsets.only(left: 4, bottom: 16),
+                padding: HtmlPaddings.only(left: 8),
+                margin: Margins.only(left: 4, bottom: 16),
                 border: const Border(
                     left: BorderSide(color: Colors.grey, width: 3)),
               )

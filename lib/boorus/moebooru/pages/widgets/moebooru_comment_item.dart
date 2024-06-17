@@ -36,7 +36,7 @@ class MoebooruCommentItem extends ConsumerWidget {
         Html(
           style: {
             'body': Style(
-              margin: EdgeInsets.zero,
+              margin: Margins.zero,
             ),
           },
           data: dtext(

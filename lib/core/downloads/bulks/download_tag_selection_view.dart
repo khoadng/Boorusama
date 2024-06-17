@@ -87,8 +87,8 @@ class _DownloadTagSelectionViewState
                     spacing: 5,
                     children: [
                       ...selectedTags.map((e) => Chip(
-                            backgroundColor:
-                                context.theme.colorScheme.surfaceContainerHighest,
+                            backgroundColor: context
+                                .theme.colorScheme.surfaceContainerHighest,
                             label: Text(e.replaceUnderscoreWithSpace()),
                             deleteIcon: Icon(
                               Symbols.close,
@@ -274,7 +274,7 @@ class DownloadPathWarning extends StatelessWidget {
         style: {
           'body': Style(
             color: context.colorScheme.onSurface,
-            margin: EdgeInsets.zero,
+            margin: Margins.zero,
           ),
         },
         data:

@@ -986,12 +986,10 @@ Widget _getTitle(
             'p': Style(
               fontSize: FontSize.medium,
               color: color,
-              padding: EdgeInsets.zero,
-              margin: EdgeInsets.zero,
+              margin: Margins.zero,
             ),
             'body': Style(
-              padding: EdgeInsets.zero,
-              margin: EdgeInsets.zero,
+              margin: Margins.zero,
             ),
             'b': Style(
               fontWeight: FontWeight.w900,
@@ -1005,12 +1003,6 @@ Widget _getTitle(
             'p': Style(
               fontSize: FontSize.medium,
               color: color,
-              padding: EdgeInsets.zero,
-              margin: EdgeInsets.zero,
-            ),
-            'body': Style(
-              padding: EdgeInsets.zero,
-              margin: EdgeInsets.zero,
             ),
             'b': Style(
               fontWeight: FontWeight.w900,
