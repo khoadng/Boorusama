@@ -112,90 +112,52 @@ class AppTheme {
   static ThemeData lightTheme({
     required ColorScheme colorScheme,
   }) =>
-      ThemeData(
-          appBarTheme: const AppBarTheme(
-            scrolledUnderElevation: 0,
-            backgroundColor: Colors.transparent,
-            shadowColor: Colors.transparent,
+      defaultTheme(colorScheme: colorScheme).copyWith(
+        brightness: Brightness.light,
+        dividerTheme: DividerThemeData(
+          color: colorScheme.outlineVariant.withOpacity(0.25),
+          endIndent: 0,
+          indent: 0,
+        ),
+        extensions: const [
+          BoorusamaColors(
+            videoPlayerBackgroundColor: Colors.white,
+            themeMode: AppThemeMode.light,
+            selectedColor: Colors.grey,
           ),
-          chipTheme: const ChipThemeData(
-            shape: StadiumBorder(),
-            side: BorderSide.none,
+        ],
+        listTileTheme: const ListTileThemeData(
+          subtitleTextStyle: TextStyle(
+            color: kHintLightColor,
           ),
-          cardTheme: const CardTheme(
-            elevation: 0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-            ),
-          ),
-          dividerTheme: DividerThemeData(
-            color: colorScheme.outlineVariant.withOpacity(0.25),
-            endIndent: 0,
-            indent: 0,
-          ),
-          dialogTheme: const DialogTheme(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-            ),
-          ),
-          extensions: const [
-            BoorusamaColors(
-              videoPlayerBackgroundColor: Colors.white,
-              themeMode: AppThemeMode.light,
-              selectedColor: Colors.grey,
-            ),
-          ],
-          floatingActionButtonTheme: const FloatingActionButtonThemeData(
-            shape: CircleBorder(),
-          ),
-          inputDecorationTheme: InputDecorationTheme(
-            floatingLabelBehavior: FloatingLabelBehavior.always,
-            filled: true,
-            enabledBorder: const OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-              borderSide: BorderSide.none,
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: const BorderRadius.all(Radius.circular(8)),
-              borderSide: BorderSide(
-                color: colorScheme.primary,
-                width: 2,
-              ),
-            ),
-            errorBorder: const OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-              borderSide: BorderSide(
-                width: 2,
-              ),
-            ),
-            focusedErrorBorder: const OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-              borderSide: BorderSide(
-                width: 2,
-              ),
-            ),
-            contentPadding: const EdgeInsets.all(12),
-          ),
-          listTileTheme: const ListTileThemeData(
-            subtitleTextStyle: TextStyle(
-              color: kHintLightColor,
-            ),
-          ),
-          popupMenuTheme: PopupMenuThemeData(
-            color: colorScheme.secondaryContainer,
-            labelTextStyle: WidgetStateProperty.all(
-              TextStyle(
-                color: colorScheme.onSecondaryContainer,
-              ),
-            ),
-          ),
-          brightness: Brightness.light,
-          colorScheme: colorScheme,
-          scrollbarTheme: ScrollbarThemeData(
-            thickness: WidgetStateProperty.all(4),
-          ));
+        ),
+      );
 
   static ThemeData darkTheme({
+    required ColorScheme colorScheme,
+  }) =>
+      defaultTheme(colorScheme: colorScheme).copyWith(
+        brightness: Brightness.dark,
+        dividerTheme: DividerThemeData(
+          color: colorScheme.outlineVariant.withOpacity(0.1),
+          endIndent: 0,
+          indent: 0,
+        ),
+        extensions: const [
+          BoorusamaColors(
+            videoPlayerBackgroundColor: Colors.black,
+            themeMode: AppThemeMode.amoledDark,
+            selectedColor: Color.fromARGB(255, 74, 74, 74),
+          ),
+        ],
+        listTileTheme: const ListTileThemeData(
+          subtitleTextStyle: TextStyle(
+            color: kHintAmoledDarkColor,
+          ),
+        ),
+      );
+
+  static ThemeData defaultTheme({
     required ColorScheme colorScheme,
   }) =>
       ThemeData(
@@ -224,13 +186,6 @@ class AppTheme {
               borderRadius: BorderRadius.all(Radius.circular(8)),
             ),
           ),
-          extensions: const [
-            BoorusamaColors(
-              videoPlayerBackgroundColor: Colors.black,
-              themeMode: AppThemeMode.amoledDark,
-              selectedColor: Color.fromARGB(255, 74, 74, 74),
-            ),
-          ],
           floatingActionButtonTheme: const FloatingActionButtonThemeData(
             shape: CircleBorder(),
           ),
