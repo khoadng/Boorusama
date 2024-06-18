@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/core/pages/settings/widgets/settings_header.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -42,7 +43,7 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
           shrinkWrap: true,
           primary: false,
           children: [
-            // SettingsHeader(label: 'settings.image_details.image_details'.tr()),
+            SettingsHeader(label: 'settings.general'.tr()),
             SettingsTile(
               title: const Text('settings.image_details.ui_overlay.ui_overlay')
                   .tr(),
@@ -52,6 +53,8 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
                   settings.copyWith(postDetailsOverlayInitialState: value)),
               optionBuilder: (value) => Text(value.localize().tr()),
             ),
+            const Divider(thickness: 1),
+            const SettingsHeader(label: 'Slideshow'),
             SettingsTile(
               title: const Text('Slideshow mode'),
               selectedOption: settings.slideshowDirection,
@@ -85,11 +88,10 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
                 ),
               ),
             ),
+            const Divider(thickness: 1),
+            const SettingsHeader(label: 'Video'),
             SwitchListTile(
               title: const Text('Mute video by default'),
-              subtitle: const Text(
-                'Default state when opening a video',
-              ),
               value: settings.muteAudioByDefault,
               onChanged: (value) => ref.updateSettings(
                 settings.copyWith(
