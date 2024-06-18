@@ -110,6 +110,12 @@ enum VideoAudioDefaultState {
   mute,
 }
 
+enum SlideshowDirection {
+  forward,
+  backward,
+  random,
+}
+
 class Settings extends Equatable {
   const Settings({
     required this.safeMode,
@@ -148,6 +154,7 @@ class Settings extends Equatable {
     required this.mediaBlurCondition,
     required this.slideshowInterval,
     required this.slideshowTransitionType,
+    required this.slideshowDirection,
     required this.reduceAnimations,
     required this.downloaderProviderType,
     required this.downloadFileExistedBehavior,
@@ -231,6 +238,9 @@ class Settings extends Equatable {
         slideshowTransitionType = json['slideshowTransitionType'] != null
             ? SlideshowTransitionType.values[json['slideshowTransitionType']]
             : SlideshowTransitionType.natural,
+        slideshowDirection = json['slideshowDirection'] != null
+            ? SlideshowDirection.values[json['slideshowDirection']]
+            : SlideshowDirection.forward,
         downloaderProviderType = json['downloaderProviderType'] != null
             ? DownloaderProviderType.values[json['downloaderProviderType']]
             : DownloaderProviderType.appDecide,
@@ -286,6 +296,7 @@ class Settings extends Equatable {
     mediaBlurCondition: MediaBlurCondition.none,
     slideshowInterval: 6,
     slideshowTransitionType: SlideshowTransitionType.natural,
+    slideshowDirection: SlideshowDirection.forward,
     reduceAnimations: false,
     downloaderProviderType: DownloaderProviderType.appDecide,
     downloadFileExistedBehavior: DownloadFileExistedBehavior.appDecide,
@@ -356,6 +367,8 @@ class Settings extends Equatable {
 
   final SlideshowTransitionType slideshowTransitionType;
 
+  final SlideshowDirection slideshowDirection;
+
   final bool reduceAnimations;
 
   final DownloaderProviderType downloaderProviderType;
@@ -402,6 +415,7 @@ class Settings extends Equatable {
     MediaBlurCondition? mediaBlurCondition,
     double? slideshowInterval,
     SlideshowTransitionType? slideshowTransitionType,
+    SlideshowDirection? slideshowDirection,
     bool? reduceAnimations,
     DownloaderProviderType? downloaderProviderType,
     DownloadFileExistedBehavior? downloadFileExistedBehavior,
@@ -457,6 +471,7 @@ class Settings extends Equatable {
         slideshowInterval: slideshowInterval ?? this.slideshowInterval,
         slideshowTransitionType:
             slideshowTransitionType ?? this.slideshowTransitionType,
+        slideshowDirection: slideshowDirection ?? this.slideshowDirection,
         reduceAnimations: reduceAnimations ?? this.reduceAnimations,
         downloaderProviderType:
             downloaderProviderType ?? this.downloaderProviderType,
@@ -504,6 +519,7 @@ class Settings extends Equatable {
         'mediaBlurCondition': mediaBlurCondition.index,
         'slideshowInterval': slideshowInterval,
         'slideshowTransitionType': slideshowTransitionType.index,
+        'slideshowDirection': slideshowDirection.index,
         'reduceAnimations': reduceAnimations,
         'downloaderProviderType': downloaderProviderType.index,
         'downloadFileExistedBehavior': downloadFileExistedBehavior.index,
@@ -548,6 +564,7 @@ class Settings extends Equatable {
         mediaBlurCondition,
         slideshowInterval,
         slideshowTransitionType,
+        slideshowDirection,
         reduceAnimations,
         downloaderProviderType,
         downloadFileExistedBehavior,

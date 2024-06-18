@@ -53,6 +53,14 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
               optionBuilder: (value) => Text(value.localize().tr()),
             ),
             SettingsTile(
+              title: const Text('Slideshow mode'),
+              selectedOption: settings.slideshowDirection,
+              items: SlideshowDirection.values,
+              onChanged: (value) => ref
+                  .updateSettings(settings.copyWith(slideshowDirection: value)),
+              optionBuilder: (value) => Text(value.localize().tr()),
+            ),
+            SettingsTile(
               title: const Text('Slideshow interval'),
               subtitle: const Text(
                   'Value less than 1 second will automatically skip transition'),

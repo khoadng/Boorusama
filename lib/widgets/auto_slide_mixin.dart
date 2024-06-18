@@ -6,6 +6,12 @@ import 'package:flutter/material.dart';
 
 const kDefaultAutoSlideDuration = Duration(seconds: 5);
 
+enum SlideDirection {
+  forward,
+  backward,
+  random,
+}
+
 mixin AutomaticSlideMixin<T extends StatefulWidget> on State<T> {
   PageController get pageController;
   Timer? timer;
@@ -19,10 +25,34 @@ mixin AutomaticSlideMixin<T extends StatefulWidget> on State<T> {
     return value;
   }
 
+  int _calculateNextPage(SlideDirection direction, int end) {
+    switch (direction) {
+      case SlideDirection.forward:
+        return (_currentPage + 1) % end;
+      case SlideDirection.backward:
+        return (_currentPage - 1) % end;
+      case SlideDirection.random:
+        if (_currentRandomPages == null || _currentRandomPages!.isEmpty) {
+          _currentRandomPages = _generateRandomPages(end);
+        }
+        // pick a random page then remove it from the list
+        return _currentRandomPages!.removeAt(0);
+    }
+  }
+
+  List<int>? _currentRandomPages;
+
+  List<int> _generateRandomPages(int end) {
+    final pages = List.generate(end, (index) => index);
+    pages.shuffle();
+    return pages;
+  }
+
   void startAutoSlide(
     int start,
     int end, {
     bool skipAnimation = true,
+    SlideDirection direction = SlideDirection.forward,
     Duration duration = kDefaultAutoSlideDuration,
   }) {
     if (_isSliding) return;
@@ -30,12 +60,13 @@ mixin AutomaticSlideMixin<T extends StatefulWidget> on State<T> {
 
     _isSliding = true;
     timer?.cancel();
+    _currentRandomPages = null;
     _currentPage = start;
 
     timer = Timer.periodic(
       duration,
       (timer) {
-        _currentPage = (_currentPage + 1) % end;
+        _currentPage = _calculateNextPage(direction, end);
 
         if (_isSliding) {
           if (skip) {
@@ -59,6 +90,7 @@ mixin AutomaticSlideMixin<T extends StatefulWidget> on State<T> {
 
   void stopAutoSlide() {
     _isSliding = false;
+    _currentRandomPages = null;
     timer?.cancel();
   }
 

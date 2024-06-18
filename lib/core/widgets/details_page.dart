@@ -169,6 +169,11 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
         controller.currentPage.value,
         widget.pageCount,
         skipAnimation: settings.skipSlideshowTransition,
+        direction: switch (settings.slideshowDirection) {
+          SlideshowDirection.forward => SlideDirection.forward,
+          SlideshowDirection.backward => SlideDirection.backward,
+          SlideshowDirection.random => SlideDirection.random,
+        },
         duration: settings.slideshowDuration,
       );
     } else {

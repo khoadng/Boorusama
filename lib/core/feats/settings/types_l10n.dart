@@ -74,3 +74,11 @@ extension BooruConfigLabelVisibilityTranslated on BooruConfigLabelVisibility {
         BooruConfigLabelVisibility.never => 'Off',
       };
 }
+
+extension SlideshowDirectionTranslated on SlideshowDirection {
+  String localize() => switch (this) {
+        SlideshowDirection.forward => 'Forward',
+        SlideshowDirection.backward => 'Backward',
+        SlideshowDirection.random => 'Random',
+      };
+}
