@@ -37,28 +37,12 @@ class ThemeBuilder extends ConsumerWidget {
                 : (null, null)
             : (null, null);
 
-        final darkScheme = AppTheme.generateFromThemeMode(
+        final scheme = AppTheme.generateScheme(
           theme,
-          seed: enableDynamicColor ? dark : null,
+          dynamicDarkScheme: dark,
+          dynamicLightScheme: light,
           systemDarkMode: systemDarkMode,
         );
-        final lightScheme = AppTheme.generateFromThemeMode(
-          theme,
-          seed: enableDynamicColor ? light : null,
-          systemDarkMode: systemDarkMode,
-        );
-        final darkAmoledScheme = AppTheme.generateFromThemeMode(
-          AppThemeMode.amoledDark,
-          seed: enableDynamicColor ? dark : null,
-          systemDarkMode: systemDarkMode,
-        );
-
-        final colorScheme = switch (theme) {
-          AppThemeMode.light => lightScheme,
-          AppThemeMode.dark => darkScheme,
-          AppThemeMode.amoledDark => darkAmoledScheme,
-          AppThemeMode.system => systemDarkMode ? darkScheme : lightScheme,
-        };
 
         return Builder(
           builder: (context) => ProviderScope(
@@ -69,7 +53,7 @@ class ThemeBuilder extends ConsumerWidget {
             child: builder(
               AppTheme.themeFrom(
                 theme,
-                colorScheme: colorScheme,
+                colorScheme: scheme,
                 systemDarkMode: systemDarkMode,
               ),
               mapAppThemeModeToSystemThemeMode(theme),

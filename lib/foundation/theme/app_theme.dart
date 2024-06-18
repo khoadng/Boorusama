@@ -63,27 +63,31 @@ const staticBlackScheme = ColorScheme(
 class AppTheme {
   AppTheme._();
 
-  static ColorScheme generateFromThemeMode(
+  static ColorScheme generateScheme(
     AppThemeMode mode, {
-    ColorScheme? seed,
+    ColorScheme? dynamicDarkScheme,
+    ColorScheme? dynamicLightScheme,
     required bool systemDarkMode,
-  }) {
-    final dark = seed != null ? seed.harmonized() : staticDarkScheme;
-    final light = seed != null ? seed.harmonized() : staticLightScheme;
-    final black = seed != null
-        ? staticBlackScheme.copyWith(
-            primary: seed.primary,
-            onPrimary: seed.onPrimary,
-          )
-        : staticBlackScheme;
-
-    return switch (mode) {
-      AppThemeMode.light => light,
-      AppThemeMode.dark => dark,
-      AppThemeMode.amoledDark => black,
-      AppThemeMode.system => systemDarkMode ? dark : light,
-    };
-  }
+  }) =>
+      switch ((dynamicDarkScheme, dynamicLightScheme)) {
+        (ColorScheme dark, ColorScheme light) => switch (mode) {
+            AppThemeMode.light => light.harmonized(),
+            AppThemeMode.dark => dark.harmonized(),
+            AppThemeMode.amoledDark => staticBlackScheme.copyWith(
+                primary: dark.primary,
+                onPrimary: dark.onPrimary,
+              ),
+            AppThemeMode.system =>
+              systemDarkMode ? dark.harmonized() : light.harmonized(),
+          },
+        _ => switch (mode) {
+            AppThemeMode.light => staticLightScheme,
+            AppThemeMode.dark => staticDarkScheme,
+            AppThemeMode.amoledDark => staticBlackScheme,
+            AppThemeMode.system =>
+              systemDarkMode ? staticDarkScheme : staticLightScheme,
+          },
+      };
 
   static ThemeData themeFrom(
     AppThemeMode mode, {
