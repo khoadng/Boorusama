@@ -116,16 +116,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
                   children: [
                     const SizedBox(height: 4),
                     TabBar(
-                      tabAlignment: TabAlignment.start,
                       isScrollable: true,
-                      labelStyle: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
-                      ),
-                      indicatorColor: context.colorScheme.onSurface,
-                      labelColor: context.colorScheme.onSurface,
-                      unselectedLabelColor:
-                          context.colorScheme.onSurface.withOpacity(0.5),
                       tabs: [
                         for (final tab in tabMap.keys) Tab(text: tab.tr()),
                       ],

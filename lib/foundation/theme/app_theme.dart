@@ -165,77 +165,97 @@ class AppTheme {
     required ColorScheme colorScheme,
   }) =>
       ThemeData(
-          appBarTheme: const AppBarTheme(
-            scrolledUnderElevation: 0,
-            backgroundColor: Colors.transparent,
-            shadowColor: Colors.transparent,
+        appBarTheme: const AppBarTheme(
+          scrolledUnderElevation: 0,
+          backgroundColor: Colors.transparent,
+          shadowColor: Colors.transparent,
+        ),
+        chipTheme: const ChipThemeData(
+          shape: StadiumBorder(),
+          side: BorderSide.none,
+        ),
+        cardTheme: const CardTheme(
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
           ),
-          chipTheme: const ChipThemeData(
-            shape: StadiumBorder(),
-            side: BorderSide.none,
+        ),
+        dividerTheme: DividerThemeData(
+          color: colorScheme.outlineVariant.withOpacity(0.1),
+          endIndent: 0,
+          indent: 0,
+        ),
+        dialogTheme: const DialogTheme(
+          surfaceTintColor: Colors.transparent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
           ),
-          cardTheme: const CardTheme(
-            elevation: 0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
+        ),
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
+          shape: CircleBorder(),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          floatingLabelBehavior: FloatingLabelBehavior.always,
+          filled: true,
+          enabledBorder: const OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+            borderSide: BorderSide.none,
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: const BorderRadius.all(Radius.circular(8)),
+            borderSide: BorderSide(
+              color: colorScheme.primary,
+              width: 2,
             ),
           ),
-          dividerTheme: DividerThemeData(
-            color: colorScheme.outlineVariant.withOpacity(0.1),
-            endIndent: 0,
-            indent: 0,
-          ),
-          dialogTheme: const DialogTheme(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
+          errorBorder: const OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+            borderSide: BorderSide(
+              width: 2,
             ),
           ),
-          floatingActionButtonTheme: const FloatingActionButtonThemeData(
-            shape: CircleBorder(),
-          ),
-          inputDecorationTheme: InputDecorationTheme(
-            floatingLabelBehavior: FloatingLabelBehavior.always,
-            filled: true,
-            enabledBorder: const OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-              borderSide: BorderSide.none,
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: const BorderRadius.all(Radius.circular(8)),
-              borderSide: BorderSide(
-                color: colorScheme.primary,
-                width: 2,
-              ),
-            ),
-            errorBorder: const OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-              borderSide: BorderSide(
-                width: 2,
-              ),
-            ),
-            focusedErrorBorder: const OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-              borderSide: BorderSide(
-                width: 2,
-              ),
-            ),
-            contentPadding: const EdgeInsets.all(12),
-          ),
-          popupMenuTheme: PopupMenuThemeData(
-            color: colorScheme.secondaryContainer,
-            labelTextStyle: WidgetStateProperty.all(
-              TextStyle(
-                color: colorScheme.onSecondaryContainer,
-              ),
+          focusedErrorBorder: const OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+            borderSide: BorderSide(
+              width: 2,
             ),
           ),
-          listTileTheme: const ListTileThemeData(
-            subtitleTextStyle: TextStyle(
-              color: kHintAmoledDarkColor,
+          contentPadding: const EdgeInsets.all(12),
+        ),
+        popupMenuTheme: PopupMenuThemeData(
+          color: colorScheme.secondaryContainer,
+          labelTextStyle: WidgetStateProperty.all(
+            TextStyle(
+              color: colorScheme.onSecondaryContainer,
             ),
           ),
-          colorScheme: colorScheme,
-          scrollbarTheme: ScrollbarThemeData(
-            thickness: WidgetStateProperty.all(4),
-          ));
+        ),
+        listTileTheme: const ListTileThemeData(
+          subtitleTextStyle: TextStyle(
+            color: kHintAmoledDarkColor,
+          ),
+        ),
+        colorScheme: colorScheme,
+        scrollbarTheme: ScrollbarThemeData(
+          thickness: WidgetStateProperty.all(4),
+        ),
+        sliderTheme: SliderThemeData(
+          trackHeight: 1,
+          thumbColor: colorScheme.onSurface,
+          trackShape: const CustomSliderTrackShape(),
+          thumbShape: const CustomSliderThumbShape(),
+          overlayShape: const CustomSliderOverlayShape(),
+        ),
+        tabBarTheme: TabBarTheme(
+          tabAlignment: TabAlignment.start,
+          indicatorColor: colorScheme.onSurface,
+          labelColor: colorScheme.onSurface,
+          unselectedLabelColor: colorScheme.onSurface.withOpacity(0.5),
+          labelStyle: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 14,
+          ),
+          dividerHeight: 0.15,
+        ),
+      );
 }

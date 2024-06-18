@@ -91,16 +91,7 @@ class _DanbooruMyUploadsPageState extends ConsumerState<DanbooruMyUploadsPage>
             children: [
               TabBar(
                 controller: tabController,
-                tabAlignment: TabAlignment.start,
                 isScrollable: true,
-                labelStyle: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-                indicatorColor: context.colorScheme.onSurface,
-                labelColor: context.colorScheme.onSurface,
-                unselectedLabelColor:
-                    context.colorScheme.onSurface.withOpacity(0.5),
                 tabs: const [
                   Tab(text: 'Unposted'),
                   Tab(text: 'Posted'),

@@ -63,16 +63,7 @@ class _PostList extends ConsumerWidget {
                           : 1,
                   length: 2,
                   child: TabBar(
-                    tabAlignment: TabAlignment.start,
                     isScrollable: true,
-                    labelStyle: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                    ),
-                    indicatorColor: context.colorScheme.onSurface,
-                    labelColor: context.colorScheme.onSurface,
-                    unselectedLabelColor:
-                        context.colorScheme.onSurface.withOpacity(0.5),
                     onTap: (value) {
                       ref
                           .read(danbooruSelectedPoolCategoryProvider.notifier)

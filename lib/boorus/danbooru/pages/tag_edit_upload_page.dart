@@ -805,16 +805,7 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
       children: [
         Expanded(
           child: TabBar(
-            tabAlignment: TabAlignment.start,
             isScrollable: true,
-            labelStyle: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
-            indicatorColor: context.colorScheme.onSurface,
-            labelColor: context.colorScheme.onSurface,
-            unselectedLabelColor:
-                context.colorScheme.onSurface.withOpacity(0.5),
             tabs: [
               const Tab(text: 'Tags'),
               const Tab(text: 'Source'),

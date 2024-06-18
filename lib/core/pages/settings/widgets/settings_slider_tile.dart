@@ -29,6 +29,7 @@ class SettingsSliderTile extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(
         left: 16,
+        right: 16,
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,

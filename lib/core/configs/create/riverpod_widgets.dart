@@ -230,7 +230,7 @@ class DefaultBooruInstructionText extends StatelessWidget {
       text,
       style: context.textTheme.titleSmall?.copyWith(
         color: context.theme.hintColor,
-        fontSize: 14,
+        fontSize: 12,
         fontWeight: FontWeight.w400,
       ),
     );
