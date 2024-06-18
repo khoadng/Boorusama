@@ -225,7 +225,6 @@ class AppTheme {
               ),
             ),
           ),
-          brightness: Brightness.dark,
           listTileTheme: const ListTileThemeData(
             subtitleTextStyle: TextStyle(
               color: kHintAmoledDarkColor,

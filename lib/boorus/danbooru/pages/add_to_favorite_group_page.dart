@@ -39,7 +39,6 @@ class AddToFavoriteGroupPage extends ConsumerWidget {
           'favorite_groups.add_to_group_dialog_title',
           style: context.textTheme.titleLarge,
         ).tr(),
-        backgroundColor: Colors.transparent,
       ),
       backgroundColor: context.colorScheme.surface,
       body: Column(

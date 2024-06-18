@@ -22,7 +22,6 @@ import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -132,9 +131,6 @@ class _FavoriteGroupDetailsPageState
       appBar: AppBar(
         centerTitle: false,
         title: Text(widget.group.name.replaceUnderscoreWithSpace()),
-        elevation: 0,
-        shadowColor: Colors.transparent,
-        backgroundColor: context.theme.scaffoldBackgroundColor,
         actions: [
           if (!editing)
             IconButton(

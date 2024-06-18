@@ -46,10 +46,7 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
           title: const Text('Popular'),
           onTap: () => context.navigator.push(CupertinoPageRoute(
               builder: (_) => Scaffold(
-                    appBar: AppBar(
-                      elevation: 0,
-                      backgroundColor: Colors.transparent,
-                    ),
+                    appBar: AppBar(),
                     body: const CustomContextMenuOverlay(
                         child: E621PopularPage()),
                   ))),

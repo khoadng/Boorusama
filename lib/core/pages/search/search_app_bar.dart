@@ -7,7 +7,6 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/widgets/booru_search_bar.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
 
 class SearchAppBar extends ConsumerWidget {
@@ -72,9 +71,6 @@ class SearchAppBar extends ConsumerWidget {
     );
 
     return AppBar(
-      elevation: 0,
-      backgroundColor: context.theme.scaffoldBackgroundColor,
-      shadowColor: Colors.transparent,
       automaticallyImplyLeading: false,
       toolbarHeight: height ?? kToolbarHeight * 1.2,
       title: trailingSearchButton != null
