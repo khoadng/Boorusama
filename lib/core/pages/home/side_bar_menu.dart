@@ -133,7 +133,9 @@ class SideBarMenu extends ConsumerWidget {
                             context.go('/download_manager');
                           },
                         ),
-                        const Divider(),
+                        const Divider(
+                          key: ValueKey('divider'),
+                        ),
                         SideMenuTile(
                           icon: const Icon(
                             Symbols.question_mark,
@@ -157,7 +159,9 @@ class SideBarMenu extends ConsumerWidget {
                           },
                         ),
                       ].map((e) => Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            padding: e.key != const ValueKey('divider')
+                                ? const EdgeInsets.symmetric(horizontal: 8)
+                                : EdgeInsets.zero,
                             child: e,
                           )),
                     SizedBox(
