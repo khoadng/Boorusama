@@ -16,6 +16,7 @@ class BooruConfig extends Equatable {
     required this.booruIdHint,
     required this.apiKey,
     required this.login,
+    required this.passHash,
     required this.name,
     required this.ratingFilter,
     required this.deletedItemBehavior,
@@ -35,6 +36,7 @@ class BooruConfig extends Equatable {
     booruIdHint: -1,
     apiKey: null,
     login: null,
+    passHash: null,
     name: '',
     deletedItemBehavior: BooruConfigDeletedItemBehavior.show,
     ratingFilter: BooruConfigRatingFilter.none,
@@ -59,6 +61,7 @@ class BooruConfig extends Equatable {
         booruIdHint: booruType.toBooruId(),
         apiKey: null,
         login: null,
+        passHash: null,
         name: 'new profile',
         deletedItemBehavior: BooruConfigDeletedItemBehavior.show,
         ratingFilter: BooruConfigRatingFilter.none,
@@ -78,6 +81,7 @@ class BooruConfig extends Equatable {
   final String url;
   final String? apiKey;
   final String? login;
+  final String? passHash;
   final String name;
   final BooruConfigDeletedItemBehavior deletedItemBehavior;
   final BooruConfigRatingFilter ratingFilter;
@@ -103,6 +107,7 @@ class BooruConfig extends Equatable {
       apiKey: apiKey ?? this.apiKey,
       login: login ?? this.login,
       name: name ?? this.name,
+      passHash: passHash,
       deletedItemBehavior: deletedItemBehavior,
       ratingFilter: ratingFilter,
       customDownloadFileNameFormat: customDownloadFileNameFormat,
@@ -122,6 +127,7 @@ class BooruConfig extends Equatable {
         booruIdHint,
         apiKey,
         login,
+        passHash,
         name,
         deletedItemBehavior,
         ratingFilter,
@@ -144,6 +150,7 @@ class BooruConfig extends Equatable {
       booruIdHint: json['booruIdHint'] as int,
       apiKey: json['apiKey'] as String?,
       login: json['login'] as String?,
+      passHash: json['passHash'] as String?,
       url: json['url'] as String,
       name: json['name'] as String,
       deletedItemBehavior: BooruConfigDeletedItemBehavior
@@ -177,6 +184,7 @@ class BooruConfig extends Equatable {
       'booruIdHint': booruIdHint,
       'apiKey': apiKey,
       'login': login,
+      'passHash': passHash,
       'url': url,
       'name': name,
       'deletedItemBehavior': deletedItemBehavior.index,

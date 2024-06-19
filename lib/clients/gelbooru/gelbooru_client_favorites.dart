@@ -18,6 +18,8 @@ mixin GelbooruClientFavorites {
   String? get userId;
   String? get passHash;
 
+  bool get canFavorite => userId != null && passHash != null;
+
   Future<GelbooruFavoriteStatus> addFavorite({
     required int postId,
   }) async {

@@ -216,7 +216,7 @@ final favoriteProvider = Provider.autoDispose
           BooruType.danbooru => ref.watch(danbooruFavoriteProvider(postId)),
           BooruType.e621 => ref.watch(e621FavoriteProvider(postId)),
           BooruType.szurubooru => ref.watch(szurubooruFavoriteProvider(postId)),
-          BooruType.gelbooru ||
+          BooruType.gelbooru => ref.watch(gelbooruFavoriteProvider(postId)),
           BooruType.gelbooruV1 ||
           BooruType.gelbooruV2 ||
           BooruType.zerochan ||

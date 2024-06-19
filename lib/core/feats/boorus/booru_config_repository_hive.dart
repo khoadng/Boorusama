@@ -93,6 +93,7 @@ class HiveBooruConfigRepository implements BooruConfigRepository {
         booruIdHint: booruConfig.booruIdHint,
         apiKey: booruConfig.apiKey ?? '',
         login: booruConfig.login ?? '',
+        passHash: booruConfig.passHash,
         url: booruConfig.url,
         name: booruConfig.name,
         deletedItemBehavior: booruConfig.deletedItemBehavior.index,

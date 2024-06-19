@@ -11,8 +11,10 @@ import 'package:boorusama/boorus/gelbooru/home/home.dart';
 import 'package:boorusama/boorus/gelbooru/posts/posts.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
+import 'package:boorusama/clients/gelbooru/gelbooru_client_favorites.dart';
 import 'package:boorusama/clients/gelbooru/types/types.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
+import 'package:boorusama/core/favorites/favorites.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/notes/notes.dart';
@@ -23,6 +25,7 @@ import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/widgets/posts/post_details_page_mixin.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/functional.dart';
+import 'package:boorusama/widgets/widgets.dart';
 import 'artists/gelbooru_artist_page.dart';
 import 'comments/gelbooru_comment_page.dart';
 import 'configs/create_gelbooru_config_page.dart';
@@ -46,6 +49,7 @@ final gelbooruClientProvider =
     baseUrl: booruConfig.url,
     login: booruConfig.login,
     apiKey: booruConfig.apiKey,
+    passHash: booruConfig.passHash,
     dio: dio,
   );
 });
@@ -131,7 +135,6 @@ Note gelbooruNoteToNote(NoteDto note) {
 
 class GelbooruBuilder
     with
-        FavoriteNotSupportedMixin,
         DefaultThumbnailUrlMixin,
         DefaultThumbnailUrlMixin,
         DefaultPostImageDetailsUrlMixin,
@@ -150,7 +153,7 @@ class GelbooruBuilder
   final PostRepository<GelbooruPost> postRepo;
   final AutocompleteRepository autocompleteRepo;
   final NoteRepository noteRepo;
-  final GelbooruClient client;
+  final GelbooruClient Function() client;
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
@@ -201,7 +204,7 @@ class GelbooruBuilder
   @override
   PostCountFetcher? get postCountFetcher =>
       (config, tags, granularRatingQueryBuilder) {
-        return client
+        return client()
             .getPosts(
               tags: getTags(
                 config,
@@ -315,6 +318,36 @@ class GelbooruBuilder
       (context, config, controller) => GelbooruMobileHomePage(
             controller: controller,
           );
+
+  @override
+  FavoriteAdder? get favoriteAdder => client().canFavorite
+      ? (postId, ref) async {
+          final status = await ref
+              .read(gelbooruFavoritesProvider(ref.readConfig).notifier)
+              .add(postId);
+
+          if (status == AddFavoriteStatus.alreadyExists) {
+            showErrorToast('Already favorited');
+          } else if (status == AddFavoriteStatus.failure) {
+            showErrorToast('Failed to favorite');
+          } else {
+            showSuccessToast('Favorited');
+          }
+
+          return status == AddFavoriteStatus.success;
+        }
+      : null;
+
+  @override
+  FavoriteRemover? get favoriteRemover => client().canFavorite
+      ? (postId, ref) async {
+          await ref
+              .read(gelbooruFavoritesProvider(ref.readConfig).notifier)
+              .remove(postId);
+
+          return true;
+        }
+      : null;
 }
 
 class GelbooruSearchPage extends ConsumerWidget {
@@ -356,3 +389,50 @@ class GelbooruFavoritesPage extends ConsumerWidget {
     );
   }
 }
+
+class GelbooruFavoritesNotifier
+    extends FamilyNotifier<IMap<int, bool>, BooruConfig>
+    with FavoritesNotifierMixin {
+  @override
+  IMap<int, bool> build(BooruConfig arg) {
+    ref.watchConfig;
+
+    return <int, bool>{}.lock;
+  }
+
+  @override
+  Future<bool> Function(int postId) get favoriteAdder => (postId) => ref
+      .read(
+        gelbooruClientProvider(ref.watchConfig),
+      )
+      .addFavorite(postId: postId)
+      .then((value) => value == GelbooruFavoriteStatus.success);
+
+  @override
+  Future<bool> Function(int postId) get favoriteRemover => (postId) => ref
+      .read(
+        gelbooruClientProvider(ref.watchConfig),
+      )
+      .removeFavorite(postId: postId)
+      .then((value) => true)
+      .catchError((e) => false);
+
+  @override
+  IMap<int, bool> get favorites => state;
+
+  @override
+  void Function(IMap<int, bool> data) get updateFavorites =>
+      (data) => state = data;
+}
+
+final gelbooruFavoritesProvider = NotifierProvider.family<
+    GelbooruFavoritesNotifier, IMap<int, bool>, BooruConfig>(
+  GelbooruFavoritesNotifier.new,
+);
+
+final gelbooruFavoriteProvider =
+    Provider.autoDispose.family<bool, int>((ref, postId) {
+  final config = ref.watchConfig;
+  final favorites = ref.watch(gelbooruFavoritesProvider(config));
+  return favorites[postId] ?? false;
+});

@@ -14,6 +14,7 @@ extension BooruConfigDataConverter on BooruConfigData? {
       booruIdHint: booruConfigData.booruIdHint ?? booruConfigData.booruId,
       apiKey: booruConfigData.apiKey.isEmpty ? null : booruConfigData.apiKey,
       login: booruConfigData.login.isEmpty ? null : booruConfigData.login,
+      passHash: booruConfigData.passHash,
       url: booruConfigData.url,
       name: booruConfigData.name,
       ratingFilter:
@@ -45,6 +46,7 @@ extension BooruConfigConverter on BooruConfig {
       booruIdHint: booruIdHint,
       apiKey: apiKey ?? '',
       login: login ?? '',
+      passHash: passHash,
       name: name,
       deletedItemBehavior: deletedItemBehavior.index,
       ratingFilter: ratingFilter.index,

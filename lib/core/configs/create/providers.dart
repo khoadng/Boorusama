@@ -127,6 +127,11 @@ extension UpdateDataX on WidgetRef {
     updateAuthConfigData(auth.copyWith(apiKey: value));
   }
 
+  void updatePassHash(String? value) {
+    final auth = read(authConfigDataProvider);
+    updateAuthConfigData(auth.copyWith(passHash: () => value));
+  }
+
   void updateLogin(String value) {
     final auth = read(authConfigDataProvider);
     updateAuthConfigData(auth.copyWith(login: value));

@@ -12,6 +12,7 @@ class BooruConfigData extends Equatable {
     required this.booruIdHint,
     required this.apiKey,
     required this.login,
+    required this.passHash,
     required this.name,
     required this.deletedItemBehavior,
     required this.ratingFilter,
@@ -40,6 +41,7 @@ class BooruConfigData extends Equatable {
         booruIdHint: booruHint.toBooruId(),
         apiKey: '',
         login: '',
+        passHash: null,
         url: url,
         name: name,
         deletedItemBehavior: BooruConfigDeletedItemBehavior.show.index,
@@ -60,6 +62,7 @@ class BooruConfigData extends Equatable {
         booruIdHint: json['booruIdHint'] as int?,
         apiKey: json['apiKey'] as String,
         login: json['login'] as String,
+        passHash: json['passHash'] as String?,
         url: json['url'] as String,
         name: json['name'] as String,
         deletedItemBehavior: json['deletedItemBehavior'] as int,
@@ -87,6 +90,7 @@ class BooruConfigData extends Equatable {
       'booruIdHint': booruIdHint,
       'apiKey': apiKey,
       'login': login,
+      'passHash': passHash,
       'url': url,
       'name': name,
       'deletedItemBehavior': deletedItemBehavior,
@@ -105,6 +109,7 @@ class BooruConfigData extends Equatable {
   final int? booruIdHint;
   final String apiKey;
   final String login;
+  final String? passHash;
   final String name;
   final int deletedItemBehavior;
   final int ratingFilter;
@@ -123,6 +128,7 @@ class BooruConfigData extends Equatable {
         booruIdHint,
         apiKey,
         login,
+        passHash,
         name,
         deletedItemBehavior,
         ratingFilter,
@@ -162,6 +168,7 @@ extension BooruConfigDataCopyWith on BooruConfigData {
     int? Function()? booruIdHint,
     String? apiKey,
     String? login,
+    String? Function()? passHash,
     String? name,
     BooruConfigDeletedItemBehavior? deletedItemBehavior,
     BooruConfigRatingFilter? ratingFilter,
@@ -179,6 +186,7 @@ extension BooruConfigDataCopyWith on BooruConfigData {
       booruIdHint: booruIdHint != null ? booruIdHint() : this.booruIdHint,
       apiKey: apiKey ?? this.apiKey,
       login: login ?? this.login,
+      passHash: passHash != null ? passHash() : this.passHash,
       name: name ?? this.name,
       deletedItemBehavior: deletedItemBehavior != null
           ? deletedItemBehavior.index
