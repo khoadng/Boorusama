@@ -485,7 +485,6 @@ class Routes {
             name: state.name,
             transitionsBuilder: fadeTransitionBuilder(),
             child: OriginalImagePage(
-              initialOrientation: MediaQuery.orientationOf(context),
               post: post,
             ),
           );
