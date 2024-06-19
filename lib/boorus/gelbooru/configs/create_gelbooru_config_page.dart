@@ -15,7 +15,6 @@ import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
-import 'package:boorusama/widgets/toast.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'widgets.dart';
 
@@ -182,51 +181,61 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
               : Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 4,
-                      ),
-                      margin: const EdgeInsets.symmetric(vertical: 16),
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: context.colorScheme.primary,
-                        ),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            'Logged in',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Row(
-                            children: [
-                              RawChip(
-                                backgroundColor:
-                                    context.colorScheme.secondaryContainer,
-                                onPressed: _openBrowser,
-                                label: const Text('Update'),
-                              ),
-                              const SizedBox(width: 8),
-                              RawChip(
-                                backgroundColor:
-                                    context.colorScheme.secondaryContainer,
-                                onPressed: () {
-                                  ref.updatePassHash(null);
-                                },
-                                label: const Text('Clear'),
-                              ),
-                            ],
-                          ),
-                        ],
+                    _buildLoginStatus(),
+                    const SizedBox(height: 8),
+                    WarningContainer(
+                      margin: EdgeInsets.zero,
+                      title: "About the heart button's state",
+                      contentBuilder: (context) => const Text(
+                        "There is no way to check if an image has already been favorited. Although you can see the visual indicator after you've favorited an image, it will lose its state if you restart the app. Don't worry, your favorites are still there on the website.",
                       ),
                     ),
                   ],
                 ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLoginStatus() {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16,
+        vertical: 4,
+      ),
+      margin: const EdgeInsets.symmetric(vertical: 16),
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: context.colorScheme.primary,
+        ),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Text(
+            'Logged in',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Row(
+            children: [
+              RawChip(
+                backgroundColor: context.colorScheme.secondaryContainer,
+                onPressed: _openBrowser,
+                label: const Text('Update'),
+              ),
+              const SizedBox(width: 8),
+              RawChip(
+                backgroundColor: context.colorScheme.secondaryContainer,
+                onPressed: () {
+                  ref.updatePassHash(null);
+                },
+                label: const Text('Clear'),
+              ),
+            ],
+          ),
         ],
       ),
     );
