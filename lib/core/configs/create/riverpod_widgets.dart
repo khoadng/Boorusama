@@ -341,7 +341,7 @@ class _CreateBooruConfigGranularRatingOptionsState
                         }
                       }
 
-                      widget.onChanged?.call(granularRatingFilters);
+                      widget.onChanged?.call(granularRatingFilters?.toSet());
                     },
                   );
                 },
