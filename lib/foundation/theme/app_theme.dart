@@ -249,13 +249,17 @@ class AppTheme {
         tabBarTheme: TabBarTheme(
           tabAlignment: TabAlignment.start,
           indicatorColor: colorScheme.onSurface,
-          labelColor: colorScheme.onSurface,
-          unselectedLabelColor: colorScheme.onSurface.withOpacity(0.5),
-          labelStyle: const TextStyle(
+          labelStyle: TextStyle(
+            color: colorScheme.onSurface,
             fontWeight: FontWeight.bold,
             fontSize: 14,
           ),
-          dividerHeight: 0.15,
+          unselectedLabelStyle: TextStyle(
+            color: colorScheme.onSurface.withOpacity(0.5),
+            fontWeight: FontWeight.bold,
+            fontSize: 14,
+          ),
+          dividerHeight: 0.1,
         ),
       );
 }
