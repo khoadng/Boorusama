@@ -345,6 +345,8 @@ class GelbooruBuilder
               .read(gelbooruFavoritesProvider(ref.readConfig).notifier)
               .remove(postId);
 
+          showSuccessToast('Favorite removed');
+
           return true;
         }
       : null;
@@ -384,8 +386,18 @@ class GelbooruFavoritesPage extends ConsumerWidget {
 
     return FavoritesPageScaffold(
       favQueryBuilder: () => query,
-      fetcher: (page) =>
-          ref.read(gelbooruPostRepoProvider(config)).getPosts(query, page),
+      fetcher: (page) => TaskEither.Do(($) async {
+        final posts = await $(
+            ref.read(gelbooruPostRepoProvider(config)).getPosts(query, page));
+
+        // all posts from this page are already favorited by the user
+        ref.read(gelbooruFavoritesProvider(config).notifier).preloadInternal(
+              posts,
+              selfFavorited: (post) => true,
+            );
+
+        return posts;
+      }),
     );
   }
 }
