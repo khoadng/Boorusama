@@ -75,6 +75,7 @@ class _InteractiveBooruImageState extends ConsumerState<InteractiveBooruImage> {
   @override
   Widget build(BuildContext context) {
     final config = ref.watchConfig;
+    final ua = ref.watch(userAgentGeneratorProvider(config)).generate();
 
     if (widget.imageUrl.isEmpty) {
       return NullableAspectRatio(
@@ -111,9 +112,7 @@ class _InteractiveBooruImageState extends ConsumerState<InteractiveBooruImage> {
                             : null,
                         fit: BoxFit.contain,
                         headers: {
-                          'User-Agent': ref
-                              .watch(userAgentGeneratorProvider(config))
-                              .generate(),
+                          'User-Agent': ua,
                         },
                       ),
                       ...widget.imageOverlayBuilder?.call(constraints) ?? [],
@@ -132,9 +131,7 @@ class _InteractiveBooruImageState extends ConsumerState<InteractiveBooruImage> {
                       : null,
                   fit: BoxFit.contain,
                   headers: {
-                    'User-Agent': ref
-                        .watch(userAgentGeneratorProvider(config))
-                        .generate(),
+                    'User-Agent': ua,
                   },
                 ),
               ),

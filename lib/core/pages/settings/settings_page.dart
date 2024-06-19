@@ -371,26 +371,47 @@ class SettingTile extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
           onTap: onTap,
           child: Container(
-              margin: EdgeInsets.symmetric(vertical: dense ? 4 : 10),
-              padding: EdgeInsets.symmetric(
-                horizontal: 8,
-                vertical: showIcon ? 4 : 6,
-              ),
-              child: Row(
-                children: [
-                  if (showIcon) leading,
-                  if (showIcon) const SizedBox(width: 16),
-                  Expanded(
-                    child: Text(
-                      title,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
+            margin: EdgeInsets.symmetric(
+              vertical: dense
+                  ? 4
+                  : subtitle != null
+                      ? 6
+                      : 10,
+            ),
+            padding: EdgeInsets.symmetric(
+              horizontal: 8,
+              vertical: showIcon ? 4 : 6,
+            ),
+            child: Row(
+              children: [
+                if (showIcon) leading,
+                if (showIcon) const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                        ),
                       ),
-                    ),
+                      if (subtitle != null) ...[
+                        Text(
+                          subtitle!,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: context.theme.hintColor,
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
-                ],
-              )),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -453,7 +474,10 @@ class _SettingsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16,
+        vertical: 8,
+      ),
       child: Text(
         label.toUpperCase(),
         style: context.textTheme.titleSmall!

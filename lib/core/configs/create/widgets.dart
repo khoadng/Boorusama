@@ -316,12 +316,12 @@ class CreateBooruSubmitButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FilledButton(
+    return TextButton(
       style: FilledButton.styleFrom(
         backgroundColor: backgroundColor,
       ),
       onPressed: onSubmit,
-      child: child ?? const Text('booru.config_booru_confirm').tr(),
+      child: child ?? const Text('Save'),
     );
   }
 }

@@ -24,6 +24,7 @@ class SelectedBooruChip extends StatelessWidget {
     return ListTile(
       minVerticalPadding: 0,
       horizontalTitleGap: 12,
+      contentPadding: EdgeInsets.zero,
       visualDensity: VisualDensity.compact,
       leading: source.whenWeb(
         (source) => BooruLogo(source: source),
@@ -35,6 +36,9 @@ class SelectedBooruChip extends StatelessWidget {
           () => url,
         ),
         style: context.textTheme.titleLarge,
+        maxLines: 1,
+        softWrap: false,
+        overflow: TextOverflow.ellipsis,
       ),
       subtitle: Text('using ${booruType.stringify()}'),
     );

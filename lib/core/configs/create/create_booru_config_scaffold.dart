@@ -3,12 +3,10 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -86,26 +84,27 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
       ),
     };
 
-    return Material(
-      color: backgroundColor,
-      child: SafeArea(
+    return Scaffold(
+      backgroundColor: backgroundColor,
+      appBar: AppBar(
+        titleSpacing: 0,
+        title: SelectedBooruChip(
+          booruType: config.booruType,
+          url: config.url,
+        ),
+        actions: [
+          BooruConfigSubmitButton(
+            builder: submitButtonBuilder != null
+                ? submitButtonBuilder!
+                : (data) => DefaultBooruSubmitButton(
+                      data: data,
+                    ),
+          ),
+        ],
+      ),
+      body: SafeArea(
         child: Column(
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: SelectedBooruChip(
-                    booruType: config.booruType,
-                    url: config.url,
-                  ),
-                ),
-                IconButton(
-                  splashRadius: 20,
-                  onPressed: context.navigator.pop,
-                  icon: const Icon(Symbols.close),
-                ),
-              ],
-            ),
             const SizedBox(height: 8),
             const BooruConfigNameField(),
             Expanded(
@@ -138,39 +137,25 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 8,
-                      ),
-                      child: Column(
-                        children: [
-                          if (isNewConfig)
+                    if (isNewConfig)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
+                        child: Column(
+                          children: [
                             Text(
                               'Not sure? Leave it as it is, you can change it later.',
                               style: context.textTheme.titleSmall?.copyWith(
                                 color: context.theme.hintColor,
-                                fontSize: 14,
+                                fontSize: 12,
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
-                          const SizedBox(height: 8),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: BooruConfigSubmitButton(
-                                  builder: submitButtonBuilder != null
-                                      ? submitButtonBuilder!
-                                      : (data) => DefaultBooruSubmitButton(
-                                            data: data,
-                                          ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
                   ],
                 ),
               ),
