@@ -200,17 +200,20 @@ class GelbooruBuilder
 
   @override
   PostCountFetcher? get postCountFetcher =>
-      (config, tags, granularRatingQueryBuilder) {
-        return client
-            .getPosts(
-              tags: getTags(
-                config,
-                tags,
-                granularRatingQueries: (tags) =>
-                    granularRatingQueryBuilder?.call(tags, config),
-              ),
-            )
-            .then((value) => value.count);
+      (config, tags, granularRatingQueryBuilder) async {
+        // Delay a bit to avoid this request running before the actual search, this is a hack used for the search page
+        await Future.delayed(const Duration(milliseconds: 100));
+
+        final result = await client.getPosts(
+          tags: getTags(
+            config,
+            tags,
+            granularRatingQueries: (tags) =>
+                granularRatingQueryBuilder?.call(tags, config),
+          ),
+        );
+
+        return result.count;
       };
 
   @override
