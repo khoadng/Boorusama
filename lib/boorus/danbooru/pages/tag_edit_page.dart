@@ -24,6 +24,7 @@ import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/scrolling.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -177,12 +178,14 @@ class _TagEditPageInternalState extends ConsumerState<TagEditPageInternal> {
   final splitController = MultiSplitViewController(
     areas: [
       Area(
-        minimalSize: 4,
-        weight: 0.5,
+        id: 'image',
+        data: 'image',
+        size: 250,
+        min: 25,
       ),
       Area(
-        minimalSize: 100,
-        weight: 0.5,
+        id: 'content',
+        data: 'content',
       ),
     ],
   );
@@ -212,12 +215,14 @@ class _TagEditPageInternalState extends ConsumerState<TagEditPageInternal> {
   void _setDefaultSplit() {
     splitController.areas = [
       Area(
-        minimalSize: 4,
-        weight: 0.5,
+        id: 'image',
+        data: 'image',
+        size: 250,
+        min: 25,
       ),
       Area(
-        minimalSize: 100,
-        weight: 0.5,
+        id: 'content',
+        data: 'content',
       ),
     ];
   }
@@ -225,12 +230,14 @@ class _TagEditPageInternalState extends ConsumerState<TagEditPageInternal> {
   void _setMaxSplit() {
     splitController.areas = [
       Area(
-        minimalSize: 4,
-        weight: 0.9,
+        id: 'image',
+        data: 'image',
+        size: context.screenHeight * 0.5,
+        min: 50 + MediaQuery.viewPaddingOf(context).top,
       ),
       Area(
-        minimalSize: 100,
-        weight: 0.1,
+        id: 'content',
+        data: 'content',
       ),
     ];
   }
@@ -361,36 +368,37 @@ class _TagEditPageInternalState extends ConsumerState<TagEditPageInternal> {
         child: MultiSplitView(
           axis: Axis.vertical,
           controller: splitController,
-          children: [
-            Column(
-              children: [
-                Expanded(
-                  child: _buildImage(),
-                ),
-                const Divider(
-                  thickness: 1,
-                  height: 4,
-                ),
-              ],
-            ),
-            CustomScrollView(
-              controller: scrollController,
-              slivers: [
-                SliverToBoxAdapter(
-                  child: widget.ratingSelectorBuilder(),
-                ),
-                const SliverSizedBox(height: 8),
-                if (widget.sourceBuilder != null)
-                  SliverToBoxAdapter(
-                    child: widget.sourceBuilder!(),
+          builder: (context, area) => switch (area.data) {
+            'image' => Column(
+                children: [
+                  Expanded(
+                    child: _buildImage(),
                   ),
-                const SliverSizedBox(height: 8),
-                SliverToBoxAdapter(
-                  child: _buildTagListSection(),
-                ),
-              ],
-            ),
-          ],
+                  const Divider(
+                    thickness: 1,
+                    height: 4,
+                  ),
+                ],
+              ),
+            'content' => CustomScrollView(
+                controller: scrollController,
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: widget.ratingSelectorBuilder(),
+                  ),
+                  const SliverSizedBox(height: 8),
+                  if (widget.sourceBuilder != null)
+                    SliverToBoxAdapter(
+                      child: widget.sourceBuilder!(),
+                    ),
+                  const SliverSizedBox(height: 8),
+                  SliverToBoxAdapter(
+                    child: _buildTagListSection(),
+                  ),
+                ],
+              ),
+            _ => const SizedBox(),
+          },
         ),
       ),
     );
@@ -564,7 +572,8 @@ class _TagEditPageInternalState extends ConsumerState<TagEditPageInternal> {
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(4)),
                     ),
-                    backgroundColor: context.colorScheme.surfaceContainerHighest,
+                    backgroundColor:
+                        context.colorScheme.surfaceContainerHighest,
                   ),
                   onPressed: () {
                     setState(() {

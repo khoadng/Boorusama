@@ -29,7 +29,7 @@ import 'package:boorusama/router.dart';
 import 'package:boorusama/utils/flutter_utils.dart';
 import 'package:boorusama/widgets/lazy_indexed_stack.dart';
 
-const double _kDefaultMenuSize = 280;
+const double _kDefaultMenuSize = 220;
 const String kMenuWidthCacheKey = 'menu_width';
 
 class BooruScope extends ConsumerStatefulWidget {
@@ -163,11 +163,15 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
     splitController = MultiSplitViewController(
       areas: [
         Area(
-          minimalSize: kMinSideBarWidth,
+          id: 'menu',
+          data: 'menu',
+          min: kMinSideBarWidth,
+          max: kMaxSideBarWidth,
           size: widget.menuWidth ?? _kDefaultMenuSize,
         ),
         Area(
-          minimalSize: 500,
+          id: 'content',
+          data: 'content',
         ),
       ],
     );
@@ -292,17 +296,18 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
                   });
                 },
                 axis: Axis.horizontal,
-                children: [
-                  LayoutBuilder(
-                    builder: (_, c) {
-                      // no need to set state here, just a quick hack to get the current width of the menu
-                      menuWidth.value = c.maxWidth;
+                builder: (context, area) => switch (area.data) {
+                  'menu' => LayoutBuilder(
+                      builder: (_, c) {
+                        // no need to set state here, just a quick hack to get the current width of the menu
+                        menuWidth.value = c.maxWidth;
 
-                      return menu;
-                    },
-                  ),
-                  content,
-                ],
+                        return menu;
+                      },
+                    ),
+                  'content' => content,
+                  _ => const SizedBox(),
+                },
               ),
             ),
     );
@@ -311,11 +316,15 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
   void _setMinSplit() {
     splitController.areas = [
       Area(
-        minimalSize: kMinSideBarWidth,
+        id: 'menu',
+        data: 'menu',
+        min: kMinSideBarWidth,
+        max: kMaxSideBarWidth,
         size: kMinSideBarWidth,
       ),
       Area(
-        minimalSize: 500,
+        id: 'content',
+        data: 'content',
       ),
     ];
   }
@@ -323,11 +332,15 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
   void _setDefaultSplit() {
     splitController.areas = [
       Area(
-        minimalSize: kMinSideBarWidth,
+        id: 'menu',
+        data: 'menu',
+        min: kMinSideBarWidth,
+        max: kMaxSideBarWidth,
         size: _kDefaultMenuSize,
       ),
       Area(
-        minimalSize: 500,
+        id: 'content',
+        data: 'content',
       ),
     ];
   }

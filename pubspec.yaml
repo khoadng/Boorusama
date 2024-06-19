@@ -80,7 +80,7 @@ dependencies:
   material_symbols_icons: ^4.2719.0
   media_scanner: ^2.1.0
   modal_bottom_sheet: ^3.0.0-pre
-  multi_split_view: ^2.4.0
+  multi_split_view: ^3.2.1
   oktoast: ^3.4.0
   package_info_plus: ^7.0.0
   path: ^1.8.3
