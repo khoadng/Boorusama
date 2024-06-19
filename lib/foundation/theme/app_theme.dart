@@ -103,6 +103,11 @@ class AppTheme {
           ),
         AppThemeMode.amoledDark => darkTheme(
             colorScheme: colorScheme,
+          ).copyWith(
+            dividerTheme: const DividerThemeData(
+              endIndent: 0,
+              indent: 0,
+            ),
           ),
         AppThemeMode.system => systemDarkMode
             ? darkTheme(
@@ -179,11 +184,6 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),
           ),
-        ),
-        dividerTheme: DividerThemeData(
-          color: colorScheme.outlineVariant.withOpacity(0.1),
-          endIndent: 0,
-          indent: 0,
         ),
         dialogTheme: const DialogTheme(
           surfaceTintColor: Colors.transparent,
