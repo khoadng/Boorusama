@@ -9,7 +9,7 @@ enum AddFavoriteStatus {
 }
 
 mixin FavoritesNotifierMixin {
-  Future<bool> Function(int postId) get favoriteAdder;
+  Future<AddFavoriteStatus> Function(int postId) get favoriteAdder;
   Future<bool> Function(int postId) get favoriteRemover;
 
   IMap<int, bool> get favorites;
@@ -19,14 +19,14 @@ mixin FavoritesNotifierMixin {
   Future<AddFavoriteStatus> add(int postId) async {
     if (favorites[postId] == true) return AddFavoriteStatus.alreadyExists;
 
-    final success = await favoriteAdder(postId);
-    if (success) {
+    final status = await favoriteAdder(postId);
+    if (status == AddFavoriteStatus.success ||
+        status == AddFavoriteStatus.alreadyExists) {
       final newData = favorites.add(postId, true);
       updateFavorites(newData);
-      return AddFavoriteStatus.success;
     }
 
-    return AddFavoriteStatus.failure;
+    return status;
   }
 
   Future<void> remove(int postId) async {

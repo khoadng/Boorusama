@@ -23,8 +23,14 @@ class E621FavoritesNotifier extends FamilyNotifier<IMap<int, bool>, BooruConfig>
       );
 
   @override
-  Future<bool> Function(int postId) get favoriteAdder => (postId) =>
-      ref.read(e621FavoritesRepoProvider(arg)).addToFavorites(postId);
+  Future<AddFavoriteStatus> Function(int postId) get favoriteAdder =>
+      (postId) => ref
+          .read(e621FavoritesRepoProvider(arg))
+          .addToFavorites(postId)
+          .then(
+            (value) =>
+                value ? AddFavoriteStatus.success : AddFavoriteStatus.failure,
+          );
 
   @override
   Future<bool> Function(int postId) get favoriteRemover => (postId) =>

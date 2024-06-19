@@ -413,12 +413,18 @@ class GelbooruFavoritesNotifier
   }
 
   @override
-  Future<bool> Function(int postId) get favoriteAdder => (postId) => ref
-      .read(
-        gelbooruClientProvider(ref.watchConfig),
-      )
-      .addFavorite(postId: postId)
-      .then((value) => value == GelbooruFavoriteStatus.success);
+  Future<AddFavoriteStatus> Function(int postId) get favoriteAdder =>
+      (postId) => ref
+          .read(
+            gelbooruClientProvider(ref.watchConfig),
+          )
+          .addFavorite(postId: postId)
+          .then((value) => switch (value) {
+                GelbooruFavoriteStatus.success => AddFavoriteStatus.success,
+                GelbooruFavoriteStatus.alreadyFavorited =>
+                  AddFavoriteStatus.alreadyExists,
+                _ => AddFavoriteStatus.failure,
+              });
 
   @override
   Future<bool> Function(int postId) get favoriteRemover => (postId) => ref
