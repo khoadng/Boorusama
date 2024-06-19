@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -26,9 +27,11 @@ class SettingsPage extends ConsumerStatefulWidget {
   const SettingsPage({
     super.key,
     this.scrollTo,
+    this.largeScreen = false,
   });
 
   final String? scrollTo;
+  final bool largeScreen;
 
   @override
   ConsumerState<SettingsPage> createState() => _SettingsPageState();
@@ -63,323 +66,331 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: !widget.largeScreen
+          ? AppBar(
+              title: Text(
+                'settings.settings'.tr(),
+              ),
+            )
+          : null,
+      body: SettingsPageScope(
+        options: SettingsPageOptions(
+          showIcon: !widget.largeScreen,
+          dense: widget.largeScreen,
+        ),
+        child: Theme(
+          data: Theme.of(context).copyWith(
+            iconTheme: Theme.of(context).iconTheme.copyWith(
+                  size: 20,
+                ),
+          ),
+          child: _buildBody(),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBody() {
     final appInfo = ref.watch(appInfoProvider);
     ref.watch(settingsProvider.select((value) => value.language));
     final booruBuilder = ref.watch(booruBuilderProvider);
-
-    return Scaffold(
-      appBar: AppBar(title: Text('settings.settings'.tr())),
-      body: Padding(
-        padding: const EdgeInsets.only(top: 8),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                controller: scrollController,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+    return Padding(
+      padding: const EdgeInsets.only(top: 8),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              controller: scrollController,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _SettingsSection(
+                    label: 'settings.app_settings'.tr(),
+                  ),
+                  SettingTile(
+                    leading: const FaIcon(
+                      FontAwesomeIcons.paintRoller,
+                    ),
+                    title: 'settings.appearance.appearance'.tr(),
+                    onTap: () => context.go('/settings/appearance'),
+                  ),
+                  SettingTile(
+                    title: 'settings.language.language'.tr(),
+                    leading: const Icon(
+                      Symbols.translate,
+                      size: 24,
+                    ),
+                    onTap: () => context.go('/settings/language'),
+                  ),
+                  SettingTile(
+                    title: 'download.download'.tr(),
+                    leading: const FaIcon(
+                      FontAwesomeIcons.download,
+                    ),
+                    onTap: () => context.go('/settings/download'),
+                  ),
+                  SettingTile(
+                    title: 'settings.performance.performance'.tr(),
+                    leading: const FaIcon(
+                      FontAwesomeIcons.gaugeSimpleHigh,
+                    ),
+                    onTap: () => context.go('/settings/performance'),
+                  ),
+                  SettingTile(
+                    title: 'settings.data_and_storage.data_and_storage'.tr(),
+                    onTap: () => context.go('/settings/data_and_storage'),
+                    leading: const FaIcon(
+                      FontAwesomeIcons.database,
+                    ),
+                  ),
+                  SettingTile(
+                    title:
+                        'settings.backup_and_restore.backup_and_restore'.tr(),
+                    leading: const FaIcon(
+                      FontAwesomeIcons.cloudArrowDown,
+                    ),
+                    onTap: () => context.go('/settings/backup_and_restore'),
+                  ),
+                  SettingTile(
+                    title: 'settings.search.search'.tr(),
+                    leading: const FaIcon(
+                      FontAwesomeIcons.magnifyingGlass,
+                    ),
+                    onTap: () => context.go('/settings/search'),
+                  ),
+                  SettingTile(
+                    title: 'settings.accessibility.accessibility'.tr(),
+                    leading: const FaIcon(
+                      FontAwesomeIcons.universalAccess,
+                    ),
+                    onTap: () => context.go('/settings/accessibility'),
+                  ),
+                  SettingTile(
+                    title: 'Image Viewer',
+                    leading: const FaIcon(
+                      FontAwesomeIcons.image,
+                    ),
+                    onTap: () => context.go('/settings/image_viewer'),
+                  ),
+                  SettingTile(
+                    title: 'settings.privacy.privacy'.tr(),
+                    leading: const FaIcon(
+                      FontAwesomeIcons.shieldHalved,
+                    ),
+                    onTap: () => context.go('/settings/privacy'),
+                  ),
+                  if (booruBuilder != null) ...[
+                    const Divider(),
                     _SettingsSection(
-                      label: 'settings.app_settings'.tr(),
+                      label: 'settings.booru_settings.booru_settings'.tr(),
                     ),
-                    ListTile(
-                      leading: FaIcon(
-                        FontAwesomeIcons.paintRoller,
-                        color: context.iconTheme.color,
-                        size: 20,
-                      ),
-                      title: const Text(
-                        'settings.appearance.appearance',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ).tr(),
-                      onTap: () => context.go('/settings/appearance'),
-                    ),
-                    ListTile(
-                      title: const Text('settings.language.language',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w400,
-                          )).tr(),
-                      leading: Icon(
-                        Symbols.translate,
-                        color: context.iconTheme.color,
-                      ),
-                      onTap: () => context.go('/settings/language'),
-                    ),
-                    ListTile(
-                      title: const Text(
-                        'download.download',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ).tr(),
-                      leading: FaIcon(
-                        FontAwesomeIcons.download,
-                        color: context.iconTheme.color,
-                        size: 20,
-                      ),
-                      onTap: () => context.go('/settings/download'),
-                    ),
-                    ListTile(
-                      title: const Text(
-                        'settings.performance.performance',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ).tr(),
-                      leading: FaIcon(
-                        FontAwesomeIcons.gaugeSimpleHigh,
-                        color: context.iconTheme.color,
-                        size: 20,
-                      ),
-                      onTap: () => context.go('/settings/performance'),
-                    ),
-                    ListTile(
-                      title: const Text(
-                        'settings.data_and_storage.data_and_storage',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ).tr(),
-                      leading: FaIcon(
-                        FontAwesomeIcons.database,
-                        color: context.iconTheme.color,
-                        size: 20,
-                      ),
-                      onTap: () => context.go('/settings/data_and_storage'),
-                    ),
-                    ListTile(
-                      title: const Text(
-                        'settings.backup_and_restore.backup_and_restore',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ).tr(),
-                      leading: FaIcon(
-                        FontAwesomeIcons.cloudArrowDown,
-                        color: context.iconTheme.color,
-                        size: 20,
-                      ),
-                      onTap: () => context.go('/settings/backup_and_restore'),
-                    ),
-                    ListTile(
-                      title: const Text(
-                        'settings.search.search',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ).tr(),
-                      leading: FaIcon(
-                        FontAwesomeIcons.magnifyingGlass,
-                        color: context.iconTheme.color,
-                        size: 20,
-                      ),
-                      onTap: () => context.go('/settings/search'),
-                    ),
-                    ListTile(
-                      title: const Text(
-                        'settings.accessibility.accessibility',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ).tr(),
-                      leading: FaIcon(
-                        FontAwesomeIcons.universalAccess,
-                        color: context.iconTheme.color,
-                        size: 20,
-                      ),
-                      onTap: () => context.go('/settings/accessibility'),
-                    ),
-                    ListTile(
-                      title: const Text(
-                        'Image Viewer',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ).tr(),
-                      leading: FaIcon(
-                        FontAwesomeIcons.image,
-                        color: context.iconTheme.color,
-                        size: 20,
-                      ),
-                      onTap: () => context.go('/settings/image_viewer'),
-                    ),
-                    ListTile(
-                      title: const Text(
-                        'settings.privacy.privacy',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ).tr(),
-                      leading: FaIcon(
-                        FontAwesomeIcons.shieldHalved,
-                        color: context.iconTheme.color,
-                        size: 20,
-                      ),
-                      onTap: () => context.go('/settings/privacy'),
-                    ),
-                    if (booruBuilder != null) ...[
-                      const Divider(),
-                      _SettingsSection(
-                        label: 'settings.booru_settings.booru_settings'.tr(),
-                      ),
-                      ListTile(
-                        title: Text(
+                    SettingTile(
+                      title:
                           'settings.booru_settings.edit_current_profile'.tr(),
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                        leading: FaIcon(
-                          FontAwesomeIcons.gear,
-                          color: context.iconTheme.color,
-                          size: 20,
-                        ),
-                        onTap: () => context
-                            .push('/boorus/${ref.watchConfig.id}/update'),
+                      leading: const FaIcon(
+                        FontAwesomeIcons.gear,
                       ),
-                    ],
-                    const Divider(),
-                    _SettingsSection(
-                      label: 'settings.other_settings'.tr(),
+                      onTap: () =>
+                          context.push('/boorus/${ref.watchConfig.id}/update'),
                     ),
-                    ListTile(
-                      title: const Text(
-                        'settings.changelog',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ).tr(),
-                      leading: FaIcon(
-                        FontAwesomeIcons.solidNoteSticky,
-                        color: context.iconTheme.color,
-                        size: 20,
-                      ),
-                      onTap: () => context.go('/settings/changelog'),
-                    ),
-                    ListTile(
-                      title: const Text(
-                        'settings.debug_logs.debug_logs',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ).tr(),
-                      leading: FaIcon(
-                        FontAwesomeIcons.bug,
-                        color: context.iconTheme.color,
-                        size: 20,
-                      ),
-                      onTap: () => context.navigator.push(CupertinoPageRoute(
-                          builder: (_) => const DebugLogsPage())),
-                    ),
-                    ListTile(
-                      title: const Text(
-                        'settings.information',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ).tr(),
-                      leading: Icon(
-                        Symbols.info,
-                        color: context.iconTheme.color,
-                      ),
-                      onTap: () => showDialog(
-                        context: context,
-                        builder: (context) => const AboutPage(),
-                      ),
-                    ),
-                    const Divider(),
-                    _SettingsSection(
-                      // label: 'Contribute',
-                      label: 'settings.contribute'.tr(),
-                    ),
-                    ListTile(
-                      title: const Text(
-                        'settings.help_us_translate',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ).tr(),
-                      leading: Icon(
-                        Symbols.language,
-                        color: context.iconTheme.color,
-                      ),
-                      onTap: () => context.navigator.push(
-                        CupertinoPageRoute(
-                          builder: (_) => const HelpUseTranslatePage(),
-                        ),
-                      ),
-                    ),
-                    // Source code
-                    ListTile(
-                      title: const Text(
-                        'settings.source_code',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ).tr(),
-                      leading: FaIcon(
-                        FontAwesomeIcons.code,
-                        color: context.iconTheme.color,
-                        size: 20,
-                      ),
-                      onTap: () => launchExternalUrl(
-                        Uri.parse(appInfo.githubUrl),
-                        mode: LaunchMode.externalApplication,
-                      ),
-                    ),
-                    const Divider(),
-                    _SettingsSection(
-                      label: 'settings.support'.tr(),
-                    ),
-                    ListTile(
-                      title: const Text(
-                        'settings.contact_developer',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ).tr(),
-                      subtitle: const Text(
-                        'settings.contact_developer_description',
-                      ).tr(),
-                      leading: Icon(
-                        Symbols.email,
-                        color: context.iconTheme.color,
-                      ),
-                      onTap: () => launchExternalUrl(
-                        Uri.parse('mailto:${appInfo.supportEmail}'),
-                        mode: LaunchMode.externalApplication,
-                      ),
-                    ),
-                    ListTile(
-                      title: const Text(
-                        'settings.feature_request_and_bug_report',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ).tr(),
-                      subtitle: const Text(
-                        'settings.feature_request_and_bug_report_description',
-                      ).tr(),
-                      leading: Icon(
-                        Symbols.bug_report,
-                        color: context.iconTheme.color,
-                      ),
-                      onTap: () => launchExternalUrl(
-                        Uri.parse('${appInfo.githubUrl}/issues'),
-                        mode: LaunchMode.externalApplication,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
                   ],
-                ),
+                  const Divider(),
+                  _SettingsSection(
+                    label: 'settings.other_settings'.tr(),
+                  ),
+                  SettingTile(
+                    title: 'settings.changelog'.tr(),
+                    leading: const FaIcon(
+                      FontAwesomeIcons.solidNoteSticky,
+                    ),
+                    onTap: () => context.go('/settings/changelog'),
+                  ),
+                  SettingTile(
+                    title: 'settings.debug_logs.debug_logs'.tr(),
+                    leading: const FaIcon(
+                      FontAwesomeIcons.bug,
+                    ),
+                    onTap: () => context.navigator.push(CupertinoPageRoute(
+                        builder: (_) => const DebugLogsPage())),
+                  ),
+                  SettingTile(
+                    title: 'settings.information'.tr(),
+                    leading: const Icon(
+                      Symbols.info,
+                      size: 24,
+                    ),
+                    onTap: () => showDialog(
+                      context: context,
+                      builder: (context) => const AboutPage(),
+                    ),
+                  ),
+                  const Divider(),
+                  _SettingsSection(
+                    label: 'settings.contribute'.tr(),
+                  ),
+                  SettingTile(
+                    title: 'settings.help_us_translate'.tr(),
+                    leading: const Icon(
+                      Symbols.language,
+                      size: 24,
+                    ),
+                    onTap: () => context.navigator.push(
+                      CupertinoPageRoute(
+                        builder: (_) => const HelpUseTranslatePage(),
+                      ),
+                    ),
+                  ),
+                  SettingTile(
+                    title: 'settings.source_code'.tr(),
+                    leading: const FaIcon(
+                      FontAwesomeIcons.code,
+                    ),
+                    onTap: () => launchExternalUrl(
+                      Uri.parse(appInfo.githubUrl),
+                      mode: LaunchMode.externalApplication,
+                    ),
+                  ),
+                  const Divider(),
+                  _SettingsSection(
+                    label: 'settings.support'.tr(),
+                  ),
+                  SettingTile(
+                    title: 'settings.contact_developer'.tr(),
+                    subtitle: 'settings.contact_developer_description'.tr(),
+                    leading: const Icon(
+                      Symbols.email,
+                      size: 24,
+                    ),
+                    onTap: () => launchExternalUrl(
+                      Uri.parse('mailto:${appInfo.supportEmail}'),
+                      mode: LaunchMode.externalApplication,
+                    ),
+                  ),
+                  SettingTile(
+                    title: 'settings.feature_request_and_bug_report'.tr(),
+                    subtitle:
+                        'settings.feature_request_and_bug_report_description'
+                            .tr(),
+                    leading: const Icon(
+                      Symbols.bug_report,
+                    ),
+                    onTap: () => launchExternalUrl(
+                      Uri.parse('${appInfo.githubUrl}/issues'),
+                      mode: LaunchMode.externalApplication,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                ],
               ),
             ),
-            const _Divider(),
-            const _Footer(),
-          ],
+          ),
+          const _Divider(),
+          const _Footer(),
+        ],
+      ),
+    );
+  }
+}
+
+class SettingsPageOptions extends Equatable {
+  const SettingsPageOptions({
+    required this.showIcon,
+    required this.dense,
+  });
+
+  final bool showIcon;
+  final bool dense;
+
+  @override
+  List<Object?> get props => [showIcon, dense];
+}
+
+class SettingsPageScope extends InheritedWidget {
+  const SettingsPageScope({
+    super.key,
+    required this.options,
+    required super.child,
+  });
+
+  static SettingsPageScope of(BuildContext context) {
+    final item =
+        context.dependOnInheritedWidgetOfExactType<SettingsPageScope>();
+
+    if (item == null) {
+      throw FlutterError('SettingsPageScope.of was called with a context that '
+          'does not contain a SettingsPageScope.');
+    }
+
+    return item;
+  }
+
+  final SettingsPageOptions options;
+
+  @override
+  bool updateShouldNotify(SettingsPageScope oldWidget) {
+    return options != oldWidget.options;
+  }
+}
+
+class SettingTile extends StatelessWidget {
+  const SettingTile({
+    super.key,
+    required this.title,
+    required this.leading,
+    this.onTap,
+    this.showLeading,
+    this.subtitle,
+  });
+
+  final bool? showLeading;
+  final String title;
+  final void Function()? onTap;
+  final Widget leading;
+  final String? subtitle;
+
+  @override
+  Widget build(BuildContext context) {
+    final options = SettingsPageScope.of(context).options;
+    final showIcon = showLeading ?? options.showIcon;
+    final dense = options.dense;
+
+    // final selected = options.selectedValue == title;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 12,
+        vertical: 2,
+      ),
+      child: Material(
+        borderRadius: BorderRadius.circular(8),
+        // color: selected ? context.colorScheme.secondary : Colors.transparent,
+        child: InkWell(
+          hoverColor: context.theme.hoverColor.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(8),
+          onTap: onTap,
+          child: Container(
+              margin: EdgeInsets.symmetric(vertical: dense ? 4 : 10),
+              padding: EdgeInsets.symmetric(
+                horizontal: 8,
+                vertical: showIcon ? 4 : 6,
+              ),
+              child: Row(
+                children: [
+                  if (showIcon) leading,
+                  if (showIcon) const SizedBox(width: 16),
+                  Expanded(
+                    child: Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ),
+                ],
+              )),
         ),
       ),
     );
