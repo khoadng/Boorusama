@@ -325,7 +325,8 @@ final booruSiteValidatorProvider =
   };
 });
 
-final booruProvider = Provider.family<Booru?, BooruConfig>((ref, config) {
+final booruProvider =
+    Provider.autoDispose.family<Booru?, BooruConfig>((ref, config) {
   final booruFactory = ref.watch(booruFactoryProvider);
 
   return config.createBooruFrom(booruFactory);
