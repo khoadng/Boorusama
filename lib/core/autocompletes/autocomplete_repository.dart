@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/feats/autocompletes/autocomplete.dart';
+import 'package:boorusama/core/autocompletes/autocomplete.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
 import 'package:boorusama/foundation/debugs/print.dart';
 

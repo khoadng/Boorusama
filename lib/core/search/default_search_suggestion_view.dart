@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/core/feats/utils.dart';
 import 'package:boorusama/core/search/selected_tag_controller.dart';
 import 'package:boorusama/core/search/ui/selected_tag_list_with_data.dart';
-import 'package:boorusama/core/widgets/tags/tag_suggestion_items.dart';
+import 'package:boorusama/core/search/ui/tag_suggestion_items.dart';
 import 'search_controller.dart';
 import 'suggestions_notifier.dart';
 

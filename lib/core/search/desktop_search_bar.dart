@@ -13,7 +13,6 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/utils.dart';
 import 'package:boorusama/core/search/search.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/theme/theme.dart';

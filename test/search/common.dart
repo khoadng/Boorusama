@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/core/feats/autocompletes/autocomplete.dart';
+import 'package:boorusama/core/autocompletes/autocomplete.dart';
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/tags/tags.dart';
 

@@ -13,7 +13,7 @@ import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/app_update/app_update.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
-import 'booru_search_bar.dart';
+import '../search/booru_search_bar.dart';
 
 class HomeSearchBar extends ConsumerWidget {
   const HomeSearchBar({

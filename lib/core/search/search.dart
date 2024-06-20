@@ -1,4 +1,6 @@
+export 'booru_search_bar.dart';
 export 'default_search_suggestion_view.dart';
+export 'desktop_search_bar.dart';
 export 'filter_operator.dart';
 export 'search_controller.dart';
 export 'search_histories_provider.dart';
@@ -27,3 +29,4 @@ export 'ui/selected_tag_chip.dart';
 export 'ui/selected_tag_list.dart';
 export 'ui/selected_tag_list_with_data.dart';
 export 'ui/simple_tag_search_view.dart';
+export 'ui/tag_suggestion_items.dart';

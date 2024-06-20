@@ -14,10 +14,11 @@ import 'package:boorusama/boorus/danbooru/pages/danbooru_post_statistics_page.da
 import 'package:boorusama/boorus/danbooru/pages/danbooru_search_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/latest_posts_view.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/notes/notes.dart';
+import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/settings/settings.dart';

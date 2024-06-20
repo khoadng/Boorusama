@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/widgets/booru_search_bar.dart';
+import 'package:boorusama/core/search/booru_search_bar.dart';
 import 'package:boorusama/router.dart';
 
 class SearchAppBar extends ConsumerWidget {

@@ -8,7 +8,7 @@ import 'package:jiffy/jiffy.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
-import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
+import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/user_level_colors.dart';
 import 'package:boorusama/core/settings/settings.dart';

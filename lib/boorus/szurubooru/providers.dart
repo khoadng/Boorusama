@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/boorus/szurubooru/favorites/favorites.dart';
 import 'package:boorusama/clients/szurubooru/szurubooru_client.dart';
-import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
+import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
