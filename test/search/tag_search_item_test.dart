@@ -2,8 +2,8 @@
 import 'package:test/test.dart';
 
 // Project imports:
-import 'package:boorusama/core/feats/search/filter_operator.dart';
-import 'package:boorusama/core/feats/search/tag_search_item.dart';
+import 'package:boorusama/core/search/filter_operator.dart';
+import 'package:boorusama/core/search/tag_search_item.dart';
 import 'package:boorusama/core/tags/tags.dart';
 
 final _defaultMetatags = {

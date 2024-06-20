@@ -8,8 +8,8 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/pages/search/common/option_tags_arena.dart';
 import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/search/ui/common/option_tags_arena.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'favorite_tags/add_tag_button.dart';

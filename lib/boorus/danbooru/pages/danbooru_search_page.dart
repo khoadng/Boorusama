@@ -12,12 +12,8 @@ import 'package:boorusama/boorus/danbooru/pages/widgets/search/result_view.dart'
 import 'package:boorusama/boorus/danbooru/pages/widgets/search/trending_section.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
-import 'package:boorusama/core/feats/search/search.dart';
-import 'package:boorusama/core/pages/search/metatags/danbooru_metatags_section.dart';
-import 'package:boorusama/core/pages/search/search_app_bar.dart';
-import 'package:boorusama/core/pages/search/search_button.dart';
-import 'package:boorusama/core/pages/search/search_landing_view.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
+import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
