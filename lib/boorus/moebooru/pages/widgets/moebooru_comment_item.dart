@@ -9,7 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/moebooru/feats/comments/comments.dart';
 import 'package:boorusama/core/comments/comments.dart';
 import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/feats/dtext/html_converter.dart';
+import 'package:boorusama/core/dtext/dtext.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 
 class MoebooruCommentItem extends ConsumerWidget {
