@@ -7,7 +7,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
+import 'package:boorusama/boorus/gelbooru/favorites/favorites.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/pages/home/side_menu_tile.dart';
