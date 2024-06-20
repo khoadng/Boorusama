@@ -18,7 +18,6 @@ import 'package:boorusama/core/downloads/bulks/bulk_download_page.dart';
 import 'package:boorusama/core/downloads/download_manager_page.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/home/home.dart';
-import 'package:boorusama/core/pages/home/side_bar_menu.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
