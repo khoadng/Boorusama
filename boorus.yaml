@@ -35,6 +35,7 @@
 
 - gelbooru:
     protocol: https_2
+    login-url: https://gelbooru.com/index.php?page=account&s=login&code=00
     sites:
       - https://gelbooru.com/
 

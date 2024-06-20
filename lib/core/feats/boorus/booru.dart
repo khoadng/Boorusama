@@ -140,6 +140,11 @@ extension BooruX on Booru {
         _ => null,
       };
 
+  String? getLoginUrl() => switch (this) {
+        Gelbooru g => g.loginUrl,
+        _ => null,
+      };
+
   T whenMoebooru<T>({
     required T Function(Moebooru moe) data,
     required T Function() orElse,
@@ -195,11 +200,12 @@ final class Danbooru extends Booru {
   final List<DanbooruSite> sites;
 }
 
-final class Gelbooru extends Booru {
+final class Gelbooru extends Booru with PassHashAuthMixin {
   const Gelbooru({
     required super.name,
     required super.protocol,
     required this.sites,
+    required this.loginUrl,
   });
 
   factory Gelbooru.from(String name, dynamic data) {
@@ -207,10 +213,13 @@ final class Gelbooru extends Booru {
       name: name,
       protocol: _parseProtocol(data['protocol']),
       sites: List.from(data['sites']),
+      loginUrl: data['login-url'],
     );
   }
 
   final List<String> sites;
+  @override
+  final String? loginUrl;
 }
 
 final class GelbooruV1 extends Booru {
@@ -514,3 +523,7 @@ BooruType intToBooruType(int? value) => switch (value) {
       kSzurubooruId => BooruType.szurubooru,
       _ => BooruType.unknown
     };
+
+mixin PassHashAuthMixin {
+  String? get loginUrl;
+}

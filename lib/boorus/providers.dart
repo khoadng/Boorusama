@@ -325,6 +325,12 @@ final booruSiteValidatorProvider =
   };
 });
 
+final booruProvider = Provider.family<Booru?, BooruConfig>((ref, config) {
+  final booruFactory = ref.watch(booruFactoryProvider);
+
+  return config.createBooruFrom(booruFactory);
+});
+
 class MiscDataNotifier extends AutoDisposeFamilyNotifier<String, String> {
   @override
   String build(String arg) {

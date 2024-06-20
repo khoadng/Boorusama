@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/utils.dart';
@@ -175,11 +176,11 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
             ),
           ),
           ref.watch(authConfigDataProvider).passHash == null
-              ? _buildLoginButton(context)
+              ? _buildLoginButton(context, config: config)
               : Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    _buildLoginStatus(),
+                    _buildLoginStatus(config),
                     const SizedBox(height: 8),
                     WarningContainer(
                       margin: EdgeInsets.zero,
@@ -195,7 +196,9 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
     );
   }
 
-  Widget _buildLoginStatus() {
+  Widget _buildLoginStatus(
+    BooruConfig config,
+  ) {
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: 16,
@@ -221,7 +224,9 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
             children: [
               RawChip(
                 backgroundColor: context.colorScheme.secondaryContainer,
-                onPressed: _openBrowser,
+                onPressed: () {
+                  _openBrowser(config);
+                },
                 label: const Text('Update'),
               ),
               const SizedBox(width: 8),
@@ -239,11 +244,18 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
     );
   }
 
-  void _openBrowser() {
+  void _openBrowser(BooruConfig config) {
+    final loginUrl = ref.read(booruProvider(config))?.getLoginUrl();
+
+    if (loginUrl == null) {
+      showErrorToast('Login URL for this booru is not available');
+      return;
+    }
+
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => GelbooruLoginPage(
-          url: 'https://gelbooru.com/index.php?page=account&s=login&code=00',
+          url: loginUrl,
           onGet: (cookies) {
             if (cookies.isNotEmpty) {
               final pashHash =
@@ -272,6 +284,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
 
   Widget _buildLoginButton(
     BuildContext context, {
+    required BooruConfig config,
     String? title,
   }) {
     return Container(
@@ -283,7 +296,9 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
             style: FilledButton.styleFrom(
               backgroundColor: context.colorScheme.secondaryContainer,
             ),
-            onPressed: _openBrowser,
+            onPressed: () {
+              _openBrowser(config);
+            },
             child: Text(
               title ?? 'Login with Browser',
               style: TextStyle(
