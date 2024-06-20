@@ -7,7 +7,7 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/search/search.dart';
+import 'package:boorusama/core/search_histories/search_histories.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
 import 'package:boorusama/foundation/permissions.dart';
 import 'package:boorusama/utils/duration_utils.dart';

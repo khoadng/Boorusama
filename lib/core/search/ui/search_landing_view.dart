@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/search/search.dart';
+import 'package:boorusama/core/search_histories/search_histories.dart';
 import 'package:boorusama/flutter.dart';
 
 class SearchLandingView extends ConsumerStatefulWidget {

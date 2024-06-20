@@ -2,8 +2,14 @@
 import 'package:hive/hive.dart';
 
 // Project imports:
-import 'package:boorusama/core/search/search.dart';
-import 'search_history_hive_object.dart';
+import 'package:boorusama/core/search_histories/search_histories.dart';
+
+abstract class SearchHistoryRepository {
+  Future<List<SearchHistory>> getHistories();
+  Future<List<SearchHistory>> addHistory(String query);
+  Future<List<SearchHistory>> removeHistory(String query);
+  Future<bool> clearAll();
+}
 
 class SearchHistoryRepositoryHive implements SearchHistoryRepository {
   SearchHistoryRepositoryHive({

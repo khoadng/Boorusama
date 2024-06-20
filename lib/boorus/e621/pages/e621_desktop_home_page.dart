@@ -11,6 +11,7 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/search/search.dart';
+import 'package:boorusama/core/search_histories/search_histories.dart';
 
 class E621DesktopHomePage extends ConsumerStatefulWidget {
   const E621DesktopHomePage({

@@ -9,6 +9,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:boorusama/core/downloads/bulks/bulk_download_provider.dart';
 import 'package:boorusama/core/feats/utils.dart';
 import 'package:boorusama/core/search/search.dart';
+import 'package:boorusama/core/search_histories/search_histories.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/router.dart';
 

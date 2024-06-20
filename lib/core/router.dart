@@ -18,6 +18,7 @@ import 'package:boorusama/core/downloads/bulks/bulk_download_provider.dart';
 import 'package:boorusama/core/feats/utils.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/search/search.dart';
+import 'package:boorusama/core/search_histories/search_histories.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
