@@ -5,9 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/core/configs/providers.dart';
 
-class UserNotifier extends AutoDisposeFamilyAsyncNotifier<User, int> {
+class UserNotifier extends AutoDisposeFamilyAsyncNotifier<DanbooruUser, int> {
   @override
-  Future<User> build(int arg) async {
+  Future<DanbooruUser> build(int arg) async {
     final config = ref.watchConfig;
     final user =
         await ref.watch(danbooruUserRepoProvider(config)).getUserById(arg);

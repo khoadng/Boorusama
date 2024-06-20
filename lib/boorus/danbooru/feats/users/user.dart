@@ -6,8 +6,8 @@ import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'user_level.dart';
 import 'user_repository.dart';
 
-class User extends Equatable {
-  const User({
+class DanbooruUser extends Equatable {
+  const DanbooruUser({
     required this.id,
     required this.level,
     required this.name,
@@ -20,7 +20,7 @@ class User extends Equatable {
     required this.favoriteGroupCount,
   });
 
-  factory User.placeholder() => User(
+  factory DanbooruUser.placeholder() => DanbooruUser(
         id: 0,
         level: UserLevel.member,
         name: 'User',
@@ -59,14 +59,14 @@ class User extends Equatable {
       ];
 }
 
-extension UserX on User {
-  User copyWith({
+extension UserX on DanbooruUser {
+  DanbooruUser copyWith({
     UserId? id,
     UserLevel? level,
     Username? name,
     DateTime? joinedDate,
   }) =>
-      User(
+      DanbooruUser(
         id: id ?? this.id,
         level: level ?? this.level,
         name: name ?? this.name,
@@ -85,7 +85,7 @@ typedef Username = String;
 
 Set<String> tagStringToListTagString(String str) => str.split('\n').toSet();
 
-Future<List<User>> Function(List<Favorite> favs) createUserWith(
+Future<List<DanbooruUser>> Function(List<Favorite> favs) createUserWith(
   UserRepository userRepository,
 ) =>
     (favs) async {

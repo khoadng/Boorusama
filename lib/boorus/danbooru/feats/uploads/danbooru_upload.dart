@@ -23,7 +23,7 @@ class DanbooruUpload extends Equatable {
   final List<UploadMediaAssetsDto> uploadMediaAssets;
   final List<MediaAssetDto> mediaAssets;
   final int postedCount;
-  final User? uploader;
+  final DanbooruUser? uploader;
 
   const DanbooruUpload({
     required this.id,
@@ -147,7 +147,7 @@ class DanbooruUploadPost extends DanbooruPost {
     required super.metadata,
   });
 
-  final User? uploader;
+  final DanbooruUser? uploader;
   final int mediaAssetCount;
   final int postedCount;
   final int mediaAssetId;

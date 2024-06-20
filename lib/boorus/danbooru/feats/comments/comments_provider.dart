@@ -64,6 +64,8 @@ DanbooruComment commentDtoToComment(CommentDto d) {
     createdAt: d.createdAt ?? DateTime.now(),
     updatedAt: d.updatedAt ?? DateTime.now(),
     isDeleted: d.isDeleted ?? false,
-    creator: d.creator == null ? User.placeholder() : userDtoToUser(d.creator!),
+    creator: d.creator == null
+        ? DanbooruUser.placeholder()
+        : userDtoToUser(d.creator!),
   );
 }

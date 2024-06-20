@@ -17,7 +17,7 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/dtext/dtext.dart';
 import 'package:boorusama/core/feats/forums/forums.dart';
-import 'package:boorusama/core/feats/user_level_colors.dart';
+import 'package:boorusama/core/users/users.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/string.dart';
 

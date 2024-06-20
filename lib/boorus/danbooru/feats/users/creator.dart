@@ -9,7 +9,7 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'package:boorusama/clients/danbooru/types/types.dart';
-import 'package:boorusama/core/feats/user_level_colors.dart';
+import 'package:boorusama/core/users/users.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'user.dart';
 import 'user_level.dart';
@@ -21,7 +21,7 @@ class Creator extends Equatable {
     required this.level,
   });
 
-  factory Creator.fromUser(User user) => Creator(
+  factory Creator.fromUser(DanbooruUser user) => Creator(
         id: user.id,
         name: user.name,
         level: user.level,

@@ -67,7 +67,7 @@ final danbooruCurrentUserProvider =
 });
 
 final danbooruUserProvider =
-    AsyncNotifierProvider.autoDispose.family<UserNotifier, User, int>(
+    AsyncNotifierProvider.autoDispose.family<UserNotifier, DanbooruUser, int>(
   UserNotifier.new,
 );
 

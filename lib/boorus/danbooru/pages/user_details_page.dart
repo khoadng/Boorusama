@@ -421,7 +421,7 @@ class _UserFavorites extends ConsumerWidget {
 
   final List<DanbooruPost>? favorites;
 
-  final User user;
+  final DanbooruUser user;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -453,7 +453,7 @@ class _UserUploads extends ConsumerWidget {
   });
 
   final int uid;
-  final User user;
+  final DanbooruUser user;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
