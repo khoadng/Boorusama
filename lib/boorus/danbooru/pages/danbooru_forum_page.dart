@@ -12,7 +12,7 @@ import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/forums/forum_card.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/feats/forums/forum_topic.dart';
+import 'package:boorusama/core/forums/forum_topic.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'danbooru_forum_posts_page.dart';

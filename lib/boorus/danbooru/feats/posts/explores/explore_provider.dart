@@ -12,7 +12,7 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/blacklists/blacklists.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
-import 'package:boorusama/core/feats/types.dart';
+import 'package:boorusama/core/datetimes/datetimes.dart';
 import 'package:boorusama/core/posts/posts.dart';
 
 typedef ScaleAndTime = ({

@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/core/feats/forums/forums.dart';
+import 'package:boorusama/core/forums/forums.dart';
 import 'danbooru_forum_post_vote.dart';
 
 class DanbooruForumPost extends Equatable implements ForumPost {
