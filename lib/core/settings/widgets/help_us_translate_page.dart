@@ -9,8 +9,8 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/url_launcher.dart';
 
 class HelpUseTranslatePage extends ConsumerWidget {
   const HelpUseTranslatePage({

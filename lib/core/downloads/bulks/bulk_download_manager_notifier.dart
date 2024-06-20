@@ -10,8 +10,8 @@ import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/search_histories/search_histories.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
 import 'package:boorusama/foundation/permissions.dart';
+import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/utils/duration_utils.dart';
-import 'package:boorusama/widgets/toast.dart';
 
 const _serviceName = 'Bulk Download Manager';
 

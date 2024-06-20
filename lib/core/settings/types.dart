@@ -619,6 +619,14 @@ extension SettingsX on Settings {
   }
 }
 
+extension ImageQualityX on ImageQuality {
+  bool get isHighres => switch (this) {
+        ImageQuality.high => true,
+        ImageQuality.highest => true,
+        _ => false
+      };
+}
+
 extension PageIndicatorPositionX on PageIndicatorPosition {
   bool get isVisibleAtBottom =>
       this == PageIndicatorPosition.bottom ||

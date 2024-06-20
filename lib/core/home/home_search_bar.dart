@@ -8,11 +8,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/app_update/app_update.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/url_launcher.dart';
 import '../search/booru_search_bar.dart';
 
 class HomeSearchBar extends ConsumerWidget {

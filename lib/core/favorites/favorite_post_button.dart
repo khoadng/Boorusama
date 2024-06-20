@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/toast.dart';
 
 class FavoritePostButton extends StatelessWidget {
   const FavoritePostButton({

@@ -12,7 +12,6 @@ import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
-import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/app_update/app_update.dart';
 import 'package:boorusama/foundation/display.dart';
@@ -20,6 +19,7 @@ import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/permissions.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/widgets.dart';
 

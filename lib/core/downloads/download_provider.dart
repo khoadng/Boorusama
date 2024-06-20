@@ -14,7 +14,7 @@ import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/permissions.dart';
 import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import 'package:boorusama/foundation/toast.dart';
 
 final downloadNotificationProvider = Provider<DownloadNotifications>((ref) {
   throw UnimplementedError();

@@ -13,9 +13,9 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/blacklists/blacklists.dart';
+import 'package:boorusama/core/comments/comments.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/bulks/bulk_download_provider.dart';
-import 'package:boorusama/core/feats/utils.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/search/search.dart';
@@ -26,10 +26,10 @@ import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/routes.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import 'utils.dart';
 
 void goToHomePage(
   BuildContext context, {

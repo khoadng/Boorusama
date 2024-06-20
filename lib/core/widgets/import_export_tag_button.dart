@@ -6,9 +6,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'import_tag_dialog.dart';
 

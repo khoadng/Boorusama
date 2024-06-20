@@ -2,11 +2,7 @@
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/functional.dart';
-
-String generateFullReadableName(DanbooruPost post) =>
-    '${generateCharacterOnlyReadableName(post.characterTags)} (${generateCopyrightOnlyReadableName(post.copyrightTags)}) drawn by ${post.artistTags.join(' ')}';
 
 mixin DanbooruPostRepositoryMixin {
   PostRepository<DanbooruPost> get postRepository;

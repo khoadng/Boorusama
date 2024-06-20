@@ -10,8 +10,8 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/string.dart';
-import 'package:boorusama/widgets/toast.dart';
 
 class DefaultFileDetailsSection extends StatelessWidget {
   const DefaultFileDetailsSection({

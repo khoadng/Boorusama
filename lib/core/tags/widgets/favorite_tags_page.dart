@@ -15,6 +15,7 @@ import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme_utils.dart';
+import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 const kFavoriteTagsSelectedLabelKey = 'favorite_tags_selected_label';

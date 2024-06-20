@@ -10,9 +10,9 @@ import 'package:boorusama/boorus/danbooru/feats/dmails/dmails.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/users/users.dart';
-import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme_utils.dart';
+import 'package:boorusama/foundation/url_launcher.dart';
 import '../feats/comments/comments.dart';
 import 'widgets/comments/dtext.dart';
 

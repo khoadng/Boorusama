@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:oktoast/oktoast.dart';
 
+// Project imports:
+import 'package:boorusama/flutter.dart';
+
 void showSuccessToast(
   String message, {
   Duration? duration,
@@ -35,3 +38,32 @@ void showErrorToast(
         color: Colors.white,
       ),
     );
+
+void showSimpleSnackBar({
+  required BuildContext context,
+  required Widget content,
+  Duration? duration,
+  SnackBarBehavior? behavior,
+  SnackBarAction? action,
+}) {
+  final snackBarBehavior = behavior ?? SnackBarBehavior.floating;
+  final snackbar = SnackBar(
+    action: action,
+    behavior: snackBarBehavior,
+    duration: duration ?? const Duration(seconds: 6),
+    elevation: 6,
+    width: _calculateSnackBarWidth(context, snackBarBehavior),
+    content: content,
+  );
+  context.scaffoldMessenger.showSnackBar(snackbar);
+}
+
+double? _calculateSnackBarWidth(
+  BuildContext context,
+  SnackBarBehavior behavior,
+) {
+  if (behavior == SnackBarBehavior.fixed) return null;
+  final width = context.screenWidth;
+
+  return width > 400 ? 400 : width;
+}

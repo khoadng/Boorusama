@@ -7,7 +7,7 @@ import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/core/blacklists/blacklists.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/widgets/toast.dart';
+import 'package:boorusama/foundation/toast.dart';
 
 class BlacklistedTagsNotifier
     extends FamilyNotifier<List<String>?, BooruConfig> {

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class DanbooruArtistUrlChips extends StatelessWidget {
