@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import 'package:boorusama/core/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
-import 'package:boorusama/core/pages/bookmarks/add_bookmarks_button.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class DefaultMultiSelectionActions extends ConsumerWidget {

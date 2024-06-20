@@ -33,7 +33,7 @@ import 'package:boorusama/clients/shimmie2/shimmie2_client.dart';
 import 'package:boorusama/clients/szurubooru/szurubooru_client.dart';
 import 'package:boorusama/clients/zerochan/zerochan_client.dart';
 import 'package:boorusama/core/blacklists/blacklists.dart';
-import 'package:boorusama/core/feats/bookmarks/bookmarks.dart';
+import 'package:boorusama/core/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';

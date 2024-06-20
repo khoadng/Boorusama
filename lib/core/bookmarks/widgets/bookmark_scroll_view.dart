@@ -10,12 +10,9 @@ import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/feats/bookmarks/bookmarks.dart';
+import 'package:boorusama/core/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
-import 'package:boorusama/core/pages/bookmarks/bookmark_appbar.dart';
-import 'package:boorusama/core/pages/bookmarks/bookmark_sort_button.dart';
-import 'package:boorusama/core/pages/bookmarks/bookmark_update_grid_buttons.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/display.dart';
@@ -23,9 +20,6 @@ import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import 'bookmark_booru_type_selector.dart';
-import 'bookmark_search_bar.dart';
-import 'providers.dart';
 
 class BookmarkScrollView extends ConsumerWidget {
   const BookmarkScrollView({
