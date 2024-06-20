@@ -7,12 +7,12 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
+import 'package:boorusama/core/dtext/dtext.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/time.dart';
+import '../../../../../core/comments/youtube_preview_box.dart';
 import 'danbooru_comment_header.dart';
-import 'dtext.dart';
-import 'youtube_preview_box.dart';
 
 class CommentItem extends ConsumerWidget {
   const CommentItem({
