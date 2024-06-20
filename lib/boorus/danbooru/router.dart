@@ -20,7 +20,6 @@ import 'package:boorusama/boorus/danbooru/feats/uploads/uploads.dart';
 import 'package:boorusama/core/blacklists/blacklists.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/router.dart';
-import 'package:boorusama/core/tags/show_tag_list_page.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';

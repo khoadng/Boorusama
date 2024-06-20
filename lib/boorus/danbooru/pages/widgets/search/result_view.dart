@@ -12,7 +12,6 @@ import 'package:boorusama/boorus/danbooru/pages/widgets/widgets.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/search/search.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
 import 'related_tag_section.dart';
 
 class ResultView extends ConsumerStatefulWidget {

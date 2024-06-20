@@ -11,9 +11,9 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/manage/booru_selector.dart';
+import 'package:boorusama/core/configs/manage/current_booru_tile.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/settings/settings.dart';
-import 'package:boorusama/core/widgets/current_booru_tile.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';

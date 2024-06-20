@@ -27,7 +27,6 @@ import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/routes.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import 'tags/show_tag_list_page.dart';
 import 'utils.dart';
 
 void goToHomePage(

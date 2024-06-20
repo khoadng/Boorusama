@@ -23,7 +23,6 @@ import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/utils.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/i18n.dart';

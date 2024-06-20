@@ -11,7 +11,6 @@ import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
-import 'package:boorusama/core/widgets/home_navigation_tile.dart';
 import '../scaffolds/desktop_home_page_scaffold.dart';
 
 class HomePageScaffold extends ConsumerStatefulWidget {

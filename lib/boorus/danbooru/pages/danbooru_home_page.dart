@@ -17,7 +17,6 @@ import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';

@@ -9,7 +9,7 @@ import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/dart.dart';
 
 class Shimmie2Builder

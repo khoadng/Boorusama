@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
-import 'package:boorusama/core/widgets/tags/tag_chips_placeholder.dart';
+import 'package:boorusama/core/tags/widgets/tag_chips_placeholder.dart';
 import 'related_tag_header.dart';
 
 class RelatedTagSection extends ConsumerWidget {

@@ -20,7 +20,6 @@ import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/artist_page_scaffold.dart';
 import 'package:boorusama/core/scaffolds/post_details_page_scaffold.dart';
 import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'sankaku_post.dart';

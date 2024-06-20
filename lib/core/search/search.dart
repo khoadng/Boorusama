@@ -20,6 +20,7 @@ export 'ui/full_history_view.dart';
 export 'ui/metatag_list_page.dart';
 export 'ui/metatags/danbooru_metatags_section.dart';
 export 'ui/metatags_section.dart';
+export 'ui/result_header.dart';
 export 'ui/search_app_bar.dart';
 export 'ui/search_app_bar_result_view.dart';
 export 'ui/search_button.dart';

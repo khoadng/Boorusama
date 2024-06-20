@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/feats/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/danbooru_artist_url_chips.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/danbooru_tag_details_page.dart';
+import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 
 class DanbooruArtistPage extends ConsumerStatefulWidget {
