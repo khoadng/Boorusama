@@ -27,10 +27,11 @@ class SzurubooruFavoritesNotifier
   SzurubooruClient get client => ref.read(szurubooruClientProvider(arg));
 
   @override
-  Future<bool> Function(int postId) get favoriteAdder => (postId) => client
-      .addToFavorites(postId: postId)
-      .then((value) => true)
-      .catchError((obj) => false);
+  Future<AddFavoriteStatus> Function(int postId) get favoriteAdder =>
+      (postId) => client
+          .addToFavorites(postId: postId)
+          .then((value) => AddFavoriteStatus.success)
+          .catchError((obj) => AddFavoriteStatus.failure);
 
   @override
   Future<bool> Function(int postId) get favoriteRemover => (postId) => client

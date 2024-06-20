@@ -4,9 +4,7 @@ extension BooruBuilderFeatureCheck on BooruBuilder {
   bool get isArtistSupported => artistPageBuilder != null;
 
   bool canFavorite(BooruConfig config) =>
-      favoriteAdder != null &&
-      favoriteRemover != null &&
-      config.hasLoginDetails();
+      favoriteAdder != null && favoriteRemover != null;
 }
 
 extension BooruRef on Ref {

@@ -84,6 +84,7 @@ class DefaultBooruSubmitButton extends ConsumerWidget {
       data: data.copyWith(
         login: auth.login,
         apiKey: auth.apiKey,
+        passHash: () => auth.passHash,
       ),
       enable: auth.isValid && config.name.isNotEmpty,
     );

@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/e621/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/e621/feats/posts/e621_post_provider.dart';
+import 'package:boorusama/boorus/gelbooru/favorites/favorites.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
 import 'package:boorusama/boorus/gelbooru_v1/gelbooru_v1.dart';
 import 'package:boorusama/boorus/gelbooru_v2/posts/posts_v2.dart';
@@ -216,7 +217,7 @@ final favoriteProvider = Provider.autoDispose
           BooruType.danbooru => ref.watch(danbooruFavoriteProvider(postId)),
           BooruType.e621 => ref.watch(e621FavoriteProvider(postId)),
           BooruType.szurubooru => ref.watch(szurubooruFavoriteProvider(postId)),
-          BooruType.gelbooru ||
+          BooruType.gelbooru => ref.watch(gelbooruFavoriteProvider(postId)),
           BooruType.gelbooruV1 ||
           BooruType.gelbooruV2 ||
           BooruType.zerochan ||
@@ -322,6 +323,13 @@ final booruSiteValidatorProvider =
       ).getPosts().then((value) => true),
     BooruType.unknown => Future.value(false),
   };
+});
+
+final booruProvider =
+    Provider.autoDispose.family<Booru?, BooruConfig>((ref, config) {
+  final booruFactory = ref.watch(booruFactoryProvider);
+
+  return config.createBooruFrom(booruFactory);
 });
 
 class MiscDataNotifier extends AutoDisposeFamilyNotifier<String, String> {
