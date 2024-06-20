@@ -136,6 +136,7 @@ MoebooruPost postDtoToPost(PostDto postDto, PostMetadata? metadata) {
   return MoebooruPost(
     id: postDto.id ?? 0,
     thumbnailImageUrl: postDto.previewUrl ?? '',
+    largeImageUrl: postDto.jpegUrl ?? '',
     sampleImageUrl: postDto.sampleUrl ?? '',
     originalImageUrl: postDto.fileUrl ?? '',
     tags: postDto.tags != null ? postDto.tags!.split(' ').toSet() : {},
