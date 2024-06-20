@@ -1,5 +1,4 @@
 export 'announcement_banner.dart';
-export 'artist_section.dart';
 export 'booru_bottom_bar.dart';
 export 'booru_animated_cross_fade.dart';
 export 'booru_image.dart';
