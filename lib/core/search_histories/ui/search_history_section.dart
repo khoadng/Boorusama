@@ -1,11 +1,11 @@
 // Flutter imports:
-import 'package:boorusama/core/search_histories/search_histories.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import 'package:boorusama/core/search_histories/search_histories.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/time.dart';

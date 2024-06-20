@@ -32,7 +32,7 @@ export 'widgets/post_grid_config_region.dart';
 export 'widgets/post_grid_controller.dart';
 export 'widgets/post_list_configuration_header.dart';
 export 'widgets/post_scope.dart';
-export 'widgets/post_video.dart';
+export '../videos/post_video.dart';
 export 'widgets/preview_post_grid.dart';
 export 'widgets/related_posts_section.dart';
 export 'widgets/simple_post_action_toolbar.dart';

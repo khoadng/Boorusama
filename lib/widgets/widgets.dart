@@ -30,6 +30,7 @@ export 'hide_on_scroll.dart';
 export 'icon_text_button.dart';
 export 'image_grid_item.dart';
 export 'image_overlay_icon.dart';
+export 'interactive_image.dart';
 export 'info_container.dart';
 export 'lazy_indexed_stack.dart';
 export 'modal.dart';

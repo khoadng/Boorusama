@@ -9,9 +9,8 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 
 // Project imports:
-import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
-import 'center_play_button.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class WebmVideoController {
   WebmVideoController({

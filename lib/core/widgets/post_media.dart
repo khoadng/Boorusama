@@ -7,15 +7,15 @@ import 'package:video_player/video_player.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs/providers.dart';
-import 'package:boorusama/core/feats/video/videos_provider.dart';
+import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/core/videos/videos.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
-import 'package:boorusama/widgets/embedded_webview_webm.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class PostMedia extends ConsumerWidget {
   const PostMedia({
