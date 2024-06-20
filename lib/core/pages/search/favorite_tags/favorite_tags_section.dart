@@ -8,8 +8,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/feats/tags/tags.dart';
-import 'package:boorusama/core/pages/favorite_tags/favorite_tags_page.dart';
+import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/favorite_tag_label_selector_field.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
@@ -127,7 +126,8 @@ class OptionTagsArenaNoEdit extends StatelessWidget {
                       style: FilledButton.styleFrom(
                         visualDensity: VisualDensity.compact,
                         shape: const CircleBorder(),
-                        backgroundColor: context.colorScheme.surfaceContainerHighest,
+                        backgroundColor:
+                            context.colorScheme.surfaceContainerHighest,
                       ),
                       onPressed: () => context.push('/favorite_tags'),
                       child: Icon(

@@ -8,10 +8,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/clients/danbooru/types/tag_category.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
-import 'package:boorusama/core/feats/tags/general_tag_context_menu.dart';
 import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
@@ -128,7 +127,7 @@ class InformationSection extends ConsumerWidget {
 }
 
 String chooseArtistTag(Set<String> artistTags) {
-  if (artistTags.isEmpty) return 'Unknownz artist';
+  if (artistTags.isEmpty) return 'Unknown artist';
 
   final excludedTags = {
     'banned_artist',
@@ -159,7 +158,7 @@ class ArtistNameInfoChip extends ConsumerWidget {
     final colors = context.generateChipColors(
       ref.getTagColor(
         context,
-        tagCategoryToString(TagCategory.artist),
+        tagCategoryToString(TagCategory.artist).toLowerCase(),
       ),
       ref.watch(settingsProvider),
     );

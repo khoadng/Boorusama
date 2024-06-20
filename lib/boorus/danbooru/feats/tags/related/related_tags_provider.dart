@@ -6,8 +6,7 @@ import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/clients/danbooru/types/types.dart' as danbooru;
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/tags/booru_tag_type_store.dart';
-import 'package:boorusama/core/feats/tags/tags.dart';
+import 'package:boorusama/core/tags/tags.dart';
 
 const _kTagLimit = 300;
 

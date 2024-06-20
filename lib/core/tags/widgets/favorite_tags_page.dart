@@ -9,17 +9,13 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme_utils.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import 'edit_favorite_tag_sheet.dart';
-import 'favorite_tag_config_sheet.dart';
-import 'favorite_tag_label_chip.dart';
-import 'favorite_tag_labels_page.dart';
 
 const kFavoriteTagsSelectedLabelKey = 'favorite_tags_selected_label';
 

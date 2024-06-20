@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rxdart/rxdart.dart';
 
 // Project imports:
-import 'package:boorusama/core/feats/tags/tags.dart';
+import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
@@ -161,7 +161,8 @@ class _EditSavedSearchSheetState extends ConsumerState<EditFavoriteTagSheet> {
                   FilledButton(
                     style: FilledButton.styleFrom(
                       foregroundColor: context.iconTheme.color,
-                      backgroundColor: context.colorScheme.surfaceContainerHighest,
+                      backgroundColor:
+                          context.colorScheme.surfaceContainerHighest,
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(16)),
                       ),

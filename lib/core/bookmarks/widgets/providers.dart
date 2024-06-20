@@ -10,7 +10,7 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/tags/tags.dart';
+import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/display.dart';
 
 enum BookmarkSortType {
