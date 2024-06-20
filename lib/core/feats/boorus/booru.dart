@@ -140,6 +140,7 @@ extension BooruX on Booru {
         _ => null,
       };
 
+  //TODO: This is fine for now, but we must have a different url for each site, currently there is only one site for each booru
   String? getLoginUrl() => switch (this) {
         Gelbooru g => g.loginUrl,
         _ => null,
