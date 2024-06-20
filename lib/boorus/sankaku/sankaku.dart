@@ -15,7 +15,7 @@ import 'package:boorusama/clients/sankaku/sankaku_client.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/artist_page_scaffold.dart';
 import 'package:boorusama/core/scaffolds/post_details_page_scaffold.dart';

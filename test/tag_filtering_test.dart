@@ -3,7 +3,7 @@ import 'package:test/test.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/posts/posts.dart';
 
 void main() {
   final simpleTestData = {'a', 'b', 'c'}.toTagFilterData();

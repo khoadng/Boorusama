@@ -8,7 +8,7 @@ import 'package:boorusama/boorus/szurubooru/favorites/favorites.dart';
 import 'package:boorusama/clients/szurubooru/szurubooru_client.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'szurubooru_post.dart';

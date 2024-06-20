@@ -12,7 +12,7 @@ import 'package:sliver_tools/sliver_tools.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/display.dart';

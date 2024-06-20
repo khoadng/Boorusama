@@ -11,8 +11,8 @@ import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/utils.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';

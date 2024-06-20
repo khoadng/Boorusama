@@ -18,8 +18,8 @@ import 'package:boorusama/boorus/danbooru/pages/widgets/danbooru_artist_url_chip
 import 'package:boorusama/clients/danbooru/types/source_dto.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/utils.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/tag_edit_scaffold.dart';
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/tags/tags.dart';

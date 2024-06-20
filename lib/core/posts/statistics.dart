@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/dart.dart';
 
 typedef PostStats = ({

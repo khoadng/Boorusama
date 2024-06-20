@@ -12,7 +12,7 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/permissions.dart';

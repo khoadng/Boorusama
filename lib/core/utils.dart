@@ -12,7 +12,7 @@ import 'package:url_launcher/url_launcher_string.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/notes/notes.dart';
-import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';

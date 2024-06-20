@@ -8,7 +8,7 @@ import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/clients/danbooru/danbooru_client.dart';
 import 'package:boorusama/clients/danbooru/danbooru_client_uploads.dart';
 import 'package:boorusama/clients/danbooru/types/types.dart';
-import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/posts/posts.dart';
 
 class DanbooruUpload extends Equatable {
   final int id;

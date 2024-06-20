@@ -8,7 +8,7 @@ import 'package:boorusama/clients/philomena/philomena_client.dart';
 import 'package:boorusama/clients/philomena/types/image_dto.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/functional.dart';
 

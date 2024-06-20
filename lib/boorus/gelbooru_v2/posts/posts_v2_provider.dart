@@ -7,8 +7,8 @@ import 'package:boorusama/boorus/gelbooru_v2/gelbooru_v2.dart';
 import 'package:boorusama/boorus/gelbooru_v2/posts/posts_v2.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/utils.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/foundation/caching/lru_cacher.dart';
 
 final gelbooruV2PostRepoProvider =

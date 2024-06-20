@@ -18,7 +18,7 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/artist_commentaries/artist_commentaries.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/notes/notes.dart';
-import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/post_details_page_scaffold.dart';
 import 'package:boorusama/core/tags/tags.dart';

@@ -1,6 +1,6 @@
 // Project imports:
 import 'package:boorusama/clients/danbooru/types/post_dto.dart';
-import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/string.dart';
 import 'danbooru_post.dart';
 import 'post_variant.dart';

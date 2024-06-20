@@ -11,7 +11,7 @@ import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/filename_generators/filename_generator.dart';
 import 'package:boorusama/core/feats/filename_generators/token.dart';
 import 'package:boorusama/core/feats/filename_generators/token_option.dart';
-import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/functional.dart';

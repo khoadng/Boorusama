@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 // Project imports:
-import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/theme/theme_utils.dart';
@@ -173,8 +173,8 @@ class PreviewPostListPlaceholder extends StatelessWidget {
                     width: width ?? max(constraints.maxWidth / 6, 120),
                     height: height ?? 200,
                     decoration: BoxDecoration(
-                      color:
-                          context.colorScheme.surfaceContainerHighest.withOpacity(0.5),
+                      color: context.colorScheme.surfaceContainerHighest
+                          .withOpacity(0.5),
                       borderRadius: const BorderRadius.all(Radius.circular(8)),
                     ),
                   ),
@@ -222,7 +222,8 @@ class PreviewPostGridPlaceholder extends StatelessWidget {
             itemBuilder: (context, index) {
               return Container(
                 decoration: BoxDecoration(
-                  color: context.colorScheme.surfaceContainerHighest.withOpacity(0.5),
+                  color: context.colorScheme.surfaceContainerHighest
+                      .withOpacity(0.5),
                   borderRadius: const BorderRadius.all(Radius.circular(8)),
                 ),
               );

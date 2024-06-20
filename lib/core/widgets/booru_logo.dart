@@ -6,7 +6,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
-import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/posts/posts.dart';
 
 class BooruLogo extends StatelessWidget {
   const BooruLogo({

@@ -11,7 +11,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/search/result_view.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/search/trending_section.dart';
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/flutter.dart';

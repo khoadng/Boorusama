@@ -16,7 +16,7 @@ import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/notes/notes.dart';
-import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/comment_page_scaffold.dart';
 import 'package:boorusama/core/widgets/posts/post_details_page_mixin.dart';
 import 'package:boorusama/foundation/networking/networking.dart';

@@ -15,8 +15,8 @@ import 'package:boorusama/core/blacklists/blacklists.dart';
 import 'package:boorusama/core/downloads/bulks/bulk_download_provider.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/utils.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
@@ -27,7 +27,7 @@ import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/routes.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import 'pages/show_tag_list_page.dart';
+import 'tags/show_tag_list_page.dart';
 import 'utils.dart';
 
 void goToHomePage(

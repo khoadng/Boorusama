@@ -1,6 +1,6 @@
 // Project imports:
 import 'package:boorusama/core/bookmarks/bookmarks.dart';
-import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/functional.dart';
 
