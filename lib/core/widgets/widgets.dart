@@ -1,5 +1,4 @@
 export 'announcement_banner.dart';
-export 'booru_bottom_bar.dart';
 export 'booru_animated_cross_fade.dart';
 export 'booru_image.dart';
 export 'booru_logo.dart';
@@ -21,10 +20,8 @@ export 'interactive_image.dart';
 export 'network_indicator_with_state.dart';
 export 'network_unavailable_indicator.dart';
 export 'no_data_box.dart';
-export 'note_action_button.dart';
 export 'original_image_page.dart';
 export 'post_media.dart';
-export 'post_note.dart';
 export 'reboot.dart';
 export 'source_link.dart';
 export 'swipe_target_image.dart';

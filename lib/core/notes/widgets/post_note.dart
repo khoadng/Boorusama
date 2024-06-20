@@ -7,7 +7,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_portal/flutter_portal.dart';
 
 // Project imports:
-import 'package:boorusama/core/feats/notes/notes.dart';
+import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/foundation/display.dart';
 
 class NoteStyle extends Equatable {

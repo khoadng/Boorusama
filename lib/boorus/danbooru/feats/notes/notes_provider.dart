@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/clients/danbooru/types/types.dart';
 import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/feats/notes/notes.dart';
+import 'package:boorusama/core/notes/notes.dart';
 
 const _notesLimit = 200;
 

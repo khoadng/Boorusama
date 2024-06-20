@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/core/feats/notes/notes.dart';
+import 'package:boorusama/core/notes/notes.dart';
 
 abstract interface class NoteRepository {
   Future<List<Note>> getNotes(int postId);

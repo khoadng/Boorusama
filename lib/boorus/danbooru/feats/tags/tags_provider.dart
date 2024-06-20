@@ -6,7 +6,6 @@ import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/feats/metatags/user_metatag_repository.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'ai_tag.dart';
 
