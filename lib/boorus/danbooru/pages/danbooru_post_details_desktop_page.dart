@@ -17,10 +17,9 @@ import 'package:boorusama/boorus/danbooru/pages/widgets/details/danbooru_post_ac
 import 'package:boorusama/boorus/danbooru/pages/widgets/details/pool_tiles.dart';
 import 'package:boorusama/core/feats/artist_commentaries/artist_commentaries.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/post_details_page_desktop_scaffold.dart';
-import 'package:boorusama/core/widgets/posts/character_post_list.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'danbooru_post_details_page.dart';
