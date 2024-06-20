@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/artists/artists.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/configs/configs.dart';
 
 class DanbooruArtistNotifier
     extends FamilyAsyncNotifier<DanbooruArtist, String> {

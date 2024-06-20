@@ -2,8 +2,8 @@
 import 'package:flutter/services.dart';
 
 // Project imports:
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/feats/backup/data_io_handler.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/functional.dart';
 
 const kBooruConfigsExporterImporterVersion = 1;

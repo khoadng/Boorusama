@@ -10,7 +10,7 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 import 'package:boorusama/boorus/e621/feats/tags/e621_tag_category.dart';
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/utils.dart';

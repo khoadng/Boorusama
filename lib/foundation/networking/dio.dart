@@ -9,7 +9,7 @@ import 'package:dio_http2_adapter/dio_http2_adapter.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/foundation/http/dio_logger_interceptor.dart';
 import 'package:boorusama/router.dart';
 import 'cloudflare_challenge_interceptor.dart';

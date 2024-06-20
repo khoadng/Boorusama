@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
-import 'package:boorusama/core/feats/boorus/providers.dart';
+import 'package:boorusama/core/configs/providers.dart';
 
 class UserNotifier extends AutoDisposeFamilyAsyncNotifier<User, int> {
   @override

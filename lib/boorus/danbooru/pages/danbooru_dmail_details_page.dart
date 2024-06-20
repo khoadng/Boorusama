@@ -8,7 +8,7 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/dmails/dmails.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/feats/user_level_colors.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/foundation/i18n.dart';

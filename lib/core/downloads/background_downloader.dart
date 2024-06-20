@@ -13,11 +13,11 @@ import 'package:media_scanner/media_scanner.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/configs/booru.dart';
+import 'package:boorusama/core/configs/booru_config.dart';
+import 'package:boorusama/core/configs/providers.dart';
 import 'package:boorusama/core/downloads/download_service.dart';
 import 'package:boorusama/core/downloads/types.dart';
-import 'package:boorusama/core/feats/boorus/booru.dart';
-import 'package:boorusama/core/feats/boorus/booru_config.dart';
-import 'package:boorusama/core/feats/boorus/providers.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/platform.dart';

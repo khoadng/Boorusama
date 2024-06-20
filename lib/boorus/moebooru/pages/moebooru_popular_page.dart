@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/feats/boorus/providers.dart';
+import 'package:boorusama/core/configs/providers.dart';
 import 'package:boorusama/core/feats/types.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/infinite_post_list_scaffold.dart';

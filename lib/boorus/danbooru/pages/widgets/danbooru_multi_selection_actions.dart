@@ -9,8 +9,8 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/bookmarks/bookmarks.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class DanbooruMultiSelectionActions extends ConsumerWidget {

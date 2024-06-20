@@ -7,7 +7,7 @@ import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/moebooru/moebooru.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/moebooru/types/types.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/feats/utils.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/foundation/caching/caching.dart';

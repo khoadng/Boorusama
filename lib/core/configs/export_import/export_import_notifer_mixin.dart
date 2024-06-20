@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/export_import/export_import.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
 
 mixin BooruConfigExportImportMixin on Notifier<List<BooruConfig>?> {
   // import from json

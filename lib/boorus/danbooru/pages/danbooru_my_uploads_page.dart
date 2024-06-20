@@ -15,7 +15,7 @@ import 'package:boorusama/boorus/danbooru/feats/uploads/uploads.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/feats/boorus/providers.dart';
+import 'package:boorusama/core/configs/providers.dart';
 import 'package:boorusama/core/feats/user_level_colors.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';

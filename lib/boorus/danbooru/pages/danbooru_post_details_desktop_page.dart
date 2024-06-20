@@ -15,8 +15,8 @@ import 'package:boorusama/boorus/danbooru/pages/widgets/danbooru_creator_preload
 import 'package:boorusama/boorus/danbooru/pages/widgets/details/danbooru_more_action_button.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/details/danbooru_post_action_toolbar.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/details/pool_tiles.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/feats/artist_commentaries/artist_commentaries.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/post_details_page_desktop_scaffold.dart';

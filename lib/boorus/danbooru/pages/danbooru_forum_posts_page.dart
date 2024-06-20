@@ -14,7 +14,7 @@ import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/forums/danbooru_forum_vote_chip.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/forums/forum_post_header.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/feats/dtext/html_converter.dart';
 import 'package:boorusama/core/feats/forums/forums.dart';
 import 'package:boorusama/core/feats/user_level_colors.dart';

@@ -11,8 +11,8 @@ import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/filename_generators/token_option.dart';
 import 'package:boorusama/core/posts/post.dart';
 import 'package:boorusama/core/utils.dart';

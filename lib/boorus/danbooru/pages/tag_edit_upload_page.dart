@@ -17,7 +17,7 @@ import 'package:boorusama/boorus/danbooru/feats/uploads/uploads.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/danbooru_artist_url_chips.dart';
 import 'package:boorusama/clients/danbooru/types/source_dto.dart';
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/feats/utils.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/tag_edit_scaffold.dart';

@@ -12,7 +12,7 @@ import 'package:url_launcher/url_launcher.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/feats/boorus/providers.dart';
+import 'package:boorusama/core/configs/providers.dart';
 import 'package:boorusama/core/settings/widgets/about_page.dart';
 import 'package:boorusama/core/settings/widgets/debug_logs_page.dart';
 import 'package:boorusama/core/utils.dart';

@@ -5,8 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/szurubooru/providers.dart';
 import 'package:boorusama/boorus/szurubooru/szurubooru_post.dart';
 import 'package:boorusama/clients/szurubooru/szurubooru_client.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/favorites/favorites.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/functional.dart';
 
 class SzurubooruFavoritesNotifier

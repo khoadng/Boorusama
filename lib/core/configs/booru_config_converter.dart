@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/foundation/gestures.dart';
 
 extension BooruConfigDataConverter on BooruConfigData? {
