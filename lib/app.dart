@@ -12,7 +12,7 @@ import 'package:oktoast/oktoast.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/feats/settings/settings.dart';
+import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/analytics.dart';
 import 'package:boorusama/foundation/device_info_service.dart';
 import 'package:boorusama/foundation/error.dart';

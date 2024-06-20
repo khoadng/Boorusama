@@ -2,7 +2,7 @@
 import 'package:flutter/cupertino.dart';
 
 // Project imports:
-import 'package:boorusama/core/feats/settings/settings.dart';
+import 'package:boorusama/core/settings/settings.dart';
 import 'platform.dart';
 
 const _kRawPreferredLayout = String.fromEnvironment('PREFERRED_LAYOUT');

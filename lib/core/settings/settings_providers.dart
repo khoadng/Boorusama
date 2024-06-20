@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/backup/data_io_handler.dart';
-import 'package:boorusama/core/feats/settings/types.dart';
+import 'package:boorusama/core/settings/types.dart';
 import 'settings_io_handler.dart';
 
 final gridSizeSettingsProvider = Provider<GridSize>(

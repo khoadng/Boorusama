@@ -9,7 +9,7 @@ import 'package:media_scanner/media_scanner.dart';
 // Project imports:
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/settings/settings.dart';
+import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/functional.dart';

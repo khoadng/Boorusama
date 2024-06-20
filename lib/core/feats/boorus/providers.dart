@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/settings/settings.dart';
+import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/functional.dart';
 
 final booruConfigProvider =

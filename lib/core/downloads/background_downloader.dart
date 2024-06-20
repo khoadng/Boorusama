@@ -18,7 +18,7 @@ import 'package:boorusama/core/downloads/types.dart';
 import 'package:boorusama/core/feats/boorus/booru.dart';
 import 'package:boorusama/core/feats/boorus/booru_config.dart';
 import 'package:boorusama/core/feats/boorus/providers.dart';
-import 'package:boorusama/core/feats/settings/settings.dart';
+import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/functional.dart' as fp;

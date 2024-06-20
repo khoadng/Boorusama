@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'package:hive/hive.dart';
 
 // Project imports:
-import 'package:boorusama/core/feats/settings/settings.dart';
+import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/functional.dart';
 
 class SettingsRepositoryHive implements SettingsRepository {

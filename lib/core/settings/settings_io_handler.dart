@@ -1,6 +1,6 @@
 // Project imports:
 import 'package:boorusama/core/feats/backup/data_io_handler.dart';
-import 'package:boorusama/core/feats/settings/types.dart';
+import 'package:boorusama/core/settings/types.dart';
 import 'package:boorusama/functional.dart';
 
 class SettingsIOHandler {

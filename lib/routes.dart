@@ -16,8 +16,8 @@ import 'package:boorusama/core/downloads/background_downloader.dart';
 import 'package:boorusama/core/downloads/bulks/bulk_download_page.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
-import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/pages/favorite_tags/favorite_tags_page.dart';
+import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/biometrics/app_lock.dart';
@@ -28,7 +28,7 @@ import 'package:boorusama/widgets/widgets.dart';
 import 'boorus/entry_page.dart';
 import 'core/configs/create/add_booru_page.dart';
 import 'core/downloads/download_manager_page.dart';
-import 'core/pages/settings/settings.dart';
+import 'core/settings/widgets/widgets.dart';
 import 'foundation/rating/rating.dart';
 import 'router.dart';
 

@@ -2,7 +2,7 @@
 import 'package:collection/collection.dart';
 
 // Project imports:
-import 'package:boorusama/core/feats/settings/settings.dart';
+import 'package:boorusama/core/settings/settings.dart';
 import 'booru_config.dart';
 import 'booru_config_data.dart';
 

@@ -9,15 +9,15 @@ import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/pages/settings/accessibility_page.dart';
-import 'package:boorusama/core/pages/settings/appearance_page.dart';
-import 'package:boorusama/core/pages/settings/backup_and_restore_page.dart';
-import 'package:boorusama/core/pages/settings/data_and_storage_page.dart';
-import 'package:boorusama/core/pages/settings/download_page.dart';
-import 'package:boorusama/core/pages/settings/language_page.dart';
-import 'package:boorusama/core/pages/settings/performance_page.dart';
-import 'package:boorusama/core/pages/settings/privacy_page.dart';
-import 'package:boorusama/core/pages/settings/search_settings_page.dart';
+import 'package:boorusama/core/settings/widgets/accessibility_page.dart';
+import 'package:boorusama/core/settings/widgets/appearance_page.dart';
+import 'package:boorusama/core/settings/widgets/backup_and_restore_page.dart';
+import 'package:boorusama/core/settings/widgets/data_and_storage_page.dart';
+import 'package:boorusama/core/settings/widgets/download_page.dart';
+import 'package:boorusama/core/settings/widgets/language_page.dart';
+import 'package:boorusama/core/settings/widgets/performance_page.dart';
+import 'package:boorusama/core/settings/widgets/privacy_page.dart';
+import 'package:boorusama/core/settings/widgets/search_settings_page.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
