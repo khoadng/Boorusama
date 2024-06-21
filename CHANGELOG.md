@@ -1,3 +1,11 @@
+# 3.19.0
+- [Gelbooru 0.2.5] Add support for favorites, you will need to provide additional information in the profile for it to work
+- Experimental download support to specific SD card folders
+- New option to change slideshow mode
+- Add an option to mute video by default
+- Tag blacklisting is now case-insensitive
+- Various bug fixes and UI/UX enhancements
+
 # 3.18.1
 - Fix an issue where downloaded images won't show up
 - Show file path when a download is completed
