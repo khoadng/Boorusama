@@ -85,6 +85,10 @@ class Screen {
       };
 }
 
+extension ScreenSizeX on ScreenSize {
+  bool get isLarge => this != ScreenSize.small;
+}
+
 extension DisplayX on BuildContext {
   Screen get screen => Screen.of(this);
   Orientation get orientation => MediaQuery.orientationOf(this);

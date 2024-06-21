@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/create/create.dart';
+import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -109,9 +110,11 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
             const BooruConfigNameField(),
             Expanded(
               child: DefaultTabController(
+                animationDuration:
+                    Screen.of(context).size.isLarge ? Duration.zero : null,
                 length: tabMap.length,
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const SizedBox(height: 4),
                     TabBar(
@@ -121,15 +124,20 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
                       ],
                     ),
                     Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: Container(
+                        constraints: const BoxConstraints(
+                          maxWidth: 700,
+                        ),
+                        margin: const EdgeInsets.symmetric(horizontal: 8),
                         child: TabBarView(
                           physics: const NeverScrollableScrollPhysics(),
                           children: [
                             for (final tab in tabMap.values)
                               Padding(
-                                padding: const EdgeInsets.symmetric(
+                                padding: EdgeInsets.symmetric(
                                   horizontal: 8,
+                                  vertical:
+                                      Screen.of(context).size.isLarge ? 16 : 8,
                                 ),
                                 child: tab,
                               ),

@@ -263,7 +263,11 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
             )
           : MultiSplitViewTheme(
               data: MultiSplitViewThemeData(
-                dividerThickness: widget.grooveDivider ? 16 : 4,
+                dividerThickness: widget.grooveDivider
+                    ? Screen.of(context).size.isLarge
+                        ? 24
+                        : 16
+                    : 4,
                 dividerPainter: !widget.grooveDivider
                     ? DividerPainters.background(
                         animationEnabled: false,
@@ -273,7 +277,7 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
                     : DividerPainters.grooved1(
                         animationDuration: const Duration(milliseconds: 150),
                         color: context.colorScheme.onSurface,
-                        thickness: 3,
+                        thickness: Screen.of(context).size.isLarge ? 6 : 3,
                         size: 75,
                         highlightedSize: 40,
                         highlightedColor: context.colorScheme.primary,

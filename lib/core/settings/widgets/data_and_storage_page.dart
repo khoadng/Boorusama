@@ -13,8 +13,8 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/widgets/widgets.dart';
 import 'widgets/settings_header.dart';
+import 'widgets/settings_page_scaffold.dart';
 
 final tagHighlightingCacheProvider =
     FutureProvider.autoDispose<int>((ref) async {
@@ -47,83 +47,69 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
   Widget build(BuildContext context) {
     final settings = ref.watch(settingsProvider);
 
-    return ConditionalParentWidget(
-      condition: widget.hasAppBar,
-      conditionalBuilder: (child) => Scaffold(
-        appBar: AppBar(
-          title: const Text('settings.data_and_storage.data_and_storage').tr(),
-        ),
-        body: child,
-      ),
-      child: SafeArea(
-        child: ListView(
-          shrinkWrap: true,
-          primary: false,
-          children: [
-            const SettingsHeader(label: 'Cache'),
-            Builder(
-              builder: (context) {
-                final sizeInfo = ref.watch(cacheSizeProvider);
-                final imageCacheSize = sizeInfo.imageCacheSize;
+    return SettingsPageScaffold(
+      hasAppBar: widget.hasAppBar,
+      title: const Text('settings.data_and_storage.data_and_storage').tr(),
+      children: [
+        const SettingsHeader(label: 'Cache'),
+        Builder(
+          builder: (context) {
+            final sizeInfo = ref.watch(cacheSizeProvider);
+            final imageCacheSize = sizeInfo.imageCacheSize;
 
-                return ListTile(
-                  title: const Text('Image only cache'),
-                  subtitle: Text('settings.performance.cache_size_info'
-                      .tr()
-                      .replaceAll('{0}', filesize(imageCacheSize.size))
-                      .replaceAll('{1}', imageCacheSize.fileCount.toString())),
-                  trailing: FilledButton(
-                    onPressed: () => ref
-                        .read(cacheSizeProvider.notifier)
-                        .clearAppImageCache(),
-                    child: const Text('settings.performance.clear_cache').tr(),
-                  ),
-                );
-              },
-            ),
-            ListTile(
-              title: const Text('Tag highlighting cache'),
-              subtitle: ref.watch(tagHighlightingCacheProvider).maybeWhen(
-                    data: (data) => Text(filesize(data)),
-                    orElse: () => const Text('Loading...'),
-                  ),
+            return ListTile(
+              title: const Text('Image only cache'),
+              subtitle: Text('settings.performance.cache_size_info'
+                  .tr()
+                  .replaceAll('{0}', filesize(imageCacheSize.size))
+                  .replaceAll('{1}', imageCacheSize.fileCount.toString())),
               trailing: FilledButton(
-                onPressed: () => ref
-                    .read(booruTagTypeStoreProvider)
-                    .clear()
-                    .then((value) =>
-                        ref.invalidate(tagHighlightingCacheProvider)),
+                onPressed: () =>
+                    ref.read(cacheSizeProvider.notifier).clearAppImageCache(),
                 child: const Text('settings.performance.clear_cache').tr(),
               ),
-            ),
-            Builder(
-              builder: (context) {
-                final sizeInfo = ref.watch(cacheSizeProvider);
-                final size = sizeInfo.appCacheSize;
-
-                return ListTile(
-                  title: const Text('All cache'),
-                  subtitle: Text(filesize(size.size)),
-                  trailing: FilledButton(
-                    onPressed: () =>
-                        ref.read(cacheSizeProvider.notifier).clearAppCache(),
-                    child: const Text('settings.performance.clear_cache').tr(),
-                  ),
-                );
-              },
-            ),
-            SwitchListTile(
-              value: settings.clearImageCacheOnStartup,
-              title: const Text(
-                      'settings.data_and_storage.clear_cache_on_start_up')
-                  .tr(),
-              onChanged: (value) => ref.updateSettings(
-                settings.copyWith(clearImageCacheOnStartup: value),
-              ),
-            ),
-          ],
+            );
+          },
         ),
-      ),
+        ListTile(
+          title: const Text('Tag highlighting cache'),
+          subtitle: ref.watch(tagHighlightingCacheProvider).maybeWhen(
+                data: (data) => Text(filesize(data)),
+                orElse: () => const Text('Loading...'),
+              ),
+          trailing: FilledButton(
+            onPressed: () => ref
+                .read(booruTagTypeStoreProvider)
+                .clear()
+                .then((value) => ref.invalidate(tagHighlightingCacheProvider)),
+            child: const Text('settings.performance.clear_cache').tr(),
+          ),
+        ),
+        Builder(
+          builder: (context) {
+            final sizeInfo = ref.watch(cacheSizeProvider);
+            final size = sizeInfo.appCacheSize;
+
+            return ListTile(
+              title: const Text('All cache'),
+              subtitle: Text(filesize(size.size)),
+              trailing: FilledButton(
+                onPressed: () =>
+                    ref.read(cacheSizeProvider.notifier).clearAppCache(),
+                child: const Text('settings.performance.clear_cache').tr(),
+              ),
+            );
+          },
+        ),
+        SwitchListTile(
+          value: settings.clearImageCacheOnStartup,
+          title: const Text('settings.data_and_storage.clear_cache_on_start_up')
+              .tr(),
+          onChanged: (value) => ref.updateSettings(
+            settings.copyWith(clearImageCacheOnStartup: value),
+          ),
+        ),
+      ],
     );
   }
 }

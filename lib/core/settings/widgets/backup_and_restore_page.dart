@@ -24,6 +24,7 @@ import 'package:boorusama/foundation/picker.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import 'widgets/settings_page_scaffold.dart';
 
 class BackupAndRestorePage extends ConsumerStatefulWidget {
   const BackupAndRestorePage({
@@ -40,37 +41,21 @@ class BackupAndRestorePage extends ConsumerStatefulWidget {
 class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
   @override
   Widget build(BuildContext context) {
-    return ConditionalParentWidget(
-      condition: widget.hasAppBar,
-      conditionalBuilder: (child) => Scaffold(
-        appBar: AppBar(
-          title:
-              const Text('settings.backup_and_restore.backup_and_restore').tr(),
-        ),
-        body: child,
-      ),
-      child: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const SizedBox(height: 8),
-                _buildProfiles(),
-                const SizedBox(height: 8),
-                _buildFavoriteTags(),
-                const SizedBox(height: 8),
-                _buildBookmark(),
-                const SizedBox(height: 8),
-                _buildBlacklistedTags(),
-                const SizedBox(height: 8),
-                _buildSettings(),
-              ],
-            ),
-          ),
-        ),
-      ),
+    return SettingsPageScaffold(
+      hasAppBar: widget.hasAppBar,
+      title: const Text('settings.backup_and_restore.backup_and_restore').tr(),
+      children: [
+        const SizedBox(height: 8),
+        _buildProfiles(),
+        const SizedBox(height: 8),
+        _buildFavoriteTags(),
+        const SizedBox(height: 8),
+        _buildBookmark(),
+        const SizedBox(height: 8),
+        _buildBlacklistedTags(),
+        const SizedBox(height: 8),
+        _buildSettings(),
+      ],
     );
   }
 
