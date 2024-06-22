@@ -147,6 +147,7 @@ class UnknownBooruSubmitButton extends ConsumerWidget {
     return ref.watch(_validateConfigProvider).when(
           data: (value) => value != null
               ? CreateBooruSubmitButton(
+                  fill: true,
                   backgroundColor: value ? Colors.green : null,
                   onSubmit: isValid
                       ? () {
@@ -171,6 +172,7 @@ class UnknownBooruSubmitButton extends ConsumerWidget {
                       : const Text('Verify'),
                 )
               : CreateBooruSubmitButton(
+                  fill: true,
                   onSubmit: isValid
                       ? () {
                           ref
@@ -188,6 +190,7 @@ class UnknownBooruSubmitButton extends ConsumerWidget {
                   child: const Text('Verify'),
                 ),
           loading: () => const CreateBooruSubmitButton(
+            fill: true,
             backgroundColor: Colors.grey,
             onSubmit: null,
             child: Center(
@@ -199,6 +202,7 @@ class UnknownBooruSubmitButton extends ConsumerWidget {
             ),
           ),
           error: (err, _) => CreateBooruSubmitButton(
+            fill: true,
             onSubmit: isValid
                 ? () {
                     ref.read(_targetConfigToValidateProvider.notifier).state =
