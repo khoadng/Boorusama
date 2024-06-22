@@ -266,6 +266,7 @@ extension BooruConfigX on BooruConfig {
   bool isDefault() => id == -1;
 
   bool get hasStrictSFW => url == kDanbooruSafeUrl && isIOS();
+  bool get hasSoftSFW => url == kDanbooruSafeUrl;
 
   Set<Rating>? get granularRatingFiltersWithoutUnknown {
     if (granularRatingFilters == null) return null;

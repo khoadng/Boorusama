@@ -75,7 +75,7 @@ class SuggestionsNotifier
         final filter = filterNsfw(
           data,
           tagInfo.r18Tags,
-          shouldFilter: arg.hasStrictSFW,
+          shouldFilter: arg.hasSoftSFW,
         );
 
         state = state.add(sanitized, filter);
