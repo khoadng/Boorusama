@@ -124,7 +124,7 @@ class Shimmie2Post extends SimplePost {
   @override
   String getLink(String baseUrl) {
     return baseUrl.endsWith('/')
-        ? '$baseUrl/post/view/$id'
+        ? '${baseUrl}post/view/$id'
         : '$baseUrl/post/view/$id';
   }
 }
