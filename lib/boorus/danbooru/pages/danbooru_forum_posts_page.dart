@@ -14,11 +14,11 @@ import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/forums/danbooru_forum_vote_chip.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/forums/forum_post_header.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/dtext/html_converter.dart';
-import 'package:boorusama/core/feats/forums/forums.dart';
-import 'package:boorusama/core/feats/user_level_colors.dart';
-import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/dtext/dtext.dart';
+import 'package:boorusama/core/forums/forums.dart';
+import 'package:boorusama/core/users/users.dart';
+import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/string.dart';
 
 class DanbooruForumPostsPage extends ConsumerStatefulWidget {
@@ -128,16 +128,16 @@ class _DanbooruForumPostsPageState
           ),
           Html(
             onLinkTap: !config.hasStrictSFW
-                ? (url, context, attributes, element) =>
+                ? (url, attributes, element) =>
                     url != null ? launchExternalUrlString(url) : null
                 : null,
             style: {
               'body': Style(
-                margin: const EdgeInsets.symmetric(vertical: 4),
+                margin: Margins.symmetric(vertical: 4),
               ),
               'blockquote': Style(
-                padding: const EdgeInsets.only(left: 8),
-                margin: const EdgeInsets.only(left: 4, bottom: 16),
+                padding: HtmlPaddings.only(left: 8),
+                margin: Margins.only(left: 4, bottom: 16),
                 border: const Border(
                     left: BorderSide(color: Colors.grey, width: 3)),
               )

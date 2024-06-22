@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/wikis/wikis.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/danbooru_tag_details_page.dart';
+import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 
 class DanbooruCharacterPage extends ConsumerWidget {

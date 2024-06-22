@@ -15,15 +15,13 @@ import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/danbooru_creator_preloader.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/feats/artist_commentaries/artist_commentaries.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/notes/notes.dart';
-import 'package:boorusama/core/feats/tags/booru_tag_type_store.dart';
-import 'package:boorusama/core/feats/tags/tags.dart';
+import 'package:boorusama/core/artists/artists.dart';
+import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/notes/notes.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/post_details_page_scaffold.dart';
-import 'package:boorusama/core/widgets/posts/character_post_list.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'widgets/danbooru_tags_tile.dart';
 import 'widgets/details/danbooru_more_action_button.dart';
@@ -100,7 +98,10 @@ class _DanbooruPostDetailsPageState
                 ),
         sliverRelatedPostsBuilder: (context, post) =>
             ref.watch(danbooruPostDetailsChildrenProvider(post)).maybeWhen(
-                  data: (posts) => DanbooruRelatedPostsSection(posts: posts),
+                  data: (posts) => DanbooruRelatedPostsSection(
+                    posts: posts,
+                    currentPost: post,
+                  ),
                   orElse: () => const SliverSizedBox.shrink(),
                 ),
         poolTileBuilder: (context, post) =>
@@ -268,11 +269,7 @@ final danbooruTagGroupsProvider = FutureProvider.autoDispose
 
   final tagString = tagsNotifier.containsKey(post.id)
       ? tagsNotifier[post.id]!.allTags
-      : post
-          .extractTagDetails()
-          .where((e) => e.postId == post.id)
-          .map((e) => e.name)
-          .toSet();
+      : post.tags;
 
   final repo = ref.watch(tagRepoProvider(config));
 
@@ -291,9 +288,11 @@ final danbooruCharacterExpandStateProvider =
 class DanbooruRelatedPostsSection extends ConsumerWidget {
   const DanbooruRelatedPostsSection({
     super.key,
+    required this.currentPost,
     required this.posts,
   });
 
+  final DanbooruPost currentPost;
   final List<DanbooruPost> posts;
 
   @override
@@ -301,6 +300,10 @@ class DanbooruRelatedPostsSection extends ConsumerWidget {
     return RelatedPostsSection(
       posts: posts,
       imageUrl: (item) => item.url720x720,
+      onViewAll: () => goToSearchPage(
+        context,
+        tag: currentPost.relationshipQuery,
+      ),
       onTap: (index) => goToPostDetailsPage(
         context: context,
         posts: posts,

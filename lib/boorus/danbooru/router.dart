@@ -17,17 +17,17 @@ import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/saved_searches/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/feats/uploads/uploads.dart';
-import 'package:boorusama/core/feats/blacklists/blacklists.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/tags/tags.dart';
-import 'package:boorusama/core/pages/show_tag_list_page.dart';
+import 'package:boorusama/core/blacklists/blacklists.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/router.dart';
-import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/core/wikis/wikis.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'pages/add_to_favorite_group_page.dart';
@@ -460,8 +460,8 @@ Future<bool?> goToDanbooruShowTaglistPage(
   final notifier = ref.read(danbooruBlacklistedTagsProvider(config).notifier);
   final globalNotifier = ref.read(globalBlacklistedTagsProvider.notifier);
   final favoriteNotifier = ref.read(favoriteTagsProvider.notifier);
-  final color = ref.context.colorScheme.onBackground;
-  final textColor = ref.context.colorScheme.background;
+  final color = ref.context.colorScheme.onSurface;
+  final textColor = ref.context.colorScheme.surface;
 
   return showMaterialModalBottomSheet<bool>(
     context: navigatorKey.currentContext ?? ref.context,

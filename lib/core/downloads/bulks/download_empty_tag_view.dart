@@ -6,11 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/downloads/bulks/bulk_download_provider.dart';
-import 'package:boorusama/core/feats/search/search.dart';
-import 'package:boorusama/core/feats/utils.dart';
-import 'package:boorusama/core/pages/search/search_history_section.dart';
-import 'package:boorusama/core/pages/search/simple_tag_search_view.dart';
+import 'package:boorusama/core/search/search.dart';
+import 'package:boorusama/core/search_histories/search_histories.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/router.dart';
 

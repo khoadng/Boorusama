@@ -70,6 +70,7 @@ class GelbooruConfigPasteFromClipboardButton extends ConsumerWidget {
           ref.updateAuthConfigData(AuthConfigData(
             login: uid,
             apiKey: key,
+            passHash: null,
           ));
 
           login.text = uid;

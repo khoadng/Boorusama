@@ -10,12 +10,10 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/gelbooru_v2/artists/artists.dart';
 import 'package:boorusama/boorus/gelbooru_v2/gelbooru_v2.dart';
 import 'package:boorusama/boorus/gelbooru_v2/posts/posts_v2.dart';
-import 'package:boorusama/core/feats/posts/posts.dart';
-import 'package:boorusama/core/feats/tags/tags.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
-import 'package:boorusama/core/widgets/posts/character_post_list.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -63,11 +61,15 @@ class _PostDetailPageState extends ConsumerState<GelbooruV2PostDetailsPage> {
         uploaderName: post.uploaderName,
       ),
       sliverRelatedPostsBuilder: (context, post) => post.hasParent
-          ? ref.watch(gelbooruV2ChildPostsProvider(post.parentId!)).maybeWhen(
+          ? ref.watch(gelbooruV2ChildPostsProvider(post)).maybeWhen(
                 data: (data) => RelatedPostsSection(
                   title: 'Child posts',
                   posts: data,
                   imageUrl: (post) => post.sampleImageUrl,
+                  onViewAll: () => goToSearchPage(
+                    context,
+                    tag: post.relationshipQuery,
+                  ),
                   onTap: (index) => goToPostDetailsPage(
                     context: context,
                     posts: data,

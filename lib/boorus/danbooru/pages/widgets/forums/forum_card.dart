@@ -11,7 +11,7 @@ import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/time.dart';
-import 'package:boorusama/widgets/compact_chip.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class ForumCard extends ConsumerWidget {
   const ForumCard({
@@ -90,7 +90,11 @@ class ForumCard extends ConsumerWidget {
                   const SizedBox(width: 8),
                   Text('Replies: $responseCount | '),
                   Expanded(
-                      child: Text(createdAt.fuzzify(locale: context.locale))),
+                    child: DateTooltip(
+                      date: createdAt,
+                      child: Text(createdAt.fuzzify(locale: context.locale)),
+                    ),
+                  ),
                 ],
               )
             ],

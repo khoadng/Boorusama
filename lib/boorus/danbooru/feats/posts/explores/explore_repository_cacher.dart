@@ -1,6 +1,6 @@
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
-import 'package:boorusama/core/feats/types.dart';
+import 'package:boorusama/core/datetimes/datetimes.dart';
 import 'package:boorusama/functional.dart';
 
 class ExploreRepositoryCacher implements ExploreRepository {

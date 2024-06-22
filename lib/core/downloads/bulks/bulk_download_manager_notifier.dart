@@ -4,14 +4,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/posts/posts.dart';
-import 'package:boorusama/core/feats/search/search.dart';
+import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/search_histories/search_histories.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
 import 'package:boorusama/foundation/permissions.dart';
+import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/utils/duration_utils.dart';
-import 'package:boorusama/widgets/toast.dart';
 
 const _serviceName = 'Bulk Download Manager';
 
@@ -97,7 +97,7 @@ class BulkDownloadManagerNotifier extends FamilyNotifier<void, BooruConfig> {
         for (var index = 0; index < items.length; index++) {
           final item = items[index];
           final downloadUrl = getDownloadFileUrl(item, settings);
-          if (downloadUrl.isEmpty) continue;
+          if (downloadUrl == null || downloadUrl.isEmpty) continue;
 
           downloader.enqueueDownload(
             url: downloadUrl,

@@ -10,15 +10,14 @@ import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/zerochan/types/types.dart';
 import 'package:boorusama/clients/zerochan/zerochan_client.dart';
+import 'package:boorusama/core/autocompletes/autocompletes.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/create/create_anon_config_page.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/posts/posts.dart';
-import 'package:boorusama/core/feats/tags/tags.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/path.dart' as path;
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -57,7 +56,7 @@ final zerochanPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
                   thumbnailImageUrl: e.thumbnail ?? '',
                   sampleImageUrl: e.sampleUrl() ?? '',
                   originalImageUrl: e.fileUrl() ?? '',
-                  tags: e.tags?.toSet() ?? {},
+                  tags: e.tags?.map((e) => e.toLowerCase()).toSet() ?? {},
                   rating: Rating.general,
                   hasComment: false,
                   isTranslated: false,
@@ -126,13 +125,29 @@ final zerochanTagsFromIdProvider =
         .where((e) => e.value != null)
         .map((e) => Tag(
               name: e.value!.toLowerCase().replaceAll(' ', '_'),
-              category: stringToTagCategory(
-                  e.type?.toLowerCase().replaceAll(' ', '_') ?? ''),
+              category: zerochanStringToTagCategory(e.type),
               postCount: 0,
             ))
         .toList();
   },
 );
+
+TagCategory zerochanStringToTagCategory(String? value) {
+  // remove ' fav' and ' primary' from the end of the string
+  var type = value?.toLowerCase().replaceAll(RegExp(r' fav$| primary$'), '');
+
+  return switch (type) {
+    'mangaka' || 'artist' || 'studio' => TagCategory.artist,
+    'series' ||
+    'copyright' ||
+    'game' ||
+    'visual novel' =>
+      TagCategory.copyright,
+    'character' => TagCategory.character,
+    'meta' || 'source' => TagCategory.meta,
+    _ => TagCategory.general
+  };
+}
 
 class ZerochanBuilder
     with

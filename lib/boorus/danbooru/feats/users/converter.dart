@@ -4,10 +4,10 @@ import 'user.dart';
 import 'user_level.dart';
 import 'user_self.dart';
 
-User userDtoToUser(
+DanbooruUser userDtoToUser(
   UserDto d,
 ) {
-  return User(
+  return DanbooruUser(
     id: d.id ?? 0,
     level: intToUserLevel(d.level ?? 0),
     name: d.name ?? 'User',

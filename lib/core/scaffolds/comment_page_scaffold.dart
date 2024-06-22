@@ -6,9 +6,9 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/comments/comments.dart';
-import 'package:boorusama/core/feats/dtext/html_converter.dart';
+import 'package:boorusama/core/comments/comments.dart';
+import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/dtext/dtext.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -103,7 +103,7 @@ class _CommentItem extends StatelessWidget {
         Html(
           style: {
             'body': Style(
-              margin: EdgeInsets.zero,
+              margin: Margins.zero,
             ),
           },
           data: dtext(

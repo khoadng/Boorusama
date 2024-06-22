@@ -8,8 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/boorus/danbooru/feats/versions/versions.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/router.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/time.dart';
@@ -118,12 +118,15 @@ class DanbooruPostVersionsPage extends ConsumerWidget {
                                           fontSize: 18,
                                         ),
                                       ),
-                                      Text(
-                                        version.updatedAt.fuzzify(
-                                          locale: context.locale,
-                                        ),
-                                        style: TextStyle(
-                                          color: context.theme.hintColor,
+                                      DateTooltip(
+                                        date: version.updatedAt,
+                                        child: Text(
+                                          version.updatedAt.fuzzify(
+                                            locale: context.locale,
+                                          ),
+                                          style: TextStyle(
+                                            color: context.theme.hintColor,
+                                          ),
                                         ),
                                       ),
                                       TagChangedText(

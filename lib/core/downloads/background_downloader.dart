@@ -13,12 +13,12 @@ import 'package:media_scanner/media_scanner.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/configs/booru.dart';
+import 'package:boorusama/core/configs/booru_config.dart';
+import 'package:boorusama/core/configs/providers.dart';
 import 'package:boorusama/core/downloads/download_service.dart';
 import 'package:boorusama/core/downloads/types.dart';
-import 'package:boorusama/core/feats/boorus/booru.dart';
-import 'package:boorusama/core/feats/boorus/booru_config.dart';
-import 'package:boorusama/core/feats/boorus/providers.dart';
-import 'package:boorusama/core/feats/settings/settings.dart';
+import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/functional.dart' as fp;
@@ -41,6 +41,24 @@ extension FileDownloadX on FileDownloader {
 
     return file;
   }
+}
+
+extension TaskUpdateX on TaskUpdate {
+  int? get fileSize => switch (this) {
+        TaskStatusUpdate s => () {
+            final defaultSize =
+                DownloaderMetadata.fromJsonString(task.metaData).fileSize;
+            final fileSizeString = s.responseHeaders.toOption().fold(
+                  () => '',
+                  (headers) => headers[HttpHeaders.contentLengthHeader],
+                );
+            final fileSize =
+                fileSizeString != null ? int.tryParse(fileSizeString) : null;
+
+            return fileSize ?? defaultSize;
+          }(),
+        TaskProgressUpdate p => p.expectedFileSize,
+      };
 }
 
 class BackgroundDownloader implements DownloadService {

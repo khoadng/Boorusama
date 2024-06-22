@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 // Project imports:
 import 'package:boorusama/clients/danbooru/danbooru_client.dart';
 import 'package:boorusama/clients/danbooru/types/types.dart';
-import 'package:boorusama/core/feats/artist_commentaries/artist_commentaries.dart';
+import 'package:boorusama/core/artists/artists.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
 import 'danbooru_artist_commentary_repository.dart';
 

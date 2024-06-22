@@ -8,7 +8,7 @@ import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/clients/danbooru/danbooru_client.dart';
 import 'package:boorusama/clients/danbooru/danbooru_client_uploads.dart';
 import 'package:boorusama/clients/danbooru/types/types.dart';
-import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/posts/posts.dart';
 
 class DanbooruUpload extends Equatable {
   final int id;
@@ -23,7 +23,7 @@ class DanbooruUpload extends Equatable {
   final List<UploadMediaAssetsDto> uploadMediaAssets;
   final List<MediaAssetDto> mediaAssets;
   final int postedCount;
-  final User? uploader;
+  final DanbooruUser? uploader;
 
   const DanbooruUpload({
     required this.id,
@@ -109,6 +109,7 @@ class DanbooruUploadPost extends DanbooruPost {
     required super.thumbnailImageUrl,
     required super.sampleImageUrl,
     required super.originalImageUrl,
+    required super.tags,
     required super.copyrightTags,
     required super.characterTags,
     required super.artistTags,
@@ -146,7 +147,7 @@ class DanbooruUploadPost extends DanbooruPost {
     required super.metadata,
   });
 
-  final User? uploader;
+  final DanbooruUser? uploader;
   final int mediaAssetCount;
   final int postedCount;
   final int mediaAssetId;
@@ -206,6 +207,7 @@ extension DanbooruUploadX on DanbooruUpload {
       hasLarge: false,
       duration: mediaAsset.duration ?? 0,
       variants: mediaAsset.variants?.map(variantDtoToVariant).toList() ?? [],
+      tags: const {},
       generalTags: const {},
       characterTags: const {},
       artistTags: const {},

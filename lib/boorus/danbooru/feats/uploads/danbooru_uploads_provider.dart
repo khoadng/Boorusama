@@ -9,7 +9,7 @@ import 'package:hive/hive.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/uploads/danbooru_upload.dart';
 import 'package:boorusama/clients/danbooru/types/types.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/configs/configs.dart';
 
 final danbooruUploadRepoProvider =
     Provider.family<DanbooruUploadRepository, BooruConfig>((ref, config) {

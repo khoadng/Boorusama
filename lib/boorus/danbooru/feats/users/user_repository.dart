@@ -9,11 +9,11 @@ import 'user.dart';
 import 'user_self.dart';
 
 abstract class UserRepository {
-  Future<List<User>> getUsersByIds(
+  Future<List<DanbooruUser>> getUsersByIds(
     List<int> ids, {
     CancelToken? cancelToken,
   });
-  Future<User> getUserById(int id);
+  Future<DanbooruUser> getUserById(int id);
   Future<UserSelf?> getUserSelfById(int id);
 }
 
@@ -27,7 +27,7 @@ class UserRepositoryApi implements UserRepository {
   final Set<String> defaultBlacklistedTags;
 
   @override
-  Future<List<User>> getUsersByIds(
+  Future<List<DanbooruUser>> getUsersByIds(
     List<int> ids, {
     CancelToken? cancelToken,
   }) =>
@@ -38,10 +38,10 @@ class UserRepositoryApi implements UserRepository {
             cancelToken: cancelToken,
           )
           .then(parseUsers)
-          .catchError((e) => <User>[]);
+          .catchError((e) => <DanbooruUser>[]);
 
   @override
-  Future<User> getUserById(int id) =>
+  Future<DanbooruUser> getUserById(int id) =>
       client.getUserById(id: id).then(userDtoToUser);
 
   @override

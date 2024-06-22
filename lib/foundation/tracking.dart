@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/core/feats/settings/settings.dart';
+import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/analytics.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'firebase/firebase.dart';

@@ -6,9 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/feats/tags/tags.dart';
-import 'package:boorusama/core/pages/favorite_tags/favorite_tags_page.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
@@ -84,7 +82,7 @@ class _TagEditFavoriteViewState extends ConsumerState<TagEditFavoriteView> {
                           showCheckmark: false,
                           visualDensity: VisualDensity.compact,
                           selectedColor: context.colorScheme.primary,
-                          backgroundColor: context.colorScheme.background,
+                          backgroundColor: context.colorScheme.surface,
                           onSelected: (value) => value
                               ? widget.onAdded(tag.name)
                               : widget.onRemoved(tag.name),

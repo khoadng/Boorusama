@@ -1,7 +1,7 @@
 // Project imports:
-import 'package:boorusama/core/feats/autocompletes/autocomplete.dart';
-import 'package:boorusama/core/feats/search/search.dart';
-import 'package:boorusama/core/feats/tags/tag_info_service.dart';
+import 'package:boorusama/core/autocompletes/autocomplete.dart';
+import 'package:boorusama/core/search/search.dart';
+import 'package:boorusama/core/tags/tags.dart';
 
 TagSearchItem tagSearchItemFromString(String value) => TagSearchItem.fromString(
       value,

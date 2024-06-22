@@ -15,10 +15,11 @@ import 'package:boorusama/boorus/danbooru/feats/uploads/uploads.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/feats/boorus/providers.dart';
-import 'package:boorusama/core/feats/posts/posts.dart';
-import 'package:boorusama/core/feats/settings/settings.dart';
-import 'package:boorusama/core/feats/user_level_colors.dart';
+import 'package:boorusama/core/configs/providers.dart';
+import 'package:boorusama/core/images/images.dart';
+import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/core/users/users.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -91,16 +92,7 @@ class _DanbooruMyUploadsPageState extends ConsumerState<DanbooruMyUploadsPage>
             children: [
               TabBar(
                 controller: tabController,
-                tabAlignment: TabAlignment.start,
                 isScrollable: true,
-                labelStyle: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-                indicatorColor: context.colorScheme.onBackground,
-                labelColor: context.colorScheme.onBackground,
-                unselectedLabelColor:
-                    context.colorScheme.onBackground.withOpacity(0.5),
                 tabs: const [
                   Tab(text: 'Unposted'),
                   Tab(text: 'Posted'),
@@ -448,7 +440,7 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
           vertical: 2,
         ),
         decoration: BoxDecoration(
-          color: context.colorScheme.background.withOpacity(0.8),
+          color: context.colorScheme.surface.withOpacity(0.8),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Builder(

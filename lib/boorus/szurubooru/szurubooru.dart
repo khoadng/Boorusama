@@ -12,16 +12,15 @@ import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/gelbooru_v2/gelbooru_v2.dart';
 import 'package:boorusama/boorus/szurubooru/favorites/favorites.dart';
 import 'package:boorusama/boorus/szurubooru/providers.dart';
+import 'package:boorusama/core/autocompletes/autocompletes.dart';
+import 'package:boorusama/core/comments/comments.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/comments/comments.dart';
-import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/home/home.dart';
-import 'package:boorusama/core/pages/home/side_menu_tile.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/functional.dart';
@@ -208,7 +207,7 @@ class SzurubooruBuilder
               toolbarBuilder: (context, rawPost) =>
                   castOrNull<SzurubooruPost>(rawPost).toOption().fold(
                         () => SimplePostActionToolbar(post: rawPost),
-                        (post) => SzurubooruPostActionToolbar(post: post),
+                        (post) => DefaultPostActionToolbar(post: post),
                       ),
               fileDetailsBuilder: (context, rawPost) =>
                   DefaultFileDetailsSection(
@@ -310,31 +309,5 @@ class SzurubooruFavoritesPage extends ConsumerWidget {
         favQueryBuilder: () => query,
         fetcher: (page) =>
             ref.read(szurubooruPostRepoProvider(config)).getPosts(query, page));
-  }
-}
-
-class SzurubooruPostActionToolbar extends ConsumerWidget {
-  const SzurubooruPostActionToolbar({
-    super.key,
-    required this.post,
-  });
-
-  final SzurubooruPost post;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
-    final isFaved = ref.watch(szurubooruFavoriteProvider(post.id));
-
-    return SimplePostActionToolbar(
-      post: post,
-      isFaved: isFaved,
-      isAuthorized: config.hasLoginDetails(),
-      addFavorite: () =>
-          ref.read(szurubooruFavoritesProvider(config).notifier).add(post.id),
-      removeFavorite: () => ref
-          .read(szurubooruFavoritesProvider(config).notifier)
-          .remove(post.id),
-    );
   }
 }

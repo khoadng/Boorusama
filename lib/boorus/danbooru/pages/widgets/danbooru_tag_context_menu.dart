@@ -8,9 +8,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/tags/tags.dart';
-import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/core/wikis/wikis.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 class DanbooruTagContextMenu extends ConsumerWidget {

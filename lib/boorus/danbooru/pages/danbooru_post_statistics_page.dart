@@ -11,8 +11,7 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/danbooru_creator_preloader.dart';
-import 'package:boorusama/core/feats/posts/posts.dart';
-import 'package:boorusama/core/pages/post_statistics_page.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/dart.dart';
 
 class DanbooruPostStatisticsPage extends ConsumerWidget {

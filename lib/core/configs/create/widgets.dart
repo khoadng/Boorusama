@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
-import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/functional.dart';
@@ -308,20 +308,32 @@ class CreateBooruSubmitButton extends StatelessWidget {
     required this.onSubmit,
     this.backgroundColor,
     this.child,
+    this.fill = false,
   });
 
+  final bool fill;
   final void Function()? onSubmit;
   final Color? backgroundColor;
   final Widget? child;
 
   @override
   Widget build(BuildContext context) {
-    return FilledButton(
-      style: FilledButton.styleFrom(
+    if (fill) {
+      return FilledButton(
+        style: FilledButton.styleFrom(
+          backgroundColor: backgroundColor,
+        ),
+        onPressed: onSubmit,
+        child: child ?? const Text('booru.config_booru_confirm').tr(),
+      );
+    }
+
+    return TextButton(
+      style: TextButton.styleFrom(
         backgroundColor: backgroundColor,
       ),
       onPressed: onSubmit,
-      child: child ?? const Text('booru.config_booru_confirm').tr(),
+      child: child ?? const Text('Save'),
     );
   }
 }

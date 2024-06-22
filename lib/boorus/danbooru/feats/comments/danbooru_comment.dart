@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
-import 'package:boorusama/core/feats/comments/comments.dart';
+import 'package:boorusama/core/comments/comments.dart';
 
 typedef CommentId = int;
 typedef CommentScore = int;
@@ -51,7 +51,7 @@ class DanbooruComment extends Equatable implements Comment {
   @override
   final DateTime updatedAt;
   final bool isDeleted;
-  final User? creator;
+  final DanbooruUser? creator;
 
   @override
   int? get creatorId => creator?.id;

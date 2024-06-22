@@ -11,15 +11,16 @@ import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/filename_generators/token_option.dart';
-import 'package:boorusama/core/feats/posts/post.dart';
-import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/core/filename_generators/filename_generators.dart';
+import 'package:boorusama/core/posts/post.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class CustomDownloadFileNameSection extends ConsumerStatefulWidget {
@@ -94,7 +95,7 @@ class _CustomDownloadFileNameSectionState
           text: TextSpan(
             text: 'Custom filename format ',
             style: TextStyle(
-              color: context.colorScheme.onBackground,
+              color: context.colorScheme.onSurface,
             ),
           ),
         ),

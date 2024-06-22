@@ -12,7 +12,7 @@ class UserStatsGroup extends StatelessWidget {
     required this.user,
   });
 
-  final User user;
+  final DanbooruUser user;
 
   @override
   Widget build(BuildContext context) {

@@ -8,8 +8,8 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/android.dart';
@@ -18,7 +18,7 @@ import 'package:boorusama/foundation/picker.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
-import 'package:boorusama/widgets/warning_container.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class DownloadTagSelectionView extends ConsumerStatefulWidget {
   const DownloadTagSelectionView({
@@ -87,8 +87,8 @@ class _DownloadTagSelectionViewState
                     spacing: 5,
                     children: [
                       ...selectedTags.map((e) => Chip(
-                            backgroundColor:
-                                context.theme.colorScheme.surfaceVariant,
+                            backgroundColor: context
+                                .theme.colorScheme.surfaceContainerHighest,
                             label: Text(e.replaceUnderscoreWithSpace()),
                             deleteIcon: Icon(
                               Symbols.close,
@@ -156,7 +156,7 @@ class _DownloadTagSelectionViewState
                   return Material(
                     child: Ink(
                       decoration: BoxDecoration(
-                        color: context.colorScheme.surfaceVariant,
+                        color: context.colorScheme.surfaceContainerHighest,
                         border: Border.fromBorderSide(
                           BorderSide(color: context.theme.hintColor),
                         ),
@@ -273,13 +273,14 @@ class DownloadPathWarning extends StatelessWidget {
       contentBuilder: (context) => Html(
         style: {
           'body': Style(
-            color: context.colorScheme.onError,
+            color: context.colorScheme.onSurface,
+            margin: Margins.zero,
           ),
         },
-        data: 'download.bulk_download_folder_select_warning'
-            .tr()
-            .replaceAll('{0}', allowedFolders.join(', '))
-            .replaceAll('{1}', releaseName),
+        data:
+            "The app can only download files inside public directories <b>({0})</b> for Android 11+. <br><br> Valid location examples:<br><b>[Internal]</b> /storage/emulated/0/Download <br><b>[SD card]</b> /storage/A1B2-C3D4/Download<br><br>Please choose another directory or create a new one if it doesn't exist. <br>This device's version is <b>{1}</b>."
+                .replaceAll('{0}', allowedFolders.join(', '))
+                .replaceAll('{1}', releaseName),
       ),
     );
   }

@@ -12,8 +12,8 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/feats/settings/settings.dart';
-import 'package:boorusama/core/pages/settings/settings.dart';
+import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/core/settings/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -412,11 +412,7 @@ class SimpleDownloadTile extends ConsumerWidget {
       url: task.task.url,
       thumbnailUrl: metadata.thumbnailUrl,
       siteUrl: metadata.siteUrl,
-      fileSize: switch (task) {
-        TaskStatusUpdate _ => metadata.fileSize,
-        TaskProgressUpdate p =>
-          p.hasExpectedFileSize ? p.expectedFileSize : metadata.fileSize,
-      },
+      fileSize: task.fileSize,
       networkSpeed: switch (task) {
         TaskStatusUpdate _ => null,
         TaskProgressUpdate p => p.hasNetworkSpeed ? p.networkSpeed : null,

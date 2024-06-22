@@ -1,7 +1,7 @@
 // Project imports:
 import 'package:boorusama/clients/e621/e621_client.dart';
 import 'package:boorusama/clients/e621/types/types.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'e621_tag.dart';
 import 'e621_tag_category.dart';
 

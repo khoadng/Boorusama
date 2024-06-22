@@ -170,14 +170,14 @@ class _EditSavedSearchSheetState extends ConsumerState<EditSavedSearchSheet> {
               ),
             ),
             Container(
-              margin: const EdgeInsets.only(top: 8, bottom: 16),
-              child: ButtonBar(
+              margin: const EdgeInsets.only(top: 8, bottom: 28),
+              child: OverflowBar(
                 alignment: MainAxisAlignment.spaceAround,
                 children: [
                   FilledButton(
                     style: FilledButton.styleFrom(
                       foregroundColor: context.iconTheme.color,
-                      backgroundColor: context.colorScheme.surfaceVariant,
+                      backgroundColor: context.colorScheme.surfaceContainerHighest,
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(16)),
                       ),

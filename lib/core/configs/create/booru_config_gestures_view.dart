@@ -9,8 +9,7 @@ import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
-import 'package:boorusama/widgets/option_dropdown_button.dart';
-import 'package:boorusama/widgets/warning_container.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class BooruConfigGesturesView extends ConsumerWidget {
   const BooruConfigGesturesView({
@@ -34,6 +33,7 @@ class BooruConfigGesturesView extends ConsumerWidget {
           const BooruConfigSettingsHeader(label: 'Image viewer'),
           WarningContainer(
             margin: const EdgeInsets.symmetric(vertical: 12),
+            title: 'Limitation',
             contentBuilder: (_) => const Text(
               'Images only, not applicable to videos.',
             ),

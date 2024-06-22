@@ -8,6 +8,7 @@ import 'package:html/parser.dart';
 import 'package:xml/xml.dart';
 
 // Project imports:
+import 'package:boorusama/clients/gelbooru/gelbooru_client_favorites.dart';
 import 'types/types.dart';
 
 const _kGelbooruUrl = 'https://gelbooru.com/';
@@ -17,12 +18,14 @@ typedef GelbooruPosts = ({
   int? count,
 });
 
-class GelbooruClient with RequestDeduplicator<GelbooruPosts> {
+class GelbooruClient
+    with GelbooruClientFavorites, RequestDeduplicator<GelbooruPosts> {
   GelbooruClient({
     String? baseUrl,
     Map<String, String>? headers,
     this.userId,
     this.apiKey,
+    this.passHash,
     Dio? dio,
   }) : _dio = dio ??
             Dio(BaseOptions(
@@ -31,25 +34,33 @@ class GelbooruClient with RequestDeduplicator<GelbooruPosts> {
             ));
 
   final Dio _dio;
+  @override
   final String? userId;
   final String? apiKey;
+  @override
+  final String? passHash;
+  @override
+  Dio get dio => _dio;
 
   factory GelbooruClient.gelbooru({
     Dio? dio,
     String? login,
     String? apiKey,
+    String? passHash,
   }) =>
       GelbooruClient(
         baseUrl: _kGelbooruUrl,
         dio: dio,
         userId: login,
         apiKey: apiKey,
+        passHash: passHash,
       );
 
   factory GelbooruClient.custom({
     Dio? dio,
     String? login,
     String? apiKey,
+    String? passHash,
     required String baseUrl,
   }) =>
       GelbooruClient(
@@ -57,6 +68,7 @@ class GelbooruClient with RequestDeduplicator<GelbooruPosts> {
         dio: dio,
         userId: login,
         apiKey: apiKey,
+        passHash: passHash,
       );
 
   Future<GelbooruPosts> getPosts({

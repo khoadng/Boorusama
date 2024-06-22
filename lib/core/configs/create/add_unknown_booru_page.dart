@@ -8,8 +8,8 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/create/create.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -147,6 +147,7 @@ class UnknownBooruSubmitButton extends ConsumerWidget {
     return ref.watch(_validateConfigProvider).when(
           data: (value) => value != null
               ? CreateBooruSubmitButton(
+                  fill: true,
                   backgroundColor: value ? Colors.green : null,
                   onSubmit: isValid
                       ? () {
@@ -171,6 +172,7 @@ class UnknownBooruSubmitButton extends ConsumerWidget {
                       : const Text('Verify'),
                 )
               : CreateBooruSubmitButton(
+                  fill: true,
                   onSubmit: isValid
                       ? () {
                           ref
@@ -188,6 +190,7 @@ class UnknownBooruSubmitButton extends ConsumerWidget {
                   child: const Text('Verify'),
                 ),
           loading: () => const CreateBooruSubmitButton(
+            fill: true,
             backgroundColor: Colors.grey,
             onSubmit: null,
             child: Center(
@@ -199,6 +202,7 @@ class UnknownBooruSubmitButton extends ConsumerWidget {
             ),
           ),
           error: (err, _) => CreateBooruSubmitButton(
+            fill: true,
             onSubmit: isValid
                 ? () {
                     ref.read(_targetConfigToValidateProvider.notifier).state =
@@ -222,10 +226,11 @@ class InvalidBooruWarningContainer extends ConsumerWidget {
           error: (error, st) => Stack(
             children: [
               WarningContainer(
+                title: 'Error',
                 contentBuilder: (context) => Text(
                   'It seems like the site is not running on the selected engine. Please try with another one.',
                   style: TextStyle(
-                    color: context.colorScheme.onError,
+                    color: context.colorScheme.onSurface,
                   ),
                 ),
               ),

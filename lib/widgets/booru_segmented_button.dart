@@ -53,7 +53,7 @@ class _BooruSegmentedButtonState<T> extends State<BooruSegmentedButton<T>> {
       innerPadding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
-        color: context.colorScheme.surfaceVariant,
+        color: context.colorScheme.surfaceContainerHighest,
       ),
       onValueChanged: (v) {
         setState(() {

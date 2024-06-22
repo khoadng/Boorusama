@@ -11,12 +11,13 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/utils.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/images/images.dart';
+import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/time.dart';
@@ -39,7 +40,6 @@ class AddToFavoriteGroupPage extends ConsumerWidget {
           'favorite_groups.add_to_group_dialog_title',
           style: context.textTheme.titleLarge,
         ).tr(),
-        backgroundColor: Colors.transparent,
       ),
       backgroundColor: context.colorScheme.surface,
       body: Column(

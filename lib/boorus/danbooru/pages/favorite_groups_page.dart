@@ -9,8 +9,8 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -115,7 +115,7 @@ class FavoriteGroupsPage extends ConsumerWidget {
             actions: [
               TextButton(
                 style: TextButton.styleFrom(
-                  foregroundColor: context.colorScheme.onBackground,
+                  foregroundColor: context.colorScheme.onSurface,
                 ),
                 onPressed: () => context.navigator.pop(),
                 child: const Text('generic.action.cancel').tr(),

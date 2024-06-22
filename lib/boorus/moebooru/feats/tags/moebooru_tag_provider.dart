@@ -5,8 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/moebooru/feats/autocomplete/moebooru_autocomplete_provider.dart';
 import 'package:boorusama/boorus/moebooru/feats/tags/moebooru_tag_repository.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/tags/tags.dart';
+import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/tags/tags.dart';
 
 final moebooruTagRepoProvider =
     Provider.family<MoebooruTagRepository, BooruConfig>((ref, config) {

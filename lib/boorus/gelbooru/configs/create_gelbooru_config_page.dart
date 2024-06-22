@@ -3,14 +3,19 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
+import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/create/create.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/toast.dart';
+import 'package:boorusama/foundation/url_launcher.dart';
+import 'package:boorusama/widgets/widgets.dart';
+import 'gelbooru_login_webview_page.dart';
 import 'widgets.dart';
 
 class CreateGelbooruConfigPage extends ConsumerWidget {
@@ -72,6 +77,24 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          const SizedBox(height: 16),
+          Text(
+            'Basic Auth',
+            style: context.textTheme.titleSmall?.copyWith(
+              color: context.theme.hintColor,
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'Provide this information to view your favorites. This only provides read access to your account.',
+            style: context.textTheme.titleSmall?.copyWith(
+              color: context.theme.hintColor,
+              fontSize: 12,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
           const SizedBox(height: 24),
           GelbooruLoginField(
             controller: loginController,
@@ -85,7 +108,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
             text: TextSpan(
               style: context.textTheme.titleSmall?.copyWith(
                 color: context.theme.hintColor,
-                fontSize: 14,
+                fontSize: 12,
                 fontWeight: FontWeight.w400,
               ),
               children: [
@@ -110,7 +133,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
               ],
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 8),
           const Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -132,6 +155,157 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
                 apiKey: apiKeyController,
               ),
             ],
+          ),
+          const SizedBox(height: 16),
+          const Divider(),
+          const SizedBox(height: 8),
+          Text(
+            'Advanced Auth',
+            style: context.textTheme.titleSmall?.copyWith(
+              color: context.theme.hintColor,
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'Provide this information allows you to edit your favorites. This provides write access to your account. Note that if you change your password, you need to log in again.',
+            style: context.textTheme.titleSmall?.copyWith(
+              color: context.theme.hintColor,
+              fontSize: 12,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+          ref.watch(authConfigDataProvider).passHash == null
+              ? _buildLoginButton(context, config: config)
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _buildLoginStatus(config),
+                    const SizedBox(height: 8),
+                    WarningContainer(
+                      margin: EdgeInsets.zero,
+                      title: "About the heart button's state",
+                      contentBuilder: (context) => const Text(
+                        "There is no way to check if an image has already been favorited. Although you can see the visual indicator after you've favorited an image, it will lose its state if you restart the app. Don't worry, your favorites are still there on the website.",
+                      ),
+                    ),
+                  ],
+                ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLoginStatus(
+    BooruConfig config,
+  ) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16,
+        vertical: 4,
+      ),
+      margin: const EdgeInsets.symmetric(vertical: 16),
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: context.colorScheme.primary,
+        ),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Text(
+            'Logged in',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Row(
+            children: [
+              RawChip(
+                backgroundColor: context.colorScheme.secondaryContainer,
+                onPressed: () {
+                  _openBrowser(config);
+                },
+                label: const Text('Update'),
+              ),
+              const SizedBox(width: 8),
+              RawChip(
+                backgroundColor: context.colorScheme.secondaryContainer,
+                onPressed: () {
+                  ref.updatePassHash(null);
+                },
+                label: const Text('Clear'),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _openBrowser(BooruConfig config) {
+    final loginUrl = ref.read(booruProvider(config))?.getLoginUrl();
+
+    if (loginUrl == null) {
+      showErrorToast('Login URL for this booru is not available');
+      return;
+    }
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => GelbooruLoginPage(
+          url: loginUrl,
+          onGet: (cookies) {
+            if (cookies.isNotEmpty) {
+              final pashHash =
+                  cookies.firstWhereOrNull((e) => e.name == 'pass_hash');
+              final uid = cookies.firstWhereOrNull((e) => e.name == 'user_id');
+
+              if (pashHash != null) {
+                ref.updatePassHash(
+                  pashHash.value,
+                );
+                if (uid != null) {
+                  ref.updateLogin(uid.value);
+                  loginController.text = uid.value;
+                }
+              } else {
+                showErrorToast('No hashed password found');
+              }
+
+              Navigator.of(context).pop();
+            }
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLoginButton(
+    BuildContext context, {
+    required BooruConfig config,
+    String? title,
+  }) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 16),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: context.colorScheme.secondaryContainer,
+            ),
+            onPressed: () {
+              _openBrowser(config);
+            },
+            child: Text(
+              title ?? 'Login with Browser',
+              style: TextStyle(
+                color: context.colorScheme.onSecondaryContainer,
+              ),
+            ),
           ),
         ],
       ),

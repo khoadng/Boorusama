@@ -6,7 +6,7 @@ import 'package:html/parser.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
 import 'package:boorusama/clients/danbooru/types/types.dart' as danbooru;
-import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/configs/configs.dart';
 
 part 'pools_search_provider.dart';
 

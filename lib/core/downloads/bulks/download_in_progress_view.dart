@@ -6,8 +6,8 @@ import 'package:filesize/filesize.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
@@ -88,7 +88,7 @@ class DownloadInProgressView extends ConsumerWidget {
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               borderRadius: const BorderRadius.all(Radius.circular(8)),
-              color: context.colorScheme.surfaceVariant,
+              color: context.colorScheme.surfaceContainerHighest,
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -125,7 +125,7 @@ class DownloadInProgressView extends ConsumerWidget {
                   .map((e) => Chip(
                         visualDensity: VisualDensity.compact,
                         backgroundColor:
-                            context.theme.colorScheme.surfaceVariant,
+                            context.theme.colorScheme.surfaceContainerHighest,
                         label: Text(e.replaceUnderscoreWithSpace()),
                         shape: const StadiumBorder(side: BorderSide()),
                       ))

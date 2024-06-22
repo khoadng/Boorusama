@@ -1,6 +1,6 @@
 // Project imports:
 import 'package:boorusama/clients/moebooru/moebooru_client.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'moebooru_comment.dart';
 import 'moebooru_comment_parser.dart';
 

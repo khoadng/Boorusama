@@ -18,10 +18,10 @@ import 'package:boorusama/boorus/danbooru/feats/reports/reports.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/tags/tags.dart';
+import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
@@ -357,7 +357,7 @@ class UserDetailsPage extends ConsumerWidget {
         barTouchData: BarTouchData(
           enabled: true,
           touchTooltipData: BarTouchTooltipData(
-            getTooltipColor: (_) => context.colorScheme.surfaceVariant,
+            getTooltipColor: (_) => context.colorScheme.surfaceContainerHighest,
             fitInsideHorizontally: true,
             getTooltipItem: (group, groupIndex, rod, rodIndex) {
               final date = data[groupIndex].date;
@@ -421,7 +421,7 @@ class _UserFavorites extends ConsumerWidget {
 
   final List<DanbooruPost>? favorites;
 
-  final User user;
+  final DanbooruUser user;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -453,7 +453,7 @@ class _UserUploads extends ConsumerWidget {
   });
 
   final int uid;
-  final User user;
+  final DanbooruUser user;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

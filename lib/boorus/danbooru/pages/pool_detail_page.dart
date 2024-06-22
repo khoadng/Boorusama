@@ -11,12 +11,13 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/widgets.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
-import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/time.dart';
 import 'package:boorusama/utils/html_utils.dart';
@@ -87,8 +88,7 @@ class PoolDetailPage extends ConsumerWidget {
                 ? SliverToBoxAdapter(
                     child: Html(
                       onLinkTap: !config.hasStrictSFW
-                          ? (url, context, attributes, element) =>
-                              _onHtmlLinkTapped(
+                          ? (url, attributes, element) => _onHtmlLinkTapped(
                                 attributes,
                                 url,
                                 data.descriptionEndpointRefUrl,

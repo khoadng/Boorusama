@@ -47,7 +47,7 @@ class BooruDialog extends StatelessWidget {
             ),
           ),
           Material(
-            color: context.colorScheme.background,
+            color: context.colorScheme.surface,
             shape: RoundedRectangleBorder(
               borderRadius: borderRadius ?? BorderRadius.circular(8),
             ),

@@ -2,7 +2,7 @@
 import 'package:file_picker/file_picker.dart';
 
 // Project imports:
-import 'package:boorusama/widgets/widgets.dart';
+import 'package:boorusama/foundation/toast.dart';
 
 export 'package:file_picker/file_picker.dart' show FileType;
 

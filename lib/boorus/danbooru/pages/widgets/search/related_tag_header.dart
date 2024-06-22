@@ -69,7 +69,7 @@ class _RelatedTagHeaderState extends ConsumerState<RelatedTagHeader> {
               child: FilledButton(
                 style: FilledButton.styleFrom(
                   foregroundColor: context.iconTheme.color,
-                  backgroundColor: context.colorScheme.surfaceVariant,
+                  backgroundColor: context.colorScheme.surfaceContainerHighest,
                   side: BorderSide(
                     color: context.theme.hintColor,
                   ),

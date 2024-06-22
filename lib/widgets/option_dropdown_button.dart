@@ -23,10 +23,10 @@ class OptionDropDownButton<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: backgroundColor ?? Theme.of(context).colorScheme.surfaceVariant,
+      color: backgroundColor ?? Theme.of(context).colorScheme.surfaceContainerHighest,
       child: DropdownButtonHideUnderline(
         child: DropdownButton(
-          dropdownColor: Theme.of(context).colorScheme.surfaceVariant,
+          dropdownColor: Theme.of(context).colorScheme.surfaceContainerHighest,
           alignment: alignment,
           isDense: true,
           value: value,

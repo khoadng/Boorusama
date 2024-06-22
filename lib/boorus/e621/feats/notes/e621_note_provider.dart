@@ -4,8 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/e621/e621.dart';
 import 'package:boorusama/clients/e621/types/types.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/notes/notes.dart';
+import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/notes/notes.dart';
 import 'e621_note.dart';
 
 final e621NoteRepoProvider =

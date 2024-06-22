@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/create/create.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -84,6 +84,7 @@ class DefaultBooruSubmitButton extends ConsumerWidget {
       data: data.copyWith(
         login: auth.login,
         apiKey: auth.apiKey,
+        passHash: () => auth.passHash,
       ),
       enable: auth.isValid && config.name.isNotEmpty,
     );
@@ -230,7 +231,7 @@ class DefaultBooruInstructionText extends StatelessWidget {
       text,
       style: context.textTheme.titleSmall?.copyWith(
         color: context.theme.hintColor,
-        fontSize: 14,
+        fontSize: 12,
         fontWeight: FontWeight.w400,
       ),
     );
@@ -341,7 +342,7 @@ class _CreateBooruConfigGranularRatingOptionsState
                         }
                       }
 
-                      widget.onChanged?.call(granularRatingFilters);
+                      widget.onChanged?.call(granularRatingFilters?.toSet());
                     },
                   );
                 },

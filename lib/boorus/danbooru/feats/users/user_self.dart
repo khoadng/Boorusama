@@ -2,11 +2,11 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/core/feats/users/user.dart' as core;
+import 'package:boorusama/core/users/user.dart';
 import 'user.dart';
 import 'user_level.dart';
 
-class UserSelf extends Equatable implements core.User {
+class UserSelf extends Equatable implements User {
   const UserSelf({
     required this.id,
     required this.level,

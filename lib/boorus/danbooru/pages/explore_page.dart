@@ -9,12 +9,11 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/posts/posts.dart';
-import 'package:boorusama/core/feats/settings/types.dart';
+import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/images/images.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
-import 'package:boorusama/core/utils.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/core/settings/types.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -222,88 +221,107 @@ class ExploreList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final height = context.screen.size == ScreenSize.small ? 200.0 : 250.0;
     final config = ref.watchConfig;
-    final blacklistedTags = ref.watch(blacklistTagsProvider(config));
-    final filteredPosts = posts
-        .where((post) => !blacklistedTags.any((tag) => post.tags.contains(tag)))
-        .toList();
 
-    return filteredPosts.isNotEmpty
-        ? SizedBox(
-            height: height,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (context, index) {
-                final post = filteredPosts[index];
+    return ref.watch(blacklistTagsProvider(config)).when(
+          data: (blacklistedTags) {
+            final filteredPosts = posts
+                .where((post) =>
+                    !blacklistedTags.any((tag) => post.tags.contains(tag)))
+                .toList();
 
-                return ExplicitContentBlockOverlay(
-                  block: ref.watch(settingsProvider
-                          .select((value) => value.blurExplicitMedia)) &&
-                      post.isExplicit,
-                  width: post.width,
-                  height: post.height,
-                  childBuilder: (block) => Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 2),
-                    child: GestureDetector(
-                      onTap: () => goToPostDetailsPage(
-                        context: context,
-                        posts: filteredPosts,
-                        initialIndex: index,
+            return filteredPosts.isNotEmpty
+                ? _buildList(height, filteredPosts, ref)
+                : _buildEmpty(height);
+          },
+          error: (error, _) => _buildList(height, [], ref),
+          loading: () => _buildEmpty(height),
+        );
+  }
+
+  Widget _buildList(
+    double height,
+    List<DanbooruPost> filteredPosts,
+    WidgetRef ref,
+  ) {
+    return SizedBox(
+      height: height,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemBuilder: (context, index) {
+          final post = filteredPosts[index];
+
+          return ExplicitContentBlockOverlay(
+            block: ref.watch(settingsProvider
+                    .select((value) => value.blurExplicitMedia)) &&
+                post.isExplicit,
+            width: post.width,
+            height: post.height,
+            childBuilder: (block) => Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 2),
+              child: GestureDetector(
+                onTap: () => goToPostDetailsPage(
+                  context: context,
+                  posts: filteredPosts,
+                  initialIndex: index,
+                ),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    BooruImage(
+                      aspectRatio: post.aspectRatio,
+                      imageUrl: block ? '' : post.url720x720,
+                      placeholderUrl: block ? '' : post.thumbnailImageUrl,
+                    ),
+                    if (post.isAnimated)
+                      Positioned(
+                        top: 5,
+                        left: 5,
+                        child: VideoPlayDurationIcon(
+                          duration: post.duration,
+                          hasSound: post.hasSound,
+                        ),
                       ),
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          BooruImage(
-                            aspectRatio: post.aspectRatio,
-                            imageUrl: block ? '' : post.url720x720,
-                            placeholderUrl: block ? '' : post.thumbnailImageUrl,
-                          ),
-                          if (post.isAnimated)
-                            Positioned(
-                              top: 5,
-                              left: 5,
-                              child: VideoPlayDurationIcon(
-                                duration: post.duration,
-                                hasSound: post.hasSound,
-                              ),
-                            ),
-                          Positioned.fill(
-                            child: ShadowGradientOverlay(
-                              alignment: Alignment.bottomCenter,
-                              colors: [
-                                const Color(0xC2000000),
-                                Colors.black12.withOpacity(0),
-                              ],
-                            ),
-                          ),
-                          Positioned(
-                            left: 5,
-                            bottom: 1,
-                            child: Text(
-                              '${index + 1}',
-                              style: context.textTheme.displayMedium?.copyWith(
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
+                    Positioned.fill(
+                      child: ShadowGradientOverlay(
+                        alignment: Alignment.bottomCenter,
+                        colors: [
+                          const Color(0xC2000000),
+                          Colors.black12.withOpacity(0),
                         ],
                       ),
                     ),
-                  ),
-                );
-              },
-              itemCount: filteredPosts.length,
-            ),
-          )
-        : SizedBox(
-            height: height,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: 20,
-              itemBuilder: (context, index) => Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 2),
-                child: createRandomPlaceholderContainer(context),
+                    Positioned(
+                      left: 5,
+                      bottom: 1,
+                      child: Text(
+                        '${index + 1}',
+                        style: context.textTheme.displayMedium?.copyWith(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           );
+        },
+        itemCount: filteredPosts.length,
+      ),
+    );
+  }
+
+  Widget _buildEmpty(double height) {
+    return SizedBox(
+      height: height,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: 20,
+        itemBuilder: (context, index) => Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 2),
+          child: createRandomPlaceholderContainer(context),
+        ),
+      ),
+    );
   }
 }

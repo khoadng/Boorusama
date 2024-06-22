@@ -8,8 +8,8 @@ import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/settings/settings.dart';
+import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -63,16 +63,7 @@ class _PostList extends ConsumerWidget {
                           : 1,
                   length: 2,
                   child: TabBar(
-                    tabAlignment: TabAlignment.start,
                     isScrollable: true,
-                    labelStyle: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                    ),
-                    indicatorColor: context.colorScheme.onBackground,
-                    labelColor: context.colorScheme.onBackground,
-                    unselectedLabelColor:
-                        context.colorScheme.onBackground.withOpacity(0.5),
                     onTap: (value) {
                       ref
                           .read(danbooruSelectedPoolCategoryProvider.notifier)

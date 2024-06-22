@@ -25,6 +25,11 @@ Future<void> setDeviceToPortraitMode() => SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp],
     );
 
+Future<void> setDeviceToAutoRotateMode() =>
+    SystemChrome.setPreferredOrientations(
+      DeviceOrientation.values,
+    );
+
 Future<void> setSystemActiveStatus({
   required bool active,
 }) =>

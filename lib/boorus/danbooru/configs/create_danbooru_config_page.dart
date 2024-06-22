@@ -7,11 +7,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/create/create.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/url_launcher.dart';
 import 'providers.dart';
 import 'widgets.dart';
 
@@ -42,7 +42,7 @@ class CreateDanbooruConfigPage extends StatelessWidget {
             text: TextSpan(
               style: context.textTheme.titleSmall?.copyWith(
                 color: context.theme.hintColor,
-                fontSize: 14,
+                fontSize: 12,
                 fontWeight: FontWeight.w400,
               ),
               children: [

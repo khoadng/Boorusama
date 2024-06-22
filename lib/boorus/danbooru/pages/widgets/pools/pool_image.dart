@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
-import 'package:boorusama/core/feats/settings/settings.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/core/images/images.dart';
+import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 
 class PoolImage extends ConsumerWidget {
@@ -39,7 +39,7 @@ class PoolImage extends ConsumerWidget {
                   child: Container(
                     width: constraints.maxWidth,
                     decoration: BoxDecoration(
-                      color: context.colorScheme.surfaceVariant,
+                      color: context.colorScheme.surfaceContainerHighest,
                       borderRadius:
                           BorderRadius.all(Radius.circular(imageBorderRadius)),
                     ),
@@ -53,7 +53,7 @@ class PoolImage extends ConsumerWidget {
               child: Container(
                 width: constraints.maxWidth,
                 decoration: BoxDecoration(
-                  color: context.colorScheme.surfaceVariant,
+                  color: context.colorScheme.surfaceContainerHighest,
                   borderRadius:
                       BorderRadius.all(Radius.circular(imageBorderRadius)),
                 ),

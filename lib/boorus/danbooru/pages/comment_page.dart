@@ -10,7 +10,7 @@ import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/comments/comment_box.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/comments/comment_list.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';

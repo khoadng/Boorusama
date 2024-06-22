@@ -5,8 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/feats/boorus/providers.dart';
-import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/configs/providers.dart';
+import 'package:boorusama/core/posts/posts.dart';
 
 final danbooruPostDetailsArtistProvider = FutureProvider.family
     .autoDispose<List<DanbooruPost>, String>((ref, tag) async {
@@ -14,7 +14,7 @@ final danbooruPostDetailsArtistProvider = FutureProvider.family
       .watch(danbooruArtistCharacterPostRepoProvider(ref.watchConfig))
       .getPostsFromTagWithBlacklist(
         tag: tag,
-        blacklist: ref.watch(blacklistTagsProvider(ref.watchConfig)),
+        blacklist: ref.watch(blacklistTagsProvider(ref.watchConfig).future),
       );
 });
 
@@ -25,8 +25,8 @@ final danbooruPostDetailsChildrenProvider = FutureProvider.family
   return ref
       .watch(danbooruPostRepoProvider(ref.watchConfig))
       .getPostsFromTagWithBlacklist(
-        tag: post.hasParent ? 'parent:${post.parentId}' : 'parent:${post.id}',
-        blacklist: ref.watch(blacklistTagsProvider(ref.watchConfig)),
+        tag: post.relationshipQuery,
+        blacklist: ref.watch(blacklistTagsProvider(ref.watchConfig).future),
         softLimit: null,
       );
 });

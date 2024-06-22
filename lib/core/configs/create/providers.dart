@@ -2,8 +2,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'types.dart';
 
@@ -125,6 +125,11 @@ extension UpdateDataX on WidgetRef {
   void updateApiKey(String value) {
     final auth = read(authConfigDataProvider);
     updateAuthConfigData(auth.copyWith(apiKey: value));
+  }
+
+  void updatePassHash(String? value) {
+    final auth = read(authConfigDataProvider);
+    updateAuthConfigData(auth.copyWith(passHash: () => value));
   }
 
   void updateLogin(String value) {

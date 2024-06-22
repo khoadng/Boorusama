@@ -6,9 +6,8 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/gelbooru_v2/gelbooru_v2.dart';
 import 'package:boorusama/boorus/gelbooru_v2/posts/posts_v2.dart';
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/posts/posts.dart';
-import 'package:boorusama/core/feats/utils.dart';
+import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/foundation/caching/lru_cacher.dart';
 
 final gelbooruV2PostRepoProvider =
@@ -55,11 +54,11 @@ final gelbooruV2ArtistCharacterPostRepoProvider =
 );
 
 final gelbooruV2ChildPostsProvider = FutureProvider.autoDispose
-    .family<List<GelbooruV2Post>, int>((ref, parentId) async {
+    .family<List<GelbooruV2Post>, GelbooruV2Post>((ref, post) async {
   return ref
       .watch(gelbooruV2PostRepoProvider(ref.watchConfig))
       .getPostsFromTagWithBlacklist(
-        tag: 'parent:$parentId',
-        blacklist: ref.watch(blacklistTagsProvider(ref.watchConfig)),
+        tag: post.relationshipQuery,
+        blacklist: ref.watch(blacklistTagsProvider(ref.watchConfig).future),
       );
 });

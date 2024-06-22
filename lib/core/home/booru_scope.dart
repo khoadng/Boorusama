@@ -11,16 +11,15 @@ import 'package:multi_split_view/multi_split_view.dart';
 import 'package:boorusama/app.dart';
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/blacklists/blacklists.dart';
+import 'package:boorusama/core/bookmarks/bookmarks.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/core/downloads/bulks/bulk_download_page.dart';
 import 'package:boorusama/core/downloads/download_manager_page.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/home/home.dart';
-import 'package:boorusama/core/pages/blacklists/blacklisted_tag_page.dart';
-import 'package:boorusama/core/pages/bookmarks/bookmark_page.dart';
-import 'package:boorusama/core/pages/favorite_tags/favorite_tags_page.dart';
-import 'package:boorusama/core/pages/home/side_bar_menu.dart';
+import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
@@ -29,7 +28,7 @@ import 'package:boorusama/router.dart';
 import 'package:boorusama/utils/flutter_utils.dart';
 import 'package:boorusama/widgets/lazy_indexed_stack.dart';
 
-const double _kDefaultMenuSize = 280;
+const double _kDefaultMenuSize = 220;
 const String kMenuWidthCacheKey = 'menu_width';
 
 class BooruScope extends ConsumerStatefulWidget {
@@ -163,11 +162,15 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
     splitController = MultiSplitViewController(
       areas: [
         Area(
-          minimalSize: kMinSideBarWidth,
+          id: 'menu',
+          data: 'menu',
+          min: kMinSideBarWidth,
+          max: kMaxSideBarWidth,
           size: widget.menuWidth ?? _kDefaultMenuSize,
         ),
         Area(
-          minimalSize: 500,
+          id: 'content',
+          data: 'content',
         ),
       ],
     );
@@ -212,9 +215,8 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
       left: false,
       right: false,
       child: Container(
-        width: 220,
         decoration: BoxDecoration(
-          color: context.colorScheme.surfaceVariant,
+          color: context.colorScheme.surfaceContainerHighest,
         ),
         child: Column(
           children: [
@@ -261,7 +263,11 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
             )
           : MultiSplitViewTheme(
               data: MultiSplitViewThemeData(
-                dividerThickness: 4,
+                dividerThickness: widget.grooveDivider
+                    ? Screen.of(context).size.isLarge
+                        ? 24
+                        : 16
+                    : 4,
                 dividerPainter: !widget.grooveDivider
                     ? DividerPainters.background(
                         animationEnabled: false,
@@ -269,8 +275,9 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
                         highlightedColor: context.colorScheme.primary,
                       )
                     : DividerPainters.grooved1(
+                        animationDuration: const Duration(milliseconds: 150),
                         color: context.colorScheme.onSurface,
-                        thickness: 4,
+                        thickness: Screen.of(context).size.isLarge ? 6 : 3,
                         size: 75,
                         highlightedSize: 40,
                         highlightedColor: context.colorScheme.primary,
@@ -292,17 +299,18 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
                   });
                 },
                 axis: Axis.horizontal,
-                children: [
-                  LayoutBuilder(
-                    builder: (_, c) {
-                      // no need to set state here, just a quick hack to get the current width of the menu
-                      menuWidth.value = c.maxWidth;
+                builder: (context, area) => switch (area.data) {
+                  'menu' => LayoutBuilder(
+                      builder: (_, c) {
+                        // no need to set state here, just a quick hack to get the current width of the menu
+                        menuWidth.value = c.maxWidth;
 
-                      return menu;
-                    },
-                  ),
-                  content,
-                ],
+                        return menu;
+                      },
+                    ),
+                  'content' => content,
+                  _ => const SizedBox(),
+                },
               ),
             ),
     );
@@ -311,11 +319,15 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
   void _setMinSplit() {
     splitController.areas = [
       Area(
-        minimalSize: kMinSideBarWidth,
+        id: 'menu',
+        data: 'menu',
+        min: kMinSideBarWidth,
+        max: kMaxSideBarWidth,
         size: kMinSideBarWidth,
       ),
       Area(
-        minimalSize: 500,
+        id: 'content',
+        data: 'content',
       ),
     ];
   }
@@ -323,11 +335,15 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
   void _setDefaultSplit() {
     splitController.areas = [
       Area(
-        minimalSize: kMinSideBarWidth,
+        id: 'menu',
+        data: 'menu',
+        min: kMinSideBarWidth,
+        max: kMaxSideBarWidth,
         size: _kDefaultMenuSize,
       ),
       Area(
-        minimalSize: 500,
+        id: 'content',
+        data: 'content',
       ),
     ];
   }

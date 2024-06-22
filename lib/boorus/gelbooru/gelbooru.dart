@@ -7,21 +7,22 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
+import 'package:boorusama/boorus/gelbooru/favorites/favorites.dart';
 import 'package:boorusama/boorus/gelbooru/home/home.dart';
 import 'package:boorusama/boorus/gelbooru/posts/posts.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
 import 'package:boorusama/clients/gelbooru/types/types.dart';
+import 'package:boorusama/core/autocompletes/autocompletes.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/notes/notes.dart';
-import 'package:boorusama/core/feats/posts/posts.dart';
-import 'package:boorusama/core/feats/tags/tags.dart';
-import 'package:boorusama/core/feats/utils.dart';
+import 'package:boorusama/core/favorites/favorites.dart';
+import 'package:boorusama/core/notes/notes.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
-import 'package:boorusama/core/widgets/posts/post_details_page_mixin.dart';
+import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
+import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/functional.dart';
 import 'artists/gelbooru_artist_page.dart';
 import 'comments/gelbooru_comment_page.dart';
@@ -46,6 +47,7 @@ final gelbooruClientProvider =
     baseUrl: booruConfig.url,
     login: booruConfig.login,
     apiKey: booruConfig.apiKey,
+    passHash: booruConfig.passHash,
     dio: dio,
   );
 });
@@ -131,7 +133,6 @@ Note gelbooruNoteToNote(NoteDto note) {
 
 class GelbooruBuilder
     with
-        FavoriteNotSupportedMixin,
         DefaultThumbnailUrlMixin,
         DefaultThumbnailUrlMixin,
         DefaultPostImageDetailsUrlMixin,
@@ -150,7 +151,7 @@ class GelbooruBuilder
   final PostRepository<GelbooruPost> postRepo;
   final AutocompleteRepository autocompleteRepo;
   final NoteRepository noteRepo;
-  final GelbooruClient client;
+  final GelbooruClient Function() client;
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
@@ -200,17 +201,20 @@ class GelbooruBuilder
 
   @override
   PostCountFetcher? get postCountFetcher =>
-      (config, tags, granularRatingQueryBuilder) {
-        return client
-            .getPosts(
-              tags: getTags(
-                config,
-                tags,
-                granularRatingQueries: (tags) =>
-                    granularRatingQueryBuilder?.call(tags, config),
-              ),
-            )
-            .then((value) => value.count);
+      (config, tags, granularRatingQueryBuilder) async {
+        // Delay a bit to avoid this request running before the actual search, this is a hack used for the search page
+        await Future.delayed(const Duration(milliseconds: 100));
+
+        final result = await client().getPosts(
+          tags: getTags(
+            config,
+            tags,
+            granularRatingQueries: (tags) =>
+                granularRatingQueryBuilder?.call(tags, config),
+          ),
+        );
+
+        return result.count;
       };
 
   @override
@@ -315,6 +319,38 @@ class GelbooruBuilder
       (context, config, controller) => GelbooruMobileHomePage(
             controller: controller,
           );
+
+  @override
+  FavoriteAdder? get favoriteAdder => client().canFavorite
+      ? (postId, ref) async {
+          final status = await ref
+              .read(gelbooruFavoritesProvider(ref.readConfig).notifier)
+              .add(postId);
+
+          if (status == AddFavoriteStatus.alreadyExists) {
+            showErrorToast('Already favorited');
+          } else if (status == AddFavoriteStatus.failure) {
+            showErrorToast('Failed to favorite');
+          } else {
+            showSuccessToast('Favorited');
+          }
+
+          return status == AddFavoriteStatus.success;
+        }
+      : null;
+
+  @override
+  FavoriteRemover? get favoriteRemover => client().canFavorite
+      ? (postId, ref) async {
+          await ref
+              .read(gelbooruFavoritesProvider(ref.readConfig).notifier)
+              .remove(postId);
+
+          showSuccessToast('Favorite removed');
+
+          return true;
+        }
+      : null;
 }
 
 class GelbooruSearchPage extends ConsumerWidget {
@@ -332,27 +368,6 @@ class GelbooruSearchPage extends ConsumerWidget {
       initialQuery: initialQuery,
       fetcher: (page, tags) =>
           ref.watch(gelbooruPostRepoProvider(config)).getPosts(tags, page),
-    );
-  }
-}
-
-class GelbooruFavoritesPage extends ConsumerWidget {
-  const GelbooruFavoritesPage({
-    super.key,
-    required this.uid,
-  });
-
-  final String uid;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
-    final query = 'fav:$uid';
-
-    return FavoritesPageScaffold(
-      favQueryBuilder: () => query,
-      fetcher: (page) =>
-          ref.read(gelbooruPostRepoProvider(config)).getPosts(query, page),
     );
   }
 }

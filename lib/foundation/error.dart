@@ -1,5 +1,6 @@
 // Dart imports:
 import 'dart:convert';
+import 'dart:ui';
 
 // Flutter imports:
 import 'package:flutter/foundation.dart';
@@ -10,7 +11,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/feats/settings/settings.dart';
+import 'package:boorusama/core/settings/settings.dart';
 
 final errorReporterProvider = Provider<ErrorReporter>(
   (ref) => NoErrorReporter(),
@@ -99,47 +100,64 @@ class NoErrorReporter implements ErrorReporter {
 }
 
 void initializeErrorHandlers(Settings settings, ErrorReporter? reporter) {
-  final isRemoteErrorReportingSupported =
-      reporter?.isRemoteErrorReportingSupported ?? false;
+  if (reporter == null) return;
 
   // Pass all uncaught "fatal" errors from the framework to Crashlytics
-  FlutterError.onError = (details) {
-    if (kReleaseMode &&
-        isRemoteErrorReportingSupported &&
-        settings.dataCollectingStatus == DataCollectingStatus.allow) {
-      // Ignore 304 errors
-      if (details.exception is DioException) {
-        final exception = details.exception as DioException;
-        if (exception.response?.statusCode == 304) return;
-      }
-
-      // Ignore image service errors
-      if (details.library == 'image resource service') return;
-
-      reporter?.recordFlutterFatalError(details);
-
-      return;
-    }
-
-    FlutterError.presentError(details);
-  };
+  FlutterError.onError = onUncaughtError(
+    reporter,
+    settings,
+  );
 
   // Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics
-  PlatformDispatcher.instance.onError = (error, stack) {
-    if (kReleaseMode &&
-        isRemoteErrorReportingSupported &&
-        settings.dataCollectingStatus == DataCollectingStatus.allow) {
-      // Ignore 304 errors
-      if (error is DioException) {
-        if (error.response?.statusCode == 304) return true;
+  PlatformDispatcher.instance.onError = onAsyncFlutterUncaughtError(
+    reporter,
+    settings,
+  );
+}
+
+FlutterExceptionHandler? onUncaughtError(
+  ErrorReporter reporter,
+  Settings settings,
+) =>
+    (details) {
+      if (kReleaseMode &&
+          reporter.isRemoteErrorReportingSupported &&
+          settings.dataCollectingStatus == DataCollectingStatus.allow) {
+        // Ignore 304 errors
+        if (details.exception is DioException) {
+          final exception = details.exception as DioException;
+          if (exception.response?.statusCode == 304) return;
+        }
+
+        // Ignore image service errors
+        if (details.library == 'image resource service') return;
+
+        reporter.recordFlutterFatalError(details);
+
+        return;
       }
 
-      reporter?.recordError(error, stack);
-    }
+      FlutterError.presentError(details);
+    };
 
-    return true;
-  };
-}
+ErrorCallback? onAsyncFlutterUncaughtError(
+  ErrorReporter reporter,
+  Settings settings,
+) =>
+    (error, stack) {
+      if (kReleaseMode &&
+          reporter.isRemoteErrorReportingSupported &&
+          settings.dataCollectingStatus == DataCollectingStatus.allow) {
+        // Ignore 304 errors
+        if (error is DioException) {
+          if (error.response?.statusCode == 304) return true;
+        }
+
+        reporter.recordError(error, stack);
+      }
+
+      return true;
+    };
 
 String prettyPrintJson(dynamic json) {
   if (json == null) return '';

@@ -16,18 +16,19 @@ import 'package:boorusama/boorus/danbooru/feats/sources/sources_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/uploads/uploads.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/danbooru_artist_url_chips.dart';
 import 'package:boorusama/clients/danbooru/types/source_dto.dart';
-import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/posts/posts.dart';
-import 'package:boorusama/core/feats/search/search.dart';
-import 'package:boorusama/core/feats/tags/tags.dart';
-import 'package:boorusama/core/feats/utils.dart';
+import 'package:boorusama/core/autocompletes/autocompletes.dart';
+import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/images/images.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/tag_edit_scaffold.dart';
-import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/core/search/search.dart';
+import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/toast.dart';
+import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -805,16 +806,7 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
       children: [
         Expanded(
           child: TabBar(
-            tabAlignment: TabAlignment.start,
             isScrollable: true,
-            labelStyle: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
-            indicatorColor: context.colorScheme.onBackground,
-            labelColor: context.colorScheme.onBackground,
-            unselectedLabelColor:
-                context.colorScheme.onBackground.withOpacity(0.5),
             tabs: [
               const Tab(text: 'Tags'),
               const Tab(text: 'Source'),
@@ -986,12 +978,10 @@ Widget _getTitle(
             'p': Style(
               fontSize: FontSize.medium,
               color: color,
-              padding: EdgeInsets.zero,
-              margin: EdgeInsets.zero,
+              margin: Margins.zero,
             ),
             'body': Style(
-              padding: EdgeInsets.zero,
-              margin: EdgeInsets.zero,
+              margin: Margins.zero,
             ),
             'b': Style(
               fontWeight: FontWeight.w900,
@@ -1005,12 +995,6 @@ Widget _getTitle(
             'p': Style(
               fontSize: FontSize.medium,
               color: color,
-              padding: EdgeInsets.zero,
-              margin: EdgeInsets.zero,
-            ),
-            'body': Style(
-              padding: EdgeInsets.zero,
-              margin: EdgeInsets.zero,
             ),
             'b': Style(
               fontWeight: FontWeight.w900,

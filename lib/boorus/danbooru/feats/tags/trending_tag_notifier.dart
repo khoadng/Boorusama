@@ -7,9 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/tags/booru_tag_type_store.dart';
-import 'package:boorusama/core/feats/tags/tags.dart';
+import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/tags/tags.dart';
 
 class TrendingTagNotifier
     extends AutoDisposeFamilyAsyncNotifier<List<Search>, BooruConfig> {
@@ -22,9 +21,10 @@ class TrendingTagNotifier
       ref.read(popularSearchProvider(arg));
 
   Future<List<Search>> fetch() async {
+    final bl = await ref.read(blacklistTagsProvider(arg).future);
     final excludedTags = {
       ...ref.read(tagInfoProvider).r18Tags,
-      ...ref.read(blacklistTagsProvider(arg)),
+      ...bl,
     };
 
     var searches =

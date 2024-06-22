@@ -2,7 +2,7 @@ name: boorusama
 description: A mobile client for Booru sites.
 
 publish_to: "none"
-version: 3.18.1+104
+version: 3.19.0+106
 
 environment:
   sdk: ">=3.2.0 <4.0.0"
@@ -21,7 +21,7 @@ dependencies:
   context_menus:
     git:
       url: https://github.com/khoadng/flutter-context-menu.git
-      ref: 314d1871b50d5376fa6fa30b81d7279a3734d018
+      ref: 7a310fa2aacfaa95339ee2535f0797fcf84efeca
   cookie_jar: ^4.0.8
   crypto: ^3.0.3
   custom_sliding_segmented_control: ^1.8.1
@@ -52,10 +52,7 @@ dependencies:
     git:
       url: https://github.com/khoadng/flutter_download_manager.git
       ref: 2e2f17a2e9ba95dbbbcd9b7c6c5ebfabda8123df
-  flutter_html:
-    git:
-      url: https://github.com/khoadng/flutter_html.git
-      ref: fix-rebuild
+  flutter_html: ^3.0.0-beta.2
   flutter_improved_scrolling: ^0.0.3
   flutter_local_notifications: ^17.0.0
   flutter_markdown: ^0.7.1
@@ -74,8 +71,8 @@ dependencies:
   hive: ^2.2.3
   html: ^0.15.4
   http: ^1.1.0
-  infinite_scroll_pagination: ^3.2.0
-  intl: ^0.18.1
+  infinite_scroll_pagination: ^4.0.0
+  intl: ^0.19.0
   jiffy: ^6.2.1
   like_button: ^2.0.5
   local_auth: ^2.2.0
@@ -83,7 +80,7 @@ dependencies:
   material_symbols_icons: ^4.2719.0
   media_scanner: ^2.1.0
   modal_bottom_sheet: ^3.0.0-pre
-  multi_split_view: ^2.4.0
+  multi_split_view: ^3.2.1
   oktoast: ^3.4.0
   package_info_plus: ^7.0.0
   path: ^1.8.3

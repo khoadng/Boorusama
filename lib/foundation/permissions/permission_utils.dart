@@ -1,5 +1,4 @@
 // Package imports:
-import 'package:collection/collection.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 // Project imports:
@@ -40,29 +39,18 @@ Future<PermissionStatus> checkMediaPermissions(
 Future<PermissionStatus> _requestMediaPermissionsAndroid(
   AndroidVersion? androidVersion,
 ) async {
-  final hasGranularPerm = hasGranularMediaPermissions(androidVersion);
+  if (hasScopedStorage(androidVersion) == true) {
+    // request notification permission separately
+    await Permission.notification.request();
+    return PermissionStatus.granted;
+  } else {
+    final status = await Permission.storage.request();
 
-  if (hasGranularPerm == null) return PermissionStatus.denied;
+    // request notification permission separately
+    await Permission.notification.request();
 
-  final statuses = hasGranularPerm
-      ? await [
-          Permission.photos,
-          Permission.videos,
-        ].request()
-      : await [Permission.storage].request();
-
-  // request notification permission separately
-  await Permission.notification.request();
-
-  final allAccepted =
-      statuses.values.every((e) => e == PermissionStatus.granted);
-
-  final otherStatuses =
-      statuses.values.where((e) => e != PermissionStatus.granted).firstOrNull;
-
-  return allAccepted
-      ? PermissionStatus.granted
-      : otherStatuses ?? PermissionStatus.denied;
+    return status;
+  }
 }
 
 Future<PermissionStatus> _requestMediaPermissionsIos() async {
@@ -96,24 +84,11 @@ Future<PermissionStatus> _checkMediaPermissionsIos() async {
 Future<PermissionStatus> _checkMediaPermissionsAndroid(
   AndroidVersion? androidVersion,
 ) async {
-  final hasGranularPerm = hasGranularMediaPermissions(androidVersion);
+  if (hasScopedStorage(androidVersion) == true) {
+    return PermissionStatus.granted;
+  } else {
+    final status = await Permission.storage.status;
 
-  if (hasGranularPerm == null) return PermissionStatus.denied;
-
-  final statuses = hasGranularPerm
-      ? await Future.wait([
-          Permission.photos.status,
-          Permission.videos.status,
-        ])
-      : await Future.wait([
-          Permission.storage.status,
-        ]);
-
-  final allAccepted = statuses.every((e) => e == PermissionStatus.granted);
-
-  return allAccepted
-      ? PermissionStatus.granted
-      : statuses.contains(PermissionStatus.permanentlyDenied)
-          ? PermissionStatus.permanentlyDenied
-          : PermissionStatus.denied;
+    return status;
+  }
 }

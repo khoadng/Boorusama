@@ -4,9 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/shimmie2/shimmie2_client.dart';
-import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/autocompletes/autocompletes.dart';
+import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/path.dart';
 
@@ -124,7 +124,7 @@ class Shimmie2Post extends SimplePost {
   @override
   String getLink(String baseUrl) {
     return baseUrl.endsWith('/')
-        ? '$baseUrl/post/view/$id'
+        ? '${baseUrl}post/view/$id'
         : '$baseUrl/post/view/$id';
   }
 }

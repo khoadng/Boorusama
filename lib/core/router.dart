@@ -11,28 +11,25 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
+import 'package:boorusama/core/autocompletes/autocompletes.dart';
+import 'package:boorusama/core/blacklists/blacklists.dart';
+import 'package:boorusama/core/comments/comments.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/bulks/bulk_download_provider.dart';
-import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/feats/blacklists/blacklists.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/posts/posts.dart';
-import 'package:boorusama/core/feats/search/search.dart';
-import 'package:boorusama/core/feats/tags/tags.dart';
-import 'package:boorusama/core/feats/utils.dart';
-import 'package:boorusama/core/pages/blacklists/blacklisted_tags_search_page.dart';
-import 'package:boorusama/core/pages/search/simple_tag_search_view.dart';
+import 'package:boorusama/core/images/images.dart';
+import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/search/search.dart';
+import 'package:boorusama/core/search_histories/search_histories.dart';
+import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/routes.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import 'pages/search/full_history_view.dart';
-import 'pages/search/metatag_list_page.dart';
-import 'pages/show_tag_list_page.dart';
-import 'utils.dart';
 
 void goToHomePage(
   BuildContext context, {
@@ -196,7 +193,7 @@ void goToSearchHistoryPage(
                 actions: [
                   TextButton(
                     style: TextButton.styleFrom(
-                      foregroundColor: context.colorScheme.onBackground,
+                      foregroundColor: context.colorScheme.onSurface,
                     ),
                     onPressed: () => context.navigator.pop(),
                     child: const Text('generic.action.cancel').tr(),
@@ -325,7 +322,7 @@ Future<T?> showDesktopDialogWindow<T>(
       pageBuilder: (context, _, __) {
         return Dialog(
           backgroundColor:
-              backgroundColor ?? context.colorScheme.surfaceVariant,
+              backgroundColor ?? context.colorScheme.surfaceContainerHighest,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),
           ),

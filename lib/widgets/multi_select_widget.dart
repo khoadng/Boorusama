@@ -107,7 +107,13 @@ class _MultiSelectWidgetState<T> extends State<MultiSelectWidget<T>> {
           },
         ),
         bottomSheet: multiSelect && widget.footerBuilder != null
-            ? widget.footerBuilder!(context, _controller.selectedItems)
+            ? Padding(
+                padding: EdgeInsets.only(
+                  bottom: MediaQuery.viewPaddingOf(context).bottom,
+                ),
+                child:
+                    widget.footerBuilder!(context, _controller.selectedItems),
+              )
             : const SizedBox.shrink());
   }
 }
@@ -194,7 +200,7 @@ class _SelectableItemState extends State<SelectableItem>
                 child: Icon(
                   FontAwesomeIcons.check,
                   size: 18,
-                  color: context.colorScheme.onBackground,
+                  color: context.colorScheme.onSurface,
                 ),
               ),
           ],

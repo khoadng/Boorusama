@@ -5,7 +5,7 @@ import 'package:uuid/data.dart';
 import 'package:uuid/uuid.dart';
 
 // Project imports:
-import 'package:boorusama/core/feats/filename_generators/filename_generator.dart';
+import 'package:boorusama/core/filename_generators/filename_generators.dart';
 
 void main() {
   test('generateFileName replaces tokens correctly', () {

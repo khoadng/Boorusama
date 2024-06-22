@@ -16,13 +16,13 @@ import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/widgets.dart';
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/images/images.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -52,6 +52,8 @@ class _FavoriteGroupDetailsPageState
   //TODO: this part might be broken after the new filtering system, need to check
   late final controller = PostGridController<DanbooruPost>(
     fetcher: (page) => getPostsFromIdQueue(widget.postIds),
+    blacklistedTagsFetcher: () =>
+        ref.read(blacklistTagsProvider(ref.watchConfig).future),
     refresher: () => getPostsFromIdQueue(widget.postIds),
   );
 
@@ -130,9 +132,6 @@ class _FavoriteGroupDetailsPageState
       appBar: AppBar(
         centerTitle: false,
         title: Text(widget.group.name.replaceUnderscoreWithSpace()),
-        elevation: 0,
-        shadowColor: Colors.transparent,
-        backgroundColor: context.theme.scaffoldBackgroundColor,
         actions: [
           if (!editing)
             IconButton(

@@ -9,14 +9,16 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/blacklists/blacklists.dart';
+import 'package:boorusama/core/bookmarks/bookmarks.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/core/downloads/background_downloader.dart';
 import 'package:boorusama/core/downloads/bulks/bulk_download_page.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/posts/posts.dart';
-import 'package:boorusama/core/feats/settings/settings.dart';
-import 'package:boorusama/core/pages/blacklists/blacklisted_tag_page.dart';
-import 'package:boorusama/core/pages/favorite_tags/favorite_tags_page.dart';
+import 'package:boorusama/core/images/images.dart';
+import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/biometrics/app_lock.dart';
@@ -27,9 +29,7 @@ import 'package:boorusama/widgets/widgets.dart';
 import 'boorus/entry_page.dart';
 import 'core/configs/create/add_booru_page.dart';
 import 'core/downloads/download_manager_page.dart';
-import 'core/pages/bookmarks/bookmark_details_page.dart';
-import 'core/pages/bookmarks/bookmark_page.dart';
-import 'core/pages/settings/settings.dart';
+import 'core/settings/widgets/widgets.dart';
 import 'foundation/rating/rating.dart';
 import 'router.dart';
 
@@ -485,7 +485,6 @@ class Routes {
             name: state.name,
             transitionsBuilder: fadeTransitionBuilder(),
             child: OriginalImagePage(
-              initialOrientation: MediaQuery.orientationOf(context),
               post: post,
             ),
           );

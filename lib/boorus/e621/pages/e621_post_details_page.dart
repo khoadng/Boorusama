@@ -9,12 +9,11 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/e621/feats/artists/artists.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/feats/artist_commentaries/artist_commentaries.dart';
+import 'package:boorusama/core/artists/artists.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
-import 'widgets/e621_post_action_toolbar.dart';
 import 'widgets/e621_post_tag_list.dart';
 
 class E621PostDetailsPage extends ConsumerStatefulWidget {
@@ -46,7 +45,7 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage> {
       initialIndex: widget.intitialIndex,
       onExit: widget.onExit,
       onPageChangeIndexed: widget.onPageChanged,
-      toolbarBuilder: (context, post) => E621PostActionToolbar(post: post),
+      toolbarBuilder: (context, post) => DefaultPostActionToolbar(post: post),
       swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
       sliverArtistPostsBuilder: (context, post) => post.artistTags.isNotEmpty
           ? post.artistTags

@@ -15,12 +15,11 @@ import 'package:boorusama/boorus/danbooru/pages/widgets/danbooru_creator_preload
 import 'package:boorusama/boorus/danbooru/pages/widgets/details/danbooru_more_action_button.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/details/danbooru_post_action_toolbar.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/details/pool_tiles.dart';
-import 'package:boorusama/core/feats/artist_commentaries/artist_commentaries.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/artists/artists.dart';
+import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/post_details_page_desktop_scaffold.dart';
-import 'package:boorusama/core/widgets/posts/character_post_list.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'danbooru_post_details_page.dart';
@@ -117,7 +116,10 @@ class _DanbooruPostDetailsDesktopPageState
               ),
       sliverRelatedPostsBuilder: (context, post) =>
           ref.watch(danbooruPostDetailsChildrenProvider(post)).maybeWhen(
-                data: (posts) => DanbooruRelatedPostsSection(posts: posts),
+                data: (posts) => DanbooruRelatedPostsSection(
+                  posts: posts,
+                  currentPost: post,
+                ),
                 orElse: () => const SliverSizedBox.shrink(),
               ),
       sliverArtistPostsBuilder: (context, post) => post.artistTags.isNotEmpty

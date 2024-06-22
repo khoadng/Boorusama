@@ -10,9 +10,9 @@ import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/pages/danbooru_post_details_page.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/router.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'danbooru_tag_context_menu.dart';
 
@@ -65,7 +65,7 @@ class DanbooruTagsTile extends ConsumerWidget {
                 style: FilledButton.styleFrom(
                   visualDensity: VisualDensity.compact,
                   shape: const CircleBorder(),
-                  backgroundColor: context.colorScheme.surfaceVariant,
+                  backgroundColor: context.colorScheme.surfaceContainerHighest,
                 ),
                 onPressed: () => ref.danbooruEdit(post),
                 child: Icon(

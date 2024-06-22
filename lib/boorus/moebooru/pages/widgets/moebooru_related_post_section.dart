@@ -6,9 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
-import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
-import 'package:boorusama/core/widgets/related_posts_section.dart';
 import 'package:boorusama/widgets/sliver_sized_box.dart';
 
 class MoebooruRelatedPostsSection extends ConsumerWidget {
@@ -28,6 +27,10 @@ class MoebooruRelatedPostsSection extends ConsumerWidget {
           ? RelatedPostsSection(
               posts: posts,
               imageUrl: (item) => item.sampleImageUrl,
+              onViewAll: () => goToSearchPage(
+                context,
+                tag: post.relationshipQuery,
+              ),
               onTap: (index) => goToPostDetailsPage(
                 context: context,
                 posts: posts,

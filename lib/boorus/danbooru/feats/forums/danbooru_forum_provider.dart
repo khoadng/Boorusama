@@ -6,8 +6,8 @@ import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/forums/forums.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/clients/danbooru/danbooru_client_forums.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/forums/forums.dart';
+import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/forums/forums.dart';
 
 final danbooruForumTopicRepoProvider =
     Provider.family<ForumTopicRepository<DanbooruForumTopic>, BooruConfig>(

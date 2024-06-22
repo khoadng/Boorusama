@@ -22,23 +22,21 @@ import 'package:boorusama/boorus/sankaku/sankaku.dart';
 import 'package:boorusama/boorus/shimmie2/providers.dart';
 import 'package:boorusama/boorus/zerochan/zerochan.dart';
 import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
-import 'package:boorusama/core/configs/manage/providers.dart';
+import 'package:boorusama/core/autocompletes/autocompletes.dart';
+import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/notes/notes.dart';
-import 'package:boorusama/core/feats/posts/posts.dart';
-import 'package:boorusama/core/feats/settings/settings.dart';
-import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/home/home.dart';
-import 'package:boorusama/core/pages/post_statistics_page.dart';
+import 'package:boorusama/core/notes/notes.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
-import 'package:boorusama/core/utils.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/routes.dart';
 import 'danbooru/feats/notes/notes.dart';
@@ -135,7 +133,7 @@ final booruBuildersProvider =
                 autocompleteRepo:
                     ref.read(gelbooruAutocompleteRepoProvider(config)),
                 noteRepo: ref.read(gelbooruNoteRepoProvider(config)),
-                client: ref.read(gelbooruClientProvider(config)),
+                client: () => ref.read(gelbooruClientProvider(config)),
               ),
           BooruType.gelbooruV2: (config) => GelbooruV2Builder(
                 postRepo: ref.read(gelbooruV2PostRepoProvider(config)),

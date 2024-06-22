@@ -1,8 +1,12 @@
 // Flutter imports:
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/core/feats/settings/settings.dart';
+import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/widgets/widgets.dart';
 import 'platform.dart';
 
 const _kRawPreferredLayout = String.fromEnvironment('PREFERRED_LAYOUT');
@@ -81,6 +85,10 @@ class Screen {
       };
 }
 
+extension ScreenSizeX on ScreenSize {
+  bool get isLarge => this != ScreenSize.small;
+}
+
 extension DisplayX on BuildContext {
   Screen get screen => Screen.of(this);
   Orientation get orientation => MediaQuery.orientationOf(this);
@@ -89,4 +97,35 @@ extension DisplayX on BuildContext {
 extension OrientationX on Orientation {
   bool get isLandscape => this == Orientation.landscape;
   bool get isPortrait => this == Orientation.portrait;
+}
+
+Future<T?> showAdaptiveBottomSheet<T>(
+  BuildContext context, {
+  required Widget Function(BuildContext context) builder,
+  bool expand = false,
+  double? height,
+  Color? backgroundColor,
+  RouteSettings? settings,
+}) {
+  return Screen.of(context).size != ScreenSize.small
+      ? showGeneralDialog<T>(
+          context: context,
+          routeSettings: settings,
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              builder(context),
+        )
+      : showBarModalBottomSheet<T>(
+          context: context,
+          settings: settings,
+          barrierColor: Colors.black45,
+          backgroundColor: backgroundColor ?? Colors.transparent,
+          builder: (context) => ConditionalParentWidget(
+            condition: !expand,
+            child: builder(context),
+            conditionalBuilder: (child) => SizedBox(
+              height: height,
+              child: child,
+            ),
+          ),
+        );
 }

@@ -10,10 +10,11 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 
 // Project imports:
-import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 
+//FIXME: Split view is broken, need to fix it later, check tag_edit_page.dart for the correct implementation
 class TagEditUploadScaffold extends ConsumerStatefulWidget {
   const TagEditUploadScaffold({
     super.key,
@@ -43,12 +44,14 @@ class _TagEditScaffoldState extends ConsumerState<TagEditUploadScaffold> {
   late final splitController = MultiSplitViewController(
     areas: [
       Area(
-        minimalSize: 4,
-        weight: widget.splitWeights[0],
+        data: 'image',
+        min: 4,
+        flex: widget.splitWeights[0],
       ),
       Area(
-        minimalSize: 100,
-        weight: widget.splitWeights[1],
+        data: 'content',
+        min: 100,
+        flex: widget.splitWeights[1],
       ),
     ],
   );
@@ -80,12 +83,14 @@ class _TagEditScaffoldState extends ConsumerState<TagEditUploadScaffold> {
   void _setDefaultSplit() {
     splitController.areas = [
       Area(
-        minimalSize: 4,
-        weight: 0.5,
+        data: 'image',
+        min: 4,
+        flex: 0.5,
       ),
       Area(
-        minimalSize: 100,
-        weight: 0.5,
+        data: 'content',
+        min: 100,
+        flex: 0.5,
       ),
     ];
   }
@@ -93,12 +98,14 @@ class _TagEditScaffoldState extends ConsumerState<TagEditUploadScaffold> {
   void _setMaxSplit() {
     splitController.areas = [
       Area(
-        minimalSize: 4,
-        weight: 0.9,
+        data: 'image',
+        min: 4,
+        flex: 0.9,
       ),
       Area(
-        minimalSize: 100,
-        weight: 0.1,
+        data: 'content',
+        min: 100,
+        flex: 0.1,
       ),
     ];
   }
@@ -206,20 +213,35 @@ class _TagEditScaffoldState extends ConsumerState<TagEditUploadScaffold> {
         child: MultiSplitView(
           axis: Axis.vertical,
           controller: splitController,
-          children: [
-            Column(
-              children: [
-                Expanded(
-                  child: _buildImage(),
-                ),
-                const Divider(
-                  thickness: 1,
-                  height: 4,
-                ),
-              ],
-            ),
-            widget.contentBuilder(),
-          ],
+          builder: (context, area) => switch (area.data) {
+            'image' => Column(
+                children: [
+                  Expanded(
+                    child: _buildImage(),
+                  ),
+                  const Divider(
+                    thickness: 1,
+                    height: 4,
+                  ),
+                ],
+              ),
+            'content' => widget.contentBuilder(),
+            _ => const SizedBox(),
+          },
+          // builder: (context, area) => [
+          //   Column(
+          //     children: [
+          //       Expanded(
+          //         child: _buildImage(),
+          //       ),
+          //       const Divider(
+          //         thickness: 1,
+          //         height: 4,
+          //       ),
+          //     ],
+          //   ),
+          //   widget.contentBuilder(),
+          // ],
         ),
       ),
     );
