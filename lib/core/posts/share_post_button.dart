@@ -48,42 +48,49 @@ extension PostShareX on WidgetRef {
     required BuildContext context,
     required PostShareState state,
   }) {
+    final modal = ModalShare(
+      booruLink: state.booruLink,
+      sourceLink: state.sourceLink,
+      imageData: () => (
+        imageUrl: defaultPostImageUrlBuilder(this)(post),
+        imageExt: post.format,
+      ),
+    );
+
     Screen.of(context).size == ScreenSize.small
         ? showMaterialModalBottomSheet(
             expand: false,
             context: context,
             barrierColor: Colors.black45,
             backgroundColor: Colors.transparent,
-            builder: (context) => ModalShare(
-              booruLink: state.booruLink,
-              sourceLink: state.sourceLink,
-              imageUrl: () => defaultPostImageUrlBuilder(this)(post),
-            ),
+            builder: (context) => modal,
           )
         : showDialog(
             context: context,
             builder: (context) => AlertDialog(
               contentPadding: EdgeInsets.zero,
-              content: ModalShare(
-                booruLink: state.booruLink,
-                sourceLink: state.sourceLink,
-                imageUrl: () => defaultPostImageUrlBuilder(this)(post),
-              ),
+              content: modal,
             ),
           );
   }
 }
 
 final _cachedImageFileProvider =
-    FutureProvider.autoDispose.family<XFile?, String>(
-  (ref, imageUrl) async {
+    FutureProvider.autoDispose.family<XFile?, ModelShareImageData>(
+  (ref, data) async {
+    final imageUrl = data.imageUrl;
+    final imageExt = data.imageExt;
+
+    if (imageUrl == null) return null;
+
     final ext = extension(imageUrl);
+    final effectiveExt = ext.isNotEmpty ? ext : imageExt;
     final file = await getCachedImageFile(imageUrl);
 
-    if (file == null) return null;
+    if (file == null || effectiveExt == null) return null;
 
     // attach the extension to the file
-    final newPath = file.path + ext;
+    final newPath = file.path + effectiveExt;
     final newFile = file.copySync(newPath);
     final xFile = XFile(newFile.path);
 
@@ -91,17 +98,22 @@ final _cachedImageFileProvider =
   },
 );
 
+typedef ModelShareImageData = ({
+  String? imageUrl,
+  String? imageExt,
+});
+
 class ModalShare extends ConsumerWidget {
   const ModalShare({
     super.key,
     required this.booruLink,
     required this.sourceLink,
-    required this.imageUrl,
+    required this.imageData,
   });
 
   final String booruLink;
   final PostSource sourceLink;
-  final String Function() imageUrl;
+  final ModelShareImageData Function() imageData;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -138,7 +150,7 @@ class ModalShare extends ConsumerWidget {
                 );
               },
             ),
-            ref.watch(_cachedImageFileProvider(imageUrl())).when(
+            ref.watch(_cachedImageFileProvider(imageData())).when(
                   data: (file) {
                     return file != null
                         ? ListTile(
