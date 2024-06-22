@@ -130,12 +130,12 @@ class _NoteContainerDesktopState extends State<_NoteContainerDesktop> {
               ),
         visible: _visible,
         portalFollower: ConstrainedBox(
-          constraints:
-              BoxConstraints(maxWidth: MediaQuery.sizeOf(context).width * 0.5),
-          child: IntrinsicWidth(
-            child: Material(
+          constraints: BoxConstraints(
+            maxWidth: MediaQuery.sizeOf(context).width * 0.5,
+          ),
+          child: Material(
+            child: SingleChildScrollView(
               child: Html(
-                shrinkWrap: true,
                 data: widget.content,
               ),
             ),
@@ -237,12 +237,12 @@ class _NoteContainerMobile extends StatelessWidget {
               ),
         visible: visible,
         portalFollower: ConstrainedBox(
-          constraints:
-              BoxConstraints(maxWidth: MediaQuery.sizeOf(context).width * 0.5),
-          child: IntrinsicWidth(
-            child: Material(
+          constraints: BoxConstraints(
+            maxWidth: MediaQuery.sizeOf(context).width * 0.5,
+          ),
+          child: Material(
+            child: SingleChildScrollView(
               child: Html(
-                shrinkWrap: true,
                 data: content,
               ),
             ),
