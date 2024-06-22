@@ -278,7 +278,7 @@ class DownloadPathWarning extends StatelessWidget {
           ),
         },
         data:
-            "The app can only download files inside public directories <b>({0})</b> for Android 11+. <br><br> Valid location examples:<br><b>[Internal]</b> /storage/emulated/0/Download <br><b>[SD card]</b> /storage/A1B2-C3D4/Download<br><br>Please choose another location. <br>This device's version is <b>{1}</b>."
+            "The app can only download files inside public directories <b>({0})</b> for Android 11+. <br><br> Valid location examples:<br><b>[Internal]</b> /storage/emulated/0/Download <br><b>[SD card]</b> /storage/A1B2-C3D4/Download<br><br>Please choose another directory or create a new one if it doesn't exist. <br>This device's version is <b>{1}</b>."
                 .replaceAll('{0}', allowedFolders.join(', '))
                 .replaceAll('{1}', releaseName),
       ),
