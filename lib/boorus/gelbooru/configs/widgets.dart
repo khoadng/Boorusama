@@ -22,7 +22,7 @@ class GelbooruApiKeyField extends ConsumerWidget {
     return CreateBooruApiKeyField(
       controller: controller,
       hintText:
-          '2e89f79b593ed40fd8641235f002221374e50d6343d3afe1687fc70decae58dcf',
+          'e.g. 2e89f79b593ed40fd8641235f002221374e50d6343d3afe1687fc70decae58dcf',
       onChanged: ref.updateApiKey,
     );
   }
@@ -41,7 +41,7 @@ class GelbooruLoginField extends ConsumerWidget {
     return CreateBooruLoginField(
       controller: controller,
       labelText: 'User ID',
-      hintText: '1234567',
+      hintText: 'e.g. 1234567',
       onChanged: ref.updateLogin,
     );
   }
@@ -67,11 +67,7 @@ class GelbooruConfigPasteFromClipboardButton extends ConsumerWidget {
         (value) {
           if (value == null) return;
           final (uid, key) = extractValues(value.text);
-          ref.updateAuthConfigData(AuthConfigData(
-            login: uid,
-            apiKey: key,
-            passHash: null,
-          ));
+          ref.updateLoginAndApiKey(uid, key);
 
           login.text = uid;
           apiKey.text = key;
