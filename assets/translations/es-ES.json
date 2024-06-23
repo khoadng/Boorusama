@@ -10,19 +10,23 @@
             "delete": "Borrar",
             "edit": "Editar",
             "ok": "Ok",
-            "cancel": "Cancelar"
+            "cancel": "Cancelar",
+            "duplicate": "Duplicar"
         },
         "view": "Ver"
     },
     "profile": {
-        "favorites": "Favoritos"
+        "favorites": "Favoritos",
+        "copy_user_id": "Copiar ID de usuario",
+        "profile": "Perfil",
+        "messages": "Mensajes"
     },
     "network": {
         "unavailable": "Servidor No disponible"
     },
     "tag": {
         "related": {
-            "more": "Mas",
+            "more": "Más",
             "related": "Relacionado",
             "add_to_current_search": "Añadir a la busqueda",
             "open_wiki": "Abrir Wiki"
@@ -39,17 +43,17 @@
             "file_details": "Detalles del Archivo",
             "size": "Tamaño",
             "resolution": "Resolucíon",
-            "rating": "Rating",
+            "rating": "Clasificación",
             "file_format": "Formato del Archivo",
             "share": {
-                "source": "Compartir Link de orige",
+                "source": "Compartir Link de el orígen",
                 "booru": "Compartir Link de Booru",
                 "image": "Compartir Imagen"
             },
             "copied": "Copiado",
             "show_original": "Mostrar original",
             "show_translated": "Mostrar Traduccido",
-            "login_required_notice": "Necesitas estar Logeado para hacer esta accion",
+            "login_required_notice": "Necesitas haber iniciado sesión para realizar esta acción",
             "open_wiki": "Abrir Wiki",
             "add_to_blacklist": "Añadir a la Lista de Bloqueados",
             "add_to_favorites": "Añadir a La Lista de Favoritos",
@@ -158,7 +162,8 @@
         "app_settings": "Ajustes de aplicación",
         "appearance": {
             "appearance": "Apariencia",
-            "show_scores": "Mostrar puntuaciones"
+            "show_scores": "Mostrar puntuaciones",
+            "booru_config": "Perfil de el Booru"
         },
         "general": "General",
         "search": {
@@ -243,7 +248,17 @@
             }
         },
         "help_us_translate": "Ayúdenos a traducir",
-        "other_settings": "Otros Ajustes"
+        "other_settings": "Otros Ajustes",
+        "accessibility": {
+            "accessibility": "Accesibilidad",
+            "reverseBooruConfigSelectorScrollDirection": "Dirección de desplazamiento inverso de los perfiles booru"
+        },
+        "booru_settings": {
+            "booru_settings": "Configuraciónes de el Booru"
+        },
+        "backup_and_restore": {
+            "backup_and_restore": "Copia de seguridad y restaurar"
+        }
     },
     "blacklisted_tags": {
         "remove": "Remover",
