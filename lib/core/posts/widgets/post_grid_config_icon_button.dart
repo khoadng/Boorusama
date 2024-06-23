@@ -8,6 +8,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/providers.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
@@ -29,10 +30,14 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final gridSize = ref.watch(gridSizeSettingsProvider);
-    final imageListType = ref.watch(imageListTypeSettingsProvider);
-    final pageMode = ref.watch(pageModeSettingsProvider);
-    final imageQuality = ref.watch(imageQualitySettingsProvider);
+    final gridSize =
+        ref.watch(settingsProvider.select((value) => value.gridSize));
+    final imageListType =
+        ref.watch(settingsProvider.select((value) => value.imageListType));
+    final pageMode =
+        ref.watch(settingsProvider.select((value) => value.pageMode));
+    final imageQuality =
+        ref.watch(settingsProvider.select((value) => value.imageQuality));
 
     return InkWell(
       customBorder: const CircleBorder(),

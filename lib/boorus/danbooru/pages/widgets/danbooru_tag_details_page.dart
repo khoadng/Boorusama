@@ -10,10 +10,10 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/widgets.dart';
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
-import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -182,7 +182,8 @@ final _tagCategoryColorsProvider =
 
     final categories = params.categories.split('|');
 
-    final dynamicColor = ref.watch(enableDynamicColoringSettingsProvider);
+    final dynamicColor = ref
+        .watch(settingsProvider.select((value) => value.enableDynamicColoring));
 
     for (var category in categories) {
       colors[category] = getTagColorCore(

@@ -8,8 +8,8 @@ import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -199,11 +199,15 @@ class _PoolPagedSliverGridState extends ConsumerState<PoolPagedSliverGrid> {
 
   @override
   Widget build(BuildContext context) {
-    final imageGridSpacing = ref.watch(gridSpacingSettingsProvider);
-    final imageGridPadding = ref.watch(gridPaddingSettingsProvider);
-    final gridSize = ref.watch(gridSizeSettingsProvider);
-    final imageGridAspectRatio =
-        ref.watch(gridAspectRatioSettingsProvider) - _kLabelOffset;
+    final imageGridSpacing =
+        ref.watch(settingsProvider.select((value) => value.imageGridSpacing));
+    final imageGridPadding =
+        ref.watch(settingsProvider.select((value) => value.imageGridPadding));
+    final gridSize =
+        ref.watch(settingsProvider.select((value) => value.gridSize));
+    final imageGridAspectRatio = ref.watch(
+            settingsProvider.select((value) => value.imageGridAspectRatio)) -
+        _kLabelOffset;
 
     final crossAxisCount = calculateGridCount(
       widget.constraints.maxWidth,

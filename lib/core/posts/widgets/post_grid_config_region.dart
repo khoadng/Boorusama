@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/display.dart';
@@ -33,10 +34,14 @@ class PostGridConfigRegion extends ConsumerWidget {
     return !kPreferredLayout.isMobile
         ? Builder(
             builder: (context) {
-              final gridSize = ref.watch(gridSizeSettingsProvider);
-              final imageListType = ref.watch(imageListTypeSettingsProvider);
-              final pageMode = ref.watch(pageModeSettingsProvider);
-              final imageQuality = ref.watch(imageQualitySettingsProvider);
+              final gridSize =
+                  ref.watch(settingsProvider.select((value) => value.gridSize));
+              final imageListType = ref.watch(
+                  settingsProvider.select((value) => value.imageListType));
+              final pageMode =
+                  ref.watch(settingsProvider.select((value) => value.pageMode));
+              final imageQuality = ref.watch(
+                  settingsProvider.select((value) => value.imageQuality));
 
               return Row(
                 crossAxisAlignment: CrossAxisAlignment.start,

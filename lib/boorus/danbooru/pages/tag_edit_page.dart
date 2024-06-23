@@ -20,7 +20,6 @@ import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/search/search.dart';
-import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
@@ -56,7 +55,8 @@ final danbooruTagEditColorProvider = FutureProvider.autoDispose
   final tagTypeStore = ref.watch(booruTagTypeStoreProvider);
   final tagType = await tagTypeStore.get(config.booruType, tag);
 
-  final dynamicColor = ref.watch(enableDynamicColoringSettingsProvider);
+  final dynamicColor = ref
+      .watch(settingsProvider.select((value) => value.enableDynamicColoring));
 
   final booruBuilders = ref.watch(booruBuildersProvider);
   final booruBuilderFunc = booruBuilders[config.booruType];

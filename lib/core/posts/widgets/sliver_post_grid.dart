@@ -8,6 +8,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/errors.dart';
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
@@ -39,11 +40,16 @@ class SliverPostGrid extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final imageListType = ref.watch(imageListTypeSettingsProvider);
-    final gridSize = ref.watch(gridSizeSettingsProvider);
-    final imageGridSpacing = ref.watch(gridSpacingSettingsProvider);
-    final imageGridPadding = ref.watch(gridPaddingSettingsProvider);
-    final imageGridAspectRatio = ref.watch(gridAspectRatioSettingsProvider);
+    final imageListType =
+        ref.watch(settingsProvider.select((value) => value.imageListType));
+    final gridSize =
+        ref.watch(settingsProvider.select((value) => value.gridSize));
+    final imageGridSpacing =
+        ref.watch(settingsProvider.select((value) => value.imageGridSpacing));
+    final imageGridPadding =
+        ref.watch(settingsProvider.select((value) => value.imageGridPadding));
+    final imageGridAspectRatio = ref
+        .watch(settingsProvider.select((value) => value.imageGridAspectRatio));
 
     return SliverPadding(
       padding: EdgeInsets.symmetric(
@@ -179,11 +185,16 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final imageListType = ref.watch(imageListTypeSettingsProvider);
-    final gridSize = ref.watch(gridSizeSettingsProvider);
-    final imageGridSpacing = ref.watch(gridSpacingSettingsProvider);
-    final imageBorderRadius = ref.watch(imageBorderRadiusSettingsProvider);
-    final imageGridAspectRatio = ref.watch(gridAspectRatioSettingsProvider);
+    final imageListType =
+        ref.watch(settingsProvider.select((value) => value.imageListType));
+    final gridSize =
+        ref.watch(settingsProvider.select((value) => value.gridSize));
+    final imageGridSpacing =
+        ref.watch(settingsProvider.select((value) => value.imageGridSpacing));
+    final imageBorderRadius =
+        ref.watch(settingsProvider.select((value) => value.imageBorderRadius));
+    final imageGridAspectRatio = ref
+        .watch(settingsProvider.select((value) => value.imageGridAspectRatio));
 
     return Builder(
       builder: (context) {
