@@ -114,7 +114,7 @@ class _BooruSelectorState extends ConsumerState<BooruSelector> {
 
       newOrders.reorder(oldIndex, newIndex);
 
-      ref.setBooruConfigOrder(newOrders);
+      ref.read(settingsProvider.notifier).updateOrder(newOrders);
     }
 
     final addButton = IconButton(

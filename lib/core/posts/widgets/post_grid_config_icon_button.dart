@@ -30,6 +30,7 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final settingsNotifier = ref.watch(settingsProvider.notifier);
     final gridSize =
         ref.watch(settingsProvider.select((value) => value.gridSize));
     final imageListType =
@@ -49,12 +50,18 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
           pageMode: pageMode,
           imageListType: imageListType,
           imageQuality: imageQuality,
-          onModeChanged: (mode) => ref.setPageMode(mode),
-          onGridChanged: (grid) => ref.setGridSize(grid),
-          onImageListChanged: (imageListType) =>
-              ref.setImageListType(imageListType),
-          onImageQualityChanged: (imageQuality) =>
-              ref.setImageQuality(imageQuality),
+          onModeChanged: (mode) => settingsNotifier.updateWith(
+            (s) => s.copyWith(pageMode: mode),
+          ),
+          onGridChanged: (grid) => settingsNotifier.updateWith(
+            (s) => s.copyWith(gridSize: grid),
+          ),
+          onImageListChanged: (imageListType) => settingsNotifier.updateWith(
+            (s) => s.copyWith(imageListType: imageListType),
+          ),
+          onImageQualityChanged: (imageQuality) => settingsNotifier.updateWith(
+            (s) => s.copyWith(imageQuality: imageQuality),
+          ),
         ),
       ),
       child: Container(
@@ -99,6 +106,7 @@ class PostGridActionSheet extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final postStatsPageBuilder =
         ref.watchBooruBuilder(ref.watchConfig)?.postStatisticsPageBuilder;
+    final settingsNotifier = ref.watch(settingsProvider.notifier);
 
     var mobileButtons = [
       MobilePostGridConfigTile(
@@ -195,28 +203,36 @@ class PostGridActionSheet extends ConsumerWidget {
       DesktopPostGridConfigTile(
         title: 'settings.result_layout.result_layout'.tr(),
         value: pageMode,
-        onChanged: (value) => ref.setPageMode(value),
+        onChanged: (value) => settingsNotifier.updateWith(
+          (s) => s.copyWith(pageMode: value),
+        ),
         items: PageMode.values,
         optionNameBuilder: (option) => option.localize().tr(),
       ),
       DesktopPostGridConfigTile(
         title: 'settings.image_grid.image_grid'.tr(),
         value: gridSize,
-        onChanged: (value) => ref.setGridSize(value),
+        onChanged: (value) => settingsNotifier.updateWith(
+          (s) => s.copyWith(gridSize: value),
+        ),
         items: GridSize.values,
         optionNameBuilder: (option) => option.name.sentenceCase,
       ),
       DesktopPostGridConfigTile(
         title: 'settings.image_list.image_list'.tr(),
         value: imageListType,
-        onChanged: (value) => ref.setImageListType(value),
+        onChanged: (value) => settingsNotifier.updateWith(
+          (s) => s.copyWith(imageListType: value),
+        ),
         items: ImageListType.values,
         optionNameBuilder: (option) => option.name.sentenceCase,
       ),
       DesktopPostGridConfigTile(
         title: 'settings.image_grid.image_quality.image_quality'.tr(),
         value: imageQuality,
-        onChanged: (value) => ref.setImageQuality(value),
+        onChanged: (value) => settingsNotifier.updateWith(
+          (s) => s.copyWith(imageQuality: value),
+        ),
         items: [...ImageQuality.values]..remove(ImageQuality.original),
         optionNameBuilder: (option) => option.name.sentenceCase,
       ),

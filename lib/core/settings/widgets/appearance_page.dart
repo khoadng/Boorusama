@@ -47,6 +47,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
   @override
   Widget build(BuildContext context) {
     final settings = ref.watch(settingsProvider);
+    final settingsNotifier = ref.watch(settingsProvider.notifier);
     final dynamicColorSupported = ref.watch(dynamicColorSupportProvider);
 
     return SettingsPageScaffold(
@@ -149,8 +150,9 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
           title: const Text('settings.appearance.show_post_list_config_header')
               .tr(),
           value: settings.showPostListConfigHeader,
-          onChanged: (value) =>
-              ref.setPostListConfigHeaderStatus(active: value),
+          onChanged: (value) => settingsNotifier.updateWith((s) => s.copyWith(
+                showPostListConfigHeader: value,
+              )),
         ),
         SwitchListTile(
           title: const Text('Blur explicit content').tr(),

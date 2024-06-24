@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/display.dart';
 
 final postGridSideBarVisibleProvider = StateProvider<bool>((ref) {
@@ -31,6 +30,8 @@ class PostGridConfigRegion extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final settingsNotifier = ref.watch(settingsProvider.notifier);
+
     return !kPreferredLayout.isMobile
         ? Builder(
             builder: (context) {
@@ -63,12 +64,21 @@ class PostGridConfigRegion extends ConsumerWidget {
                               pageMode: pageMode,
                               imageListType: imageListType,
                               imageQuality: imageQuality,
-                              onModeChanged: (mode) => ref.setPageMode(mode),
-                              onGridChanged: (grid) => ref.setGridSize(grid),
+                              onModeChanged: (mode) =>
+                                  settingsNotifier.updateWith(
+                                (s) => s.copyWith(pageMode: mode),
+                              ),
+                              onGridChanged: (grid) =>
+                                  settingsNotifier.updateWith(
+                                      (s) => s.copyWith(gridSize: grid)),
                               onImageListChanged: (imageListType) =>
-                                  ref.setImageListType(imageListType),
+                                  settingsNotifier.updateWith(
+                                (s) => s.copyWith(imageListType: imageListType),
+                              ),
                               onImageQualityChanged: (imageQuality) =>
-                                  ref.setImageQuality(imageQuality),
+                                  settingsNotifier.updateWith(
+                                (s) => s.copyWith(imageQuality: imageQuality),
+                              ),
                             ),
                           ),
                           SizedBox(

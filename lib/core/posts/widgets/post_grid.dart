@@ -467,6 +467,8 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
   }
 
   Widget _buildConfigHeader(Axis axis) {
+    final settingsNotifier = ref.watch(settingsProvider.notifier);
+
     return ValueListenableBuilder(
       valueListenable: controller.hasBlacklist,
       builder: (context, hasBlacklist, _) {
@@ -497,9 +499,9 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                         )
                       : null,
                   onClosed: () {
-                    ref.setPostListConfigHeaderStatus(
-                      active: false,
-                    );
+                    settingsNotifier.updateWith((s) => s.copyWith(
+                          showPostListConfigHeader: false,
+                        ));
                     showSimpleSnackBar(
                       duration: const Duration(seconds: 5),
                       context: context,
@@ -507,8 +509,10 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                           'You can always show this header again in Settings.'),
                       action: SnackBarAction(
                         label: 'Undo',
-                        onPressed: () =>
-                            ref.setPostListConfigHeaderStatus(active: true),
+                        onPressed: () => settingsNotifier
+                            .updateWith((s) => s.copyWith(
+                                  showPostListConfigHeader: true,
+                                )),
                       ),
                     );
                   },
