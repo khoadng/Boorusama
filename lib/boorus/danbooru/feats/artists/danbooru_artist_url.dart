@@ -21,6 +21,7 @@ const _pixivStacc = '/stacc/';
 const _twitterIntent = '/intent/user';
 const _pawooAccount = '/web/accounts/';
 const _misskeyAccount = 'misskey.io/users/';
+const _bskyProfile = '/profile/did:plc:';
 
 extension DanbooruArtistUrlX on DanbooruArtistUrl {
   DanbooruArtistUrl copyWith({
@@ -35,12 +36,13 @@ extension DanbooruArtistUrlX on DanbooruArtistUrl {
 
 extension DanbooruArtistUrlIterableX on Iterable<DanbooruArtistUrl> {
   Iterable<DanbooruArtistUrl> filterActive() {
-    return where((element) => element.isActive).toList();
+    return where((e) => e.isActive).toList();
   }
 
-  Iterable<DanbooruArtistUrl> filterDuplicates() => where((element) =>
-      !element.url.contains(_pixivStacc) &&
-      !element.url.contains(_pawooAccount) &&
-      !element.url.contains(_misskeyAccount) &&
-      !element.url.contains(_twitterIntent)).toList();
+  Iterable<DanbooruArtistUrl> filterDuplicates() => where((e) =>
+      !e.url.contains(_pixivStacc) &&
+      !e.url.contains(_pawooAccount) &&
+      !e.url.contains(_misskeyAccount) &&
+      !e.url.contains(_bskyProfile) &&
+      !e.url.contains(_twitterIntent)).toList();
 }
