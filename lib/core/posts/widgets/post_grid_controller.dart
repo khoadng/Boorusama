@@ -206,14 +206,12 @@ class PostGridController<T extends Post> extends ChangeNotifier {
 
   // Jump to a specific page without knowing the total pages and allowing page skips
   Future<void> jumpToPage(int targetPage) async {
-    if (_pageMode != PageMode.paginated ||
-        _loading ||
-        _refreshing ||
-        targetPage < 1) {
+    if (_pageMode != PageMode.paginated || _loading || _refreshing) {
       return;
     }
 
-    _page = targetPage;
+    // make sure the target page is larger than 0
+    _page = targetPage > 0 ? targetPage : 1;
     _clear();
     _refreshing = true;
     notifyListeners();
