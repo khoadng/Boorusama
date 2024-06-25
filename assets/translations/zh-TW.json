@@ -234,7 +234,10 @@
         "privacy": {
             "privacy": "隱私",
             "send_error_data_notice": "傳送匿名錯誤日誌",
-            "enable_biometric_lock": "啟用生物特徵辨識鎖定"
+            "enable_biometric_lock": "啟用生物特徵辨識鎖定",
+            "enable_incognito_keyboard": "啟用隱身鍵盤",
+            "enable_incognito_keyboard_notice": "僅影響安卓。",
+            "enable_biometric_lock_notice": "僅適用於支援生物識別並已設定的設備。"
         },
         "performance": {
             "performance": "效能",
@@ -278,7 +281,9 @@
             "backup_and_restore": "備份與還原"
         },
         "accessibility": {
-            "accessibility": "無障礙"
+            "accessibility": "無障礙",
+            "swipeAreaToOpenSidebar": "側邊欄的滑動區域",
+            "reverseBooruConfigSelectorScrollDirection": "反轉 booru 配置的對齊方向"
         },
         "data_and_storage": {
             "clear_cache_on_start_up": "啟動時清除圖像快取",
