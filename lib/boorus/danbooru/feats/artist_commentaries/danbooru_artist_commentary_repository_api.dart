@@ -38,12 +38,7 @@ class DanbooruArtistCommentaryRepositoryApi
       set('$postId', ac);
       return ac;
     } catch (e) {
-      return const ArtistCommentary(
-        originalTitle: '',
-        originalDescription: '',
-        translatedTitle: '',
-        translatedDescription: '',
-      );
+      return const ArtistCommentary.empty();
     }
   }
 }
@@ -52,12 +47,7 @@ ArtistCommentary artistCommentaryDtoToArtistCommentary(
   ArtistCommentaryDto? d,
 ) {
   if (d == null) {
-    return const ArtistCommentary(
-      originalTitle: '',
-      originalDescription: '',
-      translatedTitle: '',
-      translatedDescription: '',
-    );
+    return const ArtistCommentary.empty();
   }
 
   return ArtistCommentary(

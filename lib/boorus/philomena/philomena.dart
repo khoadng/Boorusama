@@ -180,13 +180,8 @@ class PhilomenaPostDetailsPage extends ConsumerWidget {
       initialIndex: payload.initialIndex,
       artistInfoBuilder: (context, post) => ArtistSection(
         commentary: post is PhilomenaPost
-            ? ArtistCommentary(
-                originalTitle: '',
-                originalDescription: post.description,
-                translatedTitle: '',
-                translatedDescription: '',
-              )
-            : ArtistCommentary.empty(),
+            ? ArtistCommentary.description(post.description)
+            : const ArtistCommentary.empty(),
         artistTags: post.artistTags ?? {},
         source: post.source,
       ),

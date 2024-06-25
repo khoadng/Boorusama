@@ -9,12 +9,18 @@ class ArtistCommentary extends Equatable {
     required this.translatedDescription,
   });
 
-  factory ArtistCommentary.empty() => const ArtistCommentary(
-        originalTitle: '',
-        originalDescription: '',
-        translatedTitle: '',
-        translatedDescription: '',
-      );
+  const ArtistCommentary.description(
+    this.originalDescription,
+  )   : originalTitle = '',
+        translatedTitle = '',
+        translatedDescription = '';
+
+  const ArtistCommentary.empty()
+      : originalTitle = '',
+        originalDescription = '',
+        translatedTitle = '',
+        translatedDescription = '';
+
   final String originalTitle;
   final String originalDescription;
   final String translatedTitle;
@@ -35,5 +41,19 @@ class ArtistCommentary extends Equatable {
 }
 
 extension DanbooruArtistCommentaryX on ArtistCommentary {
-  bool get isEmpty => this == ArtistCommentary.empty();
+  bool get isEmpty => this == const ArtistCommentary.empty();
+
+  ArtistCommentary copyWith({
+    String? originalTitle,
+    String? originalDescription,
+    String? translatedTitle,
+    String? translatedDescription,
+  }) =>
+      ArtistCommentary(
+        originalTitle: originalTitle ?? this.originalTitle,
+        originalDescription: originalDescription ?? this.originalDescription,
+        translatedTitle: translatedTitle ?? this.translatedTitle,
+        translatedDescription:
+            translatedDescription ?? this.translatedDescription,
+      );
 }
