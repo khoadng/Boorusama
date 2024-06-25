@@ -94,7 +94,7 @@ class _DanbooruPostDetailsDesktopPageState
         post: post,
         commentary:
             ref.watch(danbooruArtistCommentaryProvider(post.id)).value ??
-                ArtistCommentary.empty(),
+                const ArtistCommentary.empty(),
       ),
       statsTileBuilder: (context, post) => Padding(
         padding: const EdgeInsets.symmetric(vertical: 8),

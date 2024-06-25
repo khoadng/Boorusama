@@ -122,7 +122,7 @@ class _DanbooruPostDetailsPageState
           post: post,
           commentary:
               ref.watch(danbooruArtistCommentaryProvider(post.id)).value ??
-                  ArtistCommentary.empty(),
+                  const ArtistCommentary.empty(),
         ),
         placeholderImageUrlBuilder: (post, currentPage) =>
             currentPage == widget.intitialIndex && post.isTranslated
