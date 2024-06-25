@@ -265,7 +265,7 @@
         "other_settings": "其他设置",
         "accessibility": {
             "accessibility": "无障碍",
-            "reverseBooruConfigSelectorScrollDirection": "反转booru配置的对齐方向",
+            "reverseBooruConfigSelectorScrollDirection": "反轉 booru 配置的對齊方向",
             "swipeAreaToOpenSidebar": "侧边栏滑出宽度",
             "swipeAreaToOpenSidebarDescription": "从左侧拉出侧边栏的触发区域。设置过大值会使其它水平手势（比如翻页）不可用。"
         },
