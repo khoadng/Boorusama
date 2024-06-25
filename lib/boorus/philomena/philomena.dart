@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
@@ -16,6 +19,7 @@ import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
+import 'package:boorusama/routes.dart';
 import 'philomena_post.dart';
 
 class PhilomenaBuilder
@@ -80,38 +84,7 @@ class PhilomenaBuilder
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) => BooruProvider(
-            builder: (booruBuilder, ref) => PostDetailsPageScaffold(
-              posts: payload.posts,
-              initialIndex: payload.initialIndex,
-              artistInfoBuilder: (context, post) => ArtistSection(
-                commentary: post is PhilomenaPost
-                    ? ArtistCommentary(
-                        originalTitle: '',
-                        originalDescription: post.description,
-                        translatedTitle: '',
-                        translatedDescription: '',
-                      )
-                    : ArtistCommentary.empty(),
-                artistTags: post.artistTags ?? {},
-                source: post.source,
-              ),
-              swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
-              infoBuilder: (context, post) =>
-                  SimpleInformationSection(post: post),
-              statsTileBuilder: (context, rawPost) =>
-                  castOrNull<PhilomenaPost>(rawPost).toOption().fold(
-                        () => const SizedBox(),
-                        (post) => SimplePostStatsTile(
-                          totalComments: post.commentCount,
-                          favCount: post.favCount,
-                          score: post.score,
-                          votePercentText: _generatePercentText(post),
-                        ),
-                      ),
-              onExit: (page) => payload.scrollController?.scrollToIndex(page),
-            ),
-          );
+      (context, config, payload) => PhilomenaPostDetailsPage(payload: payload);
 
   @override
   TagColorBuilder get tagColorBuilder =>
@@ -190,6 +163,48 @@ class PhilomenaBuilder
                       null => post.representation.small,
                     }),
           );
+}
+
+class PhilomenaPostDetailsPage extends ConsumerWidget {
+  const PhilomenaPostDetailsPage({
+    super.key,
+    required this.payload,
+  });
+
+  final DetailsPayload payload;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return PostDetailsPageScaffold(
+      posts: payload.posts,
+      initialIndex: payload.initialIndex,
+      artistInfoBuilder: (context, post) => ArtistSection(
+        commentary: post is PhilomenaPost
+            ? ArtistCommentary(
+                originalTitle: '',
+                originalDescription: post.description,
+                translatedTitle: '',
+                translatedDescription: '',
+              )
+            : ArtistCommentary.empty(),
+        artistTags: post.artistTags ?? {},
+        source: post.source,
+      ),
+      swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
+      infoBuilder: (context, post) => SimpleInformationSection(post: post),
+      statsTileBuilder: (context, rawPost) =>
+          castOrNull<PhilomenaPost>(rawPost).toOption().fold(
+                () => const SizedBox(),
+                (post) => SimplePostStatsTile(
+                  totalComments: post.commentCount,
+                  favCount: post.favCount,
+                  score: post.score,
+                  votePercentText: _generatePercentText(post),
+                ),
+              ),
+      onExit: (page) => payload.scrollController?.scrollToIndex(page),
+    );
+  }
 }
 
 String _generatePercentText(PhilomenaPost? post) {

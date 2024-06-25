@@ -235,25 +235,54 @@ mixin DefaultBooruUIMixin implements BooruBuilder {
 
   @override
   SearchPageBuilder get searchPageBuilder =>
-      (context, initialQuery) => BooruProvider(
-            builder: (booruBuilder, _) => SearchPageScaffold(
-              initialQuery: initialQuery,
-              fetcher: (page, tags) =>
-                  booruBuilder?.postFetcher.call(page, tags) ??
-                  TaskEither.of(<Post>[]),
-            ),
+      (context, initialQuery) => DefaultSearchPage(
+            initialQuery: initialQuery,
           );
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) => BooruProvider(
-            builder: (booruBuilder, ref) => PostDetailsPageScaffold(
-              posts: payload.posts,
-              initialIndex: payload.initialIndex,
-              swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
-              onExit: (page) => payload.scrollController?.scrollToIndex(page),
-            ),
+      (context, config, payload) => DefaultPostDetailsPage(
+            payload: payload,
           );
+}
+
+class DefaultPostDetailsPage extends ConsumerWidget {
+  const DefaultPostDetailsPage({
+    super.key,
+    required this.payload,
+  });
+
+  final DetailsPayload payload;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return PostDetailsPageScaffold(
+      posts: payload.posts,
+      initialIndex: payload.initialIndex,
+      swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
+      onExit: (page) => payload.scrollController?.scrollToIndex(page),
+    );
+  }
+}
+
+class DefaultSearchPage extends ConsumerWidget {
+  const DefaultSearchPage({
+    super.key,
+    required this.initialQuery,
+  });
+
+  final String? initialQuery;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final booruBuilder = ref.watch(booruBuilderProvider);
+
+    return SearchPageScaffold(
+      initialQuery: initialQuery,
+      fetcher: (page, tags) =>
+          booruBuilder?.postFetcher.call(page, tags) ?? TaskEither.of(<Post>[]),
+    );
+  }
 }
 
 mixin DefaultHomeMixin implements BooruBuilder {

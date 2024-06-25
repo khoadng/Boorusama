@@ -1,3 +1,6 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
 // Package imports:
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -88,19 +91,10 @@ class GelbooruV1Builder
           );
 
   @override
-  SearchPageBuilder get searchPageBuilder => (context, initialQuery) =>
-      BooruProvider(
-        builder: (booruBuilder, _) => SearchPageScaffold(
-          noticeBuilder: (context) => InfoContainer(
-            contentBuilder: (context) => Html(
-                data: 'The app will use <b>Gelbooru</b> for tag completion.'),
-          ),
-          initialQuery: initialQuery,
-          fetcher: (page, tags) =>
-              booruBuilder?.postFetcher.call(page, tags) ??
-              TaskEither.of(<Post>[]),
-        ),
-      );
+  SearchPageBuilder get searchPageBuilder =>
+      (context, initialQuery) => GelbooruV1SearchPage(
+            initialQuery: initialQuery,
+          );
 
   @override
   PostFetcher get postFetcher => (page, tags) => TaskEither.Do(($) async {
@@ -119,4 +113,28 @@ class GelbooruV1Builder
       'source': (post, config) => config.downloadUrl,
     },
   );
+}
+
+class GelbooruV1SearchPage extends ConsumerWidget {
+  const GelbooruV1SearchPage({
+    super.key,
+    required this.initialQuery,
+  });
+
+  final String? initialQuery;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final booruBuilder = ref.watch(booruBuilderProvider);
+
+    return SearchPageScaffold(
+      noticeBuilder: (context) => InfoContainer(
+        contentBuilder: (context) =>
+            Html(data: 'The app will use <b>Gelbooru</b> for tag completion.'),
+      ),
+      initialQuery: initialQuery,
+      fetcher: (page, tags) =>
+          booruBuilder?.postFetcher.call(page, tags) ?? TaskEither.of(<Post>[]),
+    );
+  }
 }

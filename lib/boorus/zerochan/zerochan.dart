@@ -21,6 +21,7 @@ import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/path.dart' as path;
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/routes.dart';
 
 const kZerochanCustomDownloadFileNameFormat =
     '{id}_{width}x{height}.{extension}';
@@ -212,14 +213,8 @@ class ZerochanBuilder
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) => BooruProvider(
-            builder: (booruBuilder, ref) => PostDetailsPageScaffold(
-              posts: payload.posts,
-              initialIndex: payload.initialIndex,
-              swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
-              tagListBuilder: (context, post) => ZerochanTagsTile(post: post),
-              onExit: (page) => payload.scrollController?.scrollToIndex(page),
-            ),
+      (context, config, payload) => ZerochanPostDetailsPage(
+            payload: payload,
           );
 
   @override
@@ -261,6 +256,26 @@ class ZerochanBuilder
       'source': (post, config) => post.source.url,
     },
   );
+}
+
+class ZerochanPostDetailsPage extends ConsumerWidget {
+  const ZerochanPostDetailsPage({
+    super.key,
+    required this.payload,
+  });
+
+  final DetailsPayload payload;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return PostDetailsPageScaffold(
+      posts: payload.posts,
+      initialIndex: payload.initialIndex,
+      swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
+      tagListBuilder: (context, post) => ZerochanTagsTile(post: post),
+      onExit: (page) => payload.scrollController?.scrollToIndex(page),
+    );
+  }
 }
 
 class ZerochanPost extends SimplePost {

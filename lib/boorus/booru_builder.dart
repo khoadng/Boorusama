@@ -181,19 +181,3 @@ final booruBuildersProvider =
                     ref.read(szurubooruAutocompleteRepoProvider(config)),
               ),
         });
-
-class BooruProvider extends ConsumerWidget {
-  const BooruProvider({
-    super.key,
-    required this.builder,
-  });
-
-  final Widget Function(BooruBuilder? booruBuilderl, WidgetRef ref) builder;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final booruBuilder = ref.watch(booruBuilderProvider);
-
-    return builder(booruBuilder, ref);
-  }
-}

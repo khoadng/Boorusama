@@ -1,3 +1,9 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
@@ -11,6 +17,7 @@ import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/dart.dart';
+import 'package:boorusama/routes.dart';
 
 class Shimmie2Builder
     with
@@ -77,25 +84,8 @@ class Shimmie2Builder
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) => BooruProvider(
-            builder: (booruBuilder, ref) => PostDetailsPageScaffold(
-              posts: payload.posts,
-              initialIndex: payload.initialIndex,
-              swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
-              onExit: (page) => payload.scrollController?.scrollToIndex(page),
-              tagListBuilder: (context, post) => BasicTagList(
-                tags: post.tags.toList(),
-                unknownCategoryColor: ref.getTagColor(
-                  context,
-                  'general',
-                ),
-                onTap: (tag) => goToSearchPage(context, tag: tag),
-              ),
-              fileDetailsBuilder: (context, post) => DefaultFileDetailsSection(
-                post: post,
-                uploaderName: castOrNull<SimplePost>(post)?.uploaderName,
-              ),
-            ),
+      (context, config, payload) => Shimmie2PostDetailsPage(
+            payload: payload,
           );
 
   @override
@@ -113,4 +103,35 @@ class Shimmie2Builder
       'source': (post, config) => post.source.url,
     },
   );
+}
+
+class Shimmie2PostDetailsPage extends ConsumerWidget {
+  const Shimmie2PostDetailsPage({
+    super.key,
+    required this.payload,
+  });
+
+  final DetailsPayload payload;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return PostDetailsPageScaffold(
+      posts: payload.posts,
+      initialIndex: payload.initialIndex,
+      swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
+      onExit: (page) => payload.scrollController?.scrollToIndex(page),
+      tagListBuilder: (context, post) => BasicTagList(
+        tags: post.tags.toList(),
+        unknownCategoryColor: ref.getTagColor(
+          context,
+          'general',
+        ),
+        onTap: (tag) => goToSearchPage(context, tag: tag),
+      ),
+      fileDetailsBuilder: (context, post) => DefaultFileDetailsSection(
+        post: post,
+        uploaderName: castOrNull<SimplePost>(post)?.uploaderName,
+      ),
+    );
+  }
 }
