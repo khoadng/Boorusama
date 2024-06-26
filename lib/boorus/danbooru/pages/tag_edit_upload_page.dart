@@ -10,7 +10,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/sources/sources_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/uploads/uploads.dart';
@@ -343,8 +342,9 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
                                         artist.name,
                                         style: TextStyle(
                                           fontWeight: FontWeight.bold,
-                                          color: ref.getTagColor(
-                                              context, 'artist'),
+                                          color: ref.watch(
+                                            tagColorProvider('artist'),
+                                          ),
                                         ),
                                       ),
                                       if (artist.sortedUrls != null)
@@ -612,10 +612,8 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
                                   horizontal: 8,
                                   vertical: 4,
                                 ),
-                                color: ref.getTagColor(
-                                  context,
-                                  tag.category.name,
-                                ),
+                                color: ref
+                                    .watch(tagColorProvider(tag.category.name)),
                               ),
                           ],
                         ),
@@ -680,10 +678,7 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
                     horizontal: 8,
                     vertical: 4,
                   ),
-                  color: ref.getTagColor(
-                    context,
-                    'general',
-                  ),
+                  color: ref.watch(tagColorProvider('general')),
                 ),
             ],
           ),

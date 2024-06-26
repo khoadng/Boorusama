@@ -6,17 +6,14 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/widgets.dart';
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'danbooru_tag_context_menu.dart';
 import 'related_tag_cloud_chip.dart';
@@ -161,8 +158,6 @@ final danbooruRelatedTagCloudProvider =
 );
 
 typedef TagColorParams = ({
-  Color primaryColor,
-  AppThemeMode themeMode,
   String categories,
 });
 
@@ -171,35 +166,17 @@ final _tagCategoryColorsProvider =
   (ref, params) async {
     final colors = <String, Color?>{};
 
-    final config = ref.watchConfig;
-    final booruBuilders = ref.watch(booruBuildersProvider);
-    final booruBuilderFunc = booruBuilders[config.booruType];
-
-    final booruBuilder =
-        booruBuilderFunc != null ? booruBuilderFunc(config) : null;
-
-    final tagColorBuilder = booruBuilder?.tagColorBuilder;
-
     final categories = params.categories.split('|');
 
-    final dynamicColor = ref
-        .watch(settingsProvider.select((value) => value.enableDynamicColoring));
-
     for (var category in categories) {
-      colors[category] = getTagColorCore(
-        category,
-        primaryColor: params.primaryColor,
-        themeMode: params.themeMode,
-        dynamicColor: dynamicColor,
-        color: tagColorBuilder?.call(
-          params.themeMode,
-          category,
-        ),
-      );
+      colors[category] = ref.watch(tagColorProvider(category));
     }
 
     return colors;
   },
+  dependencies: [
+    tagColorProvider,
+  ],
 );
 
 class ArtistTagCloud extends ConsumerWidget {
@@ -219,8 +196,6 @@ class ArtistTagCloud extends ConsumerWidget {
             if (tags.isEmpty) return const SizedBox.shrink();
 
             final params = (
-              primaryColor: context.colorScheme.primary,
-              themeMode: context.themeMode,
               categories: tags
                   .map((e) => e.category.name)
                   .toSet()

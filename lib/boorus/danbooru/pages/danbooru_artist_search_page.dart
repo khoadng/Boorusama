@@ -7,12 +7,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/feats/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/danbooru_artist_url_chips.dart';
 import 'package:boorusama/clients/danbooru/danbooru_client_artists.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -227,7 +227,7 @@ class _DanbooruArtistSearchPageState
                   child: Text(
                     artist.name.replaceAll('_', ' '),
                     style: context.textTheme.titleLarge?.copyWith(
-                      color: ref.getTagColor(context, 'artist'),
+                      color: ref.watch(tagColorProvider('artist')),
                     ),
                   ),
                 ),

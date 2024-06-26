@@ -11,7 +11,6 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/reports/reports.dart';
@@ -300,7 +299,7 @@ class UserDetailsPage extends ConsumerWidget {
       children: tags
           .map(
             (e) => BooruChip(
-              color: ref.getTagColor(context, TagCategory.copyright.name),
+              color: ref.watch(tagColorProvider(TagCategory.copyright.name)),
               onPressed: () => goToSearchPage(
                 context,
                 tag: e.tag,
@@ -314,10 +313,8 @@ class UserDetailsPage extends ConsumerWidget {
                       text: e.tag.replaceUnderscoreWithSpace(),
                       style: TextStyle(
                         color: context.themeMode.isDark
-                            ? ref.getTagColor(
-                                context,
-                                TagCategory.copyright.name,
-                              )
+                            ? ref.watch(
+                                tagColorProvider(TagCategory.copyright.name))
                             : Colors.white,
                       ),
                       children: [

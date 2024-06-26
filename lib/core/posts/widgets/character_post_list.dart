@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -52,7 +52,7 @@ class CharacterPostList extends ConsumerWidget {
                 .map(
                   (tag) => BooruChip(
                     borderRadius: BorderRadius.circular(4),
-                    color: ref.getTagColor(context, 'character'),
+                    color: ref.watch(tagColorProvider('character')),
                     onPressed: () => goToCharacterPage(context, tag),
                     label: Text(
                       tag.replaceAll('_', ' '),

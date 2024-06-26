@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
@@ -75,7 +74,7 @@ class _Chip extends ConsumerWidget {
         ref.watch(danbooruTagCategoryProvider(search.keyword)).maybeWhen(
               data: (data) => data != null
                   ? context.generateChipColors(
-                      ref.getTagColor(context, data.name),
+                      ref.watch(tagColorProvider(data.name)),
                       ref.watch(settingsProvider),
                     )
                   : null,

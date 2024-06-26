@@ -122,10 +122,7 @@ class Shimmie2PostDetailsPage extends ConsumerWidget {
       onExit: (page) => payload.scrollController?.scrollToIndex(page),
       tagListBuilder: (context, post) => BasicTagList(
         tags: post.tags.toList(),
-        unknownCategoryColor: ref.getTagColor(
-          context,
-          'general',
-        ),
+        unknownCategoryColor: ref.watch(tagColorProvider('general')),
         onTap: (tag) => goToSearchPage(context, tag: tag),
       ),
       fileDetailsBuilder: (context, post) => DefaultFileDetailsSection(

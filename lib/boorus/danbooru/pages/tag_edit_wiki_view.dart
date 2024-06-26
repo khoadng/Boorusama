@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/tags/tags.dart';
@@ -135,7 +134,7 @@ class _RelatedTagChips extends ConsumerWidget {
       children: tags.map((tag) {
         final selected = isSelected(tag.name);
         final colors = context.generateChipColors(
-          ref.getTagColor(context, tag.category.name),
+          ref.watch(tagColorProvider(tag.category.name)),
           ref.watch(settingsProvider),
         );
 

@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
@@ -52,7 +52,7 @@ class _RelatedTagHeaderState extends ConsumerState<RelatedTagHeader> {
         itemCount: data.length,
         itemBuilder: (context, index) => switch (data[index]) {
           RelatedTagItem item => RelatedTagButton(
-              backgroundColor: ref.getTagColor(context, item.category.name),
+              backgroundColor: ref.watch(tagColorProvider(item.category.name)),
               onAdd: () => widget.onAdded(item),
               onRemove: () => widget.onNegated(item),
               label: Text(

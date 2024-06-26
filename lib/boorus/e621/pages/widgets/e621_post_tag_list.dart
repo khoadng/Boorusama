@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_tags_x/flutter_tags_x.dart' hide TagsState;
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 import 'package:boorusama/boorus/e621/feats/tags/e621_tag_category.dart';
 import 'package:boorusama/boorus/providers.dart';
@@ -137,7 +136,7 @@ class E621PostTagList extends ConsumerWidget {
           child: _Chip(
             tag: tag,
             onTap: () => goToSearchPage(context, tag: tag),
-            tagColor: ref.getTagColor(context, group.category.name),
+            tagColor: ref.watch(tagColorProvider(group.category.name)),
             maxTagWidth: maxTagWidth,
           ),
         );

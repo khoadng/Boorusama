@@ -7,11 +7,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/danbooru_creator_preloader.dart';
 import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/dart.dart';
 
 class DanbooruPostStatisticsPage extends ConsumerWidget {
@@ -25,6 +25,8 @@ class DanbooruPostStatisticsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final stats = posts.getDanbooruStats();
+    final copyrightColor = ref.watch(tagColorProvider('copyright'));
+    final characterColor = ref.watch(tagColorProvider('character'));
 
     return DanbooruCreatorPreloader(
       posts: posts,
@@ -100,7 +102,7 @@ class DanbooruPostStatisticsPage extends ConsumerWidget {
                 builder: (context) => StatisticsFromMapPage(
                   title: 'Copyright',
                   total: posts.length,
-                  keyColor: ref.getTagColor(context, 'copyright'),
+                  keyColor: copyrightColor,
                   titleFormatter: (value) => value.replaceAll('_', ' '),
                   data: stats.copyrights.topN(),
                 ),
@@ -113,7 +115,7 @@ class DanbooruPostStatisticsPage extends ConsumerWidget {
               return PostStatsTile(
                 title: e.key.replaceAll('_', ' '),
                 value: '${e.value} (${percent.toStringAsFixed(1)}%)',
-                titleColor: ref.getTagColor(context, 'copyright'),
+                titleColor: copyrightColor,
               );
             },
           ),
@@ -126,7 +128,7 @@ class DanbooruPostStatisticsPage extends ConsumerWidget {
                 builder: (context) => StatisticsFromMapPage(
                   title: 'Character',
                   total: posts.length,
-                  keyColor: ref.getTagColor(context, 'character'),
+                  keyColor: characterColor,
                   titleFormatter: (value) => value.replaceAll('_', ' '),
                   data: stats.characters.topN(),
                 ),
@@ -139,7 +141,7 @@ class DanbooruPostStatisticsPage extends ConsumerWidget {
               return PostStatsTile(
                 title: e.key.replaceAll('_', ' '),
                 value: '${e.value} (${percent.toStringAsFixed(1)}%)',
-                titleColor: ref.getTagColor(context, 'character'),
+                titleColor: characterColor,
               );
             },
           ),

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/tags/tags.dart';
@@ -63,7 +62,8 @@ class TrendingSection extends ConsumerWidget {
               ),
               TrendingTags(
                 onTagTap: onTagTap,
-                colorBuilder: (context, name) => ref.getTagColor(context, name),
+                colorBuilder: (context, name) =>
+                    ref.watch(tagColorProvider(name)),
                 tags: tags,
               ),
             ],

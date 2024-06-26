@@ -8,8 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
+import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/booru_chip.dart';
 
@@ -49,7 +49,7 @@ class RelatedTagCloudChip extends ConsumerWidget {
           horizontal: 8,
           vertical: 4,
         ),
-        color: color ?? ref.getTagColor(context, tag.category.name),
+        color: color ?? ref.watch(tagColorProvider(tag.category.name)),
         onPressed: onPressed,
       ),
     );

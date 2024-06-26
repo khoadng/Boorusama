@@ -226,10 +226,7 @@ class SzurubooruPostDetailsPage extends ConsumerWidget {
               ),
       tagListBuilder: (context, post) => BasicTagList(
         tags: post.tags.toList(),
-        unknownCategoryColor: ref.getTagColor(
-          context,
-          'general',
-        ),
+        unknownCategoryColor: ref.watch(tagColorProvider('general')),
         onTap: (tag) => goToSearchPage(context, tag: tag),
       ),
       toolbarBuilder: (context, rawPost) =>
