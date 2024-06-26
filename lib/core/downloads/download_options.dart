@@ -11,6 +11,11 @@ class DownloadOptions extends Equatable with DownloadMixin {
     this.postPerPage = 200,
   });
 
+  const DownloadOptions.defaultOptions()
+      : onlyDownloadNewFile = true,
+        storagePath = '',
+        postPerPage = 200;
+
   DownloadOptions copyWith({
     bool? onlyDownloadNewFile,
     String? storagePath,

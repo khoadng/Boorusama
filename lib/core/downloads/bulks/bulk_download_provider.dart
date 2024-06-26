@@ -42,10 +42,7 @@ final isValidToStartDownloadProvider = Provider.autoDispose<bool>(
 );
 
 final bulkDownloadOptionsProvider = StateProvider<DownloadOptions>((ref) {
-  return const DownloadOptions(
-    onlyDownloadNewFile: true,
-    storagePath: '',
-  );
+  return const DownloadOptions.defaultOptions();
 });
 
 final bulkDownloadProvider =
