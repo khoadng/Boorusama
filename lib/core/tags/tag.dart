@@ -13,6 +13,11 @@ class Tag extends Equatable {
     required this.postCount,
   });
 
+  const Tag.noCount({
+    required this.name,
+    required this.category,
+  }) : postCount = 0;
+
   factory Tag.empty() => const Tag(
         name: '',
         category: TagCategory.invalid_,

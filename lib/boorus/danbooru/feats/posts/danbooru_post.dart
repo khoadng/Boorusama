@@ -230,23 +230,38 @@ extension PostX on DanbooruPost {
     final tags = <Tag>[];
 
     for (final t in artistTags) {
-      tags.add(Tag(name: t, category: TagCategory.artist, postCount: 0));
+      tags.add(Tag.noCount(
+        name: t,
+        category: TagCategory.artist,
+      ));
     }
 
     for (final t in copyrightTags) {
-      tags.add(Tag(name: t, category: TagCategory.copyright, postCount: 0));
+      tags.add(Tag.noCount(
+        name: t,
+        category: TagCategory.copyright,
+      ));
     }
 
     for (final t in characterTags) {
-      tags.add(Tag(name: t, category: TagCategory.character, postCount: 0));
+      tags.add(Tag.noCount(
+        name: t,
+        category: TagCategory.character,
+      ));
     }
 
     for (final t in metaTags) {
-      tags.add(Tag(name: t, category: TagCategory.meta, postCount: 0));
+      tags.add(Tag.noCount(
+        name: t,
+        category: TagCategory.meta,
+      ));
     }
 
     for (final t in generalTags) {
-      tags.add(Tag(name: t, category: TagCategory.general, postCount: 0));
+      tags.add(Tag.noCount(
+        name: t,
+        category: TagCategory.general,
+      ));
     }
 
     return tags;

@@ -124,10 +124,9 @@ final zerochanTagsFromIdProvider =
 
     return data
         .where((e) => e.value != null)
-        .map((e) => Tag(
+        .map((e) => Tag.noCount(
               name: e.value!.toLowerCase().replaceAll(' ', '_'),
               category: zerochanStringToTagCategory(e.type),
-              postCount: 0,
             ))
         .toList();
   },

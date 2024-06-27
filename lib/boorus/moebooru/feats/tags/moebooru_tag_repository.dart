@@ -33,8 +33,7 @@ class MoebooruTagRepository extends TagRepository {
   }
 }
 
-Tag tagSummaryToTag(TagSummary tagSummary) => Tag(
+Tag tagSummaryToTag(TagSummary tagSummary) => Tag.noCount(
       name: tagSummary.name,
       category: intToTagCategory(tagSummary.category),
-      postCount: 0,
     );

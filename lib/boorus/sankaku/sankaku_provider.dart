@@ -40,9 +40,10 @@ final sankakuPostRepoProvider =
           final artistTags = e.tags
                   ?.where((e) => intToTagCategory(e.type) == TagCategory.artist)
                   .map((e) => Tag(
-                      name: e.tagName ?? '????',
-                      category: TagCategory.artist,
-                      postCount: e.postCount ?? 0))
+                        name: e.tagName ?? '????',
+                        category: TagCategory.artist,
+                        postCount: e.postCount ?? 0,
+                      ))
                   .toList() ??
               [];
 
@@ -50,9 +51,10 @@ final sankakuPostRepoProvider =
                   ?.where(
                       (e) => intToTagCategory(e.type) == TagCategory.character)
                   .map((e) => Tag(
-                      name: e.tagName ?? '????',
-                      category: TagCategory.character,
-                      postCount: e.postCount ?? 0))
+                        name: e.tagName ?? '????',
+                        category: TagCategory.character,
+                        postCount: e.postCount ?? 0,
+                      ))
                   .toList() ??
               [];
 
@@ -60,9 +62,10 @@ final sankakuPostRepoProvider =
                   ?.where(
                       (e) => intToTagCategory(e.type) == TagCategory.copyright)
                   .map((e) => Tag(
-                      name: e.tagName ?? '????',
-                      category: TagCategory.copyright,
-                      postCount: e.postCount ?? 0))
+                        name: e.tagName ?? '????',
+                        category: TagCategory.copyright,
+                        postCount: e.postCount ?? 0,
+                      ))
                   .toList() ??
               [];
           final timestamp = e.createdAt?.s;

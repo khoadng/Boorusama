@@ -347,10 +347,9 @@ Widget Function(
                   children: [
                     Flexible(
                       child: PostTagListChip(
-                        tag: Tag(
+                        tag: Tag.noCount(
                           name: artist,
                           category: TagCategory.artist,
-                          postCount: 0,
                         ),
                         onTap: () => goToArtistPage(
                           context,
