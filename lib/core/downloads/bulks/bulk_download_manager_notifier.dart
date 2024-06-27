@@ -28,13 +28,22 @@ class BulkDownloadManagerNotifier extends FamilyNotifier<void, BooruConfig> {
 
   LoggerService get logger => ref.read(loggerProvider);
 
-  Future<List<Post>> getPosts(String tags, int page) {
+  Future<List<Post>> getPosts(
+    String tags,
+    int page,
+    Iterable<List<TagExpression>>? patterns,
+  ) async {
     final options = ref.read(bulkDownloadOptionsProvider);
-    return postRepo.getPostsFromTagsOrEmpty(
+
+    final posts = await postRepo.getPostsFromTagsOrEmpty(
       tags,
       page: page,
       limit: options.postPerPage,
     );
+
+    final filteredItems = _filterBlacklistedTags(posts, patterns);
+
+    return filteredItems;
   }
 
   @override
@@ -48,13 +57,41 @@ class BulkDownloadManagerNotifier extends FamilyNotifier<void, BooruConfig> {
     ref.invalidate(bulkDownloadSelectedTagsProvider);
   }
 
+  List<Post> _filterBlacklistedTags(
+    List<Post> posts,
+    Iterable<List<TagExpression>>? patterns,
+  ) {
+    if (patterns == null || patterns.isEmpty) {
+      return posts;
+    }
+
+    final filterIds = <int>{};
+
+    for (final post in posts) {
+      for (final pattern in patterns) {
+        if (post.containsTagPattern(pattern)) {
+          filterIds.add(post.id);
+          break;
+        }
+      }
+    }
+
+    return posts.where((e) => !filterIds.contains(e.id)).toList();
+  }
+
   Future<void> download({
     required String tags,
   }) async {
     final deviceInfo = ref.read(deviceInfoProvider);
     final permission = await checkMediaPermissions(deviceInfo);
-    final storagePath = ref.read(bulkDownloadOptionsProvider).storagePath;
+    final options = ref.read(bulkDownloadOptionsProvider);
+    final storagePath = options.storagePath;
     final settings = ref.read(settingsProvider);
+    final blacklistedTags = options.ignoreBlacklistedTags
+        ? await ref.read(blacklistTagsProvider(ref.readConfig).future)
+        : null;
+    final patterns = blacklistedTags
+        ?.map((tag) => tag.split(' ').map(TagExpression.parse).toList());
 
     logger.logI(_serviceName,
         'Download requested for "$tags" at "$storagePath" with permission status: $permission');
@@ -84,7 +121,7 @@ class BulkDownloadManagerNotifier extends FamilyNotifier<void, BooruConfig> {
 
     try {
       var page = 1;
-      final initialItems = await getPosts(tags, page);
+      final initialItems = await getPosts(tags, page, patterns);
       final itemStack = [initialItems];
 
       while (itemStack.isNotEmpty) {
@@ -128,7 +165,7 @@ class BulkDownloadManagerNotifier extends FamilyNotifier<void, BooruConfig> {
         await const Duration(milliseconds: 200).future;
 
         page += 1;
-        final next = await getPosts(tags, page);
+        final next = await getPosts(tags, page, patterns);
         if (next.isNotEmpty) {
           itemStack.add(next);
         }
