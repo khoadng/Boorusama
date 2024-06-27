@@ -72,7 +72,7 @@ final userCopyrightDataProvider =
   return ref.watch(danbooruRelatedTagRepProvider(config)).getRelatedTag(
         'user:$username',
         order: RelatedType.frequency,
-        category: TagCategory.copyright,
+        category: TagCategory.copyright(),
       );
 });
 
@@ -299,7 +299,7 @@ class UserDetailsPage extends ConsumerWidget {
       children: tags
           .map(
             (e) => BooruChip(
-              color: ref.watch(tagColorProvider(TagCategory.copyright.name)),
+              color: ref.watch(tagColorProvider(TagCategory.copyright().name)),
               onPressed: () => goToSearchPage(
                 context,
                 tag: e.tag,
@@ -314,7 +314,7 @@ class UserDetailsPage extends ConsumerWidget {
                       style: TextStyle(
                         color: context.themeMode.isDark
                             ? ref.watch(
-                                tagColorProvider(TagCategory.copyright.name))
+                                tagColorProvider(TagCategory.copyright().name))
                             : Colors.white,
                       ),
                       children: [

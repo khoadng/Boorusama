@@ -193,8 +193,7 @@ class ArtistNameInfoChip extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final artist = chooseArtistTag(artistTags);
     final colors = context.generateChipColors(
-      ref.watch(tagColorProvider(
-          tagCategoryToString(TagCategory.artist).toLowerCase())),
+      ref.watch(tagColorProvider(TagCategory.artist().name)),
       ref.watch(settingsProvider),
     );
 

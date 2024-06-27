@@ -179,7 +179,7 @@ extension PostX on Post {
   List<Tag> extractTags() => tags
       .map((e) => Tag.noCount(
             name: e,
-            category: TagCategory.general,
+            category: TagCategory.general(),
           ))
       .toList();
 

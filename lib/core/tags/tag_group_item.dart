@@ -25,9 +25,9 @@ extension TagGroupItemX on TagGroupItem {
   List<String> extractRawTag(TagCategory category) =>
       tags.where((e) => category == e.category).map((e) => e.rawName).toList();
 
-  List<String> extractArtistTags() => extractRawTag(TagCategory.artist);
-  List<String> extractCharacterTags() => extractRawTag(TagCategory.character);
-  List<String> extractGeneralTags() => extractRawTag(TagCategory.general);
-  List<String> extractMetaTags() => extractRawTag(TagCategory.meta);
-  List<String> extractCopyRightTags() => extractRawTag(TagCategory.copyright);
+  List<String> extractArtistTags() => extractRawTag(TagCategory.artist());
+  List<String> extractCharacterTags() => extractRawTag(TagCategory.character());
+  List<String> extractGeneralTags() => extractRawTag(TagCategory.general());
+  List<String> extractMetaTags() => extractRawTag(TagCategory.meta());
+  List<String> extractCopyRightTags() => extractRawTag(TagCategory.copyright());
 }

@@ -63,7 +63,7 @@ mixin DefaultTagColorMixin implements BooruBuilder {
           '3' || 'copyright' => colors.copyright,
           '4' || 'character' => colors.character,
           '5' || 'meta' || 'metadata' => colors.meta,
-          _ => null,
+          _ => colors.general,
         };
       };
 }
@@ -349,7 +349,7 @@ Widget Function(
                       child: PostTagListChip(
                         tag: Tag.noCount(
                           name: artist,
-                          category: TagCategory.artist,
+                          category: TagCategory.artist(),
                         ),
                         onTap: () => goToArtistPage(
                           context,

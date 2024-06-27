@@ -84,7 +84,7 @@ final gelbooruV2TagsFromIdProvider =
     return data
         .map((e) => Tag(
               name: e.name ?? '',
-              category: intToTagCategory(e.type ?? 0),
+              category: TagCategory.fromLegacyId(e.type),
               postCount: e.count ?? 0,
             ))
         .toList();

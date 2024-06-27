@@ -137,15 +137,15 @@ TagCategory zerochanStringToTagCategory(String? value) {
   var type = value?.toLowerCase().replaceAll(RegExp(r' fav$| primary$'), '');
 
   return switch (type) {
-    'mangaka' || 'artist' || 'studio' => TagCategory.artist,
+    'mangaka' || 'artist' || 'studio' => TagCategory.artist(),
     'series' ||
     'copyright' ||
     'game' ||
     'visual novel' =>
-      TagCategory.copyright,
-    'character' => TagCategory.character,
-    'meta' || 'source' => TagCategory.meta,
-    _ => TagCategory.general
+      TagCategory.copyright(),
+    'character' => TagCategory.character(),
+    'meta' || 'source' => TagCategory.meta(),
+    _ => TagCategory.general(),
   };
 }
 

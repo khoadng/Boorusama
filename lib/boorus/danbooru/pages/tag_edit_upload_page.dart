@@ -49,13 +49,6 @@ final _lastWord = StateProvider.autoDispose<String?>((ref) => null);
 final tagEditUploadRelatedExpandedProvider =
     StateProvider.autoDispose<bool>((ref) => false);
 
-// ignore: unused_element
-typedef _NameAndCount = ({
-  String name,
-  int? count,
-  TagCategory category,
-});
-
 class TagEditUploadPage extends ConsumerStatefulWidget {
   const TagEditUploadPage({
     super.key,
@@ -559,13 +552,13 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
         ...source.artists!.map((e) => (
               name: e.name,
               count: null,
-              category: TagCategory.artist,
+              category: TagCategory.artist(),
             )),
       if (source.translatedTags != null)
         ...source.translatedTags!.where((e) => e.name != null).map((e) => (
               name: e.name!,
               count: e.postCount,
-              category: intToTagCategory(e.category ?? 0),
+              category: TagCategory.fromLegacyId(e.category ?? 0),
             ))
     ];
 

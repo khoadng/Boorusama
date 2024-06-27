@@ -76,11 +76,11 @@ List<RelatedTagItem> generateDummyTags(int count) => [
           frequency: 1,
           postCount: 1,
           category: switch (i % 10) {
-            0 => TagCategory.artist,
-            1 => TagCategory.character,
-            2 => TagCategory.copyright,
-            3 => TagCategory.meta,
-            _ => TagCategory.general,
+            0 => TagCategory.artist(),
+            1 => TagCategory.character(),
+            2 => TagCategory.copyright(),
+            3 => TagCategory.meta(),
+            _ => TagCategory.general(),
           },
         ),
     ];

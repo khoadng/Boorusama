@@ -19,15 +19,7 @@ final danbooruRelatedTagRepProvider =
       final related = await client
           .getRelatedTag(
             query: query,
-            category: switch (category) {
-              TagCategory.artist => danbooru.TagCategory.artist,
-              TagCategory.character => danbooru.TagCategory.character,
-              TagCategory.general => danbooru.TagCategory.general,
-              TagCategory.copyright => danbooru.TagCategory.copyright,
-              TagCategory.meta => danbooru.TagCategory.meta,
-              TagCategory.invalid_ => null,
-              null => null,
-            },
+            category: _toDanbooruTagCategory(category),
             order: switch (order) {
               RelatedType.cosine => danbooru.RelatedType.cosine,
               RelatedType.jaccard => danbooru.RelatedType.jaccard,
@@ -90,28 +82,37 @@ final danbooruRelatedTagsProvider = FutureProvider.family<List<Tag>, String>(
             Tag(name: e.tag, category: e.category, postCount: e.postCount))
         .toList();
 
-    tags.sort((a, b) => _tagCategoryToOrder(a.category)
-        .compareTo(_tagCategoryToOrder(b.category)));
+    tags.sort(
+        (a, b) => (a.category.order ?? 0).compareTo((b.category.order ?? 0)));
 
     return tags;
   },
 );
 
-int _tagCategoryToOrder(TagCategory category) => switch (category) {
-      TagCategory.artist => 0,
-      TagCategory.copyright => 1,
-      TagCategory.character => 2,
-      TagCategory.general => 3,
-      TagCategory.meta => 4,
-      TagCategory.invalid_ => 5,
-    };
+danbooru.TagCategory? _toDanbooruTagCategory(TagCategory? category) {
+  if (category == TagCategory.artist()) return danbooru.TagCategory.artist;
+  if (category == TagCategory.copyright()) {
+    return danbooru.TagCategory.copyright;
+  }
+  if (category == TagCategory.character()) {
+    return danbooru.TagCategory.character;
+  }
+  if (category == TagCategory.general()) {
+    return danbooru.TagCategory.general;
+  }
+  if (category == TagCategory.meta()) {
+    return danbooru.TagCategory.meta;
+  }
+
+  return null;
+}
 
 RelatedTag relatedTagDtoToRelatedTag(danbooru.RelatedTagDto dto) => RelatedTag(
       query: dto.query ?? '',
       wikiPageTags: dto.wikiPageTags
               ?.map((e) => Tag(
                     name: e.name ?? '',
-                    category: intToTagCategory(e.category),
+                    category: TagCategory.fromLegacyId(e.category),
                     postCount: e.postCount ?? 0,
                   ))
               .toList() ??
@@ -120,7 +121,7 @@ RelatedTag relatedTagDtoToRelatedTag(danbooru.RelatedTagDto dto) => RelatedTag(
           ? dto.relatedTags!
               .map((e) => RelatedTagItem(
                     tag: e.tag?.name ?? '',
-                    category: intToTagCategory(e.tag?.category ?? 0),
+                    category: TagCategory.fromLegacyId(e.tag?.category),
                     jaccardSimilarity: e.jaccardSimilarity ?? 0.0,
                     cosineSimilarity: e.cosineSimilarity ?? 0.0,
                     overlapCoefficient: e.overlapCoefficient ?? 0.0,

@@ -38,32 +38,35 @@ final sankakuPostRepoProvider =
           final hasChilren = e.hasChildren ?? false;
           final hasParentOrChildren = hasParent || hasChilren;
           final artistTags = e.tags
-                  ?.where((e) => intToTagCategory(e.type) == TagCategory.artist)
+                  ?.where((e) =>
+                      TagCategory.fromLegacyId(e.type) == TagCategory.artist())
                   .map((e) => Tag(
                         name: e.tagName ?? '????',
-                        category: TagCategory.artist,
+                        category: TagCategory.artist(),
                         postCount: e.postCount ?? 0,
                       ))
                   .toList() ??
               [];
 
           final characterTags = e.tags
-                  ?.where(
-                      (e) => intToTagCategory(e.type) == TagCategory.character)
+                  ?.where((e) =>
+                      TagCategory.fromLegacyId(e.type) ==
+                      TagCategory.character())
                   .map((e) => Tag(
                         name: e.tagName ?? '????',
-                        category: TagCategory.character,
+                        category: TagCategory.character(),
                         postCount: e.postCount ?? 0,
                       ))
                   .toList() ??
               [];
 
           final copyrightTags = e.tags
-                  ?.where(
-                      (e) => intToTagCategory(e.type) == TagCategory.copyright)
+                  ?.where((e) =>
+                      TagCategory.fromLegacyId(e.type) ==
+                      TagCategory.copyright())
                   .map((e) => Tag(
                         name: e.tagName ?? '????',
-                        category: TagCategory.copyright,
+                        category: TagCategory.copyright(),
                         postCount: e.postCount ?? 0,
                       ))
                   .toList() ??

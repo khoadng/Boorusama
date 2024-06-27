@@ -232,35 +232,35 @@ extension PostX on DanbooruPost {
     for (final t in artistTags) {
       tags.add(Tag.noCount(
         name: t,
-        category: TagCategory.artist,
+        category: TagCategory.artist(),
       ));
     }
 
     for (final t in copyrightTags) {
       tags.add(Tag.noCount(
         name: t,
-        category: TagCategory.copyright,
+        category: TagCategory.copyright(),
       ));
     }
 
     for (final t in characterTags) {
       tags.add(Tag.noCount(
         name: t,
-        category: TagCategory.character,
+        category: TagCategory.character(),
       ));
     }
 
     for (final t in metaTags) {
       tags.add(Tag.noCount(
         name: t,
-        category: TagCategory.meta,
+        category: TagCategory.meta(),
       ));
     }
 
     for (final t in generalTags) {
       tags.add(Tag.noCount(
         name: t,
-        category: TagCategory.general,
+        category: TagCategory.general(),
       ));
     }
 

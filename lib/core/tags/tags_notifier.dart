@@ -6,6 +6,7 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/dart.dart';
+import 'package:boorusama/string.dart';
 
 final invalidTags = [
   ':&lt;',
@@ -58,32 +59,12 @@ List<TagGroupItem> createTagGroupItems(List<Tag> tags) {
       .groupBy((e) => e.category)
       .entries
       .map((e) => TagGroupItem(
-            category: e.key.index,
-            groupName: tagCategoryToString(e.key),
+            category: e.key.id,
+            groupName: e.key.name.sentenceCase,
             tags: e.value,
-            order: tagCategoryToOrder(e.key),
+            order: e.key.order ?? 99999,
           ))
       .toList()
     ..sort((a, b) => a.order.compareTo(b.order));
   return group;
 }
-
-String tagCategoryToString(TagCategory category) => switch (category) {
-      TagCategory.artist => 'Artist',
-      TagCategory.character => 'Character',
-      TagCategory.copyright => 'Copyright',
-      TagCategory.general => 'General',
-      TagCategory.meta => 'Meta',
-      TagCategory.invalid_ => ''
-    };
-
-typedef TagCategoryOrder = int;
-
-TagCategoryOrder tagCategoryToOrder(TagCategory category) => switch (category) {
-      TagCategory.artist => 0,
-      TagCategory.copyright => 1,
-      TagCategory.character => 2,
-      TagCategory.general => 3,
-      TagCategory.meta => 4,
-      TagCategory.invalid_ => 5
-    };

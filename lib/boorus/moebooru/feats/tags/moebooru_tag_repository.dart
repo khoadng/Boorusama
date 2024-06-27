@@ -35,5 +35,5 @@ class MoebooruTagRepository extends TagRepository {
 
 Tag tagSummaryToTag(TagSummary tagSummary) => Tag.noCount(
       name: tagSummary.name,
-      category: intToTagCategory(tagSummary.category),
+      category: TagCategory.fromLegacyId(tagSummary.category),
     );

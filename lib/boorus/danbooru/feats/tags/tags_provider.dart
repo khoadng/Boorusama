@@ -35,7 +35,7 @@ final danbooruTagRepoProvider = Provider.family<TagRepository, BooruConfig>(
         return data
             .map((d) => Tag(
                   name: d.name ?? '',
-                  category: intToTagCategory(d.category ?? 0),
+                  category: TagCategory.fromLegacyId(d.category ?? 0),
                   postCount: d.postCount ?? 0,
                 ))
             .toList();
@@ -67,7 +67,7 @@ final danbooruTagCategoryProvider =
   final store = ref.watch(booruTagTypeStoreProvider);
   final type = await store.get(config.booruType, tag);
 
-  return stringToTagCategory(type);
+  return TagCategory.fromLegacyIdString(type);
 });
 
 final danbooruAITagsProvider = FutureProvider.family<List<AITag>, int>(
@@ -87,7 +87,7 @@ final danbooruAITagsProvider = FutureProvider.family<List<AITag>, int>(
                   score: e.score ?? 0,
                   tag: Tag(
                     name: e.tag?.name ?? '',
-                    category: intToTagCategory(e.tag?.category ?? 0),
+                    category: TagCategory.fromLegacyId(e.tag?.category),
                     postCount: e.tag?.postCount ?? 0,
                   ),
                 ))

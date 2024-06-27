@@ -18,9 +18,9 @@ class Tag extends Equatable {
     required this.category,
   }) : postCount = 0;
 
-  factory Tag.empty() => const Tag(
+  factory Tag.empty() => Tag(
         name: '',
-        category: TagCategory.invalid_,
+        category: TagCategory.unknown(),
         postCount: 0,
       );
 
@@ -37,22 +37,19 @@ class Tag extends Equatable {
 
   factory Tag.fromJson(Map<String, dynamic> json) => Tag(
         name: json['name'],
-        category: intToTagCategory(json['category'] as int),
+        category: TagCategory.fromLegacyId(json['category']),
         postCount: json['postCount'],
       );
 
   Map<String, dynamic> toJson() => {
         'name': name,
-        'category': category.index,
+        'category': category.id,
         'postCount': postCount,
       };
 
   final String name;
   final TagCategory category;
   final PostCount postCount;
-
-  String get displayName => name.replaceAll('_', ' ');
-  String get rawName => name;
 
   @override
   String toString() => '$rawName ($postCount)';
@@ -62,5 +59,6 @@ class Tag extends Equatable {
 }
 
 extension TagX on Tag {
-  bool get hasPost => postCount > 0;
+  String get displayName => name.replaceAll('_', ' ');
+  String get rawName => name;
 }
