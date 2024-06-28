@@ -18,6 +18,7 @@ class TagsTile extends ConsumerWidget {
     this.onTagTap,
     this.initialExpanded = false,
     required this.tags,
+    this.tagColorBuilder,
   });
 
   final Post post;
@@ -26,6 +27,7 @@ class TagsTile extends ConsumerWidget {
   final void Function(Tag tag)? onTagTap;
   final bool initialExpanded;
   final List<TagGroupItem>? tags;
+  final Color? Function(Tag tag)? tagColorBuilder;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -52,6 +54,7 @@ class TagsTile extends ConsumerWidget {
                 child: PostTagListChip(
                   tag: tag,
                   onTap: () => onTagTap?.call(tag),
+                  color: tagColorBuilder != null ? tagColorBuilder!(tag) : null,
                 ),
               ),
             ),

@@ -86,16 +86,18 @@ class PostTagListChip extends ConsumerWidget {
     required this.tag,
     this.maxTagWidth,
     this.onTap,
+    this.color,
   });
 
   final Tag tag;
+  final Color? color;
   final double? maxTagWidth;
   final void Function()? onTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.generateChipColors(
-      ref.watch(tagColorProvider(tag.category.name)),
+      color ?? ref.watch(tagColorProvider(tag.category.name)),
       ref.watch(settingsProvider),
     );
 
