@@ -8,13 +8,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/e621/feats/artists/artists.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
+import 'package:boorusama/boorus/e621/feats/tags/e621_tag_category.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/artists/artists.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
-import 'widgets/e621_post_tag_list.dart';
+import 'package:boorusama/core/tags/tags.dart';
 
 class E621PostDetailsPage extends ConsumerStatefulWidget {
   const E621PostDetailsPage({
@@ -117,24 +117,38 @@ class E621TagsTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Theme(
-      data: context.theme.copyWith(
-        listTileTheme: context.theme.listTileTheme.copyWith(
-          visualDensity: VisualDensity.compact,
-        ),
-        dividerColor: Colors.transparent,
-      ),
-      child: ExpansionTile(
-        title: Text('${post.tags.length} tags'),
-        controlAffinity: ListTileControlAffinity.leading,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: E621PostTagList(post: post),
-          ),
-          const SizedBox(height: 8),
-        ],
-      ),
+    return TagsTile(
+      post: post,
+      tags: createTagGroupItems([
+        ...post.artistTags.map((e) => Tag.noCount(
+              name: e,
+              category: e621ArtistTagCategory,
+            )),
+        ...post.characterTags.map((e) => Tag.noCount(
+              name: e,
+              category: e621CharacterTagCategory,
+            )),
+        ...post.speciesTags.map((e) => Tag.noCount(
+              name: e,
+              category: e621SpeciesTagCategory,
+            )),
+        ...post.copyrightTags.map((e) => Tag.noCount(
+              name: e,
+              category: e621CopyrightTagCategory,
+            )),
+        ...post.generalTags.map((e) => Tag.noCount(
+              name: e,
+              category: e621GeneralTagCategory,
+            )),
+        ...post.metaTags.map((e) => Tag.noCount(
+              name: e,
+              category: e621MetaTagCagegory,
+            )),
+        ...post.loreTags.map((e) => Tag.noCount(
+              name: e,
+              category: e621LoreTagCategory,
+            )),
+      ]),
     );
   }
 }
