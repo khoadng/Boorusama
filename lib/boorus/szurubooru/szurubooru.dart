@@ -224,11 +224,16 @@ class SzurubooruPostDetailsPage extends ConsumerWidget {
                   ],
                 ),
               ),
-      tagListBuilder: (context, post) => BasicTagList(
-        tags: post.tags.toList(),
-        unknownCategoryColor: ref.watch(tagColorProvider('general')),
-        onTap: (tag) => goToSearchPage(context, tag: tag),
-      ),
+      tagListBuilder: (context, post) =>
+          castOrNull<SzurubooruPost>(post).toOption().fold(
+                () => const SizedBox.shrink(),
+                (post) => TagsTile(
+                  post: post,
+                  tags: createTagGroupItems(post.tagDetails),
+                  initialExpanded: true,
+                  tagColorBuilder: (tag) => tag.category.darkColor,
+                ),
+              ),
       toolbarBuilder: (context, rawPost) =>
           castOrNull<SzurubooruPost>(rawPost).toOption().fold(
                 () => SimplePostActionToolbar(post: rawPost),
