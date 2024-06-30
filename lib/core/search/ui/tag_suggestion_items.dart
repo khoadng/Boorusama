@@ -37,89 +37,112 @@ class TagSuggestionItems extends ConsumerWidget {
       color: backgroundColor ?? context.theme.scaffoldBackgroundColor,
       elevation: 4,
       borderRadius: const BorderRadius.all(Radius.circular(8)),
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-        child: ListView.builder(
-          itemCount: _tags.length,
-          itemBuilder: (context, index) {
-            final tag = _tags[index];
-
-            return InkWell(
-              onTap: () => onItemTap(tag),
-              child: Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: dense ? 4 : 12,
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: _getTitle(
-                        tag,
-                        currentQuery,
-                        textColorBuilder?.call(tag),
-                      ),
-                    ),
-                    if (tag.hasCount && !ref.watchConfig.hasStrictSFW)
-                      Container(
-                        constraints: const BoxConstraints(maxWidth: 100),
-                        child: Text(
-                          NumberFormat.compact().format(tag.postCount),
-                          style: TextStyle(
-                            color: context.theme.hintColor,
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-            );
-          },
+      child: ListView.builder(
+        padding: const EdgeInsets.symmetric(
+          vertical: 12,
+          horizontal: 12,
         ),
+        itemCount: _tags.length,
+        itemBuilder: (context, index) {
+          final tag = _tags[index];
+
+          return TagSuggestionItem(
+            key: ValueKey(tag.value),
+            showCount: tag.hasCount && !ref.watchConfig.hasStrictSFW,
+            onItemTap: onItemTap,
+            tag: tag,
+            dense: dense,
+            currentQuery: currentQuery,
+            textColorBuilder: textColorBuilder,
+          );
+        },
       ),
     );
   }
 }
 
-Widget _getTitle(
-  AutocompleteData tag,
-  String currentQuery,
-  Color? color,
-) {
-  final query = currentQuery.replaceUnderscoreWithSpace().toLowerCase();
-  return tag.hasAlias
-      ? Html(
-          style: {
-            'p': Style(
-              fontSize: FontSize.medium,
-              color: color,
-              margin: Margins.zero,
+class TagSuggestionItem extends StatelessWidget {
+  const TagSuggestionItem({
+    super.key,
+    required this.onItemTap,
+    required this.tag,
+    required this.dense,
+    required this.currentQuery,
+    required this.textColorBuilder,
+    required this.showCount,
+  });
+
+  final ValueChanged<AutocompleteData> onItemTap;
+  final AutocompleteData tag;
+  final bool dense;
+  final String currentQuery;
+  final Color? Function(AutocompleteData tag)? textColorBuilder;
+  final bool showCount;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      customBorder: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      onTap: () => onItemTap(tag),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        margin: const EdgeInsets.only(bottom: 2),
+        padding: EdgeInsets.symmetric(
+          horizontal: 8,
+          vertical: dense ? 4 : 12,
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: _buildTitle(),
             ),
-            'body': Style(
-              margin: Margins.zero,
-            ),
-            'b': Style(
-              fontWeight: FontWeight.w900,
-            ),
-          },
-          data:
-              '<p>${tag.antecedent!.replaceUnderscoreWithSpace().replaceAll(query, '<b>$query</b>')} ➞ ${tag.label.replaceAll(query, '<b>$query</b>')}</p>',
-        )
-      : Html(
-          style: {
-            'p': Style(
-              fontSize: FontSize.medium,
-              color: color,
-              margin: Margins.zero,
-            ),
-            'body': Style(
-              margin: Margins.zero,
-            ),
-            'b': Style(
-              fontWeight: FontWeight.w900,
-            ),
-          },
-          data:
-              '<p>${tag.label.replaceAll(query.replaceUnderscoreWithSpace(), '<b>$query</b>')}</p>',
-        );
+            if (showCount)
+              Container(
+                constraints: const BoxConstraints(maxWidth: 100),
+                child: Text(
+                  NumberFormat.compact().format(tag.postCount),
+                  style: TextStyle(
+                    color: context.theme.hintColor,
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTitle() {
+    final color = textColorBuilder != null ? textColorBuilder!(tag) : null;
+    final query = currentQuery.replaceUnderscoreWithSpace().toLowerCase();
+    final htmlStyle = {
+      'p': Style(
+        fontSize: FontSize.medium,
+        color: color,
+        margin: Margins.zero,
+      ),
+      'body': Style(
+        margin: Margins.zero,
+      ),
+      'b': Style(
+        fontWeight: FontWeight.w900,
+      ),
+    };
+
+    return tag.hasAlias
+        ? Html(
+            style: htmlStyle,
+            data:
+                '<p>${tag.antecedent!.replaceUnderscoreWithSpace().replaceAll(query, '<b>$query</b>')} ➞ ${tag.label.replaceAll(query, '<b>$query</b>')}</p>',
+          )
+        : Html(
+            style: htmlStyle,
+            data:
+                '<p>${tag.label.replaceAll(query.replaceUnderscoreWithSpace(), '<b>$query</b>')}</p>',
+          );
+  }
 }
