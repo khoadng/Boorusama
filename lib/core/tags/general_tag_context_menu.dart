@@ -13,7 +13,8 @@ import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
-class GeneralTagContextMenu extends ConsumerWidget {
+class GeneralTagContextMenu extends ConsumerWidget
+    with TagContextMenuButtonConfigMixin {
   const GeneralTagContextMenu({
     super.key,
     this.itemBindings = const {},
@@ -32,24 +33,8 @@ class GeneralTagContextMenu extends ConsumerWidget {
     return ContextMenuRegion(
       contextMenu: GenericContextMenu(
         buttonConfigs: [
-          ContextMenuButtonConfig(
-            'Copy',
-            onPressed: () {
-              Clipboard.setData(ClipboardData(text: tag)).then((_) {
-                showToast(
-                  'post.detail.copied'.tr(),
-                  position: ToastPosition.bottom,
-                  textPadding: const EdgeInsets.all(8),
-                );
-              });
-            },
-          ),
-          ContextMenuButtonConfig(
-            'Search',
-            onPressed: () {
-              goToSearchPage(context, tag: tag);
-            },
-          ),
+          copyButton(tag),
+          searchButton(context, tag),
           ContextMenuButtonConfig(
             'post.detail.add_to_favorites'.tr(),
             onPressed: () {
@@ -72,4 +57,27 @@ class GeneralTagContextMenu extends ConsumerWidget {
       child: child,
     );
   }
+}
+
+mixin TagContextMenuButtonConfigMixin {
+  ContextMenuButtonConfig copyButton(String tag) => ContextMenuButtonConfig(
+        'Copy',
+        onPressed: () {
+          Clipboard.setData(ClipboardData(text: tag)).then((_) {
+            showToast(
+              'post.detail.copied'.tr(),
+              position: ToastPosition.bottom,
+              textPadding: const EdgeInsets.all(8),
+            );
+          });
+        },
+      );
+
+  ContextMenuButtonConfig searchButton(BuildContext context, String tag) =>
+      ContextMenuButtonConfig(
+        'Search',
+        onPressed: () {
+          goToSearchPage(context, tag: tag);
+        },
+      );
 }

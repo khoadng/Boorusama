@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
@@ -12,6 +13,8 @@ import 'package:boorusama/boorus/danbooru/pages/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -122,43 +125,84 @@ class _SavedSearchList extends ConsumerWidget {
       shrinkWrap: true,
       scrollDirection: Axis.horizontal,
       itemCount: searches.length,
-      itemBuilder: (context, index) {
-        final isSelected = selectedSearch == searches[index];
+      itemBuilder: (context, index) => _buildChip(
+        context,
+        searches[index],
+      ),
+    );
+  }
 
-        final text = searches[index].labels.firstOption;
+  Widget _buildChip(BuildContext context, SavedSearch search) {
+    final isSelected = selectedSearch == search;
 
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4),
-          child: ChoiceChip(
-            selected: isSelected,
-            onSelected: (selected) {
-              if (!isSelected) {
-                onSearchChanged(searches[index]);
-              }
-            },
-            padding: EdgeInsets.symmetric(
-              vertical: 4,
-              horizontal: text.fold(
-                () => 12,
-                (t) => t.length < 4 ? 12 : 4,
-              ),
-            ),
-            labelPadding: const EdgeInsets.all(1),
-            visualDensity: VisualDensity.compact,
-            side: BorderSide(
-              width: 0.5,
-              color: context.theme.hintColor,
-            ),
-            label: Text(
-              text.fold(
-                () => '<empty>',
-                (t) => t.replaceUnderscoreWithSpace(),
-              ),
-              overflow: TextOverflow.fade,
+    final text = search.labels.firstOption;
+
+    return SavedSearchContextMenu(
+      search: search,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4),
+        child: ChoiceChip(
+          selected: isSelected,
+          onSelected: (selected) {
+            if (!isSelected) {
+              onSearchChanged(search);
+            }
+          },
+          padding: EdgeInsets.symmetric(
+            vertical: 4,
+            horizontal: text.fold(
+              () => 12,
+              (t) => t.length < 4 ? 12 : 4,
             ),
           ),
-        );
-      },
+          labelPadding: const EdgeInsets.all(1),
+          visualDensity: VisualDensity.compact,
+          side: BorderSide(
+            width: 0.5,
+            color: context.theme.hintColor,
+          ),
+          label: Text(
+            text.fold(
+              () => '<empty>',
+              (t) => t.replaceUnderscoreWithSpace(),
+            ),
+            overflow: TextOverflow.fade,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class SavedSearchContextMenu extends ConsumerWidget
+    with TagContextMenuButtonConfigMixin {
+  const SavedSearchContextMenu({
+    super.key,
+    required this.search,
+    required this.child,
+  });
+
+  final SavedSearch search;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tag = search.toQuery();
+
+    return ContextMenuRegion(
+      contextMenu: GenericContextMenu(
+        buttonConfigs: [
+          copyButton(tag),
+          searchButton(context, tag),
+          ContextMenuButtonConfig(
+            'download.bulk_download'.tr(),
+            onPressed: () {
+              goToBulkDownloadPage(context, [tag], ref: ref);
+            },
+          )
+        ],
+      ),
+      child: child,
     );
   }
 }
