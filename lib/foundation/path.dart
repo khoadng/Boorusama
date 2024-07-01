@@ -2,6 +2,7 @@
 import 'dart:io';
 
 // Package imports:
+import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
 // Project imports:
@@ -86,3 +87,32 @@ TaskEither<DirectoryError, Directory> _tryGetLinuxDownloadDirectory() =>
           () => TaskEither.left(DirectoryError.directoryNotFound),
           (dir) => TaskEither.right(dir),
         ));
+
+const _kAppTemporaryDirectoryName = String.fromEnvironment('APP_NAME');
+
+Future<Directory> getAppTemporaryDirectory() async {
+  final dir = await getTemporaryDirectory();
+
+  // On Windows, the temporary directory is a global directory so we need to create a subdirectory for the app to avoid deleting other app's files
+  if (isWindows()) {
+    final name = _getAppWindowsTemporaryDirectoryName();
+
+    final appDir = Directory(join(dir.path, name));
+    if (!appDir.existsSync()) {
+      await appDir.create();
+    }
+    return appDir;
+  }
+
+  return dir;
+}
+
+String _getAppWindowsTemporaryDirectoryName() {
+  final name = _kAppTemporaryDirectoryName.isNotEmpty
+      ? _kAppTemporaryDirectoryName
+      : 'boorusama';
+
+  final sanitized = name.replaceAll(' ', '_').toLowerCase();
+
+  return sanitized;
+}

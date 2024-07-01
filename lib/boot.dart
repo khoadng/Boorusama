@@ -222,7 +222,7 @@ Future<void> boot(BootLogger bootLogger) async {
   final bookmarkBox = await Hive.openBox<BookmarkHiveObject>("favorites");
   final bookmarkRepo = BookmarkHiveRepository(bookmarkBox);
 
-  final tempPath = await getTemporaryDirectory();
+  final tempPath = await getAppTemporaryDirectory();
 
   bootLogger.l("Initialize misc data box");
   final miscDataBox = await Hive.openBox<String>(
