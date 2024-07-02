@@ -49,11 +49,9 @@ extension ListX<E> on List<E> {
   }
 
   E? getOrNull(int index) {
-    try {
-      return this[index];
-    } catch (e) {
-      return null;
-    }
+    if (index < 0 || index >= length) return null;
+
+    return this[index];
   }
 
   bool reorder(int oldIndex, int newIndex) {
