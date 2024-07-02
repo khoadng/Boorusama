@@ -10,12 +10,16 @@
             "delete": "Löschen",
             "edit": "Bearbeiten",
             "ok": "OK",
-            "cancel": "Abbrechen"
+            "cancel": "Abbrechen",
+            "duplicate": "Duplikat"
         },
         "view": "Anzeigen"
     },
     "profile": {
-        "favorites": "Favoriten"
+        "favorites": "Favoriten",
+        "messages": "Nachrichten",
+        "profile": "Profil",
+        "copy_user_id": "Nutzer ID kopieren"
     },
     "network": {
         "unavailable": "Netzwerk nicht verfügbar"
@@ -100,7 +104,8 @@
         "popular": "Beliebt",
         "hot": "Aktuell",
         "most_viewed": "Meist gesehen",
-        "see_more": "Mehr anzeigen"
+        "see_more": "Mehr anzeigen",
+        "explore": "Durchsuchen"
     },
     "search": {
         "errors": {
@@ -158,12 +163,16 @@
         "app_settings": "App Einstellungen",
         "appearance": {
             "appearance": "Aussehen",
-            "show_scores": "Scores anzeigen"
+            "show_scores": "Scores anzeigen",
+            "booru_config": "Booru Profil",
+            "booru_config_placement": "Booru Profil Platzierung",
+            "show_post_list_config_header": "Konfigurationsheader für Beiträge anzeigen"
         },
         "general": "Allgemein",
         "search": {
             "search": "Suche",
-            "auto_focus_search_bar": "Automatisch Suchleiste fokussieren wenn die Suchansicht geöffnet wird"
+            "auto_focus_search_bar": "Automatisch Suchleiste fokussieren wenn die Suchansicht geöffnet wird",
+            "hide_bookmarked_posts_from_search_results": "Gemerkte Beiträge aus den Suchergebnissen ausblenden"
         },
         "information": "Information",
         "changelog": "Änderungsprotokoll",
@@ -196,7 +205,8 @@
                 "highest": "Höchste"
             },
             "spacing": "Abstand",
-            "corner_radius": "Eckradius"
+            "corner_radius": "Eckradius",
+            "aspect_ratio": "Seitenverhältnis"
         },
         "image_viewer": {
             "image_viewer": "Bildbetrachter",
@@ -214,11 +224,18 @@
             "theme": "Theme",
             "dark": "Dunkel",
             "light": "Hell",
-            "amoled_dark": "AMOLED Dark"
+            "amoled_dark": "AMOLED Dark",
+            "dynamic_color": "Dynamische Themenfarbe",
+            "dynamic_color_mobile_description": "Themenfarbe mit Hintergrundbild synchronisieren",
+            "dynamic_color_desktop_description": "Themenfarbe mit der Akzentfarbe des Betriebssystems synchronisieren",
+            "dynamic_color_unsupported_description": "Dieses Gerät unterstützt keine dynamischen Farben."
         },
         "privacy": {
             "privacy": "Datenschutz",
-            "send_error_data_notice": "Anonyme Daten zur Fehlerprotokollierung senden"
+            "send_error_data_notice": "Anonyme Daten zur Fehlerprotokollierung senden",
+            "enable_incognito_keyboard": "Inkognito-Tastatur aktivieren",
+            "enable_biometric_lock": "Biometrische Sperre einschalten",
+            "enable_incognito_keyboard_notice": "Betrifft nur Android."
         },
         "performance": {
             "performance": "Leistung",
@@ -243,7 +260,44 @@
             }
         },
         "help_us_translate": "Hilf uns beim Übersetzen",
-        "other_settings": "Andere Einstellungen"
+        "other_settings": "Andere Einstellungen",
+        "accessibility": {
+            "swipeAreaToOpenSidebarDescription": "Die Größe des Bereichs auf der linken Seite des Bildschirms, der zum Auslösen einer Wischgeste verwendet werden kann. Große Werte blockieren alle horizontalen Gesten wie die Paginierungs-Wischgeste.",
+            "accessibility": "Barrierefreiheit",
+            "swipeAreaToOpenSidebar": "Swiping-Bereich der Sidebar"
+        },
+        "booru_settings": {
+            "booru_settings": "Booru Einstellungen",
+            "edit_current_profile": "Aktuelles Profil bearbeiten"
+        },
+        "support": "Unterstützen",
+        "data_and_storage": {
+            "clear_cache_on_start_up": "Bild-Cache beim Starten löschen",
+            "data_and_storage": "Daten und Speicherung"
+        },
+        "backup_and_restore": {
+            "backup_and_restore": "Sichern und Wiederherstellen"
+        },
+        "image_details": {
+            "ui_overlay": {
+                "show": "Anzeigen",
+                "hide": "Ausblenden",
+                "ui_overlay": "UI-Overlay"
+            },
+            "image_details": "Bild-Details"
+        },
+        "contribute": "Mitwirken",
+        "source_code": "Quellcode",
+        "contact_developer": "Entwickler Kontaktieren",
+        "contact_developer_description": "Wenn du irgendwelche Probleme oder Vorschläge hast, kannst du mir über diese Option eine E-Mail schicken",
+        "feature_request_and_bug_report": "Funktionsanfrage und Fehlerbericht",
+        "feature_request_and_bug_report_description": "Vorschlagen von Funktionen oder Melden von Fehlern über das GitHub-Repository",
+        "page_indicator": {
+            "page_indicator": "Position der Seitenanzeige",
+            "top": "Oben",
+            "bottom": "Unten",
+            "both": "Beide"
+        }
     },
     "blacklisted_tags": {
         "remove": "Entfernen",
@@ -253,7 +307,9 @@
         "updated": "Ausgeblendete Tags aktualisiert",
         "limitation_notice": "Unterstützt nur <b>NOT</b> Operator, <b>OR</b> Operator, <b>Score</b> Metatag und <b>Rating</b> Metatag\n\nDas Ausblenden von Tags mit Metatags funktioniert in der aktuellen Version nicht.",
         "failed_to_add": "Tag konnte nicht hinzugefügt werden",
-        "failed_to_remove": "Tag konnte nicht entfernt werden"
+        "failed_to_remove": "Tag konnte nicht entfernt werden",
+        "blacklisted_header_title": "Ausgeblendet",
+        "disable_all": "Alle deaktivieren"
     },
     "download": {
         "download": "Download",
@@ -347,7 +403,8 @@
         "import_hint": "Tag-String hier eingeben. Durch Leerzeichen getrennt.",
         "cancel": "Abbrechen",
         "export": "Exportieren",
-        "export_notification": "Tag-String in die Zwischenablage kopiert"
+        "export_notification": "Tag-String in die Zwischenablage kopiert",
+        "favorite_tags": "Gespeicherte Tags"
     },
     "rating": {
         "rate_request": "Diese App Bewerten",
@@ -360,7 +417,8 @@
         "settings": "Einstellungen",
         "your_bookmarks": "Lesezeichen",
         "your_blacklist": "Ausgeblendete Tags",
-        "bulk_download": "Bulk-Download"
+        "bulk_download": "Bulk-Download",
+        "get_support": "Support erhalten"
     },
     "dateRange": {
         "day": "Tag",
@@ -378,7 +436,7 @@
         "content_filtering_label": "Inhaltsfilterung",
         "hide_deleted_label": "Gelöschte Beiträge ausblenden",
         "config_booru_confirm": "OK",
-        "add_a_booru_site": "Booru Seite hinzufügen",
+        "add_a_booru_site": "Neues Profil erstellen",
         "next_step": "Weiter",
         "site_url": "URL",
         "unsupported_warning": "Dieses Booru wird momentan nicht unterstützt.",
@@ -388,7 +446,11 @@
         "validation_missing_trailing_slash": "\"{0}\" fehlt ein abschließender Schrägstrich",
         "validation_redundant_www": "\"{0}\" enthält überflüssiges \"www\"",
         "validation_contains_spaces": "\"{0}\" enthält Leerzeichen",
-        "validation_missing_scheme": "\"{0}\" entspricht keinem Schema (z.B. https://)"
+        "validation_missing_scheme": "\"{0}\" entspricht keinem Schema (z.B. https://)",
+        "download": "Herunterladen",
+        "misc": "Sonstiges",
+        "gestures": "Gesten",
+        "authentication": "Authentifizierung"
     },
     "blacklist": {
         "manage": {
@@ -415,5 +477,11 @@
     },
     "forum": {
         "forum": "Forum"
+    },
+    "gestures": {
+        "long_press": "Lange Drücken",
+        "swipe_down": "Nach unten wischen",
+        "double_tap": "Doppelt Antippen",
+        "tap": "Drücken"
     }
 }
