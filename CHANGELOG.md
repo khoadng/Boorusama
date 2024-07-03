@@ -1,3 +1,9 @@
+# Unreleased-2024.7.3
+- [Szurubooru] Show tag color
+- [Danbooru] Add a saved search context menu
+- Ignore blacklisted posts when bulk downloading
+- Bug fixes
+
 # 3.19.0
 - [Gelbooru 0.2.5] Add support for favorites, you will need to provide additional information in the profile for it to work
 - Experimental download support to specific SD card folders

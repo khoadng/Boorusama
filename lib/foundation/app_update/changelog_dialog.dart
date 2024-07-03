@@ -9,17 +9,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/foundation/app_update/what_news.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/package_info.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/time.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 extension ChangelogWidgetRefX on WidgetRef {
   Future<void> showChangelogDialogIfNeeded() async {
     final data = await loadLatestChangelogFromAssets();
-    final packageInfo = read(packageInfoProvider);
     final miscBox = read(miscDataBoxProvider);
-    final shouldShow = await shouldShowChangelogDialog(
-      packageInfo,
+    final shouldShow = shouldShowChangelogDialog(
       miscBox,
       data.version,
     );
@@ -83,10 +81,12 @@ class ChangelogDialog extends StatelessWidget {
                       ),
                     ).tr(),
                     const SizedBox(width: 8),
-                    CompactChip(
-                      backgroundColor: context.colorScheme.primary,
-                      textColor: context.colorScheme.onPrimary,
-                      label: version.toString(),
+                    Expanded(
+                      child: CompactChip(
+                        backgroundColor: context.colorScheme.primary,
+                        textColor: context.colorScheme.onPrimary,
+                        label: version.toString(),
+                      ),
                     ),
                     const Spacer(),
                     IconButton(
@@ -103,20 +103,43 @@ class ChangelogDialog extends StatelessWidget {
               ),
               Flexible(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 20,
-                    horizontal: 4,
+                  padding: const EdgeInsets.only(
+                    left: 4,
+                    bottom: 12,
+                    top: 4,
                   ),
-                  child: SingleChildScrollView(
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: MarkdownBody(
-                            data: data.content,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      switch (data.version) {
+                        Unreleased u => Padding(
+                            padding: const EdgeInsets.only(
+                              left: 8,
+                              bottom: 4,
+                            ),
+                            child: Text(
+                              '${'comment.list.last_updated'.tr()}: ${u.lastUpdated?.fuzzify(locale: Localizations.localeOf(context))}',
+                              style: TextStyle(
+                                color: context.theme.hintColor,
+                                fontStyle: FontStyle.italic,
+                                fontSize: 12,
+                              ),
+                            ),
                           ),
+                        _ => const SizedBox.shrink(),
+                      },
+                      SingleChildScrollView(
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: MarkdownBody(
+                                data: data.content,
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),

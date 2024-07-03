@@ -94,14 +94,6 @@ extension DateTimeX on DateTime {
   }
 
   String yyyyMMddWithHyphen() => DateFormat('yyyy-MM-dd').format(this);
-}
 
-extension DateFormatX on DateFormat {
-  DateTime? tryParse(String input) {
-    try {
-      return parse(input);
-    } catch (e) {
-      return null;
-    }
-  }
+  DateTime dateOnly() => DateTime(year, month, day);
 }

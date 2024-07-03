@@ -6,14 +6,76 @@ import 'package:hive/hive.dart';
 import 'package:version/version.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/package_info.dart';
+import 'package:boorusama/dart.dart';
+import 'package:boorusama/time.dart';
 
 const kChangelogKey = 'changelog';
 
 const String _assetUrl = 'CHANGELOG.md';
 
+sealed class ReleaseVersion {
+  const ReleaseVersion();
+
+  factory ReleaseVersion.fromText(String? text) =>
+      switch (text?.toLowerCase()) {
+        String s => s.startsWith('unreleased')
+            ? Unreleased.fromText(s)
+            : Official(Version.parse(s)),
+        _ => Invalid(),
+      };
+
+  String? getChangelogKey() => switch (this) {
+        Unreleased u =>
+          '${kChangelogKey}_unreleased_${u.lastUpdated?.toIso8601String() ?? 'no-date'}_seen',
+        Official o =>
+          '${kChangelogKey}_${o.version.withoutPreRelease().toString()}_seen',
+        Invalid _ => null,
+      };
+
+  @override
+  String toString() => switch (this) {
+        Unreleased _ => 'unreleased',
+        Official o => o.version.toString(),
+        Invalid _ => 'invalid',
+      };
+}
+
+class Unreleased extends ReleaseVersion {
+  const Unreleased(this.lastUpdated);
+
+  // unreleased-2000.1.1
+  factory Unreleased.fromText(String text) {
+    final parts = text.split('-');
+    final dateStrings = parts.getOrNull(1)?.split('.');
+    final year = dateStrings?.getOrNull(0);
+    final month = dateStrings?.getOrNull(1);
+    final day = dateStrings?.getOrNull(2);
+    final date = year != null && month != null && day != null
+        ? DateTime(
+            int.tryParse(year) ?? 0,
+            int.tryParse(month) ?? 0,
+            int.tryParse(day) ?? 0,
+          )
+        : null;
+
+    return Unreleased(
+      date,
+    );
+  }
+
+  final DateTime? lastUpdated;
+}
+
+class Official extends ReleaseVersion {
+  const Official(this.version);
+
+  final Version version;
+}
+
+class Invalid extends ReleaseVersion {}
+
 typedef ChangelogData = ({
-  Version version,
+  ReleaseVersion version,
   String content,
 });
 
@@ -27,11 +89,11 @@ Future<ChangelogData> loadLatestChangelogFromAssets() async {
   // parse the md file until encountering the first empty line
   final lines = text.split('\n');
   final buffer = StringBuffer();
-  final version = Version.parse(lines[0].substring(2).trim());
+  final versionText = lines[0].substring(2).trim().toLowerCase();
 
   for (var i = 1; i < lines.length; i++) {
     final line = lines[i];
-    if (line.isEmpty) {
+    if (line.trim().isEmpty) {
       break;
     }
 
@@ -39,41 +101,36 @@ Future<ChangelogData> loadLatestChangelogFromAssets() async {
   }
 
   return (
-    version: version,
+    version: ReleaseVersion.fromText(versionText),
     content: buffer.toString(),
   );
 }
 
-String getChangelogKey(Version version) =>
-    '${kChangelogKey}_${version.toString()}_seen';
-
 Future<void> markChangelogAsSeen(
-  Version version,
+  ReleaseVersion version,
   Box<String> dataBox,
 ) async {
-  final key = getChangelogKey(version.withoutPreRelease());
-  final currentTime = DateTime.now();
+  final key = version.getChangelogKey();
+
+  if (key == null) return;
+
+  final currentTime = DateTime.now().dateOnly();
   await dataBox.put(key, currentTime.toIso8601String());
 }
 
-Future<bool> shouldShowChangelogDialog(
-  PackageInfo packageInfo,
+bool shouldShowChangelogDialog(
   Box<String> dataBox,
-  Version targetVersion,
-) async {
-  final currentVersion = Version.parse(packageInfo.version).withoutPreRelease();
+  ReleaseVersion targetVersion,
+) {
+  final key = targetVersion.getChangelogKey();
 
-  // check if the current version is the target version
-  if (currentVersion != targetVersion.withoutPreRelease()) {
-    return false;
-  }
+  // Invalid version
+  if (key == null) return false;
 
-  final key = getChangelogKey(currentVersion);
   final value = dataBox.get(key);
 
-  if (value != null) {
-    return false;
-  }
+  // Already seen
+  if (value != null) return false;
 
   return true;
 }
