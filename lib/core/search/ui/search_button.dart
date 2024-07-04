@@ -40,19 +40,22 @@ class SearchButton2 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: context.colorScheme.primary,
-      borderRadius: BorderRadius.circular(8),
-      child: InkWell(
-        customBorder: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-        onTap: onTap,
-        child: Container(
-          margin: const EdgeInsets.all(4),
-          child: Icon(
-            Symbols.search,
-            color: context.colorScheme.onPrimary,
+    return Semantics(
+      button: true,
+      child: Material(
+        color: context.colorScheme.primary,
+        borderRadius: BorderRadius.circular(8),
+        child: InkWell(
+          customBorder: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          onTap: onTap,
+          child: Container(
+            margin: const EdgeInsets.all(4),
+            child: Icon(
+              Symbols.search,
+              color: context.colorScheme.onPrimary,
+            ),
           ),
         ),
       ),

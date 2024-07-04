@@ -63,12 +63,14 @@ class ShowTagListPage extends ConsumerWidget {
                     .state = value,
               ),
             ),
+            const SizedBox(height: 4),
             Expanded(
               child: ListView.builder(
                 itemBuilder: (context, index) {
                   final tag = items[index];
 
                   return ListTile(
+                    minTileHeight: 12,
                     contentPadding: const EdgeInsets.only(
                       left: 16,
                       right: 4,
