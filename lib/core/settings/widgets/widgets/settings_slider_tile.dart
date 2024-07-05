@@ -14,6 +14,7 @@ class SettingsSliderTile extends StatelessWidget {
     required this.max,
     required this.onChanged,
     required this.onChangeEnd,
+    this.padding,
   });
 
   final String title;
@@ -23,14 +24,16 @@ class SettingsSliderTile extends StatelessWidget {
   final double max;
   final void Function(double) onChanged;
   final void Function(double) onChangeEnd;
+  final EdgeInsetsGeometry? padding;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(
-        left: 16,
-        right: 16,
-      ),
+      margin: padding ??
+          const EdgeInsets.only(
+            left: 16,
+            right: 16,
+          ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [

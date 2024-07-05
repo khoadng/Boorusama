@@ -14,6 +14,7 @@ class SettingsTile<T> extends StatelessWidget {
     this.leading,
     required this.items,
     required this.optionBuilder,
+    this.padding,
   });
 
   final Widget title;
@@ -23,10 +24,12 @@ class SettingsTile<T> extends StatelessWidget {
   final Widget? leading;
   final List<T> items;
   final Widget Function(T item) optionBuilder;
+  final EdgeInsetsGeometry? padding;
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      contentPadding: padding,
       leading: leading,
       subtitle: subtitle,
       title: title,
