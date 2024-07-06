@@ -192,7 +192,9 @@ class _DanbooruInfinitePostListState
                       !multiSelect && booruConfig.hasLoginDetails() && !block,
                   image: BooruImage(
                     aspectRatio: post.isBanned ? 0.8 : post.aspectRatio,
-                    imageUrl: block ? '' : post.thumbnailFromSettings(settings),
+                    imageUrl: block
+                        ? ''
+                        : post.thumbnailFromImageQuality(settings.imageQuality),
                     borderRadius: BorderRadius.circular(
                       settings.imageBorderRadius,
                     ),

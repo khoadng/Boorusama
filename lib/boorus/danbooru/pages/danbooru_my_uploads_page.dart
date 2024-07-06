@@ -254,7 +254,8 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
                   ),
                   child: BooruImage(
                     aspectRatio: post.aspectRatio,
-                    imageUrl: post.thumbnailFromSettings(settings),
+                    imageUrl:
+                        post.thumbnailFromImageQuality(settings.imageQuality),
                     borderRadius: BorderRadius.circular(
                       settings.imageBorderRadius,
                     ),

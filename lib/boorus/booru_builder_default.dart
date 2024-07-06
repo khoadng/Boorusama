@@ -38,7 +38,7 @@ mixin NoteNotSupportedMixin implements BooruBuilder {
 mixin DefaultThumbnailUrlMixin implements BooruBuilder {
   @override
   GridThumbnailUrlBuilder get gridThumbnailUrlBuilder =>
-      (settings, post) => switch (settings.imageQuality) {
+      (imageQuality, post) => switch (imageQuality) {
             ImageQuality.automatic => post.thumbnailImageUrl,
             ImageQuality.low => post.thumbnailImageUrl,
             ImageQuality.high =>
@@ -71,10 +71,10 @@ mixin DefaultTagColorMixin implements BooruBuilder {
 mixin DefaultPostImageDetailsUrlMixin implements BooruBuilder {
   @override
   PostImageDetailsUrlBuilder get postImageDetailsUrlBuilder =>
-      (settings, post, config) => post.isGif
+      (imageQuality, post, config) => post.isGif
           ? post.sampleImageUrl
           : config.imageDetaisQuality.toOption().fold(
-              () => switch (settings.imageQuality) {
+              () => switch (imageQuality) {
                     ImageQuality.low => post.thumbnailImageUrl,
                     ImageQuality.original => post.isVideo
                         ? post.videoThumbnailUrl
@@ -302,7 +302,10 @@ String Function(
     (post) => kPreferredLayout.isDesktop
         ? post.sampleImageUrl
         : ref.watchBooruBuilder(ref.watchConfig)?.postImageDetailsUrlBuilder(
-                ref.watch(settingsProvider), post, ref.watchConfig) ??
+                  ref.watch(settingsProvider).imageQuality,
+                  post,
+                  ref.watchConfig,
+                ) ??
             post.sampleImageUrl;
 
 Widget Function(

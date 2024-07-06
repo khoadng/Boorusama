@@ -326,7 +326,7 @@ extension PostX on DanbooruPost {
 }
 
 extension DanbooruPostImageX on DanbooruPost {
-  String thumbnailFromImageQuality(ImageQuality quality) => switch (quality) {
+  String _thumbnailFromImageQuality(ImageQuality quality) => switch (quality) {
         ImageQuality.low => url360x360,
         ImageQuality.high => url720x720,
         ImageQuality.highest => isVideo ? url720x720 : urlSample,
@@ -334,9 +334,9 @@ extension DanbooruPostImageX on DanbooruPost {
         ImageQuality.automatic => url720x720
       };
 
-  String thumbnailFromSettings(Settings settings) {
+  String thumbnailFromImageQuality(ImageQuality quality) {
     if (isGif) return urlSample;
-    return thumbnailFromImageQuality(settings.imageQuality);
+    return _thumbnailFromImageQuality(quality);
   }
 }
 

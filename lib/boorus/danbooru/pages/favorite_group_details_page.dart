@@ -258,8 +258,8 @@ class _FavoriteGroupDetailsPageState
                                   child: DanbooruImageGridItem(
                                     image: BooruImage(
                                       fit: BoxFit.cover,
-                                      imageUrl:
-                                          post.thumbnailFromSettings(settings),
+                                      imageUrl: post.thumbnailFromImageQuality(
+                                          settings.imageQuality),
                                       placeholderUrl: post.thumbnailImageUrl,
                                     ),
                                     enableFav: config.hasLoginDetails(),

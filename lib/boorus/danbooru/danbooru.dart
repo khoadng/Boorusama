@@ -205,9 +205,9 @@ class DanbooruBuilder
 
   @override
   GridThumbnailUrlBuilder get gridThumbnailUrlBuilder =>
-      (settings, post) => castOrNull<DanbooruPost>(post).toOption().fold(
+      (imageQuality, post) => castOrNull<DanbooruPost>(post).toOption().fold(
             () => post.thumbnailImageUrl,
-            (post) => post.thumbnailFromSettings(settings),
+            (post) => post.thumbnailFromImageQuality(imageQuality),
           );
 
   @override
@@ -277,32 +277,34 @@ class DanbooruBuilder
   );
 
   @override
-  PostImageDetailsUrlBuilder get postImageDetailsUrlBuilder => (settings,
-          rawPost, config) =>
-      castOrNull<DanbooruPost>(rawPost).toOption().fold(
-            () => rawPost.sampleImageUrl,
-            (post) => post.isGif
-                ? post.sampleImageUrl
-                : config.imageDetaisQuality.toOption().fold(
-                    () => switch (settings.imageQuality) {
-                          ImageQuality.highest ||
-                          ImageQuality.original =>
-                            post.sampleImageUrl,
-                          _ => post.url720x720,
-                        },
-                    (quality) => switch (mapStringToPostQualityType(quality)) {
-                          PostQualityType.v180x180 => post.url180x180,
-                          PostQualityType.v360x360 => post.url360x360,
-                          PostQualityType.v720x720 => post.url720x720,
-                          PostQualityType.sample => post.isVideo
-                              ? post.url720x720
-                              : post.sampleImageUrl,
-                          PostQualityType.original => post.isVideo
-                              ? post.url720x720
-                              : post.originalImageUrl,
-                          null => post.url720x720,
-                        }),
-          );
+  PostImageDetailsUrlBuilder get postImageDetailsUrlBuilder =>
+      (imageQuality, rawPost, config) =>
+          castOrNull<DanbooruPost>(rawPost).toOption().fold(
+                () => rawPost.sampleImageUrl,
+                (post) => post.isGif
+                    ? post.sampleImageUrl
+                    : config.imageDetaisQuality.toOption().fold(
+                          () => switch (imageQuality) {
+                            ImageQuality.highest ||
+                            ImageQuality.original =>
+                              post.sampleImageUrl,
+                            _ => post.url720x720,
+                          },
+                          (quality) =>
+                              switch (mapStringToPostQualityType(quality)) {
+                            PostQualityType.v180x180 => post.url180x180,
+                            PostQualityType.v360x360 => post.url360x360,
+                            PostQualityType.v720x720 => post.url720x720,
+                            PostQualityType.sample => post.isVideo
+                                ? post.url720x720
+                                : post.sampleImageUrl,
+                            PostQualityType.original => post.isVideo
+                                ? post.url720x720
+                                : post.originalImageUrl,
+                            null => post.url720x720,
+                          },
+                        ),
+              );
 
   @override
   PostStatisticsPageBuilder get postStatisticsPageBuilder => (context, posts) {

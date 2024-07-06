@@ -133,12 +133,12 @@ class PhilomenaBuilder
   );
 
   @override
-  PostImageDetailsUrlBuilder get postImageDetailsUrlBuilder => (settings,
+  PostImageDetailsUrlBuilder get postImageDetailsUrlBuilder => (imageQuality,
           rawPost, config) =>
       castOrNull<PhilomenaPost>(rawPost).toOption().fold(
             () => rawPost.sampleImageUrl,
             (post) => config.imageDetaisQuality.toOption().fold(
-                () => switch (settings.imageQuality) {
+                () => switch (imageQuality) {
                       ImageQuality.highest ||
                       ImageQuality.original =>
                         post.representation.medium,

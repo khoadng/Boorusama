@@ -241,7 +241,10 @@ class _InfinitePostListScaffoldState<T extends Post>
                     imageUrl: block
                         ? ''
                         : gridThumbnailUrlBuilder != null
-                            ? gridThumbnailUrlBuilder(settings, post)
+                            ? gridThumbnailUrlBuilder(
+                                settings.imageQuality,
+                                post,
+                              )
                             : post.thumbnailImageUrl,
                     borderRadius: BorderRadius.circular(
                       settings.imageBorderRadius,
