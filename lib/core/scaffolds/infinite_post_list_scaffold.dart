@@ -87,7 +87,7 @@ class _InfinitePostListScaffoldState<T extends Post>
 
   @override
   Widget build(BuildContext context) {
-    final settings = ref.watch(settingsProvider);
+    final settings = ref.watch(imageListingSettingsProvider);
     final config = ref.watchConfig;
     final booruBuilder = ref.watchBooruBuilder(config);
     final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;

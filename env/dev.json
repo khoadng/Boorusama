@@ -1,5 +1,6 @@
 {
     "ENV_NAME": "dev",
+    "EXPERIMENTAL_FEATURES": "custom-listing",
     "PREFERRED_LAYOUT": "platform",
     "APP_NAME" : "Boorusama Dev"
 }

@@ -110,6 +110,7 @@ class HiveBooruConfigRepository implements BooruConfigRepository {
         postGestures: booruConfig.postGestures?.toJsonString(),
         defaultPreviewImageButtonAction:
             booruConfig.defaultPreviewImageButtonAction,
+        listing: booruConfig.listing?.toJsonString(),
       );
       final json = data.toJson();
       final jsonString = jsonEncode(json);

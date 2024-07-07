@@ -199,14 +199,14 @@ class _PoolPagedSliverGridState extends ConsumerState<PoolPagedSliverGrid> {
 
   @override
   Widget build(BuildContext context) {
-    final imageGridSpacing =
-        ref.watch(settingsProvider.select((value) => value.imageGridSpacing));
-    final imageGridPadding =
-        ref.watch(settingsProvider.select((value) => value.imageGridPadding));
-    final gridSize =
-        ref.watch(settingsProvider.select((value) => value.gridSize));
-    final imageGridAspectRatio = ref.watch(
-            settingsProvider.select((value) => value.imageGridAspectRatio)) -
+    final imageGridSpacing = ref.watch(
+        imageListingSettingsProvider.select((value) => value.imageGridSpacing));
+    final imageGridPadding = ref.watch(
+        imageListingSettingsProvider.select((value) => value.imageGridPadding));
+    final gridSize = ref
+        .watch(imageListingSettingsProvider.select((value) => value.gridSize));
+    final imageGridAspectRatio = ref.watch(imageListingSettingsProvider
+            .select((value) => value.imageGridAspectRatio)) -
         _kLabelOffset;
 
     final crossAxisCount = calculateGridCount(

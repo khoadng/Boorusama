@@ -40,16 +40,16 @@ class SliverPostGrid extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final imageListType =
-        ref.watch(settingsProvider.select((value) => value.imageListType));
-    final gridSize =
-        ref.watch(settingsProvider.select((value) => value.gridSize));
-    final imageGridSpacing =
-        ref.watch(settingsProvider.select((value) => value.imageGridSpacing));
-    final imageGridPadding =
-        ref.watch(settingsProvider.select((value) => value.imageGridPadding));
-    final imageGridAspectRatio = ref
-        .watch(settingsProvider.select((value) => value.imageGridAspectRatio));
+    final imageListType = ref.watch(
+        imageListingSettingsProvider.select((value) => value.imageListType));
+    final gridSize = ref
+        .watch(imageListingSettingsProvider.select((value) => value.gridSize));
+    final imageGridSpacing = ref.watch(
+        imageListingSettingsProvider.select((value) => value.imageGridSpacing));
+    final imageGridPadding = ref.watch(
+        imageListingSettingsProvider.select((value) => value.imageGridPadding));
+    final imageGridAspectRatio = ref.watch(imageListingSettingsProvider
+        .select((value) => value.imageGridAspectRatio));
 
     return SliverPadding(
       padding: EdgeInsets.symmetric(
@@ -185,16 +185,16 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final imageListType =
-        ref.watch(settingsProvider.select((value) => value.imageListType));
-    final gridSize =
-        ref.watch(settingsProvider.select((value) => value.gridSize));
-    final imageGridSpacing =
-        ref.watch(settingsProvider.select((value) => value.imageGridSpacing));
-    final imageBorderRadius =
-        ref.watch(settingsProvider.select((value) => value.imageBorderRadius));
-    final imageGridAspectRatio = ref
-        .watch(settingsProvider.select((value) => value.imageGridAspectRatio));
+    final imageListType = ref.watch(
+        imageListingSettingsProvider.select((value) => value.imageListType));
+    final gridSize = ref
+        .watch(imageListingSettingsProvider.select((value) => value.gridSize));
+    final imageGridSpacing = ref.watch(
+        imageListingSettingsProvider.select((value) => value.imageGridSpacing));
+    final imageBorderRadius = ref.watch(imageListingSettingsProvider
+        .select((value) => value.imageBorderRadius));
+    final imageGridAspectRatio = ref.watch(imageListingSettingsProvider
+        .select((value) => value.imageGridAspectRatio));
 
     return Builder(
       builder: (context) {

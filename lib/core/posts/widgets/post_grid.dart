@@ -160,7 +160,7 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
 
   @override
   Widget build(BuildContext context) {
-    final settings = ref.watch(settingsProvider);
+    final settings = ref.watch(imageListingSettingsProvider);
 
     return PopScope(
         canPop: !multiSelect,
@@ -500,7 +500,9 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                       : null,
                   onClosed: () {
                     settingsNotifier.updateWith((s) => s.copyWith(
-                          showPostListConfigHeader: false,
+                          listing: s.listing.copyWith(
+                            showPostListConfigHeader: false,
+                          ),
                         ));
                     showSimpleSnackBar(
                       duration: const Duration(seconds: 5),
@@ -509,9 +511,11 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                           'You can always show this header again in Settings.'),
                       action: SnackBarAction(
                         label: 'Undo',
-                        onPressed: () => settingsNotifier
-                            .updateWith((s) => s.copyWith(
-                                  showPostListConfigHeader: true,
+                        onPressed: () =>
+                            settingsNotifier.updateWith((s) => s.copyWith(
+                                  listing: s.listing.copyWith(
+                                    showPostListConfigHeader: true,
+                                  ),
                                 )),
                       ),
                     );
@@ -558,7 +562,7 @@ class HighresPreviewOnMobileDataWarningBanner extends ConsumerWidget {
   });
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final settings = ref.watch(settingsProvider);
+    final settings = ref.watch(imageListingSettingsProvider);
 
     return switch (ref.watch(networkStateProvider)) {
       NetworkConnectedState s =>

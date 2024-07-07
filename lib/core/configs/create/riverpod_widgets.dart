@@ -154,6 +154,7 @@ class BooruConfigSubmitButton extends ConsumerWidget {
     final defaultPreviewImageButtonAction =
         ref.watch(defaultPreviewImageButtonActionProvider);
     final gestures = ref.watch(postGesturesConfigDataProvider);
+    final listing = ref.watch(listingConfigsProvider);
 
     return builder(data.copyWith(
       granularRatingFilter: () => granularRatingFilter,
@@ -164,6 +165,7 @@ class BooruConfigSubmitButton extends ConsumerWidget {
       customDownloadLocation: () => customDownloadLocation,
       defaultPreviewImageButtonAction: () => defaultPreviewImageButtonAction,
       postGestures: () => gestures,
+      listing: () => listing,
       name: configName,
     ));
   }

@@ -153,7 +153,7 @@ class _DanbooruPostDetailsDesktopPageState
                                   initialIndex: postIdx,
                                 ),
                                 imageUrl: (item) => item.thumbnailFromSettings(
-                                    ref.watch(settingsProvider)),
+                                    ref.watch(imageListingSettingsProvider)),
                               ),
                               orElse: () => const PreviewPostGridPlaceholder(
                                 imageCount: 30,

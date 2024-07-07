@@ -42,7 +42,7 @@ class DanbooruImageGridItem extends ConsumerWidget {
     final isFaved =
         post.isBanned ? false : ref.watch(danbooruFavoriteProvider(post.id));
     final artistTags = [...post.artistTags]..remove('banned_artist');
-    final settings = ref.watch(settingsProvider);
+    final settings = ref.watch(imageListingSettingsProvider);
 
     return ConditionalParentWidget(
       condition: !ignoreBanOverlay && post.isBanned,

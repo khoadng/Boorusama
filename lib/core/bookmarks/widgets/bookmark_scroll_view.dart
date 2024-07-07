@@ -36,7 +36,7 @@ class BookmarkScrollView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final settings = ref.watch(settingsProvider);
+    final settings = ref.watch(imageListingSettingsProvider);
     final edit = ref.watch(bookmarkEditProvider);
     final hasBookmarks = ref.watch(hasBookmarkProvider);
 

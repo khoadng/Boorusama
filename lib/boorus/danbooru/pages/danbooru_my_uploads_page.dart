@@ -153,7 +153,7 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
   @override
   Widget build(BuildContext context) {
     final config = ref.watchConfig;
-    final settings = ref.watch(settingsProvider);
+    final settings = ref.watch(imageListingSettingsProvider);
 
     return PostScope(
       fetcher: (page) => TaskEither.Do(
@@ -194,7 +194,7 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
 
   Widget _buildGrid(
     PostGridController<DanbooruUploadPost> controller,
-    Settings settings,
+    ImageListingSettings settings,
     BoxConstraints constraints,
     BooruError? errors,
     Map<int, bool> hideMap,

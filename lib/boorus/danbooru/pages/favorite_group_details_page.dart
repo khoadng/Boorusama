@@ -117,7 +117,7 @@ class _FavoriteGroupDetailsPageState
   @override
   Widget build(BuildContext context) {
     final config = ref.watchConfig;
-    final settings = ref.watch(settingsProvider);
+    final settings = ref.watch(imageListingSettingsProvider);
 
     return Scaffold(
       floatingActionButton: editing

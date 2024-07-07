@@ -35,14 +35,14 @@ class PostGridConfigRegion extends ConsumerWidget {
     return !kPreferredLayout.isMobile
         ? Builder(
             builder: (context) {
-              final gridSize =
-                  ref.watch(settingsProvider.select((value) => value.gridSize));
-              final imageListType = ref.watch(
-                  settingsProvider.select((value) => value.imageListType));
-              final pageMode =
-                  ref.watch(settingsProvider.select((value) => value.pageMode));
-              final imageQuality = ref.watch(
-                  settingsProvider.select((value) => value.imageQuality));
+              final gridSize = ref.watch(imageListingSettingsProvider
+                  .select((value) => value.gridSize));
+              final imageListType = ref.watch(imageListingSettingsProvider
+                  .select((value) => value.imageListType));
+              final pageMode = ref.watch(imageListingSettingsProvider
+                  .select((value) => value.pageMode));
+              final imageQuality = ref.watch(imageListingSettingsProvider
+                  .select((value) => value.imageQuality));
 
               return Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -66,18 +66,31 @@ class PostGridConfigRegion extends ConsumerWidget {
                               imageQuality: imageQuality,
                               onModeChanged: (mode) =>
                                   settingsNotifier.updateWith(
-                                (s) => s.copyWith(pageMode: mode),
+                                (s) => s.copyWith(
+                                  listing: s.listing.copyWith(pageMode: mode),
+                                ),
                               ),
                               onGridChanged: (grid) =>
                                   settingsNotifier.updateWith(
-                                      (s) => s.copyWith(gridSize: grid)),
+                                (s) => s.copyWith(
+                                  listing: s.listing.copyWith(gridSize: grid),
+                                ),
+                              ),
                               onImageListChanged: (imageListType) =>
                                   settingsNotifier.updateWith(
-                                (s) => s.copyWith(imageListType: imageListType),
+                                (s) => s.copyWith(
+                                  listing: s.listing.copyWith(
+                                    imageListType: imageListType,
+                                  ),
+                                ),
                               ),
                               onImageQualityChanged: (imageQuality) =>
                                   settingsNotifier.updateWith(
-                                (s) => s.copyWith(imageQuality: imageQuality),
+                                (s) => s.copyWith(
+                                  listing: s.listing.copyWith(
+                                    imageQuality: imageQuality,
+                                  ),
+                                ),
                               ),
                             ),
                           ),

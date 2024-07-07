@@ -13,7 +13,6 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
-import 'package:boorusama/core/settings/types.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -251,7 +250,7 @@ class ExploreList extends ConsumerWidget {
           final post = filteredPosts[index];
 
           return ExplicitContentBlockOverlay(
-            block: ref.watch(settingsProvider
+            block: ref.watch(imageListingSettingsProvider
                     .select((value) => value.blurExplicitMedia)) &&
                 post.isExplicit,
             width: post.width,

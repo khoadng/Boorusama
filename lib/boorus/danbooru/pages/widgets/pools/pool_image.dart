@@ -21,8 +21,8 @@ class PoolImage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final cover = ref.watch(danbooruPoolCoverProvider(pool.id));
-    final imageBorderRadius =
-        ref.watch(settingsProvider.select((value) => value.imageBorderRadius));
+    final imageBorderRadius = ref.watch(imageListingSettingsProvider
+        .select((value) => value.imageBorderRadius));
 
     return LayoutBuilder(
       builder: (context, constraints) => cover != null

@@ -5,6 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/functional.dart';
@@ -28,6 +29,7 @@ class BooruConfig extends Equatable {
     required this.granularRatingFilters,
     required this.postGestures,
     required this.defaultPreviewImageButtonAction,
+    required this.listing,
   });
 
   static const BooruConfig empty = BooruConfig(
@@ -48,6 +50,7 @@ class BooruConfig extends Equatable {
     granularRatingFilters: null,
     postGestures: null,
     defaultPreviewImageButtonAction: null,
+    listing: null,
   );
 
   static BooruConfig defaultConfig({
@@ -73,6 +76,7 @@ class BooruConfig extends Equatable {
         granularRatingFilters: null,
         postGestures: null,
         defaultPreviewImageButtonAction: null,
+        listing: null,
       );
 
   final int id;
@@ -92,6 +96,7 @@ class BooruConfig extends Equatable {
   final Set<Rating>? granularRatingFilters;
   final PostGestureConfig? postGestures;
   final String? defaultPreviewImageButtonAction;
+  final ListingConfigs? listing;
 
   BooruConfig copyWith({
     String? url,
@@ -117,6 +122,7 @@ class BooruConfig extends Equatable {
       granularRatingFilters: granularRatingFilters,
       postGestures: postGestures,
       defaultPreviewImageButtonAction: defaultPreviewImageButtonAction,
+      listing: listing,
     );
   }
 
@@ -139,6 +145,7 @@ class BooruConfig extends Equatable {
         granularRatingFilters,
         postGestures,
         defaultPreviewImageButtonAction,
+        listing,
       ];
 
   factory BooruConfig.fromJson(Map<String, dynamic> json) {
@@ -174,6 +181,9 @@ class BooruConfig extends Equatable {
               json['postGestures'] as Map<String, dynamic>),
       defaultPreviewImageButtonAction:
           json['defaultPreviewImageButtonAction'] as String?,
+      listing: json['listing'] == null
+          ? null
+          : ListingConfigs.fromJson(json['listing'] as Map<String, dynamic>),
     );
   }
 
@@ -198,6 +208,7 @@ class BooruConfig extends Equatable {
       ),
       'postGestures': postGestures?.toJson(),
       'defaultPreviewImageButtonAction': defaultPreviewImageButtonAction,
+      'listing': listing?.toJson(),
     };
   }
 }

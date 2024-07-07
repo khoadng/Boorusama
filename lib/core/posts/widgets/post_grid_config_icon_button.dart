@@ -31,14 +31,14 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settingsNotifier = ref.watch(settingsProvider.notifier);
-    final gridSize =
-        ref.watch(settingsProvider.select((value) => value.gridSize));
-    final imageListType =
-        ref.watch(settingsProvider.select((value) => value.imageListType));
-    final pageMode =
-        ref.watch(settingsProvider.select((value) => value.pageMode));
-    final imageQuality =
-        ref.watch(settingsProvider.select((value) => value.imageQuality));
+    final gridSize = ref
+        .watch(imageListingSettingsProvider.select((value) => value.gridSize));
+    final imageListType = ref.watch(
+        imageListingSettingsProvider.select((value) => value.imageListType));
+    final pageMode = ref
+        .watch(imageListingSettingsProvider.select((value) => value.pageMode));
+    final imageQuality = ref.watch(
+        imageListingSettingsProvider.select((value) => value.imageQuality));
 
     return InkWell(
       customBorder: const CircleBorder(),
@@ -51,16 +51,24 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
           imageListType: imageListType,
           imageQuality: imageQuality,
           onModeChanged: (mode) => settingsNotifier.updateWith(
-            (s) => s.copyWith(pageMode: mode),
+            (s) => s.copyWith(
+              listing: s.listing.copyWith(pageMode: mode),
+            ),
           ),
           onGridChanged: (grid) => settingsNotifier.updateWith(
-            (s) => s.copyWith(gridSize: grid),
+            (s) => s.copyWith(
+              listing: s.listing.copyWith(gridSize: grid),
+            ),
           ),
           onImageListChanged: (imageListType) => settingsNotifier.updateWith(
-            (s) => s.copyWith(imageListType: imageListType),
+            (s) => s.copyWith(
+              listing: s.listing.copyWith(imageListType: imageListType),
+            ),
           ),
           onImageQualityChanged: (imageQuality) => settingsNotifier.updateWith(
-            (s) => s.copyWith(imageQuality: imageQuality),
+            (s) => s.copyWith(
+              listing: s.listing.copyWith(imageQuality: imageQuality),
+            ),
           ),
         ),
       ),
@@ -204,7 +212,9 @@ class PostGridActionSheet extends ConsumerWidget {
         title: 'settings.result_layout.result_layout'.tr(),
         value: pageMode,
         onChanged: (value) => settingsNotifier.updateWith(
-          (s) => s.copyWith(pageMode: value),
+          (s) => s.copyWith(
+            listing: s.listing.copyWith(pageMode: value),
+          ),
         ),
         items: PageMode.values,
         optionNameBuilder: (option) => option.localize().tr(),
@@ -213,7 +223,9 @@ class PostGridActionSheet extends ConsumerWidget {
         title: 'settings.image_grid.image_grid'.tr(),
         value: gridSize,
         onChanged: (value) => settingsNotifier.updateWith(
-          (s) => s.copyWith(gridSize: value),
+          (s) => s.copyWith(
+            listing: s.listing.copyWith(gridSize: value),
+          ),
         ),
         items: GridSize.values,
         optionNameBuilder: (option) => option.name.sentenceCase,
@@ -222,7 +234,9 @@ class PostGridActionSheet extends ConsumerWidget {
         title: 'settings.image_list.image_list'.tr(),
         value: imageListType,
         onChanged: (value) => settingsNotifier.updateWith(
-          (s) => s.copyWith(imageListType: value),
+          (s) => s.copyWith(
+            listing: s.listing.copyWith(imageListType: value),
+          ),
         ),
         items: ImageListType.values,
         optionNameBuilder: (option) => option.name.sentenceCase,
@@ -231,7 +245,9 @@ class PostGridActionSheet extends ConsumerWidget {
         title: 'settings.image_grid.image_quality.image_quality'.tr(),
         value: imageQuality,
         onChanged: (value) => settingsNotifier.updateWith(
-          (s) => s.copyWith(imageQuality: value),
+          (s) => s.copyWith(
+            listing: s.listing.copyWith(imageQuality: value),
+          ),
         ),
         items: [...ImageQuality.values]..remove(ImageQuality.original),
         optionNameBuilder: (option) => option.name.sentenceCase,

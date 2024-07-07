@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 // Project imports:
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/settings/types.dart';
 import 'package:boorusama/foundation/gestures.dart';
 
 class BooruConfigData extends Equatable {
@@ -24,6 +25,7 @@ class BooruConfigData extends Equatable {
     required this.granularRatingFilterString,
     required this.postGestures,
     required this.defaultPreviewImageButtonAction,
+    required this.listing,
   });
 
   factory BooruConfigData.anonymous({
@@ -53,6 +55,7 @@ class BooruConfigData extends Equatable {
         granularRatingFilterString: null,
         postGestures: null,
         defaultPreviewImageButtonAction: null,
+        listing: null,
       );
 
   static BooruConfigData? fromJson(Map<String, dynamic> json) {
@@ -78,6 +81,7 @@ class BooruConfigData extends Equatable {
         postGestures: json['postGestures'] as String?,
         defaultPreviewImageButtonAction:
             json['defaultPreviewImageButtonAction'] as String?,
+        listing: json['listing'] as String?,
       );
     } catch (e) {
       return null;
@@ -102,6 +106,7 @@ class BooruConfigData extends Equatable {
       'granularRatingFilterString': granularRatingFilterString,
       'postGestures': postGestures,
       'defaultPreviewImageButtonAction': defaultPreviewImageButtonAction,
+      'listing': listing,
     };
   }
 
@@ -121,6 +126,7 @@ class BooruConfigData extends Equatable {
   final String? granularRatingFilterString;
   final String? postGestures;
   final String? defaultPreviewImageButtonAction;
+  final String? listing;
 
   @override
   List<Object?> get props => [
@@ -140,12 +146,17 @@ class BooruConfigData extends Equatable {
         granularRatingFilterString,
         postGestures,
         defaultPreviewImageButtonAction,
+        listing,
       ];
 }
 
 extension BooruConfigDataX on BooruConfigData {
   PostGestureConfig? get postGesturesConfigTyped {
     return PostGestureConfig.fromJsonString(postGestures);
+  }
+
+  ListingConfigs? get listingTyped {
+    return ListingConfigs.fromJsonString(listing);
   }
 
   Set<Rating>? get granularRatingFilterTyped {
@@ -180,6 +191,7 @@ extension BooruConfigDataCopyWith on BooruConfigData {
     Set<Rating>? Function()? granularRatingFilter,
     PostGestureConfig? Function()? postGestures,
     String? Function()? defaultPreviewImageButtonAction,
+    ListingConfigs? Function()? listing,
   }) {
     return BooruConfigData(
       booruId: booruId ?? this.booruId,
@@ -216,6 +228,7 @@ extension BooruConfigDataCopyWith on BooruConfigData {
       defaultPreviewImageButtonAction: defaultPreviewImageButtonAction != null
           ? defaultPreviewImageButtonAction()
           : this.defaultPreviewImageButtonAction,
+      listing: listing != null ? listing()?.toJsonString() : this.listing,
     );
   }
 }

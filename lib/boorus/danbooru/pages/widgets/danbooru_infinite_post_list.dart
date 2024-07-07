@@ -89,7 +89,7 @@ class _DanbooruInfinitePostListState
 
   @override
   Widget build(BuildContext context) {
-    final settings = ref.watch(settingsProvider);
+    final settings = ref.watch(imageListingSettingsProvider);
 
     final booruConfig = ref.watchConfig;
     final booruBuilder = ref.watchBooruBuilder(booruConfig);

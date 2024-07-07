@@ -35,6 +35,7 @@ import 'package:boorusama/clients/zerochan/zerochan_client.dart';
 import 'package:boorusama/core/blacklists/blacklists.dart';
 import 'package:boorusama/core/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/tags/tags.dart';
@@ -113,6 +114,33 @@ final settingsProvider = NotifierProvider<SettingsNotifier, Settings>(
     settingsRepoProvider,
   ],
 );
+
+//FIXME: should move to some sort of experimental features provider
+const _kExperimentalFeatures = String.fromEnvironment('EXPERIMENTAL_FEATURES');
+final _kExperimentalFeaturesSet = _kExperimentalFeatures.split(' ');
+final kCustomListingFeatureEnabled =
+    _kExperimentalFeaturesSet.contains('custom-listing');
+
+final imageListingSettingsProvider = Provider<ImageListingSettings>((ref) {
+  final listing = ref.watch(settingsProvider.select((value) => value.listing));
+
+  // if custom listing is not enabled, return the global settings
+  if (!kCustomListingFeatureEnabled) {
+    return listing;
+  }
+
+  // check if user has set custom settings
+  final listingConfigs =
+      ref.watch(currentBooruConfigProvider.select((value) => value.listing));
+
+  // if user has set it and it's enabled, return it
+  if (listingConfigs != null && listingConfigs.enable) {
+    return listingConfigs.settings;
+  }
+
+  // otherwise, return the global settings
+  return listing;
+});
 
 final settingsRepoProvider =
     Provider<SettingsRepository>((ref) => throw UnimplementedError());

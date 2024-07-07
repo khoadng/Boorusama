@@ -62,7 +62,7 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage> {
                               initialIndex: postIdx,
                             ),
                             imageUrl: (item) => item.thumbnailFromSettings(
-                                ref.watch(settingsProvider)),
+                                ref.watch(imageListingSettingsProvider)),
                           ),
                           orElse: () => const SliverPreviewPostGridPlaceholder(
                             itemCount: 30,

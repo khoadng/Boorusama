@@ -43,7 +43,8 @@ class _PostScopeState<T extends Post> extends ConsumerState<PostScope<T>> {
 
       return ref.read(blacklistTagsProvider(ref.watchConfig).future);
     },
-    pageMode: ref.read(settingsProvider.select((value) => value.pageMode)),
+    pageMode: ref
+        .read(imageListingSettingsProvider.select((value) => value.pageMode)),
     blacklistedUrlsFetcher: () {
       try {
         final settings = ref.read(settingsProvider);
@@ -88,7 +89,7 @@ class _PostScopeState<T extends Post> extends ConsumerState<PostScope<T>> {
   @override
   Widget build(BuildContext context) {
     ref.listen(
-      settingsProvider.select((value) => value.pageMode),
+      imageListingSettingsProvider.select((value) => value.pageMode),
       (previous, next) {
         _controller.setPageMode(next);
       },
