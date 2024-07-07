@@ -20,7 +20,7 @@ abstract class SettingsRepository {
 Future<int> getSettingsPostsPerPage(SettingsRepository repository) =>
     repository.load().run().then((value) => value.fold(
           (l) => 60,
-          (r) => r.postsPerPage,
+          (r) => r.listing.postsPerPage,
         ));
 
 Future<Settings> getSettingsOrDefault(SettingsRepository repository) =>

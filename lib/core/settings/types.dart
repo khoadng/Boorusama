@@ -131,7 +131,6 @@ class Settings extends Equatable {
     required this.downloadPath,
     required this.imageQualityInFullView,
     required this.autoFocusSearchBar,
-    required this.postsPerPage,
     required this.currentBooruConfigId,
     required this.booruConfigIdOrders,
     required this.downloadQuality,
@@ -173,7 +172,6 @@ class Settings extends Equatable {
             ? DownloadQuality.values[json['downloadQuality']]
             : DownloadQuality.original,
         autoFocusSearchBar = json['autoFocusSearchBar'] ?? true,
-        postsPerPage = json['postsPerPage'] ?? 60,
         currentBooruConfigId = json['currentBooruConfigId'],
         booruConfigIdOrders = json['booruConfigIdOrders'] != null
             ? castOrFallback<String>(json['booruConfigIdOrders'], '')
@@ -243,6 +241,7 @@ class Settings extends Equatable {
       imageBorderRadius: 4,
       imageGridPadding: 16,
       imageGridAspectRatio: 0.7,
+      postsPerPage: 60,
     ),
     safeMode: true,
     blacklistedTags: '',
@@ -252,7 +251,6 @@ class Settings extends Equatable {
     downloadPath: null,
     imageQualityInFullView: ImageQuality.automatic,
     autoFocusSearchBar: true,
-    postsPerPage: 60,
     currentBooruConfigId: -1,
     booruConfigIdOrders: '',
     downloadQuality: DownloadQuality.original,
@@ -288,8 +286,6 @@ class Settings extends Equatable {
   final ImageQuality imageQualityInFullView;
 
   final bool autoFocusSearchBar;
-
-  final int postsPerPage;
 
   final int currentBooruConfigId;
 
@@ -340,7 +336,6 @@ class Settings extends Equatable {
     String? downloadPath,
     ImageQuality? imageQualityInFullView,
     bool? autoFocusSearchBar,
-    int? postsPerPage,
     int? currentBooruConfigId,
     String? booruConfigIdOrders,
     DownloadQuality? downloadQuality,
@@ -375,7 +370,6 @@ class Settings extends Equatable {
         imageQualityInFullView:
             imageQualityInFullView ?? this.imageQualityInFullView,
         autoFocusSearchBar: autoFocusSearchBar ?? this.autoFocusSearchBar,
-        postsPerPage: postsPerPage ?? this.postsPerPage,
         currentBooruConfigId: currentBooruConfigId ?? this.currentBooruConfigId,
         booruConfigIdOrders: booruConfigIdOrders ?? this.booruConfigIdOrders,
         downloadQuality: downloadQuality ?? this.downloadQuality,
@@ -424,7 +418,6 @@ class Settings extends Equatable {
       'downloadPath': downloadPath,
       'imageQualityInFullView': imageQualityInFullView.index,
       'autoFocusSearchBar': autoFocusSearchBar,
-      'postsPerPage': postsPerPage,
       'currentBooruConfigId': currentBooruConfigId,
       'booruConfigIdOrders': booruConfigIdOrders,
       'downloadQuality': downloadQuality.index,
@@ -460,7 +453,6 @@ class Settings extends Equatable {
         downloadPath,
         imageQualityInFullView,
         autoFocusSearchBar,
-        postsPerPage,
         currentBooruConfigId,
         booruConfigIdOrders,
         downloadQuality,
@@ -547,6 +539,7 @@ class ImageListingSettings extends Equatable {
   final double imageBorderRadius;
   final double imageGridPadding;
   final double imageGridAspectRatio;
+  final int postsPerPage;
 
   const ImageListingSettings({
     required this.gridSize,
@@ -561,6 +554,7 @@ class ImageListingSettings extends Equatable {
     required this.imageBorderRadius,
     required this.imageGridPadding,
     required this.imageGridAspectRatio,
+    required this.postsPerPage,
   });
 
   ImageListingSettings.fromJson(Map<String, dynamic> json)
@@ -585,6 +579,7 @@ class ImageListingSettings extends Equatable {
         mediaBlurCondition = json['mediaBlurCondition'] != null
             ? MediaBlurCondition.values[json['mediaBlurCondition']]
             : MediaBlurCondition.none,
+        postsPerPage = json['postsPerPage'] ?? 60,
         imageGridAspectRatio = json['imageGridAspectRatio'] ?? 0.7,
         imageGridPadding = json['imageGridPadding'] ?? 16,
         imageGridSpacing = json['imageGridSpacing'] ?? 4;
@@ -608,6 +603,7 @@ class ImageListingSettings extends Equatable {
     double? imageBorderRadius,
     double? imageGridPadding,
     double? imageGridAspectRatio,
+    int? postsPerPage,
   }) {
     return ImageListingSettings(
       gridSize: gridSize ?? this.gridSize,
@@ -624,6 +620,7 @@ class ImageListingSettings extends Equatable {
       imageBorderRadius: imageBorderRadius ?? this.imageBorderRadius,
       imageGridPadding: imageGridPadding ?? this.imageGridPadding,
       imageGridAspectRatio: imageGridAspectRatio ?? this.imageGridAspectRatio,
+      postsPerPage: postsPerPage ?? this.postsPerPage,
     );
   }
 
@@ -640,6 +637,7 @@ class ImageListingSettings extends Equatable {
         'imageBorderRadius': imageBorderRadius,
         'imageGridPadding': imageGridPadding,
         'imageGridAspectRatio': imageGridAspectRatio,
+        'postsPerPage': postsPerPage,
       };
 
   @override
@@ -656,6 +654,7 @@ class ImageListingSettings extends Equatable {
         imageBorderRadius,
         imageGridPadding,
         imageGridAspectRatio,
+        postsPerPage,
       ];
 }
 

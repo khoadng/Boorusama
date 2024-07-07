@@ -38,7 +38,7 @@ class PostRepositoryBuilder<T extends Post> implements PostRepository<T> {
       TaskEither.Do(($) async {
         var lim = limit;
 
-        lim ??= await getSettings().then((value) => value.postsPerPage);
+        lim ??= await getSettings().then((value) => value.listing.postsPerPage);
 
         final newTags = tags.isEmpty ? <String>[] : tags.split(' ');
 

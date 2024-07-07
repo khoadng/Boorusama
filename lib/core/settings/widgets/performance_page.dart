@@ -41,10 +41,14 @@ class _PerformancePageState extends ConsumerState<PerformancePage> {
               color: context.theme.hintColor,
             ),
           ).tr(),
-          selectedOption: settings.postsPerPage,
+          selectedOption: settings.listing.postsPerPage,
           items: getPostsPerPagePossibleValue(),
           onChanged: (newValue) {
-            ref.updateSettings(settings.copyWith(postsPerPage: newValue));
+            ref.updateSettings(settings.copyWith(
+              listing: settings.listing.copyWith(
+                postsPerPage: newValue,
+              ),
+            ));
           },
           optionBuilder: (value) => Text(
             value.toString(),
