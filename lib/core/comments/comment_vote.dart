@@ -1,6 +1,12 @@
 // Project imports:
 import 'package:boorusama/foundation/caching/caching.dart';
 
+enum CommentVoteState {
+  unvote,
+  downvoted,
+  upvoted,
+}
+
 abstract class CommentVote {
   int get commentId;
   int get score;
