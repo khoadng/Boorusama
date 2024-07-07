@@ -11,12 +11,6 @@ typedef CommentBody = String;
 typedef CommentCreatorId = int;
 typedef CommentPostId = int;
 
-enum CommentVoteState {
-  unvote,
-  downvoted,
-  upvoted,
-}
-
 class DanbooruComment extends Equatable implements Comment {
   const DanbooruComment({
     required this.id,
