@@ -5,7 +5,6 @@ import 'package:boorusama/clients/e621/types/types.dart' as e;
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/datetimes/datetimes.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
 import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/functional.dart';
@@ -14,20 +13,15 @@ abstract interface class E621PopularRepository {
   PostsOrError<E621Post> getPopularPosts(DateTime date, TimeScale timeScale);
 }
 
-class E621PopularRepositoryApi
-    with SettingsRepositoryMixin
-    implements E621PopularRepository {
+class E621PopularRepositoryApi implements E621PopularRepository {
   E621PopularRepositoryApi(
     this.client,
     this.booruConfig,
-    this.settingsRepository,
   );
 
   final E621Client client;
   final BooruConfig booruConfig;
 
-  @override
-  final SettingsRepository settingsRepository;
   final Cache<List<E621Post>> _cache = Cache(
     maxCapacity: 5,
     staleDuration: const Duration(seconds: 10),

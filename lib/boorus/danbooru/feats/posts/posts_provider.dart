@@ -47,7 +47,7 @@ final danbooruPostRepoProvider =
 
       return ref.read(danbooruPostFetchTransformerProvider(config))(posts);
     },
-    getSettings: () async => ref.read(settingsProvider),
+    getSettings: () async => ref.read(imageListingSettingsProvider),
   );
 });
 

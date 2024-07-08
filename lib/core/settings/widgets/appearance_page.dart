@@ -220,6 +220,26 @@ class _ImageListingSettingsSectionState
             optionBuilder: (value) => Text(value.localize()).tr(),
             padding: widget.itemPadding,
           ),
+        SettingsTile(
+          title: const Text('settings.performance.posts_per_page').tr(),
+          subtitle: Text(
+            'settings.performance.posts_per_page_explain',
+            style: TextStyle(
+              color: context.theme.hintColor,
+            ),
+          ).tr(),
+          selectedOption: settings.postsPerPage,
+          items: getPostsPerPagePossibleValue(),
+          onChanged: (newValue) {
+            _onUpdate(settings.copyWith(
+              postsPerPage: newValue,
+            ));
+          },
+          optionBuilder: (value) => Text(
+            value.toString(),
+          ),
+          padding: widget.itemPadding,
+        ),
         SwitchListTile(
           title: const Text('settings.appearance.show_scores').tr(),
           value: settings.showScoresInGrid,

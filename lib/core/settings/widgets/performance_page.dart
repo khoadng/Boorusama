@@ -10,6 +10,7 @@ import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/settings/widgets/widgets/settings_tile.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/widgets/widgets.dart';
 import 'widgets/settings_page_scaffold.dart';
 
 class PerformancePage extends ConsumerStatefulWidget {
@@ -33,25 +34,30 @@ class _PerformancePageState extends ConsumerState<PerformancePage> {
       hasAppBar: widget.hasAppBar,
       title: const Text('settings.performance.performance').tr(),
       children: [
-        SettingsTile(
-          title: const Text('settings.performance.posts_per_page').tr(),
-          subtitle: Text(
-            'settings.performance.posts_per_page_explain',
+        GrayedOut(
+          child: SettingsTile(
+            title: const Text('settings.performance.posts_per_page').tr(),
+            subtitle: Text(
+              'settings.performance.posts_per_page_explain',
+              style: TextStyle(
+                color: context.theme.hintColor,
+              ),
+            ).tr(),
+            selectedOption: settings.listing.postsPerPage,
+            items: getPostsPerPagePossibleValue(),
+            onChanged: (newValue) {},
+            optionBuilder: (value) => Text(
+              value.toString(),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 16),
+          child: Text(
+            'This has been moved to Settings > Appearance',
             style: TextStyle(
               color: context.theme.hintColor,
             ),
-          ).tr(),
-          selectedOption: settings.listing.postsPerPage,
-          items: getPostsPerPagePossibleValue(),
-          onChanged: (newValue) {
-            ref.updateSettings(settings.copyWith(
-              listing: settings.listing.copyWith(
-                postsPerPage: newValue,
-              ),
-            ));
-          },
-          optionBuilder: (value) => Text(
-            value.toString(),
           ),
         ),
       ],

@@ -104,7 +104,7 @@ final szurubooruPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
 
         return data;
       },
-      getSettings: () async => ref.read(settingsProvider),
+      getSettings: () async => ref.read(imageListingSettingsProvider),
     );
   },
 );

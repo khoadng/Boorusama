@@ -11,21 +11,18 @@ import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/http/http_utils.dart';
 import 'package:boorusama/functional.dart';
 
-class ExploreRepositoryApi
-    with SettingsRepositoryMixin
-    implements ExploreRepository {
+class ExploreRepositoryApi implements ExploreRepository {
   const ExploreRepositoryApi({
     required this.client,
     required this.postRepository,
-    required this.settingsRepository,
+    required this.settings,
     this.shouldFilter,
     required this.transformer,
   });
 
   final PostRepository<DanbooruPost> postRepository;
   final DanbooruClient client;
-  @override
-  final SettingsRepository settingsRepository;
+  final ImageListingSettings Function() settings;
   final bool Function(DanbooruPost post)? shouldFilter;
   final PostFetchTransformer transformer;
 
@@ -66,16 +63,16 @@ class ExploreRepositoryApi
   }) =>
       TaskEither.Do(($) async {
         final dtos = await $(tryFetchRemoteData(
-          fetcher: () => getPostsPerPage().then((lim) => client.getPopularPosts(
-                date: date,
-                scale: switch (scale) {
-                  TimeScale.day => danbooru.TimeScale.day,
-                  TimeScale.week => danbooru.TimeScale.week,
-                  TimeScale.month => danbooru.TimeScale.month,
-                },
-                page: page,
-                limit: limit ?? lim,
-              )),
+          fetcher: () => client.getPopularPosts(
+            date: date,
+            scale: switch (scale) {
+              TimeScale.day => danbooru.TimeScale.day,
+              TimeScale.week => danbooru.TimeScale.week,
+              TimeScale.month => danbooru.TimeScale.month,
+            },
+            page: page,
+            limit: limit ?? settings().postsPerPage,
+          ),
         ));
 
         final data = dtos.map(postDtoToPostNoMetadata).toList();

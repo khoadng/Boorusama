@@ -46,7 +46,7 @@ final e621PostRepoProvider =
 
       return data;
     },
-    getSettings: () async => ref.read(settingsProvider),
+    getSettings: () async => ref.read(imageListingSettingsProvider),
   );
   // );
 });
@@ -56,7 +56,6 @@ final e621PopularPostRepoProvider =
   return E621PopularRepositoryApi(
     ref.watch(e621ClientProvider(config)),
     ref.watchConfig,
-    ref.watch(settingsRepoProvider),
   );
 });
 

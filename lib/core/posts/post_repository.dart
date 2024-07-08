@@ -31,14 +31,14 @@ class PostRepositoryBuilder<T extends Post> implements PostRepository<T> {
   });
 
   final PostFutureFetcher<T> fetch;
-  final Future<Settings> Function() getSettings;
+  final Future<ImageListingSettings> Function() getSettings;
 
   @override
   PostsOrError<T> getPosts(String tags, int page, {int? limit}) =>
       TaskEither.Do(($) async {
         var lim = limit;
 
-        lim ??= await getSettings().then((value) => value.listing.postsPerPage);
+        lim ??= await getSettings().then((value) => value.postsPerPage);
 
         final newTags = tags.isEmpty ? <String>[] : tags.split(' ');
 

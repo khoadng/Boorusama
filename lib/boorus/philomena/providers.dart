@@ -29,7 +29,7 @@ final philomenaPostRepoProvider =
   final client = ref.watch(philomenaClientProvider(config));
 
   return PostRepositoryBuilder(
-    getSettings: () async => ref.read(settingsProvider),
+    getSettings: () async => ref.read(imageListingSettingsProvider),
     fetch: (tags, page, {limit}) async {
       final isEmpty = tags.join(' ').isEmpty;
 

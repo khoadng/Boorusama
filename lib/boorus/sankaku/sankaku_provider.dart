@@ -25,7 +25,7 @@ final sankakuPostRepoProvider =
     final client = ref.watch(sankakuClientProvider(config));
 
     return PostRepositoryBuilder(
-      getSettings: () async => ref.read(settingsProvider),
+      getSettings: () async => ref.read(imageListingSettingsProvider),
       fetch: (tags, page, {limit}) async {
         final posts = await client.getPosts(
           tags: tags,

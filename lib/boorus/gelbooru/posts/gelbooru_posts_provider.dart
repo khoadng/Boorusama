@@ -37,7 +37,7 @@ final gelbooruPostRepoProvider =
                     ),
                   ))
               .toList()),
-      getSettings: () async => ref.read(settingsProvider),
+      getSettings: () async => ref.read(imageListingSettingsProvider),
     );
   },
 );

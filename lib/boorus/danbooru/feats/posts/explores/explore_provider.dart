@@ -42,7 +42,7 @@ final danbooruExploreRepoProvider =
             ref.read(danbooruPostFetchTransformerProvider(config))(posts),
         client: ref.watch(danbooruClientProvider(config)),
         postRepository: ref.watch(danbooruPostRepoProvider(config)),
-        settingsRepository: ref.watch(settingsRepoProvider),
+        settings: () => ref.read(imageListingSettingsProvider),
         shouldFilter: (post) {
           // A special rule for safebooru to make sure inappropriate posts are not shown
           if (config.url == kDanbooruSafeUrl) {
