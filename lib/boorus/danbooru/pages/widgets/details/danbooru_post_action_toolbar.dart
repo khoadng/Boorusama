@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
@@ -39,28 +38,16 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
             removeFavorite: () => ref.danbooruFavorites.remove(post.id),
           ),
         if (config.hasLoginDetails())
-          IconButton(
-            icon: Icon(
-              Symbols.arrow_upward,
-              color: voteState.isUpvoted ? Colors.redAccent : null,
-            ),
-            splashRadius: 16,
-            onPressed: switch (voteState) {
-              VoteState.upvoted => () => ref.danbooruRemoveVote(post.id),
-              _ => () => ref.danbooruUpvote(post.id),
-            },
+          UpvotePostButton(
+            voteState: voteState,
+            onUpvote: () => ref.danbooruUpvote(post.id),
+            onRemoveUpvote: () => ref.danbooruRemoveVote(post.id),
           ),
         if (config.hasLoginDetails())
-          IconButton(
-            icon: Icon(
-              Symbols.arrow_downward,
-              color: voteState.isDownvoted ? Colors.blueAccent : null,
-            ),
-            splashRadius: 16,
-            onPressed: switch (voteState) {
-              VoteState.downvoted => () => ref.danbooruRemoveVote(post.id),
-              _ => () => ref.danbooruDownvote(post.id),
-            },
+          DownvotePostButton(
+            voteState: voteState,
+            onDownvote: () => ref.danbooruDownvote(post.id),
+            onRemoveDownvote: () => ref.danbooruRemoveVote(post.id),
           ),
         BookmarkPostButton(post: post),
         CommentPostButton(
