@@ -7,6 +7,7 @@ export 'post_repository.dart';
 export 'post_repository_cacher.dart';
 export 'post_share_notifier.dart';
 export 'post_statistics_page.dart';
+export 'post_vote.dart';
 export 'providers.dart';
 export 'rating.dart';
 export 'share_post_button.dart';

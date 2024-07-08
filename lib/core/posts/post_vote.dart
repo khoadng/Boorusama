@@ -1,15 +1,26 @@
+const kLocalPostVoteId = -99;
+
+abstract class PostVote {
+  int get id;
+  int get postId;
+  int get score;
+}
+
+extension PostVoteX on PostVote {
+  VoteState get voteState => voteStateFromScore(score);
+}
+
 enum VoteState {
   unvote,
   upvoted,
   downvoted,
 }
 
-VoteState voteStateFromScore(int score) {
-  if (score == 0) return VoteState.unvote;
-  if (score < 0) return VoteState.downvoted;
-
-  return VoteState.upvoted;
-}
+VoteState voteStateFromScore(int score) => switch (score) {
+      < 0 => VoteState.downvoted,
+      > 0 => VoteState.upvoted,
+      _ => VoteState.unvote,
+    };
 
 extension VoteStateX on VoteState {
   bool get isUpvoted => this == VoteState.upvoted;

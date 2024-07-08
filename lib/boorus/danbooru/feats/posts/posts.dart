@@ -18,4 +18,3 @@ export 'votes/post_vote_repository.dart';
 export 'votes/post_vote_repository_api.dart';
 export 'votes/post_votes_notifier.dart';
 export 'votes/post_votes_provider.dart';
-export 'votes/vote_state.dart';

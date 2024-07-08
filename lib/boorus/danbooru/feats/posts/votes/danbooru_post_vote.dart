@@ -2,12 +2,12 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
+import 'package:boorusama/core/posts/posts.dart';
 
 typedef PostVoteId = int;
 
-class DanbooruPostVote extends Equatable {
+class DanbooruPostVote extends Equatable implements PostVote {
   const DanbooruPostVote({
     required this.id,
     required this.postId,
@@ -42,11 +42,14 @@ class DanbooruPostVote extends Equatable {
         isDeleted: false,
       );
 
+  @override
   final PostVoteId id;
+  @override
   final int postId;
   final UserId userId;
   final DateTime createdAt;
   final DateTime updatedAt;
+  @override
   final int score;
   final bool isDeleted;
 
@@ -63,7 +66,6 @@ class DanbooruPostVote extends Equatable {
 }
 
 extension PostVoteX on DanbooruPostVote {
-  VoteState get voteState => voteStateFromScore(score);
   bool get isOptimisticUpdateVote =>
       id == DanbooruPostVote.local(postId: postId, score: score).id;
 
