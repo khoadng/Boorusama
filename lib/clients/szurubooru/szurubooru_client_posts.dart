@@ -4,6 +4,10 @@ import 'package:dio/dio.dart';
 // Project imports:
 import 'types/types.dart';
 
+const _kUpvoteScore = 1;
+const _kDownvoteScore = -1;
+const _kUnvoteScore = 0;
+
 mixin SzurubooruClientPosts {
   Dio get dio;
 
@@ -29,5 +33,53 @@ mixin SzurubooruClientPosts {
               baseUrl: dio.options.baseUrl,
             ))
         .toList();
+  }
+
+  Future<PostDto> upvotePost({
+    required int postId,
+  }) async {
+    final response = await dio.put(
+      '/api/post/$postId/score',
+      data: {
+        'score': _kUpvoteScore,
+      },
+    );
+
+    return PostDto.fromJson(
+      response.data,
+      baseUrl: dio.options.baseUrl,
+    );
+  }
+
+  Future<PostDto> downvotePost({
+    required int postId,
+  }) async {
+    final response = await dio.put(
+      '/api/post/$postId/score',
+      data: {
+        'score': _kDownvoteScore,
+      },
+    );
+
+    return PostDto.fromJson(
+      response.data,
+      baseUrl: dio.options.baseUrl,
+    );
+  }
+
+  Future<PostDto> unvotePost({
+    required int postId,
+  }) async {
+    final response = await dio.put(
+      '/api/post/$postId/score',
+      data: {
+        'score': _kUnvoteScore,
+      },
+    );
+
+    return PostDto.fromJson(
+      response.data,
+      baseUrl: dio.options.baseUrl,
+    );
   }
 }
