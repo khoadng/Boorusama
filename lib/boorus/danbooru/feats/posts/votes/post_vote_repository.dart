@@ -1,9 +1,9 @@
 // Project imports:
-import 'post_vote.dart';
+import 'danbooru_post_vote.dart';
 
 abstract class PostVoteRepository {
-  Future<PostVote?> upvote(int postId);
-  Future<PostVote?> downvote(int postId);
-  Future<List<PostVote>> getPostVotes(List<int> postIds, int userId);
+  Future<DanbooruPostVote?> upvote(int postId);
+  Future<DanbooruPostVote?> downvote(int postId);
+  Future<List<DanbooruPostVote>> getPostVotes(List<int> postIds, int userId);
   Future<bool> removeVote(int postId);
 }

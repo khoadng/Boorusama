@@ -13,7 +13,7 @@ export 'posts_provider.dart';
 export 'slide_show_configuration.dart';
 export 'statistics.dart';
 export 'utils.dart';
-export 'votes/post_vote.dart';
+export 'votes/danbooru_post_vote.dart';
 export 'votes/post_vote_repository.dart';
 export 'votes/post_vote_repository_api.dart';
 export 'votes/post_votes_notifier.dart';

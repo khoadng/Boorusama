@@ -7,8 +7,8 @@ import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 
 typedef PostVoteId = int;
 
-class PostVote extends Equatable {
-  const PostVote({
+class DanbooruPostVote extends Equatable {
+  const DanbooruPostVote({
     required this.id,
     required this.postId,
     required this.userId,
@@ -18,7 +18,7 @@ class PostVote extends Equatable {
     required this.isDeleted,
   });
 
-  factory PostVote.empty() => PostVote(
+  factory DanbooruPostVote.empty() => DanbooruPostVote(
         id: -1,
         postId: -1,
         userId: -1,
@@ -28,11 +28,11 @@ class PostVote extends Equatable {
         isDeleted: false,
       );
 
-  factory PostVote.local({
+  factory DanbooruPostVote.local({
     required int postId,
     required int score,
   }) =>
-      PostVote(
+      DanbooruPostVote(
         id: -99,
         postId: postId,
         userId: -99,
@@ -62,12 +62,12 @@ class PostVote extends Equatable {
       ];
 }
 
-extension PostVoteX on PostVote {
+extension PostVoteX on DanbooruPostVote {
   VoteState get voteState => voteStateFromScore(score);
   bool get isOptimisticUpdateVote =>
-      id == PostVote.local(postId: postId, score: score).id;
+      id == DanbooruPostVote.local(postId: postId, score: score).id;
 
-  PostVote copyWith({
+  DanbooruPostVote copyWith({
     PostVoteId? id,
     int? postId,
     UserId? userId,
@@ -76,7 +76,7 @@ extension PostVoteX on PostVote {
     int? score,
     bool? isDeleted,
   }) =>
-      PostVote(
+      DanbooruPostVote(
         id: id ?? this.id,
         postId: postId ?? this.postId,
         userId: userId ?? this.userId,

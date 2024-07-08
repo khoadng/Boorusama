@@ -5,20 +5,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/functional.dart';
 import '../../users/users.dart';
-import 'post_vote.dart';
+import 'danbooru_post_vote.dart';
 import 'post_vote_repository.dart';
 import 'post_votes_provider.dart';
 
 class PostVotesNotifier
-    extends FamilyNotifier<IMap<int, PostVote?>, BooruConfig> {
+    extends FamilyNotifier<IMap<int, DanbooruPostVote?>, BooruConfig> {
   @override
-  IMap<int, PostVote?> build(BooruConfig arg) {
-    return <int, PostVote?>{}.lock;
+  IMap<int, DanbooruPostVote?> build(BooruConfig arg) {
+    return <int, DanbooruPostVote?>{}.lock;
   }
 
   PostVoteRepository get repo => ref.read(danbooruPostVoteRepoProvider(arg));
 
-  void _vote(PostVote? postVote) {
+  void _vote(DanbooruPostVote? postVote) {
     if (postVote == null) return;
 
     state = state.add(postVote.postId, postVote);
@@ -29,7 +29,7 @@ class PostVotesNotifier
     bool localOnly = false,
   }) async {
     if (localOnly) {
-      _vote(PostVote.local(postId: postId, score: 1));
+      _vote(DanbooruPostVote.local(postId: postId, score: 1));
       return;
     }
 
@@ -42,7 +42,7 @@ class PostVotesNotifier
     bool localOnly = false,
   }) async {
     if (localOnly) {
-      _vote(PostVote.local(postId: postId, score: -1));
+      _vote(DanbooruPostVote.local(postId: postId, score: -1));
       return;
     }
 
