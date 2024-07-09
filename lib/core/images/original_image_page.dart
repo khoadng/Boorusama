@@ -33,6 +33,7 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
   Orientation? currentRotation;
   bool overlay = true;
   bool zoom = false;
+  var turn = ValueNotifier<double>(0);
 
   @override
   void initState() {
@@ -52,8 +53,6 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
 
   @override
   Widget build(BuildContext context) {
-    final config = ref.watchConfig;
-
     return CallbackShortcuts(
       bindings: {
         const SingleActivator(LogicalKeyboardKey.escape): () =>
@@ -68,13 +67,13 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
         },
         child: Focus(
           autofocus: true,
-          child: _buildBody(config),
+          child: _buildBody(),
         ),
       ),
     );
   }
 
-  Widget _buildBody(BooruConfig config) {
+  Widget _buildBody() {
     return GestureDetector(
       onTap: () {
         if (!zoom) {
@@ -115,38 +114,26 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
                     ? const Icon(Symbols.rotate_left)
                     : const Icon(Symbols.rotate_right),
               ),
+            if (kPreferredLayout.isDesktop && overlay) ...[
+              IconButton(
+                onPressed: () => turn.value = (turn.value - 0.25) % 1,
+                color: Colors.white,
+                icon: const Icon(Symbols.rotate_left),
+              ),
+              const SizedBox(width: 12),
+            ],
           ],
         ),
         body: Stack(
           children: [
             Positioned.fill(
-              child: CachedNetworkImage(
-                httpHeaders: {
-                  'User-Agent':
-                      ref.watch(userAgentGeneratorProvider(config)).generate(),
-                },
-                imageUrl: widget.post.originalImageUrl,
-                imageBuilder: (context, imageProvider) => Hero(
-                  tag: '${widget.post.id}_hero',
-                  child: PhotoView(
-                    scaleStateChangedCallback: (value) {
-                      if (value != PhotoViewScaleState.initial) {
-                        setState(() {
-                          zoom = true;
-                          overlay = false;
-                        });
-                      } else {
-                        setState(() => zoom = false);
-                      }
-                    },
-                    imageProvider: imageProvider,
-                  ),
+              child: ValueListenableBuilder(
+                valueListenable: turn,
+                builder: (context, value, child) => RotationTransition(
+                  turns: AlwaysStoppedAnimation(value),
+                  child: child,
                 ),
-                progressIndicatorBuilder: (context, url, progress) => Center(
-                  child: CircularProgressIndicator.adaptive(
-                    value: progress.progress,
-                  ),
-                ),
+                child: _buildImage(),
               ),
             ),
             if (overlay)
@@ -158,6 +145,41 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
                 ],
               ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildImage() {
+    final config = ref.watchConfig;
+
+    return CachedNetworkImage(
+      httpHeaders: {
+        'User-Agent': ref.watch(userAgentGeneratorProvider(config)).generate(),
+      },
+      imageUrl: widget.post.originalImageUrl,
+      imageBuilder: (context, imageProvider) => Hero(
+        tag: '${widget.post.id}_hero',
+        child: PhotoView(
+          backgroundDecoration: const BoxDecoration(
+            color: Colors.transparent,
+          ),
+          scaleStateChangedCallback: (value) {
+            if (value != PhotoViewScaleState.initial) {
+              setState(() {
+                zoom = true;
+                overlay = false;
+              });
+            } else {
+              setState(() => zoom = false);
+            }
+          },
+          imageProvider: imageProvider,
+        ),
+      ),
+      progressIndicatorBuilder: (context, url, progress) => Center(
+        child: CircularProgressIndicator.adaptive(
+          value: progress.progress,
         ),
       ),
     );
