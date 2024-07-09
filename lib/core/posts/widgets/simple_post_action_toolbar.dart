@@ -55,7 +55,6 @@ class SimplePostActionToolbar extends ConsumerWidget {
         DownloadPostButton(post: post),
         if (commentPageBuilder != null)
           CommentPostButton(
-            post: post,
             onPressed: () => goToCommentPage(context, ref, post.id),
           ),
         SharePostButton(post: post),

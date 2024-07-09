@@ -4,17 +4,12 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:material_symbols_icons/symbols.dart';
 
-// Project imports:
-import 'package:boorusama/core/posts/posts.dart';
-
 class CommentPostButton extends StatelessWidget {
   const CommentPostButton({
     super.key,
-    required this.post,
     this.onPressed,
   });
 
-  final Post post;
   final VoidCallback? onPressed;
 
   @override
