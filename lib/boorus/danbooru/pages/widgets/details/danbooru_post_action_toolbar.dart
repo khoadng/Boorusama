@@ -51,7 +51,6 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
           ),
         BookmarkPostButton(post: post),
         CommentPostButton(
-          post: post,
           onPressed: () => goToCommentPage(context, ref, post.id),
         ),
         DownloadPostButton(post: post),
