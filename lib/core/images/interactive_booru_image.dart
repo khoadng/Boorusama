@@ -10,6 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/images/images.dart';
+import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class InteractiveBooruImage extends ConsumerStatefulWidget {
@@ -112,7 +113,7 @@ class _InteractiveBooruImageState extends ConsumerState<InteractiveBooruImage> {
                             : null,
                         fit: BoxFit.contain,
                         headers: {
-                          'User-Agent': ua,
+                          AppHttpHeaders.userAgentHeader: ua,
                         },
                       ),
                       ...widget.imageOverlayBuilder?.call(constraints) ?? [],
@@ -131,7 +132,7 @@ class _InteractiveBooruImageState extends ConsumerState<InteractiveBooruImage> {
                       : null,
                   fit: BoxFit.contain,
                   headers: {
-                    'User-Agent': ua,
+                    AppHttpHeaders.userAgentHeader: ua,
                   },
                 ),
               ),

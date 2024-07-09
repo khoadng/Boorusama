@@ -31,3 +31,9 @@ extension DioResponseX<T> on Response<T> {
 
   int get statusCodeOrZero => statusCode != null ? statusCode! : 0;
 }
+
+abstract interface class AppHttpHeaders {
+  static const cookieHeader = "cookie";
+  static const contentLengthHeader = "content-length";
+  static const userAgentHeader = "user-agent";
+}

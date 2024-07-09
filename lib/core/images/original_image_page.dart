@@ -14,6 +14,7 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
+import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/foundation/mobile.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -155,7 +156,8 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
 
     return CachedNetworkImage(
       httpHeaders: {
-        'User-Agent': ref.watch(userAgentGeneratorProvider(config)).generate(),
+        AppHttpHeaders.userAgentHeader:
+            ref.watch(userAgentGeneratorProvider(config)).generate(),
       },
       imageUrl: widget.post.originalImageUrl,
       imageBuilder: (context, imageProvider) => Hero(

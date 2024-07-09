@@ -1,6 +1,3 @@
-// Dart imports:
-import 'dart:io';
-
 // Flutter imports:
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +9,7 @@ import 'package:webview_cookie_manager/webview_cookie_manager.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 // Project imports:
+import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/foundation/toast.dart';
 
 const kCloudflareClearanceKey = 'cf_clearance';
@@ -62,8 +60,8 @@ class CloudflareChallengeInterceptor extends Interceptor {
         }
 
         options.headers.addAll({
-          HttpHeaders.cookieHeader: cookies.cookieString,
-          HttpHeaders.userAgentHeader: _userAgent,
+          AppHttpHeaders.cookieHeader: cookies.cookieString,
+          AppHttpHeaders.userAgentHeader: _userAgent,
         });
       }
     } catch (e) {
