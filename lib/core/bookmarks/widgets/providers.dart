@@ -97,7 +97,7 @@ final tagSuggestionsProvider = Provider.autoDispose<List<String>>((ref) {
 
   tags.sort((a, b) => tagMap[b]!.compareTo(tagMap[a]!));
 
-  return tags.where((e) => e.contains(tag)).toList().toList();
+  return tags.where((e) => e.contains(tag)).toList().take(10).toList();
 });
 
 final selectedTagsProvider = StateProvider.autoDispose<String>((ref) => '');
