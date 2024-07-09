@@ -55,8 +55,9 @@ class ChangelogDialog extends StatelessWidget {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(12)),
       ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
+      child: Container(
+        constraints: const BoxConstraints(maxWidth: 650),
+        margin: const EdgeInsets.symmetric(
           horizontal: 4,
           vertical: 4,
         ),
@@ -72,23 +73,29 @@ class ChangelogDialog extends StatelessWidget {
                   horizontal: 4,
                 ),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const SizedBox(width: 8),
-                    Text(
-                      'app_update.whats_new',
-                      style: context.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ).tr(),
-                    const SizedBox(width: 8),
                     Expanded(
-                      child: CompactChip(
-                        backgroundColor: context.colorScheme.primary,
-                        textColor: context.colorScheme.onPrimary,
-                        label: version.toString(),
+                      child: Container(
+                        margin: const EdgeInsets.only(left: 8),
+                        child: Row(
+                          children: [
+                            Text(
+                              'app_update.whats_new',
+                              style: context.textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ).tr(),
+                            const SizedBox(width: 8),
+                            CompactChip(
+                              backgroundColor: context.colorScheme.primary,
+                              textColor: context.colorScheme.onPrimary,
+                              label: version.toString(),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                    const Spacer(),
                     IconButton(
                       splashRadius: 18,
                       onPressed: () => Navigator.of(context).maybePop(),
