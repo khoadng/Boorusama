@@ -484,9 +484,7 @@ class Routes {
             key: state.pageKey,
             name: state.name,
             transitionsBuilder: fadeTransitionBuilder(),
-            child: OriginalImagePage(
-              post: post,
-            ),
+            child: OriginalImagePage.post(post),
           );
         },
       );

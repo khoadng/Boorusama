@@ -21,10 +21,18 @@ import 'package:boorusama/widgets/widgets.dart';
 class OriginalImagePage extends ConsumerStatefulWidget {
   const OriginalImagePage({
     super.key,
-    required this.post,
+    required this.imageUrl,
+    required this.id,
   });
 
-  final Post post;
+  OriginalImagePage.post(
+    Post post, {
+    super.key,
+  })  : imageUrl = post.originalImageUrl,
+        id = post.id;
+
+  final String imageUrl;
+  final int id;
 
   @override
   ConsumerState<OriginalImagePage> createState() => _OriginalImagePageState();
@@ -159,9 +167,9 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
         AppHttpHeaders.userAgentHeader:
             ref.watch(userAgentGeneratorProvider(config)).generate(),
       },
-      imageUrl: widget.post.originalImageUrl,
+      imageUrl: widget.imageUrl,
       imageBuilder: (context, imageProvider) => Hero(
-        tag: '${widget.post.id}_hero',
+        tag: '${widget.id}_hero',
         child: PhotoView(
           backgroundDecoration: const BoxDecoration(
             color: Colors.transparent,
