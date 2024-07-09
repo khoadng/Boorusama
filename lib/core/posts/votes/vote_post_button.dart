@@ -1,6 +1,11 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:material_symbols_icons/symbols.dart';
 
+// Project imports:
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'post_vote.dart';
 
 class UpvotePostButton extends StatelessWidget {
@@ -20,7 +25,7 @@ class UpvotePostButton extends StatelessWidget {
     return IconButton(
       icon: Icon(
         Symbols.arrow_upward,
-        color: voteState.isUpvoted ? Colors.redAccent : null,
+        color: voteState.isUpvoted ? context.colors.upvoteColor : null,
       ),
       splashRadius: 16,
       onPressed: switch (voteState) {
@@ -48,7 +53,7 @@ class DownvotePostButton extends StatelessWidget {
     return IconButton(
       icon: Icon(
         Symbols.arrow_downward,
-        color: voteState.isDownvoted ? Colors.blueAccent : null,
+        color: voteState.isDownvoted ? context.colors.downvoteColor : null,
       ),
       splashRadius: 16,
       onPressed: switch (voteState) {

@@ -6,6 +6,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
 
 class FavoritePostButton extends StatelessWidget {
@@ -47,10 +48,10 @@ class FavoritePostButton extends StatelessWidget {
             }
           : null,
       icon: isFaved == true
-          ? const Icon(
+          ? Icon(
               Symbols.favorite,
               fill: 1,
-              color: Colors.red,
+              color: context.colors.upvoteColor,
               size: 20,
             )
           : const Icon(

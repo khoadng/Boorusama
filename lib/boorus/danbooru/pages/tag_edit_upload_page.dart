@@ -150,14 +150,16 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
                                 textColor: Colors.white,
                                 label: 'Pixel-Perfect Duplicate',
                                 onTap: () {},
-                                backgroundColor: Colors.red,
+                                backgroundColor:
+                                    context.colorScheme.errorContainer,
                               )
                             else
                               CompactChip(
                                 textColor: Colors.white,
                                 label: 'Duplicate',
                                 onTap: () {},
-                                backgroundColor: Colors.red,
+                                backgroundColor:
+                                    context.colorScheme.errorContainer,
                               ),
                           ],
                         )

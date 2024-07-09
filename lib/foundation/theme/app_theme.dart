@@ -133,6 +133,8 @@ class AppTheme {
             videoPlayerBackgroundColor: Colors.white,
             themeMode: AppThemeMode.light,
             selectedColor: Colors.grey,
+            upvoteColor: Colors.redAccent,
+            downvoteColor: Colors.blueAccent,
           ),
         ],
         listTileTheme: const ListTileThemeData(
@@ -157,6 +159,8 @@ class AppTheme {
             videoPlayerBackgroundColor: Colors.black,
             themeMode: AppThemeMode.amoledDark,
             selectedColor: Color.fromARGB(255, 74, 74, 74),
+            upvoteColor: Colors.redAccent,
+            downvoteColor: Colors.blueAccent,
           ),
         ],
         listTileTheme: const ListTileThemeData(

@@ -53,7 +53,7 @@ class CommentVoteSection extends StatelessWidget {
             icon: Icon(
               Symbols.arrow_upward_alt,
               color: voteState == CommentVoteState.upvoted
-                  ? Colors.redAccent
+                  ? context.colors.upvoteColor
                   : context.iconTheme.color,
               size: 24,
             ),
@@ -77,7 +77,7 @@ class CommentVoteSection extends StatelessWidget {
             icon: Icon(
               Symbols.arrow_downward_alt,
               color: voteState == CommentVoteState.downvoted
-                  ? Colors.redAccent
+                  ? context.colors.downvoteColor
                   : context.iconTheme.color,
               size: 24,
             ),

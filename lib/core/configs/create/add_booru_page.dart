@@ -204,12 +204,13 @@ class _AddBooruPageInternalState extends ConsumerState<AddBooruPageInternal> {
                   horizontal: 16,
                   vertical: 8,
                 ),
-                child: ValueListenableBuilder<String>(
+                child: ValueListenableBuilder(
                   valueListenable: inputText,
                   builder: (_, input, __) => Text(
                     e.message(input),
-                    style: context.theme.textTheme.bodyLarge!
-                        .copyWith(color: Colors.red),
+                    style: context.theme.textTheme.bodyLarge!.copyWith(
+                      color: context.colorScheme.error,
+                    ),
                   ),
                 )),
             (uri) => const SizedBox.shrink(),

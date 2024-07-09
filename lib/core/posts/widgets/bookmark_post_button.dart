@@ -10,6 +10,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:boorusama/core/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 
 class BookmarkPostButton extends ConsumerWidget {
   const BookmarkPostButton({
@@ -35,10 +36,10 @@ class BookmarkPostButton extends ConsumerWidget {
                 bookmarkState.getBookmark(post, booruConfig.booruType)!,
               );
             },
-            icon: const Icon(
+            icon: Icon(
               Symbols.bookmark,
               fill: 1,
-              color: Colors.red,
+              color: context.colors.upvoteColor,
             ),
           )
         : IconButton(
@@ -90,10 +91,10 @@ class BookmarkPostLikeButtonButton extends ConsumerWidget {
 
         return Future.value(!isLiked);
       },
-      likeBuilder: (bool isLiked) {
+      likeBuilder: (isLiked) {
         return Icon(
           isLiked ? Symbols.bookmark : Symbols.bookmark,
-          color: isLiked ? Colors.redAccent : Colors.white,
+          color: isLiked ? context.colors.upvoteColor : Colors.white,
           fill: isLiked ? 1 : 0,
         );
       },

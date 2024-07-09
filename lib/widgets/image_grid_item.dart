@@ -110,10 +110,12 @@ class ImageGridItem extends StatelessWidget {
 
                         return Future.value(!isLiked);
                       },
-                      likeBuilder: (bool isLiked) {
+                      likeBuilder: (isLiked) {
                         return Icon(
                           isLiked ? Symbols.favorite : Symbols.favorite,
-                          color: isLiked ? Colors.redAccent : Colors.white,
+                          color: isLiked
+                              ? context.colors.upvoteColor
+                              : Colors.white,
                           fill: isLiked ? 1 : 0,
                         );
                       },
