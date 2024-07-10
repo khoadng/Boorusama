@@ -29,11 +29,11 @@ class PoolDetailPage extends ConsumerWidget {
     required this.pool,
   });
 
-  final Pool pool;
+  final DanbooruPool pool;
 
   static Widget of(
     BuildContext context, {
-    required Pool pool,
+    required DanbooruPool pool,
   }) =>
       CustomContextMenuOverlay(
         child: PoolDetailPage(

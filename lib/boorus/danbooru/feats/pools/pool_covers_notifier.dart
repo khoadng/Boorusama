@@ -17,7 +17,7 @@ class PoolCoversNotifier
   PostRepository<DanbooruPost> get postRepo =>
       ref.watch(danbooruPostRepoProvider(arg));
 
-  Future<void> load(List<Pool>? pools) async {
+  Future<void> load(List<DanbooruPool>? pools) async {
     if (pools == null) return;
 
     final poolsWithPosts =

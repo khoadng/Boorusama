@@ -3,18 +3,18 @@ import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
 
 abstract class PoolRepository {
-  Future<List<Pool>> getPools(
+  Future<List<DanbooruPool>> getPools(
     int page, {
-    PoolCategory? category,
-    PoolOrder? order,
+    DanbooruPoolCategory? category,
+    DanbooruPoolOrder? order,
     String? name,
     String? description,
   });
-  Future<List<Pool>> getPoolsByPostId(int postId);
+  Future<List<DanbooruPool>> getPoolsByPostId(int postId);
 }
 
 class PoolRepositoryBuilder
-    with SimpleCacheMixin<List<Pool>>
+    with SimpleCacheMixin<List<DanbooruPool>>
     implements PoolRepository {
   PoolRepositoryBuilder({
     required this.fetchMany,
@@ -28,21 +28,21 @@ class PoolRepositoryBuilder
     );
   }
 
-  final Future<List<Pool>> Function(
+  final Future<List<DanbooruPool>> Function(
     int page, {
-    PoolCategory? category,
-    PoolOrder? order,
+    DanbooruPoolCategory? category,
+    DanbooruPoolOrder? order,
     String? name,
     String? description,
   }) fetchMany;
 
-  final Future<List<Pool>> Function(int postId) fetchByPostId;
+  final Future<List<DanbooruPool>> Function(int postId) fetchByPostId;
 
   @override
-  Future<List<Pool>> getPools(
+  Future<List<DanbooruPool>> getPools(
     int page, {
-    PoolCategory? category,
-    PoolOrder? order,
+    DanbooruPoolCategory? category,
+    DanbooruPoolOrder? order,
     String? name,
     String? description,
   }) =>
@@ -55,11 +55,11 @@ class PoolRepositoryBuilder
       );
 
   @override
-  Future<List<Pool>> getPoolsByPostId(int postId) => tryGet(
+  Future<List<DanbooruPool>> getPoolsByPostId(int postId) => tryGet(
         'pool-by-post-$postId',
         orElse: () => fetchByPostId(postId),
       );
 
   @override
-  late Cache<List<Pool>> cache;
+  late Cache<List<DanbooruPool>> cache;
 }

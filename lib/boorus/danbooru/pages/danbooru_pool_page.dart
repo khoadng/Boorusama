@@ -17,8 +17,8 @@ import 'widgets/pools/pool_grid_item.dart';
 import 'widgets/pools/pool_options_header.dart';
 import 'widgets/pools/pool_search_button.dart';
 
-class PoolPage extends StatelessWidget {
-  const PoolPage({
+class DanbooruPoolPage extends StatelessWidget {
+  const DanbooruPoolPage({
     super.key,
   });
 
@@ -58,7 +58,7 @@ class _PostList extends ConsumerWidget {
                 child: DefaultTabController(
                   initialIndex:
                       ref.watch(danbooruSelectedPoolCategoryProvider) ==
-                              PoolCategory.collection
+                              DanbooruPoolCategory.collection
                           ? 0
                           : 1,
                   length: 2,
@@ -69,12 +69,12 @@ class _PostList extends ConsumerWidget {
                           .read(danbooruSelectedPoolCategoryProvider.notifier)
                           .state = value ==
                               0
-                          ? PoolCategory.collection
-                          : PoolCategory.series;
+                          ? DanbooruPoolCategory.collection
+                          : DanbooruPoolCategory.series;
                     },
                     tabs: [
-                      for (final e in PoolCategory.values
-                          .where((e) => e != PoolCategory.unknown))
+                      for (final e in DanbooruPoolCategory.values
+                          .where((e) => e != DanbooruPoolCategory.unknown))
                         Tab(
                           text: 'pool.category.${e.name}'.tr(),
                         ),
@@ -109,8 +109,8 @@ class PoolPagedSliverGrid extends ConsumerStatefulWidget {
   });
 
   final BoxConstraints constraints;
-  final PoolOrder order;
-  final PoolCategory category;
+  final DanbooruPoolOrder order;
+  final DanbooruPoolCategory category;
   final String? name;
   final String? description;
 
@@ -125,7 +125,7 @@ class _PoolPagedSliverGridState extends ConsumerState<PoolPagedSliverGrid> {
   late var name = widget.name;
   late var description = widget.description;
 
-  final controller = PagingController<int, Pool>(
+  final controller = PagingController<int, DanbooruPool>(
     firstPageKey: 1,
   );
 
@@ -163,8 +163,8 @@ class _PoolPagedSliverGridState extends ConsumerState<PoolPagedSliverGrid> {
 
   Future<void> _fetchPage(
     int pageKey,
-    PoolCategory category,
-    PoolOrder order, {
+    DanbooruPoolCategory category,
+    DanbooruPoolOrder order, {
     String? name,
     String? description,
   }) async {
@@ -218,7 +218,7 @@ class _PoolPagedSliverGridState extends ConsumerState<PoolPagedSliverGrid> {
       padding: EdgeInsets.symmetric(horizontal: imageGridPadding),
       sliver: PagedSliverGrid(
         pagingController: controller,
-        builderDelegate: PagedChildBuilderDelegate<Pool>(
+        builderDelegate: PagedChildBuilderDelegate<DanbooruPool>(
           itemBuilder: (context, pool, index) => PoolGridItem(pool: pool),
           firstPageProgressIndicatorBuilder: (context) => const Center(
             child: CircularProgressIndicator.adaptive(),

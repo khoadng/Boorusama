@@ -12,7 +12,7 @@ import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'pool_page.dart';
+import 'danbooru_pool_page.dart';
 
 class PoolSearchPage extends ConsumerStatefulWidget {
   const PoolSearchPage({super.key});
@@ -173,7 +173,7 @@ class _SearchBar extends ConsumerWidget {
   }
 }
 
-Color _poolCategoryToColor(PoolCategory category) => switch (category) {
-      PoolCategory.series => TagColors.dark().copyright,
+Color _poolCategoryToColor(DanbooruPoolCategory category) => switch (category) {
+      DanbooruPoolCategory.series => TagColors.dark().copyright,
       _ => TagColors.dark().general,
     };

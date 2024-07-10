@@ -27,14 +27,14 @@ class PoolOptionsHeader extends ConsumerWidget {
       ),
       child: ChoiceOptionSelectorList(
         icon: const Icon(Symbols.sort),
-        options: PoolOrder.values,
+        options: DanbooruPoolOrder.values,
         hasNullOption: false,
         optionLabelBuilder: (value) =>
             value != null ? _poolOrderToString(value).tr() : 'All',
         sheetTitle: 'Sort by',
         onSelected: (value) {
           ref.read(danbooruSelectedPoolOrderProvider.notifier).state =
-              value ?? PoolOrder.newest;
+              value ?? DanbooruPoolOrder.newest;
         },
         selectedOption: order,
       ),
@@ -42,9 +42,9 @@ class PoolOptionsHeader extends ConsumerWidget {
   }
 }
 
-String _poolOrderToString(PoolOrder order) => switch (order) {
-      PoolOrder.newest => 'pool.order.new',
-      PoolOrder.postCount => 'pool.order.post_count',
-      PoolOrder.name => 'pool.order.name',
-      PoolOrder.latest => 'pool.order.recent',
+String _poolOrderToString(DanbooruPoolOrder order) => switch (order) {
+      DanbooruPoolOrder.newest => 'pool.order.new',
+      DanbooruPoolOrder.postCount => 'pool.order.post_count',
+      DanbooruPoolOrder.name => 'pool.order.name',
+      DanbooruPoolOrder.latest => 'pool.order.recent',
     };

@@ -18,7 +18,7 @@ class PoolTiles extends StatelessWidget {
     required this.pools,
   });
 
-  final List<Pool> pools;
+  final List<DanbooruPool> pools;
 
   @override
   Widget build(BuildContext context) {

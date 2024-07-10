@@ -14,13 +14,13 @@ final danbooruPoolRepoProvider =
     Provider.family<PoolRepository, BooruConfig>((ref, config) {
   final client = ref.watch(danbooruClientProvider(config));
 
-  Pool poolDtoToPool(danbooru.PoolDto dto) => Pool(
+  DanbooruPool poolDtoToDanbooruPool(danbooru.PoolDto dto) => DanbooruPool(
         id: dto.id!,
         postIds: dto.postIds!,
         category: switch (dto.category) {
-          'collection' => PoolCategory.collection,
-          'series' => PoolCategory.series,
-          _ => PoolCategory.unknown
+          'collection' => DanbooruPoolCategory.collection,
+          'series' => DanbooruPoolCategory.series,
+          _ => DanbooruPoolCategory.unknown
         },
         description: dto.description!,
         postCount: dto.postCount!,
@@ -35,35 +35,35 @@ final danbooruPoolRepoProvider =
         page: page,
         limit: 20,
         category: switch (category) {
-          PoolCategory.collection => danbooru.PoolCategory.collection,
-          PoolCategory.series => danbooru.PoolCategory.series,
-          PoolCategory.unknown => null,
+          DanbooruPoolCategory.collection => danbooru.PoolCategory.collection,
+          DanbooruPoolCategory.series => danbooru.PoolCategory.series,
+          DanbooruPoolCategory.unknown => null,
           null => null,
         },
         order: switch (order) {
-          PoolOrder.newest => danbooru.PoolOrder.createdAt,
-          PoolOrder.latest => danbooru.PoolOrder.updatedAt,
-          PoolOrder.postCount => danbooru.PoolOrder.postCount,
-          PoolOrder.name => danbooru.PoolOrder.name,
+          DanbooruPoolOrder.newest => danbooru.PoolOrder.createdAt,
+          DanbooruPoolOrder.latest => danbooru.PoolOrder.updatedAt,
+          DanbooruPoolOrder.postCount => danbooru.PoolOrder.postCount,
+          DanbooruPoolOrder.name => danbooru.PoolOrder.name,
           null => null,
         },
         name: name,
         description: description,
       );
 
-      return data.map(poolDtoToPool).toList();
+      return data.map(poolDtoToDanbooruPool).toList();
     },
     fetchByPostId: (postId) => client
         .getPoolsFromPostId(
           postId: postId,
           limit: 20,
         )
-        .then((value) => value.map(poolDtoToPool).toList()),
+        .then((value) => value.map(poolDtoToDanbooruPool).toList()),
   );
 });
 
-final poolSuggestionsProvider =
-    FutureProvider.autoDispose.family<List<Pool>, String>((ref, query) async {
+final poolSuggestionsProvider = FutureProvider.autoDispose
+    .family<List<DanbooruPool>, String>((ref, query) async {
   if (query.isEmpty) return [];
 
   final config = ref.watchConfig;
@@ -72,7 +72,7 @@ final poolSuggestionsProvider =
   return repo.getPools(
     1,
     name: query,
-    order: PoolOrder.postCount,
+    order: DanbooruPoolOrder.postCount,
   );
 });
 
@@ -109,10 +109,10 @@ final poolDescriptionProvider = FutureProvider.autoDispose
 });
 
 final danbooruSelectedPoolCategoryProvider =
-    StateProvider<PoolCategory>((ref) => PoolCategory.series);
+    StateProvider<DanbooruPoolCategory>((ref) => DanbooruPoolCategory.series);
 
 final danbooruSelectedPoolOrderProvider =
-    StateProvider<PoolOrder>((ref) => PoolOrder.latest);
+    StateProvider<DanbooruPoolOrder>((ref) => DanbooruPoolOrder.latest);
 
 final danbooruPoolCoversProvider = NotifierProvider.family<PoolCoversNotifier,
     Map<int, PoolCover?>, BooruConfig>(

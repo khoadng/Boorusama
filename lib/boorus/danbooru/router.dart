@@ -38,6 +38,7 @@ import 'pages/danbooru_artist_search_page.dart';
 import 'pages/danbooru_dmail_page.dart';
 import 'pages/danbooru_forum_page.dart';
 import 'pages/danbooru_my_uploads_page.dart';
+import 'pages/danbooru_pool_page.dart';
 import 'pages/danbooru_post_versions_page.dart';
 import 'pages/explore_hot_page.dart';
 import 'pages/explore_most_viewed_page.dart';
@@ -45,7 +46,6 @@ import 'pages/explore_popular_page.dart';
 import 'pages/favorite_group_details_page.dart';
 import 'pages/favorite_groups_page.dart';
 import 'pages/pool_detail_page.dart';
-import 'pages/pool_page.dart';
 import 'pages/pool_search_page.dart';
 import 'pages/saved_search_feed_page.dart';
 import 'pages/saved_search_page.dart';
@@ -57,7 +57,7 @@ import 'pages/widgets/saved_searches/edit_saved_search_sheet.dart';
 import 'pages/widgets/search/related_tag_action_sheet.dart';
 import 'router_page_constant.dart';
 
-void goToPoolDetailPage(BuildContext context, Pool pool) {
+void goToPoolDetailPage(BuildContext context, DanbooruPool pool) {
   context.navigator.push(CupertinoPageRoute(
     builder: (_) => PoolDetailPage.of(context, pool: pool),
   ));
@@ -157,7 +157,7 @@ void goToSavedSearchEditPage(BuildContext context) {
 
 void goToPoolPage(BuildContext context, WidgetRef ref) {
   context.navigator.push(CupertinoPageRoute(
-    builder: (_) => const PoolPage(),
+    builder: (_) => const DanbooruPoolPage(),
   ));
 }
 

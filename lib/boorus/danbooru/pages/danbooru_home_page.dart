@@ -26,10 +26,10 @@ import 'blacklisted_tags_page.dart';
 import 'danbooru_artist_search_page.dart';
 import 'danbooru_desktop_home_page.dart';
 import 'danbooru_forum_page.dart';
+import 'danbooru_pool_page.dart';
 import 'explore_page.dart';
 import 'favorite_groups_page.dart';
 import 'favorites_page.dart';
-import 'pool_page.dart';
 import 'saved_search_feed_page.dart';
 import 'user_details_page.dart';
 
@@ -332,7 +332,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
           // 1
           const ExplorePageDesktop(),
           // 2
-          const PoolPage(),
+          const DanbooruPoolPage(),
           // 3
           const DanbooruForumPage(),
           // 4

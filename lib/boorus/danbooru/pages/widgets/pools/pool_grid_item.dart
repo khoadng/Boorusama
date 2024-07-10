@@ -18,7 +18,7 @@ class PoolGridItem extends ConsumerWidget {
     required this.pool,
   });
 
-  final Pool pool;
+  final DanbooruPool pool;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

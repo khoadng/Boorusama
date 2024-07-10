@@ -31,8 +31,8 @@ final danbooruPostDetailsChildrenProvider = FutureProvider.family
       );
 });
 
-final danbooruPostDetailsPoolsProvider =
-    FutureProvider.family.autoDispose<List<Pool>, int>((ref, postId) async {
+final danbooruPostDetailsPoolsProvider = FutureProvider.family
+    .autoDispose<List<DanbooruPool>, int>((ref, postId) async {
   final config = ref.watchConfig;
   final repo = ref.watch(danbooruPoolRepoProvider(config));
 

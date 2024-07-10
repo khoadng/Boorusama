@@ -1,12 +1,8 @@
-// Flutter imports:
-import 'package:flutter/cupertino.dart';
-
 // Package imports:
 import 'package:equatable/equatable.dart';
 
-@immutable
-class Pool extends Equatable {
-  const Pool({
+class DanbooruPool extends Equatable {
+  const DanbooruPool({
     required this.id,
     required this.postIds,
     required this.category,
@@ -17,10 +13,10 @@ class Pool extends Equatable {
     required this.updatedAt,
   });
 
-  factory Pool.empty() => Pool(
+  factory DanbooruPool.empty() => DanbooruPool(
         id: -1,
         postIds: const [],
-        category: PoolCategory.unknown,
+        category: DanbooruPoolCategory.unknown,
         description: '',
         postCount: 0,
         name: '',
@@ -28,11 +24,11 @@ class Pool extends Equatable {
         updatedAt: DateTime(1),
       );
 
-  Pool copyWith({
+  DanbooruPool copyWith({
     PoolId? id,
     List<int>? postIds,
   }) =>
-      Pool(
+      DanbooruPool(
         id: id ?? this.id,
         postIds: postIds ?? this.postIds,
         category: category,
@@ -45,7 +41,7 @@ class Pool extends Equatable {
 
   final PoolId id;
   final List<int> postIds;
-  final PoolCategory category;
+  final DanbooruPoolCategory category;
   final PoolDescription description;
   final PoolPostCount postCount;
   final PoolName name;
@@ -65,7 +61,7 @@ class Pool extends Equatable {
       ];
 }
 
-enum PoolOrder {
+enum DanbooruPoolOrder {
   latest,
   newest,
   postCount,
@@ -77,7 +73,7 @@ typedef PoolDescription = String;
 typedef PoolPostCount = int;
 typedef PoolId = int;
 
-enum PoolCategory {
+enum DanbooruPoolCategory {
   unknown,
   collection,
   series;
