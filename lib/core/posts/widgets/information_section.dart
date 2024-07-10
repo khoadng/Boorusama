@@ -58,21 +58,20 @@ class InformationSection extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  characterTags.isEmpty
-                      ? 'Original'
-                      : generateCharacterOnlyReadableName(characterTags)
-                          .replaceUnderscoreWithSpace()
-                          .titleCase,
-                  overflow: TextOverflow.fade,
-                  style: context.textTheme.titleLarge?.copyWith(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w800,
+                if (characterTags.isNotEmpty)
+                  Text(
+                    generateCharacterOnlyReadableName(characterTags)
+                        .replaceUnderscoreWithSpace()
+                        .titleCase,
+                    overflow: TextOverflow.fade,
+                    style: context.textTheme.titleLarge?.copyWith(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
+                    ),
+                    maxLines: 1,
+                    softWrap: false,
                   ),
-                  maxLines: 1,
-                  softWrap: false,
-                ),
-                const SizedBox(height: 5),
+                if (characterTags.isNotEmpty) const SizedBox(height: 5),
                 if (copyrightTags.isNotEmpty)
                   Text(
                     generateCopyrightOnlyReadableName(copyrightTags)
