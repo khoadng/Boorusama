@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 
 class BooruChip extends ConsumerWidget {
@@ -21,6 +22,7 @@ class BooruChip extends ConsumerWidget {
     this.showBackground = true,
     this.showBorder = true,
     this.disabled = false,
+    this.chipColors,
   });
 
   final Color? color;
@@ -33,15 +35,17 @@ class BooruChip extends ConsumerWidget {
   final bool showBackground;
   final bool showBorder;
   final bool disabled;
+  final ChipColors? chipColors;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final colors = color != null
-        ? context.generateChipColors(
-            color!,
-            ref.watch(settingsProvider),
-          )
-        : null;
+    final colors = chipColors ??
+        (color != null
+            ? context.generateChipColors(
+                color!,
+                ref.watch(settingsProvider),
+              )
+            : null);
 
     return trailing != null
         ? FilledButton.icon(

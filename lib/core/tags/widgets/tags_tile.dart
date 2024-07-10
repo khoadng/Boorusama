@@ -19,6 +19,7 @@ class TagsTile extends ConsumerWidget {
     this.initialExpanded = false,
     required this.tags,
     this.tagColorBuilder,
+    this.padding,
   });
 
   final Post post;
@@ -28,6 +29,7 @@ class TagsTile extends ConsumerWidget {
   final bool initialExpanded;
   final List<TagGroupItem>? tags;
   final Color? Function(Tag tag)? tagColorBuilder;
+  final EdgeInsetsGeometry? padding;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -46,7 +48,7 @@ class TagsTile extends ConsumerWidget {
             value ? onExpand?.call() : onCollapse?.call(),
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
+            padding: padding ?? const EdgeInsets.symmetric(horizontal: 12),
             child: PostTagList(
               tags: tags,
               itemBuilder: (context, tag) => GeneralTagContextMenu(
