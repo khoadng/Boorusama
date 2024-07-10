@@ -21,7 +21,16 @@ import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/time.dart';
 import 'package:boorusama/utils/html_utils.dart';
-import 'package:boorusama/widgets/sliver_sized_box.dart';
+import 'package:boorusama/widgets/widgets.dart';
+
+final selectedPoolDetailsOrderProvider = StateProvider<PoolDetailsOrder>(
+  (ref) => PoolDetailsOrder.latest,
+);
+
+String _poolQuery(int poolId, PoolDetailsOrder? order) => switch (order) {
+      PoolDetailsOrder.oldest => 'pool:$poolId order:id',
+      _ => 'pool:$poolId',
+    };
 
 class PoolDetailPage extends ConsumerWidget {
   const PoolDetailPage({
@@ -48,7 +57,10 @@ class PoolDetailPage extends ConsumerWidget {
 
     return PostScope(
       fetcher: (page) => ref.read(danbooruPostRepoProvider(config)).getPosts(
-            'pool:${pool.id}',
+            _poolQuery(
+              pool.id,
+              ref.read(selectedPoolDetailsOrderProvider),
+            ),
             page,
           ),
       builder: (context, controller, errors) => DanbooruInfinitePostList(
@@ -100,6 +112,20 @@ class PoolDetailPage extends ConsumerWidget {
                 : const SliverSizedBox.shrink(),
             orElse: () => const SliverSizedBox.shrink(),
           ),
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 8,
+            ),
+            sliver: SliverToBoxAdapter(
+              child: PoolCategoryToggleSwitch(
+                onToggle: (order) {
+                  ref.read(selectedPoolDetailsOrderProvider.notifier).state =
+                      order;
+                  controller.refresh();
+                },
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -133,5 +159,34 @@ void _onHtmlLinkTapped(
 //             "/posts/search",
 //             routeSettings: RouteSettings(arguments: [tag.rawName]),
 //           )
+  }
+}
+
+enum PoolDetailsOrder {
+  latest,
+  oldest,
+}
+
+class PoolCategoryToggleSwitch extends StatelessWidget {
+  const PoolCategoryToggleSwitch({
+    super.key,
+    required this.onToggle,
+  });
+
+  final void Function(PoolDetailsOrder order) onToggle;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: BooruSegmentedButton(
+        initialValue: PoolDetailsOrder.latest,
+        fixedWidth: 120,
+        segments: const {
+          PoolDetailsOrder.latest: 'Latest',
+          PoolDetailsOrder.oldest: 'Oldest',
+        },
+        onChanged: (value) => onToggle(value),
+      ),
+    );
   }
 }
