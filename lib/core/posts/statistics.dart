@@ -103,6 +103,7 @@ Map<String, int> countDomain(Iterable<Post> posts) {
     '.catbox.moe': 'catbox.moe',
     'imgur.com': 'imgur.com',
     '.gumroad.com': 'gumroad.com',
+    '.wixmp.com': 'deviantart.com',
   };
 
   for (final entry in toBeMergedDomains.entries) {
