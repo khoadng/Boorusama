@@ -84,3 +84,21 @@ typedef PoolCover = ({
   String? url,
   double? aspectRatio,
 });
+
+enum PoolDetailsOrder {
+  latest,
+  oldest,
+}
+
+extension DanbooruPoolX on DanbooruPool {
+  bool get isEmpty => id == -1;
+
+  String get _query => 'pool:$id';
+
+  String toQuery(PoolDetailsOrder? order) => switch (order) {
+        PoolDetailsOrder.oldest => '$_query order:id',
+        _ => _query,
+      };
+
+  String toSearchQuery() => _query;
+}

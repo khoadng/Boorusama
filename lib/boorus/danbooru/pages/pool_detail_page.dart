@@ -27,11 +27,6 @@ final selectedPoolDetailsOrderProvider = StateProvider<PoolDetailsOrder>(
   (ref) => PoolDetailsOrder.latest,
 );
 
-String _poolQuery(int poolId, PoolDetailsOrder? order) => switch (order) {
-      PoolDetailsOrder.oldest => 'pool:$poolId order:id',
-      _ => 'pool:$poolId',
-    };
-
 class PoolDetailPage extends ConsumerWidget {
   const PoolDetailPage({
     super.key,
@@ -57,10 +52,7 @@ class PoolDetailPage extends ConsumerWidget {
 
     return PostScope(
       fetcher: (page) => ref.read(danbooruPostRepoProvider(config)).getPosts(
-            _poolQuery(
-              pool.id,
-              ref.read(selectedPoolDetailsOrderProvider),
-            ),
+            pool.toQuery(ref.read(selectedPoolDetailsOrderProvider)),
             page,
           ),
       builder: (context, controller, errors) => DanbooruInfinitePostList(
@@ -72,10 +64,21 @@ class PoolDetailPage extends ConsumerWidget {
             floating: true,
             actions: [
               IconButton(
+                icon: const Icon(Symbols.search),
+                onPressed: () {
+                  goToSearchPage(
+                    context,
+                    tag: pool.toSearchQuery(),
+                  );
+                },
+              ),
+              IconButton(
                 onPressed: () {
                   goToBulkDownloadPage(
                     context,
-                    ['pool:${pool.id}'],
+                    [
+                      pool.toSearchQuery(),
+                    ],
                     ref: ref,
                   );
                 },
@@ -160,11 +163,6 @@ void _onHtmlLinkTapped(
 //             routeSettings: RouteSettings(arguments: [tag.rawName]),
 //           )
   }
-}
-
-enum PoolDetailsOrder {
-  latest,
-  oldest,
 }
 
 class PoolCategoryToggleSwitch extends StatelessWidget {
