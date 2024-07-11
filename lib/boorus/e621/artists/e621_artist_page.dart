@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/e621/feats/artists/artists.dart';
-import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
+import 'package:boorusama/boorus/e621/artists/artists.dart';
+import 'package:boorusama/boorus/e621/posts/posts.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';

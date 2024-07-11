@@ -5,8 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/e621/e621.dart';
-import 'package:boorusama/boorus/e621/feats/favorites/favorites.dart';
-import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
+import 'package:boorusama/boorus/e621/favorites/favorites.dart';
+import 'package:boorusama/boorus/e621/posts/posts.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/e621/types/types.dart';
 import 'package:boorusama/core/configs/configs.dart';

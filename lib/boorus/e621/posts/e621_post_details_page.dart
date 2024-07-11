@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/e621/feats/artists/artists.dart';
-import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
-import 'package:boorusama/boorus/e621/feats/tags/e621_tag_category.dart';
+import 'package:boorusama/boorus/e621/artists/artists.dart';
+import 'package:boorusama/boorus/e621/posts/posts.dart';
+import 'package:boorusama/boorus/e621/tags/tags.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/artists/artists.dart';
 import 'package:boorusama/core/posts/posts.dart';

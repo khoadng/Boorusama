@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/e621/e621.dart';
-import 'package:boorusama/boorus/e621/feats/favorites/favorites.dart';
+import 'package:boorusama/boorus/e621/favorites/favorites.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/functional.dart';
 

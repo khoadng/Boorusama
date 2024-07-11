@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/boorus/e621/feats/artists/artists.dart';
+import 'package:boorusama/boorus/e621/artists/artists.dart';
 import 'package:boorusama/clients/e621/e621_client.dart';
 import 'package:boorusama/clients/e621/types/types.dart';
 import 'package:boorusama/functional.dart';
