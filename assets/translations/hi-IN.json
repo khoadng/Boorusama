@@ -1,14 +1,14 @@
 {
     "generic": {
-        "done": "",
+        "done": "पूर्ण",
         "errors": {
-            "no_data": "",
-            "unknown": ""
+            "no_data": "कोई डेटा मौजूद नहीं है",
+            "unknown": "कुछ गड़बड़ हो गई"
         },
         "action": {
-            "add": "",
-            "delete": "",
-            "edit": "",
+            "add": "जोड़ना",
+            "delete": "हटाना",
+            "edit": "संपादन",
             "ok": "",
             "cancel": "",
             "duplicate": ""
