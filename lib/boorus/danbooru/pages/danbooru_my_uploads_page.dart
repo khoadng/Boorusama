@@ -168,7 +168,11 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
                     },
                   );
 
-          return uploads.map((e) => e.previewPost).whereNotNull().toList();
+          return uploads
+              .map((e) => e.previewPost)
+              .whereNotNull()
+              .toList()
+              .toResult();
         },
       ),
       builder: (context, controller, errors) => LayoutBuilder(

@@ -44,7 +44,7 @@ final e621PostRepoProvider =
 
       ref.read(e621FavoritesProvider(config).notifier).preload(data);
 
-      return data;
+      return data.toResult();
     },
     getSettings: () async => ref.read(imageListingSettingsProvider),
   );

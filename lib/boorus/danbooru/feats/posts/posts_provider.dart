@@ -45,7 +45,8 @@ final danbooruPostRepoProvider =
                   ))
               .toList());
 
-      return ref.read(danbooruPostFetchTransformerProvider(config))(posts);
+      return ref
+          .read(danbooruPostFetchTransformerProvider(config))(posts.toResult());
     },
     getSettings: () async => ref.read(imageListingSettingsProvider),
   );
@@ -99,23 +100,25 @@ class DanbooruPostCreateNotifier
   }
 }
 
-typedef PostFetchTransformer = Future<List<DanbooruPost>> Function(
-    List<DanbooruPost> posts);
+typedef PostFetchTransformer = Future<PostResult<DanbooruPost>> Function(
+    PostResult<DanbooruPost> posts);
 
 final danbooruPostFetchTransformerProvider =
     Provider.family<PostFetchTransformer, BooruConfig>((ref, config) {
-  return (posts) async {
+  return (r) async {
     final user = await ref.read(danbooruCurrentUserProvider(config).future);
 
     if (user != null) {
-      final ids = posts.map((e) => e.id).toList();
+      final ids = r.posts.map((e) => e.id).toList();
 
       ref.read(danbooruFavoritesProvider(config).notifier).checkFavorites(ids);
       ref.read(danbooruPostVotesProvider(config).notifier).getVotes(ids);
       ref.read(danbooruTagListProvider(config).notifier).removeTags(ids);
     }
 
-    return Future.value(posts).then(filterFlashFiles());
+    final value = await Future.value(r.posts).then(filterFlashFiles());
+
+    return r.copyWith(posts: value);
   };
 });
 

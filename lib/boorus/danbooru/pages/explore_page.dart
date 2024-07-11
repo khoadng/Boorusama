@@ -150,7 +150,7 @@ class _MostViewedExploreState extends ConsumerState<_MostViewedExplore> {
     return ExploreSection(
       title: 'explore.most_viewed'.tr(),
       builder: (_) => ref.watch(danbooruMostViewedTodayProvider).maybeWhen(
-            data: (posts) => ExploreList(posts: posts),
+            data: (r) => ExploreList(posts: r.posts),
             orElse: () => const ExploreList(posts: []),
           ),
       onPressed: widget.onPressed,
@@ -175,7 +175,7 @@ class _HotExploreState extends ConsumerState<_HotExplore> {
     return ExploreSection(
       title: 'explore.hot'.tr(),
       builder: (_) => ref.watch(danbooruHotTodayProvider).maybeWhen(
-            data: (posts) => ExploreList(posts: posts),
+            data: (r) => ExploreList(posts: r.posts),
             orElse: () => const ExploreList(posts: []),
           ),
       onPressed: widget.onPressed,
@@ -200,7 +200,7 @@ class _PopularExploreState extends ConsumerState<_PopularExplore> {
     return ExploreSection(
       title: 'explore.popular'.tr(),
       builder: (_) => ref.watch(danbooruPopularTodayProvider).maybeWhen(
-            data: (posts) => ExploreList(posts: posts),
+            data: (r) => ExploreList(posts: r.posts),
             orElse: () => const ExploreList(posts: []),
           ),
       onPressed: widget.onPressed,

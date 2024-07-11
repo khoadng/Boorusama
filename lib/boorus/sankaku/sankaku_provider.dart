@@ -33,80 +33,85 @@ final sankakuPostRepoProvider =
           limit: limit,
         );
 
-        return posts.map((e) {
-          final hasParent = e.parentId != null;
-          final hasChilren = e.hasChildren ?? false;
-          final hasParentOrChildren = hasParent || hasChilren;
-          final artistTags = e.tags
-                  ?.where((e) =>
-                      TagCategory.fromLegacyId(e.type) == TagCategory.artist())
-                  .map((e) => Tag(
-                        name: e.tagName ?? '????',
-                        category: TagCategory.artist(),
-                        postCount: e.postCount ?? 0,
-                      ))
-                  .toList() ??
-              [];
+        return posts
+            .map((e) {
+              final hasParent = e.parentId != null;
+              final hasChilren = e.hasChildren ?? false;
+              final hasParentOrChildren = hasParent || hasChilren;
+              final artistTags = e.tags
+                      ?.where((e) =>
+                          TagCategory.fromLegacyId(e.type) ==
+                          TagCategory.artist())
+                      .map((e) => Tag(
+                            name: e.tagName ?? '????',
+                            category: TagCategory.artist(),
+                            postCount: e.postCount ?? 0,
+                          ))
+                      .toList() ??
+                  [];
 
-          final characterTags = e.tags
-                  ?.where((e) =>
-                      TagCategory.fromLegacyId(e.type) ==
-                      TagCategory.character())
-                  .map((e) => Tag(
-                        name: e.tagName ?? '????',
-                        category: TagCategory.character(),
-                        postCount: e.postCount ?? 0,
-                      ))
-                  .toList() ??
-              [];
+              final characterTags = e.tags
+                      ?.where((e) =>
+                          TagCategory.fromLegacyId(e.type) ==
+                          TagCategory.character())
+                      .map((e) => Tag(
+                            name: e.tagName ?? '????',
+                            category: TagCategory.character(),
+                            postCount: e.postCount ?? 0,
+                          ))
+                      .toList() ??
+                  [];
 
-          final copyrightTags = e.tags
-                  ?.where((e) =>
-                      TagCategory.fromLegacyId(e.type) ==
-                      TagCategory.copyright())
-                  .map((e) => Tag(
-                        name: e.tagName ?? '????',
-                        category: TagCategory.copyright(),
-                        postCount: e.postCount ?? 0,
-                      ))
-                  .toList() ??
-              [];
-          final timestamp = e.createdAt?.s;
+              final copyrightTags = e.tags
+                      ?.where((e) =>
+                          TagCategory.fromLegacyId(e.type) ==
+                          TagCategory.copyright())
+                      .map((e) => Tag(
+                            name: e.tagName ?? '????',
+                            category: TagCategory.copyright(),
+                            postCount: e.postCount ?? 0,
+                          ))
+                      .toList() ??
+                  [];
+              final timestamp = e.createdAt?.s;
 
-          return SankakuPost(
-            id: e.id ?? 0,
-            thumbnailImageUrl: e.previewUrl ?? '',
-            sampleImageUrl: e.sampleUrl ?? '',
-            originalImageUrl: e.fileUrl ?? '',
-            tags: e.tags?.map((e) => e.tagName).whereNotNull().toSet() ?? {},
-            rating: mapStringToRating(e.rating),
-            hasComment: e.hasComments ?? false,
-            isTranslated: false,
-            hasParentOrChildren: hasParentOrChildren,
-            source: PostSource.from(e.source),
-            score: e.totalScore ?? 0,
-            duration: e.videoDuration ?? 0,
-            fileSize: e.fileSize ?? 0,
-            format: extractFileExtension(e.fileType) ?? '',
-            hasSound: null,
-            height: e.height?.toDouble() ?? 0,
-            md5: e.md5 ?? '',
-            videoThumbnailUrl: e.previewUrl ?? '',
-            videoUrl: e.fileUrl ?? '',
-            width: e.width?.toDouble() ?? 0,
-            artistDetailsTags: artistTags,
-            characterDetailsTags: characterTags,
-            copyrightDetailsTags: copyrightTags,
-            createdAt: timestamp != null
-                ? DateTime.fromMillisecondsSinceEpoch(timestamp * 1000)
-                : null,
-            uploaderId: e.author?.id,
-            metadata: PostMetadata(
-              page: page,
-              search: tags.join(' '),
-            ),
-          );
-        }).toList();
+              return SankakuPost(
+                id: e.id ?? 0,
+                thumbnailImageUrl: e.previewUrl ?? '',
+                sampleImageUrl: e.sampleUrl ?? '',
+                originalImageUrl: e.fileUrl ?? '',
+                tags:
+                    e.tags?.map((e) => e.tagName).whereNotNull().toSet() ?? {},
+                rating: mapStringToRating(e.rating),
+                hasComment: e.hasComments ?? false,
+                isTranslated: false,
+                hasParentOrChildren: hasParentOrChildren,
+                source: PostSource.from(e.source),
+                score: e.totalScore ?? 0,
+                duration: e.videoDuration ?? 0,
+                fileSize: e.fileSize ?? 0,
+                format: extractFileExtension(e.fileType) ?? '',
+                hasSound: null,
+                height: e.height?.toDouble() ?? 0,
+                md5: e.md5 ?? '',
+                videoThumbnailUrl: e.previewUrl ?? '',
+                videoUrl: e.fileUrl ?? '',
+                width: e.width?.toDouble() ?? 0,
+                artistDetailsTags: artistTags,
+                characterDetailsTags: characterTags,
+                copyrightDetailsTags: copyrightTags,
+                createdAt: timestamp != null
+                    ? DateTime.fromMillisecondsSinceEpoch(timestamp * 1000)
+                    : null,
+                uploaderId: e.author?.id,
+                metadata: PostMetadata(
+                  page: page,
+                  search: tags.join(' '),
+                ),
+              );
+            })
+            .toList()
+            .toResult();
       },
     );
   },

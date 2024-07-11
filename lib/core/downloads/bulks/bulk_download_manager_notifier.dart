@@ -35,13 +35,13 @@ class BulkDownloadManagerNotifier extends FamilyNotifier<void, BooruConfig> {
   ) async {
     final options = ref.read(bulkDownloadOptionsProvider);
 
-    final posts = await postRepo.getPostsFromTagsOrEmpty(
+    final r = await postRepo.getPostsFromTagsOrEmpty(
       tags,
       page: page,
       limit: options.postPerPage,
     );
 
-    final filteredItems = _filterBlacklistedTags(posts, patterns);
+    final filteredItems = _filterBlacklistedTags(r.posts, patterns);
 
     return filteredItems;
   }

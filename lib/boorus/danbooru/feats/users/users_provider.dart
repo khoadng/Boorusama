@@ -86,19 +86,12 @@ final danbooruUserUploadsProvider =
   final config = ref.watchConfig;
 
   final repo = ref.watch(danbooruPostRepoProvider(config));
-  final uploads = await repo
-      .getPosts(
-        'user:$name',
-        1,
-        limit: 50,
-      )
-      .run()
-      .then((value) => value.fold(
-            (l) => <DanbooruPost>[],
-            (r) => r,
-          ));
+  final uploads = await repo.getPostsFromTagsOrEmpty(
+    'user:$name',
+    limit: 50,
+  );
 
-  return uploads;
+  return uploads.posts;
 });
 
 final danbooruUserFavoritesProvider = FutureProvider.autoDispose
@@ -111,7 +104,7 @@ final danbooruUserFavoritesProvider = FutureProvider.autoDispose
     limit: 50,
   );
 
-  return favs;
+  return favs.posts;
 });
 
 final danbooruCreatorHiveBoxProvider = Provider<Box>((ref) {

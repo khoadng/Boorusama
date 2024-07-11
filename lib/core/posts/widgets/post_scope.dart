@@ -76,7 +76,7 @@ class _PostScopeState<T extends Post> extends ConsumerState<PostScope<T>> {
             }
             return <T>[];
           },
-          (r) => r,
+          (r) => r.posts,
         ));
   }
 

@@ -72,36 +72,36 @@ final danbooruExploreRepoProvider =
 );
 
 final danbooruMostViewedTodayProvider =
-    FutureProvider<List<DanbooruPost>>((ref) async {
+    FutureProvider<PostResult<DanbooruPost>>((ref) async {
   final repo = ref
       .watch(danbooruExploreRepoProvider(ref.watchConfig))
       .getMostViewedPosts(DateTime.now());
 
   return repo.run().then((value) => value.fold(
-        (l) => <DanbooruPost>[],
+        (l) => <DanbooruPost>[].toResult(),
         (r) => r,
       ));
 });
 
 final danbooruPopularTodayProvider =
-    FutureProvider<List<DanbooruPost>>((ref) async {
+    FutureProvider<PostResult<DanbooruPost>>((ref) async {
   final repo = ref
       .watch(danbooruExploreRepoProvider(ref.watchConfig))
       .getPopularPosts(DateTime.now(), 1, TimeScale.day);
 
   return repo.run().then((value) => value.fold(
-        (l) => <DanbooruPost>[],
+        (l) => <DanbooruPost>[].toResult(),
         (r) => r,
       ));
 });
 
 final danbooruHotTodayProvider =
-    FutureProvider<List<DanbooruPost>>((ref) async {
+    FutureProvider<PostResult<DanbooruPost>>((ref) async {
   final repo =
       ref.watch(danbooruExploreRepoProvider(ref.watchConfig)).getHotPosts(1);
 
   return repo.run().then((value) => value.fold(
-        (l) => <DanbooruPost>[],
+        (l) => <DanbooruPost>[].toResult(),
         (r) => r,
       ));
 });

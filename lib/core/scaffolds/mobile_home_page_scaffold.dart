@@ -29,7 +29,8 @@ class MobileHomePageScaffold extends ConsumerWidget {
     final fetcher = booruBuilder?.postFetcher;
 
     return PostScope(
-      fetcher: (page) => fetcher?.call(page, '') ?? TaskEither.of(<Post>[]),
+      fetcher: (page) =>
+          fetcher?.call(page, '') ?? TaskEither.of(<Post>[].toResult()),
       builder: (context, postController, errors) => InfinitePostListScaffold(
         errors: errors,
         controller: postController,

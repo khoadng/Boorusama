@@ -37,16 +37,16 @@ class PoolCoversNotifier
       for (var pool in poolsToFetch) pool.postIds.last: pool.id,
     };
 
-    final posts = await postRepo
+    final r = await postRepo
         .getPostsFromIds(postPoolMap.keys.toList())
         .run()
         .then((value) => value.fold(
-              (l) => <DanbooruPost>[],
+              (l) => <DanbooruPost>[].toResult(),
               (r) => r,
             ));
 
     final postMap = <int, DanbooruPost>{
-      for (var post in posts) post.id: post,
+      for (var post in r.posts) post.id: post,
     };
 
     for (var postId in postPoolMap.keys) {

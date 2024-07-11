@@ -31,10 +31,10 @@ class DanbooruArtistCharacterPostRepository
                 limit: limit,
               )
               .flatMap((r) => TaskEither(() async {
-                    await cache.put(name, r);
+                    await cache.put(name, r.posts);
                     return Either.of(r);
                   })),
-          (data) => TaskEither.right(data),
+          (data) => TaskEither.right(data.toResult()),
         );
   }
 }

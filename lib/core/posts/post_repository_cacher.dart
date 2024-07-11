@@ -29,13 +29,13 @@ class PostRepositoryCacher<T extends Post> implements PostRepository<T> {
 
         // Check if the data exists in the cache
         if (cache.exist(name)) {
-          return cache.get(name)!;
+          return cache.get(name)!.toResult();
         }
 
         // If data is not in the cache, retrieve it from the repository and update the cache
         final data = await $(repository.getPosts(tags, page, limit: limit));
 
-        await cache.put(name, data);
+        await cache.put(name, data.posts);
 
         return data;
       });

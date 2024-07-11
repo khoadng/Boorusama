@@ -40,7 +40,7 @@ class _E621PopularPageState extends ConsumerState<E621PopularPage> {
         body: SafeArea(
           child: PostScope(
             fetcher: (page) => page > 1
-                ? TaskEither.of(<E621Post>[])
+                ? TaskEither.of(<E621Post>[].toResult())
                 : repo.getPopularPosts(selectedDate, scale),
             builder: (context, controller, errors) => Column(
               children: [

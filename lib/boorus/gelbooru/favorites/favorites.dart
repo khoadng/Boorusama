@@ -28,16 +28,16 @@ class GelbooruFavoritesPage extends ConsumerWidget {
     return FavoritesPageScaffold(
       favQueryBuilder: () => query,
       fetcher: (page) => TaskEither.Do(($) async {
-        final posts = await $(
+        final r = await $(
             ref.read(gelbooruPostRepoProvider(config)).getPosts(query, page));
 
         // all posts from this page are already favorited by the user
         ref.read(gelbooruFavoritesProvider(config).notifier).preloadInternal(
-              posts,
+              r.posts,
               selfFavorited: (post) => true,
             );
 
-        return posts;
+        return r;
       }),
     );
   }

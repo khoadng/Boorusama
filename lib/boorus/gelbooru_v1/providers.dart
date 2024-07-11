@@ -42,7 +42,8 @@ final gelbooruV1PostRepoProvider = Provider.family<PostRepository, BooruConfig>(
                     search: tags.join(' '),
                   ),
                 ))
-            .toList();
+            .toList()
+            .toResult();
       },
     );
   },

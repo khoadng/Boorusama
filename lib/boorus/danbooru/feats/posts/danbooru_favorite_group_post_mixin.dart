@@ -16,11 +16,11 @@ mixin DanbooruFavoriteGroupPostMixin {
   Future<List<DanbooruPost>> getPostsFromIdQueue(Queue<int> queue) async {
     final ids = queue.dequeue(20);
 
-    final posts = await postRepository
+    final r = await postRepository
         .getPostsFromIds(ids)
         .run()
         .then((value) => value.fold(
-              (l) => [],
+              (l) => <DanbooruPost>[].toResult(),
               (r) => r,
             ));
 
@@ -29,7 +29,7 @@ mixin DanbooruFavoriteGroupPostMixin {
       orderMap[ids[index]] = index;
     }
 
-    final orderedPosts = posts
+    final orderedPosts = r.posts
         .where((e) => orderMap.containsKey(e.id))
         .map((e) => _Payload(orderMap[e.id]!, e))
         .sorted();

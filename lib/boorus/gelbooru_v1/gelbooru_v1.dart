@@ -134,7 +134,8 @@ class GelbooruV1SearchPage extends ConsumerWidget {
       ),
       initialQuery: initialQuery,
       fetcher: (page, tags) =>
-          booruBuilder?.postFetcher.call(page, tags) ?? TaskEither.of(<Post>[]),
+          booruBuilder?.postFetcher.call(page, tags) ??
+          TaskEither.of(<Post>[].toResult()),
     );
   }
 }

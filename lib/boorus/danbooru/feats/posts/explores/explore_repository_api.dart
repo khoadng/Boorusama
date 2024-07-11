@@ -51,7 +51,7 @@ class ExploreRepositoryApi implements ExploreRepository {
         final filtered =
             shouldFilter != null ? data.whereNot(shouldFilter!).toList() : data;
 
-        return transformer(filtered);
+        return transformer(filtered.toResult());
       });
 
   @override
@@ -80,6 +80,6 @@ class ExploreRepositoryApi implements ExploreRepository {
         final filtered =
             shouldFilter != null ? data.whereNot(shouldFilter!).toList() : data;
 
-        return transformer(filtered);
+        return transformer(filtered.toResult());
       });
 }

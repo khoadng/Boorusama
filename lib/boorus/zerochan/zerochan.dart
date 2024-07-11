@@ -81,7 +81,8 @@ final zerochanPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
                     search: tags.join(' '),
                   ),
                 ))
-            .toList();
+            .toList()
+            .toResult();
       },
     );
   },

@@ -7,6 +7,7 @@ import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/posts/posts.dart';
 
 class FavoriteGroupsNotifier
     extends FamilyNotifier<List<FavoriteGroup>?, BooruConfig> {
@@ -188,16 +189,16 @@ class FavoriteGroupPreviewsNotifier
     final postIdsToFetch = postIds.where((id) => !cachedPostIds.contains(id));
     if (postIdsToFetch.isEmpty) return;
 
-    final posts = await ref
+    final r = await ref
         .watch(danbooruPostRepoProvider(arg))
         .getPostsFromIds(postIdsToFetch.toList())
         .run()
         .then((value) => value.fold(
-              (l) => <DanbooruPost>[],
+              (l) => <DanbooruPost>[].toResult(),
               (r) => r,
             ));
 
-    final map = {for (final p in posts) p.id: p.thumbnailImageUrl};
+    final map = {for (final p in r.posts) p.id: p.thumbnailImageUrl};
 
     // merge the new map with the old one
     state = {...state, ...map};

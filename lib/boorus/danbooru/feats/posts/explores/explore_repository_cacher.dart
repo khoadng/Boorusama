@@ -1,6 +1,7 @@
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/core/datetimes/datetimes.dart';
+import 'package:boorusama/core/posts/post_repository.dart';
 import 'package:boorusama/functional.dart';
 
 class ExploreRepositoryCacher implements ExploreRepository {
@@ -42,13 +43,13 @@ class ExploreRepositoryCacher implements ExploreRepository {
     final name = "popular-$truncatedDate-$page-$scale-$limit";
 
     if (_isCached(name, popularStaleDuration)) {
-      return TaskEither.of(_cache[name]!.$2);
+      return TaskEither.of(_cache[name]!.$2.toResult());
     }
 
     return repository
         .getPopularPosts(date, page, scale, limit: limit)
         .flatMap((r) => TaskEither(() async {
-              _cache[name] = (DateTime.now(), r);
+              _cache[name] = (DateTime.now(), r.posts);
               return Either.of(r);
             }));
   }
@@ -59,13 +60,13 @@ class ExploreRepositoryCacher implements ExploreRepository {
     final name = "mostViewed-$truncatedDate";
 
     if (_isCached(name, mostViewedStaleDuration)) {
-      return TaskEither.of(_cache[name]!.$2);
+      return TaskEither.of(_cache[name]!.$2.toResult());
     }
 
     return repository
         .getMostViewedPosts(date)
         .flatMap((r) => TaskEither(() async {
-              _cache[name] = (DateTime.now(), r);
+              _cache[name] = (DateTime.now(), r.posts);
               return Either.of(r);
             }));
   }
@@ -78,13 +79,13 @@ class ExploreRepositoryCacher implements ExploreRepository {
     final name = "hot-$page-$limit";
 
     if (_isCached(name, hotStaleDuration)) {
-      return TaskEither.of(_cache[name]!.$2);
+      return TaskEither.of(_cache[name]!.$2.toResult());
     }
 
     return repository
         .getHotPosts(page, limit: limit)
         .flatMap((r) => TaskEither(() async {
-              _cache[name] = (DateTime.now(), r);
+              _cache[name] = (DateTime.now(), r.posts);
               return Either.of(r);
             }));
   }

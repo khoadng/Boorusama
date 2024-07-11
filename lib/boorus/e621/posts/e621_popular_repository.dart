@@ -37,7 +37,7 @@ class E621PopularRepositoryApi implements E621PopularRepository {
         final key = _buildKey(dateString, timeScaleString);
         final cached = _cache.get(key);
 
-        if (cached != null && cached.isNotEmpty) return cached;
+        if (cached != null && cached.isNotEmpty) return cached.toResult();
 
         final response = await $(tryFetchRemoteData(
           fetcher: () => client.getPopularPosts(
@@ -56,7 +56,7 @@ class E621PopularRepositoryApi implements E621PopularRepository {
 
         _cache.set(key, filteredNoImage);
 
-        return filteredNoImage;
+        return filteredNoImage.toResult();
       });
 }
 

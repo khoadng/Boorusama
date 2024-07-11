@@ -32,7 +32,7 @@ class DanbooruSearchPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return SearchPageScaffold(
       // just return empty, we dont need to fetch anything
-      fetcher: (page, tags) => TaskEither.right(<Post>[]),
+      fetcher: (page, tags) => TaskEither.right(<Post>[].toResult()),
       initialQuery: initialQuery,
       queryPattern: {
         RegExp('(${ref.watch(metatagsProvider).map((e) => e.name).join('|')})+:'):

@@ -7,9 +7,9 @@ import 'package:boorusama/functional.dart';
 mixin DanbooruPostRepositoryMixin {
   PostRepository<DanbooruPost> get postRepository;
 
-  Future<List<DanbooruPost>> getPostsOrEmpty(String tags, int page) =>
+  Future<PostResult<DanbooruPost>> getPostsOrEmpty(String tags, int page) =>
       postRepository.getPosts(tags, page).run().then((value) => value.fold(
-            (l) => <DanbooruPost>[],
+            (l) => <DanbooruPost>[].toResult(),
             (r) => r,
           ));
 }

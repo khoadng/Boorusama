@@ -52,7 +52,7 @@ class _MoebooruPopularPageState extends ConsumerState<MoebooruPopularPage> {
   Widget build(BuildContext context) {
     return PostScope(
       fetcher: (page) => page > 1
-          ? TaskEither.of(<Post>[])
+          ? TaskEither.of(<Post>[].toResult())
           : _typeToData(selectedPopular.value, page),
       builder: (context, controller, errors) => Column(
         children: [
