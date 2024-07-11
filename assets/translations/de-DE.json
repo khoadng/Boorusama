@@ -243,7 +243,7 @@
             "posts_per_page_explain": "Vorschaubilder pro Seite",
             "cache_size": "Cache Größe",
             "clear_cache": "Löschen",
-            "cache_size_info": "{0} Mb in {1} Dateien"
+            "cache_size_info": "{0} in {1} Dateien"
         },
         "debug_logs": {
             "debug_logs": "Debug-Protokolle",
