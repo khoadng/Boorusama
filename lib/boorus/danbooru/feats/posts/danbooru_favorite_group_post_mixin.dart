@@ -13,7 +13,7 @@ import 'utils.dart';
 mixin DanbooruFavoriteGroupPostMixin {
   PostRepository<DanbooruPost> get postRepository;
 
-  Future<List<DanbooruPost>> getPostsFromIdQueue(Queue<int> queue) async {
+  Future<PostResult<DanbooruPost>> getPostsFromIdQueue(Queue<int> queue) async {
     final ids = queue.dequeue(20);
 
     final r = await postRepository
@@ -34,7 +34,7 @@ mixin DanbooruFavoriteGroupPostMixin {
         .map((e) => _Payload(orderMap[e.id]!, e))
         .sorted();
 
-    return orderedPosts.map((e) => e.post).toList();
+    return orderedPosts.map((e) => e.post).toList().toResult();
   }
 }
 

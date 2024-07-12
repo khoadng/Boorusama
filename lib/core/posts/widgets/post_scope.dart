@@ -62,7 +62,7 @@ class _PostScopeState<T extends Post> extends ConsumerState<PostScope<T>> {
 
   BooruError? errors;
 
-  Future<List<T>> fetchPosts(int page) {
+  Future<PostResult<T>> fetchPosts(int page) {
     if (errors != null) {
       setState(() {
         errors = null;
@@ -74,9 +74,9 @@ class _PostScopeState<T extends Post> extends ConsumerState<PostScope<T>> {
             if (mounted) {
               setState(() => errors = l);
             }
-            return <T>[];
+            return <T>[].toResult();
           },
-          (r) => r.posts,
+          (r) => r,
         ));
   }
 

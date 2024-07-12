@@ -10,8 +10,8 @@ import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/dart.dart';
 
-typedef ItemFetcher<T extends Post> = Future<List<T>> Function(int page);
-typedef ItemRefresher<T extends Post> = Future<List<T>> Function();
+typedef ItemFetcher<T extends Post> = Future<PostResult<T>> Function(int page);
+typedef ItemRefresher<T extends Post> = Future<PostResult<T>> Function();
 
 extension TagCountX on Map<String, Set<int>> {
   int get totalNonDuplicatesPostCount => values.expand((e) => e).toSet().length;
@@ -53,6 +53,8 @@ class PostGridController<T extends Post> extends ChangeNotifier {
   bool get refreshing => _refreshing;
   int get page => _page;
   int get total => _total;
+
+  final ValueNotifier<int?> count = ValueNotifier(null);
 
   Timer? _debounceTimer;
   final Duration debounceDuration;
@@ -174,8 +176,9 @@ class PostGridController<T extends Post> extends ChangeNotifier {
     final newItems =
         await (_pageMode == PageMode.infinite ? refresher() : fetcher(_page));
     _clear();
-    await _addAll(newItems);
-    _hasMore = newItems.isNotEmpty;
+    await _addAll(newItems.posts);
+    _hasMore = newItems.posts.isNotEmpty;
+    count.value = newItems.total;
     _refreshing = false;
     notifyListeners();
   }
@@ -195,11 +198,12 @@ class PostGridController<T extends Post> extends ChangeNotifier {
       notifyListeners();
 
       final newItems = await fetcher(_page);
-      _hasMore = newItems.isNotEmpty;
+      _hasMore = newItems.posts.isNotEmpty;
       if (_hasMore) {
-        await _addAll(newItems);
+        await _addAll(newItems.posts);
       }
       _loading = false;
+      count.value = newItems.total;
       notifyListeners();
     });
   }
@@ -217,11 +221,12 @@ class PostGridController<T extends Post> extends ChangeNotifier {
     notifyListeners();
 
     final newItems = await fetcher(_page);
-    _hasMore = newItems.isNotEmpty;
+    _hasMore = newItems.posts.isNotEmpty;
     if (_hasMore) {
-      await _addAll(newItems);
+      await _addAll(newItems.posts);
     }
     _refreshing = false;
+    count.value = newItems.total;
     notifyListeners();
   }
 

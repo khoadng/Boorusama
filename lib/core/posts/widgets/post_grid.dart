@@ -312,15 +312,25 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                                   falseChild: SliverToBoxAdapter(
                                     child: Padding(
                                       padding: const EdgeInsets.only(bottom: 8),
-                                      child: PageSelector(
-                                        currentPage: page,
-                                        onPrevious: controller.hasPreviousPage()
-                                            ? () => _goToPreviousPage()
-                                            : null,
-                                        onNext: controller.hasNextPage()
-                                            ? () => _goToNextPage()
-                                            : null,
-                                        onPageSelect: (page) => _goToPage(page),
+                                      child: ValueListenableBuilder(
+                                        valueListenable: controller.count,
+                                        builder: (_, value, __) => PageSelector(
+                                          totalResults: value,
+                                          itemPerPage: ref.watch(
+                                              imageListingSettingsProvider
+                                                  .select((value) =>
+                                                      value.postsPerPage)),
+                                          currentPage: page,
+                                          onPrevious:
+                                              controller.hasPreviousPage()
+                                                  ? () => _goToPreviousPage()
+                                                  : null,
+                                          onNext: controller.hasNextPage()
+                                              ? () => _goToNextPage()
+                                              : null,
+                                          onPageSelect: (page) =>
+                                              _goToPage(page),
+                                        ),
                                       ),
                                     ),
                                   ),
