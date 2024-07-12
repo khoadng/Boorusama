@@ -99,6 +99,33 @@ extension OrientationX on Orientation {
   bool get isPortrait => this == Orientation.portrait;
 }
 
+Future<T?> showAdaptiveSheet<T>(
+  BuildContext context, {
+  required Widget Function(BuildContext context) builder,
+  bool expand = false,
+  double? width,
+  Color? backgroundColor,
+  RouteSettings? settings,
+}) {
+  if (Screen.of(context).size == ScreenSize.small) {
+    return showMaterialModalBottomSheet<T>(
+      settings: settings,
+      context: context,
+      backgroundColor: backgroundColor,
+      duration: const Duration(milliseconds: 200),
+      expand: expand,
+      builder: builder,
+    );
+  } else {
+    return showSideSheetFromRight<T>(
+      settings: settings,
+      width: width ?? 320,
+      body: builder(context),
+      context: context,
+    );
+  }
+}
+
 Future<T?> showAdaptiveBottomSheet<T>(
   BuildContext context, {
   required Widget Function(BuildContext context) builder,

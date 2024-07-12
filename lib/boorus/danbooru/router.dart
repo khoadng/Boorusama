@@ -223,15 +223,25 @@ void goToUserDetailsPage(
   required String username,
   bool isSelf = false,
 }) {
-  context.navigator.push(
-    CupertinoPageRoute(
-      builder: (_) => UserDetailsPage(
-        uid: uid,
-        username: username,
-        isSelf: isSelf,
-      ),
-    ),
+  final page = UserDetailsPage(
+    uid: uid,
+    username: username,
+    isSelf: isSelf,
   );
+
+  if (Screen.of(context).size == ScreenSize.small) {
+    context.navigator.push(
+      CupertinoPageRoute(
+        builder: (_) => page,
+      ),
+    );
+  } else {
+    showSideSheetFromRight(
+      body: page,
+      context: context,
+      width: 480,
+    );
+  }
 }
 
 void goToPoolSearchPage(BuildContext context, WidgetRef ref) {
@@ -249,29 +259,17 @@ void goToRelatedTagsPage(
   required void Function(RelatedTagItem tag) onAdded,
   required void Function(RelatedTagItem tag) onNegated,
 }) {
-  final page = RelatedTagActionSheet(
-    relatedTag: relatedTag,
-    onAdded: onAdded,
-    onNegated: onNegated,
+  showAdaptiveSheet(
+    context,
+    settings: const RouteSettings(
+      name: RouterPageConstant.relatedTags,
+    ),
+    builder: (context) => RelatedTagActionSheet(
+      relatedTag: relatedTag,
+      onAdded: onAdded,
+      onNegated: onNegated,
+    ),
   );
-  if (Screen.of(context).size == ScreenSize.small) {
-    showBarModalBottomSheet(
-      context: context,
-      settings: const RouteSettings(
-        name: RouterPageConstant.relatedTags,
-      ),
-      builder: (context) => page,
-    );
-  } else {
-    showSideSheetFromRight(
-      settings: const RouteSettings(
-        name: RouterPageConstant.relatedTags,
-      ),
-      width: 220,
-      body: page,
-      context: context,
-    );
-  }
 }
 
 void goToPostFavoritesDetails(BuildContext context, DanbooruPost post) {
@@ -463,9 +461,8 @@ Future<bool?> goToDanbooruShowTaglistPage(
   final color = ref.context.colorScheme.onSurface;
   final textColor = ref.context.colorScheme.surface;
 
-  return showMaterialModalBottomSheet<bool>(
-    context: navigatorKey.currentContext ?? ref.context,
-    duration: const Duration(milliseconds: 200),
+  return showAdaptiveSheet(
+    navigatorKey.currentContext ?? ref.context,
     expand: true,
     builder: (dialogContext) => ShowTagListPage(
       tags: tags,

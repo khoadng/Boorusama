@@ -227,12 +227,10 @@ Future<bool?> goToShowTaglistPage(
 ) {
   final globalNotifier = ref.read(globalBlacklistedTagsProvider.notifier);
   final favoriteNotifier = ref.read(favoriteTagsProvider.notifier);
-
-  return showMaterialModalBottomSheet<bool>(
-    context: navigatorKey.currentContext ?? ref.context,
-    duration: const Duration(milliseconds: 200),
+  return showAdaptiveSheet(
+    navigatorKey.currentContext ?? ref.context,
     expand: true,
-    builder: (dialogContext) => ShowTagListPage(
+    builder: (context) => ShowTagListPage(
       tags: tags,
       onAddToGlobalBlacklist: (tag) {
         globalNotifier.addTagWithToast(
