@@ -30,6 +30,9 @@ class FavoriteTagsSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final notifier = ref
+        .watch(miscDataProvider(kSearchSelectedFavoriteTagLabelKey).notifier);
+
     return FavoriteTagsFilterScope(
       initialValue: selectedLabel,
       sortType: FavoriteTagsSortType.nameAZ,
@@ -38,10 +41,7 @@ class FavoriteTagsSection extends ConsumerWidget {
         titleTrailing: () => FavoriteTagLabelSelectorField(
           selected: selected,
           labels: labels,
-          onSelect: (value) => ref
-              .read(
-                  miscDataProvider(kSearchSelectedFavoriteTagLabelKey).notifier)
-              .put(value),
+          onSelect: (value) => notifier.put(value),
         ),
         childrenBuilder: () => _buildFavoriteTags(ref, tags),
       ),

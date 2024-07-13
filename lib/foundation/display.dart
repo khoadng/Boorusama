@@ -135,11 +135,29 @@ Future<T?> showAdaptiveBottomSheet<T>(
   RouteSettings? settings,
 }) {
   return Screen.of(context).size != ScreenSize.small
-      ? showGeneralDialog<T>(
+      ? showDialog<T>(
           context: context,
           routeSettings: settings,
-          pageBuilder: (context, animation, secondaryAnimation) =>
-              builder(context),
+          builder: (context) => Dialog(
+            insetPadding: const EdgeInsets.symmetric(
+              horizontal: 28,
+              vertical: 24,
+            ),
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(12)),
+            ),
+            child: Container(
+              constraints: const BoxConstraints(
+                maxHeight: 400,
+                maxWidth: 500,
+              ),
+              margin: const EdgeInsets.symmetric(
+                horizontal: 4,
+                vertical: 4,
+              ),
+              child: builder(context),
+            ),
+          ),
         )
       : showBarModalBottomSheet<T>(
           context: context,

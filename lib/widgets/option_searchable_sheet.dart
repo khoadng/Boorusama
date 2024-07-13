@@ -6,6 +6,9 @@ import 'package:animated_list_plus/animated_list_plus.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
+// Project imports:
+import 'package:boorusama/foundation/display.dart';
+
 class OptionSearchableSheet<T extends Object> extends StatefulWidget {
   const OptionSearchableSheet({
     super.key,
@@ -128,9 +131,7 @@ class OptionSingleSearchableField<T extends Object> extends StatelessWidget {
       child: InkWell(
         onTap: onTap ??
             () {
-              showBarModalBottomSheet(
-                  context: context,
-                  duration: duration,
+              showAdaptiveBottomSheet(context,
                   builder: (context) => OptionSearchableSheet<T>(
                         title: sheetTitle,
                         items: items,
