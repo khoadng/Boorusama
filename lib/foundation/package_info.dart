@@ -17,8 +17,10 @@ final dummyPackageInfoProvider = Provider<PackageInfo>((ref) {
   );
 });
 
+const kEnvironment = String.fromEnvironment('ENV_NAME');
+
 final currentEnvironmentProvider = Provider<String>((ref) {
-  return const String.fromEnvironment('ENV_NAME');
+  return kEnvironment;
 });
 
 final isDevEnvironmentProvider = Provider<bool>((ref) {

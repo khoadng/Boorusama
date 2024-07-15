@@ -2,6 +2,7 @@
 import 'package:flutter/widgets.dart';
 
 // Package imports:
+import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -12,11 +13,35 @@ final analyticsProvider = Provider<AnalyticsInterface>(
   (ref) => NoAnalyticsInterface(),
 );
 
+class AnalyticsNetworkInfo extends Equatable {
+  const AnalyticsNetworkInfo({
+    required this.types,
+    required this.state,
+  });
+
+  const AnalyticsNetworkInfo.error(String message)
+      : types = 'none',
+        state = 'error: $message';
+
+  const AnalyticsNetworkInfo.connected(this.types) : state = 'connected';
+
+  const AnalyticsNetworkInfo.disconnected()
+      : types = 'none',
+        state = 'disconnected';
+
+  final String types;
+  final String state;
+
+  @override
+  List<Object> get props => [types, state];
+}
+
 abstract interface class AnalyticsInterface {
   bool get enabled;
   bool isPlatformSupported();
   Future<void> ensureInitialized();
   Future<void> changeCurrentAnalyticConfig(BooruConfig config);
+  Future<void> updateNetworkInfo(AnalyticsNetworkInfo info);
   NavigatorObserver getAnalyticsObserver();
   void sendBooruAddedEvent({
     required String url,
@@ -38,6 +63,9 @@ class NoAnalyticsInterface implements AnalyticsInterface {
 
   @override
   Future<void> changeCurrentAnalyticConfig(BooruConfig config) async {}
+
+  @override
+  Future<void> updateNetworkInfo(AnalyticsNetworkInfo info) async {}
 
   @override
   NavigatorObserver getAnalyticsObserver() => NavigatorObserver();

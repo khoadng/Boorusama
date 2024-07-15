@@ -39,6 +39,14 @@ class FirebaseAnalyticsImpl implements AnalyticsInterface {
   }
 
   @override
+  Future<void> updateNetworkInfo(AnalyticsNetworkInfo info) async {
+    await FirebaseCrashlytics.instance
+        .setCustomKey('network_types', info.types);
+    await FirebaseCrashlytics.instance
+        .setCustomKey('network_state', info.state);
+  }
+
+  @override
   NavigatorObserver getAnalyticsObserver() => enabled
       ? FirebaseAnalyticsObserver(
           analytics: FirebaseAnalytics.instance,
