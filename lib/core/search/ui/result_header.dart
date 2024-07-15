@@ -17,7 +17,7 @@ class ResultHeaderWithProvider extends ConsumerWidget {
   });
 
   final List<String> selectedTags;
-  final Future<void> Function()? onRefresh;
+  final Future<void> Function(bool maintainPage)? onRefresh;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -30,7 +30,11 @@ class ResultHeaderWithProvider extends ConsumerWidget {
               ? ResultHeader(
                   count: data,
                   loading: false,
-                  onRefresh: onRefresh,
+                  onRefresh: onRefresh != null
+                      ? () async {
+                          await onRefresh!(true);
+                        }
+                      : null,
                 )
               : const SizedBox.shrink(),
           error: (error, stackTrace) => const SizedBox.shrink(),

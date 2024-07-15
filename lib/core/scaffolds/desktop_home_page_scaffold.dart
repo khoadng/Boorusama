@@ -63,7 +63,9 @@ class _DesktopHomePageScaffoldState
                         builder: (context, value, _) =>
                             ResultHeaderWithProvider(
                           selectedTags: value.split(' '),
-                          onRefresh: () => controller.refresh(),
+                          onRefresh: (maintainPage) => controller.refresh(
+                            maintainPage: maintainPage,
+                          ),
                         ),
                       ),
                       const Spacer(),

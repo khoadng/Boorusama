@@ -164,12 +164,14 @@ class PostGridController<T extends Post> extends ChangeNotifier {
   }
 
   // Refreshes the list
-  Future<void> refresh() async {
+  Future<void> refresh({
+    bool maintainPage = false,
+  }) async {
     if (_refreshing) return;
     _refreshing = true;
     _page = switch (_pageMode) {
       PageMode.infinite => 1,
-      PageMode.paginated => _page,
+      PageMode.paginated => maintainPage ? _page : 1,
     };
     notifyListeners();
 

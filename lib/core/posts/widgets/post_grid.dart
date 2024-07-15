@@ -250,7 +250,9 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                         onRefresh: () async {
                           widget.onRefresh?.call();
                           _multiSelectController.clearSelected();
-                          await controller.refresh();
+                          await controller.refresh(
+                            maintainPage: true,
+                          );
                         },
                         child: child,
                       ),
