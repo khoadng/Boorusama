@@ -1,8 +1,13 @@
-# Unreleased-2024.7.3
+# Unreleased-2024.7.15
 - [Szurubooru] Show tag color
 - [Danbooru] Add a saved search context menu
+- [Danbooru] Add buttons to search this pool and sort it's images
 - Ignore blacklisted posts when bulk downloading
-- Bug fixes
+- Experimental support for custom image listing settings
+- Move post per page setting from performance to image listing settings
+- Add a rotate button when viewing original size image on desktop
+- UI/UX updates for desktop version
+- Bug fixes and UI adjustments
 
 # 3.19.0
 - [Gelbooru 0.2.5] Add support for favorites, you will need to provide additional information in the profile for it to work
