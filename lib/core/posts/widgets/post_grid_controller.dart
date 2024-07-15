@@ -10,6 +10,9 @@ import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/dart.dart';
 
+const _kFirstPage = 1;
+const _kJumpStep = 1;
+
 typedef ItemFetcher<T extends Post> = Future<PostResult<T>> Function(int page);
 typedef ItemRefresher<T extends Post> = Future<PostResult<T>> Function();
 
@@ -39,7 +42,7 @@ class PostGridController<T extends Post> extends ChangeNotifier {
   List<T> _items = [];
   List<T> _filteredItems = [];
   Set<int> _keys = {};
-  int _page = 1;
+  int _page = _kFirstPage;
   bool _hasMore = true;
   bool _loading = false;
   bool _refreshing = false;
@@ -154,7 +157,7 @@ class PostGridController<T extends Post> extends ChangeNotifier {
     _loading = false;
     if (newPageMode == PageMode.infinite) {
       _clear();
-      _page = 1;
+      _page = _kFirstPage;
       refresh();
     } else {
       jumpToPage(_page);
@@ -170,8 +173,8 @@ class PostGridController<T extends Post> extends ChangeNotifier {
     if (_refreshing) return;
     _refreshing = true;
     _page = switch (_pageMode) {
-      PageMode.infinite => 1,
-      PageMode.paginated => maintainPage ? _page : 1,
+      PageMode.infinite => _kFirstPage,
+      PageMode.paginated => maintainPage ? _page : _kFirstPage,
     };
     notifyListeners();
 
@@ -217,7 +220,7 @@ class PostGridController<T extends Post> extends ChangeNotifier {
     }
 
     // make sure the target page is larger than 0
-    _page = targetPage > 0 ? targetPage : 1;
+    _page = targetPage > 0 ? targetPage : _kFirstPage;
     _clear();
     _refreshing = true;
     notifyListeners();
@@ -234,20 +237,20 @@ class PostGridController<T extends Post> extends ChangeNotifier {
 
   Future<void> goToPreviousPage() async {
     if (hasPreviousPage()) {
-      await jumpToPage(_page - 1);
+      await jumpToPage(_page - _kJumpStep);
     }
   }
 
   Future<void> goToNextPage() async {
     if (hasNextPage()) {
-      await jumpToPage(_page + 1);
+      await jumpToPage(_page + _kJumpStep);
     }
   }
 
   // Check if there is a previous page
   bool hasPreviousPage() {
     // Check if the current mode is paginated and there is a previous page
-    return _pageMode == PageMode.paginated && _page > 1;
+    return _pageMode == PageMode.paginated && _page > _kFirstPage;
   }
 
   // Check if there is a next page
