@@ -1,3 +1,7 @@
+# 3.19.1
+- Fix download issue on Android 10
+- Fix incorrect post count on some sites
+
 # 3.19.0
 - [Gelbooru 0.2.5] Add support for favorites, you will need to provide additional information in the profile for it to work
 - Experimental download support to specific SD card folders

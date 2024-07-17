@@ -146,7 +146,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 4),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

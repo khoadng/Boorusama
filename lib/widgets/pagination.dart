@@ -80,6 +80,8 @@ class _PageSelectorState extends State<PageSelector> {
       children: [
         IconButton(
           onPressed: widget.onPrevious,
+          padding: EdgeInsets.zero,
+          visualDensity: VisualDensity.compact,
           icon: const Icon(
             Symbols.chevron_left,
             size: 32,
@@ -120,6 +122,8 @@ class _PageSelectorState extends State<PageSelector> {
         ),
         if (!pageInputMode)
           IconButton(
+            padding: EdgeInsets.zero,
+            visualDensity: VisualDensity.compact,
             onPressed: () {
               setState(() {
                 pageInputMode = !pageInputMode;
@@ -160,6 +164,8 @@ class _PageSelectorState extends State<PageSelector> {
           ),
         IconButton(
           onPressed: widget.onNext,
+          padding: EdgeInsets.zero,
+          visualDensity: VisualDensity.compact,
           icon: const Icon(
             Symbols.chevron_right,
             size: 32,

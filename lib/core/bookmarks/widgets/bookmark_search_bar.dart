@@ -2,11 +2,14 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:searchfield/searchfield.dart';
 
 // Project imports:
+import 'package:boorusama/foundation/display.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'providers.dart';
 
 class BookmarkSearchBar extends ConsumerWidget {
@@ -25,15 +28,28 @@ class BookmarkSearchBar extends ConsumerWidget {
 
     if (!hasBookmarks) return const SizedBox.shrink();
 
+    final selectedTag = ref.watch(selectedTagsProvider);
+
     return Padding(
       padding: const EdgeInsets.all(8),
       child: SearchField(
+        animationDuration: const Duration(milliseconds: 100),
+        autoCorrect: false,
         focusNode: focusNode,
         marginColor: Colors.transparent,
         maxSuggestionsInViewPort: 10,
+        offset: const Offset(0, 54),
+        scrollbarDecoration: ScrollbarDecoration(
+          thumbVisibility: false,
+        ),
+        itemHeight: kPreferredLayout.isMobile ? 42 : 40,
+        suggestionsDecoration: SuggestionDecoration(
+          color: context.colorScheme.surfaceContainerHighest,
+          borderRadius: BorderRadius.circular(8),
+        ),
         searchInputDecoration: InputDecoration(
           prefixIcon: const Icon(Symbols.search),
-          suffix: ref.watch(selectedTagsProvider).isNotEmpty
+          suffix: selectedTag.isNotEmpty
               ? ClipRRect(
                   borderRadius: BorderRadius.circular(50),
                   child: Material(
@@ -64,18 +80,32 @@ class BookmarkSearchBar extends ConsumerWidget {
                 e,
                 item: e,
                 child: Padding(
-                  padding: const EdgeInsets.all(4),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 4,
+                    vertical: kPreferredLayout.isMobile ? 2 : 0,
+                  ),
                   child: Row(
                     children: [
                       Expanded(
-                        child: Text(
-                          e,
-                          style: TextStyle(
-                            color: ref.watch(tagColorProvider(e)).maybeWhen(
-                                  data: (color) => color,
-                                  orElse: () => null,
-                                ),
-                          ),
+                        child: Html(
+                          style: {
+                            'p': Style(
+                              fontSize: FontSize.medium,
+                              color: ref.watch(tagColorProvider(e)).maybeWhen(
+                                    data: (color) => color,
+                                    orElse: () => null,
+                                  ),
+                              margin: Margins.zero,
+                            ),
+                            'body': Style(
+                              margin: Margins.zero,
+                            ),
+                            'b': Style(
+                              fontWeight: FontWeight.w900,
+                            ),
+                          },
+                          data:
+                              '<p>${e.replaceAll(selectedTag, '<b>$selectedTag</b>')}</p>',
                         ),
                       ),
                       Text(

@@ -38,8 +38,11 @@ class _PostScopeState<T extends Post> extends ConsumerState<PostScope<T>> {
   late final _controller = PostGridController<T>(
     fetcher: (page) => fetchPosts(page),
     refresher: () => fetchPosts(1),
-    blacklistedTagsFetcher: () =>
-        ref.read(blacklistTagsProvider(ref.watchConfig).future),
+    blacklistedTagsFetcher: () {
+      if (!mounted) return Future.value({});
+
+      return ref.read(blacklistTagsProvider(ref.watchConfig).future);
+    },
     pageMode: ref.read(pageModeSettingsProvider),
     blacklistedUrlsFetcher: () {
       try {

@@ -156,7 +156,11 @@ class DanbooruBuilder
 
   @override
   PostCountFetcher? get postCountFetcher =>
-      (config, tags, _) => postCountRepo.count(tags);
+      (config, tags, granularRatingQueryBuilder) => postCountRepo.count({
+            ...tags,
+            if (granularRatingQueryBuilder != null)
+              ...granularRatingQueryBuilder(tags, config),
+          }.toList());
 
   @override
   SearchPageBuilder get searchPageBuilder =>

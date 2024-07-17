@@ -122,6 +122,14 @@ extension UpdateDataX on WidgetRef {
   void updateName(String data) =>
       read(configNameProvider.notifier).state = data;
 
+  void updateLoginAndApiKey(String login, String apiKey) {
+    final auth = read(authConfigDataProvider);
+    updateAuthConfigData(auth.copyWith(
+      login: login,
+      apiKey: apiKey,
+    ));
+  }
+
   void updateApiKey(String value) {
     final auth = read(authConfigDataProvider);
     updateAuthConfigData(auth.copyWith(apiKey: value));
