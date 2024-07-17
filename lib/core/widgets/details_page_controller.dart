@@ -33,6 +33,8 @@ class DetailsPageController extends ChangeNotifier {
 
   late final ValueNotifier<int> currentPage;
 
+  bool get blockSwipe => !pageSwipe || !swipeDownToDismiss;
+
   void nextPage() {
     _pageController.add(PageDirection.next);
   }
