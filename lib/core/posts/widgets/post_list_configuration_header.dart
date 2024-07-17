@@ -31,6 +31,7 @@ class PostListConfigurationHeader extends StatefulWidget {
     this.hasBlacklist = false,
     this.initiallyExpanded = false,
     this.axis = Axis.horizontal,
+    this.onExpansionChanged,
   });
 
   final List<HiddenData>? tags;
@@ -44,6 +45,7 @@ class PostListConfigurationHeader extends StatefulWidget {
   final bool initiallyExpanded;
   final Axis axis;
   final int postCount;
+  final void Function(bool value)? onExpansionChanged;
 
   @override
   State<PostListConfigurationHeader> createState() =>
@@ -53,7 +55,7 @@ class PostListConfigurationHeader extends StatefulWidget {
 class _PostListConfigurationHeaderState
     extends State<PostListConfigurationHeader> {
   late var hiddenTags = widget.tags;
-  var expanded = false;
+  late var expanded = widget.initiallyExpanded;
 
   bool? get allTagsHidden => hiddenTags?.every((e) => !e.active);
 
@@ -120,7 +122,7 @@ class _PostListConfigurationHeaderState
         ),
         child: widget.hasBlacklist
             ? ExpansionTile(
-                initiallyExpanded: widget.initiallyExpanded,
+                initiallyExpanded: expanded,
                 leading: Column(
                   children: [
                     const Spacer(),
@@ -140,6 +142,7 @@ class _PostListConfigurationHeaderState
                 onExpansionChanged: (value) => {
                   setState(() {
                     expanded = value;
+                    widget.onExpansionChanged?.call(value);
                   })
                 },
                 title: Row(

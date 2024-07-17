@@ -100,6 +100,7 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
   final refreshing = ValueNotifier(false);
   var items = <T>[];
   late var pageMode = controller.pageMode;
+  final expanded = ValueNotifier<bool?>(null);
 
   @override
   void initState() {
@@ -490,52 +491,54 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
             return ValueListenableBuilder(
               valueListenable: controller.activeFilters,
               builder: (context, activeFilters, child) {
-                final hiddenTags = activeFilters.keys
-                    .map((e) => (
-                          name: e,
-                          count: tagCounts[e]?.length ?? 0,
-                          active: activeFilters[e] ?? false,
-                        ))
-                    .where((e) => e.count > 0)
-                    .toList();
-
-                return PostListConfigurationHeader(
-                  axis: axis,
-                  postCount: controller.total,
-                  initiallyExpanded: axis == Axis.vertical,
-                  hasBlacklist: hasBlacklist,
-                  tags: hiddenTags,
-                  trailing: axis == Axis.horizontal
-                      ? PostGridConfigIconButton(
-                          postController: controller,
-                        )
-                      : null,
-                  onClosed: () {
-                    settingsNotifier.updateWith((s) => s.copyWith(
-                          listing: s.listing.copyWith(
-                            showPostListConfigHeader: false,
-                          ),
-                        ));
-                    showSimpleSnackBar(
-                      duration: const Duration(seconds: 5),
-                      context: context,
-                      content: const Text(
-                          'You can always show this header again in Settings.'),
-                      action: SnackBarAction(
-                        label: 'Undo',
-                        onPressed: () =>
-                            settingsNotifier.updateWith((s) => s.copyWith(
-                                  listing: s.listing.copyWith(
-                                    showPostListConfigHeader: true,
-                                  ),
-                                )),
-                      ),
-                    );
-                  },
-                  onDisableAll: _disableAll,
-                  onEnableAll: _enableAll,
-                  onChanged: _update,
-                  hiddenCount: tagCounts.totalNonDuplicatesPostCount,
+                return ValueListenableBuilder(
+                  valueListenable: expanded,
+                  builder: (_, expand, __) => PostListConfigurationHeader(
+                    axis: axis,
+                    postCount: controller.total,
+                    initiallyExpanded: axis == Axis.vertical || expand == true,
+                    onExpansionChanged: (value) => expanded.value = value,
+                    hasBlacklist: hasBlacklist,
+                    tags: activeFilters.keys
+                        .map((e) => (
+                              name: e,
+                              count: tagCounts[e]?.length ?? 0,
+                              active: activeFilters[e] ?? false,
+                            ))
+                        .where((e) => e.count > 0)
+                        .toList(),
+                    trailing: axis == Axis.horizontal
+                        ? PostGridConfigIconButton(
+                            postController: controller,
+                          )
+                        : null,
+                    onClosed: () {
+                      settingsNotifier.updateWith((s) => s.copyWith(
+                            listing: s.listing.copyWith(
+                              showPostListConfigHeader: false,
+                            ),
+                          ));
+                      showSimpleSnackBar(
+                        duration: const Duration(seconds: 5),
+                        context: context,
+                        content: const Text(
+                            'You can always show this header again in Settings.'),
+                        action: SnackBarAction(
+                          label: 'Undo',
+                          onPressed: () =>
+                              settingsNotifier.updateWith((s) => s.copyWith(
+                                    listing: s.listing.copyWith(
+                                      showPostListConfigHeader: true,
+                                    ),
+                                  )),
+                        ),
+                      );
+                    },
+                    onDisableAll: _disableAll,
+                    onEnableAll: _enableAll,
+                    onChanged: _update,
+                    hiddenCount: tagCounts.totalNonDuplicatesPostCount,
+                  ),
                 );
               },
             );
