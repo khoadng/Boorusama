@@ -43,7 +43,7 @@ class TagsTile extends ConsumerWidget {
       child: ExpansionTile(
         initiallyExpanded: initialExpanded,
         title: Text('${post.tags.length} tags'),
-        controlAffinity: ListTileControlAffinity.leading,
+        controlAffinity: ListTileControlAffinity.trailing,
         onExpansionChanged: (value) =>
             value ? onExpand?.call() : onCollapse?.call(),
         children: [
