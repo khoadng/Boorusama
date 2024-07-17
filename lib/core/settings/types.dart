@@ -628,7 +628,7 @@ class ImageListingSettings extends Equatable {
         'gridSize': gridSize.index,
         'imageListType': imageListType.index,
         'imageQuality': imageQuality.index,
-        'pageMode': pageMode.index,
+        'contentOrganizationCategory': pageMode.index,
         'pageIndicatorPosition': pageIndicatorPosition.index,
         'showScoresInGrid': showScoresInGrid,
         'showPostListConfigHeader': showPostListConfigHeader,
