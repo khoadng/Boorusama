@@ -609,8 +609,7 @@ class _MaterialDesktopControlsState extends State<MaterialDesktopControls>
             ChewieProgressColors(
               playedColor: context.theme.colorScheme.secondary,
               handleColor: context.theme.colorScheme.secondary,
-              bufferedColor:
-                  context.theme.colorScheme.surface.withOpacity(0.5),
+              bufferedColor: context.theme.colorScheme.surface.withOpacity(0.5),
               backgroundColor: context.theme.disabledColor.withOpacity(0.5),
             ),
       ),

@@ -15,6 +15,7 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
@@ -162,7 +163,7 @@ class _FavoriteGroupList extends ConsumerWidget {
                     onFailure: (message, translatable) {
                       showSimpleSnackBar(
                         context: context,
-                        duration: const Duration(seconds: 6),
+                        duration: AppDurations.extraLongToast,
                         content:
                             translatable ? Text(message).tr() : Text(message),
                       );
@@ -170,7 +171,7 @@ class _FavoriteGroupList extends ConsumerWidget {
                     onSuccess: (newGroup) {
                       showSimpleSnackBar(
                         context: context,
-                        duration: const Duration(seconds: 3),
+                        duration: AppDurations.longToast,
                         content: Text(
                           'favorite_groups.items_added_notification_popup'
                               .tr()

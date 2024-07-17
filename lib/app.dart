@@ -14,6 +14,7 @@ import 'package:oktoast/oktoast.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/analytics.dart';
+import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/device_info_service.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/i18n.dart';
@@ -232,7 +233,7 @@ class AppFailedToInitialize extends ConsumerWidget {
             const SnackBar(
               behavior: SnackBarBehavior.floating,
               content: Text('Copied'),
-              duration: Duration(seconds: 1),
+              duration: AppDurations.shortToast,
             ),
           );
         },

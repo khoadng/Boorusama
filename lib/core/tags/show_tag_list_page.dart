@@ -11,6 +11,7 @@ import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -107,7 +108,7 @@ class ShowTagListPage extends ConsumerWidget {
                               (_) => showSimpleSnackBar(
                                 context: context,
                                 content: const Text('Copied'),
-                                duration: const Duration(seconds: 1),
+                                duration: AppDurations.shortToast,
                               ),
                             );
                             break;

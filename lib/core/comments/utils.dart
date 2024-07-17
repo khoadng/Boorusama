@@ -7,6 +7,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -22,7 +23,7 @@ Future<T?> showCommentPage<T>(
         ? showMaterialModalBottomSheet<T>(
             context: context,
             settings: settings,
-            duration: const Duration(milliseconds: 250),
+            duration: AppDurations.bottomSheet,
             builder: (context) => builder(context, true),
           )
         : showSideSheetFromRight(

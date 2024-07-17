@@ -15,6 +15,7 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
@@ -30,7 +31,7 @@ void showSimpleTagSearchView(
     showBarModalBottomSheet(
       context: context,
       settings: settings,
-      duration: const Duration(milliseconds: 200),
+      duration: AppDurations.bottomSheet,
       builder: (context) => builder(context, true),
     );
   } else {

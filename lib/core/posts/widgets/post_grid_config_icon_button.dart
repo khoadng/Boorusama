@@ -14,6 +14,7 @@ import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/settings/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -185,7 +186,7 @@ class PostGridActionSheet extends ConsumerWidget {
             context.navigator.pop();
             showMaterialModalBottomSheet(
               context: context,
-              duration: const Duration(milliseconds: 250),
+              duration: AppDurations.bottomSheet,
               builder: (_) => postStatsPageBuilder(
                 context,
                 postController.items,

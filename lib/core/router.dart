@@ -23,6 +23,7 @@ import 'package:boorusama/core/search_histories/search_histories.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -180,7 +181,7 @@ void goToSearchHistoryPage(
     settings: const RouteSettings(
       name: RouterPageConstant.searchHistories,
     ),
-    duration: const Duration(milliseconds: 200),
+    duration: AppDurations.bottomSheet,
     builder: (context) => Scaffold(
       appBar: AppBar(
         title: const Text('search.history.history').tr(),

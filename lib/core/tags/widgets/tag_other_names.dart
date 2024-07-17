@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 
 // Project imports:
 import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
@@ -79,7 +80,7 @@ class OtherNameChip extends StatelessWidget {
             Clipboard.setData(ClipboardData(text: otherName)).then(
           (_) => showSimpleSnackBar(
             context: context,
-            duration: const Duration(seconds: 1),
+            duration: AppDurations.shortToast,
             content: const Text('Copied'),
           ),
         ),

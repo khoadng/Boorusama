@@ -6,6 +6,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'platform.dart';
 
@@ -112,7 +113,7 @@ Future<T?> showAdaptiveSheet<T>(
       settings: settings,
       context: context,
       backgroundColor: backgroundColor,
-      duration: const Duration(milliseconds: 200),
+      duration: AppDurations.bottomSheet,
       expand: expand,
       builder: builder,
     );

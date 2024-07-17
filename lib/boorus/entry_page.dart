@@ -13,6 +13,7 @@ import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/app_update/app_update.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
@@ -83,7 +84,7 @@ class _EntryPageState extends ConsumerState<EntryPage> {
             next.values.all((t) => t is DownloadDone)) {
           showSimpleSnackBar(
             context: context,
-            duration: const Duration(seconds: 3),
+            duration: AppDurations.longToast,
             action: SnackBarAction(
               label: 'generic.view'.tr(),
               onPressed: () => goToBulkDownloadPage(context, [], ref: ref),

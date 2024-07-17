@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
@@ -35,7 +36,7 @@ class FavoritePostButton extends StatelessWidget {
                   content: const Text(
                     'post.detail.login_required_notice',
                   ).tr(),
-                  duration: const Duration(seconds: 1),
+                  duration: AppDurations.shortToast,
                 );
 
                 return;

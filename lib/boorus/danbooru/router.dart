@@ -24,6 +24,7 @@ import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/core/wikis/wikis.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -67,7 +68,7 @@ void goToPostVersionPage(BuildContext context, DanbooruPost post) {
   if (kPreferredLayout.isMobile) {
     showMaterialModalBottomSheet(
       context: context,
-      duration: const Duration(milliseconds: 250),
+      duration: AppDurations.bottomSheet,
       builder: (_) => DanbooruPostVersionsPage(
         postId: post.id,
         previewUrl: post.url720x720,
@@ -301,7 +302,7 @@ void goToSavedSearchCreatePage(
               label: label,
               onCreated: (data) => showSimpleSnackBar(
                 context: context,
-                duration: const Duration(seconds: 1),
+                duration: AppDurations.shortToast,
                 content: const Text('saved_search.saved_search_added').tr(),
               ),
             ),
@@ -342,7 +343,7 @@ void goToSavedSearchCreatePage(
                     label: label,
                     onCreated: (data) => showSimpleSnackBar(
                       context: context,
-                      duration: const Duration(seconds: 1),
+                      duration: AppDurations.shortToast,
                       content:
                           const Text('saved_search.saved_search_added').tr(),
                     ),
@@ -376,9 +377,7 @@ void goToSavedSearchPatchPage(
                 query: query,
                 onUpdated: (data) => showSimpleSnackBar(
                   context: context,
-                  duration: const Duration(
-                    seconds: 1,
-                  ),
+                  duration: AppDurations.shortToast,
                   content: const Text(
                     'saved_search.saved_search_updated',
                   ).tr(),
@@ -442,7 +441,7 @@ Future<bool?> goToAddToFavoriteGroupSelectionPage(
 ) {
   return showMaterialModalBottomSheet<bool>(
     context: context,
-    duration: const Duration(milliseconds: 200),
+    duration: AppDurations.bottomSheet,
     expand: true,
     builder: (_) => AddToFavoriteGroupPage(
       posts: posts,

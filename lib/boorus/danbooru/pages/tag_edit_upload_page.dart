@@ -24,6 +24,7 @@ import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
@@ -95,7 +96,7 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
           error: (error, stackTrace) {
             showErrorToast(
               error.toString(),
-              duration: const Duration(seconds: 3),
+              duration: AppDurations.longToast,
             );
           },
         );

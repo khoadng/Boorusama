@@ -14,6 +14,7 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/networking/network_provider.dart';
 import 'package:boorusama/foundation/networking/network_state.dart';
@@ -519,7 +520,7 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                             ),
                           ));
                       showSimpleSnackBar(
-                        duration: const Duration(seconds: 5),
+                        duration: AppDurations.extraLongToast,
                         context: context,
                         content: const Text(
                             'You can always show this header again in Settings.'),

@@ -23,6 +23,7 @@ import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/dart.dart';
+import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/toast.dart';
@@ -449,7 +450,7 @@ extension DanbooruX on WidgetRef {
     showSuccessToast(
       message,
       backgroundColor: backgroundColor,
-      duration: const Duration(seconds: 1, milliseconds: 500),
+      duration: AppDurations.shortToast,
     );
   }
 
@@ -460,7 +461,7 @@ extension DanbooruX on WidgetRef {
         content: const Text(
           'post.detail.login_required_notice',
         ).tr(),
-        duration: const Duration(seconds: 1),
+        duration: AppDurations.shortToast,
       );
 
       return;
