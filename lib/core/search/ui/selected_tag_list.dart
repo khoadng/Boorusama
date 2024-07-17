@@ -14,12 +14,14 @@ class SelectedTagList extends StatelessWidget {
     required this.tags,
     required this.onClear,
     required this.onDelete,
+    required this.onUpdate,
     required this.onBulkDownload,
   });
 
   final List<TagSearchItem> tags;
   final VoidCallback onClear;
   final void Function(TagSearchItem tag) onDelete;
+  final void Function(TagSearchItem oldTag, String newTag)? onUpdate;
   final void Function(List<TagSearchItem> tags) onBulkDownload;
 
   @override
@@ -45,6 +47,7 @@ class SelectedTagList extends StatelessWidget {
             child: _SelectedTagChips(
               tags: tags,
               onDelete: onDelete,
+              onUpdate: onUpdate,
             ),
           ),
         ],
@@ -64,10 +67,12 @@ class _SelectedTagChips extends StatelessWidget {
   const _SelectedTagChips({
     required this.tags,
     required this.onDelete,
+    required this.onUpdate,
   });
 
   final List<TagSearchItem> tags;
   final void Function(TagSearchItem tag) onDelete;
+  final void Function(TagSearchItem oldTag, String newTag)? onUpdate;
 
   @override
   Widget build(BuildContext context) {
@@ -85,6 +90,7 @@ class _SelectedTagChips extends StatelessWidget {
               child: SelectedTagChip(
                 tagSearchItem: tags[index],
                 onDeleted: () => onDelete(tags[index]),
+                onUpdated: (tag) => onUpdate?.call(tags[index], tag),
               ),
             ),
           );

@@ -45,6 +45,15 @@ class SelectedTagController extends ValueNotifier<List<TagSearchItem>> {
     value = _tags.toList();
   }
 
+  void updateTag(TagSearchItem oldTag, String newTag) {
+    final tags = _tags.toList();
+    final index = tags.indexOf(oldTag);
+    tags[index] = _toItem(newTag);
+    _tags.clear();
+    _tags.addAll(tags);
+    value = _tags.toList();
+  }
+
   void clear() {
     _tags.clear();
     value = _tags.toList();
