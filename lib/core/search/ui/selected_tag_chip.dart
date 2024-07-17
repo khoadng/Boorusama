@@ -6,11 +6,10 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/search/search.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
+import 'selected_tag_edit_dialog.dart';
 
 // Project imports:
 
@@ -38,10 +37,8 @@ class SelectedTagChip extends StatelessWidget {
           context: context,
           barrierDismissible: true,
           builder: (c) {
-            final controller = TextEditingController()
-              ..text = tagSearchItem.toString();
             return SelectedTagEditDialog(
-              controller: controller,
+              tag: tagSearchItem,
               onUpdated: (tag) {
                 if (tag.isNotEmpty) {
                   onUpdated?.call(tag);
@@ -130,53 +127,5 @@ class SelectedTagChip extends StatelessWidget {
             ),
           )
         : const RoundedRectangleBorder();
-  }
-}
-
-class SelectedTagEditDialog extends StatelessWidget {
-  const SelectedTagEditDialog({
-    super.key,
-    required this.controller,
-    required this.onUpdated,
-  });
-
-  final TextEditingController controller;
-  final void Function(String tag)? onUpdated;
-
-  void _submit(BuildContext context) {
-    onUpdated?.call(controller.text);
-
-    Navigator.pop(context);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const Expanded(
-          child: SizedBox.shrink(),
-        ),
-        Material(
-          child: Padding(
-            padding: const EdgeInsets.all(12),
-            child: BooruTextField(
-              autocorrect: false,
-              autofocus: true,
-              controller: controller,
-              onSubmitted: (_) => _submit(context),
-              decoration: InputDecoration(
-                suffixIcon: TextButton(
-                  child: const Text('generic.action.ok').tr(),
-                  onPressed: () => _submit(context),
-                ),
-              ),
-            ),
-          ),
-        ),
-        const Expanded(
-          child: SizedBox.shrink(),
-        ),
-      ],
-    );
   }
 }

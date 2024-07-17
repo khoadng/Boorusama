@@ -18,7 +18,14 @@ class SelectedTagController extends ValueNotifier<List<TagSearchItem>> {
   List<String> get rawTags => _tags.toRawStringList();
   String get rawTagsString => _tags.toRawString();
 
-  TagSearchItem _toItem(String tag) => TagSearchItem.fromString(tag, tagInfo);
+  TagSearchItem _toItem(
+    String tag, {
+    bool isRaw = false,
+  }) =>
+      isRaw
+          ? TagSearchItem.raw(tag: tag)
+          : TagSearchItem.fromString(tag, tagInfo);
+
   String _applyOperator(String tag, FilterOperator operator) =>
       '${filterOperatorToString(operator)}$tag';
 
@@ -48,7 +55,7 @@ class SelectedTagController extends ValueNotifier<List<TagSearchItem>> {
   void updateTag(TagSearchItem oldTag, String newTag) {
     final tags = _tags.toList();
     final index = tags.indexOf(oldTag);
-    tags[index] = _toItem(newTag);
+    tags[index] = _toItem(newTag, isRaw: true);
     _tags.clear();
     _tags.addAll(tags);
     value = _tags.toList();

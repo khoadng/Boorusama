@@ -14,7 +14,14 @@ class TagSearchItem extends Equatable {
     required this.tag,
     required this.operator,
     this.metatag,
+    this.isRaw = false,
   });
+
+  const TagSearchItem.raw({
+    required this.tag,
+  })  : operator = FilterOperator.none,
+        isRaw = true,
+        metatag = null;
 
   factory TagSearchItem.fromString(
     String query,
@@ -47,14 +54,17 @@ class TagSearchItem extends Equatable {
   final String tag;
   final FilterOperator operator;
   final String? metatag;
+  final bool isRaw;
 
   String get rawTag => tag.replaceAll(' ', '_');
 
   @override
   List<Object?> get props => [tag, operator, metatag];
+
   @override
-  String toString() =>
-      '${filterOperatorToString(operator)}${metatag ?? ''}${metatag != null ? ':' : ''}$tag'
+  String toString() => isRaw
+      ? tag
+      : '${filterOperatorToString(operator)}${metatag ?? ''}${metatag != null ? ':' : ''}$tag'
           .replaceAll(' ', '_');
 }
 
