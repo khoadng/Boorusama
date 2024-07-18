@@ -22,7 +22,7 @@ import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/users/users.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/error.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/widgets.dart';
 

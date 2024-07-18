@@ -6,7 +6,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 
 class OptionTagsArena extends StatefulWidget {
   const OptionTagsArena({

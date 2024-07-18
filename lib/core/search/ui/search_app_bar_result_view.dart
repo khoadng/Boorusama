@@ -7,7 +7,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/search/search.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 
 class SearchAppBarResultView extends ConsumerWidget {
   const SearchAppBarResultView({

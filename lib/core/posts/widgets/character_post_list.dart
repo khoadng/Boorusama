@@ -8,7 +8,7 @@ import 'package:sliver_tools/sliver_tools.dart';
 // Project imports:
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class CharacterPostList extends ConsumerWidget {

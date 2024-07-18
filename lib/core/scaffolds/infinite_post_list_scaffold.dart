@@ -17,7 +17,7 @@ import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/image.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class InfinitePostListScaffold<T extends Post> extends ConsumerStatefulWidget {

@@ -12,7 +12,7 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 import 'widgets/pools/pool_grid_item.dart';
 import 'widgets/pools/pool_options_header.dart';
 import 'widgets/pools/pool_search_button.dart';

@@ -15,7 +15,7 @@ import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/search_histories/search_histories.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/error.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 
 class DanbooruDesktopHomePage extends ConsumerStatefulWidget {
   const DanbooruDesktopHomePage({super.key});

@@ -12,7 +12,7 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/foundation/crypto.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 
 class MoebooruPasswordField extends ConsumerStatefulWidget {
   const MoebooruPasswordField({

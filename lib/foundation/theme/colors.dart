@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 
 const kLightWhiteColor = Color.fromARGB(255, 220, 220, 220);
 const kDimWhiteColor = Color.fromARGB(255, 130, 130, 130);

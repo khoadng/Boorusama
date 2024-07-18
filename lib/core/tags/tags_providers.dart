@@ -11,7 +11,7 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 
 final tagsProvider =
     NotifierProvider.family<TagsNotifier, List<TagGroupItem>?, BooruConfig>(

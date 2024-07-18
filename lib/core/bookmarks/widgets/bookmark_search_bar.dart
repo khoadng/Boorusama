@@ -9,7 +9,7 @@ import 'package:searchfield/searchfield.dart';
 
 // Project imports:
 import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 import 'providers.dart';
 
 class BookmarkSearchBar extends ConsumerWidget {

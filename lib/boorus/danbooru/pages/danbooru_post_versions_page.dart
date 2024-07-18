@@ -11,7 +11,7 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/time.dart';
 import 'package:boorusama/widgets/widgets.dart';
 

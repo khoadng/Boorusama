@@ -10,7 +10,7 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 import 'widgets/settings_header.dart';
 import 'widgets/settings_page_scaffold.dart';
 import 'widgets/settings_slider_tile.dart';

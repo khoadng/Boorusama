@@ -20,7 +20,7 @@ import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 
 // Project imports:
 

@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/string.dart';
 

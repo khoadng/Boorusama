@@ -9,7 +9,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 // Project imports:
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 
 class PostStatisticsPage extends StatelessWidget {
   const PostStatisticsPage({

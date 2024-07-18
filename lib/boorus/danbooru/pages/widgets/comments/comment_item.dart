@@ -9,7 +9,7 @@ import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
 import 'package:boorusama/core/comments/comments.dart';
 import 'package:boorusama/core/dtext/dtext.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/time.dart';
 import 'danbooru_comment_header.dart';
 

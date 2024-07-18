@@ -15,7 +15,7 @@ import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/utils/stream/text_editing_controller_utils.dart';
 
@@ -177,7 +177,8 @@ class _EditSavedSearchSheetState extends ConsumerState<EditSavedSearchSheet> {
                   FilledButton(
                     style: FilledButton.styleFrom(
                       foregroundColor: context.iconTheme.color,
-                      backgroundColor: context.colorScheme.surfaceContainerHighest,
+                      backgroundColor:
+                          context.colorScheme.surfaceContainerHighest,
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(16)),
                       ),

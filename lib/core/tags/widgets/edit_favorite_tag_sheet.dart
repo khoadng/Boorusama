@@ -10,7 +10,7 @@ import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/utils/stream/text_editing_controller_utils.dart';
 
 class EditFavoriteTagSheet extends ConsumerStatefulWidget {

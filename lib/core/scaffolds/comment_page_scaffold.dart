@@ -11,7 +11,7 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/dtext/dtext.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 
 typedef CommentFetcher = Future<List<Comment>> Function(int postId);
 

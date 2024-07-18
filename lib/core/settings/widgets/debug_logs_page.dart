@@ -20,7 +20,7 @@ import 'package:boorusama/foundation/loggers/app_logger.dart';
 import 'package:boorusama/foundation/loggers/logger.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/scrolling.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/widgets/widgets.dart';
 

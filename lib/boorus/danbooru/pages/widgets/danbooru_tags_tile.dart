@@ -13,7 +13,7 @@ import 'package:boorusama/boorus/danbooru/pages/danbooru_post_details_page.dart'
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 import 'danbooru_tag_context_menu.dart';
 
 final danbooruTagTileExpansionStateProvider =
