@@ -2,25 +2,31 @@
     "generic": {
         "done": "Tamam",
         "errors": {
-            "unknown": "Birşeyler ters gitti"
+            "unknown": "Birşeyler ters gitti",
+            "no_data": "ulaşılabilir veri yok"
         },
         "action": {
             "add": "Ekle",
             "delete": "Sil",
             "edit": "Düzenle",
             "ok": "Tamam",
-            "cancel": "İptal"
+            "cancel": "İptal",
+            "duplicate": "Çoğalt"
         }
     },
     "profile": {
-        "favorites": "Favoriler"
+        "favorites": "Favoriler",
+        "profile": "Profil",
+        "copy_user_id": "Kullanıcı kimliğini kopyala",
+        "messages": "Mesajlar"
     },
     "network": {
         "unavailable": "Bağlantı mevcut değil"
     },
     "tag": {
         "related": {
-            "more": "Daha fazla"
+            "more": "Daha fazla",
+            "related": "İlişkili"
         },
         "explore": {
             "new": "Yeni",
@@ -35,8 +41,26 @@
             "rating": "Puanlama",
             "file_format": "Dosya formatı",
             "share": {
-                "source": "Paylaşım kaynak bağlantısı\n"
-            }
+                "source": "Kaynak linkini paylaş",
+                "image": "Görüntüyü paylaş"
+            },
+            "add_to_favorites": "Favorilere ekle",
+            "copied": "Kopyalandı",
+            "login_required_notice": "Bu eylemi gerçekleştirmek için giriş yapman lazım",
+            "view_in_browser": "Tarayıcıda aç",
+            "resolution": "Çözünürlük",
+            "source_label": "Kaynak",
+            "add_to_blacklist": "Karalisteye ekle",
+            "show_original": "Orijinali göster",
+            "show_translated": "Çevrilmişi göster"
+        },
+        "action": {
+            "view_comments": "Yorumları görüntüle",
+            "add_to_favorite_group": "Favori gruba ekle",
+            "select": "Seç"
+        },
+        "image_fullview": {
+            "view_original": "Orijinalini göster"
         }
     },
     "settings": {
@@ -47,5 +71,39 @@
     },
     "forum": {
         "forum": "Forum"
+    },
+    "search": {
+        "errors": {
+            "unknown": "Bilinmeyen sunucu hatası, lütfen geliştiriciye bu sorunu bildirin",
+            "access_denied": "Erişim engellendi",
+            "generic": "Bir şeyler ters gitti",
+            "database_timeout": "Aramanız olması gerektiğinden fazla uzun sürdü ve iptal edildi.",
+            "down": "Sunucu çöktü. Lütfen daha sonra tekrar deneyin"
+        },
+        "search_options": "Arama seçenekleri"
+    },
+    "comment": {
+        "create": {
+            "hint": "Yorum",
+            "loading": "Lütfen bekleyin...",
+            "error": "Hata"
+        },
+        "comments": "Yorumlar",
+        "list": {
+            "reply": "Yanıt ver",
+            "send": "Gönder",
+            "edit": "Düzenle",
+            "delete": "Sil",
+            "noComments": "Hiçbir yorum yok"
+        },
+        "counter": {
+            "one": "Yorum",
+            "other": "Yorumlar"
+        }
+    },
+    "explore": {
+        "most_viewed": "En çok görüntülenen",
+        "see_more": "Daha fazlasını gör",
+        "explore": "Keşfet"
     }
 }
