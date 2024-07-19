@@ -2,7 +2,7 @@
 import 'package:test/test.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/post_votes/post_votes.dart';
 import 'package:boorusama/core/posts/posts.dart';
 
 void main() {

@@ -14,8 +14,8 @@ import 'package:hive/hive.dart';
 import 'package:stack_trace/stack_trace.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
-import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
+import 'package:boorusama/boorus/danbooru/tags/tags.dart';
+import 'package:boorusama/boorus/danbooru/users/users.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/blacklists/blacklists.dart';
 import 'package:boorusama/core/bookmarks/bookmarks.dart';

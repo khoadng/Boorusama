@@ -6,9 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
-import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
+import 'package:boorusama/boorus/danbooru/blacklist/blacklist.dart';
+import 'package:boorusama/boorus/danbooru/favorites/favorites.dart';
+import 'package:boorusama/boorus/danbooru/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/tags/tags.dart';
 import 'package:boorusama/boorus/e621/favorites/favorites.dart';
 import 'package:boorusama/boorus/e621/posts/posts.dart';
 import 'package:boorusama/boorus/gelbooru/favorites/favorites.dart';
