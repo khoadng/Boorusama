@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:filesize/filesize.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_portal/flutter_portal.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -25,10 +24,10 @@ import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/animations.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
+import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -957,45 +956,6 @@ class _TagEditUploadTextControllerScopeState
   }
 }
 
-Widget _getTitle(
-  AutocompleteData tag,
-  String currentQuery,
-  Color? color,
-) {
-  final query = currentQuery.replaceUnderscoreWithSpace().toLowerCase();
-  return tag.hasAlias
-      ? Html(
-          style: {
-            'p': Style(
-              fontSize: FontSize.medium,
-              color: color,
-              margin: Margins.zero,
-            ),
-            'body': Style(
-              margin: Margins.zero,
-            ),
-            'b': Style(
-              fontWeight: FontWeight.w900,
-            ),
-          },
-          data:
-              '<p>${tag.antecedent!.replaceUnderscoreWithSpace().replaceAll(query, '<b>$query</b>')} ➞ ${tag.label.replaceAll(query, '<b>$query</b>')}</p>',
-        )
-      : Html(
-          style: {
-            'p': Style(
-              fontSize: FontSize.medium,
-              color: color,
-            ),
-            'b': Style(
-              fontWeight: FontWeight.w900,
-            ),
-          },
-          data:
-              '<p>${tag.label.replaceAll(query.replaceUnderscoreWithSpace(), '<b>$query</b>')}</p>',
-        );
-}
-
 class TagSuggestionsPortalFollower extends ConsumerWidget {
   const TagSuggestionsPortalFollower({
     super.key,
@@ -1008,8 +968,8 @@ class TagSuggestionsPortalFollower extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final lastQuery = ref.watch(_lastWord);
     final tags = lastQuery != null
-        ? ref.watch(suggestionProvider(lastQuery)).reversed.toList()
-        : <AutocompleteData>[];
+        ? ref.watch(suggestionProvider(lastQuery)).reversed.toIList()
+        : <AutocompleteData>[].lock;
 
     return tags.isEmpty
         ? const SizedBox.shrink()
@@ -1024,47 +984,15 @@ class TagSuggestionsPortalFollower extends ConsumerWidget {
             ),
             width: context.screenWidth,
             color: context.colorScheme.secondaryContainer,
-            child: SingleChildScrollView(
-              reverse: true,
-              child: Column(
-                children: tags.map(
-                  (tag) {
-                    return InkWell(
-                      onTap: () {
-                        onSelected(tag.value);
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: _getTitle(
-                                tag,
-                                lastQuery ?? '',
-                                generateAutocompleteTagColor(ref, context, tag),
-                              ),
-                            ),
-                            if (tag.hasCount && !ref.watchConfig.hasStrictSFW)
-                              Container(
-                                constraints:
-                                    const BoxConstraints(maxWidth: 100),
-                                child: Text(
-                                  NumberFormat.compact().format(tag.postCount),
-                                  style: TextStyle(
-                                    color: context.theme.hintColor,
-                                  ),
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ).toList(),
-              ),
+            child: TagSuggestionItems(
+              dense: true,
+              tags: tags,
+              onItemTap: (tag) {
+                onSelected(tag.value);
+              },
+              currentQuery: lastQuery ?? '',
+              textColorBuilder: (tag) =>
+                  generateAutocompleteTagColor(ref, context, tag),
             ),
           );
   }

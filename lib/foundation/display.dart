@@ -164,6 +164,7 @@ Future<T?> showAdaptiveBottomSheet<T>(
           context: context,
           settings: settings,
           barrierColor: Colors.black45,
+          duration: AppDurations.bottomSheet,
           backgroundColor: backgroundColor ?? Colors.transparent,
           builder: (context) => ConditionalParentWidget(
             condition: !expand,
