@@ -4,45 +4,40 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
+import 'package:boorusama/core/favorites/favorites.dart';
+import 'package:boorusama/functional.dart';
 import '../post_votes/post_votes.dart';
 import '../users/users.dart';
 import 'favorites_provider.dart';
 
-class FavoritesNotifier extends FamilyNotifier<Map<int, bool>, BooruConfig> {
+class FavoritesNotifier extends FamilyNotifier<IMap<int, bool>, BooruConfig>
+    with FavoritesNotifierMixin {
   final _limit = 200;
 
   @override
-  Map<int, bool> build(BooruConfig arg) {
-    return {};
+  IMap<int, bool> build(BooruConfig arg) {
+    return <int, bool>{}.lock;
   }
 
-  Future<void> add(int postId) async {
-    final success = await ref
-        .read(danbooruFavoriteRepoProvider(arg))
-        .addToFavorites(postId);
-    if (success) {
-      ref
-          .read(danbooruPostVotesProvider(arg).notifier)
-          .upvote(postId, localOnly: true);
-      state = {
-        ...state,
-        postId: true,
-      };
-    }
-  }
+  @override
+  Future<AddFavoriteStatus> Function(int postId) get favoriteAdder =>
+      (postId) async {
+        final success = await ref
+            .read(danbooruFavoriteRepoProvider(arg))
+            .addToFavorites(postId);
+        if (success) {
+          try {
+            await ref
+                .read(danbooruPostVotesProvider(arg).notifier)
+                .upvote(postId, localOnly: true);
+            return AddFavoriteStatus.success;
+          } catch (e) {
+            return AddFavoriteStatus.failure;
+          }
+        }
 
-  Future<void> remove(int postId) async {
-    final success = await ref
-        .read(danbooruFavoriteRepoProvider(arg))
-        .removeFromFavorites(postId);
-    if (success) {
-      ref.read(danbooruPostVotesProvider(arg).notifier).removeLocalVote(postId);
-      state = {
-        ...state,
-        postId: false,
+        return AddFavoriteStatus.failure;
       };
-    }
-  }
 
   Future<void> checkFavorites(List<int> postIds) async {
     final user = await ref.read(danbooruCurrentUserProvider(arg).future);
@@ -54,7 +49,7 @@ class FavoritesNotifier extends FamilyNotifier<Map<int, bool>, BooruConfig> {
     final postIdsToCheck =
         postIds.where((postId) => !state.containsKey(postId)).toList();
 
-    final cache = {...state};
+    final cache = state.unlock;
 
     if (postIdsToCheck.isNotEmpty) {
       final favorites = await ref
@@ -73,8 +68,33 @@ class FavoritesNotifier extends FamilyNotifier<Map<int, bool>, BooruConfig> {
       }
     }
 
-    state = cache;
+    state = cache.lock;
   }
+
+  @override
+  Future<bool> Function(int postId) get favoriteRemover => (postId) async {
+        final success = await ref
+            .read(danbooruFavoriteRepoProvider(arg))
+            .removeFromFavorites(postId);
+        if (success) {
+          try {
+            await ref
+                .read(danbooruPostVotesProvider(arg).notifier)
+                .removeVote(postId);
+          } catch (e) {
+            return false;
+          }
+        }
+
+        return success;
+      };
+
+  @override
+  IMap<int, bool> get favorites => state;
+
+  @override
+  void Function(IMap<int, bool> data) get updateFavorites =>
+      (data) => state = data;
 }
 
 extension DanbooruFavoritesX on WidgetRef {
