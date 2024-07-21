@@ -30,15 +30,18 @@ class BookmarkSearchBar extends ConsumerWidget {
 
     final selectedTag = ref.watch(selectedTagsProvider);
 
-    return Padding(
-      padding: const EdgeInsets.all(8),
+    return Container(
+      margin: const EdgeInsets.all(8),
+      height: kPreferredLayout.isDesktop ? 34 : null,
       child: SearchField(
         animationDuration: const Duration(milliseconds: 100),
         autoCorrect: false,
         focusNode: focusNode,
         marginColor: Colors.transparent,
         maxSuggestionsInViewPort: 10,
-        offset: const Offset(0, 54),
+        offset: kPreferredLayout.isDesktop
+            ? const Offset(0, 40)
+            : const Offset(0, 54),
         scrollbarDecoration: ScrollbarDecoration(
           thumbVisibility: false,
         ),
@@ -49,21 +52,13 @@ class BookmarkSearchBar extends ConsumerWidget {
         ),
         searchInputDecoration: InputDecoration(
           prefixIcon: const Icon(Symbols.search),
-          suffix: selectedTag.isNotEmpty
-              ? ClipRRect(
-                  borderRadius: BorderRadius.circular(50),
-                  child: Material(
-                    child: InkWell(
-                      child: const Padding(
-                        padding: EdgeInsets.all(2),
-                        child: Icon(Symbols.clear, size: 18),
-                      ),
-                      onTap: () {
-                        controller.clear();
-                        ref.read(selectedTagsProvider.notifier).state = '';
-                      },
-                    ),
-                  ),
+          suffixIcon: selectedTag.isNotEmpty
+              ? InkWell(
+                  child: const Icon(Symbols.clear),
+                  onTap: () {
+                    controller.clear();
+                    ref.read(selectedTagsProvider.notifier).state = '';
+                  },
                 )
               : null,
           hintText: 'Filter...',

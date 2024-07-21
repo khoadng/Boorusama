@@ -178,6 +178,11 @@ class AppTheme {
           scrolledUnderElevation: 0,
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
+          titleSpacing: 4,
+          titleTextStyle: TextStyle(
+            fontWeight: FontWeight.w700,
+            fontSize: 22,
+          ),
         ),
         chipTheme: const ChipThemeData(
           shape: StadiumBorder(),
