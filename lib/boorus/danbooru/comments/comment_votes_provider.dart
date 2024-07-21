@@ -25,13 +25,10 @@ final danbooruCommentVoteRepoProvider =
         client.removeCommentVote(commentId: commentId).then((_) => true),
     upvote: (commentId) => client
         .upvoteComment(commentId: commentId)
-        .then(commentVoteDtoToCommentVote)
-        .catchError((error) => throw Exception('Failed to upvote $commentId')),
+        .then(commentVoteDtoToCommentVote),
     downvote: (commentId) => client
         .downvoteComment(commentId: commentId)
-        .then(commentVoteDtoToCommentVote)
-        .catchError(
-            (error) => throw Exception('Failed to downvote $commentId')),
+        .then(commentVoteDtoToCommentVote),
   );
 });
 
