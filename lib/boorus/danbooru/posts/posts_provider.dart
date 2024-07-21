@@ -113,7 +113,7 @@ final danbooruPostFetchTransformerProvider =
       final ids = r.posts.map((e) => e.id).toList();
 
       ref.read(danbooruFavoritesProvider(config).notifier).checkFavorites(ids);
-      ref.read(danbooruPostVotesProvider(config).notifier).getVotes(ids);
+      ref.read(danbooruPostVotesProvider(config).notifier).getVotes(r.posts);
       ref.read(danbooruTagListProvider(config).notifier).removeTags(ids);
     }
 

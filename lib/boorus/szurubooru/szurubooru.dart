@@ -27,6 +27,7 @@ import 'package:boorusama/functional.dart';
 import 'package:boorusama/routes.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'create_szurubooru_config_page.dart';
+import 'post_votes/post_votes.dart';
 import 'szurubooru_post.dart';
 
 class SzurubooruBuilder
@@ -237,7 +238,7 @@ class SzurubooruPostDetailsPage extends ConsumerWidget {
       toolbarBuilder: (context, rawPost) =>
           castOrNull<SzurubooruPost>(rawPost).toOption().fold(
                 () => SimplePostActionToolbar(post: rawPost),
-                (post) => DefaultPostActionToolbar(post: post),
+                (post) => SzurubooruPostActionToolbar(post: post),
               ),
       fileDetailsBuilder: (context, rawPost) => DefaultFileDetailsSection(
         post: rawPost,

@@ -1,16 +1,22 @@
+// Dart imports:
+import 'dart:async';
+
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/functional.dart';
+import '../posts/posts.dart';
 import '../users/users.dart';
 import 'danbooru_post_vote.dart';
 import 'post_vote_repository.dart';
 import 'post_votes_provider.dart';
 
 class PostVotesNotifier
-    extends FamilyNotifier<IMap<int, DanbooruPostVote?>, BooruConfig> {
+    extends FamilyNotifier<IMap<int, DanbooruPostVote?>, BooruConfig>
+    with VotesNotifierMixin<DanbooruPostVote, DanbooruPost> {
   @override
   IMap<int, DanbooruPostVote?> build(BooruConfig arg) {
     return <int, DanbooruPostVote?>{}.lock;
@@ -18,69 +24,35 @@ class PostVotesNotifier
 
   PostVoteRepository get repo => ref.read(danbooruPostVoteRepoProvider(arg));
 
-  void _vote(DanbooruPostVote? postVote) {
-    if (postVote == null) return;
+  @override
+  Future<DanbooruPostVote?> Function(int postId) get upvoter => repo.upvote;
 
-    state = state.add(postVote.postId, postVote);
-  }
+  @override
+  Future<bool> Function(int postId) get voteRemover => repo.removeVote;
 
-  Future<void> upvote(
-    int postId, {
-    bool localOnly = false,
-  }) async {
-    if (localOnly) {
-      _vote(DanbooruPostVote.local(postId: postId, score: 1));
-      return;
-    }
+  @override
+  Future<DanbooruPostVote?> Function(int postId) get downvoter => repo.downvote;
 
-    final postVote = await repo.upvote(postId);
-    _vote(postVote);
-  }
+  @override
+  DanbooruPostVote Function(int postId, int score) get localVoteBuilder =>
+      (postId, score) => DanbooruPostVote.local(postId: postId, score: score);
 
-  Future<void> downvote(
-    int postId, {
-    bool localOnly = false,
-  }) async {
-    if (localOnly) {
-      _vote(DanbooruPostVote.local(postId: postId, score: -1));
-      return;
-    }
+  @override
+  void Function(IMap<int, DanbooruPostVote?> data) get updateVotes =>
+      (data) => state = data;
 
-    final postVote = await repo.downvote(postId);
-    _vote(postVote);
-  }
+  @override
+  IMap<int, DanbooruPostVote?> get votes => state;
 
-  void removeLocalVote(int postId) {
-    state = state.remove(postId);
-  }
+  @override
+  Future<List<DanbooruPostVote>> Function(List<DanbooruPost> posts)
+      get votesFetcher => (posts) async {
+            final user =
+                await ref.read(danbooruCurrentUserProvider(arg).future);
+            if (user == null) return [];
 
-  Future<void> removeVote(int postId) async {
-    final success = await repo.removeVote(postId);
-    if (success) {
-      removeLocalVote(postId);
-    }
-  }
+            final postIds = posts.map((e) => e.id).toList();
 
-  Future<void> getVotes(List<int> postIds) async {
-    // fetch votes for posts that are not in the cache and votes that is local
-    final postIdsToFetch = postIds.where((postId) {
-      if (!state.containsKey(postId)) return true;
-      final postVote = state[postId];
-      if (postVote == null) return false;
-      return postVote.isOptimisticUpdateVote;
-    }).toList();
-
-    final user = await ref.read(danbooruCurrentUserProvider(arg).future);
-
-    if (postIdsToFetch.isNotEmpty && user != null) {
-      final fetchedPostVotes = await repo.getPostVotes(postIdsToFetch, user.id);
-      final voteMap = {
-        for (var postVote in fetchedPostVotes) postVote.postId: postVote,
-      };
-
-      state = state.addMap({
-        for (var id in postIds) id: voteMap[id],
-      });
-    }
-  }
+            return repo.getPostVotes(postIds, user.id);
+          };
 }

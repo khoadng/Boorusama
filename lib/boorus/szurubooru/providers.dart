@@ -13,6 +13,7 @@ import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/path.dart';
+import 'post_votes/post_votes.dart';
 import 'szurubooru_post.dart';
 
 final szurubooruClientProvider = Provider.family<SzurubooruClient, BooruConfig>(
@@ -101,6 +102,7 @@ final szurubooruPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
             .toList();
 
         ref.read(szurubooruFavoritesProvider(config).notifier).preload(data);
+        ref.read(szurubooruPostVotesProvider(config).notifier).getVotes(data);
 
         return data.toResult();
       },
