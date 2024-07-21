@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 
 // Project imports:
+import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/theme.dart';
 
 const staticLightScheme = ColorScheme(
@@ -174,12 +175,12 @@ class AppTheme {
     required ColorScheme colorScheme,
   }) =>
       ThemeData(
-        appBarTheme: const AppBarTheme(
+        appBarTheme: AppBarTheme(
           scrolledUnderElevation: 0,
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
-          titleSpacing: 4,
-          titleTextStyle: TextStyle(
+          titleSpacing: kPreferredLayout.isDesktop ? 4 : null,
+          titleTextStyle: const TextStyle(
             fontWeight: FontWeight.w700,
             fontSize: 22,
           ),
