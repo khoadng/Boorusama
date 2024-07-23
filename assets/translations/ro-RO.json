@@ -1,491 +1,491 @@
 {
     "generic": {
-        "done": "",
+        "done": "Terminat",
         "errors": {
-            "no_data": "",
-            "unknown": ""
+            "no_data": "Nu există date disponibile",
+            "unknown": "Ceva nu a funcționat"
         },
         "action": {
-            "add": "",
-            "delete": "",
-            "edit": "",
-            "ok": "",
-            "cancel": "",
-            "duplicate": ""
+            "add": "Adăugați",
+            "delete": "Ștergeți",
+            "edit": "Editați",
+            "ok": "OK",
+            "cancel": "Anulați",
+            "duplicate": "Duplicați"
         },
-        "view": ""
+        "view": "Vizualizați"
     },
     "profile": {
-        "favorites": "",
-        "profile": "",
-        "copy_user_id": "",
-        "messages": ""
+        "favorites": "Favorite",
+        "profile": "Profil",
+        "copy_user_id": "Copiați ID utilizator",
+        "messages": "Mesaje"
     },
     "network": {
-        "unavailable": ""
+        "unavailable": "Rețea indisponibilă"
     },
     "tag": {
         "related": {
-            "more": "",
-            "related": "",
-            "add_to_current_search": "",
-            "open_wiki": ""
+            "more": "Mai multe",
+            "related": "Similare",
+            "add_to_current_search": "Adăugați la căutarea curentă",
+            "open_wiki": "Deschideți Wiki"
         },
         "explore": {
-            "new": "",
-            "popular": ""
+            "new": "Nou",
+            "popular": "Popular"
         }
     },
     "post": {
         "detail": {
-            "view": "",
-            "view_in_browser": "",
-            "file_details": "",
-            "size": "",
-            "resolution": "",
-            "rating": "",
-            "file_format": "",
+            "view": "Vizualizați",
+            "view_in_browser": "Vizualizați în browser",
+            "file_details": "Detaliile fișierului",
+            "size": "Mărime",
+            "resolution": "Rezoluție",
+            "rating": "Recenzie",
+            "file_format": "Formatul fișierului",
             "share": {
-                "source": "",
-                "booru": "",
-                "image": ""
+                "source": "Partajați link-ul sursei",
+                "booru": "Partajați link-ul din booru",
+                "image": "Partajați imaginea"
             },
-            "copied": "",
-            "show_original": "",
-            "show_translated": "",
-            "login_required_notice": "",
-            "open_wiki": "",
-            "add_to_blacklist": "",
-            "add_to_favorites": "",
-            "copy_and_open_saved_search": "",
+            "copied": "Copiat",
+            "show_original": "Afișați originalul",
+            "show_translated": "Afișați traducerea",
+            "login_required_notice": "Trebuie să vă logați pentru a realiza această acțiune",
+            "open_wiki": "Deschideți Wiki",
+            "add_to_blacklist": "Adăugați la lista neagră",
+            "add_to_favorites": "Adăugați la favorite",
+            "copy_and_open_saved_search": "Copiați și deschideți căutarea salvată",
             "score": {
-                "one": "",
-                "other": ""
+                "one": "Punct",
+                "other": "Puncte"
             },
-            "source_label": "",
-            "related_posts": "",
-            "add_to_bookmark": "",
-            "remove_from_bookmark": ""
+            "source_label": "Sursă",
+            "related_posts": "Postări similare",
+            "add_to_bookmark": "Adăugați la marcaje",
+            "remove_from_bookmark": "Scoateți din marcaje"
         },
         "action": {
-            "preview": "",
-            "view_comments": "",
-            "add_to_favorite_group": "",
-            "select": ""
+            "preview": "Previzualizați",
+            "view_comments": "Vizualizați comentariile",
+            "add_to_favorite_group": "Adăugați la grupul de favorite",
+            "select": "Selectați"
         },
         "image_fullview": {
-            "view_original": "",
-            "view_resized": ""
+            "view_original": "Vizualizați originalul",
+            "view_resized": "Vizualizați redimensionat"
         }
     },
     "comment": {
-        "comments": "",
+        "comments": "Comentarii",
         "create": {
-            "hint": "",
-            "loading": "",
-            "error": ""
+            "hint": "Comentați",
+            "loading": "Vă rugăm așteptați...",
+            "error": "Eroare"
         },
         "list": {
-            "edit": "",
-            "reply": "",
-            "reply_to": "",
-            "delete": "",
-            "noComments": "",
-            "last_updated": "",
-            "send": ""
+            "edit": "Editați",
+            "reply": "Răspundeți",
+            "reply_to": "Răspuns către",
+            "delete": "Ștergeți",
+            "noComments": "Nu există comentarii",
+            "last_updated": "Ultima actualizare",
+            "send": "Trimiteți"
         },
         "counter": {
-            "one": "",
-            "other": ""
+            "one": "Comentariu",
+            "other": "Comentarii"
         }
     },
     "explore": {
-        "latest": "",
-        "popular": "",
-        "hot": "",
-        "most_viewed": "",
-        "see_more": "",
-        "explore": ""
+        "latest": "Recente",
+        "popular": "Populare",
+        "hot": "Actuale",
+        "most_viewed": "Cele mai vizionate",
+        "see_more": "Vedeți mai multe",
+        "explore": "Explorați"
     },
     "search": {
         "errors": {
-            "generic": "",
-            "tag_limit": "",
-            "database_timeout": "",
-            "rate_limited": "",
-            "pagination_limit": "",
-            "max_capacity": "",
-            "down": "",
-            "access_denied": "",
-            "forbidden": "",
-            "unknown": ""
+            "generic": "Ceva nu a funcționat",
+            "tag_limit": "Limita maximă de etichete a fost atinsă. Actualizați-vă contul pentru a căuta folosind mai multe etichete în același timp.",
+            "database_timeout": "Căutarea dumneavoastră a durat prea mult pentru a fi executată și a fost anulată.",
+            "rate_limited": "Ați atins limita. Încercați mai târziu",
+            "pagination_limit": "Ați atins limita paginației, ceea ce înseamnă că nu puteți să continuați mai departe",
+            "max_capacity": "Serverul este încărcat și nu poate gestiona cererea, încercați mai târziu",
+            "down": "Serverul este indisponibil, încercați mai târziu",
+            "access_denied": "Acces refuzat",
+            "forbidden": "Autentificare eșuată",
+            "unknown": "Eroare de server necunoscută, raportați această problemă dezvoltatorului"
         },
-        "hint": "",
-        "no_result": "",
-        "search_options": "",
-        "metatags_notice": "",
+        "hint": "Căutați...",
+        "no_result": "Am căutat în lung și în lat, dar nu au fost găsite rezultate.",
+        "search_options": "Opțiuni de căutare",
+        "metatags_notice": "Meta-etichetele gratuite nu vor fi luate în considerare pentru limitele de căutare",
         "history": {
-            "history": "",
-            "clear": "",
-            "recent": ""
+            "history": "Istoric",
+            "clear": "Goliți",
+            "recent": "Recente"
         },
-        "trending": "",
-        "remove_all_selected": "",
+        "trending": "În trend",
+        "remove_all_selected": "Eliminați toate etichetele selectate",
         "result_counter": {
-            "one": "",
-            "other": ""
+            "one": "{} Rezultat",
+            "other": "{} Rezultate"
         },
-        "no_result_notice": "",
-        "search_in_progress_notice": ""
+        "no_result_notice": "Fără rezultate",
+        "search_in_progress_notice": "Căutare..."
     },
     "pool": {
-        "pool": "",
-        "pool_gallery": "",
+        "pool": "Piscină",
+        "pool_gallery": "Galerie piscină",
         "order": {
-            "recent": "",
-            "new": "",
-            "post_count": "",
-            "name": ""
+            "recent": "Recente",
+            "new": "Noi",
+            "post_count": "Numărul de postări",
+            "name": "Nume"
         },
         "category": {
-            "series": "",
-            "collection": ""
+            "series": "Serie",
+            "collection": "Colecție"
         },
         "search": {
-            "hint": ""
+            "hint": "Căutați într-o piscină"
         },
         "detail": {
-            "last_updated": ""
+            "last_updated": "Ultima actualizare"
         }
     },
     "settings": {
-        "settings": "",
-        "app_settings": "",
+        "settings": "Setări",
+        "app_settings": "Setări aplicație",
         "appearance": {
-            "appearance": "",
-            "show_scores": "",
-            "show_post_list_config_header": "",
-            "booru_config": "",
-            "booru_config_placement": ""
+            "appearance": "Aspect",
+            "show_scores": "Afișați scorurile",
+            "show_post_list_config_header": "Afișați antetul de configurare a postărilor",
+            "booru_config": "Profil Booru",
+            "booru_config_placement": "Plasare profil Booru"
         },
-        "general": "",
+        "general": "General",
         "search": {
-            "search": "",
-            "auto_focus_search_bar": "",
-            "hide_bookmarked_posts_from_search_results": ""
+            "search": "Căutare",
+            "auto_focus_search_bar": "Auto selectați bara de căutare când deschideți pagina de căutare prima dată",
+            "hide_bookmarked_posts_from_search_results": "Ascundeți postările marcate din rezultatele căutării"
         },
-        "information": "",
-        "changelog": "",
-        "infinite_scroll_warning": "",
+        "information": "Informații",
+        "changelog": "Jurnal de modificări",
+        "infinite_scroll_warning": "Aplicația s-ar putea închide dacă defilați pentru un timp lung",
         "result_layout": {
-            "result_layout": "",
-            "infinite_scroll": "",
-            "pagination": ""
+            "result_layout": "Modul paginii",
+            "infinite_scroll": "Defilare infinită",
+            "pagination": "Paginație"
         },
         "image_list": {
-            "image_list": "",
-            "standard": "",
-            "masonry": ""
+            "image_list": "Lista de imagini",
+            "standard": "Standard",
+            "masonry": "Dimensionate"
         },
         "image_grid": {
-            "image_grid": "",
+            "image_grid": "Grila de imagini",
             "grid_size": {
-                "grid_size": "",
-                "small": "",
-                "medium": "",
-                "large": ""
+                "grid_size": "Dimensiunea grilei",
+                "small": "Mică",
+                "medium": "Medie",
+                "large": "Mare"
             },
             "image_quality": {
-                "image_quality": "",
-                "high_quality_notice": "",
-                "high": "",
-                "low": "",
-                "original": "",
-                "automatic": "",
-                "highest": ""
+                "image_quality": "Calitatea imaginii",
+                "high_quality_notice": "Imaginile de înaltă calitate for lua mai mult pentru a se încărca.",
+                "high": "Înaltă",
+                "low": "Joasă",
+                "original": "Original",
+                "automatic": "Automatică",
+                "highest": "Cea mai înaltă"
             },
-            "spacing": "",
-            "corner_radius": "",
-            "padding": "",
-            "aspect_ratio": ""
+            "spacing": "Spațierea",
+            "corner_radius": "Raza colțului",
+            "padding": "Căptușeala",
+            "aspect_ratio": "Raportul de aspect"
         },
         "image_viewer": {
-            "image_viewer": "",
-            "full_res_as_default": "",
-            "full_res_notice": ""
+            "image_viewer": "Vizualizorul de imagini",
+            "full_res_as_default": "Afișați implicit rezoluția maximă",
+            "full_res_notice": "Încărcarea va dura ceva timp, în funcție de dimensiunea imaginii"
         },
         "image_detail": {
-            "image_detail": ""
+            "image_detail": "Detaliul imaginii"
         },
         "language": {
-            "language": "",
-            "language_name": ""
+            "language": "Limba",
+            "language_name": "Română"
         },
         "theme": {
-            "theme": "",
-            "dark": "",
-            "light": "",
-            "amoled_dark": "",
-            "dynamic_color": "",
-            "dynamic_color_mobile_description": "",
-            "dynamic_color_desktop_description": "",
-            "dynamic_color_unsupported_description": ""
+            "theme": "Temă",
+            "dark": "Întunecată",
+            "light": "Deschisă",
+            "amoled_dark": "Neagră",
+            "dynamic_color": "Culoare dinamică pentru temă",
+            "dynamic_color_mobile_description": "Sincronizați culoarea temei cu imaginea de fundal",
+            "dynamic_color_desktop_description": "Sincronizați culoarea temei cu culoarea de accent al sistemului de operare",
+            "dynamic_color_unsupported_description": "Acest dispozitiv nu suportă culoare dinamică."
         },
         "privacy": {
-            "privacy": "",
-            "send_error_data_notice": "",
-            "enable_incognito_keyboard": "",
-            "enable_incognito_keyboard_notice": "",
-            "enable_biometric_lock": "",
-            "enable_biometric_lock_notice": ""
+            "privacy": "Confidențialitate",
+            "send_error_data_notice": "Trimiteți date anonime pentru înregistrarea de erori",
+            "enable_incognito_keyboard": "Activați modul incognito al tastaturii",
+            "enable_incognito_keyboard_notice": "Funcționează doar pe Android.",
+            "enable_biometric_lock": "Activați blocarea biometrică",
+            "enable_biometric_lock_notice": "Funcționează doar pe dispozitive cu suport biometric care a fost configurat."
         },
         "performance": {
-            "performance": "",
-            "posts_per_page": "",
-            "posts_per_page_explain": "",
-            "cache_size": "",
-            "clear_cache": "",
-            "cache_size_info": ""
+            "performance": "Performanță",
+            "posts_per_page": "Postări pe pagină",
+            "posts_per_page_explain": "Numărul de miniaturi per pagină",
+            "cache_size": "Dimensiunea memoriei cache",
+            "clear_cache": "Eliberați",
+            "cache_size_info": "{0} în {1} fișiere"
         },
         "debug_logs": {
-            "debug_logs": "",
-            "logs_copied": ""
+            "debug_logs": "Registrul de depanare",
+            "logs_copied": "Jurnal copiat în clipboard"
         },
         "download": {
-            "path": "",
-            "select_a_folder": "",
-            "quality": "",
+            "path": "Ruta descărcărilor",
+            "select_a_folder": "Selectați un dosar",
+            "quality": "Calitatea imaginii descărcate",
             "qualities": {
-                "original": "",
-                "sample": "",
-                "preview": ""
+                "original": "Original",
+                "sample": "Mostră",
+                "preview": "Previzualizare"
             }
         },
-        "help_us_translate": "",
-        "other_settings": "",
+        "help_us_translate": "Ajutați-ne cu traducerea",
+        "other_settings": "Alte setări",
         "data_and_storage": {
-            "data_and_storage": "",
-            "clear_cache_on_start_up": ""
+            "data_and_storage": "Date și Stocare",
+            "clear_cache_on_start_up": "Goliți memoria cache a imaginilor când deschideți aplicația"
         },
         "backup_and_restore": {
-            "backup_and_restore": ""
+            "backup_and_restore": "Copie de rezervă și restaurare"
         },
         "image_details": {
-            "image_details": "",
+            "image_details": "Detaliile imaginii",
             "ui_overlay": {
-                "show": "",
-                "hide": "",
-                "ui_overlay": ""
+                "show": "Afișați",
+                "hide": "Ascundeți",
+                "ui_overlay": "Suprapunerea interfeței de utilizare"
             }
         },
         "page_indicator": {
-            "page_indicator": "",
-            "top": "",
-            "bottom": "",
-            "both": ""
+            "page_indicator": "Poziția indicatorului de pagină",
+            "top": "Sus",
+            "bottom": "Jos",
+            "both": "Ambele"
         },
         "accessibility": {
-            "accessibility": "",
-            "reverseBooruConfigSelectorScrollDirection": "",
-            "swipeAreaToOpenSidebar": "",
-            "swipeAreaToOpenSidebarDescription": ""
+            "accessibility": "Accesibilitate",
+            "reverseBooruConfigSelectorScrollDirection": "Defilare inversă a profilurilor booru",
+            "swipeAreaToOpenSidebar": "Zona de glisare a barei laterale",
+            "swipeAreaToOpenSidebarDescription": "Suprafața zonei pe partea stângă a ecranului care poate fi folosită pentru a activa o glisare. O suprafață mare va bloca toate gesturile precum gesturile paginării."
         },
         "booru_settings": {
-            "edit_current_profile": "",
-            "booru_settings": ""
+            "edit_current_profile": "Editați profilul curent",
+            "booru_settings": "Setări Booru"
         },
-        "contribute": "",
-        "source_code": "",
-        "support": "",
-        "contact_developer": "",
-        "contact_developer_description": "",
-        "feature_request_and_bug_report": "",
-        "feature_request_and_bug_report_description": ""
+        "contribute": "Contribuiți",
+        "source_code": "Sursă cod",
+        "support": "Suport",
+        "contact_developer": "Contactați dezvoltatorul",
+        "contact_developer_description": "Dacă aveți orice problemă sau sugestii, vă rog să îmi trimiteți un email prin această opțiune",
+        "feature_request_and_bug_report": "Solicitări de funcții și raportarea de erori",
+        "feature_request_and_bug_report_description": "Sugerați funcții sau raportați erori prin repozitoriul GitHub"
     },
     "blacklisted_tags": {
-        "remove": "",
-        "edit": "",
-        "blacklisted_tags": "",
-        "load_error": "",
-        "updated": "",
-        "limitation_notice": "",
-        "failed_to_add": "",
-        "failed_to_remove": "",
-        "blacklisted_header_title": "",
-        "disable_all": "",
-        "reenable_all": ""
+        "remove": "Ștergeți",
+        "edit": "Editați",
+        "blacklisted_tags": "Etichete pe lista neagră",
+        "load_error": "Nu s-au putut încărca etichetele de pe lista neagră",
+        "updated": "Lista neagră de etichete a fost actualizată",
+        "limitation_notice": "Sunt suportate doar operatorii <b>NOT</b>, <b>OR</b>, meta-etichetele <b>score</b> si <b>rating</b>\n\nLista neagră nu suportă alte meta-etichete pentru versiunea curentă.",
+        "failed_to_add": "Nu s-a putut adăuga eticheta",
+        "failed_to_remove": "Nu s-a putut șterge eticheta",
+        "blacklisted_header_title": "Puse pe lista neagră",
+        "disable_all": "Dezactivați toate",
+        "reenable_all": "Re-activați toate"
     },
     "download": {
-        "download": "",
-        "bulk_download": "",
-        "bulk_download_tag_confirmation": "",
-        "bulk_download_save_to_folder": "",
-        "bulk_download_total_count": "",
-        "bulk_download_done_count": "",
-        "bulk_download_done_confirm": "",
-        "bulk_download_cancel": "",
-        "bulk_download_duplicate": "",
-        "bulk_download_invalid_folder_name_error": "",
-        "bulk_download_folder_select_warning": "",
-        "bulk_download_select_a_folder": "",
+        "download": "Descărcați",
+        "bulk_download": "Descărcați în masă",
+        "bulk_download_tag_confirmation": "Etichetele următoare vor fi descărcate",
+        "bulk_download_save_to_folder": "Salvați într-un dosar",
+        "bulk_download_total_count": "Total",
+        "bulk_download_done_count": "Terminat",
+        "bulk_download_done_confirm": "Terminat",
+        "bulk_download_cancel": "Anulați",
+        "bulk_download_duplicate": "Duplicați",
+        "bulk_download_invalid_folder_name_error": "Un dosar nu poate conține următoarele caractere: ",
+        "bulk_download_folder_select_warning": "Aplicația poate să salveze fișiere doar în dosare publice <b>({0})</b> începând cu Android 11. <div> Cardurile SD nu sunt de asemenea suportate. </div> <div>Selectați altă locație.</div> <div>Versiunea dispozitivului este {1}.</div>",
+        "bulk_download_select_a_folder": "Selectați un dosar",
         "bulk_download_downloaded_counter": {
-            "one": "",
-            "other": ""
+            "one": "{} imagine descărcată",
+            "other": "{} imagini descărcate"
         },
         "bulk_download_skipped_counter": {
-            "one": "",
-            "other": ""
+            "one": "{} imagine omisă",
+            "other": "{} imagini omise"
         },
-        "bulk_download_download_more": "",
-        "open_app_settings": "",
-        "storage_permission_explanation": "",
-        "app_restart_request": "",
+        "bulk_download_download_more": "Descărcați mai multe",
+        "open_app_settings": "Deschideți setări",
+        "storage_permission_explanation": "Permisiunea de stocare este necesară pentru a stoca fișierele descărcate.",
+        "app_restart_request": "Trebuie să reporniți aplicația pentru ca această modificare să intre în vigoare",
         "image_counter": {
-            "one": "",
-            "other": ""
+            "one": "Descărcați {} imagine",
+            "other": "Descărcați {} imagini"
         },
         "bulk": {
-            "all_done_notification_message": ""
+            "all_done_notification_message": "Toate descărcările s-au terminat"
         }
     },
     "saved_search": {
-        "saved_search": "",
+        "saved_search": "Căutare salvată",
         "saved_search_counter": {
-            "one": "",
-            "other": ""
+            "one": "{} căutare",
+            "other": "{} căutări"
         },
-        "add_saved_search": "",
-        "saved_search_added": "",
-        "empty_saved_search": "",
-        "update_saved_search": "",
-        "saved_search_updated": "",
-        "saved_search_feed": "",
-        "saved_search_help": "",
-        "saved_search_examples": "",
-        "saved_search_try": "",
-        "saved_search_query": "",
-        "saved_search_labels": "",
-        "saved_search_labels_description": ""
+        "add_saved_search": "Adăugați o căutare salvată",
+        "saved_search_added": "Căutarea salvată a fost adăugată",
+        "empty_saved_search": "Nu ați adăugat nici o căutare",
+        "update_saved_search": "Actualizați căutarea salvată",
+        "saved_search_updated": "Căutarea salvată a fost actualizată",
+        "saved_search_feed": "Flux",
+        "saved_search_help": "Ce este?",
+        "saved_search_examples": "Exemple",
+        "saved_search_try": "Încercați",
+        "saved_search_query": "Întrebare",
+        "saved_search_labels": "Etichete*",
+        "saved_search_labels_description": "*O listă de etichete pentru a ajuta la clasificarea acestei căutări. Spațiu delimitat."
     },
     "favorites": {
         "counter": {
-            "one": "",
-            "other": ""
+            "one": "Favorit",
+            "other": "Favorite"
         },
-        "favorited": "",
-        "favorite": ""
+        "favorited": "Favorite",
+        "favorite": "Favorit"
     },
     "favorite_groups": {
-        "favorite_groups": "",
-        "empty_group_notice": "",
-        "create_group": "",
-        "edit_group": "",
-        "add_to_group_dialog_title": "",
-        "add_to": "",
-        "create": "",
-        "private": "",
-        "view_more_popup": "",
-        "items_added_notification_popup": "",
-        "group_name": "",
-        "group_name_hint": "",
-        "all_posts": "",
-        "initial_posts_hint": "",
-        "is_private_group_option": "",
-        "create_group_cancel": "",
-        "create_group_confirm": "",
-        "max_limit_warning": "",
-        "duplicate_items_warning_notification": "",
-        "detete_confirmation": "",
+        "favorite_groups": "Grupuri favorite",
+        "empty_group_notice": "Nu există grupuri favorite",
+        "create_group": "Creați grup",
+        "edit_group": "Editați grup",
+        "add_to_group_dialog_title": "Adăugați la grupul favorit",
+        "add_to": "Adăugați la",
+        "create": "Creați",
+        "private": "Privat",
+        "view_more_popup": "Vizualizați",
+        "items_added_notification_popup": "{0} postări adăugate în {1}",
+        "group_name": "Numele grupului",
+        "group_name_hint": "Grup nou",
+        "all_posts": "Postări",
+        "initial_posts_hint": "Introduceți numerele de identificare, separate prin spațiu (Opțional)",
+        "is_private_group_option": "Grup privat",
+        "create_group_cancel": "Anulați",
+        "create_group_confirm": "OK",
+        "max_limit_warning": "Membrii pot crea doar 10 grupuri favorite",
+        "duplicate_items_warning_notification": "Postările introduse există deja în grup",
+        "detete_confirmation": "Sunteți sigur/ă că doriți să ștergeți acest grup favorit",
         "group_item_counter": {
-            "one": "",
-            "other": ""
+            "one": "{} postare",
+            "other": "{} postări"
         }
     },
     "favorite_tags": {
-        "favorites": "",
-        "import": "",
-        "import_hint": "",
-        "cancel": "",
-        "export": "",
-        "export_notification": "",
-        "favorite_tags": ""
+        "favorites": "Favorite",
+        "import": "Importați",
+        "import_hint": "Introduceți seria de etichete aici. Spațiu delimitat.",
+        "cancel": "Anulați",
+        "export": "Exportați",
+        "export_notification": "Seria de etichete copiată în clipboard",
+        "favorite_tags": "Etichete favorite"
     },
     "rating": {
-        "rate_request": "",
-        "rate": "",
-        "cancel": "",
-        "later": "",
-        "rationale": ""
+        "rate_request": "Dați o notă acestei aplicații",
+        "rate": "Notați",
+        "cancel": "Nu mulțumesc",
+        "later": "Poate mai târziu",
+        "rationale": "Dacă vă place aplicația, vă rugăm să acordați puțin timp pentru a o revizui.\nNu ar dura mai mult de câteva secunde și chiar ajută acest proiect."
     },
     "sideMenu": {
-        "settings": "",
-        "your_bookmarks": "",
-        "your_blacklist": "",
-        "bulk_download": "",
-        "get_support": ""
+        "settings": "Setări",
+        "your_bookmarks": "Marcajele dvs.",
+        "your_blacklist": "Lista neagră a dvs.",
+        "bulk_download": "Descărcați în masă",
+        "get_support": "Obțineți ajutor"
     },
     "dateRange": {
-        "day": "",
-        "week": "",
-        "month": ""
+        "day": "Zi",
+        "week": "Săptămână",
+        "month": "Lună"
     },
     "booru": {
-        "booru_engine_input_label": "",
-        "config_name_label": "",
-        "site_url_label": "",
-        "login_name_label": "",
-        "password_api_key_label": "",
-        "password_hashed_label": "",
-        "password_label": "",
-        "content_filtering_label": "",
-        "hide_deleted_label": "",
-        "config_booru_confirm": "",
-        "add_a_booru_site": "",
-        "next_step": "",
-        "site_url": "",
-        "unsupported_warning": "",
-        "validation_empty_url": "",
-        "validation_invalid_url": "",
-        "validation_invalid_http_url": "",
-        "validation_missing_trailing_slash": "",
-        "validation_redundant_www": "",
-        "validation_contains_spaces": "",
-        "validation_missing_scheme": "",
-        "authentication": "",
-        "download": "",
-        "gestures": "",
-        "misc": ""
+        "booru_engine_input_label": "Motor Booru (*)",
+        "config_name_label": "Nume de profil (*)",
+        "site_url_label": "URL Site",
+        "login_name_label": "Nume de utilizator",
+        "password_api_key_label": "Cheie API",
+        "password_hashed_label": "Parolă hașurată (doar citire)",
+        "password_label": "Parolă",
+        "content_filtering_label": "Filtru de conținut",
+        "hide_deleted_label": "Ascundeți postările șterse",
+        "config_booru_confirm": "OK",
+        "add_a_booru_site": "Creați un profil nou",
+        "next_step": "Următorul",
+        "site_url": "URL Site",
+        "unsupported_warning": "Acest booru nu este suportat încă.",
+        "validation_empty_url": "URL este gol",
+        "validation_invalid_url": "\"{0}\" nu este un URL valid",
+        "validation_invalid_http_url": "\"{0}\" nu este un URL HTTP sau HTTPS",
+        "validation_missing_trailing_slash": "\"{0}\" lipsește un slash la final",
+        "validation_redundant_www": "\"{0}\" conține \"www\" redundant",
+        "validation_contains_spaces": "\"{0}\" conține spatii intermediare",
+        "validation_missing_scheme": "\"{0}\" lipsește o schemă (ex https://)",
+        "authentication": "Autentificare",
+        "download": "Descărcați",
+        "gestures": "Gesturi",
+        "misc": "Altele"
     },
     "blacklist": {
         "manage": {
-            "title": "",
-            "empty_blacklist": ""
+            "title": "Lista neagră",
+            "empty_blacklist": "Nu există etichete pe lista neagră"
         }
     },
     "bookmark": {
-        "added": "",
-        "failed_to_add": "",
-        "many_added": "",
-        "failed_to_add_many": "",
-        "removed": "",
-        "updated": "",
-        "failed_to_remove": "",
-        "failed_to_update": "",
-        "failed_to_load": ""
+        "added": "Marcaj adăugat",
+        "failed_to_add": "Nu s-a putut adăuga marcajul",
+        "many_added": "{0} marcaje adăugate",
+        "failed_to_add_many": "Nu s-au putut adăuga marcajele",
+        "removed": "Marcaj șters",
+        "updated": "Marcaj actualizat",
+        "failed_to_remove": "Nu s-a putut șterge marcajul",
+        "failed_to_update": "Nu s-a putut actualiza marcajul",
+        "failed_to_load": "Nu s-au putut încărca marcajele: {0}"
     },
     "app_update": {
-        "update": "",
-        "later": "",
-        "whats_new": "",
-        "update_available": ""
+        "update": "Actualizați",
+        "later": "Mai tărziu",
+        "whats_new": "Ce este nou?",
+        "update_available": "Actualizare disponibilă"
     },
     "forum": {
-        "forum": ""
+        "forum": "Forum"
     },
     "gestures": {
-        "swipe_down": "",
-        "double_tap": "",
-        "long_press": "",
-        "tap": ""
+        "swipe_down": "Glisați în jos",
+        "double_tap": "Apăsare dublă",
+        "long_press": "Apăsare lungă",
+        "tap": "Apăsare"
     }
 }
