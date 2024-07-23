@@ -6,8 +6,8 @@ import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/string.dart';
 import 'filter_operator.dart';
 
-bool _hasMetatag(String query, TagInfo tagInfo) =>
-    tagInfo.metatags.any((tag) => query.startsWith('${tag.name}:'));
+bool _hasMetatag(String query, Set<Metatag>? metatags) =>
+    metatags?.toList().any((tag) => query.startsWith('${tag.name}:')) ?? false;
 
 class TagSearchItem extends Equatable {
   const TagSearchItem({
@@ -25,11 +25,11 @@ class TagSearchItem extends Equatable {
 
   factory TagSearchItem.fromString(
     String query,
-    TagInfo tagInfo,
+    Set<Metatag>? metatags,
   ) {
     final operator = stringToFilterOperator(query.getFirstCharacter());
 
-    if (!_hasMetatag(query, tagInfo)) {
+    if (!_hasMetatag(query, metatags)) {
       return TagSearchItem(
         tag: stripFilterOperator(query, operator).replaceUnderscoreWithSpace(),
         operator: operator,
@@ -42,7 +42,7 @@ class TagSearchItem extends Equatable {
         .replaceUnderscoreWithSpace();
 
     final isValidMetatag =
-        tagInfo.metatags.map((e) => e.name).contains(metatag);
+        metatags?.map((e) => e.name).contains(metatag) ?? false;
 
     return TagSearchItem(
       tag: isValidMetatag ? tag : '$metatag:$tag',

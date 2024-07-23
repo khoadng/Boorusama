@@ -2,16 +2,30 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/functional.dart';
 import 'filter_operator.dart';
 import 'tag_search_item.dart';
 
 class SelectedTagController extends ValueNotifier<List<TagSearchItem>> {
   SelectedTagController({
-    required this.tagInfo,
+    required this.metatags,
   }) : super([]);
 
-  final TagInfo tagInfo;
+  SelectedTagController.fromBooruBuilder({
+    required BooruBuilder? builder,
+  }) : this(
+          metatags: builder.toOption().fold(
+                () => null,
+                (builder) => builder.metatagsBuilder.toOption().fold(
+                      () => null,
+                      (tagBuilder) => tagBuilder(),
+                    ),
+              ),
+        );
+
+  final Set<Metatag>? metatags;
   final Set<TagSearchItem> _tags = {};
 
   List<TagSearchItem> get tags => _tags.toList();
@@ -24,7 +38,7 @@ class SelectedTagController extends ValueNotifier<List<TagSearchItem>> {
   }) =>
       isRaw
           ? TagSearchItem.raw(tag: tag)
-          : TagSearchItem.fromString(tag, tagInfo);
+          : TagSearchItem.fromString(tag, metatags);
 
   String _applyOperator(String tag, FilterOperator operator) =>
       '${filterOperatorToString(operator)}$tag';

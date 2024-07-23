@@ -10,7 +10,6 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/search/result_view.dart';
 import 'package:boorusama/boorus/danbooru/search/trending_section.dart';
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/search/search.dart';
@@ -19,6 +18,7 @@ import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
+import '../danbooru_provider.dart';
 
 class DanbooruSearchPage extends ConsumerWidget {
   const DanbooruSearchPage({

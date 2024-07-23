@@ -15,6 +15,7 @@ import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/gestures.dart';
@@ -93,6 +94,7 @@ class DanbooruBuilder
     required this.favoriteRepo,
     required this.postCountRepo,
     required this.noteRepo,
+    required this.tagInfo,
   });
 
   final PostRepository<DanbooruPost> postRepo;
@@ -100,6 +102,7 @@ class DanbooruBuilder
   final FavoritePostRepository favoriteRepo;
   final PostCountRepository postCountRepo;
   final NoteRepository noteRepo;
+  final TagInfo tagInfo;
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
@@ -343,6 +346,13 @@ class DanbooruBuilder
             onTap: () => goToSearchPage(context),
           ),
         );
+      };
+
+  @override
+  MetatagsBuilder? get metatagsBuilder => () {
+        final metatags = tagInfo.metatags;
+
+        return metatags;
       };
 }
 

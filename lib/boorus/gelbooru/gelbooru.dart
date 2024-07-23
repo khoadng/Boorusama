@@ -133,6 +133,7 @@ Note gelbooruNoteToNote(NoteDto note) {
 
 class GelbooruBuilder
     with
+        UnknownMetatagsMixin,
         DefaultThumbnailUrlMixin,
         DefaultThumbnailUrlMixin,
         DefaultPostImageDetailsUrlMixin,

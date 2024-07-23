@@ -162,6 +162,7 @@ class ZerochanBuilder
         LegacyGranularRatingOptionsBuilderMixin,
         DefaultHomeMixin,
         NoGranularRatingQueryBuilderMixin,
+        UnknownMetatagsMixin,
         DefaultPostImageDetailsUrlMixin,
         DefaultPostGesturesHandlerMixin,
         DefaultGranularRatingFiltererMixin,

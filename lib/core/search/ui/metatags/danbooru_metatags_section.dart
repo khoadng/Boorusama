@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/search/ui/metatags_section.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
+import '../../../../boorus/danbooru/danbooru_provider.dart';
 
 class DanbooruMetatagsSection extends ConsumerWidget {
   const DanbooruMetatagsSection({

@@ -369,3 +369,8 @@ Widget Function(
       ImageQuickActionType.none => (context, _) => const SizedBox.shrink(),
       ImageQuickActionType.defaultAction => null,
     };
+
+mixin UnknownMetatagsMixin implements BooruBuilder {
+  @override
+  MetatagsBuilder? get metatagsBuilder => null;
+}

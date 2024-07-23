@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/e621/posts/e621_post_provider.dart';
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
@@ -24,8 +24,9 @@ class E621DesktopHomePage extends ConsumerStatefulWidget {
 }
 
 class _E621DesktopHomePageState extends ConsumerState<E621DesktopHomePage> {
-  late final selectedTagController =
-      SelectedTagController(tagInfo: ref.read(tagInfoProvider));
+  late final selectedTagController = SelectedTagController.fromBooruBuilder(
+    builder: ref.readBooruBuilder(ref.readConfig),
+  );
 
   @override
   void dispose() {

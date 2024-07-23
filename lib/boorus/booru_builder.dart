@@ -82,6 +82,8 @@ abstract class BooruBuilder {
 
   PostGestureHandlerBuilder get postGestureHandlerBuilder;
 
+  MetatagsBuilder? get metatagsBuilder;
+
   // Data Builders
   PostFetcher get postFetcher;
   AutocompleteFetcher get autocompleteFetcher;
@@ -154,6 +156,7 @@ final booruBuildersProvider =
                 favoriteRepo: ref.read(danbooruFavoriteRepoProvider(config)),
                 postCountRepo: ref.read(danbooruPostCountRepoProvider(config)),
                 noteRepo: ref.read(danbooruNoteRepoProvider(config)),
+                tagInfo: ref.read(tagInfoProvider),
               ),
           BooruType.gelbooruV1: (config) => GelbooruV1Builder(
                 postRepo: ref.read(gelbooruV1PostRepoProvider(config)),

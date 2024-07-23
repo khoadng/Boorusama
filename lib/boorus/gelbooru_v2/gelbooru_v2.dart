@@ -122,6 +122,7 @@ class GelbooruV2Builder
         DefaultThumbnailUrlMixin,
         DefaultThumbnailUrlMixin,
         PostCountNotSupportedMixin,
+        UnknownMetatagsMixin,
         DefaultPostImageDetailsUrlMixin,
         DefaultGranularRatingFiltererMixin,
         DefaultPostGesturesHandlerMixin,

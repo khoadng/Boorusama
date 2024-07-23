@@ -57,10 +57,6 @@ final booruFactoryProvider =
     Provider<BooruFactory>((ref) => throw UnimplementedError());
 
 final tagInfoProvider = Provider<TagInfo>((ref) => throw UnimplementedError());
-final metatagsProvider = Provider<Set<Metatag>>(
-  (ref) => ref.watch(tagInfoProvider).metatags,
-  dependencies: [tagInfoProvider],
-);
 
 final booruConfigRepoProvider = Provider<BooruConfigRepository>(
   (ref) => throw UnimplementedError(),

@@ -110,3 +110,5 @@ typedef HomeViewBuilder = Widget Function(
   BooruConfig config,
   HomePageController controller,
 );
+
+typedef MetatagsBuilder = Set<Metatag> Function();
