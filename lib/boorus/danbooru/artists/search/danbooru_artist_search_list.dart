@@ -7,21 +7,29 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/artists/artists.dart';
 import 'package:boorusama/clients/danbooru/danbooru_client_artists.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/string.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../artists.dart';
 
-class DanbooruArtistSearchPage extends ConsumerStatefulWidget {
-  const DanbooruArtistSearchPage({
+class DanbooruArtistSearchList extends ConsumerStatefulWidget {
+  const DanbooruArtistSearchList({
     super.key,
+    required this.nameController,
+    required this.urlController,
+    required this.order,
+    required this.focusScopeNode,
+    required this.pagingController,
   });
+
+  final TextEditingController nameController;
+  final TextEditingController urlController;
+  final ValueNotifier<ArtistOrder?> order;
+  final FocusScopeNode focusScopeNode;
+  final PagingController<int, DanbooruArtist> pagingController;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -29,41 +37,40 @@ class DanbooruArtistSearchPage extends ConsumerStatefulWidget {
 }
 
 class _DanbooruArtistSearchPageState
-    extends ConsumerState<DanbooruArtistSearchPage> {
-  final nameController = TextEditingController();
-  final urlController = TextEditingController();
-  final pagingController = PagingController<int, DanbooruArtist>(
-    firstPageKey: 1,
-  );
-  ArtistOrder? order;
+    extends ConsumerState<DanbooruArtistSearchList> {
+  late final pagingController = widget.pagingController;
 
   @override
   void initState() {
     super.initState();
-    pagingController.addPageRequestListener((pageKey) {
-      _fetchPage(pageKey);
-    });
+    pagingController.addPageRequestListener(_onPageChanged);
+  }
+
+  void _onPageChanged(pageKey) {
+    _fetchPage(pageKey);
   }
 
   @override
   void dispose() {
     super.dispose();
-    nameController.dispose();
-    urlController.dispose();
-    pagingController.dispose();
+    pagingController.removePageRequestListener(_onPageChanged);
   }
 
   void _fetchPage(int pageKey) async {
     final artists =
         await ref.read(danbooruArtistRepoProvider(ref.readConfig)).getArtists(
-              name: nameController.text,
-              url: urlController.text,
-              order: order,
+              name: widget.nameController.text,
+              url: widget.urlController.text,
+              order: widget.order.value,
               page: pageKey,
               isDeleted: false,
               hasTag: true,
               includeTag: true,
             );
+
+    // exclude banned artists
+    artists.removeWhere((artist) => artist.name == 'banned_artist');
+
     if (artists.isEmpty) {
       pagingController.appendLastPage(artists);
     } else {
@@ -74,118 +81,13 @@ class _DanbooruArtistSearchPageState
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Artists'),
-          actions: [
-            TextButton(
-              child: const Text('Search'),
-              onPressed: () {
-                pagingController.refresh();
-              },
-            ),
-          ],
-        ),
-        body: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 48,
-                      child: Text(
-                        'Name',
-                        style: context.textTheme.titleMedium,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: BooruTextField(
-                        controller: nameController,
-                        decoration: const InputDecoration(
-                          hintText: 'Name, group name, or other name',
-                          helperText: '*Supports wildcards and regexes',
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 48,
-                      child: Text(
-                        'URL',
-                        style: context.textTheme.titleMedium,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: BooruTextField(
-                        controller: urlController,
-                        decoration: const InputDecoration(
-                          hintText: 'URL or a part of it',
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 62,
-                    child: Text(
-                      'Sort by',
-                      style: context.textTheme.titleMedium,
-                    ),
-                  ),
-                  OptionDropDownButton(
-                    alignment: AlignmentDirectional.centerStart,
-                    value: order,
-                    onChanged: (value) {
-                      setState(() {
-                        order = value;
-                        pagingController.refresh();
-                      });
-                    },
-                    items: ArtistOrder.values
-                        .map((e) => DropdownMenuItem(
-                              value: e,
-                              child: Text(e.name.titleCase),
-                            ))
-                        .toList(),
-                  ),
-                ],
-              ),
-            ),
-            const SliverSizedBox(height: 8),
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 4),
-              sliver: PagedSliverList(
-                pagingController: pagingController,
-                builderDelegate: PagedChildBuilderDelegate<DanbooruArtist>(
-                  newPageProgressIndicatorBuilder: (context) => _buildLoading(),
-                  firstPageProgressIndicatorBuilder: (context) =>
-                      _buildLoading(),
-                  itemBuilder: (context, artist, index) =>
-                      _buildArtistCard(context, artist),
-                ),
-              ),
-            ),
-          ],
-        ),
+    return PagedSliverList(
+      pagingController: pagingController,
+      builderDelegate: PagedChildBuilderDelegate<DanbooruArtist>(
+        newPageProgressIndicatorBuilder: (context) => _buildLoading(),
+        firstPageProgressIndicatorBuilder: (context) => _buildLoading(),
+        itemBuilder: (context, artist, index) =>
+            _buildArtistCard(context, artist),
       ),
     );
   }
@@ -208,9 +110,15 @@ class _DanbooruArtistSearchPageState
     return Card(
       color: context.colorScheme.surface,
       child: InkWell(
-        onTap: () => goToArtistPage(context, artist.name),
+        onTap: () {
+          widget.focusScopeNode.unfocus();
+          goToArtistPage(context, artist.name);
+        },
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 12),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 4,
+            vertical: 6,
+          ),
           child: ExpandablePanel(
             theme: ExpandableThemeData(
               useInkWell: false,
