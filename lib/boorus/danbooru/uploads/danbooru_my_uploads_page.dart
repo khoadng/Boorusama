@@ -461,7 +461,7 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
                         TextSpan(
                           text: uploader.name,
                           style: context.textTheme.bodySmall?.copyWith(
-                            color: uploader.level.toOnDarkColor(),
+                            color: uploader.level.toColor(context),
                           ),
                         ),
                       ],

@@ -192,7 +192,7 @@ class _VoteChips extends ConsumerWidget {
           label: Text(
             creator?.name.replaceUnderscoreWithSpace() ?? 'User',
             style: TextStyle(
-              color: creator?.level.toOnDarkColor(),
+              color: creator?.level.toColor(context),
               fontWeight: FontWeight.w500,
             ),
           ),

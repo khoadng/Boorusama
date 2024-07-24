@@ -63,7 +63,7 @@ class DanbooruDmailDetailsPage extends ConsumerWidget {
                 Text(
                   fromUser?.name ?? 'Anon',
                   style: context.textTheme.titleMedium?.copyWith(
-                    color: fromUser?.level.toOnDarkColor(),
+                    color: fromUser?.level.toColor(context),
                   ),
                 ),
               ],
@@ -77,7 +77,7 @@ class DanbooruDmailDetailsPage extends ConsumerWidget {
                 Text(
                   toUser?.name ?? 'Anon',
                   style: context.textTheme.titleMedium?.copyWith(
-                    color: toUser?.level.toOnDarkColor(),
+                    color: toUser?.level.toColor(context),
                   ),
                 ),
               ],

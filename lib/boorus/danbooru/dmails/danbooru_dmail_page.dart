@@ -88,11 +88,11 @@ class _DanbooruDmailPageState extends ConsumerState<DanbooruDmailPage> {
                               style: dmail.isRead
                                   ? TextStyle(
                                       color: fromUser?.level
-                                          .toOnDarkColor()
+                                          .toColor(context)
                                           .withOpacity(0.7),
                                     )
                                   : TextStyle(
-                                      color: fromUser?.level.toOnDarkColor(),
+                                      color: fromUser?.level.toColor(context),
                                       fontWeight: FontWeight.w900,
                                     ),
                             ),

@@ -126,7 +126,6 @@ class TagEditHistoryCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildTitle(context),
-                const Divider(),
                 _buildTags(context),
               ],
             ),
@@ -171,7 +170,6 @@ class TagEditHistoryCard extends StatelessWidget {
                           ),
                           style: TextStyle(
                             color: context.theme.hintColor,
-                            fontSize: 12,
                           ),
                         ),
                       ),
@@ -243,7 +241,7 @@ class TagEditHistoryCard extends StatelessWidget {
 
   Widget _buildIndex(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(6),
+      padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: context.colorScheme.surface,

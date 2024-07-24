@@ -292,7 +292,7 @@ class _SearchPageScaffoldState<T extends Post>
                     ),
                   ),
                 ),
-                icon: const Icon(Symbols.sort),
+                icon: const Icon(Symbols.add),
               ),
             ),
           ),

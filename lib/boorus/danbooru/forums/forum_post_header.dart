@@ -32,7 +32,7 @@ class ForumPostHeader extends StatelessWidget {
           child: Text(
             authorName.replaceUnderscoreWithSpace(),
             style: TextStyle(
-              color: authorLevel?.toOnDarkColor(),
+              color: authorLevel?.toColor(context),
               fontSize: 15,
               fontWeight: FontWeight.w500,
             ),

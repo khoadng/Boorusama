@@ -168,7 +168,7 @@ class DanbooruSearchPage extends ConsumerWidget {
                     ),
                   ),
                 ),
-                icon: const Icon(Symbols.sort),
+                icon: const Icon(Symbols.add),
               ),
             ),
           ),

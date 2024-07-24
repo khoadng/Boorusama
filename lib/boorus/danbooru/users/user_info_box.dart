@@ -1,14 +1,18 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 // Project imports:
 import 'package:boorusama/boorus/danbooru/users/users.dart';
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/users/users.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/string.dart';
 
-class UserInfoBox extends StatelessWidget {
+class UserInfoBox extends ConsumerWidget {
   const UserInfoBox({
     super.key,
     required this.user,
@@ -17,7 +21,12 @@ class UserInfoBox extends StatelessWidget {
   final DanbooruUser user;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colors = context.generateChipColors(
+      user.level.toColor(context),
+      ref.watch(settingsProvider),
+    );
+
     return Row(
       children: [
         Expanded(
@@ -27,7 +36,8 @@ class UserInfoBox extends StatelessWidget {
               Text(
                 user.name.replaceAll('_', ' '),
                 style: context.textTheme.titleLarge?.copyWith(
-                  color: user.level.toColor(),
+                  color: colors?.foregroundColor,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
               Text(
@@ -42,11 +52,11 @@ class UserInfoBox extends StatelessWidget {
         Chip(
           label: Text(
             user.level.name.sentenceCase,
-            style: const TextStyle(
-              color: Colors.white,
+            style: TextStyle(
+              color: colors?.foregroundColor,
             ),
           ),
-          backgroundColor: user.level.toColor(),
+          backgroundColor: colors?.backgroundColor,
         ),
       ],
     );

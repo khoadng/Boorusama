@@ -161,7 +161,10 @@ class UserDetailsPage extends ConsumerWidget {
                         ),
                       if (user.uploadCount > 0)
                         Padding(
-                          padding: const EdgeInsets.only(top: 12, left: 12),
+                          padding: const EdgeInsets.only(
+                            top: 16,
+                            left: 12,
+                          ),
                           child: SizedBox(
                             height: 220,
                             child: ref
@@ -273,6 +276,7 @@ class UserDetailsPage extends ConsumerWidget {
       ]
           .map(
             (e) => BooruChip(
+              visualDensity: VisualDensity.compact,
               label: ConstrainedBox(
                   constraints:
                       BoxConstraints(maxWidth: context.screenWidth * 0.8),
@@ -297,6 +301,7 @@ class UserDetailsPage extends ConsumerWidget {
       children: tags
           .map(
             (e) => BooruChip(
+              visualDensity: VisualDensity.compact,
               color: ref.watch(tagColorProvider(TagCategory.copyright().name)),
               onPressed: () => goToSearchPage(
                 context,
@@ -310,6 +315,7 @@ class UserDetailsPage extends ConsumerWidget {
                     text: TextSpan(
                       text: e.tag.replaceUnderscoreWithSpace(),
                       style: TextStyle(
+                        fontWeight: FontWeight.w500,
                         color: context.themeMode.isDark
                             ? ref.watch(
                                 tagColorProvider(TagCategory.copyright().name))
@@ -518,7 +524,7 @@ class _PreviewList extends ConsumerWidget {
           builder: (context, constraints) => PreviewPostList(
             posts: posts,
             height: kPreferredLayout.isMobile ? null : 300,
-            width: max(constraints.maxWidth / 6, 100),
+            width: max(constraints.maxWidth / 6, 120),
             onTap: (index) => goToPostDetailsPage(
               context: context,
               posts: posts.toList(),

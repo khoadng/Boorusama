@@ -10,7 +10,6 @@ import 'package:equatable/equatable.dart';
 // Project imports:
 import 'package:boorusama/clients/danbooru/types/types.dart';
 import 'package:boorusama/core/users/users.dart';
-import 'package:boorusama/foundation/theme.dart';
 import 'user.dart';
 import 'user_level.dart';
 
@@ -74,8 +73,6 @@ extension CreatorDtoX on Creator? {
   Color getColor(BuildContext context) {
     final creatorLevel = this?.level ?? UserLevel.member;
 
-    return !context.themeMode.isDark
-        ? creatorLevel.toColor()
-        : creatorLevel.toOnDarkColor();
+    return creatorLevel.toColor(context);
   }
 }
