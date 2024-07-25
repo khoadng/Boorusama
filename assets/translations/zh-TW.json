@@ -10,12 +10,16 @@
             "delete": "刪除",
             "edit": "編輯",
             "ok": "確定",
-            "cancel": "取消"
+            "cancel": "取消",
+            "duplicate": "複製"
         },
         "view": "檢視"
     },
     "profile": {
-        "favorites": "最愛"
+        "favorites": "最愛",
+        "profile": "設定檔",
+        "copy_user_id": "複製使用者 ID",
+        "messages": "訊息"
     },
     "network": {
         "unavailable": "網路無法連接"
@@ -24,7 +28,7 @@
         "related": {
             "more": "更多",
             "related": "相關的",
-            "add_to_current_search": "新增至當前搜尋",
+            "add_to_current_search": "新增至目前搜尋",
             "open_wiki": "開啟 Wiki"
         },
         "explore": {
@@ -55,7 +59,8 @@
             "add_to_favorites": "新增至最愛",
             "copy_and_open_saved_search": "複製並開啟已保存的搜尋",
             "score": {
-                "other": "Point"
+                "other": "Point",
+                "one": "分"
             },
             "source_label": "來源",
             "related_posts": "相關貼圖",
@@ -90,7 +95,8 @@
             "send": "傳送"
         },
         "counter": {
-            "other": "評論"
+            "other": "評論",
+            "one": "留言"
         }
     },
     "explore": {
@@ -98,7 +104,8 @@
         "popular": "最受歡迎",
         "hot": "熱門",
         "most_viewed": "最多觀看",
-        "see_more": "查看更多"
+        "see_more": "查看更多",
+        "explore": "探索"
     },
     "search": {
         "errors": {
@@ -123,7 +130,13 @@
             "recent": "最近"
         },
         "trending": "趨勢",
-        "remove_all_selected": "移除所有選取標籤"
+        "remove_all_selected": "移除所有選取標籤",
+        "result_counter": {
+            "one": "{} 個結果",
+            "other": "{} 個結果"
+        },
+        "no_result_notice": "這裡什麼都沒有",
+        "search_in_progress_notice": "正在搜尋…"
     },
     "pool": {
         "pool": "貼圖",
@@ -150,11 +163,16 @@
         "app_settings": "應用程式設定",
         "appearance": {
             "appearance": "外觀",
-            "show_scores": "顯示評分"
+            "show_scores": "顯示評分",
+            "booru_config": "Booru 設定檔",
+            "booru_config_placement": "Booru 設定檔取代",
+            "show_post_list_config_header": "顯示貼圖組態標頭"
         },
         "general": "一般設定",
         "search": {
-            "search": "搜尋"
+            "search": "搜尋",
+            "hide_bookmarked_posts_from_search_results": "­",
+            "auto_focus_search_bar": "首次開啟搜尋檢視時自動對焦搜尋列"
         },
         "information": "資訊",
         "changelog": "更新日誌",
@@ -187,7 +205,9 @@
                 "highest": "最高"
             },
             "spacing": "間距",
-            "corner_radius": "圓角半徑"
+            "corner_radius": "圓角半徑",
+            "padding": "邊距",
+            "aspect_ratio": "外觀比例"
         },
         "image_viewer": {
             "image_viewer": "圖片檢視器",
@@ -205,11 +225,19 @@
             "theme": "主題",
             "dark": "深色",
             "light": "淺色",
-            "amoled_dark": "AMOLED 黑色"
+            "amoled_dark": "黑色",
+            "dynamic_color": "動態主題色彩",
+            "dynamic_color_mobile_description": "與桌布同步主題色彩",
+            "dynamic_color_desktop_description": "與 OS 強調色同步主題色彩",
+            "dynamic_color_unsupported_description": "這個裝置不支援動態色彩。"
         },
         "privacy": {
             "privacy": "隱私",
-            "send_error_data_notice": "傳送匿名錯誤日誌"
+            "send_error_data_notice": "傳送匿名錯誤日誌",
+            "enable_biometric_lock": "啟用生物特徵辨識鎖定",
+            "enable_incognito_keyboard": "啟用隱身鍵盤",
+            "enable_incognito_keyboard_notice": "僅影響安卓。",
+            "enable_biometric_lock_notice": "僅適用於支援生物識別並已設定的設備。"
         },
         "performance": {
             "performance": "效能",
@@ -234,7 +262,33 @@
             }
         },
         "help_us_translate": "協助我們翻譯",
-        "other_settings": "其他設定"
+        "other_settings": "其他設定",
+        "image_details": {
+            "ui_overlay": {
+                "ui_overlay": "UI 覆疊",
+                "show": "顯示",
+                "hide": "隱藏"
+            },
+            "image_details": "圖像詳細資料"
+        },
+        "page_indicator": {
+            "page_indicator": "頁面指示器位置",
+            "top": "頂部",
+            "bottom": "底部",
+            "both": "全部"
+        },
+        "backup_and_restore": {
+            "backup_and_restore": "備份與還原"
+        },
+        "accessibility": {
+            "accessibility": "無障礙",
+            "swipeAreaToOpenSidebar": "側邊欄的滑動區域",
+            "reverseBooruConfigSelectorScrollDirection": "反轉 booru 配置的對齊方向"
+        },
+        "data_and_storage": {
+            "clear_cache_on_start_up": "啟動時清除圖像快取",
+            "data_and_storage": "資料和儲存空間"
+        }
     },
     "blacklisted_tags": {
         "remove": "移除",

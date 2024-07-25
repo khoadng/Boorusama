@@ -10,19 +10,23 @@
             "delete": "Borrar",
             "edit": "Editar",
             "ok": "Ok",
-            "cancel": "Cancelar"
+            "cancel": "Cancelar",
+            "duplicate": "Duplicar"
         },
         "view": "Ver"
     },
     "profile": {
-        "favorites": "Favoritos"
+        "favorites": "Favoritos",
+        "copy_user_id": "Copiar ID de usuario",
+        "profile": "Perfil",
+        "messages": "Mensajes"
     },
     "network": {
         "unavailable": "Servidor No disponible"
     },
     "tag": {
         "related": {
-            "more": "Mas",
+            "more": "Más",
             "related": "Relacionado",
             "add_to_current_search": "Añadir a la busqueda",
             "open_wiki": "Abrir Wiki"
@@ -39,17 +43,17 @@
             "file_details": "Detalles del Archivo",
             "size": "Tamaño",
             "resolution": "Resolucíon",
-            "rating": "Rating",
+            "rating": "Clasificación",
             "file_format": "Formato del Archivo",
             "share": {
-                "source": "Compartir Link de orige",
+                "source": "Compartir Link de el orígen",
                 "booru": "Compartir Link de Booru",
                 "image": "Compartir Imagen"
             },
             "copied": "Copiado",
             "show_original": "Mostrar original",
             "show_translated": "Mostrar Traduccido",
-            "login_required_notice": "Necesitas estar Logeado para hacer esta accion",
+            "login_required_notice": "Necesitas haber iniciado sesión para realizar esta acción",
             "open_wiki": "Abrir Wiki",
             "add_to_blacklist": "Añadir a la Lista de Bloqueados",
             "add_to_favorites": "Añadir a La Lista de Favoritos",
@@ -100,7 +104,8 @@
         "popular": "Popular",
         "hot": "Caliente",
         "most_viewed": "Los más vistos",
-        "see_more": "Mostrar mas"
+        "see_more": "Mostrar mas",
+        "explore": "Explorar"
     },
     "search": {
         "errors": {
@@ -158,12 +163,16 @@
         "app_settings": "Ajustes de aplicación",
         "appearance": {
             "appearance": "Apariencia",
-            "show_scores": "Mostrar puntuaciones"
+            "show_scores": "Mostrar puntuaciones",
+            "booru_config": "Perfil de el Booru",
+            "show_post_list_config_header": "Mostrar encabezado de configuración de publicaciones",
+            "booru_config_placement": "Ubicación del perfil de el Booru"
         },
         "general": "General",
         "search": {
             "search": "Buscar",
-            "auto_focus_search_bar": "Enfocar automáticamente la barra de búsqueda al abrir la vista de búsqueda por primera vez"
+            "auto_focus_search_bar": "Enfocar automáticamente la barra de búsqueda al abrir la vista de búsqueda por primera vez",
+            "hide_bookmarked_posts_from_search_results": "Ocultar publicaciones marcadas como favoritas de los resultados de búsqueda"
         },
         "information": "Informacion",
         "changelog": "Lista de Cambios",
@@ -196,7 +205,9 @@
                 "highest": "Más alto"
             },
             "spacing": "Separación",
-            "corner_radius": "Radio de las esquinas"
+            "corner_radius": "Radio de las esquinas",
+            "padding": "Relleno",
+            "aspect_ratio": "Relación de aspecto"
         },
         "image_viewer": {
             "image_viewer": "Visor de Imagenes",
@@ -214,11 +225,19 @@
             "theme": "Tema",
             "dark": "Oscuro",
             "light": "Claro",
-            "amoled_dark": "Negro"
+            "amoled_dark": "Negro",
+            "dynamic_color_desktop_description": "Sincronizar el color del tema con el color de acento del sistema operativo",
+            "dynamic_color": "Tema de color dinámico",
+            "dynamic_color_mobile_description": "Sincronizar el color del tema con el fondo de pantalla",
+            "dynamic_color_unsupported_description": "Este dispositivo no admite colores dinámicos."
         },
         "privacy": {
             "privacy": "Privacidad",
-            "send_error_data_notice": "Mandar datos anonimos para registro de errores"
+            "send_error_data_notice": "Mandar datos anonimos para registro de errores",
+            "enable_biometric_lock": "Habilitar bloqueo biométrico",
+            "enable_biometric_lock_notice": "Solo funciona en dispositivos con soporte biométrico y que hayan sido configurados.",
+            "enable_incognito_keyboard": "Habilitar teclado en modo incognito",
+            "enable_incognito_keyboard_notice": "Solo efectos de Android"
         },
         "performance": {
             "performance": "Gestion",
@@ -243,7 +262,43 @@
             }
         },
         "help_us_translate": "Ayúdenos a traducir",
-        "other_settings": "Otros Ajustes"
+        "other_settings": "Otros Ajustes",
+        "accessibility": {
+            "accessibility": "Accesibilidad",
+            "reverseBooruConfigSelectorScrollDirection": "Dirección de desplazamiento inverso de los perfiles booru",
+            "swipeAreaToOpenSidebar": "Área de deslizamiento de la barra lateral",
+            "swipeAreaToOpenSidebarDescription": "La cantidad de área en el lado izquierdo de la pantalla que se puede usar para activar un deslizamiento.  Los valores grandes bloquearán todos los gestos horizontales, como el gesto de deslizar la paginación."
+        },
+        "booru_settings": {
+            "booru_settings": "Configuraciónes de el Booru",
+            "edit_current_profile": "Editar perfil actual"
+        },
+        "backup_and_restore": {
+            "backup_and_restore": "Copia de seguridad y restaurar"
+        },
+        "data_and_storage": {
+            "data_and_storage": "Datos y almacenamiento",
+            "clear_cache_on_start_up": "Borrar caché de imágenes al iniciar"
+        },
+        "page_indicator": {
+            "bottom": "Abajo",
+            "both": "Ambos",
+            "page_indicator": "Posición del indicador de página",
+            "top": "Arriba"
+        },
+        "contribute": "Contribuir",
+        "source_code": "Código fuente",
+        "support": "Apoyo",
+        "contact_developer_description": "Si tiene algún problema o sugerencia, no dude en enviarme un correo electrónico a través de esta opción",
+        "feature_request_and_bug_report": "Solicitud de funciones e informe de errores",
+        "image_details": {
+            "ui_overlay": {
+                "ui_overlay": "superposición de interfaz de usuario"
+            },
+            "image_details": "Detalles de la imagen"
+        },
+        "contact_developer": "Contacto con el desarrollador",
+        "feature_request_and_bug_report_description": "Sugerir funciones o informar errores a través del repositorio de GitHub"
     },
     "blacklisted_tags": {
         "remove": "Remover",
@@ -253,7 +308,10 @@
         "updated": "Lista de etiquetas bloqueadas actualizada",
         "limitation_notice": "Solo admite el operador <b>NO</b>, el operador <b>O</b>, la metetiqueta <b>score</b> y la metetiqueta <b>rating</b>\n\nLa prohibición mediante el uso de otras metetiquetas no funcionará en la versión actual.",
         "failed_to_add": "Error al añadir etiqueta",
-        "failed_to_remove": "No se ha podido eliminar la etiqueta"
+        "failed_to_remove": "No se ha podido eliminar la etiqueta",
+        "blacklisted_header_title": "Lista negra",
+        "disable_all": "Desactivar todo",
+        "reenable_all": "Volver a habilitar todas"
     },
     "download": {
         "download": "Descargar",
@@ -347,7 +405,8 @@
         "import_hint": "Introduzca su etiqueta aqui. Espacio delimitado.",
         "cancel": "Cancelar",
         "export": "Exportar",
-        "export_notification": "Etiquetas copiadas a tu portapapeles"
+        "export_notification": "Etiquetas copiadas a tu portapapeles",
+        "favorite_tags": "Etiquetas favoritas"
     },
     "rating": {
         "rate_request": "Calificanos",
@@ -360,7 +419,8 @@
         "settings": "Configuración",
         "your_bookmarks": "Guardado",
         "your_blacklist": "Blacklist",
-        "bulk_download": "Descarga en masa"
+        "bulk_download": "Descarga en masa",
+        "get_support": "Obtén apoyo"
     },
     "dateRange": {
         "day": "Dia",
@@ -388,7 +448,11 @@
         "validation_missing_trailing_slash": "A \"{0}\" le falta una barra al final",
         "validation_redundant_www": "\"{0}\" contiene \"www\" redundante",
         "validation_contains_spaces": "\"{0}\" contiene espacios intermedios",
-        "validation_missing_scheme": "A \"{0}\" le falta un esquema (por ejemplo, https://)"
+        "validation_missing_scheme": "A \"{0}\" le falta un esquema (por ejemplo, https://)",
+        "download": "Descargar",
+        "misc": "Varios",
+        "authentication": "Autenticacion",
+        "gestures": "Gestos"
     },
     "blacklist": {
         "manage": {
@@ -415,5 +479,10 @@
     },
     "forum": {
         "forum": "Foro"
+    },
+    "gestures": {
+        "long_press": "Pulsación larga",
+        "swipe_down": "Deslizar hacia abajo",
+        "double_tap": "Doble toque"
     }
 }
