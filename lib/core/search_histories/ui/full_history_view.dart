@@ -10,9 +10,80 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/search_histories/search_histories.dart';
+import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/time.dart';
 import 'package:boorusama/widgets/widgets.dart';
+
+class FullHistoryPage extends ConsumerStatefulWidget {
+  const FullHistoryPage({
+    super.key,
+    required this.onClear,
+    required this.onRemove,
+    required this.onTap,
+    this.scrollController,
+  });
+
+  final Function() onClear;
+  final Function(SearchHistory history) onRemove;
+  final Function(String history) onTap;
+  final ScrollController? scrollController;
+
+  @override
+  ConsumerState<FullHistoryPage> createState() => _FullHistoryPageState();
+}
+
+class _FullHistoryPageState extends ConsumerState<FullHistoryPage> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(searchHistoryProvider.notifier).resetFilter();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('search.history.history').tr(),
+        actions: [
+          TextButton(
+            onPressed: () => showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                content: const Text('Are you sure?').tr(),
+                actions: [
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      foregroundColor: context.colorScheme.onSurface,
+                    ),
+                    onPressed: () => context.navigator.pop(),
+                    child: const Text('generic.action.cancel').tr(),
+                  ),
+                  FilledButton(
+                    onPressed: () {
+                      context.navigator.pop();
+                      widget.onClear();
+                    },
+                    child: const Text('generic.action.ok').tr(),
+                  ),
+                ],
+              ),
+            ),
+            child: const Text('search.history.clear').tr(),
+          ),
+        ],
+      ),
+      body: FullHistoryView(
+        scrollController: widget.scrollController,
+        onHistoryTap: (value) => widget.onTap(value),
+        onHistoryRemoved: (value) => widget.onRemove(value),
+      ),
+    );
+  }
+}
 
 class FullHistoryView extends ConsumerWidget {
   const FullHistoryView({
@@ -53,6 +124,7 @@ class FullHistoryView extends ConsumerWidget {
                     curve: Curves.easeInOut,
                     animation: animation,
                     child: ListTile(
+                      key: ValueKey(history.query),
                       title: Text(history.query),
                       subtitle: DateTooltip(
                         date: history.createdAt,

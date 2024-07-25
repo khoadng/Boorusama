@@ -25,7 +25,6 @@ import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/router.dart';
@@ -182,42 +181,11 @@ void goToSearchHistoryPage(
       name: RouterPageConstant.searchHistories,
     ),
     duration: AppDurations.bottomSheet,
-    builder: (context) => Scaffold(
-      appBar: AppBar(
-        title: const Text('search.history.history').tr(),
-        actions: [
-          TextButton(
-            onPressed: () => showDialog(
-              context: context,
-              builder: (context) => AlertDialog(
-                content: const Text('Are you sure?').tr(),
-                actions: [
-                  TextButton(
-                    style: TextButton.styleFrom(
-                      foregroundColor: context.colorScheme.onSurface,
-                    ),
-                    onPressed: () => context.navigator.pop(),
-                    child: const Text('generic.action.cancel').tr(),
-                  ),
-                  FilledButton(
-                    onPressed: () {
-                      context.navigator.pop();
-                      onClear();
-                    },
-                    child: const Text('generic.action.ok').tr(),
-                  ),
-                ],
-              ),
-            ),
-            child: const Text('search.history.clear').tr(),
-          ),
-        ],
-      ),
-      body: FullHistoryView(
-        scrollController: ModalScrollController.of(context),
-        onHistoryTap: (value) => onTap(value),
-        onHistoryRemoved: (value) => onRemove(value),
-      ),
+    builder: (context) => FullHistoryPage(
+      onClear: onClear,
+      onRemove: onRemove,
+      onTap: onTap,
+      scrollController: ModalScrollController.of(context),
     ),
   );
 }

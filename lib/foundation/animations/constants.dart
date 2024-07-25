@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 abstract class AppDurations {
-  static const Duration bottomSheet = Durations.short4;
+  static const Duration bottomSheet = Durations.medium2;
 
   static const Duration extraLongToast = Duration(seconds: 6);
   static const Duration longToast = Duration(seconds: 3);
