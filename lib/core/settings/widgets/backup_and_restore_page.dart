@@ -19,8 +19,11 @@ import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/foundation/android.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/path.dart' as p;
 import 'package:boorusama/foundation/picker.dart';
+import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -287,12 +290,38 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
 
   Future<void> _pickFile({
     required void Function(String path) onPick,
-  }) =>
-      pickSingleFilePathToastOnError(
-        type: FileType.custom,
-        allowedExtensions: ['json'],
-        onPick: onPick,
-      );
+  }) {
+    const allowedExtensions = ['json'];
+
+    if (isAndroid()) {
+      final androidVersion =
+          ref.read(deviceInfoProvider).androidDeviceInfo?.version.sdkInt;
+      // Android 9 or lower will need to use any file type
+      if (androidVersion != null &&
+          androidVersion <= AndroidVersions.android9) {
+        return pickSingleFilePathToastOnError(
+          type: FileType.any,
+          onPick: (path) {
+            final ext = p.extension(path);
+
+            if (!allowedExtensions.contains(ext.substring(1))) {
+              showErrorToast(
+                  'Invalid file type, only ${allowedExtensions.map((e) => '.$e').join(', ')} files are allowed');
+              return;
+            }
+
+            onPick(path);
+          },
+        );
+      }
+    }
+
+    return pickSingleFilePathToastOnError(
+      type: FileType.custom,
+      allowedExtensions: allowedExtensions,
+      onPick: onPick,
+    );
+  }
 
   void _pickProfileFile(WidgetRef ref) => _pickFile(
         onPick: (path) {
