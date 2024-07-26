@@ -15,6 +15,7 @@ import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/search_histories/search_histories.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
@@ -139,7 +140,7 @@ class DanbooruSearchPage extends ConsumerWidget {
                 ),
               ),
               trailingSearchButton: IconButton(
-                onPressed: () => showBarModalBottomSheet(
+                onPressed: () => showAppModalBarBottomSheet(
                   context: context,
                   builder: (context) => Scaffold(
                     body: SafeArea(

@@ -160,11 +160,10 @@ Future<T?> showAdaptiveBottomSheet<T>(
             ),
           ),
         )
-      : showBarModalBottomSheet<T>(
+      : showAppModalBarBottomSheet<T>(
           context: context,
           settings: settings,
           barrierColor: Colors.black45,
-          duration: AppDurations.bottomSheet,
           backgroundColor: backgroundColor ?? Colors.transparent,
           builder: (context) => ConditionalParentWidget(
             condition: !expand,
@@ -176,3 +175,32 @@ Future<T?> showAdaptiveBottomSheet<T>(
           ),
         );
 }
+
+Future<T?> showAppModalBarBottomSheet<T>({
+  required BuildContext context,
+  required WidgetBuilder builder,
+  Color? backgroundColor,
+  ShapeBorder? shape,
+  Color barrierColor = Colors.black87,
+  bool bounce = true,
+  bool expand = false,
+  Curve? animationCurve,
+  bool useRootNavigator = false,
+  bool isDismissible = true,
+  Duration? duration,
+  RouteSettings? settings,
+}) =>
+    showBarModalBottomSheet<T>(
+      context: context,
+      settings: settings,
+      barrierColor: barrierColor,
+      duration: duration ?? AppDurations.bottomSheet,
+      backgroundColor: backgroundColor,
+      shape: shape,
+      bounce: bounce,
+      expand: expand,
+      animationCurve: animationCurve,
+      useRootNavigator: useRootNavigator,
+      isDismissible: isDismissible,
+      builder: builder,
+    );

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:filesize/filesize.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/posts/posts.dart';
@@ -12,6 +11,7 @@ import 'package:boorusama/boorus/danbooru/users/users.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/dart.dart';
+import 'package:boorusama/foundation/display.dart';
 
 class DanbooruPostStatisticsPage extends ConsumerWidget {
   const DanbooruPostStatisticsPage({
@@ -48,7 +48,7 @@ class DanbooruPostStatisticsPage extends ConsumerWidget {
               const Spacer(),
               TextButton(
                 onPressed: () {
-                  showBarModalBottomSheet(
+                  showAppModalBarBottomSheet(
                     context: context,
                     builder: (context) => StatisticalSummaryDetailsPage(
                       title: 'File size',
@@ -72,7 +72,7 @@ class DanbooruPostStatisticsPage extends ConsumerWidget {
           PostStatsSectionTitle(
             title: 'Resolution',
             onMore: () {
-              showBarModalBottomSheet(
+              showAppModalBarBottomSheet(
                 context: context,
                 builder: (context) => StatisticsFromMapPage(
                   title: 'Resolution',
@@ -96,7 +96,7 @@ class DanbooruPostStatisticsPage extends ConsumerWidget {
           PostStatsSectionTitle(
             title: 'Copyright',
             onMore: () {
-              showBarModalBottomSheet(
+              showAppModalBarBottomSheet(
                 context: context,
                 builder: (context) => StatisticsFromMapPage(
                   title: 'Copyright',
@@ -122,7 +122,7 @@ class DanbooruPostStatisticsPage extends ConsumerWidget {
           PostStatsSectionTitle(
             title: 'Character',
             onMore: () {
-              showBarModalBottomSheet(
+              showAppModalBarBottomSheet(
                 context: context,
                 builder: (context) => StatisticsFromMapPage(
                   title: 'Character',
@@ -148,7 +148,7 @@ class DanbooruPostStatisticsPage extends ConsumerWidget {
           PostStatsSectionTitle(
             title: 'Uploader',
             onMore: () {
-              showBarModalBottomSheet(
+              showAppModalBarBottomSheet(
                 context: context,
                 builder: (context) => StatisticsFromMapPage(
                   title: 'Uploader',
@@ -182,7 +182,7 @@ class DanbooruPostStatisticsPage extends ConsumerWidget {
           PostStatsSectionTitle(
             title: 'Approver',
             onMore: () {
-              showBarModalBottomSheet(
+              showAppModalBarBottomSheet(
                 context: context,
                 builder: (context) => StatisticsFromMapPage(
                   title: 'Approver',

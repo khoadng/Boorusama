@@ -7,7 +7,6 @@ import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
@@ -15,7 +14,6 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
@@ -28,10 +26,9 @@ void showSimpleTagSearchView(
   required Widget Function(BuildContext context, bool isMobile) builder,
 }) {
   if (kPreferredLayout.isMobile) {
-    showBarModalBottomSheet(
+    showAppModalBarBottomSheet(
       context: context,
       settings: settings,
-      duration: AppDurations.bottomSheet,
       builder: (context) => builder(context, true),
     );
   } else {
