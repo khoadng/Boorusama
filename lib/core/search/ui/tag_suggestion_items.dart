@@ -7,8 +7,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/autocompletes/autocomplete.dart';
 import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/tags/metatag.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/string.dart';
@@ -54,6 +56,8 @@ class TagSuggestionItems extends ConsumerWidget {
             dense: dense,
             currentQuery: currentQuery,
             textColorBuilder: textColorBuilder,
+            metatagExtractor:
+                ref.watchBooruBuilder(ref.watchConfig)?.metatagExtractor,
           );
         },
       ),
@@ -70,6 +74,7 @@ class TagSuggestionItem extends StatelessWidget {
     required this.currentQuery,
     required this.textColorBuilder,
     required this.showCount,
+    required this.metatagExtractor,
   });
 
   final ValueChanged<AutocompleteData> onItemTap;
@@ -78,6 +83,7 @@ class TagSuggestionItem extends StatelessWidget {
   final String currentQuery;
   final Color? Function(AutocompleteData tag)? textColorBuilder;
   final bool showCount;
+  final MetatagExtractor? metatagExtractor;
 
   @override
   Widget build(BuildContext context) {
@@ -118,7 +124,11 @@ class TagSuggestionItem extends StatelessWidget {
 
   Widget _buildTitle() {
     final color = textColorBuilder != null ? textColorBuilder!(tag) : null;
-    final query = currentQuery.replaceUnderscoreWithSpace().toLowerCase();
+    final rawQuery = currentQuery.replaceUnderscoreWithSpace().toLowerCase();
+    final metatag = metatagExtractor?.fromString(tag.value);
+    final query =
+        metatag != null ? rawQuery.replaceFirst('$metatag:', '') : rawQuery;
+
     final htmlStyle = {
       'p': Style(
         fontSize: FontSize.medium,

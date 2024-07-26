@@ -349,11 +349,9 @@ class DanbooruBuilder
       };
 
   @override
-  MetatagsBuilder? get metatagsBuilder => () {
-        final metatags = tagInfo.metatags;
-
-        return metatags;
-      };
+  late final MetatagExtractor metatagExtractor = MetatagExtractor(
+    metatags: tagInfo.metatags,
+  );
 }
 
 bool handleDanbooruGestureAction(

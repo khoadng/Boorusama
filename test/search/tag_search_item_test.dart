@@ -6,14 +6,16 @@ import 'package:boorusama/core/search/filter_operator.dart';
 import 'package:boorusama/core/search/tag_search_item.dart';
 import 'package:boorusama/core/tags/tags.dart';
 
-final _defaultMetatags = {
-  const Metatag.simple(
-    name: 'foo',
-  ),
-  const Metatag.simple(
-    name: 'bar',
-  ),
-};
+final _defaultMetatags = MetatagExtractor(
+  metatags: {
+    const Metatag.simple(
+      name: 'foo',
+    ),
+    const Metatag.simple(
+      name: 'bar',
+    ),
+  },
+);
 
 void main() {
   group('[parse tests]', () {

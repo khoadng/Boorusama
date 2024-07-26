@@ -372,5 +372,5 @@ Widget Function(
 
 mixin UnknownMetatagsMixin implements BooruBuilder {
   @override
-  MetatagsBuilder? get metatagsBuilder => null;
+  MetatagExtractor? get metatagExtractor => null;
 }

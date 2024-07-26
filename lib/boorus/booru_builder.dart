@@ -82,7 +82,7 @@ abstract class BooruBuilder {
 
   PostGestureHandlerBuilder get postGestureHandlerBuilder;
 
-  MetatagsBuilder? get metatagsBuilder;
+  MetatagExtractor? get metatagExtractor;
 
   // Data Builders
   PostFetcher get postFetcher;
