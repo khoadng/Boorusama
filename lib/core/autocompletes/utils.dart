@@ -36,7 +36,10 @@ extension AutocompleteDataDisplayX on AutocompleteData {
 
     String replaceAndHighlight(String text) {
       return text.replaceAllMapped(
-        RegExp(query, caseSensitive: false),
+        RegExp(
+          RegExp.escape(query),
+          caseSensitive: false,
+        ),
         (match) => '<b>${match.group(0)}</b>',
       );
     }

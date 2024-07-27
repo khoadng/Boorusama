@@ -61,5 +61,15 @@ void main() {
         );
       });
     });
+
+    group('complex queries', () {
+      // normal
+      test('parenthesis', () {
+        expect(
+          autocompleteData('tag').toDisplayHtml('(ta', _defaultExtractor),
+          '<p>tag</p>',
+        );
+      });
+    });
   });
 }
