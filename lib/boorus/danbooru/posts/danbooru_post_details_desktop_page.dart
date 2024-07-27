@@ -16,7 +16,6 @@ import 'package:boorusama/core/artists/artists.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
-import 'package:boorusama/core/scaffolds/post_details_page_desktop_scaffold.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../tags/danbooru_tags_tile.dart';

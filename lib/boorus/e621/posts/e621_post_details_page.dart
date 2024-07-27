@@ -13,7 +13,6 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/artists/artists.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
-import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/tags/tags.dart';
 
 class E621PostDetailsPage extends ConsumerStatefulWidget {

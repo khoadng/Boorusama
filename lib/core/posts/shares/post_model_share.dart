@@ -5,75 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:share_plus/share_plus.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/widgets/widgets.dart';
-
-class SharePostButton extends ConsumerWidget {
-  const SharePostButton({
-    super.key,
-    required this.post,
-  });
-
-  final Post post;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return IconButton(
-      splashRadius: 16,
-      onPressed: () => ref.sharePost(
-        post,
-        context: context,
-        state: ref.watch(postShareProvider(post)),
-      ),
-      icon: const Icon(
-        Symbols.share,
-      ),
-    );
-  }
-}
-
-extension PostShareX on WidgetRef {
-  void sharePost(
-    Post post, {
-    required BuildContext context,
-    required PostShareState state,
-  }) {
-    final modal = ModalShare(
-      booruLink: state.booruLink,
-      sourceLink: state.sourceLink,
-      imageData: () => (
-        imageUrl: defaultPostImageUrlBuilder(this)(post),
-        imageExt: post.format,
-      ),
-    );
-
-    Screen.of(context).size == ScreenSize.small
-        ? showMaterialModalBottomSheet(
-            expand: false,
-            context: context,
-            barrierColor: Colors.black45,
-            backgroundColor: Colors.transparent,
-            builder: (context) => modal,
-          )
-        : showDialog(
-            context: context,
-            builder: (context) => AlertDialog(
-              contentPadding: EdgeInsets.zero,
-              content: modal,
-            ),
-          );
-  }
-}
 
 final _cachedImageFileProvider =
     FutureProvider.autoDispose.family<XFile?, ModelShareImageData>(
@@ -103,8 +43,8 @@ typedef ModelShareImageData = ({
   String? imageExt,
 });
 
-class ModalShare extends ConsumerWidget {
-  const ModalShare({
+class PostModalShare extends ConsumerWidget {
+  const PostModalShare({
     super.key,
     required this.booruLink,
     required this.sourceLink,
