@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/flutter.dart';
+import '../favorited_tags.dart';
 
 class FavoriteTagLabelsPage extends ConsumerWidget {
   const FavoriteTagLabelsPage({super.key});

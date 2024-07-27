@@ -16,6 +16,7 @@ import 'package:boorusama/core/blacklists/blacklists.dart';
 import 'package:boorusama/core/comments/comments.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/bulks/bulk_download_provider.dart';
+import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/search/search.dart';

@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/backups/data_io_handler.dart';
-import 'package:boorusama/core/tags/tags.dart';
+import 'favorited_tags.dart';
 
 final favoriteTagRepoProvider =
     Provider<FavoriteTagRepository>((ref) => throw UnimplementedError());

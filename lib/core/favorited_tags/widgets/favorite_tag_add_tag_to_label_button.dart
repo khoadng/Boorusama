@@ -7,8 +7,8 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/router.dart';
-import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/flutter.dart';
+import '../favorited_tags.dart';
 
 class FavoriteTagAddTagToLabelButton extends ConsumerWidget {
   const FavoriteTagAddTagToLabelButton({

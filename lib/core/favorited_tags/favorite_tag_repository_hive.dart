@@ -2,7 +2,7 @@
 import 'package:hive/hive.dart';
 
 // Project imports:
-import 'package:boorusama/core/tags/tags.dart';
+import 'favorited_tags.dart';
 
 class FavoriteTagRepositoryHive implements FavoriteTagRepository {
   FavoriteTagRepositoryHive(this.box);

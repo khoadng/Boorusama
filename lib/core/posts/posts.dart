@@ -1,5 +1,6 @@
 export 'count/post_count_provider.dart';
 export 'count/post_count_repository.dart';
+export 'count/result_header.dart';
 export 'details/bookmark_post_button.dart';
 export 'details/comment_post_button.dart';
 export 'details/download_post_button.dart';

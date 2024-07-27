@@ -22,6 +22,7 @@ import 'package:boorusama/core/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
+import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
 import 'package:boorusama/core/search_histories/search_histories.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/tags/tags.dart';
