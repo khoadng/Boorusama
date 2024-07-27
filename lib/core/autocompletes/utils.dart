@@ -29,7 +29,10 @@ extension AutocompleteDataDisplayX on AutocompleteData {
     String value, [
     MetatagExtractor? metatagExtractor,
   ]) {
-    final rawQuery = value.replaceAll('_', ' ').toLowerCase();
+    final noOperatorQuery = (value.startsWith('-') || value.startsWith('~'))
+        ? value.substring(1)
+        : value;
+    final rawQuery = noOperatorQuery.replaceAll('_', ' ').toLowerCase();
     final metatag = metatagExtractor?.fromString(value);
     final query =
         metatag != null ? rawQuery.replaceFirst('$metatag:', '') : rawQuery;

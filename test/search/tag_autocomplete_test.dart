@@ -30,6 +30,22 @@ void main() {
       );
     });
 
+    // negate tag
+    test('negate tag', () {
+      expect(
+        autocompleteData('tag').toDisplayHtml('-ta'),
+        '<p><b>ta</b>g</p>',
+      );
+    });
+
+    // or tag
+    test('or tag', () {
+      expect(
+        autocompleteData('tag').toDisplayHtml('~ta'),
+        '<p><b>ta</b>g</p>',
+      );
+    });
+
     // metatag
     group('metatag', () {
       test('normal', () {
