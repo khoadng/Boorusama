@@ -180,9 +180,12 @@ class AppTheme {
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
           titleSpacing: kPreferredLayout.isDesktop ? 4 : null,
-          titleTextStyle: const TextStyle(
+          titleTextStyle: TextStyle(
             fontWeight: FontWeight.w700,
             fontSize: 22,
+            color: colorScheme.brightness == Brightness.light
+                ? Colors.black
+                : Colors.white,
           ),
         ),
         chipTheme: const ChipThemeData(
