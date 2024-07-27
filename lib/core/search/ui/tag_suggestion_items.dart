@@ -8,12 +8,11 @@ import 'package:intl/intl.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/core/autocompletes/autocomplete.dart';
+import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/tags/metatag.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
-import 'package:boorusama/string.dart';
 
 class TagSuggestionItems extends ConsumerWidget {
   const TagSuggestionItems({
@@ -124,35 +123,22 @@ class TagSuggestionItem extends StatelessWidget {
 
   Widget _buildTitle() {
     final color = textColorBuilder != null ? textColorBuilder!(tag) : null;
-    final rawQuery = currentQuery.replaceUnderscoreWithSpace().toLowerCase();
-    final metatag = metatagExtractor?.fromString(tag.value);
-    final query =
-        metatag != null ? rawQuery.replaceFirst('$metatag:', '') : rawQuery;
 
-    final htmlStyle = {
-      'p': Style(
-        fontSize: FontSize.medium,
-        color: color,
-        margin: Margins.zero,
-      ),
-      'body': Style(
-        margin: Margins.zero,
-      ),
-      'b': Style(
-        fontWeight: FontWeight.w900,
-      ),
-    };
-
-    return tag.hasAlias
-        ? Html(
-            style: htmlStyle,
-            data:
-                '<p>${tag.antecedent!.replaceUnderscoreWithSpace().replaceAll(query, '<b>$query</b>')} ➞ ${tag.label.replaceAll(query, '<b>$query</b>')}</p>',
-          )
-        : Html(
-            style: htmlStyle,
-            data:
-                '<p>${tag.label.replaceAll(query.replaceUnderscoreWithSpace(), '<b>$query</b>')}</p>',
-          );
+    return Html(
+      style: {
+        'p': Style(
+          fontSize: FontSize.medium,
+          color: color,
+          margin: Margins.zero,
+        ),
+        'body': Style(
+          margin: Margins.zero,
+        ),
+        'b': Style(
+          fontWeight: FontWeight.w900,
+        ),
+      },
+      data: tag.toDisplayHtml(currentQuery, metatagExtractor),
+    );
   }
 }

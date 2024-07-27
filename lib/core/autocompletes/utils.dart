@@ -23,3 +23,26 @@ Color? generateAutocompleteTagColor(
 
   return null;
 }
+
+extension AutocompleteDataDisplayX on AutocompleteData {
+  String toDisplayHtml(
+    String value, [
+    MetatagExtractor? metatagExtractor,
+  ]) {
+    final rawQuery = value.replaceAll('_', ' ').toLowerCase();
+    final metatag = metatagExtractor?.fromString(value);
+    final query =
+        metatag != null ? rawQuery.replaceFirst('$metatag:', '') : rawQuery;
+
+    String replaceAndHighlight(String text) {
+      return text.replaceAllMapped(
+        RegExp(query, caseSensitive: false),
+        (match) => '<b>${match.group(0)}</b>',
+      );
+    }
+
+    return hasAlias
+        ? '<p>${replaceAndHighlight(antecedent!.replaceAll('_', ' '))} ➞ ${replaceAndHighlight(label)}</p>'
+        : '<p>${replaceAndHighlight(label.replaceAll('_', ' '))}</p>';
+  }
+}
