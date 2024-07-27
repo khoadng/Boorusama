@@ -22,7 +22,7 @@ import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../pools/pool_tiles.dart';
-import '../tags/danbooru_tags_tile.dart';
+import '../tags/details/danbooru_tags_tile.dart';
 
 class DanbooruPostDetailsPage extends ConsumerStatefulWidget {
   const DanbooruPostDetailsPage({

@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 
 // Project imports:
-import 'tags_provider.dart';
+import 'user_metatags_provider.dart';
 
 class UserMetatagRepository {
   UserMetatagRepository({

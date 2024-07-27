@@ -13,8 +13,8 @@ import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import '../related_tags/related_tags.dart';
-import 'danbooru_tag_context_menu.dart';
+import '../../related_tags/related_tags.dart';
+import '../danbooru_tag_context_menu.dart';
 
 const _kTagCloudTotal = 30;
 
