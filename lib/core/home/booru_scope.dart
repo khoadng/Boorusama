@@ -71,17 +71,20 @@ class _BooruScopeState extends ConsumerState<BooruScope> {
 
   @override
   Widget build(BuildContext context) {
-    return CustomContextMenuOverlay(
-      child: kPreferredLayout.isMobile
-          ? OrientationBuilder(
-              builder: (context, orientation) => orientation.isPortrait
-                  ? _buildMobile()
-                  : _buildDesktop(
-                      resizable: true,
-                      grooveDivider: true,
-                    ),
-            )
-          : _buildDesktop(resizable: true),
+    return HomePageSidebarKeyboardListener(
+      controller: controller,
+      child: CustomContextMenuOverlay(
+        child: kPreferredLayout.isMobile
+            ? OrientationBuilder(
+                builder: (context, orientation) => orientation.isPortrait
+                    ? _buildMobile()
+                    : _buildDesktop(
+                        resizable: true,
+                        grooveDivider: true,
+                      ),
+              )
+            : _buildDesktop(resizable: true),
+      ),
     );
   }
 
@@ -176,6 +179,16 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
     );
 
     menuWidth.addListener(saveWidthToCache);
+
+    widget.controller.addHandler(_onSidebarStateChanged);
+  }
+
+  void _onSidebarStateChanged(open) {
+    if (open) {
+      _setDefaultSplit();
+    } else {
+      _setMinSplit();
+    }
   }
 
   void saveWidthToCache() {
@@ -191,6 +204,7 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
     menuWidth.removeListener(saveWidthToCache);
     splitController.dispose();
     menuWidth.dispose();
+    widget.controller.removeHandler(_onSidebarStateChanged);
     super.dispose();
   }
 

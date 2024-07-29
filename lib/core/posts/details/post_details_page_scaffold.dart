@@ -188,7 +188,13 @@ class _PostDetailPageScaffoldState<T extends Post>
 
     return CallbackShortcuts(
       bindings: {
-        LogicalKeySet(LogicalKeyboardKey.escape): () {
+        const SingleActivator(LogicalKeyboardKey.arrowRight): () =>
+            controller.nextPage(),
+        const SingleActivator(LogicalKeyboardKey.arrowLeft): () =>
+            controller.previousPage(),
+        const SingleActivator(LogicalKeyboardKey.keyO): () =>
+            controller.toggleOverlay(),
+        const SingleActivator(LogicalKeyboardKey.escape): () {
           Navigator.of(context).pop();
           widget.onExit(controller.currentPage.value);
         },
