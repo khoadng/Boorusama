@@ -89,6 +89,9 @@ class DanbooruImageGridItem extends ConsumerWidget {
                               tag.replaceUnderscoreWithSpace(),
                               minFontSize: 6,
                               maxLines: 1,
+                              style: TextStyle(
+                                color: context.colorScheme.onErrorContainer,
+                              ),
                             ),
                             backgroundColor: context.colorScheme.errorContainer,
                             onPressed: () {

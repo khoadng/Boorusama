@@ -54,6 +54,7 @@ class _FavoriteGroupDetailsPageState
     blacklistedTagsFetcher: () =>
         ref.read(blacklistTagsProvider(ref.watchConfig).future),
     refresher: () => getPostsFromIdQueue(widget.postIds),
+    mountedChecker: () => mounted,
   );
 
   int rowCountEditMode = 2;

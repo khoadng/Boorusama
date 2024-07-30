@@ -25,6 +25,7 @@ class PostGridController<T extends Post> extends ChangeNotifier {
     required this.fetcher,
     required this.refresher,
     required this.blacklistedTagsFetcher,
+    required this.mountedChecker,
     this.debounceDuration = const Duration(milliseconds: 500),
     PageMode pageMode = PageMode.infinite,
     this.blacklistedUrlsFetcher,
@@ -38,6 +39,9 @@ class PostGridController<T extends Post> extends ChangeNotifier {
 
   Set<String>? blacklistedTags;
   final Future<Set<String>> Function() blacklistedTagsFetcher;
+
+  // Terrible hack to check if the widget is mounted, should have a better way to do this
+  final bool Function() mountedChecker;
 
   List<T> _items = [];
   List<T> _filteredItems = [];
@@ -77,6 +81,8 @@ class PostGridController<T extends Post> extends ChangeNotifier {
     blacklistedTags = newTags;
 
     tagCounts.value = await _count(_items, newTags);
+
+    if (!mountedChecker()) return;
 
     hasBlacklist.value = tagCounts.value.values.any((e) => e.isNotEmpty);
     activeFilters.value = {
@@ -180,6 +186,9 @@ class PostGridController<T extends Post> extends ChangeNotifier {
 
     final newItems =
         await (_pageMode == PageMode.infinite ? refresher() : fetcher(_page));
+
+    if (!mountedChecker()) return;
+
     _clear();
     await _addAll(newItems.posts);
     _hasMore = newItems.posts.isNotEmpty;

@@ -58,6 +58,7 @@ class _PostScopeState<T extends Post> extends ConsumerState<PostScope<T>> {
         return {};
       }
     },
+    mountedChecker: () => mounted,
   );
 
   BooruError? errors;
