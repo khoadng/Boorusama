@@ -167,6 +167,10 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                           );
                           FocusScope.of(context).unfocus();
                         },
+                        onRawTagTap: (value) => selectedTagController.addTag(
+                          value,
+                          isRaw: true,
+                        ),
                         onHistoryTap: (value) {
                           selectedTagController.addTags(value.split(' '));
                           FocusScope.of(context).unfocus();

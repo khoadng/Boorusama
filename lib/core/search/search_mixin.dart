@@ -48,7 +48,7 @@ mixin SearchMixin {
   }
 
   void tapHistoryTag(String tag) {
-    selectedTagController.addTags(tag.split(' '));
+    selectedTagController.addTag(tag, isRaw: true);
   }
 
   void tapRawMetaTag(String tag) => updateQuery('$tag:');

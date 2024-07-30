@@ -18,7 +18,7 @@ final _top20TrendingTagsProvider = FutureProvider.autoDispose
 
   final trendingTags = <TrendingTag>[];
 
-  for (final tag in tags.take(20)) {
+  for (final tag in tags.take(15)) {
     final cat =
         await ref.watch(danbooruTagCategoryProvider(tag.keyword).future);
     trendingTags.add((

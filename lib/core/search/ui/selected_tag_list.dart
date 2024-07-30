@@ -1,6 +1,10 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:context_menus/context_menus.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 // Project imports:
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/tags/tags.dart';
@@ -83,19 +87,51 @@ class _SelectedTagChips extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         itemCount: tags.length,
         itemBuilder: (context, index) {
+          final tagItem = tags[index];
+          final chip = SelectedTagChip(
+            tagSearchItem: tagItem,
+            onDeleted: () => onDelete(tagItem),
+            onUpdated: (tag) => onUpdate?.call(tagItem, tag),
+          );
+
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4),
-            child: GeneralTagContextMenu(
-              tag: tags[index].rawTag,
-              child: SelectedTagChip(
-                tagSearchItem: tags[index],
-                onDeleted: () => onDelete(tags[index]),
-                onUpdated: (tag) => onUpdate?.call(tags[index], tag),
-              ),
-            ),
+            child: tagItem.isRaw
+                ? SelectedTagContextMenu(
+                    tag: tagItem.toString(),
+                    child: chip,
+                  )
+                : GeneralTagContextMenu(
+                    tag: tagItem.rawTag,
+                    child: chip,
+                  ),
           );
         },
       ),
+    );
+  }
+}
+
+class SelectedTagContextMenu extends ConsumerWidget
+    with TagContextMenuButtonConfigMixin {
+  const SelectedTagContextMenu({
+    super.key,
+    required this.tag,
+    required this.child,
+  });
+
+  final String tag;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ContextMenuRegion(
+      contextMenu: GenericContextMenu(
+        buttonConfigs: [
+          copyButton(tag),
+        ],
+      ),
+      child: child,
     );
   }
 }

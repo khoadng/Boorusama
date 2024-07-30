@@ -23,6 +23,8 @@ class TagSuggestionItems extends ConsumerWidget {
     this.backgroundColor,
     this.textColorBuilder,
     this.dense = false,
+    this.borderRadius,
+    this.elevation,
   }) : _tags = tags;
 
   final IList<AutocompleteData> _tags;
@@ -31,13 +33,15 @@ class TagSuggestionItems extends ConsumerWidget {
   final Color? backgroundColor;
   final Color? Function(AutocompleteData tag)? textColorBuilder;
   final bool dense;
+  final BorderRadiusGeometry? borderRadius;
+  final double? elevation;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Material(
       color: backgroundColor ?? context.theme.scaffoldBackgroundColor,
-      elevation: 4,
-      borderRadius: const BorderRadius.all(Radius.circular(8)),
+      elevation: elevation ?? 4,
+      borderRadius: borderRadius ?? const BorderRadius.all(Radius.circular(8)),
       child: ListView.builder(
         padding: const EdgeInsets.symmetric(
           vertical: 12,

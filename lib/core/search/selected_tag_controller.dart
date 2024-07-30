@@ -38,9 +38,13 @@ class SelectedTagController extends ValueNotifier<List<TagSearchItem>> {
 
   void addTag(
     String tag, {
+    bool isRaw = false,
     FilterOperator operator = FilterOperator.none,
   }) {
-    _tags.add(_toItem(_applyOperator(tag, operator)));
+    _tags.add(_toItem(
+      _applyOperator(tag, operator),
+      isRaw: isRaw,
+    ));
     value = _tags.toList();
   }
 

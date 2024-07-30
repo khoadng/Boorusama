@@ -144,26 +144,36 @@ class DanbooruSearchPage extends ConsumerWidget {
                   context: context,
                   builder: (context) => Scaffold(
                     body: SafeArea(
-                      child: SearchLandingView(
-                        scrollController: ModalScrollController.of(context),
-                        onHistoryCleared: () => ref
-                            .read(searchHistoryProvider.notifier)
-                            .clearHistories(),
-                        onHistoryRemoved: (value) => ref
-                            .read(searchHistoryProvider.notifier)
-                            .removeHistory(value.query),
-                        onHistoryTap: (value) {
-                          searchController.tapHistoryTag(value);
-                          context.pop();
-                        },
-                        onTagTap: (value) {
-                          searchController.tapTag(value);
-                          context.pop();
-                        },
-                        metatagsBuilder: (context) => _buildMetatagSection(
-                          ref,
-                          searchController,
-                          popOnSelect: true,
+                      child: Container(
+                        padding: const EdgeInsets.only(top: 8),
+                        child: SearchLandingView(
+                          scrollController: ModalScrollController.of(context),
+                          onHistoryCleared: () => ref
+                              .read(searchHistoryProvider.notifier)
+                              .clearHistories(),
+                          onHistoryRemoved: (value) => ref
+                              .read(searchHistoryProvider.notifier)
+                              .removeHistory(value.query),
+                          onHistoryTap: (value) {
+                            searchController.tapHistoryTag(value);
+                            context.pop();
+                          },
+                          onTagTap: (value) {
+                            searchController.tapTag(value);
+                            context.pop();
+                          },
+                          onRawTagTap: (value) {
+                            selectedTagController.addTag(
+                              value,
+                              isRaw: true,
+                            );
+                            context.pop();
+                          },
+                          metatagsBuilder: (context) => _buildMetatagSection(
+                            ref,
+                            searchController,
+                            popOnSelect: true,
+                          ),
                         ),
                       ),
                     ),

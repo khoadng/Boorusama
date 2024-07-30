@@ -11,8 +11,6 @@ import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/string.dart';
 import 'selected_tag_edit_dialog.dart';
 
-// Project imports:
-
 class SelectedTagChip extends StatelessWidget {
   const SelectedTagChip({
     super.key,
@@ -29,7 +27,8 @@ class SelectedTagChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final hasOperator = tagSearchItem.operator != FilterOperator.none;
     final hasMeta = tagSearchItem.metatag != null;
-    final hasAny = hasMeta || hasOperator;
+    final isRaw = tagSearchItem.isRaw;
+    final hasAny = hasMeta || hasOperator || isRaw;
 
     return GestureDetector(
       onTap: () {
@@ -53,11 +52,30 @@ class SelectedTagChip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (hasOperator)
+          if (isRaw)
+            Chip(
+              visualDensity: const ShrinkVisualDensity(),
+              backgroundColor: context.colorScheme.errorContainer,
+              labelPadding: EdgeInsets.zero,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(8),
+                  bottomLeft: Radius.circular(8),
+                ),
+              ),
+              label: Text(
+                'RAW',
+                style: TextStyle(
+                  color: context.colorScheme.onErrorContainer,
+                  letterSpacing: -1,
+                ),
+              ),
+            )
+          else if (hasOperator)
             Chip(
               visualDensity: const ShrinkVisualDensity(),
               backgroundColor: context.colorScheme.tertiary,
-              labelPadding: const EdgeInsets.symmetric(horizontal: 1),
+              labelPadding: EdgeInsets.zero,
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(8),
@@ -68,6 +86,7 @@ class SelectedTagChip extends StatelessWidget {
                 filterOperatorToStringCharacter(tagSearchItem.operator),
                 style: TextStyle(
                   color: context.colorScheme.onTertiary,
+                  letterSpacing: -1,
                 ),
               ),
             ),
@@ -75,7 +94,7 @@ class SelectedTagChip extends StatelessWidget {
             Chip(
               visualDensity: const ShrinkVisualDensity(),
               backgroundColor: context.colorScheme.secondary,
-              labelPadding: const EdgeInsets.symmetric(horizontal: 1),
+              labelPadding: EdgeInsets.zero,
               shape: _getOutlineBorderForMetaChip(hasOperator),
               label: Text(
                 tagSearchItem.metatag!,
@@ -108,7 +127,9 @@ class SelectedTagChip extends StatelessWidget {
                 maxWidth: context.screenWidth * 0.85,
               ),
               child: Text(
-                tagSearchItem.tag.replaceUnderscoreWithSpace(),
+                tagSearchItem.isRaw
+                    ? tagSearchItem.tag
+                    : tagSearchItem.tag.replaceUnderscoreWithSpace(),
                 overflow: TextOverflow.fade,
               ),
             ),

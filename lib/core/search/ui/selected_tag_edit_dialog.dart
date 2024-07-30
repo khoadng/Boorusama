@@ -111,6 +111,11 @@ class _SelectedTagEditDialogState extends ConsumerState<SelectedTagEditDialog> {
                     currentQuery: currentQuery,
                     textColorBuilder: (tag) =>
                         generateAutocompleteTagColor(ref, context, tag),
+                    borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(8),
+                      bottomRight: Radius.circular(8),
+                    ),
+                    elevation: 0,
                   );
                 },
               ),
