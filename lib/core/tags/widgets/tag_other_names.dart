@@ -22,7 +22,7 @@ class TagOtherNames extends StatelessWidget {
   Widget build(BuildContext context) {
     return Screen.of(context).size == ScreenSize.small
         ? otherNames != null
-            ? otherNames!.length > 4
+            ? otherNames!.length > 3
                 ? Container(
                     margin:
                         const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -35,8 +35,6 @@ class TagOtherNames extends StatelessWidget {
                     ),
                   )
                 : Wrap(
-                    spacing: 4,
-                    runSpacing: 6,
                     alignment: WrapAlignment.center,
                     runAlignment: WrapAlignment.center,
                     children: otherNames!
@@ -49,8 +47,6 @@ class TagOtherNames extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 2),
               child: otherNames != null
                   ? Wrap(
-                      spacing: 4,
-                      runSpacing: 6,
                       alignment: WrapAlignment.center,
                       runAlignment: WrapAlignment.center,
                       children: otherNames!

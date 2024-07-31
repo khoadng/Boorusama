@@ -5,11 +5,24 @@ import 'package:flutter/material.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+const _unknownSize = 26.0;
+const _faviconSize = 32.0;
+
+double? _calcFailedIconSize(
+  double size, {
+  double defaultSize = _unknownSize,
+  double referenceSize = _faviconSize,
+}) {
+  final ratio = defaultSize / referenceSize;
+
+  return size * ratio;
+}
+
 class WebsiteLogo extends StatelessWidget {
   const WebsiteLogo({
     super.key,
     required this.url,
-    this.size = 32,
+    this.size = _faviconSize,
   });
 
   final String url;
@@ -29,10 +42,10 @@ class WebsiteLogo extends StatelessWidget {
         clearMemoryCacheIfFailed: false,
         fit: BoxFit.cover,
         loadStateChanged: (state) => switch (state.extendedImageLoadState) {
-          LoadState.failed => const Card(
+          LoadState.failed => Card(
               child: FaIcon(
                 FontAwesomeIcons.globe,
-                size: 22,
+                size: _calcFailedIconSize(size),
                 color: Colors.blue,
               ),
             ),

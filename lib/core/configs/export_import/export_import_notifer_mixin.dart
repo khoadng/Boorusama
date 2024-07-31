@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/core/backups/backups.dart';
 import 'package:flutter/widgets.dart';
 
 // Package imports:
@@ -8,6 +7,7 @@ import 'package:version/version.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/backups/backups.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/export_import/export_import.dart';
 import 'package:boorusama/foundation/package_info.dart';

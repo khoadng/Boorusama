@@ -12,6 +12,7 @@ import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/display.dart';
+import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../../related_tags/related_tags.dart';
 import '../danbooru_tag_context_menu.dart';
@@ -54,7 +55,9 @@ class _DanbooruTagDetailsPageState
           const SizedBox(height: 12),
           widget.otherNamesBuilder(context),
           ...widget.extraBuilder?.call(context) ?? [],
-          const SizedBox(height: 36),
+          isDesktopPlatform()
+              ? const SizedBox(height: 36)
+              : const SizedBox.shrink(),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: _buildTagCloud(),
