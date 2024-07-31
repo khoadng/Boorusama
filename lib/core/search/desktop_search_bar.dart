@@ -172,7 +172,7 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                           isRaw: true,
                         ),
                         onHistoryTap: (value) {
-                          selectedTagController.addTags(value.split(' '));
+                          selectedTagController.addTag(value, isRaw: true);
                           FocusScope.of(context).unfocus();
                         },
                         metatagsBuilder: (context) => DanbooruMetatagsSection(

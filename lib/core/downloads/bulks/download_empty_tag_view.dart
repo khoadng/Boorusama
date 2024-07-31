@@ -48,7 +48,7 @@ class DownloadEmptyTagView extends ConsumerWidget {
                   onHistoryTap: (history) {
                     ref
                         .read(bulkDownloadSelectedTagsProvider.notifier)
-                        .addTags(history.split(' '));
+                        .addTag(history);
                   },
                 ),
                 orElse: () => const SizedBox.shrink(),
