@@ -147,9 +147,6 @@ class _BooruSelectorHorizontalState
                         }())
                           Container(
                             key: ValueKey(config.id),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 4,
-                            ),
                             child: BooruSelectorItem(
                               hideLabel: hideLabel,
                               config: config,

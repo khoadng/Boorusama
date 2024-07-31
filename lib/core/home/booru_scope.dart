@@ -404,19 +404,19 @@ class BooruMobileScope extends ConsumerWidget {
         resizeToAvoidBottomInset: false,
         drawerEdgeDragWidth: _calculateDrawerEdgeDragWidth(context, swipeArea),
         key: controller.scaffoldKey,
-        bottomNavigationBar: booruConfigSelectorPosition ==
-                BooruConfigSelectorPosition.bottom
-            ? Container(
-                color: Colors.transparent,
-                margin: EdgeInsets.only(
-                  bottom: MediaQuery.paddingOf(context).bottom,
-                ),
-                height: kBottomNavigationBarHeight + (hideLabel ? -4 : 0) + 16,
-                child: const BooruSelector(
-                  direction: Axis.horizontal,
-                ),
-              )
-            : null,
+        bottomNavigationBar:
+            booruConfigSelectorPosition == BooruConfigSelectorPosition.bottom
+                ? Container(
+                    color: Colors.transparent,
+                    margin: EdgeInsets.only(
+                      bottom: MediaQuery.paddingOf(context).bottom,
+                    ),
+                    height: (kBottomNavigationBarHeight - (hideLabel ? 4 : -8)),
+                    child: const BooruSelector(
+                      direction: Axis.horizontal,
+                    ),
+                  )
+                : null,
         drawer: SideBarMenu(
           width: 300,
           popOnSelect: true,
