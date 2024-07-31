@@ -15,28 +15,31 @@ class SliverUnreadMailsBanner extends ConsumerWidget {
   const SliverUnreadMailsBanner({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final unreadMailAsync =
-        ref.watch(danbooruUnreadDmailsProvider(ref.watchConfig));
-
-    return unreadMailAsync.maybeWhen(
-      data: (mails) => mails.isNotEmpty
-          ? SliverToBoxAdapter(
-              child: DismissableInfoContainer(
-                content: 'You have ${mails.length} unread mails',
-                mainColor: Colors.blue,
-                actions: [
-                  FilledButton(
-                    style: FilledButton.styleFrom(
-                      visualDensity: VisualDensity.compact,
-                    ),
-                    onPressed: () => goToDmailPage(context),
-                    child: const Text('View'),
+    return ref.watch(danbooruUnreadDmailsProvider(ref.watchConfig)).maybeWhen(
+          data: (mails) => mails.isNotEmpty
+              ? SliverToBoxAdapter(
+                  child: DismissableInfoContainer(
+                    content: 'You have ${mails.length} unread mails',
+                    mainColor: Colors.blue,
+                    actions: [
+                      TextButton(
+                        style: FilledButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          visualDensity: VisualDensity.compact,
+                        ),
+                        onPressed: () => goToDmailPage(context),
+                        child: const Text(
+                          'View',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            )
-          : const SliverSizedBox.shrink(),
-      orElse: () => const SliverSizedBox.shrink(),
-    );
+                )
+              : const SliverSizedBox.shrink(),
+          orElse: () => const SliverSizedBox.shrink(),
+        );
   }
 }

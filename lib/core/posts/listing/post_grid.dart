@@ -600,10 +600,6 @@ class HighresPreviewOnMobileDataWarningBanner extends ConsumerWidget {
         s.result.isMobile && settings.imageQuality.isHighres
             ? DismissableInfoContainer(
                 mainColor: context.colorScheme.error,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
-                ),
                 content:
                     'Caution: The app is displaying high-resolution images using mobile data.',
               )
