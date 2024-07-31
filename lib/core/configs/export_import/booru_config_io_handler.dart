@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/services.dart';
 
+// Package imports:
+import 'package:version/version.dart';
+
 // Project imports:
 import 'package:boorusama/core/backups/data_io_handler.dart';
 import 'package:boorusama/core/configs/configs.dart';
@@ -15,6 +18,7 @@ class BooruConfigIOHandler {
 
   static void exportToClipboard({
     required List<BooruConfig> configs,
+    required Version? appVersion,
     void Function()? onSucceed,
     void Function(String error)? onError,
   }) =>
@@ -22,6 +26,7 @@ class BooruConfigIOHandler {
         version: kBooruConfigsExporterImporterVersion,
         exportDate: DateTime.now(),
         payload: configs,
+        exportVersion: appVersion,
       ).fold(
         (l) => onError?.call(l.toString()),
         (r) => Clipboard.setData(ClipboardData(text: r))
@@ -40,9 +45,8 @@ class BooruConfigIOHandler {
 
     return tryDecodeData(data: jsonString).map(
       (a) => BooruConfigExportData(
-        version: a.version,
-        exportDate: a.exportDate,
         data: a.data.map((e) => BooruConfig.fromJson(e)).toList(),
+        exportData: a,
       ),
     );
   }
@@ -70,21 +74,21 @@ class BooruConfigIOHandler {
         ).toTaskEither());
 
         return BooruConfigExportData(
-          version: data.version,
-          exportDate: data.exportDate,
           data: transformed,
+          exportData: data,
         );
       });
 }
 
 class BooruConfigExportData {
   BooruConfigExportData({
-    required this.version,
-    required this.exportDate,
     required this.data,
+    required this.exportData,
   });
 
-  final int version;
-  final DateTime exportDate;
+  int get version => exportData.version;
+  DateTime get exportDate => exportData.exportDate;
+  Version? get exportVersion => exportData.exportVersion;
   final List<BooruConfig> data;
+  final ExportDataPayload exportData;
 }

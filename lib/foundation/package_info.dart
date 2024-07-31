@@ -1,6 +1,7 @@
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:version/version.dart';
 
 export 'package:package_info_plus/package_info_plus.dart';
 
@@ -26,3 +27,19 @@ final currentEnvironmentProvider = Provider<String>((ref) {
 final isDevEnvironmentProvider = Provider<bool>((ref) {
   return ref.watch(currentEnvironmentProvider) == 'dev';
 });
+
+final appVersionProvider = Provider<Version?>((ref) {
+  final packageInfo = ref.watch(packageInfoProvider);
+
+  return packageInfo.parseVersion();
+});
+
+extension PackageInfoX on PackageInfo {
+  Version? parseVersion() {
+    try {
+      return Version.parse(version);
+    } catch (e) {
+      return null;
+    }
+  }
+}

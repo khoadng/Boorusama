@@ -1,15 +1,22 @@
 // Package imports:
+import 'package:boorusama/foundation/package_info.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:version/version.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/export_import/export_import.dart';
+import 'package:boorusama/foundation/version.dart';
+
+import 'backward_import_alert_dialog.dart';
 
 mixin BooruConfigExportImportMixin on Notifier<List<BooruConfig>?> {
   // import from json
   Future<void> import({
     required String path,
+    required BuildContext context,
     void Function(String message)? onFailure,
     void Function(String message, List<BooruConfig> configs)? onSuccess,
     Future<bool> Function(BooruConfigExportData data)? onWillImport,
@@ -27,6 +34,16 @@ mixin BooruConfigExportImportMixin on Notifier<List<BooruConfig>?> {
           (value) => value.fold(
             (l) => onFailure?.call(l.toString()),
             (r) async {
+              final appVersion = ref.read(appVersionProvider);
+              if (appVersion.significantlyLowerThan(r.exportVersion)) {
+                final shouldImport = await showBackwardImportAlertDialog(
+                  context: context,
+                  data: r.exportData,
+                );
+
+                if (shouldImport == null || !shouldImport) return;
+              }
+
               final willImport = await onWillImport?.call(r);
               if (willImport == null || !willImport) return;
 
@@ -66,6 +83,7 @@ mixin BooruConfigExportImportMixin on Notifier<List<BooruConfig>?> {
   Future<void> exportClipboard({
     void Function(String message)? onFailure,
     void Function(String message)? onSuccess,
+    required Version? appVersion,
   }) async {
     if (state == null) return;
 
@@ -73,6 +91,7 @@ mixin BooruConfigExportImportMixin on Notifier<List<BooruConfig>?> {
       configs: state!,
       onSucceed: () => onSuccess?.call('Copied to clipboard'),
       onError: (e) => onFailure?.call(e),
+      appVersion: appVersion,
     );
   }
 

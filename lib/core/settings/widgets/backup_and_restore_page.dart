@@ -21,6 +21,7 @@ import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/android.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/package_info.dart';
 import 'package:boorusama/foundation/path.dart' as p;
 import 'package:boorusama/foundation/picker.dart';
 import 'package:boorusama/foundation/platform.dart';
@@ -114,6 +115,7 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
               ref.read(booruConfigProvider.notifier).exportClipboard(
                     onSuccess: (message) => showSuccessToast(message),
                     onFailure: (message) => showErrorToast(message),
+                    appVersion: ref.read(appVersionProvider),
                   );
               break;
             case 'import_clipboard':
@@ -326,6 +328,7 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
   void _pickProfileFile(WidgetRef ref) => _pickFile(
         onPick: (path) {
           ref.read(booruConfigProvider.notifier).import(
+                context: context,
                 path: path,
                 onSuccess: _onImportSuccess,
                 onWillImport: _showImportBooruConfigsAlertDialog,
@@ -447,8 +450,9 @@ class ImportBooruConfigsAlertDialog extends StatelessWidget {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(8)),
       ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Container(
+        constraints: const BoxConstraints(maxWidth: 650),
+        margin: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisSize: MainAxisSize.min,
