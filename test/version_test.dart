@@ -1,6 +1,9 @@
-import 'package:boorusama/foundation/version.dart';
+// Package imports:
 import 'package:flutter_test/flutter_test.dart';
 import 'package:version/version.dart';
+
+// Project imports:
+import 'package:boorusama/foundation/version.dart';
 
 void main() {
   group('significant version test', () {
@@ -35,5 +38,32 @@ void main() {
         false,
       ),
     );
+
+    // null cases
+    group('null cases', () {
+      test(
+        'null not significantly lower than 1.0.0',
+        () => expect(
+          null.significantlyLowerThan(Version(1, 0, 0)),
+          false,
+        ),
+      );
+
+      test(
+        '1.0.0 not significantly lower than null',
+        () => expect(
+          Version(1, 0, 0).significantlyLowerThan(null),
+          false,
+        ),
+      );
+
+      test(
+        'null not significantly lower than null',
+        () => expect(
+          null.significantlyLowerThan(null),
+          false,
+        ),
+      );
+    });
   });
 }

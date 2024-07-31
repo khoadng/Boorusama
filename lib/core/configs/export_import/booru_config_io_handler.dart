@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:version/version.dart';
 
 // Project imports:
-import 'package:boorusama/core/backups/data_io_handler.dart';
+import 'package:boorusama/core/backups/backups.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/functional.dart';
 
