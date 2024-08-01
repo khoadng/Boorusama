@@ -124,6 +124,8 @@ class OptionTagsArenaNoEdit extends StatelessWidget {
                     FilledButton(
                       style: FilledButton.styleFrom(
                         visualDensity: VisualDensity.compact,
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        minimumSize: const Size(32, 32),
                         shape: const CircleBorder(),
                         backgroundColor:
                             context.colorScheme.surfaceContainerHighest,

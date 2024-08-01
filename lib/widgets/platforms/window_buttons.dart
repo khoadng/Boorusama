@@ -34,7 +34,7 @@ final closeButtonColorsLight = WindowButtonColors(
   mouseOver: const Color(0xFFD32F2F),
   mouseDown: const Color(0xFFB71C1C),
   iconNormal: Colors.black54,
-  iconMouseOver: Colors.black,
+  iconMouseOver: Colors.white,
 );
 
 class WindowButtons extends StatelessWidget {

@@ -65,6 +65,8 @@ class _OptionTagsArenaState extends State<OptionTagsArena> {
                 FilledButton(
                   style: FilledButton.styleFrom(
                     visualDensity: VisualDensity.compact,
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    minimumSize: const Size(32, 32),
                     shape: const CircleBorder(),
                     backgroundColor: editMode
                         ? context.colorScheme.primary
