@@ -48,6 +48,7 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
     return SettingsPageScaffold(
       hasAppBar: widget.hasAppBar,
       title: const Text('settings.backup_and_restore.backup_and_restore').tr(),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       children: [
         const SizedBox(height: 8),
         _buildProfiles(),
@@ -346,7 +347,15 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
 
   void _pickSettingsFile(WidgetRef ref) => _pickFile(
         onPick: (path) {
-          ref.read(settingsProvider.notifier).importSettings(path);
+          ref.read(settingsProvider.notifier).importSettings(
+                context: context,
+                path: path,
+                onWillImport: (data) async => true,
+                onFailure: (message) => showErrorToast(message),
+                onSuccess: (message, _) {
+                  showSuccessToast(message);
+                },
+              );
         },
       );
 

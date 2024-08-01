@@ -10,11 +10,13 @@ class SettingsPageScaffold extends StatelessWidget {
     required this.title,
     this.hasAppBar = true,
     required this.children,
+    this.padding,
   });
 
   final List<Widget> children;
   final Widget title;
   final bool hasAppBar;
+  final EdgeInsetsGeometry? padding;
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +32,7 @@ class SettingsPageScaffold extends StatelessWidget {
         child: Center(
           heightFactor: 1,
           child: Container(
+            padding: padding,
             constraints: const BoxConstraints(
               maxWidth: 700,
             ),

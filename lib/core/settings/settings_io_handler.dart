@@ -21,19 +21,33 @@ class SettingsIOHandler {
         path: to,
       );
 
-  TaskEither<ImportError, Settings> import({
+  TaskEither<ImportError, SettingsExportData> import({
     required String from,
   }) =>
       TaskEither.Do(
         ($) async {
           final data = await $(handler.import(path: from));
 
-          final transformed = $(Either.tryCatch(
+          final transformed = await $(Either.tryCatch(
             () => Settings.fromJson(data.data.first),
             (e, st) => const ImportInvalidJsonField(),
           ).toTaskEither());
 
-          return transformed;
+          return SettingsExportData(
+            data: transformed,
+            exportData: data,
+          );
         },
       );
+}
+
+//FIXME: need to be abstracted as well
+class SettingsExportData {
+  SettingsExportData({
+    required this.data,
+    required this.exportData,
+  });
+
+  final Settings data;
+  final ExportDataPayload exportData;
 }
