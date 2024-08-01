@@ -1,12 +1,12 @@
-# Unreleased-2024.7.15
-- [Szurubooru] Show tag color
+# 3.20.0
+- [Szurubooru] Support post voting and tag colors
 - [Danbooru] Add a saved search context menu
-- [Danbooru] Add buttons to search this pool and sort it's images
+- Adding multiple tags in one search and raw tag query is now supported
 - Ignore blacklisted posts when bulk downloading
-- Experimental support for custom image listing settings
-- Move post per page setting from performance to image listing settings
-- Add a rotate button when viewing original size image on desktop
-- UI/UX updates for desktop version
+- Experimental support for custom image listing settings for each profile
+- Fix import issue on older Android devices
+- Add a rotate button when viewing original size image on desktop version of the app
+- Update translations for Chinese, German, Urkrainian, Turkish, and Romanian
 - Bug fixes and UI adjustments
 
 # 3.19.1
