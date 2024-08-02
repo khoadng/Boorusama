@@ -27,7 +27,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?>
     final orders = ref.read(settingsProvider).booruConfigIdOrderList;
     final newOrders = [...orders, booruConfig.id];
 
-    await ref.setBooruConfigOrder(newOrders);
+    await ref.read(settingsProvider.notifier).updateOrder(newOrders);
 
     state = [...state ?? [], booruConfig];
   }
@@ -56,7 +56,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?>
         await ref.read(booruConfigRepoProvider).remove(config);
         state = null;
         // reset order
-        await ref.setBooruConfigOrder([]);
+        await ref.read(settingsProvider.notifier).updateOrder([]);
         await ref.read(currentBooruConfigProvider.notifier).setEmpty();
 
         onSuccess?.call(config);
@@ -82,7 +82,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?>
       final orders = ref.read(settingsProvider).booruConfigIdOrderList;
       final newOrders = [...orders..remove(config.id)];
 
-      await ref.setBooruConfigOrder(newOrders);
+      await ref.read(settingsProvider.notifier).updateOrder(newOrders);
 
       final tmp = [...state!];
       tmp.remove(config);

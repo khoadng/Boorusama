@@ -1,22 +1,37 @@
 // Dart imports:
 import 'dart:async';
 
+// Flutter imports:
+import 'package:flutter/widgets.dart';
+
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/backups/backups.dart';
 import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/foundation/package_info.dart';
 import 'package:boorusama/foundation/toast.dart';
+import 'package:boorusama/foundation/version.dart';
 
 class SettingsNotifier extends Notifier<Settings> {
-  SettingsNotifier(this.initialSettings) : super();
+  SettingsNotifier(this.initialSettings);
 
   final Settings initialSettings;
 
   @override
   Settings build() {
     return initialSettings;
+  }
+
+  Future<void> updateWith(
+    Settings Function(Settings) selector,
+  ) async {
+    final currentSettings = state;
+    final newSettings = selector(currentSettings);
+
+    return updateSettings(newSettings);
   }
 
   Future<void> updateSettings(Settings settings) async {
@@ -37,7 +52,13 @@ class SettingsNotifier extends Notifier<Settings> {
     }
   }
 
-  Future<void> importSettings(String path) async {
+  Future<void> importSettings({
+    required String path,
+    required BuildContext context,
+    void Function(String message)? onFailure,
+    void Function(String message, Settings)? onSuccess,
+    Future<bool> Function(SettingsExportData data)? onWillImport,
+  }) async {
     await ref
         .read(settingIOHandlerProvider)
         .import(
@@ -47,7 +68,26 @@ class SettingsNotifier extends Notifier<Settings> {
         .then(
           (value) => value.fold(
             (l) => showErrorToast(l.toString()),
-            (r) => updateSettings(r),
+            (r) async {
+              //FIXME: Duplicate code, abstract import with check
+              final appVersion = ref.read(appVersionProvider);
+              if (appVersion
+                  .significantlyLowerThan(r.exportData.exportVersion)) {
+                final shouldImport = await showBackwardImportAlertDialog(
+                  context: context,
+                  data: r.exportData,
+                );
+
+                if (shouldImport == null || !shouldImport) return;
+              }
+
+              final willImport = await onWillImport?.call(r);
+              if (willImport == null || !willImport) return;
+
+              await updateSettings(r.data);
+
+              onSuccess?.call('Imported successfully', r.data);
+            },
           ),
         );
   }
@@ -69,68 +109,15 @@ class SettingsNotifier extends Notifier<Settings> {
   }
 }
 
-extension SettingsNotifierX on WidgetRef {
-  Future<void> updateSettings(Settings settings) =>
-      read(settingsProvider.notifier).updateSettings(settings);
-
-  Future<void> setGridSize(GridSize size) => updateSettings(
-        read(settingsProvider).copyWith(
-          gridSize: size,
-        ),
-      );
-
-  Future<void> setImageListType(ImageListType type) => updateSettings(
-        read(settingsProvider).copyWith(
-          imageListType: type,
-        ),
-      );
-
-  Future<void> setImageQuality(ImageQuality quality) => updateSettings(
-        read(settingsProvider).copyWith(
-          imageQuality: quality,
-        ),
-      );
-
-  Future<void> setPageMode(PageMode mode) => updateSettings(
-        read(settingsProvider).copyWith(
-          pageMode: mode,
-        ),
-      );
-
-  Future<void> setPostListConfigHeaderStatus({
-    required bool active,
-  }) =>
-      updateSettings(
-        read(settingsProvider).copyWith(
-          showPostListConfigHeader: active,
-        ),
-      );
-
-  Future<void> setBooruConfigOrder(List<int> configIds) => updateSettings(
-        read(settingsProvider).copyWith(
+extension SettingsNotifierX on SettingsNotifier {
+  Future<void> updateOrder(List<int> configIds) => updateWith(
+        (settings) => settings.copyWith(
           booruConfigIdOrders: configIds.join(' '),
         ),
       );
 }
 
-extension SettingsNotifierProviderRef on NotifierProviderRef {
+extension SettingsNotifierWidgetRefX on WidgetRef {
   Future<void> updateSettings(Settings settings) =>
       read(settingsProvider.notifier).updateSettings(settings);
-
-  Future<void> setBooruConfigOrder(List<int> configIds) => updateSettings(
-        read(settingsProvider).copyWith(
-          booruConfigIdOrders: configIds.join(' '),
-        ),
-      );
-}
-
-extension SettingsProviderRef on ProviderRef {
-  Future<void> updateSettings(Settings settings) =>
-      read(settingsProvider.notifier).updateSettings(settings);
-
-  Future<void> setBooruConfigOrder(List<int> configIds) => updateSettings(
-        read(settingsProvider).copyWith(
-          booruConfigIdOrders: configIds.join(' '),
-        ),
-      );
 }

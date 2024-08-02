@@ -19,6 +19,7 @@ import 'package:boorusama/core/configs/providers.dart';
 import 'package:boorusama/core/downloads/download_service.dart';
 import 'package:boorusama/core/downloads/types.dart';
 import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/functional.dart' as fp;
@@ -50,7 +51,7 @@ extension TaskUpdateX on TaskUpdate {
                 DownloaderMetadata.fromJsonString(task.metaData).fileSize;
             final fileSizeString = s.responseHeaders.toOption().fold(
                   () => '',
-                  (headers) => headers[HttpHeaders.contentLengthHeader],
+                  (headers) => headers[AppHttpHeaders.contentLengthHeader],
                 );
             final fileSize =
                 fileSizeString != null ? int.tryParse(fileSizeString) : null;

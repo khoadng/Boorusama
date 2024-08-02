@@ -9,7 +9,7 @@ import 'package:boorusama/core/configs/providers.dart';
 import 'package:boorusama/core/datetimes/datetimes.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/infinite_post_list_scaffold.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
 import '../feats/posts/posts.dart';
 
@@ -52,7 +52,7 @@ class _MoebooruPopularPageState extends ConsumerState<MoebooruPopularPage> {
   Widget build(BuildContext context) {
     return PostScope(
       fetcher: (page) => page > 1
-          ? TaskEither.of(<Post>[])
+          ? TaskEither.of(<Post>[].toResult())
           : _typeToData(selectedPopular.value, page),
       builder: (context, controller, errors) => Column(
         children: [

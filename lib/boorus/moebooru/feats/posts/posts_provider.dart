@@ -38,8 +38,9 @@ final moebooruPostRepoProvider =
                       search: tags.join(' '),
                     ),
                   ))
-              .toList()),
-      getSettings: () async => ref.read(settingsProvider),
+              .toList()
+              .toResult()),
+      getSettings: () async => ref.read(imageListingSettingsProvider),
     );
   },
 );
@@ -76,12 +77,9 @@ final moebooruPostDetailsChildrenProvider =
     final query =
         post.parentId != null ? 'parent:${post.parentId}' : 'parent:${post.id}';
 
-    final posts = await repo.getPosts(query, 1).run();
+    final r = await repo.getPostsFromTagsOrEmpty(query);
 
-    return posts.fold(
-      (l) => null,
-      (r) => r,
-    );
+    return r.posts;
   },
 );
 
@@ -91,15 +89,10 @@ final moebooruPostDetailsArtistProvider =
   final repo = ref.watch(moebooruArtistCharacterPostRepoProvider(config));
   final blacklistedTags = await ref.watch(blacklistTagsProvider(config).future);
 
-  final posts = await repo.getPosts(tag, 1).run().then(
-        (value) => value.fold(
-          (l) => <Post>[],
-          (r) => r,
-        ),
-      );
+  final r = await repo.getPostsFromTagsOrEmpty(tag);
 
   return filterTags(
-    posts.take(30).where((e) => !e.isFlash).toList(),
+    r.posts.take(30).where((e) => !e.isFlash).toList(),
     blacklistedTags,
   );
 });
@@ -110,15 +103,10 @@ final moebooruPostDetailsCharacterProvider =
   final repo = ref.watch(moebooruArtistCharacterPostRepoProvider(config));
   final blacklistedTags = await ref.watch(blacklistTagsProvider(config).future);
 
-  final posts = await repo.getPosts(tag, 1).run().then(
-        (value) => value.fold(
-          (l) => <Post>[],
-          (r) => r,
-        ),
-      );
+  final r = await repo.getPostsFromTagsOrEmpty(tag);
 
   return filterTags(
-    posts.take(30).where((e) => !e.isFlash).toList(),
+    r.posts.take(30).where((e) => !e.isFlash).toList(),
     blacklistedTags,
   );
 });

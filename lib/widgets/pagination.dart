@@ -48,6 +48,14 @@ List<int> _adjustPageIfNeeded({
       _ => pages,
     };
 
+int? calculateTotalPage(int? total, int? itemPerPage) {
+  if (total == null || itemPerPage == null) return null;
+
+  final totalPage = total / itemPerPage;
+
+  return totalPage.ceil();
+}
+
 class PageSelector extends StatefulWidget {
   const PageSelector({
     super.key,
@@ -75,6 +83,19 @@ class _PageSelectorState extends State<PageSelector> {
 
   @override
   Widget build(BuildContext context) {
+    final pages = generatePage(
+      current: widget.currentPage,
+      total: widget.totalResults,
+      itemPerPage: widget.itemPerPage,
+    );
+    final lastPage = pages.lastOrNull;
+    final isLowPageCount =
+        lastPage != null ? pages.last < _maxSelectablePage : false;
+    final isSinglePage = pages.length == 1 && pages.first == 1;
+    final isLastPage = !isLowPageCount ? false : lastPage == widget.currentPage;
+
+    if (isSinglePage) return const SizedBox.shrink();
+
     return OverflowBar(
       alignment: MainAxisAlignment.center,
       children: [
@@ -87,11 +108,7 @@ class _PageSelectorState extends State<PageSelector> {
             size: 32,
           ),
         ),
-        ...generatePage(
-          current: widget.currentPage,
-          total: widget.totalResults,
-          itemPerPage: widget.itemPerPage,
-        ).map(
+        ...pages.map(
           (page) => InkWell(
             borderRadius: BorderRadius.circular(8),
             onTap: widget.currentPage != page
@@ -120,50 +137,51 @@ class _PageSelectorState extends State<PageSelector> {
             ),
           ),
         ),
-        if (!pageInputMode)
-          IconButton(
-            padding: EdgeInsets.zero,
-            visualDensity: VisualDensity.compact,
-            onPressed: () {
-              setState(() {
-                pageInputMode = !pageInputMode;
-              });
-            },
-            icon: const Icon(Symbols.more_horiz),
-          )
-        else
-          SizedBox(
-            width: 50,
-            child: Focus(
-              onFocusChange: (value) {
-                if (!value) {
-                  setState(() {
-                    pageInputMode = false;
-                  });
-                }
+        if (!isLowPageCount)
+          if (!pageInputMode)
+            IconButton(
+              padding: EdgeInsets.zero,
+              visualDensity: VisualDensity.compact,
+              onPressed: () {
+                setState(() {
+                  pageInputMode = !pageInputMode;
+                });
               },
-              child: TextField(
-                autofocus: true,
-                onTapOutside: (_) {
-                  setState(() {
-                    pageInputMode = false;
-                  });
+              icon: const Icon(Symbols.more_horiz),
+            )
+          else
+            SizedBox(
+              width: 50,
+              child: Focus(
+                onFocusChange: (value) {
+                  if (!value) {
+                    setState(() {
+                      pageInputMode = false;
+                    });
+                  }
                 },
-                decoration: const InputDecoration(
-                  isDense: true,
-                  contentPadding: EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 2,
+                child: TextField(
+                  autofocus: true,
+                  onTapOutside: (_) {
+                    setState(() {
+                      pageInputMode = false;
+                    });
+                  },
+                  decoration: const InputDecoration(
+                    isDense: true,
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 2,
+                    ),
                   ),
+                  textInputAction: TextInputAction.done,
+                  keyboardType: TextInputType.number,
+                  onSubmitted: onSubmit,
                 ),
-                textInputAction: TextInputAction.done,
-                keyboardType: TextInputType.number,
-                onSubmitted: onSubmit,
               ),
             ),
-          ),
         IconButton(
-          onPressed: widget.onNext,
+          onPressed: isLastPage ? null : widget.onNext,
           padding: EdgeInsets.zero,
           visualDensity: VisualDensity.compact,
           icon: const Icon(
@@ -179,7 +197,16 @@ class _PageSelectorState extends State<PageSelector> {
     setState(() {
       pageInputMode = !pageInputMode;
     });
-    final page = int.tryParse(value);
+    final lastPage = calculateTotalPage(
+      widget.totalResults,
+      widget.itemPerPage,
+    );
+    final pageRaw = int.tryParse(value);
+    // if the input is not a number or the page is out of range, clamp it to the last page
+    final page = pageRaw == null || (lastPage != null && pageRaw > lastPage)
+        ? lastPage
+        : pageRaw;
+
     if (page != null) {
       widget.onPageSelect(page);
     }

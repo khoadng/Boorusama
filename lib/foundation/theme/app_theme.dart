@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/display.dart';
+import 'package:boorusama/foundation/theme.dart';
 
 const staticLightScheme = ColorScheme(
   brightness: Brightness.light,
@@ -133,6 +134,8 @@ class AppTheme {
             videoPlayerBackgroundColor: Colors.white,
             themeMode: AppThemeMode.light,
             selectedColor: Colors.grey,
+            upvoteColor: Colors.redAccent,
+            downvoteColor: Colors.blueAccent,
           ),
         ],
         listTileTheme: const ListTileThemeData(
@@ -157,6 +160,8 @@ class AppTheme {
             videoPlayerBackgroundColor: Colors.black,
             themeMode: AppThemeMode.amoledDark,
             selectedColor: Color.fromARGB(255, 74, 74, 74),
+            upvoteColor: Colors.redAccent,
+            downvoteColor: Colors.blueAccent,
           ),
         ],
         listTileTheme: const ListTileThemeData(
@@ -170,10 +175,18 @@ class AppTheme {
     required ColorScheme colorScheme,
   }) =>
       ThemeData(
-        appBarTheme: const AppBarTheme(
+        appBarTheme: AppBarTheme(
           scrolledUnderElevation: 0,
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
+          titleSpacing: kPreferredLayout.isDesktop ? 4 : null,
+          titleTextStyle: TextStyle(
+            fontWeight: FontWeight.w700,
+            fontSize: 22,
+            color: colorScheme.brightness == Brightness.light
+                ? Colors.black
+                : Colors.white,
+          ),
         ),
         chipTheme: const ChipThemeData(
           shape: StadiumBorder(),

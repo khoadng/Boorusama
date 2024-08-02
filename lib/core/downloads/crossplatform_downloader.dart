@@ -10,7 +10,7 @@ import 'package:rxdart/rxdart.dart';
 
 // Project imports:
 import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/foundation/http/user_agent_generator.dart';
+import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/platform.dart';
@@ -31,7 +31,7 @@ class CrossplatformDownloader implements Downloader {
           dio: Dio(
             BaseOptions(
               headers: {
-                'User-Agent': userAgentGenerator.generate(),
+                AppHttpHeaders.userAgentHeader: userAgentGenerator.generate(),
               },
             ),
           ),

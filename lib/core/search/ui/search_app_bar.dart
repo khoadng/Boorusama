@@ -88,6 +88,7 @@ class SearchAppBar extends ConsumerWidget {
                     flex: 4,
                     child: searchAppBar,
                   ),
+                  const SizedBox(width: 4),
                   trailingSearchButton!,
                   if (constraints.maxWidth > 700)
                     Spacer(

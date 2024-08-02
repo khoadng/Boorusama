@@ -2,7 +2,8 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
+import 'package:boorusama/boorus/danbooru/users/users.dart';
+import 'package:boorusama/foundation/theme.dart';
 
 int getUserHexOnDarkColor(UserLevel level) => switch (level) {
       UserLevel.member => 0xff009ae7,
@@ -31,6 +32,7 @@ int getUserHexColor(UserLevel level) => switch (level) {
     };
 
 extension UserColor on UserLevel {
-  Color toColor() => Color(getUserHexColor(this));
-  Color toOnDarkColor() => Color(getUserHexOnDarkColor(this));
+  Color toColor(BuildContext context) => context.colors.themeMode.isLight
+      ? Color(getUserHexColor(this))
+      : Color(getUserHexOnDarkColor(this));
 }

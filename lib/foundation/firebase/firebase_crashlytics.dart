@@ -9,6 +9,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 // Project imports:
 import 'package:boorusama/foundation/error.dart';
+import 'package:boorusama/foundation/package_info.dart';
 import 'package:boorusama/foundation/platform.dart';
 
 class FirebaseCrashlyticsReporter implements ErrorReporter {
@@ -38,5 +39,8 @@ class FirebaseCrashlyticsReporter implements ErrorReporter {
 
     await FirebaseCrashlytics.instance.setCustomKey(
         'time-zone-offset', DateTime.now().timeZoneOffset.inHours);
+
+    await FirebaseCrashlytics.instance
+        .setCustomKey('environment', kEnvironment);
   }
 }

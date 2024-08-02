@@ -4,7 +4,6 @@ export 'desktop_home_page_scaffold.dart';
 export 'favorite_page_scaffold.dart';
 export 'infinite_post_list_scaffold.dart';
 export 'mobile_home_page_scaffold.dart';
-export 'post_details_page_scaffold.dart';
 export 'search_page_scaffold.dart';
 export 'tag_details_page_scaffold.dart';
 export 'tag_edit_scaffold.dart';

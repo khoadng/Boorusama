@@ -6,11 +6,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
+import 'package:boorusama/boorus/danbooru/tags/tags.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/search/ui/metatags_section.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
+import '../../../../boorus/danbooru/danbooru_provider.dart';
 
 class DanbooruMetatagsSection extends ConsumerWidget {
   const DanbooruMetatagsSection({

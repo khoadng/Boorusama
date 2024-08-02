@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 
 class TagsTile extends ConsumerWidget {
   const TagsTile({
@@ -18,6 +18,8 @@ class TagsTile extends ConsumerWidget {
     this.onTagTap,
     this.initialExpanded = false,
     required this.tags,
+    this.tagColorBuilder,
+    this.padding,
   });
 
   final Post post;
@@ -26,6 +28,8 @@ class TagsTile extends ConsumerWidget {
   final void Function(Tag tag)? onTagTap;
   final bool initialExpanded;
   final List<TagGroupItem>? tags;
+  final Color? Function(Tag tag)? tagColorBuilder;
+  final EdgeInsetsGeometry? padding;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -39,12 +43,12 @@ class TagsTile extends ConsumerWidget {
       child: ExpansionTile(
         initiallyExpanded: initialExpanded,
         title: Text('${post.tags.length} tags'),
-        controlAffinity: ListTileControlAffinity.leading,
+        controlAffinity: ListTileControlAffinity.trailing,
         onExpansionChanged: (value) =>
             value ? onExpand?.call() : onCollapse?.call(),
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
+            padding: padding ?? const EdgeInsets.symmetric(horizontal: 12),
             child: PostTagList(
               tags: tags,
               itemBuilder: (context, tag) => GeneralTagContextMenu(
@@ -52,6 +56,7 @@ class TagsTile extends ConsumerWidget {
                 child: PostTagListChip(
                   tag: tag,
                   onTap: () => onTagTap?.call(tag),
+                  color: tagColorBuilder != null ? tagColorBuilder!(tag) : null,
                 ),
               ),
             ),

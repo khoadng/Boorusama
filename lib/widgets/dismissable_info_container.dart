@@ -8,7 +8,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 
 class DismissableInfoContainer extends ConsumerStatefulWidget {
   const DismissableInfoContainer({
@@ -51,9 +51,12 @@ class _DismissableInfoContainerState
         Container(
           margin: widget.padding ??
               const EdgeInsets.symmetric(
-                vertical: 16,
-                horizontal: 24,
+                horizontal: 16,
+                vertical: 8,
               ),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 4,
+          ),
           decoration: BoxDecoration(
             borderRadius: const BorderRadius.all(Radius.circular(4)),
             color: colors?.backgroundColor,
@@ -65,36 +68,44 @@ class _DismissableInfoContainerState
                 : null,
           ),
           width: MediaQuery.sizeOf(context).width,
-          child: Padding(
-            padding: const EdgeInsets.all(8),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Html(
-                        style: {
-                          'body': Style(
-                            color: Colors.white,
-                          ),
-                        },
-                        data: widget.content,
-                      ),
-                      OverflowBar(
-                        children: widget.actions,
-                      ),
-                    ],
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Html(
+                      style: {
+                        'body': Style(
+                          color: colors?.foregroundColor,
+                        ),
+                      },
+                      data: widget.content,
+                    ),
                   ),
+                  Container(
+                    width: 20,
+                  ),
+                ],
+              ),
+              Container(
+                padding: widget.actions.isNotEmpty
+                    ? const EdgeInsets.only(
+                        left: 4,
+                        bottom: 8,
+                      )
+                    : null,
+                child: OverflowBar(
+                  children: widget.actions,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
         if (!widget.forceShow)
           Positioned(
-              top: 12,
-              right: 20,
+              top: 8,
+              right: 12,
               child: IconButton(
                 icon: Icon(
                   Symbols.close,

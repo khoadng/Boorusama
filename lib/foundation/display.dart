@@ -6,6 +6,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'platform.dart';
 
@@ -99,6 +100,33 @@ extension OrientationX on Orientation {
   bool get isPortrait => this == Orientation.portrait;
 }
 
+Future<T?> showAdaptiveSheet<T>(
+  BuildContext context, {
+  required Widget Function(BuildContext context) builder,
+  bool expand = false,
+  double? width,
+  Color? backgroundColor,
+  RouteSettings? settings,
+}) {
+  if (Screen.of(context).size == ScreenSize.small) {
+    return showMaterialModalBottomSheet<T>(
+      settings: settings,
+      context: context,
+      backgroundColor: backgroundColor,
+      duration: AppDurations.bottomSheet,
+      expand: expand,
+      builder: builder,
+    );
+  } else {
+    return showSideSheetFromRight<T>(
+      settings: settings,
+      width: width ?? 320,
+      body: builder(context),
+      context: context,
+    );
+  }
+}
+
 Future<T?> showAdaptiveBottomSheet<T>(
   BuildContext context, {
   required Widget Function(BuildContext context) builder,
@@ -108,13 +136,31 @@ Future<T?> showAdaptiveBottomSheet<T>(
   RouteSettings? settings,
 }) {
   return Screen.of(context).size != ScreenSize.small
-      ? showGeneralDialog<T>(
+      ? showDialog<T>(
           context: context,
           routeSettings: settings,
-          pageBuilder: (context, animation, secondaryAnimation) =>
-              builder(context),
+          builder: (context) => Dialog(
+            insetPadding: const EdgeInsets.symmetric(
+              horizontal: 28,
+              vertical: 24,
+            ),
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(12)),
+            ),
+            child: Container(
+              constraints: const BoxConstraints(
+                maxHeight: 400,
+                maxWidth: 500,
+              ),
+              margin: const EdgeInsets.symmetric(
+                horizontal: 4,
+                vertical: 4,
+              ),
+              child: builder(context),
+            ),
+          ),
         )
-      : showBarModalBottomSheet<T>(
+      : showAppModalBarBottomSheet<T>(
           context: context,
           settings: settings,
           barrierColor: Colors.black45,
@@ -129,3 +175,32 @@ Future<T?> showAdaptiveBottomSheet<T>(
           ),
         );
 }
+
+Future<T?> showAppModalBarBottomSheet<T>({
+  required BuildContext context,
+  required WidgetBuilder builder,
+  Color? backgroundColor,
+  ShapeBorder? shape,
+  Color barrierColor = Colors.black87,
+  bool bounce = true,
+  bool expand = false,
+  Curve? animationCurve,
+  bool useRootNavigator = false,
+  bool isDismissible = true,
+  Duration? duration,
+  RouteSettings? settings,
+}) =>
+    showBarModalBottomSheet<T>(
+      context: context,
+      settings: settings,
+      barrierColor: barrierColor,
+      duration: duration ?? AppDurations.bottomSheet,
+      backgroundColor: backgroundColor,
+      shape: shape,
+      bounce: bounce,
+      expand: expand,
+      animationCurve: animationCurve,
+      useRootNavigator: useRootNavigator,
+      isDismissible: isDismissible,
+      builder: builder,
+    );

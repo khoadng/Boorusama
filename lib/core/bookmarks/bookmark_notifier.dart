@@ -13,6 +13,7 @@ import 'package:boorusama/core/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/permissions.dart';
@@ -143,7 +144,7 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
 
       showSuccessToast(
         '${state.bookmarks.length} bookmarks exported to ${file.path}',
-        duration: const Duration(seconds: 4),
+        duration: AppDurations.longToast,
       );
     } catch (e) {
       showErrorToast('Failed to export bookmarks: $e');
@@ -168,7 +169,7 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
         await getAllBookmarks();
         showSuccessToast(
           '${bookmarks.length} bookmarks imported',
-          duration: const Duration(seconds: 4),
+          duration: AppDurations.longToast,
         );
       } catch (e) {
         showErrorToast('Failed to import bookmarks');

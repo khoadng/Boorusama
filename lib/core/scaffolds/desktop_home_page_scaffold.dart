@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/infinite_post_list_scaffold.dart';
 import 'package:boorusama/core/search/search.dart';
@@ -25,8 +25,9 @@ class DesktopHomePageScaffold extends ConsumerStatefulWidget {
 
 class _DesktopHomePageScaffoldState
     extends ConsumerState<DesktopHomePageScaffold> {
-  late final selectedTagController =
-      SelectedTagController(tagInfo: ref.read(tagInfoProvider));
+  late final selectedTagController = SelectedTagController.fromBooruBuilder(
+    builder: ref.readBooruBuilder(ref.readConfig),
+  );
 
   @override
   void dispose() {
@@ -42,7 +43,7 @@ class _DesktopHomePageScaffoldState
     return PostScope(
       fetcher: (page) =>
           fetcher?.call(page, selectedTagController.rawTagsString) ??
-          TaskEither.of(<Post>[]),
+          TaskEither.of(<Post>[].toResult()),
       builder: (context, controller, errors) => Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -63,7 +64,9 @@ class _DesktopHomePageScaffoldState
                         builder: (context, value, _) =>
                             ResultHeaderWithProvider(
                           selectedTags: value.split(' '),
-                          onRefresh: () => controller.refresh(),
+                          onRefresh: (maintainPage) => controller.refresh(
+                            maintainPage: maintainPage,
+                          ),
                         ),
                       ),
                       const Spacer(),

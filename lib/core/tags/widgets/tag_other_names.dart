@@ -4,8 +4,9 @@ import 'package:flutter/services.dart';
 
 // Project imports:
 import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/string.dart';
 
@@ -21,7 +22,7 @@ class TagOtherNames extends StatelessWidget {
   Widget build(BuildContext context) {
     return Screen.of(context).size == ScreenSize.small
         ? otherNames != null
-            ? otherNames!.length > 4
+            ? otherNames!.length > 3
                 ? Container(
                     margin:
                         const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -34,8 +35,6 @@ class TagOtherNames extends StatelessWidget {
                     ),
                   )
                 : Wrap(
-                    spacing: 4,
-                    runSpacing: 6,
                     alignment: WrapAlignment.center,
                     runAlignment: WrapAlignment.center,
                     children: otherNames!
@@ -48,8 +47,6 @@ class TagOtherNames extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 2),
               child: otherNames != null
                   ? Wrap(
-                      spacing: 4,
-                      runSpacing: 6,
                       alignment: WrapAlignment.center,
                       runAlignment: WrapAlignment.center,
                       children: otherNames!
@@ -79,7 +76,7 @@ class OtherNameChip extends StatelessWidget {
             Clipboard.setData(ClipboardData(text: otherName)).then(
           (_) => showSimpleSnackBar(
             context: context,
-            duration: const Duration(seconds: 1),
+            duration: AppDurations.shortToast,
             content: const Text('Copied'),
           ),
         ),

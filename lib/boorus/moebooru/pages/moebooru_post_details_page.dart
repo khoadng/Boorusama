@@ -15,7 +15,6 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
-import 'package:boorusama/core/scaffolds/post_details_page_scaffold.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -248,7 +247,7 @@ class _MoebooruPostDetailsPageState
     if (tagGroups == null) return null;
 
     final tag = tagGroups.firstWhereOrNull(
-        (e) => intToTagCategory(e.category) == TagCategory.artist);
+        (e) => TagCategory.fromLegacyId(e.category) == TagCategory.artist());
     final artistTags = tag?.tags.map((e) => e.rawName).toList();
     return artistTags;
   }
@@ -260,7 +259,7 @@ class _MoebooruPostDetailsPageState
     if (tagGroups == null) return null;
 
     final tag = tagGroups.firstWhereOrNull(
-        (e) => intToTagCategory(e.category) == TagCategory.character);
+        (e) => TagCategory.fromLegacyId(e.category) == TagCategory.character());
     final characterTags = tag?.tags.map((e) => e.rawName).toSet();
     return characterTags;
   }

@@ -1,5 +1,6 @@
 {
     "ENV_NAME": "prod",
+    "EXPERIMENTAL_FEATURES": "custom-listing",
     "PREFERRED_LAYOUT": "platform",
     "APP_NAME" : "Boorusama"
 }

@@ -63,9 +63,10 @@ final shimmie2PostRepoProvider = Provider.family<PostRepository, BooruConfig>(
                     search: tags.join(' '),
                   ),
                 ))
-            .toList();
+            .toList()
+            .toResult();
       },
-      getSettings: () async => ref.read(settingsProvider),
+      getSettings: () async => ref.read(imageListingSettingsProvider),
     );
   },
 );

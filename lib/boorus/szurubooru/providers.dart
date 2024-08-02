@@ -9,8 +9,11 @@ import 'package:boorusama/clients/szurubooru/szurubooru_client.dart';
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/path.dart';
+import 'post_votes/post_votes.dart';
 import 'szurubooru_post.dart';
 
 final szurubooruClientProvider = Provider.family<SzurubooruClient, BooruConfig>(
@@ -38,6 +41,9 @@ final szurubooruPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
           limit: limit,
         );
 
+        final categories =
+            await ref.read(szurubooruTagCategoriesProvider(config).future);
+
         final data = posts
             .map((e) => SzurubooruPost(
                   id: e.id ?? 0,
@@ -49,6 +55,17 @@ final szurubooruPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
                           .whereNotNull()
                           .toSet() ??
                       {},
+                  tagDetails: e.tags
+                          ?.map((e) => Tag(
+                                name: e.names?.firstOrNull ?? '???',
+                                category: categories.firstWhereOrNull(
+                                        (element) =>
+                                            element.name == e.category) ??
+                                    TagCategory.general(),
+                                postCount: e.usages ?? 0,
+                              ))
+                          .toList() ??
+                      [],
                   rating: switch (e.safety?.toLowerCase()) {
                     'safe' => Rating.general,
                     'questionable' => Rating.questionable,
@@ -85,10 +102,11 @@ final szurubooruPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
             .toList();
 
         ref.read(szurubooruFavoritesProvider(config).notifier).preload(data);
+        ref.read(szurubooruPostVotesProvider(config).notifier).getVotes(data);
 
-        return data;
+        return data.toResult();
       },
-      getSettings: () async => ref.read(settingsProvider),
+      getSettings: () async => ref.read(imageListingSettingsProvider),
     );
   },
 );
@@ -119,5 +137,24 @@ final szurubooruAutocompleteRepoProvider =
             .toList();
       },
     );
+  },
+);
+
+final szurubooruTagCategoriesProvider =
+    FutureProvider.family<List<TagCategory>, BooruConfig>(
+  (ref, config) async {
+    final client = ref.read(szurubooruClientProvider(config));
+
+    final categories = await client.getTagCategories();
+
+    return categories
+        .mapIndexed((index, e) => TagCategory(
+              id: index,
+              name: e.name ?? '???',
+              order: e.order,
+              darkColor: hexToColor(e.color),
+              lightColor: hexToColor(e.color),
+            ))
+        .toList();
   },
 );

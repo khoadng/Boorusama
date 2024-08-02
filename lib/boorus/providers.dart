@@ -6,11 +6,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
-import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
-import 'package:boorusama/boorus/e621/feats/favorites/favorites.dart';
-import 'package:boorusama/boorus/e621/feats/posts/e621_post_provider.dart';
+import 'package:boorusama/boorus/danbooru/blacklist/blacklist.dart';
+import 'package:boorusama/boorus/danbooru/favorites/favorites.dart';
+import 'package:boorusama/boorus/danbooru/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/tags/tags.dart';
+import 'package:boorusama/boorus/e621/favorites/favorites.dart';
+import 'package:boorusama/boorus/e621/posts/posts.dart';
 import 'package:boorusama/boorus/gelbooru/favorites/favorites.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
 import 'package:boorusama/boorus/gelbooru_v1/gelbooru_v1.dart';
@@ -35,6 +36,7 @@ import 'package:boorusama/clients/zerochan/zerochan_client.dart';
 import 'package:boorusama/core/blacklists/blacklists.dart';
 import 'package:boorusama/core/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/tags/tags.dart';
@@ -55,10 +57,6 @@ final booruFactoryProvider =
     Provider<BooruFactory>((ref) => throw UnimplementedError());
 
 final tagInfoProvider = Provider<TagInfo>((ref) => throw UnimplementedError());
-final metatagsProvider = Provider<Set<Metatag>>(
-  (ref) => ref.watch(tagInfoProvider).metatags,
-  dependencies: [tagInfoProvider],
-);
 
 final booruConfigRepoProvider = Provider<BooruConfigRepository>(
   (ref) => throw UnimplementedError(),
@@ -113,6 +111,33 @@ final settingsProvider = NotifierProvider<SettingsNotifier, Settings>(
     settingsRepoProvider,
   ],
 );
+
+//FIXME: should move to some sort of experimental features provider
+const _kExperimentalFeatures = String.fromEnvironment('EXPERIMENTAL_FEATURES');
+final _kExperimentalFeaturesSet = _kExperimentalFeatures.split(' ');
+final kCustomListingFeatureEnabled =
+    _kExperimentalFeaturesSet.contains('custom-listing');
+
+final imageListingSettingsProvider = Provider<ImageListingSettings>((ref) {
+  final listing = ref.watch(settingsProvider.select((value) => value.listing));
+
+  // if custom listing is not enabled, return the global settings
+  if (!kCustomListingFeatureEnabled) {
+    return listing;
+  }
+
+  // check if user has set custom settings
+  final listingConfigs =
+      ref.watch(currentBooruConfigProvider.select((value) => value.listing));
+
+  // if user has set it and it's enabled, return it
+  if (listingConfigs != null && listingConfigs.enable) {
+    return listingConfigs.settings;
+  }
+
+  // otherwise, return the global settings
+  return listing;
+});
 
 final settingsRepoProvider =
     Provider<SettingsRepository>((ref) => throw UnimplementedError());

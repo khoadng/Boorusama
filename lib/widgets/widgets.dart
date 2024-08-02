@@ -25,6 +25,7 @@ export 'faster_ink_splash.dart';
 export 'filterable_scope.dart';
 export 'floating_glassy_card.dart';
 export 'generic_no_data_box.dart';
+export 'grayed_out.dart';
 export 'grid_size_adjustment_buttons.dart';
 export 'hide_on_scroll.dart';
 export 'icon_text_button.dart';

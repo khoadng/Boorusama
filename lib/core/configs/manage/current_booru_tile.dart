@@ -7,11 +7,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/app.dart';
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class CurrentBooruTile extends ConsumerWidget {
@@ -100,8 +100,8 @@ class CurrentBooruRatingChip extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final enableDynamicColoring =
-        ref.watch(enableDynamicColoringSettingsProvider);
+    final enableDynamicColoring = ref
+        .watch(settingsProvider.select((value) => value.enableDynamicColoring));
 
     return SquareChip(
       borderRadius: const BorderRadius.all(Radius.circular(4)),

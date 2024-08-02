@@ -11,7 +11,7 @@ import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/option_dropdown_button.dart';
 
 class DefaultImageDetailsQualityTile extends ConsumerWidget {
@@ -154,6 +154,7 @@ class BooruConfigSubmitButton extends ConsumerWidget {
     final defaultPreviewImageButtonAction =
         ref.watch(defaultPreviewImageButtonActionProvider);
     final gestures = ref.watch(postGesturesConfigDataProvider);
+    final listing = ref.watch(listingConfigsProvider);
 
     return builder(data.copyWith(
       granularRatingFilter: () => granularRatingFilter,
@@ -164,6 +165,7 @@ class BooruConfigSubmitButton extends ConsumerWidget {
       customDownloadLocation: () => customDownloadLocation,
       defaultPreviewImageButtonAction: () => defaultPreviewImageButtonAction,
       postGestures: () => gestures,
+      listing: () => listing,
       name: configName,
     ));
   }

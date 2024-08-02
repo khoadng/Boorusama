@@ -9,7 +9,7 @@ Future<T?> showAppModalBottomSheet<T>({
   required Widget Function(BuildContext context) builder,
 }) =>
     showMaterialModalBottomSheet(
-      duration: const Duration(milliseconds: 200),
+      duration: Durations.short4,
       backgroundColor: Theme.of(context).colorScheme.surface,
       context: context,
       builder: builder,

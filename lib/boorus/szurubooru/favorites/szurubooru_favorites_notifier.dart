@@ -8,6 +8,7 @@ import 'package:boorusama/clients/szurubooru/szurubooru_client.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/favorites/favorites.dart';
 import 'package:boorusama/functional.dart';
+import '../post_votes/post_votes.dart';
 
 class SzurubooruFavoritesNotifier
     extends FamilyNotifier<IMap<int, bool>, BooruConfig>
@@ -28,16 +29,30 @@ class SzurubooruFavoritesNotifier
 
   @override
   Future<AddFavoriteStatus> Function(int postId) get favoriteAdder =>
-      (postId) => client
-          .addToFavorites(postId: postId)
-          .then((value) => AddFavoriteStatus.success)
-          .catchError((obj) => AddFavoriteStatus.failure);
+      (postId) async {
+        try {
+          await client.addToFavorites(postId: postId);
+
+          await ref
+              .read(szurubooruPostVotesProvider(arg).notifier)
+              .upvote(postId, localOnly: true);
+
+          return AddFavoriteStatus.success;
+        } catch (e) {
+          return AddFavoriteStatus.failure;
+        }
+      };
 
   @override
-  Future<bool> Function(int postId) get favoriteRemover => (postId) => client
-      .removeFromFavorites(postId: postId)
-      .then((value) => true)
-      .catchError((obj) => false);
+  Future<bool> Function(int postId) get favoriteRemover => (postId) async {
+        try {
+          await client.removeFromFavorites(postId: postId);
+
+          return true;
+        } catch (e) {
+          return false;
+        }
+      };
 
   @override
   IMap<int, bool> get favorites => state;

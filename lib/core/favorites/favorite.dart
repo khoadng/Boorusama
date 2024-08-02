@@ -39,6 +39,11 @@ mixin FavoritesNotifierMixin {
     }
   }
 
+  void removeLocalFavorite(int postId) {
+    final newData = favorites.add(postId, false);
+    updateFavorites(newData);
+  }
+
   void preloadInternal<T extends Post>(
     List<T> posts, {
     bool Function(T post)? selfFavorited,

@@ -2,15 +2,14 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
+import 'package:boorusama/boorus/danbooru/favorites/favorites.dart';
 import 'package:boorusama/boorus/e621/e621.dart';
-import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
+import 'package:boorusama/boorus/e621/posts/posts.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
 import 'package:boorusama/boorus/gelbooru_v1/gelbooru_v1.dart';
 import 'package:boorusama/boorus/gelbooru_v2/posts/posts_v2.dart';
@@ -35,13 +34,13 @@ import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/gestures.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/routes.dart';
-import 'danbooru/feats/notes/notes.dart';
-import 'danbooru/feats/posts/posts.dart';
-import 'e621/feats/notes/notes.dart';
+import 'danbooru/notes/notes.dart';
+import 'danbooru/posts/posts.dart';
+import 'e621/notes/notes.dart';
 import 'gelbooru_v2/gelbooru_v2.dart';
 import 'philomena/philomena.dart';
 import 'philomena/providers.dart';
@@ -82,6 +81,8 @@ abstract class BooruBuilder {
   GranularRatingOptionsBuilder? get granularRatingOptionsBuilder;
 
   PostGestureHandlerBuilder get postGestureHandlerBuilder;
+
+  MetatagExtractor? get metatagExtractor;
 
   // Data Builders
   PostFetcher get postFetcher;
@@ -155,6 +156,7 @@ final booruBuildersProvider =
                 favoriteRepo: ref.read(danbooruFavoriteRepoProvider(config)),
                 postCountRepo: ref.read(danbooruPostCountRepoProvider(config)),
                 noteRepo: ref.read(danbooruNoteRepoProvider(config)),
+                tagInfo: ref.read(tagInfoProvider),
               ),
           BooruType.gelbooruV1: (config) => GelbooruV1Builder(
                 postRepo: ref.read(gelbooruV1PostRepoProvider(config)),
@@ -181,19 +183,3 @@ final booruBuildersProvider =
                     ref.read(szurubooruAutocompleteRepoProvider(config)),
               ),
         });
-
-class BooruProvider extends ConsumerWidget {
-  const BooruProvider({
-    super.key,
-    required this.builder,
-  });
-
-  final Widget Function(BooruBuilder? booruBuilderl, WidgetRef ref) builder;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final booruBuilder = ref.watch(booruBuilderProvider);
-
-    return builder(booruBuilder, ref);
-  }
-}

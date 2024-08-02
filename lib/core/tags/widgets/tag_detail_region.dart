@@ -11,7 +11,7 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 
 class TagDetailsRegion extends ConsumerWidget {
   const TagDetailsRegion({
@@ -33,6 +33,7 @@ class TagDetailsRegion extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                const SizedBox(width: 4),
                 SizedBox(
                   width: max(context.screenWidth * 0.25, 350),
                   child: SingleChildScrollView(
@@ -57,7 +58,7 @@ class TagDetailsRegion extends ConsumerWidget {
                   ),
                 ),
                 const VerticalDivider(
-                  width: 1,
+                  width: 12,
                   thickness: 1,
                 ),
                 Expanded(

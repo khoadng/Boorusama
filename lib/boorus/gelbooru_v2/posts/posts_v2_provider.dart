@@ -37,8 +37,9 @@ final gelbooruV2PostRepoProvider =
                       search: tags.join(' '),
                     ),
                   ))
-              .toList()),
-      getSettings: () async => ref.read(settingsProvider),
+              .toList()
+              .toResult()),
+      getSettings: () async => ref.read(imageListingSettingsProvider),
     );
   },
 );

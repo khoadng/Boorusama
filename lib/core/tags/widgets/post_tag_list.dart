@@ -7,13 +7,12 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_tags_x/flutter_tags_x.dart' hide TagsState;
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class PostTagList extends StatelessWidget {
@@ -87,16 +86,18 @@ class PostTagListChip extends ConsumerWidget {
     required this.tag,
     this.maxTagWidth,
     this.onTap,
+    this.color,
   });
 
   final Tag tag;
+  final Color? color;
   final double? maxTagWidth;
   final void Function()? onTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.generateChipColors(
-      ref.getTagColor(context, tag.category.name),
+      color ?? ref.watch(tagColorProvider(tag.category.name)),
       ref.watch(settingsProvider),
     );
 

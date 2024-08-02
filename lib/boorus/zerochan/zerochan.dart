@@ -16,11 +16,11 @@ import 'package:boorusama/core/configs/create/create_anon_config_page.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
-import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/path.dart' as path;
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/routes.dart';
 
 const kZerochanCustomDownloadFileNameFormat =
     '{id}_{width}x{height}.{extension}';
@@ -41,7 +41,7 @@ final zerochanPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
     final client = ref.watch(zerochanClientProvider(config));
 
     return PostRepositoryBuilder(
-      getSettings: () async => ref.read(settingsProvider),
+      getSettings: () async => ref.read(imageListingSettingsProvider),
       fetch: (tags, page, {limit}) async {
         final posts = await client.getPosts(
           tags: tags,
@@ -80,7 +80,8 @@ final zerochanPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
                     search: tags.join(' '),
                   ),
                 ))
-            .toList();
+            .toList()
+            .toResult();
       },
     );
   },
@@ -123,10 +124,9 @@ final zerochanTagsFromIdProvider =
 
     return data
         .where((e) => e.value != null)
-        .map((e) => Tag(
+        .map((e) => Tag.noCount(
               name: e.value!.toLowerCase().replaceAll(' ', '_'),
               category: zerochanStringToTagCategory(e.type),
-              postCount: 0,
             ))
         .toList();
   },
@@ -137,15 +137,15 @@ TagCategory zerochanStringToTagCategory(String? value) {
   var type = value?.toLowerCase().replaceAll(RegExp(r' fav$| primary$'), '');
 
   return switch (type) {
-    'mangaka' || 'artist' || 'studio' => TagCategory.artist,
+    'mangaka' || 'artist' || 'studio' => TagCategory.artist(),
     'series' ||
     'copyright' ||
     'game' ||
     'visual novel' =>
-      TagCategory.copyright,
-    'character' => TagCategory.character,
-    'meta' || 'source' => TagCategory.meta,
-    _ => TagCategory.general
+      TagCategory.copyright(),
+    'character' => TagCategory.character(),
+    'meta' || 'source' => TagCategory.meta(),
+    _ => TagCategory.general(),
   };
 }
 
@@ -161,6 +161,7 @@ class ZerochanBuilder
         LegacyGranularRatingOptionsBuilderMixin,
         DefaultHomeMixin,
         NoGranularRatingQueryBuilderMixin,
+        UnknownMetatagsMixin,
         DefaultPostImageDetailsUrlMixin,
         DefaultPostGesturesHandlerMixin,
         DefaultGranularRatingFiltererMixin,
@@ -212,14 +213,8 @@ class ZerochanBuilder
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) => BooruProvider(
-            builder: (booruBuilder, ref) => PostDetailsPageScaffold(
-              posts: payload.posts,
-              initialIndex: payload.initialIndex,
-              swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
-              tagListBuilder: (context, post) => ZerochanTagsTile(post: post),
-              onExit: (page) => payload.scrollController?.scrollToIndex(page),
-            ),
+      (context, config, payload) => ZerochanPostDetailsPage(
+            payload: payload,
           );
 
   @override
@@ -261,6 +256,26 @@ class ZerochanBuilder
       'source': (post, config) => post.source.url,
     },
   );
+}
+
+class ZerochanPostDetailsPage extends ConsumerWidget {
+  const ZerochanPostDetailsPage({
+    super.key,
+    required this.payload,
+  });
+
+  final DetailsPayload payload;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return PostDetailsPageScaffold(
+      posts: payload.posts,
+      initialIndex: payload.initialIndex,
+      swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
+      tagListBuilder: (context, post) => ZerochanTagsTile(post: post),
+      onExit: (page) => payload.scrollController?.scrollToIndex(page),
+    );
+  }
 }
 
 class ZerochanPost extends SimplePost {

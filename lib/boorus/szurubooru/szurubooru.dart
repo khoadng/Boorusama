@@ -24,8 +24,10 @@ import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/functional.dart';
+import 'package:boorusama/routes.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'create_szurubooru_config_page.dart';
+import 'post_votes/post_votes.dart';
 import 'szurubooru_post.dart';
 
 class SzurubooruBuilder
@@ -37,6 +39,7 @@ class SzurubooruBuilder
         NoteNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
         NoGranularRatingQueryBuilderMixin,
+        UnknownMetatagsMixin,
         DefaultHomeMixin,
         DefaultTagColorMixin,
         DefaultPostImageDetailsUrlMixin,
@@ -176,45 +179,8 @@ class SzurubooruBuilder
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) => BooruProvider(
-            builder: (booruBuilder, ref) => PostDetailsPageScaffold(
-              posts: payload.posts,
-              initialIndex: payload.initialIndex,
-              swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
-              onExit: (page) => payload.scrollController?.scrollToIndex(page),
-              statsTileBuilder: (context, rawPost) =>
-                  castOrNull<SzurubooruPost>(rawPost).toOption().fold(
-                        () => const SizedBox.shrink(),
-                        (post) => Column(
-                          children: [
-                            const Divider(height: 8, thickness: 0.5),
-                            SimplePostStatsTile(
-                              totalComments: post.commentCount,
-                              favCount: post.favoriteCount,
-                              score: post.score,
-                            ),
-                          ],
-                        ),
-                      ),
-              tagListBuilder: (context, post) => BasicTagList(
-                tags: post.tags.toList(),
-                unknownCategoryColor: ref.getTagColor(
-                  context,
-                  'general',
-                ),
-                onTap: (tag) => goToSearchPage(context, tag: tag),
-              ),
-              toolbarBuilder: (context, rawPost) =>
-                  castOrNull<SzurubooruPost>(rawPost).toOption().fold(
-                        () => SimplePostActionToolbar(post: rawPost),
-                        (post) => DefaultPostActionToolbar(post: post),
-                      ),
-              fileDetailsBuilder: (context, rawPost) =>
-                  DefaultFileDetailsSection(
-                post: rawPost,
-                uploaderName: castOrNull<SzurubooruPost>(rawPost)?.uploaderName,
-              ),
-            ),
+      (context, config, payload) => SzurubooruPostDetailsPage(
+            payload: payload,
           );
 
   @override
@@ -229,6 +195,58 @@ class SzurubooruBuilder
       'source': (post, config) => post.source.url,
     },
   );
+}
+
+class SzurubooruPostDetailsPage extends ConsumerWidget {
+  const SzurubooruPostDetailsPage({
+    super.key,
+    required this.payload,
+  });
+
+  final DetailsPayload payload;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return PostDetailsPageScaffold(
+      posts: payload.posts,
+      initialIndex: payload.initialIndex,
+      swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
+      onExit: (page) => payload.scrollController?.scrollToIndex(page),
+      statsTileBuilder: (context, rawPost) =>
+          castOrNull<SzurubooruPost>(rawPost).toOption().fold(
+                () => const SizedBox.shrink(),
+                (post) => Column(
+                  children: [
+                    const Divider(height: 8, thickness: 0.5),
+                    SimplePostStatsTile(
+                      totalComments: post.commentCount,
+                      favCount: post.favoriteCount,
+                      score: post.score,
+                    ),
+                  ],
+                ),
+              ),
+      tagListBuilder: (context, post) =>
+          castOrNull<SzurubooruPost>(post).toOption().fold(
+                () => const SizedBox.shrink(),
+                (post) => TagsTile(
+                  post: post,
+                  tags: createTagGroupItems(post.tagDetails),
+                  initialExpanded: true,
+                  tagColorBuilder: (tag) => tag.category.darkColor,
+                ),
+              ),
+      toolbarBuilder: (context, rawPost) =>
+          castOrNull<SzurubooruPost>(rawPost).toOption().fold(
+                () => SimplePostActionToolbar(post: rawPost),
+                (post) => SzurubooruPostActionToolbar(post: post),
+              ),
+      fileDetailsBuilder: (context, rawPost) => DefaultFileDetailsSection(
+        post: rawPost,
+        uploaderName: castOrNull<SzurubooruPost>(rawPost)?.uploaderName,
+      ),
+    );
+  }
 }
 
 class SzurubooruSearchPage extends ConsumerWidget {

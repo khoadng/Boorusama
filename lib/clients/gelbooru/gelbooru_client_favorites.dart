@@ -1,12 +1,10 @@
-// Dart imports:
-import 'dart:io';
-
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
 import 'package:html/parser.dart';
 
 // Project imports:
+import 'package:boorusama/foundation/http/http.dart';
 import 'types/post_dto.dart';
 
 enum GelbooruFavoriteStatus {
@@ -72,7 +70,7 @@ mixin GelbooruClientFavorites {
   }
 
   Map<String, dynamic> _buildHeaders() => {
-        HttpHeaders.cookieHeader: 'user_id=$userId; pass_hash=$passHash',
+        AppHttpHeaders.cookieHeader: 'user_id=$userId; pass_hash=$passHash',
       };
 
   Future<List<PostFavoriteDto>> getFavorites({

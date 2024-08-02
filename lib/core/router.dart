@@ -16,6 +16,7 @@ import 'package:boorusama/core/blacklists/blacklists.dart';
 import 'package:boorusama/core/comments/comments.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/bulks/bulk_download_provider.dart';
+import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/search/search.dart';
@@ -23,9 +24,9 @@ import 'package:boorusama/core/search_histories/search_histories.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/routes.dart';
@@ -180,43 +181,12 @@ void goToSearchHistoryPage(
     settings: const RouteSettings(
       name: RouterPageConstant.searchHistories,
     ),
-    duration: const Duration(milliseconds: 200),
-    builder: (context) => Scaffold(
-      appBar: AppBar(
-        title: const Text('search.history.history').tr(),
-        actions: [
-          TextButton(
-            onPressed: () => showDialog(
-              context: context,
-              builder: (context) => AlertDialog(
-                content: const Text('Are you sure?').tr(),
-                actions: [
-                  TextButton(
-                    style: TextButton.styleFrom(
-                      foregroundColor: context.colorScheme.onSurface,
-                    ),
-                    onPressed: () => context.navigator.pop(),
-                    child: const Text('generic.action.cancel').tr(),
-                  ),
-                  FilledButton(
-                    onPressed: () {
-                      context.navigator.pop();
-                      onClear();
-                    },
-                    child: const Text('generic.action.ok').tr(),
-                  ),
-                ],
-              ),
-            ),
-            child: const Text('search.history.clear').tr(),
-          ),
-        ],
-      ),
-      body: FullHistoryView(
-        scrollController: ModalScrollController.of(context),
-        onHistoryTap: (value) => onTap(value),
-        onHistoryRemoved: (value) => onRemove(value),
-      ),
+    duration: AppDurations.bottomSheet,
+    builder: (context) => FullHistoryPage(
+      onClear: onClear,
+      onRemove: onRemove,
+      onTap: onTap,
+      scrollController: ModalScrollController.of(context),
     ),
   );
 }
@@ -227,12 +197,10 @@ Future<bool?> goToShowTaglistPage(
 ) {
   final globalNotifier = ref.read(globalBlacklistedTagsProvider.notifier);
   final favoriteNotifier = ref.read(favoriteTagsProvider.notifier);
-
-  return showMaterialModalBottomSheet<bool>(
-    context: navigatorKey.currentContext ?? ref.context,
-    duration: const Duration(milliseconds: 200),
+  return showAdaptiveSheet(
+    navigatorKey.currentContext ?? ref.context,
     expand: true,
-    builder: (dialogContext) => ShowTagListPage(
+    builder: (context) => ShowTagListPage(
       tags: tags,
       onAddToGlobalBlacklist: (tag) {
         globalNotifier.addTagWithToast(

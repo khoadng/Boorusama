@@ -16,7 +16,7 @@ import 'package:boorusama/foundation/android.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/picker.dart';
 import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -72,62 +72,7 @@ class _DownloadTagSelectionViewState
                     .copyWith(fontWeight: FontWeight.w900),
               ).tr(),
             ),
-            Padding(
-              padding: const EdgeInsets.only(
-                top: 18,
-                left: 16,
-                right: 16,
-              ),
-              child: Builder(
-                builder: (context) {
-                  final selectedTags =
-                      ref.watch(bulkDownloadSelectedTagsProvider);
-
-                  return Wrap(
-                    spacing: 5,
-                    children: [
-                      ...selectedTags.map((e) => Chip(
-                            backgroundColor: context
-                                .theme.colorScheme.surfaceContainerHighest,
-                            label: Text(e.replaceUnderscoreWithSpace()),
-                            deleteIcon: Icon(
-                              Symbols.close,
-                              size: 16,
-                              color: context.theme.colorScheme.error,
-                            ),
-                            onDeleted: () => ref
-                                .read(bulkDownloadSelectedTagsProvider.notifier)
-                                .removeTag(e),
-                          )),
-                      IconButton(
-                        iconSize: 28,
-                        splashRadius: 20,
-                        onPressed: () {
-                          goToQuickSearchPage(
-                            context,
-                            ref: ref,
-                            onSubmitted: (context, text) {
-                              context.navigator.pop();
-                              ref
-                                  .read(
-                                      bulkDownloadSelectedTagsProvider.notifier)
-                                  .addTag(text);
-                            },
-                            onSelected: (tag) {
-                              ref
-                                  .read(
-                                      bulkDownloadSelectedTagsProvider.notifier)
-                                  .addTag(tag.value);
-                            },
-                          );
-                        },
-                        icon: const Icon(Symbols.add),
-                      ),
-                    ],
-                  );
-                },
-              ),
-            ),
+            _buildTagList(),
             const Divider(
               thickness: 2,
               endIndent: 16,
@@ -144,50 +89,7 @@ class _DownloadTagSelectionViewState
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 8,
-              ),
-              child: Builder(
-                builder: (context) {
-                  final options = ref.watch(bulkDownloadOptionsProvider);
-
-                  return Material(
-                    child: Ink(
-                      decoration: BoxDecoration(
-                        color: context.colorScheme.surfaceContainerHighest,
-                        border: Border.fromBorderSide(
-                          BorderSide(color: context.theme.hintColor),
-                        ),
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(4)),
-                      ),
-                      child: ListTile(
-                        visualDensity: VisualDensity.compact,
-                        minVerticalPadding: 0,
-                        onTap: () => _pickFolder(context, options),
-                        title: options.storagePath.isNotEmpty
-                            ? Text(
-                                options.storagePath,
-                                overflow: TextOverflow.fade,
-                              )
-                            : Text(
-                                'download.bulk_download_select_a_folder'.tr(),
-                                overflow: TextOverflow.fade,
-                                style: context.theme.textTheme.titleMedium!
-                                    .copyWith(color: context.theme.hintColor),
-                              ),
-                        trailing: IconButton(
-                          onPressed: () => _pickFolder(context, options),
-                          icon: const Icon(Symbols.folder),
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
+            _buildPathSelector(),
             if (isAndroid())
               Builder(
                 builder: (context) {
@@ -213,29 +115,151 @@ class _DownloadTagSelectionViewState
                       : const SizedBox.shrink();
                 },
               ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Builder(
-                builder: (context) {
-                  final allowDownloadd =
-                      ref.watch(isValidToStartDownloadProvider);
-                  final selectedTags =
-                      ref.watch(bulkDownloadSelectedTagsProvider);
-
-                  return FilledButton(
-                    onPressed: allowDownloadd
-                        ? () => ref
-                            .read(
-                                bulkDownloaderManagerProvider(config).notifier)
-                            .download(tags: selectedTags.join(' '))
-                        : null,
-                    child: const Text('download.download').tr(),
-                  );
-                },
-              ),
-            ),
+            // _buildIgnoreBlacklist(),
+            _buildDownloadButton(config),
           ],
         ),
+      ),
+    );
+  }
+
+  // Widget _buildIgnoreBlacklist() {
+  //   final options = ref.watch(bulkDownloadOptionsProvider);
+
+  //   return ListTile(
+  //     title: const Text("Ignore images you've blacklisted"),
+  //     trailing: Switch(
+  //       value: options.ignoreBlacklistedTags,
+  //       onChanged: (value) {
+  //         ref.read(bulkDownloadOptionsProvider.notifier).state =
+  //             options.copyWith(ignoreBlacklistedTags: value);
+  //       },
+  //     ),
+  //   );
+  // }
+
+  Widget _buildDownloadButton(BooruConfig config) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16,
+        vertical: 8,
+      ),
+      child: Builder(
+        builder: (context) {
+          final allowDownloadd = ref.watch(isValidToStartDownloadProvider);
+          final selectedTags = ref.watch(bulkDownloadSelectedTagsProvider);
+
+          return FilledButton(
+            onPressed: allowDownloadd
+                ? () => ref
+                    .read(bulkDownloaderManagerProvider(config).notifier)
+                    .download(tags: selectedTags.join(' '))
+                : null,
+            child: const Text('download.download').tr(),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildPathSelector() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16,
+        vertical: 8,
+      ),
+      child: Builder(
+        builder: (context) {
+          final options = ref.watch(bulkDownloadOptionsProvider);
+
+          return Material(
+            child: Ink(
+              decoration: BoxDecoration(
+                color: context.colorScheme.surfaceContainerHighest,
+                border: Border.fromBorderSide(
+                  BorderSide(color: context.theme.hintColor),
+                ),
+                borderRadius: const BorderRadius.all(Radius.circular(4)),
+              ),
+              child: ListTile(
+                visualDensity: VisualDensity.compact,
+                minVerticalPadding: 0,
+                onTap: () => _pickFolder(context, options),
+                title: options.storagePath.isNotEmpty
+                    ? Text(
+                        options.storagePath,
+                        overflow: TextOverflow.fade,
+                      )
+                    : Text(
+                        'download.bulk_download_select_a_folder'.tr(),
+                        overflow: TextOverflow.fade,
+                        style: context.theme.textTheme.titleMedium!
+                            .copyWith(color: context.theme.hintColor),
+                      ),
+                trailing: IconButton(
+                  onPressed: () => _pickFolder(context, options),
+                  icon: const Icon(Symbols.folder),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildTagList() {
+    return Padding(
+      padding: const EdgeInsets.only(
+        top: 18,
+        left: 16,
+        right: 16,
+      ),
+      child: Builder(
+        builder: (context) {
+          final selectedTags = ref.watch(bulkDownloadSelectedTagsProvider);
+
+          return Wrap(
+            spacing: 5,
+            children: [
+              ...selectedTags.map((e) => Chip(
+                    backgroundColor:
+                        context.theme.colorScheme.surfaceContainerHighest,
+                    label: Text(e.replaceUnderscoreWithSpace()),
+                    deleteIcon: Icon(
+                      Symbols.close,
+                      size: 16,
+                      color: context.theme.colorScheme.error,
+                    ),
+                    onDeleted: () => ref
+                        .read(bulkDownloadSelectedTagsProvider.notifier)
+                        .removeTag(e),
+                  )),
+              IconButton(
+                iconSize: 28,
+                splashRadius: 20,
+                onPressed: () {
+                  goToQuickSearchPage(
+                    context,
+                    ref: ref,
+                    onSubmitted: (context, text) {
+                      context.navigator.pop();
+                      ref
+                          .read(bulkDownloadSelectedTagsProvider.notifier)
+                          .addTag(text);
+                    },
+                    onSelected: (tag) {
+                      ref
+                          .read(bulkDownloadSelectedTagsProvider.notifier)
+                          .addTag(tag.value);
+                    },
+                  );
+                },
+                icon: const Icon(Symbols.add),
+              ),
+            ],
+          );
+        },
       ),
     );
   }

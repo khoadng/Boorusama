@@ -6,13 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
-import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/pages/comment_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/danbooru_character_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/danbooru_post_statistics_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/danbooru_search_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/latest_posts_view.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/configs.dart';
@@ -22,18 +15,24 @@ import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/dart.dart';
+import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/functional.dart';
+import 'artists/danbooru_artist_page.dart';
+import 'comments/comments.dart';
 import 'configs/create_danbooru_config_page.dart';
-import 'pages/danbooru_artist_page.dart';
-import 'pages/danbooru_home_page.dart';
-import 'pages/danbooru_post_details_desktop_page.dart';
-import 'pages/danbooru_post_details_page.dart';
-import 'pages/favorites_page.dart';
+import 'favorites/favorites.dart';
+import 'home/danbooru_home_page.dart';
+import 'post_votes/post_votes.dart';
+import 'posts/posts.dart';
+import 'reports/reports.dart';
+import 'search/search.dart';
+import 'tags/tags.dart';
 
 const kDanbooruSafeUrl = 'https://safebooru.donmai.us/';
 
@@ -95,6 +94,7 @@ class DanbooruBuilder
     required this.favoriteRepo,
     required this.postCountRepo,
     required this.noteRepo,
+    required this.tagInfo,
   });
 
   final PostRepository<DanbooruPost> postRepo;
@@ -102,6 +102,7 @@ class DanbooruBuilder
   final FavoritePostRepository favoriteRepo;
   final PostCountRepository postCountRepo;
   final NoteRepository noteRepo;
+  final TagInfo tagInfo;
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
@@ -209,9 +210,9 @@ class DanbooruBuilder
 
   @override
   GridThumbnailUrlBuilder get gridThumbnailUrlBuilder =>
-      (settings, post) => castOrNull<DanbooruPost>(post).toOption().fold(
+      (imageQuality, post) => castOrNull<DanbooruPost>(post).toOption().fold(
             () => post.thumbnailImageUrl,
-            (post) => post.thumbnailFromSettings(settings),
+            (post) => post.thumbnailFromImageQuality(imageQuality),
           );
 
   @override
@@ -281,32 +282,34 @@ class DanbooruBuilder
   );
 
   @override
-  PostImageDetailsUrlBuilder get postImageDetailsUrlBuilder => (settings,
-          rawPost, config) =>
-      castOrNull<DanbooruPost>(rawPost).toOption().fold(
-            () => rawPost.sampleImageUrl,
-            (post) => post.isGif
-                ? post.sampleImageUrl
-                : config.imageDetaisQuality.toOption().fold(
-                    () => switch (settings.imageQuality) {
-                          ImageQuality.highest ||
-                          ImageQuality.original =>
-                            post.sampleImageUrl,
-                          _ => post.url720x720,
-                        },
-                    (quality) => switch (mapStringToPostQualityType(quality)) {
-                          PostQualityType.v180x180 => post.url180x180,
-                          PostQualityType.v360x360 => post.url360x360,
-                          PostQualityType.v720x720 => post.url720x720,
-                          PostQualityType.sample => post.isVideo
-                              ? post.url720x720
-                              : post.sampleImageUrl,
-                          PostQualityType.original => post.isVideo
-                              ? post.url720x720
-                              : post.originalImageUrl,
-                          null => post.url720x720,
-                        }),
-          );
+  PostImageDetailsUrlBuilder get postImageDetailsUrlBuilder =>
+      (imageQuality, rawPost, config) =>
+          castOrNull<DanbooruPost>(rawPost).toOption().fold(
+                () => rawPost.sampleImageUrl,
+                (post) => post.isGif
+                    ? post.sampleImageUrl
+                    : config.imageDetaisQuality.toOption().fold(
+                          () => switch (imageQuality) {
+                            ImageQuality.highest ||
+                            ImageQuality.original =>
+                              post.sampleImageUrl,
+                            _ => post.url720x720,
+                          },
+                          (quality) =>
+                              switch (mapStringToPostQualityType(quality)) {
+                            PostQualityType.v180x180 => post.url180x180,
+                            PostQualityType.v360x360 => post.url360x360,
+                            PostQualityType.v720x720 => post.url720x720,
+                            PostQualityType.sample => post.isVideo
+                                ? post.url720x720
+                                : post.sampleImageUrl,
+                            PostQualityType.original => post.isVideo
+                                ? post.url720x720
+                                : post.originalImageUrl,
+                            null => post.url720x720,
+                          },
+                        ),
+              );
 
   @override
   PostStatisticsPageBuilder get postStatisticsPageBuilder => (context, posts) {
@@ -344,6 +347,11 @@ class DanbooruBuilder
           ),
         );
       };
+
+  @override
+  late final MetatagExtractor metatagExtractor = MetatagExtractor(
+    metatags: tagInfo.metatags,
+  );
 }
 
 bool handleDanbooruGestureAction(
@@ -447,7 +455,7 @@ extension DanbooruX on WidgetRef {
     showSuccessToast(
       message,
       backgroundColor: backgroundColor,
-      duration: const Duration(seconds: 1, milliseconds: 500),
+      duration: AppDurations.shortToast,
     );
   }
 
@@ -458,7 +466,7 @@ extension DanbooruX on WidgetRef {
         content: const Text(
           'post.detail.login_required_notice',
         ).tr(),
-        duration: const Duration(seconds: 1),
+        duration: AppDurations.shortToast,
       );
 
       return;

@@ -2,11 +2,9 @@
 import 'dart:convert';
 import 'dart:io';
 
-// Package imports:
-import 'package:path_provider/path_provider.dart';
-
 // Project imports:
 import 'package:boorusama/clients/moebooru/types/types.dart';
+import 'package:boorusama/foundation/path.dart';
 
 class TagSummaryRepositoryFile {
   TagSummaryRepositoryFile(this.path);
@@ -18,7 +16,7 @@ class TagSummaryRepositoryFile {
     if (_cache != null) return _cache;
 
     try {
-      final directory = await getTemporaryDirectory();
+      final directory = await getAppTemporaryDirectory();
       final file = File('${directory.path}/$path');
 
       if (file.existsSync()) {
@@ -43,7 +41,7 @@ class TagSummaryRepositoryFile {
 
   Future<void> saveTagSummaries(TagSummaryDto tagSummaryDto) async {
     try {
-      final directory = await getTemporaryDirectory();
+      final directory = await getAppTemporaryDirectory();
       final file = File('${directory.path}/$path');
       await file.writeAsString(json.encode(tagSummaryDto.toJson()));
       _cache = null;

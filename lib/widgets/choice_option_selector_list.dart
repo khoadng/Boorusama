@@ -8,7 +8,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 sealed class OptionSelectorItem {
@@ -154,7 +154,7 @@ class _ChoiceOptionSelectorListState<T>
                     final items = options.whereType<OptionType<T>>().toList();
                     showBarModalBottomSheet(
                         context: context,
-                        duration: const Duration(milliseconds: 200),
+                        duration: const Duration(milliseconds: 300),
                         builder: (context) => OptionSearchableSheet(
                               title: widget.sheetTitle,
                               items: items,

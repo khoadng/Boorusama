@@ -176,15 +176,12 @@ extension PostImageX on Post {
 }
 
 extension PostX on Post {
-  List<Tag> extractTags() {
-    final tags = <Tag>[];
-
-    for (final t in this.tags) {
-      tags.add(Tag(name: t, category: TagCategory.general, postCount: 0));
-    }
-
-    return tags;
-  }
+  List<Tag> extractTags() => tags
+      .map((e) => Tag.noCount(
+            name: e,
+            category: TagCategory.general(),
+          ))
+      .toList();
 
   TagFilterData extractTagFilterData() => TagFilterData(
         tags: tags,

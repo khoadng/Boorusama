@@ -9,6 +9,7 @@ import 'package:rich_text_controller/rich_text_controller.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
@@ -16,7 +17,8 @@ import 'package:boorusama/core/scaffolds/infinite_post_list_scaffold.dart';
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/search_histories/search_histories.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/display.dart';
+import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
 
 class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
@@ -60,8 +62,8 @@ class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
 class _SearchPageScaffoldState<T extends Post>
     extends ConsumerState<SearchPageScaffold<T>> {
   var selectedTagString = ValueNotifier('');
-  late final selectedTagController = SelectedTagController(
-    tagInfo: ref.read(tagInfoProvider),
+  late final selectedTagController = SelectedTagController.fromBooruBuilder(
+    builder: ref.readBooruBuilder(ref.readConfig),
   );
   final _scrollController = AutoScrollController();
   final _didSearchOnce = ValueNotifier(false);
@@ -210,6 +212,10 @@ class _SearchPageScaffoldState<T extends Post>
               onTagTap: (value) {
                 searchController.tapTag(value);
               },
+              onRawTagTap: (value) => selectedTagController.addTag(
+                value,
+                isRaw: true,
+              ),
               metatagsBuilder: widget.metatagsBuilder != null
                   ? (context) => widget.metatagsBuilder!(
                         context,
@@ -267,31 +273,41 @@ class _SearchPageScaffoldState<T extends Post>
                 ),
               ),
               trailingSearchButton: IconButton(
-                onPressed: () => showBarModalBottomSheet(
+                onPressed: () => showAppModalBarBottomSheet(
                   context: context,
                   builder: (context) => Scaffold(
                     body: SafeArea(
-                      child: SearchLandingView(
-                        scrollController: ModalScrollController.of(context),
-                        onHistoryCleared: () => ref
-                            .read(searchHistoryProvider.notifier)
-                            .clearHistories(),
-                        onHistoryRemoved: (value) => ref
-                            .read(searchHistoryProvider.notifier)
-                            .removeHistory(value.query),
-                        onHistoryTap: (value) {
-                          searchController.tapHistoryTag(value);
-                          context.pop();
-                        },
-                        onTagTap: (value) {
-                          searchController.tapTag(value);
-                          context.pop();
-                        },
+                      child: Container(
+                        padding: const EdgeInsets.only(top: 8),
+                        child: SearchLandingView(
+                          scrollController: ModalScrollController.of(context),
+                          onHistoryCleared: () => ref
+                              .read(searchHistoryProvider.notifier)
+                              .clearHistories(),
+                          onHistoryRemoved: (value) => ref
+                              .read(searchHistoryProvider.notifier)
+                              .removeHistory(value.query),
+                          onHistoryTap: (value) {
+                            searchController.tapHistoryTag(value);
+                            context.pop();
+                          },
+                          onTagTap: (value) {
+                            searchController.tapTag(value);
+                            context.pop();
+                          },
+                          onRawTagTap: (value) {
+                            selectedTagController.addTag(
+                              value,
+                              isRaw: true,
+                            );
+                            context.pop();
+                          },
+                        ),
                       ),
                     ),
                   ),
                 ),
-                icon: const Icon(Symbols.sort),
+                icon: const Icon(Symbols.add),
               ),
             ),
           ),

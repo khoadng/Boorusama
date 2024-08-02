@@ -6,7 +6,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 
 class OptionTagsArena extends StatefulWidget {
   const OptionTagsArena({
@@ -65,6 +65,8 @@ class _OptionTagsArenaState extends State<OptionTagsArena> {
                 FilledButton(
                   style: FilledButton.styleFrom(
                     visualDensity: VisualDensity.compact,
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    minimumSize: const Size(32, 32),
                     shape: const CircleBorder(),
                     backgroundColor: editMode
                         ? context.colorScheme.primary

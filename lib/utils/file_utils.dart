@@ -1,8 +1,8 @@
 // Dart imports:
 import 'dart:io';
 
-// Package imports:
-import 'package:path_provider/path_provider.dart';
+// Project imports:
+import 'package:boorusama/foundation/path.dart';
 
 class DirectorySizeInfo {
   final int size;
@@ -48,7 +48,7 @@ Future<DirectorySizeInfo> getDirectorySize(Directory dir) async {
 }
 
 Future<DirectorySizeInfo> getCacheSize() async {
-  final cacheDir = await getTemporaryDirectory();
+  final cacheDir = await getAppTemporaryDirectory();
   return getDirectorySize(cacheDir);
 }
 
@@ -59,7 +59,7 @@ Future<DirectorySizeInfo> getImageCacheSize() async {
 }
 
 Future<void> clearCache() async {
-  final cacheDir = await getTemporaryDirectory();
+  final cacheDir = await getAppTemporaryDirectory();
 
   if (cacheDir.existsSync()) {
     cacheDir.deleteSync(recursive: true);

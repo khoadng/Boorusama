@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 
 typedef ChipColors = ({
   Color foregroundColor,
@@ -76,4 +76,31 @@ Color generateRandomColor() {
   final g = _random.nextInt(255);
   final b = _random.nextInt(255);
   return Color.fromRGBO(r, g, b, 1);
+}
+
+Color? hexToColor(final String? hexString) {
+  var hex = hexString?.trim();
+
+  if (hex == null || hex.isEmpty) return null;
+
+  // Check if the input is a named color
+  final namedColor = namedColors[hex.toLowerCase()];
+  if (namedColor != null) return namedColor;
+
+  // Remove the leading '#' if it exists
+  hex = hex.replaceAll('#', '');
+
+  // If the string is too short, return null
+  if (hex.length != 6 && hex.length != 8) return null;
+
+  // If the hex string is in the format of 'RRGGBB', assume it is fully opaque
+  if (hex.length == 6) {
+    hex = 'FF$hex';
+  }
+
+  final hexValue = int.tryParse(hex, radix: 16);
+
+  if (hexValue == null) return null;
+
+  return Color(hexValue);
 }

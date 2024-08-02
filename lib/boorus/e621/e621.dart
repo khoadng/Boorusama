@@ -6,9 +6,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/e621/feats/favorites/favorites.dart';
-import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
-import 'package:boorusama/boorus/e621/feats/tags/e621_tag_category.dart';
+import 'package:boorusama/boorus/e621/artists/artists.dart';
+import 'package:boorusama/boorus/e621/configs/configs.dart';
+import 'package:boorusama/boorus/e621/favorites/favorites.dart';
+import 'package:boorusama/boorus/e621/home/home.dart';
+import 'package:boorusama/boorus/e621/posts/posts.dart';
+import 'package:boorusama/boorus/e621/tags/tags.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/e621/e621_client.dart';
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
@@ -19,13 +22,6 @@ import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/comment_page_scaffold.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
-import 'pages/create_e621_config_page.dart';
-import 'pages/e621_artist_page.dart';
-import 'pages/e621_favorites_page.dart';
-import 'pages/e621_home_page.dart';
-import 'pages/e621_post_details_desktop_page.dart';
-import 'pages/e621_post_details_page.dart';
-import 'pages/e621_search_page.dart';
 
 final e621ClientProvider =
     Provider.family<E621Client, BooruConfig>((ref, booruConfig) {
@@ -112,6 +108,7 @@ class E621Builder
         CharacterNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
         LegacyGranularRatingQueryBuilderMixin,
+        UnknownMetatagsMixin,
         DefaultThumbnailUrlMixin,
         DefaultPostGesturesHandlerMixin,
         DefaultPostStatisticsPageBuilderMixin,

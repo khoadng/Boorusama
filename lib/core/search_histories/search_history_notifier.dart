@@ -97,6 +97,16 @@ class SearchHistoryNotifier extends AsyncNotifier<SearchHistoryState> {
       filteredHistories: _sortByDateDesc(filteredHistories),
     ));
   }
+
+  void resetFilter() {
+    final query = state.value?.currentQuery ?? '';
+
+    if (query.isEmpty) return;
+
+    state = const AsyncLoading();
+
+    filterHistories('');
+  }
 }
 
 List<SearchHistory> _sortByDateDesc(List<SearchHistory> hist) {

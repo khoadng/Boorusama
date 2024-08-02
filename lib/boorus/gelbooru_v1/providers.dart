@@ -5,7 +5,7 @@ final gelbooruV1PostRepoProvider = Provider.family<PostRepository, BooruConfig>(
     final client = ref.watch(gelbooruV1ClientProvider(config));
 
     return PostRepositoryBuilder(
-      getSettings: () async => ref.read(settingsProvider),
+      getSettings: () async => ref.read(imageListingSettingsProvider),
       fetch: (tags, page, {limit}) async {
         final posts = await client.getPosts(
           tags: tags,
@@ -42,7 +42,8 @@ final gelbooruV1PostRepoProvider = Provider.family<PostRepository, BooruConfig>(
                     search: tags.join(' '),
                   ),
                 ))
-            .toList();
+            .toList()
+            .toResult();
       },
     );
   },

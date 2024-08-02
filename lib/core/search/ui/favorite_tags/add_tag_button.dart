@@ -17,6 +17,7 @@ class AddTagButton extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.only(top: 4, left: 4),
       child: Material(
+        color: Colors.transparent,
         child: InkWell(
           customBorder: const CircleBorder(),
           onTap: onPressed,

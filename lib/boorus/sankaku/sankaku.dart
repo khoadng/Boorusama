@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
@@ -18,7 +19,6 @@ import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/artist_page_scaffold.dart';
-import 'package:boorusama/core/scaffolds/post_details_page_scaffold.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
@@ -35,6 +35,7 @@ class SankakuBuilder
         CharacterNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
         NoGranularRatingQueryBuilderMixin,
+        UnknownMetatagsMixin,
         DefaultHomeMixin,
         DefaultTagColorMixin,
         DefaultPostImageDetailsUrlMixin,
@@ -99,54 +100,10 @@ class SankakuBuilder
         final initialIndex = payload.initialIndex;
         final scrollController = payload.scrollController;
 
-        return BooruProvider(
-          builder: (booruBuilder, ref) => PostDetailsPageScaffold(
-            posts: posts,
-            initialIndex: initialIndex,
-            swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
-            infoBuilder: (context, post) => SimpleInformationSection(
-              post: post,
-              showSource: true,
-            ),
-            parts: kDefaultPostDetailsNoSourceParts,
-            sliverArtistPostsBuilder: (context, post) =>
-                post.artistTags.isNotEmpty
-                    ? post.artistTags
-                        .map((tag) => ArtistPostList2(
-                              tag: tag,
-                              builder: (tag) => ref
-                                  .watch(sankakuArtistPostsProvider(
-                                      post.artistTags.firstOrNull))
-                                  .maybeWhen(
-                                    data: (data) => SliverPreviewPostGrid(
-                                      posts: data,
-                                      onTap: (postIdx) => goToPostDetailsPage(
-                                        context: context,
-                                        posts: data,
-                                        initialIndex: postIdx,
-                                      ),
-                                      imageUrl: (item) => item.sampleImageUrl,
-                                    ),
-                                    orElse: () =>
-                                        const SliverPreviewPostGridPlaceholder(
-                                      itemCount: 30,
-                                    ),
-                                  ),
-                            ))
-                        .toList()
-                    : [],
-            tagListBuilder: (context, post) => TagsTile(
-              post: post,
-              initialExpanded: true,
-              tags: createTagGroupItems([
-                ...post.artistDetailsTags,
-                ...post.characterDetailsTags,
-                ...post.copyrightDetailsTags,
-              ]),
-              onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
-            ),
-            onExit: (page) => scrollController?.scrollToIndex(page),
-          ),
+        return SankakuPostDetailsPage(
+          posts: posts,
+          initialIndex: initialIndex,
+          scrollController: scrollController,
         );
       };
 
@@ -191,6 +148,68 @@ class SankakuBuilder
       'source': (post, config) => sanitizedUrl(config.downloadUrl),
     },
   );
+}
+
+class SankakuPostDetailsPage extends ConsumerWidget {
+  const SankakuPostDetailsPage({
+    super.key,
+    required this.posts,
+    required this.initialIndex,
+    required this.scrollController,
+  });
+
+  final List<SankakuPost> posts;
+  final int initialIndex;
+  final AutoScrollController? scrollController;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return PostDetailsPageScaffold(
+      posts: posts,
+      initialIndex: initialIndex,
+      swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
+      infoBuilder: (context, post) => SimpleInformationSection(
+        post: post,
+        showSource: true,
+      ),
+      parts: kDefaultPostDetailsNoSourceParts,
+      sliverArtistPostsBuilder: (context, post) => post.artistTags.isNotEmpty
+          ? post.artistTags
+              .map((tag) => ArtistPostList2(
+                    tag: tag,
+                    builder: (tag) => ref
+                        .watch(sankakuArtistPostsProvider(
+                            post.artistTags.firstOrNull))
+                        .maybeWhen(
+                          data: (data) => SliverPreviewPostGrid(
+                            posts: data,
+                            onTap: (postIdx) => goToPostDetailsPage(
+                              context: context,
+                              posts: data,
+                              initialIndex: postIdx,
+                            ),
+                            imageUrl: (item) => item.sampleImageUrl,
+                          ),
+                          orElse: () => const SliverPreviewPostGridPlaceholder(
+                            itemCount: 30,
+                          ),
+                        ),
+                  ))
+              .toList()
+          : [],
+      tagListBuilder: (context, post) => TagsTile(
+        post: post,
+        initialExpanded: true,
+        tags: createTagGroupItems([
+          ...post.artistDetailsTags,
+          ...post.characterDetailsTags,
+          ...post.copyrightDetailsTags,
+        ]),
+        onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
+      ),
+      onExit: (page) => scrollController?.scrollToIndex(page),
+    );
+  }
 }
 
 class SankakuArtistPage extends ConsumerWidget {

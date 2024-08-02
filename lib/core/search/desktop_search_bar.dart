@@ -16,7 +16,7 @@ import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/search_histories/search_histories.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 
 class DesktopSearchbar extends ConsumerStatefulWidget {
   const DesktopSearchbar({
@@ -111,8 +111,9 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
   Widget _buildOverlay() {
     return Container(
       constraints: BoxConstraints(
-          maxWidth: min(context.screenWidth * 0.8, 500),
-          maxHeight: min(context.screenHeight * 0.8, 400)),
+        maxWidth: min(context.screenWidth * 0.8, 500),
+        maxHeight: min(context.screenHeight * 0.8, 400),
+      ),
       child: ValueListenableBuilder(
         valueListenable: textEditingController,
         builder: (context, query, child) {
@@ -123,7 +124,8 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
               query.text.isNotEmpty
                   ? TagSuggestionItems(
                       dense: true,
-                      backgroundColor: Theme.of(context).colorScheme.surface,
+                      backgroundColor:
+                          context.colorScheme.surfaceContainerHighest,
                       tags: suggestionTags,
                       currentQuery: query.text,
                       onItemTap: (tag) {
@@ -139,11 +141,18 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                       textColorBuilder: (tag) =>
                           generateAutocompleteTagColor(ref, context, tag),
                     )
-                  : Material(
-                      elevation: 4,
-                      borderRadius: const BorderRadius.all(Radius.circular(8)),
+                  : Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        color: context.colorScheme.surfaceContainerHighest,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                       child: SearchLandingView(
-                        backgroundColor: context.colorScheme.surface,
+                        backgroundColor:
+                            context.colorScheme.surfaceContainerHighest,
                         onHistoryCleared: () => ref
                             .read(searchHistoryProvider.notifier)
                             .clearHistories(),
@@ -158,8 +167,12 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                           );
                           FocusScope.of(context).unfocus();
                         },
+                        onRawTagTap: (value) => selectedTagController.addTag(
+                          value,
+                          isRaw: true,
+                        ),
                         onHistoryTap: (value) {
-                          selectedTagController.addTags(value.split(' '));
+                          selectedTagController.addTag(value, isRaw: true);
                           FocusScope.of(context).unfocus();
                         },
                         metatagsBuilder: (context) => DanbooruMetatagsSection(

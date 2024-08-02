@@ -15,15 +15,15 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/core/downloads/background_downloader.dart';
 import 'package:boorusama/core/downloads/bulks/bulk_download_page.dart';
+import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
-import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/biometrics/app_lock.dart';
 import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'boorus/entry_page.dart';
@@ -484,9 +484,7 @@ class Routes {
             key: state.pageKey,
             name: state.name,
             transitionsBuilder: fadeTransitionBuilder(),
-            child: OriginalImagePage(
-              post: post,
-            ),
+            child: OriginalImagePage.post(post),
           );
         },
       );

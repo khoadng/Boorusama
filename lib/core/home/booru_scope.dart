@@ -17,13 +17,13 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/core/downloads/bulks/bulk_download_page.dart';
 import 'package:boorusama/core/downloads/download_manager_page.dart';
+import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
 import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/settings/settings.dart';
-import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/utils/flutter_utils.dart';
 import 'package:boorusama/widgets/lazy_indexed_stack.dart';
@@ -71,17 +71,20 @@ class _BooruScopeState extends ConsumerState<BooruScope> {
 
   @override
   Widget build(BuildContext context) {
-    return CustomContextMenuOverlay(
-      child: kPreferredLayout.isMobile
-          ? OrientationBuilder(
-              builder: (context, orientation) => orientation.isPortrait
-                  ? _buildMobile()
-                  : _buildDesktop(
-                      resizable: true,
-                      grooveDivider: true,
-                    ),
-            )
-          : _buildDesktop(resizable: true),
+    return HomePageSidebarKeyboardListener(
+      controller: controller,
+      child: CustomContextMenuOverlay(
+        child: kPreferredLayout.isMobile
+            ? OrientationBuilder(
+                builder: (context, orientation) => orientation.isPortrait
+                    ? _buildMobile()
+                    : _buildDesktop(
+                        resizable: true,
+                        grooveDivider: true,
+                      ),
+              )
+            : _buildDesktop(resizable: true),
+      ),
     );
   }
 
@@ -176,6 +179,16 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
     );
 
     menuWidth.addListener(saveWidthToCache);
+
+    widget.controller.addHandler(_onSidebarStateChanged);
+  }
+
+  void _onSidebarStateChanged(open) {
+    if (open) {
+      _setDefaultSplit();
+    } else {
+      _setMinSplit();
+    }
   }
 
   void saveWidthToCache() {
@@ -191,6 +204,7 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
     menuWidth.removeListener(saveWidthToCache);
     splitController.dispose();
     menuWidth.dispose();
+    widget.controller.removeHandler(_onSidebarStateChanged);
     super.dispose();
   }
 
@@ -390,19 +404,19 @@ class BooruMobileScope extends ConsumerWidget {
         resizeToAvoidBottomInset: false,
         drawerEdgeDragWidth: _calculateDrawerEdgeDragWidth(context, swipeArea),
         key: controller.scaffoldKey,
-        bottomNavigationBar: booruConfigSelectorPosition ==
-                BooruConfigSelectorPosition.bottom
-            ? Container(
-                color: Colors.transparent,
-                margin: EdgeInsets.only(
-                  bottom: MediaQuery.paddingOf(context).bottom,
-                ),
-                height: kBottomNavigationBarHeight + (hideLabel ? -4 : 0) + 16,
-                child: const BooruSelector(
-                  direction: Axis.horizontal,
-                ),
-              )
-            : null,
+        bottomNavigationBar:
+            booruConfigSelectorPosition == BooruConfigSelectorPosition.bottom
+                ? Container(
+                    color: Colors.transparent,
+                    margin: EdgeInsets.only(
+                      bottom: MediaQuery.paddingOf(context).bottom,
+                    ),
+                    height: (kBottomNavigationBarHeight - (hideLabel ? 4 : -8)),
+                    child: const BooruSelector(
+                      direction: Axis.horizontal,
+                    ),
+                  )
+                : null,
         drawer: SideBarMenu(
           width: 300,
           popOnSelect: true,

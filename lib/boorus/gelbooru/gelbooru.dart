@@ -67,7 +67,7 @@ final gelbooruTagRepoProvider = Provider.family<TagRepository, BooruConfig>(
         return data
             .map((e) => Tag(
                   name: e.name ?? '',
-                  category: intToTagCategory(e.type ?? 0),
+                  category: TagCategory.fromLegacyId(e.type),
                   postCount: e.count ?? 0,
                 ))
             .toList();
@@ -90,7 +90,7 @@ final gelbooruAutocompleteRepoProvider =
               return AutocompleteData(
                 type: e.type,
                 label: e.label?.replaceAll('_', ' ') ?? '<empty>',
-                value: e.value!,
+                value: _extractAutocompleteTag(e),
                 category: e.category?.toString(),
                 postCount: e.postCount,
               );
@@ -105,6 +105,18 @@ final gelbooruAutocompleteRepoProvider =
         '${Uri.encodeComponent(config.url)}_autocomplete_cache_v1',
   );
 });
+
+String _extractAutocompleteTag(AutocompleteDto dto) {
+  final label = dto.label;
+  final value = dto.value;
+
+  // if label start with '{' use it as value, this is used for OR tags
+  if (label != null && label.startsWith('{')) {
+    return label.replaceAll(' ', '_');
+  }
+
+  return value ?? label ?? '';
+}
 
 final gelbooruNoteRepoProvider =
     Provider.family<NoteRepository, BooruConfig>((ref, config) {
@@ -133,6 +145,7 @@ Note gelbooruNoteToNote(NoteDto note) {
 
 class GelbooruBuilder
     with
+        UnknownMetatagsMixin,
         DefaultThumbnailUrlMixin,
         DefaultThumbnailUrlMixin,
         DefaultPostImageDetailsUrlMixin,

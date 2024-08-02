@@ -33,7 +33,7 @@ class _MoebooruPopularPageState
   Widget build(BuildContext context) {
     return PostScope(
       fetcher: (page) => page > 1
-          ? TaskEither.of(<Post>[])
+          ? TaskEither.of(<Post>[].toResult())
           : repo.getPopularPostsRecent(selectedPeriod.value),
       builder: (context, controller, errors) => Column(
         children: [

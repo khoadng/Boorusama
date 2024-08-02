@@ -5,12 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
+import 'booru_config_listing_view.dart';
 
 const kDefaultPreviewImageButtonAction = {
   '',
@@ -65,6 +67,10 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
 
     final tabMap = {
       if (authTab != null) 'booru.authentication': authTab!,
+      if (kCustomListingFeatureEnabled)
+        'Listing': BooruConfigListingView(
+          config: config,
+        ),
       if (hasDownloadTab)
         'booru.download': BooruConfigDownloadView(config: config),
       if (tabsBuilder != null) ...tabsBuilder!(context),

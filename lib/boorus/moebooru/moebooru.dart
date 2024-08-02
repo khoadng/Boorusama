@@ -44,6 +44,7 @@ class MoebooruBuilder
         NoteNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
         LegacyGranularRatingQueryBuilderMixin,
+        UnknownMetatagsMixin,
         DefaultThumbnailUrlMixin,
         DefaultTagColorMixin,
         DefaultPostGesturesHandlerMixin,

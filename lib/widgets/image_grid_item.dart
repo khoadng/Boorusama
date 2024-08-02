@@ -10,7 +10,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class AutoScrollOptions {
@@ -110,10 +110,12 @@ class ImageGridItem extends StatelessWidget {
 
                         return Future.value(!isLiked);
                       },
-                      likeBuilder: (bool isLiked) {
+                      likeBuilder: (isLiked) {
                         return Icon(
                           isLiked ? Symbols.favorite : Symbols.favorite,
-                          color: isLiked ? Colors.redAccent : Colors.white,
+                          color: isLiked
+                              ? context.colors.upvoteColor
+                              : Colors.white,
                           fill: isLiked ? 1 : 0,
                         );
                       },

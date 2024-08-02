@@ -17,7 +17,7 @@ import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/image.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class InfinitePostListScaffold<T extends Post> extends ConsumerStatefulWidget {
@@ -87,7 +87,7 @@ class _InfinitePostListScaffoldState<T extends Post>
 
   @override
   Widget build(BuildContext context) {
-    final settings = ref.watch(settingsProvider);
+    final settings = ref.watch(imageListingSettingsProvider);
     final config = ref.watchConfig;
     final booruBuilder = ref.watchBooruBuilder(config);
     final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
@@ -241,7 +241,10 @@ class _InfinitePostListScaffoldState<T extends Post>
                     imageUrl: block
                         ? ''
                         : gridThumbnailUrlBuilder != null
-                            ? gridThumbnailUrlBuilder(settings, post)
+                            ? gridThumbnailUrlBuilder(
+                                settings.imageQuality,
+                                post,
+                              )
                             : post.thumbnailImageUrl,
                     borderRadius: BorderRadius.circular(
                       settings.imageBorderRadius,

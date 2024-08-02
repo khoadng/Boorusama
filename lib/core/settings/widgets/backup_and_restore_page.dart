@@ -15,13 +15,17 @@ import 'package:boorusama/core/blacklists/blacklists.dart';
 import 'package:boorusama/core/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/export_import/export_import.dart';
+import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
-import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/foundation/android.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/package_info.dart';
+import 'package:boorusama/foundation/path.dart' as p;
 import 'package:boorusama/foundation/picker.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'widgets/settings_page_scaffold.dart';
@@ -44,6 +48,7 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
     return SettingsPageScaffold(
       hasAppBar: widget.hasAppBar,
       title: const Text('settings.backup_and_restore.backup_and_restore').tr(),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       children: [
         const SizedBox(height: 8),
         _buildProfiles(),
@@ -111,6 +116,7 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
               ref.read(booruConfigProvider.notifier).exportClipboard(
                     onSuccess: (message) => showSuccessToast(message),
                     onFailure: (message) => showErrorToast(message),
+                    appVersion: ref.read(appVersionProvider),
                   );
               break;
             case 'import_clipboard':
@@ -287,16 +293,43 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
 
   Future<void> _pickFile({
     required void Function(String path) onPick,
-  }) =>
-      pickSingleFilePathToastOnError(
-        type: FileType.custom,
-        allowedExtensions: ['json'],
-        onPick: onPick,
-      );
+  }) {
+    const allowedExtensions = ['json'];
+
+    if (isAndroid()) {
+      final androidVersion =
+          ref.read(deviceInfoProvider).androidDeviceInfo?.version.sdkInt;
+      // Android 9 or lower will need to use any file type
+      if (androidVersion != null &&
+          androidVersion <= AndroidVersions.android9) {
+        return pickSingleFilePathToastOnError(
+          type: FileType.any,
+          onPick: (path) {
+            final ext = p.extension(path);
+
+            if (!allowedExtensions.contains(ext.substring(1))) {
+              showErrorToast(
+                  'Invalid file type, only ${allowedExtensions.map((e) => '.$e').join(', ')} files are allowed');
+              return;
+            }
+
+            onPick(path);
+          },
+        );
+      }
+    }
+
+    return pickSingleFilePathToastOnError(
+      type: FileType.custom,
+      allowedExtensions: allowedExtensions,
+      onPick: onPick,
+    );
+  }
 
   void _pickProfileFile(WidgetRef ref) => _pickFile(
         onPick: (path) {
           ref.read(booruConfigProvider.notifier).import(
+                context: context,
                 path: path,
                 onSuccess: _onImportSuccess,
                 onWillImport: _showImportBooruConfigsAlertDialog,
@@ -314,7 +347,15 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
 
   void _pickSettingsFile(WidgetRef ref) => _pickFile(
         onPick: (path) {
-          ref.read(settingsProvider.notifier).importSettings(path);
+          ref.read(settingsProvider.notifier).importSettings(
+                context: context,
+                path: path,
+                onWillImport: (data) async => true,
+                onFailure: (message) => showErrorToast(message),
+                onSuccess: (message, _) {
+                  showSuccessToast(message);
+                },
+              );
         },
       );
 
@@ -418,8 +459,9 @@ class ImportBooruConfigsAlertDialog extends StatelessWidget {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(8)),
       ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Container(
+        constraints: const BoxConstraints(maxWidth: 650),
+        margin: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisSize: MainAxisSize.min,

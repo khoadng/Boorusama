@@ -11,7 +11,7 @@ abstract class AppUpdateChecker {
 }
 
 final shouldCheckForUpdateProvider = Provider<bool>((ref) {
-  return isAndroid();
+  return !ref.watch(isDevEnvironmentProvider) && isAndroid();
 });
 
 final appUpdateCheckerProvider = Provider<AppUpdateChecker>(

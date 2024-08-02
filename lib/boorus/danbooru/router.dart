@@ -11,53 +11,44 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
-import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
-import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/feats/saved_searches/saved_searches.dart';
-import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
-import 'package:boorusama/boorus/danbooru/feats/uploads/uploads.dart';
 import 'package:boorusama/core/blacklists/blacklists.dart';
 import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/core/wikis/wikis.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import 'pages/add_to_favorite_group_page.dart';
-import 'pages/blacklisted_tags_page.dart';
-import 'pages/comment_create_page.dart';
-import 'pages/comment_update_page.dart';
-import 'pages/danbooru_artist_search_page.dart';
-import 'pages/danbooru_dmail_page.dart';
-import 'pages/danbooru_forum_page.dart';
-import 'pages/danbooru_my_uploads_page.dart';
-import 'pages/danbooru_post_versions_page.dart';
-import 'pages/explore_hot_page.dart';
-import 'pages/explore_most_viewed_page.dart';
-import 'pages/explore_popular_page.dart';
-import 'pages/favorite_group_details_page.dart';
-import 'pages/favorite_groups_page.dart';
-import 'pages/pool_detail_page.dart';
-import 'pages/pool_page.dart';
-import 'pages/pool_search_page.dart';
-import 'pages/saved_search_feed_page.dart';
-import 'pages/saved_search_page.dart';
-import 'pages/tag_edit_page.dart';
-import 'pages/tag_edit_upload_page.dart';
-import 'pages/user_details_page.dart';
-import 'pages/widgets/favorites/create_favorite_group_dialog.dart';
-import 'pages/widgets/saved_searches/edit_saved_search_sheet.dart';
-import 'pages/widgets/search/related_tag_action_sheet.dart';
+import 'artists/artists.dart';
+import 'blacklist/blacklist.dart';
+import 'comments/comments.dart';
+import 'dmails/dmails.dart';
+import 'explores/explore_hot_page.dart';
+import 'explores/explore_most_viewed_page.dart';
+import 'explores/explore_popular_page.dart';
+import 'favorite_groups/favorite_groups.dart';
+import 'forums/danbooru_forum_page.dart';
+import 'pools/pool_detail_page.dart';
+import 'pools/pool_search_page.dart';
+import 'pools/pools.dart';
+import 'posts/posts.dart';
+import 'related_tags/related_tags.dart';
 import 'router_page_constant.dart';
+import 'saved_searches/saved_searches.dart';
+import 'tags/tags.dart';
+import 'uploads/danbooru_my_uploads_page.dart';
+import 'uploads/uploads.dart';
+import 'users/user_details_page.dart';
+import 'versions/danbooru_post_versions_page.dart';
 
-void goToPoolDetailPage(BuildContext context, Pool pool) {
+void goToPoolDetailPage(BuildContext context, DanbooruPool pool) {
   context.navigator.push(CupertinoPageRoute(
     builder: (_) => PoolDetailPage.of(context, pool: pool),
   ));
@@ -67,7 +58,7 @@ void goToPostVersionPage(BuildContext context, DanbooruPost post) {
   if (kPreferredLayout.isMobile) {
     showMaterialModalBottomSheet(
       context: context,
-      duration: const Duration(milliseconds: 250),
+      duration: AppDurations.bottomSheet,
       builder: (_) => DanbooruPostVersionsPage(
         postId: post.id,
         previewUrl: post.url720x720,
@@ -157,7 +148,7 @@ void goToSavedSearchEditPage(BuildContext context) {
 
 void goToPoolPage(BuildContext context, WidgetRef ref) {
   context.navigator.push(CupertinoPageRoute(
-    builder: (_) => const PoolPage(),
+    builder: (_) => const DanbooruPoolPage(),
   ));
 }
 
@@ -223,15 +214,25 @@ void goToUserDetailsPage(
   required String username,
   bool isSelf = false,
 }) {
-  context.navigator.push(
-    CupertinoPageRoute(
-      builder: (_) => UserDetailsPage(
-        uid: uid,
-        username: username,
-        isSelf: isSelf,
-      ),
-    ),
+  final page = UserDetailsPage(
+    uid: uid,
+    username: username,
+    isSelf: isSelf,
   );
+
+  if (Screen.of(context).size == ScreenSize.small) {
+    context.navigator.push(
+      CupertinoPageRoute(
+        builder: (_) => page,
+      ),
+    );
+  } else {
+    showSideSheetFromRight(
+      body: page,
+      context: context,
+      width: 480,
+    );
+  }
 }
 
 void goToPoolSearchPage(BuildContext context, WidgetRef ref) {
@@ -249,29 +250,17 @@ void goToRelatedTagsPage(
   required void Function(RelatedTagItem tag) onAdded,
   required void Function(RelatedTagItem tag) onNegated,
 }) {
-  final page = RelatedTagActionSheet(
-    relatedTag: relatedTag,
-    onAdded: onAdded,
-    onNegated: onNegated,
+  showAdaptiveSheet(
+    context,
+    settings: const RouteSettings(
+      name: RouterPageConstant.relatedTags,
+    ),
+    builder: (context) => RelatedTagActionSheet(
+      relatedTag: relatedTag,
+      onAdded: onAdded,
+      onNegated: onNegated,
+    ),
   );
-  if (Screen.of(context).size == ScreenSize.small) {
-    showBarModalBottomSheet(
-      context: context,
-      settings: const RouteSettings(
-        name: RouterPageConstant.relatedTags,
-      ),
-      builder: (context) => page,
-    );
-  } else {
-    showSideSheetFromRight(
-      settings: const RouteSettings(
-        name: RouterPageConstant.relatedTags,
-      ),
-      width: 220,
-      body: page,
-      context: context,
-    );
-  }
 }
 
 void goToPostFavoritesDetails(BuildContext context, DanbooruPost post) {
@@ -303,7 +292,7 @@ void goToSavedSearchCreatePage(
               label: label,
               onCreated: (data) => showSimpleSnackBar(
                 context: context,
-                duration: const Duration(seconds: 1),
+                duration: AppDurations.shortToast,
                 content: const Text('saved_search.saved_search_added').tr(),
               ),
             ),
@@ -344,7 +333,7 @@ void goToSavedSearchCreatePage(
                     label: label,
                     onCreated: (data) => showSimpleSnackBar(
                       context: context,
-                      duration: const Duration(seconds: 1),
+                      duration: AppDurations.shortToast,
                       content:
                           const Text('saved_search.saved_search_added').tr(),
                     ),
@@ -378,9 +367,7 @@ void goToSavedSearchPatchPage(
                 query: query,
                 onUpdated: (data) => showSimpleSnackBar(
                   context: context,
-                  duration: const Duration(
-                    seconds: 1,
-                  ),
+                  duration: AppDurations.shortToast,
                   content: const Text(
                     'saved_search.saved_search_updated',
                   ).tr(),
@@ -444,7 +431,7 @@ Future<bool?> goToAddToFavoriteGroupSelectionPage(
 ) {
   return showMaterialModalBottomSheet<bool>(
     context: context,
-    duration: const Duration(milliseconds: 200),
+    duration: AppDurations.bottomSheet,
     expand: true,
     builder: (_) => AddToFavoriteGroupPage(
       posts: posts,
@@ -463,9 +450,8 @@ Future<bool?> goToDanbooruShowTaglistPage(
   final color = ref.context.colorScheme.onSurface;
   final textColor = ref.context.colorScheme.surface;
 
-  return showMaterialModalBottomSheet<bool>(
-    context: navigatorKey.currentContext ?? ref.context,
-    duration: const Duration(milliseconds: 200),
+  return showAdaptiveSheet(
+    navigatorKey.currentContext ?? ref.context,
     expand: true,
     builder: (dialogContext) => ShowTagListPage(
       tags: tags,

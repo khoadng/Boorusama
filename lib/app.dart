@@ -14,13 +14,14 @@ import 'package:oktoast/oktoast.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/analytics.dart';
+import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/device_info_service.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/picker.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/scrolling.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -232,7 +233,7 @@ class AppFailedToInitialize extends ConsumerWidget {
             const SnackBar(
               behavior: SnackBarBehavior.floating,
               content: Text('Copied'),
-              duration: Duration(seconds: 1),
+              duration: AppDurations.shortToast,
             ),
           );
         },

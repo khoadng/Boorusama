@@ -13,7 +13,7 @@ import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
 
 enum AddBooruPhase {
@@ -204,12 +204,13 @@ class _AddBooruPageInternalState extends ConsumerState<AddBooruPageInternal> {
                   horizontal: 16,
                   vertical: 8,
                 ),
-                child: ValueListenableBuilder<String>(
+                child: ValueListenableBuilder(
                   valueListenable: inputText,
                   builder: (_, input, __) => Text(
                     e.message(input),
-                    style: context.theme.textTheme.bodyLarge!
-                        .copyWith(color: Colors.red),
+                    style: context.theme.textTheme.bodyLarge!.copyWith(
+                      color: context.colorScheme.error,
+                    ),
                   ),
                 )),
             (uri) => const SizedBox.shrink(),

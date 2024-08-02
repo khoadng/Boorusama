@@ -7,12 +7,7 @@ import 'package:boorusama/core/artists/artists.dart';
 void main() {
   group('[artist commentary test]', () {
     test('empty commentary', () {
-      const commentary = ArtistCommentary(
-        originalTitle: '',
-        originalDescription: '',
-        translatedTitle: '',
-        translatedDescription: '',
-      );
+      const commentary = ArtistCommentary.empty();
       expect(
         commentary.hasCommentary,
         isFalse,
@@ -20,12 +15,7 @@ void main() {
     });
 
     test('partially empty commentary', () {
-      const commentary = ArtistCommentary(
-        originalTitle: '',
-        originalDescription: 'bar',
-        translatedTitle: '',
-        translatedDescription: '',
-      );
+      const commentary = ArtistCommentary.description('bar');
       expect(
         commentary.hasCommentary,
         isTrue,
@@ -88,7 +78,7 @@ void main() {
   group('[artist commentary comparison tests]', () {
     test('equal', () {
       expect(
-        ArtistCommentary.empty(),
+        const ArtistCommentary.empty(),
         const ArtistCommentary(
           originalTitle: '',
           originalDescription: '',
@@ -100,7 +90,7 @@ void main() {
 
     test('not equal', () {
       expect(
-        ArtistCommentary.empty(),
+        const ArtistCommentary.empty(),
         isNot(const ArtistCommentary(
           originalTitle: 'a',
           originalDescription: '',

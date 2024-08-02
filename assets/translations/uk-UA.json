@@ -8,13 +8,18 @@
         "action": {
             "add": "Додати",
             "delete": "Видалити",
-            "edit": "Редактувати",
+            "edit": "Змінити",
             "ok": "ОК",
-            "cancel": "Відмінити"
-        }
+            "cancel": "Відмінити",
+            "duplicate": "Дублювати"
+        },
+        "view": "Переглянути"
     },
     "profile": {
-        "favorites": "Улюблене"
+        "favorites": "Улюблене",
+        "profile": "Профіль",
+        "copy_user_id": "Копіювати ID користувача",
+        "messages": "Сповіщення"
     },
     "network": {
         "unavailable": "Мережа недоступна"
@@ -58,16 +63,431 @@
                 "few": "Декілька очок",
                 "many": "Багато очок",
                 "other": "Інщі очки"
-            }
+            },
+            "add_to_bookmark": "Додати в обране",
+            "source_label": "Джерело",
+            "related_posts": "Схожі пости",
+            "remove_from_bookmark": "Прибрати з обраного"
+        },
+        "action": {
+            "add_to_favorite_group": "Додати в улюблене",
+            "view_comments": "Подивитися коментарі",
+            "preview": "Попередній перегляд",
+            "select": "Вибрати"
+        },
+        "image_fullview": {
+            "view_original": "Подивитися оригінальне зображення",
+            "view_resized": "Подивитися змінене у розмірі"
         }
     },
     "settings": {
         "language": {
             "language": "Мова",
             "language_name": "український"
-        }
+        },
+        "appearance": {
+            "booru_config": "Профіль Booru",
+            "show_post_list_config_header": "Показувати заголовок конфігурації дописів",
+            "show_scores": "Показати оцінки",
+            "appearance": "Зовнішній вигляд",
+            "booru_config_placement": "Розміщення профілю Booru"
+        },
+        "page_indicator": {
+            "page_indicator": "Положення індикатора сторінки",
+            "bottom": "Знизу",
+            "top": "Згори",
+            "both": "Обидва"
+        },
+        "source_code": "Вихідний код",
+        "booru_settings": {
+            "edit_current_profile": "Редагувати поточний профіль",
+            "booru_settings": "Налаштування Booru"
+        },
+        "contribute": "Зробити внесок",
+        "support": "Підтримка",
+        "download": {
+            "qualities": {
+                "original": "Оригінальна",
+                "sample": "Зразок",
+                "preview": "Стиснуте"
+            },
+            "select_a_folder": "Вибрати папку",
+            "path": "Шлях завантаження",
+            "quality": "Якість завантажуваних фото"
+        },
+        "help_us_translate": "Допоможіть нам з перекладом",
+        "privacy": {
+            "enable_incognito_keyboard": "Активувати режим інкогніто в клавіатурі",
+            "enable_biometric_lock": "Увімкнути біометричні блокування",
+            "enable_biometric_lock_notice": "Працює лише на пристроях з підтримкою біометрії, яку було налаштовано.",
+            "send_error_data_notice": "Відправляти анонімні данні про обробку помилок",
+            "privacy": "Приватність",
+            "enable_incognito_keyboard_notice": "Впливає тільки на Android."
+        },
+        "theme": {
+            "amoled_dark": "Чорна",
+            "dark": "Темна",
+            "dynamic_color": "Динамічний колір теми",
+            "dynamic_color_mobile_description": "Синхронізувати колір теми зі шпалерами",
+            "theme": "Тема",
+            "light": "Світла",
+            "dynamic_color_desktop_description": "Синхронізувати колір теми з акцентованого кольору ОС",
+            "dynamic_color_unsupported_description": "Цей пристрій не підтримує динамічний колір."
+        },
+        "changelog": "Історія змінення",
+        "image_grid": {
+            "grid_size": {
+                "large": "Велика",
+                "small": "Мала",
+                "grid_size": "Розмір сітки",
+                "medium": "Середня"
+            },
+            "image_grid": "Сітка зображень",
+            "image_quality": {
+                "image_quality": "Якість зображень",
+                "highest": "Найкраща",
+                "high": "Висока",
+                "automatic": "Автоматична",
+                "low": "Низька",
+                "high_quality_notice": "Краща якість зображення з більшість час завантаження.",
+                "original": "Оригінальна"
+            },
+            "padding": "Відступ",
+            "spacing": "Проміжок",
+            "corner_radius": "Заокругленість кутів",
+            "aspect_ratio": "Співвідношення сторін"
+        },
+        "image_viewer": {
+            "image_viewer": "Перегляд зображень",
+            "full_res_as_default": "Завжди відображати повну роздільну здатність",
+            "full_res_notice": "Завантаження може зайняти деякий час, залежно від розміру зображення"
+        },
+        "image_details": {
+            "image_details": "Деталі зображення",
+            "ui_overlay": {
+                "hide": "Сховати",
+                "ui_overlay": "Накладання інтерфейсу",
+                "show": "Показати"
+            }
+        },
+        "app_settings": "Налаштування додатку",
+        "search": {
+            "auto_focus_search_bar": "Панель пошуку з автофокусом при першому відкритті режиму пошуку",
+            "search": "Пошук",
+            "hide_bookmarked_posts_from_search_results": "Сховати пости із закладок з результатів пошуку"
+        },
+        "image_list": {
+            "image_list": "Відображення фото",
+            "masonry": "Кладкове",
+            "standard": "Стандартне"
+        },
+        "other_settings": "Інші налаштування",
+        "data_and_storage": {
+            "data_and_storage": "Данні та сховище",
+            "clear_cache_on_start_up": "Очистити кеш зображень при запуску"
+        },
+        "performance": {
+            "posts_per_page": "Зображень на сторінці",
+            "performance": "Продуктивність",
+            "posts_per_page_explain": "Кількість зображень на одній сторінці",
+            "cache_size": "Розмір кешу",
+            "clear_cache": "Очистити",
+            "cache_size_info": "{0} в {1} файлів"
+        },
+        "infinite_scroll_warning": "Може з'явитися помилка, при довгому прокручуванні",
+        "general": "Головне",
+        "image_detail": {
+            "image_detail": "Деталі зображення"
+        },
+        "information": "Інформація",
+        "result_layout": {
+            "result_layout": "Режим сторінки",
+            "pagination": "Сторінкове",
+            "infinite_scroll": "Безкінечне прокручування"
+        },
+        "settings": "Налаштування",
+        "debug_logs": {
+            "logs_copied": "Логи скопійовано в буфер обміну",
+            "debug_logs": "Журнал відладки"
+        },
+        "backup_and_restore": {
+            "backup_and_restore": "Резервне копіювання та відновлення"
+        },
+        "accessibility": {
+            "accessibility": "Доступність",
+            "reverseBooruConfigSelectorScrollDirection": "Зворотний напрямок прокрутки профілів booru",
+            "swipeAreaToOpenSidebar": "Область прокручування бокової панелі",
+            "swipeAreaToOpenSidebarDescription": "Розмір області на лівій стороні екрана, яку можна використовувати для активації свайпу. Великі значення блокуватимуть всі горизонтальні жести, такі як жест пагінації."
+        },
+        "feature_request_and_bug_report": "Запропонувати оновлення і звіт про помилку",
+        "contact_developer": "Зв'язок з розробниками",
+        "feature_request_and_bug_report_description": "Пропонуйте функції чи повідомляйте про помилки через репозиторій GitHub",
+        "contact_developer_description": "Якщо у вас є будь які пропозиція, напишіть мені на електронну пошту за допомогою цієї опції"
     },
     "forum": {
         "forum": "форум"
+    },
+    "booru": {
+        "misc": "Різне",
+        "authentication": "Аутентифікація",
+        "download": "Завантаження",
+        "booru_engine_input_label": "Booru двигун (*)",
+        "config_booru_confirm": "OK",
+        "validation_empty_url": "Посилання пусте",
+        "validation_missing_scheme": "В \"{0}\" відсутня схема (наприклад, https://)",
+        "password_api_key_label": "API ключ",
+        "validation_invalid_url": "\"{0}\" не є дійсним URL",
+        "add_a_booru_site": "Створити новий профіль",
+        "password_label": "Пароль",
+        "site_url": "Посилання на сайт",
+        "site_url_label": "Посилання на сайт",
+        "password_hashed_label": "Хеш пароля (тільки читання)",
+        "next_step": "Далі",
+        "validation_redundant_www": "\"{0}\" має лишній \"www\"",
+        "validation_missing_trailing_slash": "В \"{0}\" відсутній слеш в кінці",
+        "validation_invalid_http_url": "\"{0}\" не є HTTP чи HTTPS URL",
+        "hide_deleted_label": "Сховати видалені пости",
+        "login_name_label": "Логін",
+        "config_name_label": "Ім'я профілю (*)",
+        "validation_contains_spaces": "\"{0}\" містить проміжні пробіли",
+        "gestures": "Жести",
+        "content_filtering_label": "Фільтрація контенту",
+        "unsupported_warning": "Цей booru не підтримується."
+    },
+    "gestures": {
+        "tap": "Натискання",
+        "swipe_down": "Прокрутка вниз",
+        "double_tap": "Подвійне натискання",
+        "long_press": "Довге натискання"
+    },
+    "download": {
+        "bulk": {
+            "all_done_notification_message": "Всі завантаження завершено"
+        },
+        "download": "Скачати",
+        "bulk_download_total_count": "Всього",
+        "bulk_download": "Масове завантаження",
+        "bulk_download_done_confirm": "Готово",
+        "bulk_download_done_count": "Завантажено",
+        "bulk_download_cancel": "Відміна",
+        "bulk_download_save_to_folder": "Зберегти в",
+        "bulk_download_skipped_counter": {
+            "other": "{} зображень пропущено",
+            "one": "{} зображення пропущено"
+        },
+        "storage_permission_explanation": "Дозвіл на доступ до сховища необхідний для збереження завантажених файлів.",
+        "bulk_download_tag_confirmation": "Зображення з наступними тегами будуть завантажені",
+        "bulk_download_duplicate": "Дублікат",
+        "image_counter": {
+            "other": "Скачати {} зображень",
+            "one": "Скачати {} зображення"
+        },
+        "bulk_download_invalid_folder_name_error": "Назва папки не маже мати наступний символ: ",
+        "bulk_download_folder_select_warning": "Приложение може зберігати файли лише в публічні папки <b>({0})</b> в Android 11+. <div>SD-карти також не підтримуються.</div><div>Будь ласка, оберіть інше місце зберігання.</div> <div> Версія цього пристрою – {1}.</div>",
+        "bulk_download_download_more": "Скачати більше",
+        "open_app_settings": "Відкрити налаштування",
+        "bulk_download_select_a_folder": "Виберіть папку",
+        "bulk_download_downloaded_counter": {
+            "one": "{} зображення завантажено",
+            "other": "{} зображень завантажено"
+        },
+        "app_restart_request": "Перезагрузіть додаток, щоб зміни вступили в силу"
+    },
+    "blacklisted_tags": {
+        "failed_to_add": "Не вдалося додати тег",
+        "failed_to_remove": "Не вдалося прибрати тег",
+        "disable_all": "Вимкнути все",
+        "blacklisted_tags": "Чорний список тегів",
+        "edit": "Редагувати",
+        "remove": "Видалити",
+        "blacklisted_header_title": "В чорному списку",
+        "reenable_all": "Повторно увімкнути все",
+        "load_error": "Помилка завантаження чорного списку",
+        "updated": "Чорний список оновлено",
+        "limitation_notice": "Підтримує тільки <b>NOT</b> оператор і <b>OR</b> оператор, <b>score</b> метатег і <b>rating</b> метатег\n\nВикористання чорного списку з іншими метатегами не працює в поточної версії."
+    },
+    "bookmark": {
+        "updated": "Закладка оновлена",
+        "added": "Закладка додана",
+        "removed": "Закладка видалена",
+        "many_added": "Додано {0} закладок",
+        "failed_to_add": "Не вдалося додати закладку",
+        "failed_to_add_many": "Не вдалося додати закладки",
+        "failed_to_update": "Не вдалося оновити закладку",
+        "failed_to_load": "Не вдалося завантажити закладок: {0}",
+        "failed_to_remove": "Не вдалося видалити закладку"
+    },
+    "explore": {
+        "most_viewed": "Найбільш переглянуті",
+        "popular": "Популярне",
+        "hot": "Гаряче",
+        "explore": "Дослідити",
+        "see_more": "Подивитися більше",
+        "latest": "Останнє"
+    },
+    "search": {
+        "errors": {
+            "generic": "Щось пішло не так",
+            "max_capacity": "Сервер під навантаженням і не може виконати запит. Спробуйте пізніше",
+            "down": "Сервер не працює. Спробуйте пізніше",
+            "pagination_limit": "Ви досягли ліміту сторінок. Це означає, що ви не можете прокрутити більше",
+            "access_denied": "Доступ заборонено",
+            "forbidden": "Невдала спроба",
+            "database_timeout": "Запит перерваний із-за занадто довгої обробки.",
+            "rate_limited": "Ви були обмежені в кількості запитів, спробуйте пізніше.",
+            "tag_limit": "Максимальна кількість тегів. Покращить аккаунт для збільшення ліміту.",
+            "unknown": "Невідома помилка серверу, будь ласка, повідомте про неї розробникам"
+        },
+        "history": {
+            "history": "Історія",
+            "clear": "Очистити",
+            "recent": "Останнє"
+        },
+        "search_options": "Налаштування пошуку",
+        "no_result_notice": "Немає результатів",
+        "metatags_notice": "Вільні метатеги не будуть враховуватися при пошуку по тегам",
+        "hint": "Пошук...",
+        "trending": "Популярне",
+        "no_result": "Ми шукали і там, і тут, але так нічого і не знайшли",
+        "remove_all_selected": "Видалити всі вибрані теги",
+        "result_counter": {
+            "one": "{} Результат",
+            "other": "{} Результатів"
+        },
+        "search_in_progress_notice": "Пошук..."
+    },
+    "pool": {
+        "pool": "Альбом",
+        "detail": {
+            "last_updated": "Останнє оновлення"
+        },
+        "category": {
+            "collection": "Збірник",
+            "series": "Серії"
+        },
+        "order": {
+            "recent": "Нещодавні",
+            "name": "Ім'я",
+            "post_count": "Розмір",
+            "new": "Нове"
+        },
+        "pool_gallery": "Альбоми",
+        "search": {
+            "hint": "Пошук альбому"
+        }
+    },
+    "favorites": {
+        "favorite": "Улюблене",
+        "counter": {
+            "one": "Улюблене",
+            "other": "Улюблене"
+        },
+        "favorited": "В улюблених"
+    },
+    "favorite_groups": {
+        "create": "Створити",
+        "detete_confirmation": "Ви впевнені, що хочете видалити цю улюблену групу",
+        "empty_group_notice": "Немає улюблених груп",
+        "create_group_cancel": "Відміна",
+        "group_item_counter": {
+            "one": "{} пост",
+            "other": "{} постів"
+        },
+        "max_limit_warning": "Учасник може створювати тільки 10 груп",
+        "add_to": "Додати до",
+        "group_name_hint": "Нова група",
+        "private": "Private",
+        "view_more_popup": "Переглянути",
+        "create_group_confirm": "OK",
+        "group_name": "Назва групи",
+        "is_private_group_option": "Приватна група",
+        "items_added_notification_popup": "{0} зображень додано в {1}",
+        "initial_posts_hint": "Введіть ID зображення, розділяючи їх пробілом (необов'язково)",
+        "edit_group": "Редагувати групу",
+        "favorite_groups": "Улюблені групи",
+        "create_group": "Створити групу",
+        "all_posts": "Пости",
+        "add_to_group_dialog_title": "Додати до улюбленої групи",
+        "duplicate_items_warning_notification": "Це зображення вже є в групі"
+    },
+    "favorite_tags": {
+        "favorite_tags": "Улюблені теги",
+        "export_notification": "Теги скопійовано в буфер обміну",
+        "favorites": "Улюблене",
+        "export": "Експорт",
+        "import": "Імпорт",
+        "cancel": "Відміна",
+        "import_hint": "Введіть теги. Розділяйте пробілом."
+    },
+    "dateRange": {
+        "day": "День",
+        "week": "Неділя",
+        "month": "Місяць"
+    },
+    "saved_search": {
+        "saved_search": "Пошукові запити",
+        "saved_search_help": "Що це?",
+        "saved_search_counter": {
+            "one": "{} пошук",
+            "other": "{} пошукових запитів"
+        },
+        "saved_search_feed": "Стрічка",
+        "saved_search_try": "Спробувати",
+        "saved_search_query": "Запит",
+        "saved_search_labels": "Labels*",
+        "update_saved_search": "Оновити збережені запити",
+        "saved_search_added": "Збережений пошук додано",
+        "saved_search_updated": "Збережений пошук оновлено",
+        "saved_search_examples": "Приклади",
+        "add_saved_search": "Додати збережений пошук",
+        "empty_saved_search": "У вас немає ні одного збереженого запиту",
+        "saved_search_labels_description": "*Список тегів, які допоможуть класифікувати цей пошук. Розділення пробілом."
+    },
+    "sideMenu": {
+        "your_bookmarks": "Ваші закладки",
+        "your_blacklist": "Ваший чорний список",
+        "bulk_download": "Масове завантаження",
+        "settings": "Налаштування",
+        "get_support": "Отримати підтримку"
+    },
+    "comment": {
+        "create": {
+            "loading": "Зачекайте...",
+            "error": "Помилка",
+            "hint": "Коментар"
+        },
+        "counter": {
+            "one": "Коментар",
+            "other": "Коментарі"
+        },
+        "list": {
+            "delete": "Видалити",
+            "last_updated": "Останнє оновлення",
+            "send": "Відправити",
+            "reply": "Відповісти",
+            "noComments": "Тут немає коментарів",
+            "edit": "Редагувати",
+            "reply_to": "Відповів"
+        },
+        "comments": "Коментарі"
+    },
+    "app_update": {
+        "later": "Пізніше",
+        "update": "Оновити",
+        "whats_new": "Що нового?",
+        "update_available": "Доступне оновлення"
+    },
+    "blacklist": {
+        "manage": {
+            "title": "Чорний список",
+            "empty_blacklist": "Немає тегів у чорному списку"
+        }
+    },
+    "rating": {
+        "rate": "Оцінити",
+        "later": "Можливо пізніше",
+        "rationale": "Якщо вам сподобалося додаток, не могли б ви його оцінити?\nЦе займе лише кілька секунд і дуже допоможе проекту у розвитку.",
+        "cancel": "Ні, дякую",
+        "rate_request": "Оцініть додаток"
     }
 }

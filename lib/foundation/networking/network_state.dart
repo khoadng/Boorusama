@@ -19,4 +19,10 @@ final class NetworkDisconnectedState extends NetworkState {}
 
 extension ConnectivityResultX on List<ConnectivityResult> {
   bool get isMobile => length == 1 && contains(ConnectivityResult.mobile);
+
+  String get prettyString {
+    if (isEmpty) return 'none';
+
+    return map((e) => e.name).join(', ');
+  }
 }

@@ -1,3 +1,6 @@
+// Package imports:
+import 'package:equatable/equatable.dart';
+
 // Project imports:
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/error.dart';
@@ -6,11 +9,48 @@ import 'package:boorusama/functional.dart';
 import 'filter.dart';
 import 'post.dart';
 
-typedef PostsOrErrorCore<T extends Post> = TaskEither<BooruError, List<T>>;
+class PostResult<T extends Post> extends Equatable {
+  const PostResult({
+    required this.posts,
+    required this.total,
+  });
+
+  PostResult.empty()
+      : posts = <T>[],
+        total = 0;
+
+  PostResult<T> copyWith({
+    List<T>? posts,
+    int? Function()? total,
+  }) =>
+      PostResult(
+        posts: posts ?? this.posts,
+        total: total != null ? total() : this.total,
+      );
+
+  final List<T> posts;
+  final int? total;
+
+  @override
+  List<Object?> get props => [posts, total];
+}
+
+extension PostResultX<T extends Post> on List<T> {
+  PostResult<T> toResult({
+    int? total,
+  }) =>
+      PostResult(
+        posts: this,
+        total: total,
+      );
+}
+
+typedef PostsOrErrorCore<T extends Post>
+    = TaskEither<BooruError, PostResult<T>>;
 
 typedef PostsOrError<T extends Post> = PostsOrErrorCore<T>;
 
-typedef PostFutureFetcher<T extends Post> = Future<List<T>> Function(
+typedef PostFutureFetcher<T extends Post> = Future<PostResult<T>> Function(
   List<String> tags,
   int page, {
   int? limit,
@@ -31,7 +71,7 @@ class PostRepositoryBuilder<T extends Post> implements PostRepository<T> {
   });
 
   final PostFutureFetcher<T> fetch;
-  final Future<Settings> Function() getSettings;
+  final Future<ImageListingSettings> Function() getSettings;
 
   @override
   PostsOrError<T> getPosts(String tags, int page, {int? limit}) =>
@@ -48,31 +88,20 @@ class PostRepositoryBuilder<T extends Post> implements PostRepository<T> {
       });
 }
 
-Future<List<T>> getPostsFromTagsOrEmptyFrom<T extends Post>(
-  PostRepository<T> repository,
-  String tags,
-  int page, {
-  int? limit,
-}) =>
-    repository
-        .getPosts(
-          tags,
-          page,
-          limit: limit,
-        )
-        .run()
-        .then((value) => value.fold(
-              (l) => <T>[],
-              (r) => r,
-            ));
-
 extension PostRepositoryX<T extends Post> on PostRepository<T> {
-  Future<List<T>> getPostsFromTagsOrEmpty(
+  Future<PostResult<T>> getPostsFromTagsOrEmpty(
     String tags, {
     int? limit,
     int page = 1,
   }) =>
-      getPostsFromTagsOrEmptyFrom(this, tags, page, limit: limit);
+      getPosts(
+        tags,
+        page,
+        limit: limit,
+      ).run().then((value) => value.fold(
+            (l) => PostResult.empty(),
+            (r) => r,
+          ));
 
   Future<List<T>> getPostsFromTagsWithBlacklist({
     required String tags,
@@ -90,7 +119,7 @@ extension PostRepositoryX<T extends Post> on PostRepository<T> {
     final bl = await blacklist;
 
     final postsWithLimit =
-        softLimit == null ? posts : posts.take(softLimit).toList();
+        softLimit == null ? posts.posts : posts.posts.take(softLimit).toList();
 
     return filterTags(
       postsWithLimit.where((e) => !e.isFlash).toList(),
@@ -117,22 +146,6 @@ extension PostRepositoryX<T extends Post> on PostRepository<T> {
   }
 }
 
-mixin PostRepositoryMixin<T extends Post> {
-  PostRepository<T> get postRepository;
-
-  Future<List<T>> getPostsFromTagsOrEmpty(
-    String tags,
-    int page, {
-    int? limit,
-  }) =>
-      getPostsFromTagsOrEmptyFrom(
-        postRepository,
-        tags,
-        page,
-        limit: limit,
-      );
-}
-
 class EmptyPostRepository extends PostRepository {
   EmptyPostRepository();
 
@@ -142,5 +155,5 @@ class EmptyPostRepository extends PostRepository {
     int page, {
     int? limit,
   }) =>
-      TaskEither.right([]);
+      TaskEither.right(PostResult.empty());
 }

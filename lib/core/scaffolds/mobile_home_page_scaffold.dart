@@ -10,7 +10,7 @@ import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/infinite_post_list_scaffold.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
 
 class MobileHomePageScaffold extends ConsumerWidget {
@@ -29,7 +29,8 @@ class MobileHomePageScaffold extends ConsumerWidget {
     final fetcher = booruBuilder?.postFetcher;
 
     return PostScope(
-      fetcher: (page) => fetcher?.call(page, '') ?? TaskEither.of(<Post>[]),
+      fetcher: (page) =>
+          fetcher?.call(page, '') ?? TaskEither.of(<Post>[].toResult()),
       builder: (context, postController, errors) => InfinitePostListScaffold(
         errors: errors,
         controller: postController,

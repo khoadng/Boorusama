@@ -7,11 +7,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -79,10 +79,7 @@ class ShowTagListPage extends ConsumerWidget {
                     title: Text(
                       tag.displayName,
                       style: TextStyle(
-                        color: ref.getTagColor(
-                          context,
-                          tag.category.name,
-                        ),
+                        color: ref.watch(tagColorProvider(tag.category.name)),
                       ),
                     ),
                     onTap: () => goToSearchPage(
@@ -111,7 +108,7 @@ class ShowTagListPage extends ConsumerWidget {
                               (_) => showSimpleSnackBar(
                                 context: context,
                                 content: const Text('Copied'),
-                                duration: const Duration(seconds: 1),
+                                duration: AppDurations.shortToast,
                               ),
                             );
                             break;

@@ -79,7 +79,7 @@ typedef PostCountFetcher = Future<int?> Function(
 );
 
 typedef GridThumbnailUrlBuilder = String Function(
-  Settings settings,
+  ImageQuality imageQuality,
   Post post,
 );
 
@@ -89,7 +89,7 @@ typedef TagColorBuilder = Color? Function(
 );
 
 typedef PostImageDetailsUrlBuilder = String Function(
-  Settings settings,
+  ImageQuality imageQuality,
   Post post,
   BooruConfig config,
 );

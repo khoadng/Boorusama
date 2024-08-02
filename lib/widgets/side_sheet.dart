@@ -10,7 +10,7 @@ Future<T?> showSideSheetFromLeft<T>({
   String barrierLabel = 'Side Sheet',
   bool barrierDismissible = true,
   Color barrierColor = const Color(0xFF66000000),
-  Duration transitionDuration = const Duration(milliseconds: 300),
+  Duration transitionDuration = const Duration(milliseconds: 200),
   RouteSettings? settings,
 }) async =>
     _showSheetSide<T>(
@@ -32,7 +32,7 @@ Future<T?> showSideSheetFromRight<T>({
   String barrierLabel = 'Side Sheet',
   bool barrierDismissible = true,
   Color barrierColor = const Color(0xFF66000000),
-  Duration transitionDuration = const Duration(milliseconds: 300),
+  Duration transitionDuration = const Duration(milliseconds: 200),
   RouteSettings? settings,
 }) =>
     _showSheetSide<T>(

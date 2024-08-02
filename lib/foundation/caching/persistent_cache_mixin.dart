@@ -22,7 +22,7 @@ mixin PersistentCacheMixin {
     if (_failedToOpenBox) return null;
 
     try {
-      final dir = await getTemporaryDirectory();
+      final dir = await getAppTemporaryDirectory();
 
       _box = await Hive.openBox(persistentStorageKey, path: dir.path);
 

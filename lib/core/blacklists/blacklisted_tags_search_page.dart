@@ -7,12 +7,12 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 
 class BlacklistedTagsSearchPage extends ConsumerStatefulWidget {
   const BlacklistedTagsSearchPage({
@@ -32,8 +32,10 @@ class BlacklistedTagsSearchPage extends ConsumerStatefulWidget {
 
 class _BlacklistedTagsSearchPageState
     extends ConsumerState<BlacklistedTagsSearchPage> {
-  late final SelectedTagController selectedTagController =
-      SelectedTagController(tagInfo: ref.read(tagInfoProvider));
+  late final selectedTagController = SelectedTagController.fromBooruBuilder(
+    builder: ref.readBooruBuilder(ref.readConfig),
+  );
+
   final queryEditingController = TextEditingController();
 
   var _isSearching = false;

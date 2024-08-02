@@ -8,10 +8,10 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/string.dart';
 import 'import_tag_button.dart';
@@ -30,6 +30,9 @@ class FavoriteTagsSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final notifier = ref
+        .watch(miscDataProvider(kSearchSelectedFavoriteTagLabelKey).notifier);
+
     return FavoriteTagsFilterScope(
       initialValue: selectedLabel,
       sortType: FavoriteTagsSortType.nameAZ,
@@ -38,10 +41,7 @@ class FavoriteTagsSection extends ConsumerWidget {
         titleTrailing: () => FavoriteTagLabelSelectorField(
           selected: selected,
           labels: labels,
-          onSelect: (value) => ref
-              .read(
-                  miscDataProvider(kSearchSelectedFavoriteTagLabelKey).notifier)
-              .put(value),
+          onSelect: (value) => notifier.put(value),
         ),
         childrenBuilder: () => _buildFavoriteTags(ref, tags),
       ),
@@ -124,6 +124,8 @@ class OptionTagsArenaNoEdit extends StatelessWidget {
                     FilledButton(
                       style: FilledButton.styleFrom(
                         visualDensity: VisualDensity.compact,
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        minimumSize: const Size(32, 32),
                         shape: const CircleBorder(),
                         backgroundColor:
                             context.colorScheme.surfaceContainerHighest,

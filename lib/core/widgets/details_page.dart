@@ -231,8 +231,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
   }
 
   void _handlePointerMove(PointerMoveEvent event, bool expanded) {
-    if (!_controller.pageSwipe ||
-        !_controller.swipeDownToDismiss ||
+    if (_controller.blockSwipe ||
         expanded ||
         context.maybeNavigator?.userGestureInProgress == true ||
         _controller.slideshow.value ||
@@ -244,7 +243,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
   }
 
   void _handlePointerUp(PointerUpEvent event, bool expanded) {
-    if (expanded || !_controller.pageSwipe || !_controller.swipeDownToDismiss) {
+    if (expanded || _controller.blockSwipe) {
       return;
     }
 

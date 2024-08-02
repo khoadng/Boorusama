@@ -15,7 +15,7 @@ import 'package:boorusama/core/scaffolds/infinite_post_list_scaffold.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 import '../feats/posts/posts.dart';
 import 'moebooru_desktop_home_page.dart';
 import 'moebooru_popular_page.dart';

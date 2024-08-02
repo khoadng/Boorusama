@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'types.dart';
 
@@ -82,6 +83,12 @@ final customDownloadLocationProvider = StateProvider.autoDispose<String?>(
   dependencies: [booruConfigDataProvider],
 );
 
+final listingConfigsProvider = StateProvider.autoDispose<ListingConfigs?>(
+  (ref) =>
+      ref.watch(booruConfigDataProvider.select((value) => value.listingTyped)),
+  dependencies: [booruConfigDataProvider],
+);
+
 final configNameProvider = StateProvider.autoDispose<String>(
   (ref) => ref.watch(booruConfigDataProvider.select((value) => value.name)),
   dependencies: [booruConfigDataProvider],
@@ -118,6 +125,9 @@ extension UpdateDataX on WidgetRef {
 
   void updateCustomDownloadLocation(String? data) =>
       read(customDownloadLocationProvider.notifier).state = data;
+
+  void updateListing(ListingConfigs? data) =>
+      read(listingConfigsProvider.notifier).state = data;
 
   void updateName(String data) =>
       read(configNameProvider.notifier).state = data;

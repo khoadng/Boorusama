@@ -6,25 +6,23 @@ import 'package:boorusama/core/search/filter_operator.dart';
 import 'package:boorusama/core/search/tag_search_item.dart';
 import 'package:boorusama/core/tags/tags.dart';
 
-final _defaultMetatags = {
-  const Metatag.simple(
-    name: 'foo',
-  ),
-  const Metatag.simple(
-    name: 'bar',
-  ),
-};
+final _defaultMetatags = MetatagExtractor(
+  metatags: {
+    const Metatag.simple(
+      name: 'foo',
+    ),
+    const Metatag.simple(
+      name: 'bar',
+    ),
+  },
+);
 
 void main() {
   group('[parse tests]', () {
     test('valid tag', () {
       final item = TagSearchItem.fromString(
         'tag',
-        TagInfo(
-          metatags: _defaultMetatags,
-          defaultBlacklistedTags: {},
-          r18Tags: {},
-        ),
+        _defaultMetatags,
       );
 
       expect(
@@ -39,11 +37,7 @@ void main() {
     test('empty tag', () {
       final item = TagSearchItem.fromString(
         '',
-        TagInfo(
-          metatags: _defaultMetatags,
-          defaultBlacklistedTags: {},
-          r18Tags: {},
-        ),
+        _defaultMetatags,
       );
 
       expect(
@@ -58,11 +52,7 @@ void main() {
     test('tag with colon', () {
       final item = TagSearchItem.fromString(
         ':p',
-        TagInfo(
-          metatags: _defaultMetatags,
-          defaultBlacklistedTags: {},
-          r18Tags: {},
-        ),
+        _defaultMetatags,
       );
 
       expect(
@@ -77,11 +67,7 @@ void main() {
     test('tag with operator', () {
       final item = TagSearchItem.fromString(
         '-tag',
-        TagInfo(
-          metatags: _defaultMetatags,
-          defaultBlacklistedTags: {},
-          r18Tags: {},
-        ),
+        _defaultMetatags,
       );
 
       expect(
@@ -96,11 +82,7 @@ void main() {
     test('tag with metatag', () {
       final item = TagSearchItem.fromString(
         'foo:tag',
-        TagInfo(
-          metatags: _defaultMetatags,
-          defaultBlacklistedTags: {},
-          r18Tags: {},
-        ),
+        _defaultMetatags,
       );
 
       expect(
@@ -116,11 +98,7 @@ void main() {
     test('tag with metatag and its value', () {
       final item = TagSearchItem.fromString(
         'foo:>10',
-        TagInfo(
-          metatags: _defaultMetatags,
-          defaultBlacklistedTags: {},
-          r18Tags: {},
-        ),
+        _defaultMetatags,
       );
 
       expect(
@@ -136,11 +114,7 @@ void main() {
     test('tag with wrong metatag', () {
       final item = TagSearchItem.fromString(
         'wrong:tag',
-        TagInfo(
-          metatags: _defaultMetatags,
-          defaultBlacklistedTags: {},
-          r18Tags: {},
-        ),
+        _defaultMetatags,
       );
 
       expect(

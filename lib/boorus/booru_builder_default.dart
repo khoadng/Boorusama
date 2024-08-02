@@ -38,7 +38,7 @@ mixin NoteNotSupportedMixin implements BooruBuilder {
 mixin DefaultThumbnailUrlMixin implements BooruBuilder {
   @override
   GridThumbnailUrlBuilder get gridThumbnailUrlBuilder =>
-      (settings, post) => switch (settings.imageQuality) {
+      (imageQuality, post) => switch (imageQuality) {
             ImageQuality.automatic => post.thumbnailImageUrl,
             ImageQuality.low => post.thumbnailImageUrl,
             ImageQuality.high =>
@@ -63,7 +63,7 @@ mixin DefaultTagColorMixin implements BooruBuilder {
           '3' || 'copyright' => colors.copyright,
           '4' || 'character' => colors.character,
           '5' || 'meta' || 'metadata' => colors.meta,
-          _ => null,
+          _ => colors.general,
         };
       };
 }
@@ -71,10 +71,10 @@ mixin DefaultTagColorMixin implements BooruBuilder {
 mixin DefaultPostImageDetailsUrlMixin implements BooruBuilder {
   @override
   PostImageDetailsUrlBuilder get postImageDetailsUrlBuilder =>
-      (settings, post, config) => post.isGif
+      (imageQuality, post, config) => post.isGif
           ? post.sampleImageUrl
           : config.imageDetaisQuality.toOption().fold(
-              () => switch (settings.imageQuality) {
+              () => switch (imageQuality) {
                     ImageQuality.low => post.thumbnailImageUrl,
                     ImageQuality.original => post.isVideo
                         ? post.videoThumbnailUrl
@@ -235,25 +235,55 @@ mixin DefaultBooruUIMixin implements BooruBuilder {
 
   @override
   SearchPageBuilder get searchPageBuilder =>
-      (context, initialQuery) => BooruProvider(
-            builder: (booruBuilder, _) => SearchPageScaffold(
-              initialQuery: initialQuery,
-              fetcher: (page, tags) =>
-                  booruBuilder?.postFetcher.call(page, tags) ??
-                  TaskEither.of(<Post>[]),
-            ),
+      (context, initialQuery) => DefaultSearchPage(
+            initialQuery: initialQuery,
           );
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) => BooruProvider(
-            builder: (booruBuilder, ref) => PostDetailsPageScaffold(
-              posts: payload.posts,
-              initialIndex: payload.initialIndex,
-              swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
-              onExit: (page) => payload.scrollController?.scrollToIndex(page),
-            ),
+      (context, config, payload) => DefaultPostDetailsPage(
+            payload: payload,
           );
+}
+
+class DefaultPostDetailsPage extends ConsumerWidget {
+  const DefaultPostDetailsPage({
+    super.key,
+    required this.payload,
+  });
+
+  final DetailsPayload payload;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return PostDetailsPageScaffold(
+      posts: payload.posts,
+      initialIndex: payload.initialIndex,
+      swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
+      onExit: (page) => payload.scrollController?.scrollToIndex(page),
+    );
+  }
+}
+
+class DefaultSearchPage extends ConsumerWidget {
+  const DefaultSearchPage({
+    super.key,
+    required this.initialQuery,
+  });
+
+  final String? initialQuery;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final booruBuilder = ref.watch(booruBuilderProvider);
+
+    return SearchPageScaffold(
+      initialQuery: initialQuery,
+      fetcher: (page, tags) =>
+          booruBuilder?.postFetcher.call(page, tags) ??
+          TaskEither.of(<Post>[].toResult()),
+    );
+  }
 }
 
 mixin DefaultHomeMixin implements BooruBuilder {
@@ -273,7 +303,10 @@ String Function(
     (post) => kPreferredLayout.isDesktop
         ? post.sampleImageUrl
         : ref.watchBooruBuilder(ref.watchConfig)?.postImageDetailsUrlBuilder(
-                ref.watch(settingsProvider), post, ref.watchConfig) ??
+                  ref.watch(imageListingSettingsProvider).imageQuality,
+                  post,
+                  ref.watchConfig,
+                ) ??
             post.sampleImageUrl;
 
 Widget Function(
@@ -318,10 +351,9 @@ Widget Function(
                   children: [
                     Flexible(
                       child: PostTagListChip(
-                        tag: Tag(
+                        tag: Tag.noCount(
                           name: artist,
-                          category: TagCategory.artist,
-                          postCount: 0,
+                          category: TagCategory.artist(),
                         ),
                         onTap: () => goToArtistPage(
                           context,
@@ -337,3 +369,8 @@ Widget Function(
       ImageQuickActionType.none => (context, _) => const SizedBox.shrink(),
       ImageQuickActionType.defaultAction => null,
     };
+
+mixin UnknownMetatagsMixin implements BooruBuilder {
+  @override
+  MetatagExtractor? get metatagExtractor => null;
+}

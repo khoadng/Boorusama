@@ -7,11 +7,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 // Project imports:
-import 'package:boorusama/core/autocompletes/autocomplete.dart';
+import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/core/tags/metatag.dart';
+import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
-import 'package:boorusama/string.dart';
 
 class TagSuggestionItems extends ConsumerWidget {
   const TagSuggestionItems({
@@ -22,6 +23,8 @@ class TagSuggestionItems extends ConsumerWidget {
     this.backgroundColor,
     this.textColorBuilder,
     this.dense = false,
+    this.borderRadius,
+    this.elevation,
   }) : _tags = tags;
 
   final IList<AutocompleteData> _tags;
@@ -30,13 +33,15 @@ class TagSuggestionItems extends ConsumerWidget {
   final Color? backgroundColor;
   final Color? Function(AutocompleteData tag)? textColorBuilder;
   final bool dense;
+  final BorderRadiusGeometry? borderRadius;
+  final double? elevation;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Material(
       color: backgroundColor ?? context.theme.scaffoldBackgroundColor,
-      elevation: 4,
-      borderRadius: const BorderRadius.all(Radius.circular(8)),
+      elevation: elevation ?? 4,
+      borderRadius: borderRadius ?? const BorderRadius.all(Radius.circular(8)),
       child: ListView.builder(
         padding: const EdgeInsets.symmetric(
           vertical: 12,
@@ -54,6 +59,8 @@ class TagSuggestionItems extends ConsumerWidget {
             dense: dense,
             currentQuery: currentQuery,
             textColorBuilder: textColorBuilder,
+            metatagExtractor:
+                ref.watchBooruBuilder(ref.watchConfig)?.metatagExtractor,
           );
         },
       ),
@@ -70,6 +77,7 @@ class TagSuggestionItem extends StatelessWidget {
     required this.currentQuery,
     required this.textColorBuilder,
     required this.showCount,
+    required this.metatagExtractor,
   });
 
   final ValueChanged<AutocompleteData> onItemTap;
@@ -78,6 +86,7 @@ class TagSuggestionItem extends StatelessWidget {
   final String currentQuery;
   final Color? Function(AutocompleteData tag)? textColorBuilder;
   final bool showCount;
+  final MetatagExtractor? metatagExtractor;
 
   @override
   Widget build(BuildContext context) {
@@ -118,31 +127,22 @@ class TagSuggestionItem extends StatelessWidget {
 
   Widget _buildTitle() {
     final color = textColorBuilder != null ? textColorBuilder!(tag) : null;
-    final query = currentQuery.replaceUnderscoreWithSpace().toLowerCase();
-    final htmlStyle = {
-      'p': Style(
-        fontSize: FontSize.medium,
-        color: color,
-        margin: Margins.zero,
-      ),
-      'body': Style(
-        margin: Margins.zero,
-      ),
-      'b': Style(
-        fontWeight: FontWeight.w900,
-      ),
-    };
 
-    return tag.hasAlias
-        ? Html(
-            style: htmlStyle,
-            data:
-                '<p>${tag.antecedent!.replaceUnderscoreWithSpace().replaceAll(query, '<b>$query</b>')} ➞ ${tag.label.replaceAll(query, '<b>$query</b>')}</p>',
-          )
-        : Html(
-            style: htmlStyle,
-            data:
-                '<p>${tag.label.replaceAll(query.replaceUnderscoreWithSpace(), '<b>$query</b>')}</p>',
-          );
+    return Html(
+      style: {
+        'p': Style(
+          fontSize: FontSize.medium,
+          color: color,
+          margin: Margins.zero,
+        ),
+        'body': Style(
+          margin: Margins.zero,
+        ),
+        'b': Style(
+          fontWeight: FontWeight.w900,
+        ),
+      },
+      data: tag.toDisplayHtml(currentQuery, metatagExtractor),
+    );
   }
 }

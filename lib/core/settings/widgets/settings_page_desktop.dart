@@ -20,7 +20,7 @@ import 'package:boorusama/core/settings/widgets/privacy_page.dart';
 import 'package:boorusama/core/settings/widgets/search_settings_page.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import 'about_page.dart';
 import 'changelog_page.dart';

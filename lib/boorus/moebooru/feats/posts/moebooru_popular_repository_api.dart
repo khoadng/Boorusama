@@ -23,7 +23,7 @@ class MoebooruPopularRepositoryApi implements MoebooruPopularRepository {
           fetcher: () => client.getPopularPostsByDay(date: dateTime),
         ));
 
-        return data.map(postDtoToPostNoMetadata).toList();
+        return data.map(postDtoToPostNoMetadata).toList().toResult();
       });
 
   @override
@@ -33,7 +33,7 @@ class MoebooruPopularRepositoryApi implements MoebooruPopularRepository {
           fetcher: () => client.getPopularPostsByMonth(date: dateTime),
         ));
 
-        return data.map(postDtoToPostNoMetadata).toList();
+        return data.map(postDtoToPostNoMetadata).toList().toResult();
       });
 
   @override
@@ -43,7 +43,7 @@ class MoebooruPopularRepositoryApi implements MoebooruPopularRepository {
           fetcher: () => client.getPopularPostsByWeek(date: dateTime),
         ));
 
-        return data.map(postDtoToPostNoMetadata).toList();
+        return data.map(postDtoToPostNoMetadata).toList().toResult();
       });
 
   @override
@@ -59,6 +59,6 @@ class MoebooruPopularRepositoryApi implements MoebooruPopularRepository {
           }),
         ));
 
-        return data.map(postDtoToPostNoMetadata).toList();
+        return data.map(postDtoToPostNoMetadata).toList().toResult();
       });
 }
