@@ -48,12 +48,13 @@ class PoolDetailPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final poolDesc = ref.watch(poolDescriptionProvider(pool.id));
     final config = ref.watchConfig;
+    final postRepo = ref.watch(danbooruPostRepoProvider(config));
 
     return PostScope(
-      fetcher: (page) => ref.read(danbooruPostRepoProvider(config)).getPosts(
-            pool.toQuery(ref.read(selectedPoolDetailsOrderProvider)),
-            page,
-          ),
+      fetcher: (page) => postRepo.getPosts(
+        pool.toQuery(ref.read(selectedPoolDetailsOrderProvider)),
+        page,
+      ),
       builder: (context, controller, errors) => DanbooruInfinitePostList(
         errors: errors,
         controller: controller,

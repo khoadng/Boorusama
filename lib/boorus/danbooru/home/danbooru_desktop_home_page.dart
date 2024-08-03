@@ -38,12 +38,13 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruDesktopHomePage> {
   @override
   Widget build(BuildContext context) {
     final config = ref.watchConfig;
+    final postRepo = ref.watch(danbooruPostRepoProvider(config));
 
     return PostScope(
-      fetcher: (page) => ref.read(danbooruPostRepoProvider(config)).getPosts(
-            selectedTagController.rawTagsString,
-            page,
-          ),
+      fetcher: (page) => postRepo.getPosts(
+        selectedTagController.rawTagsString,
+        page,
+      ),
       builder: (context, controller, errors) => context.screenHeight < 450
           ? _buildList(
               controller,

@@ -190,7 +190,9 @@ class _PoolPagedSliverGridState extends ConsumerState<PoolPagedSliverGrid> {
         controller.appendPage(newItems, nextPageKey);
       }
     } catch (error) {
-      controller.error = error;
+      if (mounted) {
+        controller.error = error;
+      }
     }
   }
 

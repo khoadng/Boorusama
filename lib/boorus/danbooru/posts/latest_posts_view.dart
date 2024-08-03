@@ -40,11 +40,10 @@ class _LatestViewState extends ConsumerState<LatestView> {
   @override
   Widget build(BuildContext context) {
     final config = ref.watchConfig;
+    final postRepo = ref.watch(danbooruPostRepoProvider(config));
 
     return PostScope(
-      fetcher: (page) => ref
-          .read(danbooruPostRepoProvider(config))
-          .getPosts(_selectedTag.value, page),
+      fetcher: (page) => postRepo.getPosts(_selectedTag.value, page),
       builder: (context, controller, errors) => DanbooruInfinitePostList(
         errors: errors,
         controller: controller,
