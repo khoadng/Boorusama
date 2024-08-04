@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:boorusama/dart.dart';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
@@ -68,8 +69,8 @@ class BooruConfigData extends Equatable {
         passHash: json['passHash'] as String?,
         url: json['url'] as String,
         name: json['name'] as String,
-        deletedItemBehavior: json['deletedItemBehavior'] as int,
-        ratingFilter: json['ratingFilter'] as int,
+        deletedItemBehavior: parseIntSafe(json['deletedItemBehavior']),
+        ratingFilter: parseIntSafe(json['ratingFilter']),
         customDownloadFileNameFormat:
             json['customDownloadFileNameFormat'] as String?,
         customBulkDownloadFileNameFormat:
