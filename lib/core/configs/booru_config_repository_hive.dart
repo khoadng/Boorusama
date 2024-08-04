@@ -88,30 +88,7 @@ class HiveBooruConfigRepository implements BooruConfigRepository {
     final configs = <BooruConfig>[];
 
     for (final booruConfig in booruConfigs) {
-      final data = BooruConfigData(
-        booruId: booruConfig.booruId,
-        booruIdHint: booruConfig.booruIdHint,
-        apiKey: booruConfig.apiKey ?? '',
-        login: booruConfig.login ?? '',
-        passHash: booruConfig.passHash,
-        url: booruConfig.url,
-        name: booruConfig.name,
-        deletedItemBehavior: booruConfig.deletedItemBehavior.index,
-        ratingFilter: booruConfig.ratingFilter.index,
-        customDownloadFileNameFormat:
-            booruConfig.customDownloadFileNameFormat ?? '',
-        customBulkDownloadFileNameFormat:
-            booruConfig.customBulkDownloadFileNameFormat ?? '',
-        customDownloadLocation: booruConfig.customDownloadLocation,
-        imageDetaisQuality: booruConfig.imageDetaisQuality ?? '',
-        granularRatingFilterString: granularRatingFilterToString(
-          booruConfig.granularRatingFilters,
-        ),
-        postGestures: booruConfig.postGestures?.toJsonString(),
-        defaultPreviewImageButtonAction:
-            booruConfig.defaultPreviewImageButtonAction,
-        listing: booruConfig.listing?.toJsonString(),
-      );
+      final data = booruConfig.toBooruConfigData();
       final json = data.toJson();
       final jsonString = jsonEncode(json);
       await box.put(booruConfig.id, jsonString);
