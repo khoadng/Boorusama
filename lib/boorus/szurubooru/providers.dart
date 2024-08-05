@@ -152,8 +152,8 @@ final szurubooruTagCategoriesProvider =
               id: index,
               name: e.name ?? '???',
               order: e.order,
-              darkColor: hexToColor(e.color),
-              lightColor: hexToColor(e.color),
+              darkColor: ColorUtils.hexToColor(e.color),
+              lightColor: ColorUtils.hexToColor(e.color),
             ))
         .toList();
   },
