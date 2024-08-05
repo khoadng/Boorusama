@@ -46,8 +46,12 @@ final danbooruPostRepoProvider =
                   ))
               .toList());
 
-      return ref
-          .read(danbooruPostFetchTransformerProvider(config))(posts.toResult());
+      final filteredPosts = config.hideBannedPosts
+          ? posts.where((e) => !e.isBanned).toList()
+          : posts;
+
+      return ref.read(danbooruPostFetchTransformerProvider(config))(
+          filteredPosts.toResult());
     },
     getSettings: () async => ref.read(imageListingSettingsProvider),
   );

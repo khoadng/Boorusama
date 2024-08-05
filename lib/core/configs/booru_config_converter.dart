@@ -22,6 +22,8 @@ extension BooruConfigDataConverter on BooruConfigData? {
           BooruConfigRatingFilter.values[booruConfigData.ratingFilter],
       deletedItemBehavior: BooruConfigDeletedItemBehavior
           .values[booruConfigData.deletedItemBehavior],
+      bannedPostVisibility: BooruConfigBannedPostVisibility
+          .values[booruConfigData.bannedPostVisibility],
       customDownloadFileNameFormat:
           booruConfigData.customDownloadFileNameFormat,
       customBulkDownloadFileNameFormat:
@@ -54,6 +56,7 @@ extension BooruConfigConverter on BooruConfig {
       name: name,
       deletedItemBehavior: deletedItemBehavior.index,
       ratingFilter: ratingFilter.index,
+      bannedPostVisibility: bannedPostVisibility.index,
       url: url,
       customDownloadFileNameFormat: customDownloadFileNameFormat,
       customBulkDownloadFileNameFormat: customBulkDownloadFileNameFormat,

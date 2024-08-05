@@ -21,6 +21,7 @@ class BooruConfig extends Equatable {
     required this.name,
     required this.ratingFilter,
     required this.deletedItemBehavior,
+    required this.bannedPostVisibility,
     required this.url,
     required this.customDownloadFileNameFormat,
     required this.customBulkDownloadFileNameFormat,
@@ -42,6 +43,7 @@ class BooruConfig extends Equatable {
     name: '',
     deletedItemBehavior: BooruConfigDeletedItemBehavior.show,
     ratingFilter: BooruConfigRatingFilter.none,
+    bannedPostVisibility: BooruConfigBannedPostVisibility.show,
     url: '',
     customDownloadFileNameFormat: null,
     customBulkDownloadFileNameFormat: null,
@@ -68,6 +70,7 @@ class BooruConfig extends Equatable {
         name: 'new profile',
         deletedItemBehavior: BooruConfigDeletedItemBehavior.show,
         ratingFilter: BooruConfigRatingFilter.none,
+        bannedPostVisibility: BooruConfigBannedPostVisibility.show,
         url: url,
         customDownloadFileNameFormat: customDownloadFileNameFormat,
         customBulkDownloadFileNameFormat: customDownloadFileNameFormat,
@@ -89,6 +92,7 @@ class BooruConfig extends Equatable {
   final String name;
   final BooruConfigDeletedItemBehavior deletedItemBehavior;
   final BooruConfigRatingFilter ratingFilter;
+  final BooruConfigBannedPostVisibility bannedPostVisibility;
   final String? customDownloadFileNameFormat;
   final String? customBulkDownloadFileNameFormat;
   final String? customDownloadLocation;
@@ -115,6 +119,7 @@ class BooruConfig extends Equatable {
       passHash: passHash,
       deletedItemBehavior: deletedItemBehavior,
       ratingFilter: ratingFilter,
+      bannedPostVisibility: bannedPostVisibility,
       customDownloadFileNameFormat: customDownloadFileNameFormat,
       customBulkDownloadFileNameFormat: customBulkDownloadFileNameFormat,
       customDownloadLocation: customDownloadLocation,
@@ -137,6 +142,7 @@ class BooruConfig extends Equatable {
         name,
         deletedItemBehavior,
         ratingFilter,
+        bannedPostVisibility,
         url,
         customDownloadFileNameFormat,
         customBulkDownloadFileNameFormat,
@@ -150,6 +156,7 @@ class BooruConfig extends Equatable {
 
   factory BooruConfig.fromJson(Map<String, dynamic> json) {
     final ratingFilter = json['ratingFilter'] as int?;
+    final bannedPostVisibility = json['bannedPostVisibility'] as int?;
 
     return BooruConfig(
       id: json['id'] as int,
@@ -166,6 +173,11 @@ class BooruConfig extends Equatable {
           ? BooruConfigRatingFilter.values.getOrNull(ratingFilter) ??
               BooruConfigRatingFilter.hideNSFW
           : BooruConfigRatingFilter.hideNSFW,
+      bannedPostVisibility: bannedPostVisibility != null
+          ? BooruConfigBannedPostVisibility.values
+                  .getOrNull(bannedPostVisibility) ??
+              BooruConfigBannedPostVisibility.show
+          : BooruConfigBannedPostVisibility.show,
       customDownloadFileNameFormat:
           json['customDownloadFileNameFormat'] as String?,
       customBulkDownloadFileNameFormat:
@@ -199,6 +211,7 @@ class BooruConfig extends Equatable {
       'name': name,
       'deletedItemBehavior': deletedItemBehavior.index,
       'ratingFilter': ratingFilter.index,
+      'bannedPostVisibility': bannedPostVisibility.index,
       'customDownloadFileNameFormat': customDownloadFileNameFormat,
       'customBulkDownloadFileNameFormat': customBulkDownloadFileNameFormat,
       'customDownloadLocation': customDownloadLocation,
@@ -240,6 +253,11 @@ enum BooruConfigRatingFilter {
   custom,
 }
 
+enum BooruConfigBannedPostVisibility {
+  show,
+  hide,
+}
+
 extension BooruConfigRatingFilterX on BooruConfigRatingFilter {
   String getRatingTerm() => switch (this) {
         BooruConfigRatingFilter.none => 'None',
@@ -264,6 +282,9 @@ extension BooruConfigNullX on BooruConfig? {
 
     return true;
   }
+
+  bool get hideBannedPosts =>
+      this?.bannedPostVisibility == BooruConfigBannedPostVisibility.hide;
 }
 
 extension BooruConfigX on BooruConfig {
