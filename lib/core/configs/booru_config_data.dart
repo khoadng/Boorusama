@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:boorusama/foundation/theme.dart';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
@@ -28,6 +29,7 @@ class BooruConfigData extends Equatable {
     required this.postGestures,
     required this.defaultPreviewImageButtonAction,
     required this.listing,
+    required this.theme,
   });
 
   factory BooruConfigData.anonymous({
@@ -59,6 +61,7 @@ class BooruConfigData extends Equatable {
         postGestures: null,
         defaultPreviewImageButtonAction: null,
         listing: null,
+        theme: null,
       );
 
   static BooruConfigData? fromJson(Map<String, dynamic> json) {
@@ -86,6 +89,7 @@ class BooruConfigData extends Equatable {
         defaultPreviewImageButtonAction:
             json['defaultPreviewImageButtonAction'] as String?,
         listing: json['listing'] as String?,
+        theme: json['theme'] as String?,
       );
     } catch (e) {
       return null;
@@ -112,6 +116,7 @@ class BooruConfigData extends Equatable {
       'postGestures': postGestures,
       'defaultPreviewImageButtonAction': defaultPreviewImageButtonAction,
       'listing': listing,
+      'theme': theme,
     };
   }
 
@@ -133,6 +138,7 @@ class BooruConfigData extends Equatable {
   final String? postGestures;
   final String? defaultPreviewImageButtonAction;
   final String? listing;
+  final String? theme;
 
   @override
   List<Object?> get props => [
@@ -154,6 +160,7 @@ class BooruConfigData extends Equatable {
         postGestures,
         defaultPreviewImageButtonAction,
         listing,
+        theme,
       ];
 }
 
@@ -164,6 +171,10 @@ extension BooruConfigDataX on BooruConfigData {
 
   ListingConfigs? get listingTyped {
     return ListingConfigs.fromJsonString(listing);
+  }
+
+  ThemeConfigs? get themeTyped {
+    return ThemeConfigs.fromJsonString(theme);
   }
 
   Set<Rating>? get granularRatingFilterTyped {
@@ -209,6 +220,7 @@ extension BooruConfigDataCopyWith on BooruConfigData {
     PostGestureConfig? Function()? postGestures,
     String? Function()? defaultPreviewImageButtonAction,
     ListingConfigs? Function()? listing,
+    ThemeConfigs? Function()? theme,
   }) {
     return BooruConfigData(
       booruId: booruId ?? this.booruId,
@@ -249,6 +261,7 @@ extension BooruConfigDataCopyWith on BooruConfigData {
           ? defaultPreviewImageButtonAction()
           : this.defaultPreviewImageButtonAction,
       listing: listing != null ? listing()?.toJsonString() : this.listing,
+      theme: theme != null ? theme()?.toJsonString() : this.theme,
     );
   }
 }

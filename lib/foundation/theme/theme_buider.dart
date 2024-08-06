@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -29,6 +30,8 @@ class ThemeBuilder extends ConsumerWidget {
     final systemDarkMode =
         MediaQuery.platformBrightnessOf(context) == Brightness.dark;
 
+    final customColorScheme = ref.watchConfig.theme?.colors?.toColorScheme();
+
     return DynamicColorBuilder(
       builder: (lightOrigin, darkOrigin) {
         final (light, dark) = enableDynamicColor
@@ -37,12 +40,14 @@ class ThemeBuilder extends ConsumerWidget {
                 : (null, null)
             : (null, null);
 
-        final scheme = AppTheme.generateScheme(
+        final defaultScheme = AppTheme.generateScheme(
           theme,
           dynamicDarkScheme: dark,
           dynamicLightScheme: light,
           systemDarkMode: systemDarkMode,
         );
+
+        final scheme = customColorScheme ?? defaultScheme;
 
         return Builder(
           builder: (context) => ProviderScope(

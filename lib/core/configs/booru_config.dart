@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:boorusama/foundation/theme/theme_configs.dart';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
@@ -31,6 +32,7 @@ class BooruConfig extends Equatable {
     required this.postGestures,
     required this.defaultPreviewImageButtonAction,
     required this.listing,
+    required this.theme,
   });
 
   static const BooruConfig empty = BooruConfig(
@@ -53,6 +55,7 @@ class BooruConfig extends Equatable {
     postGestures: null,
     defaultPreviewImageButtonAction: null,
     listing: null,
+    theme: null,
   );
 
   static BooruConfig defaultConfig({
@@ -80,6 +83,7 @@ class BooruConfig extends Equatable {
         postGestures: null,
         defaultPreviewImageButtonAction: null,
         listing: null,
+        theme: null,
       );
 
   final int id;
@@ -101,6 +105,7 @@ class BooruConfig extends Equatable {
   final PostGestureConfig? postGestures;
   final String? defaultPreviewImageButtonAction;
   final ListingConfigs? listing;
+  final ThemeConfigs? theme;
 
   BooruConfig copyWith({
     String? url,
@@ -128,6 +133,7 @@ class BooruConfig extends Equatable {
       postGestures: postGestures,
       defaultPreviewImageButtonAction: defaultPreviewImageButtonAction,
       listing: listing,
+      theme: theme,
     );
   }
 
@@ -152,6 +158,7 @@ class BooruConfig extends Equatable {
         postGestures,
         defaultPreviewImageButtonAction,
         listing,
+        theme,
       ];
 
   factory BooruConfig.fromJson(Map<String, dynamic> json) {
@@ -196,6 +203,9 @@ class BooruConfig extends Equatable {
       listing: json['listing'] == null
           ? null
           : ListingConfigs.fromJson(json['listing'] as Map<String, dynamic>),
+      theme: json['theme'] == null
+          ? null
+          : ThemeConfigs.fromJson(json['theme'] as Map<String, dynamic>),
     );
   }
 
@@ -222,6 +232,7 @@ class BooruConfig extends Equatable {
       'postGestures': postGestures?.toJson(),
       'defaultPreviewImageButtonAction': defaultPreviewImageButtonAction,
       'listing': listing?.toJson(),
+      'theme': theme?.toJson(),
     };
   }
 }

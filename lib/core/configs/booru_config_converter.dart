@@ -2,6 +2,7 @@
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/gestures.dart';
+import 'package:boorusama/foundation/theme.dart';
 
 extension BooruConfigDataConverter on BooruConfigData? {
   BooruConfig? toBooruConfig({required int? id}) {
@@ -41,6 +42,9 @@ extension BooruConfigDataConverter on BooruConfigData? {
       listing: booruConfigData.listing == null
           ? null
           : ListingConfigs.fromJsonString(booruConfigData.listing),
+      theme: booruConfigData.theme == null
+          ? null
+          : ThemeConfigs.fromJsonString(booruConfigData.theme),
     );
   }
 }
@@ -68,6 +72,7 @@ extension BooruConfigConverter on BooruConfig {
       postGestures: postGestures?.toJsonString(),
       defaultPreviewImageButtonAction: defaultPreviewImageButtonAction,
       listing: listing?.toJsonString(),
+      theme: theme?.toJsonString(),
     );
   }
 }

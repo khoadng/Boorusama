@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:boorusama/foundation/theme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -89,6 +90,12 @@ final listingConfigsProvider = StateProvider.autoDispose<ListingConfigs?>(
   dependencies: [booruConfigDataProvider],
 );
 
+final themeConfigsProvider = StateProvider.autoDispose<ThemeConfigs?>(
+  (ref) =>
+      ref.watch(booruConfigDataProvider.select((value) => value.themeTyped)),
+  dependencies: [booruConfigDataProvider],
+);
+
 final configNameProvider = StateProvider.autoDispose<String>(
   (ref) => ref.watch(booruConfigDataProvider.select((value) => value.name)),
   dependencies: [booruConfigDataProvider],
@@ -128,6 +135,9 @@ extension UpdateDataX on WidgetRef {
 
   void updateListing(ListingConfigs? data) =>
       read(listingConfigsProvider.notifier).state = data;
+
+  void updateTheme(ThemeConfigs? data) =>
+      read(themeConfigsProvider.notifier).state = data;
 
   void updateName(String data) =>
       read(configNameProvider.notifier).state = data;
