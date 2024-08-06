@@ -25,7 +25,8 @@ class CommentPageScaffold extends ConsumerStatefulWidget {
 
   final int postId;
   final CommentFetcher fetcher;
-  final Widget Function(BuildContext, Comment)? commentItemBuilder;
+  final Widget Function(BuildContext context, Comment comment)?
+      commentItemBuilder;
 
   @override
   ConsumerState<CommentPageScaffold> createState() =>
