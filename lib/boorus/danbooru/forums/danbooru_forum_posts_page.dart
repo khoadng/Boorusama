@@ -56,6 +56,11 @@ class _DanbooruForumPostsPageState
   }
 
   Future<void> _fetchPage(int pageKey) async {
+    if (pageKey <= 0) {
+      pagingController.appendLastPage([]);
+      return;
+    }
+
     final posts = await ref
         .read(danbooruForumPostRepoProvider(ref.readConfig))
         .getForumPostsOrEmpty(
@@ -64,11 +69,9 @@ class _DanbooruForumPostsPageState
           limit: _pageSize,
         );
 
-    if (posts.isEmpty || pageKey == 1) {
-      pagingController.appendLastPage([]);
-    } else {
-      pagingController.appendPage(posts, pageKey - 1);
-    }
+    if (!mounted) return;
+
+    pagingController.appendPage(posts, pageKey - 1);
   }
 
   @override
