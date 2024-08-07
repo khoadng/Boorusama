@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_html/flutter_html.dart';
 
-class AppHtml extends StatelessWidget {
+class AppHtml extends StatefulWidget {
   const AppHtml({
     super.key,
     required this.data,
@@ -17,11 +17,28 @@ class AppHtml extends StatelessWidget {
   final OnTap? onLinkTap;
 
   @override
+  State<AppHtml> createState() => _AppHtmlState();
+}
+
+class _AppHtmlState extends State<AppHtml> {
+  final _focusNode = FocusNode();
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Html(
-      data: data,
-      style: _mergeStyle(context, style),
-      onLinkTap: onLinkTap,
+    return SelectableRegion(
+      focusNode: _focusNode,
+      selectionControls: materialTextSelectionControls,
+      child: Html(
+        data: widget.data,
+        style: _mergeStyle(context, widget.style),
+        onLinkTap: widget.onLinkTap,
+      ),
     );
   }
 
