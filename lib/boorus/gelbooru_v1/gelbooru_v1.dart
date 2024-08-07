@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart';
 
@@ -19,6 +18,7 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
+import 'package:boorusama/foundation/html.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/info_container.dart';
@@ -130,8 +130,9 @@ class GelbooruV1SearchPage extends ConsumerWidget {
 
     return SearchPageScaffold(
       noticeBuilder: (context) => InfoContainer(
-        contentBuilder: (context) =>
-            Html(data: 'The app will use <b>Gelbooru</b> for tag completion.'),
+        contentBuilder: (context) => const AppHtml(
+          data: 'The app will use <b>Gelbooru</b> for tag completion.',
+        ),
       ),
       initialQuery: initialQuery,
       fetcher: (page, tags) =>

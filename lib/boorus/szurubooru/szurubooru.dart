@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
@@ -22,6 +21,7 @@ import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/dart.dart';
+import 'package:boorusama/foundation/html.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/routes.dart';
@@ -264,9 +264,10 @@ class SzurubooruSearchPage extends ConsumerWidget {
     return SearchPageScaffold(
       noticeBuilder: (context) => !config.hasLoginDetails()
           ? InfoContainer(
-              contentBuilder: (context) => Html(
-                  data:
-                      'You need to log in to use <b>Szurubooru</b> tag completion.'),
+              contentBuilder: (context) => const AppHtml(
+                data:
+                    'You need to log in to use <b>Szurubooru</b> tag completion.',
+              ),
             )
           : const SizedBox.shrink(),
       initialQuery: initialQuery,

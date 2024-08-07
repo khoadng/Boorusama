@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -14,6 +13,7 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/foundation/html.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
@@ -101,7 +101,7 @@ class PoolDetailPage extends ConsumerWidget {
             data: (data) => data.description.isNotEmpty &&
                     hasTextBetweenDiv(data.description)
                 ? SliverToBoxAdapter(
-                    child: Html(
+                    child: AppHtml(
                       onLinkTap: !config.hasStrictSFW
                           ? (url, attributes, element) => _onHtmlLinkTapped(
                                 attributes,

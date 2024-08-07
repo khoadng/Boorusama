@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 // Project imports:
+import 'package:boorusama/foundation/html.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 
@@ -26,7 +27,7 @@ class Quote extends StatelessWidget {
         top: 3,
         bottom: 6,
       ),
-      child: Html(
+      child: AppHtml(
         style: {
           'body': Style(
             fontSize: FontSize.medium,

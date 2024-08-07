@@ -16,6 +16,7 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/dtext/dtext.dart';
 import 'package:boorusama/core/forums/forums.dart';
 import 'package:boorusama/core/users/users.dart';
+import 'package:boorusama/foundation/html.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/string.dart';
 
@@ -128,7 +129,7 @@ class _DanbooruForumPostsPageState
               username: creatorName,
             ),
           ),
-          Html(
+          AppHtml(
             onLinkTap: !config.hasStrictSFW
                 ? (url, attributes, element) =>
                     url != null ? launchExternalUrlString(url) : null
@@ -142,7 +143,7 @@ class _DanbooruForumPostsPageState
                 margin: Margins.only(left: 4, bottom: 16),
                 border: const Border(
                     left: BorderSide(color: Colors.grey, width: 3)),
-              )
+              ),
             },
             data: dtext(post.body, booruUrl: config.url),
           ),

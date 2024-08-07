@@ -8,6 +8,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/foundation/html.dart';
 import 'package:boorusama/foundation/theme.dart';
 
 class DismissableInfoContainer extends ConsumerStatefulWidget {
@@ -74,7 +75,7 @@ class _DismissableInfoContainerState
               Row(
                 children: [
                   Expanded(
-                    child: Html(
+                    child: AppHtml(
                       style: {
                         'body': Style(
                           color: colors?.foregroundColor,

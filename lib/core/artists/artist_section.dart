@@ -10,6 +10,7 @@ import 'package:boorusama/core/artists/artists.dart';
 import 'package:boorusama/core/comments/comments.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/foundation/html.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 
@@ -79,7 +80,7 @@ class _ArtistSectionState extends State<ArtistSection> {
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16,
                   ),
-                  child: Html(
+                  child: AppHtml(
                     style: {
                       'body': Style(
                         whiteSpace: WhiteSpace.pre,

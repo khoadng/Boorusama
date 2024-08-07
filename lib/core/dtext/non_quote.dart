@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 // Project imports:
+import 'package:boorusama/foundation/html.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 
 class NonQuote extends StatelessWidget {
@@ -13,7 +14,7 @@ class NonQuote extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Html(
+    return AppHtml(
       style: {
         'body': Style(
           fontSize: FontSize.medium,
