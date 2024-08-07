@@ -38,9 +38,10 @@ class DanbooruForumPostsPage extends ConsumerStatefulWidget {
 
 class _DanbooruForumPostsPageState
     extends ConsumerState<DanbooruForumPostsPage> {
-  final int _pageSize = 20;
   late final pagingController = PagingController<int, DanbooruForumPost>(
-    firstPageKey: (widget.responseCount / _pageSize).ceil(),
+    firstPageKey: DanbooruForumUtils.getFirstPageKey(
+      responseCount: widget.responseCount,
+    ),
   );
 
   @override
@@ -66,7 +67,7 @@ class _DanbooruForumPostsPageState
         .getForumPostsOrEmpty(
           widget.topicId,
           page: pageKey,
-          limit: _pageSize,
+          limit: DanbooruForumUtils.postPerPage,
         );
 
     if (!mounted) return;
