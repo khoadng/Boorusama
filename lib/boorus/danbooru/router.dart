@@ -246,9 +246,9 @@ void goToPoolSearchPage(BuildContext context, WidgetRef ref) {
 
 void goToRelatedTagsPage(
   BuildContext context, {
-  required RelatedTag relatedTag,
-  required void Function(RelatedTagItem tag) onAdded,
-  required void Function(RelatedTagItem tag) onNegated,
+  required DanbooruRelatedTag relatedTag,
+  required void Function(DanbooruRelatedTagItem tag) onAdded,
+  required void Function(DanbooruRelatedTagItem tag) onNegated,
 }) {
   showAdaptiveSheet(
     context,

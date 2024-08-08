@@ -63,7 +63,7 @@ final userDataProvider = FutureProvider.family<List<DanbooruReportDataPoint>,
 });
 
 final userCopyrightDataProvider =
-    FutureProvider.family<RelatedTag, DanbooruCopyrightDataParams>(
+    FutureProvider.family<DanbooruRelatedTag, DanbooruCopyrightDataParams>(
         (ref, params) async {
   final username = params.username;
   final config = ref.watchConfig;
@@ -291,7 +291,7 @@ class UserDetailsPage extends ConsumerWidget {
   }
 
   Widget _buildTags(
-    List<RelatedTagItem> tags,
+    List<DanbooruRelatedTagItem> tags,
     BuildContext context,
     WidgetRef ref,
   ) {

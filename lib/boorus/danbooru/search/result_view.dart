@@ -31,12 +31,12 @@ class ResultView extends ConsumerStatefulWidget {
   final SearchPageController searchController;
   final Color? backgroundColor;
   final void Function(
-    RelatedTagItem tag,
+    DanbooruRelatedTagItem tag,
     PostGridController<DanbooruPost> postController,
   ) onRelatedTagAdded;
 
   final void Function(
-    RelatedTagItem tag,
+    DanbooruRelatedTagItem tag,
     PostGridController<DanbooruPost> postController,
   ) onRelatedTagNegated;
 

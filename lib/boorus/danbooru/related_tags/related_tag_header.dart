@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/related_tags/related_tags.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
@@ -21,9 +22,9 @@ class RelatedTagHeader extends ConsumerStatefulWidget {
     this.backgroundColor,
   });
 
-  final RelatedTag relatedTag;
-  final void Function(RelatedTagItem item) onAdded;
-  final void Function(RelatedTagItem item) onNegated;
+  final DanbooruRelatedTag relatedTag;
+  final void Function(DanbooruRelatedTagItem item) onAdded;
+  final void Function(DanbooruRelatedTagItem item) onNegated;
   final Color? backgroundColor;
 
   @override
@@ -50,7 +51,7 @@ class _RelatedTagHeaderState extends ConsumerState<RelatedTagHeader> {
         scrollDirection: Axis.horizontal,
         itemCount: data.length,
         itemBuilder: (context, index) => switch (data[index]) {
-          RelatedTagItem item => RelatedTagButton(
+          DanbooruRelatedTagItem item => RelatedTagButton(
               backgroundColor: ref.watch(tagColorProvider(item.category.name)),
               onAdd: () => widget.onAdded(item),
               onRemove: () => widget.onNegated(item),

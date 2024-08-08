@@ -8,10 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/booru_chip.dart';
-import 'related_tags.dart';
 
 class RelatedTagCloudChip extends ConsumerWidget {
   const RelatedTagCloudChip({
@@ -20,14 +18,14 @@ class RelatedTagCloudChip extends ConsumerWidget {
     this.isDummy = false,
     required this.onPressed,
     super.key,
-    this.color,
+    required this.color,
   });
 
   final int index;
-  final RelatedTagItem tag;
   final bool isDummy;
   final VoidCallback? onPressed;
   final Color? color;
+  final String tag;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -39,7 +37,7 @@ class RelatedTagCloudChip extends ConsumerWidget {
       },
       child: BooruChip(
         label: Text(
-          tag.tag.replaceUnderscoreWithSpace(),
+          tag.replaceUnderscoreWithSpace(),
           style: TextStyle(
             fontSize: max((60 - (index * 2)).toDouble(), 24),
             color: isDummy ? Colors.transparent : null,
@@ -49,7 +47,7 @@ class RelatedTagCloudChip extends ConsumerWidget {
           horizontal: 8,
           vertical: 4,
         ),
-        color: color ?? ref.watch(tagColorProvider(tag.category.name)),
+        color: color,
         onPressed: onPressed,
       ),
     );

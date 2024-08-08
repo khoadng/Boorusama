@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/posts/posts.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/related_tags/related_tags.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/display.dart';
@@ -145,7 +146,7 @@ class _DanbooruTagDetailsPageState
 }
 
 final danbooruRelatedTagCloudProvider =
-    FutureProvider.autoDispose.family<List<RelatedTagItem>, String>(
+    FutureProvider.autoDispose.family<List<DanbooruRelatedTagItem>, String>(
   (ref, tag) async {
     final repo = ref.watch(danbooruRelatedTagRepProvider(ref.watchConfig));
     final relatedTag = await repo.getRelatedTag(tag);
@@ -188,7 +189,7 @@ class ArtistTagCloud extends ConsumerWidget {
   });
 
   final String tagName;
-  final List<RelatedTagItem> dummyTags;
+  final List<DanbooruRelatedTagItem> dummyTags;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -211,7 +212,7 @@ class ArtistTagCloud extends ConsumerWidget {
                       tag: tags[i].tag,
                       child: RelatedTagCloudChip(
                         index: i,
-                        tag: tags[i],
+                        tag: tags[i].tag,
                         color: tagColors[tags[i].category.name],
                         onPressed: () => goToSearchPage(
                           context,

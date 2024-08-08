@@ -5,28 +5,28 @@ import 'package:equatable/equatable.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/string.dart';
 
-class RelatedTag extends Equatable {
-  const RelatedTag({
+class DanbooruRelatedTag extends Equatable {
+  const DanbooruRelatedTag({
     required this.query,
     required this.tags,
     required this.wikiPageTags,
   });
 
-  const RelatedTag.empty()
+  const DanbooruRelatedTag.empty()
       : query = '',
         wikiPageTags = const [],
         tags = const [];
 
   final String query;
-  final List<RelatedTagItem> tags;
+  final List<DanbooruRelatedTagItem> tags;
   final List<Tag> wikiPageTags;
 
-  RelatedTag copyWith({
-    List<RelatedTagItem>? tags,
+  DanbooruRelatedTag copyWith({
+    List<DanbooruRelatedTagItem>? tags,
     List<Tag>? wikiPageTags,
     String? query,
   }) =>
-      RelatedTag(
+      DanbooruRelatedTag(
         query: query ?? this.query,
         wikiPageTags: wikiPageTags ?? this.wikiPageTags,
         tags: tags ?? this.tags,
@@ -36,8 +36,8 @@ class RelatedTag extends Equatable {
   List<Object?> get props => [query, tags, wikiPageTags];
 }
 
-class RelatedTagItem extends Equatable {
-  const RelatedTagItem({
+class DanbooruRelatedTagItem extends Equatable {
+  const DanbooruRelatedTagItem({
     required this.tag,
     required this.category,
     required this.jaccardSimilarity,
@@ -66,9 +66,9 @@ class RelatedTagItem extends Equatable {
       ];
 }
 
-List<RelatedTagItem> generateDummyTags(int count) => [
+List<DanbooruRelatedTagItem> generateDummyTags(int count) => [
       for (var i = 0; i < count; i++)
-        RelatedTagItem(
+        DanbooruRelatedTagItem(
           tag: generateRandomWord(3, 12),
           cosineSimilarity: 1,
           jaccardSimilarity: 1,

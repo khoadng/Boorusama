@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/tags/widgets/tag_chips_placeholder.dart';
+import 'package:boorusama/core/tags/tags.dart';
 import 'related_tags.dart';
 
 class RelatedTagSection extends ConsumerWidget {
@@ -18,8 +18,8 @@ class RelatedTagSection extends ConsumerWidget {
   });
 
   final String query;
-  final void Function(RelatedTagItem tag) onAdded;
-  final void Function(RelatedTagItem tag) onNegated;
+  final void Function(DanbooruRelatedTagItem tag) onAdded;
+  final void Function(DanbooruRelatedTagItem tag) onNegated;
   final Color? backgroundColor;
 
   @override

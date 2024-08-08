@@ -30,7 +30,7 @@ final danbooruRelatedTagRepProvider =
             limit: limit ?? _kTagLimit,
           )
           .then(relatedTagDtoToRelatedTag)
-          .catchError((obj) => const RelatedTag.empty());
+          .catchError((obj) => const DanbooruRelatedTag.empty());
 
       await ref
           .read(booruTagTypeStoreProvider)
@@ -41,9 +41,9 @@ final danbooruRelatedTagRepProvider =
   );
 });
 
-final danbooruRelatedTagProvider =
-    FutureProvider.autoDispose.family<RelatedTag, String>((ref, tag) async {
-  if (tag.isEmpty) return const RelatedTag.empty();
+final danbooruRelatedTagProvider = FutureProvider.autoDispose
+    .family<DanbooruRelatedTag, String>((ref, tag) async {
+  if (tag.isEmpty) return const DanbooruRelatedTag.empty();
 
   final config = ref.watchConfig;
 
@@ -107,7 +107,8 @@ danbooru.TagCategory? _toDanbooruTagCategory(TagCategory? category) {
   return null;
 }
 
-RelatedTag relatedTagDtoToRelatedTag(danbooru.RelatedTagDto dto) => RelatedTag(
+DanbooruRelatedTag relatedTagDtoToRelatedTag(danbooru.RelatedTagDto dto) =>
+    DanbooruRelatedTag(
       query: dto.query ?? '',
       wikiPageTags: dto.wikiPageTags
               ?.map((e) => Tag(
@@ -119,7 +120,7 @@ RelatedTag relatedTagDtoToRelatedTag(danbooru.RelatedTagDto dto) => RelatedTag(
           [],
       tags: dto.relatedTags != null
           ? dto.relatedTags!
-              .map((e) => RelatedTagItem(
+              .map((e) => DanbooruRelatedTagItem(
                     tag: e.tag?.name ?? '',
                     category: TagCategory.fromLegacyId(e.tag?.category),
                     jaccardSimilarity: e.jaccardSimilarity ?? 0.0,
@@ -135,7 +136,7 @@ RelatedTag relatedTagDtoToRelatedTag(danbooru.RelatedTagDto dto) => RelatedTag(
 extension BooruTagTypeStoreX on BooruTagTypeStore {
   Future<void> saveRelatedTagIfNotExist(
     BooruType booruType,
-    RelatedTag related,
+    DanbooruRelatedTag related,
   ) =>
       saveIfNotExist(
         booruType,
