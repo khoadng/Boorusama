@@ -8,7 +8,7 @@ class E621Tag extends Equatable {
   final int id;
   final String name;
   final int postCount;
-  final String relatedTags;
+  final List<E621RelatedTag> relatedTags;
   final DateTime relatedTagsUpdatedAt;
   final TagCategory category;
   final bool isLocked;
@@ -39,4 +39,17 @@ class E621Tag extends Equatable {
         createdAt,
         updatedAt
       ];
+}
+
+class E621RelatedTag extends Equatable {
+  final String tag;
+  final double score;
+
+  const E621RelatedTag({
+    required this.tag,
+    required this.score,
+  });
+
+  @override
+  List<Object> get props => [tag, score];
 }
