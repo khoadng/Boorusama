@@ -35,7 +35,11 @@ class _SwipeToState extends State<SwipeTo> with SingleTickerProviderStateMixin {
   Offset _dragStartOffset = Offset.zero;
   Offset _dragUpdateOffset = Offset.zero;
 
-  final double maxSwipeThreshold = 0.35;
+  double get maxSwipeThreshold => 0.35;
+
+  double calculateIconOpacity(double swipeDistanceFraction) {
+    return (swipeDistanceFraction * 3).clamp(0.0, 1.0);
+  }
 
   late var enabled = widget.enabled;
   // Left = -1, Right = 1
@@ -118,14 +122,14 @@ class _SwipeToState extends State<SwipeTo> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     // Calculate the swipe distance as a fraction of the screen width
-    double swipeDistanceFraction = _dragUpdateOffset.dx.abs();
+    final swipeDistanceFraction = _dragUpdateOffset.dx.abs();
 
     // Determine the opacity based on the swipe distance
-    double iconOpacity = (swipeDistanceFraction * 3).clamp(0.0, 1.0);
+    final iconOpacity = calculateIconOpacity(swipeDistanceFraction);
 
     // Adjust the positions based on the swipe
-    double rightIconPosition = 50 * _dragUpdateOffset.dx;
-    double leftIconPosition = -50 * _dragUpdateOffset.dx;
+    final rightIconPosition = 50 * _dragUpdateOffset.dx;
+    final leftIconPosition = -50 * _dragUpdateOffset.dx;
 
     return GestureDetector(
       onHorizontalDragStart: enabled ? _handleDragStart : null,
