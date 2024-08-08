@@ -10,11 +10,13 @@ class AppHtml extends StatefulWidget {
     required this.data,
     this.style,
     this.onLinkTap,
+    this.selectable = true,
   });
 
   final String data;
   final Map<String, Style>? style;
   final OnTap? onLinkTap;
+  final bool selectable;
 
   @override
   State<AppHtml> createState() => _AppHtmlState();
@@ -31,15 +33,19 @@ class _AppHtmlState extends State<AppHtml> {
 
   @override
   Widget build(BuildContext context) {
-    return SelectableRegion(
-      focusNode: _focusNode,
-      selectionControls: materialTextSelectionControls,
-      child: Html(
-        data: widget.data,
-        style: _mergeStyle(context, widget.style),
-        onLinkTap: widget.onLinkTap,
-      ),
+    final html = Html(
+      data: widget.data,
+      style: _mergeStyle(context, widget.style),
+      onLinkTap: widget.onLinkTap,
     );
+
+    return widget.selectable
+        ? SelectableRegion(
+            focusNode: _focusNode,
+            selectionControls: materialTextSelectionControls,
+            child: html,
+          )
+        : html;
   }
 
   Map<String, Style> _mergeStyle(

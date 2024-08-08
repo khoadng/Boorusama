@@ -140,6 +140,7 @@ class TagSuggestionItem extends StatelessWidget {
           fontWeight: FontWeight.w900,
         ),
       },
+      selectable: false,
       data: tag.toDisplayHtml(currentQuery, metatagExtractor),
     );
   }
