@@ -82,7 +82,11 @@ class SearchAppBar extends ConsumerWidget {
                 children: [
                   if (constraints.maxWidth > 700)
                     Spacer(
-                      flex: constraints.maxWidth > 1000 ? 3 : 1,
+                      flex: switch (constraints.maxWidth) {
+                        > 1600 => 7,
+                        > 1100 => 4,
+                        _ => 2,
+                      },
                     ),
                   Flexible(
                     flex: 4,
@@ -92,7 +96,11 @@ class SearchAppBar extends ConsumerWidget {
                   trailingSearchButton!,
                   if (constraints.maxWidth > 700)
                     Spacer(
-                      flex: constraints.maxWidth > 1000 ? 3 : 1,
+                      flex: switch (constraints.maxWidth) {
+                        > 1600 => 7,
+                        > 1100 => 4,
+                        _ => 2,
+                      },
                     ),
                 ],
               ),

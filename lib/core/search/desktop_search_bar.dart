@@ -118,8 +118,8 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
   Widget _buildOverlay() {
     return Container(
       constraints: BoxConstraints(
-        maxWidth: min(context.screenWidth * 0.8, 500),
-        maxHeight: min(context.screenHeight * 0.8, 400),
+        maxWidth: min(context.screenWidth * 0.7, 350),
+        maxHeight: min(context.screenHeight * 0.8, 450),
       ),
       child: ValueListenableBuilder(
         valueListenable: textEditingController,
@@ -158,6 +158,7 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: SearchLandingView(
+                        disableAnimation: true,
                         backgroundColor:
                             context.colorScheme.surfaceContainerHighest,
                         onHistoryCleared: () => ref
