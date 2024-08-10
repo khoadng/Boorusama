@@ -16,6 +16,7 @@ import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/search_histories/search_histories.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
+import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
 
 class DesktopSearchbar extends ConsumerStatefulWidget {
@@ -84,6 +85,12 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
       height: kToolbarHeight * 0.9,
       queryEditingController: textEditingController,
       onFocusChanged: (value) => showSuggestions.value = value,
+      onTapOutside: isDesktopPlatform()
+          ? () {
+              showSuggestions.value = false;
+              FocusScope.of(context).unfocus();
+            }
+          : null,
       onChanged: (value) =>
           ref.read(suggestionsProvider(config).notifier).getSuggestions(value),
       onSubmitted: (value) {
