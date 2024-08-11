@@ -60,7 +60,9 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                   target: Alignment.bottomCenter,
                   offset: Offset(-32, 0),
                 ),
-                portalFollower: _buildOverlay(),
+                portalFollower: LayoutBuilder(
+                  builder: (context, constraints) => _buildOverlay(constraints),
+                ),
                 child: Focus(
                   onFocusChange: (value) => showSuggestions.value = value,
                   child: _buildSearchBar(),
@@ -115,10 +117,16 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
     );
   }
 
-  Widget _buildOverlay() {
+  Widget _buildOverlay(BoxConstraints constraints) {
     return Container(
       constraints: BoxConstraints(
-        maxWidth: min(context.screenWidth * 0.7, 350),
+        maxWidth: min(
+          context.screenWidth * 0.7,
+          switch (constraints.maxWidth) {
+            > 1400 => 500,
+            _ => 380,
+          },
+        ),
         maxHeight: min(context.screenHeight * 0.8, 450),
       ),
       child: ValueListenableBuilder(

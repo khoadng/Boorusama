@@ -75,35 +75,31 @@ class SearchAppBar extends ConsumerWidget {
       toolbarHeight: height ?? kToolbarHeight * 1.2,
       title: trailingSearchButton != null
           ? LayoutBuilder(
-              builder: (context, constraints) => Row(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  if (constraints.maxWidth > 700)
-                    Spacer(
-                      flex: switch (constraints.maxWidth) {
-                        > 1600 => 7,
-                        > 1100 => 4,
-                        _ => 2,
-                      },
+              builder: (context, constraints) {
+                final spacer = Spacer(
+                  flex: switch (constraints.maxWidth) {
+                    > 1600 => 4,
+                    > 1000 => 3,
+                    _ => 1,
+                  },
+                );
+
+                return Row(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    if (constraints.maxWidth > 500) spacer,
+                    Flexible(
+                      flex: 4,
+                      child: searchAppBar,
                     ),
-                  Flexible(
-                    flex: 4,
-                    child: searchAppBar,
-                  ),
-                  const SizedBox(width: 4),
-                  trailingSearchButton!,
-                  if (constraints.maxWidth > 700)
-                    Spacer(
-                      flex: switch (constraints.maxWidth) {
-                        > 1600 => 7,
-                        > 1100 => 4,
-                        _ => 2,
-                      },
-                    ),
-                ],
-              ),
+                    const SizedBox(width: 4),
+                    trailingSearchButton!,
+                    if (constraints.maxWidth > 500) spacer,
+                  ],
+                );
+              },
             )
           : searchAppBar,
     );
