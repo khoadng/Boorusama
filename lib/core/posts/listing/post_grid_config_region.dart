@@ -54,6 +54,7 @@ class PostGridConfigRegion extends ConsumerWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         mainAxisSize: MainAxisSize.min,
                         children: [
+                          const SizedBox(height: 12),
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 8),
                             width: 250,

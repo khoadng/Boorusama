@@ -8,6 +8,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/foundation/display.dart';
+import 'package:boorusama/foundation/platform.dart';
 
 class OptionSearchableSheet<T extends Object> extends StatefulWidget {
   const OptionSearchableSheet({
@@ -159,9 +160,9 @@ class OptionSingleSearchableField<T extends Object> extends StatelessWidget {
                       ));
             },
         child: Container(
-          padding: const EdgeInsets.symmetric(
+          padding: EdgeInsets.symmetric(
             horizontal: 8,
-            vertical: 8,
+            vertical: isDesktopPlatform() ? 4 : 8,
           ),
           decoration: BoxDecoration(
             color: backgroundColor,

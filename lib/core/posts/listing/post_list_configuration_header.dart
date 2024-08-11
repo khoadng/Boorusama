@@ -7,6 +7,7 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/string.dart';
@@ -177,8 +178,10 @@ class _PostListConfigurationHeaderState
                 children: [
                   if (tags != null)
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 8),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: kPreferredLayout.isMobile ? 8 : 0,
+                      ),
                       child: widget.axis == Axis.horizontal
                           ? Wrap(
                               spacing: 4,

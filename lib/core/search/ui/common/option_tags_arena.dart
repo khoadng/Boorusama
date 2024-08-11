@@ -34,10 +34,7 @@ class _OptionTagsArenaState extends State<OptionTagsArena> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 1),
-          child: _buildHeader(),
-        ),
+        _buildHeader(),
         Wrap(
           spacing: 4,
           runSpacing: isDesktopPlatform() ? 4 : 0,
@@ -48,45 +45,42 @@ class _OptionTagsArenaState extends State<OptionTagsArena> {
   }
 
   Widget _buildHeader() {
-    return SizedBox(
-      height: 48,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              Text(
-                widget.title.toUpperCase(),
-                style: context.textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            Text(
+              widget.title.toUpperCase(),
+              style: context.textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            if (widget.editable)
+              FilledButton(
+                style: FilledButton.styleFrom(
+                  visualDensity: VisualDensity.compact,
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  minimumSize: const Size(32, 32),
+                  shape: const CircleBorder(),
+                  backgroundColor: editMode
+                      ? context.colorScheme.primary
+                      : context.colorScheme.surfaceContainerHighest,
+                ),
+                onPressed: () => setState(() => editMode = !editMode),
+                child: Icon(
+                  editMode ? Symbols.check : Symbols.edit,
+                  size: 16,
+                  color: editMode
+                      ? context.colorScheme.onPrimary
+                      : context.colorScheme.onSurfaceVariant,
+                  fill: 1,
                 ),
               ),
-              if (widget.editable)
-                FilledButton(
-                  style: FilledButton.styleFrom(
-                    visualDensity: VisualDensity.compact,
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    minimumSize: const Size(32, 32),
-                    shape: const CircleBorder(),
-                    backgroundColor: editMode
-                        ? context.colorScheme.primary
-                        : context.colorScheme.surfaceContainerHighest,
-                  ),
-                  onPressed: () => setState(() => editMode = !editMode),
-                  child: Icon(
-                    editMode ? Symbols.check : Symbols.edit,
-                    size: 16,
-                    color: editMode
-                        ? context.colorScheme.onPrimary
-                        : context.colorScheme.onSurfaceVariant,
-                    fill: 1,
-                  ),
-                ),
-            ],
-          ),
-          widget.titleTrailing?.call(editMode) ?? const SizedBox.shrink(),
-        ],
-      ),
+          ],
+        ),
+        widget.titleTrailing?.call(editMode) ?? const SizedBox.shrink(),
+      ],
     );
   }
 }

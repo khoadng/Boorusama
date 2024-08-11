@@ -106,45 +106,40 @@ class OptionTagsArenaNoEdit extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 1),
-          child: SizedBox(
-            height: 48,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
               children: [
-                Row(
-                  children: [
-                    Text(
-                      title.toUpperCase(),
-                      style: context.textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    FilledButton(
-                      style: FilledButton.styleFrom(
-                        visualDensity: VisualDensity.compact,
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        minimumSize: const Size(32, 32),
-                        shape: const CircleBorder(),
-                        backgroundColor:
-                            context.colorScheme.surfaceContainerHighest,
-                      ),
-                      onPressed: () => context.push('/favorite_tags'),
-                      child: Icon(
-                        Symbols.settings,
-                        size: 16,
-                        color: context.colorScheme.onSurfaceVariant,
-                        fill: 1,
-                      ),
-                    ),
-                  ],
+                Text(
+                  title.toUpperCase(),
+                  style: context.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
-                titleTrailing?.call() ?? const SizedBox.shrink(),
+                FilledButton(
+                  style: FilledButton.styleFrom(
+                    visualDensity: VisualDensity.compact,
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    minimumSize: const Size(32, 32),
+                    shape: const CircleBorder(),
+                    backgroundColor:
+                        context.colorScheme.surfaceContainerHighest,
+                  ),
+                  onPressed: () => context.push('/favorite_tags'),
+                  child: Icon(
+                    Symbols.settings,
+                    size: 16,
+                    color: context.colorScheme.onSurfaceVariant,
+                    fill: 1,
+                  ),
+                ),
               ],
             ),
-          ),
+            titleTrailing?.call() ?? const SizedBox.shrink(),
+          ],
         ),
+        const SizedBox(height: 2),
         Wrap(
           spacing: 4,
           runSpacing: isDesktopPlatform() ? 4 : 0,
