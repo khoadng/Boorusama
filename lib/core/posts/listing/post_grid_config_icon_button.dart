@@ -385,7 +385,7 @@ class DesktopPostGridConfigTile<T> extends StatelessWidget {
         Expanded(
           child: Container(
             constraints: const BoxConstraints(minWidth: 150),
-            child: OptionDropDownButton(
+            child: OptionDropDownButtonDesktop(
               alignment: AlignmentDirectional.centerStart,
               onChanged: (value) => value != null ? onChanged(value) : null,
               value: value,
