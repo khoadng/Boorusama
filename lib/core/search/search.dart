@@ -23,4 +23,5 @@ export 'ui/selected_tag_chip.dart';
 export 'ui/selected_tag_list.dart';
 export 'ui/selected_tag_list_with_data.dart';
 export 'ui/simple_tag_search_view.dart';
+export 'ui/sliver_search_app_bar.dart';
 export 'ui/tag_suggestion_items.dart';
