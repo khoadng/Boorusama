@@ -15,6 +15,7 @@ import 'package:boorusama/core/scaffolds/infinite_post_list_scaffold.dart';
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/search_histories/search_histories.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/router.dart';
 
 class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
@@ -48,6 +49,8 @@ class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     AutoScrollController scrollController,
     SelectedTagController selectedTagController,
     SearchPageController searchController,
+    BooruError? errors,
+    PostGridController<T> postController,
   )? resultBuilder;
 
   @override
@@ -139,20 +142,27 @@ class _SearchPageScaffoldState<T extends Post>
                   }
 
                   return searchOnce
-                      ? widget.resultBuilder != null
-                          ? widget.resultBuilder!(
-                              _didSearchOnce,
-                              selectedTagString,
-                              _scrollController,
-                              selectedTagController,
-                              searchController,
-                            )
-                          : _buildDefaultSearchResults(
-                              selectedTagController,
-                              searchController,
-                              focus,
-                              textController,
-                            )
+                      ? PostScope(
+                          fetcher: (page) => widget.fetcher(
+                            page,
+                            searchController.getCurrentRawTags(),
+                          ),
+                          builder: (context, controller, errors) =>
+                              widget.resultBuilder != null
+                                  ? widget.resultBuilder!(
+                                      _didSearchOnce,
+                                      selectedTagString,
+                                      _scrollController,
+                                      selectedTagController,
+                                      searchController,
+                                      errors,
+                                      controller,
+                                    )
+                                  : _buildDefaultSearchResults(
+                                      errors,
+                                      controller,
+                                    ),
+                        )
                       : _buildInitial(context, search);
                 },
               ),
@@ -232,56 +242,44 @@ class _SearchPageScaffoldState<T extends Post>
   }
 
   Widget _buildDefaultSearchResults(
-    SelectedTagController selectedTagController,
-    SearchPageController searchController,
-    FocusNode focus,
-    RichTextController textController,
+    BooruError? errors,
+    PostGridController controller,
   ) {
-    return PostScope(
-      fetcher: (page) => widget.fetcher(
-        page,
-        searchController.getCurrentRawTags(),
-      ),
-      builder: (context, controller, errors) {
-        final slivers = [
-          SliverSearchAppBar(
-            search: () {
-              searchController.search();
-              selectedTagString.value = selectedTagController.rawTagsString;
-              controller.refresh();
-            },
-            searchController: searchController,
-            selectedTagController: selectedTagController,
-          ),
-          SliverToBoxAdapter(
-              child: SelectedTagListWithData(
-            controller: selectedTagController,
-          )),
-          SliverToBoxAdapter(
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ...[
-                  ValueListenableBuilder(
-                    valueListenable: selectedTagString,
-                    builder: (context, value, _) => ResultHeaderWithProvider(
-                      selectedTags: value.split(' '),
-                      onRefresh: null,
-                    ),
+    return InfinitePostListScaffold(
+      errors: errors,
+      controller: controller,
+      sliverHeaderBuilder: (context) => [
+        SliverSearchAppBar(
+          search: () {
+            searchController.search();
+            selectedTagString.value = selectedTagController.rawTagsString;
+            controller.refresh();
+          },
+          searchController: searchController,
+          selectedTagController: selectedTagController,
+        ),
+        SliverToBoxAdapter(
+            child: SelectedTagListWithData(
+          controller: selectedTagController,
+        )),
+        SliverToBoxAdapter(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ...[
+                ValueListenableBuilder(
+                  valueListenable: selectedTagString,
+                  builder: (context, value, _) => ResultHeaderWithProvider(
+                    selectedTags: value.split(' '),
+                    onRefresh: null,
                   ),
-                  const Spacer(),
-                ]
-              ],
-            ),
+                ),
+                const Spacer(),
+              ]
+            ],
           ),
-        ];
-
-        return InfinitePostListScaffold(
-          errors: errors,
-          controller: controller,
-          sliverHeaderBuilder: (context) => slivers,
-        );
-      },
+        ),
+      ],
     );
   }
 }

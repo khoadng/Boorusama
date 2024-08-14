@@ -5,16 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/search/result_view.dart';
-import 'package:boorusama/boorus/danbooru/search/trending_section.dart';
+import 'package:boorusama/boorus/danbooru/posts/posts.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
 import '../danbooru_provider.dart';
+import '../related_tags/related_tags.dart';
+import 'trending_section.dart';
 
 class DanbooruSearchPage extends ConsumerWidget {
   const DanbooruSearchPage({
@@ -26,9 +27,11 @@ class DanbooruSearchPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
+    final postRepo = ref.watch(danbooruPostRepoProvider(config));
+
     return SearchPageScaffold(
-      // just return empty, we dont need to fetch anything
-      fetcher: (page, tags) => TaskEither.right(<Post>[].toResult()),
+      fetcher: (page, tags) => postRepo.getPosts(tags, page),
       initialQuery: initialQuery,
       queryPattern: {
         RegExp('(${ref.watch(metatagsProvider).map((e) => e.name).join('|')})+:'):
@@ -50,25 +53,14 @@ class DanbooruSearchPage extends ConsumerWidget {
         scrollController,
         selectedTagController,
         searchController,
-      ) =>
-          ResultView(
-        scrollController: scrollController,
-        selectedTagString: selectedTagString,
-        searchController: searchController,
-        onRelatedTagAdded: (tag, postController) {
-          selectedTagController.addTag(tag.tag);
-          postController.refresh();
-          selectedTagString.value = selectedTagController.rawTagsString;
-          searchController.search();
-        },
-        onRelatedTagNegated: (tag, postController) {
-          selectedTagController.negateTag(tag.tag);
-          postController.refresh();
-          selectedTagString.value = selectedTagController.rawTagsString;
-          searchController.search();
-        },
-        headerBuilder: (postController) {
-          return [
+        errors,
+        postController,
+      ) {
+        return DanbooruInfinitePostList(
+          scrollController: scrollController,
+          controller: postController,
+          errors: errors,
+          sliverHeaders: [
             SliverSearchAppBar(
               search: () {
                 didSearchOnce.value = true;
@@ -84,9 +76,51 @@ class DanbooruSearchPage extends ConsumerWidget {
                 popOnSelect: true,
               ),
             ),
-          ];
-        },
-      ),
+            SliverToBoxAdapter(
+              child: SelectedTagListWithData(
+                controller: searchController.selectedTagController,
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: ValueListenableBuilder(
+                valueListenable: selectedTagString,
+                builder: (context, selectedTags, _) => RelatedTagSection(
+                  query: selectedTags,
+                  onAdded: (tag) {
+                    selectedTagController.addTag(tag.tag);
+                    postController.refresh();
+                    selectedTagString.value =
+                        selectedTagController.rawTagsString;
+                    searchController.search();
+                  },
+                  onNegated: (tag) {
+                    selectedTagController.negateTag(tag.tag);
+                    postController.refresh();
+                    selectedTagString.value =
+                        selectedTagController.rawTagsString;
+                    searchController.search();
+                  },
+                ),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: Row(
+                children: [
+                  ValueListenableBuilder(
+                    valueListenable: selectedTagString,
+                    builder: (context, selectedTags, _) =>
+                        ResultHeaderWithProvider(
+                      selectedTags: selectedTags.split(' '),
+                      onRefresh: null,
+                    ),
+                  ),
+                  const Spacer(),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
