@@ -136,6 +136,10 @@ class FullHistoryView extends ConsumerWidget {
                       onTap: () {
                         onHistoryTap(history.query);
                       },
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                      ),
+                      minTileHeight: 0,
                       trailing: IconButton(
                         onPressed: () => onHistoryRemoved(history),
                         icon: Icon(
