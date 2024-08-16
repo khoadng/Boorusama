@@ -181,7 +181,7 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
 
     return PopScope(
         canPop: !multiSelect,
-        onPopInvoked: (didPop) {
+        onPopInvokedWithResult: (didPop, _) {
           if (didPop) return;
           _onWillPop();
         },

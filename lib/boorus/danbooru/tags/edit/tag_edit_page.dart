@@ -235,7 +235,7 @@ class _TagEditPageInternalState extends ConsumerState<TagEditPageInternal> {
 
     return PopScope(
       canPop: expandMode == null,
-      onPopInvoked: (didPop) {
+      onPopInvokedWithResult: (didPop, _) {
         if (didPop) return;
 
         _pop();

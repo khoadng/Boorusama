@@ -259,7 +259,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      onPopInvoked: (didPop) {
+      onPopInvokedWithResult: (didPop, _) {
         if (didPop) return;
         _onBackButtonPressed();
       },
