@@ -33,6 +33,7 @@ class BookmarkPostButton extends ConsumerWidget {
             splashRadius: 16,
             onPressed: () {
               ref.bookmarks.removeBookmarkWithToast(
+                context,
                 bookmarkState.getBookmark(post, booruConfig.booruType)!,
               );
             },
@@ -46,6 +47,7 @@ class BookmarkPostButton extends ConsumerWidget {
             splashRadius: 16,
             onPressed: () {
               ref.bookmarks.addBookmarkWithToast(
+                context,
                 booruConfig.booruId,
                 booruConfig.url,
                 post,
@@ -79,10 +81,12 @@ class BookmarkPostLikeButtonButton extends ConsumerWidget {
       onTap: (isLiked) {
         if (isLiked) {
           ref.bookmarks.removeBookmarkWithToast(
+            context,
             bookmarkState.getBookmark(post, booruConfig.booruType)!,
           );
         } else {
           ref.bookmarks.addBookmarkWithToast(
+            context,
             booruConfig.booruId,
             booruConfig.url,
             post,
@@ -112,10 +116,12 @@ extension BookmarkPostX on WidgetRef {
 
     if (isBookmarked) {
       bookmarks.removeBookmarkWithToast(
+        context,
         bookmarkState.getBookmark(post, booruConfig.booruType)!,
       );
     } else {
       bookmarks.addBookmarkWithToast(
+        context,
         booruConfig.booruId,
         booruConfig.url,
         post,

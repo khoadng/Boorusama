@@ -224,6 +224,7 @@ class AppFailedToInitialize extends ConsumerWidget {
     String data,
   ) =>
       pickDirectoryPathToastOnError(
+        context: context,
         onPick: (path) async {
           final file = File('$path/boorusama_crash.txt');
           await file.writeAsString(data);

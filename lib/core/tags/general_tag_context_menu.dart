@@ -43,7 +43,7 @@ class GeneralTagContextMenu extends ConsumerWidget
           ContextMenuButtonConfig(
             'Add to global blacklist',
             onPressed: () {
-              globalNotifier.addTagWithToast(tag);
+              globalNotifier.addTagWithToast(context, tag);
             },
           ),
           for (final entry in itemBindings.entries)

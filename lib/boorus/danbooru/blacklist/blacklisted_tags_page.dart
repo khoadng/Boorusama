@@ -37,7 +37,10 @@ class BlacklistedTagsPage extends ConsumerWidget {
                   tags: tags,
                   onImport: (tagString) => ref
                       .read(danbooruBlacklistedTagsProvider(config).notifier)
-                      .addFromStringWithToast(tagString: tagString),
+                      .addFromStringWithToast(
+                        context: context,
+                        tagString: tagString,
+                      ),
                 )
               : const SizedBox.shrink(),
         ],
@@ -59,7 +62,10 @@ class BlacklistedTagsPage extends ConsumerWidget {
 
             ref
                 .read(danbooruBlacklistedTagsProvider(ref.readConfig).notifier)
-                .addWithToast(tag: tagString);
+                .addWithToast(
+                  context: context,
+                  tag: tagString,
+                );
             context.navigator.pop();
           },
         );
@@ -101,7 +107,10 @@ class BlacklistedTagsList extends ConsumerWidget {
                       onRemoveTag: (tag) => ref
                           .read(danbooruBlacklistedTagsProvider(ref.readConfig)
                               .notifier)
-                          .removeWithToast(tag: tag),
+                          .removeWithToast(
+                            context: context,
+                            tag: tag,
+                          ),
                       onEditTap: () {
                         goToBlacklistedTagsSearchPage(
                           context,

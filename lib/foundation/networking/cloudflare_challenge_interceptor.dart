@@ -101,6 +101,7 @@ class CloudflareChallengeInterceptor extends Interceptor {
                   _block = false;
 
                   showSuccessToast(
+                    context,
                     'Cloudflare challenge solved, you can close this screen now',
                   );
                 },

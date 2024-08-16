@@ -204,6 +204,7 @@ Future<bool?> goToShowTaglistPage(
       tags: tags,
       onAddToGlobalBlacklist: (tag) {
         globalNotifier.addTagWithToast(
+          context,
           tag.rawName,
         );
       },

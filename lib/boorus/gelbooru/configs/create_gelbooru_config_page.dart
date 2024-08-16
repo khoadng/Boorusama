@@ -249,7 +249,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
     final loginUrl = ref.read(booruProvider(config))?.getLoginUrl();
 
     if (loginUrl == null) {
-      showErrorToast('Login URL for this booru is not available');
+      showErrorToast(context, 'Login URL for this booru is not available');
       return;
     }
 
@@ -272,7 +272,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
                   loginController.text = uid.value;
                 }
               } else {
-                showErrorToast('No hashed password found');
+                showErrorToast(context, 'No hashed password found');
               }
 
               Navigator.of(context).pop();

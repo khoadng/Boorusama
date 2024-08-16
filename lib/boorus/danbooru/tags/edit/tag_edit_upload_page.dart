@@ -94,6 +94,7 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
           loading: () {},
           error: (error, stackTrace) {
             showErrorToast(
+              context,
               error.toString(),
               duration: AppDurations.longToast,
             );

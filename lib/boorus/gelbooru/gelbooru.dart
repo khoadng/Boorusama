@@ -340,12 +340,16 @@ class GelbooruBuilder
               .read(gelbooruFavoritesProvider(ref.readConfig).notifier)
               .add(postId);
 
-          if (status == AddFavoriteStatus.alreadyExists) {
-            showErrorToast('Already favorited');
-          } else if (status == AddFavoriteStatus.failure) {
-            showErrorToast('Failed to favorite');
-          } else {
-            showSuccessToast('Favorited');
+          final context = ref.context;
+
+          if (context.mounted) {
+            if (status == AddFavoriteStatus.alreadyExists) {
+              showErrorToast(context, 'Already favorited');
+            } else if (status == AddFavoriteStatus.failure) {
+              showErrorToast(context, 'Failed to favorite');
+            } else {
+              showSuccessToast(context, 'Favorited');
+            }
           }
 
           return status == AddFavoriteStatus.success;
@@ -359,7 +363,11 @@ class GelbooruBuilder
               .read(gelbooruFavoritesProvider(ref.readConfig).notifier)
               .remove(postId);
 
-          showSuccessToast('Favorite removed');
+          final context = ref.context;
+
+          if (context.mounted) {
+            showSuccessToast(context, 'Favorite removed');
+          }
 
           return true;
         }

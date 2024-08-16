@@ -118,13 +118,13 @@ Future<void> _download(
 
   if (fileNameBuilder == null) {
     logger.logE('Single Download', 'No file name builder found, aborting...');
-    showErrorToast('Download aborted, cannot create file name');
+    showErrorToast(ref.context, 'Download aborted, cannot create file name');
     return;
   }
 
   if (downloadUrl == null || downloadUrl.isEmpty) {
     logger.logE('Single Download', 'No download url found, aborting...');
-    showErrorToast('Download aborted, no download url found');
+    showErrorToast(ref.context, 'Download aborted, no download url found');
     return;
   }
 

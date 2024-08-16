@@ -59,6 +59,7 @@ class DanbooruPostContextMenu extends ConsumerWidget {
             'post.detail.add_to_bookmark'.tr(),
             onPressed: () => ref.bookmarks
               ..addBookmarkWithToast(
+                context,
                 booruConfig.booruId,
                 booruConfig.url,
                 post,
@@ -69,6 +70,7 @@ class DanbooruPostContextMenu extends ConsumerWidget {
             'post.detail.remove_from_bookmark'.tr(),
             onPressed: () => ref.bookmarks
               ..removeBookmarkWithToast(
+                context,
                 bookmarkState.getBookmark(post, booruConfig.booruType)!,
               ),
           ),

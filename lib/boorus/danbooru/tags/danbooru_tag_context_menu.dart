@@ -37,7 +37,7 @@ class DanbooruTagContextMenu extends ConsumerWidget {
         if (config.hasLoginDetails())
           'post.detail.add_to_blacklist'.tr(): () => ref
               .read(danbooruBlacklistedTagsProvider(config).notifier)
-              .addWithToast(tag: tag),
+              .addWithToast(context: context, tag: tag),
         if (config.hasLoginDetails())
           'post.detail.copy_and_open_saved_search'.tr(): () async {
             await AppClipboard.copy(tag);

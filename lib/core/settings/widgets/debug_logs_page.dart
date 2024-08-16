@@ -72,7 +72,7 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
             IconButton(
               icon: const Icon(Symbols.download),
               onPressed: () async {
-                await writeLogsToFile(logs);
+                await writeLogsToFile(context, logs);
               },
             ),
           ],
@@ -96,9 +96,12 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
     );
   }
 
-  Future<void> writeLogsToFile(List<LogData> logs) async =>
+  Future<void> writeLogsToFile(
+    BuildContext context,
+    List<LogData> logs,
+  ) async =>
       tryGetDownloadDirectory().run().then((value) => value.fold(
-            (error) => showErrorToast(error.name),
+            (error) => showErrorToast(context, error.name),
             (directory) async {
               final file = File('${directory.path}/boorusama_logs.txt');
               final buffer = StringBuffer();
@@ -107,10 +110,14 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
                     '[${log.dateTime}][${log.serviceName}]: ${log.message}\n');
               }
               await file.writeAsString(buffer.toString());
-              showSuccessToast(
-                'Logs written to ${file.path}',
-                duration: AppDurations.longToast,
-              );
+
+              if (context.mounted) {
+                showSuccessToast(
+                  context,
+                  'Logs written to ${file.path}',
+                  duration: AppDurations.longToast,
+                );
+              }
             },
           ));
 

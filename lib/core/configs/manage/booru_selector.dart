@@ -207,7 +207,8 @@ mixin BooruSelectorActionMixin<T extends ConsumerStatefulWidget>
                       onConfirm: () =>
                           ref.read(booruConfigProvider.notifier).delete(
                                 config,
-                                onFailure: (message) => showErrorToast(message),
+                                onFailure: (message) =>
+                                    showErrorToast(context, message),
                               ),
                     ),
                   ),
@@ -224,7 +225,8 @@ mixin BooruSelectorActionMixin<T extends ConsumerStatefulWidget>
                     onConfirm: () =>
                         ref.read(booruConfigProvider.notifier).delete(
                               config,
-                              onFailure: (message) => showErrorToast(message),
+                              onFailure: (message) =>
+                                  showErrorToast(context, message),
                             ),
                   ),
                 );

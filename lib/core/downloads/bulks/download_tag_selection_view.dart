@@ -153,7 +153,7 @@ class _DownloadTagSelectionViewState
             onPressed: allowDownloadd
                 ? () => ref
                     .read(bulkDownloaderManagerProvider(config).notifier)
-                    .download(tags: selectedTags.join(' '))
+                    .download(context: context, tags: selectedTags.join(' '))
                 : null,
             child: const Text('download.download').tr(),
           );
@@ -269,6 +269,7 @@ class _DownloadTagSelectionViewState
     DownloadOptions options,
   ) =>
       pickDirectoryPathToastOnError(
+        context: context,
         onPick: (path) {
           final state = ref.read(bulkDownloadOptionsProvider);
           ref.read(bulkDownloadOptionsProvider.notifier).state = state.copyWith(

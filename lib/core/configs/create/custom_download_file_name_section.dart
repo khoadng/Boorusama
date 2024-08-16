@@ -337,7 +337,7 @@ class AvailableTokens extends ConsumerWidget {
                   downloadFilenameBuilder?.getTokenOptions(token);
 
               if (tokenOptions == null) {
-                showErrorToast('Token $token is not available');
+                showErrorToast(context, 'Token $token is not available');
                 return;
               }
 

@@ -76,6 +76,7 @@ class FavoriteTagsPage extends ConsumerWidget {
               favoritesNotifier.add(
                 text,
                 onDuplicate: (tag) => showErrorToast(
+                  context,
                   '$tag already exists',
                 ),
                 // labels: [
@@ -86,6 +87,7 @@ class FavoriteTagsPage extends ConsumerWidget {
             onSelected: (tag) => favoritesNotifier.add(
               tag.value,
               onDuplicate: (tag) => showErrorToast(
+                context,
                 '$tag already exists',
               ),
               // labels: [

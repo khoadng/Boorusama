@@ -397,45 +397,66 @@ bool handleDanbooruGestureAction(
 
 extension DanbooruX on WidgetRef {
   void danbooruToggleFavorite(int postId) {
-    _guardLogin(() {
+    _guardLogin(() async {
       final isFaved = read(danbooruFavoriteProvider(postId));
       if (isFaved) {
-        danbooruFavorites.remove(postId).then(
-              (_) => _showSuccessSnackBar('Removed from favorites'),
-            );
+        await danbooruFavorites.remove(postId);
+        if (context.mounted) {
+          _showSuccessSnackBar(
+            context,
+            'Removed from favorites',
+          );
+        }
       } else {
-        danbooruFavorites.add(postId).then(
-              (_) => _showSuccessSnackBar('Added to favorites'),
-            );
+        await danbooruFavorites.add(postId);
+        if (context.mounted) {
+          _showSuccessSnackBar(
+            context,
+            'Added to favorites',
+          );
+        }
       }
     });
   }
 
   void danbooruRemoveVote(int postId) {
-    _guardLogin(() {
-      read(danbooruPostVotesProvider(readConfig).notifier)
-          .removeVote(postId)
-          .then(
-            (_) => _showSuccessSnackBar('Vote removed'),
-          );
+    _guardLogin(() async {
+      await read(danbooruPostVotesProvider(readConfig).notifier)
+          .removeVote(postId);
+
+      if (context.mounted) {
+        _showSuccessSnackBar(
+          context,
+          'Vote removed',
+        );
+      }
     });
   }
 
   void danbooruUpvote(int postId) {
-    _guardLogin(() {
-      read(danbooruPostVotesProvider(readConfig).notifier).upvote(postId).then(
-            (_) => _showSuccessSnackBar('Upvoted'),
-          );
+    _guardLogin(() async {
+      await read(danbooruPostVotesProvider(readConfig).notifier).upvote(postId);
+
+      if (context.mounted) {
+        _showSuccessSnackBar(
+          context,
+          'Upvoted',
+        );
+      }
     });
   }
 
   void danbooruDownvote(int postId) {
-    _guardLogin(() {
-      read(danbooruPostVotesProvider(readConfig).notifier)
-          .downvote(postId)
-          .then(
-            (_) => _showSuccessSnackBar('Downvoted'),
-          );
+    _guardLogin(() async {
+      await read(danbooruPostVotesProvider(readConfig).notifier)
+          .downvote(postId);
+
+      if (context.mounted) {
+        _showSuccessSnackBar(
+          context,
+          'Downvoted',
+        );
+      }
     });
   }
 
@@ -449,10 +470,12 @@ extension DanbooruX on WidgetRef {
   }
 
   void _showSuccessSnackBar(
+    BuildContext context,
     String message, {
     Color? backgroundColor,
   }) {
     showSuccessToast(
+      context,
       message,
       backgroundColor: backgroundColor,
       duration: AppDurations.shortToast,

@@ -82,7 +82,7 @@ class BlacklistedTagPage extends ConsumerWidget {
 
                   ref
                       .read(globalBlacklistedTagsProvider.notifier)
-                      .addTagWithToast(tagString);
+                      .addTagWithToast(context, tagString);
                   context.navigator.pop();
                 },
               );

@@ -120,6 +120,7 @@ class BookmarkScrollView extends ConsumerWidget {
                           'post.detail.remove_from_bookmark'.tr(),
                           onPressed: () =>
                               ref.bookmarks.removeBookmarkWithToast(
+                            context,
                             bookmark,
                           ),
                         ),
@@ -173,7 +174,7 @@ class BookmarkScrollView extends ConsumerWidget {
                                 color: Colors.white,
                               ),
                               onPressed: () => ref.bookmarks
-                                  .removeBookmarkWithToast(bookmark),
+                                  .removeBookmarkWithToast(context, bookmark),
                             ),
                           ),
                       ],

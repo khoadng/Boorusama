@@ -461,25 +461,30 @@ Future<bool?> goToDanbooruShowTaglistPage(
       onAddToBlacklist: config.hasLoginDetails()
           ? (tag) {
               notifier.addWithToast(
+                context: ref.context,
                 tag: tag.rawName,
               );
             }
           : null,
       onAddToGlobalBlacklist: (tag) {
         globalNotifier.addTagWithToast(
+          ref.context,
           tag.rawName,
         );
       },
-      onAddToFavoriteTags: (tag) {
-        favoriteNotifier.add(tag.rawName).then(
-              (_) => showSuccessToast(
-                'Added',
-                backgroundColor: color,
-                textStyle: TextStyle(
-                  color: textColor,
-                ),
-              ),
-            );
+      onAddToFavoriteTags: (tag) async {
+        await favoriteNotifier.add(tag.rawName);
+
+        if (!dialogContext.mounted) return;
+
+        showSuccessToast(
+          ref.context,
+          'Added',
+          backgroundColor: color,
+          textStyle: TextStyle(
+            color: textColor,
+          ),
+        );
       },
     ),
   );
