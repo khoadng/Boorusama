@@ -1,16 +1,15 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:oktoast/oktoast.dart';
 
 // Project imports:
 import 'package:boorusama/core/blacklists/blacklists.dart';
 import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
 import 'package:boorusama/core/router.dart';
+import 'package:boorusama/foundation/clipboard.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 class GeneralTagContextMenu extends ConsumerWidget
@@ -33,7 +32,7 @@ class GeneralTagContextMenu extends ConsumerWidget
     return ContextMenuRegion(
       contextMenu: GenericContextMenu(
         buttonConfigs: [
-          copyButton(tag),
+          copyButton(context, tag),
           searchButton(context, tag),
           ContextMenuButtonConfig(
             'post.detail.add_to_favorites'.tr(),
@@ -60,16 +59,15 @@ class GeneralTagContextMenu extends ConsumerWidget
 }
 
 mixin TagContextMenuButtonConfigMixin {
-  ContextMenuButtonConfig copyButton(String tag) => ContextMenuButtonConfig(
+  ContextMenuButtonConfig copyButton(BuildContext context, String tag) =>
+      ContextMenuButtonConfig(
         'Copy',
         onPressed: () {
-          Clipboard.setData(ClipboardData(text: tag)).then((_) {
-            showToast(
-              'post.detail.copied'.tr(),
-              position: ToastPosition.bottom,
-              textPadding: const EdgeInsets.all(8),
-            );
-          });
+          AppClipboard.copyAndToast(
+            context,
+            tag,
+            message: 'post.detail.copied'.tr(),
+          );
         },
       );
 

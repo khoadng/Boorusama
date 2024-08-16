@@ -1,6 +1,5 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,6 +7,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/configs/create/create.dart';
+import 'package:boorusama/foundation/clipboard.dart';
 import 'package:boorusama/foundation/theme.dart';
 
 class GelbooruApiKeyField extends ConsumerWidget {
@@ -63,10 +63,10 @@ class GelbooruConfigPasteFromClipboardButton extends ConsumerWidget {
       style: FilledButton.styleFrom(
         backgroundColor: context.colorScheme.secondaryContainer,
       ),
-      onPressed: () => Clipboard.getData('text/plain').then(
+      onPressed: () => AppClipboard.paste('text/plain').then(
         (value) {
           if (value == null) return;
-          final (uid, key) = extractValues(value.text);
+          final (uid, key) = extractValues(value);
           ref.updateLoginAndApiKey(uid, key);
 
           login.text = uid;

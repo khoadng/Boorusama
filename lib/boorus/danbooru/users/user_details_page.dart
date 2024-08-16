@@ -3,7 +3,6 @@ import 'dart:math';
 
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:collection/collection.dart';
@@ -16,6 +15,7 @@ import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/clipboard.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/package_info.dart';
@@ -102,7 +102,7 @@ class UserDetailsPage extends ConsumerWidget {
             },
             onSelected: (value) {
               if (value == 0) {
-                Clipboard.setData(ClipboardData(text: uid.toString()));
+                AppClipboard.copy(uid.toString());
               }
             },
           ),

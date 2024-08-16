@@ -1,6 +1,5 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:filesize/filesize.dart';
@@ -8,9 +7,9 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/foundation/clipboard.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/string.dart';
 
 class DefaultFileDetailsSection extends StatelessWidget {
@@ -105,8 +104,10 @@ class FileDetailsSection extends StatelessWidget {
                     size: 18,
                   ),
                   onTap: () {
-                    Clipboard.setData(ClipboardData(text: post.id.toString()))
-                        .then((value) => showSuccessToast('Copied'));
+                    AppClipboard.copyWithDefaultToast(
+                      context,
+                      post.id.toString(),
+                    );
                   },
                 ),
               )),

@@ -1,6 +1,5 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,9 +10,8 @@ import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/animations.dart';
+import 'package:boorusama/foundation/clipboard.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 final selectedViewTagQueryProvider =
@@ -100,16 +98,9 @@ class ShowTagListPage extends ConsumerWidget {
                           case 'open_wiki':
                             onOpenWiki?.call(tag);
                           case 'copy':
-                            Clipboard.setData(
-                              ClipboardData(
-                                text: tag.rawName,
-                              ),
-                            ).then(
-                              (_) => showSimpleSnackBar(
-                                context: context,
-                                content: const Text('Copied'),
-                                duration: AppDurations.shortToast,
-                              ),
+                            AppClipboard.copyWithDefaultToast(
+                              context,
+                              tag.rawName,
                             );
                             break;
                         }

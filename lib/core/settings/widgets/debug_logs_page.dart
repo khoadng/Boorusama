@@ -3,7 +3,6 @@ import 'dart:io';
 
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,6 +14,7 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/animations.dart';
+import 'package:boorusama/foundation/clipboard.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/loggers/app_logger.dart';
 import 'package:boorusama/foundation/loggers/logger.dart';
@@ -52,11 +52,10 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
     // Function to copy logs to clipboard
     void copyLogsToClipboard() {
       final data = ref.read(appLoggerProvider).dump();
-      Clipboard.setData(ClipboardData(text: data));
-
-      showSimpleSnackBar(
-        context: context,
-        content: const Text('settings.debug_logs.logs_copied').tr(),
+      AppClipboard.copyAndToast(
+        context,
+        data,
+        message: 'settings.debug_logs.logs_copied'.tr(),
       );
     }
 

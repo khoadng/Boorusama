@@ -1,11 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:oktoast/oktoast.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
@@ -13,6 +11,7 @@ import 'package:boorusama/boorus/danbooru/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/posts/posts.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/foundation/clipboard.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/string.dart';
@@ -95,12 +94,11 @@ class DanbooruImageGridItem extends ConsumerWidget {
                             ),
                             backgroundColor: context.colorScheme.errorContainer,
                             onPressed: () {
-                              Clipboard.setData(
-                                      ClipboardData(text: artistTags.join(' ')))
-                                  .then((value) => showToast(
-                                        'Tag copied to clipboard',
-                                        position: ToastPosition.bottom,
-                                      ));
+                              AppClipboard.copyAndToast(
+                                context,
+                                artistTags.join(' '),
+                                message: 'Tag copied to clipboard',
+                              );
                             },
                           ),
                       ],

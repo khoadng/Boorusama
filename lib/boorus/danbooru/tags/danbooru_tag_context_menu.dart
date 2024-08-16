@@ -1,6 +1,5 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,6 +10,7 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/wikis/wikis.dart';
+import 'package:boorusama/foundation/clipboard.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 class DanbooruTagContextMenu extends ConsumerWidget {
@@ -39,10 +39,12 @@ class DanbooruTagContextMenu extends ConsumerWidget {
               .read(danbooruBlacklistedTagsProvider(config).notifier)
               .addWithToast(tag: tag),
         if (config.hasLoginDetails())
-          'post.detail.copy_and_open_saved_search'.tr(): () {
-            Clipboard.setData(
-              ClipboardData(text: tag),
-            ).then((value) => goToSavedSearchEditPage(context));
+          'post.detail.copy_and_open_saved_search'.tr(): () async {
+            await AppClipboard.copy(tag);
+
+            if (context.mounted) {
+              goToSavedSearchEditPage(context);
+            }
           },
       },
       child: child,

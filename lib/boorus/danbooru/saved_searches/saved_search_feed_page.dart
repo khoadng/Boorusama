@@ -190,7 +190,7 @@ class SavedSearchContextMenu extends ConsumerWidget
     return ContextMenuRegion(
       contextMenu: GenericContextMenu(
         buttonConfigs: [
-          copyButton(tag),
+          copyButton(context, tag),
           searchButton(context, tag),
           ContextMenuButtonConfig(
             'download.bulk_download'.tr(),

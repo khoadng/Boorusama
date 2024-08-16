@@ -1,12 +1,10 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/animations.dart';
+import 'package:boorusama/foundation/clipboard.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/string.dart';
 
@@ -31,13 +29,13 @@ class SourceLink extends StatelessWidget {
       title: title,
       subtitle: url != null
           ? InkWell(
-              onLongPress: () =>
-                  Clipboard.setData(ClipboardData(text: url.toString()))
-                      .then((_) => showSimpleSnackBar(
-                            duration: AppDurations.shortToast,
-                            context: context,
-                            content: const Text('post.detail.copied').tr(),
-                          )),
+              onLongPress: () {
+                AppClipboard.copyAndToast(
+                  context,
+                  url.toString(),
+                  message: 'post.detail.copied'.tr(),
+                );
+              },
               onTap: () {
                 if (url == null) return;
                 launchExternalUrl(Uri.parse(url!));

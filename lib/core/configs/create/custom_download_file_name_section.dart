@@ -1,6 +1,5 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:expandable/expandable.dart';
@@ -17,6 +16,7 @@ import 'package:boorusama/core/filename_generators/filename_generators.dart';
 import 'package:boorusama/core/posts/post.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/clipboard.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
@@ -429,8 +429,7 @@ class TokenOptionHelpModal extends StatelessWidget {
                             : null,
                         trailing: IconButton(
                           onPressed: () {
-                            Clipboard.setData(ClipboardData(text: option))
-                                .then((value) => showSuccessToast('Copied'));
+                            AppClipboard.copyWithDefaultToast(context, option);
                           },
                           icon: const Icon(Symbols.copy_all),
                         ),

@@ -3,7 +3,6 @@ import 'dart:io';
 
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,6 +19,7 @@ import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/android.dart';
+import 'package:boorusama/foundation/clipboard.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/package_info.dart';
 import 'package:boorusama/foundation/path.dart' as p;
@@ -171,14 +171,11 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
           } else if (value == 'export') {
             ref.read(favoriteTagsProvider.notifier).export(
               onDone: (tagString) {
-                Clipboard.setData(
-                  ClipboardData(text: tagString),
-                ).then((value) => showSimpleSnackBar(
-                      context: context,
-                      content: const Text(
-                        'favorite_tags.export_notification',
-                      ).tr(),
-                    ));
+                AppClipboard.copyAndToast(
+                  context,
+                  tagString,
+                  message: 'favorite_tags.export_notification',
+                );
               },
             );
           } else if (value == 'export_with_labels') {
