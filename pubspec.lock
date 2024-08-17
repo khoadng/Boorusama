@@ -814,14 +814,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.10+1"
-  flutter_tags_x:
-    dependency: "direct main"
-    description:
-      name: flutter_tags_x
-      sha256: b9e5e55ff79ff6b8250008eb3ea498ddd0a03213c441b25275484f601654a412
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.1.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter

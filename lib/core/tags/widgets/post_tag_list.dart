@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:flutter_tags_x/flutter_tags_x.dart' hide TagsState;
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
@@ -64,15 +63,15 @@ class PostTagList extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Tags(
+        Wrap(
           alignment: WrapAlignment.start,
           spacing: 4,
           runSpacing: 6,
-          itemCount: tags.length,
-          itemBuilder: (index) {
-            final tag = tags[index];
-            return itemBuilder(context, tag);
-          },
+          children: tags
+              .map(
+                (tag) => itemBuilder(context, tag),
+              )
+              .toList(),
         ),
         const SizedBox(height: 8),
       ],
