@@ -2,13 +2,13 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:filesize/filesize.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/foundation/filesize.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/sliver_sized_box.dart';
@@ -112,7 +112,7 @@ class RelatedPostsSection<T extends Post> extends ConsumerWidget {
                                   const BorderRadius.all(Radius.circular(4)),
                             ),
                             child: Text(
-                              filesize(post.fileSize, 1),
+                              Filesize.parse(post.fileSize, round: 1),
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,

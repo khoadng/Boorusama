@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:context_menus/context_menus.dart';
-import 'package:filesize/filesize.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
@@ -21,6 +20,7 @@ import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/users/users.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/error.dart';
+import 'package:boorusama/foundation/filesize.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -320,7 +320,7 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
                             const BorderRadius.all(Radius.circular(4)),
                       ),
                       child: Text(
-                        filesize(post.fileSize, 1),
+                        Filesize.parse(post.fileSize, round: 1),
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.white,

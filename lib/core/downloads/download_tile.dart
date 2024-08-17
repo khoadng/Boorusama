@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:android_intent_plus/android_intent.dart';
 import 'package:android_intent_plus/flag.dart';
 import 'package:collection/collection.dart';
-import 'package:filesize/filesize.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
@@ -17,6 +16,7 @@ import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/filesize.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
@@ -91,9 +91,9 @@ class DownloadTile extends StatelessWidget {
                                         context.colorScheme.tertiaryContainer,
                                     visualDensity: const ShrinkVisualDensity(),
                                     label: Text(
-                                      filesize(
+                                      Filesize.parse(
                                         fs[data.url],
-                                        1,
+                                        round: 1,
                                       ),
                                     ),
                                   )
@@ -264,8 +264,9 @@ class DownloadTileBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fileSizeText =
-        fileSize != null && fileSize! > 0 ? filesize(fileSize, 1) : null;
+    final fileSizeText = fileSize != null && fileSize! > 0
+        ? Filesize.parse(fileSize, round: 1)
+        : null;
     final networkSpeedText = networkSpeed.toOption().fold(
           () => null,
           (s) => switch (s) {

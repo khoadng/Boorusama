@@ -5,13 +5,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:filesize/filesize.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/foundation/filesize.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'widgets/settings_header.dart';
 import 'widgets/settings_page_scaffold.dart';
@@ -61,7 +61,7 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
               title: const Text('Image only cache'),
               subtitle: Text('settings.performance.cache_size_info'
                   .tr()
-                  .replaceAll('{0}', filesize(imageCacheSize.size))
+                  .replaceAll('{0}', Filesize.parse(imageCacheSize.size))
                   .replaceAll('{1}', imageCacheSize.fileCount.toString())),
               trailing: FilledButton(
                 onPressed: () =>
@@ -74,7 +74,7 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
         ListTile(
           title: const Text('Tag highlighting cache'),
           subtitle: ref.watch(tagHighlightingCacheProvider).maybeWhen(
-                data: (data) => Text(filesize(data)),
+                data: (data) => Text(Filesize.parse(data)),
                 orElse: () => const Text('Loading...'),
               ),
           trailing: FilledButton(
@@ -92,7 +92,7 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
 
             return ListTile(
               title: const Text('All cache'),
-              subtitle: Text(filesize(size.size)),
+              subtitle: Text(Filesize.parse(size.size)),
               trailing: FilledButton(
                 onPressed: () =>
                     ref.read(cacheSizeProvider.notifier).clearAppCache(),
