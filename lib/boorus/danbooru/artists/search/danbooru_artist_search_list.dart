@@ -68,6 +68,8 @@ class _DanbooruArtistSearchPageState
               includeTag: true,
             );
 
+    if (!mounted) return;
+
     // exclude banned artists
     artists.removeWhere((artist) => artist.name == 'banned_artist');
 
