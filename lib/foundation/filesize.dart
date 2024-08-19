@@ -36,6 +36,13 @@ String _defaultUnitBuilder(int index, List<String> units) {
 String _defaultFormatter(String size, String unit) => '$size $unit';
 
 class FilesizeOptions {
+
+  factory FilesizeOptions() => FilesizeOptions._(
+        divider: 1024,
+        scalingFactors: _binaryScalingFactors,
+        unitBuilder: (idx) => _defaultUnitBuilder(idx, _defaultUnits),
+        formatter: _defaultFormatter,
+      );
   const FilesizeOptions._({
     required this.divider,
     required this.scalingFactors,
@@ -54,13 +61,6 @@ class FilesizeOptions {
         unitBuilder:
             unitBuilder ?? (idx) => _defaultUnitBuilder(idx, _defaultUnits),
         formatter: formatter ?? _defaultFormatter,
-      );
-
-  factory FilesizeOptions() => FilesizeOptions._(
-        divider: 1024,
-        scalingFactors: _binaryScalingFactors,
-        unitBuilder: (idx) => _defaultUnitBuilder(idx, _defaultUnits),
-        formatter: _defaultFormatter,
       );
 
   factory FilesizeOptions.binary() => FilesizeOptions._(

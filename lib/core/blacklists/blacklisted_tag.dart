@@ -2,11 +2,6 @@
 import 'package:equatable/equatable.dart';
 
 class BlacklistedTag extends Equatable {
-  final int id;
-  final String name;
-  final bool isActive;
-  final DateTime createdDate;
-  final DateTime updatedDate;
 
   const BlacklistedTag({
     required this.id,
@@ -15,6 +10,11 @@ class BlacklistedTag extends Equatable {
     required this.createdDate,
     required this.updatedDate,
   });
+  final int id;
+  final String name;
+  final bool isActive;
+  final DateTime createdDate;
+  final DateTime updatedDate;
 
   @override
   List<Object> get props => [id, name, isActive, createdDate, updatedDate];

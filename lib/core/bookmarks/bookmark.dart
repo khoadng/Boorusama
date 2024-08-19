@@ -25,6 +25,24 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
     required this.realSourceUrl,
   });
 
+  factory Bookmark.fromJson(Map<String, dynamic> json) {
+    return Bookmark(
+      id: json['id'] as int,
+      booruId: json['booruId'] as int,
+      createdAt: DateTime.parse(json['createdAt'] as String),
+      updatedAt: DateTime.parse(json['updatedAt'] as String),
+      thumbnailUrl: json['thumbnailUrl'] as String,
+      sampleUrl: json['sampleUrl'] as String,
+      originalUrl: json['originalUrl'] as String,
+      sourceUrl: json['sourceUrl'] as String,
+      width: (json['width'] as num).toDouble(),
+      height: (json['height'] as num).toDouble(),
+      md5: json['md5'] as String,
+      tags: _parseTags(json['tags']),
+      realSourceUrl: json['realSourceUrl'] as String?,
+    );
+  }
+
   final int id;
   final int booruId;
   final DateTime createdAt;
@@ -104,24 +122,6 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
       md5: md5 ?? this.md5,
       tags: tags ?? this.tags,
       realSourceUrl: realSourceUrl,
-    );
-  }
-
-  factory Bookmark.fromJson(Map<String, dynamic> json) {
-    return Bookmark(
-      id: json['id'] as int,
-      booruId: json['booruId'] as int,
-      createdAt: DateTime.parse(json['createdAt'] as String),
-      updatedAt: DateTime.parse(json['updatedAt'] as String),
-      thumbnailUrl: json['thumbnailUrl'] as String,
-      sampleUrl: json['sampleUrl'] as String,
-      originalUrl: json['originalUrl'] as String,
-      sourceUrl: json['sourceUrl'] as String,
-      width: (json['width'] as num).toDouble(),
-      height: (json['height'] as num).toDouble(),
-      md5: json['md5'] as String,
-      tags: _parseTags(json['tags']),
-      realSourceUrl: json['realSourceUrl'] as String?,
     );
   }
 

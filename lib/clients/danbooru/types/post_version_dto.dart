@@ -5,25 +5,6 @@ import 'package:equatable/equatable.dart';
 import 'package:boorusama/clients/danbooru/types/types.dart';
 
 class PostVersionDto extends Equatable {
-  final int? id;
-  final int? postId;
-  final String? tags;
-  final List<String>? addedTags;
-  final List<String>? removedTags;
-  final int? updaterId;
-  final String? updatedAt;
-  final String? rating;
-  final bool? ratingChanged;
-  final int? parentId;
-  final bool? parentChanged;
-  final String? source;
-  final bool? sourceChanged;
-  final int? version;
-  final String? obsoleteAddedTags;
-  final String? obsoleteRemovedTags;
-  final String? unchangedTags;
-
-  final UserDto? updater;
 
   const PostVersionDto({
     this.id,
@@ -75,6 +56,25 @@ class PostVersionDto extends Equatable {
           json['updater'] != null ? UserDto.fromJson(json['updater']) : null,
     );
   }
+  final int? id;
+  final int? postId;
+  final String? tags;
+  final List<String>? addedTags;
+  final List<String>? removedTags;
+  final int? updaterId;
+  final String? updatedAt;
+  final String? rating;
+  final bool? ratingChanged;
+  final int? parentId;
+  final bool? parentChanged;
+  final String? source;
+  final bool? sourceChanged;
+  final int? version;
+  final String? obsoleteAddedTags;
+  final String? obsoleteRemovedTags;
+  final String? unchangedTags;
+
+  final UserDto? updater;
 
   @override
   List<Object?> get props => [

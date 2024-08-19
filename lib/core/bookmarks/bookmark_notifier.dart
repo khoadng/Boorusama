@@ -294,13 +294,13 @@ extension BookmarkCubitToastX on BookmarkNotifier {
 }
 
 class BookmarkState extends Equatable {
-  final IList<Bookmark> bookmarks;
-  final String error;
 
   const BookmarkState({
     required this.bookmarks,
     this.error = '',
   });
+  final IList<Bookmark> bookmarks;
+  final String error;
 
   BookmarkState copyWith({
     IList<Bookmark>? bookmarks,

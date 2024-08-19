@@ -16,10 +16,6 @@ import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/platform.dart';
 
 class CrossplatformDownloader implements Downloader {
-  final dm.DownloadManager _downloadManager;
-  final LoggerService? logger;
-  final _downloadDataController = BehaviorSubject<DownloadStatus>();
-  final void Function(Object error)? onError;
 
   CrossplatformDownloader({
     required UserAgentGenerator userAgentGenerator,
@@ -37,6 +33,10 @@ class CrossplatformDownloader implements Downloader {
           ),
           maxConcurrentTasks: 6,
         );
+  final dm.DownloadManager _downloadManager;
+  final LoggerService? logger;
+  final _downloadDataController = BehaviorSubject<DownloadStatus>();
+  final void Function(Object error)? onError;
 
   @override
   Future<void> enqueueDownload({

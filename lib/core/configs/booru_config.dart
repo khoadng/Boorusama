@@ -33,6 +33,51 @@ class BooruConfig extends Equatable {
     required this.listing,
   });
 
+  factory BooruConfig.fromJson(Map<String, dynamic> json) {
+    final ratingFilter = json['ratingFilter'] as int?;
+    final bannedPostVisibility = json['bannedPostVisibility'] as int?;
+
+    return BooruConfig(
+      id: json['id'] as int,
+      booruId: json['booruId'] as int,
+      booruIdHint: json['booruIdHint'] as int,
+      apiKey: json['apiKey'] as String?,
+      login: json['login'] as String?,
+      passHash: json['passHash'] as String?,
+      url: json['url'] as String,
+      name: json['name'] as String,
+      deletedItemBehavior: BooruConfigDeletedItemBehavior
+          .values[json['deletedItemBehavior'] as int],
+      ratingFilter: ratingFilter != null
+          ? BooruConfigRatingFilter.values.getOrNull(ratingFilter) ??
+              BooruConfigRatingFilter.hideNSFW
+          : BooruConfigRatingFilter.hideNSFW,
+      bannedPostVisibility: bannedPostVisibility != null
+          ? BooruConfigBannedPostVisibility.values
+                  .getOrNull(bannedPostVisibility) ??
+              BooruConfigBannedPostVisibility.show
+          : BooruConfigBannedPostVisibility.show,
+      customDownloadFileNameFormat:
+          json['customDownloadFileNameFormat'] as String?,
+      customBulkDownloadFileNameFormat:
+          json['customBulkDownloadFileNameFormat'] as String?,
+      customDownloadLocation: json['customDownloadLocation'] as String?,
+      imageDetaisQuality: json['imageDetaisQuality'] as String?,
+      granularRatingFilters: parseGranularRatingFilters(
+        json['granularRatingFilterString'] as String?,
+      ),
+      postGestures: json['postGestures'] == null
+          ? null
+          : PostGestureConfig.fromJson(
+              json['postGestures'] as Map<String, dynamic>),
+      defaultPreviewImageButtonAction:
+          json['defaultPreviewImageButtonAction'] as String?,
+      listing: json['listing'] == null
+          ? null
+          : ListingConfigs.fromJson(json['listing'] as Map<String, dynamic>),
+    );
+  }
+
   static const BooruConfig empty = BooruConfig(
     id: -2,
     booruId: -1,
@@ -153,51 +198,6 @@ class BooruConfig extends Equatable {
         defaultPreviewImageButtonAction,
         listing,
       ];
-
-  factory BooruConfig.fromJson(Map<String, dynamic> json) {
-    final ratingFilter = json['ratingFilter'] as int?;
-    final bannedPostVisibility = json['bannedPostVisibility'] as int?;
-
-    return BooruConfig(
-      id: json['id'] as int,
-      booruId: json['booruId'] as int,
-      booruIdHint: json['booruIdHint'] as int,
-      apiKey: json['apiKey'] as String?,
-      login: json['login'] as String?,
-      passHash: json['passHash'] as String?,
-      url: json['url'] as String,
-      name: json['name'] as String,
-      deletedItemBehavior: BooruConfigDeletedItemBehavior
-          .values[json['deletedItemBehavior'] as int],
-      ratingFilter: ratingFilter != null
-          ? BooruConfigRatingFilter.values.getOrNull(ratingFilter) ??
-              BooruConfigRatingFilter.hideNSFW
-          : BooruConfigRatingFilter.hideNSFW,
-      bannedPostVisibility: bannedPostVisibility != null
-          ? BooruConfigBannedPostVisibility.values
-                  .getOrNull(bannedPostVisibility) ??
-              BooruConfigBannedPostVisibility.show
-          : BooruConfigBannedPostVisibility.show,
-      customDownloadFileNameFormat:
-          json['customDownloadFileNameFormat'] as String?,
-      customBulkDownloadFileNameFormat:
-          json['customBulkDownloadFileNameFormat'] as String?,
-      customDownloadLocation: json['customDownloadLocation'] as String?,
-      imageDetaisQuality: json['imageDetaisQuality'] as String?,
-      granularRatingFilters: parseGranularRatingFilters(
-        json['granularRatingFilterString'] as String?,
-      ),
-      postGestures: json['postGestures'] == null
-          ? null
-          : PostGestureConfig.fromJson(
-              json['postGestures'] as Map<String, dynamic>),
-      defaultPreviewImageButtonAction:
-          json['defaultPreviewImageButtonAction'] as String?,
-      listing: json['listing'] == null
-          ? null
-          : ListingConfigs.fromJson(json['listing'] as Map<String, dynamic>),
-    );
-  }
 
   Map<String, dynamic> toJson() {
     return {

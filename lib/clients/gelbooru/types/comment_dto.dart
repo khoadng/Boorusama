@@ -2,12 +2,6 @@
 import 'package:xml/xml.dart' as xml;
 
 class CommentDto {
-  final String? createdAt;
-  final String? postId;
-  final String? body;
-  final String? creator;
-  final String? id;
-  final String? creatorId;
 
   CommentDto({
     this.createdAt,
@@ -28,6 +22,12 @@ class CommentDto {
       creatorId: element.getAttribute('creator_id'),
     );
   }
+  final String? createdAt;
+  final String? postId;
+  final String? body;
+  final String? creator;
+  final String? id;
+  final String? creatorId;
 
   @override
   String toString() => body ?? '';

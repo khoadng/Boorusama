@@ -8,13 +8,6 @@ class ArtistUrlDto {
     this.isActive,
   });
 
-  final int? id;
-  final int? artistId;
-  final String? url;
-  final String? createdAt;
-  final String? updatedAt;
-  final bool? isActive;
-
   factory ArtistUrlDto.fromJson(Map<String, dynamic> json) {
     return ArtistUrlDto(
       id: json['id'],
@@ -25,6 +18,13 @@ class ArtistUrlDto {
       isActive: json['is_active'],
     );
   }
+
+  final int? id;
+  final int? artistId;
+  final String? url;
+  final String? createdAt;
+  final String? updatedAt;
+  final bool? isActive;
 
   @override
   String toString() => url ?? '';

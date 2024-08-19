@@ -1,11 +1,4 @@
 class PostDto {
-  final int? id;
-  final int? width;
-  final int? height;
-  final String? thumbnail;
-  final String? source;
-  final String? tag;
-  final List<String>? tags;
 
   PostDto({
     this.id,
@@ -28,6 +21,13 @@ class PostDto {
       tags: (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList(),
     );
   }
+  final int? id;
+  final int? width;
+  final int? height;
+  final String? thumbnail;
+  final String? source;
+  final String? tag;
+  final List<String>? tags;
 
   @override
   String toString() => id.toString();

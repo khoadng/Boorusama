@@ -2,15 +2,6 @@
 import 'dart:math';
 
 class StatisticalSummary {
-  final double mean;
-  final double median;
-  final double highest;
-  final double lowest;
-  final double standardDeviation;
-
-  final double percentile25;
-  final double percentile75;
-  final double percentile90;
 
   StatisticalSummary({
     required this.mean,
@@ -35,6 +26,15 @@ class StatisticalSummary {
       percentile90: 0,
     );
   }
+  final double mean;
+  final double median;
+  final double highest;
+  final double lowest;
+  final double standardDeviation;
+
+  final double percentile25;
+  final double percentile75;
+  final double percentile90;
 }
 
 StatisticalSummary calculateStats(List<double>? numbers) {

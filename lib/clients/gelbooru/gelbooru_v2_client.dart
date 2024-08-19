@@ -26,16 +26,6 @@ class GelbooruV2Client with GelbooruClientFavorites {
             )),
         _baseUrl = baseUrl;
 
-  final Dio _dio;
-  final String? _baseUrl;
-  @override
-  final String? userId;
-  final String? apiKey;
-  @override
-  final String? passHash;
-  @override
-  Dio get dio => _dio;
-
   factory GelbooruV2Client.custom({
     Dio? dio,
     String? login,
@@ -50,6 +40,16 @@ class GelbooruV2Client with GelbooruClientFavorites {
         apiKey: apiKey,
         passHash: passHash,
       );
+
+  final Dio _dio;
+  final String? _baseUrl;
+  @override
+  final String? userId;
+  final String? apiKey;
+  @override
+  final String? passHash;
+  @override
+  Dio get dio => _dio;
 
   Future<List<PostV2Dto>> getPosts({
     int? page,

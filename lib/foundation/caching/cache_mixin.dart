@@ -15,10 +15,10 @@ class Cache<T> with CacheMixin<T> {
 }
 
 class CacheEntry<T> {
-  final DateTime timestamp;
-  final T value;
 
   CacheEntry(this.value) : timestamp = DateTime.now();
+  final DateTime timestamp;
+  final T value;
 }
 
 mixin CacheMixin<T> {

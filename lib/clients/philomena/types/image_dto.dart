@@ -1,42 +1,4 @@
 class ImageDto {
-  final int? tagCount;
-  final dynamic deletionReason;
-  final List<String>? sourceUrls;
-  final String? mimeType;
-  final int? downvotes;
-  final IntensitiesDto? intensities;
-  final double? duration;
-  final dynamic duplicateOf;
-  final int? id;
-  final String? name;
-  final RepresentationsDto? representations;
-  final DateTime? createdAt;
-  final String? origSha512Hash;
-  final int? commentCount;
-  final double? wilsonScore;
-  final DateTime? firstSeenAt;
-  final List<int>? tagIds;
-  final bool? thumbnailsGenerated;
-  final String? description;
-  final String? viewUrl;
-  final DateTime? updatedAt;
-  final String? uploader;
-  final int? width;
-  final int? uploaderId;
-  final List<String>? tags;
-  final int? height;
-  final String? sha512Hash;
-  final int? size;
-  final int? score;
-  final int? faves;
-  final bool? animated;
-  final bool? spoilered;
-  final String? sourceUrl;
-  final bool? hiddenFromUsers;
-  final double? aspectRatio;
-  final int? upvotes;
-  final String? format;
-  final bool? processed;
 
   ImageDto({
     this.tagCount,
@@ -137,20 +99,50 @@ class ImageDto {
       return ImageDto();
     }
   }
+  final int? tagCount;
+  final dynamic deletionReason;
+  final List<String>? sourceUrls;
+  final String? mimeType;
+  final int? downvotes;
+  final IntensitiesDto? intensities;
+  final double? duration;
+  final dynamic duplicateOf;
+  final int? id;
+  final String? name;
+  final RepresentationsDto? representations;
+  final DateTime? createdAt;
+  final String? origSha512Hash;
+  final int? commentCount;
+  final double? wilsonScore;
+  final DateTime? firstSeenAt;
+  final List<int>? tagIds;
+  final bool? thumbnailsGenerated;
+  final String? description;
+  final String? viewUrl;
+  final DateTime? updatedAt;
+  final String? uploader;
+  final int? width;
+  final int? uploaderId;
+  final List<String>? tags;
+  final int? height;
+  final String? sha512Hash;
+  final int? size;
+  final int? score;
+  final int? faves;
+  final bool? animated;
+  final bool? spoilered;
+  final String? sourceUrl;
+  final bool? hiddenFromUsers;
+  final double? aspectRatio;
+  final int? upvotes;
+  final String? format;
+  final bool? processed;
 
   @override
   String toString() => '$id: $name';
 }
 
 class RepresentationsDto {
-  final String? full;
-  final String? large;
-  final String? medium;
-  final String? small;
-  final String? tall;
-  final String? thumb;
-  final String? thumbSmall;
-  final String? thumbTiny;
 
   RepresentationsDto({
     this.full,
@@ -175,13 +167,17 @@ class RepresentationsDto {
       thumbTiny: json['thumb_tiny'],
     );
   }
+  final String? full;
+  final String? large;
+  final String? medium;
+  final String? small;
+  final String? tall;
+  final String? thumb;
+  final String? thumbSmall;
+  final String? thumbTiny;
 }
 
 class IntensitiesDto {
-  final double? ne;
-  final double? nw;
-  final double? se;
-  final double? sw;
 
   IntensitiesDto({
     this.ne,
@@ -198,4 +194,8 @@ class IntensitiesDto {
       sw: json['sw'],
     );
   }
+  final double? ne;
+  final double? nw;
+  final double? se;
+  final double? sw;
 }

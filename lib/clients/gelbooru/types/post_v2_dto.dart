@@ -2,28 +2,6 @@
 import 'package:path/path.dart' as path;
 
 class PostV2Dto {
-  final String? previewUrl;
-  final String? sampleUrl;
-  final String? fileUrl;
-  final String? directory;
-  final String? hash;
-  final int? width;
-  final int? height;
-  final int? id;
-  final String? image;
-  final int? change;
-  final String? owner;
-  final int? parentId;
-  final String? rating;
-  final bool? sample;
-  final int? sampleHeight;
-  final int? sampleWidth;
-  final int? score;
-  final String? tags;
-  final String? source;
-  final String? status;
-  final bool? hasNotes;
-  final int? commentCount;
 
   PostV2Dto({
     this.previewUrl,
@@ -120,6 +98,28 @@ class PostV2Dto {
       commentCount: json['comment_count'],
     );
   }
+  final String? previewUrl;
+  final String? sampleUrl;
+  final String? fileUrl;
+  final String? directory;
+  final String? hash;
+  final int? width;
+  final int? height;
+  final int? id;
+  final String? image;
+  final int? change;
+  final String? owner;
+  final int? parentId;
+  final String? rating;
+  final bool? sample;
+  final int? sampleHeight;
+  final int? sampleWidth;
+  final int? score;
+  final String? tags;
+  final String? source;
+  final String? status;
+  final bool? hasNotes;
+  final int? commentCount;
 
   @override
   String toString() => '$id: $fileUrl';

@@ -3,35 +3,6 @@ import 'package:equatable/equatable.dart';
 import 'package:path/path.dart' as path;
 
 class PostDto {
-  final String? previewUrl;
-  final String? sampleUrl;
-  final String? fileUrl;
-  final String? directory;
-  final String? hash;
-  final int? width;
-  final int? height;
-  final int? id;
-  final String? image;
-  final int? change;
-  final String? owner;
-  final int? parentId;
-  final String? rating;
-  final bool? sample;
-  final int? sampleHeight;
-  final int? sampleWidth;
-  final int? score;
-  final String? tags;
-  final String? source;
-  final String? status;
-  final bool? hasNotes;
-  final int? commentCount;
-  final String? createdAt;
-  final String? md5;
-  final String? title;
-  final bool? hasComments;
-  final bool? postLocked;
-  final bool? hasChildren;
-  final int? creatorId;
 
   PostDto({
     this.previewUrl,
@@ -142,6 +113,35 @@ class PostDto {
       creatorId: json['creator_id'],
     );
   }
+  final String? previewUrl;
+  final String? sampleUrl;
+  final String? fileUrl;
+  final String? directory;
+  final String? hash;
+  final int? width;
+  final int? height;
+  final int? id;
+  final String? image;
+  final int? change;
+  final String? owner;
+  final int? parentId;
+  final String? rating;
+  final bool? sample;
+  final int? sampleHeight;
+  final int? sampleWidth;
+  final int? score;
+  final String? tags;
+  final String? source;
+  final String? status;
+  final bool? hasNotes;
+  final int? commentCount;
+  final String? createdAt;
+  final String? md5;
+  final String? title;
+  final bool? hasComments;
+  final bool? postLocked;
+  final bool? hasChildren;
+  final int? creatorId;
 
   @override
   String toString() => '$id: $fileUrl';

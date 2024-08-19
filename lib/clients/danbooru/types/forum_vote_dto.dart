@@ -1,10 +1,4 @@
 class ForumPostVoteDto {
-  final int? id;
-  final int? forumPostId;
-  final int? creatorId;
-  final int? score;
-  final String? createdAt;
-  final String? updatedAt;
 
   ForumPostVoteDto({
     this.id,
@@ -25,6 +19,12 @@ class ForumPostVoteDto {
       updatedAt: json['updated_at'],
     );
   }
+  final int? id;
+  final int? forumPostId;
+  final int? creatorId;
+  final int? score;
+  final String? createdAt;
+  final String? updatedAt;
 
   @override
   String toString() => '$creatorId: $score';

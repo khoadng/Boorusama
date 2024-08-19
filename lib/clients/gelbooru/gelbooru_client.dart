@@ -33,15 +33,6 @@ class GelbooruClient
               headers: headers ?? {},
             ));
 
-  final Dio _dio;
-  @override
-  final String? userId;
-  final String? apiKey;
-  @override
-  final String? passHash;
-  @override
-  Dio get dio => _dio;
-
   factory GelbooruClient.gelbooru({
     Dio? dio,
     String? login,
@@ -70,6 +61,15 @@ class GelbooruClient
         apiKey: apiKey,
         passHash: passHash,
       );
+
+  final Dio _dio;
+  @override
+  final String? userId;
+  final String? apiKey;
+  @override
+  final String? passHash;
+  @override
+  Dio get dio => _dio;
 
   Future<GelbooruPosts> getPosts({
     int? page,

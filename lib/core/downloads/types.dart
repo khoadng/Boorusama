@@ -35,10 +35,6 @@ class DownloaderMetadata extends Equatable {
     required this.siteUrl,
   });
 
-  final String? thumbnailUrl;
-  final int? fileSize;
-  final String? siteUrl;
-
   factory DownloaderMetadata.fromJson(Map<String, dynamic> json) {
     return DownloaderMetadata(
       thumbnailUrl: json['thumbnailUrl'],
@@ -47,18 +43,22 @@ class DownloaderMetadata extends Equatable {
     );
   }
 
-  static const DownloaderMetadata empty = DownloaderMetadata(
-    thumbnailUrl: null,
-    fileSize: null,
-    siteUrl: null,
-  );
-
   factory DownloaderMetadata.fromJsonString(String jsonString) {
     return tryDecodeJson(jsonString).fold(
       (l) => DownloaderMetadata.empty,
       (r) => DownloaderMetadata.fromJson(r),
     );
   }
+
+  final String? thumbnailUrl;
+  final int? fileSize;
+  final String? siteUrl;
+
+  static const DownloaderMetadata empty = DownloaderMetadata(
+    thumbnailUrl: null,
+    fileSize: null,
+    siteUrl: null,
+  );
 
   Map<String, dynamic> toJson() {
     return {

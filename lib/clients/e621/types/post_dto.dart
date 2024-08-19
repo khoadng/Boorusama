@@ -1,27 +1,4 @@
 class PostDto {
-  final int? id;
-  final String? createdAt;
-  final String? updatedAt;
-  final E621FileDto? file;
-  final E621PreviewDto? preview;
-  final E621SampleDto? sample;
-  final E621ScoreDto? score;
-  final Map<String, List<dynamic>>? tags;
-  final List<String>? lockedTags;
-  final int? changeSeq;
-  final E621FlagsDto? flags;
-  final String? rating;
-  final int? favCount;
-  final List<String>? sources;
-  final List<int>? pools;
-  final E621RelationshipsDto? relationships;
-  final int? approverId;
-  final int? uploaderId;
-  final String? description;
-  final int? commentCount;
-  final bool? isFavorited;
-  final bool? hasNotes;
-  final double? duration;
 
   PostDto({
     this.id,
@@ -76,18 +53,35 @@ class PostDto {
       duration: json['duration'],
     );
   }
+  final int? id;
+  final String? createdAt;
+  final String? updatedAt;
+  final E621FileDto? file;
+  final E621PreviewDto? preview;
+  final E621SampleDto? sample;
+  final E621ScoreDto? score;
+  final Map<String, List<dynamic>>? tags;
+  final List<String>? lockedTags;
+  final int? changeSeq;
+  final E621FlagsDto? flags;
+  final String? rating;
+  final int? favCount;
+  final List<String>? sources;
+  final List<int>? pools;
+  final E621RelationshipsDto? relationships;
+  final int? approverId;
+  final int? uploaderId;
+  final String? description;
+  final int? commentCount;
+  final bool? isFavorited;
+  final bool? hasNotes;
+  final double? duration;
 
   @override
   String toString() => '$id';
 }
 
 class E621FileDto {
-  final int? width;
-  final int? height;
-  final String? ext;
-  final int? size;
-  final String? md5;
-  final String? url;
 
   E621FileDto({
     this.width,
@@ -108,12 +102,15 @@ class E621FileDto {
       url: json['url'],
     );
   }
+  final int? width;
+  final int? height;
+  final String? ext;
+  final int? size;
+  final String? md5;
+  final String? url;
 }
 
 class E621PreviewDto {
-  final int? width;
-  final int? height;
-  final String? url;
 
   E621PreviewDto({
     this.width,
@@ -128,14 +125,12 @@ class E621PreviewDto {
       url: json['url'],
     );
   }
+  final int? width;
+  final int? height;
+  final String? url;
 }
 
 class E621SampleDto {
-  final bool? has;
-  final int? height;
-  final int? width;
-  final String? url;
-  final Map<String, E621SampleAlternatesDto>? alternates;
 
   E621SampleDto({
     this.has,
@@ -156,13 +151,14 @@ class E621SampleDto {
       ),
     );
   }
+  final bool? has;
+  final int? height;
+  final int? width;
+  final String? url;
+  final Map<String, E621SampleAlternatesDto>? alternates;
 }
 
 class E621SampleAlternatesDto {
-  final String? type;
-  final int? height;
-  final int? width;
-  final List<String>? urls;
 
   E621SampleAlternatesDto({
     this.type,
@@ -179,12 +175,13 @@ class E621SampleAlternatesDto {
       urls: List<String>.from(json['urls'].where((x) => x != null)),
     );
   }
+  final String? type;
+  final int? height;
+  final int? width;
+  final List<String>? urls;
 }
 
 class E621ScoreDto {
-  final int? up;
-  final int? down;
-  final int? total;
 
   E621ScoreDto({
     this.up,
@@ -199,15 +196,12 @@ class E621ScoreDto {
       total: json['total'],
     );
   }
+  final int? up;
+  final int? down;
+  final int? total;
 }
 
 class E621FlagsDto {
-  final bool? pending;
-  final bool? flagged;
-  final bool? noteLocked;
-  final bool? statusLocked;
-  final bool? ratingLocked;
-  final bool? deleted;
 
   E621FlagsDto({
     this.pending,
@@ -228,13 +222,15 @@ class E621FlagsDto {
       deleted: json['deleted'],
     );
   }
+  final bool? pending;
+  final bool? flagged;
+  final bool? noteLocked;
+  final bool? statusLocked;
+  final bool? ratingLocked;
+  final bool? deleted;
 }
 
 class E621RelationshipsDto {
-  final int? parentId;
-  final bool? hasChildren;
-  final bool? hasActiveChildren;
-  final List<dynamic>? children;
 
   E621RelationshipsDto({
     this.parentId,
@@ -251,4 +247,8 @@ class E621RelationshipsDto {
       children: json['children'],
     );
   }
+  final int? parentId;
+  final bool? hasChildren;
+  final bool? hasActiveChildren;
+  final List<dynamic>? children;
 }

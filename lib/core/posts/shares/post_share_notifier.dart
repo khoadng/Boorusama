@@ -31,13 +31,13 @@ class PostShareNotifier
 }
 
 class PostShareState extends Equatable {
-  final String booruLink;
-  final PostSource sourceLink;
 
   const PostShareState({
     required this.booruLink,
     required this.sourceLink,
   });
+  final String booruLink;
+  final PostSource sourceLink;
 
   static PostShareState initial() {
     return PostShareState(

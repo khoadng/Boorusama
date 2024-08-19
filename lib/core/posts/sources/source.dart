@@ -5,6 +5,24 @@ import 'source_utils.dart';
 sealed class PostSource {
   const PostSource();
 
+  factory PostSource.from(
+    String? value, {
+    int? pixivId,
+  }) {
+    if (value == null || value.isEmpty) return const NoSource();
+
+    return isWebSource(value)
+        ? pixivId.toOption().fold(
+              () => RawWebSource(
+                faviconUrl: _getFavicon(value),
+                url: value,
+                uri: Uri.parse(value),
+              ),
+              (pixivId) => PostSource.pixiv(pixivId),
+            )
+        : NonWebSource(value);
+  }
+
   factory PostSource.none() => const NoSource();
 
   factory PostSource.pixiv(int pixivId) => PixivSource(pixivId: pixivId);
@@ -35,24 +53,6 @@ sealed class PostSource {
     }
 
     return null;
-  }
-
-  factory PostSource.from(
-    String? value, {
-    int? pixivId,
-  }) {
-    if (value == null || value.isEmpty) return const NoSource();
-
-    return isWebSource(value)
-        ? pixivId.toOption().fold(
-              () => RawWebSource(
-                faviconUrl: _getFavicon(value),
-                url: value,
-                uri: Uri.parse(value),
-              ),
-              (pixivId) => PostSource.pixiv(pixivId),
-            )
-        : NonWebSource(value);
   }
 }
 

@@ -4,13 +4,13 @@ class SearchKeywordDto {
     required this.keyword,
   });
 
-  final int hitCount;
-  final String keyword;
-
   factory SearchKeywordDto.fromJson(List<dynamic> json) => SearchKeywordDto(
         keyword: json[0],
         hitCount: json[1].toInt(),
       );
+
+  final int hitCount;
+  final String keyword;
 
   @override
   String toString() => '$keyword: $hitCount';

@@ -1,7 +1,4 @@
 class TagDto {
-  final List<String>? names;
-  final String? category;
-  final int? usages;
 
   TagDto({
     this.names,
@@ -17,15 +14,12 @@ class TagDto {
       usages: json['usages'] as int?,
     );
   }
+  final List<String>? names;
+  final String? category;
+  final int? usages;
 }
 
 class TagCategoryDto {
-  final String? name;
-  final int? version;
-  final String? color;
-  final int? usages;
-  final bool? isDefault;
-  final int? order;
 
   TagCategoryDto({
     required this.name,
@@ -46,4 +40,10 @@ class TagCategoryDto {
       order: json['order'] as int?,
     );
   }
+  final String? name;
+  final int? version;
+  final String? color;
+  final int? usages;
+  final bool? isDefault;
+  final int? order;
 }

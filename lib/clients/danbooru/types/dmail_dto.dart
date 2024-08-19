@@ -1,16 +1,4 @@
 class DmailDto {
-  final int? id;
-  final int? ownerId;
-  final int? fromId;
-  final int? toId;
-  final String? title;
-  final String? body;
-  final bool? isRead;
-  final bool? isDeleted;
-  final DateTime? createdAt;
-  final DateTime? updatedAt;
-  final bool? isSpam;
-  final String? key;
 
   DmailDto({
     this.id,
@@ -47,4 +35,16 @@ class DmailDto {
       key: json['key'],
     );
   }
+  final int? id;
+  final int? ownerId;
+  final int? fromId;
+  final int? toId;
+  final String? title;
+  final String? body;
+  final bool? isRead;
+  final bool? isDeleted;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+  final bool? isSpam;
+  final String? key;
 }

@@ -5,15 +5,15 @@ import 'dart:io';
 import 'package:boorusama/foundation/path.dart';
 
 class DirectorySizeInfo {
-  final int size;
-  final int fileCount;
-  final int directoryCount;
 
   DirectorySizeInfo({
     required this.size,
     required this.fileCount,
     required this.directoryCount,
   });
+  final int size;
+  final int fileCount;
+  final int directoryCount;
 
   static DirectorySizeInfo zero =
       DirectorySizeInfo(directoryCount: 0, fileCount: 0, size: 0);

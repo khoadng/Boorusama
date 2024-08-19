@@ -3,13 +3,13 @@ import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
 
 class SettingsRepositoryLoggerInterceptor implements SettingsRepository {
-  final SettingsRepository repository;
-  final LoggerService _logger;
 
   SettingsRepositoryLoggerInterceptor(
     this.repository, {
     required LoggerService logger,
   }) : _logger = logger;
+  final SettingsRepository repository;
+  final LoggerService _logger;
 
   @override
   Future<bool> save(Settings setting) async => repository.save(setting);

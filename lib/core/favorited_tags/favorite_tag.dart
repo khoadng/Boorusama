@@ -9,6 +9,17 @@ class FavoriteTag extends Equatable {
     required this.labels,
   });
 
+  factory FavoriteTag.fromJson(Map<String, dynamic> json) => FavoriteTag(
+        name: json['name'] as String,
+        createdAt: DateTime.parse(json['createdAt'] as String),
+        updatedAt: json['updatedAt'] != null
+            ? DateTime.parse(json['updatedAt'] as String)
+            : null,
+        labels: (json['labels'] as List<dynamic>?)
+            ?.map((e) => e as String)
+            .toList(),
+      );
+
   factory FavoriteTag.empty() => FavoriteTag(
         name: '',
         createdAt: DateTime(1),
@@ -32,17 +43,6 @@ class FavoriteTag extends Equatable {
         createdAt: createdAt ?? this.createdAt,
         updatedAt: updatedAt != null ? updatedAt() : this.updatedAt,
         labels: labels != null ? labels() : this.labels,
-      );
-
-  factory FavoriteTag.fromJson(Map<String, dynamic> json) => FavoriteTag(
-        name: json['name'] as String,
-        createdAt: DateTime.parse(json['createdAt'] as String),
-        updatedAt: json['updatedAt'] != null
-            ? DateTime.parse(json['updatedAt'] as String)
-            : null,
-        labels: (json['labels'] as List<dynamic>?)
-            ?.map((e) => e as String)
-            .toList(),
       );
 
   Map<String, dynamic> toJson() => {

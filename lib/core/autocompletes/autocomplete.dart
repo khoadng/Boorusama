@@ -19,6 +19,18 @@ class AutocompleteData extends Equatable {
     this.antecedent,
   });
 
+  factory AutocompleteData.fromJson(Map<String, dynamic> json) {
+    return AutocompleteData(
+      type: json['type'],
+      label: json['label'],
+      value: json['value'],
+      category: json['category'],
+      postCount: json['post_count'],
+      level: json['level'],
+      antecedent: json['antecedent'],
+    );
+  }
+
   final String? type;
   final AutocompleteLabel label;
   final AutocompleteValue value;
@@ -61,18 +73,6 @@ class AutocompleteData extends Equatable {
   ];
 
   static bool isTagType(String? type) => tagTypes.contains(type);
-
-  factory AutocompleteData.fromJson(Map<String, dynamic> json) {
-    return AutocompleteData(
-      type: json['type'],
-      label: json['label'],
-      value: json['value'],
-      category: json['category'],
-      postCount: json['post_count'],
-      level: json['level'],
-      antecedent: json['antecedent'],
-    );
-  }
 
   Map<String, dynamic> toJson() {
     return {

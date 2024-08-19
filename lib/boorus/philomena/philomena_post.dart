@@ -134,14 +134,6 @@ Set<String>? _findArtistFromTags(Set<String> tags) {
 }
 
 class PhilomenaRepresentation extends Equatable {
-  final String full;
-  final String large;
-  final String medium;
-  final String small;
-  final String tall;
-  final String thumb;
-  final String thumbSmall;
-  final String thumbTiny;
 
   const PhilomenaRepresentation({
     required this.full,
@@ -153,6 +145,14 @@ class PhilomenaRepresentation extends Equatable {
     required this.thumbSmall,
     required this.thumbTiny,
   });
+  final String full;
+  final String large;
+  final String medium;
+  final String small;
+  final String tall;
+  final String thumb;
+  final String thumbSmall;
+  final String thumbTiny;
 
   @override
   List<Object> get props => [

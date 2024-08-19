@@ -119,10 +119,6 @@ class _MultiSelectWidgetState<T> extends State<MultiSelectWidget<T>> {
 }
 
 class SelectableItem extends StatefulWidget {
-  final int index;
-  final bool isSelected;
-  final VoidCallback onTap;
-  final IndexedWidgetBuilder itemBuilder;
 
   const SelectableItem({
     super.key,
@@ -131,6 +127,10 @@ class SelectableItem extends StatefulWidget {
     required this.itemBuilder,
     required this.index,
   });
+  final int index;
+  final bool isSelected;
+  final VoidCallback onTap;
+  final IndexedWidgetBuilder itemBuilder;
 
   @override
   State<SelectableItem> createState() => _SelectableItemState();

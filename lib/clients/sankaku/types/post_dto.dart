@@ -2,47 +2,6 @@
 import 'tag_dto.dart';
 
 class PostDto {
-  final int? id;
-  final String? rating;
-  final String? status;
-  final AuthorDto? author;
-  final String? sampleUrl;
-  final int? sampleWidth;
-  final int? sampleHeight;
-  final String? previewUrl;
-  final int? previewWidth;
-  final int? previewHeight;
-  final String? fileUrl;
-  final int? width;
-  final int? height;
-  final int? fileSize;
-  final String? fileType;
-  final CreatedAtDto? createdAt;
-  final bool? hasChildren;
-  final bool? hasComments;
-  final bool? hasNotes;
-  final bool? isFavorited;
-  // final dynamic userVote; // Change this to the actual type if known
-  final String? md5;
-  final int? parentId;
-  final int? change;
-  final int? favCount;
-  final int? recommendedPosts;
-  final int? recommendedScore;
-  final int? voteCount;
-  final int? totalScore;
-  final int? commentCount;
-  final String? source;
-  final bool? inVisiblePool;
-  final bool? isPremium;
-  final bool? isRatingLocked;
-  final bool? isNoteLocked;
-  final bool? isStatusLocked;
-  final bool? redirectToSignup;
-  // final dynamic sequence; // Change this to the actual type if known
-  final List<TagDto>? tags;
-  final double? videoDuration;
-  final List<ReactionDto>? reactions;
 
   PostDto({
     this.id,
@@ -143,15 +102,53 @@ class PostDto {
           .toList(),
     );
   }
+  final int? id;
+  final String? rating;
+  final String? status;
+  final AuthorDto? author;
+  final String? sampleUrl;
+  final int? sampleWidth;
+  final int? sampleHeight;
+  final String? previewUrl;
+  final int? previewWidth;
+  final int? previewHeight;
+  final String? fileUrl;
+  final int? width;
+  final int? height;
+  final int? fileSize;
+  final String? fileType;
+  final CreatedAtDto? createdAt;
+  final bool? hasChildren;
+  final bool? hasComments;
+  final bool? hasNotes;
+  final bool? isFavorited;
+  // final dynamic userVote; // Change this to the actual type if known
+  final String? md5;
+  final int? parentId;
+  final int? change;
+  final int? favCount;
+  final int? recommendedPosts;
+  final int? recommendedScore;
+  final int? voteCount;
+  final int? totalScore;
+  final int? commentCount;
+  final String? source;
+  final bool? inVisiblePool;
+  final bool? isPremium;
+  final bool? isRatingLocked;
+  final bool? isNoteLocked;
+  final bool? isStatusLocked;
+  final bool? redirectToSignup;
+  // final dynamic sequence; // Change this to the actual type if known
+  final List<TagDto>? tags;
+  final double? videoDuration;
+  final List<ReactionDto>? reactions;
 
   @override
   String toString() => '$id: $fileUrl';
 }
 
 class ReactionDto {
-  final int? id;
-  final int? userId;
-  final String? reaction;
 
   ReactionDto({
     this.id,
@@ -166,13 +163,12 @@ class ReactionDto {
       reaction: json['reaction'] as String?,
     );
   }
+  final int? id;
+  final int? userId;
+  final String? reaction;
 }
 
 class AuthorDto {
-  final int? id;
-  final String? name;
-  final String? avatar;
-  final String? avatarRating;
 
   AuthorDto({
     this.id,
@@ -189,12 +185,13 @@ class AuthorDto {
       avatarRating: json['avatar_rating'] as String?,
     );
   }
+  final int? id;
+  final String? name;
+  final String? avatar;
+  final String? avatarRating;
 }
 
 class CreatedAtDto {
-  final String? jsonClass;
-  final int? s;
-  final int? n;
 
   CreatedAtDto({
     this.jsonClass,
@@ -209,4 +206,7 @@ class CreatedAtDto {
       n: json['n'] as int?,
     );
   }
+  final String? jsonClass;
+  final int? s;
+  final int? n;
 }

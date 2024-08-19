@@ -8,13 +8,13 @@ import 'package:boorusama/foundation/image.dart';
 import 'package:boorusama/foundation/video.dart';
 
 class PostMetadata extends Equatable {
-  final int? page;
-  final String? search;
 
   const PostMetadata({
     this.page,
     this.search,
   });
+  final int? page;
+  final String? search;
 
   @override
   List<Object?> get props => [page, search];

@@ -1,13 +1,4 @@
 class TagDto {
-  final int? id;
-  final String? name;
-  final int? postCount;
-  final List<RelatedTagDto>? relatedTags;
-  final String? relatedTagsUpdatedAt;
-  final int? category;
-  final bool? isLocked;
-  final String? createdAt;
-  final String? updatedAt;
 
   TagDto({
     this.id,
@@ -36,19 +27,28 @@ class TagDto {
       updatedAt: json['updated_at'],
     );
   }
+  final int? id;
+  final String? name;
+  final int? postCount;
+  final List<RelatedTagDto>? relatedTags;
+  final String? relatedTagsUpdatedAt;
+  final int? category;
+  final bool? isLocked;
+  final String? createdAt;
+  final String? updatedAt;
 
   @override
   String toString() => name ?? '';
 }
 
 class RelatedTagDto {
-  final String tag;
-  final double score;
 
   const RelatedTagDto({
     required this.tag,
     required this.score,
   });
+  final String tag;
+  final double score;
 }
 
 List<RelatedTagDto>? _parseRelatedTags(String? relatedTags) {

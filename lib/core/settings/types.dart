@@ -477,8 +477,6 @@ class Settings extends Equatable {
 }
 
 class ListingConfigs extends Equatable {
-  final ImageListingSettings settings;
-  final bool enable;
 
   const ListingConfigs({
     required this.settings,
@@ -497,6 +495,15 @@ class ListingConfigs extends Equatable {
             (json) => ListingConfigs.fromJson(json),
           ),
       };
+
+  factory ListingConfigs.fromJson(Map<String, dynamic> json) {
+    return ListingConfigs(
+      settings: ImageListingSettings.fromJson(json['settings']),
+      enable: json['enable'],
+    );
+  }
+  final ImageListingSettings settings;
+  final bool enable;
 
   ListingConfigs copyWith({
     ImageListingSettings? settings,
@@ -517,29 +524,9 @@ class ListingConfigs extends Equatable {
       };
 
   String toJsonString() => jsonEncode(toJson());
-
-  factory ListingConfigs.fromJson(Map<String, dynamic> json) {
-    return ListingConfigs(
-      settings: ImageListingSettings.fromJson(json['settings']),
-      enable: json['enable'],
-    );
-  }
 }
 
 class ImageListingSettings extends Equatable {
-  final GridSize gridSize;
-  final ImageListType imageListType;
-  final ImageQuality imageQuality;
-  final PageMode pageMode;
-  final PageIndicatorPosition pageIndicatorPosition;
-  final bool showScoresInGrid;
-  final bool showPostListConfigHeader;
-  final MediaBlurCondition mediaBlurCondition;
-  final double imageGridSpacing;
-  final double imageBorderRadius;
-  final double imageGridPadding;
-  final double imageGridAspectRatio;
-  final int postsPerPage;
 
   const ImageListingSettings({
     required this.gridSize,
@@ -583,6 +570,19 @@ class ImageListingSettings extends Equatable {
         imageGridAspectRatio = json['imageGridAspectRatio'] ?? 0.7,
         imageGridPadding = json['imageGridPadding'] ?? 16,
         imageGridSpacing = json['imageGridSpacing'] ?? 4;
+  final GridSize gridSize;
+  final ImageListType imageListType;
+  final ImageQuality imageQuality;
+  final PageMode pageMode;
+  final PageIndicatorPosition pageIndicatorPosition;
+  final bool showScoresInGrid;
+  final bool showPostListConfigHeader;
+  final MediaBlurCondition mediaBlurCondition;
+  final double imageGridSpacing;
+  final double imageBorderRadius;
+  final double imageGridPadding;
+  final double imageGridAspectRatio;
+  final int postsPerPage;
 
   //TODO: duplicate code
   bool get blurExplicitMedia =>

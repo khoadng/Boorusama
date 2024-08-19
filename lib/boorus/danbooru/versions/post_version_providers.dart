@@ -24,11 +24,11 @@ final danbooruPostVersionsProvider = FutureProvider.autoDispose
 });
 
 class DanbooruPostVersionRepository {
-  final DanbooruClient client;
 
   DanbooruPostVersionRepository({
     required this.client,
   });
+  final DanbooruClient client;
 
   Future<List<DanbooruPostVersion>> getPostVersions({
     required int id,

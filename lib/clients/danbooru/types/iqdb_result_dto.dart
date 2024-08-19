@@ -2,10 +2,6 @@
 import 'types.dart';
 
 class IqdbResultDto {
-  final String? hash;
-  final int? postId;
-  final double? score;
-  final PostDto? post;
 
   IqdbResultDto({
     required this.hash,
@@ -22,4 +18,8 @@ class IqdbResultDto {
       post: json['post'] != null ? PostDto.fromJson(json['post']) : null,
     );
   }
+  final String? hash;
+  final int? postId;
+  final double? score;
+  final PostDto? post;
 }
