@@ -16,7 +16,7 @@ void main() {
       'md5': 'f7deda9c6934179779f63910d5e8d2dc',
       'index': '7',
     };
-    final clock = Clock.fixed(DateTime(2020, 1, 1, 12, 0, 0));
+    final clock = Clock.fixed(DateTime(2020, 1, 1, 12));
     String format =
         '[{date:format=dd.MM.yyyy hh:mm}] {character:nomod,case=upper,sort[name]=desc} from {copyright:unsafe=true} drawn by {artist:limit=1} - {md5:maxlength=6} ({index:pad_left=3}).{extension}';
 
@@ -55,7 +55,7 @@ void main() {
         'index': '2',
       },
     ];
-    final clock = Clock.fixed(DateTime(2020, 1, 1, 12, 0, 0));
+    final clock = Clock.fixed(DateTime(2020, 1, 1, 12));
     String format =
         '[{date:format=dd.MM.yyyy hh:mm}] {character:nomod,case=upper,sort[name]=desc} drawn by {artist:limit=1} - {md5:maxlength=6} ({index}).{extension}';
 

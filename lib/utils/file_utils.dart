@@ -25,7 +25,7 @@ Future<DirectorySizeInfo> getDirectorySize(Directory dir) async {
   int directoryCount = 0;
 
   try {
-    await for (var entity in dir.list(recursive: false, followLinks: false)) {
+    await for (var entity in dir.list(followLinks: false)) {
       if (entity is Directory) {
         var subDirSizeInfo = await getDirectorySize(entity);
         size += subDirSizeInfo.size;

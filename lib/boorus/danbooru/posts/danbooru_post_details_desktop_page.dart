@@ -134,7 +134,7 @@ class _DanbooruPostDetailsDesktopPageState
                             imageUrl: (item) => item.url360x360,
                           ),
                           orElse: () => const SliverPreviewPostGridPlaceholder(
-                            itemCount: 30,
+                            
                           ),
                         ),
                   ))

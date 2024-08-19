@@ -374,7 +374,6 @@ class DesktopPostGridConfigTile<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisSize: MainAxisSize.max,
       children: [
         Container(
           width: 80,

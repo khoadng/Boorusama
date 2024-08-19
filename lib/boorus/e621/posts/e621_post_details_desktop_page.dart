@@ -155,7 +155,7 @@ class _DanbooruPostDetailsDesktopPageState
                                     ref.watch(imageListingSettingsProvider)),
                               ),
                               orElse: () => const PreviewPostGridPlaceholder(
-                                imageCount: 30,
+                                
                               ),
                             ),
                       )

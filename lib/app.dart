@@ -141,7 +141,6 @@ class AppFailedToInitialize extends ConsumerWidget {
                       ),
                       const SizedBox(height: 12),
                       MarkdownBody(
-                        shrinkWrap: true,
                         data: data,
                       ),
                       const SizedBox(height: 16),

@@ -364,7 +364,7 @@ class MiscDataNotifier extends AutoDisposeFamilyNotifier<String, String> {
     return miscDataBox.get(arg) ?? '';
   }
 
-  void put(String value) async {
+  Future<void> put(String value) async {
     final miscDataBox = ref.watch(miscDataBoxProvider);
     await miscDataBox.put(arg, value);
 

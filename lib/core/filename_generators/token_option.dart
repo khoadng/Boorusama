@@ -90,7 +90,7 @@ TokenOptionHandler getTokenOptionHandler(
           : data
               .split('')
               .map((e) => o.unsafeCharacters.contains(e) ? '_' : e)
-              .join(''),
+              .join(),
       DateFormatOption o => (context) =>
           DateFormat(o.value).format(clock?.now() ?? DateTime.now()),
       RatingSingleLetterOption _ => (context) => data.substring(0, 1),

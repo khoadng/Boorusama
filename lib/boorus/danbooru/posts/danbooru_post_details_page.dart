@@ -78,7 +78,7 @@ class _DanbooruPostDetailsPageState
                             ),
                             orElse: () =>
                                 const SliverPreviewPostGridPlaceholder(
-                              itemCount: 30,
+                              
                             ),
                           ),
                     ))
@@ -164,7 +164,6 @@ class DanbooruFileDetails extends ConsumerWidget {
       uploader: uploader != null
           ? Material(
               color: Colors.transparent,
-              elevation: 0,
               child: InkWell(
                 onTap: () => goToUserDetailsPage(
                   ref,
@@ -187,7 +186,6 @@ class DanbooruFileDetails extends ConsumerWidget {
           ? {
               'Approver': Material(
                 color: Colors.transparent,
-                elevation: 0,
                 child: InkWell(
                   onTap: () => goToUserDetailsPage(
                     ref,

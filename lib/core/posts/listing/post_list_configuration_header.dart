@@ -85,12 +85,10 @@ class _PostListConfigurationHeaderState
               ActionChip(
                 visualDensity: const ShrinkVisualDensity(),
                 side: BorderSide(
-                  width: 1,
                   color: context.theme.hintColor,
                 ),
                 shape: StadiumBorder(
                   side: BorderSide(
-                    width: 1,
                     color: context.theme.hintColor,
                   ),
                 ),
@@ -265,7 +263,6 @@ class _BadgedChip extends StatelessWidget {
         visualDensity: const ShrinkVisualDensity(),
         selected: active,
         side: BorderSide(
-          width: 1,
           color: active ? context.theme.hintColor : Colors.transparent,
         ),
         backgroundColor: context.colorScheme.surface,

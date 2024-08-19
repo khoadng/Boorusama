@@ -49,7 +49,6 @@ class BasicTagList extends ConsumerWidget {
                   backgroundColor: colors?.backgroundColor,
                   side: colors != null
                       ? BorderSide(
-                          width: 1,
                           color: colors.borderColor,
                         )
                       : null,

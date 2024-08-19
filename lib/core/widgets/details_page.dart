@@ -150,7 +150,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
     super.initState();
   }
 
-  void _onSlideShowChanged() async {
+  Future<void> _onSlideShowChanged() async {
     final slideShow = _controller.slideshow.value;
 
     if (slideShow) {

@@ -22,7 +22,6 @@ class PostVoteApiRepositoryApi implements PostVoteRepository {
           postIds: postIds,
           userId: userId,
           isDeleted: false,
-          limit: 100,
         )
         .then((value) => value.map(postVoteDtoToPostVote).toList());
   }

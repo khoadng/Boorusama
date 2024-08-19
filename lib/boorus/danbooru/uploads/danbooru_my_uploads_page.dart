@@ -292,7 +292,6 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
                 bottom: 4,
                 left: 4,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [

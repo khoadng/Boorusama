@@ -150,7 +150,6 @@ class _RelatedTagChips extends ConsumerWidget {
           side: selected
               ? colors != null
                   ? BorderSide(
-                      width: 1,
                       color: colors.borderColor,
                     )
                   : null

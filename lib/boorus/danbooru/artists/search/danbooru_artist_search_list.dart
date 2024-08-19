@@ -56,7 +56,7 @@ class _DanbooruArtistSearchPageState
     pagingController.removePageRequestListener(_onPageChanged);
   }
 
-  void _fetchPage(int pageKey) async {
+  Future<void> _fetchPage(int pageKey) async {
     final artists =
         await ref.read(danbooruArtistRepoProvider(ref.readConfig)).getArtists(
               name: widget.nameController.text,
@@ -153,7 +153,6 @@ class _DanbooruArtistSearchPageState
             expanded: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   if (artist.otherNames.isNotEmpty) ...[

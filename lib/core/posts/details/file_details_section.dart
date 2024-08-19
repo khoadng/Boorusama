@@ -97,7 +97,6 @@ class FileDetailsSection extends StatelessWidget {
               valueLabel: post.id.toString(),
               valueTrailing: Material(
                 color: Colors.transparent,
-                elevation: 0,
                 child: InkWell(
                   customBorder: const CircleBorder(),
                   child: const Icon(

@@ -6,19 +6,19 @@ import 'package:boorusama/core/posts/post_repository.dart';
 import 'package:boorusama/functional.dart';
 
 class ExploreRepositoryCacher implements ExploreRepository {
-  final ExploreRepository repository;
-  final Duration popularStaleDuration;
-  final Duration mostViewedStaleDuration;
-  final Duration hotStaleDuration;
-
-  final Map<String, (DateTime, List<DanbooruPost>)> _cache = {};
-
   ExploreRepositoryCacher({
     required this.repository,
     required this.popularStaleDuration,
     required this.mostViewedStaleDuration,
     required this.hotStaleDuration,
   });
+
+  final ExploreRepository repository;
+  final Duration popularStaleDuration;
+  final Duration mostViewedStaleDuration;
+  final Duration hotStaleDuration;
+
+  final Map<String, (DateTime, List<DanbooruPost>)> _cache = {};
 
   DateTime _truncateToDate(DateTime dateTime) =>
       DateTime(dateTime.year, dateTime.month, dateTime.day);

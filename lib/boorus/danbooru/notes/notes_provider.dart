@@ -17,7 +17,6 @@ final danbooruNoteRepoProvider =
     fetch: (postId) => client
         .getNotes(
           postId: postId,
-          limit: _notesLimit,
         )
         .then((value) => value.map((e) => e.toEntity()).toList()),
   );

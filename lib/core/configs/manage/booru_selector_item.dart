@@ -145,7 +145,6 @@ class BooruSelectorItem extends StatelessWidget {
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   if (direction == Axis.horizontal)
                     const SizedBox(height: 12)

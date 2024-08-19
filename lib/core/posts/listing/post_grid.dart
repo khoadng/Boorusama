@@ -276,6 +276,7 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                       child: ImprovedScrolling(
                         scrollController: _autoScrollController,
                         // https://github.com/adrianflutur/flutter_improved_scrolling/issues/5
+                        // ignore: avoid_redundant_argument_values
                         enableKeyboardScrolling: false,
                         enableMMBScrolling: true,
                         child: ConditionalParentWidget(
@@ -454,7 +455,6 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
       rightSwipeWidget: Chip(
         visualDensity: VisualDensity.compact,
         side: BorderSide(
-          width: 1,
           color: context.theme.hintColor,
         ),
         backgroundColor: context.colorScheme.surface,
@@ -473,7 +473,6 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
       leftSwipeWidget: Chip(
         visualDensity: VisualDensity.compact,
         side: BorderSide(
-          width: 1,
           color: context.theme.hintColor,
         ),
         backgroundColor: context.colorScheme.surface,

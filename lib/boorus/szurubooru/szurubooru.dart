@@ -303,7 +303,6 @@ class SzurubooruCommentPage extends ConsumerWidget {
                           ? DateTime.parse(e.lastEditTime!)
                           : DateTime(1),
                       creatorName: e.user?.name ?? '',
-                      creatorId: null,
                     ))
                 .toList(),
           ),

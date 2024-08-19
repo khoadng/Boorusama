@@ -52,7 +52,6 @@ class _LatestViewState extends ConsumerState<LatestView> {
           SliverAppBar(
             backgroundColor: context.theme.scaffoldBackgroundColor,
             toolbarHeight: kToolbarHeight * 1.2,
-            primary: true,
             title: widget.searchBar,
             floating: true,
             snap: true,

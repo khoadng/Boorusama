@@ -147,12 +147,9 @@ class TagEditHistoryCard extends StatelessWidget {
           const SizedBox(width: 8),
           Expanded(
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Expanded(
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Flexible(child: _buildUsername(context)),
                       const Text(
@@ -225,7 +222,6 @@ class TagEditHistoryCard extends StatelessWidget {
   Widget _buildUsername(BuildContext context) {
     return Material(
       color: Colors.transparent,
-      elevation: 0,
       child: InkWell(
         onTap: onUserTap,
         child: Text(

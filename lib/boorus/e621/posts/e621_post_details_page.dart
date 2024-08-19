@@ -64,7 +64,7 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage> {
                                 ref.watch(imageListingSettingsProvider)),
                           ),
                           orElse: () => const SliverPreviewPostGridPlaceholder(
-                            itemCount: 30,
+                            
                           ),
                         ),
                   ))

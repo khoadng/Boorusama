@@ -86,8 +86,6 @@ class SearchAppBar extends ConsumerWidget {
 
                 return Row(
                   mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     if (constraints.maxWidth > 500) spacer,
                     Flexible(

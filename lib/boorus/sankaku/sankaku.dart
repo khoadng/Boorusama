@@ -191,7 +191,7 @@ class SankakuPostDetailsPage extends ConsumerWidget {
                             imageUrl: (item) => item.sampleImageUrl,
                           ),
                           orElse: () => const SliverPreviewPostGridPlaceholder(
-                            itemCount: 30,
+                            
                           ),
                         ),
                   ))

@@ -18,7 +18,6 @@ List<AutocompleteData> convertTagSummaryToAutocompleteData(
     AutocompleteData(
       label: label.replaceUnderscoreWithSpace(),
       value: value,
-      antecedent: null,
       type: type,
       category: category,
     )

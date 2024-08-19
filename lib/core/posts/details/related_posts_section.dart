@@ -83,7 +83,6 @@ class RelatedPostsSection<T extends Post> extends ConsumerWidget {
                   Align(
                     alignment: Alignment.bottomLeft,
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [

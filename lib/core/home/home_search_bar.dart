@@ -58,7 +58,6 @@ class HomeSearchBar extends ConsumerWidget {
                           ),
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Padding(
                                 padding:

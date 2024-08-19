@@ -64,7 +64,6 @@ class _DismissableInfoContainerState
             border: colors != null
                 ? Border.all(
                     color: colors.borderColor,
-                    width: 1,
                   )
                 : null,
           ),

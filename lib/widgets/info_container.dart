@@ -96,7 +96,6 @@ class TemplateContainer extends StatelessWidget {
         border: borderColor != null
             ? Border.all(
                 color: borderColor!,
-                width: 1,
               )
             : null,
       ),

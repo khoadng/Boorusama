@@ -137,7 +137,6 @@ class _PostDetailsDesktopScaffoldState<T extends Post>
                   height: 1,
                   cacheHeight: 10,
                   cacheWidth: 10,
-                  cache: true,
                 ),
               PostMedia(
                 post: post,

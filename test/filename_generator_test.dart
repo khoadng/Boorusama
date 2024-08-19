@@ -159,7 +159,7 @@ void main() {
       'artist': 'namu',
     };
     String format = '{artist}_{date:format=dd.MM.yyyy hh:mm}';
-    final clock = Clock.fixed(DateTime(2020, 1, 1, 12, 0, 0));
+    final clock = Clock.fixed(DateTime(2020, 1, 1, 12));
 
     // Act
     String filename = generateFileName(metadata, format, clock: clock);
@@ -174,7 +174,7 @@ void main() {
       'artist': 'namu',
     };
     String format = '{artist}_{date}';
-    final clock = Clock.fixed(DateTime(2020, 1, 1, 12, 0, 0));
+    final clock = Clock.fixed(DateTime(2020, 1, 1, 12));
 
     // Act
     String filename = generateFileName(metadata, format, clock: clock);

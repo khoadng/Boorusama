@@ -303,7 +303,6 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
           androidVersion <= AndroidVersions.android9) {
         return pickSingleFilePathToastOnError(
           context: context,
-          type: FileType.any,
           onPick: (path) {
             final ext = p.extension(path);
 
@@ -409,7 +408,6 @@ class BackupRestoreTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           CircleAvatar(
             radius: 22,

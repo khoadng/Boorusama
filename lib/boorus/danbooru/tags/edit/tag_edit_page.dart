@@ -345,7 +345,6 @@ class _TagEditPageInternalState extends ConsumerState<TagEditPageInternal> {
             color: context.colorScheme.onSurface,
             thickness: 4,
             size: 75,
-            highlightedSize: 40,
             highlightedColor: context.colorScheme.primary,
           ),
         ),
@@ -791,7 +790,6 @@ class TagEditTagListSection extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         const Divider(
           thickness: 1,
@@ -803,7 +801,6 @@ class TagEditTagListSection extends ConsumerWidget {
             horizontal: 12,
           ),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
                 '${initialTags.length} tag${initialTags.length > 1 ? 's' : ''}',

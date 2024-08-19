@@ -56,7 +56,6 @@ class _DownloadTagSelectionViewState
           icon: const Icon(Symbols.arrow_back),
         ),
       ),
-      extendBodyBehindAppBar: false,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,

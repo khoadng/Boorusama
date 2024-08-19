@@ -79,7 +79,7 @@ class _MoebooruPostDetailsPageState
     });
   }
 
-  void _loadFavoriteUsers(int postId) async {
+  Future<void> _loadFavoriteUsers(int postId) async {
     final config = ref.readConfig;
     final booru = config.createBooruFrom(ref.read(booruFactoryProvider));
 
@@ -92,7 +92,7 @@ class _MoebooruPostDetailsPageState
         }
         return;
       },
-      orElse: () => Future.value(null),
+      orElse: () => Future.value(),
     );
   }
 
@@ -138,7 +138,7 @@ class _MoebooruPostDetailsPageState
                                 ),
                                 orElse: () =>
                                     const SliverPreviewPostGridPlaceholder(
-                                  itemCount: 30,
+                                  
                                 ),
                               ),
                         ),
@@ -217,8 +217,6 @@ class _MoebooruPostDetailsPageState
       topRightButtonsBuilder: (currentPage, expanded, post, controller) => [
         GeneralMoreActionButton(
           post: post,
-          //FIXME: temporary disable slideshow when user is logged in to prevent server spam
-          onStartSlideshow: null,
         ),
       ],
       infoBuilder: (context, post) =>

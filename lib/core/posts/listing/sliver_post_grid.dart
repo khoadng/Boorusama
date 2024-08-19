@@ -84,7 +84,6 @@ class SliverPostGrid extends ConsumerWidget {
                                   prettyPrintJson(e.message));
 
                               return MarkdownBody(
-                                shrinkWrap: true,
                                 data: data,
                               );
                             } catch (err) {

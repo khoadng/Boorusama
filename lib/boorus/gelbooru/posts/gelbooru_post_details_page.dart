@@ -82,7 +82,7 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailsPage> {
                                     ),
                                     orElse: () =>
                                         const SliverPreviewPostGridPlaceholder(
-                                      itemCount: 30,
+                                      
                                     ),
                                   ),
                             ))

@@ -132,7 +132,6 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 8),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
@@ -142,7 +141,6 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
                 ),
               ),
               Wrap(
-                spacing: 0,
                 children: [
                   Text(
                     '[${log.serviceName}]: ',

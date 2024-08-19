@@ -85,7 +85,7 @@ class DanbooruTagListNotifier
     return <int, DanbooruTagDetails>{}.lock;
   }
 
-  void setTags(
+  Future<void> setTags(
     int postId, {
     List<String>? addedTags,
     List<String>? removedTags,

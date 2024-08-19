@@ -90,7 +90,6 @@ class DanbooruTagsTile extends ConsumerWidget {
                   child: PostTagListChip(
                     tag: tag,
                     onTap: () => goToSearchPage(context, tag: tag.rawName),
-                    maxTagWidth: null,
                   ),
                 ),
               ),

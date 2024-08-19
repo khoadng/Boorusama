@@ -64,7 +64,6 @@ class PostTagList extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Wrap(
-          alignment: WrapAlignment.start,
           spacing: 4,
           runSpacing: 6,
           children: tags
@@ -113,7 +112,6 @@ class PostTagListChip extends ConsumerWidget {
         side: colors != null
             ? BorderSide(
                 color: colors.borderColor,
-                width: 1,
               )
             : BorderSide.none,
       ),

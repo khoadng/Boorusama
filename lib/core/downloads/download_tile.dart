@@ -319,7 +319,6 @@ class DownloadTileBuilder extends StatelessWidget {
               children: [
                 Row(
                   mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     if (siteUrl != null)
                       PostSource.from(siteUrl!).whenWeb(

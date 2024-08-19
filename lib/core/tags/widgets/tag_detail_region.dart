@@ -30,7 +30,6 @@ class TagDetailsRegion extends ConsumerWidget {
         : Material(
             color: context.colorScheme.surface,
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(width: 4),

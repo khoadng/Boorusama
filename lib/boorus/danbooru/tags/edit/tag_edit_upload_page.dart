@@ -372,7 +372,6 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
                           )
                       else
                         Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             const SizedBox(width: 16),
@@ -584,7 +583,6 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
                           horizontal: 12,
                         ),
                         child: Wrap(
-                          alignment: WrapAlignment.start,
                           spacing: 4,
                           children: [
                             for (final tag in translatedTags)

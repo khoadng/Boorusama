@@ -384,7 +384,6 @@ class TokenOptionHelpModal extends StatelessWidget {
       body: tokenOptions.isNotEmpty
           ? Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12),

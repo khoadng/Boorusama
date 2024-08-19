@@ -47,7 +47,6 @@ class FavoriteTagLabelChip extends ConsumerWidget {
         side: colors != null
             ? BorderSide(
                 color: colors.borderColor,
-                width: 1,
               )
             : null,
         shape: const RoundedRectangleBorder(

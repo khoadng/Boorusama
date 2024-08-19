@@ -293,7 +293,6 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
                         color: context.colorScheme.onSurface,
                         thickness: Screen.of(context).size.isLarge ? 6 : 3,
                         size: 75,
-                        highlightedSize: 40,
                         highlightedColor: context.colorScheme.primary,
                       ),
               ),
@@ -312,7 +311,6 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
                     }
                   });
                 },
-                axis: Axis.horizontal,
                 builder: (context, area) => switch (area.data) {
                   'menu' => LayoutBuilder(
                       builder: (_, c) {

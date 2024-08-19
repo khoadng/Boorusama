@@ -370,7 +370,6 @@ class _PostDetailPageScaffoldState<T extends Post>
                 // preload next image only, not the post itself
                 if (nextPost != null && !nextPost.isVideo)
                   SliverOffstage(
-                    offstage: true,
                     sliver: SliverToBoxAdapter(
                       child: ExtendedImage.network(
                         widget.swipeImageUrlBuilder(nextPost),
@@ -378,7 +377,6 @@ class _PostDetailPageScaffoldState<T extends Post>
                         height: 1,
                         cacheHeight: 10,
                         cacheWidth: 10,
-                        cache: true,
                       ),
                     ),
                   ),

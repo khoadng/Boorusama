@@ -197,7 +197,7 @@ class UserDetailsPage extends ConsumerWidget {
                                         width: 15,
                                         height: 15,
                                         child: CircularProgressIndicator(
-                                          strokeWidth: 4,
+                                          
                                         ),
                                       ),
                                     ),
@@ -382,10 +382,10 @@ class UserDetailsPage extends ConsumerWidget {
         ),
         titlesData: FlTitlesData(
           topTitles: const AxisTitles(
-            sideTitles: SideTitles(showTitles: false),
+            
           ),
           rightTitles: const AxisTitles(
-            sideTitles: SideTitles(showTitles: false),
+            
           ),
           bottomTitles: AxisTitles(
               sideTitles: SideTitles(

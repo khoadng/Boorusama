@@ -225,7 +225,6 @@ class QueryActionsSection extends StatelessWidget {
                     onPressed: () {
                       showDialog(
                         context: context,
-                        barrierDismissible: true,
                         builder: (c) {
                           return SelectedTagEditDialog(
                             tag: const TagSearchItem.raw(tag: ''),

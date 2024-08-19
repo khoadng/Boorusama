@@ -36,7 +36,6 @@ class _BookmarkDetailsPageState extends ConsumerState<BookmarkDetailsPage> {
       toolbarBuilder: (context, post) => BookmarkPostActionToolbar(post: post),
       sourceSectionBuilder: (context, post) => Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           post.source.whenWeb(
             (source) => SourceSection(source: source),

@@ -36,7 +36,7 @@ class CloudflareChallengeInterceptor extends Interceptor {
   final Set<int> triggerOnStatus;
 
   @override
-  void onRequest(
+  Future<void> onRequest(
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
@@ -192,7 +192,6 @@ class _CloudflareChallengeSolverPageState
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(4)),
         border: Border.all(
-          width: 1,
           color: Colors.white,
         ),
       ),

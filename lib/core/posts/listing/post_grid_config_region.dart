@@ -104,11 +104,9 @@ class PostGridConfigRegion extends ConsumerWidget {
                     ),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Material(
                         color: Colors.transparent,
-                        elevation: 0,
                         shadowColor: Colors.transparent,
                         child: InkWell(
                           customBorder: RoundedRectangleBorder(

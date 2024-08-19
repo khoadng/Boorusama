@@ -133,7 +133,7 @@ class _DanbooruPostDetailsDesktopPageState
                                     ),
                                     orElse: () =>
                                         const PreviewPostGridPlaceholder(
-                                      imageCount: 30,
+                                      
                                     ),
                                   ),
                             )

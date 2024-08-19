@@ -63,7 +63,6 @@ class _BooruSelectorVerticalState extends ConsumerState<BooruSelectorVertical>
         child: ref.watch(configsProvider).maybeWhen(
               data: (configs) => CustomScrollView(
                 reverse: reverseScroll,
-                scrollDirection: Axis.vertical,
                 slivers: [
                   ReorderableSliverList(
                     onReorderStarted: (index) => show(configs[index]),
@@ -80,7 +79,6 @@ class _BooruSelectorVerticalState extends ConsumerState<BooruSelectorVertical>
                               .read(currentBooruConfigProvider.notifier)
                               .update(config),
                           selected: currentConfig == config,
-                          direction: Axis.vertical,
                         );
                       },
                       childCount: configs.length,

@@ -52,7 +52,6 @@ class ForumCard extends ConsumerWidget {
           child: Column(
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   if (isSticky)

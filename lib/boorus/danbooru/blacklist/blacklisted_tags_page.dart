@@ -32,17 +32,18 @@ class BlacklistedTagsPage extends ConsumerWidget {
         title: const Text('blacklisted_tags.blacklisted_tags').tr(),
         actions: [
           _buildAddTagButton(context, ref),
-          tags != null
-              ? ImportExportTagButton(
-                  tags: tags,
-                  onImport: (tagString) => ref
-                      .read(danbooruBlacklistedTagsProvider(config).notifier)
-                      .addFromStringWithToast(
-                        context: context,
-                        tagString: tagString,
-                      ),
-                )
-              : const SizedBox.shrink(),
+          if (tags != null)
+            ImportExportTagButton(
+              tags: tags,
+              onImport: (tagString) => ref
+                  .read(danbooruBlacklistedTagsProvider(config).notifier)
+                  .addFromStringWithToast(
+                    context: context,
+                    tagString: tagString,
+                  ),
+            )
+          else
+            const SizedBox.shrink(),
         ],
       ),
       body: const SafeArea(child: BlacklistedTagsList()),

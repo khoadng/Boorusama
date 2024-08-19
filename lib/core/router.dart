@@ -342,7 +342,6 @@ Future<T?> showDesktopWindow<T>(
 }) =>
     showGeneralDialog(
       context: context,
-      barrierDismissible: false,
       pageBuilder: (context, _, __) => Dialog(
         surfaceTintColor: Colors.transparent,
         backgroundColor: Colors.transparent,
