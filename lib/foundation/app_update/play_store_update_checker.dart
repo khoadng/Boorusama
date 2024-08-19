@@ -102,12 +102,12 @@ class PlayStoreUpdateChecker implements AppUpdateChecker {
 extension DocumentX on Document {
   String? extractVersion() {
     try {
-      const patternName = ",\"name\":\"";
-      const patternVersion = ",[[[\"";
-      const patternCallback = "AF_initDataCallback";
-      const patternEndOfString = "\"";
+      const patternName = ',"name":"';
+      const patternVersion = ',[[["';
+      const patternCallback = 'AF_initDataCallback';
+      const patternEndOfString = '"';
 
-      final scripts = getElementsByTagName("script");
+      final scripts = getElementsByTagName('script');
       final infoElements =
           scripts.where((element) => element.text.contains(patternName));
       final additionalInfoElements =
@@ -126,7 +126,7 @@ extension DocumentX on Document {
           nameElement.substring(storeNameStartIndex, storeNameEndIndex);
 
       final versionElement = additionalInfoElementsFiltered
-          .where((element) => element.text.contains("\"$storeName\""))
+          .where((element) => element.text.contains('"$storeName"'))
           .first
           .text;
       final storeVersionStartIndex =

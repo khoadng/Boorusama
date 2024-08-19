@@ -59,7 +59,7 @@ class BoorusRoutes {
         builder: (context, state) => AddBooruPage(
           backgroundColor: context.theme.scaffoldBackgroundColor,
           setCurrentBooruOnSubmit:
-              state.uri.queryParameters["setAsCurrent"]?.toBool() ?? false,
+              state.uri.queryParameters['setAsCurrent']?.toBool() ?? false,
         ),
       );
 

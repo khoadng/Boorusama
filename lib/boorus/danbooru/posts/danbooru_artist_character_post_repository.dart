@@ -21,7 +21,7 @@ class DanbooruArtistCharacterPostRepository
     int? limit,
   }) {
     final tagString = tags;
-    final name = "$tagString-$page-$limit";
+    final name = '$tagString-$page-$limit';
 
     return cache.get(name).toOption().fold(
           () => repository

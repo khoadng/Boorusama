@@ -156,12 +156,12 @@ Future<BooruLanguage?> loadLanguage(String lang) async {
 
 dynamic removeEmptyFields(dynamic json) {
   if (json is Map) {
-    json.removeWhere((key, value) => value == null || value == "");
+    json.removeWhere((key, value) => value == null || value == '');
     json.forEach((key, value) {
       json[key] = removeEmptyFields(value);
     });
   } else if (json is List) {
-    json.removeWhere((item) => item == null || item == "");
+    json.removeWhere((item) => item == null || item == '');
     for (var i = 0; i < json.length; i++) {
       json[i] = removeEmptyFields(json[i]);
     }

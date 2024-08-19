@@ -41,7 +41,7 @@ class ExploreRepositoryCacher implements ExploreRepository {
     int? limit,
   }) {
     final truncatedDate = _truncateToDate(date);
-    final name = "popular-$truncatedDate-$page-$scale-$limit";
+    final name = 'popular-$truncatedDate-$page-$scale-$limit';
 
     if (_isCached(name, popularStaleDuration)) {
       return TaskEither.of(_cache[name]!.$2.toResult());
@@ -58,7 +58,7 @@ class ExploreRepositoryCacher implements ExploreRepository {
   @override
   DanbooruPostsOrError getMostViewedPosts(DateTime date) {
     final truncatedDate = _truncateToDate(date);
-    final name = "mostViewed-$truncatedDate";
+    final name = 'mostViewed-$truncatedDate';
 
     if (_isCached(name, mostViewedStaleDuration)) {
       return TaskEither.of(_cache[name]!.$2.toResult());
@@ -77,7 +77,7 @@ class ExploreRepositoryCacher implements ExploreRepository {
     int page, {
     int? limit,
   }) {
-    final name = "hot-$page-$limit";
+    final name = 'hot-$page-$limit';
 
     if (_isCached(name, hotStaleDuration)) {
       return TaskEither.of(_cache[name]!.$2.toResult());

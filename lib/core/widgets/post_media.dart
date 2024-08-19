@@ -123,7 +123,7 @@ class PostMedia extends ConsumerWidget {
                   )
         : InteractiveBooruImage(
             useHero: useHero,
-            heroTag: "${post.id}_hero",
+            heroTag: '${post.id}_hero',
             aspectRatio: post.aspectRatio,
             imageUrl: imageUrl,
             placeholderImageUrl: placeholderImageUrl,

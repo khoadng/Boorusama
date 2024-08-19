@@ -67,7 +67,7 @@ Future<void> failsafe(Object e, StackTrace st, BootLogger logger) async {
 
 Future<void> boot(BootLogger bootLogger) async {
   final appLogger = AppLogger();
-  bootLogger.l("Initialize app logger");
+  bootLogger.l('Initialize app logger');
   final logger = await loggerWith(appLogger);
   final stopwatch = Stopwatch()..start();
   logger.logI('Start up', 'App Start up');
@@ -77,18 +77,18 @@ Future<void> boot(BootLogger bootLogger) async {
       ? await getApplicationDocumentsDirectory()
       : await getApplicationSupportDirectory();
 
-  bootLogger.l("Initialize Hive");
+  bootLogger.l('Initialize Hive');
   Hive.init(dbDirectory.path);
 
-  bootLogger.l("Register search history adapter");
+  bootLogger.l('Register search history adapter');
   Hive.registerAdapter(SearchHistoryHiveObjectAdapter());
-  bootLogger.l("Register bookmark adapter");
+  bootLogger.l('Register bookmark adapter');
   Hive.registerAdapter(BookmarkHiveObjectAdapter());
-  bootLogger.l("Register favorite tag adapter");
+  bootLogger.l('Register favorite tag adapter');
   Hive.registerAdapter(FavoriteTagHiveObjectAdapter());
 
   if (isDesktopPlatform()) {
-    bootLogger.l("Initialize window manager");
+    bootLogger.l('Initialize window manager');
     doWhenWindowReady(() {
       const iPhoneSize = Size(375, 812);
       const initialSize = Size(1000, 700);
@@ -112,16 +112,16 @@ Future<void> boot(BootLogger bootLogger) async {
     );
   }
 
-  bootLogger.l("Load app info");
+  bootLogger.l('Load app info');
   final appInfo = await getAppInfo();
 
-  bootLogger.l("Load boorus from assets");
+  bootLogger.l('Load boorus from assets');
   final boorus = await loadBoorusFromAssets();
 
-  bootLogger.l("Create booru factory");
+  bootLogger.l('Create booru factory');
   final booruFactory = BooruFactory.from(boorus);
 
-  bootLogger.l("Initialize settings repository");
+  bootLogger.l('Initialize settings repository');
   final settingRepository = SettingsRepositoryLoggerInterceptor(
     SettingsRepositoryHive(
       Hive.openBox('settings'),
@@ -129,7 +129,7 @@ Future<void> boot(BootLogger bootLogger) async {
     logger: logger,
   );
 
-  bootLogger.l("Set certificate to trusted certificates");
+  bootLogger.l('Set certificate to trusted certificates');
   try {
     // https://stackoverflow.com/questions/69511057/flutter-on-android-7-certificate-verify-failed-with-letsencrypt-ssl-cert-after-s
     // On Android 7 and below, the Let's Encrypt certificate is not trusted by default and needs to be added manually.
@@ -142,14 +142,14 @@ Future<void> boot(BootLogger bootLogger) async {
   }
 
   Box<String> booruConfigBox;
-  bootLogger.l("Initialize booru config box");
+  bootLogger.l('Initialize booru config box');
   if (await Hive.boxExists('booru_configs')) {
-    bootLogger.l("Open booru config box");
+    bootLogger.l('Open booru config box');
     booruConfigBox = await Hive.openBox<String>('booru_configs');
   } else {
-    bootLogger.l("Create booru config box");
+    bootLogger.l('Create booru config box');
     booruConfigBox = await Hive.openBox<String>('booru_configs');
-    bootLogger.l("Add default booru config");
+    bootLogger.l('Add default booru config');
     final id = await booruConfigBox
         .add(HiveBooruConfigRepository.defaultValue(booruFactory));
 
@@ -159,34 +159,34 @@ Future<void> boot(BootLogger bootLogger) async {
               (r) => r,
             ));
 
-    bootLogger.l("Save default booru config");
+    bootLogger.l('Save default booru config');
     await settingRepository.save(settings.copyWith(currentBooruConfigId: id));
   }
 
-  bootLogger.l("Total booru config: ${booruConfigBox.length}");
+  bootLogger.l('Total booru config: ${booruConfigBox.length}');
 
-  bootLogger.l("Initialize booru user repository");
+  bootLogger.l('Initialize booru user repository');
   final booruUserRepo = HiveBooruConfigRepository(box: booruConfigBox);
 
-  bootLogger.l("Load settings");
+  bootLogger.l('Load settings');
   final settings =
       await settingRepository.load().run().then((value) => value.fold(
             (l) => Settings.defaultSettings,
             (r) => r,
           ));
 
-  bootLogger.l("Settings: ${settings.toJson()}");
+  bootLogger.l('Settings: ${settings.toJson()}');
 
-  bootLogger.l("Load current booru config");
+  bootLogger.l('Load current booru config');
   final initialConfig = await booruUserRepo.getCurrentBooruConfigFrom(settings);
 
   Box<String> userMetatagBox;
-  bootLogger.l("Initialize user metatag box");
+  bootLogger.l('Initialize user metatag box');
   if (await Hive.boxExists('user_metatags')) {
-    bootLogger.l("Open user metatag box");
+    bootLogger.l('Open user metatag box');
     userMetatagBox = await Hive.openBox<String>('user_metatags');
   } else {
-    bootLogger.l("Create user metatag box");
+    bootLogger.l('Create user metatag box');
     userMetatagBox = await Hive.openBox<String>('user_metatags');
     for (final e in [
       'age',
@@ -201,67 +201,67 @@ Future<void> boot(BootLogger bootLogger) async {
   }
   final userMetatagRepo = UserMetatagRepository(box: userMetatagBox);
 
-  bootLogger.l("Initialize search history repository");
+  bootLogger.l('Initialize search history repository');
   final searchHistoryBox =
       await Hive.openBox<SearchHistoryHiveObject>('search_history');
   final searchHistoryRepo = SearchHistoryRepositoryHive(
     db: searchHistoryBox,
   );
 
-  bootLogger.l("Initialize favorite tag repository");
+  bootLogger.l('Initialize favorite tag repository');
   final favoriteTagsBox =
       await Hive.openBox<FavoriteTagHiveObject>('favorite_tags');
   final favoriteTagsRepo = FavoriteTagRepositoryHive(
     favoriteTagsBox,
   );
 
-  bootLogger.l("Initialize global blacklisted tag repository");
+  bootLogger.l('Initialize global blacklisted tag repository');
   final globalBlacklistedTags = HiveBlacklistedTagRepository();
   await globalBlacklistedTags.init();
 
-  bootLogger.l("Initialize bookmark repository");
-  final bookmarkBox = await Hive.openBox<BookmarkHiveObject>("favorites");
+  bootLogger.l('Initialize bookmark repository');
+  final bookmarkBox = await Hive.openBox<BookmarkHiveObject>('favorites');
   final bookmarkRepo = BookmarkHiveRepository(bookmarkBox);
 
   final tempPath = await getAppTemporaryDirectory();
 
-  bootLogger.l("Initialize misc data box");
+  bootLogger.l('Initialize misc data box');
   final miscDataBox = await Hive.openBox<String>(
     'misc_data_v1',
     path: tempPath.path,
   );
 
-  bootLogger.l("Initialize danbooru creator box");
+  bootLogger.l('Initialize danbooru creator box');
   final danbooruCreatorBox = await Hive.openBox(
     '${Uri.encodeComponent(initialConfig?.url ?? 'danbooru')}_creators_v1',
     path: tempPath.path,
   );
 
-  bootLogger.l("Initialize package info");
+  bootLogger.l('Initialize package info');
   final packageInfo = await PackageInfo.fromPlatform();
 
-  bootLogger.l("Initialize tag info");
+  bootLogger.l('Initialize tag info');
   final tagInfo =
       await TagInfoService.create().then((value) => value.getInfo());
 
-  bootLogger.l("Initialize device info");
+  bootLogger.l('Initialize device info');
   final deviceInfo =
       await DeviceInfoService(plugin: DeviceInfoPlugin()).getDeviceInfo();
 
-  bootLogger.l("Initialize i18n");
+  bootLogger.l('Initialize i18n');
   await ensureI18nInitialized();
 
-  bootLogger.l("Load supported languages");
+  bootLogger.l('Load supported languages');
   final supportedLanguages = await loadLanguageNames();
 
-  bootLogger.l("Initialize tracking");
+  bootLogger.l('Initialize tracking');
   final (firebaseAnalytics, crashlyticsReporter) =
       await initializeTracking(settings);
 
-  bootLogger.l("Initialize error handlers");
+  bootLogger.l('Initialize error handlers');
   initializeErrorHandlers(settings, crashlyticsReporter);
 
-  bootLogger.l("Initialize download notifications");
+  bootLogger.l('Initialize download notifications');
   final downloadNotifications = await DownloadNotifications.create();
 
   FlutterError.demangleStackTrace = (StackTrace stack) {
@@ -272,7 +272,7 @@ Future<void> boot(BootLogger bootLogger) async {
 
   if (settings.clearImageCacheOnStartup) {
     logger.logI('Start up', 'Clearing image cache on startup');
-    bootLogger.l("Clear image cache");
+    bootLogger.l('Clear image cache');
     await clearImageCache();
   }
 
@@ -334,6 +334,6 @@ Future<void> boot(BootLogger bootLogger) async {
     );
   }
 
-  bootLogger.l("Run app");
+  bootLogger.l('Run app');
   run();
 }

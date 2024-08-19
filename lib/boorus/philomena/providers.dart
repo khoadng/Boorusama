@@ -101,12 +101,12 @@ String? _parseVideoThumbnail(ImageDto e) =>
         );
 
 const _kSlugReplacement = [
-  ["-colon-", ":"],
-  ["-dash-", "-"],
-  ["-fwslash-", "/"],
-  ["-bwslash-", "\\"],
-  ["-dot-", "."],
-  ["-plus-", "+"]
+  ['-colon-', ':'],
+  ['-dash-', '-'],
+  ['-fwslash-', '/'],
+  ['-bwslash-', '\\'],
+  ['-dot-', '.'],
+  ['-plus-', '+']
 ];
 
 final philomenaAutoCompleteRepoProvider =

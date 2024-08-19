@@ -18,7 +18,7 @@ class SwipeTargetImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return InteractiveBooruImage(
       useHero: false,
-      heroTag: "",
+      heroTag: '',
       aspectRatio: aspectRatio,
       imageUrl: imageUrl,
       placeholderImageUrl: imageUrl,

@@ -33,7 +33,7 @@ class BooruConfigListingView extends ConsumerWidget {
           SwitchListTile(
             title: const Text("Enable profile's specific settings"),
             subtitle: const Text(
-              "Override the global settings for this the profile. If enabled, global settings will be ignored until this is disabled.",
+              'Override the global settings for this the profile. If enabled, global settings will be ignored until this is disabled.',
             ),
             value: enable,
             onChanged: (value) => ref.updateListing(
