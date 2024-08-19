@@ -111,7 +111,7 @@ class UserDetailsPage extends ConsumerWidget {
       body: SafeArea(
         bottom: false,
         child: state.when(
-          data: (user) => Container(
+          data: (user) => DecoratedBox(
             decoration: BoxDecoration(
               color: context.theme.scaffoldBackgroundColor,
               borderRadius: const BorderRadius.all(Radius.circular(8)),
@@ -196,9 +196,7 @@ class UserDetailsPage extends ConsumerWidget {
                                       child: SizedBox(
                                         width: 15,
                                         height: 15,
-                                        child: CircularProgressIndicator(
-                                          
-                                        ),
+                                        child: CircularProgressIndicator(),
                                       ),
                                     ),
                                   ),
@@ -381,12 +379,8 @@ class UserDetailsPage extends ConsumerWidget {
           ),
         ),
         titlesData: FlTitlesData(
-          topTitles: const AxisTitles(
-            
-          ),
-          rightTitles: const AxisTitles(
-            
-          ),
+          topTitles: const AxisTitles(),
+          rightTitles: const AxisTitles(),
           bottomTitles: AxisTitles(
               sideTitles: SideTitles(
             reservedSize: 30,

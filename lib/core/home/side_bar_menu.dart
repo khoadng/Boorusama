@@ -49,7 +49,7 @@ class SideBarMenu extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (booruConfigSelectorPosition == BooruConfigSelectorPosition.side)
-            Container(
+            ColoredBox(
               color: context.colorScheme.secondaryContainer,
               child: const SafeArea(
                 bottom: false,

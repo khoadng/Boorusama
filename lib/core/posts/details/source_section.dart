@@ -46,7 +46,7 @@ class SourceSection extends StatelessWidget {
             borderRadius: BorderRadius.circular(4),
             child: InkWell(
               onTap: () => launchExternalUrlString(source.url),
-              child: Container(
+              child: DecoratedBox(
                 decoration: BoxDecoration(
                   border: Border.all(color: context.theme.hintColor),
                   borderRadius: BorderRadius.circular(4),

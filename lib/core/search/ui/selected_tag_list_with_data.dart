@@ -19,7 +19,7 @@ class SelectedTagListWithData extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
+    return ColoredBox(
         color: context.theme.scaffoldBackgroundColor,
         child: ValueListenableBuilder(
           valueListenable: controller,

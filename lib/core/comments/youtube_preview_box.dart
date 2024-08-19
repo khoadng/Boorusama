@@ -66,7 +66,7 @@ class YoutubePreviewBox extends StatelessWidget {
                             ),
                             if (data.isVideo)
                               Align(
-                                child: Container(
+                                child: DecoratedBox(
                                   decoration: const BoxDecoration(
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(8)),

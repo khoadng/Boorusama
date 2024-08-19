@@ -286,7 +286,7 @@ class _PostDetailPageScaffoldState<T extends Post>
           );
 
           return widget.infoBuilder != null
-              ? Container(
+              ? DecoratedBox(
                   decoration: BoxDecoration(
                     color:
                         context.theme.scaffoldBackgroundColor.withOpacity(0.8),

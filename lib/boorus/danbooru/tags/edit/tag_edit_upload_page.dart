@@ -682,7 +682,7 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
           },
           children: [
             if (ref.watch(tagEditUploadRelatedExpandedProvider))
-              Container(
+              DecoratedBox(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
                 ),
