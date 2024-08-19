@@ -111,7 +111,7 @@ FavoriteGroup favoriteGroupDtoToFavoriteGroup(FavoriteGroupDto d) =>
       id: d.id!,
       name: d.name ?? '',
       creator:
-          d.creator == null ? Creator.empty() : creatorDtoToCreator(d.creator!),
+          d.creator == null ? Creator.empty() : creatorDtoToCreator(d.creator),
       createdAt: d.createdAt!,
       updatedAt: d.updatedAt!,
       isPublic: d.isPublic ?? false,

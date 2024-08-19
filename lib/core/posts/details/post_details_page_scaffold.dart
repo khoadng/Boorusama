@@ -210,7 +210,7 @@ class _PostDetailPageScaffoldState<T extends Post>
               onTap: () => controller.stopSlideshow(),
               child: IgnorePointer(
                 ignoring: slideshow,
-                child: child!,
+                child: child,
               ),
             ),
             child: _build(),

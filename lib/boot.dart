@@ -264,7 +264,7 @@ Future<void> boot(BootLogger bootLogger) async {
   bootLogger.l('Initialize download notifications');
   final downloadNotifications = await DownloadNotifications.create();
 
-  FlutterError.demangleStackTrace = (StackTrace stack) {
+  FlutterError.demangleStackTrace = (stack) {
     if (stack is Trace) return stack.vmTrace;
     if (stack is Chain) return stack.toTrace().vmTrace;
     return stack;

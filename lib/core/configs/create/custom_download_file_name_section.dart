@@ -210,7 +210,7 @@ class _DownloadFormatCardState extends ConsumerState<DownloadFormatCard> {
         ),
         header: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: Text(widget.title, style: context.textTheme.bodyMedium!),
+          child: Text(widget.title, style: context.textTheme.bodyMedium),
         ),
         collapsed: preview,
         expanded: Column(

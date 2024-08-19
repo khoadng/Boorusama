@@ -321,7 +321,7 @@ class DownloadTileBuilder extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     if (siteUrl != null)
-                      PostSource.from(siteUrl!).whenWeb(
+                      PostSource.from(siteUrl).whenWeb(
                         (source) => BooruLogo(
                           source: source,
                           width: 18,

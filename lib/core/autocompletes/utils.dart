@@ -18,7 +18,7 @@ Color? generateAutocompleteTagColor(
   if (tag.hasCategory) {
     return ref.watch(tagColorProvider(tag.category!));
   } else if (tag.hasUserLevel) {
-    return Color(getUserHexColor(stringToUserLevel(tag.level!)));
+    return Color(getUserHexColor(stringToUserLevel(tag.level)));
   }
 
   return null;

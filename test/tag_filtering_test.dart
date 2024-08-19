@@ -1,6 +1,6 @@
-// Package imports:
 // ignore_for_file: avoid_redundant_argument_values
 
+// Package imports:
 import 'package:test/test.dart';
 
 // Project imports:
