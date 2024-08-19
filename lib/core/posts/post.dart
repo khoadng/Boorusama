@@ -20,7 +20,7 @@ class PostMetadata extends Equatable {
   List<Object?> get props => [page, search];
 }
 
-abstract class Post extends Equatable
+abstract class Post
     with MediaInfoMixin, ImageInfoMixin, VideoInfoMixin, TagListCheckMixin
     implements TagDetails {
   int get id;
