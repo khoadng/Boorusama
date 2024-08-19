@@ -55,7 +55,7 @@ class _ArtistSectionState extends State<ArtistSection> {
       children: [
         if (artistTags.isNotEmpty)
           switch (widget.source) {
-            WebSource source => _Link(
+            final WebSource source => _Link(
                 commentary: commentary,
                 display: display,
                 artistTags: artistTags,

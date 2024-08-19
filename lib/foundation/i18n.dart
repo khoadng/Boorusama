@@ -214,7 +214,7 @@ class RootBundleAssetLoader extends el.AssetLoader {
 
   @override
   Future<Map<String, dynamic>?> load(String path, Locale locale) async {
-    var localePath = getLocalePath(path, locale);
+    final localePath = getLocalePath(path, locale);
     final data = json.decode(await rootBundle.loadString(localePath));
     return removeEmptyFields(data);
   }

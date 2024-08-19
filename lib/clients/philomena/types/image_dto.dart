@@ -62,8 +62,8 @@ class ImageDto {
         origSha512Hash: json['orig_sha512_hash'],
         commentCount: json['comment_count'],
         wilsonScore: switch (json['wilson_score']) {
-          int n => n.toDouble(),
-          double n => n,
+          final int n => n.toDouble(),
+          final double n => n,
           _ => null,
         },
         firstSeenAt: json['first_seen_at'] != null

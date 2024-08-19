@@ -46,7 +46,7 @@ extension FileDownloadX on FileDownloader {
 
 extension TaskUpdateX on TaskUpdate {
   int? get fileSize => switch (this) {
-        TaskStatusUpdate s => () {
+        final TaskStatusUpdate s => () {
             final defaultSize =
                 DownloaderMetadata.fromJsonString(task.metaData).fileSize;
             final fileSizeString = s.responseHeaders.toOption().fold(
@@ -58,7 +58,7 @@ extension TaskUpdateX on TaskUpdate {
 
             return fileSize ?? defaultSize;
           }(),
-        TaskProgressUpdate p => p.expectedFileSize,
+        final TaskProgressUpdate p => p.expectedFileSize,
       };
 }
 

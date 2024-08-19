@@ -89,7 +89,7 @@ class GelbooruConfigPasteFromClipboardButton extends ConsumerWidget {
 
 (String uid, String key) extractValues(String? input) {
   if (input == null) return ('', '');
-  Map<String, String> values = {};
+  final Map<String, String> values = {};
   final exp = RegExp(r'&(\w+)=(\w+)');
 
   final matches = exp.allMatches(input);

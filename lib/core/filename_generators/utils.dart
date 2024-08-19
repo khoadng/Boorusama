@@ -19,10 +19,10 @@ extension StringX on String {
 }
 
 List<String> cleanAndRemoveDuplicates(List<String> input) {
-  List<String> cleaned = [];
+  final List<String> cleaned = [];
 
   for (String str in input) {
-    int index = str.indexOf('_(');
+    final int index = str.indexOf('_(');
     if (index != -1) {
       str = str.substring(0, index);
     }

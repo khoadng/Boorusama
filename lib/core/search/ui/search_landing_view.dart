@@ -80,7 +80,7 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
     final selectedLabel =
         ref.watch(miscDataProvider(kSearchSelectedFavoriteTagLabelKey));
 
-    var view = SingleChildScrollView(
+    final view = SingleChildScrollView(
       physics: const AlwaysScrollableScrollPhysics(),
       controller: widget.scrollController,
       child: Column(

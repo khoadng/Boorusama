@@ -134,7 +134,7 @@ final zerochanTagsFromIdProvider =
 
 TagCategory zerochanStringToTagCategory(String? value) {
   // remove ' fav' and ' primary' from the end of the string
-  var type = value?.toLowerCase().replaceAll(RegExp(r' fav$| primary$'), '');
+  final type = value?.toLowerCase().replaceAll(RegExp(r' fav$| primary$'), '');
 
   return switch (type) {
     'mangaka' || 'artist' || 'studio' => TagCategory.artist(),

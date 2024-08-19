@@ -31,7 +31,7 @@ class HomeSearchBar extends ConsumerWidget {
       enabled: false,
       trailing: ref.watch(appUpdateStatusProvider).maybeWhen(
             data: (status) => switch (status) {
-              UpdateAvailable d => IconButton(
+              final UpdateAvailable d => IconButton(
                   splashRadius: 12,
                   icon: Container(
                     padding: const EdgeInsets.all(6),

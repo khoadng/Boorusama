@@ -62,46 +62,46 @@ TokenOptionHandler getTokenOptionHandler(
   Clock? clock,
 }) =>
     switch (option) {
-      CountOption o => (context) =>
+      final CountOption o => (context) =>
           o.value ? data.split(' ').length.toString() : data,
-      MaxLengthOption o => (context) =>
+      final MaxLengthOption o => (context) =>
           data.length > o.value ? data.substring(0, o.value) : data,
-      FloatingPointSeparator o => (context) => switch (o.value) {
+      final FloatingPointSeparator o => (context) => switch (o.value) {
             FloatingPointSeparatorType.comma => data.replaceAll('.', ','),
             FloatingPointSeparatorType.dot => data.replaceAll(',', '.'),
           },
-      FloatingPointPrecisionOption o => (context) => switch (o.value) {
+      final FloatingPointPrecisionOption o => (context) => switch (o.value) {
             0 => data.toDoubleCommaAware()?.round().toString() ?? data,
             _ => data.toDoubleCommaAware()?.toStringAsFixed(o.value) ?? data,
           },
-      UuidVersionOption o => (context) => switch (o.value) {
+      final UuidVersionOption o => (context) => switch (o.value) {
             UuidVersion.v1 => uuid.v1(),
             UuidVersion.v4 => uuid.v4(),
           },
-      DelimiterOption o => (context) {
+      final DelimiterOption o => (context) {
           final l = o.value.contains('comma')
               ? o.value.replaceAll('comma', ',')
               : o.value;
 
           return data.split(' ').join(l);
         },
-      UnsafeOption o => (context) => o.value
+      final UnsafeOption o => (context) => o.value
           ? data
           : data
               .split('')
               .map((e) => o.unsafeCharacters.contains(e) ? '_' : e)
               .join(),
-      DateFormatOption o => (context) =>
+      final DateFormatOption o => (context) =>
           DateFormat(o.value).format(clock?.now() ?? DateTime.now()),
       RatingSingleLetterOption _ => (context) => data.substring(0, 1),
       UrlEncodeOption _ => (context) => Uri.encodeComponent(data),
-      CaseOption o => (context) => switch (o.value) {
+      final CaseOption o => (context) => switch (o.value) {
             StringCase.lower => data.toLowerCase(),
             StringCase.upper => data.toUpperCase(),
             StringCase.upperFirst => data.capitalize(),
             StringCase.none => data,
           },
-      SortOption o => (context) => switch ((o.attribute, o.value)) {
+      final SortOption o => (context) => switch ((o.attribute, o.value)) {
             (SortAttribute.name, SortOptionValue.asc) =>
               [...data.split(' ')..sort()].join(' '),
             (SortAttribute.name, SortOptionValue.desc) =>
@@ -114,12 +114,12 @@ TokenOptionHandler getTokenOptionHandler(
               ].join(' '),
             _ => data,
           },
-      LimitOption o => (context) => data.split(' ').take(o.value).join(' '),
-      NoModifiersOption o => (context) =>
+      final LimitOption o => (context) => data.split(' ').take(o.value).join(' '),
+      final NoModifiersOption o => (context) =>
           o.value ? cleanAndRemoveDuplicates(data.split(' ')).join(' ') : data,
-      UniqueCounterOption o => (context) => o.value ? data : '',
-      PadLeftOption o => (context) => data.padLeft(o.value, '0'),
-      IncludeNamesOption o => (context) =>
+      final UniqueCounterOption o => (context) => o.value ? data : '',
+      final PadLeftOption o => (context) => data.padLeft(o.value, '0'),
+      final IncludeNamesOption o => (context) =>
           o.value ? '${context.token.name}:$data' : data,
       UnknownOption _ => (context) => data,
     };

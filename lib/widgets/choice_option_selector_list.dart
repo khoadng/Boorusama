@@ -103,7 +103,7 @@ class _ChoiceOptionSelectorListState<T>
           final value = options[index];
           final selected = switch (value) {
             ButtonType _ => false,
-            OptionType o => o.data == selectedOption,
+            final OptionType o => o.data == selectedOption,
             null => selectedOption == null,
           };
 
@@ -129,7 +129,7 @@ class _ChoiceOptionSelectorListState<T>
                     ),
                   ),
                 ),
-              OptionType o => AutoScrollTag(
+              final OptionType o => AutoScrollTag(
                   controller: scrollController,
                   index: index,
                   key: ValueKey(index),

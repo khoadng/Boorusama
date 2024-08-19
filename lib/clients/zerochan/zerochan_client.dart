@@ -69,7 +69,7 @@ class ZerochanClient {
 
       final json = _parsePostResponse(response.data);
 
-      if (json case Map m) {
+      if (json case final Map m) {
         if (m.isEmpty) return [];
       }
 

@@ -61,7 +61,7 @@ final danbooruForumPostRepoProvider =
         limit: limit,
       );
 
-      var data = value.map(danbooruForumPostDtoToDanbooruForumPost).toList();
+      final data = value.map(danbooruForumPostDtoToDanbooruForumPost).toList();
 
       data.sort((a, b) => a.id.compareTo(b.id));
 

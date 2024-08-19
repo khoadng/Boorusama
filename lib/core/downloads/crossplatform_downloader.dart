@@ -122,7 +122,7 @@ class CrossplatformDownloader implements Downloader {
 
   @override
   Future<void> cancelAll() async {
-    List<String> urls = _downloadManager
+    final List<String> urls = _downloadManager
         .getAllDownloads()
         .map((task) => task.request.url)
         .toList();

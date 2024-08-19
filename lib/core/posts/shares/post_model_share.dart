@@ -64,7 +64,7 @@ class PostModalShare extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             switch (sourceLink) {
-              WebSource s => ListTile(
+              final WebSource s => ListTile(
                   title: const Text('post.detail.share.source').tr(),
                   subtitle: Text(s.uri.toString()),
                   leading: WebsiteLogo(url: s.faviconUrl),

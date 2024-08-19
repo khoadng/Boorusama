@@ -61,9 +61,9 @@ StatisticalSummary calculateStats(List<double>? numbers) {
   }
 
   // Calculate 25th, 75th, and 90th percentiles
-  double percentile25 = calculatePercentile(numbers, 25);
-  double percentile75 = calculatePercentile(numbers, 75);
-  double percentile90 = calculatePercentile(numbers, 90);
+  final double percentile25 = calculatePercentile(numbers, 25);
+  final double percentile75 = calculatePercentile(numbers, 75);
+  final double percentile90 = calculatePercentile(numbers, 90);
 
   // Calculate standard deviation
   final variance =
@@ -84,10 +84,10 @@ StatisticalSummary calculateStats(List<double>? numbers) {
 }
 
 double calculatePercentile(List<double> sortedNumbers, double percentile) {
-  int n = sortedNumbers.length;
-  double index = percentile * (n + 1) / 100;
-  int k = index.toInt();
-  double d = index - k;
+  final int n = sortedNumbers.length;
+  final double index = percentile * (n + 1) / 100;
+  final int k = index.toInt();
+  final double d = index - k;
 
   // Boundary cases
   if (k <= 0) return sortedNumbers.first;

@@ -490,7 +490,7 @@ class ListingConfigs extends Equatable {
   factory ListingConfigs.fromJsonString(String? jsonString) =>
       switch (jsonString) {
         null => ListingConfigs.undefined(),
-        String s => tryDecodeJson(s).fold(
+        final String s => tryDecodeJson(s).fold(
             (_) => ListingConfigs.undefined(),
             (json) => ListingConfigs.fromJson(json),
           ),

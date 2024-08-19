@@ -63,7 +63,7 @@ class FavoriteTag extends Equatable {
 
 extension FavoriteTagX on FavoriteTag {
   FavoriteTag ensureValid() {
-    var labels = this.labels ?? [];
+    final labels = this.labels ?? [];
 
     final data = labels.where((e) => e.isNotEmpty).toSet();
 

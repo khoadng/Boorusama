@@ -14,7 +14,7 @@ List<AutocompleteData> convertTagSummaryToAutocompleteData(
       : null;
   final category = tagSummary.category.toString();
 
-  List<AutocompleteData> autocompleteDataList = [
+  final List<AutocompleteData> autocompleteDataList = [
     AutocompleteData(
       label: label.replaceUnderscoreWithSpace(),
       value: value,

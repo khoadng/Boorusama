@@ -117,7 +117,7 @@ class PostGridActionSheet extends ConsumerWidget {
         ref.watchBooruBuilder(ref.watchConfig)?.postStatisticsPageBuilder;
     final settingsNotifier = ref.watch(settingsProvider.notifier);
 
-    var mobileButtons = [
+    final mobileButtons = [
       MobilePostGridConfigTile(
         value: pageMode.localize().tr(),
         title: 'settings.result_layout.result_layout'.tr(),

@@ -92,9 +92,9 @@ class PostDto {
           ?.map((e) => TagDto.fromJson(e))
           .toList(),
       videoDuration: switch (json['video_duration']) {
-        double v => v,
-        int v => v.toDouble(),
-        String v => double.tryParse(v),
+        final double v => v,
+        final int v => v.toDouble(),
+        final String v => double.tryParse(v),
         _ => null,
       },
       reactions: (json['reactions'] as List<dynamic>?)

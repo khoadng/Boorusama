@@ -144,15 +144,15 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
 }
 
 Set<String> _parseTags(dynamic tags) => switch (tags) {
-      String s => tryDecodeJson(s).fold(
+      final String s => tryDecodeJson(s).fold(
           (l) => const {},
           (r) => _parseJsonTags(r),
         ),
-      List l => l.map((e) => e.toString()).toSet(),
+      final List l => l.map((e) => e.toString()).toSet(),
       _ => const {},
     };
 
 Set<String> _parseJsonTags(dynamic tags) => switch (tags) {
-      List l => l.map((e) => e.toString()).toSet(),
+      final List l => l.map((e) => e.toString()).toSet(),
       _ => const {},
     };

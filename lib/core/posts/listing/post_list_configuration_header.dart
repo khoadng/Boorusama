@@ -72,7 +72,7 @@ class _PostListConfigurationHeaderState
 
   @override
   Widget build(BuildContext context) {
-    var tags = hiddenTags != null
+    final tags = hiddenTags != null
         ? [
             for (var tag in hiddenTags!)
               _BadgedChip(

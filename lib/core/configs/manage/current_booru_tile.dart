@@ -25,7 +25,7 @@ class CurrentBooruTile extends ConsumerWidget {
     final source = PostSource.from(booruConfig.url);
 
     final logo = switch (source) {
-      WebSource s => BooruLogo(
+      final WebSource s => BooruLogo(
           source: s,
         ),
       _ => const SizedBox.shrink(),

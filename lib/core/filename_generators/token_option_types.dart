@@ -108,10 +108,10 @@ List<String?> _splitString(String input) {
     }
   } else {
     // if there is no '[', split it by '='
-    int equalsIndex = input.indexOf('=');
+    final int equalsIndex = input.indexOf('=');
     if (equalsIndex != -1) {
-      String key = input.substring(0, equalsIndex);
-      String value = input.substring(equalsIndex + 1);
+      final String key = input.substring(0, equalsIndex);
+      final String value = input.substring(equalsIndex + 1);
       result.addAll([key, value]);
     } else {
       // if there is no '=', just add the input

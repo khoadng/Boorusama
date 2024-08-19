@@ -7,8 +7,6 @@ import 'package:boorusama/clients/danbooru/types/types.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/notes/notes.dart';
 
-const _notesLimit = 200;
-
 final danbooruNoteRepoProvider =
     Provider.family<NoteRepository, BooruConfig>((ref, config) {
   final client = ref.watch(danbooruClientProvider(config));

@@ -17,8 +17,8 @@ int parseIntSafe(
   int fallback = 0,
 }) =>
     switch (value) {
-      int i => i,
-      double d => d.toInt(),
-      String s => int.tryParse(s) ?? fallback,
+      final int i => i,
+      final double d => d.toInt(),
+      final String s => int.tryParse(s) ?? fallback,
       _ => fallback,
     };

@@ -71,7 +71,7 @@ class AppTheme {
     required bool systemDarkMode,
   }) =>
       switch ((dynamicDarkScheme, dynamicLightScheme)) {
-        (ColorScheme dark, ColorScheme light) => switch (mode) {
+        (final ColorScheme dark, final ColorScheme light) => switch (mode) {
             AppThemeMode.light => light.harmonized(),
             AppThemeMode.dark => dark.harmonized(),
             AppThemeMode.amoledDark => staticBlackScheme.copyWith(

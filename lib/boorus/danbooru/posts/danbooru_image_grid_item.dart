@@ -62,7 +62,7 @@ class DanbooruImageGridItem extends ConsumerWidget {
                         width: 18,
                         height: 18,
                         child: switch (post.source) {
-                          WebSource source =>
+                          final WebSource source =>
                             WebsiteLogo(url: source.faviconUrl),
                           _ => const SizedBox.shrink(),
                         },
@@ -130,7 +130,7 @@ class DanbooruImageGridItem extends ConsumerWidget {
         autoScrollOptions: autoScrollOptions,
         onTap: post.isBanned
             ? switch (post.source) {
-                WebSource source => () => launchExternalUrlString(source.url),
+                final WebSource source => () => launchExternalUrlString(source.url),
                 _ => null,
               }
             : onTap,

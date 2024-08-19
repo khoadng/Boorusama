@@ -118,7 +118,7 @@ class ChangelogDialog extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       switch (data.version) {
-                        Unreleased u => Padding(
+                        final Unreleased u => Padding(
                             padding: const EdgeInsets.only(
                               left: 8,
                               bottom: 4,

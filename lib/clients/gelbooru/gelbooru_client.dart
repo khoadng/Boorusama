@@ -100,7 +100,7 @@ class GelbooruClient
         final data = response.data;
 
         final result = switch (data) {
-          Map m => () {
+          final Map m => () {
               final count = m['@attributes']['count'] as int?;
 
               return (
@@ -142,8 +142,8 @@ class GelbooruClient
     );
 
     return switch (response.data) {
-      List l => l.map((item) => AutocompleteDto.fromJson(item)).toList(),
-      String s => (jsonDecode(s) as List<dynamic>)
+      final List l => l.map((item) => AutocompleteDto.fromJson(item)).toList(),
+      final String s => (jsonDecode(s) as List<dynamic>)
           .map((item) => AutocompleteDto.fromJson(item))
           .toList(),
       _ => <AutocompleteDto>[],
@@ -249,8 +249,8 @@ List<TagDto> _parseTags(value) {
 
   if (contentType.contains('text/xml') ||
       contentType.contains('application/xml')) {
-    var xmlDocument = XmlDocument.parse(value.data);
-    var tags = xmlDocument.findAllElements('tag');
+    final xmlDocument = XmlDocument.parse(value.data);
+    final tags = xmlDocument.findAllElements('tag');
     for (final item in tags) {
       dtos.add(TagDto.fromXml(item));
     }

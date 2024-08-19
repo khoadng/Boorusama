@@ -157,7 +157,7 @@ class BooruSelectorItem extends StatelessWidget {
                           )
                         : null,
                     child: switch (PostSource.from(config.url)) {
-                      WebSource source => ClipRRect(
+                      final WebSource source => ClipRRect(
                           borderRadius: BorderRadius.circular(8),
                           child: BooruLogo(
                             source: source,

@@ -82,7 +82,7 @@ class PlayStoreUpdateChecker implements AppUpdateChecker {
     assert(id.isNotEmpty);
     if (id.isEmpty) return null;
 
-    Map<String, dynamic> parameters = {'id': id};
+    final Map<String, dynamic> parameters = {'id': id};
     if (country != null && country.isNotEmpty) {
       parameters['gl'] = country;
     }

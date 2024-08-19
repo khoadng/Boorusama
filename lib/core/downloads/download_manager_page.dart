@@ -364,12 +364,12 @@ final _checkResumableProvider =
 
 extension TaskCancelX on TaskUpdate {
   bool get isCanceled => switch (this) {
-        TaskStatusUpdate u => u.status == TaskStatus.canceled,
+        final TaskStatusUpdate u => u.status == TaskStatus.canceled,
         TaskProgressUpdate _ => false,
       };
 
   bool get canCancel => switch (this) {
-        TaskStatusUpdate u => switch (u.status) {
+        final TaskStatusUpdate u => switch (u.status) {
             TaskStatus.failed => false,
             TaskStatus.paused => false,
             TaskStatus.running => true,
@@ -415,11 +415,11 @@ class SimpleDownloadTile extends ConsumerWidget {
       fileSize: task.fileSize,
       networkSpeed: switch (task) {
         TaskStatusUpdate _ => null,
-        TaskProgressUpdate p => p.hasNetworkSpeed ? p.networkSpeed : null,
+        final TaskProgressUpdate p => p.hasNetworkSpeed ? p.networkSpeed : null,
       },
       timeRemaining: switch (task) {
         TaskStatusUpdate _ => null,
-        TaskProgressUpdate p => p.hasTimeRemaining ? p.timeRemaining : null,
+        final TaskProgressUpdate p => p.hasTimeRemaining ? p.timeRemaining : null,
       },
       onCancel: task.canCancel ? onCancel : null,
       builder: (_) => RawDownloadTile(
@@ -427,7 +427,7 @@ class SimpleDownloadTile extends ConsumerWidget {
         strikeThrough: task.isCanceled,
         color: task.isCanceled ? context.theme.hintColor : null,
         trailing: switch (task) {
-          TaskStatusUpdate s => switch (s.status) {
+          final TaskStatusUpdate s => switch (s.status) {
               TaskStatus.failed =>
                 ref.watch(_checkResumableProvider(task.task)).when(
                       data: (value) => value
@@ -487,8 +487,8 @@ class SimpleDownloadTile extends ConsumerWidget {
             ),
         },
         subtitle: switch (task) {
-          TaskStatusUpdate s => _TaskSubtitle(task: s),
-          TaskProgressUpdate p => p.progress >= 0
+          final TaskStatusUpdate s => _TaskSubtitle(task: s),
+          final TaskProgressUpdate p => p.progress >= 0
               ? LinearPercentIndicator(
                   lineHeight: 2,
                   percent: p.progress,

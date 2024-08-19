@@ -14,8 +14,8 @@ class PostV1Dto {
   });
 
   factory PostV1Dto.fromHTML(Element html) {
-    var linkElement = html.firstChild!;
-    var imageElement = linkElement.firstChild!;
+    final linkElement = html.firstChild!;
+    final imageElement = linkElement.firstChild!;
 
     final id = linkElement.attributes['id']!.substring(1);
     var thumbUrl = imageElement.attributes['src']!;

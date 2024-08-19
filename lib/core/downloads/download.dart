@@ -130,12 +130,12 @@ DownloadPathOrError downloadWithDio(
         final fileName = basename(path);
 
         return switch (error) {
-          FileSystemException e => FileSystemDownloadError(
+          final FileSystemException e => FileSystemDownloadError(
               savedPath: some(path),
               fileName: fileName,
               error: e,
             ),
-          DioException e => HttpDownloadError(
+          final DioException e => HttpDownloadError(
               savedPath: some(path),
               fileName: fileName,
               exception: e,

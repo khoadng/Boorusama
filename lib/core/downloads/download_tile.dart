@@ -68,7 +68,7 @@ class DownloadTile extends StatelessWidget {
                   child: Wrap(
                     children: [
                       switch (data) {
-                        DownloadDone d when d.alreadyExists => Chip(
+                        final DownloadDone d when d.alreadyExists => Chip(
                             visualDensity: const ShrinkVisualDensity(),
                             backgroundColor: context.theme.colorScheme.primary,
                             label: const Text(
@@ -125,7 +125,7 @@ class DownloadTile extends StatelessWidget {
                       title: _Title(data: data.fileName),
                       subtitle: const Text('Queued', maxLines: 1),
                     ),
-                  DownloadInProgress d => ListTile(
+                  final DownloadInProgress d => ListTile(
                       dense: true,
                       visualDensity: const VisualDensity(
                         vertical: -4,
@@ -150,7 +150,7 @@ class DownloadTile extends StatelessWidget {
                         ),
                       ),
                     ),
-                  DownloadPaused d => ListTile(
+                  final DownloadPaused d => ListTile(
                       dense: true,
                       visualDensity: const VisualDensity(
                         vertical: -4,
@@ -175,7 +175,7 @@ class DownloadTile extends StatelessWidget {
                         ),
                       ),
                     ),
-                  DownloadFailed d => ListTile(
+                  final DownloadFailed d => ListTile(
                       dense: true,
                       visualDensity: const VisualDensity(
                         vertical: -4,
@@ -188,7 +188,7 @@ class DownloadTile extends StatelessWidget {
                         fileName: d.fileName,
                       ),
                     ),
-                  DownloadCanceled d => ListTile(
+                  final DownloadCanceled d => ListTile(
                       dense: true,
                       visualDensity: const VisualDensity(
                         vertical: -4,
@@ -205,7 +205,7 @@ class DownloadTile extends StatelessWidget {
                         fileName: d.fileName,
                       ),
                     ),
-                  DownloadDone d => ListTile(
+                  final DownloadDone d => ListTile(
                       dense: true,
                       visualDensity: const ShrinkVisualDensity(),
                       minVerticalPadding: 0,

@@ -190,8 +190,8 @@ extension PostX on Post {
         downvotes: downvotes,
         uploaderId: uploaderId,
         source: switch (source) {
-          WebSource w => w.url,
-          NonWebSource nw => nw.value,
+          final WebSource w => w.url,
+          final NonWebSource nw => nw.value,
           _ => null,
         },
         id: id,

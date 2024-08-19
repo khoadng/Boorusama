@@ -66,7 +66,7 @@ class SliverPostGrid extends ConsumerWidget {
                     errorMessage: message.tr(),
                     onRetry: onRetry,
                   ),
-                ServerError e => Padding(
+                final ServerError e => Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8),
                     child: Column(
                       children: [

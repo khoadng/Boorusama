@@ -49,7 +49,7 @@ mixin SwipeDownToDismissMixin<T extends StatefulWidget> on State<T> {
     if (!_isSwipingDown.value) {
       return 1.0;
     }
-    double opacity =
+    final double opacity =
         1 - (_dragDistance.value.abs() / MediaQuery.sizeOf(context).height);
     return opacity.clamp(0.0, 1.0);
   }

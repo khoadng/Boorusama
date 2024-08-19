@@ -51,7 +51,7 @@ class _RelatedTagHeaderState extends ConsumerState<RelatedTagHeader> {
         scrollDirection: Axis.horizontal,
         itemCount: data.length,
         itemBuilder: (context, index) => switch (data[index]) {
-          DanbooruRelatedTagItem item => RelatedTagButton(
+          final DanbooruRelatedTagItem item => RelatedTagButton(
               backgroundColor: ref.watch(tagColorProvider(item.category.name)),
               onAdd: () => widget.onAdded(item),
               onRemove: () => widget.onNegated(item),

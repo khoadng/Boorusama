@@ -129,7 +129,7 @@ extension PostSourceX on PostSource {
     T Function() orElse,
   ) =>
       switch (this) {
-        WebSource s => onWeb(s),
+        final WebSource s => onWeb(s),
         _ => orElse(),
       };
 }
