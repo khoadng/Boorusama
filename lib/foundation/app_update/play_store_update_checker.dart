@@ -40,7 +40,7 @@ class PlayStoreUpdateChecker implements AppUpdateChecker {
       final response = await _client.get(Uri.parse(url));
       if (response.statusCode < 200 || response.statusCode >= 300) {
         return UpdateError(
-            'Can\'t find an app in the Play Store with the id: $id');
+            "Can't find an app in the Play Store with the id: $id");
       }
 
       final document = _decodeResults(response.body);
@@ -190,4 +190,4 @@ Document? _decodeResults(String jsonResponse) {
   return null;
 }
 
-final releaseNotesSpan = RegExp(r'>(.*?)</span>');
+final releaseNotesSpan = RegExp('>(.*?)</span>');

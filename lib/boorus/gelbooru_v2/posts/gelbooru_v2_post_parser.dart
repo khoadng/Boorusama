@@ -24,7 +24,7 @@ GelbooruV2Post gelbooruV2PostDtoToGelbooruPost(
     rating: mapStringToRating(dto.rating ?? 'safe'),
     md5: dto.hash ?? '',
     hasComment: dto.commentCount != null && dto.commentCount! > 0,
-    hasParentOrChildren: (dto.parentId != null && dto.parentId != 0),
+    hasParentOrChildren: dto.parentId != null && dto.parentId != 0,
     fileSize: 0,
     score: dto.score ?? 0,
     createdAt: null,

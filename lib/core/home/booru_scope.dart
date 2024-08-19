@@ -409,7 +409,7 @@ class BooruMobileScope extends ConsumerWidget {
                     margin: EdgeInsets.only(
                       bottom: MediaQuery.paddingOf(context).bottom,
                     ),
-                    height: (kBottomNavigationBarHeight - (hideLabel ? 4 : -8)),
+                    height: kBottomNavigationBarHeight - (hideLabel ? 4 : -8),
                     child: const BooruSelector(
                       direction: Axis.horizontal,
                     ),

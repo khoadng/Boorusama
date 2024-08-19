@@ -18,7 +18,7 @@ class Reboot extends StatefulWidget {
   @override
   State<Reboot> createState() => _RebootState();
 
-  static start(BuildContext context, BooruConfig newInitialConfig) {
+  static void start(BuildContext context, BooruConfig newInitialConfig) {
     context
         .findAncestorStateOfType<_RebootState>()!
         .restartApp(newInitialConfig);
