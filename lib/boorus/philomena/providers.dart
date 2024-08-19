@@ -104,7 +104,7 @@ const _kSlugReplacement = [
   ['-colon-', ':'],
   ['-dash-', '-'],
   ['-fwslash-', '/'],
-  ['-bwslash-', '\\'],
+  ['-bwslash-', r'\'],
   ['-dot-', '.'],
   ['-plus-', '+']
 ];

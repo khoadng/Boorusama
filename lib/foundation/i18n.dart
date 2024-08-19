@@ -176,7 +176,7 @@ Future<void> ensureI18nInitialized() async {
 
   await el.EasyLocalization.ensureInitialized();
 
-  for (var locale in supportedLocales) {
+  for (final locale in supportedLocales) {
     setLocaleMessages(
       locale.toLanguageTag(),
       getMessagesForLocale(locale),

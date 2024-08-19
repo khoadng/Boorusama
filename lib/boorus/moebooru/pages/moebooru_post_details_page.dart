@@ -37,7 +37,7 @@ List<TagGroupItem> createMoebooruTagGroupItems(
 ) {
   final tags = <Tag>[];
 
-  for (var tag in tagStrings) {
+  for (final tag in tagStrings) {
     if (allTagsMap.containsKey(tag)) {
       tags.add(allTagsMap[tag]!);
     }

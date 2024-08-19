@@ -169,7 +169,7 @@ final _tagCategoryColorsProvider =
 
     final categories = params.categories.split('|');
 
-    for (var category in categories) {
+    for (final category in categories) {
       colors[category] = ref.watch(tagColorProvider(category));
     }
 

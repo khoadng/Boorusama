@@ -74,7 +74,7 @@ class _PostListConfigurationHeaderState
   Widget build(BuildContext context) {
     final tags = hiddenTags != null
         ? [
-            for (var tag in hiddenTags!)
+            for (final tag in hiddenTags!)
               _BadgedChip(
                 label: tag.name.replaceUnderscoreWithSpace(),
                 count: tag.count,
@@ -189,7 +189,7 @@ class _PostListConfigurationHeaderState
                           : Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                for (var tag in tags)
+                                for (final tag in tags)
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
                                       vertical: 4,

@@ -595,7 +595,7 @@ class __BottomSheetState extends State<_BottomSheet>
     return SlideTransition(
       position: Tween(
         begin: const Offset(0, 1),
-        end: widget.shouldSlideDown ? const Offset(0, 1) : const Offset(0, 0),
+        end: widget.shouldSlideDown ? const Offset(0, 1) : Offset.zero,
       ).animate(
         CurvedAnimation(
           parent: _animController,
@@ -656,7 +656,7 @@ class _SlideUpContainerState extends State<_SlideUpContainer>
   Widget build(BuildContext context) {
     return SlideTransition(
       position: Tween(
-        begin: const Offset(0, 0),
+        begin: Offset.zero,
         end: const Offset(0, -1.5),
       ).animate(
         CurvedAnimation(

@@ -111,10 +111,10 @@ mixin VotesNotifierMixin<T extends PostVote, P extends Post> {
     if (postIdsToFetch.isNotEmpty) {
       final fetchedPostVotes = await votesFetcher(posts);
       final voteMap = {
-        for (var postVote in fetchedPostVotes) postVote.postId: postVote,
+        for (final postVote in fetchedPostVotes) postVote.postId: postVote,
       };
 
-      final newData = votes.addMap({for (var id in postIds) id: voteMap[id]});
+      final newData = votes.addMap({for (final id in postIds) id: voteMap[id]});
 
       updateVotes(newData);
     }
