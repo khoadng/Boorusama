@@ -9,12 +9,12 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/core/blacklists/blacklists.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/html.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
+import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 const kFavoriteTagsSelectedLabelKey = 'favorite_tags_selected_label';

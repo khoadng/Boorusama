@@ -11,10 +11,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/gelbooru_v2/artists/artists.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
 import 'package:boorusama/functional.dart';
+import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'gelbooru_v2_post_details_page.dart';
 
@@ -132,9 +132,7 @@ class _DanbooruPostDetailsDesktopPageState
                                       imageUrl: (item) => item.sampleImageUrl,
                                     ),
                                     orElse: () =>
-                                        const PreviewPostGridPlaceholder(
-                                      
-                                    ),
+                                        const PreviewPostGridPlaceholder(),
                                   ),
                             )
                           : const SliverSizedBox.shrink(),

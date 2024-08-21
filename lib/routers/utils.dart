@@ -10,7 +10,6 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/blacklists/blacklists.dart';
 import 'package:boorusama/core/comments/comments.dart';
@@ -29,7 +28,6 @@ import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/router.dart';
-import 'package:boorusama/routes.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 void goToHomePage(

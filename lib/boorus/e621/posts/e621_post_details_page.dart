@@ -12,8 +12,8 @@ import 'package:boorusama/boorus/e621/tags/tags.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/artists/artists.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/router.dart';
 
 class E621PostDetailsPage extends ConsumerStatefulWidget {
   const E621PostDetailsPage({
@@ -50,23 +50,21 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage> {
           ? post.artistTags
               .map((tag) => ArtistPostList2(
                     tag: tag,
-                    builder: (tag) => ref
-                        .watch(e621ArtistPostsProvider(tag))
-                        .maybeWhen(
-                          data: (data) => SliverPreviewPostGrid(
-                            posts: data,
-                            onTap: (postIdx) => goToPostDetailsPage(
-                              context: context,
-                              posts: data,
-                              initialIndex: postIdx,
+                    builder: (tag) =>
+                        ref.watch(e621ArtistPostsProvider(tag)).maybeWhen(
+                              data: (data) => SliverPreviewPostGrid(
+                                posts: data,
+                                onTap: (postIdx) => goToPostDetailsPage(
+                                  context: context,
+                                  posts: data,
+                                  initialIndex: postIdx,
+                                ),
+                                imageUrl: (item) => item.thumbnailFromSettings(
+                                    ref.watch(imageListingSettingsProvider)),
+                              ),
+                              orElse: () =>
+                                  const SliverPreviewPostGridPlaceholder(),
                             ),
-                            imageUrl: (item) => item.thumbnailFromSettings(
-                                ref.watch(imageListingSettingsProvider)),
-                          ),
-                          orElse: () => const SliverPreviewPostGridPlaceholder(
-                            
-                          ),
-                        ),
                   ))
               .toList()
           : [],

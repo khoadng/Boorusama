@@ -9,11 +9,11 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:boorusama/boorus/danbooru/blacklist/blacklist.dart';
 import 'package:boorusama/core/blacklists/blacklists.dart';
 import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/import_export_tag_button.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/html.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 //FIXME: This is a copy of lib/boorus/core/pages/blacklists/blacklisted_tag_page.dart

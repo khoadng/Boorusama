@@ -11,9 +11,9 @@ import 'package:boorusama/boorus/gelbooru_v2/artists/artists.dart';
 import 'package:boorusama/boorus/gelbooru_v2/gelbooru_v2.dart';
 import 'package:boorusama/boorus/gelbooru_v2/posts/posts_v2.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/functional.dart';
+import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 final gelbooruV2PostDetailsArtistMapProvider = StateProvider.autoDispose(
@@ -100,9 +100,7 @@ class _PostDetailPageState extends ConsumerState<GelbooruV2PostDetailsPage> {
                                   imageUrl: (item) => item.sampleImageUrl,
                                 ),
                                 orElse: () =>
-                                    const SliverPreviewPostGridPlaceholder(
-                                  
-                                ),
+                                    const SliverPreviewPostGridPlaceholder(),
                               ),
                         ))
                     .toList()

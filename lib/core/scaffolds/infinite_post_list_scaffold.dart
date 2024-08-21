@@ -12,12 +12,12 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/image.dart';
 import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class InfinitePostListScaffold<T extends Post> extends ConsumerStatefulWidget {

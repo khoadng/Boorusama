@@ -12,7 +12,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/clipboard.dart';
@@ -22,6 +21,7 @@ import 'package:boorusama/foundation/package_info.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
+import 'package:boorusama/router.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/time.dart';
 import 'package:boorusama/widgets/widgets.dart';

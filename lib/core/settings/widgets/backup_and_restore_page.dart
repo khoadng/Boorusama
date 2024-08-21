@@ -16,7 +16,6 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/export_import/export_import.dart';
 import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/android.dart';
 import 'package:boorusama/foundation/clipboard.dart';
@@ -27,6 +26,7 @@ import 'package:boorusama/foundation/picker.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
+import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'widgets/settings_page_scaffold.dart';
 

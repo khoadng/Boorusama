@@ -9,9 +9,9 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/users/users.dart';
 import 'package:boorusama/boorus/danbooru/versions/versions.dart';
 import 'package:boorusama/core/images/images.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/router.dart';
 import 'package:boorusama/time.dart';
 import 'package:boorusama/widgets/widgets.dart';
 

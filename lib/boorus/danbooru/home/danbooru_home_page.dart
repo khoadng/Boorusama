@@ -13,11 +13,11 @@ import 'package:share_handler/share_handler.dart';
 // Project imports:
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/home/home.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
+import 'package:boorusama/router.dart';
 import 'package:boorusama/utils/flutter_utils.dart';
 import '../artists/artists.dart';
 import '../blacklist/blacklist.dart';

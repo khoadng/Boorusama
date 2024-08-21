@@ -14,9 +14,9 @@ import 'package:boorusama/boorus/moebooru/moebooru.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'widgets/moebooru_comment_section.dart';
 import 'widgets/moebooru_information_section.dart';
@@ -137,9 +137,7 @@ class _MoebooruPostDetailsPageState
                                   imageUrl: (item) => item.thumbnailImageUrl,
                                 ),
                                 orElse: () =>
-                                    const SliverPreviewPostGridPlaceholder(
-                                  
-                                ),
+                                    const SliverPreviewPostGridPlaceholder(),
                               ),
                         ),
                       )

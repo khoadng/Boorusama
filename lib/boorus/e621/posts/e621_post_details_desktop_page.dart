@@ -16,9 +16,9 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
+import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 final allowFetchProvider = StateProvider<bool>((ref) {
@@ -154,9 +154,7 @@ class _DanbooruPostDetailsDesktopPageState
                                 imageUrl: (item) => item.thumbnailFromSettings(
                                     ref.watch(imageListingSettingsProvider)),
                               ),
-                              orElse: () => const PreviewPostGridPlaceholder(
-                                
-                              ),
+                              orElse: () => const PreviewPostGridPlaceholder(),
                             ),
                       )
                     : const SliverSizedBox.shrink()

@@ -15,8 +15,8 @@ import 'package:boorusama/boorus/danbooru/posts/posts.dart';
 import 'package:boorusama/core/artists/artists.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
+import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../tags/details/danbooru_tags_tile.dart';
 
@@ -133,9 +133,8 @@ class _DanbooruPostDetailsDesktopPageState
                             ),
                             imageUrl: (item) => item.url360x360,
                           ),
-                          orElse: () => const SliverPreviewPostGridPlaceholder(
-                            
-                          ),
+                          orElse: () =>
+                              const SliverPreviewPostGridPlaceholder(),
                         ),
                   ))
               .toList()

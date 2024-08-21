@@ -9,10 +9,10 @@ import 'package:boorusama/boorus/gelbooru_v2/posts/posts_v2.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/router.dart';
 
 class GelbooruV2MobileHomePage extends ConsumerWidget {
   const GelbooruV2MobileHomePage({

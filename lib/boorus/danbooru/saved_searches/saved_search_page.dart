@@ -11,9 +11,9 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/saved_searches/saved_searches.dart';
 import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/generic_no_data_box.dart';
 
 class SavedSearchPage extends ConsumerWidget {

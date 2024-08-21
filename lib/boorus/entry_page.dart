@@ -11,7 +11,6 @@ import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/app_update/app_update.dart';
@@ -22,6 +21,7 @@ import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/functional.dart';
+import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class EntryPage extends ConsumerStatefulWidget {

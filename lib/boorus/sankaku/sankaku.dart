@@ -17,11 +17,11 @@ import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/artist_page_scaffold.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
+import 'package:boorusama/router.dart';
 import 'sankaku_post.dart';
 
 part 'sankaku_provider.dart';
@@ -190,9 +190,8 @@ class SankakuPostDetailsPage extends ConsumerWidget {
                             ),
                             imageUrl: (item) => item.sampleImageUrl,
                           ),
-                          orElse: () => const SliverPreviewPostGridPlaceholder(
-                            
-                          ),
+                          orElse: () =>
+                              const SliverPreviewPostGridPlaceholder(),
                         ),
                   ))
               .toList()

@@ -9,10 +9,10 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 // Project imports:
 import 'package:boorusama/clients/danbooru/danbooru_client_artists.dart';
 import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/router.dart';
 import '../artists.dart';
 
 class DanbooruArtistSearchList extends ConsumerStatefulWidget {

@@ -9,7 +9,6 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/android.dart';
 import 'package:boorusama/foundation/html.dart';
@@ -17,6 +16,7 @@ import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/picker.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/router.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
