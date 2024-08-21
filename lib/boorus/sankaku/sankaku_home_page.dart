@@ -58,7 +58,7 @@ class SankakuHomePage extends ConsumerWidget {
       ],
       desktopViews: () {
         final sankakuTabs = [
-          const DesktopHomePageScaffold(),
+          const DefaultDesktopHomePage(),
           if (login != null) SankakuFavoritesPage(username: login)
         ];
 

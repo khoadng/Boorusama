@@ -9,11 +9,8 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/related_tags/related_tag_section.dart';
 import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/search/search.dart';
-import 'package:boorusama/core/search_histories/search_histories.dart';
-import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/theme.dart';
 
 class DanbooruDesktopHomePage extends ConsumerStatefulWidget {
@@ -40,68 +37,25 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruDesktopHomePage> {
     final config = ref.watchConfig;
     final postRepo = ref.watch(danbooruPostRepoProvider(config));
 
-    return PostScope(
-      fetcher: (page) => postRepo.getPosts(
-        selectedTagController.rawTagsString,
-        page,
+    return DesktopHomePageScaffold(
+      fetcher: (page, tags) => postRepo.getPosts(tags, page),
+      selectedTagController: selectedTagController,
+      selectedTagString: selectedTagString,
+      persistentHeaderBuilder: () => [
+        _buildRelatedTags(),
+      ],
+      listBuilder: (controller, errors, searchBar) => DanbooruInfinitePostList(
+        controller: controller,
+        errors: errors,
+        sliverHeaders: [
+          SliverToBoxAdapter(
+            child: searchBar,
+          ),
+          SliverToBoxAdapter(
+            child: _buildRelatedTags(),
+          ),
+        ],
       ),
-      builder: (context, controller, errors) => context.screenHeight < 450
-          ? _buildList(
-              controller,
-              errors,
-              children: [
-                SliverToBoxAdapter(
-                  child: _buildSearchbar(controller),
-                ),
-                SliverToBoxAdapter(
-                  child: _buildRelatedTags(),
-                ),
-              ],
-            )
-          : Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                _buildSearchbar(controller),
-                _buildRelatedTags(),
-                Expanded(
-                  child: _buildList(
-                    controller,
-                    errors,
-                    children: [
-                      SliverToBoxAdapter(
-                        child: Row(
-                          children: [
-                            ValueListenableBuilder(
-                              valueListenable: selectedTagString,
-                              builder: (context, value, _) =>
-                                  ResultHeaderWithProvider(
-                                selectedTags: value.split(' '),
-                                onRefresh: (maintainPage) => controller.refresh(
-                                  maintainPage: maintainPage,
-                                ),
-                              ),
-                            ),
-                            const Spacer(),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-    );
-  }
-
-  Widget _buildList(
-    PostGridController<DanbooruPost> controller,
-    BooruError? errors, {
-    required List<Widget> children,
-  }) {
-    return DanbooruInfinitePostList(
-      controller: controller,
-      errors: errors,
-      sliverHeaders: children,
     );
   }
 
@@ -120,22 +74,5 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruDesktopHomePage> {
     );
   }
 
-  Widget _buildSearchbar(PostGridController<DanbooruPost> controller) {
-    return DesktopSearchbar(
-      onSearch: () => _onSearch(controller),
-      selectedTagController: selectedTagController,
-    );
-  }
-
   var selectedTagString = ValueNotifier('');
-
-  void _onSearch(
-    PostGridController postController,
-  ) {
-    ref
-        .read(searchHistoryProvider.notifier)
-        .addHistory(selectedTagController.rawTagsString);
-    selectedTagString.value = selectedTagController.rawTagsString;
-    postController.refresh();
-  }
 }

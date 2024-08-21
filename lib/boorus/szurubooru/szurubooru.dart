@@ -156,7 +156,7 @@ class SzurubooruBuilder
         ],
         desktopViews: () {
           final tabs = [
-            const DesktopHomePageScaffold(),
+            const DefaultDesktopHomePage(),
             if (config.hasLoginDetails()) ...[
               SzurubooruFavoritesPage(username: config.name),
             ],

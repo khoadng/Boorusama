@@ -83,7 +83,7 @@ class _HomePageScaffoldState extends ConsumerState<HomePageScaffold> {
           ? widget.desktopViews!
           : () {
               final tabs = [
-                const DesktopHomePageScaffold(),
+                const DefaultDesktopHomePage(),
               ];
 
               return [

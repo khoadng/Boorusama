@@ -19,7 +19,6 @@ import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
-import 'e621_desktop_home_page.dart';
 
 class E621HomePage extends ConsumerStatefulWidget {
   const E621HomePage({
@@ -94,7 +93,7 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
       ],
       desktopViews: () {
         final e621Tabs = [
-          const E621DesktopHomePage(),
+          const DefaultDesktopHomePage(),
           const E621PopularPage(),
           if (config.hasLoginDetails()) ...[
             E621FavoritesPage(

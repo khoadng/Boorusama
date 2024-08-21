@@ -10,9 +10,9 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/gelbooru/favorites/favorites.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/home/home.dart';
+import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/router.dart';
-import 'gelbooru_desktop_home_page.dart';
 
 class GelbooruHomePage extends ConsumerStatefulWidget {
   const GelbooruHomePage({
@@ -73,7 +73,7 @@ class _GelbooruHomePageState extends ConsumerState<GelbooruHomePage> {
       ],
       desktopViews: () {
         final gelbooruTabs = [
-          const GelbooruDesktopHomePage(),
+          const DefaultDesktopHomePage(),
           if (favoritePageBuilder != null && ref.watchConfig.hasLoginDetails())
             GelbooruFavoritesPage(uid: ref.watchConfig.login!),
         ];

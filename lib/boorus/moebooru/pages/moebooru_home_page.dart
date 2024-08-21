@@ -10,14 +10,13 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/scaffolds/infinite_post_list_scaffold.dart';
+import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
 import '../feats/posts/posts.dart';
-import 'moebooru_desktop_home_page.dart';
 import 'moebooru_popular_page.dart';
 import 'moebooru_popular_recent_page.dart';
 
@@ -123,7 +122,7 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
       ],
       desktopViews: () {
         final moebooruTabs = [
-          const MoebooruDesktopHomePage(),
+          const DefaultDesktopHomePage(),
           const MoebooruPopularPage(),
           const MoebooruPopularRecentPage(),
         ];
