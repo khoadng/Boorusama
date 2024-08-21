@@ -106,12 +106,14 @@ class _DanbooruInfinitePostListState
         scrollController: _autoScrollController,
         sliverHeaders: widget.sliverHeaders,
         safeArea: widget.safeArea,
-        footerBuilder: (context, selectedItems) =>
-            DanbooruMultiSelectionActions(
-          selectedPosts: selectedItems,
-          endMultiSelect: () {
-            _multiSelectController.disableMultiSelect();
-          },
+        footer: ValueListenableBuilder(
+          valueListenable: _multiSelectController.selectedItemsNotifier,
+          builder: (_, selectedItems, __) => DanbooruMultiSelectionActions(
+            selectedPosts: selectedItems,
+            endMultiSelect: () {
+              _multiSelectController.disableMultiSelect();
+            },
+          ),
         ),
         multiSelectController: _multiSelectController,
         onLoadMore: widget.onLoadMore,

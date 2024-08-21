@@ -122,20 +122,22 @@ class _InfinitePostListScaffoldState<T extends Post>
                       )),
             ),
         ],
-        footerBuilder: (context, selectedItems) =>
-            widget.multiSelectActions != null
-                ? widget.multiSelectActions!.call(
-                    selectedItems,
-                    () {
-                      _multiSelectController.disableMultiSelect();
-                    },
-                  )
-                : DefaultMultiSelectionActions(
-                    selectedPosts: selectedItems,
-                    endMultiSelect: () {
-                      _multiSelectController.disableMultiSelect();
-                    },
-                  ),
+        footer: ValueListenableBuilder(
+          valueListenable: _multiSelectController.selectedItemsNotifier,
+          builder: (_, selectedItems, __) => widget.multiSelectActions != null
+              ? widget.multiSelectActions!.call(
+                  selectedItems,
+                  () {
+                    _multiSelectController.disableMultiSelect();
+                  },
+                )
+              : DefaultMultiSelectionActions(
+                  selectedPosts: selectedItems,
+                  endMultiSelect: () {
+                    _multiSelectController.disableMultiSelect();
+                  },
+                ),
+        ),
         multiSelectController: _multiSelectController,
         onLoadMore: widget.onLoadMore,
         onRefresh: widget.onRefresh,

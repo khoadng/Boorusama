@@ -16,29 +16,22 @@ typedef FooterBuilder<T> = Widget Function(
   List<T> selectedItems,
 );
 
-typedef HeaderBuilder<T> = Widget Function(
-  BuildContext context,
-  List<T> selectedItems,
-  VoidCallback clearSelected,
-  VoidCallback selectAll,
-);
-
 class MultiSelectWidget<T> extends StatefulWidget {
   const MultiSelectWidget({
     super.key,
     required this.items,
     required this.itemBuilder,
     required this.scrollableWidgetBuilder,
-    this.footerBuilder,
-    this.headerBuilder,
+    this.footer,
+    this.header,
     this.multiSelectController,
     this.onMultiSelectChanged,
   });
   final List<T> items;
   final IndexedWidgetBuilder itemBuilder;
   final ScrollableWidgetBuilder<T> scrollableWidgetBuilder;
-  final FooterBuilder<T>? footerBuilder;
-  final HeaderBuilder<T>? headerBuilder;
+  final Widget? footer;
+  final Widget? header;
   final MultiSelectController<T>? multiSelectController;
   final void Function(bool multiSelect)? onMultiSelectChanged;
 
@@ -82,13 +75,8 @@ class _MultiSelectWidgetState<T> extends State<MultiSelectWidget<T>> {
     return Scaffold(
         appBar: PreferredSize(
             preferredSize: const Size.fromHeight(kToolbarHeight),
-            child: multiSelect && widget.headerBuilder != null
-                ? widget.headerBuilder!(
-                    context,
-                    _controller.selectedItems,
-                    _controller.clearSelected,
-                    () => _controller.selectAll(widget.items),
-                  )
+            child: multiSelect && widget.header != null
+                ? widget.header!
                 : const SizedBox.shrink()),
         body: widget.scrollableWidgetBuilder(
           context,
@@ -106,20 +94,18 @@ class _MultiSelectWidgetState<T> extends State<MultiSelectWidget<T>> {
                 : widget.itemBuilder(context, index);
           },
         ),
-        bottomSheet: multiSelect && widget.footerBuilder != null
+        bottomSheet: multiSelect && widget.footer != null
             ? Padding(
                 padding: EdgeInsets.only(
                   bottom: MediaQuery.viewPaddingOf(context).bottom,
                 ),
-                child:
-                    widget.footerBuilder!(context, _controller.selectedItems),
+                child: widget.footer,
               )
             : const SizedBox.shrink());
   }
 }
 
 class SelectableItem extends StatefulWidget {
-
   const SelectableItem({
     super.key,
     required this.isSelected,

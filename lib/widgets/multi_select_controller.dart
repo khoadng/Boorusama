@@ -5,6 +5,8 @@ class MultiSelectController<T> extends ChangeNotifier {
   bool _multiSelectEnabled = false;
   final Set<T> _selectedItems = <T>{};
 
+  final ValueNotifier<List<T>> selectedItemsNotifier = ValueNotifier([]);
+
   bool get multiSelectEnabled => _multiSelectEnabled;
 
   set multiSelectEnabled(bool value) {
@@ -22,6 +24,7 @@ class MultiSelectController<T> extends ChangeNotifier {
   void disableMultiSelect() {
     _multiSelectEnabled = false;
     _selectedItems.clear();
+    notifySelectedItems();
     notifyListeners();
   }
 
@@ -36,17 +39,24 @@ class MultiSelectController<T> extends ChangeNotifier {
     } else {
       _selectedItems.add(item);
     }
+    notifySelectedItems();
     notifyListeners();
   }
 
   void clearSelected() {
     _selectedItems.clear();
+    notifySelectedItems();
     notifyListeners();
   }
 
   void selectAll(List<T> items) {
     _selectedItems.addAll(items);
+    notifySelectedItems();
     notifyListeners();
+  }
+
+  void notifySelectedItems() {
+    selectedItemsNotifier.value = _selectedItems.toList();
   }
 
   List<T> get selectedItems => _selectedItems.toList();

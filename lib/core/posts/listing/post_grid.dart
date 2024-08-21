@@ -39,8 +39,8 @@ class PostGrid<T extends Post> extends ConsumerStatefulWidget {
     this.extendBody = false,
     this.extendBodyHeight,
     required this.itemBuilder,
-    this.footerBuilder,
-    this.headerBuilder,
+    this.footer,
+    this.header,
     this.blacklistedIdString,
     required this.bodyBuilder,
     this.multiSelectController,
@@ -64,8 +64,8 @@ class PostGrid<T extends Post> extends ConsumerStatefulWidget {
   final bool safeArea;
 
   final ItemWidgetBuilder<T> itemBuilder;
-  final FooterBuilder<T>? footerBuilder;
-  final HeaderBuilder<T>? headerBuilder;
+  final Widget? footer;
+  final Widget? header;
   final Widget Function(
     BuildContext context,
     IndexedWidgetBuilder itemBuilder,
@@ -198,35 +198,38 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                 child: child,
               ),
               child: MultiSelectWidget<T>(
-                footerBuilder: widget.footerBuilder,
+                footer: widget.footer,
                 multiSelectController: _multiSelectController,
                 onMultiSelectChanged: (p0) => setState(() {
                   multiSelect = p0;
                 }),
-                headerBuilder: (context, selected, clearSelected, selectAll) =>
-                    widget.headerBuilder != null
-                        ? widget.headerBuilder!(
-                            context, selected, clearSelected, selectAll)
-                        : AppBar(
-                            leading: IconButton(
-                              onPressed: () =>
-                                  _multiSelectController.disableMultiSelect(),
-                              icon: const Icon(Symbols.close),
-                            ),
-                            actions: [
-                              IconButton(
-                                onPressed: selectAll,
-                                icon: const Icon(Symbols.select_all),
-                              ),
-                              IconButton(
-                                onPressed: clearSelected,
-                                icon: const Icon(Symbols.clear_all),
-                              ),
-                            ],
-                            title: selected.isEmpty
-                                ? const Text('Select items')
-                                : Text('${selected.length} Items selected'),
+                header: widget.header != null
+                    ? widget.header!
+                    : AppBar(
+                        leading: IconButton(
+                          onPressed: () =>
+                              _multiSelectController.disableMultiSelect(),
+                          icon: const Icon(Symbols.close),
+                        ),
+                        actions: [
+                          IconButton(
+                            onPressed: () =>
+                                _multiSelectController.selectAll(items),
+                            icon: const Icon(Symbols.select_all),
                           ),
+                          IconButton(
+                            onPressed: _multiSelectController.clearSelected,
+                            icon: const Icon(Symbols.clear_all),
+                          ),
+                        ],
+                        title: ValueListenableBuilder(
+                          valueListenable:
+                              _multiSelectController.selectedItemsNotifier,
+                          builder: (_, selected, __) => selected.isEmpty
+                              ? const Text('Select items')
+                              : Text('${selected.length} Items selected'),
+                        ),
+                      ),
                 items: items,
                 itemBuilder: (context, index) =>
                     widget.itemBuilder(context, items, index),
