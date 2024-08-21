@@ -97,7 +97,7 @@ class _EntryPageState extends ConsumerState<EntryPage> {
       },
     );
 
-    return OrientationBuilder(
+    return PerformanceOrientationBuilder(
       builder: (context, orientation) => ConditionalParentWidget(
         condition: kPreferredLayout.isDesktop ||
             (kPreferredLayout.isMobile && orientation.isLandscape),

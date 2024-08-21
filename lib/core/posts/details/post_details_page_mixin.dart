@@ -12,7 +12,7 @@ import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/videos/videos.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/widgets/embedded_webview_webm.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 mixin PostDetailsPageMixin<T extends StatefulWidget, E extends Post>
     on State<T> {
@@ -102,7 +102,7 @@ class FlexibleLayoutSwitcher extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return kPreferredLayout.isMobile
-        ? OrientationBuilder(
+        ? PerformanceOrientationBuilder(
             builder: (context, orientation) =>
                 orientation == Orientation.portrait ? mobile() : desktop(),
           )

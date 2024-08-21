@@ -19,6 +19,7 @@ import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/router.dart';
+import 'package:boorusama/widgets/widgets.dart';
 import 'booru_desktop_scope.dart';
 import 'booru_mobile_scope.dart';
 
@@ -68,7 +69,7 @@ class _BooruScopeState extends ConsumerState<BooruScope> {
       controller: controller,
       child: CustomContextMenuOverlay(
         child: kPreferredLayout.isMobile
-            ? OrientationBuilder(
+            ? PerformanceOrientationBuilder(
                 builder: (context, orientation) => orientation.isPortrait
                     ? _buildMobile()
                     : _buildDesktop(
