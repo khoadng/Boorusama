@@ -20,38 +20,34 @@ import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
-class SliverPostGrid extends ConsumerWidget {
+typedef PostWidgetBuilder<T extends Post> = Widget Function(
+  BuildContext context,
+  int index,
+  T post,
+);
+
+class SliverPostGrid<T extends Post> extends ConsumerWidget {
   const SliverPostGrid({
     super.key,
     required this.constraints,
     required this.itemBuilder,
-    required this.refreshing,
     required this.error,
-    required this.data,
     required this.onRetry,
     required this.multiSelectController,
+    required this.postController,
   });
 
   final BoxConstraints? constraints;
-  final IndexedWidgetBuilder itemBuilder;
-  final bool refreshing;
+  final PostWidgetBuilder<T> itemBuilder;
   final BooruError? error;
-  final List<Post> data;
   final VoidCallback? onRetry;
-  final MultiSelectController<Post>? multiSelectController;
+  final MultiSelectController<T>? multiSelectController;
+  final PostGridController<T> postController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final imageListType = ref.watch(
-        imageListingSettingsProvider.select((value) => value.imageListType));
-    final gridSize = ref
-        .watch(imageListingSettingsProvider.select((value) => value.gridSize));
-    final imageGridSpacing = ref.watch(
-        imageListingSettingsProvider.select((value) => value.imageGridSpacing));
     final imageGridPadding = ref.watch(
         imageListingSettingsProvider.select((value) => value.imageGridPadding));
-    final imageGridAspectRatio = ref.watch(imageListingSettingsProvider
-        .select((value) => value.imageGridAspectRatio));
 
     return SliverPadding(
       padding: EdgeInsets.symmetric(
@@ -109,58 +105,79 @@ class SliverPostGrid extends ConsumerWidget {
             );
           }
 
-          if (refreshing) {
-            return _Placeholder(
-              usePlaceholder: true,
-              constraints: constraints,
-            );
-          }
-
-          if (data.isEmpty) {
-            return const SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.only(bottom: 48),
-                child: NoDataBox(),
-              ),
-            );
-          }
-
-          final crossAxisCount = calculateGridCount(
-            constraints?.maxWidth ?? context.screenWidth,
-            gridSize,
+          return ValueListenableBuilder(
+            valueListenable: postController.refreshingNotifier,
+            builder: (_, refreshing, __) {
+              return refreshing
+                  ? _Placeholder(
+                      usePlaceholder: true,
+                      constraints: constraints,
+                    )
+                  : _buildGrid(ref, context);
+            },
           );
-
-          return switch (imageListType) {
-            ImageListType.standard => SliverGrid(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  childAspectRatio: imageGridAspectRatio,
-                  crossAxisCount: crossAxisCount,
-                  mainAxisSpacing: imageGridSpacing,
-                  crossAxisSpacing: imageGridSpacing,
-                ),
-                delegate: SliverChildBuilderDelegate(
-                  buildItem,
-                  childCount: data.length,
-                ),
-              ),
-            ImageListType.masonry => SliverMasonryGrid.count(
-                crossAxisCount: crossAxisCount,
-                mainAxisSpacing: imageGridSpacing,
-                crossAxisSpacing: imageGridSpacing,
-                childCount: data.length,
-                itemBuilder: buildItem,
-              ),
-          };
         },
       ),
     );
   }
 
-  Widget buildItem(context, index) {
+  Widget _buildGrid(WidgetRef ref, BuildContext context) {
+    final imageListType = ref.watch(
+        imageListingSettingsProvider.select((value) => value.imageListType));
+    final gridSize = ref
+        .watch(imageListingSettingsProvider.select((value) => value.gridSize));
+    final imageGridSpacing = ref.watch(
+        imageListingSettingsProvider.select((value) => value.imageGridSpacing));
+    final imageGridAspectRatio = ref.watch(imageListingSettingsProvider
+        .select((value) => value.imageGridAspectRatio));
+
+    return ValueListenableBuilder(
+      valueListenable: postController.itemsNotifier,
+      builder: (_, data, __) {
+        final crossAxisCount = calculateGridCount(
+          constraints?.maxWidth ?? context.screenWidth,
+          gridSize,
+        );
+
+        return data.isNotEmpty
+            ? switch (imageListType) {
+                ImageListType.standard => SliverGrid(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      childAspectRatio: imageGridAspectRatio,
+                      crossAxisCount: crossAxisCount,
+                      mainAxisSpacing: imageGridSpacing,
+                      crossAxisSpacing: imageGridSpacing,
+                    ),
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) => buildItem(context, index, data),
+                      childCount: data.length,
+                    ),
+                  ),
+                ImageListType.masonry => SliverMasonryGrid.count(
+                    crossAxisCount: crossAxisCount,
+                    mainAxisSpacing: imageGridSpacing,
+                    crossAxisSpacing: imageGridSpacing,
+                    childCount: data.length,
+                    itemBuilder: (context, index) =>
+                        buildItem(context, index, data),
+                  ),
+              }
+            : const SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.only(bottom: 48),
+                  child: NoDataBox(),
+                ),
+              );
+      },
+    );
+  }
+
+  Widget buildItem(context, index, List<T> data) {
     final controller = multiSelectController;
+    final post = data[index];
 
     if (controller == null) {
-      return itemBuilder(context, index);
+      return itemBuilder(context, index, post);
     }
 
     return ValueListenableBuilder(
@@ -170,12 +187,13 @@ class SliverPostGrid extends ConsumerWidget {
               valueListenable: controller.selectedItemsNotifier,
               builder: (_, selectedItems, __) => SelectableItem(
                 index: index,
-                isSelected: selectedItems.contains(data[index]),
-                onTap: () => controller.toggleSelection(data[index]),
-                itemBuilder: itemBuilder,
+                isSelected: selectedItems.contains(post),
+                onTap: () => controller.toggleSelection(post),
+                itemBuilder: (context, isSelected) =>
+                    itemBuilder(context, index, post),
               ),
             )
-          : itemBuilder(context, index),
+          : itemBuilder(context, index, post),
     );
   }
 }

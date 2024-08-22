@@ -41,7 +41,7 @@ class PostGrid<T extends Post> extends ConsumerStatefulWidget {
     this.footer,
     this.header,
     this.blacklistedIdString,
-    required this.bodyBuilder,
+    required this.body,
     this.multiSelectController,
     required this.controller,
     this.refreshAtStart = true,
@@ -64,11 +64,7 @@ class PostGrid<T extends Post> extends ConsumerStatefulWidget {
 
   final Widget? footer;
   final Widget? header;
-  final Widget Function(
-    BuildContext context,
-    bool refreshing,
-    List<T> data,
-  ) bodyBuilder;
+  final Widget body;
 
   final String? blacklistedIdString;
 
@@ -350,15 +346,7 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                               ),
                               trueChild: const SliverSizedBox.shrink(),
                             ),
-                          ValueListenableBuilder(
-                            valueListenable: refreshing,
-                            builder: (context, refreshing, child) =>
-                                widget.bodyBuilder(
-                              context,
-                              refreshing,
-                              items,
-                            ),
-                          ),
+                          widget.body,
                           if (pageMode == PageMode.infinite)
                             ConditionalValueListenableBuilder(
                               valueListenable: loading,
