@@ -184,6 +184,7 @@ class E621Builder
   PostDetailsPageBuilder get postDetailsPageBuilder =>
       (context, config, payload) => PostDetailsLayoutSwitcher(
             initialIndex: payload.initialIndex,
+            posts: payload.posts,
             scrollController: payload.scrollController,
             desktop: (controller) => E621PostDetailsDesktopPage(
               initialIndex: controller.currentPage.value,
@@ -193,6 +194,7 @@ class E621Builder
             ),
             mobile: (controller) => E621PostDetailsPage(
               intitialIndex: controller.currentPage.value,
+              controller: controller,
               posts: payload.posts.map((e) => e as E621Post).toList(),
               onExit: (page) => controller.onExit(page),
               onPageChanged: (page) => controller.setPage(page),

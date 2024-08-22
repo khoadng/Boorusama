@@ -55,12 +55,14 @@ class MoebooruPostDetailsPage extends ConsumerStatefulWidget {
     required this.initialPage,
     required this.onExit,
     required this.onPageChanged,
+    required this.controller,
   });
 
   final List<MoebooruPost> posts;
   final int initialPage;
   final void Function(int page) onExit;
   final void Function(int page) onPageChanged;
+  final PostDetailsController<Post> controller;
 
   @override
   ConsumerState<MoebooruPostDetailsPage> createState() =>
@@ -99,7 +101,6 @@ class _MoebooruPostDetailsPageState
   @override
   Widget build(BuildContext context) {
     final config = ref.watchConfig;
-    final booru = config.createBooruFrom(ref.watch(booruFactoryProvider));
 
     return PostDetailsPageScaffold(
       posts: posts,
@@ -182,35 +183,7 @@ class _MoebooruPostDetailsPageState
           tag: tag.rawName,
         ),
       ),
-      toolbarBuilder: (context, post) {
-        final notifier = ref.watch(moebooruFavoritesProvider(post.id).notifier);
-
-        return booru?.whenMoebooru(
-                data: (data) => data.supportsFavorite(config.url)
-                    ? SimplePostActionToolbar(
-                        isFaved: ref
-                            .watch(moebooruFavoritesProvider(post.id))
-                            ?.contains(config.login),
-                        addFavorite: () => ref
-                            .read(moebooruClientProvider(config))
-                            .favoritePost(postId: post.id)
-                            .then((value) {
-                          notifier.clear();
-                        }),
-                        removeFavorite: () => ref
-                            .read(moebooruClientProvider(config))
-                            .unfavoritePost(postId: post.id)
-                            .then((value) {
-                          notifier.clear();
-                        }),
-                        isAuthorized: config.hasLoginDetails(),
-                        forceHideFav: !config.hasLoginDetails(),
-                        post: post,
-                      )
-                    : SimplePostActionToolbar(post: post),
-                orElse: () => SimplePostActionToolbar(post: post)) ??
-            SimplePostActionToolbar(post: post);
-      },
+      toolbar: MoebooruPostDetailsActionToolbar(controller: widget.controller),
       commentsBuilder: (context, post) => MoebooruCommentSection(post: post),
       topRightButtonsBuilder: (currentPage, expanded, post, controller) => [
         GeneralMoreActionButton(
@@ -258,5 +231,53 @@ class _MoebooruPostDetailsPageState
         (e) => TagCategory.fromLegacyId(e.category) == TagCategory.character());
     final characterTags = tag?.tags.map((e) => e.rawName).toSet();
     return characterTags;
+  }
+}
+
+class MoebooruPostDetailsActionToolbar extends ConsumerWidget {
+  const MoebooruPostDetailsActionToolbar({
+    super.key,
+    required this.controller,
+  });
+
+  final PostDetailsController controller;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
+    final booru = config.createBooruFrom(ref.watch(booruFactoryProvider));
+
+    return ValueListenableBuilder(
+      valueListenable: controller.currentPost,
+      builder: (_, post, __) {
+        final notifier = ref.watch(moebooruFavoritesProvider(post.id).notifier);
+
+        return booru?.whenMoebooru(
+                data: (data) => data.supportsFavorite(config.url)
+                    ? SimplePostActionToolbar(
+                        isFaved: ref
+                            .watch(moebooruFavoritesProvider(post.id))
+                            ?.contains(config.login),
+                        addFavorite: () => ref
+                            .read(moebooruClientProvider(config))
+                            .favoritePost(postId: post.id)
+                            .then((value) {
+                          notifier.clear();
+                        }),
+                        removeFavorite: () => ref
+                            .read(moebooruClientProvider(config))
+                            .unfavoritePost(postId: post.id)
+                            .then((value) {
+                          notifier.clear();
+                        }),
+                        isAuthorized: config.hasLoginDetails(),
+                        forceHideFav: !config.hasLoginDetails(),
+                        post: post,
+                      )
+                    : SimplePostActionToolbar(post: post),
+                orElse: () => SimplePostActionToolbar(post: post)) ??
+            SimplePostActionToolbar(post: post);
+      },
+    );
   }
 }

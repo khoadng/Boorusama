@@ -31,12 +31,14 @@ class GelbooruV2PostDetailsPage extends ConsumerStatefulWidget {
     required this.initialIndex,
     required this.onExit,
     required this.onPageChanged,
+    required this.controller,
   });
 
   final int initialIndex;
   final List<GelbooruV2Post> posts;
   final void Function(int page) onExit;
   final void Function(int page) onPageChanged;
+  final PostDetailsController<Post> controller;
 
   @override
   ConsumerState<GelbooruV2PostDetailsPage> createState() =>
@@ -53,7 +55,10 @@ class _PostDetailPageState extends ConsumerState<GelbooruV2PostDetailsPage> {
       initialIndex: widget.initialIndex,
       onExit: widget.onExit,
       onPageChangeIndexed: widget.onPageChanged,
-      toolbarBuilder: (context, post) => SimplePostActionToolbar(post: post),
+      toolbar: ValueListenableBuilder(
+        valueListenable: widget.controller.currentPost,
+        builder: (_, post, __) => SimplePostActionToolbar(post: post),
+      ),
       swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
       fileDetailsBuilder: (context, post) => DefaultFileDetailsSection(
         post: post,

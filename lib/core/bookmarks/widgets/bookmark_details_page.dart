@@ -12,7 +12,7 @@ import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 
-class BookmarkDetailsPage extends ConsumerStatefulWidget {
+class BookmarkDetailsPage extends ConsumerWidget {
   const BookmarkDetailsPage({
     super.key,
     required this.initialIndex,
@@ -21,19 +21,62 @@ class BookmarkDetailsPage extends ConsumerStatefulWidget {
   final int initialIndex;
 
   @override
-  ConsumerState<BookmarkDetailsPage> createState() =>
+  Widget build(BuildContext context, WidgetRef ref) {
+    final bookmarks = ref.watch(filteredBookmarksProvider);
+    final posts = bookmarks.map((e) => e.toPost()).toList();
+
+    return PostDetailsLayoutSwitcher(
+      initialIndex: initialIndex,
+      posts: posts,
+      desktop: null,
+      mobile: (controller) => BookmarkDetailsPageInternal(
+        initialIndex: initialIndex,
+        controller: controller,
+        posts: posts,
+      ),
+      scrollController: null,
+    );
+  }
+}
+
+class BookmarkDetailsPageInternal extends ConsumerStatefulWidget {
+  const BookmarkDetailsPageInternal({
+    super.key,
+    required this.initialIndex,
+    required this.controller,
+    required this.posts,
+  });
+
+  final int initialIndex;
+  final List<BookmarkPost> posts;
+  final PostDetailsController<Post> controller;
+
+  @override
+  ConsumerState<BookmarkDetailsPageInternal> createState() =>
       _BookmarkDetailsPageState();
 }
 
-class _BookmarkDetailsPageState extends ConsumerState<BookmarkDetailsPage> {
+class _BookmarkDetailsPageState
+    extends ConsumerState<BookmarkDetailsPageInternal> {
+  late var posts = widget.posts;
+
+  @override
+  void didUpdateWidget(covariant BookmarkDetailsPageInternal oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    setState(() {
+      posts = widget.posts;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final bookmarks = ref.watch(filteredBookmarksProvider);
-
     return PostDetailsPageScaffold(
-      posts: bookmarks.map((e) => e.toPost()).toList(),
+      posts: posts,
       swipeImageUrlBuilder: (post) => post.sampleImageUrl,
-      toolbarBuilder: (context, post) => BookmarkPostActionToolbar(post: post),
+      toolbar: ValueListenableBuilder(
+        valueListenable: widget.controller.currentPost,
+        builder: (context, post, _) => BookmarkPostActionToolbar(post: post),
+      ),
       sourceSectionBuilder: (context, post) => Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -69,6 +112,22 @@ class _BookmarkDetailsPageState extends ConsumerState<BookmarkDetailsPage> {
     );
   }
 }
+
+// class _BookmarkProvider extends ConsumerStatefulWidget {
+//   const _BookmarkProvider();
+
+//   @override
+//   ConsumerState<_BookmarkProvider> createState() => _BookmarkProviderState();
+// }
+
+// class _BookmarkProviderState extends ConsumerState<_BookmarkProvider> {
+//   final
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return const SizedBox.shrink();
+//   }
+// }
 
 class BookmarkPostActionToolbar extends ConsumerWidget {
   const BookmarkPostActionToolbar({

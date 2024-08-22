@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/videos/videos.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -110,30 +111,33 @@ class FlexibleLayoutSwitcher extends StatelessWidget {
   }
 }
 
-class PostDetailsLayoutSwitcher extends ConsumerStatefulWidget {
+class PostDetailsLayoutSwitcher<T extends Post> extends ConsumerStatefulWidget {
   const PostDetailsLayoutSwitcher({
     super.key,
     required this.initialIndex,
+    required this.posts,
     required this.desktop,
     required this.mobile,
     required this.scrollController,
   });
 
   final int initialIndex;
+  final List<T> posts;
   final AutoScrollController? scrollController;
-  final Widget Function(PostDetailsController controller) desktop;
-  final Widget Function(PostDetailsController controller) mobile;
+  final Widget Function(PostDetailsController<T> controller)? desktop;
+  final Widget Function(PostDetailsController<T> controller) mobile;
 
   @override
-  ConsumerState<PostDetailsLayoutSwitcher> createState() =>
-      _PostDetailsLayoutSwitcherState();
+  ConsumerState<PostDetailsLayoutSwitcher<T>> createState() =>
+      _PostDetailsLayoutSwitcherState<T>();
 }
 
-class _PostDetailsLayoutSwitcherState
-    extends ConsumerState<PostDetailsLayoutSwitcher> {
-  late PostDetailsController controller = PostDetailsController(
+class _PostDetailsLayoutSwitcherState<T extends Post>
+    extends ConsumerState<PostDetailsLayoutSwitcher<T>> {
+  late PostDetailsController<T> controller = PostDetailsController<T>(
     scrollController: widget.scrollController,
     initialPage: widget.initialIndex,
+    posts: widget.posts,
     reduceAnimations: ref.read(settingsProvider).reduceAnimations,
   );
 
@@ -145,26 +149,66 @@ class _PostDetailsLayoutSwitcherState
 
   @override
   Widget build(BuildContext context) {
-    return FlexibleLayoutSwitcher(
-      desktop: () => widget.desktop(controller),
-      mobile: () => widget.mobile(controller),
+    return PostDetailsScope(
+      controller: controller,
+      child: FlexibleLayoutSwitcher(
+        desktop: () => widget.desktop != null
+            ? widget.desktop!(controller)
+            : widget.mobile(controller),
+        mobile: () => widget.mobile(controller),
+      ),
     );
   }
 }
 
-class PostDetailsController extends ChangeNotifier {
+class PostDetailsScope extends InheritedWidget {
+  const PostDetailsScope({
+    super.key,
+    required this.controller,
+    required super.child,
+  });
+
+  final PostDetailsController controller;
+
+  static PostDetailsController of(BuildContext context) {
+    final scope =
+        context.dependOnInheritedWidgetOfExactType<PostDetailsScope>();
+
+    if (scope == null) {
+      throw FlutterError('No PostDetailsScope found in context');
+    }
+
+    return scope.controller;
+  }
+
+  @override
+  bool updateShouldNotify(PostDetailsScope oldWidget) {
+    return controller != oldWidget.controller;
+  }
+}
+
+class PostDetailsController<T extends Post> extends ChangeNotifier {
   PostDetailsController({
     required this.scrollController,
     required int initialPage,
+    required this.posts,
     required this.reduceAnimations,
-  }) : currentPage = ValueNotifier(initialPage);
+  })  : currentPage = ValueNotifier(initialPage),
+        currentPost = ValueNotifier(posts[initialPage]);
   final AutoScrollController? scrollController;
   final bool reduceAnimations;
+  final List<T> posts;
 
   late ValueNotifier<int> currentPage;
+  late ValueNotifier<T> currentPost;
 
   void setPage(int page) {
     currentPage.value = page;
+    final post = posts.getOrNull(page);
+
+    if (post != null) {
+      currentPost.value = post;
+    }
   }
 
   void onExit(int page) {

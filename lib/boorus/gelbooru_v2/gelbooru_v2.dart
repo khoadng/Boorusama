@@ -193,22 +193,28 @@ class GelbooruV2Builder
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) => PostDetailsLayoutSwitcher(
-            initialIndex: payload.initialIndex,
-            scrollController: payload.scrollController,
-            desktop: (controller) => GelbooruV2PostDetailsDesktopPage(
-              initialIndex: controller.currentPage.value,
-              posts: payload.posts.map((e) => e as GelbooruV2Post).toList(),
-              onExit: (page) => controller.onExit(page),
-              onPageChanged: (page) => controller.setPage(page),
-            ),
-            mobile: (controller) => GelbooruV2PostDetailsPage(
-              initialIndex: controller.currentPage.value,
-              posts: payload.posts.map((e) => e as GelbooruV2Post).toList(),
-              onExit: (page) => controller.onExit(page),
-              onPageChanged: (page) => controller.setPage(page),
-            ),
-          );
+      (context, config, payload) {
+        final posts = payload.posts.map((e) => e as GelbooruV2Post).toList();
+
+        return PostDetailsLayoutSwitcher(
+          initialIndex: payload.initialIndex,
+          posts: posts,
+          scrollController: payload.scrollController,
+          desktop: (controller) => GelbooruV2PostDetailsDesktopPage(
+            initialIndex: controller.currentPage.value,
+            posts: posts,
+            onExit: (page) => controller.onExit(page),
+            onPageChanged: (page) => controller.setPage(page),
+          ),
+          mobile: (controller) => GelbooruV2PostDetailsPage(
+            initialIndex: controller.currentPage.value,
+            controller: controller,
+            posts: posts,
+            onExit: (page) => controller.onExit(page),
+            onPageChanged: (page) => controller.setPage(page),
+          ),
+        );
+      };
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>

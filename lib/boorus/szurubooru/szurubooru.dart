@@ -178,8 +178,24 @@ class SzurubooruBuilder
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) => SzurubooruPostDetailsPage(
-            payload: payload,
+      (context, config, payload) => PostDetailsLayoutSwitcher(
+            initialIndex: payload.initialIndex,
+            posts: payload.posts,
+            scrollController: payload.scrollController,
+            desktop: (controller) => SzurubooruPostDetailsPage(
+              initialPage: controller.currentPage.value,
+              controller: controller,
+              posts: payload.posts,
+              onExit: (page) => controller.onExit(page),
+              onPageChanged: (page) => controller.setPage(page),
+            ),
+            mobile: (controller) => SzurubooruPostDetailsPage(
+              initialPage: controller.currentPage.value,
+              controller: controller,
+              posts: payload.posts,
+              onExit: (page) => controller.onExit(page),
+              onPageChanged: (page) => controller.setPage(page),
+            ),
           );
 
   @override
@@ -199,18 +215,27 @@ class SzurubooruBuilder
 class SzurubooruPostDetailsPage extends ConsumerWidget {
   const SzurubooruPostDetailsPage({
     super.key,
-    required this.payload,
+    required this.controller,
+    required this.onExit,
+    required this.onPageChanged,
+    required this.posts,
+    required this.initialPage,
   });
 
-  final DetailsPayload payload;
+  final List<Post> posts;
+  final PostDetailsController<Post> controller;
+  final void Function(int page) onExit;
+  final void Function(int page) onPageChanged;
+  final int initialPage;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return PostDetailsPageScaffold(
-      posts: payload.posts,
-      initialIndex: payload.initialIndex,
+      posts: posts,
+      initialIndex: initialPage,
       swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
-      onExit: (page) => payload.scrollController?.scrollToIndex(page),
+      onExit: onExit,
+      onPageChangeIndexed: onPageChanged,
       statsTileBuilder: (context, rawPost) =>
           castOrNull<SzurubooruPost>(rawPost).toOption().fold(
                 () => const SizedBox.shrink(),
@@ -235,11 +260,14 @@ class SzurubooruPostDetailsPage extends ConsumerWidget {
                   tagColorBuilder: (tag) => tag.category.darkColor,
                 ),
               ),
-      toolbarBuilder: (context, rawPost) =>
-          castOrNull<SzurubooruPost>(rawPost).toOption().fold(
-                () => SimplePostActionToolbar(post: rawPost),
-                (post) => SzurubooruPostActionToolbar(post: post),
-              ),
+      toolbar: ValueListenableBuilder(
+        valueListenable: controller.currentPost,
+        builder: (_, rawPost, __) =>
+            castOrNull<SzurubooruPost>(rawPost).toOption().fold(
+                  () => SimplePostActionToolbar(post: rawPost),
+                  (post) => SzurubooruPostActionToolbar(post: post),
+                ),
+      ),
       fileDetailsBuilder: (context, rawPost) => DefaultFileDetailsSection(
         post: rawPost,
         uploaderName: castOrNull<SzurubooruPost>(rawPost)?.uploaderName,

@@ -22,12 +22,14 @@ class E621PostDetailsPage extends ConsumerStatefulWidget {
     required this.intitialIndex,
     required this.onExit,
     required this.onPageChanged,
+    required this.controller,
   });
 
   final int intitialIndex;
   final List<E621Post> posts;
   final void Function(int page) onExit;
   final void Function(int page) onPageChanged;
+  final PostDetailsController<Post> controller;
 
   @override
   ConsumerState<E621PostDetailsPage> createState() =>
@@ -44,7 +46,7 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage> {
       initialIndex: widget.intitialIndex,
       onExit: widget.onExit,
       onPageChangeIndexed: widget.onPageChanged,
-      toolbarBuilder: (context, post) => DefaultPostActionToolbar(post: post),
+      toolbar: DefaultPostDetailsActionToolbar(controller: widget.controller),
       swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
       sliverArtistPostsBuilder: (context, post) => post.artistTags.isNotEmpty
           ? post.artistTags

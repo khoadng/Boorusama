@@ -76,7 +76,7 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     required this.posts,
     required this.initialIndex,
     required this.onExit,
-    this.toolbarBuilder,
+    this.toolbar,
     this.sliverArtistPostsBuilder,
     this.sliverCharacterPostsBuilder,
     this.onExpanded,
@@ -95,6 +95,7 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     this.fileDetailsBuilder,
     this.sourceSectionBuilder,
     this.parts = kDefaultPostDetailsParts,
+    this.postDetailsController,
   });
 
   final int initialIndex;
@@ -105,7 +106,7 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   final void Function(int index)? onPageChangeIndexed;
   final String Function(T post) swipeImageUrlBuilder;
   final String? Function(T post, int currentPage)? placeholderImageUrlBuilder;
-  final Widget Function(BuildContext context, T post)? toolbarBuilder;
+  final Widget? toolbar;
   final List<Widget> Function(BuildContext context, T post)?
       sliverArtistPostsBuilder;
   final Widget Function(BuildContext context, T post)?
@@ -125,6 +126,8 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
       sliverRelatedPostsBuilder;
   final List<Widget> Function(int currentPage, bool expanded, T post,
       DetailsPageController controller)? topRightButtonsBuilder;
+
+  final PostDetailsController<T>? postDetailsController;
 
   @override
   ConsumerState<PostDetailsPageScaffold<T>> createState() =>
@@ -172,6 +175,7 @@ class _PostDetailPageScaffoldState<T extends Post>
   void dispose() {
     _controller.currentPage.removeListener(_onPageChanged);
     _controller.dispose();
+
     super.dispose();
   }
 
@@ -233,8 +237,8 @@ class _PostDetailPageScaffoldState<T extends Post>
               constraints.maxHeight > 450
                   ? widget.infoBuilder!(context, posts[page])
                   : const SizedBox.shrink(),
-            widget.toolbarBuilder != null
-                ? widget.toolbarBuilder!(context, posts[page])
+            widget.toolbar != null
+                ? widget.toolbar!
                 : SimplePostActionToolbar(post: posts[page]),
           ],
         ),
@@ -404,10 +408,9 @@ class _PostDetailPageScaffoldState<T extends Post>
                                   child: widget.infoBuilder!(context, post),
                                 )
                               : null,
-                          PostDetailsPart.toolbar => widget.toolbarBuilder !=
-                                  null
+                          PostDetailsPart.toolbar => widget.toolbar != null
                               ? SliverToBoxAdapter(
-                                  child: widget.toolbarBuilder!(context, post),
+                                  child: widget.toolbar,
                                 )
                               : null,
                           PostDetailsPart.artistInfo => widget
@@ -545,6 +548,23 @@ class _PostDetailPageScaffoldState<T extends Post>
         onExpanded: (currentPage) =>
             widget.onExpanded?.call(posts[currentPage]),
       ),
+    );
+  }
+}
+
+class DefaultPostDetailsActionToolbar extends StatelessWidget {
+  const DefaultPostDetailsActionToolbar({
+    super.key,
+    required this.controller,
+  });
+
+  final PostDetailsController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder(
+      valueListenable: controller.currentPost,
+      builder: (_, post, __) => DefaultPostActionToolbar(post: post),
     );
   }
 }

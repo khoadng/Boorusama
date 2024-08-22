@@ -238,6 +238,7 @@ class GelbooruBuilder
   PostDetailsPageBuilder get postDetailsPageBuilder =>
       (context, config, payload) => PostDetailsLayoutSwitcher(
             initialIndex: payload.initialIndex,
+            posts: payload.posts,
             scrollController: payload.scrollController,
             desktop: (controller) => GelbooruPostDetailsDesktopPage(
               initialIndex: controller.currentPage.value,
@@ -247,6 +248,7 @@ class GelbooruBuilder
             ),
             mobile: (controller) => GelbooruPostDetailsPage(
               initialIndex: controller.currentPage.value,
+              controller: controller,
               posts: payload.posts.map((e) => e as GelbooruPost).toList(),
               onExit: (page) => controller.onExit(page),
               onPageChanged: (page) => controller.setPage(page),
