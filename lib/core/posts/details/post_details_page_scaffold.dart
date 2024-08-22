@@ -217,31 +217,68 @@ class _PostDetailPageScaffoldState<T extends Post>
                 child: child,
               ),
             ),
-            child: _build(),
+            child: ValueListenableBuilder(
+              valueListenable: controller.currentPage,
+              builder: (_, page, __) => _build(page),
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget _build() {
+  Widget _build(int currentPage) {
     final config = ref.watchConfig;
     final booruBuilder = ref.watchBooruBuilder(config);
     final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
 
+    Widget buildShareChild(BoxConstraints constraints) {
+      return Column(
+        children: [
+          if (widget.infoBuilder != null)
+            constraints.maxHeight > 450
+                ? widget.infoBuilder!(context, posts[currentPage])
+                : const SizedBox.shrink(),
+          widget.toolbar != null
+              ? widget.toolbar!
+              : SimplePostActionToolbar(post: posts[currentPage]),
+        ],
+      );
+    }
+
+    Widget buildBottomSheet(BoxConstraints constraints) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (posts[currentPage].isVideo)
+            ValueListenableBuilder(
+              valueListenable: videoProgress,
+              builder: (_, progress, __) => VideoSoundScope(
+                builder: (context, soundOn) => BooruVideoProgressBar(
+                  soundOn: soundOn,
+                  progress: progress,
+                  playbackSpeed:
+                      ref.watchPlaybackSpeed(posts[currentPage].videoUrl),
+                  onSeek: (position) => onVideoSeekTo(position, currentPage),
+                  onSpeedChanged: (speed) =>
+                      ref.setPlaybackSpeed(posts[currentPage].videoUrl, speed),
+                  onSoundToggle: (value) => ref.setGlobalVideoSound(value),
+                ),
+              ),
+            ),
+          Container(
+            color: context.colorScheme.surface,
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.paddingOf(context).bottom,
+            ),
+            child: buildShareChild(constraints),
+          ),
+        ],
+      );
+    }
+
     return LayoutBuilder(
       builder: (context, constraints) => DetailsPage(
-        sharedChildBuilder: (page) => Column(
-          children: [
-            if (widget.infoBuilder != null)
-              constraints.maxHeight > 450
-                  ? widget.infoBuilder!(context, posts[page])
-                  : const SizedBox.shrink(),
-            widget.toolbar != null
-                ? widget.toolbar!
-                : SimplePostActionToolbar(post: posts[page]),
-          ],
-        ),
         currentSettings: () => ref.read(settingsProvider),
         controller: controller,
         intitialIndex: widget.initialIndex,
@@ -258,61 +295,27 @@ class _PostDetailPageScaffoldState<T extends Post>
                   posts[page],
                 )
             : null,
-        bottomSheet: (page, sharedChild) {
-          final bottomSheet = Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (posts[page].isVideo)
-                ValueListenableBuilder(
-                  valueListenable: videoProgress,
-                  builder: (_, progress, __) => VideoSoundScope(
-                    builder: (context, soundOn) => BooruVideoProgressBar(
-                      soundOn: soundOn,
-                      progress: progress,
-                      playbackSpeed:
-                          ref.watchPlaybackSpeed(posts[page].videoUrl),
-                      onSeek: (position) => onVideoSeekTo(position, page),
-                      onSpeedChanged: (speed) =>
-                          ref.setPlaybackSpeed(posts[page].videoUrl, speed),
-                      onSoundToggle: (value) => ref.setGlobalVideoSound(value),
+        bottomSheet: widget.infoBuilder != null
+            ? DecoratedBox(
+                decoration: BoxDecoration(
+                  color: context.theme.scaffoldBackgroundColor.withOpacity(0.8),
+                  border: Border(
+                    top: BorderSide(
+                      color: context.theme.dividerColor,
+                      width: 0.2,
                     ),
                   ),
                 ),
-              if (sharedChild != null)
-                Container(
-                  color: context.colorScheme.surface,
-                  padding: EdgeInsets.only(
-                    bottom: MediaQuery.paddingOf(context).bottom,
-                  ),
-                  child: sharedChild,
-                ),
-            ],
-          );
-
-          return widget.infoBuilder != null
-              ? DecoratedBox(
-                  decoration: BoxDecoration(
-                    color:
-                        context.theme.scaffoldBackgroundColor.withOpacity(0.8),
-                    border: Border(
-                      top: BorderSide(
-                        color: context.theme.dividerColor,
-                        width: 0.2,
-                      ),
-                    ),
-                  ),
-                  child: bottomSheet,
-                )
-              : bottomSheet;
-        },
-        targetSwipeDownBuilder: (context, page) => SwipeTargetImage(
-          imageUrl: posts[page].isVideo
-              ? posts[page].videoThumbnailUrl
-              : widget.swipeImageUrlBuilder(posts[page]),
-          aspectRatio: posts[page].aspectRatio,
+                child: buildBottomSheet(constraints),
+              )
+            : buildBottomSheet(constraints),
+        targetSwipeDown: SwipeTargetImage(
+          imageUrl: posts[currentPage].isVideo
+              ? posts[currentPage].videoThumbnailUrl
+              : widget.swipeImageUrlBuilder(posts[currentPage]),
+          aspectRatio: posts[currentPage].aspectRatio,
         ),
-        expandedBuilder:
-            (context, page, currentPage, expanded, enableSwipe, sharedChild) {
+        expandedBuilder: (context, page, expanded, enableSwipe) {
           final post = posts[page];
           final nextPost = posts.length > page + 1 ? posts[page + 1] : null;
           final expandedOnCurrentPage = expanded && page == currentPage;
@@ -529,24 +532,23 @@ class _PostDetailPageScaffoldState<T extends Post>
           );
         },
         pageCount: widget.posts.length,
-        topRightButtonsBuilder: (page, expanded) =>
-            widget.topRightButtonsBuilder != null
-                ? widget.topRightButtonsBuilder!(
-                    page, expanded, posts[page], controller)
-                : [
-                    NoteActionButtonWithProvider(
-                      post: posts[page],
-                      expanded: expanded,
-                      noteState:
-                          ref.watch(notesControllerProvider(posts[page])),
-                    ),
-                    GeneralMoreActionButton(
-                      post: widget.posts[page],
-                      onStartSlideshow: () => controller.startSlideshow(),
-                    ),
-                  ],
-        onExpanded: (currentPage) =>
-            widget.onExpanded?.call(posts[currentPage]),
+        topRightButtonsBuilder: (expanded) => widget.topRightButtonsBuilder !=
+                null
+            ? widget.topRightButtonsBuilder!(
+                currentPage, expanded, posts[currentPage], controller)
+            : [
+                NoteActionButtonWithProvider(
+                  post: posts[currentPage],
+                  expanded: expanded,
+                  noteState:
+                      ref.watch(notesControllerProvider(posts[currentPage])),
+                ),
+                GeneralMoreActionButton(
+                  post: widget.posts[currentPage],
+                  onStartSlideshow: () => controller.startSlideshow(),
+                ),
+              ],
+        onExpanded: () => widget.onExpanded?.call(posts[currentPage]),
       ),
     );
   }
