@@ -34,8 +34,6 @@ class PostGrid<T extends Post> extends ConsumerStatefulWidget {
     this.onRefresh,
     this.sliverHeaders,
     this.scrollController,
-    this.contextMenuBuilder,
-    this.multiSelectActions,
     this.extendBody = false,
     this.extendBodyHeight,
     this.footer,
@@ -53,7 +51,6 @@ class PostGrid<T extends Post> extends ConsumerStatefulWidget {
   final void Function()? onRefresh;
   final List<Widget>? sliverHeaders;
   final AutoScrollController? scrollController;
-  final Widget Function(Post post, void Function() next)? contextMenuBuilder;
 
   final bool extendBody;
   final double? extendBodyHeight;
@@ -71,11 +68,6 @@ class PostGrid<T extends Post> extends ConsumerStatefulWidget {
   final MultiSelectController<T>? multiSelectController;
 
   final PostGridController<T> controller;
-
-  final Widget Function(
-    Iterable<Post> selectedPosts,
-    void Function() endMultiSelect,
-  )? multiSelectActions;
 
   @override
   ConsumerState<PostGrid<T>> createState() => _InfinitePostListState();
