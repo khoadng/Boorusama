@@ -8,9 +8,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'multi_select_controller.dart';
 
-typedef ScrollableWidgetBuilder<T> = Widget Function(
-    BuildContext context, List<T> items, IndexedWidgetBuilder itemBuilder);
-
 typedef FooterBuilder<T> = Widget Function(
   BuildContext context,
   List<T> selectedItems,
@@ -19,21 +16,17 @@ typedef FooterBuilder<T> = Widget Function(
 class MultiSelectWidget<T> extends StatefulWidget {
   const MultiSelectWidget({
     super.key,
-    required this.items,
-    required this.itemBuilder,
-    required this.scrollableWidgetBuilder,
     this.footer,
     this.header,
     this.multiSelectController,
     this.onMultiSelectChanged,
+    required this.child,
   });
-  final List<T> items;
-  final IndexedWidgetBuilder itemBuilder;
-  final ScrollableWidgetBuilder<T> scrollableWidgetBuilder;
   final Widget? footer;
   final Widget? header;
   final MultiSelectController<T>? multiSelectController;
   final void Function(bool multiSelect)? onMultiSelectChanged;
+  final Widget child;
 
   @override
   State<MultiSelectWidget<T>> createState() => _MultiSelectWidgetState<T>();
@@ -78,22 +71,7 @@ class _MultiSelectWidgetState<T> extends State<MultiSelectWidget<T>> {
             child: multiSelect && widget.header != null
                 ? widget.header!
                 : const SizedBox.shrink()),
-        body: widget.scrollableWidgetBuilder(
-          context,
-          widget.items,
-          (context, index) {
-            return multiSelect
-                ? SelectableItem(
-                    index: index,
-                    isSelected:
-                        _controller.selectedItems.contains(widget.items[index]),
-                    onTap: () =>
-                        _controller.toggleSelection(widget.items[index]),
-                    itemBuilder: widget.itemBuilder,
-                  )
-                : widget.itemBuilder(context, index);
-          },
-        ),
+        body: widget.child,
         bottomSheet: multiSelect && widget.footer != null
             ? Padding(
                 padding: EdgeInsets.only(

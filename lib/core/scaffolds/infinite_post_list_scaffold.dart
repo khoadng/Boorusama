@@ -139,139 +139,140 @@ class _InfinitePostListScaffoldState<T extends Post>
         multiSelectController: _multiSelectController,
         onLoadMore: widget.onLoadMore,
         onRefresh: widget.onRefresh,
-        itemBuilder: (context, items, index) {
-          final post = items[index];
-          final (width, height, cacheWidth, cacheHeight) =
-              context.sizeFromConstraints(
-            constraints,
-            post.aspectRatio,
-          );
+        bodyBuilder: (context, refreshing, data) {
+          return SliverPostGrid(
+            multiSelectController: _multiSelectController,
+            constraints: constraints,
+            itemBuilder: (context, index) {
+              final post = data[index];
+              final (width, height, cacheWidth, cacheHeight) =
+                  context.sizeFromConstraints(
+                constraints,
+                post.aspectRatio,
+              );
 
-          return ConditionalParentWidget(
-            condition: !canHandleLongPress,
-            conditionalBuilder: (child) => ValueListenableBuilder(
-              valueListenable: _multiSelectController.multiSelectNotifier,
-              builder: (_, multiSelect, __) => ContextMenuRegion(
-                isEnabled: !multiSelect,
-                contextMenu: widget.contextMenuBuilder != null
-                    ? widget.contextMenuBuilder!.call(
-                        post,
-                        () {
-                          _multiSelectController.enableMultiSelect();
-                        },
-                      )
-                    : GeneralPostContextMenu(
-                        hasAccount: false,
-                        onMultiSelect: () {
-                          _multiSelectController.enableMultiSelect();
-                        },
-                        post: post,
-                      ),
-                child: child,
-              ),
-            ),
-            child: ConditionalParentWidget(
-              condition: canHandleLongPress,
-              conditionalBuilder: (child) => GestureDetector(
-                onLongPress: () {
-                  if (postGesturesHandler != null) {
-                    postGesturesHandler(
-                      ref,
-                      ref.watchConfig.postGestures?.preview?.longPress,
-                      post,
-                    );
-                  }
-                },
-                child: child,
-              ),
-              child: ValueListenableBuilder(
-                valueListenable: _multiSelectController.multiSelectNotifier,
-                builder: (_, multiSelect, __) => ExplicitContentBlockOverlay(
-                  width: width ?? 100,
-                  height: height ?? 100,
-                  block: settings.blurExplicitMedia && post.isExplicit,
-                  childBuilder: (block) => ImageGridItem(
-                    isGif: post.isGif,
-                    isAI: post.isAI,
-                    hideOverlay: multiSelect,
-                    onTap: !multiSelect
-                        ? () {
-                            if (booruBuilder?.canHandlePostGesture(
-                                        GestureType.tap,
-                                        config.postGestures?.preview) ==
-                                    true &&
-                                postGesturesHandler != null) {
-                              postGesturesHandler(
-                                ref,
-                                ref.watchConfig.postGestures?.preview?.tap,
-                                post,
-                              );
-                            } else {
-                              goToPostDetailsPage(
-                                context: context,
-                                posts: items,
-                                initialIndex: index,
-                                scrollController: _autoScrollController,
-                              );
-                            }
-                          }
-                        : null,
-                    isFaved: ref.watch(favoriteProvider(post.id)),
-                    enableFav: !multiSelect && canFavorite && !block,
-                    quickActionButtonBuilder:
-                        defaultImagePreviewButtonBuilder(ref, post),
-                    onFavToggle: (isFaved) async {
-                      if (isFaved) {
-                        if (favoriteAdder == null) return;
-                        await favoriteAdder(post.id, ref);
-                      } else {
-                        if (favoriteRemover == null) return;
-                        await favoriteRemover(post.id, ref);
+              return ConditionalParentWidget(
+                condition: !canHandleLongPress,
+                conditionalBuilder: (child) => ValueListenableBuilder(
+                  valueListenable: _multiSelectController.multiSelectNotifier,
+                  builder: (_, multiSelect, __) => ContextMenuRegion(
+                    isEnabled: !multiSelect,
+                    contextMenu: widget.contextMenuBuilder != null
+                        ? widget.contextMenuBuilder!.call(
+                            post,
+                            () {
+                              _multiSelectController.enableMultiSelect();
+                            },
+                          )
+                        : GeneralPostContextMenu(
+                            hasAccount: false,
+                            onMultiSelect: () {
+                              _multiSelectController.enableMultiSelect();
+                            },
+                            post: post,
+                          ),
+                    child: child,
+                  ),
+                ),
+                child: ConditionalParentWidget(
+                  condition: canHandleLongPress,
+                  conditionalBuilder: (child) => GestureDetector(
+                    onLongPress: () {
+                      if (postGesturesHandler != null) {
+                        postGesturesHandler(
+                          ref,
+                          ref.watchConfig.postGestures?.preview?.longPress,
+                          post,
+                        );
                       }
                     },
-                    autoScrollOptions: AutoScrollOptions(
-                      controller: _autoScrollController,
-                      index: index,
-                    ),
-                    isAnimated: post.isAnimated,
-                    isTranslated: post.isTranslated,
-                    hasComments: post.hasComment,
-                    hasParentOrChildren: post.hasParentOrChildren,
-                    score: settings.showScoresInGrid ? post.score : null,
-                    borderRadius: BorderRadius.circular(
-                      settings.imageBorderRadius,
-                    ),
-                    image: BooruImage(
-                      aspectRatio: post.aspectRatio,
-                      imageUrl: block
-                          ? ''
-                          : gridThumbnailUrlBuilder != null
-                              ? gridThumbnailUrlBuilder(
-                                  settings.imageQuality,
-                                  post,
-                                )
-                              : post.thumbnailImageUrl,
-                      borderRadius: BorderRadius.circular(
-                        settings.imageBorderRadius,
+                    child: child,
+                  ),
+                  child: ValueListenableBuilder(
+                    valueListenable: _multiSelectController.multiSelectNotifier,
+                    builder: (_, multiSelect, __) =>
+                        ExplicitContentBlockOverlay(
+                      width: width ?? 100,
+                      height: height ?? 100,
+                      block: settings.blurExplicitMedia && post.isExplicit,
+                      childBuilder: (block) => ImageGridItem(
+                        isGif: post.isGif,
+                        isAI: post.isAI,
+                        hideOverlay: multiSelect,
+                        onTap: !multiSelect
+                            ? () {
+                                if (booruBuilder?.canHandlePostGesture(
+                                            GestureType.tap,
+                                            config.postGestures?.preview) ==
+                                        true &&
+                                    postGesturesHandler != null) {
+                                  postGesturesHandler(
+                                    ref,
+                                    ref.watchConfig.postGestures?.preview?.tap,
+                                    post,
+                                  );
+                                } else {
+                                  goToPostDetailsPage(
+                                    context: context,
+                                    posts: data,
+                                    initialIndex: index,
+                                    scrollController: _autoScrollController,
+                                  );
+                                }
+                              }
+                            : null,
+                        isFaved: ref.watch(favoriteProvider(post.id)),
+                        enableFav: !multiSelect && canFavorite && !block,
+                        quickActionButtonBuilder:
+                            defaultImagePreviewButtonBuilder(ref, post),
+                        onFavToggle: (isFaved) async {
+                          if (isFaved) {
+                            if (favoriteAdder == null) return;
+                            await favoriteAdder(post.id, ref);
+                          } else {
+                            if (favoriteRemover == null) return;
+                            await favoriteRemover(post.id, ref);
+                          }
+                        },
+                        autoScrollOptions: AutoScrollOptions(
+                          controller: _autoScrollController,
+                          index: index,
+                        ),
+                        isAnimated: post.isAnimated,
+                        isTranslated: post.isTranslated,
+                        hasComments: post.hasComment,
+                        hasParentOrChildren: post.hasParentOrChildren,
+                        score: settings.showScoresInGrid ? post.score : null,
+                        borderRadius: BorderRadius.circular(
+                          settings.imageBorderRadius,
+                        ),
+                        image: BooruImage(
+                          aspectRatio: post.aspectRatio,
+                          imageUrl: block
+                              ? ''
+                              : gridThumbnailUrlBuilder != null
+                                  ? gridThumbnailUrlBuilder(
+                                      settings.imageQuality,
+                                      post,
+                                    )
+                                  : post.thumbnailImageUrl,
+                          borderRadius: BorderRadius.circular(
+                            settings.imageBorderRadius,
+                          ),
+                          forceFill:
+                              settings.imageListType == ImageListType.standard,
+                          placeholderUrl: post.thumbnailImageUrl,
+                          width: width,
+                          height: height,
+                          cacheHeight: cacheHeight,
+                          cacheWidth: cacheWidth,
+                        ),
                       ),
-                      forceFill:
-                          settings.imageListType == ImageListType.standard,
-                      placeholderUrl: post.thumbnailImageUrl,
-                      width: width,
-                      height: height,
-                      cacheHeight: cacheHeight,
-                      cacheWidth: cacheWidth,
                     ),
                   ),
                 ),
-              ),
-            ),
-          );
-        },
-        bodyBuilder: (context, itemBuilder, refreshing, data) {
-          return SliverPostGrid(
-            constraints: constraints,
-            itemBuilder: itemBuilder,
+              );
+            },
             refreshing: refreshing,
             error: widget.errors,
             data: data,
