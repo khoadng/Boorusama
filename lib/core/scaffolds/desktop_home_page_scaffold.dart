@@ -123,7 +123,7 @@ class _DesktopHomePageScaffoldState<T extends Post>
     return InfinitePostListScaffold(
       controller: controller,
       errors: errors,
-      sliverHeaderBuilder: (context) => children,
+      sliverHeaders: children,
     );
   }
 

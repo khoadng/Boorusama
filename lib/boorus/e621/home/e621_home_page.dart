@@ -133,7 +133,7 @@ class E621MobileHomeView extends ConsumerWidget {
       builder: (context, postController, errors) => InfinitePostListScaffold(
         errors: errors,
         controller: postController,
-        sliverHeaderBuilder: (context) => [
+        sliverHeaders: [
           SliverAppBar(
             backgroundColor: context.theme.scaffoldBackgroundColor,
             toolbarHeight: kToolbarHeight * 1.2,

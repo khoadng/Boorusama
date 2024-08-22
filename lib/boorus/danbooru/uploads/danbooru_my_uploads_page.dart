@@ -354,7 +354,6 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
           );
         },
         error: errors,
-        onRetry: () => controller.refresh(),
       ),
     );
   }

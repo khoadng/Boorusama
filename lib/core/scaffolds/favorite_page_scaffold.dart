@@ -32,7 +32,7 @@ class FavoritesPageScaffold<T extends Post> extends ConsumerWidget {
         builder: (context, controller, errors) => InfinitePostListScaffold(
           errors: errors,
           controller: controller,
-          sliverHeaderBuilder: (context) => [
+          sliverHeaders: [
             SliverAppBar(
               title: const Text('profile.favorites').tr(),
               floating: true,

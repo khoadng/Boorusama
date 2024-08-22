@@ -248,7 +248,7 @@ class _SearchPageScaffoldState<T extends Post>
     return InfinitePostListScaffold(
       errors: errors,
       controller: controller,
-      sliverHeaderBuilder: (context) => [
+      sliverHeaders: [
         SliverSearchAppBar(
           search: () {
             searchController.search();

@@ -56,7 +56,7 @@ class _E621ArtistPageState extends ConsumerState<E621ArtistPage> {
         gridBuilder: (context, slivers) => InfinitePostListScaffold(
           errors: errors,
           controller: controller,
-          sliverHeaderBuilder: (context) => slivers,
+          sliverHeaders: slivers,
         ),
       ),
     );

@@ -25,7 +25,7 @@ class InfinitePostListScaffold<T extends Post> extends ConsumerStatefulWidget {
     super.key,
     this.onLoadMore,
     this.onRefresh,
-    this.sliverHeaderBuilder,
+    this.sliverHeaders,
     this.scrollController,
     this.contextMenuBuilder,
     this.multiSelectActions,
@@ -39,7 +39,7 @@ class InfinitePostListScaffold<T extends Post> extends ConsumerStatefulWidget {
 
   final VoidCallback? onLoadMore;
   final void Function()? onRefresh;
-  final List<Widget> Function(BuildContext context)? sliverHeaderBuilder;
+  final List<Widget>? sliverHeaders;
   final AutoScrollController? scrollController;
   final Widget Function(T post, void Function() next)? contextMenuBuilder;
 
@@ -106,7 +106,7 @@ class _InfinitePostListScaffoldState<T extends Post>
         scrollController: _autoScrollController,
         safeArea: widget.safeArea,
         sliverHeaders: [
-          ...widget.sliverHeaderBuilder?.call(context) ?? [],
+          ...widget.sliverHeaders ?? [],
           if (settings.imageListType == ImageListType.masonry &&
               config.booruType == BooruType.gelbooruV1)
             SliverToBoxAdapter(
@@ -272,7 +272,6 @@ class _InfinitePostListScaffoldState<T extends Post>
             );
           },
           error: widget.errors,
-          onRetry: () => widget.controller.refresh(),
         ),
       ),
     );

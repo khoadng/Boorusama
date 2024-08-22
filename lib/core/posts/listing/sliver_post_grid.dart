@@ -32,7 +32,6 @@ class SliverPostGrid<T extends Post> extends ConsumerWidget {
     required this.constraints,
     required this.itemBuilder,
     required this.error,
-    required this.onRetry,
     required this.multiSelectController,
     required this.postController,
   });
@@ -40,7 +39,6 @@ class SliverPostGrid<T extends Post> extends ConsumerWidget {
   final BoxConstraints? constraints;
   final PostWidgetBuilder<T> itemBuilder;
   final BooruError? error;
-  final VoidCallback? onRetry;
   final MultiSelectController<T>? multiSelectController;
   final PostGridController<T> postController;
 
@@ -62,7 +60,7 @@ class SliverPostGrid<T extends Post> extends ConsumerWidget {
               child: switch (error!) {
                 AppError _ => ErrorBox(
                     errorMessage: message.tr(),
-                    onRetry: onRetry,
+                    onRetry: _onErrorRetry,
                   ),
                 final ServerError e => Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -94,7 +92,7 @@ class SliverPostGrid<T extends Post> extends ConsumerWidget {
                         const SizedBox(height: 16),
                         if (e.isServerError)
                           FilledButton(
-                            onPressed: onRetry,
+                            onPressed: _onErrorRetry,
                             child: const Text('Retry'),
                           ),
                       ],
@@ -120,6 +118,8 @@ class SliverPostGrid<T extends Post> extends ConsumerWidget {
       ),
     );
   }
+
+  void _onErrorRetry() => postController.refresh();
 
   Widget _buildGrid(WidgetRef ref, BuildContext context) {
     final imageListType = ref.watch(
