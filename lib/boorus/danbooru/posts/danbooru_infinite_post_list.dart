@@ -67,23 +67,21 @@ class _DanbooruInfinitePostListState
     extends ConsumerState<DanbooruInfinitePostList> {
   late final AutoScrollController _autoScrollController;
   final _multiSelectController = MultiSelectController<DanbooruPost>();
-  var multiSelect = false;
 
   @override
   void initState() {
     super.initState();
     _autoScrollController = widget.scrollController ?? AutoScrollController();
-    _multiSelectController.addListener(() {
-      setState(() {
-        multiSelect = _multiSelectController.multiSelectEnabled;
-      });
-    });
   }
 
   @override
   void dispose() {
     super.dispose();
     _multiSelectController.dispose();
+
+    if (widget.scrollController == null) {
+      _autoScrollController.dispose();
+    }
   }
 
   @override
@@ -130,16 +128,19 @@ class _DanbooruInfinitePostListState
 
           return ConditionalParentWidget(
             condition: !canHandleLongPress,
-            conditionalBuilder: (child) => ContextMenuRegion(
-              isEnabled: !post.isBanned && !multiSelect,
-              contextMenu: DanbooruPostContextMenu(
-                hasAccount: booruConfig.hasLoginDetails(),
-                onMultiSelect: () {
-                  _multiSelectController.enableMultiSelect();
-                },
-                post: post,
+            conditionalBuilder: (child) => ValueListenableBuilder(
+              valueListenable: _multiSelectController.multiSelectNotifier,
+              builder: (_, multiSelect, __) => ContextMenuRegion(
+                isEnabled: !post.isBanned && !multiSelect,
+                contextMenu: DanbooruPostContextMenu(
+                  hasAccount: booruConfig.hasLoginDetails(),
+                  onMultiSelect: () {
+                    _multiSelectController.enableMultiSelect();
+                  },
+                  post: post,
+                ),
+                child: child,
               ),
-              child: child,
             ),
             child: ConditionalParentWidget(
               condition: canHandleLongPress,
@@ -155,57 +156,62 @@ class _DanbooruInfinitePostListState
                 },
                 child: child,
               ),
-              child: ExplicitContentBlockOverlay(
-                block: settings.blurExplicitMedia && post.isExplicit,
-                width: width ?? 100,
-                height: height ?? 100,
-                childBuilder: (block) => DanbooruImageGridItem(
-                  ignoreBanOverlay: block,
-                  post: post,
-                  hideOverlay: multiSelect,
-                  autoScrollOptions: AutoScrollOptions(
-                    controller: _autoScrollController,
-                    index: index,
-                  ),
-                  onTap: !multiSelect
-                      ? () {
-                          if (booruBuilder?.canHandlePostGesture(
-                                      GestureType.tap,
-                                      booruConfig.postGestures?.preview) ==
-                                  true &&
-                              postGesturesHandler != null) {
-                            postGesturesHandler(
-                              ref,
-                              ref.watchConfig.postGestures?.preview?.tap,
-                              post,
-                            );
-                          } else {
-                            goToPostDetailsPage(
-                              context: context,
-                              posts: items,
-                              initialIndex: index,
-                              scrollController: _autoScrollController,
-                            );
-                          }
-                        }
-                      : null,
-                  enableFav:
-                      !multiSelect && booruConfig.hasLoginDetails() && !block,
-                  image: BooruImage(
-                    aspectRatio: post.isBanned ? 0.8 : post.aspectRatio,
-                    imageUrl: block
-                        ? ''
-                        : post.thumbnailFromImageQuality(settings.imageQuality),
-                    borderRadius: BorderRadius.circular(
-                      settings.imageBorderRadius,
+              child: ValueListenableBuilder(
+                valueListenable: _multiSelectController.multiSelectNotifier,
+                builder: (_, multiSelect, __) => ExplicitContentBlockOverlay(
+                  block: settings.blurExplicitMedia && post.isExplicit,
+                  width: width ?? 100,
+                  height: height ?? 100,
+                  childBuilder: (block) => DanbooruImageGridItem(
+                    ignoreBanOverlay: block,
+                    post: post,
+                    hideOverlay: multiSelect,
+                    autoScrollOptions: AutoScrollOptions(
+                      controller: _autoScrollController,
+                      index: index,
                     ),
-                    forceFill: settings.imageListType == ImageListType.standard,
-                    placeholderUrl: post.thumbnailImageUrl,
-                    width: width,
-                    height: height,
-                    cacheHeight: cacheHeight,
-                    cacheWidth: cacheWidth,
-                    // null, // Will cause error sometimes, disabled for now
+                    onTap: !multiSelect
+                        ? () {
+                            if (booruBuilder?.canHandlePostGesture(
+                                        GestureType.tap,
+                                        booruConfig.postGestures?.preview) ==
+                                    true &&
+                                postGesturesHandler != null) {
+                              postGesturesHandler(
+                                ref,
+                                ref.watchConfig.postGestures?.preview?.tap,
+                                post,
+                              );
+                            } else {
+                              goToPostDetailsPage(
+                                context: context,
+                                posts: items,
+                                initialIndex: index,
+                                scrollController: _autoScrollController,
+                              );
+                            }
+                          }
+                        : null,
+                    enableFav:
+                        !multiSelect && booruConfig.hasLoginDetails() && !block,
+                    image: BooruImage(
+                      aspectRatio: post.isBanned ? 0.8 : post.aspectRatio,
+                      imageUrl: block
+                          ? ''
+                          : post
+                              .thumbnailFromImageQuality(settings.imageQuality),
+                      borderRadius: BorderRadius.circular(
+                        settings.imageBorderRadius,
+                      ),
+                      forceFill:
+                          settings.imageListType == ImageListType.standard,
+                      placeholderUrl: post.thumbnailImageUrl,
+                      width: width,
+                      height: height,
+                      cacheHeight: cacheHeight,
+                      cacheWidth: cacheWidth,
+                      // null, // Will cause error sometimes, disabled for now
+                    ),
                   ),
                 ),
               ),

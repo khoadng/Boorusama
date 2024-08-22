@@ -66,23 +66,21 @@ class _InfinitePostListScaffoldState<T extends Post>
     extends ConsumerState<InfinitePostListScaffold<T>> {
   late final AutoScrollController _autoScrollController;
   final _multiSelectController = MultiSelectController<T>();
-  var multiSelect = false;
 
   @override
   void initState() {
     super.initState();
     _autoScrollController = widget.scrollController ?? AutoScrollController();
-    _multiSelectController.addListener(() {
-      setState(() {
-        multiSelect = _multiSelectController.multiSelectEnabled;
-      });
-    });
   }
 
   @override
   void dispose() {
     super.dispose();
     _multiSelectController.dispose();
+
+    if (widget.scrollController == null) {
+      _autoScrollController.dispose();
+    }
   }
 
   @override
@@ -151,23 +149,26 @@ class _InfinitePostListScaffoldState<T extends Post>
 
           return ConditionalParentWidget(
             condition: !canHandleLongPress,
-            conditionalBuilder: (child) => ContextMenuRegion(
-              isEnabled: !multiSelect,
-              contextMenu: widget.contextMenuBuilder != null
-                  ? widget.contextMenuBuilder!.call(
-                      post,
-                      () {
-                        _multiSelectController.enableMultiSelect();
-                      },
-                    )
-                  : GeneralPostContextMenu(
-                      hasAccount: false,
-                      onMultiSelect: () {
-                        _multiSelectController.enableMultiSelect();
-                      },
-                      post: post,
-                    ),
-              child: child,
+            conditionalBuilder: (child) => ValueListenableBuilder(
+              valueListenable: _multiSelectController.multiSelectNotifier,
+              builder: (_, multiSelect, __) => ContextMenuRegion(
+                isEnabled: !multiSelect,
+                contextMenu: widget.contextMenuBuilder != null
+                    ? widget.contextMenuBuilder!.call(
+                        post,
+                        () {
+                          _multiSelectController.enableMultiSelect();
+                        },
+                      )
+                    : GeneralPostContextMenu(
+                        hasAccount: false,
+                        onMultiSelect: () {
+                          _multiSelectController.enableMultiSelect();
+                        },
+                        post: post,
+                      ),
+                child: child,
+              ),
             ),
             child: ConditionalParentWidget(
               condition: canHandleLongPress,
@@ -183,80 +184,84 @@ class _InfinitePostListScaffoldState<T extends Post>
                 },
                 child: child,
               ),
-              child: ExplicitContentBlockOverlay(
-                width: width ?? 100,
-                height: height ?? 100,
-                block: settings.blurExplicitMedia && post.isExplicit,
-                childBuilder: (block) => ImageGridItem(
-                  isGif: post.isGif,
-                  isAI: post.isAI,
-                  hideOverlay: multiSelect,
-                  onTap: !multiSelect
-                      ? () {
-                          if (booruBuilder?.canHandlePostGesture(
-                                      GestureType.tap,
-                                      config.postGestures?.preview) ==
-                                  true &&
-                              postGesturesHandler != null) {
-                            postGesturesHandler(
-                              ref,
-                              ref.watchConfig.postGestures?.preview?.tap,
-                              post,
-                            );
-                          } else {
-                            goToPostDetailsPage(
-                              context: context,
-                              posts: items,
-                              initialIndex: index,
-                              scrollController: _autoScrollController,
-                            );
-                          }
-                        }
-                      : null,
-                  isFaved: ref.watch(favoriteProvider(post.id)),
-                  enableFav: !multiSelect && canFavorite && !block,
-                  quickActionButtonBuilder:
-                      defaultImagePreviewButtonBuilder(ref, post),
-                  onFavToggle: (isFaved) async {
-                    if (isFaved) {
-                      if (favoriteAdder == null) return;
-                      await favoriteAdder(post.id, ref);
-                    } else {
-                      if (favoriteRemover == null) return;
-                      await favoriteRemover(post.id, ref);
-                    }
-                  },
-                  autoScrollOptions: AutoScrollOptions(
-                    controller: _autoScrollController,
-                    index: index,
-                  ),
-                  isAnimated: post.isAnimated,
-                  isTranslated: post.isTranslated,
-                  hasComments: post.hasComment,
-                  hasParentOrChildren: post.hasParentOrChildren,
-                  score: settings.showScoresInGrid ? post.score : null,
-                  borderRadius: BorderRadius.circular(
-                    settings.imageBorderRadius,
-                  ),
-                  image: BooruImage(
-                    aspectRatio: post.aspectRatio,
-                    imageUrl: block
-                        ? ''
-                        : gridThumbnailUrlBuilder != null
-                            ? gridThumbnailUrlBuilder(
-                                settings.imageQuality,
+              child: ValueListenableBuilder(
+                valueListenable: _multiSelectController.multiSelectNotifier,
+                builder: (_, multiSelect, __) => ExplicitContentBlockOverlay(
+                  width: width ?? 100,
+                  height: height ?? 100,
+                  block: settings.blurExplicitMedia && post.isExplicit,
+                  childBuilder: (block) => ImageGridItem(
+                    isGif: post.isGif,
+                    isAI: post.isAI,
+                    hideOverlay: multiSelect,
+                    onTap: !multiSelect
+                        ? () {
+                            if (booruBuilder?.canHandlePostGesture(
+                                        GestureType.tap,
+                                        config.postGestures?.preview) ==
+                                    true &&
+                                postGesturesHandler != null) {
+                              postGesturesHandler(
+                                ref,
+                                ref.watchConfig.postGestures?.preview?.tap,
                                 post,
-                              )
-                            : post.thumbnailImageUrl,
+                              );
+                            } else {
+                              goToPostDetailsPage(
+                                context: context,
+                                posts: items,
+                                initialIndex: index,
+                                scrollController: _autoScrollController,
+                              );
+                            }
+                          }
+                        : null,
+                    isFaved: ref.watch(favoriteProvider(post.id)),
+                    enableFav: !multiSelect && canFavorite && !block,
+                    quickActionButtonBuilder:
+                        defaultImagePreviewButtonBuilder(ref, post),
+                    onFavToggle: (isFaved) async {
+                      if (isFaved) {
+                        if (favoriteAdder == null) return;
+                        await favoriteAdder(post.id, ref);
+                      } else {
+                        if (favoriteRemover == null) return;
+                        await favoriteRemover(post.id, ref);
+                      }
+                    },
+                    autoScrollOptions: AutoScrollOptions(
+                      controller: _autoScrollController,
+                      index: index,
+                    ),
+                    isAnimated: post.isAnimated,
+                    isTranslated: post.isTranslated,
+                    hasComments: post.hasComment,
+                    hasParentOrChildren: post.hasParentOrChildren,
+                    score: settings.showScoresInGrid ? post.score : null,
                     borderRadius: BorderRadius.circular(
                       settings.imageBorderRadius,
                     ),
-                    forceFill: settings.imageListType == ImageListType.standard,
-                    placeholderUrl: post.thumbnailImageUrl,
-                    width: width,
-                    height: height,
-                    cacheHeight: cacheHeight,
-                    cacheWidth: cacheWidth,
+                    image: BooruImage(
+                      aspectRatio: post.aspectRatio,
+                      imageUrl: block
+                          ? ''
+                          : gridThumbnailUrlBuilder != null
+                              ? gridThumbnailUrlBuilder(
+                                  settings.imageQuality,
+                                  post,
+                                )
+                              : post.thumbnailImageUrl,
+                      borderRadius: BorderRadius.circular(
+                        settings.imageBorderRadius,
+                      ),
+                      forceFill:
+                          settings.imageListType == ImageListType.standard,
+                      placeholderUrl: post.thumbnailImageUrl,
+                      width: width,
+                      height: height,
+                      cacheHeight: cacheHeight,
+                      cacheWidth: cacheWidth,
+                    ),
                   ),
                 ),
               ),
