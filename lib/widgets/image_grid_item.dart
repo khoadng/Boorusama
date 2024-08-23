@@ -208,11 +208,10 @@ class ImageGridItem extends StatelessWidget {
     return Stack(
       children: [
         image,
-        if (!hideOverlay)
-          Padding(
-            padding: const EdgeInsets.only(top: 1, left: 1),
-            child: _buildOverlayIcon(context),
-          ),
+        Padding(
+          padding: const EdgeInsets.only(top: 1, left: 1),
+          child: _buildOverlayIcon(context),
+        ),
         Positioned.fill(
           child: Material(
             color: Colors.transparent,
