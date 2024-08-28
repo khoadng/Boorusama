@@ -22,7 +22,6 @@ import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/widgets.dart';
 
 class EntryPage extends ConsumerStatefulWidget {
   const EntryPage({
@@ -97,37 +96,33 @@ class _EntryPageState extends ConsumerState<EntryPage> {
       },
     );
 
-    return PerformanceOrientationBuilder(
-      builder: (context, orientation) => ConditionalParentWidget(
-        condition: kPreferredLayout.isDesktop ||
-            (kPreferredLayout.isMobile && orientation.isLandscape),
-        conditionalBuilder: (child) => Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ConditionalParentWidget(
-              condition: orientation.isLandscape,
-              conditionalBuilder: (child) => SafeArea(
-                right: false,
-                child: child,
-              ),
-              child: const BooruSelector(),
+    bool isDesktop(BuildContext context) =>
+        kPreferredLayout.isDesktop ||
+        (kPreferredLayout.isMobile &&
+            MediaQuery.orientationOf(context).isLandscape);
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (isDesktop(context)) ...[
+          const SafeArea(
+            right: false,
+            child: BooruSelector(),
+          ),
+          const SafeArea(
+            bottom: false,
+            left: false,
+            right: false,
+            child: VerticalDivider(
+              thickness: 1,
+              width: 1,
             ),
-            const SafeArea(
-              bottom: false,
-              left: false,
-              right: false,
-              child: VerticalDivider(
-                thickness: 1,
-                width: 1,
-              ),
-            ),
-            Expanded(
-              child: child,
-            )
-          ],
+          ),
+        ],
+        const Expanded(
+          child: _Boorus(),
         ),
-        child: const _Boorus(),
-      ),
+      ],
     );
   }
 }
