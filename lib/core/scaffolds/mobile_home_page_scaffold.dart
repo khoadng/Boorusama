@@ -10,9 +10,10 @@ import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/infinite_post_list_scaffold.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/functional.dart';
 
-class MobileHomePageScaffold extends ConsumerWidget {
+class MobileHomePageScaffold extends ConsumerStatefulWidget {
   const MobileHomePageScaffold({
     super.key,
     required this.controller,
@@ -23,7 +24,21 @@ class MobileHomePageScaffold extends ConsumerWidget {
   final void Function() onSearchTap;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<MobileHomePageScaffold> createState() =>
+      _MobileHomePageScaffoldState();
+}
+
+class _MobileHomePageScaffoldState
+    extends ConsumerState<MobileHomePageScaffold> {
+  final selectedTagString = ValueNotifier('');
+
+  bool get isDesktop =>
+      kPreferredLayout.isDesktop ||
+      (kPreferredLayout.isMobile &&
+          MediaQuery.orientationOf(context).isLandscape);
+
+  @override
+  Widget build(BuildContext context) {
     final booruBuilder = ref.watch(booruBuilderProvider);
     final fetcher = booruBuilder?.postFetcher;
 
@@ -35,12 +50,18 @@ class MobileHomePageScaffold extends ConsumerWidget {
         controller: postController,
         sliverHeaders: [
           SliverHomeSearchBar(
-            controller: controller,
+            controller: widget.controller,
+            selectedTagString: selectedTagString,
             onSearch: () {
               postController.refresh();
             },
           ),
           const SliverAppAnnouncementBanner(),
+          if (isDesktop)
+            SliverResultHeader(
+              selectedTagString: selectedTagString,
+              controller: postController,
+            ),
         ],
       ),
     );

@@ -77,6 +77,11 @@ class _LatestViewState extends ConsumerState<LatestView> {
           ),
           const SliverAppAnnouncementBanner(),
           const SliverUnreadMailsBanner(),
+          if (isDesktop)
+            SliverResultHeader(
+              selectedTagString: selectedTagString,
+              controller: controller,
+            ),
           if (!isDesktop)
             SliverToBoxAdapter(
               child: ValueListenableBuilder<String>(

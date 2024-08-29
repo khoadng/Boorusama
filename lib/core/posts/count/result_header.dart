@@ -77,3 +77,34 @@ class ResultHeader extends StatelessWidget {
     );
   }
 }
+
+class SliverResultHeader extends StatelessWidget {
+  const SliverResultHeader({
+    super.key,
+    required this.selectedTagString,
+    required this.controller,
+  });
+
+  final ValueNotifier<String> selectedTagString;
+  final PostGridController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverToBoxAdapter(
+      child: Row(
+        children: [
+          ValueListenableBuilder(
+            valueListenable: selectedTagString,
+            builder: (context, value, _) => ResultHeaderWithProvider(
+              selectedTags: value.split(' '),
+              onRefresh: (maintainPage) => controller.refresh(
+                maintainPage: maintainPage,
+              ),
+            ),
+          ),
+          const Spacer(),
+        ],
+      ),
+    );
+  }
+}
