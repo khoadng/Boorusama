@@ -108,6 +108,7 @@ class E621Builder
         LegacyGranularRatingOptionsBuilderMixin,
         LegacyGranularRatingQueryBuilderMixin,
         UnknownMetatagsMixin,
+        DefaultHomeMixin,
         DefaultThumbnailUrlMixin,
         DefaultPostGesturesHandlerMixin,
         DefaultPostStatisticsPageBuilderMixin,
@@ -258,10 +259,4 @@ class E621Builder
       'source': (post, config) => config.downloadUrl,
     },
   );
-
-  @override
-  HomeViewBuilder get homeViewBuilder =>
-      (context, config, controller) => E621MobileHomeView(
-            controller: controller,
-          );
 }

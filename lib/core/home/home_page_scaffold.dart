@@ -4,39 +4,21 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/home/home.dart';
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/settings/settings.dart';
-import '../scaffolds/desktop_home_page_scaffold.dart';
 
 class HomePageScaffold extends ConsumerStatefulWidget {
   const HomePageScaffold({
     super.key,
-    required this.onPostTap,
-    required this.onSearchTap,
     this.mobileMenuBuilder,
     this.desktopMenuBuilder,
     this.desktopViews,
   });
 
-  final void Function(
-    BuildContext context,
-    Iterable<Post> posts,
-    Post post,
-    AutoScrollController scrollController,
-    Settings settings,
-    int initialIndex,
-  ) onPostTap;
-  final void Function() onSearchTap;
-
-  final List<Widget> Function(
-    BuildContext context,
-    HomePageController controller,
-  )? mobileMenuBuilder;
+  final List<Widget>? mobileMenuBuilder;
 
   final List<Widget> Function(
     BuildContext context,
@@ -44,55 +26,66 @@ class HomePageScaffold extends ConsumerStatefulWidget {
     BoxConstraints constraints,
   )? desktopMenuBuilder;
 
-  final List<Widget> Function()? desktopViews;
+  final List<Widget>? desktopViews;
 
   @override
   ConsumerState<HomePageScaffold> createState() => _HomePageScaffoldState();
 }
 
 class _HomePageScaffoldState extends ConsumerState<HomePageScaffold> {
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+  late final controller = HomePageController(scaffoldKey: scaffoldKey);
+
+  @override
+  void dispose() {
+    super.dispose();
+    controller.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final config = ref.watchConfig;
+    final customHome = ref.watchBooruBuilder(ref.watchConfig)?.homeViewBuilder;
+
+    final views = [
+      if (customHome != null)
+        customHome(context, config, controller)
+      else
+        const Scaffold(
+          body: Center(child: Text('No home view builder found')),
+        ),
+      if (widget.desktopViews != null) ...widget.desktopViews!,
+    ];
 
     return BooruScope(
+      controller: controller,
       config: config,
-      mobileMenuBuilder: (context, controller) =>
-          widget.mobileMenuBuilder != null
-              ? widget.mobileMenuBuilder!(context, controller)
-              : [],
-      desktopMenuBuilder: (context, controller, constraints) =>
-          widget.desktopMenuBuilder != null
-              ? widget.desktopMenuBuilder!(context, controller, constraints)
-              : [
-                  HomeNavigationTile(
-                    value: 0,
-                    controller: controller,
-                    constraints: constraints,
-                    selectedIcon: Symbols.dashboard,
-                    icon: Symbols.dashboard,
-                    title: 'Home',
-                  ),
-                  ...coreDesktopTabBuilder(
-                    context,
-                    constraints,
-                    controller,
-                  ),
-                ],
-      desktopViews: widget.desktopViews != null
-          ? widget.desktopViews!
-          : () {
-              final tabs = [
-                const DefaultDesktopHomePage(),
-              ];
-
-              return [
-                ...tabs,
-                ...coreDesktopViewBuilder(
-                  previousItemCount: tabs.length,
-                ),
-              ];
-            },
+      mobileMenuBuilder: [
+        if (widget.mobileMenuBuilder != null) ...widget.mobileMenuBuilder!,
+      ],
+      desktopMenuBuilder: (context, controller, constraints) => [
+        HomeNavigationTile(
+          value: 0,
+          controller: controller,
+          constraints: constraints,
+          selectedIcon: Symbols.dashboard,
+          icon: Symbols.dashboard,
+          title: 'Home',
+        ),
+        if (widget.desktopMenuBuilder != null)
+          ...widget.desktopMenuBuilder!(context, controller, constraints),
+        ...coreDesktopTabBuilder(
+          context,
+          constraints,
+          controller,
+        ),
+      ],
+      desktopViews: [
+        ...views,
+        ...coreDesktopViewBuilder(
+          previousItemCount: views.length,
+        ),
+      ],
     );
   }
 }

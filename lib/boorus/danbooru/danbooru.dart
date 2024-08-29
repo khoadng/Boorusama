@@ -10,7 +10,6 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
@@ -347,10 +346,7 @@ class DanbooruBuilder
   @override
   HomeViewBuilder get homeViewBuilder => (context, config, controller) {
         return LatestView(
-          searchBar: HomeSearchBar(
-            onMenuTap: controller.openMenu,
-            onTap: () => goToSearchPage(context),
-          ),
+          controller: controller,
         );
       };
 

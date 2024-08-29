@@ -146,6 +146,7 @@ Note gelbooruNoteToNote(NoteDto note) {
 class GelbooruBuilder
     with
         UnknownMetatagsMixin,
+        DefaultHomeMixin,
         DefaultThumbnailUrlMixin,
         DefaultThumbnailUrlMixin,
         DefaultPostImageDetailsUrlMixin,
@@ -328,12 +329,6 @@ class GelbooruBuilder
       'source': (post, config) => config.downloadUrl,
     },
   );
-
-  @override
-  HomeViewBuilder get homeViewBuilder =>
-      (context, config, controller) => GelbooruMobileHomePage(
-            controller: controller,
-          );
 
   @override
   FavoriteAdder? get favoriteAdder => client().canFavorite

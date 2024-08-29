@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/blacklists/blacklists.dart';
 import 'package:boorusama/core/bookmarks/bookmarks.dart';
@@ -16,12 +15,9 @@ import 'package:boorusama/core/downloads/download_manager_page.dart';
 import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
 import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/widgets.dart';
 import 'booru_desktop_scope.dart';
-import 'booru_mobile_scope.dart';
 
 const String kMenuWidthCacheKey = 'menu_width';
 
@@ -32,6 +28,7 @@ class BooruScope extends ConsumerStatefulWidget {
     required this.mobileMenuBuilder,
     required this.desktopMenuBuilder,
     required this.desktopViews,
+    this.controller,
   });
 
   final BooruConfig config;
@@ -42,12 +39,11 @@ class BooruScope extends ConsumerStatefulWidget {
     BoxConstraints constraints,
   ) desktopMenuBuilder;
 
-  final List<Widget> Function(
-    BuildContext context,
-    HomePageController controller,
-  ) mobileMenuBuilder;
+  final List<Widget> mobileMenuBuilder;
 
-  final List<Widget> Function() desktopViews;
+  final List<Widget> desktopViews;
+
+  final HomePageController? controller;
 
   @override
   ConsumerState<BooruScope> createState() => _BooruScopeState();
@@ -55,71 +51,37 @@ class BooruScope extends ConsumerStatefulWidget {
 
 class _BooruScopeState extends ConsumerState<BooruScope> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
-  late final controller = HomePageController(scaffoldKey: scaffoldKey);
+  late final controller =
+      widget.controller ?? HomePageController(scaffoldKey: scaffoldKey);
 
   @override
   void dispose() {
-    controller.dispose();
+    if (widget.controller == null) {
+      controller.dispose();
+    }
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final menuWidth = ref.watch(miscDataProvider(kMenuWidthCacheKey));
+
     return HomePageSidebarKeyboardListener(
       controller: controller,
       child: CustomContextMenuOverlay(
-        child: kPreferredLayout.isMobile
-            ? PerformanceOrientationBuilder(
-                builder: (context, orientation) => orientation.isPortrait
-                    ? _buildMobile()
-                    : _buildDesktop(
-                        resizable: true,
-                        grooveDivider: true,
-                      ),
-              )
-            : _buildDesktop(resizable: true),
+        child: BooruDesktopScope(
+          controller: controller,
+          config: widget.config,
+          menuBuilder: (context, constraints) => widget.desktopMenuBuilder(
+            context,
+            controller,
+            constraints,
+          ),
+          mobileMenuBuilder: widget.mobileMenuBuilder,
+          views: widget.desktopViews,
+          menuWidth: double.tryParse(menuWidth),
+        ),
       ),
-    );
-  }
-
-  Widget _buildMobile() {
-    final customHome = ref.watchBooruBuilder(ref.watchConfig)?.homeViewBuilder;
-
-    return BooruMobileScope(
-      controller: controller,
-      config: widget.config,
-      menuBuilder: (context, controller) => widget.mobileMenuBuilder(
-        context,
-        controller,
-      ),
-      home: customHome != null
-          ? customHome(context, widget.config, controller)
-          : Scaffold(
-              body: Center(
-                child: Text('No View found for ${widget.config.name}'),
-              ),
-            ),
-    );
-  }
-
-  Widget _buildDesktop({
-    bool resizable = false,
-    bool grooveDivider = false,
-  }) {
-    final menuWidth = ref.watch(miscDataProvider(kMenuWidthCacheKey));
-
-    return BooruDesktopScope(
-      controller: controller,
-      config: widget.config,
-      resizable: resizable,
-      menuBuilder: (context, constraints) => widget.desktopMenuBuilder(
-        context,
-        controller,
-        constraints,
-      ),
-      views: widget.desktopViews,
-      grooveDivider: grooveDivider,
-      menuWidth: double.tryParse(menuWidth),
     );
   }
 }

@@ -20,9 +20,8 @@ class SankakuHomePage extends ConsumerWidget {
     final config = ref.watchConfig;
     final login = config.login;
 
-    return BooruScope(
-      config: config,
-      mobileMenuBuilder: (context, controller) => [
+    return HomePageScaffold(
+      mobileMenuBuilder: [
         if (login != null)
           SideMenuTile(
             icon: const Icon(Symbols.favorite),
@@ -33,14 +32,6 @@ class SankakuHomePage extends ConsumerWidget {
           ),
       ],
       desktopMenuBuilder: (context, controller, constraints) => [
-        HomeNavigationTile(
-          value: 0,
-          controller: controller,
-          constraints: constraints,
-          selectedIcon: Symbols.dashboard,
-          icon: Symbols.dashboard,
-          title: 'Home',
-        ),
         if (login != null)
           HomeNavigationTile(
             value: 1,
@@ -50,25 +41,8 @@ class SankakuHomePage extends ConsumerWidget {
             icon: Symbols.favorite,
             title: 'Favorites',
           ),
-        ...coreDesktopTabBuilder(
-          context,
-          constraints,
-          controller,
-        ),
       ],
-      desktopViews: () {
-        final sankakuTabs = [
-          const DefaultDesktopHomePage(),
-          if (login != null) SankakuFavoritesPage(username: login)
-        ];
-
-        return [
-          ...sankakuTabs,
-          ...coreDesktopViewBuilder(
-            previousItemCount: sankakuTabs.length,
-          ),
-        ];
-      },
+      desktopViews: [if (login != null) SankakuFavoritesPage(username: login)],
     );
   }
 }

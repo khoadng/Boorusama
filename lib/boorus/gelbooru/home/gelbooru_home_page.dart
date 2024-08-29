@@ -10,7 +10,6 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/gelbooru/favorites/favorites.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/home/home.dart';
-import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/router.dart';
 
@@ -32,9 +31,8 @@ class _GelbooruHomePageState extends ConsumerState<GelbooruHomePage> {
     final favoritePageBuilder =
         ref.watchBooruBuilder(ref.watchConfig)?.favoritesPageBuilder;
 
-    return BooruScope(
-      config: widget.config,
-      mobileMenuBuilder: (context, controller) => [
+    return HomePageScaffold(
+      mobileMenuBuilder: [
         if (favoritePageBuilder != null && ref.watchConfig.hasLoginDetails())
           SideMenuTile(
             icon: const Icon(
@@ -48,14 +46,6 @@ class _GelbooruHomePageState extends ConsumerState<GelbooruHomePage> {
           ),
       ],
       desktopMenuBuilder: (context, controller, constraints) => [
-        HomeNavigationTile(
-          value: 0,
-          controller: controller,
-          constraints: constraints,
-          selectedIcon: Symbols.dashboard,
-          icon: Symbols.dashboard,
-          title: 'Home',
-        ),
         if (favoritePageBuilder != null && ref.watchConfig.hasLoginDetails())
           HomeNavigationTile(
             value: 1,
@@ -65,26 +55,11 @@ class _GelbooruHomePageState extends ConsumerState<GelbooruHomePage> {
             icon: Symbols.favorite,
             title: 'Favorites',
           ),
-        ...coreDesktopTabBuilder(
-          context,
-          constraints,
-          controller,
-        ),
       ],
-      desktopViews: () {
-        final gelbooruTabs = [
-          const DefaultDesktopHomePage(),
-          if (favoritePageBuilder != null && ref.watchConfig.hasLoginDetails())
-            GelbooruFavoritesPage(uid: ref.watchConfig.login!),
-        ];
-
-        return [
-          ...gelbooruTabs,
-          ...coreDesktopViewBuilder(
-            previousItemCount: gelbooruTabs.length,
-          ),
-        ];
-      },
+      desktopViews: [
+        if (favoritePageBuilder != null && ref.watchConfig.hasLoginDetails())
+          GelbooruFavoritesPage(uid: ref.watchConfig.login!),
+      ],
     );
   }
 }

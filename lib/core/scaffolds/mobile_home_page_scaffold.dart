@@ -10,7 +10,6 @@ import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/infinite_post_list_scaffold.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
 
 class MobileHomePageScaffold extends ConsumerWidget {
@@ -35,16 +34,11 @@ class MobileHomePageScaffold extends ConsumerWidget {
         errors: errors,
         controller: postController,
         sliverHeaders: [
-          SliverAppBar(
-            backgroundColor: context.theme.scaffoldBackgroundColor,
-            toolbarHeight: kToolbarHeight * 1.2,
-            title: HomeSearchBar(
-              onMenuTap: controller.openMenu,
-              onTap: onSearchTap,
-            ),
-            floating: true,
-            snap: true,
-            automaticallyImplyLeading: false,
+          SliverHomeSearchBar(
+            controller: controller,
+            onSearch: () {
+              postController.refresh();
+            },
           ),
           const SliverAppAnnouncementBanner(),
         ],

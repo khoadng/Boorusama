@@ -112,65 +112,10 @@ class SzurubooruBuilder
       .then((value) => true);
 
   @override
-  HomePageBuilder get homePageBuilder => (context, config) => HomePageScaffold(
-        onPostTap:
-            (context, posts, post, scrollController, settings, initialIndex) =>
-                goToPostDetailsPage(
-          context: context,
-          posts: posts,
-          initialIndex: initialIndex,
-        ),
-        mobileMenuBuilder: (context, controller) => [
-          if (config.hasLoginDetails()) ...[
-            SideMenuTile(
-              icon: const Icon(Symbols.favorite),
-              title: Text('profile.favorites'.tr()),
-              onTap: () => goToFavoritesPage(context),
-            ),
-          ]
-        ],
-        desktopMenuBuilder: (context, controller, constraints) => [
-          HomeNavigationTile(
-            value: 0,
-            controller: controller,
-            constraints: constraints,
-            selectedIcon: Symbols.dashboard,
-            icon: Symbols.dashboard,
-            title: 'Home',
-          ),
-          if (config.hasLoginDetails()) ...[
-            HomeNavigationTile(
-              value: 1,
-              controller: controller,
-              constraints: constraints,
-              selectedIcon: Symbols.favorite,
-              icon: Symbols.favorite,
-              title: 'Favorites',
-            ),
-          ],
-          ...coreDesktopTabBuilder(
-            context,
-            constraints,
-            controller,
-          ),
-        ],
-        desktopViews: () {
-          final tabs = [
-            const DefaultDesktopHomePage(),
-            if (config.hasLoginDetails()) ...[
-              SzurubooruFavoritesPage(username: config.name),
-            ],
-          ];
-
-          return [
-            ...tabs,
-            ...coreDesktopViewBuilder(
-              previousItemCount: tabs.length,
-            ),
-          ];
-        },
-        onSearchTap: () => goToSearchPage(context),
-      );
+  HomePageBuilder get homePageBuilder =>
+      (context, config) => SzurubooruHomePage(
+            config: config,
+          );
 
   @override
   SearchPageBuilder get searchPageBuilder => (context, initialQuery) =>
@@ -210,6 +155,47 @@ class SzurubooruBuilder
       'source': (post, config) => post.source.url,
     },
   );
+}
+
+class SzurubooruHomePage extends StatelessWidget {
+  const SzurubooruHomePage({
+    super.key,
+    required this.config,
+  });
+
+  final BooruConfig config;
+
+  @override
+  Widget build(BuildContext context) {
+    return HomePageScaffold(
+      mobileMenuBuilder: [
+        if (config.hasLoginDetails()) ...[
+          SideMenuTile(
+            icon: const Icon(Symbols.favorite),
+            title: Text('profile.favorites'.tr()),
+            onTap: () => goToFavoritesPage(context),
+          ),
+        ]
+      ],
+      desktopMenuBuilder: (context, controller, constraints) => [
+        if (config.hasLoginDetails()) ...[
+          HomeNavigationTile(
+            value: 1,
+            controller: controller,
+            constraints: constraints,
+            selectedIcon: Symbols.favorite,
+            icon: Symbols.favorite,
+            title: 'Favorites',
+          ),
+        ],
+      ],
+      desktopViews: [
+        if (config.hasLoginDetails()) ...[
+          SzurubooruFavoritesPage(username: config.name),
+        ],
+      ],
+    );
+  }
 }
 
 class SzurubooruPostDetailsPage extends ConsumerWidget {

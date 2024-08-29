@@ -45,6 +45,7 @@ class MoebooruBuilder
         LegacyGranularRatingOptionsBuilderMixin,
         LegacyGranularRatingQueryBuilderMixin,
         UnknownMetatagsMixin,
+        DefaultHomeMixin,
         DefaultThumbnailUrlMixin,
         DefaultTagColorMixin,
         DefaultPostGesturesHandlerMixin,
@@ -165,10 +166,6 @@ class MoebooruBuilder
       'source': (post, config) => config.downloadUrl,
     },
   );
-
-  @override
-  HomeViewBuilder get homeViewBuilder => (context, config, controller) =>
-      MoebooruMobileHomeView(controller: controller);
 }
 
 class MoebooruFavoritesPage extends ConsumerWidget {

@@ -30,7 +30,6 @@ import '../router.dart';
 import '../saved_searches/saved_searches.dart';
 import '../tags/tags.dart';
 import '../users/users.dart';
-import 'home.dart';
 
 class DanbooruHomePage extends ConsumerStatefulWidget {
   const DanbooruHomePage({
@@ -125,9 +124,8 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
       },
     );
 
-    return BooruScope(
-      config: widget.config,
-      mobileMenuBuilder: (context, controller) => [
+    return HomePageScaffold(
+      mobileMenuBuilder: [
         if (widget.config.hasLoginDetails() && userId != null)
           SideMenuTile(
             icon: Icon(
@@ -236,14 +234,6 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
       ],
       desktopMenuBuilder: (context, controller, constraints) => [
         HomeNavigationTile(
-          value: 0,
-          controller: controller,
-          constraints: constraints,
-          selectedIcon: Symbols.dashboard,
-          icon: Symbols.dashboard,
-          title: 'Home',
-        ),
-        HomeNavigationTile(
           value: 1,
           controller: controller,
           constraints: constraints,
@@ -318,50 +308,34 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
             title: 'blacklisted_tags.blacklisted_tags'.tr(),
           ),
         ],
-        ...coreDesktopTabBuilder(
-          context,
-          constraints,
-          controller,
-        ),
       ],
-      desktopViews: () {
-        final danbooruTabs = [
-          // 0
-          const DanbooruDesktopHomePage(),
-          // 1
-          const ExplorePageDesktop(),
-          // 2
-          const DanbooruPoolPage(),
-          // 3
-          const DanbooruForumPage(),
-          // 4
-          const DanbooruArtistSearchPage(),
-          if (widget.config.hasLoginDetails()) ...[
-            if (userId != null)
-              // 5
-              UserDetailsPage(
-                uid: userId,
-                username: widget.config.login!,
-                hasAppBar: false,
-              ),
-            // 6
-            DanbooruFavoritesPage(username: widget.config.login!),
-            // 7
-            const FavoriteGroupsPage(),
-            // 8
-            const SavedSearchFeedPage(),
-            // 9
-            const BlacklistedTagsPage(),
-          ],
-        ];
-
-        return [
-          ...danbooruTabs,
-          ...coreDesktopViewBuilder(
-            previousItemCount: danbooruTabs.length,
-          ),
-        ];
-      },
+      desktopViews: [
+        // 1
+        const ExplorePageDesktop(),
+        // 2
+        const DanbooruPoolPage(),
+        // 3
+        const DanbooruForumPage(),
+        // 4
+        const DanbooruArtistSearchPage(),
+        if (widget.config.hasLoginDetails()) ...[
+          if (userId != null)
+            // 5
+            UserDetailsPage(
+              uid: userId,
+              username: widget.config.login!,
+              hasAppBar: false,
+            ),
+          // 6
+          DanbooruFavoritesPage(username: widget.config.login!),
+          // 7
+          const FavoriteGroupsPage(),
+          // 8
+          const SavedSearchFeedPage(),
+          // 9
+          const BlacklistedTagsPage(),
+        ],
+      ],
     );
   }
 }

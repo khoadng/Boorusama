@@ -19,7 +19,7 @@ class MostSearchTagList extends ConsumerWidget {
     required this.selected,
   });
 
-  final void Function(Search search) onSelected;
+  final void Function(Search search, bool value) onSelected;
   final String selected;
 
   @override
@@ -43,7 +43,8 @@ class MostSearchTagList extends ConsumerWidget {
                         child: _Chip(
                           search: searches[index],
                           isSelected: selected == searches[index].keyword,
-                          onSelected: onSelected,
+                          onSelected: (value) =>
+                              onSelected(searches[index], value),
                         ),
                       );
                     },
@@ -65,7 +66,7 @@ class _Chip extends ConsumerWidget {
 
   final Search search;
   final bool isSelected;
-  final void Function(Search search) onSelected;
+  final void Function(bool value) onSelected;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -94,7 +95,7 @@ class _Chip extends ConsumerWidget {
               ? Colors.transparent
               : colors?.borderColor ?? Colors.transparent,
         ),
-        onSelected: (selected) => onSelected(search),
+        onSelected: (selected) => onSelected(selected),
         padding: const EdgeInsets.symmetric(
           horizontal: 8,
           vertical: 4,

@@ -6,14 +6,21 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/home/home.dart';
+import 'package:boorusama/core/search/search.dart';
+import 'package:boorusama/core/search_histories/search_histories.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/app_update/app_update.dart';
+import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
-import '../search/booru_search_bar.dart';
+import 'package:boorusama/router.dart';
 
 class HomeSearchBar extends ConsumerWidget {
   const HomeSearchBar({
@@ -183,5 +190,99 @@ class _VersionChangeVisualizedText extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class SliverHomeSearchBar extends ConsumerStatefulWidget {
+  const SliverHomeSearchBar({
+    super.key,
+    required this.controller,
+    this.selectedTagString,
+    required this.onSearch,
+    this.selectedTagController,
+  });
+
+  final HomePageController controller;
+  final ValueNotifier<String>? selectedTagString;
+  final void Function() onSearch;
+  final SelectedTagController? selectedTagController;
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _SliverHomeSearchBarState();
+}
+
+class _SliverHomeSearchBarState extends ConsumerState<SliverHomeSearchBar> {
+  late final selectedTagController = widget.selectedTagController ??
+      SelectedTagController.fromBooruBuilder(
+        builder: ref.readBooruBuilder(ref.readConfig),
+      );
+
+  late final selectedTagString = widget.selectedTagString ?? ValueNotifier('');
+
+  @override
+  void dispose() {
+    if (widget.selectedTagController == null) {
+      selectedTagController.dispose();
+    }
+
+    super.dispose();
+  }
+
+  bool get isDesktop => kPreferredLayout.isDesktop;
+
+  bool get isTablet => MediaQuery.sizeOf(context).shortestSide >= 550;
+
+  bool get isMobileLandscape =>
+      kPreferredLayout.isMobile &&
+      MediaQuery.orientationOf(context).isLandscape;
+
+  @override
+  Widget build(BuildContext context) {
+    if (isDesktop) {
+      return _buildPinned(context);
+    } else if (isMobileLandscape) {
+      return isTablet
+          ? _buildPinned(context)
+          : SliverToBoxAdapter(
+              child: _buildDesktop(),
+            );
+    } else {
+      return SliverAppBar(
+        backgroundColor: context.theme.scaffoldBackgroundColor,
+        toolbarHeight: kToolbarHeight * 1.2,
+        title: HomeSearchBar(
+          onMenuTap: widget.controller.openMenu,
+          onTap: () => goToSearchPage(context),
+        ),
+        floating: true,
+        snap: true,
+        automaticallyImplyLeading: false,
+      );
+    }
+  }
+
+  Widget _buildPinned(BuildContext context) {
+    return SliverPinnedHeader(
+      child: ColoredBox(
+        color: context.colorScheme.surface,
+        child: _buildDesktop(),
+      ),
+    );
+  }
+
+  Widget _buildDesktop() {
+    return DesktopSearchbar(
+      onSearch: () => _onSearch(),
+      selectedTagController: selectedTagController,
+    );
+  }
+
+  void _onSearch() {
+    ref
+        .read(searchHistoryProvider.notifier)
+        .addHistory(selectedTagController.rawTagsString);
+    selectedTagString.value = selectedTagController.rawTagsString;
+    widget.onSearch();
   }
 }
