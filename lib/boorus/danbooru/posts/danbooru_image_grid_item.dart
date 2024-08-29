@@ -77,33 +77,35 @@ class DanbooruImageGridItem extends ConsumerWidget {
                       ),
                     ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: Wrap(
-                      children: [
-                        for (final tag in artistTags)
-                          ActionChip(
-                            visualDensity: VisualDensity.compact,
-                            label: AutoSizeText(
-                              tag.replaceUnderscoreWithSpace(),
-                              minFontSize: 6,
-                              maxLines: 1,
-                              style: TextStyle(
-                                color: context.colorScheme.onErrorContainer,
+                  if (artistTags.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: Wrap(
+                        children: [
+                          for (final tag in artistTags)
+                            ActionChip(
+                              visualDensity: VisualDensity.compact,
+                              label: AutoSizeText(
+                                tag.replaceUnderscoreWithSpace(),
+                                minFontSize: 6,
+                                maxLines: 1,
+                                style: TextStyle(
+                                  color: context.colorScheme.onErrorContainer,
+                                ),
                               ),
+                              backgroundColor:
+                                  context.colorScheme.errorContainer,
+                              onPressed: () {
+                                AppClipboard.copyAndToast(
+                                  context,
+                                  artistTags.join(' '),
+                                  message: 'Tag copied to clipboard',
+                                );
+                              },
                             ),
-                            backgroundColor: context.colorScheme.errorContainer,
-                            onPressed: () {
-                              AppClipboard.copyAndToast(
-                                context,
-                                artistTags.join(' '),
-                                message: 'Tag copied to clipboard',
-                              );
-                            },
-                          ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
                 ],
               ),
             ),
@@ -130,7 +132,8 @@ class DanbooruImageGridItem extends ConsumerWidget {
         autoScrollOptions: autoScrollOptions,
         onTap: post.isBanned
             ? switch (post.source) {
-                final WebSource source => () => launchExternalUrlString(source.url),
+                final WebSource source => () =>
+                    launchExternalUrlString(source.url),
                 _ => null,
               }
             : onTap,
