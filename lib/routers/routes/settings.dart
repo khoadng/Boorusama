@@ -1,11 +1,8 @@
-// Flutter imports:
-import 'package:flutter/material.dart';
-
 // Project imports:
 import 'package:boorusama/core/settings/widgets/widgets.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/router.dart';
+import 'package:boorusama/widgets/widgets.dart';
 import '../widgets/dialog_page.dart';
 
 GoRoute settings() => GoRoute(
@@ -105,34 +102,10 @@ GoRoute settingsDesktop() => GoRoute(
       pageBuilder: (context, state) => DialogPage(
         key: state.pageKey,
         name: state.name,
-        builder: (context) => Container(
-          margin: EdgeInsets.symmetric(
-            vertical:
-                context.screenWidth < 1100 ? 50 : context.screenWidth * 0.1,
-            horizontal:
-                context.screenHeight < 900 ? 50 : context.screenHeight * 0.2,
-          ),
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.all(
-              Radius.circular(8),
-            ),
-          ),
-          child: Dialog(
-            backgroundColor: Theme.of(context).cardColor,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-            ),
-            child: const Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: 12,
-                horizontal: 16,
-              ),
-              child: Material(
-                color: Colors.transparent,
-                child: SettingsPageDesktop(),
-              ),
-            ),
-          ),
+        builder: (context) => const BooruDialog(
+          width: 800,
+          height: 600,
+          child: SettingsPageDesktop(),
         ),
       ),
     );
