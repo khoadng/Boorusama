@@ -53,9 +53,9 @@ class PremiumInteractionBlock extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(8),
                       color: Colors.black.withOpacity(0.25),
                     ),
-                    child: Opacity(
-                      opacity: 0.5,
-                      child: IgnorePointer(
+                    child: IgnorePointer(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 4),
                         child: child,
                       ),
                     ),
