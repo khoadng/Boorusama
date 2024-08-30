@@ -9,9 +9,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class PremiumInteractionBlock extends ConsumerWidget {
   const PremiumInteractionBlock({
     super.key,
+    this.padding,
     required this.child,
   });
 
+  const PremiumInteractionBlock.horizontalPadding({
+    super.key,
+    required this.child,
+  }) : padding = const EdgeInsets.symmetric(horizontal: 8);
+
+  final EdgeInsetsGeometry? padding;
   final Widget child;
 
   @override
@@ -27,7 +34,7 @@ class PremiumInteractionBlock extends ConsumerWidget {
                 children: [
                   Container(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 4,
+                      horizontal: 12,
                       vertical: 4,
                     ),
                     child: Text(
@@ -40,6 +47,7 @@ class PremiumInteractionBlock extends ConsumerWidget {
                     ),
                   ),
                   Container(
+                    margin: padding,
                     decoration: BoxDecoration(
                       border: const GradientBoxBorder(
                         gradient: LinearGradient(
@@ -48,10 +56,9 @@ class PremiumInteractionBlock extends ConsumerWidget {
                             Colors.red,
                           ],
                         ),
-                        width: 1,
+                        width: 1.5,
                       ),
                       borderRadius: BorderRadius.circular(8),
-                      color: Colors.black.withOpacity(0.25),
                     ),
                     child: IgnorePointer(
                       child: Padding(
