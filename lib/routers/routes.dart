@@ -17,6 +17,7 @@ import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/premiums/premiums.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/biometrics/app_lock.dart';
@@ -92,7 +93,20 @@ class Routes {
           bulkDownloads(ref),
           favoriteTags(),
           originalImageViewer(),
+          premium(ref),
         ],
+      );
+
+  static GoRoute premium(Ref ref) => GoRoute(
+        path: 'premium',
+        name: '/premium',
+        pageBuilder: (context, state) {
+          return CupertinoPage(
+            key: state.pageKey,
+            name: state.name,
+            child: const PremiumPage(),
+          );
+        },
       );
 
   static GoRoute postDetails(Ref ref) => GoRoute(

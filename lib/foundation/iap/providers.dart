@@ -34,8 +34,8 @@ const _kPackages = <Package>[
       id: 'annual_subscription',
       title: '1 year',
       description: '',
-      price: '\$14.99',
-      rawPrice: 14.99,
+      price: '\$19.99',
+      rawPrice: 19.99,
       currencyCode: 'USD',
     ),
     type: PackageType.annual,
@@ -83,7 +83,7 @@ const _kVNDPackages = <Package>[
 
 Future<(InAppPurchase, SubscriptionManager, Package?)> initIap() async {
   final iap = DummyInAppPurchase(
-    packages: _kVNDPackages,
+    packages: _kPackages,
   );
 
   final subscriptionManager = DummySubscriptionManager(
