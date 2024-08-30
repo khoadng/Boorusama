@@ -248,12 +248,30 @@ class _SliverHomeSearchBarState extends ConsumerState<SliverHomeSearchBar> {
               child: _buildDesktop(),
             );
     } else {
+      final homeSearchBar = HomeSearchBar(
+        onMenuTap: widget.controller.openMenu,
+        onTap: () => goToSearchPage(context),
+      );
       return SliverAppBar(
         backgroundColor: context.theme.scaffoldBackgroundColor,
         toolbarHeight: kToolbarHeight * 1.2,
-        title: HomeSearchBar(
-          onMenuTap: widget.controller.openMenu,
-          onTap: () => goToSearchPage(context),
+        title: LayoutBuilder(
+          builder: (context, constraints) {
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (constraints.maxWidth < 600)
+                  Expanded(child: homeSearchBar)
+                else
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(
+                      maxWidth: 500,
+                    ),
+                    child: homeSearchBar,
+                  ),
+              ],
+            );
+          },
         ),
         floating: true,
         snap: true,

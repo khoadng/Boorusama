@@ -9,7 +9,6 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/gelbooru_v2/artists/artists.dart';
 import 'package:boorusama/boorus/gelbooru_v2/comments/comments.dart';
-import 'package:boorusama/boorus/gelbooru_v2/home/gelbooru_v2_mobile_home_page.dart';
 import 'package:boorusama/boorus/gelbooru_v2/posts/posts_v2.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/gelbooru/gelbooru_v2_client.dart';
@@ -123,6 +122,7 @@ class GelbooruV2Builder
         DefaultThumbnailUrlMixin,
         PostCountNotSupportedMixin,
         UnknownMetatagsMixin,
+        DefaultHomeMixin,
         DefaultPostImageDetailsUrlMixin,
         DefaultGranularRatingFiltererMixin,
         DefaultPostGesturesHandlerMixin,
@@ -290,12 +290,6 @@ class GelbooruV2Builder
       'source': (post, config) => config.downloadUrl,
     },
   );
-
-  @override
-  HomeViewBuilder get homeViewBuilder =>
-      (context, config, controller) => GelbooruV2MobileHomePage(
-            controller: controller,
-          );
 }
 
 class GelbooruV2SearchPage extends ConsumerWidget {
