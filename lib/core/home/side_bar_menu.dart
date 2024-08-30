@@ -2,6 +2,7 @@
 import 'dart:math';
 
 // Flutter imports:
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -12,6 +13,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/manage/booru_selector.dart';
 import 'package:boorusama/core/configs/manage/current_booru_tile.dart';
+import 'package:boorusama/core/premiums/premiums.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
@@ -112,6 +114,20 @@ class SideBarMenu extends ConsumerWidget {
                             context.go('/favorite_tags');
                           },
                         ),
+                        // Subscriptions
+                        SideMenuTile(
+                          icon: const Icon(
+                            Symbols.star,
+                            fill: 1,
+                          ),
+                          title: const Text('Boorusama Plus'),
+                          onTap: () {
+                            if (popOnSelect) context.navigator.pop();
+                            Navigator.of(context).push(CupertinoPageRoute<void>(
+                              builder: (context) => const PremiumPage(),
+                            ));
+                          },
+                        ),
                         SideMenuTile(
                           icon: const Icon(Symbols.sim_card_download),
                           title: const Text('sideMenu.bulk_download').tr(),
@@ -146,6 +162,7 @@ class SideBarMenu extends ConsumerWidget {
                             context.go('/settings?scrollTo=support');
                           },
                         ),
+
                         SideMenuTile(
                           icon: const Icon(
                             Symbols.settings,
