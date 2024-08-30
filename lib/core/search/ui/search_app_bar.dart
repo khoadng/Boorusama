@@ -43,63 +43,47 @@ class SearchAppBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final searchAppBar = BooruSearchBar(
-      dense: dense,
-      autofocus: autofocus ?? false,
-      onTapOutside: onTapOutside,
-      focus: focusNode,
-      queryEditingController: queryEditingController,
-      onFocusChanged: onFocusChanged,
-      leading: leading,
-      trailing: ValueListenableBuilder(
-        valueListenable: queryEditingController,
-        builder: (context, value, child) {
-          return value.text.isNotEmpty
-              ? IconButton(
-                  splashRadius: 16,
-                  icon: const Icon(Symbols.close),
-                  onPressed: () {
-                    queryEditingController.clear();
-                    onClear?.call();
-                  },
-                )
-              : innerSearchButton ?? const SizedBox.shrink();
-        },
-      ),
-      onChanged: onChanged,
-      onSubmitted: onSubmitted,
-    );
-
     return AppBar(
       automaticallyImplyLeading: false,
       toolbarHeight: height ?? kToolbarHeight * 1.2,
-      title: trailingSearchButton != null
-          ? LayoutBuilder(
-              builder: (context, constraints) {
-                final spacer = Spacer(
-                  flex: switch (constraints.maxWidth) {
-                    > 1600 => 4,
-                    > 1000 => 3,
-                    _ => 1,
-                  },
-                );
-
-                return Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (constraints.maxWidth > 500) spacer,
-                    Flexible(
-                      flex: 4,
-                      child: searchAppBar,
-                    ),
-                    const SizedBox(width: 4),
-                    trailingSearchButton!,
-                    if (constraints.maxWidth > 500) spacer,
-                  ],
-                );
-              },
-            )
-          : searchAppBar,
+      title: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxWidth: 500,
+            ),
+            child: BooruSearchBar(
+              dense: dense,
+              autofocus: autofocus ?? false,
+              onTapOutside: onTapOutside,
+              focus: focusNode,
+              queryEditingController: queryEditingController,
+              onFocusChanged: onFocusChanged,
+              leading: leading,
+              trailing: ValueListenableBuilder(
+                valueListenable: queryEditingController,
+                builder: (context, value, child) {
+                  return value.text.isNotEmpty
+                      ? IconButton(
+                          splashRadius: 16,
+                          icon: const Icon(Symbols.close),
+                          onPressed: () {
+                            queryEditingController.clear();
+                            onClear?.call();
+                          },
+                        )
+                      : innerSearchButton ?? const SizedBox.shrink();
+                },
+              ),
+              onChanged: onChanged,
+              onSubmitted: onSubmitted,
+            ),
+          ),
+          const SizedBox(width: 4),
+          trailingSearchButton!,
+        ],
+      ),
     );
   }
 }
