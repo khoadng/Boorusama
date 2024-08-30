@@ -10,7 +10,6 @@ environment:
 dependencies:
   android_intent_plus: ^5.1.0
   animated_list_plus: ^0.5.2
-  auto_size_text: ^3.0.0
   background_downloader: ^8.5.3
   bitsdojo_window: ^0.1.6
   cached_network_image: ^3.3.0

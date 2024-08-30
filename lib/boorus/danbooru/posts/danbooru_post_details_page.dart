@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -173,7 +172,7 @@ class DanbooruFileDetails extends ConsumerWidget {
                   uid: uploader.id,
                   username: uploader.name,
                 ),
-                child: AutoSizeText(
+                child: Text(
                   uploader.name.replaceAll('_', ' '),
                   maxLines: 1,
                   style: TextStyle(
@@ -195,7 +194,7 @@ class DanbooruFileDetails extends ConsumerWidget {
                     uid: approver.id,
                     username: approver.name,
                   ),
-                  child: AutoSizeText(
+                  child: Text(
                     approver.name.replaceAll('_', ' '),
                     maxLines: 1,
                     style: TextStyle(

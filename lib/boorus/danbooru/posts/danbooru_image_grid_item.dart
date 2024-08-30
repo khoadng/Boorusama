@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -68,7 +67,7 @@ class DanbooruImageGridItem extends ConsumerWidget {
                         },
                       ),
                       const SizedBox(width: 4),
-                      const AutoSizeText(
+                      const Text(
                         maxLines: 1,
                         'Banned post',
                         style: TextStyle(
@@ -85,9 +84,8 @@ class DanbooruImageGridItem extends ConsumerWidget {
                           for (final tag in artistTags)
                             ActionChip(
                               visualDensity: VisualDensity.compact,
-                              label: AutoSizeText(
+                              label: Text(
                                 tag.replaceUnderscoreWithSpace(),
-                                minFontSize: 6,
                                 maxLines: 1,
                                 style: TextStyle(
                                   color: context.colorScheme.onErrorContainer,
