@@ -33,6 +33,7 @@ import 'package:boorusama/foundation/app_info.dart';
 import 'package:boorusama/foundation/device_info_service.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/error.dart';
+import 'package:boorusama/foundation/iap/iap.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
 import 'package:boorusama/foundation/mobile.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
@@ -284,6 +285,8 @@ Future<void> boot(BootLogger bootLogger) async {
   // Prepare for Android 15
   showSystemStatus();
 
+  final (iap, subManager, activeSubs) = await initIap();
+
   logger.logI('Start up',
       'Initialization done in ${stopwatch.elapsed.inMilliseconds}ms');
   stopwatch.stop();
@@ -328,6 +331,14 @@ Future<void> boot(BootLogger bootLogger) async {
                 analyticsProvider.overrideWithValue(firebaseAnalytics),
               if (crashlyticsReporter != null)
                 errorReporterProvider.overrideWithValue(crashlyticsReporter),
+              iapProvider.overrideWithValue(iap),
+              subscriptionManagerProvider.overrideWithValue(subManager),
+              subscriptionNotifierProvider
+                  .overrideWith(() => SubscriptionNotifier(
+                        initialPackage: activeSubs,
+                        iap: iap,
+                        manager: subManager,
+                      )),
             ],
             child: App(
               appName: appInfo.appName,
