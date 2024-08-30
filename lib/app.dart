@@ -28,7 +28,7 @@ import 'package:boorusama/widgets/widgets.dart';
 import 'widgets/platforms/platforms.dart';
 
 const kMinSideBarWidth = 62.0;
-const kMaxSideBarWidth = 280.0;
+const kMaxSideBarWidth = 250.0;
 
 class App extends StatelessWidget {
   const App({

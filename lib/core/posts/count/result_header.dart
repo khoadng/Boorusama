@@ -91,19 +91,25 @@ class SliverResultHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
-      child: Row(
-        children: [
-          ValueListenableBuilder(
-            valueListenable: selectedTagString,
-            builder: (context, value, _) => ResultHeaderWithProvider(
-              selectedTags: value.split(' '),
-              onRefresh: (maintainPage) => controller.refresh(
-                maintainPage: maintainPage,
-              ),
-            ),
-          ),
-          const Spacer(),
-        ],
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return constraints.maxWidth < 250
+              ? const SizedBox.shrink()
+              : Row(
+                  children: [
+                    ValueListenableBuilder(
+                      valueListenable: selectedTagString,
+                      builder: (context, value, _) => ResultHeaderWithProvider(
+                        selectedTags: value.split(' '),
+                        onRefresh: (maintainPage) => controller.refresh(
+                          maintainPage: maintainPage,
+                        ),
+                      ),
+                    ),
+                    const Spacer(),
+                  ],
+                );
+        },
       ),
     );
   }

@@ -92,7 +92,7 @@ Future<void> boot(BootLogger bootLogger) async {
     doWhenWindowReady(() {
       const iPhoneSize = Size(375, 812);
       const initialSize = Size(1000, 700);
-      const minSize = Size(950, 500);
+      const minSize = Size(500, 500);
       appWindow.minSize = kPreferredLayout.isMobile ? iPhoneSize : minSize;
       appWindow.size = kPreferredLayout.isMobile ? iPhoneSize : initialSize;
       appWindow.alignment = Alignment.center;

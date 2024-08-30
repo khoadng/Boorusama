@@ -144,33 +144,39 @@ class _PostListConfigurationHeaderState
                     widget.onExpansionChanged?.call(value);
                   })
                 },
-                title: Row(
-                  children: [
-                    const SizedBox(width: 8),
-                    const Text('blacklisted_tags.blacklisted_header_title')
-                        .tr(),
-                    const SizedBox(width: 8),
-                    if (widget.hiddenCount != null)
-                      if (widget.hiddenCount! > 0)
-                        Chip(
-                          padding: EdgeInsets.zero,
-                          visualDensity: const ShrinkVisualDensity(),
-                          backgroundColor: context.colorScheme.primary,
-                          label: Text(
-                            '${widget.hiddenCount} of ${widget.postCount}',
-                            style: TextStyle(
-                              color: context.colorScheme.onPrimary,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                    const Spacer(),
-                    expanded
-                        ? const SizedBox.shrink()
-                        : FittedBox(
-                            child: widget.trailing,
-                          ),
-                  ],
+                title: LayoutBuilder(
+                  builder: (context, constraints) {
+                    return Row(
+                      children: [
+                        const SizedBox(width: 8),
+                        const Text('blacklisted_tags.blacklisted_header_title')
+                            .tr(),
+                        if (constraints.maxWidth > 250)
+                          const SizedBox(width: 8),
+                        if (widget.hiddenCount != null)
+                          if (widget.hiddenCount! > 0)
+                            if (constraints.maxWidth > 250)
+                              Chip(
+                                padding: EdgeInsets.zero,
+                                visualDensity: const ShrinkVisualDensity(),
+                                backgroundColor: context.colorScheme.primary,
+                                label: Text(
+                                  '${widget.hiddenCount} of ${widget.postCount}',
+                                  style: TextStyle(
+                                    color: context.colorScheme.onPrimary,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                        const Spacer(),
+                        expanded
+                            ? const SizedBox.shrink()
+                            : FittedBox(
+                                child: widget.trailing,
+                              ),
+                      ],
+                    );
+                  },
                 ),
                 expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
