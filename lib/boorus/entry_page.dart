@@ -96,15 +96,10 @@ class _EntryPageState extends ConsumerState<EntryPage> {
       },
     );
 
-    bool isDesktop(BuildContext context) =>
-        kPreferredLayout.isDesktop ||
-        (kPreferredLayout.isMobile &&
-            MediaQuery.orientationOf(context).isLandscape);
-
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (isDesktop(context)) ...[
+        if (context.isLandscapeLayout) ...[
           const SafeArea(
             right: false,
             child: BooruSelector(),

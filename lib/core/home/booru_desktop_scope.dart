@@ -49,10 +49,7 @@ class BooruDesktopScope extends ConsumerStatefulWidget {
 class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
   late MultiSplitViewController splitController;
 
-  bool get isDesktop =>
-      kPreferredLayout.isDesktop ||
-      (kPreferredLayout.isMobile &&
-          MediaQuery.orientationOf(context).isLandscape);
+  bool get isDesktop => context.isLandscapeLayout;
 
   bool get isMobileLandScape =>
       kPreferredLayout.isMobile &&

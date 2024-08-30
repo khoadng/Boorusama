@@ -32,11 +32,6 @@ class _MobileHomePageScaffoldState
     extends ConsumerState<MobileHomePageScaffold> {
   final selectedTagString = ValueNotifier('');
 
-  bool get isDesktop =>
-      kPreferredLayout.isDesktop ||
-      (kPreferredLayout.isMobile &&
-          MediaQuery.orientationOf(context).isLandscape);
-
   @override
   Widget build(BuildContext context) {
     final booruBuilder = ref.watch(booruBuilderProvider);
@@ -57,7 +52,7 @@ class _MobileHomePageScaffoldState
             },
           ),
           const SliverAppAnnouncementBanner(),
-          if (isDesktop)
+          if (context.isLandscapeLayout)
             SliverResultHeader(
               selectedTagString: selectedTagString,
               controller: postController,

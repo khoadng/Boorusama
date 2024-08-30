@@ -36,11 +36,6 @@ class _LatestViewState extends ConsumerState<LatestView> {
     builder: ref.readBooruBuilder(ref.readConfig),
   );
 
-  bool get isDesktop =>
-      kPreferredLayout.isDesktop ||
-      (kPreferredLayout.isMobile &&
-          MediaQuery.orientationOf(context).isLandscape);
-
   @override
   void dispose() {
     _autoScrollController.dispose();
@@ -56,7 +51,7 @@ class _LatestViewState extends ConsumerState<LatestView> {
 
     return PostScope(
       fetcher: (page) {
-        final tag = isDesktop
+        final tag = context.isLandscapeLayout
             ? selectedTagString.value
             : _selectedMostSearchedTag.value;
 
@@ -77,12 +72,12 @@ class _LatestViewState extends ConsumerState<LatestView> {
           ),
           const SliverAppAnnouncementBanner(),
           const SliverUnreadMailsBanner(),
-          if (isDesktop)
+          if (context.isLandscapeLayout)
             SliverResultHeader(
               selectedTagString: selectedTagString,
               controller: controller,
             ),
-          if (!isDesktop)
+          if (!context.isLandscapeLayout)
             SliverToBoxAdapter(
               child: ValueListenableBuilder<String>(
                 valueListenable: _selectedMostSearchedTag,
