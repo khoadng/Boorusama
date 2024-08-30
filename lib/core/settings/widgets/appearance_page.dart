@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/premiums/premiums.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
@@ -214,14 +215,16 @@ class _ImageListingSettingsSectionState
           padding: widget.itemPadding,
         ),
         if (settings.pageMode == PageMode.paginated)
-          SettingsTile<PageIndicatorPosition>(
-            title: const Text('settings.page_indicator.page_indicator').tr(),
-            selectedOption: settings.pageIndicatorPosition,
-            items: const [...PageIndicatorPosition.values],
-            onChanged: (value) =>
-                _onUpdate(settings.copyWith(pageIndicatorPosition: value)),
-            optionBuilder: (value) => Text(value.localize()).tr(),
-            padding: widget.itemPadding,
+          PremiumInteractionBlock(
+            child: SettingsTile<PageIndicatorPosition>(
+              title: const Text('settings.page_indicator.page_indicator').tr(),
+              selectedOption: settings.pageIndicatorPosition,
+              items: const [...PageIndicatorPosition.values],
+              onChanged: (value) =>
+                  _onUpdate(settings.copyWith(pageIndicatorPosition: value)),
+              optionBuilder: (value) => Text(value.localize()).tr(),
+              padding: widget.itemPadding,
+            ),
           ),
         SettingsTile(
           title: const Text('settings.performance.posts_per_page').tr(),
@@ -259,17 +262,19 @@ class _ImageListingSettingsSectionState
           )),
           contentPadding: widget.itemPadding,
         ),
-        SwitchListTile(
-          title: const Text('Blur explicit content').tr(),
-          value: settings.blurExplicitMedia,
-          onChanged: (value) => _onUpdate(settings.copyWith(
-              mediaBlurCondition: value
-                  ? MediaBlurCondition.explicitOnly
-                  : MediaBlurCondition.none)),
-          contentPadding: widget.itemPadding,
+        PremiumInteractionBlock(
+          child: SwitchListTile(
+            title: const Text('Blur explicit content').tr(),
+            value: settings.blurExplicitMedia,
+            onChanged: (value) => _onUpdate(settings.copyWith(
+                mediaBlurCondition: value
+                    ? MediaBlurCondition.explicitOnly
+                    : MediaBlurCondition.none)),
+            contentPadding: widget.itemPadding,
+          ),
         ),
         const SizedBox(height: 4),
-        _buildSpacingSlider(settings),
+        PremiumInteractionBlock(child: _buildSpacingSlider(settings)),
         const SizedBox(height: 10),
         _buildBorderRadiusSlider(settings),
         const SizedBox(height: 10),

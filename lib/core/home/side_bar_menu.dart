@@ -118,7 +118,7 @@ class SideBarMenu extends ConsumerWidget {
                             Symbols.star,
                             fill: 1,
                           ),
-                          title: const Text('Boorusama Plus'),
+                          title: const Text(kPremiumBrandNameFull),
                           onTap: () {
                             if (popOnSelect) context.navigator.pop();
                             Navigator.of(context).push(CupertinoPageRoute<void>(
