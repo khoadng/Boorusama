@@ -180,10 +180,9 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
         color: context.theme.scaffoldBackgroundColor,
         child: PostGridConfigRegion(
           postController: controller,
-          blacklistHeader: ScreenLayoutBuilder(
-            builder: (_, small) => _buildConfigHeader(
-              !small ? Axis.vertical : Axis.horizontal,
-            ),
+          blacklistHeader: ResponsiveLayoutBuilder(
+            phone: (context) => _buildConfigHeader(Axis.horizontal),
+            pc: (context) => _buildConfigHeader(Axis.vertical),
           ),
           builder: (context, header) => ConditionalParentWidget(
             condition: widget.safeArea,
@@ -287,26 +286,22 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                                   sliver: e,
                                 )),
                           if (settings.showPostListConfigHeader)
-                            ScreenLayoutBuilder(
-                              builder: (_, small) {
-                                if (!small) {
-                                  return const SliverSizedBox.shrink();
-                                }
-
-                                return ConditionalValueListenableBuilder(
-                                  valueListenable: refreshing,
-                                  useFalseChildAsCache: true,
-                                  trueChild: const SliverSizedBox.shrink(),
-                                  falseChild: SliverPinnedHeader(
-                                    child: Padding(
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: settings.imageGridPadding,
-                                      ),
-                                      child: header,
+                            ResponsiveLayoutBuilder(
+                              phone: (context) =>
+                                  ConditionalValueListenableBuilder(
+                                valueListenable: refreshing,
+                                useFalseChildAsCache: true,
+                                trueChild: const SliverSizedBox.shrink(),
+                                falseChild: SliverPinnedHeader(
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: settings.imageGridPadding,
                                     ),
+                                    child: header,
                                   ),
-                                );
-                              },
+                                ),
+                              ),
+                              pc: (context) => const SliverSizedBox.shrink(),
                             ),
                           ConditionalValueListenableBuilder(
                             valueListenable: refreshing,
