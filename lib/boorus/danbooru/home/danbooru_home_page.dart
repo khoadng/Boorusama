@@ -128,9 +128,8 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
       mobileMenuBuilder: [
         if (widget.config.hasLoginDetails() && userId != null)
           SideMenuTile(
-            icon: Icon(
+            icon: const _Icon(
               Symbols.account_box,
-              fill: context.themeMode.isLight ? 0 : 1,
             ),
             title: const Text('profile.profile').tr(),
             onTap: () {
@@ -144,9 +143,8 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
             },
           ),
         SideMenuTile(
-          icon: Icon(
+          icon: const _Icon(
             Symbols.explore,
-            fill: context.themeMode.isLight ? 0 : 1,
           ),
           title: const Text('explore.explore').tr(),
           onTap: () => context.navigator.push(CupertinoPageRoute(
@@ -158,9 +156,8 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
                   ))),
         ),
         SideMenuTile(
-          icon: Icon(
+          icon: const _Icon(
             Symbols.photo_album,
-            fill: context.themeMode.isLight ? 0 : 1,
           ),
           title: const Text('Pools'),
           onTap: () {
@@ -168,9 +165,8 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
           },
         ),
         SideMenuTile(
-          icon: Icon(
+          icon: const _Icon(
             Symbols.forum,
-            fill: context.themeMode.isLight ? 0 : 1,
           ),
           title: const Text('forum.forum').tr(),
           onTap: () {
@@ -178,9 +174,8 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
           },
         ),
         SideMenuTile(
-          icon: const Icon(
+          icon: const _Icon(
             Symbols.search,
-            fill: 1,
           ),
           title: const Text('Artists'),
           onTap: () {
@@ -189,9 +184,8 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
         ),
         if (widget.config.hasLoginDetails()) ...[
           SideMenuTile(
-            icon: Icon(
+            icon: const _Icon(
               Symbols.favorite,
-              fill: context.themeMode.isLight ? 0 : 1,
             ),
             title: Text('profile.favorites'.tr()),
             onTap: () {
@@ -199,9 +193,8 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
             },
           ),
           SideMenuTile(
-            icon: Icon(
+            icon: const _Icon(
               Symbols.collections,
-              fill: context.themeMode.isLight ? 0 : 1,
             ),
             title: const Text('favorite_groups.favorite_groups').tr(),
             onTap: () {
@@ -209,9 +202,8 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
             },
           ),
           SideMenuTile(
-            icon: const Icon(
+            icon: const _Icon(
               Symbols.search,
-              fill: 1,
             ),
             title: const Text('saved_search.saved_search').tr(),
             onTap: () {
@@ -219,9 +211,8 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
             },
           ),
           SideMenuTile(
-            icon: const Icon(
+            icon: const _Icon(
               Symbols.tag,
-              fill: 1,
             ),
             title: const Text(
               'blacklisted_tags.blacklisted_tags',
@@ -336,6 +327,22 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
           const BlacklistedTagsPage(),
         ],
       ],
+    );
+  }
+}
+
+class _Icon extends StatelessWidget {
+  const _Icon(
+    this.icon,
+  );
+
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return Icon(
+      icon,
+      fill: context.isLight ? 0 : 1,
     );
   }
 }

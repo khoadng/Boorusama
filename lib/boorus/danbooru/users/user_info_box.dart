@@ -36,7 +36,7 @@ class UserInfoBox extends ConsumerWidget {
               Text(
                 user.name.replaceAll('_', ' '),
                 style: context.textTheme.titleLarge?.copyWith(
-                  color: context.themeMode.isLight
+                  color: context.isLight
                       ? user.level.toColor(context)
                       : colors?.foregroundColor,
                   fontWeight: FontWeight.w500,

@@ -19,11 +19,10 @@ typedef ChipColors = ({
 ChipColors? generateChipColorsFromColorScheme(
   Color? color,
   ColorScheme colorScheme,
-  AppThemeMode themeMode,
   bool enableDynamicColoring,
 ) {
   if (color == null) return null;
-  if (themeMode.isLight) {
+  if (colorScheme.brightness == Brightness.light) {
     final backgroundColor = enableDynamicColoring
         ? color.harmonizeWith(colorScheme.primary)
         : color;

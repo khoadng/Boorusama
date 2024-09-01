@@ -30,10 +30,8 @@ class _EmptyBooruConfigHomePageState
       value: SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         systemNavigationBarColor: Colors.transparent,
-        statusBarBrightness:
-            context.themeMode.isDark ? Brightness.dark : Brightness.light,
-        statusBarIconBrightness:
-            context.themeMode.isLight ? Brightness.dark : Brightness.light,
+        statusBarBrightness: context.brightness,
+        statusBarIconBrightness: context.onBrightness,
       ),
       child: Scaffold(
         key: scaffoldKey,
