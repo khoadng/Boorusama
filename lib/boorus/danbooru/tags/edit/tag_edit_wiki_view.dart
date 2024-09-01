@@ -175,7 +175,7 @@ class _RelatedTagChips extends ConsumerWidget {
                     text: '  ${NumberFormat.compact().format(tag.postCount)}',
                     style: context.textTheme.bodySmall?.copyWith(
                       fontSize: 11,
-                      color: context.themeMode.isLight
+                      color: context.isLight
                           ? !selected
                               ? null
                               : Colors.white.withOpacity(0.85)

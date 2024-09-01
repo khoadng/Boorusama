@@ -314,7 +314,7 @@ class UserDetailsPage extends ConsumerWidget {
                       text: e.tag.replaceUnderscoreWithSpace(),
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
-                        color: context.themeMode.isDark
+                        color: context.isDark
                             ? ref.watch(
                                 tagColorProvider(TagCategory.copyright().name))
                             : Colors.white,
@@ -323,7 +323,7 @@ class UserDetailsPage extends ConsumerWidget {
                         TextSpan(
                           text: '  ${(e.frequency * 100).toStringAsFixed(1)}%',
                           style: context.textTheme.bodySmall?.copyWith(
-                            color: context.themeMode.isLight
+                            color: context.isLight
                                 ? Colors.white.withOpacity(0.85)
                                 : null,
                           ),

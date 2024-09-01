@@ -47,15 +47,12 @@ class WindowButtons extends StatelessWidget {
     return Row(
       children: [
         MinimizeWindowButton(
-            colors:
-                context.themeMode.isDark ? buttonColors : buttonColorsLight),
+            colors: context.isDark ? buttonColors : buttonColorsLight),
         MaximizeWindowButton(
-            colors:
-                context.themeMode.isDark ? buttonColors : buttonColorsLight),
+            colors: context.isDark ? buttonColors : buttonColorsLight),
         CloseWindowButton(
-            colors: context.themeMode.isDark
-                ? closeButtonColors
-                : closeButtonColorsLight),
+            colors:
+                context.isDark ? closeButtonColors : closeButtonColorsLight),
       ],
     );
   }

@@ -99,7 +99,6 @@ extension DynamicColorX on BuildContext {
       generateChipColorsFromColorScheme(
         color,
         colorScheme,
-        themeMode,
         settings.enableDynamicColoring,
       );
 }

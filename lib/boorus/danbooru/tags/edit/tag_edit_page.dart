@@ -892,7 +892,7 @@ class TagEditTagListSection extends ConsumerWidget {
                 title: Text(
                   filtered[index].replaceAll('_', ' '),
                   style: TextStyle(
-                    color: context.themeMode.isLight
+                    color: context.isLight
                         ? colors?.backgroundColor
                         : colors?.foregroundColor,
                     fontWeight: toBeAdded.contains(filtered[index])
@@ -934,7 +934,6 @@ class TagEditTagListSection extends ConsumerWidget {
               ? generateChipColorsFromColorScheme(
                   color,
                   context.colorScheme,
-                  context.themeMode,
                   ref.watch(settingsProvider).enableDynamicColoring,
                 )
               : null,
