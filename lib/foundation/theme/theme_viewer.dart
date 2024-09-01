@@ -108,49 +108,67 @@ class _ThemePreviewAppState extends State<ThemePreviewApp> {
               effect: const WormEffect(),
             ),
             const SizedBox(height: 24),
-            SizedBox(
-              height: 60,
-              child: ListView.builder(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 4,
-                  horizontal: 8,
-                ),
-                scrollDirection: Axis.horizontal,
-                itemCount: preDefinedColorSettings.length,
-                itemBuilder: (context, index) {
-                  final selected =
-                      preDefinedColorSettings[index] == _currentScheme;
-
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 2,
+            Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 8,
+                  ),
+                  child: Text(
+                    _currentScheme?.nickname ??
+                        _currentScheme?.name ??
+                        'Unknown',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
                     ),
-                    child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _currentScheme = preDefinedColorSettings[index];
-                          widget
-                              .onSchemeChanged(preDefinedColorSettings[index]);
-                        });
-                      },
-                      child: Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: preDefinedColorSettings[index].primary,
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: selected
-                                ? colorScheme.onSurface
-                                : Colors.transparent,
-                            width: selected ? 2 : 0,
+                  ),
+                ),
+                SizedBox(
+                  height: 48,
+                  child: ListView.builder(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 4,
+                      horizontal: 8,
+                    ),
+                    scrollDirection: Axis.horizontal,
+                    itemCount: preDefinedColorSettings.length,
+                    itemBuilder: (context, index) {
+                      final selected =
+                          preDefinedColorSettings[index] == _currentScheme;
+
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 2,
+                        ),
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _currentScheme = preDefinedColorSettings[index];
+                              widget.onSchemeChanged(
+                                  preDefinedColorSettings[index]);
+                            });
+                          },
+                          child: Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color: preDefinedColorSettings[index].surface,
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: selected
+                                    ? colorScheme.primary
+                                    : Colors.transparent,
+                                width: selected ? 2 : 0,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                  );
-                },
-              ),
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
 
             // list of predefined colors
@@ -222,11 +240,11 @@ class PreviewFrame extends StatelessWidget {
       child: Container(
         padding: padding ??
             const EdgeInsets.symmetric(
-              vertical: 16,
-              horizontal: 16,
+              vertical: 12,
+              horizontal: 12,
             ),
         margin: const EdgeInsets.symmetric(
-          horizontal: 40,
+          horizontal: 20,
         ),
         decoration: BoxDecoration(
           border: Border.all(

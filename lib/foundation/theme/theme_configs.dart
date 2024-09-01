@@ -8,11 +8,36 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
 final preDefinedColorSettings = [
-  ColorSettings.fromScheme('boorusama_light', staticLightScheme),
-  ColorSettings.fromScheme('boorusama_dark', staticDarkScheme),
-  ColorSettings.fromScheme('boorusama_black', staticBlackScheme),
-  ColorSettings.fromScheme('danbooru_dark', staticDanbooruDarkScheme),
-  ColorSettings.fromScheme('danbooru_light', staticDanbooruLightScheme),
+  ColorSettings.fromScheme(
+    'boorusama_light',
+    staticLightScheme,
+    nickname: 'Light',
+  ),
+  ColorSettings.fromScheme(
+    'boorusama_dark',
+    staticDarkScheme,
+    nickname: 'Dark',
+  ),
+  ColorSettings.fromScheme(
+    'boorusama_black',
+    staticBlackScheme,
+    nickname: 'Midnight',
+  ),
+  ColorSettings.fromScheme(
+    'danbooru_dark',
+    staticDanbooruDarkScheme,
+    nickname: 'Dark Blue',
+  ),
+  ColorSettings.fromScheme(
+    'danbooru_light',
+    staticDanbooruLightScheme,
+    nickname: 'Light Blue',
+  ),
+  ColorSettings.fromScheme(
+    'green',
+    staticGreenScheme,
+    nickname: 'Light Green',
+  ),
 ].whereNotNull().toList();
 
 const staticDanbooruDarkScheme = ColorScheme(
@@ -47,6 +72,22 @@ const staticDanbooruLightScheme = ColorScheme(
   onSurface: Colors.black,
 );
 
+const staticGreenScheme = ColorScheme(
+  brightness: Brightness.light,
+  secondaryContainer: Color(0xfff2f6fe),
+  onSecondaryContainer: Colors.black,
+  onTertiaryContainer: Colors.black,
+  surfaceContainerHighest: Color(0xff93c292),
+  primary: Color(0xff000198),
+  onPrimary: kOnPrimaryLightColor,
+  secondary: kOnPrimaryLightColor,
+  onSecondary: kOnPrimaryLightColor,
+  error: Color(0xfffec3c3),
+  onError: kOnErrorDarkColor,
+  surface: Color(0xffa9e4a4),
+  onSurface: Colors.black,
+);
+
 Color? _parseColor(dynamic color) => switch (color) {
       String s => ColorUtils.hexToColor(s),
       _ => null,
@@ -54,6 +95,7 @@ Color? _parseColor(dynamic color) => switch (color) {
 
 class ColorSettings extends Equatable {
   final String name;
+  final String? nickname;
   final Brightness brightness;
   final Color? secondaryContainer;
   final Color? onSecondaryContainer;
@@ -83,9 +125,14 @@ class ColorSettings extends Equatable {
     required this.onError,
     required this.surface,
     required this.onSurface,
+    this.nickname,
   });
 
-  static ColorSettings? fromScheme(String name, ColorScheme? colorScheme) {
+  static ColorSettings? fromScheme(
+    String name,
+    ColorScheme? colorScheme, {
+    String? nickname,
+  }) {
     if (colorScheme == null) return null;
 
     return ColorSettings(
@@ -103,6 +150,7 @@ class ColorSettings extends Equatable {
       onError: colorScheme.onError,
       surface: colorScheme.surface,
       onSurface: colorScheme.onSurface,
+      nickname: nickname,
     );
   }
 

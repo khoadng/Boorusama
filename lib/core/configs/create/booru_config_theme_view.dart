@@ -55,7 +55,6 @@ class BooruConfigThemeView extends ConsumerWidget {
                         Positioned.fill(
                           child: Column(
                             children: [
-                              const SizedBox(height: 12),
                               Expanded(
                                 child: ThemePreviewApp(
                                   defaultScheme: fallback,
@@ -121,8 +120,12 @@ class BooruConfigThemeView extends ConsumerWidget {
               width: 32,
               height: 32,
               decoration: BoxDecoration(
-                color: colors?.primary,
+                color: colors?.surface,
                 shape: BoxShape.circle,
+                border: Border.all(
+                  color: colors?.primary ?? Colors.black,
+                  width: 2,
+                ),
               ),
             ),
           ),
