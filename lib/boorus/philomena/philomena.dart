@@ -18,7 +18,7 @@ import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
-import 'package:boorusama/routes.dart';
+import 'package:boorusama/router.dart';
 import 'philomena_post.dart';
 
 class PhilomenaBuilder

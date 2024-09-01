@@ -1,3 +1,6 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -115,40 +118,59 @@ class BlacklistedTagsNotifier
 
 extension BlacklistedTagsNotifierX on BlacklistedTagsNotifier {
   Future<void> addFromStringWithToast({
+    required BuildContext context,
     required String tagString,
   }) async {
     final tags = sanitizeBlacklistTagString(tagString);
 
     if (tags == null) {
-      showErrorToast('Invalid tag format');
+      showErrorToast(
+        context,
+        'Invalid tag format',
+      );
       return;
     }
 
     await add(
       tagSet: tags.toSet(),
-      onSuccess: (tags) => showSuccessToast('blacklisted_tags.updated'.tr()),
-      onFailure: (e) =>
-          showErrorToast('${'blacklisted_tags.failed_to_add'.tr()}\n$e'),
+      onSuccess: (tags) =>
+          showSuccessToast(context, 'blacklisted_tags.updated'.tr()),
+      onFailure: (e) => showErrorToast(
+        context,
+        '${'blacklisted_tags.failed_to_add'.tr()}\n$e',
+      ),
     );
   }
 
   Future<void> addWithToast({
+    required BuildContext context,
     required String tag,
   }) =>
       add(
         tagSet: {tag},
-        onSuccess: (tags) => showSuccessToast('blacklisted_tags.updated'.tr()),
-        onFailure: (e) =>
-            showErrorToast('${'blacklisted_tags.failed_to_add'.tr()}\n$e'),
+        onSuccess: (tags) => showSuccessToast(
+          context,
+          'blacklisted_tags.updated'.tr(),
+        ),
+        onFailure: (e) => showErrorToast(
+          context,
+          '${'blacklisted_tags.failed_to_add'.tr()}\n$e',
+        ),
       );
 
   Future<void> removeWithToast({
+    required BuildContext context,
     required String tag,
   }) =>
       remove(
         tag: tag,
-        onSuccess: (tags) => showSuccessToast('blacklisted_tags.updated'.tr()),
-        onFailure: () =>
-            showErrorToast('blacklisted_tags.failed_to_remove'.tr()),
+        onSuccess: (tags) => showSuccessToast(
+          context,
+          'blacklisted_tags.updated'.tr(),
+        ),
+        onFailure: () => showErrorToast(
+          context,
+          'blacklisted_tags.failed_to_remove'.tr(),
+        ),
       );
 }

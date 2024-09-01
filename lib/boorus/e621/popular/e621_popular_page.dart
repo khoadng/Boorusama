@@ -73,7 +73,6 @@ class _E621PopularPageState extends ConsumerState<E621PopularPage> {
                   child: InfinitePostListScaffold(
                     errors: errors,
                     controller: controller,
-                    sliverHeaderBuilder: (context) => [],
                   ),
                 ),
               ],

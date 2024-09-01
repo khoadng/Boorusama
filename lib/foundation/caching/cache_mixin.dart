@@ -15,10 +15,10 @@ class Cache<T> with CacheMixin<T> {
 }
 
 class CacheEntry<T> {
-  final DateTime timestamp;
-  final T value;
 
   CacheEntry(this.value) : timestamp = DateTime.now();
+  final DateTime timestamp;
+  final T value;
 }
 
 mixin CacheMixin<T> {
@@ -31,7 +31,7 @@ mixin CacheMixin<T> {
       DateTime.now().difference(cacheEntry.timestamp) > staleDuration;
 
   T? get(String key) {
-    var cacheEntry = _cache.get(key);
+    final cacheEntry = _cache.get(key);
 
     if (cacheEntry == null) return null;
 

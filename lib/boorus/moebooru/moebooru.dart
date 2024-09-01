@@ -45,6 +45,7 @@ class MoebooruBuilder
         LegacyGranularRatingOptionsBuilderMixin,
         LegacyGranularRatingQueryBuilderMixin,
         UnknownMetatagsMixin,
+        DefaultHomeMixin,
         DefaultThumbnailUrlMixin,
         DefaultTagColorMixin,
         DefaultPostGesturesHandlerMixin,
@@ -134,6 +135,7 @@ class MoebooruBuilder
   PostDetailsPageBuilder get postDetailsPageBuilder =>
       (context, config, payload) => PostDetailsLayoutSwitcher(
             initialIndex: payload.initialIndex,
+            posts: payload.posts,
             scrollController: payload.scrollController,
             desktop: (controller) => MoebooruPostDetailsDesktopPage(
               initialIndex: controller.currentPage.value,
@@ -143,6 +145,7 @@ class MoebooruBuilder
             ),
             mobile: (controller) => MoebooruPostDetailsPage(
               initialPage: controller.currentPage.value,
+              controller: controller,
               posts: payload.posts.map((e) => e as MoebooruPost).toList(),
               onExit: (page) => controller.onExit(page),
               onPageChanged: (page) => controller.setPage(page),
@@ -163,10 +166,6 @@ class MoebooruBuilder
       'source': (post, config) => config.downloadUrl,
     },
   );
-
-  @override
-  HomeViewBuilder get homeViewBuilder => (context, config, controller) =>
-      MoebooruMobileHomeView(controller: controller);
 }
 
 class MoebooruFavoritesPage extends ConsumerWidget {

@@ -20,7 +20,7 @@ class TagSummaryRepositoryFile {
       final file = File('${directory.path}/$path');
 
       if (file.existsSync()) {
-        final lastModified = await file.lastModified();
+        final lastModified = file.lastModifiedSync();
         final now = DateTime.now();
         if (now.difference(lastModified).inDays < 1) {
           final content = await file.readAsString();

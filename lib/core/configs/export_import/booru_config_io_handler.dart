@@ -1,12 +1,10 @@
-// Flutter imports:
-import 'package:flutter/services.dart';
-
 // Package imports:
 import 'package:version/version.dart';
 
 // Project imports:
 import 'package:boorusama/core/backups/backups.dart';
 import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/foundation/clipboard.dart';
 import 'package:boorusama/functional.dart';
 
 const kBooruConfigsExporterImporterVersion = 1;
@@ -29,16 +27,15 @@ class BooruConfigIOHandler {
         exportVersion: appVersion,
       ).fold(
         (l) => onError?.call(l.toString()),
-        (r) => Clipboard.setData(ClipboardData(text: r))
+        (r) => AppClipboard.copy(r)
             .then((value) => onSucceed?.call())
             .catchError((e, st) => onError?.call(e.toString())),
       );
 
   static Future<Either<ImportError, BooruConfigExportData>>
       importFromClipboard() async {
-    final data = await Clipboard.getData('text/plain');
+    final jsonString = await AppClipboard.paste('text/plain');
 
-    final jsonString = data?.text;
     if (jsonString == null || jsonString.isEmpty) {
       return left(const ImportErrorEmpty());
     }

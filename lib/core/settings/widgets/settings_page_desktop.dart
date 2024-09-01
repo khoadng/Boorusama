@@ -75,182 +75,185 @@ class _LargeLayoutState extends ConsumerState<_LargeLayout> {
 
     return ValueListenableBuilder(
       valueListenable: currentTab,
-      builder: (context, index, _) => Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SingleChildScrollView(
-            primary: false,
-            child: SizedBox(
-              width: 200,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _SettingsSection(
-                    label: 'settings.app_settings'.tr(),
-                  ),
-                  ListTile(
-                    textColor:
-                        index == 0 ? context.colorScheme.onSecondary : null,
-                    tileColor:
-                        index == 0 ? context.colorScheme.secondary : null,
-                    title: const Text('settings.appearance.appearance').tr(),
-                    onTap: () => currentTab.value = 0,
-                  ),
-                  ListTile(
-                    textColor:
-                        index == 1 ? context.colorScheme.onSecondary : null,
-                    tileColor:
-                        index == 1 ? context.colorScheme.secondary : null,
-                    title: const Text('settings.language.language').tr(),
-                    onTap: () => currentTab.value = 1,
-                  ),
-                  ListTile(
-                    textColor:
-                        index == 2 ? context.colorScheme.onSecondary : null,
-                    tileColor:
-                        index == 2 ? context.colorScheme.secondary : null,
-                    title: const Text('download.download').tr(),
-                    onTap: () => currentTab.value = 2,
-                  ),
-                  ListTile(
-                    textColor:
-                        index == 3 ? context.colorScheme.onSecondary : null,
-                    tileColor:
-                        index == 3 ? context.colorScheme.secondary : null,
-                    title: const Text('settings.performance.performance').tr(),
-                    onTap: () => currentTab.value = 3,
-                  ),
-                  ListTile(
-                    textColor:
-                        index == 4 ? context.colorScheme.onSecondary : null,
-                    tileColor:
-                        index == 4 ? context.colorScheme.secondary : null,
-                    title:
-                        const Text('settings.data_and_storage.data_and_storage')
-                            .tr(),
-                    onTap: () => currentTab.value = 4,
-                  ),
-                  ListTile(
-                    textColor:
-                        index == 5 ? context.colorScheme.onSecondary : null,
-                    tileColor:
-                        index == 5 ? context.colorScheme.secondary : null,
-                    title: const Text(
-                            'settings.backup_and_restore.backup_and_restore')
-                        .tr(),
-                    onTap: () => currentTab.value = 5,
-                  ),
-                  ListTile(
-                    textColor:
-                        index == 6 ? context.colorScheme.onSecondary : null,
-                    tileColor:
-                        index == 6 ? context.colorScheme.secondary : null,
-                    title: const Text('settings.search.search').tr(),
-                    onTap: () => currentTab.value = 6,
-                  ),
-                  ListTile(
-                    textColor:
-                        index == 7 ? context.colorScheme.onSecondary : null,
-                    tileColor:
-                        index == 7 ? context.colorScheme.secondary : null,
-                    title:
-                        const Text('settings.accessibility.accessibility').tr(),
-                    onTap: () => currentTab.value = 7,
-                  ),
-                  ListTile(
-                    textColor:
-                        index == 8 ? context.colorScheme.onSecondary : null,
-                    tileColor:
-                        index == 8 ? context.colorScheme.secondary : null,
-                    title: const Text('settings.privacy.privacy').tr(),
-                    onTap: () => currentTab.value = 8,
-                  ),
-                  ListTile(
-                    textColor:
-                        index == 9 ? context.colorScheme.onSecondary : null,
-                    tileColor:
-                        index == 9 ? context.colorScheme.secondary : null,
-                    title: const Text('settings.debug_logs.debug_logs').tr(),
-                    onTap: () => currentTab.value = 9,
-                  ),
-                  const Divider(
-                    thickness: 0.8,
-                    endIndent: 10,
-                    indent: 10,
-                  ),
-                  ListTile(
-                    title: const Text('settings.changelog').tr(),
-                    onTap: () => showDialog(
+      builder: (context, index, _) => LayoutBuilder(
+        builder: (context, constrains) => Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SingleChildScrollView(
+              primary: false,
+              child: SizedBox(
+                width: constrains.maxWidth > 500 ? 200 : 100,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _SettingsSection(
+                      label: 'settings.app_settings'.tr(),
+                    ),
+                    ListTile(
+                      textColor:
+                          index == 0 ? context.colorScheme.onSecondary : null,
+                      tileColor:
+                          index == 0 ? context.colorScheme.secondary : null,
+                      title: const Text('settings.appearance.appearance').tr(),
+                      onTap: () => currentTab.value = 0,
+                    ),
+                    ListTile(
+                      textColor:
+                          index == 1 ? context.colorScheme.onSecondary : null,
+                      tileColor:
+                          index == 1 ? context.colorScheme.secondary : null,
+                      title: const Text('settings.language.language').tr(),
+                      onTap: () => currentTab.value = 1,
+                    ),
+                    ListTile(
+                      textColor:
+                          index == 2 ? context.colorScheme.onSecondary : null,
+                      tileColor:
+                          index == 2 ? context.colorScheme.secondary : null,
+                      title: const Text('download.download').tr(),
+                      onTap: () => currentTab.value = 2,
+                    ),
+                    ListTile(
+                      textColor:
+                          index == 3 ? context.colorScheme.onSecondary : null,
+                      tileColor:
+                          index == 3 ? context.colorScheme.secondary : null,
+                      title:
+                          const Text('settings.performance.performance').tr(),
+                      onTap: () => currentTab.value = 3,
+                    ),
+                    ListTile(
+                      textColor:
+                          index == 4 ? context.colorScheme.onSecondary : null,
+                      tileColor:
+                          index == 4 ? context.colorScheme.secondary : null,
+                      title: const Text(
+                              'settings.data_and_storage.data_and_storage')
+                          .tr(),
+                      onTap: () => currentTab.value = 4,
+                    ),
+                    ListTile(
+                      textColor:
+                          index == 5 ? context.colorScheme.onSecondary : null,
+                      tileColor:
+                          index == 5 ? context.colorScheme.secondary : null,
+                      title: const Text(
+                              'settings.backup_and_restore.backup_and_restore')
+                          .tr(),
+                      onTap: () => currentTab.value = 5,
+                    ),
+                    ListTile(
+                      textColor:
+                          index == 6 ? context.colorScheme.onSecondary : null,
+                      tileColor:
+                          index == 6 ? context.colorScheme.secondary : null,
+                      title: const Text('settings.search.search').tr(),
+                      onTap: () => currentTab.value = 6,
+                    ),
+                    ListTile(
+                      textColor:
+                          index == 7 ? context.colorScheme.onSecondary : null,
+                      tileColor:
+                          index == 7 ? context.colorScheme.secondary : null,
+                      title: const Text('settings.accessibility.accessibility')
+                          .tr(),
+                      onTap: () => currentTab.value = 7,
+                    ),
+                    ListTile(
+                      textColor:
+                          index == 8 ? context.colorScheme.onSecondary : null,
+                      tileColor:
+                          index == 8 ? context.colorScheme.secondary : null,
+                      title: const Text('settings.privacy.privacy').tr(),
+                      onTap: () => currentTab.value = 8,
+                    ),
+                    ListTile(
+                      textColor:
+                          index == 9 ? context.colorScheme.onSecondary : null,
+                      tileColor:
+                          index == 9 ? context.colorScheme.secondary : null,
+                      title: const Text('settings.debug_logs.debug_logs').tr(),
+                      onTap: () => currentTab.value = 9,
+                    ),
+                    const Divider(
+                      thickness: 0.8,
+                      endIndent: 10,
+                      indent: 10,
+                    ),
+                    ListTile(
+                      title: const Text('settings.changelog').tr(),
+                      onTap: () => showDialog(
+                          context: context,
+                          builder: (context) => Container(
+                                margin: const EdgeInsets.all(120),
+                                child: const ChangelogPage(),
+                              )),
+                    ),
+                    ListTile(
+                      title: const Text('settings.help_us_translate').tr(),
+                      onTap: () => launchExternalUrlString(
+                          appInfo.translationProjectUrl),
+                    ),
+                    ListTile(
+                      title: const Text('settings.information').tr(),
+                      onTap: () => showDialog(
                         context: context,
-                        builder: (context) => Container(
-                              margin: const EdgeInsets.all(120),
-                              child: const ChangelogPage(),
-                            )),
-                  ),
-                  ListTile(
-                    title: const Text('settings.help_us_translate').tr(),
-                    onTap: () =>
-                        launchExternalUrlString(appInfo.translationProjectUrl),
-                  ),
-                  ListTile(
-                    title: const Text('settings.information').tr(),
-                    onTap: () => showDialog(
-                      context: context,
-                      builder: (context) => const AboutPage(),
+                        builder: (context) => const AboutPage(),
+                      ),
                     ),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.only(left: 8),
-                    child: _Footer(
-                      mainAxisAlignment: MainAxisAlignment.start,
+                    const Padding(
+                      padding: EdgeInsets.only(left: 8),
+                      child: _Footer(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-          const VerticalDivider(width: 1),
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: IndexedStack(
-                index: index,
-                children: const [
-                  AppearancePage(
-                    hasAppBar: false,
-                  ),
-                  LanguagePage(
-                    hasAppBar: false,
-                  ),
-                  DownloadPage(
-                    hasAppBar: false,
-                  ),
-                  PerformancePage(
-                    hasAppBar: false,
-                  ),
-                  DataAndStoragePage(
-                    hasAppBar: false,
-                  ),
-                  BackupAndRestorePage(
-                    hasAppBar: false,
-                  ),
-                  SearchSettingsPage(
-                    hasAppBar: false,
-                  ),
-                  AccessibilityPage(
-                    hasAppBar: false,
-                  ),
-                  PrivacyPage(
-                    hasAppBar: false,
-                  ),
-                  DebugLogsPage(
-                    hasAppBar: false,
-                  ),
-                ],
+            const VerticalDivider(width: 1),
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: IndexedStack(
+                  index: index,
+                  children: const [
+                    AppearancePage(
+                      hasAppBar: false,
+                    ),
+                    LanguagePage(
+                      hasAppBar: false,
+                    ),
+                    DownloadPage(
+                      hasAppBar: false,
+                    ),
+                    PerformancePage(
+                      hasAppBar: false,
+                    ),
+                    DataAndStoragePage(
+                      hasAppBar: false,
+                    ),
+                    BackupAndRestorePage(
+                      hasAppBar: false,
+                    ),
+                    SearchSettingsPage(
+                      hasAppBar: false,
+                    ),
+                    AccessibilityPage(
+                      hasAppBar: false,
+                    ),
+                    PrivacyPage(
+                      hasAppBar: false,
+                    ),
+                    DebugLogsPage(
+                      hasAppBar: false,
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

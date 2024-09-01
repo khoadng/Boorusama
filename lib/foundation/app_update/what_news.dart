@@ -18,16 +18,16 @@ sealed class ReleaseVersion {
 
   factory ReleaseVersion.fromText(String? text) =>
       switch (text?.toLowerCase()) {
-        String s => s.startsWith('unreleased')
+        final String s => s.startsWith('unreleased')
             ? Unreleased.fromText(s)
             : Official(Version.parse(s)),
         _ => Invalid(),
       };
 
   String? getChangelogKey() => switch (this) {
-        Unreleased u =>
+        final Unreleased u =>
           '${kChangelogKey}_unreleased_${u.lastUpdated?.toIso8601String() ?? 'no-date'}_seen',
-        Official o =>
+        final Official o =>
           '${kChangelogKey}_${o.version.withoutPreRelease().toString()}_seen',
         Invalid _ => null,
       };
@@ -35,7 +35,7 @@ sealed class ReleaseVersion {
   @override
   String toString() => switch (this) {
         Unreleased _ => 'unreleased',
-        Official o => o.version.toString(),
+        final Official o => o.version.toString(),
         Invalid _ => 'invalid',
       };
 }

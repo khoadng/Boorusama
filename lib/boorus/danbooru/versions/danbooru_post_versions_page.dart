@@ -9,9 +9,9 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/users/users.dart';
 import 'package:boorusama/boorus/danbooru/versions/versions.dart';
 import 'package:boorusama/core/images/images.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/router.dart';
 import 'package:boorusama/time.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -147,12 +147,9 @@ class TagEditHistoryCard extends StatelessWidget {
           const SizedBox(width: 8),
           Expanded(
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Expanded(
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Flexible(child: _buildUsername(context)),
                       const Text(
@@ -225,7 +222,6 @@ class TagEditHistoryCard extends StatelessWidget {
   Widget _buildUsername(BuildContext context) {
     return Material(
       color: Colors.transparent,
-      elevation: 0,
       child: InkWell(
         onTap: onUserTap,
         child: Text(

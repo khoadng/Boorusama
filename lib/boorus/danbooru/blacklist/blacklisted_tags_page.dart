@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
@@ -10,11 +9,11 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:boorusama/boorus/danbooru/blacklist/blacklist.dart';
 import 'package:boorusama/core/blacklists/blacklists.dart';
 import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/import_export_tag_button.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/html.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 //FIXME: This is a copy of lib/boorus/core/pages/blacklists/blacklisted_tag_page.dart
@@ -33,14 +32,18 @@ class BlacklistedTagsPage extends ConsumerWidget {
         title: const Text('blacklisted_tags.blacklisted_tags').tr(),
         actions: [
           _buildAddTagButton(context, ref),
-          tags != null
-              ? ImportExportTagButton(
-                  tags: tags,
-                  onImport: (tagString) => ref
-                      .read(danbooruBlacklistedTagsProvider(config).notifier)
-                      .addFromStringWithToast(tagString: tagString),
-                )
-              : const SizedBox.shrink(),
+          if (tags != null)
+            ImportExportTagButton(
+              tags: tags,
+              onImport: (tagString) => ref
+                  .read(danbooruBlacklistedTagsProvider(config).notifier)
+                  .addFromStringWithToast(
+                    context: context,
+                    tagString: tagString,
+                  ),
+            )
+          else
+            const SizedBox.shrink(),
         ],
       ),
       body: const SafeArea(child: BlacklistedTagsList()),
@@ -60,7 +63,10 @@ class BlacklistedTagsPage extends ConsumerWidget {
 
             ref
                 .read(danbooruBlacklistedTagsProvider(ref.readConfig).notifier)
-                .addWithToast(tag: tagString);
+                .addWithToast(
+                  context: context,
+                  tag: tagString,
+                );
             context.navigator.pop();
           },
         );
@@ -86,16 +92,11 @@ class BlacklistedTagsList extends ConsumerWidget {
             slivers: [
               SliverToBoxAdapter(
                 child: WarningContainer(
-                    title: 'Limitation',
-                    contentBuilder: (context) => Html(
-                          style: {
-                            'body': Style(
-                              color: context.colorScheme.onSurface,
-                              margin: Margins.zero,
-                            ),
-                          },
-                          data: 'blacklisted_tags.limitation_notice'.tr(),
-                        )),
+                  title: 'Limitation',
+                  contentBuilder: (context) => AppHtml(
+                    data: 'blacklisted_tags.limitation_notice'.tr(),
+                  ),
+                ),
               ),
               SliverList(
                 delegate: SliverChildBuilderDelegate(
@@ -107,7 +108,10 @@ class BlacklistedTagsList extends ConsumerWidget {
                       onRemoveTag: (tag) => ref
                           .read(danbooruBlacklistedTagsProvider(ref.readConfig)
                               .notifier)
-                          .removeWithToast(tag: tag),
+                          .removeWithToast(
+                            context: context,
+                            tag: tag,
+                          ),
                       onEditTap: () {
                         goToBlacklistedTagsSearchPage(
                           context,

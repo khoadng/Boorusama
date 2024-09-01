@@ -9,10 +9,10 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 // Project imports:
 import 'package:boorusama/clients/danbooru/danbooru_client_artists.dart';
 import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/router.dart';
 import '../artists.dart';
 
 class DanbooruArtistSearchList extends ConsumerStatefulWidget {
@@ -56,7 +56,7 @@ class _DanbooruArtistSearchPageState
     pagingController.removePageRequestListener(_onPageChanged);
   }
 
-  void _fetchPage(int pageKey) async {
+  Future<void> _fetchPage(int pageKey) async {
     final artists =
         await ref.read(danbooruArtistRepoProvider(ref.readConfig)).getArtists(
               name: widget.nameController.text,
@@ -67,6 +67,8 @@ class _DanbooruArtistSearchPageState
               hasTag: true,
               includeTag: true,
             );
+
+    if (!mounted) return;
 
     // exclude banned artists
     artists.removeWhere((artist) => artist.name == 'banned_artist');
@@ -86,8 +88,10 @@ class _DanbooruArtistSearchPageState
       builderDelegate: PagedChildBuilderDelegate<DanbooruArtist>(
         newPageProgressIndicatorBuilder: (context) => _buildLoading(),
         firstPageProgressIndicatorBuilder: (context) => _buildLoading(),
-        itemBuilder: (context, artist, index) =>
-            _buildArtistCard(context, artist),
+        itemBuilder: (context, artist, index) => ArtistSearchInfoCard(
+          focusScopeNode: widget.focusScopeNode,
+          artist: artist,
+        ),
       ),
     );
   }
@@ -102,11 +106,35 @@ class _DanbooruArtistSearchPageState
       ),
     );
   }
+}
 
-  Widget _buildArtistCard(
-    BuildContext context,
-    DanbooruArtist artist,
-  ) {
+class ArtistSearchInfoCard extends ConsumerStatefulWidget {
+  const ArtistSearchInfoCard({
+    super.key,
+    required this.focusScopeNode,
+    required this.artist,
+  });
+
+  final FocusScopeNode focusScopeNode;
+  final DanbooruArtist artist;
+
+  @override
+  ConsumerState<ArtistSearchInfoCard> createState() => _ArtistCardState();
+}
+
+class _ArtistCardState extends ConsumerState<ArtistSearchInfoCard> {
+  final expandedController = ExpandableController();
+
+  @override
+  void dispose() {
+    super.dispose();
+    expandedController.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final artist = widget.artist;
+
     return Card(
       color: context.colorScheme.surface,
       child: InkWell(
@@ -120,6 +148,7 @@ class _DanbooruArtistSearchPageState
             vertical: 6,
           ),
           child: ExpandablePanel(
+            controller: expandedController,
             theme: ExpandableThemeData(
               useInkWell: false,
               iconPlacement: ExpandablePanelIconPlacement.right,
@@ -148,10 +177,20 @@ class _DanbooruArtistSearchPageState
               ],
             ),
             collapsed: const SizedBox.shrink(),
-            expanded: Padding(
+            expanded: _buildExpanded(artist),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildExpanded(DanbooruArtist artist) {
+    return ValueListenableBuilder(
+      valueListenable: expandedController,
+      builder: (context, expanded, child) => expanded
+          ? Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   if (artist.otherNames.isNotEmpty) ...[
@@ -168,10 +207,8 @@ class _DanbooruArtistSearchPageState
                   ),
                 ],
               ),
-            ),
-          ),
-        ),
-      ),
+            )
+          : const SizedBox.shrink(),
     );
   }
 }

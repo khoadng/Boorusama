@@ -2,15 +2,6 @@
 import 'types.dart';
 
 class CommentDto {
-  final int? id;
-  final UserDto? user;
-  final int? postId;
-  final int? version;
-  final String? text;
-  final String? creationTime;
-  final String? lastEditTime;
-  final int? score;
-  final int? ownScore;
 
   CommentDto({
     this.id,
@@ -39,4 +30,13 @@ class CommentDto {
       ownScore: json['ownScore'] as int?,
     );
   }
+  final int? id;
+  final UserDto? user;
+  final int? postId;
+  final int? version;
+  final String? text;
+  final String? creationTime;
+  final String? lastEditTime;
+  final int? score;
+  final int? ownScore;
 }

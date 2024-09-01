@@ -57,7 +57,7 @@ class _DownloadPageState extends ConsumerState<DownloadPage> {
         ListTile(
           title: const Text('Ignore files that already downloaded'),
           subtitle: const Text(
-            'This will prevent downloading files that already exist in the folder. This is useful when you don\'t want to download the same file multiple times.',
+            "This will prevent downloading files that already exist in the folder. This is useful when you don't want to download the same file multiple times.",
           ),
           trailing: Switch(
             value: settings.skipDownloadIfExists,

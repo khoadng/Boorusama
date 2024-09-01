@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:equatable/equatable.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_portal/flutter_portal.dart';
 
 // Project imports:
 import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/foundation/display.dart';
+import 'package:boorusama/foundation/html.dart';
 
 class NoteStyle extends Equatable {
   const NoteStyle({
@@ -135,7 +135,7 @@ class _NoteContainerDesktopState extends State<_NoteContainerDesktop> {
           ),
           child: Material(
             child: SingleChildScrollView(
-              child: Html(
+              child: AppHtml(
                 data: widget.content,
               ),
             ),
@@ -242,7 +242,7 @@ class _NoteContainerMobile extends StatelessWidget {
           ),
           child: Material(
             child: SingleChildScrollView(
-              child: Html(
+              child: AppHtml(
                 data: content,
               ),
             ),

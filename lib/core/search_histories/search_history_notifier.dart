@@ -11,14 +11,14 @@ class SearchHistoryState {
     required this.currentQuery,
   });
 
-  final List<SearchHistory> histories;
-  final List<SearchHistory> filteredHistories;
-  final String currentQuery;
-
   SearchHistoryState.initial()
       : histories = [],
         filteredHistories = [],
         currentQuery = '';
+
+  final List<SearchHistory> histories;
+  final List<SearchHistory> filteredHistories;
+  final String currentQuery;
 
   SearchHistoryState copyWith({
     List<SearchHistory>? histories,

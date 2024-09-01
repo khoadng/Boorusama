@@ -84,7 +84,6 @@ class SuggestionsNotifier
           fallback.state = filter;
         }
       },
-      duration: const Duration(milliseconds: 350),
     );
   }
 }

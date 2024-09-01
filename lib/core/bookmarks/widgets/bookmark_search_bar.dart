@@ -9,6 +9,7 @@ import 'package:searchfield/searchfield.dart';
 
 // Project imports:
 import 'package:boorusama/foundation/display.dart';
+import 'package:boorusama/foundation/html.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'providers.dart';
 
@@ -82,7 +83,7 @@ class BookmarkSearchBar extends ConsumerWidget {
                   child: Row(
                     children: [
                       Expanded(
-                        child: Html(
+                        child: AppHtml(
                           style: {
                             'p': Style(
                               fontSize: FontSize.medium,
@@ -90,9 +91,6 @@ class BookmarkSearchBar extends ConsumerWidget {
                                     data: (color) => color,
                                     orElse: () => null,
                                   ),
-                              margin: Margins.zero,
-                            ),
-                            'body': Style(
                               margin: Margins.zero,
                             ),
                             'b': Style(

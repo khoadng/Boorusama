@@ -1,3 +1,6 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
 // Package imports:
 import 'package:file_picker/file_picker.dart';
 
@@ -7,6 +10,7 @@ import 'package:boorusama/foundation/toast.dart';
 export 'package:file_picker/file_picker.dart' show FileType;
 
 Future<void> pickDirectoryPathToastOnError({
+  required BuildContext context,
   required void Function(String path) onPick,
   void Function()? onCanceled,
 }) =>
@@ -15,11 +19,13 @@ Future<void> pickDirectoryPathToastOnError({
         onCanceled: onCanceled,
         onError: (e) {
           showErrorToast(
+            context,
             e.toString(),
           );
         });
 
 Future<void> pickSingleFilePathToastOnError({
+  required BuildContext context,
   FileType type = FileType.any,
   List<String>? allowedExtensions,
   required void Function(String path) onPick,
@@ -30,6 +36,7 @@ Future<void> pickSingleFilePathToastOnError({
       onPick: onPick,
       onError: (e) {
         showErrorToast(
+          context,
           e.toString(),
         );
       },

@@ -1,3 +1,6 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -80,6 +83,7 @@ class BulkDownloadManagerNotifier extends FamilyNotifier<void, BooruConfig> {
   }
 
   Future<void> download({
+    required BuildContext context,
     required String tags,
   }) async {
     final deviceInfo = ref.read(deviceInfoProvider);
@@ -115,7 +119,9 @@ class BulkDownloadManagerNotifier extends FamilyNotifier<void, BooruConfig> {
 
     if (fileNameBuilder == null) {
       logger.logE('Bulk Download', 'No file name builder found, aborting...');
-      showErrorToast('Download aborted, cannot create file name');
+      if (context.mounted) {
+        showErrorToast(context, 'Download aborted, cannot create file name');
+      }
       return;
     }
 

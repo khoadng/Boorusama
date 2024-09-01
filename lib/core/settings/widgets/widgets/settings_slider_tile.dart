@@ -35,7 +35,6 @@ class SettingsSliderTile extends StatelessWidget {
             right: 16,
           ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(
             width: 80,

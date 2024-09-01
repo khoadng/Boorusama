@@ -1,12 +1,10 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-// Package imports:
-import 'package:filesize/filesize.dart';
-
 // Project imports:
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/filesize.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/string.dart';
@@ -32,7 +30,7 @@ class InfoChips extends StatelessWidget {
         ),
         _InfoChip(
           leftLabel: const Text('post.detail.size').tr(),
-          rightLabel: Text(filesize(post.fileSize, 1)),
+          rightLabel: Text(Filesize.parse(post.fileSize, round: 1)),
           leftColor: context.colorScheme.surfaceContainerHighest,
           rightColor: context.colorScheme.surface,
         ),

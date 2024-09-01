@@ -48,7 +48,6 @@ class _EmptyBooruConfigHomePageState
             children: [
               Positioned.fill(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(

@@ -143,12 +143,6 @@ final settingsRepoProvider =
     Provider<SettingsRepository>((ref) => throw UnimplementedError());
 
 class DioArgs {
-  final Directory cacheDir;
-  final String baseUrl;
-  final UserAgentGenerator userAgentGenerator;
-  final BooruConfig booruConfig;
-  final LoggerService loggerService;
-  final BooruFactory booruFactory;
 
   DioArgs({
     required this.cacheDir,
@@ -158,6 +152,12 @@ class DioArgs {
     required this.loggerService,
     required this.booruFactory,
   });
+  final Directory cacheDir;
+  final String baseUrl;
+  final UserAgentGenerator userAgentGenerator;
+  final BooruConfig booruConfig;
+  final LoggerService loggerService;
+  final BooruFactory booruFactory;
 }
 
 final dioArgsProvider = Provider.family<DioArgs, BooruConfig>((ref, config) {
@@ -364,7 +364,7 @@ class MiscDataNotifier extends AutoDisposeFamilyNotifier<String, String> {
     return miscDataBox.get(arg) ?? '';
   }
 
-  void put(String value) async {
+  Future<void> put(String value) async {
     final miscDataBox = ref.watch(miscDataBoxProvider);
     await miscDataBox.put(arg, value);
 

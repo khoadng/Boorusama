@@ -69,7 +69,7 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
       },
       child: PopScope(
         canPop: false,
-        onPopInvoked: (didPop) {
+        onPopInvokedWithResult: (didPop, _) {
           if (didPop) return;
 
           _pop();

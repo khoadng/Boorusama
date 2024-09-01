@@ -62,6 +62,8 @@ class PostGridController<T extends Post> extends ChangeNotifier {
   int get total => _total;
 
   final ValueNotifier<int?> count = ValueNotifier(null);
+  final ValueNotifier<bool> refreshingNotifier = ValueNotifier(false);
+  final ValueNotifier<List<T>> itemsNotifier = ValueNotifier(const []);
 
   Timer? _debounceTimer;
   final Duration debounceDuration;
@@ -149,7 +151,7 @@ class PostGridController<T extends Post> extends ChangeNotifier {
       blacklistedUrlsFetcher != null ? blacklistedUrlsFetcher!() : {},
     );
 
-    _filteredItems = filteredItems;
+    _setFilteringItems(filteredItems);
   }
 
   // Set the page mode and reset the state
@@ -159,7 +161,7 @@ class PostGridController<T extends Post> extends ChangeNotifier {
     _pageMode = newPageMode;
 
     _hasMore = true;
-    _refreshing = false;
+    _setRefreshing(false);
     _loading = false;
     if (newPageMode == PageMode.infinite) {
       _clear();
@@ -177,7 +179,7 @@ class PostGridController<T extends Post> extends ChangeNotifier {
     bool maintainPage = false,
   }) async {
     if (_refreshing) return;
-    _refreshing = true;
+    _setRefreshing(true);
     _page = switch (_pageMode) {
       PageMode.infinite => _kFirstPage,
       PageMode.paginated => maintainPage ? _page : _kFirstPage,
@@ -193,7 +195,7 @@ class PostGridController<T extends Post> extends ChangeNotifier {
     await _addAll(newItems.posts);
     _hasMore = newItems.posts.isNotEmpty;
     count.value = newItems.total;
-    _refreshing = false;
+    _setRefreshing(false);
     notifyListeners();
   }
 
@@ -231,7 +233,7 @@ class PostGridController<T extends Post> extends ChangeNotifier {
     // make sure the target page is larger than 0
     _page = targetPage > 0 ? targetPage : _kFirstPage;
     _clear();
-    _refreshing = true;
+    _setRefreshing(true);
     notifyListeners();
 
     final newItems = await fetcher(_page);
@@ -239,7 +241,7 @@ class PostGridController<T extends Post> extends ChangeNotifier {
     if (_hasMore) {
       await _addAll(newItems.posts);
     }
-    _refreshing = false;
+    _setRefreshing(false);
     count.value = newItems.total;
     notifyListeners();
   }
@@ -279,7 +281,7 @@ class PostGridController<T extends Post> extends ChangeNotifier {
     onSuccess?.call();
 
     _items = data;
-    _filteredItems = data;
+    _setFilteringItems(data);
     notifyListeners();
   }
 
@@ -291,7 +293,7 @@ class PostGridController<T extends Post> extends ChangeNotifier {
     _keys = data.map((e) => itemIdExtractor(e)).toSet();
 
     _items = data;
-    _filteredItems = data;
+    _setFilteringItems(data);
     notifyListeners();
   }
 
@@ -326,11 +328,22 @@ class PostGridController<T extends Post> extends ChangeNotifier {
   void _clear() {
     _items.clear();
     _filteredItems.clear();
+    _setFilteringItems([]);
     _keys.clear();
     tagCounts.value = {};
     hasBlacklist.value = false;
     activeFilters.value = {};
     notifyListeners();
+  }
+
+  void _setRefreshing(bool value) {
+    _refreshing = value;
+    refreshingNotifier.value = value;
+  }
+
+  void _setFilteringItems(List<T> items) {
+    _filteredItems = items;
+    itemsNotifier.value = items;
   }
 }
 

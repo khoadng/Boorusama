@@ -6,7 +6,9 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/search_histories/search_histories.dart';
+import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/time.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -43,11 +45,12 @@ class SearchHistorySection extends StatelessWidget {
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    if (onFullHistoryRequested != null)
-                      IconButton(
-                        onPressed: onFullHistoryRequested,
-                        icon: const Icon(Symbols.manage_history),
-                      ),
+                    if (!Screen.of(context).size.isLarge)
+                      if (onFullHistoryRequested != null)
+                        IconButton(
+                          onPressed: onFullHistoryRequested,
+                          icon: const Icon(Symbols.manage_history),
+                        ),
                   ],
                 ),
               ),
@@ -57,6 +60,7 @@ class SearchHistorySection extends StatelessWidget {
                       title: Text(item.query),
                       contentPadding: const EdgeInsets.only(left: 16),
                       onTap: () => onHistoryTap(item.query),
+                      minTileHeight: isDesktopPlatform() ? 0 : null,
                       subtitle: showTime
                           ? DateTooltip(
                               date: item.createdAt,

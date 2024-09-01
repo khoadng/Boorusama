@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
@@ -10,13 +9,14 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/android.dart';
+import 'package:boorusama/foundation/html.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/picker.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/router.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -56,7 +56,6 @@ class _DownloadTagSelectionViewState
           icon: const Icon(Symbols.arrow_back),
         ),
       ),
-      extendBodyBehindAppBar: false,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -153,7 +152,7 @@ class _DownloadTagSelectionViewState
             onPressed: allowDownloadd
                 ? () => ref
                     .read(bulkDownloaderManagerProvider(config).notifier)
-                    .download(tags: selectedTags.join(' '))
+                    .download(context: context, tags: selectedTags.join(' '))
                 : null,
             child: const Text('download.download').tr(),
           );
@@ -269,6 +268,7 @@ class _DownloadTagSelectionViewState
     DownloadOptions options,
   ) =>
       pickDirectoryPathToastOnError(
+        context: context,
         onPick: (path) {
           final state = ref.read(bulkDownloadOptionsProvider);
           ref.read(bulkDownloadOptionsProvider.notifier).state = state.copyWith(
@@ -294,13 +294,7 @@ class DownloadPathWarning extends StatelessWidget {
   Widget build(BuildContext context) {
     return WarningContainer(
       margin: padding,
-      contentBuilder: (context) => Html(
-        style: {
-          'body': Style(
-            color: context.colorScheme.onSurface,
-            margin: Margins.zero,
-          ),
-        },
+      contentBuilder: (context) => AppHtml(
         data:
             "The app can only download files inside public directories <b>({0})</b> for Android 11+. <br><br> Valid location examples:<br><b>[Internal]</b> /storage/emulated/0/Download <br><b>[SD card]</b> /storage/A1B2-C3D4/Download<br><br>Please choose another directory or create a new one if it doesn't exist. <br>This device's version is <b>{1}</b>."
                 .replaceAll('{0}', allowedFolders.join(', '))

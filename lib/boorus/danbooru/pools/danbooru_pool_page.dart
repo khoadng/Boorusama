@@ -50,7 +50,7 @@ class _PostList extends ConsumerWidget {
               ],
             ),
             SliverPinnedHeader(
-              child: Container(
+              child: ColoredBox(
                 color: context.colorScheme.surface,
                 child: DefaultTabController(
                   initialIndex:

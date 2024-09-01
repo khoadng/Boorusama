@@ -142,6 +142,9 @@ PODS:
   - GoogleUtilities/UserDefaults (7.13.3):
     - GoogleUtilities/Logger
     - GoogleUtilities/Privacy
+  - local_auth_darwin (0.0.1):
+    - Flutter
+    - FlutterMacOS
   - mdk (0.29.1)
   - nanopb (2.30910.0):
     - nanopb/decode (= 2.30910.0)
@@ -186,6 +189,7 @@ DEPENDENCIES:
   - FlutterMacOS (from `Flutter/ephemeral`)
   - fvp (from `Flutter/ephemeral/.symlinks/plugins/fvp/darwin`)
   - gal (from `Flutter/ephemeral/.symlinks/plugins/gal/darwin`)
+  - local_auth_darwin (from `Flutter/ephemeral/.symlinks/plugins/local_auth_darwin/darwin`)
   - package_info_plus (from `Flutter/ephemeral/.symlinks/plugins/package_info_plus/macos`)
   - path_provider_foundation (from `Flutter/ephemeral/.symlinks/plugins/path_provider_foundation/darwin`)
   - share_plus (from `Flutter/ephemeral/.symlinks/plugins/share_plus/macos`)
@@ -238,6 +242,8 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/fvp/darwin
   gal:
     :path: Flutter/ephemeral/.symlinks/plugins/gal/darwin
+  local_auth_darwin:
+    :path: Flutter/ephemeral/.symlinks/plugins/local_auth_darwin/darwin
   package_info_plus:
     :path: Flutter/ephemeral/.symlinks/plugins/package_info_plus/macos
   path_provider_foundation:
@@ -281,6 +287,7 @@ SPEC CHECKSUMS:
   GoogleAppMeasurement: f65fc137531af9ad647f1c0a42f3b6a4d3a98049
   GoogleDataTransport: 6c09b596d841063d76d4288cc2d2f42cc36e1e2a
   GoogleUtilities: ea963c370a38a8069cc5f7ba4ca849a60b6d7d15
+  local_auth_darwin: 66e40372f1c29f383a314c738c7446e2f7fdadc3
   mdk: 3c49affb38303cf86fd9f8ea1e05fe029c4dc194
   nanopb: 438bc412db1928dac798aa6fd75726007be04262
   package_info_plus: fa739dd842b393193c5ca93c26798dff6e3d0e0c

@@ -74,7 +74,7 @@ class _MostViewedContent extends ConsumerWidget {
       },
     );
 
-    return Container(
+    return ColoredBox(
       color: context.colorScheme.surface,
       child: SafeArea(
         child: Column(

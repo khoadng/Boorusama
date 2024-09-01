@@ -10,10 +10,8 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/dart.dart';
@@ -23,6 +21,7 @@ import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/functional.dart';
+import 'package:boorusama/router.dart';
 import 'artists/danbooru_artist_page.dart';
 import 'comments/comments.dart';
 import 'configs/create_danbooru_config_page.dart';
@@ -169,22 +168,28 @@ class DanbooruBuilder
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) => PostDetailsLayoutSwitcher(
-            initialIndex: payload.initialIndex,
-            scrollController: payload.scrollController,
-            desktop: (controller) => DanbooruPostDetailsDesktopPage(
-              initialIndex: controller.currentPage.value,
-              posts: payload.posts.map((e) => e as DanbooruPost).toList(),
-              onExit: (page) => controller.onExit(page),
-              onPageChanged: (page) => controller.setPage(page),
-            ),
-            mobile: (controller) => DanbooruPostDetailsPage(
-              intitialIndex: controller.currentPage.value,
-              posts: payload.posts.map((e) => e as DanbooruPost).toList(),
-              onExit: (page) => controller.onExit(page),
-              onPageChanged: (page) => controller.setPage(page),
-            ),
-          );
+      (context, config, payload) {
+        final posts = payload.posts.map((e) => e as DanbooruPost).toList();
+
+        return PostDetailsLayoutSwitcher<DanbooruPost>(
+          initialIndex: payload.initialIndex,
+          posts: posts,
+          scrollController: payload.scrollController,
+          desktop: (controller) => DanbooruPostDetailsDesktopPage(
+            initialIndex: controller.currentPage.value,
+            posts: posts,
+            onExit: (page) => controller.onExit(page),
+            onPageChanged: (page) => controller.setPage(page),
+          ),
+          mobile: (controller) => DanbooruPostDetailsPage(
+            intitialIndex: controller.currentPage.value,
+            posts: posts,
+            onExit: (page) => controller.onExit(page),
+            onPageChanged: (page) => controller.setPage(page),
+            controller: controller,
+          ),
+        );
+      };
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
@@ -341,10 +346,7 @@ class DanbooruBuilder
   @override
   HomeViewBuilder get homeViewBuilder => (context, config, controller) {
         return LatestView(
-          searchBar: HomeSearchBar(
-            onMenuTap: controller.openMenu,
-            onTap: () => goToSearchPage(context),
-          ),
+          controller: controller,
         );
       };
 
@@ -397,45 +399,66 @@ bool handleDanbooruGestureAction(
 
 extension DanbooruX on WidgetRef {
   void danbooruToggleFavorite(int postId) {
-    _guardLogin(() {
+    _guardLogin(() async {
       final isFaved = read(danbooruFavoriteProvider(postId));
       if (isFaved) {
-        danbooruFavorites.remove(postId).then(
-              (_) => _showSuccessSnackBar('Removed from favorites'),
-            );
+        await danbooruFavorites.remove(postId);
+        if (context.mounted) {
+          _showSuccessSnackBar(
+            context,
+            'Removed from favorites',
+          );
+        }
       } else {
-        danbooruFavorites.add(postId).then(
-              (_) => _showSuccessSnackBar('Added to favorites'),
-            );
+        await danbooruFavorites.add(postId);
+        if (context.mounted) {
+          _showSuccessSnackBar(
+            context,
+            'Added to favorites',
+          );
+        }
       }
     });
   }
 
   void danbooruRemoveVote(int postId) {
-    _guardLogin(() {
-      read(danbooruPostVotesProvider(readConfig).notifier)
-          .removeVote(postId)
-          .then(
-            (_) => _showSuccessSnackBar('Vote removed'),
-          );
+    _guardLogin(() async {
+      await read(danbooruPostVotesProvider(readConfig).notifier)
+          .removeVote(postId);
+
+      if (context.mounted) {
+        _showSuccessSnackBar(
+          context,
+          'Vote removed',
+        );
+      }
     });
   }
 
   void danbooruUpvote(int postId) {
-    _guardLogin(() {
-      read(danbooruPostVotesProvider(readConfig).notifier).upvote(postId).then(
-            (_) => _showSuccessSnackBar('Upvoted'),
-          );
+    _guardLogin(() async {
+      await read(danbooruPostVotesProvider(readConfig).notifier).upvote(postId);
+
+      if (context.mounted) {
+        _showSuccessSnackBar(
+          context,
+          'Upvoted',
+        );
+      }
     });
   }
 
   void danbooruDownvote(int postId) {
-    _guardLogin(() {
-      read(danbooruPostVotesProvider(readConfig).notifier)
-          .downvote(postId)
-          .then(
-            (_) => _showSuccessSnackBar('Downvoted'),
-          );
+    _guardLogin(() async {
+      await read(danbooruPostVotesProvider(readConfig).notifier)
+          .downvote(postId);
+
+      if (context.mounted) {
+        _showSuccessSnackBar(
+          context,
+          'Downvoted',
+        );
+      }
     });
   }
 
@@ -449,10 +472,12 @@ extension DanbooruX on WidgetRef {
   }
 
   void _showSuccessSnackBar(
+    BuildContext context,
     String message, {
     Color? backgroundColor,
   }) {
     showSuccessToast(
+      context,
       message,
       backgroundColor: backgroundColor,
       duration: AppDurations.shortToast,

@@ -1,14 +1,13 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/foundation/clipboard.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'import_tag_dialog.dart';
 
@@ -41,15 +40,12 @@ class ImportExportTagButton extends ConsumerWidget {
             ),
           );
         } else if (value == 'export') {
-          Clipboard.setData(
-            ClipboardData(text: tags.join('\n')),
-          ).then((value) => showSimpleSnackBar(
-                context: context,
-                //TODO: should create a new key for this instead of using the same key as favorite_tags.export_notification
-                content: const Text(
-                  'favorite_tags.export_notification',
-                ).tr(),
-              ));
+          AppClipboard.copyAndToast(
+            context,
+            tags.join('\n'),
+            //TODO: should create a new key for this instead of using the same key as favorite_tags.export_notification
+            message: 'favorite_tags.export_notification'.tr(),
+          );
         }
       },
       itemBuilder: {

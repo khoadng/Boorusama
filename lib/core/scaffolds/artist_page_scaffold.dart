@@ -44,7 +44,7 @@ class _ArtistPageScaffoldState<T extends Post>
         gridBuilder: (context, slivers) => InfinitePostListScaffold(
           errors: errors,
           controller: controller,
-          sliverHeaderBuilder: (context) => slivers,
+          sliverHeaders: slivers,
         ),
       ),
     );

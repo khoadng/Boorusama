@@ -7,6 +7,7 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/string.dart';
@@ -71,9 +72,9 @@ class _PostListConfigurationHeaderState
 
   @override
   Widget build(BuildContext context) {
-    var tags = hiddenTags != null
+    final tags = hiddenTags != null
         ? [
-            for (var tag in hiddenTags!)
+            for (final tag in hiddenTags!)
               _BadgedChip(
                 label: tag.name.replaceUnderscoreWithSpace(),
                 count: tag.count,
@@ -84,12 +85,10 @@ class _PostListConfigurationHeaderState
               ActionChip(
                 visualDensity: const ShrinkVisualDensity(),
                 side: BorderSide(
-                  width: 1,
                   color: context.theme.hintColor,
                 ),
                 shape: StadiumBorder(
                   side: BorderSide(
-                    width: 1,
                     color: context.theme.hintColor,
                   ),
                 ),
@@ -145,40 +144,48 @@ class _PostListConfigurationHeaderState
                     widget.onExpansionChanged?.call(value);
                   })
                 },
-                title: Row(
-                  children: [
-                    const SizedBox(width: 8),
-                    const Text('blacklisted_tags.blacklisted_header_title')
-                        .tr(),
-                    const SizedBox(width: 8),
-                    if (widget.hiddenCount != null)
-                      if (widget.hiddenCount! > 0)
-                        Chip(
-                          padding: EdgeInsets.zero,
-                          visualDensity: const ShrinkVisualDensity(),
-                          backgroundColor: context.colorScheme.primary,
-                          label: Text(
-                            '${widget.hiddenCount} of ${widget.postCount}',
-                            style: TextStyle(
-                              color: context.colorScheme.onPrimary,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                    const Spacer(),
-                    expanded
-                        ? const SizedBox.shrink()
-                        : FittedBox(
-                            child: widget.trailing,
-                          ),
-                  ],
+                title: LayoutBuilder(
+                  builder: (context, constraints) {
+                    return Row(
+                      children: [
+                        const SizedBox(width: 8),
+                        const Text('blacklisted_tags.blacklisted_header_title')
+                            .tr(),
+                        if (constraints.maxWidth > 250)
+                          const SizedBox(width: 8),
+                        if (widget.hiddenCount != null)
+                          if (widget.hiddenCount! > 0)
+                            if (constraints.maxWidth > 250)
+                              Chip(
+                                padding: EdgeInsets.zero,
+                                visualDensity: const ShrinkVisualDensity(),
+                                backgroundColor: context.colorScheme.primary,
+                                label: Text(
+                                  '${widget.hiddenCount} of ${widget.postCount}',
+                                  style: TextStyle(
+                                    color: context.colorScheme.onPrimary,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                        const Spacer(),
+                        expanded
+                            ? const SizedBox.shrink()
+                            : FittedBox(
+                                child: widget.trailing,
+                              ),
+                      ],
+                    );
+                  },
                 ),
                 expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   if (tags != null)
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 8),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: kPreferredLayout.isMobile ? 8 : 0,
+                      ),
                       child: widget.axis == Axis.horizontal
                           ? Wrap(
                               spacing: 4,
@@ -188,7 +195,7 @@ class _PostListConfigurationHeaderState
                           : Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                for (var tag in tags)
+                                for (final tag in tags)
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
                                       vertical: 4,
@@ -262,7 +269,6 @@ class _BadgedChip extends StatelessWidget {
         visualDensity: const ShrinkVisualDensity(),
         selected: active,
         side: BorderSide(
-          width: 1,
           color: active ? context.theme.hintColor : Colors.transparent,
         ),
         backgroundColor: context.colorScheme.surface,

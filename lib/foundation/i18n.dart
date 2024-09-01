@@ -156,12 +156,12 @@ Future<BooruLanguage?> loadLanguage(String lang) async {
 
 dynamic removeEmptyFields(dynamic json) {
   if (json is Map) {
-    json.removeWhere((key, value) => value == null || value == "");
+    json.removeWhere((key, value) => value == null || value == '');
     json.forEach((key, value) {
       json[key] = removeEmptyFields(value);
     });
   } else if (json is List) {
-    json.removeWhere((item) => item == null || item == "");
+    json.removeWhere((item) => item == null || item == '');
     for (var i = 0; i < json.length; i++) {
       json[i] = removeEmptyFields(json[i]);
     }
@@ -176,7 +176,7 @@ Future<void> ensureI18nInitialized() async {
 
   await el.EasyLocalization.ensureInitialized();
 
-  for (var locale in supportedLocales) {
+  for (final locale in supportedLocales) {
     setLocaleMessages(
       locale.toLanguageTag(),
       getMessagesForLocale(locale),
@@ -214,7 +214,7 @@ class RootBundleAssetLoader extends el.AssetLoader {
 
   @override
   Future<Map<String, dynamic>?> load(String path, Locale locale) async {
-    var localePath = getLocalePath(path, locale);
+    final localePath = getLocalePath(path, locale);
     final data = json.decode(await rootBundle.loadString(localePath));
     return removeEmptyFields(data);
   }

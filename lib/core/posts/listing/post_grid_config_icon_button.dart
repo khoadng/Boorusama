@@ -117,7 +117,7 @@ class PostGridActionSheet extends ConsumerWidget {
         ref.watchBooruBuilder(ref.watchConfig)?.postStatisticsPageBuilder;
     final settingsNotifier = ref.watch(settingsProvider.notifier);
 
-    var mobileButtons = [
+    final mobileButtons = [
       MobilePostGridConfigTile(
         value: pageMode.localize().tr(),
         title: 'settings.result_layout.result_layout'.tr(),
@@ -374,7 +374,6 @@ class DesktopPostGridConfigTile<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisSize: MainAxisSize.max,
       children: [
         Container(
           width: 80,
@@ -385,7 +384,7 @@ class DesktopPostGridConfigTile<T> extends StatelessWidget {
         Expanded(
           child: Container(
             constraints: const BoxConstraints(minWidth: 150),
-            child: OptionDropDownButton(
+            child: OptionDropDownButtonDesktop(
               alignment: AlignmentDirectional.centerStart,
               onChanged: (value) => value != null ? onChanged(value) : null,
               value: value,

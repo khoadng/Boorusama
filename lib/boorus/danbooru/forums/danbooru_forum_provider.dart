@@ -61,7 +61,7 @@ final danbooruForumPostRepoProvider =
         limit: limit,
       );
 
-      var data = value.map(danbooruForumPostDtoToDanbooruForumPost).toList();
+      final data = value.map(danbooruForumPostDtoToDanbooruForumPost).toList();
 
       data.sort((a, b) => a.id.compareTo(b.id));
 
@@ -76,3 +76,14 @@ final danbooruForumPostRepoProvider =
     },
   );
 });
+
+class DanbooruForumUtils {
+  const DanbooruForumUtils._();
+
+  static const int postPerPage = 20;
+
+  static int getFirstPageKey({
+    required int responseCount,
+  }) =>
+      (responseCount / postPerPage).ceil();
+}

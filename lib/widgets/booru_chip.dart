@@ -42,7 +42,7 @@ class BooruChip extends ConsumerWidget {
     final colors = chipColors ??
         (color != null
             ? context.generateChipColors(
-                color!,
+                color,
                 ref.watch(settingsProvider),
               )
             : null);
@@ -72,7 +72,7 @@ class BooruChip extends ConsumerWidget {
                   : null,
             ),
             onPressed: onPressed,
-            icon: trailing!,
+            icon: trailing,
             label: label,
           )
         : FilledButton(

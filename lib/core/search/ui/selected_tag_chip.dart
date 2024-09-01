@@ -34,7 +34,6 @@ class SelectedTagChip extends StatelessWidget {
       onTap: () {
         showDialog(
           context: context,
-          barrierDismissible: true,
           builder: (c) {
             return SelectedTagEditDialog(
               tag: tagSearchItem,

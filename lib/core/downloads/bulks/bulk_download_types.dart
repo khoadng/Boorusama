@@ -19,12 +19,12 @@ class BulkDownloadState extends Equatable {
     this.estimatedDownloadSize = 0,
   });
 
-  final Map<String, DownloadStatus> downloadStatuses;
-  final int estimatedDownloadSize;
-
   factory BulkDownloadState.initial() => const BulkDownloadState(
         downloadStatuses: {},
       );
+
+  final Map<String, DownloadStatus> downloadStatuses;
+  final int estimatedDownloadSize;
 
   BulkDownloadState copyWith({
     Map<String, DownloadStatus>? downloadStatuses,

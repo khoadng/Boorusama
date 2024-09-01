@@ -37,12 +37,12 @@ mixin PersistentCacheMixin {
     final box = await openBox();
     if (box == null) return null;
 
-    var cachedValue = box.get(key);
+    final cachedValue = box.get(key);
 
     if (cachedValue == null) return null;
 
     // Use Hive timestamps to store the last access time
-    var timestamp = box.get('${key}_timestamp');
+    final timestamp = box.get('${key}_timestamp');
 
     if (timestamp == null) {
       box.delete(key);

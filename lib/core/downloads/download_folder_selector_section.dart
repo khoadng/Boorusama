@@ -136,6 +136,7 @@ class _DownloadFolderSelectorSectionState
   bool showPath() => storagePath != null && storagePath!.isNotEmpty;
 
   Future<void> _pickFolder() => pickDirectoryPathToastOnError(
+        context: context,
         onPick: (path) => widget.onPathChanged(path),
       );
 }

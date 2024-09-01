@@ -1,13 +1,11 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Project imports:
 import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/foundation/animations.dart';
+import 'package:boorusama/foundation/clipboard.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/string.dart';
 
 class TagOtherNames extends StatelessWidget {
@@ -72,14 +70,12 @@ class OtherNameChip extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4),
       child: GestureDetector(
-        onLongPress: () =>
-            Clipboard.setData(ClipboardData(text: otherName)).then(
-          (_) => showSimpleSnackBar(
-            context: context,
-            duration: AppDurations.shortToast,
-            content: const Text('Copied'),
-          ),
-        ),
+        onLongPress: () {
+          AppClipboard.copyWithDefaultToast(
+            context,
+            otherName,
+          );
+        },
         child: RawChip(
           onPressed: () {},
           side: BorderSide(

@@ -23,7 +23,6 @@ class ForumVoteChip extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 2),
       decoration: BoxDecoration(
         border: Border.all(
-          width: 1,
           color: borderColor,
         ),
         color: color,

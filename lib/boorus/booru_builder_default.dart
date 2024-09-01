@@ -222,16 +222,8 @@ mixin NewGranularRatingQueryBuilderMixin on BooruBuilder {
 
 mixin DefaultBooruUIMixin implements BooruBuilder {
   @override
-  HomePageBuilder get homePageBuilder => (context, config) => HomePageScaffold(
-        onPostTap:
-            (context, posts, post, scrollController, settings, initialIndex) =>
-                goToPostDetailsPage(
-          context: context,
-          posts: posts,
-          initialIndex: initialIndex,
-        ),
-        onSearchTap: () => goToSearchPage(context),
-      );
+  HomePageBuilder get homePageBuilder =>
+      (context, config) => const HomePageScaffold();
 
   @override
   SearchPageBuilder get searchPageBuilder =>

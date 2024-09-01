@@ -18,7 +18,6 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/dart.dart';
@@ -235,7 +234,7 @@ class _TagEditPageInternalState extends ConsumerState<TagEditPageInternal> {
 
     return PopScope(
       canPop: expandMode == null,
-      onPopInvoked: (didPop) {
+      onPopInvokedWithResult: (didPop, _) {
         if (didPop) return;
 
         _pop();
@@ -345,7 +344,6 @@ class _TagEditPageInternalState extends ConsumerState<TagEditPageInternal> {
             color: context.colorScheme.onSurface,
             thickness: 4,
             size: 75,
-            highlightedSize: 40,
             highlightedColor: context.colorScheme.primary,
           ),
         ),
@@ -791,7 +789,6 @@ class TagEditTagListSection extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         const Divider(
           thickness: 1,
@@ -803,7 +800,6 @@ class TagEditTagListSection extends ConsumerWidget {
             horizontal: 12,
           ),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
                 '${initialTags.length} tag${initialTags.length > 1 ? 's' : ''}',

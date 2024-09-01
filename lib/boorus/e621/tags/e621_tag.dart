@@ -5,15 +5,6 @@ import 'package:equatable/equatable.dart';
 import 'package:boorusama/core/tags/tags.dart';
 
 class E621Tag extends Equatable {
-  final int id;
-  final String name;
-  final int postCount;
-  final String relatedTags;
-  final DateTime relatedTagsUpdatedAt;
-  final TagCategory category;
-  final bool isLocked;
-  final DateTime createdAt;
-  final DateTime updatedAt;
 
   const E621Tag({
     required this.id,
@@ -26,6 +17,15 @@ class E621Tag extends Equatable {
     required this.createdAt,
     required this.updatedAt,
   });
+  final int id;
+  final String name;
+  final int postCount;
+  final List<E621RelatedTag> relatedTags;
+  final DateTime relatedTagsUpdatedAt;
+  final TagCategory category;
+  final bool isLocked;
+  final DateTime createdAt;
+  final DateTime updatedAt;
 
   @override
   List<Object> get props => [
@@ -39,4 +39,17 @@ class E621Tag extends Equatable {
         createdAt,
         updatedAt
       ];
+}
+
+class E621RelatedTag extends Equatable {
+
+  const E621RelatedTag({
+    required this.tag,
+    required this.score,
+  });
+  final String tag;
+  final double score;
+
+  @override
+  List<Object> get props => [tag, score];
 }

@@ -19,14 +19,14 @@ class NotesControllerState extends Equatable {
     this.alreadyLoaded = false,
   });
 
-  final IList<Note> notes;
-  final bool enableNotes;
-  final bool alreadyLoaded;
-
   factory NotesControllerState.initial() => NotesControllerState(
         notes: <Note>[].lock,
         enableNotes: true,
       );
+
+  final IList<Note> notes;
+  final bool enableNotes;
+  final bool alreadyLoaded;
 
   NotesControllerState copyWith({
     IList<Note>? notes,

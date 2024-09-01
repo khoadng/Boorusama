@@ -26,7 +26,7 @@ NetworkProtocol? stringToNetworkProtocol(String value) => switch (value) {
     };
 
 NetworkProtocol _parseProtocol(dynamic value) => switch (value) {
-      String s => stringToNetworkProtocol(s) ?? NetworkProtocol.https_1_1,
+      final String s => stringToNetworkProtocol(s) ?? NetworkProtocol.https_1_1,
       _ => NetworkProtocol.https_1_1,
     };
 
@@ -92,21 +92,21 @@ extension BooruX on Booru {
       };
 
   bool hasSite(String url) => switch (this) {
-        Danbooru d => d.sites.any((e) => e.url == url),
-        Gelbooru g => g.sites.contains(url),
-        GelbooruV1 g => g.sites.contains(url),
-        GelbooruV2 g => g.sites.any((e) => e.url == url),
-        Moebooru m => m.sites.any((e) => e.url == url),
-        E621 e => e.sites.contains(url),
-        Zerochan z => z.sites.contains(url),
-        Sankaku s => s.sites.contains(url),
-        Philomena p => p.sites.contains(url),
-        Shimmie2 s => s.sites.contains(url),
-        Szurubooru s => s.sites.contains(url),
+        final Danbooru d => d.sites.any((e) => e.url == url),
+        final Gelbooru g => g.sites.contains(url),
+        final GelbooruV1 g => g.sites.contains(url),
+        final GelbooruV2 g => g.sites.any((e) => e.url == url),
+        final Moebooru m => m.sites.any((e) => e.url == url),
+        final E621 e => e.sites.contains(url),
+        final Zerochan z => z.sites.contains(url),
+        final Sankaku s => s.sites.contains(url),
+        final Philomena p => p.sites.contains(url),
+        final Shimmie2 s => s.sites.contains(url),
+        final Szurubooru s => s.sites.contains(url),
       };
 
   NetworkProtocol? getSiteProtocol(String url) => switch (this) {
-        Moebooru m => m.sites
+        final Moebooru m => m.sites
                 .firstWhereOrNull((e) => url.contains(e.url))
                 ?.overrideProtocol ??
             protocol,
@@ -114,26 +114,26 @@ extension BooruX on Booru {
       };
 
   String? getSalt(String url) => switch (this) {
-        Moebooru m =>
+        final Moebooru m =>
           m.sites.firstWhereOrNull((e) => url.contains(e.url))?.salt,
         _ => null,
       };
 
   bool? hasAiTagSupported(String url) => switch (this) {
-        Danbooru d =>
+        final Danbooru d =>
           d.sites.firstWhereOrNull((e) => url.contains(e.url))?.aiTagSupport ??
               false,
         _ => null,
       };
 
   String getApiUrl(String url) => switch (this) {
-        GelbooruV2 g =>
+        final GelbooruV2 g =>
           g.sites.firstWhereOrNull((e) => url.contains(e.url))?.apiUrl ?? url,
         _ => url,
       };
 
   bool? hasCensoredTagsBanned(String url) => switch (this) {
-        Danbooru d => d.sites
+        final Danbooru d => d.sites
                 .firstWhereOrNull((e) => url.contains(e.url))
                 ?.censoredTagsBanned ??
             false,
@@ -142,7 +142,7 @@ extension BooruX on Booru {
 
   //TODO: This is fine for now, but we must have a different url for each site, currently there is only one site for each booru
   String? getLoginUrl() => switch (this) {
-        Gelbooru g => g.loginUrl,
+        final Gelbooru g => g.loginUrl,
         _ => null,
       };
 

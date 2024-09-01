@@ -8,6 +8,7 @@ import 'package:oktoast/oktoast.dart';
 import 'package:boorusama/flutter.dart';
 
 void showSuccessToast(
+  BuildContext context,
   String message, {
   Duration? duration,
   Color? backgroundColor,
@@ -24,6 +25,7 @@ void showSuccessToast(
     );
 
 void showErrorToast(
+  BuildContext context,
   String message, {
   Duration? duration,
 }) =>

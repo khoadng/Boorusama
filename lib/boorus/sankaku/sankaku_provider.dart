@@ -12,7 +12,7 @@ final sankakuClientProvider = Provider.family<SankakuClient, BooruConfig>(
       username: config.login,
       password: config.apiKey,
       headers: switch (booru) {
-        Sankaku s => s.headers,
+        final Sankaku s => s.headers,
         _ => null,
       },
     );

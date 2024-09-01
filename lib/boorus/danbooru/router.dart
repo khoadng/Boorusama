@@ -14,7 +14,6 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:boorusama/core/blacklists/blacklists.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/core/wikis/wikis.dart';
@@ -40,7 +39,6 @@ import 'pools/pool_search_page.dart';
 import 'pools/pools.dart';
 import 'posts/posts.dart';
 import 'related_tags/related_tags.dart';
-import 'router_page_constant.dart';
 import 'saved_searches/saved_searches.dart';
 import 'tags/tags.dart';
 import 'uploads/danbooru_my_uploads_page.dart';
@@ -246,9 +244,9 @@ void goToPoolSearchPage(BuildContext context, WidgetRef ref) {
 
 void goToRelatedTagsPage(
   BuildContext context, {
-  required RelatedTag relatedTag,
-  required void Function(RelatedTagItem tag) onAdded,
-  required void Function(RelatedTagItem tag) onNegated,
+  required DanbooruRelatedTag relatedTag,
+  required void Function(DanbooruRelatedTagItem tag) onAdded,
+  required void Function(DanbooruRelatedTagItem tag) onNegated,
 }) {
   showAdaptiveSheet(
     context,
@@ -461,25 +459,30 @@ Future<bool?> goToDanbooruShowTaglistPage(
       onAddToBlacklist: config.hasLoginDetails()
           ? (tag) {
               notifier.addWithToast(
+                context: ref.context,
                 tag: tag.rawName,
               );
             }
           : null,
       onAddToGlobalBlacklist: (tag) {
         globalNotifier.addTagWithToast(
+          ref.context,
           tag.rawName,
         );
       },
-      onAddToFavoriteTags: (tag) {
-        favoriteNotifier.add(tag.rawName).then(
-              (_) => showSuccessToast(
-                'Added',
-                backgroundColor: color,
-                textStyle: TextStyle(
-                  color: textColor,
-                ),
-              ),
-            );
+      onAddToFavoriteTags: (tag) async {
+        await favoriteNotifier.add(tag.rawName);
+
+        if (!dialogContext.mounted) return;
+
+        showSuccessToast(
+          ref.context,
+          'Added',
+          backgroundColor: color,
+          textStyle: TextStyle(
+            color: textColor,
+          ),
+        );
       },
     ),
   );

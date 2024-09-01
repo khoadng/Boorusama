@@ -22,7 +22,7 @@ class PostRepositoryCacher<T extends Post> implements PostRepository<T> {
   }) =>
       TaskEither.Do(($) async {
         final tagString = tags;
-        final defaultKey = "$tagString-$page-$limit";
+        final defaultKey = '$tagString-$page-$limit';
         final name = keyBuilder != null
             ? keyBuilder!(tags, page, limit: limit)
             : defaultKey;

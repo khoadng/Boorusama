@@ -3,7 +3,6 @@ import 'dart:math';
 
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:collection/collection.dart';
@@ -13,15 +12,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/clipboard.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/package_info.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
+import 'package:boorusama/router.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/time.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -63,7 +63,7 @@ final userDataProvider = FutureProvider.family<List<DanbooruReportDataPoint>,
 });
 
 final userCopyrightDataProvider =
-    FutureProvider.family<RelatedTag, DanbooruCopyrightDataParams>(
+    FutureProvider.family<DanbooruRelatedTag, DanbooruCopyrightDataParams>(
         (ref, params) async {
   final username = params.username;
   final config = ref.watchConfig;
@@ -102,7 +102,7 @@ class UserDetailsPage extends ConsumerWidget {
             },
             onSelected: (value) {
               if (value == 0) {
-                Clipboard.setData(ClipboardData(text: uid.toString()));
+                AppClipboard.copy(uid.toString());
               }
             },
           ),
@@ -111,7 +111,7 @@ class UserDetailsPage extends ConsumerWidget {
       body: SafeArea(
         bottom: false,
         child: state.when(
-          data: (user) => Container(
+          data: (user) => DecoratedBox(
             decoration: BoxDecoration(
               color: context.theme.scaffoldBackgroundColor,
               borderRadius: const BorderRadius.all(Radius.circular(8)),
@@ -196,9 +196,7 @@ class UserDetailsPage extends ConsumerWidget {
                                       child: SizedBox(
                                         width: 15,
                                         height: 15,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 4,
-                                        ),
+                                        child: CircularProgressIndicator(),
                                       ),
                                     ),
                                   ),
@@ -291,7 +289,7 @@ class UserDetailsPage extends ConsumerWidget {
   }
 
   Widget _buildTags(
-    List<RelatedTagItem> tags,
+    List<DanbooruRelatedTagItem> tags,
     BuildContext context,
     WidgetRef ref,
   ) {
@@ -381,12 +379,8 @@ class UserDetailsPage extends ConsumerWidget {
           ),
         ),
         titlesData: FlTitlesData(
-          topTitles: const AxisTitles(
-            sideTitles: SideTitles(showTitles: false),
-          ),
-          rightTitles: const AxisTitles(
-            sideTitles: SideTitles(showTitles: false),
-          ),
+          topTitles: const AxisTitles(),
+          rightTitles: const AxisTitles(),
           bottomTitles: AxisTitles(
               sideTitles: SideTitles(
             reservedSize: 30,

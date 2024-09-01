@@ -8,19 +8,19 @@ import 'package:boorusama/foundation/image.dart';
 import 'package:boorusama/foundation/video.dart';
 
 class PostMetadata extends Equatable {
-  final int? page;
-  final String? search;
 
   const PostMetadata({
     this.page,
     this.search,
   });
+  final int? page;
+  final String? search;
 
   @override
   List<Object?> get props => [page, search];
 }
 
-abstract class Post extends Equatable
+abstract class Post
     with MediaInfoMixin, ImageInfoMixin, VideoInfoMixin, TagListCheckMixin
     implements TagDetails {
   int get id;
@@ -190,8 +190,8 @@ extension PostX on Post {
         downvotes: downvotes,
         uploaderId: uploaderId,
         source: switch (source) {
-          WebSource w => w.url,
-          NonWebSource nw => nw.value,
+          final WebSource w => w.url,
+          final NonWebSource nw => nw.value,
           _ => null,
         },
         id: id,

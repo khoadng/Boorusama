@@ -173,6 +173,7 @@ class _EditFavoriteGroupDialogState
                                         isPrivate: isPrivate,
                                         onFailure: (message, translatable) =>
                                             showErrorToast(
+                                          context,
                                           translatable ? message.tr() : message,
                                         ),
                                       );
@@ -187,7 +188,7 @@ class _EditFavoriteGroupDialogState
                                         isPrivate: isPrivate,
                                         initialIds: textController.text,
                                         onFailure: (message, _) {
-                                          showErrorToast(message);
+                                          showErrorToast(context, message);
                                         },
                                       );
                                 }

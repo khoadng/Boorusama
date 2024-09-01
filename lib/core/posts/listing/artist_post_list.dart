@@ -9,8 +9,8 @@ import 'package:sliver_tools/sliver_tools.dart';
 // Project imports:
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class ArtistPostList extends ConsumerWidget {

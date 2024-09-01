@@ -8,7 +8,7 @@ import 'package:boorusama/core/filename_generators/filename_generators.dart';
 void main() {
   test('generateFileName many options', () {
     // Arrange
-    Map<String, String> metadata = {
+    final Map<String, String> metadata = {
       'artist': 'foo_(123) f00 barr',
       'character': 'bar_(abc) bar_(123)_(456) foobar',
       'copyright': 'copy/right',
@@ -16,12 +16,12 @@ void main() {
       'md5': 'f7deda9c6934179779f63910d5e8d2dc',
       'index': '7',
     };
-    final clock = Clock.fixed(DateTime(2020, 1, 1, 12, 0, 0));
-    String format =
+    final clock = Clock.fixed(DateTime(2020, 1, 1, 12));
+    const String format =
         '[{date:format=dd.MM.yyyy hh:mm}] {character:nomod,case=upper,sort[name]=desc} from {copyright:unsafe=true} drawn by {artist:limit=1} - {md5:maxlength=6} ({index:pad_left=3}).{extension}';
 
     // Act
-    String filename = generateFileName(metadata, format, clock: clock);
+    final String filename = generateFileName(metadata, format, clock: clock);
 
     // Assert
     expect(
@@ -32,7 +32,7 @@ void main() {
 
   test('generateFileName multiple files', () {
     // Arrange
-    List<Map<String, String>> metadata = [
+    final List<Map<String, String>> metadata = [
       {
         'artist': 'artist1 artist4',
         'character': 'character1 character3',
@@ -55,12 +55,12 @@ void main() {
         'index': '2',
       },
     ];
-    final clock = Clock.fixed(DateTime(2020, 1, 1, 12, 0, 0));
-    String format =
+    final clock = Clock.fixed(DateTime(2020, 1, 1, 12));
+    const String format =
         '[{date:format=dd.MM.yyyy hh:mm}] {character:nomod,case=upper,sort[name]=desc} drawn by {artist:limit=1} - {md5:maxlength=6} ({index}).{extension}';
 
     // Act
-    List<String> filenames =
+    final List<String> filenames =
         metadata.map((e) => generateFileName(e, format, clock: clock)).toList();
 
     // Assert

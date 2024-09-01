@@ -79,7 +79,6 @@ class _AppLockState extends ConsumerState<AppLock> {
                 return Center(
                     child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
                       'Please authenticate to use the app',

@@ -69,7 +69,6 @@ class _GelbooruLoginPageState extends State<GelbooruLoginPage> {
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(4)),
         border: Border.all(
-          width: 1,
           color: Colors.white,
         ),
       ),

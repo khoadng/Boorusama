@@ -76,7 +76,7 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
           const SingleActivator(LogicalKeyboardKey.escape): () => _onExit(),
         },
         child: PopScope(
-          onPopInvoked: (didPop) {
+          onPopInvokedWithResult: (didPop, _) {
             if (didPop) return;
             _onExit();
           },

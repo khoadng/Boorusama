@@ -80,7 +80,7 @@ class _CommentPageState extends ConsumerState<CommentPage> {
       builder: (context, edit, child) {
         return PopScope(
           canPop: !edit,
-          onPopInvoked: (didPop) {
+          onPopInvokedWithResult: (didPop, _) {
             if (didPop) return;
             _pop();
           },

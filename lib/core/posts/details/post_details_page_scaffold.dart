@@ -16,7 +16,6 @@ import 'package:boorusama/core/filename_generators/filename_generators.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/videos/videos.dart';
@@ -24,6 +23,7 @@ import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 enum PostDetailsPart {
@@ -76,7 +76,7 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     required this.posts,
     required this.initialIndex,
     required this.onExit,
-    this.toolbarBuilder,
+    this.toolbar,
     this.sliverArtistPostsBuilder,
     this.sliverCharacterPostsBuilder,
     this.onExpanded,
@@ -95,6 +95,7 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     this.fileDetailsBuilder,
     this.sourceSectionBuilder,
     this.parts = kDefaultPostDetailsParts,
+    this.postDetailsController,
   });
 
   final int initialIndex;
@@ -105,7 +106,7 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   final void Function(int index)? onPageChangeIndexed;
   final String Function(T post) swipeImageUrlBuilder;
   final String? Function(T post, int currentPage)? placeholderImageUrlBuilder;
-  final Widget Function(BuildContext context, T post)? toolbarBuilder;
+  final Widget? toolbar;
   final List<Widget> Function(BuildContext context, T post)?
       sliverArtistPostsBuilder;
   final Widget Function(BuildContext context, T post)?
@@ -125,6 +126,8 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
       sliverRelatedPostsBuilder;
   final List<Widget> Function(int currentPage, bool expanded, T post,
       DetailsPageController controller)? topRightButtonsBuilder;
+
+  final PostDetailsController<T>? postDetailsController;
 
   @override
   ConsumerState<PostDetailsPageScaffold<T>> createState() =>
@@ -172,6 +175,7 @@ class _PostDetailPageScaffoldState<T extends Post>
   void dispose() {
     _controller.currentPage.removeListener(_onPageChanged);
     _controller.dispose();
+
     super.dispose();
   }
 
@@ -210,34 +214,71 @@ class _PostDetailPageScaffoldState<T extends Post>
               onTap: () => controller.stopSlideshow(),
               child: IgnorePointer(
                 ignoring: slideshow,
-                child: child!,
+                child: child,
               ),
             ),
-            child: _build(),
+            child: ValueListenableBuilder(
+              valueListenable: controller.currentPage,
+              builder: (_, page, __) => _build(page),
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget _build() {
+  Widget _build(int currentPage) {
     final config = ref.watchConfig;
     final booruBuilder = ref.watchBooruBuilder(config);
     final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
 
+    Widget buildShareChild(BoxConstraints constraints) {
+      return Column(
+        children: [
+          if (widget.infoBuilder != null)
+            constraints.maxHeight > 450
+                ? widget.infoBuilder!(context, posts[currentPage])
+                : const SizedBox.shrink(),
+          widget.toolbar != null
+              ? widget.toolbar!
+              : SimplePostActionToolbar(post: posts[currentPage]),
+        ],
+      );
+    }
+
+    Widget buildBottomSheet(BoxConstraints constraints) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (posts[currentPage].isVideo)
+            ValueListenableBuilder(
+              valueListenable: videoProgress,
+              builder: (_, progress, __) => VideoSoundScope(
+                builder: (context, soundOn) => BooruVideoProgressBar(
+                  soundOn: soundOn,
+                  progress: progress,
+                  playbackSpeed:
+                      ref.watchPlaybackSpeed(posts[currentPage].videoUrl),
+                  onSeek: (position) => onVideoSeekTo(position, currentPage),
+                  onSpeedChanged: (speed) =>
+                      ref.setPlaybackSpeed(posts[currentPage].videoUrl, speed),
+                  onSoundToggle: (value) => ref.setGlobalVideoSound(value),
+                ),
+              ),
+            ),
+          Container(
+            color: context.colorScheme.surface,
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.paddingOf(context).bottom,
+            ),
+            child: buildShareChild(constraints),
+          ),
+        ],
+      );
+    }
+
     return LayoutBuilder(
       builder: (context, constraints) => DetailsPage(
-        sharedChildBuilder: (page) => Column(
-          children: [
-            if (widget.infoBuilder != null)
-              constraints.maxHeight > 450
-                  ? widget.infoBuilder!(context, posts[page])
-                  : const SizedBox.shrink(),
-            widget.toolbarBuilder != null
-                ? widget.toolbarBuilder!(context, posts[page])
-                : SimplePostActionToolbar(post: posts[page]),
-          ],
-        ),
         currentSettings: () => ref.read(settingsProvider),
         controller: controller,
         intitialIndex: widget.initialIndex,
@@ -254,61 +295,27 @@ class _PostDetailPageScaffoldState<T extends Post>
                   posts[page],
                 )
             : null,
-        bottomSheet: (page, sharedChild) {
-          final bottomSheet = Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (posts[page].isVideo)
-                ValueListenableBuilder(
-                  valueListenable: videoProgress,
-                  builder: (_, progress, __) => VideoSoundScope(
-                    builder: (context, soundOn) => BooruVideoProgressBar(
-                      soundOn: soundOn,
-                      progress: progress,
-                      playbackSpeed:
-                          ref.watchPlaybackSpeed(posts[page].videoUrl),
-                      onSeek: (position) => onVideoSeekTo(position, page),
-                      onSpeedChanged: (speed) =>
-                          ref.setPlaybackSpeed(posts[page].videoUrl, speed),
-                      onSoundToggle: (value) => ref.setGlobalVideoSound(value),
+        bottomSheet: widget.infoBuilder != null
+            ? DecoratedBox(
+                decoration: BoxDecoration(
+                  color: context.theme.scaffoldBackgroundColor.withOpacity(0.8),
+                  border: Border(
+                    top: BorderSide(
+                      color: context.theme.dividerColor,
+                      width: 0.2,
                     ),
                   ),
                 ),
-              if (sharedChild != null)
-                Container(
-                  color: context.colorScheme.surface,
-                  padding: EdgeInsets.only(
-                    bottom: MediaQuery.paddingOf(context).bottom,
-                  ),
-                  child: sharedChild,
-                ),
-            ],
-          );
-
-          return widget.infoBuilder != null
-              ? Container(
-                  decoration: BoxDecoration(
-                    color:
-                        context.theme.scaffoldBackgroundColor.withOpacity(0.8),
-                    border: Border(
-                      top: BorderSide(
-                        color: context.theme.dividerColor,
-                        width: 0.2,
-                      ),
-                    ),
-                  ),
-                  child: bottomSheet,
-                )
-              : bottomSheet;
-        },
-        targetSwipeDownBuilder: (context, page) => SwipeTargetImage(
-          imageUrl: posts[page].isVideo
-              ? posts[page].videoThumbnailUrl
-              : widget.swipeImageUrlBuilder(posts[page]),
-          aspectRatio: posts[page].aspectRatio,
+                child: buildBottomSheet(constraints),
+              )
+            : buildBottomSheet(constraints),
+        targetSwipeDown: SwipeTargetImage(
+          imageUrl: posts[currentPage].isVideo
+              ? posts[currentPage].videoThumbnailUrl
+              : widget.swipeImageUrlBuilder(posts[currentPage]),
+          aspectRatio: posts[currentPage].aspectRatio,
         ),
-        expandedBuilder:
-            (context, page, currentPage, expanded, enableSwipe, sharedChild) {
+        expandedBuilder: (context, page, expanded, enableSwipe) {
           final post = posts[page];
           final nextPost = posts.length > page + 1 ? posts[page + 1] : null;
           final expandedOnCurrentPage = expanded && page == currentPage;
@@ -370,7 +377,6 @@ class _PostDetailPageScaffoldState<T extends Post>
                 // preload next image only, not the post itself
                 if (nextPost != null && !nextPost.isVideo)
                   SliverOffstage(
-                    offstage: true,
                     sliver: SliverToBoxAdapter(
                       child: ExtendedImage.network(
                         widget.swipeImageUrlBuilder(nextPost),
@@ -378,7 +384,6 @@ class _PostDetailPageScaffoldState<T extends Post>
                         height: 1,
                         cacheHeight: 10,
                         cacheWidth: 10,
-                        cache: true,
                       ),
                     ),
                   ),
@@ -406,10 +411,9 @@ class _PostDetailPageScaffoldState<T extends Post>
                                   child: widget.infoBuilder!(context, post),
                                 )
                               : null,
-                          PostDetailsPart.toolbar => widget.toolbarBuilder !=
-                                  null
+                          PostDetailsPart.toolbar => widget.toolbar != null
                               ? SliverToBoxAdapter(
-                                  child: widget.toolbarBuilder!(context, post),
+                                  child: widget.toolbar,
                                 )
                               : null,
                           PostDetailsPart.artistInfo => widget
@@ -528,25 +532,41 @@ class _PostDetailPageScaffoldState<T extends Post>
           );
         },
         pageCount: widget.posts.length,
-        topRightButtonsBuilder: (page, expanded) =>
-            widget.topRightButtonsBuilder != null
-                ? widget.topRightButtonsBuilder!(
-                    page, expanded, posts[page], controller)
-                : [
-                    NoteActionButtonWithProvider(
-                      post: posts[page],
-                      expanded: expanded,
-                      noteState:
-                          ref.watch(notesControllerProvider(posts[page])),
-                    ),
-                    GeneralMoreActionButton(
-                      post: widget.posts[page],
-                      onStartSlideshow: () => controller.startSlideshow(),
-                    ),
-                  ],
-        onExpanded: (currentPage) =>
-            widget.onExpanded?.call(posts[currentPage]),
+        topRightButtonsBuilder: (expanded) => widget.topRightButtonsBuilder !=
+                null
+            ? widget.topRightButtonsBuilder!(
+                currentPage, expanded, posts[currentPage], controller)
+            : [
+                NoteActionButtonWithProvider(
+                  post: posts[currentPage],
+                  expanded: expanded,
+                  noteState:
+                      ref.watch(notesControllerProvider(posts[currentPage])),
+                ),
+                GeneralMoreActionButton(
+                  post: widget.posts[currentPage],
+                  onStartSlideshow: () => controller.startSlideshow(),
+                ),
+              ],
+        onExpanded: () => widget.onExpanded?.call(posts[currentPage]),
       ),
+    );
+  }
+}
+
+class DefaultPostDetailsActionToolbar extends StatelessWidget {
+  const DefaultPostDetailsActionToolbar({
+    super.key,
+    required this.controller,
+  });
+
+  final PostDetailsController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder(
+      valueListenable: controller.currentPost,
+      builder: (_, post, __) => DefaultPostActionToolbar(post: post),
     );
   }
 }

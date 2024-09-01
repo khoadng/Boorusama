@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/router.dart';
 
 class SelectedTagListWithData extends ConsumerWidget {
   const SelectedTagListWithData({
@@ -19,7 +19,7 @@ class SelectedTagListWithData extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
+    return ColoredBox(
         color: context.theme.scaffoldBackgroundColor,
         child: ValueListenableBuilder(
           valueListenable: controller,

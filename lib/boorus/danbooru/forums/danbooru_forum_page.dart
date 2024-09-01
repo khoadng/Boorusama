@@ -52,6 +52,8 @@ class _DanbooruForumPageState extends ConsumerState<DanbooruForumPage> {
         .watch(danbooruCreatorsProvider(config).notifier)
         .load(topics.map((e) => e.creatorId).toList());
 
+    if (!mounted) return;
+
     if (topics.isEmpty) {
       pagingController.appendLastPage([]);
     } else {

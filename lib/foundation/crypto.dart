@@ -13,10 +13,10 @@ String hashPasswordSHA1({
   required String password,
   required String Function(String salt, String password) hashStringBuilder,
 }) {
-  var hashedString = hashStringBuilder(salt, password);
-  var bytes = utf8.encode(hashedString);
-  var hash = sha1.convert(bytes);
-  var hashedPassword = hash.toString();
+  final hashedString = hashStringBuilder(salt, password);
+  final bytes = utf8.encode(hashedString);
+  final hash = sha1.convert(bytes);
+  final hashedPassword = hash.toString();
 
   return hashedPassword;
 }

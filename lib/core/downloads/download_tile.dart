@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:android_intent_plus/android_intent.dart';
 import 'package:android_intent_plus/flag.dart';
 import 'package:collection/collection.dart';
-import 'package:filesize/filesize.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
@@ -17,6 +16,7 @@ import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/filesize.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
@@ -68,7 +68,7 @@ class DownloadTile extends StatelessWidget {
                   child: Wrap(
                     children: [
                       switch (data) {
-                        DownloadDone d when d.alreadyExists => Chip(
+                        final DownloadDone d when d.alreadyExists => Chip(
                             visualDensity: const ShrinkVisualDensity(),
                             backgroundColor: context.theme.colorScheme.primary,
                             label: const Text(
@@ -91,9 +91,9 @@ class DownloadTile extends StatelessWidget {
                                         context.colorScheme.tertiaryContainer,
                                     visualDensity: const ShrinkVisualDensity(),
                                     label: Text(
-                                      filesize(
+                                      Filesize.parse(
                                         fs[data.url],
-                                        1,
+                                        round: 1,
                                       ),
                                     ),
                                   )
@@ -125,7 +125,7 @@ class DownloadTile extends StatelessWidget {
                       title: _Title(data: data.fileName),
                       subtitle: const Text('Queued', maxLines: 1),
                     ),
-                  DownloadInProgress d => ListTile(
+                  final DownloadInProgress d => ListTile(
                       dense: true,
                       visualDensity: const VisualDensity(
                         vertical: -4,
@@ -150,7 +150,7 @@ class DownloadTile extends StatelessWidget {
                         ),
                       ),
                     ),
-                  DownloadPaused d => ListTile(
+                  final DownloadPaused d => ListTile(
                       dense: true,
                       visualDensity: const VisualDensity(
                         vertical: -4,
@@ -175,7 +175,7 @@ class DownloadTile extends StatelessWidget {
                         ),
                       ),
                     ),
-                  DownloadFailed d => ListTile(
+                  final DownloadFailed d => ListTile(
                       dense: true,
                       visualDensity: const VisualDensity(
                         vertical: -4,
@@ -188,7 +188,7 @@ class DownloadTile extends StatelessWidget {
                         fileName: d.fileName,
                       ),
                     ),
-                  DownloadCanceled d => ListTile(
+                  final DownloadCanceled d => ListTile(
                       dense: true,
                       visualDensity: const VisualDensity(
                         vertical: -4,
@@ -205,7 +205,7 @@ class DownloadTile extends StatelessWidget {
                         fileName: d.fileName,
                       ),
                     ),
-                  DownloadDone d => ListTile(
+                  final DownloadDone d => ListTile(
                       dense: true,
                       visualDensity: const ShrinkVisualDensity(),
                       minVerticalPadding: 0,
@@ -264,8 +264,9 @@ class DownloadTileBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fileSizeText =
-        fileSize != null && fileSize! > 0 ? filesize(fileSize, 1) : null;
+    final fileSizeText = fileSize != null && fileSize! > 0
+        ? Filesize.parse(fileSize, round: 1)
+        : null;
     final networkSpeedText = networkSpeed.toOption().fold(
           () => null,
           (s) => switch (s) {
@@ -318,10 +319,9 @@ class DownloadTileBuilder extends StatelessWidget {
               children: [
                 Row(
                   mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     if (siteUrl != null)
-                      PostSource.from(siteUrl!).whenWeb(
+                      PostSource.from(siteUrl).whenWeb(
                         (source) => BooruLogo(
                           source: source,
                           width: 18,

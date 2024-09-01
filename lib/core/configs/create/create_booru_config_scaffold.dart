@@ -122,7 +122,6 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
                     Screen.of(context).size.isLarge ? Duration.zero : null,
                 length: tabMap.length,
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const SizedBox(height: 4),
                     TabBar(

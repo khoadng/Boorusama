@@ -36,11 +36,11 @@ extension StringX on String {
   String replaceUnderscoreWithSpace() => replaceAll('_', ' ');
 
   ///
-  /// Add a [char] at a [position] with the given String [s].
+  /// Add a [char] at a [position] with the given string.
   ///
   /// The boolean [repeat] defines whether to add the [char] at every [position].
-  /// If [position] is greater than the length of [s], it will return [s].
-  /// If [repeat] is true and [position] is 0, it will return [s].
+  /// If [position] is greater than the length of the string, it will return the original string.
+  /// If [repeat] is true and [position] is 0, it will return the original string.
   ///
   /// Example :
   /// 1234567890 , '-', 3 => 123-4567890

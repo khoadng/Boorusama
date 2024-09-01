@@ -15,13 +15,6 @@ enum GestureType {
 }
 
 class GestureConfig extends Equatable {
-  final String? swipeUp;
-  final String? swipeDown;
-  final String? swipeLeft;
-  final String? swipeRight;
-  final String? doubleTap;
-  final String? longPress;
-  final String? tap;
 
   const GestureConfig({
     required this.swipeUp,
@@ -53,6 +46,13 @@ class GestureConfig extends Equatable {
       tap: json['tap'] as String?,
     );
   }
+  final String? swipeUp;
+  final String? swipeDown;
+  final String? swipeLeft;
+  final String? swipeRight;
+  final String? doubleTap;
+  final String? longPress;
+  final String? tap;
 
   GestureConfig copyWith({
     String? Function()? swipeUp,
@@ -101,8 +101,6 @@ class GestureConfig extends Equatable {
 }
 
 class PostGestureConfig extends Equatable {
-  final GestureConfig? preview;
-  final GestureConfig? fullview;
 
   const PostGestureConfig({
     required this.preview,
@@ -132,6 +130,8 @@ class PostGestureConfig extends Equatable {
     return PostGestureConfig.fromJson(
         jsonDecode(jsonString) as Map<String, dynamic>);
   }
+  final GestureConfig? preview;
+  final GestureConfig? fullview;
 
   PostGestureConfig copyWith({
     GestureConfig? Function()? preview,

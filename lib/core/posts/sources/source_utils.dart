@@ -15,7 +15,7 @@ bool isWebSource(String? url) {
     return false;
   }
 
-  var uri = Uri.tryParse(url);
+  final uri = Uri.tryParse(url);
 
   if (uri == null) return false;
 

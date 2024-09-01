@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
@@ -18,13 +17,13 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/dart.dart';
+import 'package:boorusama/foundation/html.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/functional.dart';
-import 'package:boorusama/routes.dart';
+import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'create_szurubooru_config_page.dart';
 import 'post_votes/post_votes.dart';
@@ -113,65 +112,10 @@ class SzurubooruBuilder
       .then((value) => true);
 
   @override
-  HomePageBuilder get homePageBuilder => (context, config) => HomePageScaffold(
-        onPostTap:
-            (context, posts, post, scrollController, settings, initialIndex) =>
-                goToPostDetailsPage(
-          context: context,
-          posts: posts,
-          initialIndex: initialIndex,
-        ),
-        mobileMenuBuilder: (context, controller) => [
-          if (config.hasLoginDetails()) ...[
-            SideMenuTile(
-              icon: const Icon(Symbols.favorite),
-              title: Text('profile.favorites'.tr()),
-              onTap: () => goToFavoritesPage(context),
-            ),
-          ]
-        ],
-        desktopMenuBuilder: (context, controller, constraints) => [
-          HomeNavigationTile(
-            value: 0,
-            controller: controller,
-            constraints: constraints,
-            selectedIcon: Symbols.dashboard,
-            icon: Symbols.dashboard,
-            title: 'Home',
-          ),
-          if (config.hasLoginDetails()) ...[
-            HomeNavigationTile(
-              value: 1,
-              controller: controller,
-              constraints: constraints,
-              selectedIcon: Symbols.favorite,
-              icon: Symbols.favorite,
-              title: 'Favorites',
-            ),
-          ],
-          ...coreDesktopTabBuilder(
-            context,
-            constraints,
-            controller,
-          ),
-        ],
-        desktopViews: () {
-          final tabs = [
-            const DesktopHomePageScaffold(),
-            if (config.hasLoginDetails()) ...[
-              SzurubooruFavoritesPage(username: config.name),
-            ],
-          ];
-
-          return [
-            ...tabs,
-            ...coreDesktopViewBuilder(
-              previousItemCount: tabs.length,
-            ),
-          ];
-        },
-        onSearchTap: () => goToSearchPage(context),
-      );
+  HomePageBuilder get homePageBuilder =>
+      (context, config) => SzurubooruHomePage(
+            config: config,
+          );
 
   @override
   SearchPageBuilder get searchPageBuilder => (context, initialQuery) =>
@@ -179,8 +123,24 @@ class SzurubooruBuilder
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) => SzurubooruPostDetailsPage(
-            payload: payload,
+      (context, config, payload) => PostDetailsLayoutSwitcher(
+            initialIndex: payload.initialIndex,
+            posts: payload.posts,
+            scrollController: payload.scrollController,
+            desktop: (controller) => SzurubooruPostDetailsPage(
+              initialPage: controller.currentPage.value,
+              controller: controller,
+              posts: payload.posts,
+              onExit: (page) => controller.onExit(page),
+              onPageChanged: (page) => controller.setPage(page),
+            ),
+            mobile: (controller) => SzurubooruPostDetailsPage(
+              initialPage: controller.currentPage.value,
+              controller: controller,
+              posts: payload.posts,
+              onExit: (page) => controller.onExit(page),
+              onPageChanged: (page) => controller.setPage(page),
+            ),
           );
 
   @override
@@ -197,21 +157,71 @@ class SzurubooruBuilder
   );
 }
 
+class SzurubooruHomePage extends StatelessWidget {
+  const SzurubooruHomePage({
+    super.key,
+    required this.config,
+  });
+
+  final BooruConfig config;
+
+  @override
+  Widget build(BuildContext context) {
+    return HomePageScaffold(
+      mobileMenuBuilder: [
+        if (config.hasLoginDetails()) ...[
+          SideMenuTile(
+            icon: const Icon(Symbols.favorite),
+            title: Text('profile.favorites'.tr()),
+            onTap: () => goToFavoritesPage(context),
+          ),
+        ]
+      ],
+      desktopMenuBuilder: (context, controller, constraints) => [
+        if (config.hasLoginDetails()) ...[
+          HomeNavigationTile(
+            value: 1,
+            controller: controller,
+            constraints: constraints,
+            selectedIcon: Symbols.favorite,
+            icon: Symbols.favorite,
+            title: 'Favorites',
+          ),
+        ],
+      ],
+      desktopViews: [
+        if (config.hasLoginDetails()) ...[
+          SzurubooruFavoritesPage(username: config.name),
+        ],
+      ],
+    );
+  }
+}
+
 class SzurubooruPostDetailsPage extends ConsumerWidget {
   const SzurubooruPostDetailsPage({
     super.key,
-    required this.payload,
+    required this.controller,
+    required this.onExit,
+    required this.onPageChanged,
+    required this.posts,
+    required this.initialPage,
   });
 
-  final DetailsPayload payload;
+  final List<Post> posts;
+  final PostDetailsController<Post> controller;
+  final void Function(int page) onExit;
+  final void Function(int page) onPageChanged;
+  final int initialPage;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return PostDetailsPageScaffold(
-      posts: payload.posts,
-      initialIndex: payload.initialIndex,
+      posts: posts,
+      initialIndex: initialPage,
       swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
-      onExit: (page) => payload.scrollController?.scrollToIndex(page),
+      onExit: onExit,
+      onPageChangeIndexed: onPageChanged,
       statsTileBuilder: (context, rawPost) =>
           castOrNull<SzurubooruPost>(rawPost).toOption().fold(
                 () => const SizedBox.shrink(),
@@ -236,11 +246,14 @@ class SzurubooruPostDetailsPage extends ConsumerWidget {
                   tagColorBuilder: (tag) => tag.category.darkColor,
                 ),
               ),
-      toolbarBuilder: (context, rawPost) =>
-          castOrNull<SzurubooruPost>(rawPost).toOption().fold(
-                () => SimplePostActionToolbar(post: rawPost),
-                (post) => SzurubooruPostActionToolbar(post: post),
-              ),
+      toolbar: ValueListenableBuilder(
+        valueListenable: controller.currentPost,
+        builder: (_, rawPost, __) =>
+            castOrNull<SzurubooruPost>(rawPost).toOption().fold(
+                  () => SimplePostActionToolbar(post: rawPost),
+                  (post) => SzurubooruPostActionToolbar(post: post),
+                ),
+      ),
       fileDetailsBuilder: (context, rawPost) => DefaultFileDetailsSection(
         post: rawPost,
         uploaderName: castOrNull<SzurubooruPost>(rawPost)?.uploaderName,
@@ -264,9 +277,10 @@ class SzurubooruSearchPage extends ConsumerWidget {
     return SearchPageScaffold(
       noticeBuilder: (context) => !config.hasLoginDetails()
           ? InfoContainer(
-              contentBuilder: (context) => Html(
-                  data:
-                      'You need to log in to use <b>Szurubooru</b> tag completion.'),
+              contentBuilder: (context) => const AppHtml(
+                data:
+                    'You need to log in to use <b>Szurubooru</b> tag completion.',
+              ),
             )
           : const SizedBox.shrink(),
       initialQuery: initialQuery,
@@ -302,7 +316,6 @@ class SzurubooruCommentPage extends ConsumerWidget {
                           ? DateTime.parse(e.lastEditTime!)
                           : DateTime(1),
                       creatorName: e.user?.name ?? '',
-                      creatorId: null,
                     ))
                 .toList(),
           ),

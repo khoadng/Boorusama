@@ -15,12 +15,11 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/create/create_anon_config_page.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/path.dart' as path;
 import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/routes.dart';
+import 'package:boorusama/router.dart';
 
 const kZerochanCustomDownloadFileNameFormat =
     '{id}_{width}x{height}.{extension}';
@@ -134,7 +133,7 @@ final zerochanTagsFromIdProvider =
 
 TagCategory zerochanStringToTagCategory(String? value) {
   // remove ' fav' and ' primary' from the end of the string
-  var type = value?.toLowerCase().replaceAll(RegExp(r' fav$| primary$'), '');
+  final type = value?.toLowerCase().replaceAll(RegExp(r' fav$| primary$'), '');
 
   return switch (type) {
     'mangaka' || 'artist' || 'studio' => TagCategory.artist(),

@@ -127,7 +127,7 @@ extension DownloadWithSettingsX on DownloadService {
 
 // map DownloadError to message
 String mapDownloadErrorToMessage(DownloadError error) => switch (error) {
-      FileSystemDownloadError e => switch (e.type) {
+      final FileSystemDownloadError e => switch (e.type) {
           FileSystemDownloadErrorType.directoryNotFound =>
             'Directory ${error.savedPath} not found',
           FileSystemDownloadErrorType.restrictedDirectory =>
@@ -141,9 +141,9 @@ String mapDownloadErrorToMessage(DownloadError error) => switch (error) {
           FileSystemDownloadErrorType.fileNameTooLong =>
             'File name is too long, total length is  ${error.fileName.length}'
         },
-      HttpDownloadError e =>
+      final HttpDownloadError e =>
         'Http request error ${e.exception.response?.statusCode}, failed to download ${e.fileName}',
-      GenericDownloadError e => e.message,
+      final GenericDownloadError e => e.message,
     };
 
 class DioDownloadService implements DownloadService {
@@ -204,7 +204,7 @@ class DioDownloadService implements DownloadService {
       url: url,
       fileNameBuilder: fileNameBuilder,
     ).orElse((error) => switch (error) {
-          HttpDownloadError e => e.exception.response?.statusCode == 404
+          final HttpDownloadError e => e.exception.response?.statusCode == 404
               ? _download(
                   urls: urls..remove(url),
                   fileNameBuilder: fileNameBuilder,
@@ -238,7 +238,7 @@ class DioDownloadService implements DownloadService {
       url: url,
       fileNameBuilder: fileNameBuilder,
     ).orElse((error) => switch (error) {
-          HttpDownloadError e => e.exception.response?.statusCode == 404
+          final HttpDownloadError e => e.exception.response?.statusCode == 404
               ? _download(
                   urls: urls..remove(url),
                   fileNameBuilder: fileNameBuilder,

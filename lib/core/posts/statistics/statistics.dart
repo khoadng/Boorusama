@@ -69,7 +69,7 @@ Map<String, int> countDomain(Iterable<Post> posts) {
 
   for (final post in posts) {
     var domain = switch (post.source) {
-      WebSource w => w.uri.host,
+      final WebSource w => w.uri.host,
       NonWebSource _ => '<non-web source>',
       NoSource _ => '<no source>',
     };

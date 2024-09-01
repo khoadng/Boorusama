@@ -46,7 +46,11 @@ class _SelectedTagEditDialogState extends ConsumerState<SelectedTagEditDialog> {
 
     Future.delayed(
       Duration.zero,
-      () => Navigator.of(context).pop(),
+      () {
+        if (context.mounted) {
+          Navigator.of(context).pop();
+        }
+      },
     );
   }
 

@@ -3,7 +3,6 @@ import 'dart:io';
 
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,9 +16,9 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/export_import/export_import.dart';
 import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/android.dart';
+import 'package:boorusama/foundation/clipboard.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/package_info.dart';
 import 'package:boorusama/foundation/path.dart' as p;
@@ -27,6 +26,7 @@ import 'package:boorusama/foundation/picker.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
+import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'widgets/settings_page_scaffold.dart';
 
@@ -114,8 +114,8 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
               break;
             case 'export_clipboard':
               ref.read(booruConfigProvider.notifier).exportClipboard(
-                    onSuccess: (message) => showSuccessToast(message),
-                    onFailure: (message) => showErrorToast(message),
+                    onSuccess: (message) => showSuccessToast(context, message),
+                    onFailure: (message) => showErrorToast(context, message),
                     appVersion: ref.read(appVersionProvider),
                   );
               break;
@@ -123,7 +123,7 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
               ref.read(booruConfigProvider.notifier).importClipboard(
                     onSuccess: _onImportSuccess,
                     onWillImport: _showImportBooruConfigsAlertDialog,
-                    onFailure: (message) => showErrorToast(message),
+                    onFailure: (message) => showErrorToast(context, message),
                   );
               break;
             default:
@@ -151,7 +151,7 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
       trailing: ImportExportTagButton(
         onImport: (tagString) => ref
             .read(globalBlacklistedTagsProvider.notifier)
-            .addTagStringWithToast(tagString),
+            .addTagStringWithToast(context, tagString),
         tags: blacklistedTags.map((e) => e.name).toList(),
       ),
     );
@@ -171,14 +171,11 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
           } else if (value == 'export') {
             ref.read(favoriteTagsProvider.notifier).export(
               onDone: (tagString) {
-                Clipboard.setData(
-                  ClipboardData(text: tagString),
-                ).then((value) => showSimpleSnackBar(
-                      context: context,
-                      content: const Text(
-                        'favorite_tags.export_notification',
-                      ).tr(),
-                    ));
+                AppClipboard.copyAndToast(
+                  context,
+                  tagString,
+                  message: 'favorite_tags.export_notification',
+                );
               },
             );
           } else if (value == 'export_with_labels') {
@@ -268,25 +265,27 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
 
   Future<void> _pickBookmarkFolder(WidgetRef ref) =>
       pickDirectoryPathToastOnError(
+        context: context,
         onPick: (path) {
-          ref.bookmarks.exportAllBookmarks(path);
+          ref.bookmarks.exportAllBookmarks(context, path);
         },
       );
 
   void _pickBookmarkFile(WidgetRef ref) => _pickFile(
         onPick: (path) {
           final file = File(path);
-          ref.bookmarks.importBookmarks(file);
+          ref.bookmarks.importBookmarks(context, file);
         },
       );
 
   Future<void> _pickProfileFolder(WidgetRef ref) =>
       pickDirectoryPathToastOnError(
+        context: context,
         onPick: (path) {
           ref.read(booruConfigProvider.notifier).export(
                 path: path,
-                onSuccess: (message) => showSuccessToast(message),
-                onFailure: (message) => showErrorToast(message),
+                onSuccess: (message) => showSuccessToast(context, message),
+                onFailure: (message) => showErrorToast(context, message),
               );
         },
       );
@@ -303,13 +302,15 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
       if (androidVersion != null &&
           androidVersion <= AndroidVersions.android9) {
         return pickSingleFilePathToastOnError(
-          type: FileType.any,
+          context: context,
           onPick: (path) {
             final ext = p.extension(path);
 
             if (!allowedExtensions.contains(ext.substring(1))) {
               showErrorToast(
-                  'Invalid file type, only ${allowedExtensions.map((e) => '.$e').join(', ')} files are allowed');
+                context,
+                'Invalid file type, only ${allowedExtensions.map((e) => '.$e').join(', ')} files are allowed',
+              );
               return;
             }
 
@@ -320,6 +321,7 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
     }
 
     return pickSingleFilePathToastOnError(
+      context: context,
       type: FileType.custom,
       allowedExtensions: allowedExtensions,
       onPick: onPick,
@@ -333,15 +335,16 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
                 path: path,
                 onSuccess: _onImportSuccess,
                 onWillImport: _showImportBooruConfigsAlertDialog,
-                onFailure: (message) => showErrorToast(message),
+                onFailure: (message) => showErrorToast(context, message),
               );
         },
       );
 
   Future<void> _pickSettingsFolder(WidgetRef ref) =>
       pickDirectoryPathToastOnError(
+        context: context,
         onPick: (path) {
-          ref.read(settingsProvider.notifier).exportSettings(path);
+          ref.read(settingsProvider.notifier).exportSettings(context, path);
         },
       );
 
@@ -351,9 +354,9 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
                 context: context,
                 path: path,
                 onWillImport: (data) async => true,
-                onFailure: (message) => showErrorToast(message),
+                onFailure: (message) => showErrorToast(context, message),
                 onSuccess: (message, _) {
-                  showSuccessToast(message);
+                  showSuccessToast(context, message);
                 },
               );
         },
@@ -361,8 +364,10 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
 
   Future<void> _pickFavoriteTagsFolder(WidgetRef ref) =>
       pickDirectoryPathToastOnError(
+        context: context,
         onPick: (path) {
           ref.read(favoriteTagsProvider.notifier).exportWithLabels(
+                context: context,
                 path: path,
               );
         },
@@ -371,6 +376,7 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
   void _pickFavoriteTagsFile(WidgetRef ref) => _pickFile(
         onPick: (path) {
           ref.read(favoriteTagsProvider.notifier).importWithLabels(
+                context: context,
                 path: path,
               );
         },
@@ -402,7 +408,6 @@ class BackupRestoreTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           CircleAvatar(
             radius: 22,

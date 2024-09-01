@@ -25,7 +25,7 @@ class InMemoryBooruConfigRepository implements BooruConfigRepository {
     final id = _configs.isEmpty ? 1 : _configs.last.id + 1;
     final config = booruConfigData.toBooruConfig(id: id);
 
-    if (config == null) return Future.value(null);
+    if (config == null) return Future.value();
 
     _configs.add(config);
     return Future.value(config);
@@ -68,10 +68,10 @@ class InMemoryBooruConfigRepository implements BooruConfigRepository {
   @override
   Future<BooruConfig?> update(int id, BooruConfigData booruConfigData) {
     final index = _configs.indexWhere((e) => e.id == id);
-    if (index == -1) return Future.value(null);
+    if (index == -1) return Future.value();
 
     final config = booruConfigData.toBooruConfig(id: id);
-    if (config == null) return Future.value(null);
+    if (config == null) return Future.value();
 
     _configs[index] = config;
     return Future.value(config);

@@ -12,9 +12,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
+import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 final allowFetchProvider = StateProvider<bool>((ref) {
@@ -137,7 +137,6 @@ class _PostDetailsDesktopScaffoldState<T extends Post>
                   height: 1,
                   cacheHeight: 10,
                   cacheWidth: 10,
-                  cache: true,
                 ),
               PostMedia(
                 post: post,

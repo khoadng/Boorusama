@@ -146,6 +146,7 @@ Note gelbooruNoteToNote(NoteDto note) {
 class GelbooruBuilder
     with
         UnknownMetatagsMixin,
+        DefaultHomeMixin,
         DefaultThumbnailUrlMixin,
         DefaultThumbnailUrlMixin,
         DefaultPostImageDetailsUrlMixin,
@@ -238,6 +239,7 @@ class GelbooruBuilder
   PostDetailsPageBuilder get postDetailsPageBuilder =>
       (context, config, payload) => PostDetailsLayoutSwitcher(
             initialIndex: payload.initialIndex,
+            posts: payload.posts,
             scrollController: payload.scrollController,
             desktop: (controller) => GelbooruPostDetailsDesktopPage(
               initialIndex: controller.currentPage.value,
@@ -247,6 +249,7 @@ class GelbooruBuilder
             ),
             mobile: (controller) => GelbooruPostDetailsPage(
               initialIndex: controller.currentPage.value,
+              controller: controller,
               posts: payload.posts.map((e) => e as GelbooruPost).toList(),
               onExit: (page) => controller.onExit(page),
               onPageChanged: (page) => controller.setPage(page),
@@ -328,24 +331,22 @@ class GelbooruBuilder
   );
 
   @override
-  HomeViewBuilder get homeViewBuilder =>
-      (context, config, controller) => GelbooruMobileHomePage(
-            controller: controller,
-          );
-
-  @override
   FavoriteAdder? get favoriteAdder => client().canFavorite
       ? (postId, ref) async {
           final status = await ref
               .read(gelbooruFavoritesProvider(ref.readConfig).notifier)
               .add(postId);
 
-          if (status == AddFavoriteStatus.alreadyExists) {
-            showErrorToast('Already favorited');
-          } else if (status == AddFavoriteStatus.failure) {
-            showErrorToast('Failed to favorite');
-          } else {
-            showSuccessToast('Favorited');
+          final context = ref.context;
+
+          if (context.mounted) {
+            if (status == AddFavoriteStatus.alreadyExists) {
+              showErrorToast(context, 'Already favorited');
+            } else if (status == AddFavoriteStatus.failure) {
+              showErrorToast(context, 'Failed to favorite');
+            } else {
+              showSuccessToast(context, 'Favorited');
+            }
           }
 
           return status == AddFavoriteStatus.success;
@@ -359,7 +360,11 @@ class GelbooruBuilder
               .read(gelbooruFavoritesProvider(ref.readConfig).notifier)
               .remove(postId);
 
-          showSuccessToast('Favorite removed');
+          final context = ref.context;
+
+          if (context.mounted) {
+            showSuccessToast(context, 'Favorite removed');
+          }
 
           return true;
         }

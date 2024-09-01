@@ -24,9 +24,9 @@ class RelatedTagActionSheet extends ConsumerStatefulWidget {
     required this.onNegated,
   });
 
-  final RelatedTag relatedTag;
-  final void Function(RelatedTagItem tag) onAdded;
-  final void Function(RelatedTagItem tag) onNegated;
+  final DanbooruRelatedTag relatedTag;
+  final void Function(DanbooruRelatedTagItem tag) onAdded;
+  final void Function(DanbooruRelatedTagItem tag) onNegated;
 
   @override
   ConsumerState<RelatedTagActionSheet> createState() =>
