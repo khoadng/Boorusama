@@ -325,7 +325,6 @@ class PreviewHome extends StatelessWidget {
                       chipColors: generateChipColorsFromColorScheme(
                         color,
                         colorScheme,
-                        isDark ? AppThemeMode.dark : AppThemeMode.light,
                         true,
                       ),
                     ),
