@@ -68,7 +68,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
 
     final tabMap = {
       if (authTab != null) 'booru.authentication': authTab!,
-      'Layout & Theme': const BooruConfigThemeView(),
+      'Theme': const BooruConfigThemeView(),
       if (kCustomListingFeatureEnabled)
         'Listing': BooruConfigListingView(
           config: config,

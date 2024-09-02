@@ -54,7 +54,7 @@ class ThemePreviewApp extends StatefulWidget {
 
   final ColorScheme defaultScheme;
   final ColorSettings? currentScheme;
-  final void Function(ColorSettings color) onSchemeChanged;
+  final void Function(ColorSettings? color) onSchemeChanged;
 
   @override
   State<ThemePreviewApp> createState() => _ThemePreviewAppState();
@@ -62,6 +62,10 @@ class ThemePreviewApp extends StatefulWidget {
 
 class _ThemePreviewAppState extends State<ThemePreviewApp> {
   late var _currentScheme = widget.currentScheme;
+  final predefined = [
+    null,
+    ...preDefinedColorSettings,
+  ];
 
   final pageController = PageController();
 
@@ -117,7 +121,7 @@ class _ThemePreviewAppState extends State<ThemePreviewApp> {
                   child: Text(
                     _currentScheme?.nickname ??
                         _currentScheme?.name ??
-                        'Unknown',
+                        'Default',
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
@@ -132,37 +136,24 @@ class _ThemePreviewAppState extends State<ThemePreviewApp> {
                       horizontal: 8,
                     ),
                     scrollDirection: Axis.horizontal,
-                    itemCount: preDefinedColorSettings.length,
+                    itemCount: predefined.length,
                     itemBuilder: (context, index) {
-                      final selected =
-                          preDefinedColorSettings[index] == _currentScheme;
+                      final selected = predefined[index] == _currentScheme;
 
                       return Padding(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 2,
                         ),
-                        child: GestureDetector(
+                        child: _PreviewColor(
+                          color: predefined[index],
                           onTap: () {
                             setState(() {
-                              _currentScheme = preDefinedColorSettings[index];
-                              widget.onSchemeChanged(
-                                  preDefinedColorSettings[index]);
+                              _currentScheme = predefined[index];
+                              widget.onSchemeChanged(predefined[index]);
                             });
                           },
-                          child: Container(
-                            width: 40,
-                            height: 40,
-                            decoration: BoxDecoration(
-                              color: preDefinedColorSettings[index].surface,
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: selected
-                                    ? colorScheme.primary
-                                    : Colors.transparent,
-                                width: selected ? 2 : 0,
-                              ),
-                            ),
-                          ),
+                          colorScheme: colorScheme,
+                          selected: selected,
                         ),
                       );
                     },
@@ -170,52 +161,65 @@ class _ThemePreviewAppState extends State<ThemePreviewApp> {
                 ),
               ],
             ),
-
-            // list of predefined colors
-            // SizedBox(
-            //   height: 60,
-            //   child: ListView.builder(
-            //     padding: const EdgeInsets.symmetric(
-            //       vertical: 4,
-            //       horizontal: 8,
-            //     ),
-            //     scrollDirection: Axis.horizontal,
-            //     itemCount: _kPrimaryColors.length,
-            //     itemBuilder: (context, index) {
-            //       final selected = _kPrimaryColors[index] == _currentScheme;
-
-            //       return Padding(
-            //         padding: const EdgeInsets.symmetric(
-            //           horizontal: 2,
-            //         ),
-            //         child: GestureDetector(
-            //           onTap: () {
-            //             setState(() {
-            //               // _currentScheme = _kPrimaryColors[index];
-            //             });
-            //           },
-            //           child: Container(
-            //             width: 40,
-            //             height: 40,
-            //             decoration: BoxDecoration(
-            //               color: _kPrimaryColors[index],
-            //               shape: BoxShape.circle,
-            //               border: Border.all(
-            //                 color: selected
-            //                     ? colorScheme.onSurface
-            //                     : Colors.transparent,
-            //                 width: selected ? 2 : 0,
-            //               ),
-            //             ),
-            //           ),
-            //         ),
-            //       );
-            //     },
-            //   ),
-            // ),
-
             const SizedBox(height: 24),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _PreviewColor extends StatelessWidget {
+  const _PreviewColor({
+    required this.color,
+    required this.onTap,
+    required this.colorScheme,
+    required this.selected,
+  });
+
+  final ColorSettings? color;
+  final ColorScheme colorScheme;
+  final void Function() onTap;
+  final bool selected;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = color;
+
+    if (c == null) {
+      return GestureDetector(
+        onTap: onTap,
+        child: Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: selected ? colorScheme.primary : colorScheme.onSurface,
+              width: 2,
+            ),
+          ),
+          child: Icon(
+            Icons.refresh,
+            color: colorScheme.onSurface,
+          ),
+        ),
+      );
+    }
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(
+          color: c.surface ?? Colors.transparent,
+          shape: BoxShape.circle,
+          border: Border.all(
+            color: selected ? colorScheme.primary : Colors.transparent,
+            width: selected ? 2 : 0,
+          ),
         ),
       ),
     );

@@ -41,119 +41,94 @@ class BooruConfigThemeView extends ConsumerWidget {
           ListTile(
             contentPadding: EdgeInsets.zero,
             visualDensity: VisualDensity.compact,
-            title: const Text("Color Scheme"),
-            subtitle: const Text(
-              'Change the color scheme of the app for this particular profile.',
+            title: const Text("Color scheme"),
+            subtitle: Text(
+              colors?.nickname ?? 'Default',
             ),
             onTap: () async {
-              context.navigator.push(
-                CupertinoPageRoute(
-                  builder: (context) => Material(
-                    color: Colors.transparent,
-                    child: Stack(
-                      children: [
-                        Positioned.fill(
-                          child: Column(
-                            children: [
-                              Expanded(
-                                child: ThemePreviewApp(
-                                  defaultScheme: fallback,
-                                  currentScheme: colors,
-                                  onSchemeChanged: (newScheme) {
-                                    ref
-                                        .read(_currentSelectColorSchemeProvider
-                                            .notifier)
-                                        .state = newScheme;
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        // close button
-                        Positioned(
-                          top: 0,
-                          left: 4,
-                          child: SafeArea(
-                            child: CircularIconButton(
-                              icon: const Padding(
-                                padding: EdgeInsets.only(left: 8),
-                                child: Icon(
-                                  Symbols.arrow_back_ios,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              onPressed: () {
-                                context.navigator.pop();
-                              },
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          top: 0,
-                          right: 4,
-                          child: SafeArea(
-                            child: TextButton(
-                              onPressed: () {
-                                final colors =
-                                    ref.read(_currentSelectColorSchemeProvider);
-
-                                ref.updateTheme(
-                                  ThemeConfigs(
-                                    colors: colors,
-                                    enable: true,
-                                  ),
-                                );
-                                context.navigator.pop();
-                              },
-                              child: const Text('Save'),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              );
+              _customizeTheme(context, fallback, colors, ref);
             },
-            trailing: Container(
-              width: 32,
-              height: 32,
-              decoration: BoxDecoration(
-                color: colors?.surface,
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: colors?.primary ?? Colors.black,
-                  width: 2,
-                ),
+            trailing: FilledButton(
+              style: FilledButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               ),
-            ),
-          ),
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            visualDensity: VisualDensity.compact,
-            title: const Text("App's home screen"),
-            subtitle: const Text(
-              'Customize the default screen of the app for this profile.',
-            ),
-            trailing: OptionDropDownButton(
-              alignment: AlignmentDirectional.centerStart,
-              value: 'Default',
-              onChanged: (value) {
-                print(value);
-              },
-              items: [
-                'Default',
-                'Search',
-              ]
-                  .map((value) => DropdownMenuItem(
-                        value: value,
-                        child: Text(value),
-                      ))
-                  .toList(),
+              onPressed: () => _customizeTheme(context, fallback, colors, ref),
+              child: const Text('Customize'),
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Future<void> _customizeTheme(BuildContext context, ColorScheme fallback,
+      ColorSettings? colors, WidgetRef ref) {
+    return context.navigator.push(
+      CupertinoPageRoute(
+        builder: (context) => Material(
+          color: Colors.transparent,
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: ThemePreviewApp(
+                        defaultScheme: fallback,
+                        currentScheme: colors,
+                        onSchemeChanged: (newScheme) {
+                          ref
+                              .read(_currentSelectColorSchemeProvider.notifier)
+                              .state = newScheme;
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // close button
+              Positioned(
+                top: 0,
+                left: 4,
+                child: SafeArea(
+                  child: CircularIconButton(
+                    icon: const Padding(
+                      padding: EdgeInsets.only(left: 8),
+                      child: Icon(
+                        Symbols.arrow_back_ios,
+                        color: Colors.white,
+                      ),
+                    ),
+                    onPressed: () {
+                      context.navigator.pop();
+                    },
+                  ),
+                ),
+              ),
+              Positioned(
+                top: 0,
+                right: 4,
+                child: SafeArea(
+                  child: TextButton(
+                    onPressed: () {
+                      final colors =
+                          ref.read(_currentSelectColorSchemeProvider);
+
+                      ref.updateTheme(
+                        ThemeConfigs(
+                          colors: colors,
+                          enable: true,
+                        ),
+                      );
+                      context.navigator.pop();
+                    },
+                    child: const Text('Save'),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
