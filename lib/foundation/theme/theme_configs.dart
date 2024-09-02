@@ -74,7 +74,7 @@ const staticDanbooruLightScheme = ColorScheme(
 
 const staticGreenScheme = ColorScheme(
   brightness: Brightness.light,
-  secondaryContainer: Color(0xfff2f6fe),
+  secondaryContainer: Color(0xff93c292),
   onSecondaryContainer: Colors.black,
   onTertiaryContainer: Colors.black,
   surfaceContainerHighest: Color(0xff93c292),
@@ -82,7 +82,7 @@ const staticGreenScheme = ColorScheme(
   onPrimary: kOnPrimaryLightColor,
   secondary: kOnPrimaryLightColor,
   onSecondary: kOnPrimaryLightColor,
-  error: Color(0xfffec3c3),
+  error: Color(0xffff0101),
   onError: kOnErrorDarkColor,
   surface: Color(0xffa9e4a4),
   onSurface: Colors.black,
