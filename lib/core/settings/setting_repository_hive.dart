@@ -8,6 +8,8 @@ import 'package:hive/hive.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/functional.dart';
 
+const _settingsKey = 'settings';
+
 class SettingsRepositoryHive implements SettingsRepository {
   SettingsRepositoryHive(
     this._db,
@@ -27,7 +29,7 @@ class SettingsRepositoryHive implements SettingsRepository {
       );
 
   Either<SettingsLoadError, String> _getSettingsJson(dynamic db) {
-    final jsonString = db.get('settings');
+    final jsonString = db.get(_settingsKey);
     return jsonString != null
         ? Either.right(jsonString)
         : Either.left(SettingsLoadError.tableNotFound);
@@ -59,8 +61,7 @@ class SettingsRepositoryHive implements SettingsRepository {
     final db = await _db;
     final json = jsonEncode(setting.toJson());
 
-    //TODO: should make general name instead
-    await db.put('settings', json);
+    await db.put(_settingsKey, json);
 
     return true;
   }
