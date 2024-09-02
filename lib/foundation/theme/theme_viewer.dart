@@ -79,6 +79,15 @@ class _ThemePreviewAppState extends State<ThemePreviewApp> {
   Widget build(BuildContext context) {
     final colorScheme = _currentScheme?.toColorScheme() ?? widget.defaultScheme;
 
+    final pages = [
+      PreviewHome(
+        colorScheme: colorScheme,
+      ),
+      PreviewDetails(
+        colorScheme: colorScheme,
+      ),
+    ];
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: colorScheme.brightness == Brightness.dark
@@ -95,21 +104,19 @@ class _ThemePreviewAppState extends State<ThemePreviewApp> {
             Expanded(
               child: PageView(
                 controller: pageController,
-                children: [
-                  PreviewHome(
-                    colorScheme: colorScheme,
-                  ),
-                  PreviewDetails(
-                    colorScheme: colorScheme,
-                  ),
-                ],
+                children: pages,
               ),
             ),
             const SizedBox(height: 12),
             SmoothPageIndicator(
               controller: pageController,
-              count: 2,
-              effect: const WormEffect(),
+              count: pages.length,
+              effect: WormEffect(
+                activeDotColor: colorScheme.primary,
+                dotColor: colorScheme.outlineVariant.withOpacity(0.25),
+                dotHeight: 8,
+                dotWidth: 16,
+              ),
             ),
             const SizedBox(height: 24),
             Column(
@@ -129,7 +136,7 @@ class _ThemePreviewAppState extends State<ThemePreviewApp> {
                   ),
                 ),
                 SizedBox(
-                  height: 48,
+                  height: 68,
                   child: ListView.builder(
                     padding: const EdgeInsets.symmetric(
                       vertical: 4,
@@ -142,7 +149,7 @@ class _ThemePreviewAppState extends State<ThemePreviewApp> {
 
                       return Padding(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 2,
+                          horizontal: 4,
                         ),
                         child: _PreviewColor(
                           color: predefined[index],
@@ -169,6 +176,12 @@ class _ThemePreviewAppState extends State<ThemePreviewApp> {
   }
 }
 
+bool _sameish(Color a, Color b, [int threshold = 10]) {
+  return (a.red - b.red).abs() < threshold &&
+      (a.green - b.green).abs() < threshold &&
+      (a.blue - b.blue).abs() < threshold;
+}
+
 class _PreviewColor extends StatelessWidget {
   const _PreviewColor({
     required this.color,
@@ -186,18 +199,21 @@ class _PreviewColor extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = color;
 
+    final sameColorWithSurface = c != null &&
+        _sameish(c.surface ?? Colors.transparent, colorScheme.surface, 20);
+
     if (c == null) {
       return GestureDetector(
         onTap: onTap,
         child: Container(
-          width: 40,
-          height: 40,
+          width: 60,
+          height: 60,
           decoration: BoxDecoration(
             color: Colors.transparent,
-            shape: BoxShape.circle,
+            borderRadius: BorderRadius.circular(8),
             border: Border.all(
               color: selected ? colorScheme.primary : colorScheme.onSurface,
-              width: 2,
+              width: selected ? 2.5 : 1.3,
             ),
           ),
           child: Icon(
@@ -211,16 +227,30 @@ class _PreviewColor extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 40,
-        height: 40,
+        width: 60,
+        height: 60,
         decoration: BoxDecoration(
           color: c.surface ?? Colors.transparent,
-          shape: BoxShape.circle,
+          borderRadius: BorderRadius.circular(8),
           border: Border.all(
-            color: selected ? colorScheme.primary : Colors.transparent,
-            width: selected ? 2 : 0,
+            color: selected
+                ? colorScheme.primary
+                : sameColorWithSurface
+                    ? colorScheme.onSurface
+                    : Colors.transparent,
+            width: selected
+                ? 2.5
+                : sameColorWithSurface
+                    ? 1.3
+                    : 0,
           ),
         ),
+        child: selected
+            ? Icon(
+                Icons.check,
+                color: colorScheme.onSurface,
+              )
+            : null,
       ),
     );
   }
@@ -248,7 +278,7 @@ class PreviewFrame extends StatelessWidget {
               horizontal: 12,
             ),
         margin: const EdgeInsets.symmetric(
-          horizontal: 20,
+          horizontal: 32,
         ),
         decoration: BoxDecoration(
           border: Border.all(
