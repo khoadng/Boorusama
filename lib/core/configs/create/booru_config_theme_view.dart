@@ -37,7 +37,6 @@ class BooruConfigThemeView extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const SizedBox(height: 12),
           ListTile(
             contentPadding: EdgeInsets.zero,
             visualDensity: VisualDensity.compact,

@@ -205,6 +205,7 @@ class ColorSettings extends Equatable {
         onError: _parseColor(json['onError']),
         surface: _parseColor(json['surface']),
         onSurface: _parseColor(json['onSurface']),
+        nickname: json['nickname'],
       );
     } catch (e) {
       return null;
@@ -227,6 +228,7 @@ class ColorSettings extends Equatable {
       'onError': onError?.hex,
       'surface': surface?.hex,
       'onSurface': onSurface?.hex,
+      'nickname': nickname,
     };
   }
 
@@ -246,6 +248,7 @@ class ColorSettings extends Equatable {
         onError,
         surface,
         onSurface,
+        nickname,
       ];
 }
 

@@ -82,7 +82,8 @@ class ThemeBuilder extends ConsumerWidget {
   final lightAdditionalColours = _extractAdditionalColours(lightBase);
   final darkAdditionalColours = _extractAdditionalColours(darkBase);
 
-  final lightScheme = _insertAdditionalColours(lightBase, lightAdditionalColours);
+  final lightScheme =
+      _insertAdditionalColours(lightBase, lightAdditionalColours);
   final darkScheme = _insertAdditionalColours(darkBase, darkAdditionalColours);
 
   return (lightScheme.harmonized(), darkScheme.harmonized());
