@@ -98,78 +98,78 @@ class _ThemePreviewAppState extends State<ThemePreviewApp> {
               colorScheme: colorScheme,
             ),
       home: Material(
-        child: Column(
-          children: [
-            const SizedBox(height: 48),
-            Expanded(
-              child: PageView(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(height: 48),
+              SizedBox(
+                height: 500,
+                child: PageView(
+                  controller: pageController,
+                  children: pages,
+                ),
+              ),
+              const SizedBox(height: 12),
+              SmoothPageIndicator(
                 controller: pageController,
-                children: pages,
-              ),
-            ),
-            const SizedBox(height: 12),
-            SmoothPageIndicator(
-              controller: pageController,
-              count: pages.length,
-              effect: WormEffect(
-                activeDotColor: colorScheme.primary,
-                dotColor: colorScheme.outlineVariant.withOpacity(0.25),
-                dotHeight: 8,
-                dotWidth: 16,
-              ),
-            ),
-            const SizedBox(height: 24),
-            Column(
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 8,
-                  ),
-                  child: Text(
-                    _currentScheme?.nickname ??
-                        _currentScheme?.name ??
-                        'Default',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
+                count: pages.length,
+                effect: WormEffect(
+                  activeDotColor: colorScheme.primary,
+                  dotColor: colorScheme.outlineVariant.withOpacity(0.25),
+                  dotHeight: 8,
+                  dotWidth: 16,
                 ),
-                SizedBox(
-                  height: 68,
-                  child: ListView.builder(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 4,
-                      horizontal: 8,
+              ),
+              const SizedBox(height: 24),
+              SizedBox(
+                height: 200,
+                child: Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 8,
+                      ),
+                      child: Text(
+                        _currentScheme?.nickname ??
+                            _currentScheme?.name ??
+                            'Default',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                          color: colorScheme.onSurface,
+                        ),
+                      ),
                     ),
-                    scrollDirection: Axis.horizontal,
-                    itemCount: predefined.length,
-                    itemBuilder: (context, index) {
-                      final selected = predefined[index] == _currentScheme;
+                    Wrap(
+                      runSpacing: 8,
+                      children: [
+                        ...predefined.map((e) {
+                          final selected = e == _currentScheme;
 
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 4,
-                        ),
-                        child: _PreviewColor(
-                          color: predefined[index],
-                          onTap: () {
-                            setState(() {
-                              _currentScheme = predefined[index];
-                              widget.onSchemeChanged(predefined[index]);
-                            });
-                          },
-                          colorScheme: colorScheme,
-                          selected: selected,
-                        ),
-                      );
-                    },
-                  ),
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 4,
+                            ),
+                            child: _PreviewColor(
+                              color: e,
+                              onTap: () {
+                                setState(() {
+                                  _currentScheme = e;
+                                  widget.onSchemeChanged(e);
+                                });
+                              },
+                              colorScheme: colorScheme,
+                              selected: selected,
+                            ),
+                          );
+                        }),
+                      ],
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            const SizedBox(height: 24),
-          ],
+              ),
+              const SizedBox(height: 24),
+            ],
+          ),
         ),
       ),
     );
@@ -206,8 +206,8 @@ class _PreviewColor extends StatelessWidget {
       return GestureDetector(
         onTap: onTap,
         child: Container(
-          width: 60,
-          height: 60,
+          width: 52,
+          height: 52,
           decoration: BoxDecoration(
             color: Colors.transparent,
             borderRadius: BorderRadius.circular(8),
@@ -227,8 +227,8 @@ class _PreviewColor extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 60,
-        height: 60,
+        width: 52,
+        height: 52,
         decoration: BoxDecoration(
           color: c.surface ?? Colors.transparent,
           borderRadius: BorderRadius.circular(8),
@@ -278,7 +278,7 @@ class PreviewFrame extends StatelessWidget {
               horizontal: 12,
             ),
         margin: const EdgeInsets.symmetric(
-          horizontal: 32,
+          horizontal: 40,
         ),
         decoration: BoxDecoration(
           border: Border.all(
@@ -412,13 +412,18 @@ class PreviewDetails extends StatelessWidget {
     return PreviewFrame(
       padding: const EdgeInsets.symmetric(
         vertical: 16,
-        horizontal: 8,
+        horizontal: 4,
       ),
       colorScheme: colorScheme,
       child: CustomScrollView(
         slivers: [
           const SliverToBoxAdapter(
-            child: BooruImage(imageUrl: ''),
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: 8,
+              ),
+              child: BooruImage(imageUrl: ''),
+            ),
           ),
           const SliverToBoxAdapter(
             child: PreviewPostActionToolbar(),
