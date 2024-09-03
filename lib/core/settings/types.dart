@@ -477,7 +477,6 @@ class Settings extends Equatable {
 }
 
 class ListingConfigs extends Equatable {
-
   const ListingConfigs({
     required this.settings,
     required this.enable,
@@ -527,7 +526,6 @@ class ListingConfigs extends Equatable {
 }
 
 class ImageListingSettings extends Equatable {
-
   const ImageListingSettings({
     required this.gridSize,
     required this.imageListType,
@@ -584,7 +582,6 @@ class ImageListingSettings extends Equatable {
   final double imageGridAspectRatio;
   final int postsPerPage;
 
-  //TODO: duplicate code
   bool get blurExplicitMedia =>
       mediaBlurCondition == MediaBlurCondition.explicitOnly;
 
