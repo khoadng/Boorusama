@@ -76,7 +76,8 @@ class BoorusRoutes {
                 Scaffold(
                   appBar: AppBar(),
                   body: const Center(
-                    child: Text('Not implemented'),
+                    child: Text(
+                        'Not implemented, maybe forgot to add the builder implementation?'),
                   ),
                 ),
           );

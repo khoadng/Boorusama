@@ -16,9 +16,9 @@ import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/platform.dart';
 
 class CrossplatformDownloader implements Downloader {
-
   CrossplatformDownloader({
     required UserAgentGenerator userAgentGenerator,
+    Map<String, String>? extraHeaders,
     this.logger,
     this.onError,
   }) : _downloadManager = dm.DownloadManager(
@@ -28,6 +28,7 @@ class CrossplatformDownloader implements Downloader {
             BaseOptions(
               headers: {
                 AppHttpHeaders.userAgentHeader: userAgentGenerator.generate(),
+                if (extraHeaders != null) ...extraHeaders,
               },
             ),
           ),

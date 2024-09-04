@@ -11,6 +11,7 @@ import 'package:photo_view/photo_view.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
@@ -166,6 +167,7 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
       httpHeaders: {
         AppHttpHeaders.userAgentHeader:
             ref.watch(userAgentGeneratorProvider(config)).generate(),
+        ...ref.watch(extraHttpHeaderProvider(config)),
       },
       imageUrl: widget.imageUrl,
       imageBuilder: (context, imageProvider) => Hero(

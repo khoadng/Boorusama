@@ -6,6 +6,7 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
+import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/foundation/android.dart';
 import 'package:boorusama/foundation/platform.dart';
 
@@ -49,6 +50,7 @@ final bulkDownloadProvider =
     Provider.family<Downloader, BooruConfig>((ref, config) {
   return CrossplatformDownloader(
     userAgentGenerator: ref.watch(userAgentGeneratorProvider(config)),
+    extraHeaders: ref.watch(extraHttpHeaderProvider(config)),
     logger: ref.watch(loggerProvider),
   );
 });
