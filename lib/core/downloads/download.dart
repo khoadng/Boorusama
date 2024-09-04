@@ -15,6 +15,7 @@ DownloadPathOrError downloadUrl({
   required DownloadNotifications notifications,
   required String url,
   required DownloadFilenameBuilder fileNameBuilder,
+  required Map<String, String>? headers,
   bool enableNotification = true,
 }) =>
     TaskEither.Do(($) async {
@@ -39,6 +40,7 @@ DownloadPathOrError downloadUrl({
               path,
               enableNotification,
             ),
+            headers: headers,
           ),
         ),
         notifications: notifications,
@@ -53,6 +55,7 @@ DownloadPathOrError downloadUrlCustomLocation({
   required String path,
   required String url,
   required DownloadFilenameBuilder fileNameBuilder,
+  required Map<String, String>? headers,
   bool enableNotification = true,
 }) =>
     TaskEither.Do(($) async {
@@ -77,6 +80,7 @@ DownloadPathOrError downloadUrlCustomLocation({
               filePath,
               enableNotification,
             ),
+            headers: headers,
           ),
         ),
         notifications: notifications,
@@ -107,6 +111,7 @@ DownloadPathOrError downloadWithDio(
   required String url,
   required String path,
   required ProgressCallback onReceiveProgress,
+  required Map<String, String>? headers,
 }) =>
     TaskEither.tryCatch(
       () {
@@ -124,6 +129,11 @@ DownloadPathOrError downloadWithDio(
               onReceiveProgress(count, total);
             }
           },
+          options: headers != null
+              ? Options(
+                  headers: headers,
+                )
+              : null,
         ).then((value) => path);
       },
       (error, stackTrace) {

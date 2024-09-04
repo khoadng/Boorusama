@@ -70,6 +70,7 @@ class BackgroundDownloader implements DownloadService {
     DownloaderMetadata? metadata,
     int? fileSize,
     bool? skipIfExists,
+    Map<String, String>? headers,
   }) =>
       fp.TaskEither.Do(
         ($) async {
@@ -87,6 +88,7 @@ class BackgroundDownloader implements DownloadService {
             directory: downloadDir != null ? downloadDir.path : '',
             updates: Updates.statusAndProgress,
             metaData: metadata?.toJsonString() ?? '',
+            headers: headers,
           );
 
           return FileDownloader().enqueueIfNeeded(
@@ -103,6 +105,7 @@ class BackgroundDownloader implements DownloadService {
     required DownloadFilenameBuilder fileNameBuilder,
     DownloaderMetadata? metadata,
     bool? skipIfExists,
+    Map<String, String>? headers,
   }) =>
       fp.TaskEither.Do(
         ($) async {
@@ -115,6 +118,7 @@ class BackgroundDownloader implements DownloadService {
             retries: 1,
             updates: Updates.statusAndProgress,
             metaData: metadata?.toJsonString() ?? '',
+            headers: headers,
           );
 
           return FileDownloader().enqueueIfNeeded(

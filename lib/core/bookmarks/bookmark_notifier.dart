@@ -15,8 +15,10 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
+import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/foundation/animations.dart';
+import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/permissions.dart';
@@ -202,9 +204,8 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
       BooruConfig config, List<Bookmark> bookmarks) async {
     final settings = ref.read(settingsProvider);
     final tasks = bookmarks
-        .map((bookmark) => ref
-            .read(downloadServiceProvider(config))
-            .downloadWithSettings(
+        .map((bookmark) =>
+            ref.read(downloadServiceProvider(config)).downloadWithSettings(
               settings,
               config: config,
               url: bookmark.originalUrl,
@@ -215,8 +216,12 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
               ),
               fileNameBuilder: () =>
                   bookmark.md5 + extension(bookmark.originalUrl),
-            )
-            .run())
+              headers: {
+                AppHttpHeaders.userAgentHeader:
+                    ref.read(userAgentGeneratorProvider(config)).generate(),
+                ...ref.read(extraHttpHeaderProvider(config)),
+              },
+            ).run())
         .toList();
     await Future.wait(tasks);
   }
@@ -294,7 +299,6 @@ extension BookmarkCubitToastX on BookmarkNotifier {
 }
 
 class BookmarkState extends Equatable {
-
   const BookmarkState({
     required this.bookmarks,
     this.error = '',

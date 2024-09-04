@@ -8,8 +8,10 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
+import 'package:boorusama/core/images/providers.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/permissions.dart';
@@ -128,8 +130,7 @@ Future<void> _download(
     return;
   }
 
-  Future<void> download() async => service
-      .downloadWithSettings(
+  Future<void> download() async => service.downloadWithSettings(
         settings,
         config: booruConfig,
         metadata: DownloaderMetadata(
@@ -143,8 +144,12 @@ Future<void> _download(
           booruConfig,
           downloadable,
         ),
-      )
-      .run();
+        headers: {
+          AppHttpHeaders.userAgentHeader:
+              ref.read(userAgentGeneratorProvider(booruConfig)).generate(),
+          ...ref.read(extraHttpHeaderProvider(booruConfig)),
+        },
+      ).run();
 
   // Platform doesn't require permissions, just download it right away
   if (permission == null) {
