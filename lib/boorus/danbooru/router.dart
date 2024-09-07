@@ -54,12 +54,12 @@ void goToPoolDetailPage(BuildContext context, DanbooruPool pool) {
 
 void goToPostVersionPage(BuildContext context, DanbooruPost post) {
   if (kPreferredLayout.isMobile) {
-    showMaterialModalBottomSheet(
-      context: context,
-      duration: AppDurations.bottomSheet,
-      builder: (_) => DanbooruPostVersionsPage(
-        postId: post.id,
-        previewUrl: post.url720x720,
+    context.navigator.push(
+      CupertinoPageRoute(
+        builder: (_) => DanbooruPostVersionsPage(
+          postId: post.id,
+          previewUrl: post.url720x720,
+        ),
       ),
     );
   } else {
