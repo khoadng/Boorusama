@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 
@@ -15,23 +14,19 @@ import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/posts/posts.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/search/search.dart';
-import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/scrolling.dart';
 import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/router.dart';
-import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'tag_edit_ai_view.dart';
 import 'tag_edit_favorite_view.dart';
 import 'tag_edit_wiki_view.dart';
+import 'widgets/tag_edit_rating_selector_section.dart';
+import 'widgets/tag_edit_tag_list_section.dart';
 
 enum TagEditExpandMode {
   favorite,
@@ -44,26 +39,6 @@ const kHowToRateUrl = 'https://danbooru.donmai.us/wiki_pages/howto:rate';
 typedef TagEditColorParams = ({
   String tag,
 });
-
-final danbooruTagEditColorProvider =
-    FutureProvider.autoDispose.family<Color?, TagEditColorParams>(
-  (ref, params) async {
-    final tag = params.tag;
-    final config = ref.watchConfig;
-    final tagTypeStore = ref.watch(booruTagTypeStoreProvider);
-    final tagType = await tagTypeStore.get(config.booruType, tag);
-
-    if (tagType == null) return null;
-
-    final color = ref.watch(tagColorProvider(tagType));
-
-    return color;
-  },
-  dependencies: [
-    tagColorProvider,
-    currentBooruConfigProvider,
-  ],
-);
 
 final selectedTagEditRatingProvider =
     StateProvider.family.autoDispose<Rating?, Rating?>((ref, rating) {
@@ -682,331 +657,5 @@ class _TagEditPageInternalState extends ConsumerState<TagEditPageInternal> {
         () {},
       );
     });
-  }
-}
-
-class TagEditRatingSelectorSection extends ConsumerWidget {
-  const TagEditRatingSelectorSection({
-    super.key,
-    required this.rating,
-    required this.onChanged,
-  });
-
-  final Rating? rating;
-  final void Function(Rating rating) onChanged;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
-
-    return LayoutBuilder(
-      builder: (context, constraints) => Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8),
-            child: Row(
-              children: [
-                Text(
-                  'Rating',
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                if (!config.hasStrictSFW)
-                  IconButton(
-                    splashRadius: 20,
-                    visualDensity: VisualDensity.compact,
-                    onPressed: () => launchExternalUrlString(kHowToRateUrl),
-                    icon: const Icon(
-                      FontAwesomeIcons.circleQuestion,
-                      size: 16,
-                    ),
-                  ),
-              ],
-            ),
-          ),
-          Center(
-            child: BooruSegmentedButton(
-              segments: {
-                for (final rating
-                    in Rating.values.where((e) => e != Rating.unknown))
-                  rating: constraints.maxWidth > 360
-                      ? rating.name.sentenceCase
-                      : rating.name.sentenceCase
-                          .getFirstCharacter()
-                          .toUpperCase(),
-              },
-              initialValue: rating,
-              onChanged: onChanged,
-              fixedWidth: constraints.maxWidth < 360 ? 36 : null,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-final tagEditTagFilterModeProvider = StateProvider.autoDispose<bool>((ref) {
-  return false;
-});
-
-final tagEditCurrentFilterProvider = StateProvider.autoDispose<String>((ref) {
-  return '';
-});
-
-final tagEditFilteredListProvider =
-    Provider.autoDispose.family<List<String>, Set<String>>((ref, tags) {
-  final filter = ref.watch(tagEditCurrentFilterProvider);
-
-  if (filter.isEmpty) return tags.toList();
-
-  return tags.where((tag) => tag.contains(filter)).toList();
-});
-
-class TagEditTagListSection extends ConsumerWidget {
-  const TagEditTagListSection({
-    super.key,
-    required this.initialTags,
-    required this.tags,
-    required this.onTagTap,
-    required this.onDeleted,
-    required this.toBeAdded,
-    required this.toBeRemoved,
-  });
-
-  final Set<String> initialTags;
-  final Set<String> tags;
-  final void Function(String tag) onTagTap;
-  final void Function(String tag) onDeleted;
-  final Set<String> toBeAdded;
-  final Set<String> toBeRemoved;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final filtered = ref.watch(tagEditFilteredListProvider(tags));
-    final filterOn = ref.watch(tagEditTagFilterModeProvider);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        const Divider(
-          thickness: 1,
-        ),
-        Container(
-          constraints: const BoxConstraints(minHeight: 56),
-          margin: const EdgeInsets.symmetric(
-            vertical: 4,
-            horizontal: 12,
-          ),
-          child: Row(
-            children: [
-              Text(
-                '${initialTags.length} tag${initialTags.length > 1 ? 's' : ''}',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontSize: 20,
-                    ),
-              ),
-              filterOn
-                  ? Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 8),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: BooruSearchBar(
-                                autofocus: true,
-                                dense: true,
-                                contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 8,
-                                ),
-                                hintText: 'Filter...',
-                                onChanged: (value) => ref
-                                    .read(tagEditCurrentFilterProvider.notifier)
-                                    .state = value,
-                              ),
-                            ),
-                            FilledButton(
-                              style: FilledButton.styleFrom(
-                                  visualDensity: VisualDensity.compact,
-                                  shape: const CircleBorder(),
-                                  backgroundColor: context.colorScheme.primary),
-                              onPressed: () {
-                                ref
-                                    .read(tagEditTagFilterModeProvider.notifier)
-                                    .state = false;
-                                ref
-                                    .read(tagEditCurrentFilterProvider.notifier)
-                                    .state = '';
-                              },
-                              child: Icon(
-                                Symbols.check,
-                                size: 16,
-                                color: context.colorScheme.onPrimary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    )
-                  : IconButton(
-                      splashRadius: 20,
-                      onPressed: () => ref
-                          .read(tagEditTagFilterModeProvider.notifier)
-                          .state = true,
-                      icon: const Icon(
-                        Symbols.filter_list,
-                      ),
-                    ),
-              if (!filterOn) const Spacer(),
-              if (!filterOn)
-                BooruPopupMenuButton(
-                  itemBuilder: const {
-                    'fetch_category': Text('Fetch tag category'),
-                  },
-                  onSelected: (value) async {
-                    switch (value) {
-                      case 'fetch_category':
-                        await _fetch(ref);
-                        break;
-                    }
-                  },
-                ),
-            ],
-          ),
-        ),
-        MediaQuery.removePadding(
-          context: context,
-          removeTop: true,
-          child: ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: filtered.length,
-            padding: const EdgeInsets.symmetric(
-              horizontal: 8,
-            ),
-            itemBuilder: (_, index) {
-              final colors = _getColors(filtered[index], context, ref);
-
-              return TagEditTagTile(
-                title: Text(
-                  filtered[index].replaceAll('_', ' '),
-                  style: TextStyle(
-                    color: context.isLight
-                        ? colors?.backgroundColor
-                        : colors?.foregroundColor,
-                    fontWeight: toBeAdded.contains(filtered[index])
-                        ? FontWeight.w900
-                        : null,
-                  ),
-                ),
-                onTap: () => onTagTap(filtered[index]),
-                filtered: filtered,
-                onDeleted: () => onDeleted(filtered[index]),
-              );
-            },
-          ),
-        ),
-      ],
-    );
-  }
-
-  Future<void> _fetch(WidgetRef ref) async {
-    final repo = ref.watch(tagRepoProvider(ref.watchConfig));
-
-    final t = await repo.getTagsByName(tags, 1);
-
-    await ref
-        .watch(booruTagTypeStoreProvider)
-        .saveTagIfNotExist(ref.watchConfig.booruType, t);
-
-    for (final tag in t) {
-      final params = (tag: tag.rawName,);
-      ref.invalidate(danbooruTagEditColorProvider(params));
-    }
-  }
-
-  ChipColors? _getColors(String tag, BuildContext context, WidgetRef ref) {
-    final params = (tag: tag,);
-
-    final colors = ref.watch(danbooruTagEditColorProvider(params)).maybeWhen(
-          data: (color) => color != null && color != Colors.white
-              ? generateChipColorsFromColorScheme(
-                  color,
-                  context.colorScheme,
-                  ref.watch(settingsProvider).enableDynamicColoring,
-                )
-              : null,
-          orElse: () => null,
-        );
-
-    return colors;
-  }
-}
-
-class TagEditTagTile extends StatefulWidget {
-  const TagEditTagTile({
-    super.key,
-    required this.onTap,
-    required this.filtered,
-    required this.onDeleted,
-    required this.title,
-  });
-
-  final void Function() onTap;
-  final List<String> filtered;
-  final void Function() onDeleted;
-  final Widget title;
-
-  @override
-  State<TagEditTagTile> createState() => _TagEditTagTileState();
-}
-
-class _TagEditTagTileState extends State<TagEditTagTile> {
-  var hover = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) {
-        setState(() {
-          hover = true;
-        });
-      },
-      onExit: (_) {
-        setState(() {
-          hover = false;
-        });
-      },
-      child: InkWell(
-        onTap: widget.onTap,
-        child: Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 8,
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: widget.title,
-              ),
-              if (!kPreferredLayout.isMobile && !hover)
-                const SizedBox(
-                  height: 32,
-                )
-              else
-                IconButton(
-                  splashRadius: 20,
-                  visualDensity: VisualDensity.compact,
-                  onPressed: widget.onDeleted,
-                  icon: Icon(
-                    Symbols.close,
-                    size: kPreferredLayout.isDesktop ? 16 : 20,
-                  ),
-                )
-            ],
-          ),
-        ),
-      ),
-    );
   }
 }
