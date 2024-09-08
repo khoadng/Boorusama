@@ -13,7 +13,7 @@ import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
 
-class SliverSearchAppBar extends ConsumerWidget {
+class SliverSearchAppBar extends ConsumerStatefulWidget {
   const SliverSearchAppBar({
     super.key,
     required this.search,
@@ -28,7 +28,20 @@ class SliverSearchAppBar extends ConsumerWidget {
   final Widget Function(BuildContext, WidgetRef)? metatagsBuilder;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SliverSearchAppBar> createState() => _SliverSearchAppBarState();
+}
+
+class _SliverSearchAppBarState extends ConsumerState<SliverSearchAppBar> {
+  final focusScope = FocusScopeNode();
+
+  @override
+  void dispose() {
+    super.dispose();
+    focusScope.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return SliverAppBar(
       floating: true,
       snap: true,
@@ -36,55 +49,61 @@ class SliverSearchAppBar extends ConsumerWidget {
       titleSpacing: 0,
       toolbarHeight: kToolbarHeight * 1.2,
       backgroundColor: context.theme.scaffoldBackgroundColor,
-      title: SearchAppBar(
-        autofocus: false,
-        queryEditingController: searchController.textEditingController,
-        leading: (!context.canPop() ? null : const SearchAppBarBackButton()),
-        innerSearchButton: Padding(
-          padding: const EdgeInsets.only(right: 8),
-          child: SearchButton2(
-            onTap: search,
+      title: FocusScope(
+        node: focusScope,
+        child: SearchAppBar(
+          autofocus: false,
+          queryEditingController: widget.searchController.textEditingController,
+          leading: (!context.canPop() ? null : const SearchAppBarBackButton()),
+          innerSearchButton: Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: SearchButton2(
+              onTap: widget.search,
+            ),
           ),
-        ),
-        trailingSearchButton: IconButton(
-          onPressed: () => showAppModalBarBottomSheet(
-            context: context,
-            builder: (context) => Scaffold(
-              body: SafeArea(
-                child: Container(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: SearchLandingView(
-                    scrollController: ModalScrollController.of(context),
-                    onHistoryCleared: () => ref
-                        .read(searchHistoryProvider.notifier)
-                        .clearHistories(),
-                    onHistoryRemoved: (value) => ref
-                        .read(searchHistoryProvider.notifier)
-                        .removeHistory(value.query),
-                    onHistoryTap: (value) {
-                      searchController.tapHistoryTag(value);
-                      context.pop();
-                    },
-                    onTagTap: (value) {
-                      searchController.tapTag(value);
-                      context.pop();
-                    },
-                    onRawTagTap: (value) {
-                      selectedTagController.addTag(
-                        value,
-                        isRaw: true,
-                      );
-                      context.pop();
-                    },
-                    metatagsBuilder: metatagsBuilder != null
-                        ? (context) => metatagsBuilder!(context, ref)
-                        : null,
+          onTapOutside: () {
+            focusScope.unfocus();
+          },
+          trailingSearchButton: IconButton(
+            onPressed: () => showAppModalBarBottomSheet(
+              context: context,
+              builder: (context) => Scaffold(
+                body: SafeArea(
+                  child: Container(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: SearchLandingView(
+                      scrollController: ModalScrollController.of(context),
+                      onHistoryCleared: () => ref
+                          .read(searchHistoryProvider.notifier)
+                          .clearHistories(),
+                      onHistoryRemoved: (value) => ref
+                          .read(searchHistoryProvider.notifier)
+                          .removeHistory(value.query),
+                      onHistoryTap: (value) {
+                        widget.searchController.tapHistoryTag(value);
+                        context.pop();
+                      },
+                      onTagTap: (value) {
+                        widget.searchController.tapTag(value);
+                        context.pop();
+                      },
+                      onRawTagTap: (value) {
+                        widget.selectedTagController.addTag(
+                          value,
+                          isRaw: true,
+                        );
+                        context.pop();
+                      },
+                      metatagsBuilder: widget.metatagsBuilder != null
+                          ? (context) => widget.metatagsBuilder!(context, ref)
+                          : null,
+                    ),
                   ),
                 ),
               ),
             ),
+            icon: const Icon(Symbols.add),
           ),
-          icon: const Icon(Symbols.add),
         ),
       ),
     );
