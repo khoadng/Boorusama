@@ -8,6 +8,20 @@ import 'package:rate_my_app/rate_my_app.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
 
+class RateMyAppScope extends StatelessWidget {
+  const RateMyAppScope({
+    super.key,
+    required this.child,
+  });
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return canRate() ? createAppRatingWidget(child: child) : child;
+  }
+}
+
 RateMyApp _createRateMyApp() => RateMyApp(
       minDays: 14,
       minLaunches: 200,

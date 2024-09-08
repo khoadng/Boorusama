@@ -9,7 +9,6 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/entry_page.dart';
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/blacklists/blacklists.dart';
 import 'package:boorusama/core/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
@@ -17,7 +16,6 @@ import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/biometrics/app_lock.dart';
 import 'package:boorusama/foundation/rating/rating.dart';
@@ -59,12 +57,9 @@ typedef DetailsPayload<T extends Post> = ({
 class Routes {
   static GoRoute home(Ref ref) => GoRoute(
         path: '/',
-        builder: (context, state) => AppLock(
-          enable: ref.read(settingsProvider).appLockEnabled,
-          child: ConditionalParentWidget(
-            condition: canRate(),
-            conditionalBuilder: (child) => createAppRatingWidget(child: child),
-            child: const BackgroundDownloaderBuilder(
+        builder: (context, state) => const AppLockWithSettings(
+          child: RateMyAppScope(
+            child: BackgroundDownloaderBuilder(
               child: CustomContextMenuOverlay(
                 child: Focus(
                   autofocus: true,
