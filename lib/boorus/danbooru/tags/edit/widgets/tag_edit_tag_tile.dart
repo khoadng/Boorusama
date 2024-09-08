@@ -26,20 +26,16 @@ class TagEditTagTile extends StatefulWidget {
 }
 
 class _TagEditTagTileState extends State<TagEditTagTile> {
-  var hover = false;
+  final hover = ValueNotifier(false);
 
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
       onEnter: (_) {
-        setState(() {
-          hover = true;
-        });
+        hover.value = true;
       },
       onExit: (_) {
-        setState(() {
-          hover = false;
-        });
+        hover.value = false;
       },
       child: InkWell(
         onTap: widget.onTap,
@@ -52,12 +48,15 @@ class _TagEditTagTileState extends State<TagEditTagTile> {
               Expanded(
                 child: widget.title,
               ),
-              if (!kPreferredLayout.isMobile && !hover)
-                const SizedBox(
-                  height: 32,
-                )
-              else
-                IconButton(
+              ValueListenableBuilder(
+                valueListenable: hover,
+                builder: (_, value, child) =>
+                    !kPreferredLayout.isMobile && !value
+                        ? const SizedBox(
+                            height: 32,
+                          )
+                        : child!,
+                child: IconButton(
                   splashRadius: 20,
                   visualDensity: VisualDensity.compact,
                   onPressed: widget.onDeleted,
@@ -65,7 +64,8 @@ class _TagEditTagTileState extends State<TagEditTagTile> {
                     Symbols.close,
                     size: kPreferredLayout.isDesktop ? 16 : 20,
                   ),
-                )
+                ),
+              )
             ],
           ),
         ),
