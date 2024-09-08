@@ -109,7 +109,10 @@ dependencies:
   version: ^3.0.2
   video_player: ^2.9.1
   video_player_macos: ^2.0.1
-  webview_cookie_manager: ^2.0.6
+  webview_cookie_manager:
+    git:
+       url: https://github.com/fryette/webview_cookie_manager
+       ref: 923e514752ad7bb7e83849f11de767a301ac57b5
   webview_flutter: ^4.8.0
   webview_flutter_android: ^3.16.4
   xml: ^6.5.0
