@@ -11,6 +11,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/search_histories/search_histories.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/time.dart';
@@ -136,10 +137,12 @@ class FullHistoryView extends ConsumerWidget {
                       onTap: () {
                         onHistoryTap(history.query);
                       },
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                      ),
-                      minTileHeight: 0,
+                      contentPadding: kPreferredLayout.isDesktop
+                          ? const EdgeInsets.symmetric(
+                              horizontal: 12,
+                            )
+                          : null,
+                      minTileHeight: kPreferredLayout.isDesktop ? 0 : null,
                       trailing: IconButton(
                         onPressed: () => onHistoryRemoved(history),
                         icon: Icon(
