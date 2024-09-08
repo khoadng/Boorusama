@@ -27,10 +27,6 @@ import 'widgets/tag_edit_rating_selector_section.dart';
 
 const kHowToRateUrl = 'https://danbooru.donmai.us/wiki_pages/howto:rate';
 
-typedef TagEditColorParams = ({
-  String tag,
-});
-
 final selectedTagEditRatingProvider =
     StateProvider.family.autoDispose<Rating?, Rating?>((ref, rating) {
   return rating;

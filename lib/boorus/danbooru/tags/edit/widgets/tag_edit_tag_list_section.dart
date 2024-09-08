@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/tags/tags.dart';
@@ -35,175 +36,227 @@ final tagEditFilteredListProvider =
 });
 
 final danbooruTagEditColorProvider =
-    FutureProvider.autoDispose.family<Color?, TagEditColorParams>(
-  (ref, params) async {
-    final tag = params.tag;
+    FutureProvider.autoDispose<Map<String, ChipColors?>>(
+  (ref) async {
+    final tags = ref.watch(_tagsProvider);
+    final filters = ref.watch(tagEditFilteredListProvider(tags));
+
+    final colors = <String, ChipColors?>{};
     final config = ref.watchConfig;
     final tagTypeStore = ref.watch(booruTagTypeStoreProvider);
-    final tagType = await tagTypeStore.get(config.booruType, tag);
+    final colorScheme = ref.watch(colorSchemeProvider);
+    final enableDynamicColoring = ref
+        .watch(settingsProvider.select((value) => value.enableDynamicColoring));
 
-    if (tagType == null) return null;
+    for (final tag in filters) {
+      final tagType = await tagTypeStore.get(config.booruType, tag);
 
-    final color = ref.watch(tagColorProvider(tagType));
+      if (tagType == null) {
+        colors[tag] = null;
+      } else {
+        final color = ref.watch(tagColorProvider(tagType));
 
-    return color;
+        final chipColors = color != null && color != Colors.white
+            ? generateChipColorsFromColorScheme(
+                color,
+                colorScheme,
+                enableDynamicColoring,
+              )
+            : null;
+
+        colors[tag] = chipColors;
+      }
+    }
+
+    return colors;
   },
   dependencies: [
+    _tagsProvider,
+    colorSchemeProvider,
+    settingsProvider,
     tagColorProvider,
+    tagEditFilteredListProvider,
     currentBooruConfigProvider,
   ],
 );
 
-class TagEditTagListSection extends ConsumerWidget {
-  const TagEditTagListSection({
-    super.key,
-    required this.initialTags,
-    required this.tags,
-    required this.onTagTap,
-    required this.onDeleted,
-    required this.toBeAdded,
-    required this.toBeRemoved,
-  });
+final _initialTagCountProvider = Provider.autoDispose<int>((ref) {
+  throw UnimplementedError();
+});
 
-  final Set<String> initialTags;
-  final Set<String> tags;
-  final void Function(String tag) onTagTap;
-  final void Function(String tag) onDeleted;
-  final Set<String> toBeAdded;
-  final Set<String> toBeRemoved;
+final _tagsProvider = Provider.autoDispose<Set<String>>((ref) {
+  throw UnimplementedError();
+});
+
+class SliverTagEditTagListSection extends ConsumerWidget {
+  const SliverTagEditTagListSection({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final tags = ref.watch(tagEditProvider.select((value) => value.tags));
+    final initialTags = ref.watch(tagEditProvider.notifier).initialTags;
+
+    return ProviderScope(
+      overrides: [
+        _initialTagCountProvider.overrideWithValue(initialTags.length),
+        _tagsProvider.overrideWithValue(tags),
+      ],
+      child: MultiSliver(
+        children: const [
+          SliverDivider(
+            thickness: 1,
+          ),
+          SliverToBoxAdapter(
+            child: TagEditFilterHeader(),
+          ),
+          _SliverTagEditListView(),
+        ],
+      ),
+    );
+  }
+}
+
+class _SliverTagEditListView extends ConsumerWidget {
+  const _SliverTagEditListView();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tags = ref.watch(_tagsProvider);
     final filtered = ref.watch(tagEditFilteredListProvider(tags));
-    final filterOn = ref.watch(tagEditTagFilterModeProvider);
+    final toBeAdded =
+        ref.watch(tagEditProvider.select((value) => value.toBeAdded));
+    final notifier = ref.watch(tagEditProvider.notifier);
+    //FIXME: Need to fix color flashing when adding tag
+    final chipColors = ref.watch(danbooruTagEditColorProvider).maybeWhen(
+          data: (value) => value,
+          orElse: () => null,
+        );
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        const Divider(
-          thickness: 1,
-        ),
-        Container(
-          constraints: const BoxConstraints(minHeight: 56),
-          margin: const EdgeInsets.symmetric(
-            vertical: 4,
-            horizontal: 12,
-          ),
-          child: Row(
-            children: [
-              Text(
-                '${initialTags.length} tag${initialTags.length > 1 ? 's' : ''}',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontSize: 20,
-                    ),
-              ),
-              filterOn
-                  ? Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 8),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: BooruSearchBar(
-                                autofocus: true,
-                                dense: true,
-                                contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 8,
-                                ),
-                                hintText: 'Filter...',
-                                onChanged: (value) => ref
-                                    .read(tagEditCurrentFilterProvider.notifier)
-                                    .state = value,
-                              ),
-                            ),
-                            FilledButton(
-                              style: FilledButton.styleFrom(
-                                  visualDensity: VisualDensity.compact,
-                                  shape: const CircleBorder(),
-                                  backgroundColor: context.colorScheme.primary),
-                              onPressed: () {
-                                ref
-                                    .read(tagEditTagFilterModeProvider.notifier)
-                                    .state = false;
-                                ref
-                                    .read(tagEditCurrentFilterProvider.notifier)
-                                    .state = '';
-                              },
-                              child: Icon(
-                                Symbols.check,
-                                size: 16,
-                                color: context.colorScheme.onPrimary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    )
-                  : IconButton(
-                      splashRadius: 20,
-                      onPressed: () => ref
-                          .read(tagEditTagFilterModeProvider.notifier)
-                          .state = true,
-                      icon: const Icon(
-                        Symbols.filter_list,
-                      ),
-                    ),
-              if (!filterOn) const Spacer(),
-              if (!filterOn)
-                BooruPopupMenuButton(
-                  itemBuilder: const {
-                    'fetch_category': Text('Fetch tag category'),
-                  },
-                  onSelected: (value) async {
-                    switch (value) {
-                      case 'fetch_category':
-                        await _fetch(ref);
-                        break;
-                    }
-                  },
-                ),
-            ],
-          ),
-        ),
-        MediaQuery.removePadding(
-          context: context,
-          removeTop: true,
-          child: ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: filtered.length,
-            padding: const EdgeInsets.symmetric(
-              horizontal: 8,
+    return SliverList.builder(
+      itemCount: filtered.length,
+      itemBuilder: (_, index) {
+        final tag = filtered[index];
+        final colors = chipColors != null
+            ? chipColors.containsKey(tag)
+                ? chipColors[tag]
+                : null
+            : null;
+
+        return TagEditTagTile(
+          title: Text(
+            tag.replaceAll('_', ' '),
+            style: TextStyle(
+              color: context.isLight
+                  ? colors?.backgroundColor
+                  : colors?.foregroundColor,
+              fontWeight: toBeAdded.contains(tag) ? FontWeight.w900 : null,
             ),
-            itemBuilder: (_, index) {
-              final colors = _getColors(filtered[index], context, ref);
+          ),
+          onTap: () => notifier.setSelectedTag(tag),
+          onDeleted: () => notifier.removeTag(tag),
+        );
+      },
+    );
+  }
+}
 
-              return TagEditTagTile(
-                title: Text(
-                  filtered[index].replaceAll('_', ' '),
-                  style: TextStyle(
-                    color: context.isLight
-                        ? colors?.backgroundColor
-                        : colors?.foregroundColor,
-                    fontWeight: toBeAdded.contains(filtered[index])
-                        ? FontWeight.w900
-                        : null,
+class TagEditFilterHeader extends ConsumerWidget {
+  const TagEditFilterHeader({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final filterOn = ref.watch(tagEditTagFilterModeProvider);
+    final tagCount = ref.watch(_initialTagCountProvider);
+
+    return Container(
+      constraints: const BoxConstraints(minHeight: 56),
+      margin: const EdgeInsets.symmetric(
+        vertical: 4,
+        horizontal: 12,
+      ),
+      child: Row(
+        children: [
+          Text(
+            '$tagCount tag${tagCount > 1 ? 's' : ''}',
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  fontSize: 20,
+                ),
+          ),
+          filterOn
+              ? Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: BooruSearchBar(
+                            autofocus: true,
+                            dense: true,
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 8,
+                            ),
+                            hintText: 'Filter...',
+                            onChanged: (value) => ref
+                                .read(tagEditCurrentFilterProvider.notifier)
+                                .state = value,
+                          ),
+                        ),
+                        FilledButton(
+                          style: FilledButton.styleFrom(
+                              visualDensity: VisualDensity.compact,
+                              shape: const CircleBorder(),
+                              backgroundColor: context.colorScheme.primary),
+                          onPressed: () {
+                            ref
+                                .read(tagEditTagFilterModeProvider.notifier)
+                                .state = false;
+                            ref
+                                .read(tagEditCurrentFilterProvider.notifier)
+                                .state = '';
+                          },
+                          child: Icon(
+                            Symbols.check,
+                            size: 16,
+                            color: context.colorScheme.onPrimary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              : IconButton(
+                  splashRadius: 20,
+                  onPressed: () => ref
+                      .read(tagEditTagFilterModeProvider.notifier)
+                      .state = true,
+                  icon: const Icon(
+                    Symbols.filter_list,
                   ),
                 ),
-                onTap: () => onTagTap(filtered[index]),
-                filtered: filtered,
-                onDeleted: () => onDeleted(filtered[index]),
-              );
-            },
-          ),
-        ),
-      ],
+          if (!filterOn) const Spacer(),
+          if (!filterOn)
+            BooruPopupMenuButton(
+              itemBuilder: const {
+                'fetch_category': Text('Fetch tag category'),
+              },
+              onSelected: (value) async {
+                switch (value) {
+                  case 'fetch_category':
+                    await _fetch(ref);
+                    break;
+                }
+              },
+            ),
+        ],
+      ),
     );
   }
 
   Future<void> _fetch(WidgetRef ref) async {
     final repo = ref.watch(tagRepoProvider(ref.watchConfig));
+    final tags = ref.watch(_tagsProvider);
 
     final t = await repo.getTagsByName(tags, 1);
 
@@ -211,26 +264,6 @@ class TagEditTagListSection extends ConsumerWidget {
         .watch(booruTagTypeStoreProvider)
         .saveTagIfNotExist(ref.watchConfig.booruType, t);
 
-    for (final tag in t) {
-      final params = (tag: tag.rawName,);
-      ref.invalidate(danbooruTagEditColorProvider(params));
-    }
-  }
-
-  ChipColors? _getColors(String tag, BuildContext context, WidgetRef ref) {
-    final params = (tag: tag,);
-
-    final colors = ref.watch(danbooruTagEditColorProvider(params)).maybeWhen(
-          data: (color) => color != null && color != Colors.white
-              ? generateChipColorsFromColorScheme(
-                  color,
-                  context.colorScheme,
-                  ref.watch(settingsProvider).enableDynamicColoring,
-                )
-              : null,
-          orElse: () => null,
-        );
-
-    return colors;
+    ref.invalidate(danbooruTagEditColorProvider);
   }
 }

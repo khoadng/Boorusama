@@ -44,9 +44,7 @@ class TagEditContent extends ConsumerWidget {
             child: sourceBuilder!(),
           ),
         const SliverSizedBox(height: 8),
-        const SliverToBoxAdapter(
-          child: TagEditTagListSectionWithStates(),
-        ),
+        const SliverTagEditTagListSection(),
       ],
     );
   }
@@ -152,33 +150,6 @@ class TagEditModeSelectButton extends ConsumerWidget {
       title: title,
       onPressed: () {
         notifier.setExpandMode(mode);
-      },
-    );
-  }
-}
-
-class TagEditTagListSectionWithStates extends ConsumerWidget {
-  const TagEditTagListSectionWithStates({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final tags = ref.watch(tagEditProvider.select((value) => value.tags));
-    final toBeAdded =
-        ref.watch(tagEditProvider.select((value) => value.toBeAdded));
-    final toBeRemoved =
-        ref.watch(tagEditProvider.select((value) => value.toBeRemoved));
-    final notifier = ref.watch(tagEditProvider.notifier);
-
-    return TagEditTagListSection(
-      tags: tags.toSet(),
-      toBeAdded: toBeAdded.toSet(),
-      toBeRemoved: toBeRemoved.toSet(),
-      initialTags: notifier.initialTags,
-      onDeleted: (tag) {
-        notifier.removeTag(tag);
-      },
-      onTagTap: (tag) {
-        notifier.setSelectedTag(tag);
       },
     );
   }

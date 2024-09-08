@@ -11,13 +11,11 @@ class TagEditTagTile extends StatefulWidget {
   const TagEditTagTile({
     super.key,
     required this.onTap,
-    required this.filtered,
     required this.onDeleted,
     required this.title,
   });
 
   final void Function() onTap;
-  final List<String> filtered;
   final void Function() onDeleted;
   final Widget title;
 
