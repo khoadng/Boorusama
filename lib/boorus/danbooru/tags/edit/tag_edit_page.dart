@@ -21,18 +21,9 @@ import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/scrolling.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/widgets.dart';
-import 'tag_edit_ai_view.dart';
-import 'tag_edit_favorite_view.dart';
-import 'tag_edit_wiki_view.dart';
+import 'tag_edit_content.dart';
+import 'tag_edit_notifier.dart';
 import 'widgets/tag_edit_rating_selector_section.dart';
-import 'widgets/tag_edit_tag_list_section.dart';
-
-enum TagEditExpandMode {
-  favorite,
-  related,
-  aiTag,
-}
 
 const kHowToRateUrl = 'https://danbooru.donmai.us/wiki_pages/howto:rate';
 
@@ -43,6 +34,10 @@ typedef TagEditColorParams = ({
 final selectedTagEditRatingProvider =
     StateProvider.family.autoDispose<Rating?, Rating?>((ref, rating) {
   return rating;
+});
+
+final tagEditProvider = NotifierProvider<TagEditNotifier, TagEditState>(() {
+  throw UnimplementedError();
 });
 
 class TagEditPage extends ConsumerWidget {
@@ -59,81 +54,75 @@ class TagEditPage extends ConsumerWidget {
     final tags = ref.watch(danbooruTagListProvider(config));
     final initialRating =
         tags.containsKey(post.id) ? tags[post.id]!.rating : post.rating;
-    final rating = ref.watch(selectedTagEditRatingProvider(initialRating));
+    final effectiveTags =
+        tags.containsKey(post.id) ? tags[post.id]!.allTags : post.tags.toSet();
 
-    return TagEditPageInternal(
-      postId: post.id,
-      imageUrl: post.url720x720,
-      aspectRatio: post.aspectRatio ?? 1,
-      tags: tags.containsKey(post.id) ? tags[post.id]!.allTags : post.tags,
-      submitButtonBuilder: (addedTags, removedTags) => TextButton(
-        onPressed: (addedTags.isNotEmpty ||
-                removedTags.isNotEmpty ||
-                rating != initialRating)
-            ? () {
-                ref
-                    .read(danbooruTagListProvider(ref.readConfig).notifier)
-                    .setTags(
-                      post.id,
-                      addedTags: addedTags,
-                      removedTags: removedTags,
-                      rating: rating != initialRating ? rating : null,
-                    );
-                context.pop();
-              }
-            : null,
-        child: const Text('Submit'),
-      ),
-      ratingSelectorBuilder: () {
-        return TagEditRatingSelectorSection(
+    return ProviderScope(
+      overrides: [
+        tagEditProvider.overrideWith(
+          () => TagEditNotifier(
+            initialTags: effectiveTags,
+            postId: post.id,
+            imageAspectRatio: post.aspectRatio ?? 1,
+            imageUrl: post.url720x720,
+            initialRating: initialRating,
+          ),
+        ),
+      ],
+      child: TagEditPageInternal(
+        submitButton: const TagEditSubmitButton(),
+        ratingSelector: TagEditRatingSelectorSection(
           rating: initialRating,
           onChanged: (value) {
             ref
                 .read(selectedTagEditRatingProvider(initialRating).notifier)
                 .state = value;
           },
-        );
-      },
+        ),
+      ),
     );
   }
 }
 
-class TagEditPageInternal extends ConsumerStatefulWidget {
-  const TagEditPageInternal({
-    super.key,
-    required this.postId,
-    required this.tags,
-    required this.imageUrl,
-    required this.aspectRatio,
-    required this.ratingSelectorBuilder,
-    required this.submitButtonBuilder,
-    this.sourceBuilder,
-  });
-
-  final int postId;
-  final String imageUrl;
-  final double aspectRatio;
-  final Set<String> tags;
-  final Widget Function() ratingSelectorBuilder;
-  final Widget Function(
-    List<String> addedTags,
-    List<String> removedTags,
-  ) submitButtonBuilder;
-
-  final Widget Function()? sourceBuilder;
+class TagEditSubmitButton extends ConsumerWidget {
+  const TagEditSubmitButton({super.key});
 
   @override
-  ConsumerState<TagEditPageInternal> createState() =>
-      _TagEditPageInternalState();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final notifier = ref.watch(tagEditProvider.notifier);
+    final initialRating = notifier.initialRating;
+    final postId = notifier.postId;
+    final addedTags =
+        ref.watch(tagEditProvider.select((value) => value.toBeAdded));
+    final removedTags =
+        ref.watch(tagEditProvider.select((value) => value.toBeRemoved));
+    final rating = ref.watch(selectedTagEditRatingProvider(initialRating));
+
+    return TextButton(
+      onPressed: (addedTags.isNotEmpty ||
+              removedTags.isNotEmpty ||
+              rating != initialRating)
+          ? () {
+              ref
+                  .read(danbooruTagListProvider(ref.readConfig).notifier)
+                  .setTags(
+                    postId,
+                    addedTags: addedTags.toList(),
+                    removedTags: removedTags.toList(),
+                    rating: rating != initialRating ? rating : null,
+                  );
+              context.pop();
+            }
+          : null,
+      child: const Text('Submit'),
+    );
+  }
 }
 
-class _TagEditPageInternalState extends ConsumerState<TagEditPageInternal> {
-  late final tags = [...widget.tags];
-  final toBeAdded = <String>{};
-  final toBeRemoved = <String>{};
-  TagEditExpandMode? expandMode;
-  final scrollController = ScrollController();
-  final splitController = MultiSplitViewController(
+class TagEditViewController extends ChangeNotifier {
+  TagEditViewController();
+
+  final MultiSplitViewController splitController = MultiSplitViewController(
     areas: [
       Area(
         id: 'image',
@@ -148,29 +137,7 @@ class _TagEditPageInternalState extends ConsumerState<TagEditPageInternal> {
     ],
   );
 
-  String? selectedTag;
-
-  var viewExpanded = false;
-
-  @override
-  void dispose() {
-    super.dispose();
-    scrollController.dispose();
-    splitController.dispose();
-  }
-
-  void _pop() {
-    if (expandMode != null) {
-      setState(() {
-        expandMode = null;
-        _setDefaultSplit();
-      });
-    } else {
-      context.pop();
-    }
-  }
-
-  void _setDefaultSplit() {
+  void setDefaultSplit() {
     splitController.areas = [
       Area(
         id: 'image',
@@ -183,9 +150,11 @@ class _TagEditPageInternalState extends ConsumerState<TagEditPageInternal> {
         data: 'content',
       ),
     ];
+
+    notifyListeners();
   }
 
-  void _setMaxSplit() {
+  void setMaxSplit(BuildContext context) {
     splitController.areas = [
       Area(
         id: 'image',
@@ -198,14 +167,121 @@ class _TagEditPageInternalState extends ConsumerState<TagEditPageInternal> {
         data: 'content',
       ),
     ];
+
+    notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    splitController.dispose();
+  }
+}
+
+class TagEditPageInternal extends ConsumerStatefulWidget {
+  const TagEditPageInternal({
+    super.key,
+    required this.ratingSelector,
+    required this.submitButton,
+    this.sourceBuilder,
+  });
+
+  final Widget ratingSelector;
+  final Widget submitButton;
+
+  final Widget Function()? sourceBuilder;
+
+  @override
+  ConsumerState<TagEditPageInternal> createState() =>
+      _TagEditPageInternalState();
+}
+
+class _TagEditPageInternalState extends ConsumerState<TagEditPageInternal> {
+  final scrollController = ScrollController();
+  final viewController = TagEditViewController();
+
+  @override
+  void initState() {
+    super.initState();
+    viewController.addListener(_onViewChanged);
+  }
+
+  void _onViewChanged() {
+    if (!mounted) return;
+
+    setState(() {});
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    viewController.removeListener(_onViewChanged);
+
+    scrollController.dispose();
+    viewController.dispose();
+  }
+
+  void _pop() {
+    if (!mounted) return;
+
+    final expandMode =
+        ref.read(tagEditProvider.select((value) => value.expandMode));
+
+    if (expandMode != null) {
+      ref.read(tagEditProvider.notifier).setExpandMode(null);
+      viewController.setDefaultSplit();
+    } else {
+      context.pop();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final config = ref.watchConfig;
-    final booru =
-        ref.watch(booruFactoryProvider).create(type: config.booruType);
-    final aiTagSupport = booru?.hasAiTagSupported(config.url);
+
+    final expandMode =
+        ref.watch(tagEditProvider.select((value) => value.expandMode));
+
+    ref.listen(
+      tagEditProvider.select((value) => value.tags),
+      (prev, current) {
+        if ((prev?.length ?? 0) < (current.length)) {
+          // Hacky way to scroll to the end of the list, somehow if it is currently on top, it won't scroll to last item
+          final offset = scrollController.offset ==
+                  scrollController.position.maxScrollExtent
+              ? 0
+              : scrollController.position.maxScrollExtent / current.length;
+
+          WidgetsBinding.instance.addPostFrameCallback(
+            (_) {
+              if (!mounted || !scrollController.hasClients) return;
+
+              scrollController.animateToWithAccessibility(
+                scrollController.position.maxScrollExtent + offset,
+                duration: const Duration(milliseconds: 200),
+                curve: Curves.easeOut,
+                reduceAnimations: ref.read(settingsProvider).reduceAnimations,
+              );
+            },
+          );
+
+          Future.delayed(
+            const Duration(milliseconds: 200),
+            () {},
+          );
+        }
+      },
+    );
+
+    ref.listen(
+      tagEditProvider.select((value) => value.expandMode),
+      (prev, current) {
+        if (prev != current) {
+          viewController.setMaxSplit(context);
+        }
+      },
+    );
 
     return PopScope(
       canPop: expandMode == null,
@@ -223,10 +299,7 @@ class _TagEditPageInternalState extends ConsumerState<TagEditPageInternal> {
             icon: const Icon(Symbols.arrow_back),
           ),
           actions: [
-            widget.submitButtonBuilder(
-              toBeAdded.toList(),
-              toBeRemoved.toList(),
-            ),
+            widget.submitButton,
           ],
         ),
         body: LayoutBuilder(
@@ -240,17 +313,16 @@ class _TagEditPageInternalState extends ConsumerState<TagEditPageInternal> {
                       Expanded(
                         child: _buildSplit(context, config),
                       ),
-                      _buildMode(
-                        context,
-                        aiTagSupport ?? false,
-                        constraints.maxHeight,
+                      TagEditExpandContent(
+                        viewController: viewController,
+                        maxHeight: constraints.maxHeight,
                       ),
                     ],
                   )
                 : Row(
                     children: [
-                      Expanded(
-                        child: _buildImage(),
+                      const Expanded(
+                        child: TagEditImageSection(),
                       ),
                       const VerticalDivider(
                         width: 4,
@@ -264,23 +336,15 @@ class _TagEditPageInternalState extends ConsumerState<TagEditPageInternal> {
                         child: Column(
                           children: [
                             Expanded(
-                              child: CustomScrollView(
-                                controller: scrollController,
-                                slivers: [
-                                  SliverToBoxAdapter(
-                                    child: widget.ratingSelectorBuilder(),
-                                  ),
-                                  const SliverSizedBox(height: 8),
-                                  SliverToBoxAdapter(
-                                    child: _buildTagListSection(),
-                                  ),
-                                ],
+                              child: TagEditContent(
+                                ratingSelector: widget.ratingSelector,
+                                scrollController: scrollController,
+                                sourceBuilder: widget.sourceBuilder,
                               ),
                             ),
-                            _buildMode(
-                              context,
-                              aiTagSupport ?? false,
-                              constraints.maxHeight,
+                            TagEditExpandContent(
+                              viewController: viewController,
+                              maxHeight: constraints.maxHeight,
                             ),
                           ],
                         ),
@@ -290,21 +354,6 @@ class _TagEditPageInternalState extends ConsumerState<TagEditPageInternal> {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildImage() {
-    return LayoutBuilder(
-      builder: (context, constraints) => constraints.maxHeight > 80
-          ? InteractiveBooruImage(
-              useHero: false,
-              heroTag: '',
-              aspectRatio: widget.aspectRatio,
-              imageUrl: widget.imageUrl,
-            )
-          : SizedBox(
-              height: constraints.maxHeight - 4,
-            ),
     );
   }
 
@@ -324,35 +373,23 @@ class _TagEditPageInternalState extends ConsumerState<TagEditPageInternal> {
         ),
         child: MultiSplitView(
           axis: Axis.vertical,
-          controller: splitController,
+          controller: viewController.splitController,
           builder: (context, area) => switch (area.data) {
-            'image' => Column(
+            'image' => const Column(
                 children: [
                   Expanded(
-                    child: _buildImage(),
+                    child: TagEditImageSection(),
                   ),
-                  const Divider(
+                  Divider(
                     thickness: 1,
                     height: 4,
                   ),
                 ],
               ),
-            'content' => CustomScrollView(
-                controller: scrollController,
-                slivers: [
-                  SliverToBoxAdapter(
-                    child: widget.ratingSelectorBuilder(),
-                  ),
-                  const SliverSizedBox(height: 8),
-                  if (widget.sourceBuilder != null)
-                    SliverToBoxAdapter(
-                      child: widget.sourceBuilder!(),
-                    ),
-                  const SliverSizedBox(height: 8),
-                  SliverToBoxAdapter(
-                    child: _buildTagListSection(),
-                  ),
-                ],
+            'content' => TagEditContent(
+                ratingSelector: widget.ratingSelector,
+                scrollController: scrollController,
+                sourceBuilder: widget.sourceBuilder,
               ),
             _ => const SizedBox(),
           },
@@ -360,302 +397,36 @@ class _TagEditPageInternalState extends ConsumerState<TagEditPageInternal> {
       ),
     );
   }
+}
 
-  Widget _buildTagListSection() {
-    return TagEditTagListSection(
-      tags: tags.toSet(),
-      toBeAdded: toBeAdded.toSet(),
-      toBeRemoved: toBeRemoved.toSet(),
-      initialTags: widget.tags,
-      onDeleted: (tag) {
-        _removeTag(tag);
-      },
-      onTagTap: (tag) {
-        setState(() {
-          selectedTag = tag;
-          expandMode = TagEditExpandMode.related;
-          _setMaxSplit();
-        });
-      },
+class _Image extends ConsumerWidget {
+  const _Image();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final notifer = ref.watch(tagEditProvider.notifier);
+    return InteractiveBooruImage(
+      useHero: false,
+      heroTag: '',
+      aspectRatio: notifer.imageAspectRatio,
+      imageUrl: notifer.imageUrl,
     );
   }
+}
 
-  Widget _buildMode(
-    BuildContext context,
-    bool aiTagSupport,
-    double maxHeight,
-  ) {
-    final height =
-        viewExpanded ? max(maxHeight - kToolbarHeight - 120.0, 280.0) : 280.0;
+class TagEditImageSection extends StatelessWidget {
+  const TagEditImageSection({
+    super.key,
+  });
 
-    return switch (expandMode) {
-      TagEditExpandMode.favorite => Container(
-          height: height,
-          color: context.colorScheme.secondaryContainer,
-          child: Column(
-            children: [
-              _buildAppSheetAppbar('Favorites'),
-              Expanded(
-                child: TagEditFavoriteView(
-                  onRemoved: (tag) {
-                    _removeTag(tag);
-                  },
-                  onAdded: (tag) {
-                    _addTag(tag);
-                  },
-                  isSelected: (tag) => tags.contains(tag),
-                ),
-              ),
-            ],
-          ),
-        ),
-      TagEditExpandMode.related => Container(
-          height: height,
-          color: context.colorScheme.secondaryContainer,
-          child: Column(
-            children: [
-              _buildAppSheetAppbar('Related'),
-              Expanded(
-                child: TagEditWikiView(
-                  tag: selectedTag,
-                  onRemoved: (tag) {
-                    _removeTag(tag);
-                  },
-                  onAdded: (tag) {
-                    _addTag(tag);
-                  },
-                  isSelected: (tag) => tags.contains(tag),
-                ),
-              ),
-            ],
-          ),
-        ),
-      TagEditExpandMode.aiTag => Container(
-          height: height,
-          color: context.colorScheme.secondaryContainer,
-          child: Column(
-            children: [
-              _buildAppSheetAppbar('Suggested'),
-              Expanded(
-                child: TagEditAITagView(
-                  postId: widget.postId,
-                  onRemoved: (tag) {
-                    _removeTag(tag);
-                  },
-                  onAdded: (tag) {
-                    _addTag(tag);
-                  },
-                  isSelected: (tag) => tags.contains(tag),
-                ),
-              ),
-            ],
-          ),
-        ),
-      null => Container(
-          margin: const EdgeInsets.only(left: 8, bottom: 20, top: 8),
-          height: 42,
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            children: [
-              FilledButton(
-                style: FilledButton.styleFrom(
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(4)),
-                  ),
-                  backgroundColor: context.colorScheme.surfaceContainerHighest,
-                ),
-                onPressed: () {
-                  goToQuickSearchPage(
-                    context,
-                    ref: ref,
-                    onSelected: (tag) {
-                      _addTag(tag.value);
-                    },
-                  );
-                },
-                child: Text(
-                  'Search',
-                  style: TextStyle(
-                    color: context.colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 4),
-              FilledButton(
-                style: FilledButton.styleFrom(
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(4)),
-                  ),
-                  backgroundColor: context.colorScheme.surfaceContainerHighest,
-                ),
-                onPressed: () {
-                  setState(() {
-                    expandMode = TagEditExpandMode.favorite;
-                    _setMaxSplit();
-                  });
-                },
-                child: Text(
-                  'Favorites',
-                  style: TextStyle(
-                    color: context.colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 4),
-              FilledButton(
-                style: FilledButton.styleFrom(
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(4)),
-                  ),
-                  backgroundColor: context.colorScheme.surfaceContainerHighest,
-                ),
-                onPressed: () {
-                  setState(() {
-                    expandMode = TagEditExpandMode.related;
-                    _setMaxSplit();
-                  });
-                },
-                child: Text(
-                  'Related',
-                  style: TextStyle(
-                    color: context.colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ),
-              if (aiTagSupport) ...[
-                const SizedBox(width: 4),
-                FilledButton(
-                  style: FilledButton.styleFrom(
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(4)),
-                    ),
-                    backgroundColor:
-                        context.colorScheme.surfaceContainerHighest,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      expandMode = TagEditExpandMode.aiTag;
-                      _setMaxSplit();
-                    });
-                  },
-                  child: Text(
-                    'Suggested',
-                    style: TextStyle(
-                      color: context.colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                ),
-              ],
-            ],
-          ),
-        ),
-    };
-  }
-
-  Widget _buildAppSheetAppbar(String title) {
-    return Row(
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 16, top: 8, bottom: 4),
-          child: Text(
-            title,
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-        ),
-        const Spacer(),
-        Padding(
-          padding: const EdgeInsets.only(right: 4, top: 8, bottom: 4),
-          child: Material(
-            shape: const CircleBorder(),
-            color: context.colorScheme.surfaceContainerHighest,
-            child: Container(
-              padding: const EdgeInsets.all(4),
-              child: InkWell(
-                radius: 32,
-                customBorder: const CircleBorder(),
-                onTap: () {
-                  setState(() {
-                    viewExpanded = !viewExpanded;
-                    if (!viewExpanded) {
-                      _setMaxSplit();
-                    } else {
-                      _setDefaultSplit();
-                    }
-                  });
-                },
-                child: !viewExpanded
-                    ? const Icon(Symbols.arrow_drop_up)
-                    : const Icon(Symbols.arrow_drop_down),
-              ),
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) => constraints.maxHeight > 80
+          ? const _Image()
+          : SizedBox(
+              height: constraints.maxHeight - 4,
             ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(right: 16, top: 8, bottom: 4),
-          child: Material(
-            shape: const CircleBorder(),
-            color: context.colorScheme.surfaceContainerHighest,
-            child: Container(
-              padding: const EdgeInsets.all(4),
-              child: InkWell(
-                radius: 32,
-                customBorder: const CircleBorder(),
-                onTap: () {
-                  setState(() {
-                    expandMode = null;
-                    _setDefaultSplit();
-                  });
-                },
-                child: const Icon(Symbols.close),
-              ),
-            ),
-          ),
-        ),
-      ],
     );
-  }
-
-  void _removeTag(String tag) {
-    setState(() {
-      if (toBeAdded.contains(tag)) {
-        tags.remove(tag);
-        toBeAdded.remove(tag);
-      } else {
-        tags.remove(tag);
-        toBeRemoved.add(tag);
-      }
-    });
-  }
-
-  void _addTag(String tag) {
-    setState(() {
-      if (tags.contains(tag)) return;
-      if (toBeAdded.contains(tag)) return;
-      tags.add(tag);
-      toBeAdded.add(tag);
-      // Hacky way to scroll to the end of the list, somehow if it is currently on top, it won't scroll to last item
-      final offset =
-          scrollController.offset == scrollController.position.maxScrollExtent
-              ? 0
-              : scrollController.position.maxScrollExtent / tags.length;
-
-      WidgetsBinding.instance.addPostFrameCallback(
-        (_) {
-          if (!mounted || !scrollController.hasClients) return;
-
-          scrollController.animateToWithAccessibility(
-            scrollController.position.maxScrollExtent + offset,
-            duration: const Duration(milliseconds: 200),
-            curve: Curves.easeOut,
-            reduceAnimations: ref.read(settingsProvider).reduceAnimations,
-          );
-        },
-      );
-
-      Future.delayed(
-        const Duration(milliseconds: 200),
-        () {},
-      );
-    });
   }
 }
