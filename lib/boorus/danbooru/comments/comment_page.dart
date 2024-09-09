@@ -128,15 +128,15 @@ class _CommentPageState extends ConsumerState<CommentPage> {
                           onUpvote: (comment) => ref
                               .read(
                                   danbooruCommentVotesProvider(config).notifier)
-                              .upvote(comment.id),
+                              .guardUpvote(ref, comment.id),
                           onDownvote: (comment) => ref
                               .read(
                                   danbooruCommentVotesProvider(config).notifier)
-                              .downvote(comment.id),
+                              .guardDownvote(ref, comment.id),
                           onClearVote: (comment, commentVote) => ref
                               .read(
                                   danbooruCommentVotesProvider(config).notifier)
-                              .unvote(commentVote),
+                              .guardUnvote(ref, commentVote),
                         ),
                       ),
                       if (config.hasLoginDetails())

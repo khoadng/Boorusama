@@ -485,18 +485,22 @@ extension DanbooruX on WidgetRef {
   }
 
   void _guardLogin(void Function() action) {
-    if (!readConfig.hasLoginDetails()) {
-      showSimpleSnackBar(
-        context: context,
-        content: const Text(
-          'post.detail.login_required_notice',
-        ).tr(),
-        duration: AppDurations.shortToast,
-      );
-
-      return;
-    }
-
-    action();
+    guardLogin(this, action);
   }
+}
+
+void guardLogin(WidgetRef ref, void Function() action) {
+  if (!ref.readConfig.hasLoginDetails()) {
+    showSimpleSnackBar(
+      context: ref.context,
+      content: const Text(
+        'post.detail.login_required_notice',
+      ).tr(),
+      duration: AppDurations.shortToast,
+    );
+
+    return;
+  }
+
+  action();
 }

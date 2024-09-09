@@ -40,14 +40,14 @@ class CommentList extends StatelessWidget {
 
               return ListTile(
                 title: CommentItem(
-                  hasVoteSection: authenticated,
+                  hasVoteSection: true,
                   onVoteChanged: (event, commentVote) => switch (event) {
                     VoteEvent.upvoted => onUpvote(comment),
                     VoteEvent.downvote => onDownvote(comment),
                     VoteEvent.voteRemoved => onClearVote(comment, commentVote),
                   },
                   comment: comment,
-                  onReply: () => onReply(comment),
+                  onReply: authenticated ? () => onReply(comment) : null,
                   moreBuilder: (context) => authenticated
                       ? BooruPopupMenuButton(
                           onSelected: (value) {
