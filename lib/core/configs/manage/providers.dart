@@ -13,4 +13,5 @@ final currentBooruConfigProvider =
     settingsProvider,
     loggerProvider,
   ],
+  name: 'currentBooruConfigProvider',
 );

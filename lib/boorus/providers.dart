@@ -110,6 +110,7 @@ final settingsProvider = NotifierProvider<SettingsNotifier, Settings>(
   dependencies: [
     settingsRepoProvider,
   ],
+  name: 'settingsProvider',
 );
 
 //FIXME: should move to some sort of experimental features provider
@@ -139,11 +140,12 @@ final imageListingSettingsProvider = Provider<ImageListingSettings>((ref) {
   return listing;
 });
 
-final settingsRepoProvider =
-    Provider<SettingsRepository>((ref) => throw UnimplementedError());
+final settingsRepoProvider = Provider<SettingsRepository>(
+  (ref) => throw UnimplementedError(),
+  name: 'settingsRepoProvider',
+);
 
 class DioArgs {
-
   DioArgs({
     required this.cacheDir,
     required this.baseUrl,
@@ -178,11 +180,15 @@ final dioArgsProvider = Provider.family<DioArgs, BooruConfig>((ref, config) {
 
 final httpCacheDirProvider = Provider<Directory>(
   (ref) => throw UnimplementedError(),
+  name: 'httpCacheDirProvider',
 );
 
-final miscDataBoxProvider = Provider<Box<String>>((ref) {
-  throw UnimplementedError();
-});
+final miscDataBoxProvider = Provider<Box<String>>(
+  (ref) {
+    throw UnimplementedError();
+  },
+  name: 'miscDataBoxProvider',
+);
 
 final miscDataProvider = NotifierProvider.autoDispose
     .family<MiscDataNotifier, String, String>(MiscDataNotifier.new);
@@ -206,19 +212,26 @@ final loggerProvider =
 
 final bookmarkRepoProvider = Provider<BookmarkRepository>(
   (ref) => throw UnimplementedError(),
+  name: 'bookmarkRepoProvider',
 );
 
-final deviceInfoProvider = Provider<DeviceInfo>((ref) {
-  throw UnimplementedError();
-});
+final deviceInfoProvider = Provider<DeviceInfo>(
+  (ref) {
+    throw UnimplementedError();
+  },
+  name: 'deviceInfoProvider',
+);
 
 final cacheSizeProvider =
     NotifierProvider.autoDispose<CacheSizeNotifier, CacheSizeInfo>(
         CacheSizeNotifier.new);
 
-final appInfoProvider = Provider<AppInfo>((ref) {
-  throw UnimplementedError();
-});
+final appInfoProvider = Provider<AppInfo>(
+  (ref) {
+    throw UnimplementedError();
+  },
+  name: 'appInfoProvider',
+);
 
 final tagRepoProvider = Provider.family<TagRepository, BooruConfig>(
     (ref, config) => switch (config.booruType) {

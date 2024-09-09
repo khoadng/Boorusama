@@ -199,6 +199,11 @@ class BooruConfig extends Equatable {
         listing,
       ];
 
+  @override
+  String toString() {
+    return 'Config(id=$id, booruId=$booruIdHint, name=$name, url=$url, login=${hasLoginDetails()})';
+  }
+
   Map<String, dynamic> toJson() {
     return {
       'id': id,
