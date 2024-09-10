@@ -106,10 +106,12 @@ extension DownloadWithSettingsX on DownloadService {
     required DownloadFilenameBuilder fileNameBuilder,
     required BooruConfig config,
     required Map<String, String>? headers,
+    String? path,
   }) {
-    final downloadPath = config.hasCustomDownloadLocation
-        ? config.customDownloadLocation
-        : settings.downloadPath;
+    final downloadPath = path ??
+        (config.hasCustomDownloadLocation
+            ? config.customDownloadLocation
+            : settings.downloadPath);
 
     return downloadPath != null && downloadPath.isNotEmpty
         ? downloadCustomLocation(

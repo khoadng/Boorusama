@@ -213,6 +213,7 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
                 thumbnailUrl: bookmark.thumbnailUrl,
                 fileSize: null,
                 siteUrl: bookmark.sourceUrl,
+                group: null,
               ),
               fileNameBuilder: () =>
                   bookmark.md5 + extension(bookmark.originalUrl),

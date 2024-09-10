@@ -16,6 +16,7 @@ GoRoute downloadManager() => GoRoute(
       pageBuilder: genericMobilePageBuilder(
         builder: (context, state) => DownloadManagerGatewayPage(
           filter: state.uri.queryParameters['filter'],
+          group: state.uri.queryParameters['group'],
         ),
       ),
     );

@@ -25,6 +25,11 @@ final downloadFilterProvider =
   return _convertFilter(initialFilter);
 });
 
+final downloadGroupProvider = Provider<String?>(
+  (ref) => null,
+  name: 'downloadGroupProvider',
+);
+
 DownloadFilter2 _convertFilter(String? filter) => switch (filter) {
       'error' => DownloadFilter2.failed,
       'running' => DownloadFilter2.inProgress,
@@ -35,7 +40,13 @@ DownloadFilter2 _convertFilter(String? filter) => switch (filter) {
 final downloadFilteredProvider =
     Provider.family<List<TaskUpdate>, String?>((ref, initialFilter) {
   final filter = ref.watch(downloadFilterProvider(initialFilter));
-  final state = ref.watch(downloadTasksProvider);
+  final group = ref.watch(downloadGroupProvider);
+  final stateRaw = ref.watch(downloadTasksProvider);
+  final state = stateRaw.where((e) {
+    if (group == null) return true;
+
+    return e.task.group == group;
+  }).toList();
 
   return switch (filter) {
     DownloadFilter2.all => state.toList(),
@@ -63,15 +74,19 @@ final downloadFilteredProvider =
         .where((e) => e.status == TaskStatus.canceled)
         .toList(),
   };
-});
+}, dependencies: [
+  downloadGroupProvider,
+]);
 
 class DownloadManagerGatewayPage extends ConsumerWidget {
   const DownloadManagerGatewayPage({
     super.key,
     this.filter,
+    this.group,
   });
 
   final String? filter;
+  final String? group;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -80,7 +95,15 @@ class DownloadManagerGatewayPage extends ConsumerWidget {
 
     return useLegacy
         ? const DisabledDownloadManagerPage()
-        : DownloadManagerPage(filter: filter);
+        : ProviderScope(
+            overrides: [
+              downloadGroupProvider
+                  .overrideWithValue(group ?? FileDownloader.defaultGroup),
+            ],
+            child: DownloadManagerPage(
+              filter: filter,
+            ),
+          );
   }
 }
 
@@ -184,24 +207,36 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
   @override
   Widget build(BuildContext context) {
     final tasks = ref.watch(downloadFilteredProvider(widget.filter));
+    final group = ref.watch(downloadGroupProvider);
+    final isDefaultGroup =
+        group == FileDownloader.defaultGroup || group == null;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Downloads'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () {
-              openDownloadSettingsPage(context);
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.clear),
-            onPressed: () {
-              ref.read(downloadTasksProvider.notifier).state = [];
-            },
-          ),
-        ],
+        actions: isDefaultGroup
+            ? [
+                IconButton(
+                  icon: const Icon(Icons.settings),
+                  onPressed: () {
+                    openDownloadSettingsPage(context);
+                  },
+                ),
+                IconButton(
+                  icon: const Icon(Icons.clear),
+                  onPressed: () {
+                    // clear default group only
+                    final tasks = ref
+                        .read(downloadTasksProvider)
+                        .where(
+                            (e) => e.task.group != FileDownloader.defaultGroup)
+                        .toList();
+
+                    ref.read(downloadTasksProvider.notifier).state = tasks;
+                  },
+                ),
+              ]
+            : null,
       ),
       body: SafeArea(
         child: Column(
@@ -295,18 +330,19 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
                             },
                           ),
                           const Spacer(),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 24,
-                              horizontal: 8,
-                            ),
-                            child: Text(
-                              'This feature is still in experimental phase, please report any issues to the developer. You can also switch back to the legacy downloader in the settings.',
-                              style: context.textTheme.bodySmall?.copyWith(
-                                color: context.theme.hintColor,
+                          if (isDefaultGroup)
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 24,
+                                horizontal: 8,
+                              ),
+                              child: Text(
+                                'This feature is still in experimental phase, please report any issues to the developer. You can also switch back to the legacy downloader in the settings.',
+                                style: context.textTheme.bodySmall?.copyWith(
+                                  color: context.theme.hintColor,
+                                ),
                               ),
                             ),
-                          ),
                         ],
                       ),
               ),
@@ -419,7 +455,8 @@ class SimpleDownloadTile extends ConsumerWidget {
       },
       timeRemaining: switch (task) {
         TaskStatusUpdate _ => null,
-        final TaskProgressUpdate p => p.hasTimeRemaining ? p.timeRemaining : null,
+        final TaskProgressUpdate p =>
+          p.hasTimeRemaining ? p.timeRemaining : null,
       },
       onCancel: task.canCancel ? onCancel : null,
       builder: (_) => RawDownloadTile(

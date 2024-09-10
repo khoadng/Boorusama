@@ -91,7 +91,11 @@ extension BooruConfigDownloadX on BooruConfig {
 }
 
 extension PostDownloadX on WidgetRef {
-  Future<void> download(Post post) async {
+  Future<void> download(
+    Post post, {
+    String? group,
+    String? downloadPath,
+  }) async {
     final perm = await read(deviceStoragePermissionProvider.future);
     final settings = read(settingsProvider);
 
@@ -100,6 +104,8 @@ extension PostDownloadX on WidgetRef {
       post,
       permission: isAndroid() || isIOS() ? perm.storagePermission : null,
       settings: settings,
+      group: group,
+      downloadPath: downloadPath,
     );
   }
 }
@@ -109,6 +115,8 @@ Future<void> _download(
   Post downloadable, {
   PermissionStatus? permission,
   required Settings settings,
+  String? group,
+  String? downloadPath,
 }) async {
   final booruConfig = ref.readConfig;
   final service = ref.read(downloadServiceProvider(booruConfig));
@@ -130,13 +138,15 @@ Future<void> _download(
     return;
   }
 
-  Future<void> download() async => service.downloadWithSettings(
+  Future<void> download() async => service
+      .downloadWithSettings(
         settings,
         config: booruConfig,
         metadata: DownloaderMetadata(
           thumbnailUrl: downloadable.thumbnailImageUrl,
           fileSize: downloadable.fileSize,
           siteUrl: PostSource.from(downloadable.thumbnailImageUrl).url,
+          group: group,
         ),
         url: downloadUrl,
         fileNameBuilder: () => fileNameBuilder.generate(
@@ -149,7 +159,9 @@ Future<void> _download(
               ref.read(userAgentGeneratorProvider(booruConfig)).generate(),
           ...ref.read(extraHttpHeaderProvider(booruConfig)),
         },
-      ).run();
+        path: downloadPath,
+      )
+      .run();
 
   // Platform doesn't require permissions, just download it right away
   if (permission == null) {

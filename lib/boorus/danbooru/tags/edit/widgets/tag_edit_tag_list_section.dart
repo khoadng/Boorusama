@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -11,6 +10,7 @@ import 'package:sliver_tools/sliver_tools.dart';
 import 'package:boorusama/boorus/danbooru/tags/tags.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/dart.dart';

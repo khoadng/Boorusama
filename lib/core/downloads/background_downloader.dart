@@ -89,6 +89,7 @@ class BackgroundDownloader implements DownloadService {
             updates: Updates.statusAndProgress,
             metaData: metadata?.toJsonString() ?? '',
             headers: headers,
+            group: metadata?.group ?? FileDownloader.defaultGroup,
           );
 
           return FileDownloader().enqueueIfNeeded(
@@ -119,6 +120,7 @@ class BackgroundDownloader implements DownloadService {
             updates: Updates.statusAndProgress,
             metaData: metadata?.toJsonString() ?? '',
             headers: headers,
+            group: metadata?.group ?? FileDownloader.defaultGroup,
           );
 
           return FileDownloader().enqueueIfNeeded(
