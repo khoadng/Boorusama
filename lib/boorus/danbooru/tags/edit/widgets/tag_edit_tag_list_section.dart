@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -10,21 +11,12 @@ import 'package:sliver_tools/sliver_tools.dart';
 import 'package:boorusama/boorus/danbooru/tags/tags.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'tag_edit_tag_tile.dart';
-
-final tagEditTagFilterModeProvider = StateProvider.autoDispose<bool>((ref) {
-  return false;
-});
-
-final tagEditCurrentFilterProvider = StateProvider.autoDispose<String>((ref) {
-  return '';
-});
 
 final tagEditFilteredListProvider =
     Provider.autoDispose.family<List<String>, Set<String>>((ref, tags) {
@@ -35,26 +27,50 @@ final tagEditFilteredListProvider =
   return tags.where((tag) => tag.contains(filter)).toList();
 });
 
-final danbooruTagEditColorProvider =
-    FutureProvider.autoDispose<Map<String, ChipColors?>>(
-  (ref) async {
-    final tags = ref.watch(_tagsProvider);
-    final filters = ref.watch(tagEditFilteredListProvider(tags));
+class DanbooruTagEditColorNotifier
+    extends FamilyNotifier<Map<String, ChipColors?>, BooruConfig> {
+  @override
+  Map<String, ChipColors> build(BooruConfig arg) {
+    return {};
+  }
 
+  Future<void> load(List<String> tags) async {
+    if (tags.isEmpty) return;
+
+    final nonExistentTags = tags.where((tag) => !state.containsKey(tag));
+
+    if (nonExistentTags.isEmpty) return;
+
+    return _load(nonExistentTags.toList());
+  }
+
+  Future<void> fetchColors(Set<String> tags) async {
+    final repo = ref.read(tagRepoProvider(ref.watchConfig));
+
+    final t = await repo.getTagsByName(tags, 1);
+
+    await ref
+        .watch(booruTagTypeStoreProvider)
+        .saveTagIfNotExist(ref.watchConfig.booruType, t);
+
+    return _load(tags.toList());
+  }
+
+  Future<void> _load(List<String> tags) async {
     final colors = <String, ChipColors?>{};
     final config = ref.watchConfig;
-    final tagTypeStore = ref.watch(booruTagTypeStoreProvider);
-    final colorScheme = ref.watch(colorSchemeProvider);
+    final tagTypeStore = ref.read(booruTagTypeStoreProvider);
+    final colorScheme = ref.read(colorSchemeProvider);
     final enableDynamicColoring = ref
-        .watch(settingsProvider.select((value) => value.enableDynamicColoring));
+        .read(settingsProvider.select((value) => value.enableDynamicColoring));
 
-    for (final tag in filters) {
+    for (final tag in tags) {
       final tagType = await tagTypeStore.get(config.booruType, tag);
 
       if (tagType == null) {
         colors[tag] = null;
       } else {
-        final color = ref.watch(tagColorProvider(tagType));
+        final color = ref.read(tagColorProvider(tagType));
 
         final chipColors = color != null && color != Colors.white
             ? generateChipColorsFromColorScheme(
@@ -68,8 +84,19 @@ final danbooruTagEditColorProvider =
       }
     }
 
-    return colors;
-  },
+    final effectiveColors = {...state};
+
+    for (final entry in colors.entries) {
+      effectiveColors[entry.key] = entry.value;
+    }
+
+    state = effectiveColors;
+  }
+}
+
+final danbooruTagEditColorsProvider = NotifierProvider.family<
+    DanbooruTagEditColorNotifier, Map<String, ChipColors?>, BooruConfig>(
+  DanbooruTagEditColorNotifier.new,
   dependencies: [
     _tagsProvider,
     colorSchemeProvider,
@@ -78,6 +105,21 @@ final danbooruTagEditColorProvider =
     tagEditFilteredListProvider,
     currentBooruConfigProvider,
   ],
+  name: 'danbooruTagEditColorsProvider',
+);
+
+final _tagColorProvider = Provider.autoDispose.family<ChipColors?, String>(
+  (ref, tag) {
+    final config = ref.watchConfig;
+    final colors = ref.watch(danbooruTagEditColorsProvider(config));
+
+    return colors[tag];
+  },
+  dependencies: [
+    currentBooruConfigProvider,
+    danbooruTagEditColorsProvider,
+  ],
+  name: 'tagColorProvider',
 );
 
 final _initialTagCountProvider = Provider.autoDispose<int>((ref) {
@@ -118,31 +160,49 @@ class SliverTagEditTagListSection extends ConsumerWidget {
   }
 }
 
-class _SliverTagEditListView extends ConsumerWidget {
+class _SliverTagEditListView extends ConsumerStatefulWidget {
   const _SliverTagEditListView();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_SliverTagEditListView> createState() =>
+      _SliverTagEditListViewState();
+}
+
+class _SliverTagEditListViewState
+    extends ConsumerState<_SliverTagEditListView> {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    ref
+        .read(danbooruTagEditColorsProvider(ref.readConfig).notifier)
+        .load(ref.read(_tagsProvider).toList());
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final tags = ref.watch(_tagsProvider);
     final filtered = ref.watch(tagEditFilteredListProvider(tags));
     final toBeAdded =
         ref.watch(tagEditProvider.select((value) => value.toBeAdded));
+
     final notifier = ref.watch(tagEditProvider.notifier);
-    //FIXME: Need to fix color flashing when adding tag
-    final chipColors = ref.watch(danbooruTagEditColorProvider).maybeWhen(
-          data: (value) => value,
-          orElse: () => null,
-        );
+
+    ref.listen(
+      tagEditProvider.select((value) => value.toBeAdded),
+      (prev, cur) {
+        ref.read(danbooruTagEditColorsProvider(ref.readConfig).notifier).load(
+              cur.toList(),
+            );
+      },
+    );
 
     return SliverList.builder(
       itemCount: filtered.length,
       itemBuilder: (_, index) {
         final tag = filtered[index];
-        final colors = chipColors != null
-            ? chipColors.containsKey(tag)
-                ? chipColors[tag]
-                : null
-            : null;
+        final colors = ref.watch(_tagColorProvider(tag));
+        final isNewlyAdded = toBeAdded.contains(tag);
 
         return TagEditTagTile(
           title: Text(
@@ -151,7 +211,7 @@ class _SliverTagEditListView extends ConsumerWidget {
               color: context.isLight
                   ? colors?.backgroundColor
                   : colors?.foregroundColor,
-              fontWeight: toBeAdded.contains(tag) ? FontWeight.w900 : null,
+              fontWeight: isNewlyAdded ? FontWeight.w900 : null,
             ),
           ),
           onTap: () => notifier.setSelectedTag(tag),
@@ -161,6 +221,14 @@ class _SliverTagEditListView extends ConsumerWidget {
     );
   }
 }
+
+final tagEditTagFilterModeProvider = StateProvider.autoDispose<bool>((ref) {
+  return false;
+});
+
+final tagEditCurrentFilterProvider = StateProvider.autoDispose<String>((ref) {
+  return '';
+});
 
 class TagEditFilterHeader extends ConsumerWidget {
   const TagEditFilterHeader({super.key});
@@ -255,15 +323,9 @@ class TagEditFilterHeader extends ConsumerWidget {
   }
 
   Future<void> _fetch(WidgetRef ref) async {
-    final repo = ref.watch(tagRepoProvider(ref.watchConfig));
-    final tags = ref.watch(_tagsProvider);
-
-    final t = await repo.getTagsByName(tags, 1);
-
-    await ref
-        .watch(booruTagTypeStoreProvider)
-        .saveTagIfNotExist(ref.watchConfig.booruType, t);
-
-    ref.invalidate(danbooruTagEditColorProvider);
+    final tags = ref.read(_tagsProvider);
+    ref
+        .read(danbooruTagEditColorsProvider(ref.watchConfig).notifier)
+        .fetchColors(tags);
   }
 }
