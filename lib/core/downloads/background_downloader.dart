@@ -16,14 +16,13 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/booru.dart';
 import 'package:boorusama/core/configs/booru_config.dart';
 import 'package:boorusama/core/configs/providers.dart';
-import 'package:boorusama/core/downloads/download_service.dart';
-import 'package:boorusama/core/downloads/types.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/functional.dart' as fp;
 import 'package:boorusama/router.dart';
+import 'downloads.dart';
 
 extension FileDownloadX on FileDownloader {
   Future<String> enqueueIfNeeded(
@@ -178,11 +177,6 @@ class _BackgroundDownloaderScopeState
   late StreamSubscription<TaskUpdate> downloadUpdates;
 
   void _update(TaskUpdate update) {
-    final totalTasks = ref.read(downloadTasksProvider);
-
-    final index =
-        totalTasks.indexWhere((element) => element.task == update.task);
-
     if (update case TaskStatusUpdate()) {
       if (update.status case TaskStatus.complete) {
         WidgetsBinding.instance.addPostFrameCallback(
@@ -236,18 +230,7 @@ class _BackgroundDownloaderScopeState
       }
     }
 
-    if (index == -1) {
-      ref.read(downloadTasksProvider.notifier).state = [
-        ...totalTasks,
-        update,
-      ];
-      return;
-    } else {
-      totalTasks[index] = update;
-      ref.read(downloadTasksProvider.notifier).state = [
-        ...totalTasks,
-      ];
-    }
+    ref.read(downloadTasksProvider.notifier).addOrUpdate(update);
   }
 
   @override
@@ -306,7 +289,3 @@ class _BackgroundDownloaderScopeState
     return widget.child;
   }
 }
-
-final downloadTasksProvider = StateProvider<List<TaskUpdate>>((ref) {
-  return [];
-});
