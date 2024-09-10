@@ -43,10 +43,9 @@ class CrossplatformDownloader implements Downloader {
   Future<void> enqueueDownload({
     required String url,
     String? path,
-    required DownloadFilenameBuilder fileNameBuilder,
+    required String filename,
   }) async {
-    final fileName = fileNameBuilder();
-    _downloadDataController.add(DownloadInitializing(url, fileName));
+    _downloadDataController.add(DownloadInitializing(url, filename));
 
     final savePath = path != null
         ? tryGetCustomDownloadDirectory(path)
@@ -60,11 +59,11 @@ class CrossplatformDownloader implements Downloader {
     return dir.fold(
       () => null,
       (t) async {
-        final filePath = join(t.path, fileName);
+        final filePath = join(t.path, filename);
         if (File(filePath).existsSync()) {
           _downloadDataController.add(DownloadDone(
             url,
-            fileName,
+            filename,
             t.path,
             alreadyExists: true,
           ));
@@ -72,15 +71,15 @@ class CrossplatformDownloader implements Downloader {
         }
 
         final task =
-            await _downloadManager.addDownload(url, join(t.path, fileName));
+            await _downloadManager.addDownload(url, join(t.path, filename));
 
-        _downloadDataController.add(DownloadQueued(url, fileName));
+        _downloadDataController.add(DownloadQueued(url, filename));
 
         task?.progress.addListener(() {
           if (task.status.value == dm.DownloadStatus.downloading) {
             _downloadDataController.add(DownloadInProgress(
               url,
-              fileName,
+              filename,
               task.progress.value,
             ));
           }
@@ -94,24 +93,24 @@ class CrossplatformDownloader implements Downloader {
 
         task?.status.addListener(() {
           final status = switch (task.status.value) {
-            dm.DownloadStatus.queued => DownloadQueued(url, fileName),
+            dm.DownloadStatus.queued => DownloadQueued(url, filename),
             dm.DownloadStatus.downloading => DownloadInProgress(
                 url,
-                fileName,
+                filename,
                 task.progress.value,
               ),
             dm.DownloadStatus.paused => DownloadPaused(
                 url,
-                fileName,
+                filename,
                 task.progress.value,
               ),
-            dm.DownloadStatus.failed => DownloadFailed(url, fileName),
+            dm.DownloadStatus.failed => DownloadFailed(url, filename),
             dm.DownloadStatus.canceled => task.progress.value == 1
-                ? DownloadDone(url, fileName, task.request.path)
-                : DownloadCanceled(url, fileName),
+                ? DownloadDone(url, filename, task.request.path)
+                : DownloadCanceled(url, filename),
             dm.DownloadStatus.completed => DownloadDone(
                 url,
-                fileName,
+                filename,
                 task.request.path,
               ),
           };

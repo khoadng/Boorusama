@@ -3,13 +3,12 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'download_status.dart';
-import 'types.dart';
 
 abstract class Downloader {
   Future<void> enqueueDownload({
     required String url,
     String? path,
-    required DownloadFilenameBuilder fileNameBuilder,
+    required String filename,
   });
 
   Future<void> pause(String url);

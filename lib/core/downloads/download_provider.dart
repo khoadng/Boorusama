@@ -149,7 +149,7 @@ Future<void> _download(
           group: group,
         ),
         url: downloadUrl,
-        fileNameBuilder: () => fileNameBuilder.generate(
+        filename: fileNameBuilder.generate(
           settings,
           booruConfig,
           downloadable,

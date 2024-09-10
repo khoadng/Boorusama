@@ -7,8 +7,6 @@ import 'package:equatable/equatable.dart';
 // Project imports:
 import 'package:boorusama/functional.dart';
 
-typedef DownloadFilenameBuilder = String Function();
-
 enum DownloadFilter {
   all,
   pending,

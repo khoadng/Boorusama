@@ -81,7 +81,7 @@ typedef DownloadPathOrError = TaskEither<DownloadError, String>;
 abstract class DownloadService {
   DownloadPathOrError download({
     required String url,
-    required DownloadFilenameBuilder fileNameBuilder,
+    required String filename,
     DownloaderMetadata? metadata,
     bool? skipIfExists,
     Map<String, String>? headers,
@@ -90,7 +90,7 @@ abstract class DownloadService {
   DownloadPathOrError downloadCustomLocation({
     required String url,
     required String path,
-    required DownloadFilenameBuilder fileNameBuilder,
+    required String filename,
     DownloaderMetadata? metadata,
     bool? skipIfExists,
     Map<String, String>? headers,
@@ -103,7 +103,7 @@ extension DownloadWithSettingsX on DownloadService {
     required String url,
     DownloaderMetadata? metadata,
     String? folderName,
-    required DownloadFilenameBuilder fileNameBuilder,
+    required String filename,
     required BooruConfig config,
     required Map<String, String>? headers,
     String? path,
@@ -118,14 +118,14 @@ extension DownloadWithSettingsX on DownloadService {
             url: url,
             metadata: metadata,
             path: join(downloadPath, folderName),
-            fileNameBuilder: fileNameBuilder,
+            filename: filename,
             skipIfExists: settings.skipDownloadIfExists,
             headers: headers,
           )
         : download(
             url: url,
             metadata: metadata,
-            fileNameBuilder: fileNameBuilder,
+            filename: filename,
             skipIfExists: settings.skipDownloadIfExists,
             headers: headers,
           );
@@ -169,7 +169,7 @@ class DioDownloadService implements DownloadService {
   @override
   DownloadPathOrError download({
     required String url,
-    required DownloadFilenameBuilder fileNameBuilder,
+    required String filename,
     DownloaderMetadata? metadata,
     bool? skipIfExists,
     Map<String, String>? headers,
@@ -179,7 +179,7 @@ class DioDownloadService implements DownloadService {
               urls: retryExtensions
                   .map((e) => removeFileExtension(url) + e)
                   .toList(),
-              fileNameBuilder: fileNameBuilder,
+              filename: filename,
               headers: headers,
             )
               .flatMap(_reloadMedia)
@@ -188,7 +188,7 @@ class DioDownloadService implements DownloadService {
               dio: dio,
               notifications: notifications,
               url: url,
-              fileNameBuilder: fileNameBuilder,
+              filename: filename,
               headers: headers,
             )
               .flatMap(_reloadMedia)
@@ -196,15 +196,15 @@ class DioDownloadService implements DownloadService {
 
   DownloadPathOrError _download({
     required List<String> urls,
-    required DownloadFilenameBuilder fileNameBuilder,
+    required String filename,
     required Map<String, String>? headers,
   }) {
     if (urls.isEmpty) {
       return TaskEither.left(GenericDownloadError(
         savedPath: none(),
-        fileName: fileNameBuilder(),
+        fileName: filename,
         message:
-            'Multiple tries failed to download ${fileNameBuilder()}, all urls are invalid',
+            'Multiple tries failed to download $filename, all urls are invalid',
       ));
     }
 
@@ -214,13 +214,13 @@ class DioDownloadService implements DownloadService {
       dio: dio,
       notifications: notifications,
       url: url,
-      fileNameBuilder: fileNameBuilder,
+      filename: filename,
       headers: headers,
     ).orElse((error) => switch (error) {
           final HttpDownloadError e => e.exception.response?.statusCode == 404
               ? _download(
                   urls: urls..remove(url),
-                  fileNameBuilder: fileNameBuilder,
+                  filename: filename,
                   headers: headers,
                 )
               : TaskEither.left(e),
@@ -231,16 +231,16 @@ class DioDownloadService implements DownloadService {
   //FIXME: should merge with _download, i'm playing it safe for now
   DownloadPathOrError _downloadCustomLocation({
     required List<String> urls,
-    required DownloadFilenameBuilder fileNameBuilder,
+    required String filename,
     required String path,
     required Map<String, String>? headers,
   }) {
     if (urls.isEmpty) {
       return TaskEither.left(GenericDownloadError(
         savedPath: none(),
-        fileName: fileNameBuilder(),
+        fileName: filename,
         message:
-            'Multiple tries failed to download ${fileNameBuilder()}, all urls are invalid',
+            'Multiple tries failed to download $filename, all urls are invalid',
       ));
     }
 
@@ -251,13 +251,13 @@ class DioDownloadService implements DownloadService {
       notifications: notifications,
       path: path,
       url: url,
-      fileNameBuilder: fileNameBuilder,
+      filename: filename,
       headers: headers,
     ).orElse((error) => switch (error) {
           final HttpDownloadError e => e.exception.response?.statusCode == 404
               ? _download(
                   urls: urls..remove(url),
-                  fileNameBuilder: fileNameBuilder,
+                  filename: filename,
                   headers: headers,
                 )
               : TaskEither.left(e),
@@ -269,7 +269,7 @@ class DioDownloadService implements DownloadService {
   DownloadPathOrError downloadCustomLocation({
     required String url,
     required String path,
-    required DownloadFilenameBuilder fileNameBuilder,
+    required String filename,
     DownloaderMetadata? metadata,
     bool? skipIfExists,
     Map<String, String>? headers,
@@ -279,7 +279,7 @@ class DioDownloadService implements DownloadService {
               urls: retryExtensions
                   .map((e) => removeFileExtension(url) + e)
                   .toList(),
-              fileNameBuilder: fileNameBuilder,
+              filename: filename,
               path: path,
               headers: headers,
             )
@@ -290,7 +290,7 @@ class DioDownloadService implements DownloadService {
               notifications: notifications,
               path: path,
               url: url,
-              fileNameBuilder: fileNameBuilder,
+              filename: filename,
               headers: headers,
             )
               .flatMap(_reloadMedia)

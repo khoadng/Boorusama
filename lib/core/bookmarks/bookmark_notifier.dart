@@ -215,8 +215,7 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
                 siteUrl: bookmark.sourceUrl,
                 group: null,
               ),
-              fileNameBuilder: () =>
-                  bookmark.md5 + extension(bookmark.originalUrl),
+              filename: bookmark.md5 + extension(bookmark.originalUrl),
               headers: {
                 AppHttpHeaders.userAgentHeader:
                     ref.read(userAgentGeneratorProvider(config)).generate(),

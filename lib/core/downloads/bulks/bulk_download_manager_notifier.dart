@@ -145,7 +145,7 @@ class BulkDownloadManagerNotifier extends FamilyNotifier<void, BooruConfig> {
           downloader.enqueueDownload(
             url: downloadUrl,
             path: storagePath,
-            fileNameBuilder: () => fileNameBuilder.generateForBulkDownload(
+            filename: fileNameBuilder.generateForBulkDownload(
               settings,
               arg,
               item,
@@ -195,7 +195,7 @@ class BulkDownloadManagerNotifier extends FamilyNotifier<void, BooruConfig> {
     await downloader.enqueueDownload(
       url: url,
       path: storagePath,
-      fileNameBuilder: () => fileName,
+      filename: fileName,
     );
   }
 

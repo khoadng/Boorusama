@@ -66,7 +66,7 @@ class BackgroundDownloader implements DownloadService {
   @override
   DownloadPathOrError download({
     required String url,
-    required DownloadFilenameBuilder fileNameBuilder,
+    required String filename,
     DownloaderMetadata? metadata,
     int? fileSize,
     bool? skipIfExists,
@@ -79,7 +79,7 @@ class BackgroundDownloader implements DownloadService {
 
           final task = DownloadTask(
             url: url,
-            filename: fileNameBuilder(),
+            filename: filename,
             allowPause: true,
             retries: 1,
             baseDirectory: downloadDir != null
@@ -103,7 +103,7 @@ class BackgroundDownloader implements DownloadService {
   DownloadPathOrError downloadCustomLocation({
     required String url,
     required String path,
-    required DownloadFilenameBuilder fileNameBuilder,
+    required String filename,
     DownloaderMetadata? metadata,
     bool? skipIfExists,
     Map<String, String>? headers,
@@ -112,7 +112,7 @@ class BackgroundDownloader implements DownloadService {
         ($) async {
           final task = DownloadTask(
             url: url,
-            filename: fileNameBuilder(),
+            filename: filename,
             baseDirectory: BaseDirectory.root,
             directory: path,
             allowPause: true,

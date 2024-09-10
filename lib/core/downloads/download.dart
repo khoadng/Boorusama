@@ -14,7 +14,7 @@ DownloadPathOrError downloadUrl({
   required Dio dio,
   required DownloadNotifications notifications,
   required String url,
-  required DownloadFilenameBuilder fileNameBuilder,
+  required String filename,
   required Map<String, String>? headers,
   bool enableNotification = true,
 }) =>
@@ -22,11 +22,11 @@ DownloadPathOrError downloadUrl({
       final dir = await $(
           tryGetDownloadDirectory().mapLeft((error) => GenericDownloadError(
                 message: error.name,
-                fileName: fileNameBuilder(),
+                fileName: filename,
                 savedPath: none(),
               )));
 
-      final path = await $(joinDownloadPath(fileNameBuilder(), dir));
+      final path = await $(joinDownloadPath(filename, dir));
 
       return _wrapWithNotification(
         () => $(
@@ -36,7 +36,7 @@ DownloadPathOrError downloadUrl({
             path: path,
             onReceiveProgress: onReceiveProgress(
               notifications,
-              fileNameBuilder(),
+              filename,
               path,
               enableNotification,
             ),
@@ -54,7 +54,7 @@ DownloadPathOrError downloadUrlCustomLocation({
   required DownloadNotifications notifications,
   required String path,
   required String url,
-  required DownloadFilenameBuilder fileNameBuilder,
+  required String filename,
   required Map<String, String>? headers,
   bool enableNotification = true,
 }) =>
@@ -62,11 +62,11 @@ DownloadPathOrError downloadUrlCustomLocation({
       final dir = await $(tryGetCustomDownloadDirectory(path)
           .mapLeft((error) => GenericDownloadError(
                 message: error.name,
-                fileName: fileNameBuilder(),
+                fileName: filename,
                 savedPath: none(),
               )));
 
-      final filePath = await $(joinDownloadPath(fileNameBuilder(), dir));
+      final filePath = await $(joinDownloadPath(filename, dir));
 
       return _wrapWithNotification(
         () => $(
@@ -76,7 +76,7 @@ DownloadPathOrError downloadUrlCustomLocation({
             path: filePath,
             onReceiveProgress: onReceiveProgress(
               notifications,
-              fileNameBuilder(),
+              filename,
               filePath,
               enableNotification,
             ),
