@@ -8,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/experimental.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
@@ -67,10 +66,9 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
 
     final tabMap = {
       if (authTab != null) 'booru.authentication': authTab!,
-      if (kCustomListingFeatureEnabled)
-        'Listing': BooruConfigListingView(
-          config: config,
-        ),
+      'Listing': BooruConfigListingView(
+        config: config,
+      ),
       if (hasDownloadTab)
         'booru.download': BooruConfigDownloadView(config: config),
       if (tabsBuilder != null) ...tabsBuilder!(context),

@@ -43,7 +43,6 @@ import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/app_info.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
 import 'package:boorusama/foundation/device_info_service.dart';
-import 'package:boorusama/foundation/experimental.dart';
 import 'package:boorusama/foundation/http/user_agent_generator.dart';
 import 'package:boorusama/foundation/http/user_agent_generator_impl.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
@@ -116,11 +115,6 @@ final settingsProvider = NotifierProvider<SettingsNotifier, Settings>(
 
 final imageListingSettingsProvider = Provider<ImageListingSettings>((ref) {
   final listing = ref.watch(settingsProvider.select((value) => value.listing));
-
-  // if custom listing is not enabled, return the global settings
-  if (!kCustomListingFeatureEnabled) {
-    return listing;
-  }
 
   // check if user has set custom settings
   final listingConfigs =
