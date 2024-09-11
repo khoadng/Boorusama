@@ -176,7 +176,7 @@ class _EditSavedSearchSheetState extends ConsumerState<EditSavedSearchSheet> {
                 children: [
                   FilledButton(
                     style: FilledButton.styleFrom(
-                      foregroundColor: context.iconTheme.color,
+                      foregroundColor: context.colorScheme.onSurface,
                       backgroundColor:
                           context.colorScheme.surfaceContainerHighest,
                       shape: const RoundedRectangleBorder(
@@ -192,7 +192,7 @@ class _EditSavedSearchSheetState extends ConsumerState<EditSavedSearchSheet> {
                     valueListenable: queryHasText,
                     builder: (context, enable, _) => FilledButton(
                       style: FilledButton.styleFrom(
-                        foregroundColor: context.iconTheme.color,
+                        foregroundColor: context.colorScheme.onPrimary,
                         shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(16)),
                         ),
