@@ -43,6 +43,7 @@ import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/app_info.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
 import 'package:boorusama/foundation/device_info_service.dart';
+import 'package:boorusama/foundation/experimental.dart';
 import 'package:boorusama/foundation/http/user_agent_generator.dart';
 import 'package:boorusama/foundation/http/user_agent_generator_impl.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
@@ -112,12 +113,6 @@ final settingsProvider = NotifierProvider<SettingsNotifier, Settings>(
   ],
   name: 'settingsProvider',
 );
-
-//FIXME: should move to some sort of experimental features provider
-const _kExperimentalFeatures = String.fromEnvironment('EXPERIMENTAL_FEATURES');
-final _kExperimentalFeaturesSet = _kExperimentalFeatures.split(' ');
-final kCustomListingFeatureEnabled =
-    _kExperimentalFeaturesSet.contains('custom-listing');
 
 final imageListingSettingsProvider = Provider<ImageListingSettings>((ref) {
   final listing = ref.watch(settingsProvider.select((value) => value.listing));
