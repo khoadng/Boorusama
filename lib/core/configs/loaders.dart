@@ -20,7 +20,7 @@ Future<List<Booru>> loadBoorusFromAssets() async {
 
 Future<List<Booru>> loadBoorusFromGithub(
   String githubLinkUrl,
-  LoggerService logger,
+  Logger logger,
 ) async {
   try {
     final uri = Uri.parse(githubLinkUrl);

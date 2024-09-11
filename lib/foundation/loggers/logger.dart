@@ -10,7 +10,7 @@ enum LogLevel {
   error,
 }
 
-abstract class LoggerService {
+abstract class Logger {
   void logI(String serviceName, String message);
   void logW(String serviceName, String message);
   void logE(String serviceName, String message);
@@ -22,7 +22,7 @@ abstract class LoggerService {
 }
 
 mixin LoggerMixin {
-  LoggerService get logger;
+  Logger get logger;
 
   void logI(String serviceName, String message) =>
       logger.logI(serviceName, message);
@@ -41,7 +41,7 @@ mixin LoggerMixin {
       logger.log(serviceName, message, level: level);
 }
 
-Future<LoggerService> loggerWith(LoggerService logger) async {
+Future<Logger> loggerWith(Logger logger) async {
   if (!kReleaseMode) {
     return MultiChannelLogger(
       loggers: [

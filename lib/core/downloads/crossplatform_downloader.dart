@@ -35,7 +35,7 @@ class CrossplatformDownloader implements Downloader {
           maxConcurrentTasks: 6,
         );
   final dm.DownloadManager _downloadManager;
-  final LoggerService? logger;
+  final Logger? logger;
   final _downloadDataController = BehaviorSubject<DownloadStatus>();
   final void Function(Object error)? onError;
 

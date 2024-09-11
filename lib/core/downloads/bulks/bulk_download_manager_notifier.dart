@@ -29,7 +29,7 @@ class BulkDownloadManagerNotifier extends FamilyNotifier<void, BooruConfig> {
 
   PostRepository get postRepo => ref.read(postRepoProvider(arg));
 
-  LoggerService get logger => ref.read(loggerProvider);
+  Logger get logger => ref.read(loggerProvider);
 
   Future<List<Post>> getPosts(
     String tags,

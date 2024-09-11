@@ -7,7 +7,7 @@ import 'package:intl/intl.dart';
 // Project imports:
 import 'logger.dart';
 
-class ConsoleLogger extends LoggerService {
+class ConsoleLogger extends Logger {
   String _formatDateTime(DateTime dateTime) {
     return DateFormat('yyyy-MM-dd, hh:mm:ss').format(dateTime);
   }

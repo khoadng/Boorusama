@@ -97,7 +97,7 @@ class MockAnalytics extends Mock implements AnalyticsInterface {}
 
 class MockSettingsRepository extends Mock implements SettingsRepository {}
 
-class MockLogger extends Mock implements LoggerService {}
+class MockLogger extends Mock implements Logger {}
 
 final mockAnalytics = MockAnalytics();
 

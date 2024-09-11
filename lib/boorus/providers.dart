@@ -158,7 +158,7 @@ class DioArgs {
   final String baseUrl;
   final UserAgentGenerator userAgentGenerator;
   final BooruConfig booruConfig;
-  final LoggerService loggerService;
+  final Logger loggerService;
   final BooruFactory booruFactory;
 }
 
@@ -207,8 +207,7 @@ final userAgentGeneratorProvider =
   },
 );
 
-final loggerProvider =
-    Provider<LoggerService>((ref) => throw UnimplementedError());
+final loggerProvider = Provider<Logger>((ref) => throw UnimplementedError());
 
 final bookmarkRepoProvider = Provider<BookmarkRepository>(
   (ref) => throw UnimplementedError(),
