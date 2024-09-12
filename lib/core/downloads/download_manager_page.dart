@@ -338,11 +338,9 @@ class RetryAllFailedButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final failed = ref
-        .watch(downloadFilteredProvider(filter))
-        .whereType<TaskStatusUpdate>()
-        .where((e) => e.status == TaskStatus.failed)
-        .toList();
+    final failed = ref.watch(downloadTasksProvider).failed(
+          ref.watch(downloadGroupProvider),
+        );
 
     return ref.watch(downloadFilterProvider(filter)) ==
                 DownloadFilter2.failed &&
