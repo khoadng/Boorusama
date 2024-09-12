@@ -40,19 +40,20 @@ class DownloadEmptyTagView extends ConsumerWidget {
                 .read(bulkDownloadSelectedTagsProvider.notifier)
                 .addTag(tag.value);
           },
-          emptyBuilder: () => ref.watch(searchHistoryProvider).maybeWhen(
-                data: (data) => SearchHistorySection(
-                  maxHistory: 20,
-                  showTime: true,
-                  histories: data.histories,
-                  onHistoryTap: (history) {
-                    ref
-                        .read(bulkDownloadSelectedTagsProvider.notifier)
-                        .addTag(history);
-                  },
-                ),
-                orElse: () => const SizedBox.shrink(),
-              ),
+          emptyBuilder: (controller) =>
+              ref.watch(searchHistoryProvider).maybeWhen(
+                    data: (data) => SearchHistorySection(
+                      maxHistory: 20,
+                      showTime: true,
+                      histories: data.histories,
+                      onHistoryTap: (history) {
+                        ref
+                            .read(bulkDownloadSelectedTagsProvider.notifier)
+                            .addTag(history);
+                      },
+                    ),
+                    orElse: () => const SizedBox.shrink(),
+                  ),
         ),
       ),
     );

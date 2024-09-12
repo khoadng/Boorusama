@@ -237,6 +237,7 @@ void goToQuickSearchPage(
   Widget Function(String text)? floatingActionButton,
   required void Function(AutocompleteData tag) onSelected,
   void Function(BuildContext context, String text)? onSubmitted,
+  Widget Function(TextEditingController controller)? emptyBuilder,
 }) {
   showSimpleTagSearchView(
     context,
@@ -255,6 +256,7 @@ void goToQuickSearchPage(
             onSelected: onSelected,
             textColorBuilder: (tag) =>
                 generateAutocompleteTagColor(ref, context, tag),
+            emptyBuilder: emptyBuilder,
           )
         : SimpleTagSearchView(
             onSubmitted: onSubmitted,
@@ -267,6 +269,7 @@ void goToQuickSearchPage(
             onSelected: onSelected,
             textColorBuilder: (tag) =>
                 generateAutocompleteTagColor(ref, context, tag),
+            emptyBuilder: emptyBuilder,
           ),
   );
 }
