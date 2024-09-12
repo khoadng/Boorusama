@@ -10,15 +10,15 @@ import 'package:boorusama/foundation/theme.dart';
 class SelectedBooruChip extends StatelessWidget {
   const SelectedBooruChip({
     super.key,
-    required this.booruType,
-    required this.url,
+    required this.config,
   });
 
-  final String url;
-  final BooruType booruType;
+  final BooruConfig config;
 
   @override
   Widget build(BuildContext context) {
+    final url = config.url;
+    final booruType = config.booruType;
     final source = PostSource.from(url);
 
     return ListTile(
@@ -26,7 +26,7 @@ class SelectedBooruChip extends StatelessWidget {
       horizontalTitleGap: 12,
       contentPadding: EdgeInsets.zero,
       visualDensity: VisualDensity.compact,
-      leading: BooruLogo(source: url),
+      leading: BooruLogo.fromConfig(config),
       title: Text(
         source.whenWeb(
           (source) => source.uri.host,

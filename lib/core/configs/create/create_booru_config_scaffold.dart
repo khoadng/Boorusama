@@ -94,8 +94,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
       appBar: AppBar(
         titleSpacing: 0,
         title: SelectedBooruChip(
-          booruType: config.booruType,
-          url: config.url,
+          config: config,
         ),
         actions: [
           BooruConfigSubmitButton(

@@ -6,6 +6,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
 
 class BooruLogo extends StatelessWidget {
@@ -14,14 +15,29 @@ class BooruLogo extends StatelessWidget {
     required this.source,
     this.width,
     this.height,
-  });
+  }) : _isFixedIcon = false;
+
+  BooruLogo.fromConfig(
+    BooruConfig config, {
+    super.key,
+    this.width,
+    this.height,
+  })  : source = config.booruType == BooruType.hydrus
+            ? 'assets/images/hydrus-logo.png'
+            : config.url,
+        _isFixedIcon = config.booruType == BooruType.hydrus;
 
   final String source;
   final double? width;
   final double? height;
+  final bool _isFixedIcon;
 
   @override
   Widget build(BuildContext context) {
+    if (_isFixedIcon) {
+      return _buildAssetImage(source);
+    }
+
     return PostSource.from(source).whenWeb(
       (s) => FittedBox(
         child: s.faviconType == FaviconType.network
@@ -41,14 +57,18 @@ class BooruLogo extends StatelessWidget {
                   _ => state.completedWidget,
                 },
               )
-            : Image.asset(
-                s.faviconUrl,
-                width: width ?? 28,
-                height: height ?? 28,
-                fit: BoxFit.cover,
-              ),
+            : _buildAssetImage(s.faviconUrl),
       ),
       () => const SizedBox.shrink(),
+    );
+  }
+
+  Widget _buildAssetImage(url) {
+    return Image.asset(
+      url,
+      width: width ?? 28,
+      height: height ?? 28,
+      fit: BoxFit.cover,
     );
   }
 }

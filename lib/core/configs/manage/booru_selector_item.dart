@@ -157,8 +157,8 @@ class BooruSelectorItem extends StatelessWidget {
                         : null,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(8),
-                      child: BooruLogo(
-                        source: config.url,
+                      child: BooruLogo.fromConfig(
+                        config,
                         width: logoSize,
                         height: logoSize,
                       ),

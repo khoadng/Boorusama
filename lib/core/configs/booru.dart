@@ -13,6 +13,7 @@ const int kSankaku = 27;
 const int kPhilomenaId = 28;
 const int kShimmie2Id = 29;
 const int kSzurubooruId = 30;
+const int kHydrusId = 31;
 
 enum NetworkProtocol {
   https_1_1,
@@ -89,6 +90,7 @@ extension BooruX on Booru {
         Philomena _ => kPhilomenaId,
         Shimmie2 _ => kShimmie2Id,
         Szurubooru _ => kSzurubooruId,
+        Hydrus _ => kHydrusId,
       };
 
   bool hasSite(String url) => switch (this) {
@@ -103,6 +105,7 @@ extension BooruX on Booru {
         final Philomena p => p.sites.contains(url),
         final Shimmie2 s => s.sites.contains(url),
         final Szurubooru s => s.sites.contains(url),
+        final Hydrus h => h.sites.contains(url),
       };
 
   NetworkProtocol? getSiteProtocol(String url) => switch (this) {
@@ -441,6 +444,24 @@ class Szurubooru extends Booru {
   final List<String> sites;
 }
 
+class Hydrus extends Booru {
+  const Hydrus({
+    required super.name,
+    required super.protocol,
+    required this.sites,
+  });
+
+  factory Hydrus.from(String name, dynamic data) {
+    return Hydrus(
+      name: name,
+      protocol: _parseProtocol(data['protocol']),
+      sites: List.from(data['sites']),
+    );
+  }
+
+  final List<String> sites;
+}
+
 enum BooruType {
   unknown,
   danbooru,
@@ -454,6 +475,7 @@ enum BooruType {
   philomena,
   shimmie2,
   szurubooru,
+  hydrus,
 }
 
 extension BooruTypeX on BooruType {
@@ -470,6 +492,7 @@ extension BooruTypeX on BooruType {
         BooruType.philomena => 'Philomena',
         BooruType.shimmie2 => 'Shimmie2',
         BooruType.szurubooru => 'Szurubooru',
+        BooruType.hydrus => 'Hydrus',
       };
 
   bool get isGelbooruBased =>
@@ -506,6 +529,7 @@ extension BooruTypeX on BooruType {
         BooruType.philomena => kPhilomenaId,
         BooruType.shimmie2 => kShimmie2Id,
         BooruType.szurubooru => kSzurubooruId,
+        BooruType.hydrus => kHydrusId,
         BooruType.unknown => 0,
       };
 }
@@ -522,6 +546,7 @@ BooruType intToBooruType(int? value) => switch (value) {
       kPhilomenaId => BooruType.philomena,
       kShimmie2Id => BooruType.shimmie2,
       kSzurubooruId => BooruType.szurubooru,
+      kHydrusId => BooruType.hydrus,
       _ => BooruType.unknown
     };
 

@@ -44,6 +44,7 @@ class BooruFactory {
       BooruType.philomena => kPhilomenaId,
       BooruType.shimmie2 => kShimmie2Id,
       BooruType.szurubooru => kSzurubooruId,
+      BooruType.hydrus => kHydrusId,
       BooruType.unknown => 0,
     };
 

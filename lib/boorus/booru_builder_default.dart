@@ -59,8 +59,8 @@ mixin DefaultTagColorMixin implements BooruBuilder {
 
         return switch (tagType) {
           '0' || 'general' || 'tag' => colors.general,
-          '1' || 'artist' => colors.artist,
-          '3' || 'copyright' => colors.copyright,
+          '1' || 'artist' || 'creator' || 'studio' => colors.artist,
+          '3' || 'copyright' || 'series' => colors.copyright,
           '4' || 'character' => colors.character,
           '5' || 'meta' || 'metadata' => colors.meta,
           _ => colors.general,

@@ -41,6 +41,7 @@ import 'danbooru/notes/notes.dart';
 import 'danbooru/posts/posts.dart';
 import 'e621/notes/notes.dart';
 import 'gelbooru_v2/gelbooru_v2.dart';
+import 'hydrus/hydrus.dart';
 import 'philomena/philomena.dart';
 import 'philomena/providers.dart';
 import 'shimmie2/shimmie2.dart';
@@ -180,5 +181,9 @@ final booruBuildersProvider =
                 postRepo: ref.read(szurubooruPostRepoProvider(config)),
                 autocompleteRepo:
                     ref.read(szurubooruAutocompleteRepoProvider(config)),
+              ),
+          BooruType.hydrus: (config) => HydrusBuilder(
+                postRepo: ref.read(hydrusPostRepoProvider(config)),
+                client: ref.read(hydrusClientProvider(config)),
               ),
         });
