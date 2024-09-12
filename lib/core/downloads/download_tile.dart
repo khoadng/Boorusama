@@ -13,7 +13,6 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/images/images.dart';
-import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/filesize.dart';
@@ -321,13 +320,10 @@ class DownloadTileBuilder extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     if (siteUrl != null)
-                      PostSource.from(siteUrl).whenWeb(
-                        (source) => BooruLogo(
-                          source: source,
-                          width: 18,
-                          height: 18,
-                        ),
-                        () => const SizedBox.shrink(),
+                      BooruLogo(
+                        source: siteUrl!,
+                        width: 18,
+                        height: 18,
                       ),
                     Expanded(
                       child: Padding(

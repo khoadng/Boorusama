@@ -26,10 +26,7 @@ class SelectedBooruChip extends StatelessWidget {
       horizontalTitleGap: 12,
       contentPadding: EdgeInsets.zero,
       visualDensity: VisualDensity.compact,
-      leading: source.whenWeb(
-        (source) => BooruLogo(source: source),
-        () => const SizedBox.shrink(),
-      ),
+      leading: BooruLogo(source: url),
       title: Text(
         source.whenWeb(
           (source) => source.uri.host,

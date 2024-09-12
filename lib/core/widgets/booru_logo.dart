@@ -16,36 +16,39 @@ class BooruLogo extends StatelessWidget {
     this.height,
   });
 
-  final WebSource source;
+  final String source;
   final double? width;
   final double? height;
 
   @override
   Widget build(BuildContext context) {
-    return FittedBox(
-      child: source.faviconType == FaviconType.network
-          ? ExtendedImage.network(
-              source.faviconUrl,
-              width: width ?? 24,
-              height: height ?? 24,
-              fit: BoxFit.cover,
-              clearMemoryCacheIfFailed: false,
-              loadStateChanged: (state) =>
-                  switch (state.extendedImageLoadState) {
-                LoadState.failed => FaIcon(
-                    FontAwesomeIcons.globe,
-                    size: width,
-                    color: Colors.blue,
-                  ),
-                _ => state.completedWidget,
-              },
-            )
-          : Image.asset(
-              source.faviconUrl,
-              width: width ?? 28,
-              height: height ?? 28,
-              fit: BoxFit.cover,
-            ),
+    return PostSource.from(source).whenWeb(
+      (s) => FittedBox(
+        child: s.faviconType == FaviconType.network
+            ? ExtendedImage.network(
+                s.faviconUrl,
+                width: width ?? 24,
+                height: height ?? 24,
+                fit: BoxFit.cover,
+                clearMemoryCacheIfFailed: false,
+                loadStateChanged: (state) =>
+                    switch (state.extendedImageLoadState) {
+                  LoadState.failed => FaIcon(
+                      FontAwesomeIcons.globe,
+                      size: width,
+                      color: Colors.blue,
+                    ),
+                  _ => state.completedWidget,
+                },
+              )
+            : Image.asset(
+                s.faviconUrl,
+                width: width ?? 28,
+                height: height ?? 28,
+                fit: BoxFit.cover,
+              ),
+      ),
+      () => const SizedBox.shrink(),
     );
   }
 }

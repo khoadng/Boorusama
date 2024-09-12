@@ -13,7 +13,6 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/images/images.dart';
-import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
@@ -103,7 +102,6 @@ class BookmarkScrollView extends ConsumerWidget {
                 childCount: bookmarks.length,
                 itemBuilder: (context, index) {
                   final bookmark = bookmarks[index];
-                  final source = PostSource.from(bookmark.sourceUrl);
 
                   return ContextMenuRegion(
                     contextMenu: GenericContextMenu(
@@ -153,15 +151,9 @@ class BookmarkScrollView extends ConsumerWidget {
                             placeholderUrl: bookmark.thumbnailUrl,
                           ),
                         ),
-                        source.whenWeb(
-                          (url) => Positioned(
-                            bottom: 5,
-                            right: 5,
-                            child: BooruLogo(
-                              source: url,
-                            ),
-                          ),
-                          () => const SizedBox(),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: BooruLogo(source: bookmark.sourceUrl),
                         ),
                         if (edit)
                           Positioned(

@@ -11,7 +11,6 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/home/home.dart';
-import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/animations.dart';
@@ -223,12 +222,9 @@ class _Boorus extends ConsumerWidget {
                             config,
                           );
                     },
-                    leading: PostSource.from(config.url).whenWeb(
-                      (source) => ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: BooruLogo(source: source),
-                      ),
-                      () => const SizedBox.shrink(),
+                    leading: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: BooruLogo(source: config.url),
                     ),
                   );
                 },

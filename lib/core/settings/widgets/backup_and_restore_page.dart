@@ -15,7 +15,6 @@ import 'package:boorusama/core/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/export_import/export_import.dart';
 import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
-import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/android.dart';
 import 'package:boorusama/foundation/clipboard.dart';
@@ -80,12 +79,9 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
                 runSpacing: 8,
                 children: [
                   ...first5Configs.map(
-                    (e) => PostSource.from(e.url).whenWeb(
-                      (source) => ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: BooruLogo(source: source),
-                      ),
-                      () => const SizedBox.shrink(),
+                    (e) => ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: BooruLogo(source: e.url),
                     ),
                   ),
                   if (first5Configs.length < configs!.length)
