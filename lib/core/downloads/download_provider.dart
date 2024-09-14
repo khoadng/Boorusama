@@ -98,6 +98,12 @@ extension PostDownloadX on WidgetRef {
 
   Settings get settings => read(settingsProvider);
 
+  void _showToastIfPossible({String? message}) {
+    if (this.context.mounted) {
+      showDownloadStartToast(this.context, message: message);
+    }
+  }
+
   Future<void> download(
     Post post, {
     String? group,
@@ -112,6 +118,9 @@ extension PostDownloadX on WidgetRef {
       settings: settings,
       group: group,
       downloadPath: downloadPath,
+      onStarted: () {
+        showDownloadStartToast(this.context);
+      },
     );
   }
 
@@ -121,6 +130,10 @@ extension PostDownloadX on WidgetRef {
     String? downloadPath,
   }) async {
     final perm = await _getPermissionStatus();
+
+    _showToastIfPossible(
+      message: 'Downloading ${posts.length} files...',
+    );
 
     for (int i = 0; i < posts.length; i++) {
       final post = posts[i];
@@ -148,6 +161,7 @@ Future<void> _download(
   String? group,
   String? downloadPath,
   Map<String, String>? bulkMetadata,
+  void Function()? onStarted,
 }) async {
   final booruConfig = ref.readConfig;
   final service = ref.read(downloadServiceProvider(booruConfig));
@@ -169,37 +183,40 @@ Future<void> _download(
     return;
   }
 
-  Future<void> download() async => service
-      .downloadWithSettings(
-        settings,
-        config: booruConfig,
-        metadata: DownloaderMetadata(
-          thumbnailUrl: downloadable.thumbnailImageUrl,
-          fileSize: downloadable.fileSize,
-          siteUrl: PostSource.from(downloadable.thumbnailImageUrl).url,
-          group: group,
-        ),
-        url: downloadUrl,
-        filename: bulkMetadata != null
-            ? fileNameBuilder.generateForBulkDownload(
-                settings,
-                booruConfig,
-                downloadable,
-                metadata: bulkMetadata,
-              )
-            : fileNameBuilder.generate(
-                settings,
-                booruConfig,
-                downloadable,
-              ),
-        headers: {
-          AppHttpHeaders.userAgentHeader:
-              ref.read(userAgentGeneratorProvider(booruConfig)).generate(),
-          ...ref.read(extraHttpHeaderProvider(booruConfig)),
-        },
-        path: downloadPath,
-      )
-      .run();
+  Future<void> download() {
+    onStarted?.call();
+    return service
+        .downloadWithSettings(
+          settings,
+          config: booruConfig,
+          metadata: DownloaderMetadata(
+            thumbnailUrl: downloadable.thumbnailImageUrl,
+            fileSize: downloadable.fileSize,
+            siteUrl: PostSource.from(downloadable.thumbnailImageUrl).url,
+            group: group,
+          ),
+          url: downloadUrl,
+          filename: bulkMetadata != null
+              ? fileNameBuilder.generateForBulkDownload(
+                  settings,
+                  booruConfig,
+                  downloadable,
+                  metadata: bulkMetadata,
+                )
+              : fileNameBuilder.generate(
+                  settings,
+                  booruConfig,
+                  downloadable,
+                ),
+          headers: {
+            AppHttpHeaders.userAgentHeader:
+                ref.read(userAgentGeneratorProvider(booruConfig)).generate(),
+            ...ref.read(extraHttpHeaderProvider(booruConfig)),
+          },
+          path: downloadPath,
+        )
+        .run();
+  }
 
   // Platform doesn't require permissions, just download it right away
   if (permission == null) {

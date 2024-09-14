@@ -32,8 +32,6 @@ class DanbooruMultiSelectionActions extends ConsumerWidget {
         IconButton(
           onPressed: selectedPosts.isNotEmpty
               ? () {
-                  showDownloadStartToast(context);
-
                   ref.bulkDownload(selectedPosts);
 
                   endMultiSelect();

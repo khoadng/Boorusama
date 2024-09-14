@@ -50,7 +50,6 @@ class GeneralPostContextMenu extends ConsumerWidget {
         ContextMenuButtonConfig(
           'download.download'.tr(),
           onPressed: () {
-            showDownloadStartToast(context);
             ref.download(post);
           },
         ),

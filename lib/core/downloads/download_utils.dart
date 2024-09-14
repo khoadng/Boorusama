@@ -119,9 +119,9 @@ mixin DownloadMixin {
           : true);
 }
 
-void showDownloadStartToast(BuildContext context) {
+void showDownloadStartToast(BuildContext context, {String? message}) {
   showToast(
-    'Download started',
+    message ?? 'Download started',
     context: context,
     position: const ToastPosition(
       align: Alignment.bottomCenter,

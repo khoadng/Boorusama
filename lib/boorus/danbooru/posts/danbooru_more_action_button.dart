@@ -40,7 +40,6 @@ class DanbooruMoreActionButton extends ConsumerWidget {
           onSelected: (value) {
             switch (value) {
               case 'download':
-                showDownloadStartToast(context);
                 ref.download(post);
                 break;
               case 'add_to_favgroup':
