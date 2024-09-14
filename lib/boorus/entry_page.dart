@@ -13,7 +13,6 @@ import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/app_update/app_update.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
@@ -21,8 +20,6 @@ import 'package:boorusama/foundation/permissions.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
-import 'package:boorusama/functional.dart';
-import 'package:boorusama/router.dart';
 
 class EntryPage extends ConsumerStatefulWidget {
   const EntryPage({
@@ -72,74 +69,51 @@ class _EntryPageState extends ConsumerState<EntryPage> {
       );
     }
 
-    final config = ref.watchConfig;
-
-    ref.listen(
-      bulkDownloadStateProvider(config)
-          .select((value) => value.downloadStatuses),
-      (previous, next) {
-        if (previous == null) return;
-        if (previous.values.any((e) => e is! DownloadDone) &&
-            next.values.isNotEmpty &&
-            next.values.all((t) => t is DownloadDone)) {
-          showSimpleSnackBar(
-            context: context,
-            duration: AppDurations.longToast,
-            action: SnackBarAction(
-              label: 'generic.view'.tr(),
-              onPressed: () => goToBulkDownloadPage(context, [], ref: ref),
-            ),
-            behavior: SnackBarBehavior.fixed,
-            content:
-                const Text('download.bulk.all_done_notification_message').tr(),
-          );
-        }
-      },
-    );
-
-    return Column(
-      children: [
-        Expanded(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (context.isLandscapeLayout) ...[
-                SafeArea(
-                  right: false,
-                  child: _SidebarSettingsListener(
-                    builder: (_, bottom, __) => bottom
-                        ? const SizedBox.shrink()
-                        : const BooruSelector(),
+    return BulkDownloadNotificationScope(
+      child: Column(
+        children: [
+          Expanded(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (context.isLandscapeLayout) ...[
+                  SafeArea(
+                    right: false,
+                    child: _SidebarSettingsListener(
+                      builder: (_, bottom, __) => bottom
+                          ? const SizedBox.shrink()
+                          : const BooruSelector(),
+                    ),
                   ),
-                ),
-                const SafeArea(
-                  bottom: false,
-                  left: false,
-                  right: false,
-                  child: VerticalDivider(
-                    thickness: 1,
-                    width: 1,
+                  const SafeArea(
+                    bottom: false,
+                    left: false,
+                    right: false,
+                    child: VerticalDivider(
+                      thickness: 1,
+                      width: 1,
+                    ),
                   ),
+                ],
+                const Expanded(
+                  child: _Boorus(),
                 ),
               ],
-              const Expanded(
-                child: _Boorus(),
-              ),
-            ],
+            ),
           ),
-        ),
-        if (context.isLandscapeLayout)
-          _SidebarSettingsListener(
-            builder: (_, bottom, hideLabel) => bottom
-                ? SizedBox(
-                    height: kBottomNavigationBarHeight - (hideLabel ? 4 : -8),
-                    child: const BooruSelector(
-                      direction: Axis.horizontal,
-                    ),
-                  )
-                : const SizedBox.shrink(),
-          ),
-      ],
+          if (context.isLandscapeLayout)
+            _SidebarSettingsListener(
+              builder: (_, bottom, hideLabel) => bottom
+                  ? SizedBox(
+                      height: kBottomNavigationBarHeight - (hideLabel ? 4 : -8),
+                      child: const BooruSelector(
+                        direction: Axis.horizontal,
+                      ),
+                    )
+                  : const SizedBox.shrink(),
+            ),
+        ],
+      ),
     );
   }
 }

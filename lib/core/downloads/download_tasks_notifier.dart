@@ -41,6 +41,8 @@ extension DownloadTaskStateX on DownloadTaskState {
 
   List<TaskUpdate> all(String group) => _tasks[group] ?? [];
 
+  Map<String, List<TaskUpdate>> get tasks => {..._tasks};
+
   List<TaskUpdate> completed(String group) => all(group)
       .whereType<TaskStatusUpdate>()
       .where((e) => e.status == TaskStatus.complete)

@@ -14,7 +14,7 @@ import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/blacklists/blacklists.dart';
 import 'package:boorusama/core/comments/comments.dart';
 import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/downloads/bulks/bulk_download_provider.dart';
+import 'package:boorusama/core/downloads/bulks/create_bulk_download_task_sheet.dart';
 import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
@@ -320,9 +320,15 @@ Future<void> goToBulkDownloadPage(
   List<String>? tags, {
   required WidgetRef ref,
 }) async {
-  ref.read(bulkDownloadSelectedTagsProvider.notifier).addTags(tags);
-
-  context.go('/bulk_downloads');
+  if (tags != null) {
+    goToNewBulkDownloadTaskPage(
+      ref,
+      context,
+      initialValue: tags,
+    );
+  } else {
+    context.pushNamed(kBulkdownload);
+  }
 }
 
 Future<T?> showDesktopFullScreenWindow<T>(

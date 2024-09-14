@@ -13,15 +13,6 @@ enum DownloadFilter {
   paused,
   inProgress,
   completed,
-  failed,
-}
-
-enum DownloadFilter2 {
-  all,
-  pending,
-  paused,
-  inProgress,
-  completed,
   canceled,
   failed,
 }

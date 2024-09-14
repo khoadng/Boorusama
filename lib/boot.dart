@@ -263,6 +263,7 @@ Future<void> boot(BootLogger bootLogger) async {
 
   bootLogger.l('Initialize download notifications');
   final downloadNotifications = await DownloadNotifications.create();
+  final bulkDownloadNotifications = await BulkDownloadNotifications.create();
 
   FlutterError.demangleStackTrace = (stack) {
     if (stack is Trace) return stack.vmTrace;
@@ -308,6 +309,8 @@ Future<void> boot(BootLogger bootLogger) async {
               bookmarkRepoProvider.overrideWithValue(bookmarkRepo),
               downloadNotificationProvider
                   .overrideWithValue(downloadNotifications),
+              bulkDownloadNotificationProvider
+                  .overrideWithValue(bulkDownloadNotifications),
               deviceInfoProvider.overrideWithValue(deviceInfo),
               danbooruUserMetatagRepoProvider
                   .overrideWithValue(userMetatagRepo),

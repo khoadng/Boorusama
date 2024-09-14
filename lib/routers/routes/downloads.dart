@@ -23,7 +23,7 @@ GoRoute downloadManager() => GoRoute(
 
 GoRoute bulkDownloads(Ref ref) => GoRoute(
       path: 'bulk_downloads',
-      name: '/bulk_downloads',
+      name: kBulkdownload,
       pageBuilder: genericMobilePageBuilder(
         builder: (context, state) =>
             ref.read(currentBooruConfigProvider).booruType == BooruType.zerochan

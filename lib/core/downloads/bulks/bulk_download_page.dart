@@ -5,7 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/downloads/downloads.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
+import 'bulk_download_task_tile.dart';
+import 'create_bulk_download_task_sheet.dart';
+import 'providers.dart';
 
 class BulkDownloadPage extends ConsumerWidget {
   const BulkDownloadPage({
@@ -14,28 +17,51 @@ class BulkDownloadPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(bulkDownloadManagerStatusProvider);
+    final tasks = ref.watch(bulkdownloadProvider);
 
-    ref.listen(
-      bulkDownloadSelectedTagsProvider,
-      (previous, next) {
-        // this is a hack to keep the state of selected tags
-      },
-    );
-
-    return GestureDetector(
-      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+    return CustomContextMenuOverlay(
       child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Bulk Download'),
+        ),
         body: SafeArea(
-          child: switch (state) {
-            BulkDownloadManagerStatus.initial => const DownloadEmptyTagView(),
-            BulkDownloadManagerStatus.dataSelected =>
-              const DownloadTagSelectionView(),
-            BulkDownloadManagerStatus.downloadInProgress ||
-            BulkDownloadManagerStatus.cancel =>
-              const DownloadInProgressView(),
-            _ => const SizedBox.shrink(),
-          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: tasks.isNotEmpty
+                    ? ListView.builder(
+                        itemCount: tasks.length,
+                        itemBuilder: (context, index) {
+                          final task = tasks[index];
+
+                          return BulkDownloadTaskTile(
+                            task: task,
+                          );
+                        },
+                      )
+                    : const Center(
+                        child: Text(
+                          'No downloads',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+              ),
+              Container(
+                margin: const EdgeInsets.all(12),
+                child: FilledButton(
+                  onPressed: () {
+                    goToNewBulkDownloadTaskPage(
+                      ref,
+                      context,
+                      initialValue: null,
+                    );
+                  },
+                  child: const Text('New download'),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

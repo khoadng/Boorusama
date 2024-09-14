@@ -8,10 +8,12 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/foundation/android.dart';
 import 'package:boorusama/foundation/device_info_service.dart';
+import 'package:boorusama/foundation/html.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/picker.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class DownloadFolderSelectorSection extends StatefulWidget {
   const DownloadFolderSelectorSection({
@@ -139,4 +141,30 @@ class _DownloadFolderSelectorSectionState
         context: context,
         onPick: (path) => widget.onPathChanged(path),
       );
+}
+
+class DownloadPathWarning extends StatelessWidget {
+  const DownloadPathWarning({
+    super.key,
+    required this.releaseName,
+    required this.allowedFolders,
+    this.padding,
+  });
+
+  final String releaseName;
+  final List<String> allowedFolders;
+  final EdgeInsetsGeometry? padding;
+
+  @override
+  Widget build(BuildContext context) {
+    return WarningContainer(
+      margin: padding,
+      contentBuilder: (context) => AppHtml(
+        data:
+            "The app can only download files inside public directories <b>({0})</b> for Android 11+. <br><br> Valid location examples:<br><b>[Internal]</b> /storage/emulated/0/Download <br><b>[SD card]</b> /storage/A1B2-C3D4/Download<br><br>Please choose another directory or create a new one if it doesn't exist. <br>This device's version is <b>{1}</b>."
+                .replaceAll('{0}', allowedFolders.join(', '))
+                .replaceAll('{1}', releaseName),
+      ),
+    );
+  }
 }

@@ -47,6 +47,8 @@ const kInitialQueryKey = 'query';
 const kArtistNameKey = 'name';
 const kCharacterNameKey = 'name';
 
+const kBulkdownload = 'bulk_download';
+
 typedef DetailsPayload<T extends Post> = ({
   int initialIndex,
   List<T> posts,

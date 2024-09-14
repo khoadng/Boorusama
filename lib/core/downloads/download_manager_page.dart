@@ -21,7 +21,7 @@ import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 final downloadFilterProvider =
-    StateProvider.family<DownloadFilter2, String?>((ref, initialFilter) {
+    StateProvider.family<DownloadFilter, String?>((ref, initialFilter) {
   return _convertFilter(initialFilter);
 });
 
@@ -30,11 +30,11 @@ final downloadGroupProvider = Provider<String>(
   name: 'downloadGroupProvider',
 );
 
-DownloadFilter2 _convertFilter(String? filter) => switch (filter) {
-      'error' => DownloadFilter2.failed,
-      'running' => DownloadFilter2.inProgress,
-      'complete' => DownloadFilter2.completed,
-      _ => DownloadFilter2.all,
+DownloadFilter _convertFilter(String? filter) => switch (filter) {
+      'error' => DownloadFilter.failed,
+      'running' => DownloadFilter.inProgress,
+      'complete' => DownloadFilter.completed,
+      _ => DownloadFilter.all,
     };
 
 final downloadFilteredProvider =
@@ -44,13 +44,13 @@ final downloadFilteredProvider =
   final state = ref.watch(downloadTasksProvider);
 
   return switch (filter) {
-    DownloadFilter2.all => state.all(group),
-    DownloadFilter2.pending => state.pending(group),
-    DownloadFilter2.paused => state.paused(group),
-    DownloadFilter2.inProgress => state.inProgress(group),
-    DownloadFilter2.completed => state.completed(group),
-    DownloadFilter2.failed => state.failed(group),
-    DownloadFilter2.canceled => state.canceled(group),
+    DownloadFilter.all => state.all(group),
+    DownloadFilter.pending => state.pending(group),
+    DownloadFilter.paused => state.paused(group),
+    DownloadFilter.inProgress => state.inProgress(group),
+    DownloadFilter.completed => state.completed(group),
+    DownloadFilter.failed => state.failed(group),
+    DownloadFilter.canceled => state.canceled(group),
   };
 }, dependencies: [
   downloadGroupProvider,
@@ -130,13 +130,13 @@ class DisabledDownloadManagerPage extends StatelessWidget {
 }
 
 const _filterOptions = [
-  DownloadFilter2.all,
-  DownloadFilter2.inProgress,
-  DownloadFilter2.pending,
-  DownloadFilter2.paused,
-  DownloadFilter2.failed,
-  DownloadFilter2.canceled,
-  DownloadFilter2.completed,
+  DownloadFilter.all,
+  DownloadFilter.inProgress,
+  DownloadFilter.pending,
+  DownloadFilter.paused,
+  DownloadFilter.failed,
+  DownloadFilter.canceled,
+  DownloadFilter.completed,
 ];
 
 class DownloadManagerPage extends ConsumerStatefulWidget {
@@ -287,17 +287,17 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
                             padding: const EdgeInsets.symmetric(vertical: 24),
                             child: switch (ref
                                 .watch(downloadFilterProvider(widget.filter))) {
-                              DownloadFilter2.failed =>
+                              DownloadFilter.failed =>
                                 const Text('No failed downloads'),
-                              DownloadFilter2.inProgress =>
+                              DownloadFilter.inProgress =>
                                 const Text('No downloads in progress'),
-                              DownloadFilter2.pending =>
+                              DownloadFilter.pending =>
                                 const Text('No pending downloads'),
-                              DownloadFilter2.paused =>
+                              DownloadFilter.paused =>
                                 const Text('No paused downloads'),
-                              DownloadFilter2.completed =>
+                              DownloadFilter.completed =>
                                 const Text('No completed downloads'),
-                              DownloadFilter2.canceled =>
+                              DownloadFilter.canceled =>
                                 const Text('No canceled downloads'),
                               _ => const Text('No downloads'),
                             },
@@ -342,8 +342,7 @@ class RetryAllFailedButton extends ConsumerWidget {
           ref.watch(downloadGroupProvider),
         );
 
-    return ref.watch(downloadFilterProvider(filter)) ==
-                DownloadFilter2.failed &&
+    return ref.watch(downloadFilterProvider(filter)) == DownloadFilter.failed &&
             failed.isNotEmpty
         ? Padding(
             padding: const EdgeInsets.all(12),
