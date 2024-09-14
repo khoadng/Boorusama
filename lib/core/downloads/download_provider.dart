@@ -91,22 +91,52 @@ extension BooruConfigDownloadX on BooruConfig {
 }
 
 extension PostDownloadX on WidgetRef {
+  Future<PermissionStatus?> _getPermissionStatus() async {
+    final perm = await read(deviceStoragePermissionProvider.future);
+    return isAndroid() || isIOS() ? perm.storagePermission : null;
+  }
+
+  Settings get settings => read(settingsProvider);
+
   Future<void> download(
     Post post, {
     String? group,
     String? downloadPath,
   }) async {
-    final perm = await read(deviceStoragePermissionProvider.future);
-    final settings = read(settingsProvider);
+    final perm = await _getPermissionStatus();
 
     await _download(
       this,
       post,
-      permission: isAndroid() || isIOS() ? perm.storagePermission : null,
+      permission: perm,
       settings: settings,
       group: group,
       downloadPath: downloadPath,
     );
+  }
+
+  Future<void> bulkDownload(
+    List<Post> posts, {
+    String? group,
+    String? downloadPath,
+  }) async {
+    final perm = await _getPermissionStatus();
+
+    for (int i = 0; i < posts.length; i++) {
+      final post = posts[i];
+      await _download(
+        this,
+        post,
+        permission: perm,
+        settings: settings,
+        group: group,
+        downloadPath: downloadPath,
+        bulkMetadata: {
+          'total': posts.length.toString(),
+          'index': i.toString(),
+        },
+      );
+    }
   }
 }
 
@@ -117,6 +147,7 @@ Future<void> _download(
   required Settings settings,
   String? group,
   String? downloadPath,
+  Map<String, String>? bulkMetadata,
 }) async {
   final booruConfig = ref.readConfig;
   final service = ref.read(downloadServiceProvider(booruConfig));
@@ -149,11 +180,18 @@ Future<void> _download(
           group: group,
         ),
         url: downloadUrl,
-        filename: fileNameBuilder.generate(
-          settings,
-          booruConfig,
-          downloadable,
-        ),
+        filename: bulkMetadata != null
+            ? fileNameBuilder.generateForBulkDownload(
+                settings,
+                booruConfig,
+                downloadable,
+                metadata: bulkMetadata,
+              )
+            : fileNameBuilder.generate(
+                settings,
+                booruConfig,
+                downloadable,
+              ),
         headers: {
           AppHttpHeaders.userAgentHeader:
               ref.read(userAgentGeneratorProvider(booruConfig)).generate(),

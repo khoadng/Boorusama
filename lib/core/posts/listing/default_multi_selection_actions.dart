@@ -18,7 +18,7 @@ class DefaultMultiSelectionActions extends ConsumerWidget {
     required this.endMultiSelect,
   });
 
-  final Iterable<Post> selectedPosts;
+  final List<Post> selectedPosts;
   final void Function() endMultiSelect;
 
   @override
@@ -29,10 +29,8 @@ class DefaultMultiSelectionActions extends ConsumerWidget {
           onPressed: selectedPosts.isNotEmpty
               ? () {
                   showDownloadStartToast(context);
-                  // ignore: prefer_foreach
-                  for (final p in selectedPosts) {
-                    ref.download(p);
-                  }
+
+                  ref.bulkDownload(selectedPosts);
 
                   endMultiSelect();
                 }
