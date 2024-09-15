@@ -2,7 +2,6 @@
 import 'types.dart';
 
 class PostDto {
-
   PostDto({
     this.id,
     this.version,
@@ -125,7 +124,6 @@ class PostDto {
 }
 
 class UserDto {
-
   UserDto({
     this.name,
     this.avatarUrl,
@@ -139,4 +137,23 @@ class UserDto {
   }
   final String? name;
   final String? avatarUrl;
+}
+
+// A post resource stripped down to id and thumbnailUrl fields.
+class MicroPostDto {
+  const MicroPostDto({
+    this.id,
+    this.thumbnailUrl,
+  });
+
+  factory MicroPostDto.fromJson(Map<String, dynamic> json, {String? baseUrl}) {
+    final thumbnailUrl = json['thumbnailUrl'] as String?;
+    return MicroPostDto(
+      id: json['id'] as int?,
+      thumbnailUrl: thumbnailUrl != null ? '$baseUrl$thumbnailUrl' : null,
+    );
+  }
+
+  final int? id;
+  final String? thumbnailUrl;
 }

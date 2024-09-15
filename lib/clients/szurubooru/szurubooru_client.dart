@@ -8,6 +8,7 @@ import 'package:dio/dio.dart';
 // Project imports:
 import 'szurubooru_client_comments.dart';
 import 'szurubooru_client_favorites.dart';
+import 'szurubooru_client_pools.dart';
 import 'szurubooru_client_posts.dart';
 import 'types/types.dart';
 
@@ -18,6 +19,7 @@ class SzurubooruClient
     with
         SzurubooruClientComments,
         SzurubooruClientFavorites,
+        SzurubooruClientPools,
         SzurubooruClientPosts {
   SzurubooruClient({
     Dio? dio,
