@@ -391,7 +391,7 @@ Future<Object?> goToFavoriteGroupCreatePage(
 
 Future<Object?> goToFavoriteGroupEditPage(
   BuildContext context,
-  FavoriteGroup group,
+  DanbooruFavoriteGroup group,
 ) {
   return showGeneralDialog(
     context: context,
@@ -411,7 +411,7 @@ void goToFavoriteGroupPage(BuildContext context) {
 
 void goToFavoriteGroupDetailsPage(
   BuildContext context,
-  FavoriteGroup group,
+  DanbooruFavoriteGroup group,
 ) {
   context.navigator.push(CupertinoPageRoute(
     builder: (_) => CustomContextMenuOverlay(

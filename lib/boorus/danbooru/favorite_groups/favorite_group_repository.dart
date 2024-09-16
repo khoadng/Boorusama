@@ -2,7 +2,7 @@
 import 'favorite_groups.dart';
 
 abstract class FavoriteGroupRepository {
-  Future<List<FavoriteGroup>> getFavoriteGroupsByCreatorName({
+  Future<List<DanbooruFavoriteGroup>> getFavoriteGroupsByCreatorName({
     required String name,
     int? page,
   });

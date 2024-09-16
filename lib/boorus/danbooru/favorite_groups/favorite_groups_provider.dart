@@ -34,7 +34,7 @@ final danbooruFavoriteGroupRepoProvider =
 });
 
 final danbooruFavoriteGroupsProvider = NotifierProvider.family<
-    FavoriteGroupsNotifier, List<FavoriteGroup>?, BooruConfig>(
+    FavoriteGroupsNotifier, List<DanbooruFavoriteGroup>?, BooruConfig>(
   FavoriteGroupsNotifier.new,
   dependencies: [
     danbooruFavoriteGroupRepoProvider,
@@ -44,7 +44,8 @@ final danbooruFavoriteGroupsProvider = NotifierProvider.family<
 );
 
 final danbooruFavoriteGroupFilterableProvider = NotifierProvider.autoDispose
-    .family<FavoriteGroupFilterableNotifier, List<FavoriteGroup>?, BooruConfig>(
+    .family<FavoriteGroupFilterableNotifier, List<DanbooruFavoriteGroup>?,
+        BooruConfig>(
   FavoriteGroupFilterableNotifier.new,
   dependencies: [
     danbooruFavoriteGroupsProvider,

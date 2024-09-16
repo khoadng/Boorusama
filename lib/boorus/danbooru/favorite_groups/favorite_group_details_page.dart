@@ -34,7 +34,7 @@ class FavoriteGroupDetailsPage extends ConsumerStatefulWidget {
     required this.postIds,
   });
 
-  final FavoriteGroup group;
+  final DanbooruFavoriteGroup group;
   final Queue<int> postIds;
 
   @override
