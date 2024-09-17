@@ -45,7 +45,11 @@ Future<Logger> loggerWith(Logger logger) async {
   if (!kReleaseMode) {
     return MultiChannelLogger(
       loggers: [
-        ConsoleLogger(),
+        ConsoleLogger(
+          options: const ConsoleLoggerOptions(
+            decodeUriParameters: true,
+          ),
+        ),
         logger,
       ],
     );
