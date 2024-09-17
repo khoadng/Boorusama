@@ -172,7 +172,7 @@ void goToSearchHistoryPage(
   BuildContext context, {
   required Function() onClear,
   required Function(SearchHistory history) onRemove,
-  required Function(String history) onTap,
+  required Function(SearchHistory history) onTap,
 }) {
   showMaterialModalBottomSheet(
     context: context,

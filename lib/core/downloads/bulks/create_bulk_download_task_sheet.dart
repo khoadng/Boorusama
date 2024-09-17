@@ -293,7 +293,13 @@ class _EditSavedSearchSheetState
                               histories: data.histories,
                               onHistoryTap: (history) {
                                 context.navigator.pop();
-                                _addTag(history);
+
+                                if (history.queryType == QueryType.list) {
+                                  final tags = history.queryAsList();
+                                  _addTags(tags);
+                                } else {
+                                  _addTag(history.query);
+                                }
                               },
                             ),
                             orElse: () => const SizedBox.shrink(),
@@ -321,6 +327,15 @@ class _EditSavedSearchSheetState
       task = task.copyWith(tags: [
         ...task.tags,
         tag,
+      ]);
+    });
+  }
+
+  void _addTags(List<String> tags) {
+    setState(() {
+      task = task.copyWith(tags: [
+        ...task.tags,
+        ...tags,
       ]);
     });
   }

@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:convert';
+
 // Package imports:
 import 'package:equatable/equatable.dart';
 
@@ -5,17 +8,12 @@ enum QueryType {
   /// Example: `tag1 -tag2`
   simple,
 
-  /// Same as simple but let the app know that the query is raw
-  /// Example: `tag1 {tag2 ~ tag3}`
-  raw,
-
   /// Example: ["tag1", "tag2", "tag3"]
   list,
 }
 
 QueryType? parseQueryType(String? type) => switch (type) {
       'simple' => QueryType.simple,
-      'raw' => QueryType.raw,
       'list' => QueryType.list,
       _ => null
     };
@@ -67,4 +65,20 @@ class SearchHistory extends Equatable {
 
   @override
   List<Object?> get props => [query, createdAt, searchCount, queryType];
+}
+
+extension SearchHistoryX on SearchHistory {
+  List<String> queryAsList() {
+    if (queryType != QueryType.list) return [];
+
+    final json = jsonDecode(query);
+
+    if (json is! List) return [];
+
+    try {
+      return [for (final tag in json) tag as String];
+    } catch (e) {
+      return [];
+    }
+  }
 }

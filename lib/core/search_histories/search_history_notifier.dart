@@ -1,7 +1,11 @@
+// Dart imports:
+import 'dart:convert';
+
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/search_histories/search_histories.dart';
 
 class SearchHistoryState {
@@ -52,7 +56,19 @@ class SearchHistoryNotifier extends AsyncNotifier<SearchHistoryState> {
     }
   }
 
-  Future<void> addHistory(String history) async {
+  Future<void> addHistoryFromController(
+    SelectedTagController controller,
+  ) async {
+    final queries = controller.tags.map((e) => e.originalTag).toList();
+    final json = jsonEncode(queries);
+
+    await addHistory(json, queryType: QueryType.list);
+  }
+
+  Future<void> addHistory(
+    String history, {
+    QueryType queryType = QueryType.simple,
+  }) async {
     // If history length is larger than 255 characters, we will not add it.
     // This is a limitation of Hive.
     if (history.length > 255) return;
@@ -61,8 +77,9 @@ class SearchHistoryNotifier extends AsyncNotifier<SearchHistoryState> {
 
     if (currentState == null) return;
 
-    final histories =
-        await ref.read(searchHistoryRepoProvider).addHistory(history);
+    final histories = await ref
+        .read(searchHistoryRepoProvider)
+        .addHistory(history, queryType: queryType);
     state = AsyncData(currentState.copyWith(
       histories: _sortByDateDesc(histories),
     ));

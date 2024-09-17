@@ -299,7 +299,7 @@ class _SliverHomeSearchBarState extends ConsumerState<SliverHomeSearchBar> {
   void _onSearch() {
     ref
         .read(searchHistoryProvider.notifier)
-        .addHistory(selectedTagController.rawTagsString);
+        .addHistoryFromController(selectedTagController);
     selectedTagString.value = selectedTagController.rawTagsString;
     widget.onSearch();
   }

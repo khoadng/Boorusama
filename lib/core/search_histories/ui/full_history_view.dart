@@ -28,7 +28,7 @@ class FullHistoryPage extends ConsumerStatefulWidget {
 
   final Function() onClear;
   final Function(SearchHistory history) onRemove;
-  final Function(String history) onTap;
+  final Function(SearchHistory history) onTap;
   final ScrollController? scrollController;
 
   @override
@@ -95,7 +95,7 @@ class FullHistoryView extends ConsumerWidget {
     this.useAppbar = true,
   });
 
-  final ValueChanged<String> onHistoryTap;
+  final ValueChanged<SearchHistory> onHistoryTap;
   final void Function(SearchHistory item) onHistoryRemoved;
   final bool useAppbar;
   final ScrollController? scrollController;
@@ -126,7 +126,7 @@ class FullHistoryView extends ConsumerWidget {
                     animation: animation,
                     child: ListTile(
                       key: ValueKey(history.query),
-                      title: Text(history.query),
+                      title: SearchHistoryQueryWidget(history: history),
                       subtitle: DateTooltip(
                         date: history.createdAt,
                         child: Text(
@@ -135,7 +135,7 @@ class FullHistoryView extends ConsumerWidget {
                         ),
                       ),
                       onTap: () {
-                        onHistoryTap(history.query);
+                        onHistoryTap(history);
                       },
                       contentPadding: kPreferredLayout.isDesktop
                           ? const EdgeInsets.symmetric(
