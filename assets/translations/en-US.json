@@ -259,7 +259,8 @@
                 "original": "Original",
                 "sample": "Sample",
                 "preview": "Preview"
-            }
+            },
+            "title": "Download"
         },
         "help_us_translate": "Help us translate",
         "other_settings": "Other settings",
