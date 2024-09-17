@@ -2,6 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
+import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/http/http.dart';
@@ -56,9 +57,22 @@ typedef PostFutureFetcher<T extends Post> = Future<PostResult<T>> Function(
   int? limit,
 });
 
+typedef PostFutureControllerFetcher<T extends Post> = Future<PostResult<T>>
+    Function(
+  SelectedTagController controller,
+  int page, {
+  int? limit,
+});
+
 abstract class PostRepository<T extends Post> {
   PostsOrError<T> getPosts(
     String tags,
+    int page, {
+    int? limit,
+  });
+
+  PostsOrError<T> getPostsFromController(
+    SelectedTagController controller,
     int page, {
     int? limit,
   });
@@ -68,9 +82,11 @@ class PostRepositoryBuilder<T extends Post> implements PostRepository<T> {
   PostRepositoryBuilder({
     required this.fetch,
     required this.getSettings,
+    this.fetchFromController,
   });
 
   final PostFutureFetcher<T> fetch;
+  final PostFutureControllerFetcher<T>? fetchFromController;
   final Future<ImageListingSettings> Function() getSettings;
 
   @override
@@ -86,6 +102,29 @@ class PostRepositoryBuilder<T extends Post> implements PostRepository<T> {
           fetcher: () => fetch(newTags, page, limit: lim),
         ));
       });
+
+  @override
+  PostsOrError<T> getPostsFromController(
+    SelectedTagController controller,
+    int page, {
+    int? limit,
+  }) =>
+      fetchFromController != null
+          ? TaskEither.Do(($) async {
+              var lim = limit;
+
+              lim ??= await getSettings().then((value) => value.postsPerPage);
+
+              return $(tryFetchRemoteData(
+                fetcher: () =>
+                    fetchFromController!(controller, page, limit: lim),
+              ));
+            })
+          : getPosts(
+              controller.rawTagsString,
+              page,
+              limit: limit,
+            );
 }
 
 extension PostRepositoryX<T extends Post> on PostRepository<T> {
@@ -152,6 +191,14 @@ class EmptyPostRepository extends PostRepository {
   @override
   PostsOrError getPosts(
     String tags,
+    int page, {
+    int? limit,
+  }) =>
+      TaskEither.right(PostResult.empty());
+
+  @override
+  PostsOrError getPostsFromController(
+    SelectedTagController controller,
     int page, {
     int? limit,
   }) =>

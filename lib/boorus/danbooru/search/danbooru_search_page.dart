@@ -31,7 +31,8 @@ class DanbooruSearchPage extends ConsumerWidget {
     final postRepo = ref.watch(danbooruPostRepoProvider(config));
 
     return SearchPageScaffold(
-      fetcher: (page, tags) => postRepo.getPosts(tags, page),
+      fetcher: (page, controller) =>
+          postRepo.getPosts(controller.rawTagsString, page),
       initialQuery: initialQuery,
       queryPattern: {
         RegExp('(${ref.watch(metatagsProvider).map((e) => e.name).join('|')})+:'):

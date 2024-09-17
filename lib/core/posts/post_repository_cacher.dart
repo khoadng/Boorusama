@@ -1,5 +1,6 @@
 // Project imports:
 import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
 import 'package:boorusama/functional.dart';
 
@@ -39,4 +40,10 @@ class PostRepositoryCacher<T extends Post> implements PostRepository<T> {
 
         return data;
       });
+
+  @override
+  PostsOrError<T> getPostsFromController(
+          SelectedTagController controller, int page,
+          {int? limit}) =>
+      repository.getPostsFromController(controller, page, limit: limit);
 }

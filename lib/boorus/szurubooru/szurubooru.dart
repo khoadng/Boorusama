@@ -284,8 +284,9 @@ class SzurubooruSearchPage extends ConsumerWidget {
             )
           : const SizedBox.shrink(),
       initialQuery: initialQuery,
-      fetcher: (page, tags) =>
-          ref.read(szurubooruPostRepoProvider(config)).getPosts(tags, page),
+      fetcher: (page, controller) => ref
+          .read(szurubooruPostRepoProvider(config))
+          .getPosts(controller.rawTagsString, page),
     );
   }
 }

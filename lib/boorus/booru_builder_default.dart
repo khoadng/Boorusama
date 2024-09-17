@@ -271,8 +271,8 @@ class DefaultSearchPage extends ConsumerWidget {
 
     return SearchPageScaffold(
       initialQuery: initialQuery,
-      fetcher: (page, tags) =>
-          booruBuilder?.postFetcher.call(page, tags) ??
+      fetcher: (page, controler) =>
+          booruBuilder?.postFetcher.call(page, controler.rawTagsString) ??
           TaskEither.of(<Post>[].toResult()),
     );
   }

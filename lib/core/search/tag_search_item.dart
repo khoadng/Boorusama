@@ -59,3 +59,8 @@ class TagSearchItem extends Equatable {
       : '${filterOperatorToString(operator)}${metatag ?? ''}${metatag != null ? ':' : ''}$tag'
           .replaceAll(' ', '_');
 }
+
+extension TagSearchItem2X on TagSearchItem {
+  String toStringWithoutReplace() =>
+      '${filterOperatorToString(operator)}${metatag ?? ''}${metatag != null ? ':' : ''}$tag';
+}

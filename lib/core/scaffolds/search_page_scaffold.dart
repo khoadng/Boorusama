@@ -34,7 +34,10 @@ class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
 
   final Widget Function(BuildContext context)? noticeBuilder;
 
-  final PostsOrErrorCore<T> Function(int page, String tags) fetcher;
+  final PostsOrErrorCore<T> Function(
+    int page,
+    SelectedTagController selectedTagController,
+  ) fetcher;
 
   final Map<RegExp, TextStyle>? queryPattern;
 
@@ -145,7 +148,7 @@ class _SearchPageScaffoldState<T extends Post>
                       ? PostScope(
                           fetcher: (page) => widget.fetcher(
                             page,
-                            searchController.getCurrentRawTags(),
+                            searchController.selectedTagController,
                           ),
                           builder: (context, controller, errors) =>
                               widget.resultBuilder != null

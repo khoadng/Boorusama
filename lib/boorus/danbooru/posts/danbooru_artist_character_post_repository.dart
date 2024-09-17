@@ -1,5 +1,6 @@
 // Project imports:
 import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
 import 'package:boorusama/functional.dart';
 import 'danbooru_post.dart';
@@ -37,4 +38,10 @@ class DanbooruArtistCharacterPostRepository
           (data) => TaskEither.right(data.toResult()),
         );
   }
+
+  @override
+  PostsOrError<DanbooruPost> getPostsFromController(
+          SelectedTagController controller, int page,
+          {int? limit}) =>
+      repository.getPostsFromController(controller, page, limit: limit);
 }

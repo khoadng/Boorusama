@@ -305,8 +305,9 @@ class GelbooruV2SearchPage extends ConsumerWidget {
     final config = ref.watchConfig;
     return SearchPageScaffold(
       initialQuery: initialQuery,
-      fetcher: (page, tags) =>
-          ref.watch(gelbooruV2PostRepoProvider(config)).getPosts(tags, page),
+      fetcher: (page, controller) => ref
+          .watch(gelbooruV2PostRepoProvider(config))
+          .getPosts(controller.rawTagsString, page),
     );
   }
 }
