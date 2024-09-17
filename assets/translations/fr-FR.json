@@ -261,8 +261,9 @@
             "qualities": {
                 "original": "Original",
                 "sample": "Simple",
-                "preview": "Aperçu"
-            }
+                "preview": "Miniature"
+            },
+            "title": "Téléchargements"
         },
         "help_us_translate": "Aidez-nous à traduire",
         "other_settings": "Autres paramètres",
@@ -319,7 +320,7 @@
         "blacklisted_header_title": "Sur liste noire"
     },
     "download": {
-        "download": "Téléchargement",
+        "download": "Télécharger",
         "bulk_download": "Téléchargement en masse",
         "bulk_download_tag_confirmation": "Les tags ci-dessous vont être téléchargés",
         "bulk_download_save_to_folder": "Enregistrer dans un dossier",
@@ -459,7 +460,7 @@
         "validation_missing_trailing_slash": "Il manque une barre oblique à la fin de «{0}»",
         "misc": "Divers",
         "authentication": "Authentification",
-        "download": "Télécharger",
+        "download": "Téléchargements",
         "gestures": "Gestes",
         "validation_missing_scheme": "Il manque un shéma à «{0}» (ex. https://)",
         "validation_redundant_www": "«{0}» contient un «www» superflu",
