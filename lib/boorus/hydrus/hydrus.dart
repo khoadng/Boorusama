@@ -82,55 +82,66 @@ final hydrusPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
   (ref, config) {
     final client = ref.watch(hydrusClientProvider(config));
 
+    Future<PostResult<HydrusPost>> getPosts(
+      List<String> tags,
+      int page, {
+      int? limit,
+    }) async {
+      final files = await client.getFiles(
+        tags: tags,
+        page: page,
+        limit: limit,
+      );
+
+      final data = files.files
+          .map((e) => HydrusPost(
+                id: e.fileId ?? 0,
+                thumbnailImageUrl: e.thumbnailUrl,
+                sampleImageUrl: e.imageUrl,
+                originalImageUrl: e.imageUrl,
+                tags: e.allTags,
+                rating: Rating.general,
+                hasComment: false,
+                isTranslated: false,
+                hasParentOrChildren: false,
+                source: PostSource.from(e.firstSource),
+                score: 0,
+                duration: e.duration?.toDouble() ?? 0,
+                fileSize: e.size ?? 0,
+                format: e.ext ?? '',
+                hasSound: e.hasAudio,
+                height: e.height?.toDouble() ?? 0,
+                md5: e.hash ?? '',
+                videoThumbnailUrl: e.thumbnailUrl,
+                videoUrl: e.imageUrl,
+                width: e.width?.toDouble() ?? 0,
+                uploaderId: null,
+                uploaderName: null,
+                createdAt: null,
+                metadata: PostMetadata(
+                  page: page,
+                  search: tags.join(' '),
+                ),
+                ownFavorite: e.faved,
+              ))
+          .toList()
+          .toResult(
+            total: files.count,
+          );
+
+      ref.read(hydrusFavoritesProvider(config).notifier).preload(data.posts);
+
+      return data;
+    }
+
     return PostRepositoryBuilder(
       getSettings: () async => ref.read(imageListingSettingsProvider),
-      fetch: (tags, page, {limit}) async {
-        final files = await client.getFiles(
-          tags: tags,
-          page: page,
-          limit: limit,
-        );
+      fetchFromController: (controller, page, {limit}) {
+        final tags = controller.tags.map((e) => e.originalTag).toList();
 
-        final data = files.files
-            .map((e) => HydrusPost(
-                  id: e.fileId ?? 0,
-                  thumbnailImageUrl: e.thumbnailUrl,
-                  sampleImageUrl: e.imageUrl,
-                  originalImageUrl: e.imageUrl,
-                  tags: e.allTags,
-                  rating: Rating.general,
-                  hasComment: false,
-                  isTranslated: false,
-                  hasParentOrChildren: false,
-                  source: PostSource.from(e.firstSource),
-                  score: 0,
-                  duration: e.duration?.toDouble() ?? 0,
-                  fileSize: e.size ?? 0,
-                  format: e.ext ?? '',
-                  hasSound: e.hasAudio,
-                  height: e.height?.toDouble() ?? 0,
-                  md5: e.hash ?? '',
-                  videoThumbnailUrl: e.thumbnailUrl,
-                  videoUrl: e.imageUrl,
-                  width: e.width?.toDouble() ?? 0,
-                  uploaderId: null,
-                  uploaderName: null,
-                  createdAt: null,
-                  metadata: PostMetadata(
-                    page: page,
-                    search: tags.join(' '),
-                  ),
-                  ownFavorite: e.faved,
-                ))
-            .toList()
-            .toResult(
-              total: files.count,
-            );
-
-        ref.read(hydrusFavoritesProvider(config).notifier).preload(data.posts);
-
-        return data;
+        return getPosts(tags, page, limit: limit);
       },
+      fetch: getPosts,
     );
   },
 );
@@ -171,7 +182,7 @@ class HydrusBuilder
 
           return AutocompleteData(
             label: e.value,
-            value: e.value.replaceAll(' ', '_'),
+            value: e.value,
             category: category,
             postCount: e.count,
           );
@@ -267,6 +278,12 @@ class HydrusBuilder
   HomePageBuilder get homePageBuilder => (context, config) => HydrusHomePage(
         config: config,
       );
+
+  @override
+  SearchPageBuilder get searchPageBuilder =>
+      (context, initialQuery) => HydrusSearchPage(
+            initialQuery: initialQuery,
+          );
 }
 
 class HydrusHomePage extends StatelessWidget {
@@ -512,6 +529,26 @@ class HydrusPostActionToolbar extends ConsumerWidget {
         BookmarkPostButton(post: post),
         DownloadPostButton(post: post),
       ],
+    );
+  }
+}
+
+class HydrusSearchPage extends ConsumerWidget {
+  const HydrusSearchPage({
+    super.key,
+    this.initialQuery,
+  });
+
+  final String? initialQuery;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
+    return SearchPageScaffold(
+      initialQuery: initialQuery,
+      fetcher: (page, controller) => ref
+          .read(hydrusPostRepoProvider(config))
+          .getPostsFromController(controller, page),
     );
   }
 }
