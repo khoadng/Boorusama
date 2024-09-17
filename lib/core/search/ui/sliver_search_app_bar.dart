@@ -78,7 +78,7 @@ class _SliverSearchAppBarState extends ConsumerState<SliverSearchAppBar> {
                           .clearHistories(),
                       onHistoryRemoved: (value) => ref
                           .read(searchHistoryProvider.notifier)
-                          .removeHistory(value.query),
+                          .removeHistory(value),
                       onHistoryTap: (value) {
                         widget.searchController.tapHistoryTag(value);
                         context.pop();

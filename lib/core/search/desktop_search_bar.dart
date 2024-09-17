@@ -171,7 +171,7 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                             .clearHistories(),
                         onHistoryRemoved: (value) => ref
                             .read(searchHistoryProvider.notifier)
-                            .removeHistory(value.query),
+                            .removeHistory(value),
                         onTagTap: (value) {
                           selectedTagController.addTag(
                             value,

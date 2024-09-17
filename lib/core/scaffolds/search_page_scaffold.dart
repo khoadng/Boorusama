@@ -212,9 +212,8 @@ class _SearchPageScaffoldState<T extends Post>
             child: SearchLandingView(
               onHistoryCleared: () =>
                   ref.read(searchHistoryProvider.notifier).clearHistories(),
-              onHistoryRemoved: (value) => ref
-                  .read(searchHistoryProvider.notifier)
-                  .removeHistory(value.query),
+              onHistoryRemoved: (value) =>
+                  ref.read(searchHistoryProvider.notifier).removeHistory(value),
               onHistoryTap: (value) {
                 searchController.tapHistoryTag(value);
               },

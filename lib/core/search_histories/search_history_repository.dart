@@ -7,7 +7,7 @@ import 'package:boorusama/core/search_histories/search_histories.dart';
 abstract class SearchHistoryRepository {
   Future<List<SearchHistory>> getHistories();
   Future<List<SearchHistory>> addHistory(String query);
-  Future<List<SearchHistory>> removeHistory(String query);
+  Future<List<SearchHistory>> removeHistory(SearchHistory history);
   Future<bool> clearAll();
 }
 
@@ -37,7 +37,7 @@ class SearchHistoryRepositoryHive implements SearchHistoryRepository {
         ));
         await db.put(query, historyObj);
       } else {
-        final history = SearchHistory.now(query);
+        final history = SearchHistory.now(query, QueryType.simple);
         final historyObj = searchHistoryToHiveObject(history);
         await db.put(query, historyObj);
       }
@@ -56,7 +56,9 @@ class SearchHistoryRepositoryHive implements SearchHistoryRepository {
   }
 
   @override
-  Future<List<SearchHistory>> removeHistory(String query) async {
+  Future<List<SearchHistory>> removeHistory(SearchHistory history) async {
+    final query = history.query;
+
     await db.delete(query);
 
     return getHistories();

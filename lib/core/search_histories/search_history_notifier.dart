@@ -70,7 +70,7 @@ class SearchHistoryNotifier extends AsyncNotifier<SearchHistoryState> {
     filterHistories(currentState.currentQuery);
   }
 
-  Future<void> removeHistory(String history) async {
+  Future<void> removeHistory(SearchHistory history) async {
     final currentState = state.value;
 
     if (currentState == null) return;
