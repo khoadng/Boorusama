@@ -113,7 +113,7 @@ class HydrusClient {
     final res = await _dio.get(
       '/get_files/file_metadata',
       queryParameters: {
-        'file_ids': fileIds.toString(),
+        'file_ids': jsonEncode(fileIds),
       },
     );
 
