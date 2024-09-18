@@ -10,6 +10,7 @@ import 'package:boorusama/boorus/danbooru/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/posts/posts.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/foundation/clipboard.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
@@ -117,16 +118,18 @@ class DanbooruImageGridItem extends ConsumerWidget {
         isGif: post.isGif,
         isAI: post.isAI,
         hideOverlay: hideOverlay,
-        isFaved: isFaved,
-        enableFav: !post.isBanned && enableFav,
-        onFavToggle: (isFaved) async {
-          if (!isFaved) {
-            ref.danbooruFavorites.remove(post.id);
-          } else {
-            ref.danbooruFavorites.add(post.id);
-          }
-        },
-        quickActionButtonBuilder: defaultImagePreviewButtonBuilder(ref, post),
+        quickActionButtonBuilder: !post.isBanned && enableFav
+            ? (context, constraints) => QuickFavoriteButton(
+                  isFaved: isFaved,
+                  onFavToggle: (isFaved) async {
+                    if (!isFaved) {
+                      ref.danbooruFavorites.remove(post.id);
+                    } else {
+                      ref.danbooruFavorites.add(post.id);
+                    }
+                  },
+                )
+            : defaultImagePreviewButtonBuilder(ref, post),
         autoScrollOptions: autoScrollOptions,
         onTap: post.isBanned
             ? switch (post.source) {
