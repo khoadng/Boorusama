@@ -238,7 +238,8 @@
                 "preview": "Pré-visualizar"
             },
             "path": "Caminho de download",
-            "quality": "Qualidade de download de imagens"
+            "quality": "Qualidade de download de imagens",
+            "title": "Baixar"
         },
         "infinite_scroll_warning": "Talvez crashe o aplicativo se rolar por muito tempo",
         "help_us_translate": "Nos ajude a traduzir",
