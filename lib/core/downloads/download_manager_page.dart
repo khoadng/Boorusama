@@ -10,9 +10,7 @@ import 'package:readmore/readmore.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/settings/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/platform.dart';
@@ -68,20 +66,15 @@ class DownloadManagerGatewayPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final useLegacy = ref
-        .watch(settingsProvider.select((value) => value.useLegacyDownloader));
-
-    return useLegacy
-        ? const DisabledDownloadManagerPage()
-        : ProviderScope(
-            overrides: [
-              downloadGroupProvider
-                  .overrideWithValue(group ?? FileDownloader.defaultGroup),
-            ],
-            child: DownloadManagerPage(
-              filter: filter,
-            ),
-          );
+    return ProviderScope(
+      overrides: [
+        downloadGroupProvider
+            .overrideWithValue(group ?? FileDownloader.defaultGroup),
+      ],
+      child: DownloadManagerPage(
+        filter: filter,
+      ),
+    );
   }
 }
 
@@ -303,19 +296,6 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
                             },
                           ),
                           const Spacer(),
-                          if (isDefaultGroup)
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 24,
-                                horizontal: 8,
-                              ),
-                              child: Text(
-                                'This feature is still in experimental phase, please report any issues to the developer. You can also switch back to the legacy downloader in the settings.',
-                                style: context.textTheme.bodySmall?.copyWith(
-                                  color: context.theme.hintColor,
-                                ),
-                              ),
-                            ),
                         ],
                       ),
               ),

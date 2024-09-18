@@ -12,11 +12,9 @@ import 'package:gal/gal.dart';
 import 'package:media_scanner/media_scanner.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/booru.dart';
 import 'package:boorusama/core/configs/booru_config.dart';
 import 'package:boorusama/core/configs/providers.dart';
-import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/platform.dart';
@@ -140,19 +138,14 @@ class BackgroundDownloaderBuilder extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final useLegacy = ref
-        .watch(settingsProvider.select((value) => value.useLegacyDownloader));
-
-    return useLegacy
-        ? child
-        : BackgroundDownloaderScope(
-            onTapNotification: (task, notificationType) {
-              context.go(
-                '/download_manager?filter=${notificationType.name}',
-              );
-            },
-            child: child,
-          );
+    return BackgroundDownloaderScope(
+      onTapNotification: (task, notificationType) {
+        context.go(
+          '/download_manager?filter=${notificationType.name}',
+        );
+      },
+      child: child,
+    );
   }
 }
 

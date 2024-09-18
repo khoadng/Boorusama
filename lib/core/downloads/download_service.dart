@@ -3,15 +3,12 @@ import 'dart:io';
 
 // Package imports:
 import 'package:dio/dio.dart';
-import 'package:gal/gal.dart';
-import 'package:media_scanner/media_scanner.dart';
 
 // Project imports:
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/path.dart';
-import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/functional.dart';
 
 enum FileSystemDownloadErrorType {
@@ -132,180 +129,6 @@ extension DownloadWithSettingsX on DownloadService {
   }
 }
 
-// map DownloadError to message
-String mapDownloadErrorToMessage(DownloadError error) => switch (error) {
-      final FileSystemDownloadError e => switch (e.type) {
-          FileSystemDownloadErrorType.directoryNotFound =>
-            'Directory ${error.savedPath} not found',
-          FileSystemDownloadErrorType.restrictedDirectory =>
-            'Restricted directory, cannot download to  ${error.savedPath}',
-          FileSystemDownloadErrorType.failedToCreateFile =>
-            'Failed to create file: ${error.error.message}',
-          FileSystemDownloadErrorType.needElevatedPermission =>
-            'Need elevated permission in order to download to  ${error.savedPath}',
-          FileSystemDownloadErrorType.readOnlyDirectory =>
-            'Read only directory, cannot download to  ${error.savedPath}',
-          FileSystemDownloadErrorType.fileNameTooLong =>
-            'File name is too long, total length is  ${error.fileName.length}'
-        },
-      final HttpDownloadError e =>
-        'Http request error ${e.exception.response?.statusCode}, failed to download ${e.fileName}',
-      final GenericDownloadError e => e.message,
-    };
-
-class DioDownloadService implements DownloadService {
-  DioDownloadService(
-    this.dio,
-    this.notifications, {
-    this.retryOn404 = false,
-    this.retryExtensions = const ['.jpg', '.png', '.webp'],
-  });
-
-  final Dio dio;
-  final DownloadNotifications notifications;
-  final bool retryOn404;
-  final List<String> retryExtensions;
-
-  @override
-  DownloadPathOrError download({
-    required String url,
-    required String filename,
-    DownloaderMetadata? metadata,
-    bool? skipIfExists,
-    Map<String, String>? headers,
-  }) =>
-      retryOn404
-          ? _download(
-              urls: retryExtensions
-                  .map((e) => removeFileExtension(url) + e)
-                  .toList(),
-              filename: filename,
-              headers: headers,
-            )
-              .flatMap(_reloadMedia)
-              .mapLeft((error) => _notifyFailure(notifications, error))
-          : downloadUrl(
-              dio: dio,
-              notifications: notifications,
-              url: url,
-              filename: filename,
-              headers: headers,
-            )
-              .flatMap(_reloadMedia)
-              .mapLeft((error) => _notifyFailure(notifications, error));
-
-  DownloadPathOrError _download({
-    required List<String> urls,
-    required String filename,
-    required Map<String, String>? headers,
-  }) {
-    if (urls.isEmpty) {
-      return TaskEither.left(GenericDownloadError(
-        savedPath: none(),
-        fileName: filename,
-        message:
-            'Multiple tries failed to download $filename, all urls are invalid',
-      ));
-    }
-
-    final url = urls.first;
-
-    return downloadUrl(
-      dio: dio,
-      notifications: notifications,
-      url: url,
-      filename: filename,
-      headers: headers,
-    ).orElse((error) => switch (error) {
-          final HttpDownloadError e => e.exception.response?.statusCode == 404
-              ? _download(
-                  urls: urls..remove(url),
-                  filename: filename,
-                  headers: headers,
-                )
-              : TaskEither.left(e),
-          _ => TaskEither.left(error),
-        });
-  }
-
-  //FIXME: should merge with _download, i'm playing it safe for now
-  DownloadPathOrError _downloadCustomLocation({
-    required List<String> urls,
-    required String filename,
-    required String path,
-    required Map<String, String>? headers,
-  }) {
-    if (urls.isEmpty) {
-      return TaskEither.left(GenericDownloadError(
-        savedPath: none(),
-        fileName: filename,
-        message:
-            'Multiple tries failed to download $filename, all urls are invalid',
-      ));
-    }
-
-    final url = urls.first;
-
-    return downloadUrlCustomLocation(
-      dio: dio,
-      notifications: notifications,
-      path: path,
-      url: url,
-      filename: filename,
-      headers: headers,
-    ).orElse((error) => switch (error) {
-          final HttpDownloadError e => e.exception.response?.statusCode == 404
-              ? _download(
-                  urls: urls..remove(url),
-                  filename: filename,
-                  headers: headers,
-                )
-              : TaskEither.left(e),
-          _ => TaskEither.left(error),
-        });
-  }
-
-  @override
-  DownloadPathOrError downloadCustomLocation({
-    required String url,
-    required String path,
-    required String filename,
-    DownloaderMetadata? metadata,
-    bool? skipIfExists,
-    Map<String, String>? headers,
-  }) =>
-      retryOn404
-          ? _downloadCustomLocation(
-              urls: retryExtensions
-                  .map((e) => removeFileExtension(url) + e)
-                  .toList(),
-              filename: filename,
-              path: path,
-              headers: headers,
-            )
-              .flatMap(_reloadMedia)
-              .mapLeft((error) => _notifyFailure(notifications, error))
-          : downloadUrlCustomLocation(
-              dio: dio,
-              notifications: notifications,
-              path: path,
-              url: url,
-              filename: filename,
-              headers: headers,
-            )
-              .flatMap(_reloadMedia)
-              .mapLeft((error) => _notifyFailure(notifications, error));
-}
-
-DownloadPathOrError _reloadMedia(String path) => TaskEither(() async {
-      if (isAndroid()) {
-        await MediaScanner.loadMedia(path: path);
-      } else if (isIOS()) {
-        await Gal.putImage(path);
-      }
-      return Either.right(path);
-    });
-
 String removeFileExtension(String url) {
   final lastDotIndex = url.lastIndexOf('.');
   if (lastDotIndex != -1) {
@@ -314,18 +137,4 @@ String removeFileExtension(String url) {
     // If there is no '.', return the original URL
     return url;
   }
-}
-
-DownloadError _notifyFailure(
-  DownloadNotifications notifications,
-  DownloadError error,
-) {
-  notifications.showFailed(
-    mapDownloadErrorToMessage(error),
-    error.savedPath.fold(
-      () => '',
-      (t) => t,
-    ),
-  );
-  return error;
 }

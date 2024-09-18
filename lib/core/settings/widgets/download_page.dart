@@ -61,33 +61,8 @@ class _DownloadPageState extends ConsumerState<DownloadPage> {
           ),
           trailing: Switch(
             value: settings.skipDownloadIfExists,
-            onChanged: settings.useLegacyDownloader
-                ? null
-                : (value) async {
-                    await ref.updateDownloadFileExistedBehavior(
-                        settings, value);
-                  },
-          ),
-        ),
-        const SizedBox(height: 4),
-        ListTile(
-          title: const Text('Use legacy downloader'),
-          subtitle: const Text(
-            'This may be useful if you are experiencing issues with the new download manager. It will be removed in the future when the new download manager is stable.',
-          ),
-          trailing: Switch(
-            value: settings.useLegacyDownloader,
             onChanged: (value) async {
-              await ref.updateDownloaderStatus(settings, value);
-              // Don't allow the user to enable the skipDownloadIfExists
-              if (value) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  ref.updateDownloadFileExistedBehavior(
-                    ref.read(settingsProvider),
-                    false,
-                  );
-                });
-              }
+              await ref.updateDownloadFileExistedBehavior(settings, value);
             },
           ),
         ),
