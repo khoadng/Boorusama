@@ -1,10 +1,13 @@
-// convert a BooruConfig and an orignal tag list to List<String>
+// Dart imports:
+import 'dart:convert';
+
+// Package imports:
+import 'package:collection/collection.dart';
 
 // Project imports:
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/functional.dart';
-import 'package:collection/collection.dart';
 
 abstract class TagQueryComposer {
   List<String> compose(List<String> tags);
@@ -21,12 +24,34 @@ class DefaultTagQueryComposer implements TagQueryComposer {
 
   @override
   List<String> compose(List<String> tags) {
+    final alwaysIncludeTags = _parseAlwaysIncludeTags(config.alwaysIncludeTags);
+
     final data = {
+      ...alwaysIncludeTags,
       ...tags,
       if (ratingTagsFilter != null) ...ratingTagsFilter!,
     };
 
     return data.toList();
+  }
+
+  List<String> _parseAlwaysIncludeTags(String? alwaysIncludeTags) {
+    if (alwaysIncludeTags == null || alwaysIncludeTags.isEmpty) {
+      return [];
+    }
+
+    try {
+      final json = jsonDecode(alwaysIncludeTags);
+
+      if (json is List) {
+        final tags = [for (final tag in json) tag as String];
+        return tags;
+      }
+
+      return [];
+    } catch (e) {
+      return [];
+    }
   }
 }
 
