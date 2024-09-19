@@ -14,6 +14,8 @@ class PostRepositoryCacher<T extends Post> implements PostRepository<T> {
   final PostRepository<T> repository;
   final Cacher<String, List<T>> cache;
   final String Function(String tags, int page, {int? limit})? keyBuilder;
+  @override
+  TagQueryComposer get tagComposer => repository.tagComposer;
 
   @override
   PostsOrError<T> getPosts(

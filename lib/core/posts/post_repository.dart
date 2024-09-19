@@ -2,6 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
+import 'package:boorusama/core/posts/utils.dart';
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/error.dart';
@@ -76,6 +77,8 @@ abstract class PostRepository<T extends Post> {
     int page, {
     int? limit,
   });
+
+  TagQueryComposer get tagComposer;
 }
 
 class PostRepositoryBuilder<T extends Post> implements PostRepository<T> {
@@ -83,11 +86,14 @@ class PostRepositoryBuilder<T extends Post> implements PostRepository<T> {
     required this.fetch,
     required this.getSettings,
     this.fetchFromController,
+    required this.tagComposer,
   });
 
   final PostFutureFetcher<T> fetch;
   final PostFutureControllerFetcher<T>? fetchFromController;
   final Future<ImageListingSettings> Function() getSettings;
+  @override
+  final TagQueryComposer tagComposer;
 
   @override
   PostsOrError<T> getPosts(String tags, int page, {int? limit}) =>
@@ -98,8 +104,10 @@ class PostRepositoryBuilder<T extends Post> implements PostRepository<T> {
 
         final newTags = tags.isEmpty ? <String>[] : tags.split(' ');
 
+        final tags2 = tagComposer.compose(newTags);
+
         return $(tryFetchRemoteData(
-          fetcher: () => fetch(newTags, page, limit: lim),
+          fetcher: () => fetch(tags2, page, limit: lim),
         ));
       });
 
@@ -203,4 +211,7 @@ class EmptyPostRepository extends PostRepository {
     int? limit,
   }) =>
       TaskEither.right(PostResult.empty());
+
+  @override
+  final TagQueryComposer tagComposer = EmptyTagQueryComposer();
 }

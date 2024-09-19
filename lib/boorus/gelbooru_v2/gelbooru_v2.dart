@@ -21,7 +21,6 @@ import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
-import 'package:boorusama/functional.dart';
 import 'create_gelbooru_v2_config_page.dart';
 import 'home/gelbooru_v2_home_page.dart';
 import 'posts/gelbooru_v2_post_details_desktop_page.dart';
@@ -244,30 +243,6 @@ class GelbooruV2Builder
       (context, useAppBar, postId) => GelbooruV2CommentPage(
             postId: postId,
           );
-
-  @override
-  GranularRatingQueryBuilder? get granularRatingQueryBuilder =>
-      (currentQuery, config) => switch (config.ratingFilter) {
-            BooruConfigRatingFilter.none => currentQuery,
-            BooruConfigRatingFilter.hideNSFW => [
-                ...currentQuery,
-                'rating:safe',
-              ],
-            BooruConfigRatingFilter.hideExplicit => [
-                ...currentQuery,
-                '-rating:explicit',
-              ],
-            BooruConfigRatingFilter.custom =>
-              config.granularRatingFiltersWithoutUnknown.toOption().fold(
-                    () => currentQuery,
-                    (ratings) => [
-                      ...currentQuery,
-                      ...ratings.map((e) => '-rating:${e.toFullString(
-                            legacy: true,
-                          )}'),
-                    ],
-                  ),
-          };
 
   @override
   GranularRatingOptionsBuilder? get granularRatingOptionsBuilder => () => {

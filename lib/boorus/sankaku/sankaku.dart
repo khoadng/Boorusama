@@ -34,7 +34,6 @@ class SankakuBuilder
         CommentNotSupportedMixin,
         CharacterNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
-        NoGranularRatingQueryBuilderMixin,
         UnknownMetatagsMixin,
         DefaultHomeMixin,
         DefaultTagColorMixin,

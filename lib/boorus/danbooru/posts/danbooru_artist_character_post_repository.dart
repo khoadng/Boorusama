@@ -14,6 +14,8 @@ class DanbooruArtistCharacterPostRepository
 
   final PostRepository<DanbooruPost> repository;
   final Cacher<String, List<DanbooruPost>> cache;
+  @override
+  TagQueryComposer get tagComposer => repository.tagComposer;
 
   @override
   PostsOrError<DanbooruPost> getPosts(

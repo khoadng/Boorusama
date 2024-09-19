@@ -82,10 +82,7 @@ const kDanbooruPostSamples = [
 ];
 
 class DanbooruBuilder
-    with
-        DefaultTagColorMixin,
-        NewGranularRatingOptionsBuilderMixin,
-        NewGranularRatingQueryBuilderMixin
+    with DefaultTagColorMixin, NewGranularRatingOptionsBuilderMixin
     implements BooruBuilder {
   DanbooruBuilder({
     required this.postRepo,
@@ -155,12 +152,8 @@ class DanbooruBuilder
       (postId, ref) => ref.danbooruFavorites.remove(postId).then((_) => true);
 
   @override
-  PostCountFetcher? get postCountFetcher =>
-      (config, tags, granularRatingQueryBuilder) => postCountRepo.count({
-            ...tags,
-            if (granularRatingQueryBuilder != null)
-              ...granularRatingQueryBuilder(tags, config),
-          }.toList());
+  PostCountFetcher? get postCountFetcher => (config, tags, tagComposer) =>
+      postCountRepo.count(tagComposer.compose(tags));
 
   @override
   SearchPageBuilder get searchPageBuilder =>

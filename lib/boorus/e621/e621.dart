@@ -106,7 +106,6 @@ class E621Builder
         PostCountNotSupportedMixin,
         CharacterNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
-        LegacyGranularRatingQueryBuilderMixin,
         UnknownMetatagsMixin,
         DefaultHomeMixin,
         DefaultThumbnailUrlMixin,

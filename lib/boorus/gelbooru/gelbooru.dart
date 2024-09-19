@@ -23,7 +23,6 @@ import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/toast.dart';
-import 'package:boorusama/functional.dart';
 import 'artists/gelbooru_artist_page.dart';
 import 'comments/gelbooru_comment_page.dart';
 import 'configs/create_gelbooru_config_page.dart';
@@ -214,18 +213,12 @@ class GelbooruBuilder
       (query) => autocompleteRepo.getAutocomplete(query);
 
   @override
-  PostCountFetcher? get postCountFetcher =>
-      (config, tags, granularRatingQueryBuilder) async {
+  PostCountFetcher? get postCountFetcher => (config, tags, tagComposer) async {
         // Delay a bit to avoid this request running before the actual search, this is a hack used for the search page
         await Future.delayed(const Duration(milliseconds: 100));
 
         final result = await client().getPosts(
-          tags: getTags(
-            config,
-            tags,
-            granularRatingQueries: (tags) =>
-                granularRatingQueryBuilder?.call(tags, config),
-          ),
+          tags: tagComposer.compose(tags),
         );
 
         return result.count;
@@ -284,28 +277,6 @@ class GelbooruBuilder
       (context, useAppBar, postId) => GelbooruCommentPage(
             postId: postId,
           );
-
-  @override
-  GranularRatingQueryBuilder? get granularRatingQueryBuilder =>
-      (currentQuery, config) => switch (config.ratingFilter) {
-            BooruConfigRatingFilter.none => currentQuery,
-            BooruConfigRatingFilter.hideNSFW => [
-                ...currentQuery,
-                'rating:general',
-              ],
-            BooruConfigRatingFilter.hideExplicit => [
-                ...currentQuery,
-                '-rating:explicit',
-              ],
-            BooruConfigRatingFilter.custom =>
-              config.granularRatingFiltersWithoutUnknown.toOption().fold(
-                    () => currentQuery,
-                    (ratings) => [
-                      ...currentQuery,
-                      ...ratings.map((e) => '-rating:${e.toFullString()}'),
-                    ],
-                  ),
-          };
 
   @override
   GranularRatingOptionsBuilder? get granularRatingOptionsBuilder => () => {

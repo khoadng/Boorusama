@@ -31,7 +31,6 @@ class PhilomenaBuilder
         ArtistNotSupportedMixin,
         CharacterNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
-        NoGranularRatingQueryBuilderMixin,
         UnknownMetatagsMixin,
         DefaultHomeMixin,
         DefaultGranularRatingFiltererMixin,
