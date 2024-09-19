@@ -10,7 +10,6 @@ import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/search_histories/search_histories.dart';
@@ -193,7 +192,7 @@ class _VersionChangeVisualizedText extends StatelessWidget {
   }
 }
 
-class SliverHomeSearchBar extends ConsumerStatefulWidget {
+class SliverHomeSearchBar extends ConsumerWidget {
   const SliverHomeSearchBar({
     super.key,
     required this.controller,
@@ -208,14 +207,45 @@ class SliverHomeSearchBar extends ConsumerStatefulWidget {
   final SelectedTagController? selectedTagController;
 
   @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final booruBuilder = ref.watch(booruBuilderProvider);
+
+    return SliverHomeSearchBarInternal(
+      controller: controller,
+      selectedTagString: selectedTagString,
+      onSearch: onSearch,
+      selectedTagController: selectedTagController,
+      booruBuilder: booruBuilder,
+    );
+  }
+}
+
+class SliverHomeSearchBarInternal extends ConsumerStatefulWidget {
+  const SliverHomeSearchBarInternal({
+    super.key,
+    required this.controller,
+    this.selectedTagString,
+    required this.onSearch,
+    this.selectedTagController,
+    required this.booruBuilder,
+  });
+
+  final HomePageController controller;
+  final ValueNotifier<String>? selectedTagString;
+  final void Function() onSearch;
+  final SelectedTagController? selectedTagController;
+  final BooruBuilder? booruBuilder;
+
+  @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
       _SliverHomeSearchBarState();
 }
 
-class _SliverHomeSearchBarState extends ConsumerState<SliverHomeSearchBar> {
+class _SliverHomeSearchBarState
+    extends ConsumerState<SliverHomeSearchBarInternal> {
   late final selectedTagController = widget.selectedTagController ??
       SelectedTagController.fromBooruBuilder(
-        builder: ref.readBooruBuilder(ref.readConfig),
+        builder: widget.booruBuilder,
       );
 
   late final selectedTagString = widget.selectedTagString ?? ValueNotifier('');
