@@ -4,36 +4,7 @@
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/functional.dart';
-
-List<String> getTags(
-  BooruConfig booruConfig,
-  List<String> tags, {
-  List<String>? Function(List<String> tags)? granularRatingQueries,
-}) {
-  final deletedStatusTag = booruConfigDeletedBehaviorToTag(
-    booruConfig.deletedItemBehavior,
-  );
-
-  final data = [
-    ...tags,
-    if (deletedStatusTag != null) deletedStatusTag,
-  ];
-
-  return granularRatingQueries != null
-      ? granularRatingQueries(data) ?? []
-      : data;
-}
-
-String? booruConfigDeletedBehaviorToTag(
-  BooruConfigDeletedItemBehavior? behavior,
-) {
-  if (behavior == null) return null;
-
-  return switch (behavior) {
-    BooruConfigDeletedItemBehavior.show => null,
-    BooruConfigDeletedItemBehavior.hide => '-status:deleted'
-  };
-}
+import 'package:collection/collection.dart';
 
 abstract class TagQueryComposer {
   List<String> compose(List<String> tags);
@@ -106,14 +77,9 @@ class DanbooruTagQueryComposer implements TagQueryComposer {
   });
 
   final BooruConfig config;
-
-  @override
-  List<String> compose(List<String> tags) {
-    final deletedStatusTag = booruConfigDeletedBehaviorToTag(
-      config.deletedItemBehavior,
-    );
-
-    final ratingTag = switch (config.ratingFilter) {
+  late final TagQueryComposer _composer = DefaultTagQueryComposer(
+    config: config,
+    ratingTagsFilter: switch (config.ratingFilter) {
       BooruConfigRatingFilter.none => <String>[],
       BooruConfigRatingFilter.hideNSFW => [
           'rating:g',
@@ -129,15 +95,20 @@ class DanbooruTagQueryComposer implements TagQueryComposer {
                 ...ratings.map((e) => '-rating:${e.toShortString()}'),
               ],
             ),
-    };
+    },
+  );
 
-    final data = {
+  @override
+  List<String> compose(List<String> tags) {
+    final newTags = [
       ...tags,
-      if (deletedStatusTag != null) deletedStatusTag,
-      ...ratingTag,
-    };
+      switch (config.deletedItemBehavior) {
+        BooruConfigDeletedItemBehavior.show => null,
+        BooruConfigDeletedItemBehavior.hide => '-status:deleted'
+      },
+    ].whereNotNull().toList();
 
-    return data.toList();
+    return _composer.compose(newTags);
   }
 }
 
@@ -147,10 +118,9 @@ class GelbooruTagQueryComposer implements TagQueryComposer {
   });
 
   final BooruConfig config;
-
-  @override
-  List<String> compose(List<String> tags) {
-    final ratingTag = switch (config.ratingFilter) {
+  late final TagQueryComposer _composer = DefaultTagQueryComposer(
+    config: config,
+    ratingTagsFilter: switch (config.ratingFilter) {
       BooruConfigRatingFilter.none => <String>[],
       BooruConfigRatingFilter.hideNSFW => [
           'rating:general',
@@ -165,14 +135,12 @@ class GelbooruTagQueryComposer implements TagQueryComposer {
                 ...ratings.map((e) => '-rating:${e.toFullString()}'),
               ],
             ),
-    };
+    },
+  );
 
-    final data = {
-      ...tags,
-      ...ratingTag,
-    };
-
-    return data.toList();
+  @override
+  List<String> compose(List<String> tags) {
+    return _composer.compose(tags);
   }
 }
 
@@ -182,10 +150,9 @@ class GelbooruV2TagQueryComposer implements TagQueryComposer {
   });
 
   final BooruConfig config;
-
-  @override
-  List<String> compose(List<String> tags) {
-    final ratingTag = switch (config.ratingFilter) {
+  late final TagQueryComposer _composer = DefaultTagQueryComposer(
+    config: config,
+    ratingTagsFilter: switch (config.ratingFilter) {
       BooruConfigRatingFilter.none => <String>[],
       BooruConfigRatingFilter.hideNSFW => [
           'rating:safe',
@@ -202,13 +169,11 @@ class GelbooruV2TagQueryComposer implements TagQueryComposer {
                     )}'),
               ],
             ),
-    };
+    },
+  );
 
-    final data = {
-      ...tags,
-      ...ratingTag,
-    };
-
-    return data.toList();
+  @override
+  List<String> compose(List<String> tags) {
+    return _composer.compose(tags);
   }
 }
