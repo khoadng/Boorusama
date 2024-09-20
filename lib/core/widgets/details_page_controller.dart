@@ -48,6 +48,7 @@ class DetailsPageController extends ChangeNotifier {
     disablePageSwipe();
     disableSwipeDownToDismiss();
     if (!_hideOverlay.value) setHideOverlay(true);
+    hideSystemStatus();
     notifyListeners();
   }
 
@@ -56,7 +57,7 @@ class DetailsPageController extends ChangeNotifier {
     enablePageSwipe();
     enableSwipeDownToDismiss();
     setHideOverlay(false);
-
+    showSystemStatus();
     notifyListeners();
   }
 
@@ -94,7 +95,16 @@ class DetailsPageController extends ChangeNotifier {
 
   void toggleOverlay() {
     _hideOverlay.value = !_hideOverlay.value;
+    if (_hideOverlay.value) {
+      hideSystemStatus();
+    } else {
+      showSystemStatus();
+    }
     notifyListeners();
+  }
+
+  void restoreSystemStatus() {
+    showSystemStatus();
   }
 
   @override
