@@ -11,6 +11,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/display.dart';
+import 'package:boorusama/foundation/mobile.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/circular_icon_button.dart';
 
@@ -55,6 +56,8 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
       showInfo = ref.read(miscDataProvider(kShowInfoStateCacheKey)) == 'true';
       widget.onPageChanged.call(currentPage);
     });
+
+    showSystemStatus();
   }
 
   void _onExit() {

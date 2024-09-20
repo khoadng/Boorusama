@@ -134,12 +134,19 @@ final hydrusPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
       return data;
     }
 
+    final composer = DefaultTagQueryComposer(config: config);
+
     return PostRepositoryBuilder(
+      tagComposer: composer,
       getSettings: () async => ref.read(imageListingSettingsProvider),
       fetchFromController: (controller, page, {limit}) {
         final tags = controller.tags.map((e) => e.originalTag).toList();
 
-        return getPosts(tags, page, limit: limit);
+        return getPosts(
+          composer.compose(tags),
+          page,
+          limit: limit,
+        );
       },
       fetch: getPosts,
     );
@@ -155,7 +162,6 @@ class HydrusBuilder
         DefaultThumbnailUrlMixin,
         CommentNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
-        NoGranularRatingQueryBuilderMixin,
         UnknownMetatagsMixin,
         DefaultHomeMixin,
         DefaultTagColorMixin,

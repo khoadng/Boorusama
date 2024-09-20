@@ -43,7 +43,6 @@ class MoebooruBuilder
         CommentNotSupportedMixin,
         NoteNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
-        LegacyGranularRatingQueryBuilderMixin,
         UnknownMetatagsMixin,
         DefaultHomeMixin,
         DefaultThumbnailUrlMixin,

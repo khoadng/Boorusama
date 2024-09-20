@@ -77,7 +77,6 @@ abstract class BooruBuilder {
   PostStatisticsPageBuilder get postStatisticsPageBuilder;
 
   GranularRatingFilterer? get granularRatingFilterer;
-  GranularRatingQueryBuilder? get granularRatingQueryBuilder;
   GranularRatingOptionsBuilder? get granularRatingOptionsBuilder;
 
   PostGestureHandlerBuilder get postGestureHandlerBuilder;

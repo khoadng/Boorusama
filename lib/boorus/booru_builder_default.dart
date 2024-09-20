@@ -164,62 +164,6 @@ mixin NewGranularRatingOptionsBuilderMixin on BooruBuilder {
       };
 }
 
-mixin NoGranularRatingQueryBuilderMixin on BooruBuilder {
-  @override
-  GranularRatingQueryBuilder? get granularRatingQueryBuilder => null;
-}
-
-mixin LegacyGranularRatingQueryBuilderMixin on BooruBuilder {
-  @override
-  GranularRatingQueryBuilder? get granularRatingQueryBuilder =>
-      (currentQuery, config) => switch (config.ratingFilter) {
-            BooruConfigRatingFilter.none => currentQuery,
-            BooruConfigRatingFilter.hideNSFW => [
-                ...currentQuery,
-                'rating:safe',
-              ],
-            BooruConfigRatingFilter.hideExplicit => [
-                ...currentQuery,
-                '-rating:explicit',
-              ],
-            BooruConfigRatingFilter.custom =>
-              config.granularRatingFiltersWithoutUnknown.toOption().fold(
-                    () => currentQuery,
-                    (ratings) => [
-                      ...currentQuery,
-                      ...ratings.map((e) => '-rating:${e.toFullString(
-                            legacy: true,
-                          )}'),
-                    ],
-                  ),
-          };
-}
-
-mixin NewGranularRatingQueryBuilderMixin on BooruBuilder {
-  @override
-  GranularRatingQueryBuilder? get granularRatingQueryBuilder =>
-      (currentQuery, config) => switch (config.ratingFilter) {
-            BooruConfigRatingFilter.none => currentQuery,
-            BooruConfigRatingFilter.hideNSFW => [
-                ...currentQuery,
-                'rating:g',
-              ],
-            BooruConfigRatingFilter.hideExplicit => [
-                ...currentQuery,
-                '-rating:e',
-                '-rating:q',
-              ],
-            BooruConfigRatingFilter.custom =>
-              config.granularRatingFiltersWithoutUnknown.toOption().fold(
-                    () => currentQuery,
-                    (ratings) => [
-                      ...currentQuery,
-                      ...ratings.map((e) => '-rating:${e.toShortString()}'),
-                    ],
-                  ),
-          };
-}
-
 mixin DefaultBooruUIMixin implements BooruBuilder {
   @override
   HomePageBuilder get homePageBuilder =>

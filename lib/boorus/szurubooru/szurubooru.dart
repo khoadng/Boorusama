@@ -37,7 +37,6 @@ class SzurubooruBuilder
         CharacterNotSupportedMixin,
         NoteNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
-        NoGranularRatingQueryBuilderMixin,
         UnknownMetatagsMixin,
         DefaultHomeMixin,
         DefaultTagColorMixin,

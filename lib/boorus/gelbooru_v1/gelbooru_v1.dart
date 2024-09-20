@@ -41,7 +41,6 @@ class GelbooruV1Builder
         DefaultPostGesturesHandlerMixin,
         DefaultGranularRatingFiltererMixin,
         LegacyGranularRatingOptionsBuilderMixin,
-        NoGranularRatingQueryBuilderMixin,
         DefaultPostStatisticsPageBuilderMixin,
         DefaultBooruUIMixin
     implements BooruBuilder {

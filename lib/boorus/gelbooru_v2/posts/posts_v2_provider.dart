@@ -2,7 +2,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/gelbooru_v2/gelbooru_v2.dart';
 import 'package:boorusama/boorus/gelbooru_v2/posts/posts_v2.dart';
 import 'package:boorusama/boorus/providers.dart';
@@ -16,16 +15,10 @@ final gelbooruV2PostRepoProvider =
     final client = ref.watch(gelbooruV2ClientProvider(config));
 
     return PostRepositoryBuilder(
+      tagComposer: GelbooruV2TagQueryComposer(config: config),
       fetch: (tags, page, {limit}) => client
           .getPosts(
-            tags: getTags(
-              config,
-              tags,
-              granularRatingQueries: (tags) => ref
-                  .readCurrentBooruBuilder()
-                  ?.granularRatingQueryBuilder
-                  ?.call(tags, config),
-            ),
+            tags: tags,
             page: page,
             limit: limit,
           )

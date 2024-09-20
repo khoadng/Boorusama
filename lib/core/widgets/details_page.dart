@@ -13,6 +13,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/mobile.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -87,7 +88,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
         if (widget.onSwipeDownEnd != null) {
           widget.onSwipeDownEnd!(controller.currentPage.value);
         } else {
-          _onBackButtonPressed();
+          _onBackButtonPressed(false);
         }
       };
 
@@ -103,6 +104,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
   void initState() {
     isSwipingDown.addListener(_updateShouldSlideDown);
     isExpanded.addListener(_updateShouldSlideDown);
+    isExpanded.addListener(_showSystemStatusOnExpanded);
 
     if (_controller._hideOverlay.value) {
       _shouldSlideDownNotifier.value = true;
@@ -195,6 +197,12 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
     _updateShouldSlideDown();
   }
 
+  void _showSystemStatusOnExpanded() {
+    if (isExpanded.value) {
+      showSystemStatus();
+    }
+  }
+
   void _updateShouldSlideDown() {
     if (_keepBottomSheetDown.value) return;
     _shouldSlideDownNotifier.value = isSwipingDown.value ||
@@ -209,6 +217,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
 
     isSwipingDown.removeListener(_updateShouldSlideDown);
     isExpanded.removeListener(_updateShouldSlideDown);
+    isExpanded.removeListener(_showSystemStatusOnExpanded);
 
     _controller.removeListener(_onPageDetailsChanged);
 
@@ -244,9 +253,12 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
     handlePointerUp(event);
   }
 
-  void _onBackButtonPressed() {
+  void _onBackButtonPressed(bool didPop) {
     _keepBottomSheetDown.value = true;
-    context.navigator.pop();
+    _controller.restoreSystemStatus();
+    if (!didPop) {
+      context.navigator.pop();
+    }
     widget.onExit(controller.currentPage.value);
   }
 
@@ -254,8 +266,12 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
   Widget build(BuildContext context) {
     return PopScope(
       onPopInvokedWithResult: (didPop, _) {
-        if (didPop) return;
-        _onBackButtonPressed();
+        if (didPop) {
+          _onBackButtonPressed(didPop);
+          return;
+        }
+
+        _onBackButtonPressed(didPop);
       },
       child: Scaffold(
         body: ValueListenableBuilder(
@@ -418,7 +434,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
                     child: Padding(
                       padding: const EdgeInsets.all(8),
                       child: _NavigationButtonBar(
-                        onBack: _onBackButtonPressed,
+                        onBack: () => _onBackButtonPressed(false),
                       ),
                     ),
                   ),

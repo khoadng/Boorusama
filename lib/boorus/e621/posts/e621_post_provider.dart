@@ -3,7 +3,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/e621/e621.dart';
 import 'package:boorusama/boorus/e621/favorites/favorites.dart';
 import 'package:boorusama/boorus/e621/posts/posts.dart';
@@ -18,18 +17,12 @@ final e621PostRepoProvider =
   final client = ref.watch(e621ClientProvider(config));
 
   return PostRepositoryBuilder(
+    tagComposer: LegacyTagQueryComposer(config: config),
     fetch: (tags, page, {limit}) async {
       final data = await client
           .getPosts(
             page: page,
-            tags: getTags(
-              config,
-              tags,
-              granularRatingQueries: (tags) => ref
-                  .readCurrentBooruBuilder()
-                  ?.granularRatingQueryBuilder
-                  ?.call(tags, config),
-            ),
+            tags: tags,
             limit: limit,
           )
           .then((value) => value

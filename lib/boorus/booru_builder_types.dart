@@ -75,7 +75,7 @@ typedef GranularRatingOptionsBuilder = Set<Rating> Function();
 typedef PostCountFetcher = Future<int?> Function(
   BooruConfig config,
   List<String> tags,
-  GranularRatingQueryBuilder? granularRatingQueryBuilder,
+  TagQueryComposer tagQueryComposer,
 );
 
 typedef GridThumbnailUrlBuilder = String Function(
