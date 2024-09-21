@@ -209,7 +209,7 @@ class HydrusClient {
 extension HydrusClientX on HydrusClient {
   Future<bool> changeLikeStatus({
     required int fileId,
-    required bool liked,
+    required bool? liked,
   }) async {
     final services = await getServicesCached();
     final key = getLikeDislikeRatingKey(services);

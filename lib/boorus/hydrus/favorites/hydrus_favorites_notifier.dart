@@ -40,7 +40,7 @@ class HydrusFavoritesNotifier
   @override
   Future<bool> Function(int postId) get favoriteRemover => (postId) async {
         try {
-          await client.changeLikeStatus(fileId: postId, liked: false);
+          await client.changeLikeStatus(fileId: postId, liked: null);
 
           return true;
         } catch (e) {
