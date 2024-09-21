@@ -146,6 +146,7 @@ class GelbooruBuilder
     with
         UnknownMetatagsMixin,
         DefaultHomeMixin,
+        DefaultQuickFavoriteButtonBuilderMixin,
         DefaultThumbnailUrlMixin,
         DefaultThumbnailUrlMixin,
         DefaultPostImageDetailsUrlMixin,

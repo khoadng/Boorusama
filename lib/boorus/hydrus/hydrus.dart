@@ -17,7 +17,6 @@ import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/core/downloads/download_file_name_generator.dart';
-import 'package:boorusama/core/favorites/favorites.dart';
 import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
@@ -290,6 +289,12 @@ class HydrusBuilder
       (context, initialQuery) => HydrusSearchPage(
             initialQuery: initialQuery,
           );
+
+  @override
+  QuickFavoriteButtonBuilder? get quickFavoriteButtonBuilder =>
+      (context, constraints, post) => HydrusQuickFavoriteButton(
+            post: post,
+          );
 }
 
 class HydrusHomePage extends StatelessWidget {
@@ -341,48 +346,6 @@ final ratingServiceNameProvider = FutureProvider<String?>((ref) async {
 
   return services.firstWhereOrNull((e) => e.key == key)?.name;
 });
-
-class HydrusFavoritesPage extends ConsumerWidget {
-  const HydrusFavoritesPage({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
-
-    return ref.watch(ratingServiceNameProvider).when(
-          data: (serviceName) => serviceName == null || serviceName.isEmpty
-              ? _buildError()
-              : Builder(
-                  builder: (context) {
-                    final query = 'system:rating for $serviceName = like'
-                        .replaceAll(' ', '_');
-                    return FavoritesPageScaffold(
-                      favQueryBuilder: () => query,
-                      fetcher: (page) => ref
-                          .read(hydrusPostRepoProvider(config))
-                          .getPosts(query, page),
-                    );
-                  },
-                ),
-          loading: () => const Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(),
-            ),
-          ),
-          error: (error, _) => _buildError(),
-        );
-  }
-
-  Widget _buildError() {
-    return const Scaffold(
-      body: Center(
-        child: Text('Error: Cannot find any like/dislike rating service'),
-      ),
-    );
-  }
-}
 
 class HydrusPostDetailsPage extends ConsumerWidget {
   const HydrusPostDetailsPage({
@@ -518,20 +481,14 @@ class HydrusPostActionToolbar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
-    final isFaved = ref.watch(hydrusFavoriteProvider(post.id));
-
-    final favNotifier = ref.watch(hydrusFavoritesProvider(config).notifier);
+    final canFav = ref.watch(hydrusCanFavoriteProvider).maybeWhen(
+          data: (fav) => fav,
+          orElse: () => false,
+        );
 
     return PostActionToolbar(
       children: [
-        if (config.hasLoginDetails())
-          FavoritePostButton(
-            isFaved: isFaved,
-            isAuthorized: config.hasLoginDetails(),
-            addFavorite: () => favNotifier.add(post.id),
-            removeFavorite: () => favNotifier.remove(post.id),
-          ),
+        if (canFav) HydrusFavoritePostButton(post: post),
         BookmarkPostButton(post: post),
         DownloadPostButton(post: post),
       ],

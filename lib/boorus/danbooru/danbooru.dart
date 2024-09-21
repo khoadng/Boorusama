@@ -82,7 +82,10 @@ const kDanbooruPostSamples = [
 ];
 
 class DanbooruBuilder
-    with DefaultTagColorMixin, NewGranularRatingOptionsBuilderMixin
+    with
+        DefaultQuickFavoriteButtonBuilderMixin,
+        DefaultTagColorMixin,
+        NewGranularRatingOptionsBuilderMixin
     implements BooruBuilder {
   DanbooruBuilder({
     required this.postRepo,

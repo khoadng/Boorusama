@@ -8,6 +8,16 @@ mixin FavoriteNotSupportedMixin implements BooruBuilder {
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder => null;
+  @override
+  QuickFavoriteButtonBuilder? get quickFavoriteButtonBuilder => null;
+}
+
+mixin DefaultQuickFavoriteButtonBuilderMixin implements BooruBuilder {
+  @override
+  QuickFavoriteButtonBuilder get quickFavoriteButtonBuilder =>
+      (context, constraints, post) => DefaultQuickFavoriteButton(
+            post: post,
+          );
 }
 
 mixin ArtistNotSupportedMixin implements BooruBuilder {

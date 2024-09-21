@@ -2,6 +2,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/hydrus/hydrus.dart';
+import 'package:boorusama/clients/hydrus/types/types.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/functional.dart';
 import 'favorites.dart';
@@ -16,4 +18,13 @@ final hydrusFavoriteProvider =
   final config = ref.watchConfig;
   final favorites = ref.watch(hydrusFavoritesProvider(config));
   return favorites[postId] ?? false;
+});
+
+final hydrusCanFavoriteProvider = FutureProvider<bool>((ref) async {
+  final config = ref.watchConfig;
+  final client = ref.read(hydrusClientProvider(config));
+
+  final services = await client.getServicesCached();
+
+  return getLikeDislikeRatingKey(services) != null;
 });

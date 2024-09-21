@@ -25,6 +25,7 @@ import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
+import 'package:boorusama/core/favorites/favorites.dart';
 import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts/posts.dart';
@@ -63,6 +64,8 @@ abstract class BooruBuilder {
   ArtistPageBuilder? get artistPageBuilder;
   CharacterPageBuilder? get characterPageBuilder;
   CommentPageBuilder? get commentPageBuilder;
+
+  QuickFavoriteButtonBuilder? get quickFavoriteButtonBuilder;
 
   HomeViewBuilder get homeViewBuilder;
 

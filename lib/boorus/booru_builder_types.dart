@@ -34,6 +34,12 @@ typedef FavoritesPageBuilder = Widget Function(
   BooruConfig config,
 );
 
+typedef QuickFavoriteButtonBuilder = Widget Function(
+  BuildContext context,
+  BoxConstraints constraints,
+  Post post,
+);
+
 typedef ArtistPageBuilder = Widget Function(
   BuildContext context,
   String artistName,

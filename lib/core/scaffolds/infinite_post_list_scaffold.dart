@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:like_button/like_button.dart';
-import 'package:material_symbols_icons/symbols.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
@@ -96,10 +94,8 @@ class _InfinitePostListScaffoldState<T extends Post>
           config.postGestures?.preview,
         ) ??
         false;
-    final favoriteAdder = booruBuilder?.favoriteAdder;
-    final favoriteRemover = booruBuilder?.favoriteRemover;
+
     final gridThumbnailUrlBuilder = booruBuilder?.gridThumbnailUrlBuilder;
-    final canFavorite = booruBuilder?.canFavorite(config) ?? false;
 
     return LayoutBuilder(
       builder: (context, constraints) => PostGrid(
@@ -221,21 +217,15 @@ class _InfinitePostListScaffoldState<T extends Post>
                               }
                             }
                           : null,
-                      quickActionButtonBuilder: !multiSelect &&
-                              canFavorite &&
-                              !block
-                          ? (context, constraints) => QuickFavoriteButton(
-                                isFaved: ref.watch(favoriteProvider(post.id)),
-                                onFavToggle: (isFaved) async {
-                                  if (isFaved) {
-                                    if (favoriteAdder == null) return;
-                                    await favoriteAdder(post.id, ref);
-                                  } else {
-                                    if (favoriteRemover == null) return;
-                                    await favoriteRemover(post.id, ref);
-                                  }
-                                },
-                              )
+                      quickActionButtonBuilder: !multiSelect && !block
+                          ? (context, constraints) =>
+                              booruBuilder?.quickFavoriteButtonBuilder != null
+                                  ? booruBuilder!.quickFavoriteButtonBuilder!(
+                                      context,
+                                      constraints,
+                                      post,
+                                    )
+                                  : const SizedBox.shrink()
                           : defaultImagePreviewButtonBuilder(ref, post),
                       autoScrollOptions: AutoScrollOptions(
                         controller: _autoScrollController,
@@ -278,48 +268,6 @@ class _InfinitePostListScaffoldState<T extends Post>
           },
           error: widget.errors,
         ),
-      ),
-    );
-  }
-}
-
-class QuickFavoriteButton extends ConsumerWidget {
-  const QuickFavoriteButton({
-    super.key,
-    this.onFavToggle,
-    required this.isFaved,
-  });
-
-  final void Function(bool value)? onFavToggle;
-  final bool isFaved;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
-      padding: const EdgeInsets.only(
-        top: 2,
-        bottom: 1,
-        right: 1,
-        left: 3,
-      ),
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: Colors.black.withOpacity(0.5),
-      ),
-      child: LikeButton(
-        isLiked: isFaved,
-        onTap: (isLiked) {
-          onFavToggle?.call(!isLiked);
-
-          return Future.value(!isLiked);
-        },
-        likeBuilder: (isLiked) {
-          return Icon(
-            isLiked ? Symbols.favorite : Symbols.favorite,
-            color: isLiked ? context.colors.upvoteColor : Colors.white,
-            fill: isLiked ? 1 : 0,
-          );
-        },
       ),
     );
   }

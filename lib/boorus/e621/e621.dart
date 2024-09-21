@@ -108,6 +108,7 @@ class E621Builder
         LegacyGranularRatingOptionsBuilderMixin,
         UnknownMetatagsMixin,
         DefaultHomeMixin,
+        DefaultQuickFavoriteButtonBuilderMixin,
         DefaultThumbnailUrlMixin,
         DefaultPostGesturesHandlerMixin,
         DefaultPostStatisticsPageBuilderMixin,

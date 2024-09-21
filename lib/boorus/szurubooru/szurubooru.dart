@@ -38,6 +38,7 @@ class SzurubooruBuilder
         NoteNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
         UnknownMetatagsMixin,
+        DefaultQuickFavoriteButtonBuilderMixin,
         DefaultHomeMixin,
         DefaultTagColorMixin,
         DefaultPostImageDetailsUrlMixin,
