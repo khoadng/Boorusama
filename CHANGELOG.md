@@ -1,3 +1,12 @@
+# Unreleased-2024.9.22
+- [Danbooru] Add an option to hide banned posts
+- Add support for Hydrus Network
+- Add a new booru profile option to include extra tags in every search
+- Redesign bulk downdloader, remove legacy download method
+- Hide system UI when UI overlay is hidden in image viewer
+- Fix an issue where changing orientation will cause the home page to reset
+- More UI/UX improvements to desktop version
+
 # 3.20.0
 - [Szurubooru] Support post voting and tag colors
 - [Danbooru] Add a saved search context menu
