@@ -14,7 +14,6 @@ import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
@@ -137,12 +136,7 @@ class PhilomenaBuilder
       castOrNull<PhilomenaPost>(rawPost).toOption().fold(
             () => rawPost.sampleImageUrl,
             (post) => config.imageDetaisQuality.toOption().fold(
-                () => switch (imageQuality) {
-                      ImageQuality.highest ||
-                      ImageQuality.original =>
-                        post.representation.medium,
-                      _ => post.representation.small,
-                    },
+                () => post.sampleImageUrl,
                 (quality) =>
                     switch (stringToPhilomenaPostQualityType(quality)) {
                       PhilomenaPostQualityType.full => post.representation.full,
