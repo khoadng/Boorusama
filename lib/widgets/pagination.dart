@@ -65,6 +65,7 @@ class PageSelector extends StatefulWidget {
     this.onPrevious,
     this.onNext,
     required this.onPageSelect,
+    this.pageInput = true,
   });
 
   final int currentPage;
@@ -73,6 +74,7 @@ class PageSelector extends StatefulWidget {
   final VoidCallback? onPrevious;
   final VoidCallback? onNext;
   final void Function(int page) onPageSelect;
+  final bool pageInput;
 
   @override
   State<PageSelector> createState() => _PageSelectorState();
@@ -137,49 +139,50 @@ class _PageSelectorState extends State<PageSelector> {
             ),
           ),
         ),
-        if (!isLowPageCount)
-          if (!pageInputMode)
-            IconButton(
-              padding: EdgeInsets.zero,
-              visualDensity: VisualDensity.compact,
-              onPressed: () {
-                setState(() {
-                  pageInputMode = !pageInputMode;
-                });
-              },
-              icon: const Icon(Symbols.more_horiz),
-            )
-          else
-            SizedBox(
-              width: 50,
-              child: Focus(
-                onFocusChange: (value) {
-                  if (!value) {
-                    setState(() {
-                      pageInputMode = false;
-                    });
-                  }
+        if (widget.pageInput)
+          if (!isLowPageCount)
+            if (!pageInputMode)
+              IconButton(
+                padding: EdgeInsets.zero,
+                visualDensity: VisualDensity.compact,
+                onPressed: () {
+                  setState(() {
+                    pageInputMode = !pageInputMode;
+                  });
                 },
-                child: TextField(
-                  autofocus: true,
-                  onTapOutside: (_) {
-                    setState(() {
-                      pageInputMode = false;
-                    });
+                icon: const Icon(Symbols.more_horiz),
+              )
+            else
+              SizedBox(
+                width: 50,
+                child: Focus(
+                  onFocusChange: (value) {
+                    if (!value) {
+                      setState(() {
+                        pageInputMode = false;
+                      });
+                    }
                   },
-                  decoration: const InputDecoration(
-                    isDense: true,
-                    contentPadding: EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 2,
+                  child: TextField(
+                    autofocus: true,
+                    onTapOutside: (_) {
+                      setState(() {
+                        pageInputMode = false;
+                      });
+                    },
+                    decoration: const InputDecoration(
+                      isDense: true,
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 2,
+                      ),
                     ),
+                    textInputAction: TextInputAction.done,
+                    keyboardType: TextInputType.number,
+                    onSubmitted: onSubmit,
                   ),
-                  textInputAction: TextInputAction.done,
-                  keyboardType: TextInputType.number,
-                  onSubmitted: onSubmit,
                 ),
               ),
-            ),
         IconButton(
           onPressed: isLastPage ? null : widget.onNext,
           padding: EdgeInsets.zero,
