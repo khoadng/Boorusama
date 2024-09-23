@@ -12,6 +12,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
 import 'package:boorusama/router.dart';
@@ -20,6 +21,50 @@ import 'package:boorusama/widgets/widgets.dart';
 final allowFetchProvider = StateProvider<bool>((ref) {
   return true;
 });
+
+class DefaultPostDetailsDesktopPage extends ConsumerStatefulWidget {
+  const DefaultPostDetailsDesktopPage({
+    super.key,
+    required this.initialIndex,
+    required this.posts,
+    required this.onExit,
+    required this.onPageChanged,
+  });
+
+  final int initialIndex;
+  final List<Post> posts;
+  final void Function(int index) onExit;
+  final void Function(int page) onPageChanged;
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _DefaultPostDetailsDesktopPageState();
+}
+
+class _DefaultPostDetailsDesktopPageState
+    extends ConsumerState<DefaultPostDetailsDesktopPage> {
+  @override
+  Widget build(BuildContext context) {
+    return PostDetailsPageDesktopScaffold(
+      posts: widget.posts,
+      initialIndex: widget.initialIndex,
+      onExit: widget.onExit,
+      onPageChanged: widget.onPageChanged,
+      imageUrlBuilder: (post) => post.sampleImageUrl,
+      topRightButtonsBuilder: (currentPage, expanded, post) =>
+          GeneralMoreActionButton(post: post),
+      toolbarBuilder: (context, post) => SimplePostActionToolbar(post: post),
+      tagListBuilder: (context, post) => BasicTagList(
+        tags: post.tags.toList(),
+        onTap: (tag) => goToSearchPage(context, tag: tag),
+      ),
+      fileDetailsBuilder: (context, post) => FileDetailsSection(
+        post: post,
+        rating: post.rating,
+      ),
+    );
+  }
+}
 
 class PostDetailsPageDesktopScaffold<T extends Post>
     extends ConsumerStatefulWidget {
@@ -37,6 +82,8 @@ class PostDetailsPageDesktopScaffold<T extends Post>
     this.fileDetailsBuilder,
     this.poolTileBuilder,
     this.infoBuilder,
+    this.sourceBuilder,
+    this.commentBuilder,
     this.sliverRelatedPostsBuilder,
     this.sliverArtistPostsBuilder,
     this.sliverCharacterPostsBuilder,
@@ -58,7 +105,8 @@ class PostDetailsPageDesktopScaffold<T extends Post>
   final Widget Function(BuildContext context, T post)? fileDetailsBuilder;
   final Widget Function(BuildContext context, T post)? poolTileBuilder;
   final Widget Function(BuildContext context, T post)? infoBuilder;
-
+  final Widget Function(BuildContext context, T post)? sourceBuilder;
+  final Widget Function(BuildContext context, T post)? commentBuilder;
   final String Function(T post) imageUrlBuilder;
 
   final Widget Function(BuildContext context, T post)?
@@ -180,10 +228,19 @@ class _PostDetailsDesktopScaffoldState<T extends Post>
                       const Divider(height: 8, thickness: 1),
                       widget.fileDetailsBuilder!(context, post),
                     ],
+                    if (widget.sourceBuilder != null) ...[
+                      const Divider(height: 8, thickness: 1),
+                      widget.sourceBuilder!(context, post),
+                    ],
                     if (allowFetch)
                       if (widget.poolTileBuilder != null) ...[
                         const Divider(height: 8, thickness: 1),
                         widget.poolTileBuilder!(context, post),
+                      ],
+                    if (allowFetch)
+                      if (widget.commentBuilder != null) ...[
+                        const Divider(height: 8, thickness: 1),
+                        widget.commentBuilder!(context, post),
                       ],
                   ],
                 ),

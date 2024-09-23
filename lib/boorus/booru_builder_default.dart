@@ -187,9 +187,22 @@ mixin DefaultBooruUIMixin implements BooruBuilder {
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) => DefaultPostDetailsPage(
+      (context, config, payload) {
+        return PostDetailsLayoutSwitcher(
+          initialIndex: payload.initialIndex,
+          posts: payload.posts,
+          scrollController: payload.scrollController,
+          desktop: (controller) => DefaultPostDetailsDesktopPage(
+            initialIndex: controller.currentPage.value,
+            posts: payload.posts,
+            onExit: (page) => controller.onExit(page),
+            onPageChanged: (page) => controller.setPage(page),
+          ),
+          mobile: (controller) => DefaultPostDetailsPage(
             payload: payload,
-          );
+          ),
+        );
+      };
 }
 
 class DefaultPostDetailsPage extends ConsumerWidget {

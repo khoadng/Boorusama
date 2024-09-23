@@ -1,9 +1,5 @@
-// Dart imports:
-import 'dart:async';
-
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,15 +10,9 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/debounce_mixin.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/widgets.dart';
 import 'gelbooru_post_details_page.dart';
-
-final allowFetchProvider = StateProvider<bool>((ref) {
-  return false;
-});
 
 class GelbooruPostDetailsDesktopPage extends ConsumerStatefulWidget {
   const GelbooruPostDetailsDesktopPage({
@@ -30,14 +20,12 @@ class GelbooruPostDetailsDesktopPage extends ConsumerStatefulWidget {
     required this.initialIndex,
     required this.posts,
     required this.onExit,
-    this.hasDetailsTagList = true,
     required this.onPageChanged,
   });
 
   final int initialIndex;
   final List<Post> posts;
   final void Function(int index) onExit;
-  final bool hasDetailsTagList;
   final void Function(int page) onPageChanged;
 
   @override
@@ -46,135 +34,69 @@ class GelbooruPostDetailsDesktopPage extends ConsumerStatefulWidget {
 }
 
 class _DanbooruPostDetailsDesktopPageState
-    extends ConsumerState<GelbooruPostDetailsDesktopPage> with DebounceMixin {
-  late var page = widget.initialIndex;
-  Timer? _debounceTimer;
-
-  @override
-  void dispose() {
-    super.dispose();
-    _debounceTimer?.cancel();
-  }
-
+    extends ConsumerState<GelbooruPostDetailsDesktopPage> {
   @override
   Widget build(BuildContext context) {
-    final post = widget.posts[page];
     final booruConfig = ref.watchConfig;
     final gelArtistMap = ref.watch(gelbooruPostDetailsArtistMapProvider);
 
-    return CallbackShortcuts(
-      bindings: {
-        const SingleActivator(
-          LogicalKeyboardKey.keyF,
-          control: true,
-        ): () => goToOriginalImagePage(context, post),
-      },
-      child: DetailsPageDesktop(
-        onExit: widget.onExit,
-        initialPage: widget.initialIndex,
-        totalPages: widget.posts.length,
-        onPageChanged: (page) {
-          widget.onPageChanged(page);
-          setState(() {
-            this.page = page;
-
-            ref.read(allowFetchProvider.notifier).state = false;
-
-            _debounceTimer?.cancel();
-            _debounceTimer = Timer(
-              const Duration(seconds: 1),
-              () {
-                ref.read(allowFetchProvider.notifier).state = true;
-
-                if (widget.hasDetailsTagList) {
-                  ref.read(tagsProvider(booruConfig).notifier).load(
-                    post.tags,
-                    onSuccess: (tags) {
-                      if (!mounted) return;
-
-                      ref.read(tagsProvider(booruConfig).notifier).load(
-                        post.tags,
-                        onSuccess: (tags) {
-                          if (!mounted) return;
-                          ref.setGelbooruPostDetailsArtistMap(
-                            post: post,
-                            tags: tags,
-                          );
-                        },
-                      );
-                    },
-                  );
-                }
-              },
+    return PostDetailsPageDesktopScaffold(
+      posts: widget.posts,
+      initialIndex: widget.initialIndex,
+      onExit: widget.onExit,
+      onPageChanged: widget.onPageChanged,
+      onPageLoaded: (post) {
+        ref.read(tagsProvider(booruConfig).notifier).load(
+          post.tags,
+          onSuccess: (tags) {
+            if (!mounted) return;
+            ref.setGelbooruPostDetailsArtistMap(
+              post: post,
+              tags: tags,
             );
-          });
-        },
-        topRightBuilder: (context) => GeneralMoreActionButton(
-          post: post,
-        ),
-        mediaBuilder: (context) {
-          return PostMedia(
-            post: post,
-            imageUrl: post.sampleImageUrl,
-            placeholderImageUrl: post.thumbnailImageUrl,
-            autoPlay: true,
-            inFocus: true,
-          );
-        },
-        infoBuilder: (context) {
-          return CustomScrollView(
-            slivers: [
-              SliverList(
-                delegate: SliverChildListDelegate(
-                  [
-                    FileDetailsSection(
-                      post: post,
-                      rating: post.rating,
-                    ),
-                    const Divider(height: 8, thickness: 1),
-                    SimplePostActionToolbar(post: post),
-                    const Divider(height: 8, thickness: 1),
-                    TagsTile(
-                      initialExpanded: true,
-                      tags: ref.watch(tagsProvider(booruConfig)),
-                      post: post,
-                      onTagTap: (tag) =>
-                          goToSearchPage(context, tag: tag.rawName),
-                    ),
-                  ],
-                ),
-              ),
-              if (allowFetch)
-                gelArtistMap.lookup(post.id).fold(
-                      () => const SliverSizedBox.shrink(),
-                      (tags) => tags.isNotEmpty
-                          ? ArtistPostList(
-                              artists: tags,
-                              builder: (tag) => ref
-                                  .watch(gelbooruArtistPostsProvider(tag))
-                                  .maybeWhen(
-                                    data: (data) => PreviewPostGrid(
-                                      posts: data,
-                                      onTap: (postIdx) => goToPostDetailsPage(
-                                        context: context,
-                                        posts: data,
-                                        initialIndex: postIdx,
-                                      ),
-                                      imageUrl: (item) => item.sampleImageUrl,
-                                    ),
-                                    orElse: () =>
-                                        const PreviewPostGridPlaceholder(),
-                                  ),
-                            )
-                          : const SliverSizedBox.shrink(),
-                    ),
-              const SliverSizedBox(height: 24),
-            ],
-          );
-        },
+          },
+        );
+      },
+      imageUrlBuilder: (post) => post.sampleImageUrl,
+      topRightButtonsBuilder: (currentPage, expanded, post) =>
+          GeneralMoreActionButton(post: post),
+      toolbarBuilder: (context, post) => SimplePostActionToolbar(post: post),
+      tagListBuilder: (context, post) => TagsTile(
+        initialExpanded: true,
+        tags: ref.watch(tagsProvider(booruConfig)),
+        post: post,
+        onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
       ),
+      fileDetailsBuilder: (context, post) => FileDetailsSection(
+        post: post,
+        rating: post.rating,
+      ),
+      sliverArtistPostsBuilder: (context, post) => gelArtistMap
+          .lookup(post.id)
+          .fold(
+            () => const [],
+            (tags) => tags.isNotEmpty
+                ? [
+                    ArtistPostList(
+                      artists: tags,
+                      builder: (tag) => ref
+                          .watch(gelbooruArtistPostsProvider(tag))
+                          .maybeWhen(
+                            data: (data) => PreviewPostGrid(
+                              posts: data,
+                              onTap: (postIdx) => goToPostDetailsPage(
+                                context: context,
+                                posts: data,
+                                initialIndex: postIdx,
+                              ),
+                              imageUrl: (item) => item.sampleImageUrl,
+                            ),
+                            orElse: () => const PreviewPostGridPlaceholder(),
+                          ),
+                    ),
+                  ]
+                : [],
+          ),
     );
   }
-
-  bool get allowFetch => ref.watch(allowFetchProvider);
 }
