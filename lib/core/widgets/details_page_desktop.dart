@@ -20,21 +20,21 @@ const String kShowInfoStateCacheKey = 'showInfoCacheStateKey';
 class DetailsPageDesktop extends ConsumerStatefulWidget {
   const DetailsPageDesktop({
     super.key,
-    required this.mediaBuilder,
-    required this.infoBuilder,
+    required this.media,
+    required this.info,
     this.initialPage = 0,
     required this.totalPages,
     required this.onPageChanged,
     required this.onExit,
-    this.topRightBuilder,
+    this.topRight,
     this.onShowInfoChanged,
   });
 
   final int initialPage;
   final int totalPages;
-  final Widget Function(BuildContext context) mediaBuilder;
-  final Widget Function(BuildContext context) infoBuilder;
-  final Widget Function(BuildContext context)? topRightBuilder;
+  final Widget media;
+  final Widget info;
+  final Widget? topRight;
   final void Function(int page) onPageChanged;
   final void Function(int page) onExit;
   final void Function(bool value)? onShowInfoChanged;
@@ -91,7 +91,7 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                   Expanded(
                     child: Stack(
                       children: [
-                        widget.mediaBuilder(context),
+                        widget.media,
                         if (currentPage < widget.totalPages - 1)
                           Align(
                             alignment: Alignment.centerRight,
@@ -138,7 +138,7 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                             ),
                           ),
                         ),
-                        if (widget.topRightBuilder != null)
+                        if (widget.topRight != null)
                           Positioned(
                             top: 8,
                             right: 12,
@@ -153,8 +153,7 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                                         context: context,
                                         backgroundColor: context
                                             .theme.scaffoldBackgroundColor,
-                                        builder: (context) =>
-                                            widget.infoBuilder(context),
+                                        builder: (context) => widget.info,
                                       ),
                                       icon: const Icon(
                                         Symbols.info,
@@ -181,7 +180,7 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                                       ),
                                     ),
                                   const SizedBox(width: 8),
-                                  widget.topRightBuilder!.call(context),
+                                  widget.topRight!,
                                 ],
                               ),
                             ),
@@ -197,7 +196,7 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                     Container(
                       constraints: const BoxConstraints(maxWidth: 400),
                       color: context.colorScheme.surface,
-                      child: widget.infoBuilder(context),
+                      child: widget.info,
                     ),
                 ],
               ),

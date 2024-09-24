@@ -166,100 +166,87 @@ class _PostDetailsDesktopScaffoldState<T extends Post>
             },
           );
         },
-        topRightBuilder: (context) =>
-            widget.topRightButtonsBuilder?.call(
+        topRight: widget.topRightButtonsBuilder?.call(
               page,
               showInfo.value,
               post,
             ) ??
             const SizedBox.shrink(),
-        mediaBuilder: (context) {
-          final noteState = ref.watch(notesControllerProvider(post));
-
-          return Stack(
-            children: [
-              if (nextPost != null && !nextPost.isVideo)
-                ExtendedImage.network(
-                  widget.imageUrlBuilder(nextPost),
-                  width: 1,
-                  height: 1,
-                  cacheHeight: 10,
-                  cacheWidth: 10,
-                ),
-              PostMedia(
-                post: post,
-                imageUrl: widget.imageUrlBuilder(post),
-                // Prevent placeholder image from showing when first loaded a post with translated image
-                placeholderImageUrl:
-                    post.isTranslated ? null : post.thumbnailImageUrl,
-                imageOverlayBuilder: (constraints) =>
-                    noteOverlayBuilderDelegate(constraints, post, noteState),
-                autoPlay: true,
-                inFocus: true,
+        media: Stack(
+          children: [
+            if (nextPost != null && !nextPost.isVideo)
+              ExtendedImage.network(
+                widget.imageUrlBuilder(nextPost),
+                width: 1,
+                height: 1,
+                cacheHeight: 10,
+                cacheWidth: 10,
               ),
-            ],
-          );
-        },
-        infoBuilder: (context) {
-          return CustomScrollView(
-            slivers: [
-              SliverList(
-                delegate: SliverChildListDelegate(
-                  [
-                    if (widget.infoBuilder != null)
-                      widget.infoBuilder!(context, post),
-                    if (widget.toolbarBuilder != null) ...[
-                      const Divider(height: 8, thickness: 1),
-                      widget.toolbarBuilder!(context, post),
-                    ],
-                    if (widget.artistInfoBuilder != null) ...[
-                      const Divider(height: 8, thickness: 1),
-                      widget.artistInfoBuilder!(context, post),
-                    ],
-                    if (widget.statsTileBuilder != null) ...[
-                      const Divider(height: 8, thickness: 1),
-                      widget.statsTileBuilder!(context, post),
-                    ],
-                    if (widget.tagListBuilder != null) ...[
-                      const Divider(height: 8, thickness: 1),
-                      widget.tagListBuilder!(context, post),
-                    ],
-                    if (widget.fileDetailsBuilder != null) ...[
-                      const Divider(height: 8, thickness: 1),
-                      widget.fileDetailsBuilder!(context, post),
-                    ],
-                    if (widget.sourceBuilder != null) ...[
-                      const Divider(height: 8, thickness: 1),
-                      widget.sourceBuilder!(context, post),
-                    ],
-                    if (allowFetch)
-                      if (widget.poolTileBuilder != null) ...[
-                        const Divider(height: 8, thickness: 1),
-                        widget.poolTileBuilder!(context, post),
-                      ],
-                    if (allowFetch)
-                      if (widget.commentBuilder != null) ...[
-                        const Divider(height: 8, thickness: 1),
-                        widget.commentBuilder!(context, post),
-                      ],
+            PostMedia(
+              post: post,
+              imageUrl: widget.imageUrlBuilder(post),
+              // Prevent placeholder image from showing when first loaded a post with translated image
+              placeholderImageUrl:
+                  post.isTranslated ? null : post.thumbnailImageUrl,
+              imageOverlayBuilder: (constraints) => noteOverlayBuilderDelegate(
+                constraints,
+                post,
+                ref.watch(notesControllerProvider(post)),
+              ),
+              autoPlay: true,
+              inFocus: true,
+            ),
+          ],
+        ),
+        info: CustomScrollView(
+          slivers: [
+            SliverList(
+              delegate: SliverChildListDelegate(
+                [
+                  if (widget.infoBuilder != null)
+                    widget.infoBuilder!(context, post),
+                  if (widget.toolbarBuilder != null) ...[
+                    const Divider(height: 8, thickness: 1),
+                    widget.toolbarBuilder!(context, post),
                   ],
-                ),
+                  if (widget.artistInfoBuilder != null) ...[
+                    const Divider(height: 8, thickness: 1),
+                    widget.artistInfoBuilder!(context, post),
+                  ],
+                  if (widget.statsTileBuilder != null) ...[
+                    const Divider(height: 8, thickness: 1),
+                    widget.statsTileBuilder!(context, post),
+                  ],
+                  if (widget.tagListBuilder != null) ...[
+                    const Divider(height: 8, thickness: 1),
+                    widget.tagListBuilder!(context, post),
+                  ],
+                  if (widget.fileDetailsBuilder != null) ...[
+                    const Divider(height: 8, thickness: 1),
+                    widget.fileDetailsBuilder!(context, post),
+                  ],
+                  if (allowFetch)
+                    if (widget.poolTileBuilder != null) ...[
+                      const Divider(height: 8, thickness: 1),
+                      widget.poolTileBuilder!(context, post),
+                    ],
+                ],
               ),
-              if (allowFetch)
-                if (widget.sliverRelatedPostsBuilder != null) ...[
-                  widget.sliverRelatedPostsBuilder!(context, post),
-                ],
-              if (allowFetch)
-                if (widget.sliverArtistPostsBuilder != null)
-                  ...widget.sliverArtistPostsBuilder!(context, post),
-              if (allowFetch)
-                if (widget.sliverCharacterPostsBuilder != null) ...[
-                  widget.sliverCharacterPostsBuilder!(context, post),
-                ],
-              const SliverSizedBox(height: 24),
-            ],
-          );
-        },
+            ),
+            if (allowFetch)
+              if (widget.sliverRelatedPostsBuilder != null) ...[
+                widget.sliverRelatedPostsBuilder!(context, post),
+              ],
+            if (allowFetch)
+              if (widget.sliverArtistPostsBuilder != null)
+                ...widget.sliverArtistPostsBuilder!(context, post),
+            if (allowFetch)
+              if (widget.sliverCharacterPostsBuilder != null) ...[
+                widget.sliverCharacterPostsBuilder!(context, post),
+              ],
+            const SliverSizedBox(height: 24),
+          ],
+        ),
       ),
     );
   }

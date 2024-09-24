@@ -91,76 +91,73 @@ class _DanbooruPostDetailsDesktopPageState
             setState(() => loading = false);
           });
         },
-        topRightBuilder: (context) => GeneralMoreActionButton(
+        topRight: GeneralMoreActionButton(
           post: post,
         ),
-        mediaBuilder: (context) {
-          final noteState = ref.watch(notesControllerProvider(post));
-
-          return PostMedia(
-            post: post,
-            imageUrl: post.sampleImageUrl,
-            // Prevent placeholder image from showing when first loaded a post with translated image
-            placeholderImageUrl:
-                post.isTranslated ? null : post.thumbnailImageUrl,
-            imageOverlayBuilder: (constraints) =>
-                noteOverlayBuilderDelegate(constraints, post, noteState),
-            autoPlay: true,
-            inFocus: true,
-          );
-        },
-        infoBuilder: (context) {
-          return CustomScrollView(
-            slivers: [
-              SliverList(
-                delegate: SliverChildListDelegate(
-                  [
-                    SimpleInformationSection(
-                      post: post,
-                    ),
-                    const Divider(height: 8, thickness: 1),
-                    DefaultPostActionToolbar(post: post),
-                    const Divider(height: 8, thickness: 1),
-                    E621ArtistSection(post: post),
-                    //FIXME: implement stats tile
-                    // Padding(
-                    //   padding: const EdgeInsets.symmetric(vertical: 8),
-                    //   child: DanbooruPostStatsTile(post: post),
-                    // ),
-                    const Divider(height: 8, thickness: 1),
-                    E621TagsTile(post: post),
-                    FileDetailsSection(
-                      post: post,
-                      rating: post.rating,
-                    ),
-                    const Divider(height: 8, thickness: 1),
-                  ],
-                ),
+        media: PostMedia(
+          post: post,
+          imageUrl: post.sampleImageUrl,
+          // Prevent placeholder image from showing when first loaded a post with translated image
+          placeholderImageUrl:
+              post.isTranslated ? null : post.thumbnailImageUrl,
+          imageOverlayBuilder: (constraints) => noteOverlayBuilderDelegate(
+            constraints,
+            post,
+            ref.watch(notesControllerProvider(post)),
+          ),
+          autoPlay: true,
+          inFocus: true,
+        ),
+        info: CustomScrollView(
+          slivers: [
+            SliverList(
+              delegate: SliverChildListDelegate(
+                [
+                  SimpleInformationSection(
+                    post: post,
+                  ),
+                  const Divider(height: 8, thickness: 1),
+                  DefaultPostActionToolbar(post: post),
+                  const Divider(height: 8, thickness: 1),
+                  E621ArtistSection(post: post),
+                  //FIXME: implement stats tile
+                  // Padding(
+                  //   padding: const EdgeInsets.symmetric(vertical: 8),
+                  //   child: DanbooruPostStatsTile(post: post),
+                  // ),
+                  const Divider(height: 8, thickness: 1),
+                  E621TagsTile(post: post),
+                  FileDetailsSection(
+                    post: post,
+                    rating: post.rating,
+                  ),
+                  const Divider(height: 8, thickness: 1),
+                ],
               ),
-              if (allowFetch)
-                post.artistTags.isNotEmpty
-                    ? ArtistPostList(
-                        artists: post.artistTags.toList(),
-                        builder: (tag) => ref
-                            .watch(e621ArtistPostsProvider(tag))
-                            .maybeWhen(
-                              data: (data) => PreviewPostGrid(
+            ),
+            if (allowFetch)
+              post.artistTags.isNotEmpty
+                  ? ArtistPostList(
+                      artists: post.artistTags.toList(),
+                      builder: (tag) => ref
+                          .watch(e621ArtistPostsProvider(tag))
+                          .maybeWhen(
+                            data: (data) => PreviewPostGrid(
+                              posts: data,
+                              onTap: (postIdx) => goToPostDetailsPage(
+                                context: context,
                                 posts: data,
-                                onTap: (postIdx) => goToPostDetailsPage(
-                                  context: context,
-                                  posts: data,
-                                  initialIndex: postIdx,
-                                ),
-                                imageUrl: (item) => item.thumbnailFromSettings(
-                                    ref.watch(imageListingSettingsProvider)),
+                                initialIndex: postIdx,
                               ),
-                              orElse: () => const PreviewPostGridPlaceholder(),
+                              imageUrl: (item) => item.thumbnailFromSettings(
+                                  ref.watch(imageListingSettingsProvider)),
                             ),
-                      )
-                    : const SliverSizedBox.shrink()
-            ],
-          );
-        },
+                            orElse: () => const PreviewPostGridPlaceholder(),
+                          ),
+                    )
+                  : const SliverSizedBox.shrink()
+          ],
+        ),
       ),
     );
   }
