@@ -10,8 +10,10 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
@@ -128,6 +130,7 @@ class _PostDetailsDesktopScaffoldState<T extends Post>
   late final controller = DetailsPageDesktopController(
     initialPage: widget.initialIndex,
     totalPages: widget.posts.length,
+    hideOverlay: ref.read(settingsProvider).hidePostDetailsOverlay,
   );
   late final pageController = PageController(initialPage: widget.initialIndex);
 
@@ -239,6 +242,11 @@ class _PostDetailsDesktopScaffoldState<T extends Post>
                     post,
                     ref.watch(notesControllerProvider(post)),
                   ),
+                  onImageTap: () {
+                    if (!controller.showInfo.value) {
+                      controller.toggleOverlay();
+                    }
+                  },
                   autoPlay: true,
                   inFocus: true,
                 ),

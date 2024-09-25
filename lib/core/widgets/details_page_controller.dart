@@ -5,7 +5,31 @@ enum PageDirection {
   previous,
 }
 
-class DetailsPageController extends ChangeNotifier {
+mixin UIOverlayMixin on ChangeNotifier {
+  ValueNotifier<bool> get hideOverlay;
+
+  void toggleOverlay() {
+    hideOverlay.value = !hideOverlay.value;
+    if (hideOverlay.value) {
+      hideSystemStatus();
+    } else {
+      showSystemStatus();
+    }
+    notifyListeners();
+  }
+
+  // set overlay value
+  void setHideOverlay(bool value) {
+    hideOverlay.value = value;
+    notifyListeners();
+  }
+
+  void restoreSystemStatus() {
+    showSystemStatus();
+  }
+}
+
+class DetailsPageController extends ChangeNotifier with UIOverlayMixin {
   DetailsPageController({
     bool swipeDownToDismiss = true,
     bool hideOverlay = false,
@@ -22,6 +46,7 @@ class DetailsPageController extends ChangeNotifier {
 
   bool get swipeDownToDismiss => _enableSwipeDownToDismiss;
   bool get pageSwipe => _enablePageSwipe;
+  @override
   ValueNotifier<bool> get hideOverlay => _hideOverlay;
   ValueNotifier<bool> get slideshow => _slideshow;
 
@@ -81,30 +106,10 @@ class DetailsPageController extends ChangeNotifier {
     notifyListeners();
   }
 
-  // set overlay value
-  void setHideOverlay(bool value) {
-    _hideOverlay.value = value;
-    notifyListeners();
-  }
-
   // set enable swipe page
   void setEnablePageSwipe(bool value) {
     _enablePageSwipe = value;
     notifyListeners();
-  }
-
-  void toggleOverlay() {
-    _hideOverlay.value = !_hideOverlay.value;
-    if (_hideOverlay.value) {
-      hideSystemStatus();
-    } else {
-      showSystemStatus();
-    }
-    notifyListeners();
-  }
-
-  void restoreSystemStatus() {
-    showSystemStatus();
   }
 
   @override
