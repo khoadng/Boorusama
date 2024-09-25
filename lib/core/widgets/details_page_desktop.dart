@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:async';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,6 +20,49 @@ import 'package:boorusama/widgets/circular_icon_button.dart';
 
 const String kShowInfoStateCacheKey = 'showInfoCacheStateKey';
 
+class DetailsPageDesktopController extends ChangeNotifier {
+  DetailsPageDesktopController({
+    required int initialPage,
+    required this.totalPages,
+  }) : currentPage = ValueNotifier(initialPage);
+
+  final ValueNotifier<bool> showInfo = ValueNotifier(false);
+  late final ValueNotifier<int> currentPage;
+  final int totalPages;
+
+  final StreamController<PageDirection> _pageController =
+      StreamController<PageDirection>.broadcast();
+
+  Stream<PageDirection> get pageStream => _pageController.stream;
+
+  void toggleShowInfo() {
+    showInfo.value = !showInfo.value;
+    notifyListeners();
+  }
+
+  void setShowInfo(bool value) {
+    showInfo.value = value;
+    notifyListeners();
+  }
+
+  void changePage(int page) {
+    currentPage.value = page;
+    notifyListeners();
+  }
+
+  void nextPage() {
+    if (currentPage.value < totalPages - 1) {
+      _pageController.add(PageDirection.next);
+    }
+  }
+
+  void previousPage() {
+    if (currentPage.value > 0) {
+      _pageController.add(PageDirection.previous);
+    }
+  }
+}
+
 class DetailsPageDesktop extends ConsumerStatefulWidget {
   const DetailsPageDesktop({
     super.key,
@@ -24,10 +70,9 @@ class DetailsPageDesktop extends ConsumerStatefulWidget {
     required this.info,
     this.initialPage = 0,
     required this.totalPages,
-    required this.onPageChanged,
     required this.onExit,
     this.topRight,
-    this.onShowInfoChanged,
+    this.controller,
   });
 
   final int initialPage;
@@ -35,9 +80,8 @@ class DetailsPageDesktop extends ConsumerStatefulWidget {
   final Widget media;
   final Widget info;
   final Widget? topRight;
-  final void Function(int page) onPageChanged;
   final void Function(int page) onExit;
-  final void Function(bool value)? onShowInfoChanged;
+  final DetailsPageDesktopController? controller;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -45,23 +89,35 @@ class DetailsPageDesktop extends ConsumerStatefulWidget {
 }
 
 class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
-  late var currentPage = widget.initialPage;
-  bool showInfo = false;
+  late final DetailsPageDesktopController controller = widget.controller ??
+      DetailsPageDesktopController(
+        initialPage: widget.initialPage,
+        totalPages: widget.totalPages,
+      );
 
   @override
   void initState() {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      showInfo = ref.read(miscDataProvider(kShowInfoStateCacheKey)) == 'true';
-      widget.onPageChanged.call(currentPage);
+      final showInfo =
+          ref.read(miscDataProvider(kShowInfoStateCacheKey)) == 'true';
+      controller.setShowInfo(showInfo);
     });
 
     showSystemStatus();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    if (widget.controller == null) {
+      controller.dispose();
+    }
+  }
+
   void _onExit() {
-    widget.onExit.call(currentPage);
+    widget.onExit.call(controller.currentPage.value);
     Navigator.of(context).pop();
   }
 
@@ -73,9 +129,9 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
       child: CallbackShortcuts(
         bindings: {
           const SingleActivator(LogicalKeyboardKey.arrowRight): () =>
-              _nextPost(),
+              controller.nextPage(),
           const SingleActivator(LogicalKeyboardKey.arrowLeft): () =>
-              _previousPost(),
+              controller.previousPage(),
           const SingleActivator(LogicalKeyboardKey.escape): () => _onExit(),
         },
         child: PopScope(
@@ -92,33 +148,45 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                     child: Stack(
                       children: [
                         widget.media,
-                        if (currentPage < widget.totalPages - 1)
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: MaterialButton(
-                              color: Colors.black.withOpacity(0.5),
-                              shape: const CircleBorder(),
-                              padding: const EdgeInsets.all(12),
-                              onPressed: () => _nextPost(),
-                              child: const Icon(
-                                Symbols.arrow_forward,
-                                color: Colors.white,
-                              ),
-                            ),
+                        if (kPreferredLayout.isDesktop)
+                          ValueListenableBuilder(
+                            valueListenable: controller.currentPage,
+                            builder: (context, page, child) => page <
+                                    widget.totalPages - 1
+                                ? Align(
+                                    alignment: Alignment.centerRight,
+                                    child: MaterialButton(
+                                      color: Colors.black.withOpacity(0.5),
+                                      shape: const CircleBorder(),
+                                      padding: const EdgeInsets.all(12),
+                                      onPressed: () => controller.nextPage(),
+                                      child: const Icon(
+                                        Symbols.arrow_forward,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  )
+                                : const SizedBox.shrink(),
                           ),
-                        if (currentPage > 0)
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: MaterialButton(
-                              color: Colors.black.withOpacity(0.5),
-                              shape: const CircleBorder(),
-                              padding: const EdgeInsets.all(12),
-                              onPressed: () => _previousPost(),
-                              child: const Icon(
-                                Symbols.arrow_back,
-                                color: Colors.white,
-                              ),
-                            ),
+                        if (kPreferredLayout.isDesktop)
+                          ValueListenableBuilder(
+                            valueListenable: controller.currentPage,
+                            builder: (context, page, child) => page > 0
+                                ? Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: MaterialButton(
+                                      color: Colors.black.withOpacity(0.5),
+                                      shape: const CircleBorder(),
+                                      padding: const EdgeInsets.all(12),
+                                      onPressed: () =>
+                                          controller.previousPage(),
+                                      child: const Icon(
+                                        Symbols.arrow_back,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  )
+                                : const SizedBox.shrink(),
                           ),
                         SafeArea(
                           child: Align(
@@ -164,14 +232,13 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                                     CircularIconButton(
                                       onPressed: () => setState(
                                         () {
-                                          showInfo = !showInfo;
+                                          controller.toggleShowInfo();
                                           ref
                                               .read(miscDataProvider(
                                                       kShowInfoStateCacheKey)
                                                   .notifier)
-                                              .put(showInfo.toString());
-                                          widget.onShowInfoChanged
-                                              ?.call(showInfo);
+                                              .put(controller.showInfo.value
+                                                  .toString());
                                         },
                                       ),
                                       icon: const Icon(
@@ -192,11 +259,19 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                     width: 1,
                     thickness: 1,
                   ),
-                  if (showInfo && !isSmall)
-                    Container(
-                      constraints: const BoxConstraints(maxWidth: 400),
-                      color: context.colorScheme.surface,
-                      child: widget.info,
+                  if (!isSmall)
+                    ValueListenableBuilder(
+                      valueListenable: controller.showInfo,
+                      builder: (context, value, child) {
+                        return value
+                            ? Container(
+                                constraints:
+                                    const BoxConstraints(maxWidth: 400),
+                                color: context.colorScheme.surface,
+                                child: widget.info,
+                              )
+                            : const SizedBox.shrink();
+                      },
                     ),
                 ],
               ),
@@ -205,23 +280,5 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
         ),
       ),
     );
-  }
-
-  void _nextPost() {
-    if (currentPage < widget.totalPages - 1) {
-      setState(() {
-        currentPage++;
-        widget.onPageChanged.call(currentPage);
-      });
-    }
-  }
-
-  void _previousPost() {
-    if (currentPage > 0) {
-      setState(() {
-        currentPage--;
-        widget.onPageChanged.call(currentPage);
-      });
-    }
   }
 }
