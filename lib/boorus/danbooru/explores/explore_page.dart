@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/explores/explores.dart';
@@ -79,7 +78,9 @@ class ExplorePageDesktop extends ConsumerWidget {
         Offstage(
           offstage: selectedCategory != null,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
+            padding: EdgeInsets.only(
+              top: MediaQuery.viewPaddingOf(context).top,
+            ),
             child: CustomScrollView(
               primary: false,
               slivers: [
@@ -108,25 +109,28 @@ class ExplorePageDesktop extends ConsumerWidget {
         Offstage(
           offstage: selectedCategory == null,
           child: Scaffold(
-            appBar: AppBar(
-              leading: IconButton(
-                onPressed: () => ref
-                    .read(selectedExploreCategoryProvider.notifier)
-                    .state = null,
-                icon: const Icon(Symbols.arrow_back),
-              ),
-            ),
             body: switch (selectedCategory) {
-              ExploreCategory.hot => const ExploreHotPage(),
-              ExploreCategory.mostViewed =>
-                ExploreMostViewedPage.routeOf(context),
-              ExploreCategory.popular => ExplorePopularPage.routeOf(context),
+              ExploreCategory.hot => ExploreHotPage(
+                  onBack: () => _onBack(ref),
+                ),
+              ExploreCategory.mostViewed => ExploreMostViewedPage.routeOf(
+                  context,
+                  onBack: () => _onBack(ref),
+                ),
+              ExploreCategory.popular => ExplorePopularPage.routeOf(
+                  context,
+                  onBack: () => _onBack(ref),
+                ),
               null => const SizedBox.shrink(),
             },
           ),
         ),
       ],
     );
+  }
+
+  void _onBack(WidgetRef ref) {
+    ref.read(selectedExploreCategoryProvider.notifier).state = null;
   }
 }
 

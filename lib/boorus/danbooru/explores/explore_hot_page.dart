@@ -15,7 +15,10 @@ import 'package:boorusama/foundation/i18n.dart';
 class ExploreHotPage extends ConsumerWidget {
   const ExploreHotPage({
     super.key,
+    this.onBack,
   });
+
+  final void Function()? onBack;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -31,6 +34,7 @@ class ExploreHotPage extends ConsumerWidget {
           sliverHeaders: [
             ExploreSliverAppBar(
               title: 'explore.hot'.tr(),
+              onBack: onBack,
             ),
           ],
         ),
