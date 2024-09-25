@@ -69,6 +69,9 @@ class SearchHistoryNotifier extends AsyncNotifier<SearchHistoryState> {
     String history, {
     QueryType queryType = QueryType.simple,
   }) async {
+    // ignore empty history
+    if (history.trim().isEmpty) return;
+
     // If history length is larger than 255 characters, we will not add it.
     // This is a limitation of Hive.
     if (history.length > 255) return;
