@@ -10,7 +10,6 @@ import 'package:boorusama/widgets/widgets.dart';
 import '../router.dart';
 import 'dmails.dart';
 
-//FIXME: Desktop currently doesn't show unread mails
 class SliverUnreadMailsBanner extends ConsumerWidget {
   const SliverUnreadMailsBanner({super.key});
   @override
