@@ -91,6 +91,7 @@ class BulkDownloadTask extends Equatable with DownloadMixin {
     required this.estimatedDownloadSize,
     required this.coverUrl,
     required this.totalItems,
+    required this.mixedMedia,
     required this.siteUrl,
     required this.pageProgress,
     required this.options,
@@ -104,6 +105,7 @@ class BulkDownloadTask extends Equatable with DownloadMixin {
         estimatedDownloadSize = null,
         coverUrl = null,
         totalItems = null,
+        mixedMedia = null,
         siteUrl = null,
         pageProgress = null,
         error = null,
@@ -118,6 +120,7 @@ class BulkDownloadTask extends Equatable with DownloadMixin {
     int? Function()? estimatedDownloadSize,
     String? Function()? coverUrl,
     int? Function()? totalItems,
+    bool? Function()? mixedMedia,
     String? Function()? siteUrl,
     PageProgress? Function()? pageProgress,
     BulkDownloadOptions? options,
@@ -132,6 +135,7 @@ class BulkDownloadTask extends Equatable with DownloadMixin {
           estimatedDownloadSize?.call() ?? this.estimatedDownloadSize,
       coverUrl: coverUrl?.call() ?? this.coverUrl,
       totalItems: totalItems?.call() ?? this.totalItems,
+      mixedMedia: mixedMedia?.call() ?? this.mixedMedia,
       siteUrl: siteUrl?.call() ?? this.siteUrl,
       pageProgress: pageProgress?.call() ?? this.pageProgress,
       options: options ?? this.options,
@@ -145,6 +149,7 @@ class BulkDownloadTask extends Equatable with DownloadMixin {
   final String path;
   final int? estimatedDownloadSize;
   final int? totalItems;
+  final bool? mixedMedia;
   final String? coverUrl;
   final String? siteUrl;
   final PageProgress? pageProgress;
@@ -162,6 +167,7 @@ class BulkDownloadTask extends Equatable with DownloadMixin {
         estimatedDownloadSize,
         coverUrl,
         totalItems,
+        mixedMedia,
         siteUrl,
         pageProgress,
         options,
@@ -310,6 +316,7 @@ class BulkDownloadNotifier extends Notifier<List<BulkDownloadTask>> {
       completed: 0,
       perPage: _perPage,
     );
+    var mixedMedia = false;
 
     try {
       var page = 1;
@@ -367,6 +374,9 @@ class BulkDownloadNotifier extends Notifier<List<BulkDownloadTask>> {
 
           estimatedDownloadSize += item.fileSize;
           totalItems += 1;
+          if (item.isAnimated) {
+            mixedMedia = true;
+          }
 
           await downloader
               .downloadCustomLocation(
@@ -423,6 +433,7 @@ class BulkDownloadNotifier extends Notifier<List<BulkDownloadTask>> {
               coverUrl: () => coverUrl,
               totalItems: () => totalItems,
               siteUrl: () => siteUrl,
+              mixedMedia: () => mixedMedia,
             )
           else
             t,

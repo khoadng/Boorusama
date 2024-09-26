@@ -37,7 +37,7 @@ class BulkDownloadTaskTile extends ConsumerWidget {
         : null;
 
     final totalItemText = task.totalItems != null
-        ? '${task.totalItems} image${task.totalItems == 1 ? '' : 's'}'
+        ? '${task.totalItems} ${task.mixedMedia == true ? 'file' : 'image'}${task.totalItems == 1 ? '' : 's'}'
         : null;
 
     final infoText = [

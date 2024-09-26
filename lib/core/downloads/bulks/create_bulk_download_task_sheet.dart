@@ -73,6 +73,7 @@ class _EditSavedSearchSheetState
         .select((value) => value.androidDeviceInfo?.version.sdkInt));
 
     return Material(
+      color: context.colorScheme.secondaryContainer,
       child: Container(
         margin: EdgeInsets.only(
           bottom: MediaQuery.viewInsetsOf(context).bottom,
@@ -338,9 +339,6 @@ void goToNewBulkDownloadTaskPage(
 }) {
   showMaterialModalBottomSheet(
     context: context,
-    settings: const RouteSettings(
-      name: RouterPageConstant.savedSearchCreate,
-    ),
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(
         top: Radius.circular(16),

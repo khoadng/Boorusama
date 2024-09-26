@@ -68,6 +68,7 @@ class DownloadTileBuilder extends StatelessWidget {
         horizontal: 8,
       ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
             width: 60,
