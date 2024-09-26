@@ -173,8 +173,6 @@ class BulkDownloadTask extends Equatable with DownloadMixin {
 }
 
 extension BulkDownloadTaskX on BulkDownloadTask {
-  bool get valid => tags.isNotEmpty && path.isNotEmpty;
-
   String get query => tags.join(' ');
   String get displayName => tags.join(', ');
 }

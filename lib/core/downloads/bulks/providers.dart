@@ -32,3 +32,16 @@ final bulkDownloadNotificationQueueProvider =
 final bulkDownloadNotificationProvider = Provider<BulkDownloadNotifications>(
   (ref) => throw UnimplementedError(),
 );
+
+final createBulkDownloadProvider =
+    NotifierProvider.autoDispose<CreateBulkDownloadNotifier, BulkDownloadTask>(
+  CreateBulkDownloadNotifier.new,
+  dependencies: [
+    createBulkDownloadInitialProvider,
+  ],
+);
+
+final createBulkDownloadInitialProvider =
+    Provider.autoDispose<List<String>?>((ref) {
+  return null;
+});

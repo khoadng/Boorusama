@@ -20,7 +20,7 @@ import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
 
-class CreateBulkDownloadTaskSheet extends ConsumerStatefulWidget {
+class CreateBulkDownloadTaskSheet extends ConsumerWidget {
   const CreateBulkDownloadTaskSheet({
     super.key,
     required this.title,
@@ -33,166 +33,179 @@ class CreateBulkDownloadTaskSheet extends ConsumerStatefulWidget {
   final void Function(BuildContext context, bool isQueue) onSubmitted;
 
   @override
-  ConsumerState<CreateBulkDownloadTaskSheet> createState() =>
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ProviderScope(
+      overrides: [
+        createBulkDownloadInitialProvider.overrideWithValue(initialValue),
+      ],
+      child: CreateBulkDownloadTaskSheetInternal(
+        title: title,
+        onSubmitted: onSubmitted,
+      ),
+    );
+  }
+}
+
+class CreateBulkDownloadTaskSheetInternal extends ConsumerStatefulWidget {
+  const CreateBulkDownloadTaskSheetInternal({
+    super.key,
+    required this.title,
+    required this.onSubmitted,
+  });
+
+  final String title;
+  final void Function(BuildContext context, bool isQueue) onSubmitted;
+
+  @override
+  ConsumerState<CreateBulkDownloadTaskSheetInternal> createState() =>
       _EditSavedSearchSheetState();
 }
 
 class _EditSavedSearchSheetState
-    extends ConsumerState<CreateBulkDownloadTaskSheet> {
-  late BulkDownloadTask task = BulkDownloadTask.randomId(
-    tags: widget.initialValue ?? [],
-    path: '',
-  );
-
+    extends ConsumerState<CreateBulkDownloadTaskSheetInternal> {
   var advancedOptions = false;
 
   @override
   Widget build(BuildContext context) {
-    final notifier = ref.watch(bulkdownloadProvider.notifier);
+    final notifier = ref.watch(createBulkDownloadProvider.notifier);
+    final task = ref.watch(createBulkDownloadProvider);
+    final androidSdkInt = ref.watch(deviceInfoProvider
+        .select((value) => value.androidDeviceInfo?.version.sdkInt));
 
     return Material(
       child: Container(
         margin: EdgeInsets.only(
           bottom: MediaQuery.viewInsetsOf(context).bottom,
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  widget.title,
-                  style: context.textTheme.titleLarge,
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            _buildTagList(),
-            const Divider(
-              thickness: 1,
-              endIndent: 16,
-              indent: 16,
-            ),
-            const SizedBox(height: 16),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Text(
-                'download.bulk_download_save_to_folder'.tr().toUpperCase(),
-                style: context.theme.textTheme.titleSmall?.copyWith(
-                  color: context.theme.hintColor,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-            ),
-            _buildPathSelector(),
-            if (isAndroid())
-              Builder(
-                builder: (context) {
-                  return task.shouldDisplayWarning(
-                    hasScopeStorage: hasScopedStorage(ref
-                            .read(deviceInfoProvider)
-                            .androidDeviceInfo
-                            ?.version
-                            .sdkInt) ??
-                        true,
-                  )
-                      ? DownloadPathWarning(
-                          releaseName: ref
-                                  .read(deviceInfoProvider)
-                                  .androidDeviceInfo
-                                  ?.version
-                                  .release ??
-                              'Unknown',
-                          allowedFolders: task.allowedFolders,
-                        )
-                      : const SizedBox.shrink();
-                },
-              ),
-            // show advanced options
-            SwitchListTile(
-              title: const Text('Show advanced options'),
-              value: advancedOptions,
-              onChanged: (value) {
-                setState(() {
-                  advancedOptions = value;
-                });
-              },
-            ),
-
-            if (advancedOptions) ...[
-              SwitchListTile(
-                title: const Text('Enable notification'),
-                value: task.options.notications,
-                onChanged: (value) {
-                  setState(() {
-                    task = task.copyWith(
-                      options: task.options.copyWith(notications: value),
-                    );
-                  });
-                },
-              ),
-              SwitchListTile(
-                title: const Text('Ignore files that already exist'),
-                value: task.options.skipIfExists,
-                onChanged: (value) {
-                  setState(() {
-                    task = task.copyWith(
-                      options: task.options.copyWith(skipIfExists: value),
-                    );
-                  });
-                },
-              ),
-            ],
-            Container(
-              margin: const EdgeInsets.only(
-                top: 12,
-                bottom: 28,
-              ),
-              child: OverflowBar(
-                alignment: MainAxisAlignment.spaceAround,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  FilledButton(
-                    style: FilledButton.styleFrom(
-                      foregroundColor: context.iconTheme.color,
-                      backgroundColor:
-                          context.colorScheme.surfaceContainerHighest,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(16)),
-                      ),
-                    ),
-                    onPressed: task.valid
-                        ? () {
-                            notifier.addTask(task);
-                            widget.onSubmitted(context, true);
-                            context.navigator.pop();
-                          }
-                        : null,
-                    child: const Text('Add to queue'),
-                  ),
-                  FilledButton(
-                    style: FilledButton.styleFrom(
-                      foregroundColor: context.colorScheme.onPrimary,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(16)),
-                      ),
-                    ),
-                    onPressed: task.valid
-                        ? () {
-                            notifier.addTask(task);
-                            notifier.startTask(task.id);
-                            widget.onSubmitted(context, false);
-                            context.navigator.pop();
-                          }
-                        : null,
-                    child: const Text('Download'),
+                  Text(
+                    widget.title,
+                    style: context.textTheme.titleLarge,
                   ),
                 ],
               ),
-            ),
-          ],
+              const SizedBox(height: 8),
+              _buildTagList(task),
+              const Divider(
+                thickness: 1,
+                endIndent: 16,
+                indent: 16,
+              ),
+              const SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Text(
+                  'download.bulk_download_save_to_folder'.tr().toUpperCase(),
+                  style: context.theme.textTheme.titleSmall?.copyWith(
+                    color: context.theme.hintColor,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ),
+              _buildPathSelector(task),
+              if (isAndroid())
+                Builder(
+                  builder: (context) {
+                    return task.shouldDisplayWarning(
+                      hasScopeStorage: hasScopedStorage(androidSdkInt) ?? true,
+                    )
+                        ? DownloadPathWarning(
+                            releaseName: ref
+                                    .read(deviceInfoProvider)
+                                    .androidDeviceInfo
+                                    ?.version
+                                    .release ??
+                                'Unknown',
+                            allowedFolders: task.allowedFolders,
+                          )
+                        : const SizedBox.shrink();
+                  },
+                ),
+              // show advanced options
+              SwitchListTile(
+                title: const Text('Show advanced options'),
+                value: advancedOptions,
+                onChanged: (value) {
+                  setState(() {
+                    advancedOptions = value;
+                  });
+                },
+              ),
+              if (advancedOptions) ...[
+                SwitchListTile(
+                  title: const Text('Enable notification'),
+                  value: task.options.notications,
+                  onChanged: (value) {
+                    notifier.setOptions(
+                      task.options.copyWith(notications: value),
+                    );
+                  },
+                ),
+                SwitchListTile(
+                  title: const Text('Ignore files that already exist'),
+                  value: task.options.skipIfExists,
+                  onChanged: (value) {
+                    notifier.setOptions(
+                      task.options.copyWith(skipIfExists: value),
+                    );
+                  },
+                ),
+              ],
+              Container(
+                margin: const EdgeInsets.only(
+                  top: 12,
+                  bottom: 28,
+                ),
+                child: OverflowBar(
+                  alignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    FilledButton(
+                      style: FilledButton.styleFrom(
+                        foregroundColor: context.iconTheme.color,
+                        backgroundColor:
+                            context.colorScheme.surfaceContainerHighest,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(16)),
+                        ),
+                      ),
+                      onPressed: task.valid(androidSdkInt: androidSdkInt)
+                          ? () {
+                              notifier.queue();
+                              widget.onSubmitted(context, true);
+                              context.navigator.pop();
+                            }
+                          : null,
+                      child: const Text('Add to queue'),
+                    ),
+                    FilledButton(
+                      style: FilledButton.styleFrom(
+                        foregroundColor: context.colorScheme.onPrimary,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(16)),
+                        ),
+                      ),
+                      onPressed: task.valid(androidSdkInt: androidSdkInt)
+                          ? () {
+                              notifier.start();
+                              widget.onSubmitted(context, false);
+                              context.navigator.pop();
+                            }
+                          : null,
+                      child: const Text('Download'),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -204,13 +217,11 @@ class _EditSavedSearchSheetState
       pickDirectoryPathToastOnError(
         context: context,
         onPick: (path) {
-          setState(() {
-            task = task.copyWith(path: path);
-          });
+          ref.read(createBulkDownloadProvider.notifier).setPath(path);
         },
       );
 
-  Widget _buildPathSelector() {
+  Widget _buildPathSelector(BulkDownloadTask task) {
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: 16,
@@ -254,7 +265,9 @@ class _EditSavedSearchSheetState
     );
   }
 
-  Widget _buildTagList() {
+  Widget _buildTagList(BulkDownloadTask task) {
+    final notifier = ref.watch(createBulkDownloadProvider.notifier);
+
     return Container(
       margin: const EdgeInsets.symmetric(
         horizontal: 12,
@@ -262,6 +275,7 @@ class _EditSavedSearchSheetState
       child: Wrap(
         runAlignment: WrapAlignment.center,
         spacing: 5,
+        runSpacing: isMobilePlatform() ? -4 : 8,
         children: [
           ...task.tags.map(
             (e) => Chip(
@@ -273,7 +287,7 @@ class _EditSavedSearchSheetState
                 size: 16,
                 color: context.theme.colorScheme.error,
               ),
-              onDeleted: () => _removeTag(e),
+              onDeleted: () => notifier.removeTag(e),
             ),
           ),
           IconButton(
@@ -293,13 +307,7 @@ class _EditSavedSearchSheetState
                               histories: data.histories,
                               onHistoryTap: (history) {
                                 context.navigator.pop();
-
-                                if (history.queryType == QueryType.list) {
-                                  final tags = history.queryAsList();
-                                  _addTags(tags);
-                                } else {
-                                  _addTag(history.query);
-                                }
+                                notifier.addFromSearchHistory(history);
                               },
                             ),
                             orElse: () => const SizedBox.shrink(),
@@ -308,10 +316,10 @@ class _EditSavedSearchSheetState
                 ),
                 onSubmitted: (context, text) {
                   context.navigator.pop();
-                  _addTag(text);
+                  notifier.addTag(text);
                 },
                 onSelected: (tag) {
-                  _addTag(tag.value);
+                  notifier.addTag(tag.value);
                 },
               );
             },
@@ -320,34 +328,6 @@ class _EditSavedSearchSheetState
         ],
       ),
     );
-  }
-
-  void _addTag(String tag) {
-    setState(() {
-      task = task.copyWith(tags: [
-        ...task.tags,
-        tag,
-      ]);
-    });
-  }
-
-  void _addTags(List<String> tags) {
-    setState(() {
-      task = task.copyWith(tags: [
-        ...task.tags,
-        ...tags,
-      ]);
-    });
-  }
-
-  void _removeTag(String tag) {
-    setState(() {
-      task = task.copyWith(
-        tags: [
-          ...task.tags.where((e) => e != tag),
-        ],
-      );
-    });
   }
 }
 
