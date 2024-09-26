@@ -94,7 +94,7 @@ class _EditSavedSearchSheetState
                 ],
               ),
               const SizedBox(height: 8),
-              _buildTagList(task),
+              const CreateBulkDownloadTagList(),
               const Divider(
                 thickness: 1,
                 endIndent: 16,
@@ -265,9 +265,53 @@ class _EditSavedSearchSheetState
       ),
     );
   }
+}
 
-  Widget _buildTagList(BulkDownloadTask task) {
+void goToNewBulkDownloadTaskPage(
+  WidgetRef ref,
+  BuildContext context, {
+  required List<String>? initialValue,
+}) {
+  showMaterialModalBottomSheet(
+    context: context,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(
+        top: Radius.circular(16),
+      ),
+    ),
+    backgroundColor: context.colorScheme.secondaryContainer,
+    builder: (_) => CreateBulkDownloadTaskSheet(
+      initialValue: initialValue,
+      title: 'New download',
+      onSubmitted: (_, isQueue) {
+        showToast(
+          isQueue ? 'Added' : 'Download started',
+          position: ToastPosition.bottom,
+          textPadding: const EdgeInsets.all(8),
+          duration: AppDurations.shortToast,
+        );
+      },
+    ),
+  );
+}
+
+class CreateBulkDownloadTagList extends ConsumerStatefulWidget {
+  const CreateBulkDownloadTagList({
+    super.key,
+  });
+
+  @override
+  ConsumerState<CreateBulkDownloadTagList> createState() =>
+      _CreateBulkDownloadTagListState();
+}
+
+class _CreateBulkDownloadTagListState
+    extends ConsumerState<CreateBulkDownloadTagList> {
+  @override
+  Widget build(BuildContext context) {
     final notifier = ref.watch(createBulkDownloadProvider.notifier);
+    final tags =
+        ref.watch(createBulkDownloadProvider.select((value) => value.tags));
 
     return Container(
       margin: const EdgeInsets.symmetric(
@@ -278,7 +322,7 @@ class _EditSavedSearchSheetState
         spacing: 5,
         runSpacing: isMobilePlatform() ? -4 : 8,
         children: [
-          ...task.tags.map(
+          ...tags.map(
             (e) => Chip(
               backgroundColor:
                   context.theme.colorScheme.surfaceContainerHighest,
@@ -330,32 +374,4 @@ class _EditSavedSearchSheetState
       ),
     );
   }
-}
-
-void goToNewBulkDownloadTaskPage(
-  WidgetRef ref,
-  BuildContext context, {
-  required List<String>? initialValue,
-}) {
-  showMaterialModalBottomSheet(
-    context: context,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(
-        top: Radius.circular(16),
-      ),
-    ),
-    backgroundColor: context.colorScheme.secondaryContainer,
-    builder: (_) => CreateBulkDownloadTaskSheet(
-      initialValue: initialValue,
-      title: 'New download',
-      onSubmitted: (_, isQueue) {
-        showToast(
-          isQueue ? 'Added' : 'Download started',
-          position: ToastPosition.bottom,
-          textPadding: const EdgeInsets.all(8),
-          duration: AppDurations.shortToast,
-        );
-      },
-    ),
-  );
 }
