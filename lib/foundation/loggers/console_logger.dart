@@ -6,6 +6,7 @@ import 'package:equatable/equatable.dart';
 import 'package:intl/intl.dart';
 
 // Project imports:
+import 'package:boorusama/functional.dart';
 import 'logger.dart';
 
 class ConsoleLoggerOptions extends Equatable {
@@ -34,9 +35,10 @@ class ConsoleLogger extends Logger {
     return DateFormat('yyyy-MM-dd, hh:mm:ss').format(dateTime);
   }
 
-  // compose log message
   String _composeMessage(String serviceName, String message, String colorCode) {
-    final msg = options.decodeUriParameters ? Uri.decodeFull(message) : message;
+    final msg = options.decodeUriParameters
+        ? tryDecodeFullUri(message).getOrElse(() => message)
+        : message;
 
     return '\x1B[33m${_formatDateTime(DateTime.now())}\x1B[0m -> \x1B[35m$serviceName\x1B[0m -> $colorCode$msg\x1B[0m';
   }
