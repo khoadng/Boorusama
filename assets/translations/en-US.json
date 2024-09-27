@@ -212,7 +212,19 @@
         "image_viewer": {
             "image_viewer": "Image viewer",
             "full_res_as_default": "Show full resolution as default",
-            "full_res_notice": "It will take a while to load depend on the size of image"
+            "full_res_notice": "It will take a while to load depend on the size of image",
+            "slideshow": "Slideshow",
+            "slideshow_interval": "Slideshow interval",
+            "slideshow_mode": "Slideshow mode",
+            "slideshow_modes": {
+                "random": "Random",
+                "forward": "Forward",
+                "backward": "Backward"
+            },
+            "slideshow_skip": "Skip slideshow transition",
+            "slideshow_interval_explanation": "Value less than 1 second will automatically skip transition",
+            "mute_video": "Mute video by default",
+            "video_section_title": "Video"
         },
         "image_detail": {
             "image_detail": "Image detail"
@@ -488,5 +500,13 @@
         "double_tap": "Double tap",
         "long_press": "Long press",
         "tap": "Tap"
+    },
+    "time": {
+        "counters": {
+            "second": {
+                "one": "Second",
+                "other": "Seconds"
+            }
+        }
     }
 }
