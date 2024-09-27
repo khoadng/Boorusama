@@ -13,6 +13,7 @@ import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/filesize.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
+import 'l10n.dart';
 
 class DownloadTileBuilder extends StatelessWidget {
   const DownloadTileBuilder({
@@ -122,7 +123,7 @@ class DownloadTileBuilder extends StatelessWidget {
                           visualDensity: const ShrinkVisualDensity(),
                         ),
                         onPressed: onCancel,
-                        child: const Text('Cancel'),
+                        child: const Text(DownloadTranslations.cancel).tr(),
                       )
                     else
                       const SizedBox(

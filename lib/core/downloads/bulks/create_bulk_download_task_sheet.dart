@@ -14,11 +14,11 @@ import 'package:boorusama/core/search_histories/search_histories.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/android.dart';
 import 'package:boorusama/foundation/animations.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/picker.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
+import '../l10n.dart';
 
 class CreateBulkDownloadTaskSheet extends ConsumerWidget {
   const CreateBulkDownloadTaskSheet({
@@ -104,7 +104,9 @@ class _EditSavedSearchSheetState
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
-                  'download.bulk_download_save_to_folder'.tr().toUpperCase(),
+                  DownloadTranslations.bulkDownloadSaveToFolder
+                      .tr()
+                      .toUpperCase(),
                   style: context.theme.textTheme.titleSmall?.copyWith(
                     color: context.theme.hintColor,
                     fontWeight: FontWeight.w800,
@@ -130,9 +132,10 @@ class _EditSavedSearchSheetState
                         : const SizedBox.shrink();
                   },
                 ),
-              // show advanced options
               SwitchListTile(
-                title: const Text('Show advanced options'),
+                title: const Text(
+                        DownloadTranslations.bulkdDownloadShowAdvancedOptions)
+                    .tr(),
                 value: advancedOptions,
                 onChanged: (value) {
                   setState(() {
@@ -142,7 +145,9 @@ class _EditSavedSearchSheetState
               ),
               if (advancedOptions) ...[
                 SwitchListTile(
-                  title: const Text('Enable notification'),
+                  title: const Text(
+                          DownloadTranslations.bulkDownloadEnableNotifications)
+                      .tr(),
                   value: task.options.notications,
                   onChanged: (value) {
                     notifier.setOptions(
@@ -151,7 +156,8 @@ class _EditSavedSearchSheetState
                   },
                 ),
                 SwitchListTile(
-                  title: const Text('Ignore files that already exist'),
+                  title: const Text(DownloadTranslations.skipDownloadIfExists)
+                      .tr(),
                   value: task.options.skipIfExists,
                   onChanged: (value) {
                     notifier.setOptions(
@@ -184,7 +190,9 @@ class _EditSavedSearchSheetState
                               context.navigator.pop();
                             }
                           : null,
-                      child: const Text('Add to queue'),
+                      child: const Text(
+                              DownloadTranslations.bulkDownloadAddToQueue)
+                          .tr(),
                     ),
                     FilledButton(
                       style: FilledButton.styleFrom(
@@ -200,7 +208,9 @@ class _EditSavedSearchSheetState
                               context.navigator.pop();
                             }
                           : null,
-                      child: const Text('Download'),
+                      child:
+                          const Text(DownloadTranslations.bulkDownloadDownload)
+                              .tr(),
                     ),
                   ],
                 ),
@@ -249,7 +259,7 @@ class _EditSavedSearchSheetState
                         overflow: TextOverflow.fade,
                       )
                     : Text(
-                        'download.bulk_download_select_a_folder'.tr(),
+                        DownloadTranslations.bulkDownloadSelectFolder.tr(),
                         overflow: TextOverflow.fade,
                         style: context.theme.textTheme.titleMedium!
                             .copyWith(color: context.theme.hintColor),
@@ -282,7 +292,7 @@ void goToNewBulkDownloadTaskPage(
     backgroundColor: context.colorScheme.secondaryContainer,
     builder: (_) => CreateBulkDownloadTaskSheet(
       initialValue: initialValue,
-      title: 'New download',
+      title: DownloadTranslations.bulkDownloadNewDownloadTitle.tr(),
       onSubmitted: (_, isQueue) {
         showToast(
           isQueue ? 'Added' : 'Download started',

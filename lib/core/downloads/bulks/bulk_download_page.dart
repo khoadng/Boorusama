@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/widgets/widgets.dart';
+import '../l10n.dart';
 import 'bulk_download_task_tile.dart';
 import 'create_bulk_download_task_sheet.dart';
 import 'providers.dart';
@@ -22,7 +23,7 @@ class BulkDownloadPage extends ConsumerWidget {
     return CustomContextMenuOverlay(
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Bulk Download'),
+          title: const Text(DownloadTranslations.bulkDownloadTitle).tr(),
         ),
         body: SafeArea(
           child: Column(
@@ -40,11 +41,11 @@ class BulkDownloadPage extends ConsumerWidget {
                           );
                         },
                       )
-                    : const Center(
-                        child: Text(
-                          'No downloads',
+                    : Center(
+                        child: const Text(
+                          DownloadTranslations.bulkDownloadEmpty,
                           style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
+                        ).tr(),
                       ),
               ),
               Container(
@@ -57,7 +58,8 @@ class BulkDownloadPage extends ConsumerWidget {
                       initialValue: null,
                     );
                   },
-                  child: const Text('New download'),
+                  child:
+                      const Text(DownloadTranslations.bulkDownloadCreate).tr(),
                 ),
               ),
             ],

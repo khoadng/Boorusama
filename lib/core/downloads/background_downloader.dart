@@ -21,6 +21,7 @@ import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/functional.dart' as fp;
 import 'package:boorusama/router.dart';
 import 'downloads.dart';
+import 'l10n.dart';
 
 extension FileDownloadX on FileDownloader {
   Future<String> enqueueIfNeeded(
@@ -243,13 +244,13 @@ class _BackgroundDownloaderScopeState
             '{filename}',
             '{progress}',
           ),
-          complete: const TaskNotification(
+          complete: TaskNotification(
             '{filename}',
-            'completed',
+            DownloadTranslations.downloadCompletedNotification.tr(),
           ),
-          error: const TaskNotification(
+          error: TaskNotification(
             '{filename}',
-            'failed',
+            DownloadTranslations.downloadFailedNotification.tr(),
           ),
           progressBar: true,
         );

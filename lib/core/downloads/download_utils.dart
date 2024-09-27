@@ -6,6 +6,7 @@ import 'package:oktoast/oktoast.dart';
 
 // Project imports:
 import 'package:boorusama/foundation/theme.dart';
+import 'l10n.dart';
 
 const String _basePath = '/storage/emulated';
 const String _sdCardBasePath = '/storage';
@@ -121,7 +122,7 @@ mixin DownloadMixin {
 
 void showDownloadStartToast(BuildContext context, {String? message}) {
   showToast(
-    message ?? 'Download started',
+    message ?? DownloadTranslations.downloadStartedNotification.tr(),
     context: context,
     position: const ToastPosition(
       align: Alignment.bottomCenter,

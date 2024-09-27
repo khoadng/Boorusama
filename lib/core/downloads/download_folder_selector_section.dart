@@ -9,11 +9,11 @@ import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/foundation/android.dart';
 import 'package:boorusama/foundation/device_info_service.dart';
 import 'package:boorusama/foundation/html.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/picker.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import 'l10n.dart';
 
 class DownloadFolderSelectorSection extends StatefulWidget {
   const DownloadFolderSelectorSection({
@@ -60,7 +60,7 @@ class _DownloadFolderSelectorSectionState
       children: [
         const SizedBox(height: 16),
         Text(
-          widget.title ?? 'settings.download.path'.tr(),
+          widget.title ?? DownloadTranslations.downloadPath.tr(),
         ),
         const SizedBox(height: 4),
         Material(
@@ -93,7 +93,7 @@ class _DownloadFolderSelectorSectionState
                           )
                         : Text(
                             widget.hint ??
-                                'settings.download.select_a_folder'.tr(),
+                                DownloadTranslations.downloadSelectFolder.tr(),
                             overflow: TextOverflow.fade,
                             style: context.textTheme.titleMedium!
                                 .copyWith(color: context.theme.hintColor),
@@ -160,10 +160,10 @@ class DownloadPathWarning extends StatelessWidget {
     return WarningContainer(
       margin: padding,
       contentBuilder: (context) => AppHtml(
-        data:
-            "The app can only download files inside public directories <b>({0})</b> for Android 11+. <br><br> Valid location examples:<br><b>[Internal]</b> /storage/emulated/0/Download <br><b>[SD card]</b> /storage/A1B2-C3D4/Download<br><br>Please choose another directory or create a new one if it doesn't exist. <br>This device's version is <b>{1}</b>."
-                .replaceAll('{0}', allowedFolders.join(', '))
-                .replaceAll('{1}', releaseName),
+        data: DownloadTranslations.downloadSelectFolderWarning
+            .tr()
+            .replaceAll('{0}', allowedFolders.join(', '))
+            .replaceAll('{1}', releaseName),
       ),
     );
   }

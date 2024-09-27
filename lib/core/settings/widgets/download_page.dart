@@ -8,9 +8,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
+import 'package:boorusama/core/downloads/l10n.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/settings/widgets/widgets/settings_tile.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'widgets/settings_page_scaffold.dart';
 
 class DownloadPage extends ConsumerStatefulWidget {
@@ -55,10 +55,10 @@ class _DownloadPageState extends ConsumerState<DownloadPage> {
         ),
         const SizedBox(height: 4),
         ListTile(
-          title: const Text('Ignore files that already downloaded'),
+          title: const Text(DownloadTranslations.skipDownloadIfExists).tr(),
           subtitle: const Text(
-            "This will prevent downloading files that already exist in the folder. This is useful when you don't want to download the same file multiple times.",
-          ),
+            DownloadTranslations.skipDownloadIfExistsExplanation,
+          ).tr(),
           trailing: Switch(
             value: settings.skipDownloadIfExists,
             onChanged: (value) async {

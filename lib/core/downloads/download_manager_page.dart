@@ -17,6 +17,7 @@ import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import 'l10n.dart';
 
 final downloadFilterProvider =
     StateProvider.family<DownloadFilter, String?>((ref, initialFilter) {
@@ -183,7 +184,7 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Downloads'),
+        title: const Text(DownloadTranslations.downloadManagerTitle).tr(),
         actions: isDefaultGroup
             ? [
                 IconButton(
@@ -219,8 +220,7 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
                   searchable: false,
                   options: _filterOptions,
                   hasNullOption: false,
-                  optionLabelBuilder: (value) =>
-                      value?.name.sentenceCase ?? 'Unknown',
+                  optionLabelBuilder: (value) => value!.localize().tr(),
                   onSelected: (value) {
                     if (value == null) return;
 
@@ -278,22 +278,11 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
                         children: [
                           Container(
                             padding: const EdgeInsets.symmetric(vertical: 24),
-                            child: switch (ref
-                                .watch(downloadFilterProvider(widget.filter))) {
-                              DownloadFilter.failed =>
-                                const Text('No failed downloads'),
-                              DownloadFilter.inProgress =>
-                                const Text('No downloads in progress'),
-                              DownloadFilter.pending =>
-                                const Text('No pending downloads'),
-                              DownloadFilter.paused =>
-                                const Text('No paused downloads'),
-                              DownloadFilter.completed =>
-                                const Text('No completed downloads'),
-                              DownloadFilter.canceled =>
-                                const Text('No canceled downloads'),
-                              _ => const Text('No downloads'),
-                            },
+                            child: Text(
+                              ref
+                                  .watch(downloadFilterProvider(widget.filter))
+                                  .emptyLocalize(),
+                            ),
                           ),
                           const Spacer(),
                         ],
@@ -336,7 +325,7 @@ class RetryAllFailedButton extends ConsumerWidget {
                   FileDownloader().enqueue(dt);
                 }
               },
-              child: const Text('Retry all'),
+              child: const Text(DownloadTranslations.retryAllFailed).tr(),
             ),
           )
         : const SizedBox.shrink();

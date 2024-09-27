@@ -18,6 +18,7 @@ import 'package:boorusama/foundation/filesize.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
+import '../l10n.dart';
 import 'bulk_download_notifier.dart';
 import 'providers.dart';
 
@@ -37,7 +38,10 @@ class BulkDownloadTaskTile extends ConsumerWidget {
         : null;
 
     final totalItemText = task.totalItems != null
-        ? '${task.totalItems} ${task.mixedMedia == true ? 'file' : 'image'}${task.totalItems == 1 ? '' : 's'}'
+        ? DownloadTranslations.bulkDownloadTitleInfoCounter(
+            !(task.totalItems == 1),
+            task.mixedMedia == true,
+          ).replaceAll('{}', task.totalItems.toString())
         : null;
 
     final infoText = [
@@ -53,7 +57,7 @@ class BulkDownloadTaskTile extends ConsumerWidget {
       contextMenu: GenericContextMenu(
         buttonConfigs: [
           ContextMenuButtonConfig(
-            'Delete',
+            DownloadTranslations.bulkDownloadDelete.tr(),
             onPressed: () {
               ref.read(bulkdownloadProvider.notifier).removeTask(
                     task.id,
@@ -120,9 +124,14 @@ class BulkDownloadTaskTile extends ConsumerWidget {
                                 : EdgeInsets.zero,
                             child: Text(
                               switch (task.status) {
-                                BulkDownloadTaskStatus.created => 'Created',
+                                BulkDownloadTaskStatus.created =>
+                                  DownloadTranslations.bulkDownloadCreatedStatus
+                                      .tr(),
                                 BulkDownloadTaskStatus.queue =>
-                                  'Fetching${task.pageProgress != null ? ' page ${task.pageProgress!.completed + 1}' : ''}...',
+                                  DownloadTranslations
+                                          .bulkDownloadInProgressStatus(
+                                              task.pageProgress?.completed)
+                                      .tr(),
                                 BulkDownloadTaskStatus.error =>
                                   task.error ?? 'Error',
                                 _ => infoText,
@@ -140,7 +149,8 @@ class BulkDownloadTaskTile extends ConsumerWidget {
                         switch (task.status) {
                           BulkDownloadTaskStatus.created => _ActionButton(
                               task: task,
-                              title: 'Start',
+                              title:
+                                  DownloadTranslations.bulkDownloadStart.tr(),
                               onPressed: () {
                                 ref
                                     .read(bulkdownloadProvider.notifier)
@@ -159,7 +169,8 @@ class BulkDownloadTaskTile extends ConsumerWidget {
                                           task.id,
                                         );
                                   },
-                                  title: 'Cancel',
+                                  title: DownloadTranslations.bulkDownloadCancel
+                                      .tr(),
                                 )
                               : const SizedBox(
                                   height: 24,
@@ -173,7 +184,7 @@ class BulkDownloadTaskTile extends ConsumerWidget {
                                       task.id,
                                     );
                               },
-                              title: 'Stop',
+                              title: DownloadTranslations.bulkDownloadStop.tr(),
                             ),
                           _ => const SizedBox(
                               height: 24,
