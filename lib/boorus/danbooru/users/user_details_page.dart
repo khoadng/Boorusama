@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:collection/collection.dart';
+import 'package:equatable/equatable.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -32,28 +33,71 @@ import '../reports/reports.dart';
 import '../router.dart';
 import 'users.dart';
 
-typedef DanbooruReportDataParams = ({
-  String username,
-  String tag,
-  int uploadCount,
-});
+class DanbooruReportDataParams extends Equatable {
+  const DanbooruReportDataParams({
+    required this.username,
+    required this.tag,
+    required this.uploadCount,
+  });
+
+  DanbooruReportDataParams.forUser(
+    DanbooruUser user,
+  )   : username = user.name,
+        tag = 'user:${user.name}',
+        uploadCount = user.uploadCount;
+
+  DanbooruReportDataParams withDateRange({
+    DateTime? from,
+    DateTime? to,
+  }) {
+    return DanbooruReportDataParams(
+      username: username,
+      tag: tag,
+      uploadCount: uploadCount,
+    );
+  }
+
+  final String username;
+  final String tag;
+  final int uploadCount;
+
+  @override
+  List<Object?> get props => [username, tag, uploadCount];
+}
 
 typedef DanbooruCopyrightDataParams = ({
   String username,
   int uploadCount,
 });
 
-final userDataProvider = FutureProvider.family<List<DanbooruReportDataPoint>,
-    DanbooruReportDataParams>((ref, params) async {
+final userDataProvider = FutureProvider.autoDispose
+    .family<List<DanbooruReportDataPoint>, DanbooruReportDataParams>(
+        (ref, params) async {
   final tag = params.tag;
   final config = ref.watchConfig;
+  final now = DateTime.now();
+
+  final selectedRange = ref.watch(selectedUploadDateRangeSelectorTypeProvider);
+  final from = switch (selectedRange) {
+    UploadDateRangeSelectorType.last7Days =>
+      now.subtract(const Duration(days: 7)),
+    UploadDateRangeSelectorType.last30Days =>
+      now.subtract(const Duration(days: 30)),
+    UploadDateRangeSelectorType.last3Months =>
+      now.subtract(const Duration(days: 90)),
+    UploadDateRangeSelectorType.last6Months =>
+      now.subtract(const Duration(days: 180)),
+    UploadDateRangeSelectorType.lastYear =>
+      now.subtract(const Duration(days: 365)),
+  };
+
   final data =
       await ref.watch(danbooruPostReportProvider(config)).getPostReports(
     tags: [
       tag,
     ],
     period: DanbooruReportPeriod.day,
-    from: DateTime.now().subtract(const Duration(days: 30)),
+    from: from,
     to: DateTime.now(),
   );
 
@@ -168,26 +212,33 @@ class UserDetailsPage extends ConsumerWidget {
                           child: SizedBox(
                             height: 220,
                             child: ref
-                                .watch(userDataProvider((
-                                  username: username,
-                                  tag: 'user:$username',
-                                  uploadCount: user.uploadCount,
-                                )))
+                                .watch(userDataProvider(
+                                  DanbooruReportDataParams.forUser(user),
+                                ))
                                 .maybeWhen(
                                   data: (data) => Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.stretch,
                                     children: [
-                                      Text(
-                                        '${data.sumBy((e) => e.postCount).toString()} uploads in the last 30 days',
-                                        style: context.textTheme.titleMedium!
-                                            .copyWith(
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              '${data.sumBy((e) => e.postCount).toString()} uploads',
+                                              style: context
+                                                  .textTheme.titleMedium!
+                                                  .copyWith(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                          const UploadDateRangeSelectorButton(),
+                                        ],
                                       ),
                                       const SizedBox(height: 16),
                                       Expanded(
-                                          child: _buildChart(context, data)),
+                                          child:
+                                              _buildChart(ref, context, data)),
                                     ],
                                   ),
                                   orElse: () => const SizedBox(
@@ -337,17 +388,48 @@ class UserDetailsPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildChart(BuildContext context, List<DanbooruReportDataPoint> data) {
+  Widget _buildChart(
+      WidgetRef ref, BuildContext context, List<DanbooruReportDataPoint> data) {
     final seen = <int>{};
     final titles = <int, String>{};
+    final dateRange = ref.watch(selectedUploadDateRangeSelectorTypeProvider);
+    final isWeeklyChart = dateRange == UploadDateRangeSelectorType.last7Days;
+    final isMonthlyChart = dateRange == UploadDateRangeSelectorType.last30Days;
 
-    for (var i = 0; i < data.length; i++) {
-      final month = data[i].date.month;
-      if (!seen.contains(month)) {
-        titles[i] = parseIntToMonthString(month);
-        seen.add(data[i].date.month);
-      } else {
-        titles[i] = '';
+    if (isWeeklyChart) {
+      // Sep 5 7 9 11 13
+
+      for (var i = 0; i < data.length; i++) {
+        // if it's the first day, show the month e.g. Sep 5
+        if (i == 0) {
+          titles[i] =
+              '${parseIntToMonthString(data[i].date.month)} ${data[i].date.day}';
+        } else {
+          titles[i] = data[i].date.day.toString();
+        }
+      }
+    } else if (isMonthlyChart) {
+      // Sep 5 12 19 26
+      var skipCounter = 0;
+      for (var i = 0; i < data.length; i++) {
+        if (skipCounter == 6 || i == 0) {
+          titles[i] =
+              '${parseIntToMonthString(data[i].date.month)} ${data[i].date.day}';
+          skipCounter = 0;
+        } else {
+          titles[i] = '';
+          skipCounter++;
+        }
+      }
+    } else {
+      for (var i = 0; i < data.length; i++) {
+        final month = data[i].date.month;
+        if (!seen.contains(month)) {
+          titles[i] = parseIntToMonthString(month);
+          seen.add(data[i].date.month);
+        } else {
+          titles[i] = '';
+        }
       }
     }
 
@@ -398,6 +480,17 @@ class UserDetailsPage extends ConsumerWidget {
                   x: idx,
                   barRods: [
                     BarChartRodData(
+                      width: switch (dateRange) {
+                        UploadDateRangeSelectorType.last7Days => 28,
+                        UploadDateRangeSelectorType.last30Days => 8,
+                        UploadDateRangeSelectorType.last3Months => 4,
+                        UploadDateRangeSelectorType.last6Months => 2,
+                        UploadDateRangeSelectorType.lastYear => 1,
+                      },
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(1),
+                        topRight: Radius.circular(1),
+                      ),
                       toY: e.postCount.toDouble(),
                     )
                   ],
@@ -528,6 +621,53 @@ class _PreviewList extends ConsumerWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+enum UploadDateRangeSelectorType {
+  last7Days,
+  last30Days,
+  last3Months,
+  last6Months,
+  lastYear,
+}
+
+extension UploadDateRangeSelectorTypeExtension on UploadDateRangeSelectorType {
+  String get name => switch (this) {
+        UploadDateRangeSelectorType.last7Days => 'Last 7 days',
+        UploadDateRangeSelectorType.last30Days => 'Last 30 days',
+        UploadDateRangeSelectorType.last3Months => 'Last 3 months',
+        UploadDateRangeSelectorType.last6Months => 'Last 6 months',
+        UploadDateRangeSelectorType.lastYear => 'Last year'
+      };
+}
+
+final selectedUploadDateRangeSelectorTypeProvider =
+    StateProvider.autoDispose<UploadDateRangeSelectorType>(
+        (ref) => UploadDateRangeSelectorType.last30Days);
+
+class UploadDateRangeSelectorButton extends ConsumerWidget {
+  const UploadDateRangeSelectorButton({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return OptionDropDownButton(
+      alignment: AlignmentDirectional.centerStart,
+      value: ref.watch(selectedUploadDateRangeSelectorTypeProvider),
+      onChanged: (value) => ref
+          .read(selectedUploadDateRangeSelectorTypeProvider.notifier)
+          .state = value ?? UploadDateRangeSelectorType.last30Days,
+      items: UploadDateRangeSelectorType.values
+          .map(
+            (value) => DropdownMenuItem(
+              value: value,
+              child: Text(value.name),
+            ),
+          )
+          .toList(),
     );
   }
 }
