@@ -42,6 +42,7 @@ class DetailsPageController extends ChangeNotifier with UIOverlayMixin {
 
   var _enablePageSwipe = true;
   final _slideshow = ValueNotifier<bool>(false);
+  final _expanded = ValueNotifier<bool>(false);
   late final ValueNotifier<bool> _hideOverlay;
 
   bool get swipeDownToDismiss => _enableSwipeDownToDismiss;
@@ -49,6 +50,7 @@ class DetailsPageController extends ChangeNotifier with UIOverlayMixin {
   @override
   ValueNotifier<bool> get hideOverlay => _hideOverlay;
   ValueNotifier<bool> get slideshow => _slideshow;
+  ValueNotifier<bool> get expanded => _expanded;
 
   // use stream event to change to next page or previous page
   final StreamController<PageDirection> _pageController =
@@ -106,9 +108,13 @@ class DetailsPageController extends ChangeNotifier with UIOverlayMixin {
     notifyListeners();
   }
 
-  // set enable swipe page
   void setEnablePageSwipe(bool value) {
     _enablePageSwipe = value;
+    notifyListeners();
+  }
+
+  void setExpanded(bool value) {
+    _expanded.value = value;
     notifyListeners();
   }
 

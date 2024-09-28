@@ -366,6 +366,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
           }
 
           isExpanded.value = metrics.isPageExpanded;
+          _controller.setExpanded(metrics.isPageExpanded);
           if (isExpanded.value) {
             widget.onExpanded?.call();
           }
