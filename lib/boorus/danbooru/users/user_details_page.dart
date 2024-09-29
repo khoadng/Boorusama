@@ -118,6 +118,8 @@ final userCopyrightDataProvider =
       );
 });
 
+const _kTopCopyrigthTags = 5;
+
 class UserDetailsPage extends ConsumerWidget {
   const UserDetailsPage({
     super.key,
@@ -261,7 +263,10 @@ class UserDetailsPage extends ConsumerWidget {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               Text(
-                                'Top 5 copyrights',
+                                'Top {0} copyrights'.replaceFirst(
+                                  '{0}',
+                                  _kTopCopyrigthTags.toString(),
+                                ),
                                 style: context.textTheme.titleMedium?.copyWith(
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -274,7 +279,9 @@ class UserDetailsPage extends ConsumerWidget {
                                   )))
                                   .maybeWhen(
                                     data: (data) => _buildTags(
-                                      data.tags.take(5).toList(),
+                                      data.tags
+                                          .take(_kTopCopyrigthTags)
+                                          .toList(),
                                       context,
                                       ref,
                                     ),
