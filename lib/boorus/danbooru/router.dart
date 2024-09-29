@@ -152,7 +152,7 @@ void goToPoolPage(BuildContext context, WidgetRef ref) {
 
 void goToBlacklistedTagPage(BuildContext context) {
   context.navigator.push(CupertinoPageRoute(
-    builder: (_) => const BlacklistedTagsPage(),
+    builder: (_) => const DanbooruBlacklistedTagsPage(),
   ));
 }
 

@@ -11,8 +11,8 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/widgets/import_export_tag_button.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
-class BlacklistedTagsPage extends ConsumerWidget {
-  const BlacklistedTagsPage({
+class DanbooruBlacklistedTagsPage extends ConsumerWidget {
+  const DanbooruBlacklistedTagsPage({
     super.key,
   });
 
