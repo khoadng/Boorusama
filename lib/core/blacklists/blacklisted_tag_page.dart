@@ -47,74 +47,67 @@ class BlacklistedTagPage extends ConsumerWidget {
     final tags = ref.watch(globalBlacklistedTagsProvider);
     final sortType = ref.watch(selectedBlacklistedTagsSortTypeProvider);
     final sortedTags = sortBlacklistedTags(tags, sortType);
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('blacklist.manage.title').tr(),
-        actions: [
-          IconButton(
-            onPressed: () {
-              showMaterialModalBottomSheet(
-                context: context,
-                backgroundColor: context.colorScheme.secondaryContainer,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                builder: (context) => BlacklistedTagConfigSheet(
-                  onSorted: (value) {
-                    ref
-                        .read(selectedBlacklistedTagsSortTypeProvider.notifier)
-                        .state = value;
-                  },
-                ),
-              );
-            },
-            icon: const Icon(
-              Icons.sort,
-              fill: 1,
-              size: 20,
-            ),
-          ),
-          AddBlacklistedTagButton(
-            onAdd: (tag) {
-              ref
-                  .read(globalBlacklistedTagsProvider.notifier)
-                  .addTagWithToast(context, tag);
-            },
-          ),
-        ],
-      ),
-      body: SafeArea(
-        child: BlacklistedTagsList(
-          tags: sortedTags.map((e) => e.name).toList(),
-          onEditTap: (oldTag, newTag) {
-            final oldBlacklistedTag =
-                sortedTags.firstWhereOrNull((e) => e.name == oldTag);
 
-            if (oldBlacklistedTag == null) {
-              showErrorToast(context, 'Cannot find tag $oldTag');
-              return;
-            }
-
-            ref.read(globalBlacklistedTagsProvider.notifier).updateTag(
-                  oldTag: oldBlacklistedTag,
-                  newTag: newTag,
-                );
+    return BlacklistedTagsList(
+      title: 'blacklist.manage.title'.tr(),
+      actions: [
+        IconButton(
+          onPressed: () {
+            showMaterialModalBottomSheet(
+              context: context,
+              backgroundColor: context.colorScheme.secondaryContainer,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              builder: (context) => BlacklistedTagConfigSheet(
+                onSorted: (value) {
+                  ref
+                      .read(selectedBlacklistedTagsSortTypeProvider.notifier)
+                      .state = value;
+                },
+              ),
+            );
           },
-          onRemoveTag: (tag) {
-            final blacklistedTag =
-                sortedTags.firstWhereOrNull((e) => e.name == tag);
-
-            if (blacklistedTag == null) {
-              showErrorToast(context, 'Cannot find tag $tag');
-              return;
-            }
-
-            ref
-                .read(globalBlacklistedTagsProvider.notifier)
-                .removeTag(blacklistedTag);
-          },
+          icon: const Icon(
+            Icons.sort,
+            fill: 1,
+            size: 20,
+          ),
         ),
-      ),
+      ],
+      tags: sortedTags.map((e) => e.name).toList(),
+      onAddTag: (tag) {
+        ref
+            .read(globalBlacklistedTagsProvider.notifier)
+            .addTagWithToast(context, tag);
+      },
+      onEditTap: (oldTag, newTag) {
+        final oldBlacklistedTag =
+            sortedTags.firstWhereOrNull((e) => e.name == oldTag);
+
+        if (oldBlacklistedTag == null) {
+          showErrorToast(context, 'Cannot find tag $oldTag');
+          return;
+        }
+
+        ref.read(globalBlacklistedTagsProvider.notifier).updateTag(
+              oldTag: oldBlacklistedTag,
+              newTag: newTag,
+            );
+      },
+      onRemoveTag: (tag) {
+        final blacklistedTag =
+            sortedTags.firstWhereOrNull((e) => e.name == tag);
+
+        if (blacklistedTag == null) {
+          showErrorToast(context, 'Cannot find tag $tag');
+          return;
+        }
+
+        ref
+            .read(globalBlacklistedTagsProvider.notifier)
+            .removeTag(blacklistedTag);
+      },
     );
   }
 }
@@ -170,59 +163,79 @@ class BlacklistedTagsList extends ConsumerWidget {
     required this.tags,
     required this.onRemoveTag,
     required this.onEditTap,
+    required this.onAddTag,
+    required this.title,
+    required this.actions,
   });
 
+  final String title;
+  final List<Widget> actions;
   final List<String>? tags;
   final void Function(String tag) onRemoveTag;
   final void Function(String oldTag, String newTag) onEditTap;
+  final void Function(String tag) onAddTag;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return tags.toOption().fold(
-          () => const Center(child: CircularProgressIndicator()),
-          (tags) => tags.isNotEmpty
-              ? CustomScrollView(
-                  slivers: [
-                    SliverToBoxAdapter(
-                      child: WarningContainer(
-                        title: 'Limitation',
-                        contentBuilder: (context) => AppHtml(
-                          data: 'blacklisted_tags.limitation_notice'.tr(),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(title),
+        actions: [
+          AddBlacklistedTagButton(
+            onAdd: onAddTag,
+          ),
+          ...actions,
+        ],
+      ),
+      body: SafeArea(
+        child: tags.toOption().fold(
+              () => const Center(child: CircularProgressIndicator()),
+              (tags) => tags.isNotEmpty
+                  ? CustomScrollView(
+                      slivers: [
+                        SliverToBoxAdapter(
+                          child: WarningContainer(
+                            title: 'Limitation',
+                            contentBuilder: (context) => AppHtml(
+                              data: 'blacklisted_tags.limitation_notice'.tr(),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          final tag = tags[index];
+                        SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                            (context, index) {
+                              final tag = tags[index];
 
-                          return BlacklistedTagTile(
-                            tag: tag,
-                            onRemoveTag: (_) => onRemoveTag(tag),
-                            onEditTap: () {
-                              goToBlacklistedTagsSearchPage(
-                                context,
-                                initialTags: tag.split(' '),
-                                onSelectDone: (tagItems, currentQuery) {
-                                  final tagString = [
-                                    ...tagItems.map((e) => e.toString()),
-                                    if (currentQuery.isNotEmpty) currentQuery,
-                                  ].join(' ');
+                              return BlacklistedTagTile(
+                                tag: tag,
+                                onRemoveTag: (_) => onRemoveTag(tag),
+                                onEditTap: () {
+                                  goToBlacklistedTagsSearchPage(
+                                    context,
+                                    initialTags: tag.split(' '),
+                                    onSelectDone: (tagItems, currentQuery) {
+                                      final tagString = [
+                                        ...tagItems.map((e) => e.toString()),
+                                        if (currentQuery.isNotEmpty)
+                                          currentQuery,
+                                      ].join(' ');
 
-                                  onEditTap(tag, tagString);
-                                  context.navigator.pop();
+                                      onEditTap(tag, tagString);
+                                      context.navigator.pop();
+                                    },
+                                  );
                                 },
                               );
                             },
-                          );
-                        },
-                        childCount: tags.length,
-                      ),
-                    ),
-                  ],
-                )
-              : const Center(child: Text('No blacklisted tags')),
-        );
+                            childCount: tags.length,
+                          ),
+                        ),
+                      ],
+                    )
+                  : const Center(child: Text('No blacklisted tags')),
+            ),
+      ),
+    );
   }
 }
 
