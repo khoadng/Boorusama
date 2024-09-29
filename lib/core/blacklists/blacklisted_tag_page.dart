@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/foundation/toast.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -43,6 +44,9 @@ class BlacklistedTagPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final tags = ref.watch(globalBlacklistedTagsProvider);
+    final sortType = ref.watch(selectedBlacklistedTagsSortTypeProvider);
+    final sortedTags = sortBlacklistedTags(tags, sortType);
     return Scaffold(
       appBar: AppBar(
         title: const Text('blacklist.manage.title').tr(),
@@ -70,28 +74,77 @@ class BlacklistedTagPage extends ConsumerWidget {
               size: 20,
             ),
           ),
-          IconButton(
-            onPressed: () {
-              goToBlacklistedTagsSearchPage(
-                context,
-                onSelectDone: (tagItems, currentQuery) {
-                  final tagString = [
-                    ...tagItems.map((e) => e.toString()),
-                    if (currentQuery.isNotEmpty) currentQuery,
-                  ].join(' ');
-
-                  ref
-                      .read(globalBlacklistedTagsProvider.notifier)
-                      .addTagWithToast(context, tagString);
-                  context.navigator.pop();
-                },
-              );
+          AddBlacklistedTagButton(
+            onAdd: (tag) {
+              ref
+                  .read(globalBlacklistedTagsProvider.notifier)
+                  .addTagWithToast(context, tag);
             },
-            icon: const Icon(Symbols.add),
           ),
         ],
       ),
-      body: const SafeArea(child: BlacklistedTagsList()),
+      body: SafeArea(
+        child: BlacklistedTagsList(
+          tags: sortedTags.map((e) => e.name).toList(),
+          onEditTap: (oldTag, newTag) {
+            final oldBlacklistedTag =
+                sortedTags.firstWhereOrNull((e) => e.name == oldTag);
+
+            if (oldBlacklistedTag == null) {
+              showErrorToast(context, 'Cannot find tag $oldTag');
+              return;
+            }
+
+            ref.read(globalBlacklistedTagsProvider.notifier).updateTag(
+                  oldTag: oldBlacklistedTag,
+                  newTag: newTag,
+                );
+          },
+          onRemoveTag: (tag) {
+            final blacklistedTag =
+                sortedTags.firstWhereOrNull((e) => e.name == tag);
+
+            if (blacklistedTag == null) {
+              showErrorToast(context, 'Cannot find tag $tag');
+              return;
+            }
+
+            ref
+                .read(globalBlacklistedTagsProvider.notifier)
+                .removeTag(blacklistedTag);
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class AddBlacklistedTagButton extends StatelessWidget {
+  const AddBlacklistedTagButton({
+    super.key,
+    required this.onAdd,
+  });
+
+  final void Function(String tag) onAdd;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed: () {
+        goToBlacklistedTagsSearchPage(
+          context,
+          onSelectDone: (tagItems, currentQuery) {
+            final tagString = [
+              ...tagItems.map((e) => e.toString()),
+              if (currentQuery.isNotEmpty) currentQuery,
+            ].join(' ');
+
+            onAdd(tagString);
+            context.navigator.pop();
+          },
+        );
+      },
+      icon: const Icon(Symbols.add),
     );
   }
 }
@@ -114,15 +167,18 @@ List<BlacklistedTag> sortBlacklistedTags(
 class BlacklistedTagsList extends ConsumerWidget {
   const BlacklistedTagsList({
     super.key,
+    required this.tags,
+    required this.onRemoveTag,
+    required this.onEditTap,
   });
+
+  final List<String>? tags;
+  final void Function(String tag) onRemoveTag;
+  final void Function(String oldTag, String newTag) onEditTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tags = ref.watch(globalBlacklistedTagsProvider);
-    final sortType = ref.watch(selectedBlacklistedTagsSortTypeProvider);
-    final sortedTags = sortBlacklistedTags(tags, sortType);
-
-    return sortedTags.toOption().fold(
+    return tags.toOption().fold(
           () => const Center(child: CircularProgressIndicator()),
           (tags) => tags.isNotEmpty
               ? CustomScrollView(
@@ -141,27 +197,19 @@ class BlacklistedTagsList extends ConsumerWidget {
                           final tag = tags[index];
 
                           return BlacklistedTagTile(
-                            tag: tag.name,
-                            onRemoveTag: (_) => ref
-                                .read(globalBlacklistedTagsProvider.notifier)
-                                .removeTag(tag),
+                            tag: tag,
+                            onRemoveTag: (_) => onRemoveTag(tag),
                             onEditTap: () {
                               goToBlacklistedTagsSearchPage(
                                 context,
-                                initialTags: tag.name.split(' '),
+                                initialTags: tag.split(' '),
                                 onSelectDone: (tagItems, currentQuery) {
                                   final tagString = [
                                     ...tagItems.map((e) => e.toString()),
                                     if (currentQuery.isNotEmpty) currentQuery,
                                   ].join(' ');
 
-                                  ref
-                                      .read(globalBlacklistedTagsProvider
-                                          .notifier)
-                                      .updateTag(
-                                        oldTag: tag,
-                                        newTag: tagString,
-                                      );
+                                  onEditTap(tag, tagString);
                                   context.navigator.pop();
                                 },
                               );
