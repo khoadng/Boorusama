@@ -21,7 +21,7 @@ class DanbooruBlacklistedTagsPage extends ConsumerWidget {
     final config = ref.watchConfig;
     final tags = ref.watch(danbooruBlacklistedTagsProvider(config));
 
-    return BlacklistedTagsList(
+    return BlacklistedTagsViewScaffold(
       title: 'blacklisted_tags.blacklisted_tags'.tr(),
       actions: [
         if (tags != null)

@@ -19,11 +19,14 @@ class BlacklistedTagsSearchPage extends ConsumerStatefulWidget {
     super.key,
     required this.onSelectedDone,
     this.initialTags,
+    this.backButton,
   });
 
   final void Function(List<TagSearchItem> tags, String currentQuery)
       onSelectedDone;
   final List<String>? initialTags;
+
+  final Widget? backButton;
 
   @override
   ConsumerState<BlacklistedTagsSearchPage> createState() =>
@@ -92,7 +95,7 @@ class _BlacklistedTagsSearchPageState
             selectedTagController.addTag(value);
             queryEditingController.clear();
           },
-          leading: const SearchAppBarBackButton(),
+          leading: widget.backButton ?? const SearchAppBarBackButton(),
         ),
       ),
       body: SafeArea(
