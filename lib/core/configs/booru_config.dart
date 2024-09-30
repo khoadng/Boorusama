@@ -31,6 +31,7 @@ class BooruConfig extends Equatable {
     required this.postGestures,
     required this.defaultPreviewImageButtonAction,
     required this.listing,
+    required this.alwaysIncludeTags,
   });
 
   factory BooruConfig.fromJson(Map<String, dynamic> json) {
@@ -75,6 +76,7 @@ class BooruConfig extends Equatable {
       listing: json['listing'] == null
           ? null
           : ListingConfigs.fromJson(json['listing'] as Map<String, dynamic>),
+      alwaysIncludeTags: json['alwaysIncludeTags'] as String?,
     );
   }
 
@@ -98,6 +100,7 @@ class BooruConfig extends Equatable {
     postGestures: null,
     defaultPreviewImageButtonAction: null,
     listing: null,
+    alwaysIncludeTags: null,
   );
 
   static BooruConfig defaultConfig({
@@ -125,6 +128,7 @@ class BooruConfig extends Equatable {
         postGestures: null,
         defaultPreviewImageButtonAction: null,
         listing: null,
+        alwaysIncludeTags: null,
       );
 
   final int id;
@@ -146,6 +150,7 @@ class BooruConfig extends Equatable {
   final PostGestureConfig? postGestures;
   final String? defaultPreviewImageButtonAction;
   final ListingConfigs? listing;
+  final String? alwaysIncludeTags;
 
   BooruConfig copyWith({
     String? url,
@@ -173,6 +178,7 @@ class BooruConfig extends Equatable {
       postGestures: postGestures,
       defaultPreviewImageButtonAction: defaultPreviewImageButtonAction,
       listing: listing,
+      alwaysIncludeTags: alwaysIncludeTags,
     );
   }
 
@@ -197,7 +203,13 @@ class BooruConfig extends Equatable {
         postGestures,
         defaultPreviewImageButtonAction,
         listing,
+        alwaysIncludeTags,
       ];
+
+  @override
+  String toString() {
+    return 'Config(id=$id, booruId=$booruIdHint, name=$name, url=$url, login=${hasLoginDetails()})';
+  }
 
   Map<String, dynamic> toJson() {
     return {
@@ -222,6 +234,7 @@ class BooruConfig extends Equatable {
       'postGestures': postGestures?.toJson(),
       'defaultPreviewImageButtonAction': defaultPreviewImageButtonAction,
       'listing': listing?.toJson(),
+      'alwaysIncludeTags': alwaysIncludeTags,
     };
   }
 }

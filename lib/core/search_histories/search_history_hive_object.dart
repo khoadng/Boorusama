@@ -12,6 +12,7 @@ class SearchHistoryHiveObject {
     required this.query,
     required this.createdAt,
     required this.searchCount,
+    required this.type,
   });
 
   @HiveField(0)
@@ -22,6 +23,9 @@ class SearchHistoryHiveObject {
 
   @HiveField(2)
   int? searchCount;
+
+  @HiveField(3)
+  String? type;
 }
 
 SearchHistory hiveObjectToSearchHistory(SearchHistoryHiveObject obj) {
@@ -29,6 +33,7 @@ SearchHistory hiveObjectToSearchHistory(SearchHistoryHiveObject obj) {
     query: obj.query,
     createdAt: obj.createdAt,
     searchCount: obj.searchCount ?? 0,
+    queryType: parseQueryType(obj.type),
   );
 }
 
@@ -37,5 +42,6 @@ SearchHistoryHiveObject searchHistoryToHiveObject(SearchHistory history) {
     query: history.query,
     createdAt: history.createdAt,
     searchCount: history.searchCount,
+    type: history.queryType?.name,
   );
 }

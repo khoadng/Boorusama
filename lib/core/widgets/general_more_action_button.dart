@@ -40,7 +40,6 @@ class GeneralMoreActionButton extends ConsumerWidget {
           onSelected: (value) {
             switch (value) {
               case 'download':
-                showDownloadStartToast(context);
                 if (onDownload != null) {
                   onDownload!(post);
                 } else {

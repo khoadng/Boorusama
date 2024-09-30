@@ -83,9 +83,9 @@ const kDanbooruPostSamples = [
 
 class DanbooruBuilder
     with
+        DefaultQuickFavoriteButtonBuilderMixin,
         DefaultTagColorMixin,
-        NewGranularRatingOptionsBuilderMixin,
-        NewGranularRatingQueryBuilderMixin
+        NewGranularRatingOptionsBuilderMixin
     implements BooruBuilder {
   DanbooruBuilder({
     required this.postRepo,
@@ -155,12 +155,8 @@ class DanbooruBuilder
       (postId, ref) => ref.danbooruFavorites.remove(postId).then((_) => true);
 
   @override
-  PostCountFetcher? get postCountFetcher =>
-      (config, tags, granularRatingQueryBuilder) => postCountRepo.count({
-            ...tags,
-            if (granularRatingQueryBuilder != null)
-              ...granularRatingQueryBuilder(tags, config),
-          }.toList());
+  PostCountFetcher? get postCountFetcher => (config, tags, tagComposer) =>
+      postCountRepo.count(tagComposer.compose(tags));
 
   @override
   SearchPageBuilder get searchPageBuilder =>
@@ -485,18 +481,22 @@ extension DanbooruX on WidgetRef {
   }
 
   void _guardLogin(void Function() action) {
-    if (!readConfig.hasLoginDetails()) {
-      showSimpleSnackBar(
-        context: context,
-        content: const Text(
-          'post.detail.login_required_notice',
-        ).tr(),
-        duration: AppDurations.shortToast,
-      );
-
-      return;
-    }
-
-    action();
+    guardLogin(this, action);
   }
+}
+
+void guardLogin(WidgetRef ref, void Function() action) {
+  if (!ref.readConfig.hasLoginDetails()) {
+    showSimpleSnackBar(
+      context: ref.context,
+      content: const Text(
+        'post.detail.login_required_notice',
+      ).tr(),
+      duration: AppDurations.shortToast,
+    );
+
+    return;
+  }
+
+  action();
 }

@@ -34,6 +34,7 @@ final szurubooruPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
     final client = ref.watch(szurubooruClientProvider(config));
 
     return PostRepositoryBuilder(
+      tagComposer: DefaultTagQueryComposer(config: config),
       fetch: (tags, page, {limit}) async {
         final posts = await client.getPosts(
           tags: tags,

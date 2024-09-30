@@ -25,7 +25,6 @@ class DownloadPostButton extends ConsumerWidget {
         ? IconButton(
             splashRadius: 16,
             onPressed: () {
-              showDownloadStartToast(context);
               ref.download(post);
             },
             icon: const Icon(
@@ -36,7 +35,6 @@ class DownloadPostButton extends ConsumerWidget {
             color: Colors.transparent,
             child: InkWell(
               onTap: () {
-                showDownloadStartToast(context);
                 ref.download(post);
               },
               child: const Padding(

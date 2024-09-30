@@ -101,7 +101,7 @@ class FavoriteGroupsPage extends ConsumerWidget {
   void _showEditSheet(
     BuildContext context,
     WidgetRef ref,
-    FavoriteGroup favGroup,
+    DanbooruFavoriteGroup favGroup,
     BooruConfig config,
   ) {
     showMaterialModalBottomSheet(
@@ -151,7 +151,7 @@ class _Preview extends ConsumerWidget {
     required this.group,
   });
 
-  final FavoriteGroup group;
+  final DanbooruFavoriteGroup group;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

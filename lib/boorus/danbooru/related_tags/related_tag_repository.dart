@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:convert';
+
 // Project imports:
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
@@ -39,7 +42,12 @@ class RelatedTagRepositoryBuilder
     int? limit,
   }) =>
       tryGet(
-        query,
+        jsonEncode({
+          'query': query,
+          'category': category?.name,
+          'order': order?.name,
+          'limit': limit,
+        }),
         orElse: () => fetch(
           query,
           category: category,

@@ -27,6 +27,7 @@ import 'package:boorusama/clients/e621/e621_client.dart';
 import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
 import 'package:boorusama/clients/gelbooru/gelbooru_v1_client.dart';
 import 'package:boorusama/clients/gelbooru/gelbooru_v2_client.dart';
+import 'package:boorusama/clients/hydrus/hydrus_client.dart';
 import 'package:boorusama/clients/moebooru/moebooru_client.dart';
 import 'package:boorusama/clients/philomena/philomena_client.dart';
 import 'package:boorusama/clients/sankaku/sankaku_client.dart';
@@ -49,6 +50,8 @@ import 'package:boorusama/foundation/loggers/loggers.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/package_info.dart';
 import 'package:boorusama/functional.dart';
+import 'hydrus/favorites/favorites.dart';
+import 'hydrus/hydrus.dart';
 import 'philomena/providers.dart';
 import 'shimmie2/providers.dart';
 import 'szurubooru/providers.dart';
@@ -80,6 +83,7 @@ final postRepoProvider = Provider.family<PostRepository, BooruConfig>(
           BooruType.shimmie2 => ref.watch(shimmie2PostRepoProvider(config)),
           BooruType.zerochan => ref.watch(zerochanPostRepoProvider(config)),
           BooruType.szurubooru => ref.watch(szurubooruPostRepoProvider(config)),
+          BooruType.hydrus => ref.watch(hydrusPostRepoProvider(config)),
           BooruType.unknown => ref.watch(emptyPostRepoProvider),
         });
 
@@ -101,6 +105,7 @@ final postArtistCharacterRepoProvider =
               BooruType.sankaku ||
               BooruType.shimmie2 ||
               BooruType.zerochan ||
+              BooruType.hydrus ||
               BooruType.unknown =>
                 ref.watch(postRepoProvider(config)),
             });
@@ -110,21 +115,11 @@ final settingsProvider = NotifierProvider<SettingsNotifier, Settings>(
   dependencies: [
     settingsRepoProvider,
   ],
+  name: 'settingsProvider',
 );
-
-//FIXME: should move to some sort of experimental features provider
-const _kExperimentalFeatures = String.fromEnvironment('EXPERIMENTAL_FEATURES');
-final _kExperimentalFeaturesSet = _kExperimentalFeatures.split(' ');
-final kCustomListingFeatureEnabled =
-    _kExperimentalFeaturesSet.contains('custom-listing');
 
 final imageListingSettingsProvider = Provider<ImageListingSettings>((ref) {
   final listing = ref.watch(settingsProvider.select((value) => value.listing));
-
-  // if custom listing is not enabled, return the global settings
-  if (!kCustomListingFeatureEnabled) {
-    return listing;
-  }
 
   // check if user has set custom settings
   final listingConfigs =
@@ -139,11 +134,12 @@ final imageListingSettingsProvider = Provider<ImageListingSettings>((ref) {
   return listing;
 });
 
-final settingsRepoProvider =
-    Provider<SettingsRepository>((ref) => throw UnimplementedError());
+final settingsRepoProvider = Provider<SettingsRepository>(
+  (ref) => throw UnimplementedError(),
+  name: 'settingsRepoProvider',
+);
 
 class DioArgs {
-
   DioArgs({
     required this.cacheDir,
     required this.baseUrl,
@@ -156,7 +152,7 @@ class DioArgs {
   final String baseUrl;
   final UserAgentGenerator userAgentGenerator;
   final BooruConfig booruConfig;
-  final LoggerService loggerService;
+  final Logger loggerService;
   final BooruFactory booruFactory;
 }
 
@@ -178,11 +174,15 @@ final dioArgsProvider = Provider.family<DioArgs, BooruConfig>((ref, config) {
 
 final httpCacheDirProvider = Provider<Directory>(
   (ref) => throw UnimplementedError(),
+  name: 'httpCacheDirProvider',
 );
 
-final miscDataBoxProvider = Provider<Box<String>>((ref) {
-  throw UnimplementedError();
-});
+final miscDataBoxProvider = Provider<Box<String>>(
+  (ref) {
+    throw UnimplementedError();
+  },
+  name: 'miscDataBoxProvider',
+);
 
 final miscDataProvider = NotifierProvider.autoDispose
     .family<MiscDataNotifier, String, String>(MiscDataNotifier.new);
@@ -201,24 +201,30 @@ final userAgentGeneratorProvider =
   },
 );
 
-final loggerProvider =
-    Provider<LoggerService>((ref) => throw UnimplementedError());
+final loggerProvider = Provider<Logger>((ref) => throw UnimplementedError());
 
 final bookmarkRepoProvider = Provider<BookmarkRepository>(
   (ref) => throw UnimplementedError(),
+  name: 'bookmarkRepoProvider',
 );
 
-final deviceInfoProvider = Provider<DeviceInfo>((ref) {
-  throw UnimplementedError();
-});
+final deviceInfoProvider = Provider<DeviceInfo>(
+  (ref) {
+    throw UnimplementedError();
+  },
+  name: 'deviceInfoProvider',
+);
 
 final cacheSizeProvider =
     NotifierProvider.autoDispose<CacheSizeNotifier, CacheSizeInfo>(
         CacheSizeNotifier.new);
 
-final appInfoProvider = Provider<AppInfo>((ref) {
-  throw UnimplementedError();
-});
+final appInfoProvider = Provider<AppInfo>(
+  (ref) {
+    throw UnimplementedError();
+  },
+  name: 'appInfoProvider',
+);
 
 final tagRepoProvider = Provider.family<TagRepository, BooruConfig>(
     (ref, config) => switch (config.booruType) {
@@ -233,6 +239,7 @@ final tagRepoProvider = Provider.family<TagRepository, BooruConfig>(
           BooruType.philomena ||
           BooruType.szurubooru ||
           BooruType.shimmie2 ||
+          BooruType.hydrus ||
           BooruType.unknown =>
             ref.watch(emptyTagRepoProvider),
         });
@@ -242,6 +249,7 @@ final favoriteProvider = Provider.autoDispose
           BooruType.danbooru => ref.watch(danbooruFavoriteProvider(postId)),
           BooruType.e621 => ref.watch(e621FavoriteProvider(postId)),
           BooruType.szurubooru => ref.watch(szurubooruFavoriteProvider(postId)),
+          BooruType.hydrus => ref.watch(hydrusFavoriteProvider(postId)),
           BooruType.gelbooru => ref.watch(gelbooruFavoriteProvider(postId)),
           BooruType.gelbooruV1 ||
           BooruType.gelbooruV2 ||
@@ -274,6 +282,7 @@ final blacklistTagsProvider =
     BooruType.philomena ||
     BooruType.szurubooru ||
     BooruType.shimmie2 ||
+    BooruType.hydrus ||
     BooruType.unknown =>
       globalBlacklistedTags,
   };
@@ -346,6 +355,11 @@ final booruSiteValidatorProvider =
         username: login,
         token: apiKey,
       ).getPosts().then((value) => true),
+    BooruType.hydrus => HydrusClient(
+        baseUrl: config.url,
+        apiKey: apiKey ?? '',
+        dio: dio,
+      ).getFiles().then((value) => true),
     BooruType.unknown => Future.value(false),
   };
 });

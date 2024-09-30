@@ -26,7 +26,7 @@ class EditFavoriteGroupDialog extends ConsumerStatefulWidget {
 
   final double? padding;
   final String title;
-  final FavoriteGroup? initialData;
+  final DanbooruFavoriteGroup? initialData;
   final bool enableManualDataInput;
 
   @override

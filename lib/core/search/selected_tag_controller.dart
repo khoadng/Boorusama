@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/core/search_histories/search_histories.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'filter_operator.dart';
 import 'tag_search_item.dart';
@@ -36,11 +37,25 @@ class SelectedTagController extends ValueNotifier<List<TagSearchItem>> {
   String _applyOperator(String tag, FilterOperator operator) =>
       '${filterOperatorToString(operator)}$tag';
 
+  void addTagFromSearchHistory(SearchHistory history) {
+    if (history.queryType == QueryType.list) {
+      final tags = history.queryAsList();
+      addTags(tags);
+    } else {
+      addTag(
+        history.query,
+        isRaw: true,
+      );
+    }
+  }
+
   void addTag(
     String tag, {
     bool isRaw = false,
     FilterOperator operator = FilterOperator.none,
   }) {
+    if (tag.isEmpty) return;
+
     _tags.add(_toItem(
       _applyOperator(tag, operator),
       isRaw: isRaw,

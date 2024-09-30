@@ -5,9 +5,12 @@ import 'package:version/version.dart';
 
 export 'package:package_info_plus/package_info_plus.dart';
 
-final packageInfoProvider = Provider<PackageInfo>((ref) {
-  throw UnimplementedError();
-});
+final packageInfoProvider = Provider<PackageInfo>(
+  (ref) {
+    throw UnimplementedError();
+  },
+  name: 'packageInfoProvider',
+);
 
 final dummyPackageInfoProvider = Provider<PackageInfo>((ref) {
   return PackageInfo(

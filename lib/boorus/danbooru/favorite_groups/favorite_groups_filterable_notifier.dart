@@ -5,10 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'favorite_groups.dart';
 
-class FavoriteGroupFilterableNotifier
-    extends AutoDisposeFamilyNotifier<List<FavoriteGroup>?, BooruConfig> {
+class FavoriteGroupFilterableNotifier extends AutoDisposeFamilyNotifier<
+    List<DanbooruFavoriteGroup>?, BooruConfig> {
   @override
-  List<FavoriteGroup>? build(BooruConfig arg) {
+  List<DanbooruFavoriteGroup>? build(BooruConfig arg) {
     return ref.watch(danbooruFavoriteGroupsProvider(arg));
   }
 

@@ -114,6 +114,7 @@ class _InteractiveBooruImageState extends ConsumerState<InteractiveBooruImage> {
                         fit: BoxFit.contain,
                         headers: {
                           AppHttpHeaders.userAgentHeader: ua,
+                          ...ref.watch(extraHttpHeaderProvider(config)),
                         },
                       ),
                       ...widget.imageOverlayBuilder?.call(constraints) ?? [],
@@ -133,6 +134,7 @@ class _InteractiveBooruImageState extends ConsumerState<InteractiveBooruImage> {
                   fit: BoxFit.contain,
                   headers: {
                     AppHttpHeaders.userAgentHeader: ua,
+                    ...ref.watch(extraHttpHeaderProvider(config)),
                   },
                 ),
               ),

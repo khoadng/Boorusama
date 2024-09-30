@@ -50,7 +50,6 @@ class DanbooruPostContextMenu extends ConsumerWidget {
         ContextMenuButtonConfig(
           'download.download'.tr(),
           onPressed: () {
-            showDownloadStartToast(context);
             ref.download(post);
           },
         ),
@@ -143,7 +142,6 @@ class FavoriteGroupsPostContextMenu extends ConsumerWidget {
         ContextMenuButtonConfig(
           'download.download'.tr(),
           onPressed: () {
-            showDownloadStartToast(context);
             ref.download(post);
           },
         ),

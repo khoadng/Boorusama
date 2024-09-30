@@ -9,7 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/downloads/downloads.dart';
+import 'package:boorusama/core/downloads/download.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
@@ -50,7 +50,6 @@ class GeneralPostContextMenu extends ConsumerWidget {
         ContextMenuButtonConfig(
           'download.download'.tr(),
           onPressed: () {
-            showDownloadStartToast(context);
             ref.download(post);
           },
         ),

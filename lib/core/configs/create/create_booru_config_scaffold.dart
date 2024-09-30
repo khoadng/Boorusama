@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/foundation/display.dart';
@@ -13,6 +12,7 @@ import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'booru_config_listing_view.dart';
+import 'booru_config_search_view.dart';
 
 const kDefaultPreviewImageButtonAction = {
   '',
@@ -29,6 +29,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
     this.tabsBuilder,
     required this.isNewConfig,
     this.authTab,
+    this.searchTab,
     this.postDetailsResolution,
     this.hasDownloadTab = true,
     this.hasRatingFilter = false,
@@ -44,6 +45,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
   final Map<String, Widget> Function(BuildContext context)? tabsBuilder;
 
   final Widget? authTab;
+  final Widget? searchTab;
 
   final Widget? postDetailsResolution;
 
@@ -67,19 +69,21 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
 
     final tabMap = {
       if (authTab != null) 'booru.authentication': authTab!,
-      if (kCustomListingFeatureEnabled)
-        'Listing': BooruConfigListingView(
-          config: config,
-        ),
+      'Listing': searchTab ??
+          BooruConfigListingView(
+            config: config,
+          ),
       if (hasDownloadTab)
         'booru.download': BooruConfigDownloadView(config: config),
+      'Search': BooruConfigSearchView(
+        hasRatingFilter: hasRatingFilter,
+      ),
       if (tabsBuilder != null) ...tabsBuilder!(context),
       'booru.gestures': BooruConfigGesturesView(
         postDetailsGestureActions: postDetailsGestureActions,
         describePostDetailsAction: describePostDetailsAction,
       ),
       'booru.misc': BooruConfigMiscView(
-        hasRatingFilter: hasRatingFilter,
         postDetailsGestureActions: postDetailsGestureActions,
         postPreviewQuickActionButtonActions:
             postPreviewQuickActionButtonActions,
@@ -96,8 +100,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
       appBar: AppBar(
         titleSpacing: 0,
         title: SelectedBooruChip(
-          booruType: config.booruType,
-          url: config.url,
+          config: config,
         ),
         actions: [
           BooruConfigSubmitButton(
@@ -123,6 +126,9 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
                   children: [
                     const SizedBox(height: 4),
                     TabBar(
+                      labelPadding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                      ),
                       isScrollable: true,
                       tabs: [
                         for (final tab in tabMap.keys) Tab(text: tab.tr()),

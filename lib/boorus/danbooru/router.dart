@@ -54,12 +54,12 @@ void goToPoolDetailPage(BuildContext context, DanbooruPool pool) {
 
 void goToPostVersionPage(BuildContext context, DanbooruPost post) {
   if (kPreferredLayout.isMobile) {
-    showMaterialModalBottomSheet(
-      context: context,
-      duration: AppDurations.bottomSheet,
-      builder: (_) => DanbooruPostVersionsPage(
-        postId: post.id,
-        previewUrl: post.url720x720,
+    context.navigator.push(
+      CupertinoPageRoute(
+        builder: (_) => DanbooruPostVersionsPage(
+          postId: post.id,
+          previewUrl: post.url720x720,
+        ),
       ),
     );
   } else {
@@ -152,7 +152,7 @@ void goToPoolPage(BuildContext context, WidgetRef ref) {
 
 void goToBlacklistedTagPage(BuildContext context) {
   context.navigator.push(CupertinoPageRoute(
-    builder: (_) => const BlacklistedTagsPage(),
+    builder: (_) => const DanbooruBlacklistedTagsPage(),
   ));
 }
 
@@ -391,7 +391,7 @@ Future<Object?> goToFavoriteGroupCreatePage(
 
 Future<Object?> goToFavoriteGroupEditPage(
   BuildContext context,
-  FavoriteGroup group,
+  DanbooruFavoriteGroup group,
 ) {
   return showGeneralDialog(
     context: context,
@@ -411,7 +411,7 @@ void goToFavoriteGroupPage(BuildContext context) {
 
 void goToFavoriteGroupDetailsPage(
   BuildContext context,
-  FavoriteGroup group,
+  DanbooruFavoriteGroup group,
 ) {
   context.navigator.push(CupertinoPageRoute(
     builder: (_) => CustomContextMenuOverlay(

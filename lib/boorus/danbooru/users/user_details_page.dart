@@ -5,8 +5,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:collection/collection.dart';
-import 'package:fl_chart/fl_chart.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -23,37 +22,80 @@ import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/string.dart';
-import 'package:boorusama/time.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../favorites/favorites.dart';
 import '../posts/posts.dart';
 import '../related_tags/related_tags.dart';
 import '../reports/reports.dart';
 import '../router.dart';
+import 'user_charts.dart';
 import 'users.dart';
 
-typedef DanbooruReportDataParams = ({
-  String username,
-  String tag,
-  int uploadCount,
-});
+class DanbooruReportDataParams extends Equatable {
+  const DanbooruReportDataParams({
+    required this.username,
+    required this.tag,
+    required this.uploadCount,
+  });
+
+  DanbooruReportDataParams.forUser(
+    DanbooruUser user,
+  )   : username = user.name,
+        tag = 'user:${user.name}',
+        uploadCount = user.uploadCount;
+
+  DanbooruReportDataParams withDateRange({
+    DateTime? from,
+    DateTime? to,
+  }) {
+    return DanbooruReportDataParams(
+      username: username,
+      tag: tag,
+      uploadCount: uploadCount,
+    );
+  }
+
+  final String username;
+  final String tag;
+  final int uploadCount;
+
+  @override
+  List<Object?> get props => [username, tag, uploadCount];
+}
 
 typedef DanbooruCopyrightDataParams = ({
   String username,
   int uploadCount,
 });
 
-final userDataProvider = FutureProvider.family<List<DanbooruReportDataPoint>,
-    DanbooruReportDataParams>((ref, params) async {
+final userDataProvider = FutureProvider.autoDispose
+    .family<List<DanbooruReportDataPoint>, DanbooruReportDataParams>(
+        (ref, params) async {
   final tag = params.tag;
   final config = ref.watchConfig;
+  final now = DateTime.now();
+
+  final selectedRange = ref.watch(selectedUploadDateRangeSelectorTypeProvider);
+  final from = switch (selectedRange) {
+    UploadDateRangeSelectorType.last7Days =>
+      now.subtract(const Duration(days: 7)),
+    UploadDateRangeSelectorType.last30Days =>
+      now.subtract(const Duration(days: 30)),
+    UploadDateRangeSelectorType.last3Months =>
+      now.subtract(const Duration(days: 90)),
+    UploadDateRangeSelectorType.last6Months =>
+      now.subtract(const Duration(days: 180)),
+    UploadDateRangeSelectorType.lastYear =>
+      now.subtract(const Duration(days: 365)),
+  };
+
   final data =
       await ref.watch(danbooruPostReportProvider(config)).getPostReports(
     tags: [
       tag,
     ],
     period: DanbooruReportPeriod.day,
-    from: DateTime.now().subtract(const Duration(days: 30)),
+    from: from,
     to: DateTime.now(),
   );
 
@@ -73,6 +115,8 @@ final userCopyrightDataProvider =
         category: TagCategory.copyright(),
       );
 });
+
+const _kTopCopyrigthTags = 5;
 
 class UserDetailsPage extends ConsumerWidget {
   const UserDetailsPage({
@@ -168,26 +212,35 @@ class UserDetailsPage extends ConsumerWidget {
                           child: SizedBox(
                             height: 220,
                             child: ref
-                                .watch(userDataProvider((
-                                  username: username,
-                                  tag: 'user:$username',
-                                  uploadCount: user.uploadCount,
-                                )))
+                                .watch(userDataProvider(
+                                  DanbooruReportDataParams.forUser(user),
+                                ))
                                 .maybeWhen(
                                   data: (data) => Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.stretch,
                                     children: [
-                                      Text(
-                                        '${data.sumBy((e) => e.postCount).toString()} uploads in the last 30 days',
-                                        style: context.textTheme.titleMedium!
-                                            .copyWith(
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              '${data.sumBy((e) => e.postCount).toString()} uploads',
+                                              style: context
+                                                  .textTheme.titleMedium!
+                                                  .copyWith(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                          const UploadDateRangeSelectorButton(),
+                                        ],
                                       ),
                                       const SizedBox(height: 16),
                                       Expanded(
-                                          child: _buildChart(context, data)),
+                                        child: UserUploadDailyDeltaChart(
+                                          data: data,
+                                        ),
+                                      ),
                                     ],
                                   ),
                                   orElse: () => const SizedBox(
@@ -210,7 +263,10 @@ class UserDetailsPage extends ConsumerWidget {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               Text(
-                                'Top 5 copyrights',
+                                'Top {0} copyrights'.replaceFirst(
+                                  '{0}',
+                                  _kTopCopyrigthTags.toString(),
+                                ),
                                 style: context.textTheme.titleMedium?.copyWith(
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -223,7 +279,9 @@ class UserDetailsPage extends ConsumerWidget {
                                   )))
                                   .maybeWhen(
                                     data: (data) => _buildTags(
-                                      data.tags.take(5).toList(),
+                                      data.tags
+                                          .take(_kTopCopyrigthTags)
+                                          .toList(),
                                       context,
                                       ref,
                                     ),
@@ -314,7 +372,7 @@ class UserDetailsPage extends ConsumerWidget {
                       text: e.tag.replaceUnderscoreWithSpace(),
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
-                        color: context.themeMode.isDark
+                        color: context.isDark
                             ? ref.watch(
                                 tagColorProvider(TagCategory.copyright().name))
                             : Colors.white,
@@ -323,7 +381,7 @@ class UserDetailsPage extends ConsumerWidget {
                         TextSpan(
                           text: '  ${(e.frequency * 100).toStringAsFixed(1)}%',
                           style: context.textTheme.bodySmall?.copyWith(
-                            color: context.themeMode.isLight
+                            color: context.isLight
                                 ? Colors.white.withOpacity(0.85)
                                 : null,
                           ),
@@ -334,76 +392,6 @@ class UserDetailsPage extends ConsumerWidget {
             ),
           )
           .toList(),
-    );
-  }
-
-  Widget _buildChart(BuildContext context, List<DanbooruReportDataPoint> data) {
-    final seen = <int>{};
-    final titles = <int, String>{};
-
-    for (var i = 0; i < data.length; i++) {
-      final month = data[i].date.month;
-      if (!seen.contains(month)) {
-        titles[i] = parseIntToMonthString(month);
-        seen.add(data[i].date.month);
-      } else {
-        titles[i] = '';
-      }
-    }
-
-    return BarChart(
-      BarChartData(
-        barTouchData: BarTouchData(
-          enabled: true,
-          touchTooltipData: BarTouchTooltipData(
-            getTooltipColor: (_) => context.colorScheme.surfaceContainerHighest,
-            fitInsideHorizontally: true,
-            getTooltipItem: (group, groupIndex, rod, rodIndex) {
-              final date = data[groupIndex].date;
-              return BarTooltipItem(
-                  '${date.day}/${date.month}/${date.year}',
-                  context.textTheme.bodySmall?.copyWith(
-                        color: context.theme.textTheme.bodyLarge?.color,
-                      ) ??
-                      const TextStyle(),
-                  children: [
-                    TextSpan(
-                      text: '\n${rod.toY.toInt()} posts',
-                      style: context.textTheme.bodySmall?.copyWith(
-                        color: context.colorScheme.primary,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ]);
-            },
-          ),
-        ),
-        titlesData: FlTitlesData(
-          topTitles: const AxisTitles(),
-          rightTitles: const AxisTitles(),
-          bottomTitles: AxisTitles(
-              sideTitles: SideTitles(
-            reservedSize: 30,
-            showTitles: true,
-            getTitlesWidget: (value, meta) => SideTitleWidget(
-              axisSide: meta.axisSide,
-              child: Text(
-                titles[value.toInt()]!,
-              ),
-            ),
-          )),
-        ),
-        barGroups: data
-            .mapIndexed((idx, e) => BarChartGroupData(
-                  x: idx,
-                  barRods: [
-                    BarChartRodData(
-                      toY: e.postCount.toDouble(),
-                    )
-                  ],
-                ))
-            .toList(),
-      ),
     );
   }
 }
@@ -528,6 +516,53 @@ class _PreviewList extends ConsumerWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+enum UploadDateRangeSelectorType {
+  last7Days,
+  last30Days,
+  last3Months,
+  last6Months,
+  lastYear,
+}
+
+extension UploadDateRangeSelectorTypeExtension on UploadDateRangeSelectorType {
+  String get name => switch (this) {
+        UploadDateRangeSelectorType.last7Days => 'Last 7 days',
+        UploadDateRangeSelectorType.last30Days => 'Last 30 days',
+        UploadDateRangeSelectorType.last3Months => 'Last 3 months',
+        UploadDateRangeSelectorType.last6Months => 'Last 6 months',
+        UploadDateRangeSelectorType.lastYear => 'Last year'
+      };
+}
+
+final selectedUploadDateRangeSelectorTypeProvider =
+    StateProvider.autoDispose<UploadDateRangeSelectorType>(
+        (ref) => UploadDateRangeSelectorType.last30Days);
+
+class UploadDateRangeSelectorButton extends ConsumerWidget {
+  const UploadDateRangeSelectorButton({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return OptionDropDownButton(
+      alignment: AlignmentDirectional.centerStart,
+      value: ref.watch(selectedUploadDateRangeSelectorTypeProvider),
+      onChanged: (value) => ref
+          .read(selectedUploadDateRangeSelectorTypeProvider.notifier)
+          .state = value ?? UploadDateRangeSelectorType.last30Days,
+      items: UploadDateRangeSelectorType.values
+          .map(
+            (value) => DropdownMenuItem(
+              value: value,
+              child: Text(value.name),
+            ),
+          )
+          .toList(),
     );
   }
 }

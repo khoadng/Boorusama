@@ -32,6 +32,7 @@ import 'package:boorusama/router.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'tag_edit_favorite_view.dart';
+import 'tag_edit_notifier.dart';
 import 'tag_edit_page.dart';
 import 'tag_edit_wiki_view.dart';
 

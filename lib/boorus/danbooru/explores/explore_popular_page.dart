@@ -19,15 +19,22 @@ import 'package:boorusama/utils/duration_utils.dart';
 class ExplorePopularPage extends ConsumerWidget {
   const ExplorePopularPage({
     super.key,
+    required this.onBack,
   });
 
-  static Widget routeOf(BuildContext context) => CustomContextMenuOverlay(
+  final void Function()? onBack;
+
+  static Widget routeOf(
+    BuildContext context, {
+    void Function()? onBack,
+  }) =>
+      CustomContextMenuOverlay(
         child: ProviderScope(
           overrides: [
             timeScaleProvider.overrideWith((ref) => TimeScale.day),
             dateProvider.overrideWith((ref) => DateTime.now()),
           ],
-          child: const ExplorePopularPage(),
+          child: ExplorePopularPage(onBack: onBack),
         ),
       );
 
@@ -43,6 +50,7 @@ class ExplorePopularPage extends ConsumerWidget {
       builder: (context, controller, errors) => _PopularContent(
         controller: controller,
         errors: errors,
+        onBack: onBack,
       ),
     );
   }
@@ -52,10 +60,12 @@ class _PopularContent extends ConsumerWidget {
   const _PopularContent({
     required this.controller,
     this.errors,
+    required this.onBack,
   });
 
   final PostGridController<DanbooruPost> controller;
   final BooruError? errors;
+  final void Function()? onBack;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -85,6 +95,7 @@ class _PopularContent extends ConsumerWidget {
                 sliverHeaders: [
                   ExploreSliverAppBar(
                     title: 'explore.popular'.tr(),
+                    onBack: onBack,
                   ),
                   SliverList(
                     delegate: SliverChildListDelegate(

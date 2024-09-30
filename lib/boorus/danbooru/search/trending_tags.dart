@@ -26,8 +26,6 @@ class TrendingTags extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = context.themeMode;
-
     return tags != null && tags!.isNotEmpty
         ? Wrap(
             spacing: 6,
@@ -46,7 +44,7 @@ class TrendingTags extends ConsumerWidget {
                   label: Text(
                     e.name.keyword.replaceUnderscoreWithSpace(),
                     style: TextStyle(
-                      color: theme.isDark ? color : null,
+                      color: context.isDark ? color : null,
                     ),
                   ),
                 ),

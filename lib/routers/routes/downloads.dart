@@ -16,13 +16,14 @@ GoRoute downloadManager() => GoRoute(
       pageBuilder: genericMobilePageBuilder(
         builder: (context, state) => DownloadManagerGatewayPage(
           filter: state.uri.queryParameters['filter'],
+          group: state.uri.queryParameters['group'],
         ),
       ),
     );
 
 GoRoute bulkDownloads(Ref ref) => GoRoute(
       path: 'bulk_downloads',
-      name: '/bulk_downloads',
+      name: kBulkdownload,
       pageBuilder: genericMobilePageBuilder(
         builder: (context, state) =>
             ref.read(currentBooruConfigProvider).booruType == BooruType.zerochan

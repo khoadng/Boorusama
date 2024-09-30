@@ -1,5 +1,6 @@
 // Project imports:
 import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
 import 'package:boorusama/functional.dart';
 
@@ -13,6 +14,8 @@ class PostRepositoryCacher<T extends Post> implements PostRepository<T> {
   final PostRepository<T> repository;
   final Cacher<String, List<T>> cache;
   final String Function(String tags, int page, {int? limit})? keyBuilder;
+  @override
+  TagQueryComposer get tagComposer => repository.tagComposer;
 
   @override
   PostsOrError<T> getPosts(
@@ -39,4 +42,10 @@ class PostRepositoryCacher<T extends Post> implements PostRepository<T> {
 
         return data;
       });
+
+  @override
+  PostsOrError<T> getPostsFromController(
+          SelectedTagController controller, int page,
+          {int? limit}) =>
+      repository.getPostsFromController(controller, page, limit: limit);
 }

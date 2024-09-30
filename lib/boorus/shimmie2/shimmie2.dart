@@ -27,7 +27,6 @@ class Shimmie2Builder
         CharacterNotSupportedMixin,
         NoteNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
-        NoGranularRatingQueryBuilderMixin,
         UnknownMetatagsMixin,
         DefaultHomeMixin,
         DefaultTagColorMixin,

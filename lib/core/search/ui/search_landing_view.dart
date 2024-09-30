@@ -30,7 +30,7 @@ class SearchLandingView extends ConsumerStatefulWidget {
     this.disableAnimation = false,
   });
 
-  final ValueChanged<String>? onHistoryTap;
+  final ValueChanged<SearchHistory>? onHistoryTap;
   final ValueChanged<String>? onTagTap;
   final ValueChanged<String>? onRawTagTap;
   final ValueChanged<SearchHistory> onHistoryRemoved;
@@ -174,7 +174,7 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
     widget.onTagTap?.call(value);
   }
 
-  void _onHistoryTap(String value, WidgetRef ref) {
+  void _onHistoryTap(SearchHistory value, WidgetRef ref) {
     widget.onHistoryTap?.call(value);
   }
 

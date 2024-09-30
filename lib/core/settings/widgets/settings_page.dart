@@ -168,7 +168,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     onTap: () => context.go('/settings/accessibility'),
                   ),
                   SettingTile(
-                    title: 'Image Viewer',
+                    title: 'settings.image_viewer.image_viewer'.tr(),
                     leading: const FaIcon(
                       FontAwesomeIcons.image,
                     ),

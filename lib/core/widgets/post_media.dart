@@ -138,14 +138,7 @@ class PostMedia extends ConsumerWidget {
           );
 
     return PerformanceOrientationBuilder(
-      builder: (_, orientation) => Padding(
-        padding: orientation == Orientation.portrait
-            ? EdgeInsets.zero
-            : EdgeInsets.only(
-                bottom: 8 + MediaQuery.viewPaddingOf(context).bottom,
-              ),
-        child: media,
-      ),
+      builder: (_, orientation) => media,
     );
   }
 }
