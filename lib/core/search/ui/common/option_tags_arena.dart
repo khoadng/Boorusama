@@ -8,26 +8,45 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
 
+class OptionTagsArenaController extends ChangeNotifier {
+  final ValueNotifier<bool> editMode = ValueNotifier(false);
+
+  void toggleEditMode() {
+    editMode.value = !editMode.value;
+    notifyListeners();
+  }
+}
+
 class OptionTagsArena extends StatefulWidget {
   const OptionTagsArena({
     super.key,
     required this.title,
     this.titleTrailing,
-    required this.childrenBuilder,
+    required this.children,
     this.editable = true,
+    this.controller,
   });
 
   final String title;
-  final Widget Function(bool editMode)? titleTrailing;
-  final List<Widget> Function(bool editMode) childrenBuilder;
+  final Widget? titleTrailing;
+  final List<Widget> children;
   final bool editable;
+  final OptionTagsArenaController? controller;
 
   @override
   State<OptionTagsArena> createState() => _OptionTagsArenaState();
 }
 
 class _OptionTagsArenaState extends State<OptionTagsArena> {
-  bool editMode = false;
+  late final controller = widget.controller ?? OptionTagsArenaController();
+
+  @override
+  void dispose() {
+    if (widget.controller == null) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +57,7 @@ class _OptionTagsArenaState extends State<OptionTagsArena> {
         Wrap(
           spacing: 4,
           runSpacing: isDesktopPlatform() ? 4 : 0,
-          children: widget.childrenBuilder(editMode),
+          children: widget.children,
         ),
       ],
     );
@@ -57,29 +76,34 @@ class _OptionTagsArenaState extends State<OptionTagsArena> {
               ),
             ),
             if (widget.editable)
-              FilledButton(
-                style: FilledButton.styleFrom(
-                  visualDensity: VisualDensity.compact,
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  minimumSize: const Size(32, 32),
-                  shape: const CircleBorder(),
-                  backgroundColor: editMode
-                      ? context.colorScheme.primary
-                      : context.colorScheme.surfaceContainerHighest,
-                ),
-                onPressed: () => setState(() => editMode = !editMode),
-                child: Icon(
-                  editMode ? Symbols.check : Symbols.edit,
-                  size: 16,
-                  color: editMode
-                      ? context.colorScheme.onPrimary
-                      : context.colorScheme.onSurfaceVariant,
-                  fill: 1,
-                ),
+              ValueListenableBuilder(
+                valueListenable: controller.editMode,
+                builder: (context, editMode, child) {
+                  return FilledButton(
+                    style: FilledButton.styleFrom(
+                      visualDensity: VisualDensity.compact,
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      minimumSize: const Size(32, 32),
+                      shape: const CircleBorder(),
+                      backgroundColor: editMode
+                          ? context.colorScheme.primary
+                          : context.colorScheme.surfaceContainerHighest,
+                    ),
+                    onPressed: () => controller.toggleEditMode(),
+                    child: Icon(
+                      editMode ? Symbols.check : Symbols.edit,
+                      size: 16,
+                      color: editMode
+                          ? context.colorScheme.onPrimary
+                          : context.colorScheme.onSurfaceVariant,
+                      fill: 1,
+                    ),
+                  );
+                },
               ),
           ],
         ),
-        widget.titleTrailing?.call(editMode) ?? const SizedBox.shrink(),
+        widget.titleTrailing ?? const SizedBox.shrink(),
       ],
     );
   }

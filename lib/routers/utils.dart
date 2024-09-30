@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -14,11 +13,12 @@ import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/blacklists/blacklists.dart';
 import 'package:boorusama/core/comments/comments.dart';
 import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/downloads/bulks/bulk_download_provider.dart';
+import 'package:boorusama/core/downloads/bulks/create_bulk_download_task_sheet.dart';
 import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/search/search.dart';
+import 'package:boorusama/core/search/ui/selected_tag_edit_dialog.dart';
 import 'package:boorusama/core/search_histories/search_histories.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
@@ -104,19 +104,25 @@ void goToPostDetailsPage<T extends Post>({
 
 void goToBlacklistedTagsSearchPage(
   BuildContext context, {
-  required void Function(List<TagSearchItem> tags, String currentQuery)
-      onSelectDone,
+  required void Function(List<String> tags, String currentQuery) onSelectDone,
   List<String>? initialTags,
 }) {
-  context.navigator.push(CupertinoPageRoute(
-    builder: (_) => BlacklistedTagsSearchPage(
-      initialTags: initialTags,
-      onSelectedDone: onSelectDone,
-    ),
-    settings: const RouteSettings(
+  showDialog(
+    context: context,
+    routeSettings: const RouteSettings(
       name: RouterPageConstant.blacklistedSearch,
     ),
-  ));
+    builder: (c) {
+      return SelectedTagEditDialog(
+        tag: TagSearchItem.raw(tag: initialTags?.join(' ') ?? ''),
+        onUpdated: (tag) {
+          if (tag.isNotEmpty) {
+            onSelectDone([], tag.trim());
+          }
+        },
+      );
+    },
+  );
 }
 
 void goToMetatagsPage(
@@ -172,7 +178,7 @@ void goToSearchHistoryPage(
   BuildContext context, {
   required Function() onClear,
   required Function(SearchHistory history) onRemove,
-  required Function(String history) onTap,
+  required Function(SearchHistory history) onTap,
 }) {
   showMaterialModalBottomSheet(
     context: context,
@@ -237,6 +243,7 @@ void goToQuickSearchPage(
   Widget Function(String text)? floatingActionButton,
   required void Function(AutocompleteData tag) onSelected,
   void Function(BuildContext context, String text)? onSubmitted,
+  Widget Function(TextEditingController controller)? emptyBuilder,
 }) {
   showSimpleTagSearchView(
     context,
@@ -255,6 +262,7 @@ void goToQuickSearchPage(
             onSelected: onSelected,
             textColorBuilder: (tag) =>
                 generateAutocompleteTagColor(ref, context, tag),
+            emptyBuilder: emptyBuilder,
           )
         : SimpleTagSearchView(
             onSubmitted: onSubmitted,
@@ -267,6 +275,7 @@ void goToQuickSearchPage(
             onSelected: onSelected,
             textColorBuilder: (tag) =>
                 generateAutocompleteTagColor(ref, context, tag),
+            emptyBuilder: emptyBuilder,
           ),
   );
 }
@@ -317,9 +326,15 @@ Future<void> goToBulkDownloadPage(
   List<String>? tags, {
   required WidgetRef ref,
 }) async {
-  ref.read(bulkDownloadSelectedTagsProvider.notifier).addTags(tags);
-
-  context.go('/bulk_downloads');
+  if (tags != null) {
+    goToNewBulkDownloadTaskPage(
+      ref,
+      context,
+      initialValue: tags,
+    );
+  } else {
+    context.pushNamed(kBulkdownload);
+  }
 }
 
 Future<T?> showDesktopFullScreenWindow<T>(

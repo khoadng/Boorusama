@@ -3,7 +3,7 @@
 // Project imports:
 import 'package:boorusama/foundation/loggers/loggers.dart';
 
-class EmptyLogger implements LoggerService {
+class EmptyLogger implements Logger {
   @override
   void logE(String serviceName, String message) {}
 

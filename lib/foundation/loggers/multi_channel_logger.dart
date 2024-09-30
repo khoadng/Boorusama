@@ -1,12 +1,12 @@
 // Project imports:
 import 'package:boorusama/foundation/loggers/loggers.dart';
 
-class MultiChannelLogger implements LoggerService {
+class MultiChannelLogger implements Logger {
   MultiChannelLogger({
     required this.loggers,
   });
 
-  final List<LoggerService> loggers;
+  final List<Logger> loggers;
 
   @override
   void logE(String serviceName, String message) {

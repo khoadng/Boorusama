@@ -81,16 +81,22 @@ class AddUnknownBooruPage extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         const BooruUrlField(),
-                        const SizedBox(height: 16),
-                        Text(
-                          'Advanced options (optional)',
-                          style: context.textTheme.titleMedium,
-                        ),
-                        const DefaultBooruInstructionText(
-                          '*These options only be used if the site allows it.',
-                        ),
-                        const SizedBox(height: 16),
-                        const DefaultBooruLoginField(),
+                        if (ref.watch(booruEngineProvider) != BooruType.hydrus)
+                          const SizedBox(height: 16),
+                        if (ref.watch(booruEngineProvider) != BooruType.hydrus)
+                          Text(
+                            'Advanced options (optional)',
+                            style: context.textTheme.titleMedium,
+                          ),
+                        if (ref.watch(booruEngineProvider) != BooruType.hydrus)
+                          const DefaultBooruInstructionText(
+                            '*These options only be used if the site allows it.',
+                          ),
+                        //FIXME: make this part of the config customisable
+                        if (ref.watch(booruEngineProvider) != BooruType.hydrus)
+                          const SizedBox(height: 16),
+                        if (ref.watch(booruEngineProvider) != BooruType.hydrus)
+                          const DefaultBooruLoginField(),
                         const SizedBox(height: 16),
                         const DefaultBooruApiKeyField(),
                         const SizedBox(height: 16),
@@ -142,7 +148,10 @@ class UnknownBooruSubmitButton extends ConsumerWidget {
     final url = ref.watch(_siteUrlProvider(config));
     final engine = ref.watch(booruEngineProvider);
 
-    final isValid = auth.isValid && engine != null && configName.isNotEmpty;
+    final isValid = engine != null &&
+        //FIXME: make this check customisable
+        (engine == BooruType.hydrus ? auth.apiKey.isNotEmpty : auth.isValid) &&
+        configName.isNotEmpty;
 
     return ref.watch(_validateConfigProvider).when(
           data: (value) => value != null

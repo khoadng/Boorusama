@@ -43,7 +43,6 @@ class MoebooruBuilder
         CommentNotSupportedMixin,
         NoteNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
-        LegacyGranularRatingQueryBuilderMixin,
         UnknownMetatagsMixin,
         DefaultHomeMixin,
         DefaultThumbnailUrlMixin,
@@ -105,7 +104,8 @@ class MoebooruBuilder
   SearchPageBuilder get searchPageBuilder =>
       (context, initialQuery) => SearchPageScaffold(
             initialQuery: initialQuery,
-            fetcher: (page, tags) => postFetcher(page, tags),
+            fetcher: (page, controller) =>
+                postFetcher(page, controller.rawTagsString),
           );
 
   @override

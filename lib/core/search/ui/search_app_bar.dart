@@ -69,6 +69,7 @@ class SearchAppBar extends ConsumerWidget {
       onChanged: onChanged,
       onSubmitted: onSubmitted,
     );
+
     return LayoutBuilder(
       builder: (context, constraints) => AppBar(
         automaticallyImplyLeading: false,
@@ -82,7 +83,7 @@ class SearchAppBar extends ConsumerWidget {
                   )
                 : ConstrainedBox(
                     constraints: const BoxConstraints(
-                      maxWidth: 500,
+                      maxWidth: 480,
                     ),
                     child: searchBar,
                   ),

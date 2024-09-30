@@ -171,7 +171,7 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                             .clearHistories(),
                         onHistoryRemoved: (value) => ref
                             .read(searchHistoryProvider.notifier)
-                            .removeHistory(value.query),
+                            .removeHistory(value),
                         onTagTap: (value) {
                           selectedTagController.addTag(
                             value,
@@ -185,7 +185,7 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                           isRaw: true,
                         ),
                         onHistoryTap: (value) {
-                          selectedTagController.addTag(value, isRaw: true);
+                          selectedTagController.addTagFromSearchHistory(value);
                           FocusScope.of(context).unfocus();
                         },
                         metatagsBuilder: (context) => DanbooruMetatagsSection(

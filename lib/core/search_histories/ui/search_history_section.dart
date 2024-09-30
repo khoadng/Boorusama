@@ -23,7 +23,7 @@ class SearchHistorySection extends StatelessWidget {
     this.showTime = false,
   });
 
-  final ValueChanged<String> onHistoryTap;
+  final ValueChanged<SearchHistory> onHistoryTap;
   final void Function()? onFullHistoryRequested;
   final List<SearchHistory> histories;
   final int maxHistory;
@@ -57,9 +57,9 @@ class SearchHistorySection extends StatelessWidget {
               ...histories.take(maxHistory).map(
                     (item) => ListTile(
                       visualDensity: VisualDensity.compact,
-                      title: Text(item.query),
+                      title: SearchHistoryQueryWidget(history: item),
                       contentPadding: const EdgeInsets.only(left: 16),
-                      onTap: () => onHistoryTap(item.query),
+                      onTap: () => onHistoryTap(item),
                       minTileHeight: isDesktopPlatform() ? 0 : null,
                       subtitle: showTime
                           ? DateTooltip(
@@ -75,5 +75,37 @@ class SearchHistorySection extends StatelessWidget {
             ],
           )
         : const SizedBox.shrink();
+  }
+}
+
+class SearchHistoryQueryWidget extends StatelessWidget {
+  const SearchHistoryQueryWidget({
+    super.key,
+    required this.history,
+  });
+
+  final SearchHistory history;
+
+  @override
+  Widget build(BuildContext context) {
+    return switch (history.queryType) {
+      QueryType.list => Wrap(
+          spacing: 4,
+          runSpacing: 4,
+          children: history
+              .queryAsList()
+              .map(
+                (e) => IgnorePointer(
+                  child: CompactChip(
+                    label: e,
+                    backgroundColor:
+                        context.colorScheme.surfaceContainerHighest,
+                  ),
+                ),
+              )
+              .toList(),
+        ),
+      _ => Text(history.query),
+    };
   }
 }

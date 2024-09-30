@@ -33,6 +33,7 @@ class BooruConfig extends Equatable {
     required this.defaultPreviewImageButtonAction,
     required this.listing,
     required this.theme,
+    required this.alwaysIncludeTags,
   });
 
   factory BooruConfig.fromJson(Map<String, dynamic> json) {
@@ -80,6 +81,7 @@ class BooruConfig extends Equatable {
       theme: json['theme'] == null
           ? null
           : ThemeConfigs.fromJson(json['theme'] as Map<String, dynamic>),
+      alwaysIncludeTags: json['alwaysIncludeTags'] as String?,
     );
   }
 
@@ -104,6 +106,7 @@ class BooruConfig extends Equatable {
     defaultPreviewImageButtonAction: null,
     listing: null,
     theme: null,
+    alwaysIncludeTags: null,
   );
 
   static BooruConfig defaultConfig({
@@ -132,6 +135,7 @@ class BooruConfig extends Equatable {
         defaultPreviewImageButtonAction: null,
         listing: null,
         theme: null,
+        alwaysIncludeTags: null,
       );
 
   final int id;
@@ -154,6 +158,7 @@ class BooruConfig extends Equatable {
   final String? defaultPreviewImageButtonAction;
   final ListingConfigs? listing;
   final ThemeConfigs? theme;
+  final String? alwaysIncludeTags;
 
   BooruConfig copyWith({
     String? url,
@@ -182,6 +187,7 @@ class BooruConfig extends Equatable {
       defaultPreviewImageButtonAction: defaultPreviewImageButtonAction,
       listing: listing,
       theme: theme,
+      alwaysIncludeTags: alwaysIncludeTags,
     );
   }
 
@@ -207,7 +213,13 @@ class BooruConfig extends Equatable {
         defaultPreviewImageButtonAction,
         listing,
         theme,
+        alwaysIncludeTags,
       ];
+
+  @override
+  String toString() {
+    return 'Config(id=$id, booruId=$booruIdHint, name=$name, url=$url, login=${hasLoginDetails()})';
+  }
 
   Map<String, dynamic> toJson() {
     return {
@@ -233,6 +245,7 @@ class BooruConfig extends Equatable {
       'defaultPreviewImageButtonAction': defaultPreviewImageButtonAction,
       'listing': listing?.toJson(),
       'theme': theme?.toJson(),
+      'alwaysIncludeTags': alwaysIncludeTags,
     };
   }
 }

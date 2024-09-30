@@ -41,7 +41,6 @@ class GelbooruV1Builder
         DefaultPostGesturesHandlerMixin,
         DefaultGranularRatingFiltererMixin,
         LegacyGranularRatingOptionsBuilderMixin,
-        NoGranularRatingQueryBuilderMixin,
         DefaultPostStatisticsPageBuilderMixin,
         DefaultBooruUIMixin
     implements BooruBuilder {
@@ -135,8 +134,8 @@ class GelbooruV1SearchPage extends ConsumerWidget {
         ),
       ),
       initialQuery: initialQuery,
-      fetcher: (page, tags) =>
-          booruBuilder?.postFetcher.call(page, tags) ??
+      fetcher: (page, controller) =>
+          booruBuilder?.postFetcher.call(page, controller.rawTagsString) ??
           TaskEither.of(<Post>[].toResult()),
     );
   }

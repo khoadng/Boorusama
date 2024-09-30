@@ -113,22 +113,6 @@ class _BookmarkDetailsPageState
   }
 }
 
-// class _BookmarkProvider extends ConsumerStatefulWidget {
-//   const _BookmarkProvider();
-
-//   @override
-//   ConsumerState<_BookmarkProvider> createState() => _BookmarkProviderState();
-// }
-
-// class _BookmarkProviderState extends ConsumerState<_BookmarkProvider> {
-//   final
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return const SizedBox.shrink();
-//   }
-// }
-
 class BookmarkPostActionToolbar extends ConsumerWidget {
   const BookmarkPostActionToolbar({
     super.key,

@@ -8,6 +8,16 @@ mixin FavoriteNotSupportedMixin implements BooruBuilder {
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder => null;
+  @override
+  QuickFavoriteButtonBuilder? get quickFavoriteButtonBuilder => null;
+}
+
+mixin DefaultQuickFavoriteButtonBuilderMixin implements BooruBuilder {
+  @override
+  QuickFavoriteButtonBuilder get quickFavoriteButtonBuilder =>
+      (context, constraints, post) => DefaultQuickFavoriteButton(
+            post: post,
+          );
 }
 
 mixin ArtistNotSupportedMixin implements BooruBuilder {
@@ -59,8 +69,8 @@ mixin DefaultTagColorMixin implements BooruBuilder {
 
         return switch (tagType) {
           '0' || 'general' || 'tag' => colors.general,
-          '1' || 'artist' => colors.artist,
-          '3' || 'copyright' => colors.copyright,
+          '1' || 'artist' || 'creator' || 'studio' => colors.artist,
+          '3' || 'copyright' || 'series' => colors.copyright,
           '4' || 'character' => colors.character,
           '5' || 'meta' || 'metadata' => colors.meta,
           _ => colors.general,
@@ -164,62 +174,6 @@ mixin NewGranularRatingOptionsBuilderMixin on BooruBuilder {
       };
 }
 
-mixin NoGranularRatingQueryBuilderMixin on BooruBuilder {
-  @override
-  GranularRatingQueryBuilder? get granularRatingQueryBuilder => null;
-}
-
-mixin LegacyGranularRatingQueryBuilderMixin on BooruBuilder {
-  @override
-  GranularRatingQueryBuilder? get granularRatingQueryBuilder =>
-      (currentQuery, config) => switch (config.ratingFilter) {
-            BooruConfigRatingFilter.none => currentQuery,
-            BooruConfigRatingFilter.hideNSFW => [
-                ...currentQuery,
-                'rating:safe',
-              ],
-            BooruConfigRatingFilter.hideExplicit => [
-                ...currentQuery,
-                '-rating:explicit',
-              ],
-            BooruConfigRatingFilter.custom =>
-              config.granularRatingFiltersWithoutUnknown.toOption().fold(
-                    () => currentQuery,
-                    (ratings) => [
-                      ...currentQuery,
-                      ...ratings.map((e) => '-rating:${e.toFullString(
-                            legacy: true,
-                          )}'),
-                    ],
-                  ),
-          };
-}
-
-mixin NewGranularRatingQueryBuilderMixin on BooruBuilder {
-  @override
-  GranularRatingQueryBuilder? get granularRatingQueryBuilder =>
-      (currentQuery, config) => switch (config.ratingFilter) {
-            BooruConfigRatingFilter.none => currentQuery,
-            BooruConfigRatingFilter.hideNSFW => [
-                ...currentQuery,
-                'rating:g',
-              ],
-            BooruConfigRatingFilter.hideExplicit => [
-                ...currentQuery,
-                '-rating:e',
-                '-rating:q',
-              ],
-            BooruConfigRatingFilter.custom =>
-              config.granularRatingFiltersWithoutUnknown.toOption().fold(
-                    () => currentQuery,
-                    (ratings) => [
-                      ...currentQuery,
-                      ...ratings.map((e) => '-rating:${e.toShortString()}'),
-                    ],
-                  ),
-          };
-}
-
 mixin DefaultBooruUIMixin implements BooruBuilder {
   @override
   HomePageBuilder get homePageBuilder =>
@@ -233,9 +187,22 @@ mixin DefaultBooruUIMixin implements BooruBuilder {
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) => DefaultPostDetailsPage(
+      (context, config, payload) {
+        return PostDetailsLayoutSwitcher(
+          initialIndex: payload.initialIndex,
+          posts: payload.posts,
+          scrollController: payload.scrollController,
+          desktop: (controller) => DefaultPostDetailsDesktopPage(
+            initialIndex: controller.currentPage.value,
+            posts: payload.posts,
+            onExit: (page) => controller.onExit(page),
+            onPageChanged: (page) => controller.setPage(page),
+          ),
+          mobile: (controller) => DefaultPostDetailsPage(
             payload: payload,
-          );
+          ),
+        );
+      };
 }
 
 class DefaultPostDetailsPage extends ConsumerWidget {
@@ -271,8 +238,8 @@ class DefaultSearchPage extends ConsumerWidget {
 
     return SearchPageScaffold(
       initialQuery: initialQuery,
-      fetcher: (page, tags) =>
-          booruBuilder?.postFetcher.call(page, tags) ??
+      fetcher: (page, controler) =>
+          booruBuilder?.postFetcher.call(page, controler.rawTagsString) ??
           TaskEither.of(<Post>[].toResult()),
     );
   }

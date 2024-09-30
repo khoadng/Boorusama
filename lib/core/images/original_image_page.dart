@@ -11,6 +11,7 @@ import 'package:photo_view/photo_view.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
@@ -52,10 +53,11 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
     });
   }
 
-  Future<void> _pop() async {
+  Future<void> _pop(bool didPop) async {
     await setDeviceToAutoRotateMode();
+    showSystemStatus();
 
-    if (mounted) {
+    if (mounted && !didPop) {
       context.navigator.pop();
     }
   }
@@ -70,9 +72,12 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
       child: PopScope(
         canPop: false,
         onPopInvokedWithResult: (didPop, _) {
-          if (didPop) return;
+          if (didPop) {
+            _pop(didPop);
+            return;
+          }
 
-          _pop();
+          _pop(didPop);
         },
         child: Focus(
           autofocus: true,
@@ -85,11 +90,9 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
   Widget _buildBody() {
     return GestureDetector(
       onTap: () {
-        if (!zoom) {
-          setState(() {
-            overlay = !overlay;
-          });
-        }
+        setState(() {
+          _setOverlay(!overlay);
+        });
       },
       child: Scaffold(
         extendBodyBehindAppBar: true,
@@ -99,7 +102,7 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
           leading: overlay
               ? IconButton(
                   icon: const Icon(Symbols.close, color: Colors.white),
-                  onPressed: _pop,
+                  onPressed: () => _pop(false),
                 )
               : null,
           actions: [
@@ -166,6 +169,7 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
       httpHeaders: {
         AppHttpHeaders.userAgentHeader:
             ref.watch(userAgentGeneratorProvider(config)).generate(),
+        ...ref.watch(extraHttpHeaderProvider(config)),
       },
       imageUrl: widget.imageUrl,
       imageBuilder: (context, imageProvider) => Hero(
@@ -178,7 +182,7 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
             if (value != PhotoViewScaleState.initial) {
               setState(() {
                 zoom = true;
-                overlay = false;
+                _setOverlay(false);
               });
             } else {
               setState(() => zoom = false);
@@ -193,5 +197,15 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
         ),
       ),
     );
+  }
+
+  void _setOverlay(bool value) {
+    overlay = value;
+
+    if (overlay) {
+      showSystemStatus();
+    } else {
+      hideSystemStatus();
+    }
   }
 }

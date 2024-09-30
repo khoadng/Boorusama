@@ -2,19 +2,45 @@
 import 'dart:developer' as developer;
 
 // Package imports:
+import 'package:equatable/equatable.dart';
 import 'package:intl/intl.dart';
 
 // Project imports:
+import 'package:boorusama/functional.dart';
 import 'logger.dart';
 
-class ConsoleLogger extends LoggerService {
+class ConsoleLoggerOptions extends Equatable {
+  const ConsoleLoggerOptions({
+    required this.decodeUriParameters,
+  });
+
+  const ConsoleLoggerOptions.defaults() : decodeUriParameters = false;
+
+  final bool decodeUriParameters;
+
+  @override
+  List<Object?> get props => [
+        decodeUriParameters,
+      ];
+}
+
+class ConsoleLogger extends Logger {
+  ConsoleLogger({
+    required this.options,
+  });
+
+  final ConsoleLoggerOptions options;
+
   String _formatDateTime(DateTime dateTime) {
     return DateFormat('yyyy-MM-dd, hh:mm:ss').format(dateTime);
   }
 
-  // compose log message
   String _composeMessage(String serviceName, String message, String colorCode) {
-    return '\x1B[33m${_formatDateTime(DateTime.now())}\x1B[0m -> \x1B[35m$serviceName\x1B[0m -> $colorCode$message\x1B[0m';
+    final msg = options.decodeUriParameters
+        ? tryDecodeFullUri(message).getOrElse(() => message)
+        : message;
+
+    return '\x1B[33m${_formatDateTime(DateTime.now())}\x1B[0m -> \x1B[35m$serviceName\x1B[0m -> $colorCode$msg\x1B[0m';
   }
 
   @override

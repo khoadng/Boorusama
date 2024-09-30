@@ -30,6 +30,7 @@ class BooruConfigData extends Equatable {
     required this.defaultPreviewImageButtonAction,
     required this.listing,
     required this.theme,
+    required this.alwaysIncludeTags,
   });
 
   factory BooruConfigData.anonymous({
@@ -62,6 +63,7 @@ class BooruConfigData extends Equatable {
         defaultPreviewImageButtonAction: null,
         listing: null,
         theme: null,
+        alwaysIncludeTags: null,
       );
 
   static BooruConfigData? fromJson(Map<String, dynamic> json) {
@@ -90,6 +92,7 @@ class BooruConfigData extends Equatable {
             json['defaultPreviewImageButtonAction'] as String?,
         listing: json['listing'] as String?,
         theme: json['theme'] as String?,
+        alwaysIncludeTags: json['alwaysIncludeTags'] as String?,
       );
     } catch (e) {
       return null;
@@ -117,6 +120,7 @@ class BooruConfigData extends Equatable {
       'defaultPreviewImageButtonAction': defaultPreviewImageButtonAction,
       'listing': listing,
       'theme': theme,
+      'alwaysIncludeTags': alwaysIncludeTags,
     };
   }
 
@@ -139,6 +143,7 @@ class BooruConfigData extends Equatable {
   final String? defaultPreviewImageButtonAction;
   final String? listing;
   final String? theme;
+  final String? alwaysIncludeTags;
 
   @override
   List<Object?> get props => [
@@ -161,6 +166,7 @@ class BooruConfigData extends Equatable {
         defaultPreviewImageButtonAction,
         listing,
         theme,
+        alwaysIncludeTags,
       ];
 }
 
@@ -221,6 +227,7 @@ extension BooruConfigDataCopyWith on BooruConfigData {
     String? Function()? defaultPreviewImageButtonAction,
     ListingConfigs? Function()? listing,
     ThemeConfigs? Function()? theme,
+    String? Function()? alwaysIncludeTags,
   }) {
     return BooruConfigData(
       booruId: booruId ?? this.booruId,
@@ -262,6 +269,9 @@ extension BooruConfigDataCopyWith on BooruConfigData {
           : this.defaultPreviewImageButtonAction,
       listing: listing != null ? listing()?.toJsonString() : this.listing,
       theme: theme != null ? theme()?.toJsonString() : this.theme,
+      alwaysIncludeTags: alwaysIncludeTags != null
+          ? alwaysIncludeTags()
+          : this.alwaysIncludeTags,
     );
   }
 }

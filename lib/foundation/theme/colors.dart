@@ -105,8 +105,8 @@ extension DynamicColorX on BuildContext {
 
 final dynamicColorSupportProvider = Provider<bool>((ref) {
   throw UnimplementedError();
-});
+}, name: 'dynamicColorSupportProvider');
 
 final colorSchemeProvider = Provider<ColorScheme>((ref) {
   throw UnimplementedError();
-});
+}, name: 'colorSchemeProvider');

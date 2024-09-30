@@ -6,8 +6,8 @@ import '../users/users.dart';
 
 // Project imports:
 
-class FavoriteGroup extends Equatable {
-  const FavoriteGroup({
+class DanbooruFavoriteGroup extends Equatable {
+  const DanbooruFavoriteGroup({
     required this.id,
     required this.name,
     required this.creator,
@@ -17,8 +17,8 @@ class FavoriteGroup extends Equatable {
     required this.postIds,
   });
 
-  final FavoriteGroupId id;
-  final FavoriteGroupName name;
+  final int id;
+  final String name;
   final Creator creator;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -29,16 +29,13 @@ class FavoriteGroup extends Equatable {
   List<Object?> get props => [id, name, updatedAt, isPublic, postIds];
 }
 
-typedef FavoriteGroupId = int;
-typedef FavoriteGroupName = String;
-
-extension FavoriteGroupX on FavoriteGroup {
-  FavoriteGroup copyWith({
+extension FavoriteGroupX on DanbooruFavoriteGroup {
+  DanbooruFavoriteGroup copyWith({
     String? name,
     bool? isPublic,
     List<int>? postIds,
   }) =>
-      FavoriteGroup(
+      DanbooruFavoriteGroup(
         id: id,
         name: name ?? this.name,
         creator: creator,

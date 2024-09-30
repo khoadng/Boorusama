@@ -19,6 +19,7 @@ class NonQuote extends StatelessWidget {
         'body': Style(
           fontSize: FontSize.medium,
           margin: Margins.zero,
+          whiteSpace: WhiteSpace.pre,
         ),
       },
       data: text,

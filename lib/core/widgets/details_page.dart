@@ -13,6 +13,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/mobile.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -73,7 +74,6 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
   );
   var isExpanded = ValueNotifier(false);
   late final _shouldSlideDownNotifier = ValueNotifier(false);
-  final _scrollNotification = ValueNotifier<ScrollNotification?>(null);
 
   //details page contorller
   late final _controller = widget.controller ?? DetailsPageController();
@@ -88,7 +88,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
         if (widget.onSwipeDownEnd != null) {
           widget.onSwipeDownEnd!(controller.currentPage.value);
         } else {
-          _onBackButtonPressed();
+          _onBackButtonPressed(false);
         }
       };
 
@@ -104,6 +104,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
   void initState() {
     isSwipingDown.addListener(_updateShouldSlideDown);
     isExpanded.addListener(_updateShouldSlideDown);
+    isExpanded.addListener(_showSystemStatusOnExpanded);
 
     if (_controller._hideOverlay.value) {
       _shouldSlideDownNotifier.value = true;
@@ -196,6 +197,12 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
     _updateShouldSlideDown();
   }
 
+  void _showSystemStatusOnExpanded() {
+    if (isExpanded.value) {
+      showSystemStatus();
+    }
+  }
+
   void _updateShouldSlideDown() {
     if (_keepBottomSheetDown.value) return;
     _shouldSlideDownNotifier.value = isSwipingDown.value ||
@@ -210,6 +217,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
 
     isSwipingDown.removeListener(_updateShouldSlideDown);
     isExpanded.removeListener(_updateShouldSlideDown);
+    isExpanded.removeListener(_showSystemStatusOnExpanded);
 
     _controller.removeListener(_onPageDetailsChanged);
 
@@ -245,9 +253,12 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
     handlePointerUp(event);
   }
 
-  void _onBackButtonPressed() {
+  void _onBackButtonPressed(bool didPop) {
     _keepBottomSheetDown.value = true;
-    context.navigator.pop();
+    _controller.restoreSystemStatus();
+    if (!didPop) {
+      context.navigator.pop();
+    }
     widget.onExit(controller.currentPage.value);
   }
 
@@ -255,50 +266,25 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
   Widget build(BuildContext context) {
     return PopScope(
       onPopInvokedWithResult: (didPop, _) {
-        if (didPop) return;
-        _onBackButtonPressed();
+        if (didPop) {
+          _onBackButtonPressed(didPop);
+          return;
+        }
+
+        _onBackButtonPressed(didPop);
       },
-      child: NotificationListener<ScrollNotification>(
-        onNotification: (notification) {
-          // set the scroll notification to the value notifier on next frame
-          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-            if (!mounted) return;
-            _scrollNotification.value = notification;
-          });
-          return false;
-        },
-        child: Scaffold(
-          floatingActionButton: ValueListenableBuilder(
-            valueListenable: isExpanded,
-            builder: (context, expanded, child) => expanded
-                ? ValueListenableBuilder(
-                    valueListenable: _scrollNotification,
-                    builder: (_, notification, __) => HideOnScroll(
-                      scrollNotification: notification,
-                      child: BooruScrollToTopButton(
-                        onPressed: () {
-                          controller.animateViewportInsetTo(
-                              ViewportInset.shrunk,
-                              curve: Curves.easeOut,
-                              duration: const Duration(milliseconds: 150));
-                        },
-                      ),
-                    ),
-                  )
-                : const SizedBox.shrink(),
+      child: Scaffold(
+        body: ValueListenableBuilder(
+          valueListenable: isExpanded,
+          builder: (context, expanded, navButtonGroup) => Stack(
+            children: [
+              _buildScrollContent(expanded),
+              navButtonGroup!,
+              _buildBottomSheet(),
+              _buildTopRightButtonGroup(expanded),
+            ],
           ),
-          body: ValueListenableBuilder(
-            valueListenable: isExpanded,
-            builder: (context, expanded, navButtonGroup) => Stack(
-              children: [
-                _buildScrollContent(expanded),
-                navButtonGroup!,
-                _buildBottomSheet(),
-                _buildTopRightButtonGroup(expanded),
-              ],
-            ),
-            child: _buildNavigationButtonGroup(context),
-          ),
+          child: _buildNavigationButtonGroup(context),
         ),
       ),
     );
@@ -380,6 +366,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
           }
 
           isExpanded.value = metrics.isPageExpanded;
+          _controller.setExpanded(metrics.isPageExpanded);
           if (isExpanded.value) {
             widget.onExpanded?.call();
           }
@@ -388,11 +375,23 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
             ? const DefaultPageViewScrollPhysics()
             : const NeverScrollableScrollPhysics(),
         itemCount: widget.pageCount,
-        itemBuilder: (context, page) => widget.expandedBuilder(
-          context,
-          page,
-          expanded,
-          _pageSwipe,
+        itemBuilder: (context, page) => Scaffold(
+          floatingActionButton: ScrollToTop(
+            scrollController: PageContentScrollController.of(context),
+            child: BooruScrollToTopButton(
+              onPressed: () {
+                controller.animateViewportInsetTo(ViewportInset.shrunk,
+                    curve: Curves.easeOut,
+                    duration: const Duration(milliseconds: 150));
+              },
+            ),
+          ),
+          body: widget.expandedBuilder(
+            context,
+            page,
+            expanded,
+            _pageSwipe,
+          ),
         ),
       ),
     );
@@ -436,7 +435,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
                     child: Padding(
                       padding: const EdgeInsets.all(8),
                       child: _NavigationButtonBar(
-                        onBack: _onBackButtonPressed,
+                        onBack: () => _onBackButtonPressed(false),
                       ),
                     ),
                   ),

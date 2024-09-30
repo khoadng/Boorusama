@@ -38,8 +38,11 @@ class _MobileHomePageScaffoldState
     final fetcher = booruBuilder?.postFetcher;
 
     return PostScope(
-      fetcher: (page) =>
-          fetcher?.call(page, '') ?? TaskEither.of(<Post>[].toResult()),
+      fetcher: (page) {
+        final tags = selectedTagString.value;
+
+        return fetcher?.call(page, tags) ?? TaskEither.of(<Post>[].toResult());
+      },
       builder: (context, postController, errors) => InfinitePostListScaffold(
         errors: errors,
         controller: postController,

@@ -9,7 +9,7 @@ import 'package:boorusama/foundation/platform.dart';
 Future<PermissionStatus> requestMediaPermissions(
   DeviceInfo deviceInfo,
 ) {
-  if (isWindows()) return Future.value(PermissionStatus.granted);
+  if (isWindows() || isMacOS()) return Future.value(PermissionStatus.granted);
 
   if (isAndroid()) {
     return _requestMediaPermissionsAndroid(

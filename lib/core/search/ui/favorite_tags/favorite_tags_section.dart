@@ -38,12 +38,12 @@ class FavoriteTagsSection extends ConsumerWidget {
       sortType: FavoriteTagsSortType.nameAZ,
       builder: (_, tags, labels, selected) => OptionTagsArenaNoEdit(
         title: 'favorite_tags.favorites'.tr(),
-        titleTrailing: () => FavoriteTagLabelSelectorField(
+        titleTrailing: FavoriteTagLabelSelectorField(
           selected: selected,
           labels: labels,
           onSelect: (value) => notifier.put(value),
         ),
-        childrenBuilder: () => _buildFavoriteTags(ref, tags),
+        children: _buildFavoriteTags(ref, tags),
       ),
     );
   }
@@ -93,12 +93,12 @@ class OptionTagsArenaNoEdit extends StatelessWidget {
     super.key,
     required this.title,
     this.titleTrailing,
-    required this.childrenBuilder,
+    required this.children,
   });
 
   final String title;
-  final Widget Function()? titleTrailing;
-  final List<Widget> Function() childrenBuilder;
+  final Widget? titleTrailing;
+  final List<Widget> children;
 
   @override
   Widget build(BuildContext context) {
@@ -135,14 +135,14 @@ class OptionTagsArenaNoEdit extends StatelessWidget {
                 ),
               ],
             ),
-            titleTrailing?.call() ?? const SizedBox.shrink(),
+            titleTrailing ?? const SizedBox.shrink(),
           ],
         ),
         const SizedBox(height: 2),
         Wrap(
           spacing: 4,
           runSpacing: isDesktopPlatform() ? 4 : 0,
-          children: childrenBuilder(),
+          children: children,
         ),
       ],
     );

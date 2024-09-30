@@ -96,6 +96,12 @@ final themeConfigsProvider = StateProvider.autoDispose<ThemeConfigs?>(
   dependencies: [booruConfigDataProvider],
 );
 
+final alwaysIncludeTagsProvider = StateProvider.autoDispose<String?>(
+  (ref) => ref.watch(
+      booruConfigDataProvider.select((value) => value.alwaysIncludeTags)),
+  dependencies: [booruConfigDataProvider],
+);
+
 final configNameProvider = StateProvider.autoDispose<String>(
   (ref) => ref.watch(booruConfigDataProvider.select((value) => value.name)),
   dependencies: [booruConfigDataProvider],
@@ -138,6 +144,9 @@ extension UpdateDataX on WidgetRef {
 
   void updateTheme(ThemeConfigs? data) =>
       read(themeConfigsProvider.notifier).state = data;
+
+  void updateAlwaysIncludeTags(String? data) =>
+      read(alwaysIncludeTagsProvider.notifier).state = data;
 
   void updateName(String data) =>
       read(configNameProvider.notifier).state = data;

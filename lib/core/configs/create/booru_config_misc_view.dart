@@ -13,7 +13,6 @@ import 'package:boorusama/widgets/option_dropdown_button.dart';
 class BooruConfigMiscView extends ConsumerWidget {
   const BooruConfigMiscView({
     super.key,
-    required this.hasRatingFilter,
     required this.postDetailsGestureActions,
     required this.postPreviewQuickActionButtonActions,
     required this.describePostPreviewQuickAction,
@@ -24,7 +23,6 @@ class BooruConfigMiscView extends ConsumerWidget {
   });
 
   final BooruConfig config;
-  final bool hasRatingFilter;
   final Set<String?> postDetailsGestureActions;
   final String Function(String? action)? describePostDetailsAction;
 
@@ -64,9 +62,6 @@ class BooruConfigMiscView extends ConsumerWidget {
                   .toList(),
             ),
           ),
-          if (hasRatingFilter) ...[
-            const DefaultBooruRatingOptionsTile(),
-          ],
           if (postDetailsResolution != null)
             postDetailsResolution!
           else

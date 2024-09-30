@@ -94,10 +94,8 @@ class _InfinitePostListScaffoldState<T extends Post>
           config.postGestures?.preview,
         ) ??
         false;
-    final favoriteAdder = booruBuilder?.favoriteAdder;
-    final favoriteRemover = booruBuilder?.favoriteRemover;
+
     final gridThumbnailUrlBuilder = booruBuilder?.gridThumbnailUrlBuilder;
-    final canFavorite = booruBuilder?.canFavorite(config) ?? false;
 
     return LayoutBuilder(
       builder: (context, constraints) => PostGrid(
@@ -219,19 +217,16 @@ class _InfinitePostListScaffoldState<T extends Post>
                               }
                             }
                           : null,
-                      isFaved: ref.watch(favoriteProvider(post.id)),
-                      enableFav: !multiSelect && canFavorite && !block,
-                      quickActionButtonBuilder:
-                          defaultImagePreviewButtonBuilder(ref, post),
-                      onFavToggle: (isFaved) async {
-                        if (isFaved) {
-                          if (favoriteAdder == null) return;
-                          await favoriteAdder(post.id, ref);
-                        } else {
-                          if (favoriteRemover == null) return;
-                          await favoriteRemover(post.id, ref);
-                        }
-                      },
+                      quickActionButtonBuilder: !multiSelect && !block
+                          ? (context, constraints) =>
+                              booruBuilder?.quickFavoriteButtonBuilder != null
+                                  ? booruBuilder!.quickFavoriteButtonBuilder!(
+                                      context,
+                                      constraints,
+                                      post,
+                                    )
+                                  : const SizedBox.shrink()
+                          : defaultImagePreviewButtonBuilder(ref, post),
                       autoScrollOptions: AutoScrollOptions(
                         controller: _autoScrollController,
                         index: index,

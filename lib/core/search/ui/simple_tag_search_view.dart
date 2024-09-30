@@ -70,7 +70,7 @@ class SimpleTagSearchView extends ConsumerStatefulWidget {
   final Widget? backButton;
   final void Function(BuildContext context, String text)? onSubmitted;
   final Color? Function(AutocompleteData tag)? textColorBuilder;
-  final Widget Function()? emptyBuilder;
+  final Widget Function(TextEditingController controller)? emptyBuilder;
 
   @override
   ConsumerState<SimpleTagSearchView> createState() =>
@@ -138,7 +138,10 @@ class _SimpleTagSearchViewState extends ConsumerState<SimpleTagSearchView> {
                     )
                   : Expanded(
                       child: widget.emptyBuilder != null
-                          ? SingleChildScrollView(child: widget.emptyBuilder!())
+                          ? SingleChildScrollView(
+                              child:
+                                  widget.emptyBuilder!(textEditingController),
+                            )
                           : const Center(
                               child: SizedBox.shrink(),
                             ),

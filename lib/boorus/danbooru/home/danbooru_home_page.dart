@@ -324,7 +324,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
           // 8
           const SavedSearchFeedPage(),
           // 9
-          const BlacklistedTagsPage(),
+          const DanbooruBlacklistedTagsPage(),
         ],
       ],
     );

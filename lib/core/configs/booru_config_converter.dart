@@ -45,6 +45,7 @@ extension BooruConfigDataConverter on BooruConfigData? {
       theme: booruConfigData.theme == null
           ? null
           : ThemeConfigs.fromJsonString(booruConfigData.theme),
+      alwaysIncludeTags: booruConfigData.alwaysIncludeTags,
     );
   }
 }
@@ -73,6 +74,7 @@ extension BooruConfigConverter on BooruConfig {
       defaultPreviewImageButtonAction: defaultPreviewImageButtonAction,
       listing: listing?.toJsonString(),
       theme: theme?.toJsonString(),
+      alwaysIncludeTags: alwaysIncludeTags,
     );
   }
 }

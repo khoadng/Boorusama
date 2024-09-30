@@ -34,6 +34,7 @@ import 'package:boorusama/foundation/device_info_service.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
+import 'package:boorusama/foundation/mobile.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/package_info.dart';
 import 'package:boorusama/foundation/path.dart';
@@ -263,6 +264,7 @@ Future<void> boot(BootLogger bootLogger) async {
 
   bootLogger.l('Initialize download notifications');
   final downloadNotifications = await DownloadNotifications.create();
+  final bulkDownloadNotifications = await BulkDownloadNotifications.create();
 
   FlutterError.demangleStackTrace = (stack) {
     if (stack is Trace) return stack.vmTrace;
@@ -279,7 +281,7 @@ Future<void> boot(BootLogger bootLogger) async {
   HttpOverrides.global = AppHttpOverrides();
 
   // Prepare for Android 15
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  showSystemStatus();
 
   logger.logI('Start up',
       'Initialization done in ${stopwatch.elapsed.inMilliseconds}ms');
@@ -308,6 +310,8 @@ Future<void> boot(BootLogger bootLogger) async {
               bookmarkRepoProvider.overrideWithValue(bookmarkRepo),
               downloadNotificationProvider
                   .overrideWithValue(downloadNotifications),
+              bulkDownloadNotificationProvider
+                  .overrideWithValue(bulkDownloadNotifications),
               deviceInfoProvider.overrideWithValue(deviceInfo),
               danbooruUserMetatagRepoProvider
                   .overrideWithValue(userMetatagRepo),

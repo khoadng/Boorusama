@@ -25,6 +25,7 @@ import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
+import 'package:boorusama/core/favorites/favorites.dart';
 import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts/posts.dart';
@@ -41,6 +42,7 @@ import 'danbooru/notes/notes.dart';
 import 'danbooru/posts/posts.dart';
 import 'e621/notes/notes.dart';
 import 'gelbooru_v2/gelbooru_v2.dart';
+import 'hydrus/hydrus.dart';
 import 'philomena/philomena.dart';
 import 'philomena/providers.dart';
 import 'shimmie2/shimmie2.dart';
@@ -63,6 +65,8 @@ abstract class BooruBuilder {
   CharacterPageBuilder? get characterPageBuilder;
   CommentPageBuilder? get commentPageBuilder;
 
+  QuickFavoriteButtonBuilder? get quickFavoriteButtonBuilder;
+
   HomeViewBuilder get homeViewBuilder;
 
   GridThumbnailUrlBuilder get gridThumbnailUrlBuilder;
@@ -76,7 +80,6 @@ abstract class BooruBuilder {
   PostStatisticsPageBuilder get postStatisticsPageBuilder;
 
   GranularRatingFilterer? get granularRatingFilterer;
-  GranularRatingQueryBuilder? get granularRatingQueryBuilder;
   GranularRatingOptionsBuilder? get granularRatingOptionsBuilder;
 
   PostGestureHandlerBuilder get postGestureHandlerBuilder;
@@ -180,5 +183,9 @@ final booruBuildersProvider =
                 postRepo: ref.read(szurubooruPostRepoProvider(config)),
                 autocompleteRepo:
                     ref.read(szurubooruAutocompleteRepoProvider(config)),
+              ),
+          BooruType.hydrus: (config) => HydrusBuilder(
+                postRepo: ref.read(hydrusPostRepoProvider(config)),
+                client: ref.read(hydrusClientProvider(config)),
               ),
         });

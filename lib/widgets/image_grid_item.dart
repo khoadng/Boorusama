@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 // Package imports:
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:like_button/like_button.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
@@ -33,9 +32,6 @@ class ImageGridItem extends StatelessWidget {
     this.isTranslated,
     this.autoScrollOptions,
     required this.image,
-    this.enableFav = false,
-    this.onFavToggle,
-    this.isFaved,
     this.hideOverlay = false,
     this.duration,
     this.hasSound,
@@ -54,9 +50,6 @@ class ImageGridItem extends StatelessWidget {
   final bool? hasComments;
   final bool? hasParentOrChildren;
   final bool? isTranslated;
-  final bool enableFav;
-  final void Function(bool value)? onFavToggle;
-  final bool? isFaved;
   final bool hideOverlay;
   final double? duration;
   final bool? hasSound;
@@ -88,40 +81,8 @@ class ImageGridItem extends StatelessWidget {
                   right: 4,
                   child: quickActionButtonBuilder!(context, constraints),
                 )
-              else if (enableFav)
-                Positioned(
-                  bottom: 4,
-                  right: 4,
-                  child: Container(
-                    padding: const EdgeInsets.only(
-                      top: 2,
-                      bottom: 1,
-                      right: 1,
-                      left: 3,
-                    ),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.black.withOpacity(0.5),
-                    ),
-                    child: LikeButton(
-                      isLiked: isFaved,
-                      onTap: (isLiked) {
-                        onFavToggle?.call(!isLiked);
-
-                        return Future.value(!isLiked);
-                      },
-                      likeBuilder: (isLiked) {
-                        return Icon(
-                          isLiked ? Symbols.favorite : Symbols.favorite,
-                          color: isLiked
-                              ? context.colors.upvoteColor
-                              : Colors.white,
-                          fill: isLiked ? 1 : 0,
-                        );
-                      },
-                    ),
-                  ),
-                ),
+              else
+                const SizedBox.shrink(),
             if (score != null)
               Positioned(
                 bottom: 4,

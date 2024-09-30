@@ -34,6 +34,12 @@ typedef FavoritesPageBuilder = Widget Function(
   BooruConfig config,
 );
 
+typedef QuickFavoriteButtonBuilder = Widget Function(
+  BuildContext context,
+  BoxConstraints constraints,
+  Post post,
+);
+
 typedef ArtistPageBuilder = Widget Function(
   BuildContext context,
   String artistName,
@@ -75,7 +81,7 @@ typedef GranularRatingOptionsBuilder = Set<Rating> Function();
 typedef PostCountFetcher = Future<int?> Function(
   BooruConfig config,
   List<String> tags,
-  GranularRatingQueryBuilder? granularRatingQueryBuilder,
+  TagQueryComposer tagQueryComposer,
 );
 
 typedef GridThumbnailUrlBuilder = String Function(

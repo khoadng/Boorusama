@@ -5,7 +5,6 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/favorites/favorites.dart';
@@ -22,18 +21,12 @@ final danbooruPostRepoProvider =
   final client = ref.watch(danbooruClientProvider(config));
 
   return PostRepositoryBuilder(
+    tagComposer: DanbooruTagQueryComposer(config: config),
     fetch: (tags, page, {limit}) async {
       final posts = await client
           .getPosts(
             page: page,
-            tags: getTags(
-              config,
-              tags,
-              granularRatingQueries: (tags) => ref
-                  .readCurrentBooruBuilder()
-                  ?.granularRatingQueryBuilder
-                  ?.call(tags, config),
-            ),
+            tags: tags,
             limit: limit,
           )
           .then((value) => value

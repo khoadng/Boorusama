@@ -25,7 +25,7 @@ class CommentVoteSection extends StatelessWidget {
     required this.voteState,
   });
 
-  final VoidCallback onReply;
+  final VoidCallback? onReply;
   final Widget Function(BuildContext context)? moreBuilder;
   final void Function(VoteEvent event)? onVote;
   final CommentVoteState voteState;
@@ -82,10 +82,11 @@ class CommentVoteSection extends StatelessWidget {
               size: 24,
             ),
           ),
-          TextButton(
-            onPressed: onReply,
-            child: const Text('comment.list.reply').tr(),
-          ),
+          if (onReply != null)
+            TextButton(
+              onPressed: onReply,
+              child: const Text('comment.list.reply').tr(),
+            ),
           if (moreBuilder != null) moreBuilder!(context),
         ],
       ),
