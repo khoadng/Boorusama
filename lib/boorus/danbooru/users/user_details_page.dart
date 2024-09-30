@@ -397,15 +397,14 @@ class UserDetailsPage extends ConsumerWidget {
 
   Widget _buildChart(
       WidgetRef ref, BuildContext context, List<DanbooruReportDataPoint> data) {
-    final seen = <int>{};
     final titles = <int, String>{};
     final dateRange = ref.watch(selectedUploadDateRangeSelectorTypeProvider);
     final isWeeklyChart = dateRange == UploadDateRangeSelectorType.last7Days;
     final isMonthlyChart = dateRange == UploadDateRangeSelectorType.last30Days;
+    final isYearlyChart = dateRange == UploadDateRangeSelectorType.lastYear;
 
     if (isWeeklyChart) {
       // Sep 5 7 9 11 13
-
       for (var i = 0; i < data.length; i++) {
         // if it's the first day, show the month e.g. Sep 5
         if (i == 0) {
@@ -428,7 +427,34 @@ class UserDetailsPage extends ConsumerWidget {
           skipCounter++;
         }
       }
+    } else if (isYearlyChart) {
+      // Sep Dec Mar Jun
+      if (data.isNotEmpty) {
+        final firstMonth = data.first.date.month;
+
+        final showMonths = {
+          for (var i = 0; i < 4; i++)
+            (firstMonth + i * 3) % 12 == 0 ? 12 : (firstMonth + i * 3) % 12,
+
+          // always include today's month
+          DateTime.now().month,
+        };
+
+        final seen = <int>{};
+
+        for (var i = 0; i < data.length; i++) {
+          final month = data[i].date.month;
+          if (showMonths.contains(month) && !seen.contains(month)) {
+            titles[i] = parseIntToMonthString(month);
+            seen.add(month);
+          } else {
+            titles[i] = '';
+          }
+        }
+      }
     } else {
+      final seen = <int>{};
+
       for (var i = 0; i < data.length; i++) {
         final month = data[i].date.month;
         if (!seen.contains(month)) {
@@ -490,9 +516,9 @@ class UserDetailsPage extends ConsumerWidget {
                       width: switch (dateRange) {
                         UploadDateRangeSelectorType.last7Days => 28,
                         UploadDateRangeSelectorType.last30Days => 8,
-                        UploadDateRangeSelectorType.last3Months => 4,
-                        UploadDateRangeSelectorType.last6Months => 2,
-                        UploadDateRangeSelectorType.lastYear => 1,
+                        UploadDateRangeSelectorType.last3Months => 2.5,
+                        UploadDateRangeSelectorType.last6Months => 1.25,
+                        UploadDateRangeSelectorType.lastYear => 0.75,
                       },
                       borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(1),
