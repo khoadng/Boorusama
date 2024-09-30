@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/html.dart';
 import 'package:boorusama/foundation/i18n.dart';
@@ -110,7 +109,6 @@ class BlacklistedTagList extends StatelessWidget {
                                       _joinTags(tagItems, currentQuery);
 
                                   onEditTap(tag, tagString);
-                                  context.navigator.pop();
                                 },
                               );
                             },
@@ -126,9 +124,9 @@ class BlacklistedTagList extends StatelessWidget {
   }
 }
 
-String _joinTags(List<TagSearchItem> tagItems, String currentQuery) {
+String _joinTags(List<String> tagItems, String currentQuery) {
   final tagString = [
-    ...tagItems.map((e) => e.toString()),
+    ...tagItems,
     if (currentQuery.isNotEmpty) currentQuery,
   ].join(' ');
 

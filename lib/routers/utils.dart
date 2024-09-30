@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -19,6 +18,7 @@ import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/search/search.dart';
+import 'package:boorusama/core/search/ui/selected_tag_edit_dialog.dart';
 import 'package:boorusama/core/search_histories/search_histories.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
@@ -104,19 +104,25 @@ void goToPostDetailsPage<T extends Post>({
 
 void goToBlacklistedTagsSearchPage(
   BuildContext context, {
-  required void Function(List<TagSearchItem> tags, String currentQuery)
-      onSelectDone,
+  required void Function(List<String> tags, String currentQuery) onSelectDone,
   List<String>? initialTags,
 }) {
-  context.navigator.push(CupertinoPageRoute(
-    builder: (_) => BlacklistedTagsSearchPage(
-      initialTags: initialTags,
-      onSelectedDone: onSelectDone,
-    ),
-    settings: const RouteSettings(
+  showDialog(
+    context: context,
+    routeSettings: const RouteSettings(
       name: RouterPageConstant.blacklistedSearch,
     ),
-  ));
+    builder: (c) {
+      return SelectedTagEditDialog(
+        tag: TagSearchItem.raw(tag: initialTags?.join(' ') ?? ''),
+        onUpdated: (tag) {
+          if (tag.isNotEmpty) {
+            onSelectDone([], tag.trim());
+          }
+        },
+      );
+    },
+  );
 }
 
 void goToMetatagsPage(
