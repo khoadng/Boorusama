@@ -72,8 +72,8 @@ const staticDanbooruLightScheme = ColorScheme(
   onPrimary: kOnPrimaryLightColor,
   secondary: kOnPrimaryLightColor,
   onSecondary: kOnPrimaryLightColor,
-  error: Color(0xfffec3c3),
-  onError: kOnErrorDarkColor,
+  error: Color(0xffec2525),
+  onError: Colors.black,
   surface: Color(0xfffefeff),
   onSurface: Colors.black,
 );
