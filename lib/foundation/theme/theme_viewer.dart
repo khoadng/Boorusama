@@ -499,8 +499,10 @@ class PreviewPostActionToolbar extends StatelessWidget {
           onDownvote: () => {},
           onRemoveDownvote: () => {},
         ),
-        BookmarkPostButton(
-          post: _previewPost,
+        IgnorePointer(
+          child: BookmarkPostButton(
+            post: _previewPost,
+          ),
         ),
         IgnorePointer(child: DownloadPostButton(post: _previewPost)),
         IgnorePointer(child: SharePostButton(post: _previewPost)),
