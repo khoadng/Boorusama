@@ -26,7 +26,7 @@ class BooruScope extends ConsumerStatefulWidget {
   const BooruScope({
     super.key,
     required this.config,
-    required this.mobileMenuBuilder,
+    required this.mobileMenu,
     required this.desktopMenuBuilder,
     required this.desktopViews,
     this.controller,
@@ -40,7 +40,7 @@ class BooruScope extends ConsumerStatefulWidget {
     BoxConstraints constraints,
   ) desktopMenuBuilder;
 
-  final List<Widget> mobileMenuBuilder;
+  final List<Widget> mobileMenu;
 
   final List<Widget> desktopViews;
 
@@ -92,7 +92,7 @@ class _BooruScopeState extends ConsumerState<BooruScope> {
             controller,
             constraints,
           ),
-          mobileMenuBuilder: widget.mobileMenuBuilder,
+          mobileMenu: widget.mobileMenu,
           views: desktopViews,
           menuWidth: double.tryParse(menuWidth),
         ),

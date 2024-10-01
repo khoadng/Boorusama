@@ -125,7 +125,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
     );
 
     return HomePageScaffold(
-      mobileMenuBuilder: [
+      mobileMenu: [
         if (widget.config.hasLoginDetails() && userId != null)
           SideMenuTile(
             icon: const _Icon(

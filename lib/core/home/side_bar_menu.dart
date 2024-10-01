@@ -24,20 +24,20 @@ class SideBarMenu extends ConsumerWidget {
     super.key,
     this.width,
     this.popOnSelect = false,
-    this.initialContentBuilder,
-    this.contentBuilder,
+    this.initialContent,
+    this.content,
     this.padding,
   });
 
   final double? width;
   final EdgeInsets? padding;
   final bool popOnSelect;
-  final List<Widget>? Function(BuildContext context)? initialContentBuilder;
-  final List<Widget> Function(BuildContext context)? contentBuilder;
+  final List<Widget>? initialContent;
+  final List<Widget>? content;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booruConfigSelectorPosition = ref.watch(
+    final position = ref.watch(
         settingsProvider.select((value) => value.booruConfigSelectorPosition));
 
     return Container(
@@ -47,7 +47,7 @@ class SideBarMenu extends ConsumerWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (booruConfigSelectorPosition == BooruConfigSelectorPosition.side)
+          if (position == BooruConfigSelectorPosition.side)
             ColoredBox(
               color: context.colorScheme.secondaryContainer,
               child: const SafeArea(
@@ -63,7 +63,7 @@ class SideBarMenu extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (initialContentBuilder != null)
+                    if (initialContent != null)
                       SizedBox(
                         height: MediaQuery.viewPaddingOf(context).top,
                       )
@@ -73,19 +73,17 @@ class SideBarMenu extends ConsumerWidget {
                       padding: EdgeInsets.symmetric(horizontal: 8),
                       child: CurrentBooruTile(),
                     ),
-                    if (initialContentBuilder != null)
-                      ...[
-                        ...initialContentBuilder!(context)!,
-                      ].map((e) => Padding(
+                    if (initialContent != null)
+                      ...initialContent!.map((e) => Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 8),
                             child: e,
                           )),
-                    if (initialContentBuilder != null) const Divider(),
-                    if (contentBuilder != null) ...[
-                      ...contentBuilder!(context).map((e) => Padding(
+                    if (initialContent != null) const Divider(),
+                    if (content != null) ...[
+                      ...content!.map((e) => Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 8),
                             child: e,
-                          ))
+                          )),
                     ] else
                       ...[
                         SideMenuTile(

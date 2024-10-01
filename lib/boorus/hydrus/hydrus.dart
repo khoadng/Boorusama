@@ -308,7 +308,7 @@ class HydrusHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return HomePageScaffold(
-      mobileMenuBuilder: [
+      mobileMenu: [
         SideMenuTile(
           icon: const Icon(Symbols.favorite),
           title: Text('profile.favorites'.tr()),

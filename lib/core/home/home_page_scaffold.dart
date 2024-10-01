@@ -13,12 +13,12 @@ import 'package:boorusama/core/home/home.dart';
 class HomePageScaffold extends ConsumerStatefulWidget {
   const HomePageScaffold({
     super.key,
-    this.mobileMenuBuilder,
+    this.mobileMenu,
     this.desktopMenuBuilder,
     this.desktopViews,
   });
 
-  final List<Widget>? mobileMenuBuilder;
+  final List<Widget>? mobileMenu;
 
   final List<Widget> Function(
     BuildContext context,
@@ -60,9 +60,7 @@ class _HomePageScaffoldState extends ConsumerState<HomePageScaffold> {
     return BooruScope(
       controller: controller,
       config: config,
-      mobileMenuBuilder: [
-        if (widget.mobileMenuBuilder != null) ...widget.mobileMenuBuilder!,
-      ],
+      mobileMenu: widget.mobileMenu ?? [],
       desktopMenuBuilder: (context, controller, constraints) => [
         HomeNavigationTile(
           value: 0,

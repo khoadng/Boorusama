@@ -32,7 +32,7 @@ class _GelbooruV2HomePageState extends ConsumerState<GelbooruV2HomePage> {
         ref.watchBooruBuilder(ref.watchConfig)?.favoritesPageBuilder;
 
     return HomePageScaffold(
-      mobileMenuBuilder: [
+      mobileMenu: [
         if (favoritePageBuilder != null && ref.watchConfig.hasLoginDetails())
           SideMenuTile(
             icon: const Icon(
