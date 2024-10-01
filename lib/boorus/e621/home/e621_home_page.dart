@@ -34,7 +34,7 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
     final config = ref.watchConfig;
 
     return HomePageScaffold(
-      mobileMenuBuilder: [
+      mobileMenu: [
         SideMenuTile(
           icon: const Icon(Symbols.explore),
           title: const Text('Popular'),

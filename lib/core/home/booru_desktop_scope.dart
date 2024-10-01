@@ -27,7 +27,7 @@ class BooruDesktopScope extends ConsumerStatefulWidget {
     required this.controller,
     required this.config,
     required this.menuBuilder,
-    required this.mobileMenuBuilder,
+    required this.mobileMenu,
     required this.views,
     required this.menuWidth,
   });
@@ -40,7 +40,7 @@ class BooruDesktopScope extends ConsumerStatefulWidget {
   final List<Widget> views;
   final double? menuWidth;
 
-  final List<Widget> mobileMenuBuilder;
+  final List<Widget> mobileMenu;
 
   @override
   ConsumerState<BooruDesktopScope> createState() => _BooruDesktopScopeState();
@@ -163,8 +163,6 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
           )
         : const SizedBox();
 
-    // Only used to force rebuild when language changes
-    ref.watch(settingsProvider.select((value) => value.language));
     final booruConfigSelectorPosition = ref.watch(
         settingsProvider.select((value) => value.booruConfigSelectorPosition));
     final swipeArea = ref.watch(settingsProvider
@@ -200,7 +198,7 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
                 width: 300,
                 popOnSelect: true,
                 padding: EdgeInsets.zero,
-                initialContentBuilder: (context) => widget.mobileMenuBuilder,
+                initialContent: widget.mobileMenu,
               )
             : null,
         backgroundColor: context.colorScheme.surface,

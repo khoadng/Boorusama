@@ -104,6 +104,14 @@ extension I18nX on BuildContext {
 
   void setLocale(Locale locale) =>
       el.EasyLocalization.of(this)?.setLocale(locale);
+
+  void setLocaleFromString(String? locale) {
+    if (locale == null) return;
+
+    final data = locale.split('-');
+
+    setLocale(Locale(data[0], data[1]));
+  }
 }
 
 class BooruLanguage extends Equatable {

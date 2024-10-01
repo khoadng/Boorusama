@@ -168,7 +168,7 @@ class SzurubooruHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return HomePageScaffold(
-      mobileMenuBuilder: [
+      mobileMenu: [
         if (config.hasLoginDetails()) ...[
           SideMenuTile(
             icon: const Icon(Symbols.favorite),

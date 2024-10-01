@@ -32,7 +32,7 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
   @override
   Widget build(BuildContext context) {
     return HomePageScaffold(
-      mobileMenuBuilder: [
+      mobileMenu: [
         SideMenuTile(
           icon: const Icon(
             Symbols.explore,

@@ -21,7 +21,7 @@ class SankakuHomePage extends ConsumerWidget {
     final login = config.login;
 
     return HomePageScaffold(
-      mobileMenuBuilder: [
+      mobileMenu: [
         if (login != null)
           SideMenuTile(
             icon: const Icon(Symbols.favorite),

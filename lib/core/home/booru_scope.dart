@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
@@ -14,6 +15,7 @@ import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
 import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/router.dart';
 import 'booru_desktop_scope.dart';
@@ -24,7 +26,7 @@ class BooruScope extends ConsumerStatefulWidget {
   const BooruScope({
     super.key,
     required this.config,
-    required this.mobileMenuBuilder,
+    required this.mobileMenu,
     required this.desktopMenuBuilder,
     required this.desktopViews,
     this.controller,
@@ -38,7 +40,7 @@ class BooruScope extends ConsumerStatefulWidget {
     BoxConstraints constraints,
   ) desktopMenuBuilder;
 
-  final List<Widget> mobileMenuBuilder;
+  final List<Widget> mobileMenu;
 
   final List<Widget> desktopViews;
 
@@ -64,6 +66,20 @@ class _BooruScopeState extends ConsumerState<BooruScope> {
   @override
   Widget build(BuildContext context) {
     final menuWidth = ref.watch(miscDataProvider(kMenuWidthCacheKey));
+    final desktopViews = widget.desktopViews
+        .mapIndexed((i, e) => Scaffold(
+              appBar: !context.isLandscapeLayout && i > 0
+                  ? AppBar(
+                      leading: BackButton(
+                        onPressed: () {
+                          controller.goToTab(0);
+                        },
+                      ),
+                    )
+                  : null,
+              body: e,
+            ))
+        .toList();
 
     return HomePageSidebarKeyboardListener(
       controller: controller,
@@ -76,8 +92,8 @@ class _BooruScopeState extends ConsumerState<BooruScope> {
             controller,
             constraints,
           ),
-          mobileMenuBuilder: widget.mobileMenuBuilder,
-          views: widget.desktopViews,
+          mobileMenu: widget.mobileMenu,
+          views: desktopViews,
           menuWidth: double.tryParse(menuWidth),
         ),
       ),
