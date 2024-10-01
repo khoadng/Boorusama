@@ -107,8 +107,11 @@ class _ThemePreviewAppState extends State<ThemePreviewApp> {
           child: Column(
             children: [
               const SizedBox(height: 48),
-              SizedBox(
-                height: 500,
+              Container(
+                height: MediaQuery.sizeOf(context).height * 0.7,
+                constraints: const BoxConstraints(
+                  maxHeight: 700,
+                ),
                 child: PageView(
                   controller: pageController,
                   children: pages,
