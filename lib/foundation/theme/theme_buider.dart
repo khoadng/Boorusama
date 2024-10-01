@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/core/configs/configs.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -8,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'app_theme.dart';
 import 'colors.dart';
 import 'theme_mode.dart';
@@ -40,14 +40,13 @@ class ThemeBuilder extends ConsumerWidget {
                 : (null, null)
             : (null, null);
 
-        final defaultScheme = AppTheme.generateScheme(
-          theme,
-          dynamicDarkScheme: dark,
-          dynamicLightScheme: light,
-          systemDarkMode: systemDarkMode,
-        );
-
-        final scheme = customColorScheme ?? defaultScheme;
+        final scheme = customColorScheme ??
+            AppTheme.generateScheme(
+              theme,
+              dynamicDarkScheme: dark,
+              dynamicLightScheme: light,
+              systemDarkMode: systemDarkMode,
+            );
 
         return Builder(
           builder: (context) => ProviderScope(
@@ -58,7 +57,7 @@ class ThemeBuilder extends ConsumerWidget {
             ],
             child: builder(
               AppTheme.themeFrom(
-                theme,
+                customColorScheme != null ? null : theme,
                 colorScheme: scheme,
                 systemDarkMode: systemDarkMode,
               ),

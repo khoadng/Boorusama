@@ -1,3 +1,11 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+
+// Project imports:
 import 'package:boorusama/boorus/danbooru/posts/posts.dart';
 import 'package:boorusama/core/favorites/favorites.dart';
 import 'package:boorusama/core/images/images.dart';
@@ -7,9 +15,6 @@ import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 final _kRandomTags = [
   'outdoors',

@@ -1,11 +1,17 @@
+// Dart imports:
 import 'dart:convert';
 
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:collection/collection.dart';
+import 'package:equatable/equatable.dart';
+
+// Project imports:
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
-import 'package:collection/collection.dart';
-import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 
 final preDefinedColorSettings = [
   ColorSettings.fromScheme(

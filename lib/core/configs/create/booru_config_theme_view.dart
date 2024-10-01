@@ -1,16 +1,16 @@
 // Flutter imports:
-import 'package:boorusama/core/configs/create/create.dart';
-import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/widgets/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import 'package:boorusama/core/configs/create/create.dart';
+import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/utils/flutter_utils.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 final _currentSelectColorSchemeProvider =
     StateProvider.autoDispose<ColorSettings?>(

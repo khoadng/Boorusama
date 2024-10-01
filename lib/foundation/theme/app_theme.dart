@@ -91,7 +91,7 @@ class AppTheme {
       };
 
   static ThemeData themeFrom(
-    AppThemeMode mode, {
+    AppThemeMode? mode, {
     required ColorScheme colorScheme,
     required bool systemDarkMode,
   }) =>
@@ -117,6 +117,14 @@ class AppTheme {
             : lightTheme(
                 colorScheme: colorScheme,
               ),
+        null => switch (colorScheme.brightness) {
+            Brightness.light => lightTheme(
+                colorScheme: colorScheme,
+              ),
+            Brightness.dark => darkTheme(
+                colorScheme: colorScheme,
+              ),
+          },
       };
 
   static ThemeData lightTheme({

@@ -1,5 +1,4 @@
 // Package imports:
-import 'package:boorusama/foundation/theme.dart';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
@@ -8,6 +7,7 @@ import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/types.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/gestures.dart';
+import 'package:boorusama/foundation/theme.dart';
 
 class BooruConfigData extends Equatable {
   const BooruConfigData({
