@@ -6,8 +6,9 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:boorusama/foundation/theme.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class TagChipsPlaceholder extends StatelessWidget {
+class TagChipsPlaceholder extends ConsumerWidget {
   const TagChipsPlaceholder({
     super.key,
     this.height,
@@ -20,7 +21,9 @@ class TagChipsPlaceholder extends StatelessWidget {
   final Color? backgroundColor;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = ref.watch(colorSchemeProvider);
+
     return Container(
       color: backgroundColor,
       height: height ?? 40,
@@ -35,7 +38,7 @@ class TagChipsPlaceholder extends StatelessWidget {
               right: 4,
             ),
             child: ChoiceChip(
-              disabledColor: context.colorScheme.surfaceContainerHighest,
+              disabledColor: colorScheme.surfaceContainerHighest,
               label: SizedBox(width: Random().nextInt(40).toDouble() + 40),
               selected: false,
               padding: const EdgeInsets.all(4),
