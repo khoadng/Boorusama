@@ -223,7 +223,7 @@ class E621Builder
 
   @override
   TagColorBuilder get tagColorBuilder =>
-      (context, tagType) => switch (tagType) {
+      (brightness, tagType) => switch (tagType) {
             'general' => const Color(0xffb4c7d8),
             'artist' => const Color(0xfff2ad04),
             'copyright' => const Color(0xffd60ad8),

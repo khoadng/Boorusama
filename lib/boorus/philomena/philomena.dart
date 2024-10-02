@@ -86,32 +86,32 @@ class PhilomenaBuilder
 
   @override
   TagColorBuilder get tagColorBuilder =>
-      (themeMode, tagType) => switch (tagType) {
-            'error' => themeMode.isDark
+      (brightness, tagType) => switch (tagType) {
+            'error' => brightness.isDark
                 ? const Color.fromARGB(255, 212, 84, 96)
                 : const Color.fromARGB(255, 173, 38, 63),
-            'rating' => themeMode.isDark
+            'rating' => brightness.isDark
                 ? const Color.fromARGB(255, 64, 140, 217)
                 : const Color.fromARGB(255, 65, 124, 169),
-            'origin' => themeMode.isDark
+            'origin' => brightness.isDark
                 ? const Color.fromARGB(255, 111, 100, 224)
                 : const Color.fromARGB(255, 56, 62, 133),
-            'oc' => themeMode.isDark
+            'oc' => brightness.isDark
                 ? const Color.fromARGB(255, 176, 86, 182)
                 : const Color.fromARGB(255, 176, 86, 182),
-            'character' => themeMode.isDark
+            'character' => brightness.isDark
                 ? const Color.fromARGB(255, 73, 170, 190)
                 : const Color.fromARGB(255, 46, 135, 119),
-            'species' => themeMode.isDark
+            'species' => brightness.isDark
                 ? const Color.fromARGB(255, 176, 106, 80)
                 : const Color.fromARGB(255, 131, 87, 54),
-            'content-official' => themeMode.isDark
+            'content-official' => brightness.isDark
                 ? const Color.fromARGB(255, 185, 180, 65)
                 : const Color.fromARGB(255, 151, 142, 27),
-            'content-fanmade' => themeMode.isDark
+            'content-fanmade' => brightness.isDark
                 ? const Color.fromARGB(255, 204, 143, 180)
                 : const Color.fromARGB(255, 174, 90, 147),
-            _ => themeMode.isDark
+            _ => brightness.isDark
                 ? Colors.green
                 : const Color.fromARGB(255, 111, 143, 13),
           };
