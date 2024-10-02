@@ -59,7 +59,7 @@ class _DanbooruPostDetailsDesktopPageState
       sliverArtistPostsBuilder: (context, post) => post.artistTags.isNotEmpty
           ? post.artistTags
               .map(
-                (tag) => ArtistPostList2(
+                (tag) => ArtistPostList(
                   tag: tag,
                   builder: (tag) => ref
                       .watch(e621ArtistPostsProvider(tag))

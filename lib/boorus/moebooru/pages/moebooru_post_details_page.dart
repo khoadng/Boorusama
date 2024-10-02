@@ -123,7 +123,7 @@ class _MoebooruPostDetailsPageState
               return artistTags != null && artistTags.isNotEmpty
                   ? artistTags
                       .map(
-                        (tag) => ArtistPostList2(
+                        (tag) => ArtistPostList(
                           tag: tag,
                           builder: (tag) => ref
                               .watch(moebooruPostDetailsArtistProvider(tag))

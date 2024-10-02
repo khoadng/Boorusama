@@ -90,7 +90,7 @@ class _PostDetailPageState extends ConsumerState<GelbooruV2PostDetailsPage> {
             () => [],
             (tags) => tags.isNotEmpty
                 ? tags
-                    .map((tag) => ArtistPostList2(
+                    .map((tag) => ArtistPostList(
                           tag: tag,
                           builder: (tag) => ref
                               .watch(gelbooruV2ArtistPostsProvider(tag))

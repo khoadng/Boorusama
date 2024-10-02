@@ -19,6 +19,8 @@ mixin DoubleLayerCacheMixin<TData> {
   String get debugObjectName;
   String get debugFetcherName;
 
+  bool get enableDebugPrint;
+
   /// Retrieves data based on a list of keys, with options for custom fetchers
   /// and storage checks.
   ///
@@ -127,6 +129,8 @@ mixin DoubleLayerCacheMixin<TData> {
   }
 
   void _debugPrint(String message) {
+    if (!enableDebugPrint) return;
+
     if (kDebugMode) {
       print('[DoubleLayerCacheMixin] $message');
     }

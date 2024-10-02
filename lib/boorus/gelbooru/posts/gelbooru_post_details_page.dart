@@ -65,10 +65,10 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailsPage> {
       ),
       sliverArtistPostsBuilder: (context, post) =>
           ref.watch(gelbooruPostDetailsArtistMapProvider).lookup(post.id).fold(
-                () => [],
+                () => const [],
                 (tags) => tags.isNotEmpty
                     ? tags
-                        .map((tag) => ArtistPostList2(
+                        .map((tag) => ArtistPostList(
                               tag: tag,
                               builder: (tag) => ref
                                   .watch(gelbooruArtistPostsProvider(tag))

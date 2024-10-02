@@ -35,8 +35,6 @@ class _DanbooruPostDetailsDesktopPageState
     extends ConsumerState<GelbooruV2PostDetailsDesktopPage> {
   @override
   Widget build(BuildContext context) {
-    final gelArtistMap = ref.watch(gelbooruV2PostDetailsArtistMapProvider);
-
     return PostDetailsPageDesktopScaffold(
       posts: widget.posts,
       initialIndex: widget.initialIndex,
@@ -57,30 +55,32 @@ class _DanbooruPostDetailsDesktopPageState
         post: post,
         rating: post.rating,
       ),
-      sliverArtistPostsBuilder: (context, post) => gelArtistMap
+      sliverArtistPostsBuilder: (context, post) => ref
+          .watch(gelbooruV2PostDetailsArtistMapProvider)
           .lookup(post.id)
           .fold(
             () => const [],
             (tags) => tags.isNotEmpty
-                ? [
-                    ArtistPostList(
-                      artists: tags,
-                      builder: (tag) => ref
-                          .watch(gelbooruV2ArtistPostsProvider(tag))
-                          .maybeWhen(
-                            data: (data) => PreviewPostGrid(
-                              posts: data,
-                              onTap: (postIdx) => goToPostDetailsPage(
-                                context: context,
-                                posts: data,
-                                initialIndex: postIdx,
+                ? tags
+                    .map((tag) => ArtistPostList(
+                          tag: tag,
+                          builder: (tag) => ref
+                              .watch(gelbooruV2ArtistPostsProvider(tag))
+                              .maybeWhen(
+                                data: (data) => SliverPreviewPostGrid(
+                                  posts: data,
+                                  onTap: (postIdx) => goToPostDetailsPage(
+                                    context: context,
+                                    posts: data,
+                                    initialIndex: postIdx,
+                                  ),
+                                  imageUrl: (item) => item.sampleImageUrl,
+                                ),
+                                orElse: () =>
+                                    const SliverPreviewPostGridPlaceholder(),
                               ),
-                              imageUrl: (item) => item.sampleImageUrl,
-                            ),
-                            orElse: () => const PreviewPostGridPlaceholder(),
-                          ),
-                    )
-                  ]
+                        ))
+                    .toList()
                 : [],
           ),
     );
