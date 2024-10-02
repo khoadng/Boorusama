@@ -256,7 +256,7 @@ class ColorSettings extends Equatable {
         surface: _parseColor(json['surface']),
         onSurface: _parseColor(json['onSurface']),
         nickname: json['nickname'],
-        isPredefined: false,
+        isPredefined: json['isPredefined'],
       );
     } catch (e) {
       return null;
@@ -280,6 +280,7 @@ class ColorSettings extends Equatable {
       'surface': surface?.hex,
       'onSurface': onSurface?.hex,
       'nickname': nickname,
+      'isPredefined': isPredefined,
     };
   }
 
@@ -300,6 +301,7 @@ class ColorSettings extends Equatable {
         surface,
         onSurface,
         nickname,
+        isPredefined,
       ];
 }
 
