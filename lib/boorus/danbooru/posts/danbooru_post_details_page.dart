@@ -65,7 +65,7 @@ class _DanbooruPostDetailsPageState
         swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
         sliverArtistPostsBuilder: (context, post) => post.artistTags.isNotEmpty
             ? post.artistTags
-                .map((tag) => ArtistPostList2(
+                .map((tag) => ArtistPostList(
                       tag: tag,
                       builder: (tag) => ref
                           .watch(danbooruPostDetailsArtistProvider(tag))

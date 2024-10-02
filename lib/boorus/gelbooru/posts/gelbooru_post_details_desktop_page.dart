@@ -35,10 +35,28 @@ class GelbooruPostDetailsDesktopPage extends ConsumerStatefulWidget {
 
 class _DanbooruPostDetailsDesktopPageState
     extends ConsumerState<GelbooruPostDetailsDesktopPage> {
+  void _loadTags(Post post) {
+    final booruConfig = ref.readConfig;
+
+    ref.read(tagsProvider(booruConfig).notifier).load(
+      post.tags,
+      onSuccess: (tags) {
+        if (!mounted) return;
+
+        ref.read(tagsProvider(booruConfig).notifier).load(
+              post.tags,
+              onSuccess: (tags) => ref.setGelbooruPostDetailsArtistMap(
+                post: post,
+                tags: tags,
+              ),
+            );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final booruConfig = ref.watchConfig;
-    final gelArtistMap = ref.watch(gelbooruPostDetailsArtistMapProvider);
 
     return PostDetailsPageDesktopScaffold(
       posts: widget.posts,
@@ -50,10 +68,7 @@ class _DanbooruPostDetailsDesktopPageState
           post.tags,
           onSuccess: (tags) {
             if (!mounted) return;
-            ref.setGelbooruPostDetailsArtistMap(
-              post: post,
-              tags: tags,
-            );
+            _loadTags(post);
           },
         );
       },
@@ -62,41 +77,43 @@ class _DanbooruPostDetailsDesktopPageState
           GeneralMoreActionButton(post: post),
       toolbarBuilder: (context, post) => SimplePostActionToolbar(post: post),
       tagListBuilder: (context, post) => TagsTile(
-        initialExpanded: true,
         tags: ref.watch(tagsProvider(booruConfig)),
         post: post,
         onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
+        onExpand: () {
+          _loadTags(post);
+        },
       ),
       fileDetailsBuilder: (context, post) => FileDetailsSection(
         post: post,
         rating: post.rating,
       ),
-      sliverArtistPostsBuilder: (context, post) => gelArtistMap
-          .lookup(post.id)
-          .fold(
-            () => const [],
-            (tags) => tags.isNotEmpty
-                ? [
-                    ArtistPostList(
-                      artists: tags,
-                      builder: (tag) => ref
-                          .watch(gelbooruArtistPostsProvider(tag))
-                          .maybeWhen(
-                            data: (data) => PreviewPostGrid(
-                              posts: data,
-                              onTap: (postIdx) => goToPostDetailsPage(
-                                context: context,
-                                posts: data,
-                                initialIndex: postIdx,
-                              ),
-                              imageUrl: (item) => item.sampleImageUrl,
-                            ),
-                            orElse: () => const PreviewPostGridPlaceholder(),
-                          ),
-                    ),
-                  ]
-                : [],
-          ),
+      sliverArtistPostsBuilder: (context, post) =>
+          ref.watch(gelbooruPostDetailsArtistMapProvider).lookup(post.id).fold(
+                () => [],
+                (tags) => tags.isNotEmpty
+                    ? tags
+                        .map((tag) => ArtistPostList(
+                              tag: tag,
+                              builder: (tag) => ref
+                                  .watch(gelbooruArtistPostsProvider(tag))
+                                  .maybeWhen(
+                                    data: (data) => SliverPreviewPostGrid(
+                                      posts: data,
+                                      onTap: (postIdx) => goToPostDetailsPage(
+                                        context: context,
+                                        posts: data,
+                                        initialIndex: postIdx,
+                                      ),
+                                      imageUrl: (item) => item.sampleImageUrl,
+                                    ),
+                                    orElse: () =>
+                                        const SliverPreviewPostGridPlaceholder(),
+                                  ),
+                            ))
+                        .toList()
+                    : [],
+              ),
     );
   }
 }

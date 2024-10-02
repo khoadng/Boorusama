@@ -50,7 +50,7 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage> {
       swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
       sliverArtistPostsBuilder: (context, post) => post.artistTags.isNotEmpty
           ? post.artistTags
-              .map((tag) => ArtistPostList2(
+              .map((tag) => ArtistPostList(
                     tag: tag,
                     builder: (tag) =>
                         ref.watch(e621ArtistPostsProvider(tag)).maybeWhen(
