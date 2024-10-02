@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
@@ -19,6 +18,7 @@ import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/artist_page_scaffold.dart';
 import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/router.dart';
@@ -95,17 +95,23 @@ class SankakuBuilder
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) {
-        final posts = payload.posts.map((e) => e as SankakuPost).toList();
-        final initialIndex = payload.initialIndex;
-        final scrollController = payload.scrollController;
-
-        return SankakuPostDetailsPage(
-          posts: posts,
-          initialIndex: initialIndex,
-          scrollController: scrollController,
-        );
-      };
+      (context, config, payload) => PostDetailsLayoutSwitcher(
+            initialIndex: payload.initialIndex,
+            posts: payload.posts,
+            scrollController: payload.scrollController,
+            desktop: (controller) => SankakuPostDetailsDesktopPage(
+              initialIndex: controller.currentPage.value,
+              posts: payload.posts.map((e) => e as SankakuPost).toList(),
+              onExit: (page) => controller.onExit(page),
+              onPageChanged: (page) => controller.setPage(page),
+            ),
+            mobile: (controller) => SankakuPostDetailsPage(
+              initialIndex: controller.currentPage.value,
+              posts: payload.posts.map((e) => e as SankakuPost).toList(),
+              onExit: (page) => controller.onExit(page),
+              onPageChanged: (page) => controller.setPage(page),
+            ),
+          );
 
   @override
   ArtistPageBuilder? get artistPageBuilder =>
@@ -155,12 +161,14 @@ class SankakuPostDetailsPage extends ConsumerWidget {
     super.key,
     required this.posts,
     required this.initialIndex,
-    required this.scrollController,
+    required this.onExit,
+    required this.onPageChanged,
   });
 
   final List<SankakuPost> posts;
   final int initialIndex;
-  final AutoScrollController? scrollController;
+  final void Function(int page) onPageChanged;
+  final void Function(int page) onExit;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -196,17 +204,93 @@ class SankakuPostDetailsPage extends ConsumerWidget {
                   ))
               .toList()
           : [],
-      tagListBuilder: (context, post) => TagsTile(
+      tagListBuilder: (context, post) => SankakuTagsTile(post: post),
+      onExit: onExit,
+      onPageChangeIndexed: onPageChanged,
+    );
+  }
+}
+
+class SankakuPostDetailsDesktopPage extends ConsumerWidget {
+  const SankakuPostDetailsDesktopPage({
+    super.key,
+    required this.initialIndex,
+    required this.posts,
+    required this.onExit,
+    required this.onPageChanged,
+  });
+
+  final int initialIndex;
+  final List<SankakuPost> posts;
+  final void Function(int index) onExit;
+  final void Function(int page) onPageChanged;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return PostDetailsPageDesktopScaffold(
+      initialIndex: initialIndex,
+      posts: posts,
+      onExit: onExit,
+      onPageChanged: onPageChanged,
+      imageUrlBuilder: defaultPostImageUrlBuilder(ref),
+      infoBuilder: (context, post) => SimpleInformationSection(
         post: post,
-        initialExpanded: true,
-        tags: createTagGroupItems([
-          ...post.artistDetailsTags,
-          ...post.characterDetailsTags,
-          ...post.copyrightDetailsTags,
-        ]),
-        onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
+        showSource: true,
       ),
-      onExit: (page) => scrollController?.scrollToIndex(page),
+      sliverArtistPostsBuilder: (context, post) => post.artistTags.isNotEmpty
+          ? post.artistTags
+              .map((tag) => ArtistPostList(
+                    tag: tag,
+                    builder: (tag) => ref
+                        .watch(sankakuArtistPostsProvider(
+                            post.artistTags.firstOrNull))
+                        .maybeWhen(
+                          data: (data) => SliverPreviewPostGrid(
+                            posts: data,
+                            onTap: (postIdx) => goToPostDetailsPage(
+                              context: context,
+                              posts: data,
+                              initialIndex: postIdx,
+                            ),
+                            imageUrl: (item) => item.sampleImageUrl,
+                          ),
+                          orElse: () =>
+                              const SliverPreviewPostGridPlaceholder(),
+                        ),
+                  ))
+              .toList()
+          : [],
+      tagListBuilder: (context, post) => SankakuTagsTile(post: post),
+      toolbarBuilder: (context, post) => SimplePostActionToolbar(post: post),
+      fileDetailsBuilder: (context, post) => FileDetailsSection(
+        post: post,
+        rating: post.rating,
+      ),
+      topRightButtonsBuilder: (currentPage, expanded, post) =>
+          GeneralMoreActionButton(post: post),
+    );
+  }
+}
+
+class SankakuTagsTile extends StatelessWidget {
+  const SankakuTagsTile({
+    super.key,
+    required this.post,
+  });
+
+  final SankakuPost post;
+
+  @override
+  Widget build(BuildContext context) {
+    return TagsTile(
+      post: post,
+      initialExpanded: true,
+      tags: createTagGroupItems([
+        ...post.artistDetailsTags,
+        ...post.characterDetailsTags,
+        ...post.copyrightDetailsTags,
+      ]),
+      onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
     );
   }
 }
