@@ -63,10 +63,6 @@ class _MoebooruPostDetailsDesktopPageState
         post: post,
         rating: post.rating,
       ),
-      sourceBuilder: (context, post) => post.source.whenWeb(
-        (source) => SourceSection(source: source),
-        () => const SizedBox.shrink(),
-      ),
       commentBuilder: (context, post) => MoebooruCommentSection(
         post: post,
         allowFetch: true,

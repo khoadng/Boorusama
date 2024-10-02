@@ -200,10 +200,6 @@ class ZerochanPostDetailsDesktopPage extends ConsumerWidget {
       ),
       topRightButtonsBuilder: (currentPage, expanded, post) =>
           GeneralMoreActionButton(post: post),
-      sourceBuilder: (context, post) => post.source.whenWeb(
-        (source) => SourceSection(source: source),
-        () => const SizedBox.shrink(),
-      ),
     );
   }
 }

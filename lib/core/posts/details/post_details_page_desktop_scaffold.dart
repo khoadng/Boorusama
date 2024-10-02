@@ -90,6 +90,7 @@ class PostDetailsPageDesktopScaffold<T extends Post>
     this.sliverArtistPostsBuilder,
     this.sliverCharacterPostsBuilder,
     required this.imageUrlBuilder,
+    this.parts = kDefaultPostDetailsParts,
     this.onPageLoaded,
   });
 
@@ -117,6 +118,8 @@ class PostDetailsPageDesktopScaffold<T extends Post>
       sliverArtistPostsBuilder;
   final Widget Function(BuildContext context, T post)?
       sliverCharacterPostsBuilder;
+
+  final Set<PostDetailsPart> parts;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -311,6 +314,12 @@ class _PostDetailsDesktopScaffoldState<T extends Post>
               ],
               if (widget.sourceBuilder != null) ...[
                 widget.sourceBuilder!(context, post),
+                const SizedBox(height: 8),
+              ] else if (widget.parts.contains(PostDetailsPart.source)) ...[
+                post.source.whenWeb(
+                  (source) => SourceSection(source: source),
+                  () => const SizedBox.shrink(),
+                ),
                 const SizedBox(height: 8),
               ],
               if (widget.tagListBuilder != null) ...[

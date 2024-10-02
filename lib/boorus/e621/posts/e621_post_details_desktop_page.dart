@@ -80,6 +80,7 @@ class _DanbooruPostDetailsDesktopPageState
               )
               .toList()
           : [],
+      parts: kDefaultPostDetailsNoSourceParts,
     );
   }
 }

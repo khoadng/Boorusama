@@ -268,6 +268,7 @@ class SankakuPostDetailsDesktopPage extends ConsumerWidget {
       ),
       topRightButtonsBuilder: (currentPage, expanded, post) =>
           GeneralMoreActionButton(post: post),
+      parts: kDefaultPostDetailsNoSourceParts,
     );
   }
 }
