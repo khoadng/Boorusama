@@ -6,12 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/notes/notes.dart';
+import 'package:boorusama/core/posts/details/common.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/tags/tags.dart';
@@ -234,19 +234,18 @@ class _PostDetailsDesktopScaffoldState<T extends Post>
           },
           itemBuilder: (context, index) {
             final post = widget.posts[index];
-            final nextPost = index + 1 < widget.posts.length
-                ? widget.posts[index + 1]
-                : null;
+            final (prevPost, nextPost) =
+                widget.posts.getPrevAndNextPosts(index);
 
             return Stack(
               children: [
                 if (nextPost != null && !nextPost.isVideo)
-                  ExtendedImage.network(
-                    widget.imageUrlBuilder(nextPost),
-                    width: 1,
-                    height: 1,
-                    cacheHeight: 10,
-                    cacheWidth: 10,
+                  PostDetailsPreloadImage(
+                    url: widget.imageUrlBuilder(nextPost),
+                  ),
+                if (prevPost != null && !prevPost.isVideo)
+                  PostDetailsPreloadImage(
+                    url: widget.imageUrlBuilder(prevPost),
                   ),
                 PostMedia(
                   post: post,
