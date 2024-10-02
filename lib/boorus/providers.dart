@@ -20,7 +20,7 @@ import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/moebooru/feats/tags/moebooru_tag_provider.dart';
 import 'package:boorusama/boorus/sankaku/sankaku.dart';
 import 'package:boorusama/boorus/szurubooru/favorites/favorites.dart';
-import 'package:boorusama/boorus/zerochan/zerochan.dart';
+import 'package:boorusama/boorus/zerochan/providers.dart';
 import 'package:boorusama/clients/boorusama/boorusama_client.dart';
 import 'package:boorusama/clients/danbooru/danbooru_client.dart';
 import 'package:boorusama/clients/e621/e621_client.dart';

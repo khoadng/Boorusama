@@ -309,6 +309,10 @@ class _PostDetailsDesktopScaffoldState<T extends Post>
                 const Divider(height: 8, thickness: 1),
                 widget.statsTileBuilder!(context, post),
               ],
+              if (widget.sourceBuilder != null) ...[
+                widget.sourceBuilder!(context, post),
+                const SizedBox(height: 8),
+              ],
               if (widget.tagListBuilder != null) ...[
                 const Divider(height: 8, thickness: 1),
                 widget.tagListBuilder!(context, post),
