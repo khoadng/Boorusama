@@ -152,6 +152,15 @@ class _PostDetailsDesktopScaffoldState<T extends Post>
         );
       }
     });
+
+    // on info show, fetch stuff
+    controller.showInfo.addListener(_onInfoChanged);
+  }
+
+  void _onInfoChanged() {
+    if (controller.showInfo.value) {
+      _fetchInfo(controller.currentPage.value);
+    }
   }
 
   @override
@@ -160,7 +169,14 @@ class _PostDetailsDesktopScaffoldState<T extends Post>
     pageController.dispose();
     _debounceTimer?.cancel();
     _pageSubscription.cancel();
+    controller.showInfo.removeListener(_onInfoChanged);
     controller.dispose();
+  }
+
+  void _fetchInfo(int page) {
+    final post = widget.posts[page];
+    ref.read(allowFetchProvider.notifier).state = true;
+    ref.read(notesControllerProvider(post).notifier).load();
   }
 
   @override
@@ -207,9 +223,11 @@ class _PostDetailsDesktopScaffoldState<T extends Post>
               () {
                 widget.onPageChanged(page);
                 controller.changePage(page);
-                final post = widget.posts[page];
-                ref.read(allowFetchProvider.notifier).state = true;
-                ref.read(notesControllerProvider(post).notifier).load();
+
+                // if the info is not shown, don't fetch anything
+                if (!controller.showInfo.value) return;
+
+                _fetchInfo(page);
                 widget.onPageLoaded?.call(widget.posts[page]);
               },
             );
