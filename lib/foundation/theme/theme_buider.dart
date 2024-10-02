@@ -8,9 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
-import 'app_theme.dart';
-import 'colors.dart';
-import 'theme_mode.dart';
+import 'package:boorusama/foundation/theme.dart';
 
 class ThemeBuilder extends ConsumerWidget {
   const ThemeBuilder({
@@ -30,7 +28,8 @@ class ThemeBuilder extends ConsumerWidget {
     final systemDarkMode =
         MediaQuery.platformBrightnessOf(context) == Brightness.dark;
 
-    final customColorScheme = ref.watchConfig.theme?.colors?.toColorScheme();
+    final customColorScheme =
+        getSchemeFromColorSettings(ref.watchConfig.theme?.colors);
 
     return DynamicColorBuilder(
       builder: (lightOrigin, darkOrigin) {

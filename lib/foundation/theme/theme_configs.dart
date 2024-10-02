@@ -14,37 +14,52 @@ import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
 
 final preDefinedColorSettings = [
-  ColorSettings.fromScheme(
+  ColorSettings.fromPredefinedScheme(
     'boorusama_light',
     staticLightScheme,
     nickname: 'Light',
   ),
-  ColorSettings.fromScheme(
+  ColorSettings.fromPredefinedScheme(
     'boorusama_dark',
     staticDarkScheme,
     nickname: 'Dark',
   ),
-  ColorSettings.fromScheme(
+  ColorSettings.fromPredefinedScheme(
     'boorusama_black',
     staticBlackScheme,
     nickname: 'Midnight',
   ),
-  ColorSettings.fromScheme(
+  ColorSettings.fromPredefinedScheme(
     'danbooru_dark',
     staticDanbooruDarkScheme,
     nickname: 'Dark Blue',
   ),
-  ColorSettings.fromScheme(
+  ColorSettings.fromPredefinedScheme(
     'danbooru_light',
     staticDanbooruLightScheme,
     nickname: 'Light Blue',
   ),
-  ColorSettings.fromScheme(
+  ColorSettings.fromPredefinedScheme(
     'green',
     staticGreenScheme,
     nickname: 'Light Green',
   ),
 ].whereNotNull().toList();
+
+ColorScheme? getSchemeFromColorSettings(ColorSettings? colorSettings) {
+  // if is predefined, use the predefined color scheme instead
+  if (colorSettings?.isPredefined == true) {
+    final scheme = preDefinedColorSettings
+        .firstWhereOrNull(
+          (e) => e.name == colorSettings!.name,
+        )
+        ?.toColorScheme();
+
+    return scheme;
+  } else {
+    return colorSettings?.toColorScheme();
+  }
+}
 
 const staticDanbooruDarkScheme = ColorScheme(
   brightness: Brightness.dark,
@@ -116,6 +131,8 @@ class ColorSettings extends Equatable {
   final Color? surface;
   final Color? onSurface;
 
+  final bool isPredefined;
+
   const ColorSettings({
     required this.name,
     required this.brightness,
@@ -132,9 +149,35 @@ class ColorSettings extends Equatable {
     required this.surface,
     required this.onSurface,
     this.nickname,
+    required this.isPredefined,
   });
 
-  static ColorSettings? fromScheme(
+  static ColorSettings? fromPredefinedScheme(
+    String name,
+    ColorScheme colorScheme, {
+    String? nickname,
+  }) {
+    return ColorSettings(
+      name: name,
+      brightness: colorScheme.brightness,
+      secondaryContainer: colorScheme.secondaryContainer,
+      onSecondaryContainer: colorScheme.onSecondaryContainer,
+      onTertiaryContainer: colorScheme.onTertiaryContainer,
+      surfaceContainerHighest: colorScheme.surfaceContainerHighest,
+      primary: colorScheme.primary,
+      onPrimary: colorScheme.onPrimary,
+      secondary: colorScheme.secondary,
+      onSecondary: colorScheme.onSecondary,
+      error: colorScheme.error,
+      onError: colorScheme.onError,
+      surface: colorScheme.surface,
+      onSurface: colorScheme.onSurface,
+      nickname: nickname,
+      isPredefined: true,
+    );
+  }
+
+  static ColorSettings? fromCustomScheme(
     String name,
     ColorScheme? colorScheme, {
     String? nickname,
@@ -157,6 +200,7 @@ class ColorSettings extends Equatable {
       surface: colorScheme.surface,
       onSurface: colorScheme.onSurface,
       nickname: nickname,
+      isPredefined: false,
     );
   }
 
@@ -212,6 +256,7 @@ class ColorSettings extends Equatable {
         surface: _parseColor(json['surface']),
         onSurface: _parseColor(json['onSurface']),
         nickname: json['nickname'],
+        isPredefined: false,
       );
     } catch (e) {
       return null;
