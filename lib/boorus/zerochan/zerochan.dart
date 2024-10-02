@@ -217,10 +217,9 @@ class ZerochanBuilder
           );
 
   @override
-  TagColorBuilder get tagColorBuilder => (themeMode, tagType) {
-        final colors = themeMode == AppThemeMode.light
-            ? TagColors.dark()
-            : TagColors.light();
+  TagColorBuilder get tagColorBuilder => (brightness, tagType) {
+        final colors =
+            brightness.isLight ? TagColors.dark() : TagColors.light();
 
         return switch (tagType) {
           'mangaka' ||

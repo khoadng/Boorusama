@@ -7,11 +7,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/display.dart';
+import 'package:boorusama/foundation/theme.dart';
 
 enum BookmarkSortType {
   newest,
@@ -59,19 +59,21 @@ final booruTypeCountProvider =
       .length;
 });
 
-final tagColorProvider =
-    FutureProvider.autoDispose.family<Color?, String>((ref, tag) async {
-  final config = ref.watchConfig;
-  final settings = ref.watch(settingsProvider);
-  final tagTypeStore = ref.watch(booruTagTypeStoreProvider);
-  final tagType = await tagTypeStore.get(config.booruType, tag);
+final tagColorProvider = FutureProvider.autoDispose.family<Color?, String>(
+  (ref, tag) async {
+    final config = ref.watchConfig;
+    final tagTypeStore = ref.watch(booruTagTypeStoreProvider);
+    final tagType = await tagTypeStore.get(config.booruType, tag);
+    final colorScheme = ref.watch(colorSchemeProvider);
 
-  final color = ref
-      .watch(booruBuilderProvider)
-      ?.tagColorBuilder(settings.themeMode, tagType);
+    final color = ref
+        .watch(booruBuilderProvider)
+        ?.tagColorBuilder(colorScheme.brightness, tagType);
 
-  return color;
-});
+    return color;
+  },
+  dependencies: [colorSchemeProvider],
+);
 
 final tagMapProvider = Provider<Map<String, int>>((ref) {
   final bookmarks = ref.watch(bookmarkProvider).bookmarks;
