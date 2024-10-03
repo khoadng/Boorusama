@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
@@ -291,59 +293,118 @@ class _PostDetailsDesktopScaffoldState<T extends Post>
   Widget _buildInfo(BuildContext context, T post) {
     return CustomScrollView(
       slivers: [
-        SliverList(
-          delegate: SliverChildListDelegate(
-            [
-              if (widget.infoBuilder != null)
-                widget.infoBuilder!(context, post),
-              if (widget.toolbarBuilder != null) ...[
-                const Divider(height: 8, thickness: 1),
-                widget.toolbarBuilder!(context, post),
-              ],
-              if (allowFetch)
-                if (widget.poolTileBuilder != null) ...[
-                  widget.poolTileBuilder!(context, post),
-                ],
-              if (widget.artistInfoBuilder != null) ...[
-                const Divider(height: 8, thickness: 1),
-                widget.artistInfoBuilder!(context, post),
-              ],
-              if (widget.statsTileBuilder != null) ...[
-                const Divider(height: 8, thickness: 1),
-                widget.statsTileBuilder!(context, post),
-              ],
-              if (widget.sourceBuilder != null) ...[
-                widget.sourceBuilder!(context, post),
-                const SizedBox(height: 8),
-              ] else if (widget.parts.contains(PostDetailsPart.source)) ...[
-                post.source.whenWeb(
-                  (source) => SourceSection(source: source),
-                  () => const SizedBox.shrink(),
-                ),
-                const SizedBox(height: 8),
-              ],
-              if (widget.tagListBuilder != null) ...[
-                const Divider(height: 8, thickness: 1),
-                widget.tagListBuilder!(context, post),
-              ],
-              if (widget.fileDetailsBuilder != null) ...[
-                const Divider(height: 8, thickness: 1),
-                widget.fileDetailsBuilder!(context, post),
-              ],
-            ],
-          ),
-        ),
-        if (allowFetch)
-          if (widget.sliverRelatedPostsBuilder != null) ...[
-            widget.sliverRelatedPostsBuilder!(context, post),
-          ],
-        if (allowFetch)
-          if (widget.sliverArtistPostsBuilder != null)
-            ...widget.sliverArtistPostsBuilder!(context, post),
-        if (allowFetch)
-          if (widget.sliverCharacterPostsBuilder != null) ...[
-            widget.sliverCharacterPostsBuilder!(context, post),
-          ],
+        ...widget.parts
+            .map(
+              (p) => switch (p) {
+                PostDetailsPart.pool => widget.poolTileBuilder != null
+                    ? SliverToBoxAdapter(
+                        child: widget.poolTileBuilder!(context, post),
+                      )
+                    : null,
+                PostDetailsPart.info => widget.infoBuilder != null
+                    ? SliverToBoxAdapter(
+                        child: widget.infoBuilder!(context, post),
+                      )
+                    : null,
+                PostDetailsPart.toolbar => widget.toolbarBuilder != null
+                    ? SliverToBoxAdapter(
+                        child: widget.toolbarBuilder!(context, post),
+                      )
+                    : null,
+                PostDetailsPart.artistInfo => widget.artistInfoBuilder != null
+                    ? SliverToBoxAdapter(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            const Divider(thickness: 0.5, height: 8),
+                            widget.artistInfoBuilder!(
+                              context,
+                              post,
+                            ),
+                          ],
+                        ),
+                      )
+                    : null,
+                PostDetailsPart.stats => widget.statsTileBuilder != null
+                    ? SliverToBoxAdapter(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            const SizedBox(height: 8),
+                            widget.statsTileBuilder!(context, post),
+                            const Divider(thickness: 0.5),
+                          ],
+                        ),
+                      )
+                    : null,
+                PostDetailsPart.tags => widget.tagListBuilder != null
+                    ? SliverToBoxAdapter(
+                        child: widget.tagListBuilder!(context, post),
+                      )
+                    : SliverToBoxAdapter(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          child: BasicTagList(
+                            tags: post.tags.toList(),
+                            onTap: (tag) => goToSearchPage(context, tag: tag),
+                          ),
+                        ),
+                      ),
+                PostDetailsPart.fileDetails => widget.fileDetailsBuilder != null
+                    ? SliverToBoxAdapter(
+                        child: Column(
+                          children: [
+                            widget.fileDetailsBuilder!(context, post),
+                            const Divider(thickness: 0.5),
+                          ],
+                        ),
+                      )
+                    : SliverToBoxAdapter(
+                        child: Column(
+                          children: [
+                            FileDetailsSection(
+                              post: post,
+                              rating: post.rating,
+                            ),
+                            const Divider(thickness: 0.5),
+                          ],
+                        ),
+                      ),
+                PostDetailsPart.source => widget.sourceBuilder != null
+                    ? SliverToBoxAdapter(
+                        child: widget.sourceBuilder!(context, post),
+                      )
+                    : post.source.whenWeb(
+                        (source) => SliverToBoxAdapter(
+                          child: SourceSection(source: source),
+                        ),
+                        () => null,
+                      ),
+                PostDetailsPart.comments => widget.commentBuilder != null
+                    ? SliverToBoxAdapter(
+                        child: widget.commentBuilder!(context, post),
+                      )
+                    : null,
+                PostDetailsPart.artistPosts =>
+                  widget.sliverArtistPostsBuilder != null
+                      ? MultiSliver(
+                          children: widget.sliverArtistPostsBuilder!(
+                            context,
+                            post,
+                          ),
+                        )
+                      : null,
+                PostDetailsPart.relatedPosts =>
+                  widget.sliverRelatedPostsBuilder != null
+                      ? widget.sliverRelatedPostsBuilder!(context, post)
+                      : null,
+                PostDetailsPart.characterList =>
+                  widget.sliverCharacterPostsBuilder != null
+                      ? widget.sliverCharacterPostsBuilder!(context, post)
+                      : null,
+              },
+            )
+            .whereNotNull(),
         const SliverSizedBox(height: 24),
       ],
     );

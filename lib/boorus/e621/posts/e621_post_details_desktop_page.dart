@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/e621/artists/artists.dart';
 import 'package:boorusama/boorus/e621/posts/posts.dart';
 import 'package:boorusama/boorus/providers.dart';
@@ -44,17 +45,13 @@ class _DanbooruPostDetailsDesktopPageState
       onPageLoaded: (post) {
         ref.read(notesControllerProvider(post).notifier).load();
       },
-      imageUrlBuilder: (post) => post.sampleImageUrl,
+      imageUrlBuilder: defaultPostImageUrlBuilder(ref),
       infoBuilder: (context, post) => SimpleInformationSection(post: post),
       topRightButtonsBuilder: (currentPage, expanded, post) =>
           GeneralMoreActionButton(post: post),
       toolbarBuilder: (context, post) => DefaultPostActionToolbar(post: post),
       tagListBuilder: (context, post) => E621TagsTile(
         post: post,
-      ),
-      fileDetailsBuilder: (context, post) => FileDetailsSection(
-        post: post,
-        rating: post.rating,
       ),
       sliverArtistPostsBuilder: (context, post) => post.artistTags.isNotEmpty
           ? post.artistTags
