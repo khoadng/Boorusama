@@ -118,6 +118,13 @@ final settingsProvider = NotifierProvider<SettingsNotifier, Settings>(
   name: 'settingsProvider',
 );
 
+final hasCustomListingSettingsProvider = Provider<bool>((ref) {
+  final listingConfigs =
+      ref.watch(currentBooruConfigProvider.select((value) => value.listing));
+
+  return listingConfigs != null && listingConfigs.enable;
+});
+
 final imageListingSettingsProvider = Provider<ImageListingSettings>((ref) {
   final listing = ref.watch(settingsProvider.select((value) => value.listing));
 
