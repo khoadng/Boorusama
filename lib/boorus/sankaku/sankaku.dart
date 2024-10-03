@@ -79,10 +79,12 @@ class SankakuBuilder
         context,
         config, {
         backgroundColor,
+        initialTab,
       }) =>
           CreateSankakuConfigPage(
             config: config,
             backgroundColor: backgroundColor,
+            initialTab: initialTab,
           );
 
   @override

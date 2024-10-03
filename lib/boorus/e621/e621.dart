@@ -152,10 +152,12 @@ class E621Builder
         context,
         config, {
         backgroundColor,
+        initialTab,
       }) =>
           CreateE621ConfigPage(
             config: config,
             backgroundColor: backgroundColor,
+            initialTab: initialTab,
           );
 
   @override

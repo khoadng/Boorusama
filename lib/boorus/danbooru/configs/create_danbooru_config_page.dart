@@ -21,9 +21,11 @@ class CreateDanbooruConfigPage extends StatelessWidget {
     this.backgroundColor,
     required this.config,
     this.isNewConfig = false,
+    this.initialTab,
   });
 
   final Color? backgroundColor;
+  final String? initialTab;
   final BooruConfig config;
   final bool isNewConfig;
 
@@ -35,6 +37,7 @@ class CreateDanbooruConfigPage extends StatelessWidget {
       ],
       child: CreateBooruConfigScaffold(
         isNewConfig: isNewConfig,
+        initialTab: initialTab,
         backgroundColor: backgroundColor,
         authTab: DefaultBooruAuthConfigView(
           showInstructionWhen: !config.hasStrictSFW,

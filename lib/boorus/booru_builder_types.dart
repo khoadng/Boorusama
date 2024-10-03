@@ -11,6 +11,7 @@ typedef UpdateConfigPageBuilder = Widget Function(
   BuildContext context,
   BooruConfig config, {
   Color? backgroundColor,
+  String? initialTab,
 });
 
 typedef HomePageBuilder = Widget Function(

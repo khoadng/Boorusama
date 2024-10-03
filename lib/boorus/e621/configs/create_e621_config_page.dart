@@ -14,9 +14,11 @@ class CreateE621ConfigPage extends StatelessWidget {
     this.backgroundColor,
     required this.config,
     this.isNewConfig = false,
+    this.initialTab,
   });
 
   final Color? backgroundColor;
+  final String? initialTab;
   final BooruConfig config;
   final bool isNewConfig;
 
@@ -27,6 +29,7 @@ class CreateE621ConfigPage extends StatelessWidget {
         initialBooruConfigProvider.overrideWithValue(config),
       ],
       child: CreateBooruConfigScaffold(
+        initialTab: initialTab,
         isNewConfig: isNewConfig,
         backgroundColor: backgroundColor,
         authTab: const DefaultBooruAuthConfigView(),

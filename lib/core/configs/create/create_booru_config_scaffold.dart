@@ -39,6 +39,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
     this.describePostDetailsAction,
     this.describePostPreviewQuickAction,
     this.submitButtonBuilder,
+    required this.initialTab,
   });
 
   final Color? backgroundColor;
@@ -62,6 +63,8 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
   final bool isNewConfig;
 
   final Widget Function(BooruConfigData data)? submitButtonBuilder;
+
+  final String? initialTab;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -118,14 +121,20 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
             const SizedBox(height: 8),
             const BooruConfigNameField(),
             Expanded(
-              child: DefaultTabController(
+              child: _TabControllerProvider(
+                initialIndex: _findInitialIndexFromQuery(
+                  initialTab,
+                  tabMap,
+                ),
+                tabMap: tabMap,
+                length: tabMap.length,
                 animationDuration:
                     Screen.of(context).size.isLarge ? Duration.zero : null,
-                length: tabMap.length,
-                child: Column(
+                builder: (controller) => Column(
                   children: [
                     const SizedBox(height: 4),
                     TabBar(
+                      controller: controller,
                       labelPadding: const EdgeInsets.symmetric(
                         horizontal: 12,
                       ),
@@ -141,6 +150,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
                         ),
                         margin: const EdgeInsets.symmetric(horizontal: 8),
                         child: TabBarView(
+                          controller: controller,
                           physics: const NeverScrollableScrollPhysics(),
                           children: [
                             for (final tab in tabMap.values)
@@ -183,6 +193,69 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
         ),
       ),
     );
+  }
+}
+
+int _findInitialIndexFromQuery(
+  String? query,
+  Map<String, Widget> tabMap,
+) {
+  final q = query?.toLowerCase();
+
+  if (q == null) {
+    return 0;
+  }
+
+  final tabNames = tabMap.keys.toList();
+
+  for (var i = 0; i < tabNames.length; i++) {
+    final tabName = tabNames[i].toLowerCase();
+
+    if (tabName.contains(q)) {
+      return i;
+    }
+  }
+
+  return 0;
+}
+
+class _TabControllerProvider extends StatefulWidget {
+  const _TabControllerProvider({
+    required this.tabMap,
+    required this.animationDuration,
+    required this.length,
+    this.initialIndex,
+    required this.builder,
+  });
+
+  final Map<String, Widget> tabMap;
+  final Duration? animationDuration;
+  final int length;
+  final int? initialIndex;
+  final Widget Function(TabController controller) builder;
+
+  @override
+  State<_TabControllerProvider> createState() => _TabControllerProviderState();
+}
+
+class _TabControllerProviderState extends State<_TabControllerProvider>
+    with SingleTickerProviderStateMixin {
+  late final _controller = TabController(
+    length: widget.length,
+    vsync: this,
+    animationDuration: widget.animationDuration,
+    initialIndex: widget.initialIndex ?? 0,
+  );
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.builder(_controller);
   }
 }
 

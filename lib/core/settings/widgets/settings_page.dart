@@ -192,8 +192,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                       leading: const FaIcon(
                         FontAwesomeIcons.gear,
                       ),
-                      onTap: () =>
-                          context.push('/boorus/${ref.watchConfig.id}/update'),
+                      onTap: () => goToUpdateBooruConfigPage(
+                        context,
+                        config: ref.watchConfig,
+                      ),
                     ),
                   ],
                   const Divider(),

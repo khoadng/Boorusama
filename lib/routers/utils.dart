@@ -221,6 +221,21 @@ Future<bool?> goToShowTaglistPage(
   );
 }
 
+void goToUpdateBooruConfigPage(
+  BuildContext context, {
+  required BooruConfig config,
+  String? initialTab,
+}) {
+  context.push(
+    Uri(
+      path: '/boorus/${config.id}/update',
+      queryParameters: {
+        if (initialTab != null) 'q': initialTab,
+      },
+    ).toString(),
+  );
+}
+
 void goToCommentPage(BuildContext context, WidgetRef ref, int postId) {
   final builder = ref.readBooruBuilder(ref.readConfig)?.commentPageBuilder;
 

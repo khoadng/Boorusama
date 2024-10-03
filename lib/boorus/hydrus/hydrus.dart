@@ -216,10 +216,12 @@ class HydrusBuilder
         context,
         config, {
         backgroundColor,
+        initialTab,
       }) =>
           CreateHydrusConfigPage(
             config: config,
             backgroundColor: backgroundColor,
+            initialTab: initialTab,
           );
 
   @override
@@ -397,11 +399,13 @@ class CreateHydrusConfigPage extends ConsumerWidget {
     required this.config,
     this.backgroundColor,
     this.isNewConfig = false,
+    this.initialTab,
   });
 
   final BooruConfig config;
   final Color? backgroundColor;
   final bool isNewConfig;
+  final String? initialTab;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -413,6 +417,7 @@ class CreateHydrusConfigPage extends ConsumerWidget {
         authTab: const HydrusAuthConfigView(),
         isNewConfig: isNewConfig,
         backgroundColor: backgroundColor,
+        initialTab: initialTab,
         submitButtonBuilder: (data) => HydrusConfigSubmitButton(data: data),
       ),
     );

@@ -87,10 +87,12 @@ class MoebooruBuilder
         context,
         config, {
         backgroundColor,
+        initialTab,
       }) =>
           CreateMoebooruConfigPage(
             config: config,
             backgroundColor: backgroundColor,
+            initialTab: initialTab,
           );
 
   @override

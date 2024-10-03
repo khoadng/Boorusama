@@ -70,10 +70,12 @@ class ZerochanBuilder
         context,
         config, {
         backgroundColor,
+        initialTab,
       }) =>
           CreateAnonConfigPage(
             config: config,
             backgroundColor: backgroundColor,
+            initialTab: initialTab,
           );
 
   @override

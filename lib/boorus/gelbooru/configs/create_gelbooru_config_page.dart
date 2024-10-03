@@ -24,11 +24,13 @@ class CreateGelbooruConfigPage extends ConsumerWidget {
     required this.config,
     this.backgroundColor,
     this.isNewConfig = false,
+    this.initialTab,
   });
 
   final BooruConfig config;
   final Color? backgroundColor;
   final bool isNewConfig;
+  final String? initialTab;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -39,6 +41,7 @@ class CreateGelbooruConfigPage extends ConsumerWidget {
       child: CreateBooruConfigScaffold(
         isNewConfig: isNewConfig,
         backgroundColor: backgroundColor,
+        initialTab: initialTab,
         authTab: const GelbooruAuthView(),
         hasRatingFilter: true,
       ),
