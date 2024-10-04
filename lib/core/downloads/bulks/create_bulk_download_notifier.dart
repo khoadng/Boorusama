@@ -107,10 +107,10 @@ extension BulkDownloadTaskXX on BulkDownloadTask {
   bool valid({
     int? androidSdkInt,
   }) {
-    if (!isAndroid()) return true;
-
     if (tags.isEmpty) return false;
     if (path.isEmpty) return false;
+
+    if (!isAndroid()) return true;
 
     return !shouldDisplayWarning(
       hasScopeStorage: hasScopedStorage(androidSdkInt) ?? true,
