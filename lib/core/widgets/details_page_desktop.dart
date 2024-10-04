@@ -210,21 +210,23 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                             alignment: Alignment.topLeft,
                             child: ValueListenableBuilder(
                               valueListenable: controller.hideOverlay,
-                              builder: (_, hide, __) => !hide
-                                  ? Padding(
-                                      padding: const EdgeInsets.only(top: 8),
-                                      child: MaterialButton(
-                                        color: Colors.black.withOpacity(0.5),
-                                        shape: const CircleBorder(),
-                                        padding: const EdgeInsets.all(12),
-                                        onPressed: () => _onExit(false),
-                                        child: const Icon(
-                                          Symbols.close,
-                                          color: Colors.white,
+                              builder: (_, hide, __) => AnimatedSwitcher(
+                                duration: Durations.extralong1,
+                                reverseDuration:
+                                    const Duration(milliseconds: 10),
+                                child: hide
+                                    ? null
+                                    : Padding(
+                                        padding: const EdgeInsets.all(8),
+                                        child: CircularIconButton(
+                                          onPressed: () => _onExit(false),
+                                          icon: const Icon(
+                                            Symbols.close,
+                                            color: Colors.white,
+                                          ),
                                         ),
                                       ),
-                                    )
-                                  : const SizedBox.shrink(),
+                              ),
                             ),
                           ),
                         ),
@@ -274,9 +276,12 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                               final topRightWidget = ValueListenableBuilder(
                                 valueListenable: controller.hideOverlay,
                                 builder: (context, value, child) {
-                                  return value
-                                      ? const SizedBox.shrink()
-                                      : topRightWidgetRaw;
+                                  return AnimatedSwitcher(
+                                    duration: Durations.extralong1,
+                                    reverseDuration:
+                                        const Duration(milliseconds: 10),
+                                    child: value ? null : topRightWidgetRaw,
+                                  );
                                 },
                               );
 

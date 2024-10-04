@@ -422,26 +422,29 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
       valueListenable: isExpanded,
       builder: (_, expanded, __) => ValueListenableBuilder(
         valueListenable: _controller.hideOverlay,
-        builder: (_, hide, __) => !hide
-            ? Align(
-                alignment: Alignment(
-                  -0.75,
-                  getTopActionIconAlignValue(),
-                ),
-                child: ValueListenableBuilder(
-                  valueListenable: _shouldSlideDownNotifier,
-                  builder: (context, value, child) => _SlideUpContainer(
-                    shouldSlideUp: value && !expanded,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: _NavigationButtonBar(
-                        onBack: () => _onBackButtonPressed(false),
+        builder: (_, hide, __) => AnimatedSwitcher(
+          duration: Durations.extralong1,
+          child: !hide
+              ? Align(
+                  alignment: Alignment(
+                    -0.75,
+                    getTopActionIconAlignValue(),
+                  ),
+                  child: ValueListenableBuilder(
+                    valueListenable: _shouldSlideDownNotifier,
+                    builder: (context, value, child) => _SlideUpContainer(
+                      shouldSlideUp: value && !expanded,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: _NavigationButtonBar(
+                          onBack: () => _onBackButtonPressed(false),
+                        ),
                       ),
                     ),
                   ),
-                ),
-              )
-            : const SizedBox.shrink(),
+                )
+              : null,
+        ),
       ),
     );
   }
@@ -449,31 +452,34 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
   Widget _buildTopRightButtonGroup(bool expanded) {
     return ValueListenableBuilder(
       valueListenable: _controller.hideOverlay,
-      builder: (_, hide, __) => !hide
-          ? Align(
-              alignment: Alignment(
-                0.9,
-                getTopActionIconAlignValue(),
-              ),
-              child: ValueListenableBuilder(
-                  valueListenable: _shouldSlideDownNotifier,
-                  builder: (context, value, child) => _SlideUpContainer(
-                        shouldSlideUp: value && !expanded,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: OverflowBar(
-                            alignment: MainAxisAlignment.end,
-                            spacing: 4,
-                            children: [
-                              ...widget.topRightButtonsBuilder(
-                                expanded,
-                              ),
-                            ],
+      builder: (_, hide, __) => AnimatedSwitcher(
+        duration: Durations.extralong1,
+        child: !hide
+            ? Align(
+                alignment: Alignment(
+                  0.9,
+                  getTopActionIconAlignValue(),
+                ),
+                child: ValueListenableBuilder(
+                    valueListenable: _shouldSlideDownNotifier,
+                    builder: (context, value, child) => _SlideUpContainer(
+                          shouldSlideUp: value && !expanded,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: OverflowBar(
+                              alignment: MainAxisAlignment.end,
+                              spacing: 4,
+                              children: [
+                                ...widget.topRightButtonsBuilder(
+                                  expanded,
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      )),
-            )
-          : const SizedBox.shrink(),
+                        )),
+              )
+            : null,
+      ),
     );
   }
 }
