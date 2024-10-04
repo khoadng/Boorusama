@@ -29,6 +29,9 @@ final bulkdownloadProvider =
 final bulkDownloadNotificationQueueProvider =
     StateProvider<Map<String, bool>>((ref) => {});
 
+final bulkDownloadErrorNotificationQueueProvider =
+    StateProvider<String?>((ref) => null);
+
 final bulkDownloadNotificationProvider = Provider<BulkDownloadNotifications>(
   (ref) => throw UnimplementedError(),
 );

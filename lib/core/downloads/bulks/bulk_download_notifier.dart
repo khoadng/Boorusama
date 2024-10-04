@@ -20,6 +20,7 @@ import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/search_histories/search_histories.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/permissions.dart';
+import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/router.dart';
 
 const _serviceName = 'Bulk Download Manager';
@@ -258,6 +259,27 @@ class BulkDownloadNotifier extends Notifier<List<BulkDownloadTask>> {
 
     if (task == null) {
       return;
+    }
+
+    // check if there is any running task
+    final runningTask = state.firstWhereOrNull(
+      (e) => e.status == BulkDownloadTaskStatus.inProgress,
+    );
+
+    if (runningTask != null) {
+      // check if it is completed
+      final completed =
+          ref.read(downloadTasksProvider).allCompleted(runningTask.id);
+
+      if (!completed) {
+        const msg =
+            'Please wait for the current download to finish first before starting another one';
+
+        ref.read(bulkDownloadErrorNotificationQueueProvider.notifier).state =
+            msg;
+
+        return;
+      }
     }
 
     logger.logI(_serviceName,
@@ -516,6 +538,18 @@ class BulkDownloadNotificationScope extends ConsumerWidget {
             };
           }
         }
+      },
+    );
+
+    ref.listen(
+      bulkDownloadErrorNotificationQueueProvider,
+      (prev, cur) {
+        if (cur == null) return;
+
+        ref.read(bulkDownloadErrorNotificationQueueProvider.notifier).state =
+            null;
+
+        showErrorToast(context, cur);
       },
     );
 

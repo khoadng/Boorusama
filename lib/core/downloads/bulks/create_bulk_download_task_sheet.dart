@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:oktoast/oktoast.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
@@ -13,10 +12,10 @@ import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/search_histories/search_histories.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/android.dart';
-import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/picker.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/router.dart';
 import '../l10n.dart';
 
@@ -171,46 +170,51 @@ class _EditSavedSearchSheetState
                   top: 12,
                   bottom: 28,
                 ),
-                child: OverflowBar(
-                  alignment: MainAxisAlignment.spaceAround,
+                child: Row(
                   children: [
-                    FilledButton(
-                      style: FilledButton.styleFrom(
-                        foregroundColor: context.iconTheme.color,
-                        backgroundColor:
-                            context.colorScheme.surfaceContainerHighest,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(16)),
-                        ),
-                      ),
-                      onPressed: task.valid(androidSdkInt: androidSdkInt)
-                          ? () {
-                              notifier.queue();
-                              widget.onSubmitted(context, true);
-                              context.navigator.pop();
-                            }
-                          : null,
-                      child: const Text(
-                              DownloadTranslations.bulkDownloadAddToQueue)
-                          .tr(),
-                    ),
-                    FilledButton(
-                      style: FilledButton.styleFrom(
-                        foregroundColor: context.colorScheme.onPrimary,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(16)),
-                        ),
-                      ),
-                      onPressed: task.valid(androidSdkInt: androidSdkInt)
-                          ? () {
-                              notifier.start();
-                              widget.onSubmitted(context, false);
-                              context.navigator.pop();
-                            }
-                          : null,
-                      child:
-                          const Text(DownloadTranslations.bulkDownloadDownload)
+                    // FilledButton(
+                    //   style: FilledButton.styleFrom(
+                    //     foregroundColor: context.iconTheme.color,
+                    //     backgroundColor:
+                    //         context.colorScheme.surfaceContainerHighest,
+                    //     shape: const RoundedRectangleBorder(
+                    //       borderRadius: BorderRadius.all(Radius.circular(16)),
+                    //     ),
+                    //   ),
+                    //   onPressed: task.valid(androidSdkInt: androidSdkInt)
+                    //       ? () {
+                    //           notifier.queue();
+                    //           widget.onSubmitted(context, true);
+                    //           context.navigator.pop();
+                    //         }
+                    //       : null,
+                    //   child: const Text(
+                    //           DownloadTranslations.bulkDownloadAddToQueue)
+                    //       .tr(),
+                    // ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: FilledButton(
+                          style: FilledButton.styleFrom(
+                            foregroundColor: context.colorScheme.onPrimary,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(16)),
+                            ),
+                          ),
+                          onPressed: task.valid(androidSdkInt: androidSdkInt)
+                              ? () {
+                                  notifier.start();
+                                  widget.onSubmitted(context, false);
+                                  context.navigator.pop();
+                                }
+                              : null,
+                          child: const Text(
+                                  DownloadTranslations.bulkDownloadDownload)
                               .tr(),
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -294,11 +298,18 @@ void goToNewBulkDownloadTaskPage(
       initialValue: initialValue,
       title: DownloadTranslations.bulkDownloadNewDownloadTitle.tr(),
       onSubmitted: (_, isQueue) {
-        showToast(
-          isQueue ? 'Added' : 'Download started',
-          position: ToastPosition.bottom,
-          textPadding: const EdgeInsets.all(8),
-          duration: AppDurations.shortToast,
+        showSimpleSnackBar(
+          context: context,
+          content: Text(
+            isQueue ? 'Added' : 'Download started',
+          ),
+          action: SnackBarAction(
+            label: 'View',
+            textColor: context.colorScheme.primary,
+            onPressed: () {
+              context.pushNamed(kBulkdownload);
+            },
+          ),
         );
       },
     ),

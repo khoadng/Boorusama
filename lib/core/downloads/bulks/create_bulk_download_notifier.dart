@@ -83,12 +83,13 @@ extension BulkDownloadTaskXX on BulkDownloadTask {
   bool valid({
     int? androidSdkInt,
   }) {
+    if (!isAndroid()) return true;
+
     if (tags.isEmpty) return false;
     if (path.isEmpty) return false;
 
-    return isAndroid() &&
-        !shouldDisplayWarning(
-          hasScopeStorage: hasScopedStorage(androidSdkInt) ?? true,
-        );
+    return !shouldDisplayWarning(
+      hasScopeStorage: hasScopedStorage(androidSdkInt) ?? true,
+    );
   }
 }
