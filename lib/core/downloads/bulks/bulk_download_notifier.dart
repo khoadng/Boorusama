@@ -260,27 +260,6 @@ class BulkDownloadNotifier extends Notifier<List<BulkDownloadTask>> {
       return;
     }
 
-    // check if there is any running task
-    final runningTask = state.firstWhereOrNull(
-      (e) => e.status == BulkDownloadTaskStatus.inProgress,
-    );
-
-    if (runningTask != null) {
-      // check if it is completed
-      final completed =
-          ref.read(downloadTasksProvider).allCompleted(runningTask.id);
-
-      if (!completed) {
-        const msg =
-            'Please wait for the current download to finish first before starting another one';
-
-        ref.read(bulkDownloadErrorNotificationQueueProvider.notifier).state =
-            msg;
-
-        return;
-      }
-    }
-
     logger.logI(_serviceName,
         'Download requested for "${task.tags}" at "${task.storagePath}" with permission status: $permission');
 

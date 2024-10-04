@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -60,12 +61,35 @@ class CreateBulkDownloadNotifier extends AutoDisposeNotifier<BulkDownloadTask> {
     state = state.copyWith(options: options);
   }
 
-  void start() {
-    if (!state.valid(androidSdkInt: androidSdkInt)) return;
+  bool start() {
+    if (!state.valid(androidSdkInt: androidSdkInt)) return false;
+
+    // check if there is any running task
+    final runningTask = ref.read(bulkdownloadProvider).firstWhereOrNull(
+          (e) => e.status == BulkDownloadTaskStatus.inProgress,
+        );
+
+    if (runningTask != null) {
+      // check if it is completed
+      final completed =
+          ref.read(downloadTasksProvider).allCompleted(runningTask.id);
+
+      if (!completed) {
+        const msg =
+            'Please wait for the current download to finish first before starting another one';
+
+        ref.read(bulkDownloadErrorNotificationQueueProvider.notifier).state =
+            msg;
+
+        return false;
+      }
+    }
 
     final notifier = ref.read(bulkdownloadProvider.notifier);
     notifier.addTask(state);
     notifier.startTask(state.id);
+
+    return true;
   }
 
   int? get androidSdkInt =>

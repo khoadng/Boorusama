@@ -57,10 +57,10 @@ class CreateBulkDownloadTaskSheetInternal extends ConsumerStatefulWidget {
 
   @override
   ConsumerState<CreateBulkDownloadTaskSheetInternal> createState() =>
-      _EditSavedSearchSheetState();
+      _CreateBulkDownloadTaskSheetState();
 }
 
-class _EditSavedSearchSheetState
+class _CreateBulkDownloadTaskSheetState
     extends ConsumerState<CreateBulkDownloadTaskSheetInternal> {
   var advancedOptions = false;
 
@@ -205,9 +205,11 @@ class _EditSavedSearchSheetState
                           ),
                           onPressed: task.valid(androidSdkInt: androidSdkInt)
                               ? () {
-                                  notifier.start();
-                                  widget.onSubmitted(context, false);
-                                  context.navigator.pop();
+                                  final success = notifier.start();
+                                  if (success) {
+                                    widget.onSubmitted(context, false);
+                                    context.navigator.pop();
+                                  }
                                 }
                               : null,
                           child: const Text(
