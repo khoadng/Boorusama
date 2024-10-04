@@ -9,6 +9,13 @@ final downloadGroupCompletedProvider =
   return ref.watch(downloadTasksProvider).allCompleted(group);
 });
 
+final downloadGroupFailedProvider =
+    Provider.autoDispose.family<int, String>((ref, group) {
+  final failed = ref.watch(downloadTasksProvider).failed(group);
+
+  return failed.length;
+});
+
 final percentCompletedProvider =
     Provider.autoDispose.family<double, String>((ref, group) {
   final completed = ref.watch(downloadTasksProvider).completed(group);
