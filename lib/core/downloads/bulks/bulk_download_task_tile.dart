@@ -14,6 +14,7 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/clipboard.dart';
 import 'package:boorusama/foundation/filesize.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
@@ -63,6 +64,15 @@ class BulkDownloadTaskTile extends ConsumerWidget {
               ref.read(bulkdownloadProvider.notifier).removeTask(
                     task.id,
                   );
+            },
+          ),
+          ContextMenuButtonConfig(
+            DownloadTranslations.bulkDownloadCopyPath.tr(),
+            onPressed: () {
+              AppClipboard.copyWithDefaultToast(
+                context,
+                task.path,
+              );
             },
           ),
         ],
