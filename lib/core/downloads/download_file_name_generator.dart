@@ -134,12 +134,14 @@ class DownloadFileNameBuilder<T extends Post>
     T post, {
     required Map<String, String>? metadata,
   }) async {
-    final downloadUrl = await downloadFileUrlExtractor.getDownloadFileUrl(
+    final urlData = await downloadFileUrlExtractor.getDownloadFileUrl(
       post: post,
       settings: settings,
     );
 
-    if (downloadUrl == null) return '';
+    if (urlData == null) return '';
+
+    final downloadUrl = urlData.url;
 
     final fallbackName = basename(downloadUrl);
 

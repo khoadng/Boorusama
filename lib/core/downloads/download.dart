@@ -91,7 +91,7 @@ Future<void> _download(
   final service = ref.read(downloadServiceProvider(booruConfig));
   final fileNameBuilder =
       ref.readBooruBuilder(booruConfig)?.downloadFilenameBuilder;
-  final downloadUrl = await downloadFileUrlExtractor.getDownloadFileUrl(
+  final urlData = await downloadFileUrlExtractor.getDownloadFileUrl(
     post: downloadable,
     settings: settings,
   );
@@ -106,7 +106,7 @@ Future<void> _download(
     return;
   }
 
-  if (downloadUrl == null || downloadUrl.isEmpty) {
+  if (urlData == null || urlData.url.isEmpty) {
     logger.logE('Single Download', 'No download url found, aborting...');
     if (ref.context.mounted) {
       showErrorToast(ref.context, 'Download aborted, no download url found');
@@ -138,11 +138,13 @@ Future<void> _download(
             siteUrl: PostSource.from(downloadable.thumbnailImageUrl).url,
             group: group,
           ),
-          url: downloadUrl,
+          url: urlData.url,
           filename: fileName,
           headers: {
             AppHttpHeaders.userAgentHeader:
                 ref.read(userAgentGeneratorProvider(booruConfig)).generate(),
+            if (urlData.cookie != null)
+              AppHttpHeaders.cookieHeader: urlData.cookie!,
             ...ref.read(extraHttpHeaderProvider(booruConfig)),
           },
           path: downloadPath,

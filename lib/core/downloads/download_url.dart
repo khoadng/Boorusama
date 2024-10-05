@@ -1,12 +1,30 @@
 // Package imports:
 import 'package:collection/collection.dart';
+import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 
+class DownloadUrlData extends Equatable {
+  const DownloadUrlData({
+    required this.url,
+    required this.cookie,
+  });
+
+  const DownloadUrlData.urlOnly(
+    this.url,
+  ) : cookie = null;
+
+  final String url;
+  final String? cookie;
+
+  @override
+  List<Object?> get props => [url, cookie];
+}
+
 abstract interface class DownloadFileUrlExtractor {
-  Future<String?> getDownloadFileUrl({
+  Future<DownloadUrlData?> getDownloadFileUrl({
     required Post post,
     required Settings settings,
   });
@@ -16,11 +34,11 @@ final class UrlInsidePostExtractor implements DownloadFileUrlExtractor {
   const UrlInsidePostExtractor();
 
   @override
-  Future<String?> getDownloadFileUrl({
+  Future<DownloadUrlData?> getDownloadFileUrl({
     required Post post,
     required Settings settings,
   }) async {
-    if (post.isVideo) return post.videoUrl;
+    if (post.isVideo) return DownloadUrlData.urlOnly(post.videoUrl);
 
     final urls = [
       post.originalImageUrl,
@@ -28,11 +46,13 @@ final class UrlInsidePostExtractor implements DownloadFileUrlExtractor {
       post.thumbnailImageUrl
     ];
 
-    return switch (settings.downloadQuality) {
+    final url = switch (settings.downloadQuality) {
       DownloadQuality.original => urls.firstWhereOrNull((e) => e.isNotEmpty),
       DownloadQuality.sample =>
         urls.skip(1).firstWhereOrNull((e) => e.isNotEmpty),
       DownloadQuality.preview => post.thumbnailImageUrl,
     };
+
+    return url != null ? DownloadUrlData.urlOnly(url) : null;
   }
 }

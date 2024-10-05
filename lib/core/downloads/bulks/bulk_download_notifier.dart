@@ -18,6 +18,7 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/dart.dart';
+import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/foundation/permissions.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/router.dart';
@@ -371,11 +372,11 @@ class BulkDownloadNotifier extends Notifier<List<BulkDownloadTask>> {
         for (var index = 0; index < items.length; index++) {
           final item = items[index];
 
-          final downloadUrl = await downloadFileUrlExtractor.getDownloadFileUrl(
+          final urlData = await downloadFileUrlExtractor.getDownloadFileUrl(
             post: item,
             settings: settings,
           );
-          if (downloadUrl == null || downloadUrl.isEmpty) continue;
+          if (urlData == null || urlData.url.isEmpty) continue;
 
           estimatedDownloadSize += item.fileSize;
           totalItems += 1;
@@ -394,10 +395,14 @@ class BulkDownloadNotifier extends Notifier<List<BulkDownloadTask>> {
 
           await downloader
               .downloadCustomLocation(
-                url: downloadUrl,
+                url: urlData.url,
                 path: task.path,
                 filename: fileName,
                 skipIfExists: task.options.skipIfExists,
+                headers: {
+                  if (urlData.cookie != null)
+                    AppHttpHeaders.cookieHeader: urlData.cookie!,
+                },
                 metadata: DownloaderMetadata(
                   thumbnailUrl: item.thumbnailImageUrl,
                   fileSize: item.fileSize,
