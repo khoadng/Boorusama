@@ -272,8 +272,9 @@ Widget Function(
   BoxConstraints constraints,
 )? defaultImagePreviewButtonBuilder(
   WidgetRef ref,
-  Post post,
-) =>
+  Post post, {
+  required Widget favoriteButton,
+}) =>
     switch (ref.watchConfig.defaultPreviewImageButtonActionType) {
       ImageQuickActionType.bookmark => (context, _) => Container(
             padding: const EdgeInsets.only(
@@ -325,7 +326,7 @@ Widget Function(
             },
           ),
       ImageQuickActionType.none => (context, _) => const SizedBox.shrink(),
-      ImageQuickActionType.defaultAction => null,
+      ImageQuickActionType.defaultAction => (context, _) => favoriteButton,
     };
 
 mixin UnknownMetatagsMixin implements BooruBuilder {

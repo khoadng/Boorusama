@@ -119,7 +119,10 @@ class DanbooruImageGridItem extends ConsumerWidget {
         isAI: post.isAI,
         hideOverlay: hideOverlay,
         quickActionButtonBuilder: !post.isBanned && enableFav
-            ? (context, constraints) => QuickFavoriteButton(
+            ? defaultImagePreviewButtonBuilder(
+                ref,
+                post,
+                favoriteButton: QuickFavoriteButton(
                   isFaved: isFaved,
                   onFavToggle: (isFaved) async {
                     if (!isFaved) {
@@ -128,8 +131,9 @@ class DanbooruImageGridItem extends ConsumerWidget {
                       ref.danbooruFavorites.add(post.id);
                     }
                   },
-                )
-            : defaultImagePreviewButtonBuilder(ref, post),
+                ),
+              )
+            : null,
         autoScrollOptions: autoScrollOptions,
         onTap: post.isBanned
             ? switch (post.source) {
