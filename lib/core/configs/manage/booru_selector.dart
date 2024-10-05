@@ -176,7 +176,10 @@ mixin BooruSelectorActionMixin<T extends ConsumerStatefulWidget>
         buttonConfigs: [
           ContextMenuButtonConfig(
             'generic.action.edit'.tr(),
-            onPressed: () => context.go('/boorus/${config.id}/update'),
+            onPressed: () => goToUpdateBooruConfigPage(
+              context,
+              config: config,
+            ),
           ),
           ContextMenuButtonConfig(
             'generic.action.duplicate'.tr(),

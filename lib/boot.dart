@@ -101,13 +101,14 @@ Future<void> boot(BootLogger bootLogger) async {
     });
   }
 
-  if (isLinux() || isWindows() || isIOS()) {
+  if (isDesktopPlatform() || isIOS()) {
     fvp.registerWith(
       options: {
         'platforms': [
           'linux',
           'ios',
           'windows',
+          'macos',
         ],
       },
     );

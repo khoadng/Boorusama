@@ -14,11 +14,13 @@ class CreateSzurubooruConfigPage extends ConsumerWidget {
     this.backgroundColor,
     required this.config,
     this.isNewConfig = false,
+    this.initialTab,
   });
 
   final Color? backgroundColor;
   final BooruConfig config;
   final bool isNewConfig;
+  final String? initialTab;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -28,6 +30,7 @@ class CreateSzurubooruConfigPage extends ConsumerWidget {
       ],
       child: CreateBooruConfigScaffold(
         isNewConfig: isNewConfig,
+        initialTab: initialTab,
         backgroundColor: backgroundColor,
         authTab: const SzurubooruAuthConfigView(),
       ),

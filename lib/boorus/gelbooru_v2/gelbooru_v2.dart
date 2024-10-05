@@ -167,10 +167,12 @@ class GelbooruV2Builder
         context,
         config, {
         backgroundColor,
+        initialTab,
       }) =>
           CreateGelbooruV2ConfigPage(
             config: config,
             backgroundColor: backgroundColor,
+            initialTab: initialTab,
           );
 
   @override

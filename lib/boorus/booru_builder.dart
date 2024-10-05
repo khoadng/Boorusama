@@ -48,6 +48,7 @@ import 'philomena/providers.dart';
 import 'shimmie2/shimmie2.dart';
 import 'szurubooru/providers.dart';
 import 'szurubooru/szurubooru.dart';
+import 'zerochan/providers.dart';
 
 part 'booru_builder_types.dart';
 part 'booru_builder_default.dart';

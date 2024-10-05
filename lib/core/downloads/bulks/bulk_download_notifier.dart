@@ -17,9 +17,9 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/search_histories/search_histories.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/permissions.dart';
+import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/router.dart';
 
 const _serviceName = 'Bulk Download Manager';
@@ -284,7 +284,7 @@ class BulkDownloadNotifier extends Notifier<List<BulkDownloadTask>> {
     }
 
     // saved tags to history
-    ref.read(searchHistoryProvider.notifier).addHistory(task.query);
+    // ref.read(searchHistoryProvider.notifier).addHistory(task.query);
 
     updateTaskStatus(task.id, BulkDownloadTaskStatus.queue);
 
@@ -516,6 +516,18 @@ class BulkDownloadNotificationScope extends ConsumerWidget {
             };
           }
         }
+      },
+    );
+
+    ref.listen(
+      bulkDownloadErrorNotificationQueueProvider,
+      (prev, cur) {
+        if (cur == null) return;
+
+        ref.read(bulkDownloadErrorNotificationQueueProvider.notifier).state =
+            null;
+
+        showErrorToast(context, cur);
       },
     );
 

@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:exprollable_page_view/exprollable_page_view.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
@@ -15,6 +14,7 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/filename_generators/filename_generators.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/notes/notes.dart';
+import 'package:boorusama/core/posts/details/common.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/tags/tags.dart';
@@ -317,7 +317,7 @@ class _PostDetailPageScaffoldState<T extends Post>
         ),
         expandedBuilder: (context, page, expanded, enableSwipe) {
           final post = posts[page];
-          final nextPost = posts.length > page + 1 ? posts[page + 1] : null;
+          final (previousPost, nextPost) = posts.getPrevAndNextPosts(page);
           final expandedOnCurrentPage = expanded && page == currentPage;
           final media = PostMedia(
             inFocus: !expanded && page == currentPage,
@@ -378,12 +378,16 @@ class _PostDetailPageScaffoldState<T extends Post>
                 if (nextPost != null && !nextPost.isVideo)
                   SliverOffstage(
                     sliver: SliverToBoxAdapter(
-                      child: ExtendedImage.network(
-                        widget.swipeImageUrlBuilder(nextPost),
-                        width: 1,
-                        height: 1,
-                        cacheHeight: 10,
-                        cacheWidth: 10,
+                      child: PostDetailsPreloadImage(
+                        url: widget.swipeImageUrlBuilder(nextPost),
+                      ),
+                    ),
+                  ),
+                if (previousPost != null && !previousPost.isVideo)
+                  SliverOffstage(
+                    sliver: SliverToBoxAdapter(
+                      child: PostDetailsPreloadImage(
+                        url: widget.swipeImageUrlBuilder(previousPost),
                       ),
                     ),
                   ),

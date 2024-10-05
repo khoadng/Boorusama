@@ -11,7 +11,7 @@ Future<void> showSystemStatus() => SystemChrome.setEnabledSystemUIMode(
 
 Future<void> setDeviceToLandscapeMode() =>
     SystemChrome.setPreferredOrientations(
-      [DeviceOrientation.landscapeRight],
+      [DeviceOrientation.landscapeLeft],
     );
 
 Future<void> setDeviceToPortraitMode() => SystemChrome.setPreferredOrientations(

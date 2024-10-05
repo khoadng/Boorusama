@@ -6,12 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
-import 'package:extended_image/extended_image.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/notes/notes.dart';
+import 'package:boorusama/core/posts/details/common.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/tags/tags.dart';
@@ -90,6 +92,7 @@ class PostDetailsPageDesktopScaffold<T extends Post>
     this.sliverArtistPostsBuilder,
     this.sliverCharacterPostsBuilder,
     required this.imageUrlBuilder,
+    this.parts = kDefaultPostDetailsParts,
     this.onPageLoaded,
   });
 
@@ -117,6 +120,8 @@ class PostDetailsPageDesktopScaffold<T extends Post>
       sliverArtistPostsBuilder;
   final Widget Function(BuildContext context, T post)?
       sliverCharacterPostsBuilder;
+
+  final Set<PostDetailsPart> parts;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -234,19 +239,18 @@ class _PostDetailsDesktopScaffoldState<T extends Post>
           },
           itemBuilder: (context, index) {
             final post = widget.posts[index];
-            final nextPost = index + 1 < widget.posts.length
-                ? widget.posts[index + 1]
-                : null;
+            final (prevPost, nextPost) =
+                widget.posts.getPrevAndNextPosts(index);
 
             return Stack(
               children: [
                 if (nextPost != null && !nextPost.isVideo)
-                  ExtendedImage.network(
-                    widget.imageUrlBuilder(nextPost),
-                    width: 1,
-                    height: 1,
-                    cacheHeight: 10,
-                    cacheWidth: 10,
+                  PostDetailsPreloadImage(
+                    url: widget.imageUrlBuilder(nextPost),
+                  ),
+                if (prevPost != null && !prevPost.isVideo)
+                  PostDetailsPreloadImage(
+                    url: widget.imageUrlBuilder(prevPost),
                   ),
                 PostMedia(
                   post: post,
@@ -289,49 +293,118 @@ class _PostDetailsDesktopScaffoldState<T extends Post>
   Widget _buildInfo(BuildContext context, T post) {
     return CustomScrollView(
       slivers: [
-        SliverList(
-          delegate: SliverChildListDelegate(
-            [
-              if (widget.infoBuilder != null)
-                widget.infoBuilder!(context, post),
-              if (widget.toolbarBuilder != null) ...[
-                const Divider(height: 8, thickness: 1),
-                widget.toolbarBuilder!(context, post),
-              ],
-              if (allowFetch)
-                if (widget.poolTileBuilder != null) ...[
-                  widget.poolTileBuilder!(context, post),
-                ],
-              if (widget.artistInfoBuilder != null) ...[
-                const Divider(height: 8, thickness: 1),
-                widget.artistInfoBuilder!(context, post),
-              ],
-              if (widget.statsTileBuilder != null) ...[
-                const Divider(height: 8, thickness: 1),
-                widget.statsTileBuilder!(context, post),
-              ],
-              if (widget.tagListBuilder != null) ...[
-                const Divider(height: 8, thickness: 1),
-                widget.tagListBuilder!(context, post),
-              ],
-              if (widget.fileDetailsBuilder != null) ...[
-                const Divider(height: 8, thickness: 1),
-                widget.fileDetailsBuilder!(context, post),
-              ],
-            ],
-          ),
-        ),
-        if (allowFetch)
-          if (widget.sliverRelatedPostsBuilder != null) ...[
-            widget.sliverRelatedPostsBuilder!(context, post),
-          ],
-        if (allowFetch)
-          if (widget.sliverArtistPostsBuilder != null)
-            ...widget.sliverArtistPostsBuilder!(context, post),
-        if (allowFetch)
-          if (widget.sliverCharacterPostsBuilder != null) ...[
-            widget.sliverCharacterPostsBuilder!(context, post),
-          ],
+        ...widget.parts
+            .map(
+              (p) => switch (p) {
+                PostDetailsPart.pool => widget.poolTileBuilder != null
+                    ? SliverToBoxAdapter(
+                        child: widget.poolTileBuilder!(context, post),
+                      )
+                    : null,
+                PostDetailsPart.info => widget.infoBuilder != null
+                    ? SliverToBoxAdapter(
+                        child: widget.infoBuilder!(context, post),
+                      )
+                    : null,
+                PostDetailsPart.toolbar => widget.toolbarBuilder != null
+                    ? SliverToBoxAdapter(
+                        child: widget.toolbarBuilder!(context, post),
+                      )
+                    : null,
+                PostDetailsPart.artistInfo => widget.artistInfoBuilder != null
+                    ? SliverToBoxAdapter(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            const Divider(thickness: 0.5, height: 8),
+                            widget.artistInfoBuilder!(
+                              context,
+                              post,
+                            ),
+                          ],
+                        ),
+                      )
+                    : null,
+                PostDetailsPart.stats => widget.statsTileBuilder != null
+                    ? SliverToBoxAdapter(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            const SizedBox(height: 8),
+                            widget.statsTileBuilder!(context, post),
+                            const Divider(thickness: 0.5),
+                          ],
+                        ),
+                      )
+                    : null,
+                PostDetailsPart.tags => widget.tagListBuilder != null
+                    ? SliverToBoxAdapter(
+                        child: widget.tagListBuilder!(context, post),
+                      )
+                    : SliverToBoxAdapter(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          child: BasicTagList(
+                            tags: post.tags.toList(),
+                            onTap: (tag) => goToSearchPage(context, tag: tag),
+                          ),
+                        ),
+                      ),
+                PostDetailsPart.fileDetails => widget.fileDetailsBuilder != null
+                    ? SliverToBoxAdapter(
+                        child: Column(
+                          children: [
+                            widget.fileDetailsBuilder!(context, post),
+                            const Divider(thickness: 0.5),
+                          ],
+                        ),
+                      )
+                    : SliverToBoxAdapter(
+                        child: Column(
+                          children: [
+                            FileDetailsSection(
+                              post: post,
+                              rating: post.rating,
+                            ),
+                            const Divider(thickness: 0.5),
+                          ],
+                        ),
+                      ),
+                PostDetailsPart.source => widget.sourceBuilder != null
+                    ? SliverToBoxAdapter(
+                        child: widget.sourceBuilder!(context, post),
+                      )
+                    : post.source.whenWeb(
+                        (source) => SliverToBoxAdapter(
+                          child: SourceSection(source: source),
+                        ),
+                        () => null,
+                      ),
+                PostDetailsPart.comments => widget.commentBuilder != null
+                    ? SliverToBoxAdapter(
+                        child: widget.commentBuilder!(context, post),
+                      )
+                    : null,
+                PostDetailsPart.artistPosts =>
+                  widget.sliverArtistPostsBuilder != null
+                      ? MultiSliver(
+                          children: widget.sliverArtistPostsBuilder!(
+                            context,
+                            post,
+                          ),
+                        )
+                      : null,
+                PostDetailsPart.relatedPosts =>
+                  widget.sliverRelatedPostsBuilder != null
+                      ? widget.sliverRelatedPostsBuilder!(context, post)
+                      : null,
+                PostDetailsPart.characterList =>
+                  widget.sliverCharacterPostsBuilder != null
+                      ? widget.sliverCharacterPostsBuilder!(context, post)
+                      : null,
+              },
+            )
+            .whereNotNull(),
         const SliverSizedBox(height: 24),
       ],
     );

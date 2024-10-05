@@ -130,10 +130,12 @@ class DanbooruBuilder
         context,
         config, {
         backgroundColor,
+        initialTab,
       }) =>
           CreateDanbooruConfigPage(
             config: config,
             backgroundColor: backgroundColor,
+            initialTab: initialTab,
           );
 
   @override

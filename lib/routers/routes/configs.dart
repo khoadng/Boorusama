@@ -50,6 +50,7 @@ class BoorusRoutes {
         pageBuilder: (context, state) {
           final idParam = state.pathParameters['id'];
           final id = idParam?.toInt();
+          final q = state.uri.queryParameters['q'];
           final config = ref
               .read(booruConfigProvider)
               ?.firstWhere((element) => element.id == id);
@@ -72,6 +73,7 @@ class BoorusRoutes {
                   context,
                   config,
                   backgroundColor: context.theme.scaffoldBackgroundColor,
+                  initialTab: q,
                 ) ??
                 Scaffold(
                   appBar: AppBar(),

@@ -81,10 +81,12 @@ class SzurubooruBuilder
         context,
         config, {
         backgroundColor,
+        initialTab,
       }) =>
           CreateSzurubooruConfigPage(
             config: config,
             backgroundColor: backgroundColor,
+            initialTab: initialTab,
           );
 
   @override

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/gelbooru_v2/artists/artists.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
@@ -40,7 +41,7 @@ class _DanbooruPostDetailsDesktopPageState
       initialIndex: widget.initialIndex,
       onExit: widget.onExit,
       onPageChanged: widget.onPageChanged,
-      imageUrlBuilder: (post) => post.sampleImageUrl,
+      imageUrlBuilder: defaultPostImageUrlBuilder(ref),
       topRightButtonsBuilder: (currentPage, expanded, post) =>
           GeneralMoreActionButton(post: post),
       toolbarBuilder: (context, post) => SimplePostActionToolbar(post: post),
@@ -50,10 +51,6 @@ class _DanbooruPostDetailsDesktopPageState
           post: post,
           tags: tags,
         ),
-      ),
-      fileDetailsBuilder: (context, post) => FileDetailsSection(
-        post: post,
-        rating: post.rating,
       ),
       sliverArtistPostsBuilder: (context, post) => ref
           .watch(gelbooruV2PostDetailsArtistMapProvider)

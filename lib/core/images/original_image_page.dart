@@ -99,41 +99,58 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
         appBar: AppBar(
           toolbarHeight: kToolbarHeight * 1.3,
           automaticallyImplyLeading: false,
-          leading: overlay
-              ? IconButton(
-                  icon: const Icon(Symbols.close, color: Colors.white),
-                  onPressed: () => _pop(false),
-                )
-              : null,
+          leading: AnimatedSwitcher(
+            duration: Durations.extralong1,
+            reverseDuration: const Duration(milliseconds: 10),
+            child: overlay
+                ? IconButton(
+                    icon: const Icon(Symbols.close, color: Colors.white),
+                    onPressed: () => _pop(false),
+                  )
+                : null,
+          ),
           actions: [
-            if (kPreferredLayout.isMobile && overlay)
-              IconButton(
-                onPressed: () {
-                  if (currentRotation == Orientation.portrait) {
-                    setState(() {
-                      setDeviceToLandscapeMode();
-                      currentRotation = Orientation.landscape;
-                    });
-                  } else {
-                    setState(() {
-                      setDeviceToPortraitMode();
-                      currentRotation = Orientation.portrait;
-                    });
-                  }
-                },
-                color: Colors.white,
-                icon: currentRotation == Orientation.portrait
-                    ? const Icon(Symbols.rotate_left)
-                    : const Icon(Symbols.rotate_right),
+            if (kPreferredLayout.isMobile)
+              AnimatedSwitcher(
+                duration: Durations.extralong1,
+                reverseDuration: const Duration(milliseconds: 10),
+                child: overlay
+                    ? IconButton(
+                        onPressed: () {
+                          if (currentRotation == Orientation.portrait) {
+                            setState(() {
+                              setDeviceToLandscapeMode();
+                              currentRotation = Orientation.landscape;
+                            });
+                          } else {
+                            setState(() {
+                              setDeviceToPortraitMode();
+                              currentRotation = Orientation.portrait;
+                            });
+                          }
+                        },
+                        color: Colors.white,
+                        icon: currentRotation == Orientation.portrait
+                            ? const Icon(Symbols.rotate_left)
+                            : const Icon(Symbols.rotate_right),
+                      )
+                    : null,
               ),
-            if (kPreferredLayout.isDesktop && overlay) ...[
-              IconButton(
-                onPressed: () => turn.value = (turn.value - 0.25) % 1,
-                color: Colors.white,
-                icon: const Icon(Symbols.rotate_left),
+            if (kPreferredLayout.isDesktop)
+              AnimatedSwitcher(
+                duration: Durations.extralong1,
+                reverseDuration: const Duration(milliseconds: 10),
+                child: overlay
+                    ? Container(
+                        margin: const EdgeInsets.only(right: 12),
+                        child: IconButton(
+                          onPressed: () => turn.value = (turn.value - 0.25) % 1,
+                          color: Colors.white,
+                          icon: const Icon(Symbols.rotate_left),
+                        ),
+                      )
+                    : null,
               ),
-              const SizedBox(width: 12),
-            ],
           ],
         ),
         body: Stack(
@@ -148,14 +165,19 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
                 child: _buildImage(),
               ),
             ),
-            if (overlay)
-              ShadowGradientOverlay(
-                alignment: Alignment.topCenter,
-                colors: <Color>[
-                  const Color.fromARGB(60, 0, 0, 0),
-                  Colors.black12.withOpacity(0),
-                ],
-              ),
+            AnimatedSwitcher(
+              duration: Durations.extralong1,
+              reverseDuration: const Duration(milliseconds: 10),
+              child: overlay
+                  ? ShadowGradientOverlay(
+                      alignment: Alignment.topCenter,
+                      colors: <Color>[
+                        const Color.fromARGB(60, 0, 0, 0),
+                        Colors.black12.withOpacity(0),
+                      ],
+                    )
+                  : null,
+            ),
           ],
         ),
       ),

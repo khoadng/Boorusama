@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/gelbooru/artists/artists.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
@@ -72,7 +73,7 @@ class _DanbooruPostDetailsDesktopPageState
           },
         );
       },
-      imageUrlBuilder: (post) => post.sampleImageUrl,
+      imageUrlBuilder: defaultPostImageUrlBuilder(ref),
       topRightButtonsBuilder: (currentPage, expanded, post) =>
           GeneralMoreActionButton(post: post),
       toolbarBuilder: (context, post) => SimplePostActionToolbar(post: post),
@@ -83,10 +84,6 @@ class _DanbooruPostDetailsDesktopPageState
         onExpand: () {
           _loadTags(post);
         },
-      ),
-      fileDetailsBuilder: (context, post) => FileDetailsSection(
-        post: post,
-        rating: post.rating,
       ),
       sliverArtistPostsBuilder: (context, post) =>
           ref.watch(gelbooruPostDetailsArtistMapProvider).lookup(post.id).fold(

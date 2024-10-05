@@ -14,6 +14,7 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/clipboard.dart';
 import 'package:boorusama/foundation/filesize.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
@@ -52,6 +53,7 @@ class BulkDownloadTaskTile extends ConsumerWidget {
     final siteUrl = task.siteUrl;
 
     final isCompleted = ref.watch(downloadGroupCompletedProvider(task.id));
+    final failedCount = ref.watch(downloadGroupFailedProvider(task.id));
 
     return ContextMenuRegion(
       contextMenu: GenericContextMenu(
@@ -62,6 +64,15 @@ class BulkDownloadTaskTile extends ConsumerWidget {
               ref.read(bulkdownloadProvider.notifier).removeTask(
                     task.id,
                   );
+            },
+          ),
+          ContextMenuButtonConfig(
+            DownloadTranslations.bulkDownloadCopyPath.tr(),
+            onPressed: () {
+              AppClipboard.copyWithDefaultToast(
+                context,
+                task.path,
+              );
             },
           ),
         ],
@@ -218,16 +229,33 @@ class BulkDownloadTaskTile extends ConsumerWidget {
                                         final progress = ref.watch(
                                           percentCompletedProvider(task.id),
                                         );
-                                        return LinearPercentIndicator(
-                                          lineHeight: 2,
-                                          percent: progress,
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 4),
-                                          animation: true,
-                                          animateFromLastPercent: true,
-                                          trailing: Text(
-                                            '${(progress * 100).floor()}%',
-                                          ),
+                                        return Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            LinearPercentIndicator(
+                                              lineHeight: 2,
+                                              percent: progress,
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                horizontal: 4,
+                                              ),
+                                              animation: true,
+                                              animateFromLastPercent: true,
+                                              trailing: Text(
+                                                '${(progress * 100).floor()}%',
+                                              ),
+                                            ),
+                                            if (failedCount > 0)
+                                              Text(
+                                                '$failedCount failed',
+                                                style: TextStyle(
+                                                  color:
+                                                      context.colorScheme.error,
+                                                  fontSize: 11,
+                                                ),
+                                              ),
+                                          ],
                                         );
                                       },
                                     )

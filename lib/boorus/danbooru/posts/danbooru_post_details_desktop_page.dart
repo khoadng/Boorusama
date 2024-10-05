@@ -147,6 +147,7 @@ class _DanbooruPostDetailsDesktopPageState
                 data: (_) => CharacterPostList(tags: post.characterTags),
                 orElse: () => const SliverSizedBox.shrink(),
               ),
+      parts: kDefaultPostDetailsNoSourceParts,
     );
   }
 }

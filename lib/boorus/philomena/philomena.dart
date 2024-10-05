@@ -71,10 +71,12 @@ class PhilomenaBuilder
         context,
         config, {
         backgroundColor,
+        initialTab,
       }) =>
           CreatePhilomenaConfigPage(
             config: config,
             backgroundColor: backgroundColor,
+            initialTab: initialTab,
           );
 
   @override
