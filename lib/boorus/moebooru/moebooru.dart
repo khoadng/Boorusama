@@ -44,6 +44,7 @@ class MoebooruBuilder
         NoteNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
         UnknownMetatagsMixin,
+        DefaultDownloadFileUrlExtractorMixin,
         DefaultHomeMixin,
         DefaultThumbnailUrlMixin,
         DefaultTagColorMixin,
@@ -155,8 +156,9 @@ class MoebooruBuilder
           );
 
   @override
-  final DownloadFilenameGenerator downloadFilenameBuilder =
+  late final DownloadFilenameGenerator downloadFilenameBuilder =
       DownloadFileNameBuilder(
+    downloadFileUrlExtractor: downloadFileUrlExtractor,
     defaultFileNameFormat: kGelbooruCustomDownloadFileNameFormat,
     defaultBulkDownloadFileNameFormat: kGelbooruCustomDownloadFileNameFormat,
     sampleData: kDanbooruPostSamples,

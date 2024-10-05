@@ -39,6 +39,7 @@ class SzurubooruBuilder
         LegacyGranularRatingOptionsBuilderMixin,
         UnknownMetatagsMixin,
         DefaultQuickFavoriteButtonBuilderMixin,
+        DefaultDownloadFileUrlExtractorMixin,
         DefaultHomeMixin,
         DefaultTagColorMixin,
         DefaultPostImageDetailsUrlMixin,
@@ -146,8 +147,9 @@ class SzurubooruBuilder
           );
 
   @override
-  final DownloadFilenameGenerator<Post> downloadFilenameBuilder =
+  late final DownloadFilenameGenerator<Post> downloadFilenameBuilder =
       DownloadFileNameBuilder<Post>(
+    downloadFileUrlExtractor: downloadFileUrlExtractor,
     defaultFileNameFormat: kGelbooruV2CustomDownloadFileNameFormat,
     defaultBulkDownloadFileNameFormat: kGelbooruV2CustomDownloadFileNameFormat,
     sampleData: kDanbooruPostSamples,

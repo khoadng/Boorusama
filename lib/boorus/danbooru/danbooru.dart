@@ -82,7 +82,10 @@ const kDanbooruPostSamples = [
 ];
 
 class DanbooruBuilder
-    with DefaultTagColorMixin, NewGranularRatingOptionsBuilderMixin
+    with
+        DefaultDownloadFileUrlExtractorMixin,
+        DefaultTagColorMixin,
+        NewGranularRatingOptionsBuilderMixin
     implements BooruBuilder {
   DanbooruBuilder({
     required this.postRepo,
@@ -261,8 +264,9 @@ class DanbooruBuilder
           );
 
   @override
-  final DownloadFilenameGenerator downloadFilenameBuilder =
+  late final DownloadFilenameGenerator downloadFilenameBuilder =
       DownloadFileNameBuilder<DanbooruPost>(
+    downloadFileUrlExtractor: downloadFileUrlExtractor,
     defaultFileNameFormat: kBoorusamaCustomDownloadFileNameFormat,
     defaultBulkDownloadFileNameFormat:
         kBoorusamaBulkDownloadCustomFileNameFormat,

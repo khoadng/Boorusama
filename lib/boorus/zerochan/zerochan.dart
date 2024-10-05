@@ -32,6 +32,7 @@ class ZerochanBuilder
         DefaultThumbnailUrlMixin,
         CommentNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
+        DefaultDownloadFileUrlExtractorMixin,
         DefaultHomeMixin,
         UnknownMetatagsMixin,
         DefaultPostImageDetailsUrlMixin,
@@ -130,8 +131,9 @@ class ZerochanBuilder
       };
 
   @override
-  final DownloadFilenameGenerator<Post> downloadFilenameBuilder =
+  late final DownloadFilenameGenerator<Post> downloadFilenameBuilder =
       DownloadFileNameBuilder<Post>(
+    downloadFileUrlExtractor: downloadFileUrlExtractor,
     defaultFileNameFormat: kZerochanCustomDownloadFileNameFormat,
     defaultBulkDownloadFileNameFormat: kZerochanCustomDownloadFileNameFormat,
     sampleData: kDanbooruPostSamples,

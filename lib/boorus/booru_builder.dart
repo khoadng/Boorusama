@@ -87,6 +87,8 @@ abstract class BooruBuilder {
 
   MetatagExtractor? get metatagExtractor;
 
+  DownloadFileUrlExtractor get downloadFileUrlExtractor;
+
   // Data Builders
   PostFetcher get postFetcher;
   AutocompleteFetcher get autocompleteFetcher;

@@ -22,14 +22,14 @@ abstract class DownloadFilenameGenerator<T extends Post> {
   List<String> getTokenOptions(String token);
   TokenOptionDocs? getDocsForTokenOption(String token, String tokenOption);
 
-  String generate(
+  Future<String> generate(
     Settings settings,
     BooruConfig config,
     T post, {
     Map<String, String>? metadata,
   });
 
-  String generateForBulkDownload(
+  Future<String> generateForBulkDownload(
     Settings settings,
     BooruConfig config,
     T post, {
@@ -77,6 +77,7 @@ class DownloadFileNameBuilder<T extends Post>
     required this.sampleData,
     required this.defaultFileNameFormat,
     required this.defaultBulkDownloadFileNameFormat,
+    required this.downloadFileUrlExtractor,
     bool hasRating = true,
     bool hasMd5 = true,
     DownloadFilenameTokenHandler<T>? extensionHandler,
@@ -107,6 +108,8 @@ class DownloadFileNameBuilder<T extends Post>
 
   final TokenizerConfigs tokenizerConfigs = TokenizerConfigs.defaultConfigs();
 
+  final DownloadFileUrlExtractor downloadFileUrlExtractor;
+
   String _joinFileWithExtension(String fileName, String fileExt) {
     // check if file already has extension
     final fileNameExt = extension(fileName);
@@ -124,14 +127,17 @@ class DownloadFileNameBuilder<T extends Post>
         : '$cleanedFileName$ext';
   }
 
-  String _generate(
+  Future<String> _generate(
     Settings settings,
     BooruConfig config,
     String? format,
     T post, {
     required Map<String, String>? metadata,
-  }) {
-    final downloadUrl = getDownloadFileUrl(post, settings);
+  }) async {
+    final downloadUrl = await downloadFileUrlExtractor.getDownloadFileUrl(
+      post: post,
+      settings: settings,
+    );
 
     if (downloadUrl == null) return '';
 
@@ -165,7 +171,7 @@ class DownloadFileNameBuilder<T extends Post>
   }
 
   @override
-  String generate(
+  Future<String> generate(
     Settings settings,
     BooruConfig config,
     T post, {
@@ -180,7 +186,7 @@ class DownloadFileNameBuilder<T extends Post>
       );
 
   @override
-  String generateForBulkDownload(
+  Future<String> generateForBulkDownload(
     Settings settings,
     BooruConfig config,
     T post, {

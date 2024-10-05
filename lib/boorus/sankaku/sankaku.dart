@@ -36,6 +36,7 @@ class SankakuBuilder
         LegacyGranularRatingOptionsBuilderMixin,
         UnknownMetatagsMixin,
         DefaultQuickFavoriteButtonBuilderMixin,
+        DefaultDownloadFileUrlExtractorMixin,
         DefaultHomeMixin,
         DefaultTagColorMixin,
         DefaultPostImageDetailsUrlMixin,
@@ -139,8 +140,9 @@ class SankakuBuilder
             );
 
   @override
-  final DownloadFilenameGenerator downloadFilenameBuilder =
+  late final DownloadFilenameGenerator downloadFilenameBuilder =
       DownloadFileNameBuilder<SankakuPost>(
+    downloadFileUrlExtractor: downloadFileUrlExtractor,
     defaultFileNameFormat: kBoorusamaCustomDownloadFileNameFormat,
     defaultBulkDownloadFileNameFormat:
         kBoorusamaBulkDownloadCustomFileNameFormat,

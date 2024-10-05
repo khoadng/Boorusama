@@ -299,6 +299,8 @@ class BulkDownloadNotifier extends Notifier<List<BulkDownloadTask>> {
     final tags = task.query;
     final downloader = ref.read(downloadServiceProvider(config));
     final settings = ref.read(settingsProvider);
+    final downloadFileUrlExtractor =
+        ref.read(downloadFileUrlExtractorProvider(config));
 
     final fileNameBuilder =
         ref.readBooruBuilder(config)?.downloadFilenameBuilder;
@@ -369,7 +371,10 @@ class BulkDownloadNotifier extends Notifier<List<BulkDownloadTask>> {
         for (var index = 0; index < items.length; index++) {
           final item = items[index];
 
-          final downloadUrl = getDownloadFileUrl(item, settings);
+          final downloadUrl = await downloadFileUrlExtractor.getDownloadFileUrl(
+            post: item,
+            settings: settings,
+          );
           if (downloadUrl == null || downloadUrl.isEmpty) continue;
 
           estimatedDownloadSize += item.fileSize;
@@ -378,18 +383,20 @@ class BulkDownloadNotifier extends Notifier<List<BulkDownloadTask>> {
             mixedMedia = true;
           }
 
+          final fileName = await fileNameBuilder.generateForBulkDownload(
+            settings,
+            config,
+            item,
+            metadata: {
+              'index': index.toString(),
+            },
+          );
+
           await downloader
               .downloadCustomLocation(
                 url: downloadUrl,
                 path: task.path,
-                filename: fileNameBuilder.generateForBulkDownload(
-                  settings,
-                  config,
-                  item,
-                  metadata: {
-                    'index': index.toString(),
-                  },
-                ),
+                filename: fileName,
                 skipIfExists: task.options.skipIfExists,
                 metadata: DownloaderMetadata(
                   thumbnailUrl: item.thumbnailImageUrl,

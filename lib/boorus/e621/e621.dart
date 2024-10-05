@@ -107,6 +107,7 @@ class E621Builder
         CharacterNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
         UnknownMetatagsMixin,
+        DefaultDownloadFileUrlExtractorMixin,
         DefaultHomeMixin,
         DefaultQuickFavoriteButtonBuilderMixin,
         DefaultThumbnailUrlMixin,
@@ -241,8 +242,9 @@ class E621Builder
   NoteFetcher? get noteFetcher => (postId) => noteRepo.getNotes(postId);
 
   @override
-  final DownloadFilenameGenerator downloadFilenameBuilder =
+  late final DownloadFilenameGenerator downloadFilenameBuilder =
       DownloadFileNameBuilder<E621Post>(
+    downloadFileUrlExtractor: downloadFileUrlExtractor,
     defaultFileNameFormat: kBoorusamaCustomDownloadFileNameFormat,
     defaultBulkDownloadFileNameFormat:
         kBoorusamaBulkDownloadCustomFileNameFormat,

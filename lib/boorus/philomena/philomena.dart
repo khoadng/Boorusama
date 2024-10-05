@@ -31,6 +31,7 @@ class PhilomenaBuilder
         CharacterNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
         UnknownMetatagsMixin,
+        DefaultDownloadFileUrlExtractorMixin,
         DefaultHomeMixin,
         DefaultGranularRatingFiltererMixin,
         DefaultPostGesturesHandlerMixin,
@@ -119,8 +120,9 @@ class PhilomenaBuilder
           };
 
   @override
-  final DownloadFilenameGenerator<Post> downloadFilenameBuilder =
+  late final DownloadFilenameGenerator<Post> downloadFilenameBuilder =
       DownloadFileNameBuilder<Post>(
+    downloadFileUrlExtractor: downloadFileUrlExtractor,
     defaultFileNameFormat: kGelbooruV2CustomDownloadFileNameFormat,
     defaultBulkDownloadFileNameFormat: kGelbooruV2CustomDownloadFileNameFormat,
     sampleData: kDanbooruPostSamples,

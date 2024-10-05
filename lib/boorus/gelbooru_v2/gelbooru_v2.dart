@@ -121,6 +121,7 @@ class GelbooruV2Builder
         DefaultThumbnailUrlMixin,
         PostCountNotSupportedMixin,
         UnknownMetatagsMixin,
+        DefaultDownloadFileUrlExtractorMixin,
         DefaultHomeMixin,
         DefaultPostImageDetailsUrlMixin,
         DefaultGranularRatingFiltererMixin,
@@ -254,8 +255,9 @@ class GelbooruV2Builder
       };
 
   @override
-  final DownloadFilenameGenerator downloadFilenameBuilder =
+  late final DownloadFilenameGenerator downloadFilenameBuilder =
       DownloadFileNameBuilder(
+    downloadFileUrlExtractor: downloadFileUrlExtractor,
     defaultFileNameFormat: kGelbooruV2CustomDownloadFileNameFormat,
     defaultBulkDownloadFileNameFormat: kGelbooruV2CustomDownloadFileNameFormat,
     sampleData: kDanbooruPostSamples,

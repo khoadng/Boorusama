@@ -162,6 +162,7 @@ class HydrusBuilder
         CommentNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
         UnknownMetatagsMixin,
+        DefaultDownloadFileUrlExtractorMixin,
         DefaultHomeMixin,
         DefaultTagColorMixin,
         DefaultPostGesturesHandlerMixin,
@@ -225,8 +226,9 @@ class HydrusBuilder
           );
 
   @override
-  final DownloadFilenameGenerator<Post> downloadFilenameBuilder =
+  late final DownloadFilenameGenerator<Post> downloadFilenameBuilder =
       DownloadFileNameBuilder<Post>(
+    downloadFileUrlExtractor: downloadFileUrlExtractor,
     defaultFileNameFormat: kGelbooruV2CustomDownloadFileNameFormat,
     defaultBulkDownloadFileNameFormat: kGelbooruV2CustomDownloadFileNameFormat,
     sampleData: kDanbooruPostSamples,
