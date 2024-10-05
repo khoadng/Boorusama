@@ -217,20 +217,8 @@ class _InfinitePostListScaffoldState<T extends Post>
                               }
                             }
                           : null,
-                      quickActionButtonBuilder: !multiSelect && !block
-                          ? defaultImagePreviewButtonBuilder(
-                              ref,
-                              post,
-                              favoriteButton: booruBuilder
-                                          ?.quickFavoriteButtonBuilder !=
-                                      null
-                                  ? booruBuilder!.quickFavoriteButtonBuilder!(
-                                      context,
-                                      constraints,
-                                      post,
-                                    )
-                                  : const SizedBox.shrink(),
-                            )
+                      quickActionButton: !multiSelect && !block
+                          ? DefaultImagePreviewQuickActionButton(post: post)
                           : null,
                       autoScrollOptions: AutoScrollOptions(
                         controller: _autoScrollController,

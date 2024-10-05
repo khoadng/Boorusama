@@ -82,10 +82,7 @@ const kDanbooruPostSamples = [
 ];
 
 class DanbooruBuilder
-    with
-        DefaultQuickFavoriteButtonBuilderMixin,
-        DefaultTagColorMixin,
-        NewGranularRatingOptionsBuilderMixin
+    with DefaultTagColorMixin, NewGranularRatingOptionsBuilderMixin
     implements BooruBuilder {
   DanbooruBuilder({
     required this.postRepo,
@@ -352,6 +349,15 @@ class DanbooruBuilder
   late final MetatagExtractor metatagExtractor = MetatagExtractor(
     metatags: tagInfo.metatags,
   );
+
+  @override
+  QuickFavoriteButtonBuilder get quickFavoriteButtonBuilder =>
+      (context, post) => castOrNull<DanbooruPost>(post).toOption().fold(
+            () => const SizedBox.shrink(),
+            (post) => DanbooruQuickFavoriteButton(
+              post: post,
+            ),
+          );
 }
 
 bool handleDanbooruGestureAction(

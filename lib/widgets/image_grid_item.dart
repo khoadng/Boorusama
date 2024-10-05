@@ -38,7 +38,7 @@ class ImageGridItem extends StatelessWidget {
     this.score,
     this.isAI = false,
     this.isGif = false,
-    this.quickActionButtonBuilder,
+    this.quickActionButton,
     this.borderRadius,
   });
 
@@ -56,8 +56,7 @@ class ImageGridItem extends StatelessWidget {
   final int? score;
   final bool isAI;
   final bool isGif;
-  final Widget Function(BuildContext context, BoxConstraints constraints)?
-      quickActionButtonBuilder;
+  final Widget? quickActionButton;
   final BorderRadius? borderRadius;
 
   @override
@@ -70,47 +69,44 @@ class ImageGridItem extends StatelessWidget {
         key: ValueKey(autoScrollOptions!.index),
         child: child,
       ),
-      child: LayoutBuilder(
-        builder: (context, constraints) => Stack(
-          children: [
-            _buildImage(context),
-            if (!hideOverlay)
-              if (quickActionButtonBuilder != null)
-                Positioned(
-                  bottom: 4,
-                  right: 4,
-                  child: quickActionButtonBuilder!(context, constraints),
-                )
-              else
-                const SizedBox.shrink(),
-            if (score != null)
+      child: Stack(
+        children: [
+          _buildImage(context),
+          if (!hideOverlay)
+            if (quickActionButton != null)
               Positioned(
                 bottom: 4,
-                left: 4,
-                child: Container(
-                  constraints: const BoxConstraints(minWidth: 28),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-                  decoration: const BoxDecoration(
-                    color: Colors.black,
-                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                  ),
-                  child: Text(
-                    NumberFormat.compact().format(score),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: score! > 0
-                          ? Colors.red
-                          : score! < 0
-                              ? Colors.blue
-                              : Colors.white,
-                      fontWeight: FontWeight.w800,
-                    ),
+                right: 4,
+                child: quickActionButton!,
+              )
+            else
+              const SizedBox.shrink(),
+          if (score != null)
+            Positioned(
+              bottom: 4,
+              left: 4,
+              child: Container(
+                constraints: const BoxConstraints(minWidth: 28),
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                decoration: const BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                ),
+                child: Text(
+                  NumberFormat.compact().format(score),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: score! > 0
+                        ? Colors.red
+                        : score! < 0
+                            ? Colors.blue
+                            : Colors.white,
+                    fontWeight: FontWeight.w800,
                   ),
                 ),
               ),
-          ],
-        ),
+            ),
+        ],
       ),
     );
   }

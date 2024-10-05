@@ -6,10 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/danbooru/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/posts/posts.dart';
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/favorites/favorites.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/foundation/clipboard.dart';
 import 'package:boorusama/foundation/theme.dart';
@@ -39,8 +37,6 @@ class DanbooruImageGridItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isFaved =
-        post.isBanned ? false : ref.watch(danbooruFavoriteProvider(post.id));
     final artistTags = [...post.artistTags]..remove('banned_artist');
     final settings = ref.watch(imageListingSettingsProvider);
 
@@ -118,21 +114,8 @@ class DanbooruImageGridItem extends ConsumerWidget {
         isGif: post.isGif,
         isAI: post.isAI,
         hideOverlay: hideOverlay,
-        quickActionButtonBuilder: !post.isBanned && enableFav
-            ? defaultImagePreviewButtonBuilder(
-                ref,
-                post,
-                favoriteButton: QuickFavoriteButton(
-                  isFaved: isFaved,
-                  onFavToggle: (isFaved) async {
-                    if (!isFaved) {
-                      ref.danbooruFavorites.remove(post.id);
-                    } else {
-                      ref.danbooruFavorites.add(post.id);
-                    }
-                  },
-                ),
-              )
+        quickActionButton: !post.isBanned && enableFav
+            ? DefaultImagePreviewQuickActionButton(post: post)
             : null,
         autoScrollOptions: autoScrollOptions,
         onTap: post.isBanned

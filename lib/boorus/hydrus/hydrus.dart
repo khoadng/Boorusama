@@ -294,7 +294,7 @@ class HydrusBuilder
 
   @override
   QuickFavoriteButtonBuilder? get quickFavoriteButtonBuilder =>
-      (context, constraints, post) => HydrusQuickFavoriteButton(
+      (context, post) => HydrusQuickFavoriteButton(
             post: post,
           );
 }
