@@ -18,7 +18,8 @@ void main() {
       'copyright': 'sword:art/online',
       'character': 'lea:fa'
     };
-    const String format = '{id}_{artist}_{copyright}_{character}_{md5}.{extension}';
+    const String format =
+        '{id}_{artist}_{copyright}_{character}_{md5}.{extension}';
 
     // Act
     final String filename = generateFileName(metadata, format);
@@ -57,7 +58,8 @@ void main() {
       'copyright': 'sword:art/online',
       'character': 'leafa'
     };
-    const String format = '{artist}_{copyright:unsafe}_{character}_{md5}.{extension}';
+    const String format =
+        '{artist}_{copyright:unsafe}_{character}_{md5}.{extension}';
 
     // Act
     final String filename = generateFileName(metadata, format);
@@ -119,7 +121,8 @@ void main() {
       'copyright': 'sword art online',
       'character': 'leafa'
     };
-    const String format = '{artist}_{copyright}_{character}_{md5:foo=8}.{extension}';
+    const String format =
+        '{artist}_{copyright}_{character}_{md5:foo=8}.{extension}';
 
     // Act
     final String filename = generateFileName(metadata, format);
@@ -141,7 +144,8 @@ void main() {
       'copyright': 'sword art online',
       'character': 'leafa'
     };
-    const String format = '{artist}_{copyright}_{character}_{md5:foo=8}.{extension}';
+    const String format =
+        '{artist}_{copyright}_{character}_{md5:foo=8}.{extension}';
 
     // Act
     final String filename = generateFileName(metadata, format);
@@ -234,7 +238,8 @@ void main() {
       'artist': 'aa aaaa aaa a',
       'character': 'b bbbb bb bbb',
     };
-    const String format = '{artist:sort[length]=asc}_{character:sort[length]=desc}';
+    const String format =
+        '{artist:sort[length]=asc}_{character:sort[length]=desc}';
 
     // Act
     final String filename = generateFileName(metadata, format);
@@ -450,7 +455,7 @@ class MockUuid implements Uuid {
       [];
   @override
   UuidValue v1obj({Map<String, dynamic>? options, V1Options? config}) =>
-      UuidValue.dns;
+      Namespace.dns.uuidValue;
   @override
   String v4({Map<String, dynamic>? options, V4Options? config}) =>
       '44444444-4444-4444-4444-444444444444';
@@ -460,7 +465,7 @@ class MockUuid implements Uuid {
       [];
   @override
   UuidValue v4obj({Map<String, dynamic>? options, V4Options? config}) =>
-      UuidValue.dns;
+      Namespace.dns.uuidValue;
   @override
   String v5(String? namespace, String? name,
           {Map<String, dynamic>? options, V5Options? config}) =>
@@ -472,28 +477,28 @@ class MockUuid implements Uuid {
   @override
   UuidValue v5obj(String? namespace, String? name,
           {Map<String, dynamic>? options, V5Options? config}) =>
-      UuidValue.dns;
+      Namespace.dns.uuidValue;
   @override
   String v6({V6Options? config}) => '66666666-6666-6666-6666-666666666666';
   @override
   List<int> v6buffer(List<int> buffer, {V6Options? config, int offset = 0}) =>
       [];
   @override
-  UuidValue v6obj({V6Options? config}) => UuidValue.dns;
+  UuidValue v6obj({V6Options? config}) => Namespace.dns.uuidValue;
   @override
   String v7({V7Options? config}) => '77777777-7777-7777-7777-777777777777';
   @override
   List<int> v7buffer(List<int> buffer, {V7Options? config, int offset = 0}) =>
       [];
   @override
-  UuidValue v7obj({V7Options? config}) => UuidValue.dns;
+  UuidValue v7obj({V7Options? config}) => Namespace.dns.uuidValue;
   @override
   String v8({V8Options? config}) => '88888888-8888-8888-8888-888888888888';
   @override
   List<int> v8buffer(List<int> buffer, {V8Options? config, int offset = 0}) =>
       [];
   @override
-  UuidValue v8obj({V8Options? config}) => UuidValue.dns;
+  UuidValue v8obj({V8Options? config}) => Namespace.dns.uuidValue;
 
   @override
   String v8g({V8GenericOptions? config}) =>
@@ -505,5 +510,5 @@ class MockUuid implements Uuid {
       [];
 
   @override
-  UuidValue v8gobj({V8GenericOptions? config}) => UuidValue.dns;
+  UuidValue v8gobj({V8GenericOptions? config}) => Namespace.dns.uuidValue;
 }

@@ -51,7 +51,7 @@ class BookmarkSearchBar extends ConsumerWidget {
           color: context.colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(8),
         ),
-        searchInputDecoration: InputDecoration(
+        searchInputDecoration: SearchInputDecoration(
           prefixIcon: const Icon(Symbols.search),
           suffixIcon: selectedTag.isNotEmpty
               ? InkWell(
