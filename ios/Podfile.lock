@@ -142,10 +142,10 @@ PODS:
   - Flutter (1.0.0)
   - flutter_local_notifications (0.0.1):
     - Flutter
-  - fvp (0.0.1):
+  - fvp (0.26.1):
     - Flutter
     - FlutterMacOS
-    - mdk
+    - mdk (~> 0.29.1)
   - gal (1.0.0):
     - Flutter
     - FlutterMacOS
@@ -391,7 +391,7 @@ SPEC CHECKSUMS:
   FirebaseSharedSwift: d39c2ad64a11a8d936ce25a42b00df47078bb59c
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   flutter_local_notifications: 4cde75091f6327eb8517fa068a0a5950212d2086
-  fvp: cb4a2438331cfd98abcdcac3ae49d0b0456274a2
+  fvp: 2ed530d49ba212cbe34965c2aa67f51a0e697826
   gal: 61e868295d28fe67ffa297fae6dacebf56fd53e1
   GoogleAppMeasurement: 76d4f8b36b03bd8381fa9a7fe2cc7f99c0a2e93a
   GoogleDataTransport: aae35b7ea0c09004c3797d53c8c41f66f219d6a7
