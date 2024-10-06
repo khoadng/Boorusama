@@ -51,6 +51,14 @@ extension PostDownloadX on WidgetRef {
     String? group,
     String? downloadPath,
   }) async {
+    final config = readConfig;
+
+    // ensure that the booru supports bulk download
+    if (!config.booruType.canDownloadMultipleFiles) {
+      showBulkDownloadUnsupportErrorToast(context);
+      return;
+    }
+
     final perm = await _getPermissionStatus();
 
     _showToastIfPossible(

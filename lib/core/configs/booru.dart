@@ -514,6 +514,8 @@ extension BooruTypeX on BooruType {
 
   bool get supportBlacklistedTags => isDanbooruBased;
 
+  bool get canDownloadMultipleFiles => true;
+
   bool get hasUnknownFullImageUrl =>
       this == BooruType.zerochan || this == BooruType.gelbooruV1;
 

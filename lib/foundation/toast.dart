@@ -32,12 +32,15 @@ void showErrorToast(
     showToast(
       message,
       position: ToastPosition.bottom,
-      margin: const EdgeInsets.all(100),
-      textPadding: const EdgeInsets.all(8),
+      margin: const EdgeInsets.symmetric(
+        horizontal: 20,
+        vertical: 60,
+      ),
+      textPadding: const EdgeInsets.all(4),
       duration: duration,
-      backgroundColor: Colors.red,
-      textStyle: const TextStyle(
-        color: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.error,
+      textStyle: TextStyle(
+        color: Theme.of(context).colorScheme.onError,
       ),
     );
 

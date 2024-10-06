@@ -40,6 +40,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
     this.describePostPreviewQuickAction,
     this.submitButtonBuilder,
     required this.initialTab,
+    this.footer,
   });
 
   final Color? backgroundColor;
@@ -65,6 +66,8 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
   final Widget Function(BooruConfigData data)? submitButtonBuilder;
 
   final String? initialTab;
+
+  final Widget? footer;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -170,7 +173,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 12,
-                          vertical: 6,
+                          vertical: 12,
                         ),
                         child: Column(
                           children: [
@@ -185,6 +188,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
                           ],
                         ),
                       ),
+                    if (footer != null) footer!,
                   ],
                 ),
               ),
