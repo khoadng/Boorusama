@@ -164,6 +164,7 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                       ),
                       child: SearchLandingView(
                         disableAnimation: true,
+                        reverseScheme: true,
                         backgroundColor:
                             context.colorScheme.surfaceContainerHighest,
                         onHistoryCleared: () => ref

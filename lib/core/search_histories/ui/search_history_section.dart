@@ -21,6 +21,7 @@ class SearchHistorySection extends StatelessWidget {
     required this.histories,
     this.maxHistory = 5,
     this.showTime = false,
+    this.reverseScheme,
   });
 
   final ValueChanged<SearchHistory> onHistoryTap;
@@ -28,6 +29,7 @@ class SearchHistorySection extends StatelessWidget {
   final List<SearchHistory> histories;
   final int maxHistory;
   final bool showTime;
+  final bool? reverseScheme;
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +59,10 @@ class SearchHistorySection extends StatelessWidget {
               ...histories.take(maxHistory).map(
                     (item) => ListTile(
                       visualDensity: VisualDensity.compact,
-                      title: SearchHistoryQueryWidget(history: item),
+                      title: SearchHistoryQueryWidget(
+                        history: item,
+                        reverseScheme: reverseScheme,
+                      ),
                       contentPadding: const EdgeInsets.only(left: 16),
                       onTap: () => onHistoryTap(item),
                       minTileHeight: isDesktopPlatform() ? 0 : null,
@@ -82,9 +87,11 @@ class SearchHistoryQueryWidget extends StatelessWidget {
   const SearchHistoryQueryWidget({
     super.key,
     required this.history,
+    this.reverseScheme,
   });
 
   final SearchHistory history;
+  final bool? reverseScheme;
 
   @override
   Widget build(BuildContext context) {
@@ -98,8 +105,14 @@ class SearchHistoryQueryWidget extends StatelessWidget {
                 (e) => IgnorePointer(
                   child: CompactChip(
                     label: e,
-                    backgroundColor:
-                        context.colorScheme.surfaceContainerHighest,
+                    borderRadius: BorderRadius.circular(8),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 2,
+                      horizontal: 8,
+                    ),
+                    backgroundColor: reverseScheme == true
+                        ? context.colorScheme.surface
+                        : context.colorScheme.surfaceContainerHighest,
                   ),
                 ),
               )
