@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -251,8 +252,8 @@ class HydrusBuilder
             initialIndex: payload.initialIndex,
             posts: payload.posts,
             scrollController: payload.scrollController,
-            desktop: (controller) => HydrusPostDetailsPage(
-              initialPage: controller.currentPage.value,
+            desktop: (controller) => HydrusPostDetailsDesktopPage(
+              initialIndex: controller.currentPage.value,
               controller: controller,
               posts: payload.posts,
               onExit: (page) => controller.onExit(page),
@@ -375,6 +376,10 @@ class HydrusPostDetailsPage extends ConsumerWidget {
       swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
       onExit: onExit,
       onPageChangeIndexed: onPageChanged,
+      fileDetailsBuilder: (context, post) => DefaultFileDetailsSection(
+        post: post,
+        initialExpanded: true,
+      ),
       tagListBuilder: (context, post) => BasicTagList(
         tags: post.tags.toList(),
         onTap: (tag) => goToSearchPage(
@@ -391,6 +396,57 @@ class HydrusPostDetailsPage extends ConsumerWidget {
                   (post) => HydrusPostActionToolbar(post: post),
                 ),
       ),
+    );
+  }
+}
+
+class HydrusPostDetailsDesktopPage extends ConsumerWidget {
+  const HydrusPostDetailsDesktopPage({
+    super.key,
+    required this.initialIndex,
+    required this.posts,
+    required this.onExit,
+    required this.onPageChanged,
+    required this.controller,
+  });
+
+  final int initialIndex;
+  final List<Post> posts;
+  final void Function(int index) onExit;
+  final void Function(int page) onPageChanged;
+  final PostDetailsController<Post> controller;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return PostDetailsPageDesktopScaffold(
+      debounceDuration: Duration.zero,
+      initialIndex: initialIndex,
+      posts: posts,
+      onExit: onExit,
+      onPageChanged: onPageChanged,
+      imageUrlBuilder: defaultPostImageUrlBuilder(ref),
+      fileDetailsBuilder: (context, post) => DefaultFileDetailsSection(
+        post: post,
+        initialExpanded: true,
+      ),
+      tagListBuilder: (context, post) => BasicTagList(
+        tags: post.tags.toList(),
+        onTap: (tag) => goToSearchPage(
+          context,
+          tag: tag,
+        ),
+        unknownCategoryColor: ref.watch(tagColorProvider('general')),
+      ),
+      toolbarBuilder: (context, post) => ValueListenableBuilder(
+        valueListenable: controller.currentPost,
+        builder: (_, rawPost, __) =>
+            castOrNull<HydrusPost>(rawPost).toOption().fold(
+                  () => SimplePostActionToolbar(post: rawPost),
+                  (post) => HydrusPostActionToolbar(post: post),
+                ),
+      ),
+      topRightButtonsBuilder: (currentPage, expanded, post) =>
+          GeneralMoreActionButton(post: post),
     );
   }
 }
