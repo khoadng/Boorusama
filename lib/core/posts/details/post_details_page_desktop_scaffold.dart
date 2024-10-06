@@ -94,6 +94,7 @@ class PostDetailsPageDesktopScaffold<T extends Post>
     required this.imageUrlBuilder,
     this.parts = kDefaultPostDetailsParts,
     this.onPageLoaded,
+    this.debounceDuration,
   });
 
   final int initialIndex;
@@ -122,6 +123,8 @@ class PostDetailsPageDesktopScaffold<T extends Post>
       sliverCharacterPostsBuilder;
 
   final Set<PostDetailsPart> parts;
+
+  final Duration? debounceDuration;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -224,7 +227,7 @@ class _PostDetailsDesktopScaffoldState<T extends Post>
             ref.read(allowFetchProvider.notifier).state = false;
             _debounceTimer?.cancel();
             _debounceTimer = Timer(
-              const Duration(seconds: 1),
+              widget.debounceDuration ?? const Duration(seconds: 1),
               () {
                 widget.onPageChanged(page);
                 controller.changePage(page);

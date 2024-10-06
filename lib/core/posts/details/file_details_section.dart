@@ -29,6 +29,7 @@ class DefaultFileDetailsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FileDetailsSection(
+      initialExpanded: initialExpanded,
       post: post,
       rating: post.rating,
       uploader: uploaderName != null
