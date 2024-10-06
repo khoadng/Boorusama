@@ -12,6 +12,30 @@ final subscriptionNotifierProvider =
     NotifierProvider<SubscriptionNotifier, Package?>(
         () => throw UnimplementedError());
 
+final packagePurchaseProvider =
+    AsyncNotifierProvider.autoDispose<PackagePurchaseNotifier, bool?>(
+        PackagePurchaseNotifier.new);
+
+class PackagePurchaseNotifier extends AutoDisposeAsyncNotifier<bool?> {
+  @override
+  Future<bool?> build() {
+    return Future.value(null);
+  }
+
+  Future<void> startPurchase(Package package) async {
+    try {
+      state = const AsyncLoading();
+
+      final notifier = ref.read(subscriptionNotifierProvider.notifier);
+      await notifier.purchasePackage(package);
+
+      state = const AsyncData(true);
+    } catch (e, st) {
+      state = AsyncError(e, st);
+    }
+  }
+}
+
 class SubscriptionNotifier extends Notifier<Package?> {
   final Package? initialPackage;
   final InAppPurchase iap;
@@ -31,8 +55,11 @@ class SubscriptionNotifier extends Notifier<Package?> {
   Future<void> purchasePackage(Package package) async {
     final success = await iap.purchasePackage(package);
     if (success) {
-      print('Purchased ${package.product.title}');
       state = package;
     }
+  }
+
+  Future<void> cancelSubscription() async {
+    state = null;
   }
 }

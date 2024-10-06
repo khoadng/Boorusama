@@ -81,6 +81,23 @@ class SideBarMenu extends ConsumerWidget {
                             child: e,
                           )),
                     if (initialContent != null) const Divider(),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: SideMenuTile(
+                        icon: const Icon(
+                          Symbols.star,
+                          fill: 1,
+                        ),
+                        title: const Text(kPremiumBrandNameFull),
+                        onTap: () {
+                          if (popOnSelect) context.navigator.pop();
+                          Navigator.of(context).push(CupertinoPageRoute<void>(
+                            builder: (context) => const PremiumPage(),
+                          ));
+                        },
+                      ),
+                    ),
+                    const Divider(),
                     if (content != null) ...[
                       ...content!.map((e) => Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -110,20 +127,6 @@ class SideBarMenu extends ConsumerWidget {
                           onTap: () {
                             if (popOnSelect) context.navigator.pop();
                             context.go('/favorite_tags');
-                          },
-                        ),
-                        // Subscriptions
-                        SideMenuTile(
-                          icon: const Icon(
-                            Symbols.star,
-                            fill: 1,
-                          ),
-                          title: const Text(kPremiumBrandNameFull),
-                          onTap: () {
-                            if (popOnSelect) context.navigator.pop();
-                            Navigator.of(context).push(CupertinoPageRoute<void>(
-                              builder: (context) => const PremiumPage(),
-                            ));
                           },
                         ),
                         SideMenuTile(
@@ -160,7 +163,6 @@ class SideBarMenu extends ConsumerWidget {
                             context.go('/settings?scrollTo=support');
                           },
                         ),
-
                         SideMenuTile(
                           icon: const Icon(
                             Symbols.settings,

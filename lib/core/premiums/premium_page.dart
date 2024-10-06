@@ -51,6 +51,17 @@ class _PremiumPageState extends ConsumerState<PremiumPage> {
           children: [
             const Text('Manage your subscription'),
             Text('You are subscribed to ${package.product.title}'),
+            Container(
+              padding: const EdgeInsets.all(8),
+              child: ElevatedButton(
+                onPressed: () {
+                  ref
+                      .read(subscriptionNotifierProvider.notifier)
+                      .cancelSubscription();
+                },
+                child: const Text('Cancel Subscription (debug)'),
+              ),
+            ),
           ],
         ),
       ),
@@ -111,8 +122,8 @@ class _PremiumPageState extends ConsumerState<PremiumPage> {
                         products: products,
                         onPurchase: (package) async {
                           ref
-                              .read(subscriptionNotifierProvider.notifier)
-                              .purchasePackage(package);
+                              .read(packagePurchaseProvider.notifier)
+                              .startPurchase(package);
                         },
                       ),
                       error: (e, st) => Text('Error: $e'),
@@ -121,7 +132,6 @@ class _PremiumPageState extends ConsumerState<PremiumPage> {
               ],
             ),
             Positioned(
-              // alignment: Alignment.topRight,
               top: 4,
               right: 8,
               child: IconButton(
@@ -166,9 +176,11 @@ class _SubscriptionPlansState extends ConsumerState<SubscriptionPlans> {
             package: product,
             saveIndicator: product.bestValue?.savings.toOption().fold(
                   () => null,
-                  (value) => CompactChip(
-                    label: '${(value * 100).toStringAsFixed(0)}% off',
-                    backgroundColor: Theme.of(context).colorScheme.primary,
+                  (value) => IgnorePointer(
+                    child: CompactChip(
+                      label: '${(value * 100).toStringAsFixed(0)}% off',
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                    ),
                   ),
                 ),
             onTap: () => setState(
@@ -200,12 +212,25 @@ class _SubscriptionPlansState extends ConsumerState<SubscriptionPlans> {
             style: FilledButton.styleFrom(
               minimumSize: const Size(0, 48),
             ),
-            onPressed: () {
-              if (selected != null) {
-                widget.onPurchase(selected!);
-              }
-            },
-            child: const Text('Get Plus'),
+            onPressed: ref.watch(packagePurchaseProvider).maybeWhen(
+                  data: (state) => () {
+                    if (selected != null) {
+                      widget.onPurchase(selected!);
+                    }
+                  },
+                  orElse: () => null,
+                ),
+            child: ref.watch(packagePurchaseProvider).when(
+                  data: (state) => const Text('Get Plus'),
+                  error: (e, st) => Text('Error: $e'),
+                  loading: () => SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
+                  ),
+                ),
           ),
         ),
         const SizedBox(height: 16),

@@ -36,12 +36,16 @@ class DummyInAppPurchase implements InAppPurchase {
   }
 
   @override
-  Future<bool> purchasePackage(Package package) {
+  Future<bool> purchasePackage(Package package) async {
     if (purchasedPackages.contains(package)) {
-      return Future.value(false);
+      await Future.delayed(const Duration(seconds: 2));
+
+      return Future.value(true);
     }
 
     purchasedPackages.add(package);
+
+    await Future.delayed(const Duration(seconds: 2));
 
     return Future.value(true);
   }
