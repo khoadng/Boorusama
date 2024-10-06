@@ -31,7 +31,7 @@ class SavedSearchPage extends ConsumerWidget {
         title: const Text('saved_search.saved_search').tr(),
         actions: [
           IconButton(
-            onPressed: () => goToSavedSearchCreatePage(ref, context),
+            onPressed: () => goToSavedSearchCreatePage(context),
             icon: const Icon(Symbols.add),
           ),
         ],
@@ -131,7 +131,7 @@ class _SuccessView extends ConsumerWidget {
         onDelete: () => ref
             .read(danbooruSavedSearchesProvider(ref.readConfig).notifier)
             .delete(savedSearch: savedSearch),
-        onEdit: () => goToSavedSearchPatchPage(ref, context, savedSearch),
+        onEdit: () => goToSavedSearchPatchPage(context, savedSearch),
       ),
     );
   }

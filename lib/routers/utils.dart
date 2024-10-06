@@ -10,7 +10,6 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/blacklists/blacklists.dart';
 import 'package:boorusama/core/comments/comments.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/bulks/create_bulk_download_task_sheet.dart';
@@ -199,24 +198,11 @@ Future<bool?> goToShowTaglistPage(
   WidgetRef ref,
   List<Tag> tags,
 ) {
-  final globalNotifier = ref.read(globalBlacklistedTagsProvider.notifier);
-  final favoriteNotifier = ref.read(favoriteTagsProvider.notifier);
   return showAdaptiveSheet(
     navigatorKey.currentContext ?? ref.context,
     expand: true,
-    builder: (context) => ShowTagListPage(
+    builder: (context) => DefaultShowTagListPage(
       tags: tags,
-      onAddToGlobalBlacklist: (tag) {
-        globalNotifier.addTagWithToast(
-          context,
-          tag.rawName,
-        );
-      },
-      onAddToFavoriteTags: (tag) {
-        favoriteNotifier.add(
-          tag.rawName,
-        );
-      },
     ),
   );
 }

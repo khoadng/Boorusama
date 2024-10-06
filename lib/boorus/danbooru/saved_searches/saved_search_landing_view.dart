@@ -96,9 +96,8 @@ class SavedSearchLandingView extends ConsumerWidget {
     String? query,
   }) {
     goToSavedSearchCreatePage(
-      ref,
       context,
-      initialValue: SavedSearch.empty().copyWith(query: query),
+      initialValue: query,
     );
   }
 }
