@@ -18,9 +18,11 @@ class DefaultFileDetailsSection extends StatelessWidget {
     required this.post,
     this.uploaderName,
     this.customDetails,
+    this.initialExpanded = false,
   });
 
   final Post post;
+  final bool initialExpanded;
   final String? uploaderName;
   final Map<String, Widget>? customDetails;
 
@@ -50,12 +52,14 @@ class FileDetailsSection extends StatelessWidget {
     required this.rating,
     this.uploader,
     this.customDetails,
+    this.initialExpanded = false,
   });
 
   final Post post;
   final Rating rating;
   final Widget? uploader;
   final Map<String, Widget>? customDetails;
+  final bool initialExpanded;
 
   @override
   Widget build(BuildContext context) {
@@ -82,6 +86,7 @@ class FileDetailsSection extends StatelessWidget {
         dividerColor: Colors.transparent,
       ),
       child: ExpansionTile(
+        initiallyExpanded: initialExpanded,
         title: Text(
           'post.detail.file_details'.tr(),
         ),
