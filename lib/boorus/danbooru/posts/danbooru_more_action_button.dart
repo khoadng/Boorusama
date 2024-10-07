@@ -78,7 +78,7 @@ class DanbooruMoreActionButton extends ConsumerWidget {
             if (booruConfig.hasLoginDetails())
               'add_to_favgroup':
                   const Text('post.action.add_to_favorite_group').tr(),
-            'show_tag_list': const Text('View tags'),
+            if (post.tags.isNotEmpty) 'show_tag_list': const Text('View tags'),
             'tag_history': const Text('View tag history'),
             if (!booruConfig.hasStrictSFW)
               'view_in_browser': const Text('post.detail.view_in_browser').tr(),
