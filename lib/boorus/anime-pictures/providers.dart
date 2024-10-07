@@ -98,6 +98,17 @@ final animePicturesWeeklyPopularProvider = FutureProvider.autoDispose
       .then((value) => value.map(dtoToAnimePicturesPost).toList());
 });
 
+final animePicturesCurrentUserIdProvider =
+    FutureProvider.family<int?, BooruConfig>((ref, config) async {
+  final cookie = config.passHash;
+  if (cookie == null || cookie.isEmpty) return null;
+
+  final user =
+      await ref.watch(animePicturesClientProvider(config)).getProfile();
+
+  return user.id;
+});
+
 TagCategory animePicturesTagTypeToTagCategory(AnimePicturesTagType? type) =>
     switch (type) {
       null => TagCategory.general(),
@@ -122,11 +133,11 @@ AnimePicturesPost dtoToAnimePicturesPost(
     originalImageUrl: e.bigPreview ?? '',
     tags: {},
     rating: switch (e.erotics) {
-      0 => Rating.general,
-      1 => Rating.sensitive,
-      2 => Rating.questionable,
-      3 => Rating.explicit,
-      _ => Rating.unknown,
+      EroticLevel.none => Rating.general,
+      EroticLevel.light => Rating.sensitive,
+      EroticLevel.moderate => Rating.questionable,
+      EroticLevel.hard => Rating.explicit,
+      null => Rating.unknown,
     },
     hasComment: false,
     isTranslated: false,

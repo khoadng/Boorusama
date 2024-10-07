@@ -16,10 +16,12 @@ import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/settings/types.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
+import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'create_anime_pictures_config_page.dart';
@@ -135,8 +137,80 @@ class AnimePicturesBuilder
       (context, config) => AnimePicturesHomePage(config: config);
 
   @override
+  FavoritesPageBuilder? get favoritesPageBuilder =>
+      (context, config) => const AnimePicturesCurrentUserIdScope(
+            child: AnimePicturesFavoritesPage(),
+          );
+
+  @override
   late final DownloadFileUrlExtractor downloadFileUrlExtractor =
       AnimePicturesDownloadFileUrlExtractor(client);
+}
+
+class AnimePicturesCurrentUserIdScope extends ConsumerWidget {
+  const AnimePicturesCurrentUserIdScope({
+    super.key,
+    required this.child,
+  });
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ref.watch(animePicturesCurrentUserIdProvider(ref.watchConfig)).when(
+          data: (value) => value != null
+              ? ProviderScope(
+                  overrides: [
+                    _uidProvider.overrideWithValue(value),
+                  ],
+                  child: child,
+                )
+              : _buildInvalidPage(),
+          loading: () => Scaffold(
+            appBar: AppBar(),
+            body: const Center(
+              child: CircularProgressIndicator(),
+            ),
+          ),
+          error: (e, _) => _buildInvalidPage(),
+        );
+  }
+
+  Widget _buildInvalidPage() {
+    return const Scaffold(
+      body: Center(
+        child: Text('You need to provide login details to use this feature.'),
+      ),
+    );
+  }
+}
+
+final _uidProvider = Provider.autoDispose<int>((ref) {
+  throw UnimplementedError();
+});
+
+class AnimePicturesFavoritesPage extends ConsumerWidget {
+  const AnimePicturesFavoritesPage({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final uid = ref.watch(_uidProvider);
+    final config = ref.watchConfig;
+
+    return FavoritesPageScaffold(
+      favQueryBuilder: null,
+      fetcher: (page) => TaskEither.Do(($) async {
+        final posts = await ref
+            .read(animePicturesClientProvider(config))
+            .getPosts(starsBy: uid, page: page)
+            .then((values) => values.map(dtoToAnimePicturesPost).toList());
+
+        return posts.toResult();
+      }),
+    );
+  }
 }
 
 class AnimePicturesDownloadFileUrlExtractor
