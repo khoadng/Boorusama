@@ -41,7 +41,7 @@ class PostDto {
   final int? scoreNumber;
   final int? size;
   final int? downloadCount;
-  final int? erotics;
+  final EroticLevel? erotics;
   final List<int>? color;
   final String? ext;
   final int? status;
@@ -100,7 +100,13 @@ class PostDto {
       scoreNumber: json['score_number'],
       size: json['size'],
       downloadCount: json['download_count'],
-      erotics: json['erotics'],
+      erotics: switch (json['erotics']) {
+        0 => EroticLevel.none,
+        1 => EroticLevel.light,
+        2 => EroticLevel.moderate,
+        3 => EroticLevel.hard,
+        _ => null,
+      },
       color: json['color']?.cast<int>(),
       ext: json['ext'],
       status: json['status'],
@@ -121,6 +127,13 @@ class PostDto {
 enum TopLength {
   day,
   week,
+}
+
+enum EroticLevel {
+  none,
+  light,
+  moderate,
+  hard,
 }
 
 class PostDetailsTagDto {

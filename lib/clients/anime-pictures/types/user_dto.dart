@@ -36,3 +36,7 @@ class UserDto {
     );
   }
 }
+
+extension UserDtoX on UserDto {
+  bool get isExist => id != null;
+}
