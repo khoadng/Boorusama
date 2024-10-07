@@ -132,6 +132,28 @@ class AnimePicturesClient {
 
     return data;
   }
+
+  Future<List<PostDto>> getTopPosts({
+    TopLength? length,
+  }) async {
+    final l = length ?? TopLength.week;
+
+    final resp = await _dio.get(
+      '$_basePath/top',
+      queryParameters: {
+        'length': l.name,
+      },
+    );
+
+    final results = resp.data['top'] as List;
+
+    return results
+        .map((item) => PostDto.fromJson(
+              item,
+              _dio.options.baseUrl,
+            ))
+        .toList();
+  }
 }
 
 typedef AnimePicturesDownloadUrlData = ({

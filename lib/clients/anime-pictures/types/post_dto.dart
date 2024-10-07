@@ -1,3 +1,4 @@
+// Project imports:
 import 'types.dart';
 
 class PostDto {
@@ -115,6 +116,11 @@ class PostDto {
       bigPreview: big,
     );
   }
+}
+
+enum TopLength {
+  day,
+  week,
 }
 
 class PostDetailsTagDto {
