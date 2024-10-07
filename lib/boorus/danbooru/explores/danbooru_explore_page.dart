@@ -6,17 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/explores/explores.dart';
-import 'package:boorusama/boorus/danbooru/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/images/images.dart';
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/foundation/display.dart';
+import 'package:boorusama/core/explores/explores.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/widgets.dart';
 
 class DanbooruExplorePage extends ConsumerWidget {
   const DanbooruExplorePage({
@@ -28,109 +20,92 @@ class DanbooruExplorePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: CustomScrollView(
-        primary: false,
-        slivers: [
-          SliverSizedBox(
-            height:
-                useAppBarPadding ? MediaQuery.viewPaddingOf(context).top : 0,
-          ),
-          SliverToBoxAdapter(
-            child: _PopularExplore(
-              onPressed: () => goToExplorePopularPage(context),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: _HotExplore(
-              onPressed: () => goToExploreHotPage(context),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: _MostViewedExplore(
-              onPressed: () => goToExploreMostViewedPage(context),
-            ),
-          ),
-          const SliverSizedBox(height: kBottomNavigationBarHeight + 20),
-        ],
-      ),
-    );
-  }
-}
-
-final selectedExploreCategoryProvider =
-    StateProvider.autoDispose<ExploreCategory?>((ref) {
-  return null;
-});
-
-class ExplorePageDesktop extends ConsumerWidget {
-  const ExplorePageDesktop({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final selectedCategory = ref.watch(selectedExploreCategoryProvider);
-
-    return Stack(
-      children: [
-        Offstage(
-          offstage: selectedCategory != null,
-          child: Padding(
-            padding: EdgeInsets.only(
-              top: MediaQuery.viewPaddingOf(context).top,
-            ),
-            child: CustomScrollView(
-              primary: false,
-              slivers: [
-                SliverToBoxAdapter(
-                    child: _PopularExplore(
-                  onPressed: () => ref
-                      .read(selectedExploreCategoryProvider.notifier)
-                      .state = ExploreCategory.popular,
-                )),
-                SliverToBoxAdapter(
-                    child: _HotExplore(
-                  onPressed: () => ref
-                      .read(selectedExploreCategoryProvider.notifier)
-                      .state = ExploreCategory.hot,
-                )),
-                SliverToBoxAdapter(
-                    child: _MostViewedExplore(
-                  onPressed: () => ref
-                      .read(selectedExploreCategoryProvider.notifier)
-                      .state = ExploreCategory.mostViewed,
-                )),
-              ],
-            ),
+    return ExplorePage(
+      useAppBarPadding: useAppBarPadding,
+      sliverOverviews: [
+        SliverToBoxAdapter(
+          child: _PopularExplore(
+            onPressed: () => goToExplorePopularPage(context),
           ),
         ),
-        Offstage(
-          offstage: selectedCategory == null,
-          child: Scaffold(
-            body: switch (selectedCategory) {
-              ExploreCategory.hot => ExploreHotPage(
-                  onBack: () => _onBack(ref),
-                ),
-              ExploreCategory.mostViewed => ExploreMostViewedPage.routeOf(
-                  context,
-                  onBack: () => _onBack(ref),
-                ),
-              ExploreCategory.popular => ExplorePopularPage.routeOf(
-                  context,
-                  onBack: () => _onBack(ref),
-                ),
-              null => const SizedBox.shrink(),
-            },
+        SliverToBoxAdapter(
+          child: _HotExplore(
+            onPressed: () => goToExploreHotPage(context),
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: _MostViewedExplore(
+            onPressed: () => goToExploreMostViewedPage(context),
           ),
         ),
       ],
     );
   }
+}
 
-  void _onBack(WidgetRef ref) {
-    ref.read(selectedExploreCategoryProvider.notifier).state = null;
+class DanbooruExplorePageDesktop extends ConsumerStatefulWidget {
+  const DanbooruExplorePageDesktop({
+    super.key,
+  });
+
+  @override
+  ConsumerState<DanbooruExplorePageDesktop> createState() =>
+      _DanbooruExplorePageDesktopState();
+}
+
+class _DanbooruExplorePageDesktopState
+    extends ConsumerState<DanbooruExplorePageDesktop> {
+  final controller = ExplorePageDesktopController();
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ExplorePageDesktop(
+      controller: controller,
+      sliverOverviews: [
+        SliverToBoxAdapter(
+          child: _PopularExplore(
+            onPressed: () =>
+                controller.changeCategory(ExploreCategory.popular.name),
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: _HotExplore(
+            onPressed: () =>
+                controller.changeCategory(ExploreCategory.hot.name),
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: _MostViewedExplore(
+            onPressed: () =>
+                controller.changeCategory(ExploreCategory.mostViewed.name),
+          ),
+        ),
+      ],
+      details: ValueListenableBuilder(
+        valueListenable: controller.selectedCategory,
+        builder: (context, category, child) {
+          return switch (category) {
+            'popular' => ExplorePopularPage.routeOf(
+                context,
+                onBack: controller.back,
+              ),
+            'mostViewed' => ExploreMostViewedPage.routeOf(
+                context,
+                onBack: controller.back,
+              ),
+            _ => ExploreHotPage(
+                onBack: controller.back,
+              ),
+          };
+        },
+      ),
+    );
   }
 }
 
@@ -205,123 +180,6 @@ class _PopularExploreState extends ConsumerState<_PopularExplore> {
             orElse: () => const ExploreList(posts: []),
           ),
       onPressed: widget.onPressed,
-    );
-  }
-}
-
-class ExploreList extends ConsumerWidget {
-  const ExploreList({
-    super.key,
-    required this.posts,
-  });
-
-  final List<DanbooruPost> posts;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final height = context.screen.size == ScreenSize.small ? 200.0 : 250.0;
-    final config = ref.watchConfig;
-
-    return ref.watch(blacklistTagsProvider(config)).when(
-          data: (blacklistedTags) {
-            final filteredPosts = posts
-                .where((post) =>
-                    !blacklistedTags.any((tag) => post.tags.contains(tag)))
-                .toList();
-
-            return filteredPosts.isNotEmpty
-                ? _buildList(height, filteredPosts, ref)
-                : _buildEmpty(height);
-          },
-          error: (error, _) => _buildList(height, [], ref),
-          loading: () => _buildEmpty(height),
-        );
-  }
-
-  Widget _buildList(
-    double height,
-    List<DanbooruPost> filteredPosts,
-    WidgetRef ref,
-  ) {
-    return SizedBox(
-      height: height,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemBuilder: (context, index) {
-          final post = filteredPosts[index];
-
-          return ExplicitContentBlockOverlay(
-            block: ref.watch(imageListingSettingsProvider
-                    .select((value) => value.blurExplicitMedia)) &&
-                post.isExplicit,
-            width: post.width,
-            height: post.height,
-            childBuilder: (block) => Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 2),
-              child: GestureDetector(
-                onTap: () => goToPostDetailsPage(
-                  context: context,
-                  posts: filteredPosts,
-                  initialIndex: index,
-                ),
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    BooruImage(
-                      aspectRatio: post.aspectRatio,
-                      imageUrl: block ? '' : post.url720x720,
-                      placeholderUrl: block ? '' : post.thumbnailImageUrl,
-                    ),
-                    if (post.isAnimated)
-                      Positioned(
-                        top: 5,
-                        left: 5,
-                        child: VideoPlayDurationIcon(
-                          duration: post.duration,
-                          hasSound: post.hasSound,
-                        ),
-                      ),
-                    Positioned.fill(
-                      child: ShadowGradientOverlay(
-                        alignment: Alignment.bottomCenter,
-                        colors: [
-                          const Color(0xC2000000),
-                          Colors.black12.withOpacity(0),
-                        ],
-                      ),
-                    ),
-                    Positioned(
-                      left: 5,
-                      bottom: 1,
-                      child: Text(
-                        '${index + 1}',
-                        style: context.textTheme.displayMedium?.copyWith(
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        },
-        itemCount: filteredPosts.length,
-      ),
-    );
-  }
-
-  Widget _buildEmpty(double height) {
-    return SizedBox(
-      height: height,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: 20,
-        itemBuilder: (context, index) => Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 2),
-          child: createRandomPlaceholderContainer(context),
-        ),
-      ),
     );
   }
 }

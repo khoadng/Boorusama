@@ -302,7 +302,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
       ],
       desktopViews: [
         // 1
-        const ExplorePageDesktop(),
+        const DanbooruExplorePageDesktop(),
         // 2
         const DanbooruPoolPage(),
         // 3
