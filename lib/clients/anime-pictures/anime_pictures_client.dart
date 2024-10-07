@@ -135,6 +135,7 @@ class AnimePicturesClient {
 
   Future<List<PostDto>> getTopPosts({
     TopLength? length,
+    bool? erotic,
   }) async {
     final l = length ?? TopLength.week;
 
@@ -142,6 +143,7 @@ class AnimePicturesClient {
       '$_basePath/top',
       queryParameters: {
         'length': l.name,
+        'erotic': erotic == true ? 1 : '',
       },
     );
 
@@ -153,6 +155,16 @@ class AnimePicturesClient {
               _dio.options.baseUrl,
             ))
         .toList();
+  }
+
+  Future<UserDto> getProfile() async {
+    final response = await _dio.get(
+      '$_basePath/profile',
+    );
+
+    final result = response.data['user'];
+
+    return UserDto.fromJson(result);
   }
 }
 
