@@ -85,7 +85,7 @@ class DanbooruPostContextMenu extends ConsumerWidget {
           ),
         if (!booruConfig.hasStrictSFW)
           ContextMenuButtonConfig(
-            'Open in browser',
+            'post.detail.view_in_browser'.tr(),
             onPressed: () =>
                 launchExternalUrlString(post.getLink(booruConfig.url)),
           ),
