@@ -21,6 +21,7 @@ import 'package:boorusama/boorus/moebooru/feats/tags/moebooru_tag_provider.dart'
 import 'package:boorusama/boorus/sankaku/sankaku.dart';
 import 'package:boorusama/boorus/szurubooru/favorites/favorites.dart';
 import 'package:boorusama/boorus/zerochan/providers.dart';
+import 'package:boorusama/clients/anime-pictures/anime_pictures_client.dart';
 import 'package:boorusama/clients/boorusama/boorusama_client.dart';
 import 'package:boorusama/clients/danbooru/danbooru_client.dart';
 import 'package:boorusama/clients/e621/e621_client.dart';
@@ -50,6 +51,7 @@ import 'package:boorusama/foundation/loggers/loggers.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/package_info.dart';
 import 'package:boorusama/functional.dart';
+import 'anime-pictures/providers.dart';
 import 'hydrus/favorites/favorites.dart';
 import 'hydrus/hydrus.dart';
 import 'philomena/providers.dart';
@@ -84,6 +86,8 @@ final postRepoProvider = Provider.family<PostRepository, BooruConfig>(
           BooruType.zerochan => ref.watch(zerochanPostRepoProvider(config)),
           BooruType.szurubooru => ref.watch(szurubooruPostRepoProvider(config)),
           BooruType.hydrus => ref.watch(hydrusPostRepoProvider(config)),
+          BooruType.animePictures =>
+            ref.watch(animePicturesPostRepoProvider(config)),
           BooruType.unknown => ref.watch(emptyPostRepoProvider),
         });
 
@@ -106,6 +110,7 @@ final postArtistCharacterRepoProvider =
               BooruType.shimmie2 ||
               BooruType.zerochan ||
               BooruType.hydrus ||
+              BooruType.animePictures ||
               BooruType.unknown =>
                 ref.watch(postRepoProvider(config)),
             });
@@ -247,6 +252,7 @@ final tagRepoProvider = Provider.family<TagRepository, BooruConfig>(
           BooruType.szurubooru ||
           BooruType.shimmie2 ||
           BooruType.hydrus ||
+          BooruType.animePictures ||
           BooruType.unknown =>
             ref.watch(emptyTagRepoProvider),
         });
@@ -266,6 +272,7 @@ final favoriteProvider = Provider.autoDispose
           BooruType.philomena ||
           BooruType.szurubooru ||
           BooruType.shimmie2 ||
+          BooruType.animePictures ||
           BooruType.unknown =>
             false,
         });
@@ -290,6 +297,7 @@ final blacklistTagsProvider =
     BooruType.szurubooru ||
     BooruType.shimmie2 ||
     BooruType.hydrus ||
+    BooruType.animePictures ||
     BooruType.unknown =>
       globalBlacklistedTags,
   };
@@ -367,6 +375,10 @@ final booruSiteValidatorProvider =
         apiKey: apiKey ?? '',
         dio: dio,
       ).getFiles().then((value) => true),
+    BooruType.animePictures => AnimePicturesClient(
+        baseUrl: config.url,
+        dio: dio,
+      ).getPosts().then((value) => true),
     BooruType.unknown => Future.value(false),
   };
 });

@@ -85,3 +85,8 @@
     protocol: https_1
     sites:
       - https://rule34.paheal.net/
+
+- anime-pictures:
+    protocol: https_1
+    sites:
+      - https://anime-pictures.net/

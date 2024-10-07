@@ -14,6 +14,7 @@ const int kPhilomenaId = 28;
 const int kShimmie2Id = 29;
 const int kSzurubooruId = 30;
 const int kHydrusId = 31;
+const int kAnimePicturesId = 32;
 
 enum NetworkProtocol {
   https_1_1,
@@ -62,6 +63,7 @@ sealed class Booru extends Equatable {
         'philomena' => Philomena.from(name, data),
         'shimmie2' => Shimmie2.from(name, data),
         'szurubooru' => Szurubooru.from(name, data),
+        'anime-pictures' => AnimePictures.from(name, data),
         _ => throw Exception('Unknown booru: $name'),
       };
 
@@ -91,6 +93,7 @@ extension BooruX on Booru {
         Shimmie2 _ => kShimmie2Id,
         Szurubooru _ => kSzurubooruId,
         Hydrus _ => kHydrusId,
+        AnimePictures _ => kAnimePicturesId,
       };
 
   bool hasSite(String url) => switch (this) {
@@ -106,6 +109,7 @@ extension BooruX on Booru {
         final Shimmie2 s => s.sites.contains(url),
         final Szurubooru s => s.sites.contains(url),
         final Hydrus h => h.sites.contains(url),
+        final AnimePictures a => a.sites.contains(url),
       };
 
   NetworkProtocol? getSiteProtocol(String url) => switch (this) {
@@ -462,6 +466,24 @@ class Hydrus extends Booru {
   final List<String> sites;
 }
 
+class AnimePictures extends Booru {
+  const AnimePictures({
+    required super.name,
+    required super.protocol,
+    required this.sites,
+  });
+
+  factory AnimePictures.from(String name, dynamic data) {
+    return AnimePictures(
+      name: name,
+      protocol: _parseProtocol(data['protocol']),
+      sites: List.from(data['sites']),
+    );
+  }
+
+  final List<String> sites;
+}
+
 enum BooruType {
   unknown,
   danbooru,
@@ -476,6 +498,7 @@ enum BooruType {
   shimmie2,
   szurubooru,
   hydrus,
+  animePictures,
 }
 
 extension BooruTypeX on BooruType {
@@ -493,6 +516,7 @@ extension BooruTypeX on BooruType {
         BooruType.shimmie2 => 'Shimmie2',
         BooruType.szurubooru => 'Szurubooru',
         BooruType.hydrus => 'Hydrus',
+        BooruType.animePictures => 'Anime Pictures',
       };
 
   bool get isGelbooruBased =>
@@ -514,7 +538,7 @@ extension BooruTypeX on BooruType {
 
   bool get supportBlacklistedTags => isDanbooruBased;
 
-  bool get canDownloadMultipleFiles => true;
+  bool get canDownloadMultipleFiles => this != BooruType.animePictures;
 
   bool get hasUnknownFullImageUrl =>
       this == BooruType.zerochan || this == BooruType.gelbooruV1;
@@ -532,6 +556,7 @@ extension BooruTypeX on BooruType {
         BooruType.shimmie2 => kShimmie2Id,
         BooruType.szurubooru => kSzurubooruId,
         BooruType.hydrus => kHydrusId,
+        BooruType.animePictures => kAnimePicturesId,
         BooruType.unknown => 0,
       };
 }
@@ -549,6 +574,7 @@ BooruType intToBooruType(int? value) => switch (value) {
       kShimmie2Id => BooruType.shimmie2,
       kSzurubooruId => BooruType.szurubooru,
       kHydrusId => BooruType.hydrus,
+      kAnimePicturesId => BooruType.animePictures,
       _ => BooruType.unknown
     };
 
