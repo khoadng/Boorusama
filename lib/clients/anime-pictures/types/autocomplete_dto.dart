@@ -1,17 +1,17 @@
 import 'types.dart';
 
 class AutocompleteDto {
-  final String? t;
-  final String? t2;
-  final AnimePicturesTagType? c;
-  final int? id;
-
-  AutocompleteDto({
+  const AutocompleteDto({
     this.t,
     this.t2,
     this.c,
     this.id,
   });
+
+  final String? t;
+  final String? t2;
+  final AnimePicturesTagType? c;
+  final int? id;
 
   factory AutocompleteDto.fromJson(Map<String, dynamic> json) {
     final tag = json['t'] as String?;
@@ -22,7 +22,7 @@ class AutocompleteDto {
     return AutocompleteDto(
       t: cleanTag,
       t2: cleanTag2,
-      c: json['c'],
+      c: tagTypeFromInt(json['c']),
       id: json['id'],
     );
   }
