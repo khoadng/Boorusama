@@ -18,8 +18,8 @@ import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
-class ExplorePage extends ConsumerWidget {
-  const ExplorePage({
+class DanbooruExplorePage extends ConsumerWidget {
+  const DanbooruExplorePage({
     super.key,
     this.useAppBarPadding = true,
   });
