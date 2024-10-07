@@ -79,6 +79,24 @@ final animePicturesAutocompleteRepoProvider =
   },
 );
 
+final animePicturesDailyPopularProvider = FutureProvider.autoDispose
+    .family<List<AnimePicturesPost>, BooruConfig>((ref, config) async {
+  final client = ref.watch(animePicturesClientProvider(config));
+
+  return client
+      .getTopPosts(length: TopLength.day)
+      .then((value) => value.map(dtoToAnimePicturesPost).toList());
+});
+
+final animePicturesWeeklyPopularProvider = FutureProvider.autoDispose
+    .family<List<AnimePicturesPost>, BooruConfig>((ref, config) async {
+  final client = ref.watch(animePicturesClientProvider(config));
+
+  return client
+      .getTopPosts(length: TopLength.week)
+      .then((value) => value.map(dtoToAnimePicturesPost).toList());
+});
+
 TagCategory animePicturesTagTypeToTagCategory(AnimePicturesTagType? type) =>
     switch (type) {
       null => TagCategory.general(),

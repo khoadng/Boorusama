@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/anime-pictures/anime_pictures_home_page.dart';
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/gelbooru_v2/gelbooru_v2.dart';
@@ -130,6 +131,10 @@ class AnimePicturesBuilder
               onPageChanged: (page) => controller.setPage(page),
             ),
           );
+
+  @override
+  HomePageBuilder get homePageBuilder =>
+      (context, config) => AnimePicturesHomePage(config: config);
 
   @override
   late final DownloadFileUrlExtractor downloadFileUrlExtractor =
