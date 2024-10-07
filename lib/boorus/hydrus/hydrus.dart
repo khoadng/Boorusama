@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -22,6 +21,7 @@ import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
@@ -337,8 +337,8 @@ class HydrusHomePage extends StatelessWidget {
   }
 }
 
-final ratingServiceNameProvider = FutureProvider<String?>((ref) async {
-  final config = ref.watchConfig;
+final ratingServiceNameProvider =
+    FutureProvider.family<String?, BooruConfig>((ref, config) async {
   final client = ref.read(hydrusClientProvider(config));
 
   final services = await client.getServicesCached();
@@ -544,10 +544,11 @@ class HydrusPostActionToolbar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final canFav = ref.watch(hydrusCanFavoriteProvider).maybeWhen(
-          data: (fav) => fav,
-          orElse: () => false,
-        );
+    final canFav =
+        ref.watch(hydrusCanFavoriteProvider(ref.watchConfig)).maybeWhen(
+              data: (fav) => fav,
+              orElse: () => false,
+            );
 
     return PostActionToolbar(
       children: [
