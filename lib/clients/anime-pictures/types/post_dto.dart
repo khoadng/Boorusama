@@ -136,6 +136,10 @@ enum EroticLevel {
   hard,
 }
 
+enum PostOrder {
+  starsDate,
+}
+
 class PostDetailsTagDto {
   const PostDetailsTagDto({
     required this.tag,

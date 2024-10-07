@@ -33,15 +33,22 @@ class AnimePicturesClient {
     List<String>? tags,
     int? page,
     int? limit,
+    int? starsBy,
+    PostOrder? orderBy,
   }) async {
     final isEmpty = tags?.join(' ').isEmpty ?? true;
 
     final response = await _dio.get(
       '$_basePath/posts',
       queryParameters: {
+        if (starsBy != null) 'stars_by': starsBy,
         if (!isEmpty) 'search_tag': tags!.join(' '),
         'page': (page ?? 1) - 1,
         if (limit != null) 'posts_per_page': limit,
+        if (orderBy != null)
+          'order_by': switch (orderBy) {
+            PostOrder.starsDate => 'stars_date',
+          },
       },
     );
 
