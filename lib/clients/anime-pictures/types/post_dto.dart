@@ -1,32 +1,7 @@
+import 'types.dart';
+
 class PostDto {
-  final int? id;
-  final String? md5;
-  final String? md5Pixels;
-  final int? width;
-  final int? height;
-  final String? pubtime;
-  final String? datetime;
-  final int? score;
-  final int? scoreNumber;
-  final int? size;
-  final int? downloadCount;
-  final int? erotics;
-  final List<int>? color;
-  final String? ext;
-  final int? status;
-  final int? statusType;
-  final int? redirectId;
-  final bool? spoiler;
-  final bool? haveAlpha;
-  final int? tagsCount;
-  final double? artefactsDegree;
-  final double? smoothDegree;
-
-  final String? smallPreview;
-  final String? mediumPreview;
-  final String? bigPreview;
-
-  PostDto({
+  const PostDto({
     this.id,
     this.md5,
     this.md5Pixels,
@@ -53,6 +28,33 @@ class PostDto {
     this.mediumPreview,
     this.bigPreview,
   });
+
+  final int? id;
+  final String? md5;
+  final String? md5Pixels;
+  final int? width;
+  final int? height;
+  final String? pubtime;
+  final String? datetime;
+  final int? score;
+  final int? scoreNumber;
+  final int? size;
+  final int? downloadCount;
+  final int? erotics;
+  final List<int>? color;
+  final String? ext;
+  final int? status;
+  final int? statusType;
+  final int? redirectId;
+  final bool? spoiler;
+  final bool? haveAlpha;
+  final int? tagsCount;
+  final double? artefactsDegree;
+  final double? smoothDegree;
+
+  final String? smallPreview;
+  final String? mediumPreview;
+  final String? bigPreview;
 
   factory PostDto.fromJson(Map<String, dynamic> json, String baseUrl) {
     final extRaw = json['ext'];
@@ -115,23 +117,88 @@ class PostDto {
   }
 }
 
+class PostDetailsTagDto {
+  const PostDetailsTagDto({
+    required this.tag,
+    required this.user,
+  });
+
+  final TagDto? tag;
+  final UserDto? user;
+
+  factory PostDetailsTagDto.fromJson(Map<String, dynamic> json) {
+    return PostDetailsTagDto(
+      tag: json['tag'] != null ? TagDto.fromJson(json['tag']) : null,
+      user: json['user'] != null ? UserDto.fromJson(json['user']) : null,
+    );
+  }
+}
+
+class PostDetailsFavoritesUserDto {
+  const PostDetailsFavoritesUserDto({
+    required this.user,
+    required this.favorite,
+  });
+
+  final UserDto? user;
+  final FavoriteDto? favorite;
+
+  factory PostDetailsFavoritesUserDto.fromJson(Map<String, dynamic> json) {
+    return PostDetailsFavoritesUserDto(
+      user: json['user'] != null ? UserDto.fromJson(json['user']) : null,
+      favorite: json['favorite'] != null
+          ? FavoriteDto.fromJson(json['favorite'])
+          : null,
+    );
+  }
+}
+
 class PostDetailsDto {
-  PostDetailsDto({
+  const PostDetailsDto({
     required this.post,
+    required this.user,
+    required this.moderator,
+    required this.tags,
+    required this.starIt,
+    required this.favoritesUsers,
     required this.fileUrl,
+    required this.tied,
   });
 
   final PostDto? post;
+  final UserDto? user;
+  final UserDto? moderator;
+  final List<PostDetailsTagDto>? tags;
+  final bool starIt;
+  final List<PostDetailsFavoritesUserDto>? favoritesUsers;
   final String? fileUrl;
+  final List<PostDto>? tied;
 
   factory PostDetailsDto.fromJson(Map<String, dynamic> json, String baseUrl) {
-    final post =
-        json['post'] != null ? PostDto.fromJson(json['post'], baseUrl) : null;
-    final fileUrl = json['file_url'];
-
     return PostDetailsDto(
-      post: post,
-      fileUrl: fileUrl,
+      post:
+          json['post'] != null ? PostDto.fromJson(json['post'], baseUrl) : null,
+      user: json['user'] != null ? UserDto.fromJson(json['user']) : null,
+      moderator: json['moderator'] != null
+          ? UserDto.fromJson(json['moderator'])
+          : null,
+      tags: json['tags'] != null
+          ? (json['tags'] as List)
+              .map((item) => PostDetailsTagDto.fromJson(item))
+              .toList()
+          : null,
+      starIt: json['star_it'],
+      favoritesUsers: json['favorites_users'] != null
+          ? (json['favorites_users'] as List)
+              .map((item) => PostDetailsFavoritesUserDto.fromJson(item))
+              .toList()
+          : null,
+      fileUrl: json['file_url'],
+      tied: json['tied'] != null
+          ? (json['tied'] as List)
+              .map((item) => PostDto.fromJson(item, baseUrl))
+              .toList()
+          : null,
     );
   }
 }
