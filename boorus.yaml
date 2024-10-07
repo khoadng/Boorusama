@@ -88,5 +88,6 @@
 
 - anime-pictures:
     protocol: https_1
+    login-url: https://anime-pictures.net/login?lang=en
     sites:
       - https://anime-pictures.net/

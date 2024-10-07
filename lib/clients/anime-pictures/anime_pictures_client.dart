@@ -13,6 +13,7 @@ class AnimePicturesClient {
   AnimePicturesClient({
     Dio? dio,
     required String baseUrl,
+    this.cookie,
   }) {
     _dio = dio ?? Dio();
 
@@ -24,10 +25,16 @@ class AnimePicturesClient {
 
     _dio.options = _dio.options.copyWith(
       baseUrl: url,
+      headers: cookie != null
+          ? {
+              'cookie': cookie,
+            }
+          : null,
     );
   }
 
   late final Dio _dio;
+  final String? cookie;
 
   Future<List<PostDto>> getPosts({
     List<String>? tags,
@@ -108,9 +115,11 @@ class AnimePicturesClient {
       options: Options(
         followRedirects: false,
         validateStatus: (status) => status == 302,
-        headers: {
-          'cookie': 'sitelang=en',
-        },
+        headers: this.cookie == null
+            ? {
+                'cookie': 'sitelang=en',
+              }
+            : null,
       ),
     );
 
@@ -123,9 +132,13 @@ class AnimePicturesClient {
       return null;
     }
 
+    final cookieString = this.cookie != null
+        ? '${this.cookie}; ${cookie.name}=${cookie.value}'
+        : 'sitelang=en; ${cookie.name}=${cookie.value}';
+
     final data = (
       url: location,
-      cookie: 'sitelang=en; ${cookie.name}=${cookie.value}',
+      cookie: cookieString,
     );
 
     _downloadUrlCache[postId] = data;

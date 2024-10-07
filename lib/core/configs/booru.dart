@@ -150,6 +150,7 @@ extension BooruX on Booru {
   //TODO: This is fine for now, but we must have a different url for each site, currently there is only one site for each booru
   String? getLoginUrl() => switch (this) {
         final Gelbooru g => g.loginUrl,
+        final AnimePictures a => a.loginUrl,
         _ => null,
       };
 
@@ -466,11 +467,12 @@ class Hydrus extends Booru {
   final List<String> sites;
 }
 
-class AnimePictures extends Booru {
+class AnimePictures extends Booru with PassHashAuthMixin {
   const AnimePictures({
     required super.name,
     required super.protocol,
     required this.sites,
+    required this.loginUrl,
   });
 
   factory AnimePictures.from(String name, dynamic data) {
@@ -478,10 +480,14 @@ class AnimePictures extends Booru {
       name: name,
       protocol: _parseProtocol(data['protocol']),
       sites: List.from(data['sites']),
+      loginUrl: data['login-url'],
     );
   }
 
   final List<String> sites;
+
+  @override
+  final String? loginUrl;
 }
 
 enum BooruType {

@@ -19,6 +19,7 @@ final animePicturesClientProvider =
     return AnimePicturesClient(
       dio: dio,
       baseUrl: config.url,
+      cookie: config.passHash,
     );
   },
 );
@@ -122,7 +123,9 @@ AnimePicturesPost dtoToAnimePicturesPost(
     tags: {},
     rating: switch (e.erotics) {
       0 => Rating.general,
-      1 => Rating.explicit,
+      1 => Rating.sensitive,
+      2 => Rating.questionable,
+      3 => Rating.explicit,
       _ => Rating.unknown,
     },
     hasComment: false,

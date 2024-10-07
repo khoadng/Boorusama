@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/anime-pictures/anime_pictures_home_page.dart';
@@ -15,16 +14,15 @@ import 'package:boorusama/clients/anime-pictures/anime_pictures_client.dart';
 import 'package:boorusama/clients/anime-pictures/types/types.dart';
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/types.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
-import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import 'create_anime_pictures_config_page.dart';
 import 'providers.dart';
 
 class AnimePicturesBuilder
@@ -375,67 +373,6 @@ class AnimePicturesPostDetailsDesktopPage extends ConsumerWidget {
               ),
       topRightButtonsBuilder: (currentPage, expanded, post) =>
           GeneralMoreActionButton(post: post),
-    );
-  }
-}
-
-class CreateAnimePicturesConfigPage extends ConsumerWidget {
-  const CreateAnimePicturesConfigPage({
-    super.key,
-    required this.config,
-    this.backgroundColor,
-    this.isNewConfig = false,
-    this.initialTab,
-  });
-
-  final BooruConfig config;
-  final Color? backgroundColor;
-  final bool isNewConfig;
-  final String? initialTab;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return ProviderScope(
-      overrides: [
-        initialBooruConfigProvider.overrideWithValue(config),
-      ],
-      child: CreateBooruConfigScaffold(
-        isNewConfig: isNewConfig,
-        backgroundColor: backgroundColor,
-        initialTab: initialTab,
-        footer: isNewConfig
-            ? Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
-                ),
-                decoration: BoxDecoration(
-                  color: context.theme.colorScheme.secondaryContainer,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(12),
-                    topRight: Radius.circular(12),
-                  ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Symbols.info,
-                      size: 16,
-                      color: context.theme.colorScheme.error,
-                    ),
-                    const SizedBox(width: 8),
-                    Flexible(
-                      child: Text(
-                        "Bulk download and blacklist won't work for this booru.",
-                        style: context.textTheme.bodySmall,
-                      ),
-                    ),
-                  ],
-                ),
-              )
-            : null,
-      ),
     );
   }
 }
