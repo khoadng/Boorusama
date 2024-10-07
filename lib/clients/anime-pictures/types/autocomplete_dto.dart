@@ -1,7 +1,9 @@
+import 'types.dart';
+
 class AutocompleteDto {
   final String? t;
   final String? t2;
-  final int? c;
+  final AnimePicturesTagType? c;
   final int? id;
 
   AutocompleteDto({
