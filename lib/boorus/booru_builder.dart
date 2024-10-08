@@ -38,6 +38,8 @@ import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
+import 'anime-pictures/anime_pictures.dart';
+import 'anime-pictures/providers.dart';
 import 'danbooru/notes/notes.dart';
 import 'danbooru/posts/posts.dart';
 import 'e621/notes/notes.dart';
@@ -190,5 +192,11 @@ final booruBuildersProvider =
           BooruType.hydrus: (config) => HydrusBuilder(
                 postRepo: ref.read(hydrusPostRepoProvider(config)),
                 client: ref.read(hydrusClientProvider(config)),
+              ),
+          BooruType.animePictures: (config) => AnimePicturesBuilder(
+                client: ref.read(animePicturesClientProvider(config)),
+                postRepo: ref.read(animePicturesPostRepoProvider(config)),
+                autocompleteRepo:
+                    ref.read(animePicturesAutocompleteRepoProvider(config)),
               ),
         });

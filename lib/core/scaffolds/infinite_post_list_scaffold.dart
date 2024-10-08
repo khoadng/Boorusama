@@ -13,10 +13,12 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/image.dart';
 import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -260,6 +262,43 @@ class _InfinitePostListScaffoldState<T extends Post>
             );
           },
           error: widget.errors,
+        ),
+      ),
+    );
+  }
+}
+
+class SinglePagePostListScaffold<T extends Post>
+    extends ConsumerStatefulWidget {
+  const SinglePagePostListScaffold({
+    super.key,
+    required this.posts,
+    this.sliverHeaders,
+  });
+
+  final List<T> posts;
+  final List<Widget>? sliverHeaders;
+
+  @override
+  ConsumerState<SinglePagePostListScaffold<T>> createState() =>
+      _SinglePagePostListScaffoldState<T>();
+}
+
+class _SinglePagePostListScaffoldState<T extends Post>
+    extends ConsumerState<SinglePagePostListScaffold<T>> {
+  @override
+  Widget build(BuildContext context) {
+    return CustomContextMenuOverlay(
+      child: PostScope(
+        fetcher: (page) => TaskEither.Do(
+          ($) async => page == 1 ? widget.posts.toResult() : <T>[].toResult(),
+        ),
+        builder: (context, controller, errors) => InfinitePostListScaffold(
+          errors: errors,
+          controller: controller,
+          sliverHeaders: [
+            if (widget.sliverHeaders != null) ...widget.sliverHeaders!,
+          ],
         ),
       ),
     );

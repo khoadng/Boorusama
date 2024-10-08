@@ -13,17 +13,13 @@ import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/foundation/permissions.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/toast.dart';
+import 'package:boorusama/router.dart';
 
 extension PostDownloadX on WidgetRef {
   Future<PermissionStatus?> _getPermissionStatus() async {
     final perm = await read(deviceStoragePermissionProvider.future);
     return isAndroid() || isIOS() ? perm.storagePermission : null;
   }
-
-  Settings get settings => read(settingsProvider);
-
-  DownloadFileUrlExtractor get urlExtractor =>
-      read(downloadFileUrlExtractorProvider(readConfig));
 
   void _showToastIfPossible({String? message}) {
     if (context.mounted) {
@@ -32,6 +28,8 @@ extension PostDownloadX on WidgetRef {
   }
 
   Future<void> download(Post post) async {
+    final settings = read(settingsProvider);
+    final urlExtractor = read(downloadFileUrlExtractorProvider(readConfig));
     final perm = await _getPermissionStatus();
 
     await _download(
@@ -41,7 +39,10 @@ extension PostDownloadX on WidgetRef {
       settings: settings,
       downloadFileUrlExtractor: urlExtractor,
       onStarted: () {
-        showDownloadStartToast(context);
+        final c = navigatorKey.currentState?.context;
+        if (c != null) {
+          showDownloadStartToast(c);
+        }
       },
     );
   }
@@ -51,6 +52,8 @@ extension PostDownloadX on WidgetRef {
     String? group,
     String? downloadPath,
   }) async {
+    final settings = read(settingsProvider);
+    final urlExtractor = read(downloadFileUrlExtractorProvider(readConfig));
     final config = readConfig;
 
     // ensure that the booru supports bulk download
@@ -99,12 +102,21 @@ Future<void> _download(
   final service = ref.read(downloadServiceProvider(booruConfig));
   final fileNameBuilder =
       ref.readBooruBuilder(booruConfig)?.downloadFilenameBuilder;
+  final logger = ref.read(loggerProvider);
+
+  final headers = {
+    AppHttpHeaders.userAgentHeader:
+        ref.read(userAgentGeneratorProvider(booruConfig)).generate(),
+    ...ref.read(extraHttpHeaderProvider(booruConfig)),
+  };
+
+  final deviceStoragePermissionNotifier =
+      ref.read(deviceStoragePermissionProvider.notifier);
+
   final urlData = await downloadFileUrlExtractor.getDownloadFileUrl(
     post: downloadable,
     settings: settings,
   );
-
-  final logger = ref.read(loggerProvider);
 
   if (fileNameBuilder == null) {
     logger.logE('Single Download', 'No file name builder found, aborting...');
@@ -149,11 +161,9 @@ Future<void> _download(
           url: urlData.url,
           filename: fileName,
           headers: {
-            AppHttpHeaders.userAgentHeader:
-                ref.read(userAgentGeneratorProvider(booruConfig)).generate(),
+            ...headers,
             if (urlData.cookie != null)
               AppHttpHeaders.cookieHeader: urlData.cookie!,
-            ...ref.read(extraHttpHeaderProvider(booruConfig)),
           },
           path: downloadPath,
         )
@@ -170,7 +180,7 @@ Future<void> _download(
     download();
   } else {
     logger.logI('Single Download', 'Permission not granted, requesting...');
-    ref.read(deviceStoragePermissionProvider.notifier).requestPermission(
+    deviceStoragePermissionNotifier.requestPermission(
       onDone: (isGranted) {
         if (isGranted) {
           download();
