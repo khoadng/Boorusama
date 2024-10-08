@@ -11,8 +11,6 @@ import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
-import 'booru_config_listing_view.dart';
-import 'booru_config_search_view.dart';
 
 const kDefaultPreviewImageButtonAction = {
   '',

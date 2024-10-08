@@ -6,8 +6,8 @@ import 'package:cookie_jar/cookie_jar.dart';
 import 'package:webview_cookie_manager/webview_cookie_manager.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-class GelbooruLoginPage extends StatefulWidget {
-  const GelbooruLoginPage({
+class CookieAccessWebViewPage extends StatefulWidget {
+  const CookieAccessWebViewPage({
     super.key,
     required this.url,
     required this.onGet,
@@ -17,10 +17,11 @@ class GelbooruLoginPage extends StatefulWidget {
   final void Function(List<Cookie> cookies) onGet;
 
   @override
-  State<GelbooruLoginPage> createState() => _GelbooruLoginPageState();
+  State<CookieAccessWebViewPage> createState() =>
+      _CookieAccessWebViewPageState();
 }
 
-class _GelbooruLoginPageState extends State<GelbooruLoginPage> {
+class _CookieAccessWebViewPageState extends State<CookieAccessWebViewPage> {
   final WebViewController controller = WebViewController();
 
   @override

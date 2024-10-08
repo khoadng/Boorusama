@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/gelbooru/configs/gelbooru_login_webview_page.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/create/create.dart';
@@ -182,7 +181,7 @@ class _AnimePicturesAuthViewState extends ConsumerState<AnimePicturesAuthView> {
 
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => GelbooruLoginPage(
+        builder: (context) => CookieAccessWebViewPage(
           url: loginUrl,
           onGet: (cookies) {
             if (cookies.isNotEmpty) {
