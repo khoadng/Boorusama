@@ -1,6 +1,6 @@
-# Unreleased-2024.9.22
+# Unreleased-2024.10.08
 - [Danbooru] Add an option to hide banned posts
-- Add support for Hydrus Network
+- Add support for Hydrus Network and anime-pictures
 - Add a new booru profile option to include extra tags in every search
 - Redesign bulk downdloader, remove legacy download method
 - Hide system UI when UI overlay is hidden in image viewer
