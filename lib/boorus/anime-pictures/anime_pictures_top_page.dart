@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -9,6 +10,11 @@ import 'package:boorusama/boorus/anime-pictures/providers.dart';
 import 'package:boorusama/boorus/danbooru/explores/explore_section.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/explores/explores.dart';
+import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/scaffolds/scaffolds.dart';
+import 'package:boorusama/widgets/widgets.dart';
+
+final _eroticOnProvider = StateProvider<bool>((ref) => false);
 
 class AnimePicturesTopPage extends ConsumerWidget {
   const AnimePicturesTopPage({
@@ -23,17 +29,98 @@ class AnimePicturesTopPage extends ConsumerWidget {
     return ExplorePage(
       useAppBarPadding: useAppBarPadding,
       sliverOverviews: [
+        if (ref.watchConfig.passHash != null)
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              child: EroticsToggleSwitch(
+                onToggle: (erotic) {
+                  ref.read(_eroticOnProvider.notifier).state = erotic;
+                },
+              ),
+            ),
+          ),
         SliverToBoxAdapter(
           child: _DailyPopularExplore(
-            onPressed: () => print('Daily Popular'),
+            onPressed: (posts) => goToAnimePicturesDetailsTopPage(
+              context,
+              posts,
+              'Daily Top',
+            ),
           ),
         ),
         SliverToBoxAdapter(
           child: _WeeklyPopularExplore(
-            onPressed: () => print('Weekly Popular'),
+            onPressed: (posts) => goToAnimePicturesDetailsTopPage(
+              context,
+              posts,
+              'Weekly Top',
+            ),
           ),
         ),
       ],
+    );
+  }
+}
+
+void goToAnimePicturesDetailsTopPage(
+  BuildContext context,
+  List<Post> posts,
+  String title,
+) {
+  Navigator.of(context).push(
+    CupertinoPageRoute(
+      builder: (_) => AnimePicturesDetailsTopPage(
+        posts: posts,
+        title: title,
+      ),
+    ),
+  );
+}
+
+class AnimePicturesDetailsTopPage extends ConsumerWidget {
+  const AnimePicturesDetailsTopPage({
+    super.key,
+    required this.posts,
+    required this.title,
+  });
+
+  final List<Post> posts;
+  final String title;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(title),
+      ),
+      body: SinglePagePostListScaffold(
+        posts: posts,
+      ),
+    );
+  }
+}
+
+class EroticsToggleSwitch extends StatelessWidget {
+  const EroticsToggleSwitch({
+    super.key,
+    required this.onToggle,
+  });
+
+  final void Function(bool erotic) onToggle;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: BooruSegmentedButton(
+        initialValue: false,
+        fixedWidth: 120,
+        segments: const {
+          false: 'Common',
+          true: 'Erotics',
+        },
+        onChanged: (value) => onToggle(value),
+      ),
     );
   }
 }
@@ -43,7 +130,7 @@ class _DailyPopularExplore extends ConsumerStatefulWidget {
     required this.onPressed,
   });
 
-  final void Function() onPressed;
+  final void Function(List<Post> posts) onPressed;
 
   @override
   ConsumerState<_DailyPopularExplore> createState() => _PopularExploreState();
@@ -52,15 +139,22 @@ class _DailyPopularExplore extends ConsumerStatefulWidget {
 class _PopularExploreState extends ConsumerState<_DailyPopularExplore> {
   @override
   Widget build(BuildContext context) {
+    final params = (
+      config: ref.watchConfig,
+      erotic: ref.watch(_eroticOnProvider),
+    );
+
     return ExploreSection(
-      title: 'Daily Popular',
-      builder: (_) => ref
-          .watch(animePicturesDailyPopularProvider(ref.watchConfig))
-          .maybeWhen(
-            data: (r) => ExploreList(posts: r),
-            orElse: () => const ExploreList(posts: []),
+      title: 'Daily',
+      builder: (_) =>
+          ref.watch(animePicturesDailyPopularProvider(params)).maybeWhen(
+                data: (r) => ExploreList(posts: r),
+                orElse: () => const ExploreList(posts: []),
+              ),
+      onPressed: ref.watch(animePicturesDailyPopularProvider(params)).maybeWhen(
+            data: (r) => () => widget.onPressed(r),
+            orElse: () => null,
           ),
-      onPressed: widget.onPressed,
     );
   }
 }
@@ -70,7 +164,7 @@ class _WeeklyPopularExplore extends ConsumerStatefulWidget {
     required this.onPressed,
   });
 
-  final void Function() onPressed;
+  final void Function(List<Post> posts) onPressed;
 
   @override
   ConsumerState<_WeeklyPopularExplore> createState() =>
@@ -80,15 +174,23 @@ class _WeeklyPopularExplore extends ConsumerStatefulWidget {
 class _WeeklyPopularExploreState extends ConsumerState<_WeeklyPopularExplore> {
   @override
   Widget build(BuildContext context) {
+    final params = (
+      config: ref.watchConfig,
+      erotic: ref.watch(_eroticOnProvider),
+    );
+
     return ExploreSection(
-      title: 'Weekly Popular',
-      builder: (_) => ref
-          .watch(animePicturesWeeklyPopularProvider(ref.watchConfig))
-          .maybeWhen(
-            data: (r) => ExploreList(posts: r),
-            orElse: () => const ExploreList(posts: []),
-          ),
-      onPressed: widget.onPressed,
+      title: 'Weekly',
+      builder: (_) =>
+          ref.watch(animePicturesWeeklyPopularProvider(params)).maybeWhen(
+                data: (r) => ExploreList(posts: r),
+                orElse: () => const ExploreList(posts: []),
+              ),
+      onPressed:
+          ref.watch(animePicturesWeeklyPopularProvider(params)).maybeWhen(
+                data: (r) => () => widget.onPressed(r),
+                orElse: () => null,
+              ),
     );
   }
 }

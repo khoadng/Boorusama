@@ -197,8 +197,6 @@ class _AnimePicturesAuthViewState extends ConsumerState<AnimePicturesAuthView> {
                   .map((e) => '${e.name}=${e.value}')
                   .join('; ');
 
-              print(cookiesString);
-
               ref.updatePassHash(cookiesString);
 
               Navigator.of(context).pop();

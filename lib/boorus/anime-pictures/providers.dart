@@ -80,21 +80,31 @@ final animePicturesAutocompleteRepoProvider =
   },
 );
 
+typedef TopParams = ({
+  BooruConfig config,
+  bool erotic,
+});
+
 final animePicturesDailyPopularProvider = FutureProvider.autoDispose
-    .family<List<AnimePicturesPost>, BooruConfig>((ref, config) async {
+    .family<List<AnimePicturesPost>, TopParams>((ref, params) async {
+  final config = params.config;
+  final erotic = params.erotic;
+
   final client = ref.watch(animePicturesClientProvider(config));
 
   return client
-      .getTopPosts(length: TopLength.day)
+      .getTopPosts(length: TopLength.day, erotic: erotic)
       .then((value) => value.map(dtoToAnimePicturesPost).toList());
 });
 
 final animePicturesWeeklyPopularProvider = FutureProvider.autoDispose
-    .family<List<AnimePicturesPost>, BooruConfig>((ref, config) async {
+    .family<List<AnimePicturesPost>, TopParams>((ref, params) async {
+  final config = params.config;
+  final erotic = params.erotic;
   final client = ref.watch(animePicturesClientProvider(config));
 
   return client
-      .getTopPosts(length: TopLength.week)
+      .getTopPosts(length: TopLength.week, erotic: erotic)
       .then((value) => value.map(dtoToAnimePicturesPost).toList());
 });
 
