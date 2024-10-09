@@ -73,15 +73,16 @@ class GeneralPostContextMenu extends ConsumerWidget {
                 bookmarkState.getBookmark(post, booruConfig.booruType)!,
               ),
           ),
-        ContextMenuButtonConfig(
-          'View tags',
-          onPressed: () {
-            goToShowTaglistPage(ref, post.extractTags());
-          },
-        ),
+        if (post.tags.isNotEmpty)
+          ContextMenuButtonConfig(
+            'View tags',
+            onPressed: () {
+              goToShowTaglistPage(ref, post.extractTags());
+            },
+          ),
         if (!booruConfig.hasStrictSFW)
           ContextMenuButtonConfig(
-            'Open in browser',
+            'post.detail.view_in_browser'.tr(),
             onPressed: () =>
                 launchExternalUrlString(post.getLink(booruConfig.url)),
           ),

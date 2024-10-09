@@ -21,7 +21,7 @@ import 'package:boorusama/router.dart';
 import 'package:boorusama/utils/flutter_utils.dart';
 import '../artists/artists.dart';
 import '../blacklist/blacklist.dart';
-import '../explores/explore_page.dart';
+import '../explores/danbooru_explore_page.dart';
 import '../favorite_groups/favorite_groups.dart';
 import '../favorites/favorites.dart';
 import '../forums/forums.dart';
@@ -152,7 +152,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
                     appBar: AppBar(
                       title: const Text('explore.explore').tr(),
                     ),
-                    body: const ExplorePage(),
+                    body: const DanbooruExplorePage(),
                   ))),
         ),
         SideMenuTile(
@@ -302,7 +302,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
       ],
       desktopViews: [
         // 1
-        const ExplorePageDesktop(),
+        const DanbooruExplorePageDesktop(),
         // 2
         const DanbooruPoolPage(),
         // 3

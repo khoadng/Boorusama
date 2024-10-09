@@ -76,7 +76,7 @@ class GeneralMoreActionButton extends ConsumerWidget {
             'download': const Text('download.download').tr(),
             if (!booru.hasStrictSFW)
               'view_in_browser': const Text('post.detail.view_in_browser').tr(),
-            'show_tag_list': const Text('View tags'),
+            if (post.tags.isNotEmpty) 'show_tag_list': const Text('View tags'),
             if (post.hasFullView)
               'view_original':
                   const Text('post.image_fullview.view_original').tr(),

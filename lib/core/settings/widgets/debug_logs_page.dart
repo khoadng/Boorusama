@@ -22,6 +22,7 @@ import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/scrolling.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
+import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class DebugLogsPage extends ConsumerStatefulWidget {
@@ -150,7 +151,7 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
                     ),
                   ),
                   ReadMoreText(
-                    log.message,
+                    _formatLog(log.message),
                     trimExpandedText: ' less',
                     trimCollapsedText: ' more',
                     trimMode: TrimMode.Line,
@@ -173,4 +174,10 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
       },
     );
   }
+}
+
+String _formatLog(String message) {
+  final msg = tryDecodeFullUri(message).getOrElse(() => message);
+
+  return msg;
 }

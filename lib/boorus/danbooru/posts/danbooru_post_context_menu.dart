@@ -85,16 +85,17 @@ class DanbooruPostContextMenu extends ConsumerWidget {
           ),
         if (!booruConfig.hasStrictSFW)
           ContextMenuButtonConfig(
-            'Open in browser',
+            'post.detail.view_in_browser'.tr(),
             onPressed: () =>
                 launchExternalUrlString(post.getLink(booruConfig.url)),
           ),
-        ContextMenuButtonConfig(
-          'View tags',
-          onPressed: () {
-            goToDanbooruShowTaglistPage(ref, post.extractTags());
-          },
-        ),
+        if (post.tags.isNotEmpty)
+          ContextMenuButtonConfig(
+            'View tags',
+            onPressed: () {
+              goToDanbooruShowTaglistPage(ref, post.extractTags());
+            },
+          ),
         ContextMenuButtonConfig(
           'View tag history',
           onPressed: () => goToPostVersionPage(context, post),

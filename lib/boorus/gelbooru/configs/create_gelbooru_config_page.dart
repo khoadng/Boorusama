@@ -15,7 +15,6 @@ import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import 'gelbooru_login_webview_page.dart';
 import 'widgets.dart';
 
 class CreateGelbooruConfigPage extends ConsumerWidget {
@@ -258,7 +257,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
 
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => GelbooruLoginPage(
+        builder: (context) => CookieAccessWebViewPage(
           url: loginUrl,
           onGet: (cookies) {
             if (cookies.isNotEmpty) {

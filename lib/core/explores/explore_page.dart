@@ -5,15 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/explores/explores.dart';
-import 'package:boorusama/boorus/danbooru/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -22,9 +19,11 @@ class ExplorePage extends ConsumerWidget {
   const ExplorePage({
     super.key,
     this.useAppBarPadding = true,
+    required this.sliverOverviews,
   });
 
   final bool useAppBarPadding;
+  final List<Widget> sliverOverviews;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -37,21 +36,7 @@ class ExplorePage extends ConsumerWidget {
             height:
                 useAppBarPadding ? MediaQuery.viewPaddingOf(context).top : 0,
           ),
-          SliverToBoxAdapter(
-            child: _PopularExplore(
-              onPressed: () => goToExplorePopularPage(context),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: _HotExplore(
-              onPressed: () => goToExploreHotPage(context),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: _MostViewedExplore(
-              onPressed: () => goToExploreMostViewedPage(context),
-            ),
-          ),
+          ...sliverOverviews,
           const SliverSizedBox(height: kBottomNavigationBarHeight + 20),
         ],
       ),
@@ -59,20 +44,63 @@ class ExplorePage extends ConsumerWidget {
   }
 }
 
-final selectedExploreCategoryProvider =
-    StateProvider.autoDispose<ExploreCategory?>((ref) {
-  return null;
-});
+class ExplorePageDesktopController extends ChangeNotifier {
+  final ValueNotifier<String?> selectedCategory = ValueNotifier(null);
 
-class ExplorePageDesktop extends ConsumerWidget {
+  void changeCategory(String category) {
+    selectedCategory.value = category;
+  }
+
+  void back() {
+    selectedCategory.value = null;
+  }
+}
+
+class ExplorePageDesktop extends ConsumerStatefulWidget {
   const ExplorePageDesktop({
     super.key,
+    required this.sliverOverviews,
+    required this.details,
+    this.controller,
   });
 
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final selectedCategory = ref.watch(selectedExploreCategoryProvider);
+  final List<Widget> sliverOverviews;
+  final Widget details;
+  final ExplorePageDesktopController? controller;
 
+  @override
+  ConsumerState<ExplorePageDesktop> createState() => _ExplorePageDesktopState();
+}
+
+class _ExplorePageDesktopState extends ConsumerState<ExplorePageDesktop> {
+  late final controller = widget.controller ?? ExplorePageDesktopController();
+  String? selectedCategory;
+
+  @override
+  void initState() {
+    super.initState();
+
+    controller.selectedCategory.addListener(_onChanged);
+  }
+
+  void _onChanged() {
+    setState(() {
+      selectedCategory = controller.selectedCategory.value;
+    });
+  }
+
+  @override
+  void dispose() {
+    if (widget.controller == null) {
+      controller.dispose();
+    }
+
+    controller.selectedCategory.removeListener(_onChanged);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Stack(
       children: [
         Offstage(
@@ -84,127 +112,16 @@ class ExplorePageDesktop extends ConsumerWidget {
             child: CustomScrollView(
               primary: false,
               slivers: [
-                SliverToBoxAdapter(
-                    child: _PopularExplore(
-                  onPressed: () => ref
-                      .read(selectedExploreCategoryProvider.notifier)
-                      .state = ExploreCategory.popular,
-                )),
-                SliverToBoxAdapter(
-                    child: _HotExplore(
-                  onPressed: () => ref
-                      .read(selectedExploreCategoryProvider.notifier)
-                      .state = ExploreCategory.hot,
-                )),
-                SliverToBoxAdapter(
-                    child: _MostViewedExplore(
-                  onPressed: () => ref
-                      .read(selectedExploreCategoryProvider.notifier)
-                      .state = ExploreCategory.mostViewed,
-                )),
+                ...widget.sliverOverviews,
               ],
             ),
           ),
         ),
         Offstage(
           offstage: selectedCategory == null,
-          child: Scaffold(
-            body: switch (selectedCategory) {
-              ExploreCategory.hot => ExploreHotPage(
-                  onBack: () => _onBack(ref),
-                ),
-              ExploreCategory.mostViewed => ExploreMostViewedPage.routeOf(
-                  context,
-                  onBack: () => _onBack(ref),
-                ),
-              ExploreCategory.popular => ExplorePopularPage.routeOf(
-                  context,
-                  onBack: () => _onBack(ref),
-                ),
-              null => const SizedBox.shrink(),
-            },
-          ),
+          child: widget.details,
         ),
       ],
-    );
-  }
-
-  void _onBack(WidgetRef ref) {
-    ref.read(selectedExploreCategoryProvider.notifier).state = null;
-  }
-}
-
-class _MostViewedExplore extends ConsumerStatefulWidget {
-  const _MostViewedExplore({
-    required this.onPressed,
-  });
-
-  final void Function() onPressed;
-
-  @override
-  ConsumerState<_MostViewedExplore> createState() => _MostViewedExploreState();
-}
-
-class _MostViewedExploreState extends ConsumerState<_MostViewedExplore> {
-  @override
-  Widget build(BuildContext context) {
-    return ExploreSection(
-      title: 'explore.most_viewed'.tr(),
-      builder: (_) => ref.watch(danbooruMostViewedTodayProvider).maybeWhen(
-            data: (r) => ExploreList(posts: r.posts),
-            orElse: () => const ExploreList(posts: []),
-          ),
-      onPressed: widget.onPressed,
-    );
-  }
-}
-
-class _HotExplore extends ConsumerStatefulWidget {
-  const _HotExplore({
-    required this.onPressed,
-  });
-
-  final void Function() onPressed;
-
-  @override
-  ConsumerState<_HotExplore> createState() => _HotExploreState();
-}
-
-class _HotExploreState extends ConsumerState<_HotExplore> {
-  @override
-  Widget build(BuildContext context) {
-    return ExploreSection(
-      title: 'explore.hot'.tr(),
-      builder: (_) => ref.watch(danbooruHotTodayProvider).maybeWhen(
-            data: (r) => ExploreList(posts: r.posts),
-            orElse: () => const ExploreList(posts: []),
-          ),
-      onPressed: widget.onPressed,
-    );
-  }
-}
-
-class _PopularExplore extends ConsumerStatefulWidget {
-  const _PopularExplore({
-    required this.onPressed,
-  });
-
-  final void Function() onPressed;
-
-  @override
-  ConsumerState<_PopularExplore> createState() => _PopularExploreState();
-}
-
-class _PopularExploreState extends ConsumerState<_PopularExplore> {
-  @override
-  Widget build(BuildContext context) {
-    return ExploreSection(
-      title: 'explore.popular'.tr(),
-      builder: (_) => ref.watch(danbooruPopularTodayProvider).maybeWhen(
-            data: (r) => ExploreList(posts: r.posts),
-            orElse: () => const ExploreList(posts: []),
-          ),
-      onPressed: widget.onPressed,
     );
   }
 }
@@ -215,7 +132,7 @@ class ExploreList extends ConsumerWidget {
     required this.posts,
   });
 
-  final List<DanbooruPost> posts;
+  final List<Post> posts;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -240,7 +157,7 @@ class ExploreList extends ConsumerWidget {
 
   Widget _buildList(
     double height,
-    List<DanbooruPost> filteredPosts,
+    List<Post> filteredPosts,
     WidgetRef ref,
   ) {
     return SizedBox(
@@ -269,7 +186,8 @@ class ExploreList extends ConsumerWidget {
                   children: [
                     BooruImage(
                       aspectRatio: post.aspectRatio,
-                      imageUrl: block ? '' : post.url720x720,
+                      imageUrl:
+                          block ? '' : defaultPostImageUrlBuilder(ref)(post),
                       placeholderUrl: block ? '' : post.thumbnailImageUrl,
                     ),
                     if (post.isAnimated)

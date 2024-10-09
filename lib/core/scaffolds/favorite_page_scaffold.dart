@@ -22,7 +22,7 @@ class FavoritesPageScaffold<T extends Post> extends ConsumerWidget {
   });
 
   final PostsOrError<T> Function(int page) fetcher;
-  final String Function() favQueryBuilder;
+  final String Function()? favQueryBuilder;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -40,15 +40,16 @@ class FavoritesPageScaffold<T extends Post> extends ConsumerWidget {
               shadowColor: Colors.transparent,
               backgroundColor: context.theme.scaffoldBackgroundColor,
               actions: [
-                IconButton(
-                  icon: const Icon(Symbols.search),
-                  onPressed: () {
-                    goToSearchPage(
-                      context,
-                      tag: favQueryBuilder(),
-                    );
-                  },
-                ),
+                if (favQueryBuilder != null)
+                  IconButton(
+                    icon: const Icon(Symbols.search),
+                    onPressed: () {
+                      goToSearchPage(
+                        context,
+                        tag: favQueryBuilder!(),
+                      );
+                    },
+                  ),
               ],
             ),
             const SliverSizedBox(height: 5),
