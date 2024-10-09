@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 
 // Project imports:
 import 'package:boorusama/functional.dart';
+import 'console.dart';
 import 'logger.dart';
 
 class ConsoleLoggerOptions extends Equatable {
@@ -35,27 +36,31 @@ class ConsoleLogger extends Logger {
     return DateFormat('yyyy-MM-dd, hh:mm:ss').format(dateTime);
   }
 
-  String _composeMessage(String serviceName, String message, String colorCode) {
+  String _composeMessage(String serviceName, String message, String color) {
     final msg = options.decodeUriParameters
         ? tryDecodeFullUri(message).getOrElse(() => message)
         : message;
 
-    return '\x1B[33m${_formatDateTime(DateTime.now())}\x1B[0m -> \x1B[35m$serviceName\x1B[0m -> $colorCode$msg\x1B[0m';
+    final time = colorize(_formatDateTime(DateTime.now()), yellow);
+    final service = colorize(serviceName, magenta);
+    final m = colorize(msg, color);
+
+    return '$time -> $service -> $m';
   }
 
   @override
   void logI(String serviceName, String message) {
-    developer.log(_composeMessage(serviceName, message, '\x1B[34m'));
+    developer.log(_composeMessage(serviceName, message, blue));
   }
 
   @override
   void logW(String serviceName, String message) {
-    developer.log(_composeMessage(serviceName, message, '\x1B[33m'));
+    developer.log(_composeMessage(serviceName, message, yellow));
   }
 
   @override
   void logE(String serviceName, String message) {
-    developer.log(_composeMessage(serviceName, message, '\x1B[31m'));
+    developer.log(_composeMessage(serviceName, message, red));
   }
 
   @override
