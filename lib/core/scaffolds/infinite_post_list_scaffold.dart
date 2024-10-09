@@ -91,7 +91,7 @@ class _InfinitePostListScaffoldState<T extends Post>
     final config = ref.watchConfig;
     final booruBuilder = ref.watchBooruBuilder(config);
     final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
-    final canHandleLongPress = booruBuilder?.canHandlePostGesture(
+    final hasCustomLongPress = booruBuilder?.canHandlePostGesture(
           GestureType.longPress,
           config.postGestures?.preview,
         ) ??
@@ -107,18 +107,7 @@ class _InfinitePostListScaffoldState<T extends Post>
         safeArea: widget.safeArea,
         sliverHeaders: [
           ...widget.sliverHeaders ?? [],
-          if (settings.imageListType == ImageListType.masonry &&
-              config.booruType == BooruType.gelbooruV1)
-            SliverToBoxAdapter(
-              child: WarningContainer(
-                  title: 'Layout',
-                  contentBuilder: (context) => Text(
-                        'Consider switching to the "Standard" layout. "Masonry" is glitchy on Gelbooru V1.',
-                        style: TextStyle(
-                          color: context.colorScheme.onSurface,
-                        ),
-                      )),
-            ),
+          const SliverMasonryGridWarning(),
         ],
         footer: ValueListenableBuilder(
           valueListenable: _multiSelectController.selectedItemsNotifier,
@@ -150,46 +139,33 @@ class _InfinitePostListScaffoldState<T extends Post>
               post.aspectRatio,
             );
 
-            return ConditionalParentWidget(
-              condition: !canHandleLongPress,
-              conditionalBuilder: (child) => ValueListenableBuilder(
-                valueListenable: _multiSelectController.multiSelectNotifier,
-                builder: (_, multiSelect, __) => ContextMenuRegion(
-                  isEnabled: !multiSelect,
-                  contextMenu: widget.contextMenuBuilder != null
-                      ? widget.contextMenuBuilder!.call(
-                          post,
-                          () {
-                            _multiSelectController.enableMultiSelect();
-                          },
-                        )
-                      : GeneralPostContextMenu(
-                          hasAccount: false,
-                          onMultiSelect: () {
-                            _multiSelectController.enableMultiSelect();
-                          },
-                          post: post,
-                        ),
-                  child: child,
-                ),
-              ),
-              child: ConditionalParentWidget(
-                condition: canHandleLongPress,
-                conditionalBuilder: (child) => GestureDetector(
-                  onLongPress: () {
-                    if (postGesturesHandler != null) {
-                      postGesturesHandler(
-                        ref,
-                        ref.watchConfig.postGestures?.preview?.longPress,
+            return ValueListenableBuilder(
+              valueListenable: _multiSelectController.multiSelectNotifier,
+              builder: (_, multiSelect, __) => DefaultPostListContextMenuRegion(
+                isEnabled: !multiSelect,
+                contextMenu: widget.contextMenuBuilder != null
+                    ? widget.contextMenuBuilder!.call(
                         post,
-                      );
-                    }
-                  },
-                  child: child,
-                ),
-                child: ValueListenableBuilder(
-                  valueListenable: _multiSelectController.multiSelectNotifier,
-                  builder: (_, multiSelect, __) => ExplicitContentBlockOverlay(
+                        () {
+                          _multiSelectController.enableMultiSelect();
+                        },
+                      )
+                    : GeneralPostContextMenu(
+                        hasAccount: false,
+                        onMultiSelect: () {
+                          _multiSelectController.enableMultiSelect();
+                        },
+                        post: post,
+                      ),
+                child: GestureDetector(
+                  onLongPress: hasCustomLongPress && postGesturesHandler != null
+                      ? () => postGesturesHandler(
+                            ref,
+                            ref.watchConfig.postGestures?.preview?.longPress,
+                            post,
+                          )
+                      : null,
+                  child: ExplicitContentBlockOverlay(
                     width: width ?? 100,
                     height: height ?? 100,
                     block: settings.blurExplicitMedia && post.isExplicit,
@@ -265,6 +241,65 @@ class _InfinitePostListScaffoldState<T extends Post>
         ),
       ),
     );
+  }
+}
+
+class DefaultPostListContextMenuRegion extends ConsumerWidget {
+  const DefaultPostListContextMenuRegion({
+    super.key,
+    this.isEnabled = true,
+    required this.contextMenu,
+    required this.child,
+  });
+
+  final bool isEnabled;
+  final Widget contextMenu;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
+    final booruBuilder = ref.watchBooruBuilder(config);
+    final hasCustomLongPress = booruBuilder?.canHandlePostGesture(
+          GestureType.longPress,
+          config.postGestures?.preview,
+        ) ??
+        false;
+
+    if (hasCustomLongPress) return child;
+
+    return ContextMenuRegion(
+      isEnabled: isEnabled,
+      contextMenu: contextMenu,
+      child: child,
+    );
+  }
+}
+
+class SliverMasonryGridWarning extends ConsumerWidget {
+  const SliverMasonryGridWarning({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final type = ref.watch(
+        imageListingSettingsProvider.select((value) => value.imageListType));
+    final booruType = ref.watchConfig.booruType;
+
+    return type == ImageListType.masonry && booruType.masonryLayoutUnsupported
+        ? SliverToBoxAdapter(
+            child: WarningContainer(
+              title: 'Layout',
+              contentBuilder: (context) => Text(
+                'Consider switching to the "Standard" layout. "Masonry" is very jumpy for this booru.',
+                style: TextStyle(
+                  color: context.colorScheme.onSurface,
+                ),
+              ),
+            ),
+          )
+        : const SliverSizedBox.shrink();
   }
 }
 

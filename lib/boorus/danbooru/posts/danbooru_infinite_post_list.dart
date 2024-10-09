@@ -79,13 +79,12 @@ class _DanbooruInfinitePostListState
   @override
   Widget build(BuildContext context) {
     final settings = ref.watch(imageListingSettingsProvider);
-
-    final booruConfig = ref.watchConfig;
-    final booruBuilder = ref.watchBooruBuilder(booruConfig);
+    final config = ref.watchConfig;
+    final booruBuilder = ref.watchBooruBuilder(config);
     final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
-    final canHandleLongPress = booruBuilder?.canHandlePostGesture(
+    final hasCustomLongPress = booruBuilder?.canHandlePostGesture(
           GestureType.longPress,
-          booruConfig.postGestures?.preview,
+          config.postGestures?.preview,
         ) ??
         false;
 
@@ -119,39 +118,25 @@ class _DanbooruInfinitePostListState
               post.aspectRatio,
             );
 
-            return ConditionalParentWidget(
-              condition: !canHandleLongPress,
-              conditionalBuilder: (child) => ValueListenableBuilder(
-                valueListenable: _multiSelectController.multiSelectNotifier,
-                builder: (_, multiSelect, __) => ContextMenuRegion(
-                  isEnabled: !post.isBanned && !multiSelect,
-                  contextMenu: DanbooruPostContextMenu(
-                    hasAccount: booruConfig.hasLoginDetails(),
-                    onMultiSelect: () {
-                      _multiSelectController.enableMultiSelect();
-                    },
-                    post: post,
-                  ),
-                  child: child,
-                ),
-              ),
-              child: ConditionalParentWidget(
-                condition: canHandleLongPress,
-                conditionalBuilder: (child) => GestureDetector(
-                  onLongPress: () {
-                    if (postGesturesHandler != null) {
-                      postGesturesHandler(
-                        ref,
-                        ref.watchConfig.postGestures?.preview?.longPress,
-                        post,
-                      );
-                    }
+            return ValueListenableBuilder(
+              valueListenable: _multiSelectController.multiSelectNotifier,
+              builder: (_, multiSelect, __) => ContextMenuRegion(
+                isEnabled: !post.isBanned && !multiSelect,
+                contextMenu: DanbooruPostContextMenu(
+                  onMultiSelect: () {
+                    _multiSelectController.enableMultiSelect();
                   },
-                  child: child,
+                  post: post,
                 ),
-                child: ValueListenableBuilder(
-                  valueListenable: _multiSelectController.multiSelectNotifier,
-                  builder: (_, multiSelect, __) => ExplicitContentBlockOverlay(
+                child: GestureDetector(
+                  onLongPress: hasCustomLongPress && postGesturesHandler != null
+                      ? () => postGesturesHandler(
+                            ref,
+                            ref.watchConfig.postGestures?.preview?.longPress,
+                            post,
+                          )
+                      : null,
+                  child: ExplicitContentBlockOverlay(
                     block: settings.blurExplicitMedia && post.isExplicit,
                     width: width ?? 100,
                     height: height ?? 100,
@@ -167,7 +152,7 @@ class _DanbooruInfinitePostListState
                           ? () {
                               if (booruBuilder?.canHandlePostGesture(
                                           GestureType.tap,
-                                          booruConfig.postGestures?.preview) ==
+                                          config.postGestures?.preview) ==
                                       true &&
                                   postGesturesHandler != null) {
                                 postGesturesHandler(
@@ -185,9 +170,8 @@ class _DanbooruInfinitePostListState
                               }
                             }
                           : null,
-                      enableFav: !multiSelect &&
-                          booruConfig.hasLoginDetails() &&
-                          !block,
+                      enableFav:
+                          !multiSelect && config.hasLoginDetails() && !block,
                       image: BooruImage(
                         aspectRatio: post.isBanned ? 0.8 : post.aspectRatio,
                         imageUrl: block
@@ -204,7 +188,6 @@ class _DanbooruInfinitePostListState
                         height: height,
                         cacheHeight: cacheHeight,
                         cacheWidth: cacheWidth,
-                        // null, // Will cause error sometimes, disabled for now
                       ),
                     ),
                   ),

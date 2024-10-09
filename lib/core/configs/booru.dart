@@ -546,6 +546,8 @@ extension BooruTypeX on BooruType {
 
   bool get canDownloadMultipleFiles => this != BooruType.animePictures;
 
+  bool get masonryLayoutUnsupported => this == BooruType.gelbooruV1;
+
   bool get hasUnknownFullImageUrl =>
       this == BooruType.zerochan || this == BooruType.gelbooruV1;
 
