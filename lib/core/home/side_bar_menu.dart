@@ -81,23 +81,25 @@ class SideBarMenu extends ConsumerWidget {
                             child: e,
                           )),
                     if (initialContent != null) const Divider(),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: SideMenuTile(
-                        icon: const Icon(
-                          Symbols.star,
-                          fill: 1,
+                    if (kPremiumEnabled) ...[
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: SideMenuTile(
+                          icon: const Icon(
+                            Symbols.star,
+                            fill: 1,
+                          ),
+                          title: const Text(kPremiumBrandNameFull),
+                          onTap: () {
+                            if (popOnSelect) context.navigator.pop();
+                            Navigator.of(context).push(CupertinoPageRoute<void>(
+                              builder: (context) => const PremiumPage(),
+                            ));
+                          },
                         ),
-                        title: const Text(kPremiumBrandNameFull),
-                        onTap: () {
-                          if (popOnSelect) context.navigator.pop();
-                          Navigator.of(context).push(CupertinoPageRoute<void>(
-                            builder: (context) => const PremiumPage(),
-                          ));
-                        },
                       ),
-                    ),
-                    const Divider(),
+                      const Divider(),
+                    ],
                     if (content != null) ...[
                       ...content!.map((e) => Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 8),

@@ -5,7 +5,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/foundation/iap/subscription.dart';
 import 'premiums.dart';
 
+const kPremiumEnabled = true;
+
 final hasPremiumProvider = Provider<bool>((ref) {
+  if (!kPremiumEnabled) return true;
+
   final package = ref.watch(subscriptionNotifierProvider);
 
   return package != null;
