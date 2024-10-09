@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:equatable/equatable.dart';
 import 'package:flutter_portal/flutter_portal.dart';
+import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 
 // Project imports:
 import 'package:boorusama/core/notes/notes.dart';
@@ -220,31 +221,48 @@ class _NoteContainerMobile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.sizeOf(context).width;
+    final screenHeight = MediaQuery.sizeOf(context).height;
+
     return Container(
       margin: EdgeInsets.only(
         left: coordinate.x,
         top: coordinate.y,
       ),
       child: PortalTarget(
-        anchor: coordinate.x > MediaQuery.sizeOf(context).width / 2
-            ? const Aligned(
-                follower: Alignment.topRight,
-                target: Alignment.bottomRight,
-              )
-            : const Aligned(
-                follower: Alignment.topLeft,
-                target: Alignment.bottomLeft,
-              ),
+        anchor: switch (
+            coordinate.calculateQuadrant(screenWidth, screenHeight)) {
+          NoteQuadrant.topLeft => const Aligned(
+              follower: Alignment.topLeft,
+              target: Alignment.bottomLeft,
+            ),
+          NoteQuadrant.topRight => const Aligned(
+              follower: Alignment.topRight,
+              target: Alignment.bottomRight,
+            ),
+          NoteQuadrant.bottomLeft => const Aligned(
+              follower: Alignment.bottomLeft,
+              target: Alignment.topLeft,
+            ),
+          NoteQuadrant.bottomRight => const Aligned(
+              follower: Alignment.bottomRight,
+              target: Alignment.topRight,
+            ),
+        },
         visible: visible,
-        portalFollower: ConstrainedBox(
+        portalFollower: Container(
+          padding: const EdgeInsets.all(4),
           constraints: BoxConstraints(
-            maxWidth: MediaQuery.sizeOf(context).width * 0.5,
+            maxWidth: 200,
+            maxHeight: 300,
           ),
-          child: Material(
-            child: SingleChildScrollView(
-              child: AppHtml(
-                data: content,
-              ),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surface,
+            borderRadius: BorderRadius.circular(2),
+          ),
+          child: SingleChildScrollView(
+            child: HtmlWidget(
+              content,
             ),
           ),
         ),
