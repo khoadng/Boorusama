@@ -14,6 +14,7 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
 import 'package:boorusama/core/home/home.dart';
+import 'package:boorusama/core/premiums/premiums.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
@@ -113,6 +114,7 @@ List<Widget> coreDesktopViewBuilder({
 
   final views = [
     for (int i = 0; i < totalPlaceholder; i++) const SizedBox.shrink(),
+    if (kPremiumEnabled) const PremiumPage(canGoBack: false),
     const BookmarkPage(),
     const BlacklistedTagPage(),
     const FavoriteTagsPage(),
@@ -130,8 +132,19 @@ List<Widget> coreDesktopTabBuilder(
 ) {
   return [
     const Divider(),
+    if (kPremiumEnabled) ...[
+      HomeNavigationTile(
+        value: _v(1),
+        controller: controller,
+        constraints: constraints,
+        selectedIcon: Symbols.star,
+        icon: Symbols.star,
+        title: kPremiumBrandNameFull,
+      ),
+      const Divider(),
+    ],
     HomeNavigationTile(
-      value: _v(1),
+      value: _v(2),
       controller: controller,
       constraints: constraints,
       selectedIcon: Symbols.bookmark,
@@ -139,7 +152,7 @@ List<Widget> coreDesktopTabBuilder(
       title: 'sideMenu.your_bookmarks'.tr(),
     ),
     HomeNavigationTile(
-      value: _v(2),
+      value: _v(3),
       controller: controller,
       constraints: constraints,
       selectedIcon: Symbols.list_alt,
@@ -147,7 +160,7 @@ List<Widget> coreDesktopTabBuilder(
       title: 'sideMenu.your_blacklist'.tr(),
     ),
     HomeNavigationTile(
-      value: _v(3),
+      value: _v(4),
       controller: controller,
       constraints: constraints,
       selectedIcon: Symbols.tag,
@@ -155,7 +168,7 @@ List<Widget> coreDesktopTabBuilder(
       title: 'favorite_tags.favorite_tags'.tr(),
     ),
     HomeNavigationTile(
-      value: _v(4),
+      value: _v(5),
       controller: controller,
       constraints: constraints,
       selectedIcon: Symbols.sim_card_download,
@@ -163,7 +176,7 @@ List<Widget> coreDesktopTabBuilder(
       title: 'sideMenu.bulk_download'.tr(),
     ),
     HomeNavigationTile(
-      value: _v(5),
+      value: _v(6),
       controller: controller,
       constraints: constraints,
       selectedIcon: Symbols.download,

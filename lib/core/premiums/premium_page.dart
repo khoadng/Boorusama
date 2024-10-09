@@ -14,7 +14,10 @@ import 'premiums.dart';
 class PremiumPage extends ConsumerStatefulWidget {
   const PremiumPage({
     super.key,
+    this.canGoBack = true,
   });
+
+  final bool canGoBack;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _PremiumPageState();
@@ -131,16 +134,17 @@ class _PremiumPageState extends ConsumerState<PremiumPage> {
                     ),
               ],
             ),
-            Positioned(
-              top: 4,
-              right: 8,
-              child: IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
+            if (widget.canGoBack)
+              Positioned(
+                top: 4,
+                right: 8,
+                child: IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
               ),
-            ),
           ],
         ),
       ),
