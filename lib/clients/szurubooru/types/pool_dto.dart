@@ -45,3 +45,44 @@ class PoolDto {
     );
   }
 }
+
+class PoolUpdateRequest {
+  PoolUpdateRequest({
+    required this.version,
+    this.names,
+    this.category,
+    this.description,
+    this.postIds,
+  });
+
+  PoolUpdateRequest copyWith({
+    List<String>? Function()? names,
+    String? Function()? category,
+    String? Function()? description,
+    List<int>? Function()? postIds,
+  }) {
+    return PoolUpdateRequest(
+      version: version,
+      names: names != null ? names() : this.names,
+      category: category != null ? category() : this.category,
+      description: description != null ? description() : this.description,
+      postIds: postIds != null ? postIds() : this.postIds,
+    );
+  }
+
+  final int version;
+  final List<String>? names;
+  final String? category;
+  final String? description;
+  final List<int>? postIds;
+
+  Map<String, dynamic> toJson() {
+    return {
+      'version': version,
+      if (names != null) 'names': names,
+      if (category != null) 'category': category,
+      if (description != null) 'description': description,
+      if (postIds != null) 'posts': postIds,
+    };
+  }
+}

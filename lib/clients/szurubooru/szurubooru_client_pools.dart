@@ -30,4 +30,16 @@ mixin SzurubooruClientPools {
             ))
         .toList();
   }
+
+  Future<PoolDto> updatePool(int poolId, PoolUpdateRequest pool) async {
+    final response = await dio.put(
+      '/api/pool/$poolId',
+      data: pool.toJson(),
+    );
+
+    return PoolDto.fromJson(
+      response.data as Map<String, dynamic>,
+      baseUrl: dio.options.baseUrl,
+    );
+  }
 }
