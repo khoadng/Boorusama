@@ -390,48 +390,67 @@ class _SzurubooruPoolEditPageState extends State<SzurubooruPoolEditPage> {
       ),
       body: SafeArea(
         child: ReorderableListView.builder(
+          header: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              'Long press and drag to reorder',
+            ),
+          ),
           itemBuilder: (context, index) {
             final post = widget.posts[index];
             return Container(
               key: ValueKey(post.id),
               padding: const EdgeInsets.symmetric(vertical: 4),
-              child: Row(
-                children: [
-                  const SizedBox(width: 16),
-                  LimitedBox(
-                    maxWidth: 50,
-                    child: BooruImage(
-                      fit: BoxFit.cover,
-                      imageUrl: post.thumbnailUrl ?? '',
+              child: InkWell(
+                child: Row(
+                  children: [
+                    const SizedBox(width: 16),
+                    LimitedBox(
+                      maxWidth: 50,
+                      child: BooruImage(
+                        fit: BoxFit.cover,
+                        imageUrl: post.thumbnailUrl ?? '',
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 16),
-                  Text(post.id.toString()),
-                  const Spacer(),
-                  IconButton(
-                    icon: const Icon(Icons.keyboard_arrow_up),
-                    onPressed: () {
-                      if (index > 0) {
+                    const SizedBox(width: 16),
+                    Text(post.id.toString()),
+                    const Spacer(),
+                    IconButton(
+                      icon: const Icon(Icons.keyboard_arrow_up),
+                      onPressed: () {
+                        if (index > 0) {
+                          setState(() {
+                            final post = posts.removeAt(index);
+                            posts.insert(index - 1, post);
+                          });
+                        }
+                      },
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.keyboard_arrow_down),
+                      onPressed: () {
+                        if (index < posts.length - 1) {
+                          setState(() {
+                            final post = posts.removeAt(index);
+                            posts.insert(index + 1, post);
+                          });
+                        }
+                      },
+                    ),
+                    //delete button
+                    IconButton(
+                      icon: Icon(
+                        Icons.close,
+                        color: Theme.of(context).colorScheme.error,
+                      ),
+                      onPressed: () {
                         setState(() {
-                          final post = posts.removeAt(index);
-                          posts.insert(index - 1, post);
+                          posts.removeAt(index);
                         });
-                      }
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.keyboard_arrow_down),
-                    onPressed: () {
-                      if (index < posts.length - 1) {
-                        setState(() {
-                          final post = posts.removeAt(index);
-                          posts.insert(index + 1, post);
-                        });
-                      }
-                    },
-                  ),
-                  const SizedBox(width: 36),
-                ],
+                      },
+                    ),
+                  ],
+                ),
               ),
             );
           },
