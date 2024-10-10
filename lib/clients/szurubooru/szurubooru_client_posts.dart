@@ -8,10 +8,15 @@ const _kUpvoteScore = 1;
 const _kDownvoteScore = -1;
 const _kUnvoteScore = 0;
 
+typedef SzurubooruPosts = ({
+  List<PostDto> posts,
+  int? total,
+});
+
 mixin SzurubooruClientPosts {
   Dio get dio;
 
-  Future<List<PostDto>> getPosts({
+  Future<SzurubooruPosts> getPosts({
     int? limit,
     int? page,
     List<String>? tags,
@@ -26,13 +31,19 @@ mixin SzurubooruClientPosts {
     );
 
     final results = response.data['results'] as List;
+    final total = response.data['total'] as int?;
 
-    return results
+    final posts = results
         .map((e) => PostDto.fromJson(
               e,
               baseUrl: dio.options.baseUrl,
             ))
         .toList();
+
+    return (
+      posts: posts,
+      total: total,
+    );
   }
 
   Future<PostDto> upvotePost({

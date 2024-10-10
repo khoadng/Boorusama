@@ -13,6 +13,7 @@ import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/path.dart';
+import 'package:boorusama/functional.dart';
 import 'post_votes/post_votes.dart';
 import 'szurubooru_post.dart';
 
@@ -34,7 +35,7 @@ final szurubooruPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
     final client = ref.watch(szurubooruClientProvider(config));
 
     return PostRepositoryBuilder(
-      tagComposer: DefaultTagQueryComposer(config: config),
+      tagComposer: SzurubooruTagQueryComposer(config: config),
       fetch: (tags, page, {limit}) async {
         final posts = await client.getPosts(
           tags: tags,
@@ -45,7 +46,7 @@ final szurubooruPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
         final categories =
             await ref.read(szurubooruTagCategoriesProvider(config).future);
 
-        final data = posts
+        final data = posts.posts
             .map((e) => SzurubooruPost(
                   id: e.id ?? 0,
                   thumbnailImageUrl: e.thumbnailUrl ?? '',
@@ -105,7 +106,9 @@ final szurubooruPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
         ref.read(szurubooruFavoritesProvider(config).notifier).preload(data);
         ref.read(szurubooruPostVotesProvider(config).notifier).getVotes(data);
 
-        return data.toResult();
+        return data.toResult(
+          total: posts.total,
+        );
       },
       getSettings: () async => ref.read(imageListingSettingsProvider),
     );
@@ -159,3 +162,44 @@ final szurubooruTagCategoriesProvider =
         .toList();
   },
 );
+
+String _ratingToSzurubooruRatingString(Rating rating) => switch (rating) {
+      Rating.unknown => 'sketchy',
+      Rating.explicit => 'unsafe',
+      Rating.questionable => 'sketchy',
+      Rating.sensitive => 'sketchy',
+      Rating.general => 'safe',
+    };
+
+class SzurubooruTagQueryComposer implements TagQueryComposer {
+  SzurubooruTagQueryComposer({
+    required this.config,
+  });
+
+  final BooruConfig config;
+  late final TagQueryComposer _composer = DefaultTagQueryComposer(
+    config: config,
+    ratingTagsFilter: switch (config.ratingFilter) {
+      BooruConfigRatingFilter.none => [],
+      BooruConfigRatingFilter.hideNSFW => [
+          '-rating:sketchy,unsafe',
+        ],
+      BooruConfigRatingFilter.hideExplicit => [
+          '-rating:unsafe',
+        ],
+      BooruConfigRatingFilter.custom =>
+        config.granularRatingFiltersWithoutUnknown.toOption().fold(
+              () => [],
+              (ratings) => [
+                ...ratings.map(
+                    (e) => '-rating:${_ratingToSzurubooruRatingString(e)}'),
+              ],
+            ),
+    },
+  );
+
+  @override
+  List<String> compose(List<String> tags) {
+    return _composer.compose(tags);
+  }
+}

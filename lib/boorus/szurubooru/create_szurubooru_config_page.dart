@@ -29,6 +29,7 @@ class CreateSzurubooruConfigPage extends ConsumerWidget {
         initialBooruConfigProvider.overrideWithValue(config),
       ],
       child: CreateBooruConfigScaffold(
+        hasRatingFilter: true,
         isNewConfig: isNewConfig,
         initialTab: initialTab,
         backgroundColor: backgroundColor,

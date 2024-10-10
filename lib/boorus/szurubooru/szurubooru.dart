@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
@@ -15,19 +14,13 @@ import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/comments/comments.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
-import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/html.dart';
-import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/functional.dart';
-import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'create_szurubooru_config_page.dart';
-import 'post_votes/post_votes.dart';
-import 'szurubooru_post.dart';
+import 'szurubooru_home_page.dart';
+import 'szurubooru_post_details_page.dart';
 
 class SzurubooruBuilder
     with
@@ -130,8 +123,8 @@ class SzurubooruBuilder
             initialIndex: payload.initialIndex,
             posts: payload.posts,
             scrollController: payload.scrollController,
-            desktop: (controller) => SzurubooruPostDetailsPage(
-              initialPage: controller.currentPage.value,
+            desktop: (controller) => SzurubooruPostDetailsDesktopPage(
+              initialIndex: controller.currentPage.value,
               controller: controller,
               posts: payload.posts,
               onExit: (page) => controller.onExit(page),
@@ -159,111 +152,6 @@ class SzurubooruBuilder
       'source': (post, config) => post.source.url,
     },
   );
-}
-
-class SzurubooruHomePage extends StatelessWidget {
-  const SzurubooruHomePage({
-    super.key,
-    required this.config,
-  });
-
-  final BooruConfig config;
-
-  @override
-  Widget build(BuildContext context) {
-    return HomePageScaffold(
-      mobileMenu: [
-        if (config.hasLoginDetails()) ...[
-          SideMenuTile(
-            icon: const Icon(Symbols.favorite),
-            title: Text('profile.favorites'.tr()),
-            onTap: () => goToFavoritesPage(context),
-          ),
-        ]
-      ],
-      desktopMenuBuilder: (context, controller, constraints) => [
-        if (config.hasLoginDetails()) ...[
-          HomeNavigationTile(
-            value: 1,
-            controller: controller,
-            constraints: constraints,
-            selectedIcon: Symbols.favorite,
-            icon: Symbols.favorite,
-            title: 'Favorites',
-          ),
-        ],
-      ],
-      desktopViews: [
-        if (config.hasLoginDetails()) ...[
-          SzurubooruFavoritesPage(username: config.name),
-        ],
-      ],
-    );
-  }
-}
-
-class SzurubooruPostDetailsPage extends ConsumerWidget {
-  const SzurubooruPostDetailsPage({
-    super.key,
-    required this.controller,
-    required this.onExit,
-    required this.onPageChanged,
-    required this.posts,
-    required this.initialPage,
-  });
-
-  final List<Post> posts;
-  final PostDetailsController<Post> controller;
-  final void Function(int page) onExit;
-  final void Function(int page) onPageChanged;
-  final int initialPage;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return PostDetailsPageScaffold(
-      posts: posts,
-      initialIndex: initialPage,
-      swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
-      onExit: onExit,
-      onPageChangeIndexed: onPageChanged,
-      statsTileBuilder: (context, rawPost) =>
-          castOrNull<SzurubooruPost>(rawPost).toOption().fold(
-                () => const SizedBox.shrink(),
-                (post) => Column(
-                  children: [
-                    const Divider(height: 8, thickness: 0.5),
-                    SimplePostStatsTile(
-                      totalComments: post.commentCount,
-                      favCount: post.favoriteCount,
-                      score: post.score,
-                    ),
-                  ],
-                ),
-              ),
-      tagListBuilder: (context, post) =>
-          castOrNull<SzurubooruPost>(post).toOption().fold(
-                () => const SizedBox.shrink(),
-                (post) => TagsTile(
-                  post: post,
-                  tags: createTagGroupItems(post.tagDetails),
-                  initialExpanded: true,
-                  tagColorBuilder: (tag) => tag.category.darkColor,
-                ),
-              ),
-      toolbar: ValueListenableBuilder(
-        valueListenable: controller.currentPost,
-        builder: (_, rawPost, __) =>
-            castOrNull<SzurubooruPost>(rawPost).toOption().fold(
-                  () => SimplePostActionToolbar(post: rawPost),
-                  (post) => SzurubooruPostActionToolbar(post: post),
-                ),
-      ),
-      fileDetailsBuilder: (context, rawPost) => DefaultFileDetailsSection(
-        post: rawPost,
-        uploaderName: castOrNull<SzurubooruPost>(rawPost)?.uploaderName,
-      ),
-    );
-  }
 }
 
 class SzurubooruSearchPage extends ConsumerWidget {
