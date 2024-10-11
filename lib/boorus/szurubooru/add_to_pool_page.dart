@@ -175,10 +175,10 @@ class _FavoriteGroupList extends ConsumerWidget {
             onTap: () async {
               final id = group.id;
               final postIds =
-                  group.posts?.map((e) => e.id).whereNotNull().toList() ?? [];
+                  group.posts?.map((e) => e.id).whereNotNull().toList();
               final version = group.version;
 
-              if (id == null || postIds.isEmpty || version == null) {
+              if (id == null || postIds == null || version == null) {
                 return;
               }
 
