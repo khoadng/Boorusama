@@ -129,6 +129,9 @@ final szurubooruAutocompleteRepoProvider =
 
         final tags = await client.autocomplete(query: query);
 
+        final categories =
+            await ref.read(szurubooruTagCategoriesProvider(config).future);
+
         return tags
             .map((e) => AutocompleteData(
                   label: e.names?.firstOrNull
@@ -136,6 +139,9 @@ final szurubooruAutocompleteRepoProvider =
                           .replaceAll('_', ' ') ??
                       '???',
                   value: e.names?.firstOrNull?.toLowerCase() ?? '???',
+                  category: categories
+                      .firstWhereOrNull((element) => element.name == e.category)
+                      ?.name,
                   postCount: e.usages,
                 ))
             .toList();

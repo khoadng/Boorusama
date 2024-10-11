@@ -79,6 +79,7 @@ class SzurubooruPostDetailsPage extends ConsumerWidget {
                   tags: createTagGroupItems(post.tagDetails),
                   initialExpanded: true,
                   tagColorBuilder: (tag) => tag.category.darkColor,
+                  onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
                 ),
               ),
       toolbar: ValueListenableBuilder(
@@ -142,7 +143,7 @@ class SzurubooruPostDetailsDesktopPage extends ConsumerWidget {
                   post: post,
                   tags: createTagGroupItems(post.tagDetails),
                   initialExpanded: true,
-                  tagColorBuilder: (tag) => tag.category.darkColor,
+                  onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
                 ),
               ),
       toolbarBuilder: (context, post) => ValueListenableBuilder(
