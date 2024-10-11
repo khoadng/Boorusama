@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:collection/collection.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
@@ -405,11 +406,14 @@ class _SzurubooruPoolEditPageState extends State<SzurubooruPoolEditPage> {
                 child: Row(
                   children: [
                     const SizedBox(width: 16),
-                    LimitedBox(
-                      maxWidth: 50,
-                      child: BooruImage(
-                        fit: BoxFit.cover,
-                        imageUrl: post.thumbnailUrl ?? '',
+                    InkWell(
+                      onTap: () => goToImagePreviewPage(context, post),
+                      child: LimitedBox(
+                        maxWidth: 80,
+                        child: BooruImage(
+                          fit: BoxFit.cover,
+                          imageUrl: post.thumbnailUrl ?? '',
+                        ),
                       ),
                     ),
                     const SizedBox(width: 16),
@@ -456,6 +460,55 @@ class _SzurubooruPoolEditPageState extends State<SzurubooruPoolEditPage> {
           },
           itemCount: widget.posts.length,
           onReorder: _onReorder,
+        ),
+      ),
+    );
+  }
+}
+
+void goToImagePreviewPage(BuildContext context, MicroPostDto post) {
+  showGeneralDialog(
+    context: context,
+    pageBuilder: (context, animation, secondaryAnimation) => QuickPreviewImage(
+      child: BooruImage(
+        fit: BoxFit.contain,
+        imageUrl: post.thumbnailUrl ?? '',
+      ),
+    ),
+  );
+}
+
+class QuickPreviewImage extends StatelessWidget {
+  const QuickPreviewImage({
+    super.key,
+    required this.child,
+  });
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => Navigator.of(context).pop(),
+      child: CallbackShortcuts(
+        bindings: {
+          const SingleActivator(LogicalKeyboardKey.escape): () =>
+              Navigator.of(context).pop(),
+        },
+        child: Focus(
+          autofocus: true,
+          child: Scaffold(
+            backgroundColor: const Color.fromARGB(189, 0, 0, 0),
+            body: Center(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.sizeOf(context).height * 0.8,
+                  maxWidth: MediaQuery.sizeOf(context).width * 0.8,
+                ),
+                child: child,
+              ),
+            ),
+          ),
         ),
       ),
     );
