@@ -1,10 +1,10 @@
 // Flutter imports:
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:collection/collection.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
@@ -207,8 +207,8 @@ void goToPoolPage(BuildContext context) {
   ));
 }
 
-void goToAddToPoolPage(BuildContext context, List<Post> posts) {
-  context.navigator.push(CupertinoPageRoute(
+Future<bool?> goToAddToPoolPage(BuildContext context, List<Post> posts) {
+  return context.navigator.push(CupertinoPageRoute(
     builder: (_) => SzurubooruAddToPoolPage(posts: posts),
   ));
 }

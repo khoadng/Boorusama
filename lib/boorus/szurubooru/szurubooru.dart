@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
@@ -20,6 +21,7 @@ import 'package:boorusama/foundation/html.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'create_szurubooru_config_page.dart';
 import 'szurubooru_home_page.dart';
+import 'szurubooru_pool_page.dart';
 import 'szurubooru_post_details_page.dart';
 
 class SzurubooruBuilder
@@ -31,7 +33,6 @@ class SzurubooruBuilder
         NoteNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
         UnknownMetatagsMixin,
-        DefaultMultiSelectionActionsBuilderMixin,
         DefaultQuickFavoriteButtonBuilderMixin,
         DefaultDownloadFileUrlExtractorMixin,
         DefaultHomeMixin,
@@ -153,6 +154,51 @@ class SzurubooruBuilder
       'source': (post, config) => post.source.url,
     },
   );
+
+  @override
+  MultiSelectionActionsBuilder? get multiSelectionActionsBuilder =>
+      (context, controller) =>
+          SzurubooruMultiSelectionActions(controller: controller);
+}
+
+class SzurubooruMultiSelectionActions extends ConsumerWidget {
+  const SzurubooruMultiSelectionActions({
+    super.key,
+    required this.controller,
+  });
+
+  final MultiSelectController<Post> controller;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
+
+    return DefaultMultiSelectionActions(
+      controller: controller,
+      extraActions: [
+        if (config.hasLoginDetails())
+          ValueListenableBuilder(
+            valueListenable: controller.selectedItemsNotifier,
+            builder: (context, selectedPosts, child) {
+              return IconButton(
+                onPressed: selectedPosts.isNotEmpty
+                    ? () async {
+                        final shouldEnd = await goToAddToPoolPage(
+                          context,
+                          selectedPosts,
+                        );
+                        if (shouldEnd != null && shouldEnd) {
+                          controller.disableMultiSelect();
+                        }
+                      }
+                    : null,
+                icon: const Icon(Symbols.add),
+              );
+            },
+          ),
+      ],
+    );
+  }
 }
 
 class SzurubooruSearchPage extends ConsumerWidget {

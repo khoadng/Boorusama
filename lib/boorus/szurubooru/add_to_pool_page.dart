@@ -202,7 +202,7 @@ class _FavoriteGroupList extends ConsumerWidget {
                     ),
                   );
 
-              navigator.pop();
+              navigator.pop(true);
             },
           ),
         );
