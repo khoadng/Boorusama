@@ -62,7 +62,7 @@ class WarningContainer extends StatelessWidget {
   }
 }
 
-class TemplateContainer extends StatelessWidget {
+class TemplateContainer extends StatefulWidget {
   const TemplateContainer({
     super.key,
     required this.contentBuilder,
@@ -72,6 +72,7 @@ class TemplateContainer extends StatelessWidget {
     this.titleColor,
     this.icon,
     this.margin,
+    this.initiallyExpanded = true,
   });
 
   final Widget Function(BuildContext context) contentBuilder;
@@ -81,11 +82,19 @@ class TemplateContainer extends StatelessWidget {
   final Color? titleColor;
   final Widget? icon;
   final EdgeInsetsGeometry? margin;
+  final bool initiallyExpanded;
+
+  @override
+  State<TemplateContainer> createState() => _TemplateContainerState();
+}
+
+class _TemplateContainerState extends State<TemplateContainer> {
+  late bool isExpanded = widget.initiallyExpanded;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: margin ??
+      margin: widget.margin ??
           const EdgeInsets.symmetric(
             horizontal: 12,
             vertical: 8,
@@ -93,9 +102,9 @@ class TemplateContainer extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: const BorderRadius.all(Radius.circular(4)),
-        border: borderColor != null
+        border: widget.borderColor != null
             ? Border.all(
-                color: borderColor!,
+                color: widget.borderColor!,
               )
             : null,
       ),
@@ -104,7 +113,7 @@ class TemplateContainer extends StatelessWidget {
         children: [
           Container(
             height: 40,
-            color: titleBackgroundColor,
+            color: widget.titleBackgroundColor,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -113,29 +122,48 @@ class TemplateContainer extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: Row(
                     children: [
-                      if (icon != null) icon!,
+                      if (widget.icon != null) widget.icon!,
                       const SizedBox(width: 8),
-                      if (title != null)
+                      if (widget.title != null)
                         Text(
-                          title!,
+                          widget.title!,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            color: titleColor,
+                            color: widget.titleColor,
                           ),
                         ),
+                      const Spacer(),
+                      Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          customBorder: const CircleBorder(),
+                          onTap: () {
+                            setState(() {
+                              isExpanded = !isExpanded;
+                            });
+                          },
+                          child: Icon(
+                            !isExpanded
+                                ? Icons.keyboard_arrow_down
+                                : Icons.keyboard_arrow_up,
+                            color: Theme.of(context).colorScheme.onError,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
               ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 12,
+          if (isExpanded)
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 12,
+              ),
+              child: widget.contentBuilder(context),
             ),
-            child: contentBuilder(context),
-          ),
         ],
       ),
     );
