@@ -370,8 +370,6 @@ class DanbooruBuilder
         final isDanController =
             controller is MultiSelectController<DanbooruPost>;
 
-        print('isDanController: $isDanController');
-
         return isDanController
             ? DanbooruMultiSelectionActions(controller: controller)
             : DefaultMultiSelectionActions(controller: controller);

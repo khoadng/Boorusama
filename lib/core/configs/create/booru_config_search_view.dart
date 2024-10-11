@@ -34,7 +34,7 @@ class BooruConfigSearchView extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           if (hasRatingFilter) ...[
-            const SizedBox(height: 4),
+            const SizedBox(height: 12),
             const DefaultBooruRatingOptionsTile(),
             const Divider(),
           ],
@@ -208,14 +208,16 @@ class _EffectiveTagPreview extends ConsumerWidget {
             runAlignment: WrapAlignment.center,
             spacing: 5,
             children: [
-              RawCompactChip(
-                backgroundColor: Colors.transparent,
-                label: Text(
-                  '<your search query>',
-                  style: TextStyle(
-                    color: context.theme.colorScheme.onSecondaryContainer
-                        .withOpacity(0.6),
-                    fontStyle: FontStyle.italic,
+              IgnorePointer(
+                child: RawCompactChip(
+                  backgroundColor: Colors.transparent,
+                  label: Text(
+                    '<your search query>',
+                    style: TextStyle(
+                      color: context.theme.colorScheme.onSecondaryContainer
+                          .withOpacity(0.6),
+                      fontStyle: FontStyle.italic,
+                    ),
                   ),
                 ),
               ),
