@@ -146,6 +146,7 @@ class GelbooruBuilder
     with
         UnknownMetatagsMixin,
         DefaultDownloadFileUrlExtractorMixin,
+        DefaultMultiSelectionActionsBuilderMixin,
         DefaultHomeMixin,
         DefaultQuickFavoriteButtonBuilderMixin,
         DefaultThumbnailUrlMixin,

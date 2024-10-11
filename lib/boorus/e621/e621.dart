@@ -108,6 +108,7 @@ class E621Builder
         LegacyGranularRatingOptionsBuilderMixin,
         UnknownMetatagsMixin,
         DefaultDownloadFileUrlExtractorMixin,
+        DefaultMultiSelectionActionsBuilderMixin,
         DefaultHomeMixin,
         DefaultQuickFavoriteButtonBuilderMixin,
         DefaultThumbnailUrlMixin,

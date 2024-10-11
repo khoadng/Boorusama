@@ -37,6 +37,7 @@ class InfinitePostListScaffold<T extends Post> extends ConsumerStatefulWidget {
     this.refreshAtStart = true,
     this.errors,
     this.safeArea = true,
+    this.multiSelectController,
   });
 
   final VoidCallback? onLoadMore;
@@ -54,10 +55,9 @@ class InfinitePostListScaffold<T extends Post> extends ConsumerStatefulWidget {
 
   final BooruError? errors;
 
-  final Widget Function(
-    List<T> selectedPosts,
-    void Function() endMultiSelect,
-  )? multiSelectActions;
+  final Widget? multiSelectActions;
+
+  final MultiSelectController<T>? multiSelectController;
 
   @override
   ConsumerState<InfinitePostListScaffold<T>> createState() =>
@@ -67,7 +67,8 @@ class InfinitePostListScaffold<T extends Post> extends ConsumerStatefulWidget {
 class _InfinitePostListScaffoldState<T extends Post>
     extends ConsumerState<InfinitePostListScaffold<T>> {
   late final AutoScrollController _autoScrollController;
-  final _multiSelectController = MultiSelectController<T>();
+  late final _multiSelectController =
+      widget.multiSelectController ?? MultiSelectController<T>();
 
   @override
   void initState() {
@@ -78,7 +79,9 @@ class _InfinitePostListScaffoldState<T extends Post>
   @override
   void dispose() {
     super.dispose();
-    _multiSelectController.dispose();
+    if (widget.multiSelectController == null) {
+      _multiSelectController.dispose();
+    }
 
     if (widget.scrollController == null) {
       _autoScrollController.dispose();
@@ -98,6 +101,10 @@ class _InfinitePostListScaffoldState<T extends Post>
         false;
 
     final gridThumbnailUrlBuilder = booruBuilder?.gridThumbnailUrlBuilder;
+    final multiSelectActions = booruBuilder?.multiSelectionActionsBuilder?.call(
+      context,
+      _multiSelectController,
+    );
 
     return LayoutBuilder(
       builder: (context, constraints) => PostGrid(
@@ -109,22 +116,11 @@ class _InfinitePostListScaffoldState<T extends Post>
           ...widget.sliverHeaders ?? [],
           const SliverMasonryGridWarning(),
         ],
-        footer: ValueListenableBuilder(
-          valueListenable: _multiSelectController.selectedItemsNotifier,
-          builder: (_, selectedItems, __) => widget.multiSelectActions != null
-              ? widget.multiSelectActions!.call(
-                  selectedItems,
-                  () {
-                    _multiSelectController.disableMultiSelect();
-                  },
-                )
-              : DefaultMultiSelectionActions(
-                  selectedPosts: selectedItems,
-                  endMultiSelect: () {
-                    _multiSelectController.disableMultiSelect();
-                  },
-                ),
-        ),
+        footer: widget.multiSelectActions ??
+            multiSelectActions ??
+            DefaultMultiSelectionActions(
+              controller: _multiSelectController,
+            ),
         multiSelectController: _multiSelectController,
         onLoadMore: widget.onLoadMore,
         onRefresh: widget.onRefresh,
