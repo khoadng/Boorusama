@@ -33,6 +33,7 @@ class ZerochanBuilder
         CommentNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
         DefaultDownloadFileUrlExtractorMixin,
+        DefaultMultiSelectionActionsBuilderMixin,
         DefaultHomeMixin,
         UnknownMetatagsMixin,
         DefaultPostImageDetailsUrlMixin,

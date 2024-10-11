@@ -22,6 +22,7 @@ import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
+import 'package:boorusama/widgets/widgets.dart';
 import 'artists/danbooru_artist_page.dart';
 import 'comments/comments.dart';
 import 'configs/create_danbooru_config_page.dart';
@@ -362,6 +363,19 @@ class DanbooruBuilder
               post: post,
             ),
           );
+
+  @override
+  MultiSelectionActionsBuilder? get multiSelectionActionsBuilder =>
+      (context, controller) {
+        final isDanController =
+            controller is MultiSelectController<DanbooruPost>;
+
+        print('isDanController: $isDanController');
+
+        return isDanController
+            ? DanbooruMultiSelectionActions(controller: controller)
+            : DefaultMultiSelectionActions(controller: controller);
+      };
 }
 
 bool handleDanbooruGestureAction(

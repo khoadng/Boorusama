@@ -322,23 +322,7 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                               falseChild: SliverToBoxAdapter(
                                 child: Padding(
                                   padding: const EdgeInsets.only(bottom: 8),
-                                  child: ValueListenableBuilder(
-                                    valueListenable: controller.count,
-                                    builder: (_, value, __) => PageSelector(
-                                      totalResults: value,
-                                      itemPerPage: ref.watch(
-                                          imageListingSettingsProvider.select(
-                                              (value) => value.postsPerPage)),
-                                      currentPage: page,
-                                      onPrevious: controller.hasPreviousPage()
-                                          ? () => _goToPreviousPage()
-                                          : null,
-                                      onNext: controller.hasNextPage()
-                                          ? () => _goToNextPage()
-                                          : null,
-                                      onPageSelect: (page) => _goToPage(page),
-                                    ),
-                                  ),
+                                  child: _buildPageIndicator(),
                                 ),
                               ),
                               trueChild: const SliverSizedBox.shrink(),
@@ -367,7 +351,15 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                               valueListenable: refreshing,
                               useFalseChildAsCache: true,
                               trueChild: const SliverSizedBox.shrink(),
-                              falseChild: _buildPageIndicator(),
+                              falseChild: SliverToBoxAdapter(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                    top: 40,
+                                    bottom: 20,
+                                  ),
+                                  child: _buildPageIndicator(),
+                                ),
+                              ),
                             ),
                           SliverSizedBox(
                             height:
@@ -402,19 +394,17 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
   }
 
   Widget _buildPageIndicator() {
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: const EdgeInsets.only(
-          top: 40,
-          bottom: 20,
-        ),
-        child: PageSelector(
-          currentPage: page,
-          onPrevious:
-              controller.hasPreviousPage() ? () => _goToPreviousPage() : null,
-          onNext: controller.hasNextPage() ? () => _goToNextPage() : null,
-          onPageSelect: (page) => _goToPage(page),
-        ),
+    return ValueListenableBuilder(
+      valueListenable: controller.count,
+      builder: (_, value, __) => PageSelector(
+        totalResults: value,
+        itemPerPage: ref.watch(
+            imageListingSettingsProvider.select((value) => value.postsPerPage)),
+        currentPage: page,
+        onPrevious:
+            controller.hasPreviousPage() ? () => _goToPreviousPage() : null,
+        onNext: controller.hasNextPage() ? () => _goToNextPage() : null,
+        onPageSelect: (page) => _goToPage(page),
       ),
     );
   }

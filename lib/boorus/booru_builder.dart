@@ -38,6 +38,7 @@ import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
+import 'package:boorusama/widgets/widgets.dart';
 import 'anime-pictures/anime_pictures.dart';
 import 'anime-pictures/providers.dart';
 import 'danbooru/notes/notes.dart';
@@ -90,6 +91,8 @@ abstract class BooruBuilder {
   MetatagExtractor? get metatagExtractor;
 
   DownloadFileUrlExtractor get downloadFileUrlExtractor;
+
+  MultiSelectionActionsBuilder? get multiSelectionActionsBuilder;
 
   // Data Builders
   PostFetcher get postFetcher;
