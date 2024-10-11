@@ -11,6 +11,7 @@ import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/functional.dart';
+import 'package:boorusama/router.dart';
 import 'post_votes/post_votes.dart';
 import 'szurubooru_post.dart';
 
@@ -60,6 +61,7 @@ class SzurubooruPostDetailsPage extends ConsumerWidget {
                   tags: createTagGroupItems(post.tagDetails),
                   initialExpanded: true,
                   tagColorBuilder: (tag) => tag.category.darkColor,
+                  onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
                 ),
               ),
       toolbar: ValueListenableBuilder(
@@ -123,7 +125,7 @@ class SzurubooruPostDetailsDesktopPage extends ConsumerWidget {
                   post: post,
                   tags: createTagGroupItems(post.tagDetails),
                   initialExpanded: true,
-                  tagColorBuilder: (tag) => tag.category.darkColor,
+                  onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
                 ),
               ),
       toolbarBuilder: (context, post) => ValueListenableBuilder(
