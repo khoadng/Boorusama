@@ -31,6 +31,7 @@ class PhilomenaBuilder
         CharacterNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
         UnknownMetatagsMixin,
+        DefaultMultiSelectionActionsBuilderMixin,
         DefaultDownloadFileUrlExtractorMixin,
         DefaultHomeMixin,
         DefaultGranularRatingFiltererMixin,

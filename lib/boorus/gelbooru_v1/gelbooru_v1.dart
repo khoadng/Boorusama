@@ -34,6 +34,7 @@ class GelbooruV1Builder
         CommentNotSupportedMixin,
         NoteNotSupportedMixin,
         UnknownMetatagsMixin,
+        DefaultMultiSelectionActionsBuilderMixin,
         DefaultDownloadFileUrlExtractorMixin,
         DefaultHomeMixin,
         DefaultThumbnailUrlMixin,

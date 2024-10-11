@@ -138,6 +138,14 @@ mixin DefaultPostGesturesHandlerMixin on BooruBuilder {
           );
 }
 
+mixin DefaultMultiSelectionActionsBuilderMixin on BooruBuilder {
+  @override
+  MultiSelectionActionsBuilder? get multiSelectionActionsBuilder =>
+      (context, controller) => DefaultMultiSelectionActions(
+            controller: controller,
+          );
+}
+
 extension BooruBuilderGestures on BooruBuilder {
   bool canHandlePostGesture(
     GestureType gesture,

@@ -101,6 +101,10 @@ class _InfinitePostListScaffoldState<T extends Post>
         false;
 
     final gridThumbnailUrlBuilder = booruBuilder?.gridThumbnailUrlBuilder;
+    final multiSelectActions = booruBuilder?.multiSelectionActionsBuilder?.call(
+      context,
+      _multiSelectController,
+    );
 
     return LayoutBuilder(
       builder: (context, constraints) => PostGrid(
@@ -113,6 +117,7 @@ class _InfinitePostListScaffoldState<T extends Post>
           const SliverMasonryGridWarning(),
         ],
         footer: widget.multiSelectActions ??
+            multiSelectActions ??
             DefaultMultiSelectionActions(
               controller: _multiSelectController,
             ),

@@ -40,6 +40,11 @@ typedef QuickFavoriteButtonBuilder = Widget Function(
   Post post,
 );
 
+typedef MultiSelectionActionsBuilder = Widget Function(
+  BuildContext context,
+  MultiSelectController<Post> controller,
+);
+
 typedef ArtistPageBuilder = Widget Function(
   BuildContext context,
   String artistName,

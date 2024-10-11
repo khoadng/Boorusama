@@ -121,6 +121,7 @@ class GelbooruV2Builder
         DefaultThumbnailUrlMixin,
         PostCountNotSupportedMixin,
         UnknownMetatagsMixin,
+        DefaultMultiSelectionActionsBuilderMixin,
         DefaultDownloadFileUrlExtractorMixin,
         DefaultHomeMixin,
         DefaultPostImageDetailsUrlMixin,

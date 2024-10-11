@@ -88,6 +88,11 @@ class _DanbooruInfinitePostListState
         ) ??
         false;
 
+    final multiSelectActions = booruBuilder?.multiSelectionActionsBuilder?.call(
+      context,
+      _multiSelectController,
+    );
+
     return LayoutBuilder(
       builder: (context, constraints) => PostGrid(
         refreshAtStart: widget.refreshAtStart,
@@ -95,9 +100,7 @@ class _DanbooruInfinitePostListState
         scrollController: _autoScrollController,
         sliverHeaders: widget.sliverHeaders,
         safeArea: widget.safeArea,
-        footer: DanbooruMultiSelectionActions(
-          controller: _multiSelectController,
-        ),
+        footer: multiSelectActions,
         multiSelectController: _multiSelectController,
         onLoadMore: widget.onLoadMore,
         onRefresh: widget.onRefresh,
