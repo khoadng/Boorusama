@@ -241,13 +241,14 @@ class DefaultSearchPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booruBuilder = ref.watch(booruBuilderProvider);
+    final postRepo = ref.watch(postRepoProvider(ref.watchConfig));
 
     return SearchPageScaffold(
       initialQuery: initialQuery,
-      fetcher: (page, controler) =>
-          booruBuilder?.postFetcher.call(page, controler.rawTagsString) ??
-          TaskEither.of(<Post>[].toResult()),
+      fetcher: (page, controler) => postRepo.getPostsFromController(
+        controler,
+        page,
+      ),
     );
   }
 }

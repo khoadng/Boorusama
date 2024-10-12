@@ -198,11 +198,7 @@ class HydrusBuilder
         DefaultPostStatisticsPageBuilderMixin,
         DefaultBooruUIMixin
     implements BooruBuilder {
-  HydrusBuilder({
-    required this.postRepo,
-  });
-
-  final PostRepository postRepo;
+  HydrusBuilder();
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
@@ -250,9 +246,6 @@ class HydrusBuilder
   @override
   PostImageDetailsUrlBuilder get postImageDetailsUrlBuilder =>
       (imageQuality, rawPost, config) => rawPost.sampleImageUrl;
-
-  @override
-  PostFetcher get postFetcher => (page, tags) => postRepo.getPosts(tags, page);
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>

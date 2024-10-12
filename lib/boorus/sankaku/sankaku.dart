@@ -46,11 +46,7 @@ class SankakuBuilder
         DefaultPostStatisticsPageBuilderMixin,
         DefaultBooruUIMixin
     implements BooruBuilder {
-  SankakuBuilder({
-    required this.postRepository,
-  });
-
-  final PostRepository<SankakuPost> postRepository;
+  SankakuBuilder();
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
@@ -86,10 +82,6 @@ class SankakuBuilder
   @override
   HomePageBuilder get homePageBuilder =>
       (context, config) => const SankakuHomePage();
-
-  @override
-  PostFetcher get postFetcher =>
-      (tags, page, {limit}) => postRepository.getPosts(page, tags);
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>

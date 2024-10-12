@@ -41,11 +41,7 @@ class SzurubooruBuilder
         DefaultPostStatisticsPageBuilderMixin,
         DefaultBooruUIMixin
     implements BooruBuilder {
-  SzurubooruBuilder({
-    required this.postRepo,
-  });
-
-  final PostRepository postRepo;
+  SzurubooruBuilder();
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
@@ -76,10 +72,6 @@ class SzurubooruBuilder
             backgroundColor: backgroundColor,
             initialTab: initialTab,
           );
-
-  @override
-  PostFetcher get postFetcher =>
-      (page, tags, {limit}) => postRepo.getPosts(tags, page, limit: limit);
 
   @override
   CommentPageBuilder? get commentPageBuilder =>

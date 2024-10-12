@@ -18,7 +18,6 @@ import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/functional.dart';
 import 'configs/create_moebooru_config_page.dart';
-import 'feats/autocomplete/autocomplete.dart';
 import 'feats/posts/posts.dart';
 import 'pages/moebooru_home_page.dart';
 import 'pages/moebooru_post_details_desktop_page.dart';
@@ -47,6 +46,7 @@ class MoebooruBuilder
         DefaultMultiSelectionActionsBuilderMixin,
         DefaultDownloadFileUrlExtractorMixin,
         DefaultHomeMixin,
+        DefaultBooruUIMixin,
         DefaultThumbnailUrlMixin,
         DefaultTagColorMixin,
         DefaultPostGesturesHandlerMixin,
@@ -54,13 +54,7 @@ class MoebooruBuilder
         DefaultGranularRatingFiltererMixin,
         DefaultPostStatisticsPageBuilderMixin
     implements BooruBuilder {
-  MoebooruBuilder({
-    required this.postRepo,
-    required this.autocompleteRepo,
-  });
-
-  final PostRepository<MoebooruPost> postRepo;
-  final MoebooruAutocompleteRepository autocompleteRepo;
+  MoebooruBuilder();
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
@@ -95,17 +89,6 @@ class MoebooruBuilder
             config: config,
             backgroundColor: backgroundColor,
             initialTab: initialTab,
-          );
-
-  @override
-  PostFetcher get postFetcher => (page, tags) => postRepo.getPosts(tags, page);
-
-  @override
-  SearchPageBuilder get searchPageBuilder =>
-      (context, initialQuery) => SearchPageScaffold(
-            initialQuery: initialQuery,
-            fetcher: (page, controller) =>
-                postFetcher(page, controller.rawTagsString),
           );
 
   @override

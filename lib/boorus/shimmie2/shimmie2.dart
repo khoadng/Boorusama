@@ -37,11 +37,7 @@ class Shimmie2Builder
         DefaultPostStatisticsPageBuilderMixin,
         DefaultBooruUIMixin
     implements BooruBuilder {
-  Shimmie2Builder({
-    required this.postRepo,
-  });
-
-  final PostRepository postRepo;
+  Shimmie2Builder();
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
@@ -72,10 +68,6 @@ class Shimmie2Builder
             backgroundColor: backgroundColor,
             initialTab: initialTab,
           );
-
-  @override
-  PostFetcher get postFetcher =>
-      (page, tags, {limit}) => postRepo.getPosts(tags, page, limit: limit);
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>

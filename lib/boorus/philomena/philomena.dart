@@ -38,11 +38,7 @@ class PhilomenaBuilder
         DefaultPostStatisticsPageBuilderMixin,
         DefaultBooruUIMixin
     implements BooruBuilder {
-  PhilomenaBuilder({
-    required this.postRepo,
-  });
-
-  final PostRepository postRepo;
+  PhilomenaBuilder();
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
@@ -73,9 +69,6 @@ class PhilomenaBuilder
             backgroundColor: backgroundColor,
             initialTab: initialTab,
           );
-
-  @override
-  PostFetcher get postFetcher => (page, tags) => postRepo.getPosts(tags, page);
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>

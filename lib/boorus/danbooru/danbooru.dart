@@ -88,14 +88,12 @@ class DanbooruBuilder
         NewGranularRatingOptionsBuilderMixin
     implements BooruBuilder {
   DanbooruBuilder({
-    required this.postRepo,
     required this.favoriteRepo,
     required this.postCountRepo,
     required this.noteRepo,
     required this.tagInfo,
   });
 
-  final PostRepository<DanbooruPost> postRepo;
   final FavoritePostRepository favoriteRepo;
   final PostCountRepository postCountRepo;
   final NoteRepository noteRepo;
@@ -135,12 +133,6 @@ class DanbooruBuilder
             backgroundColor: backgroundColor,
             initialTab: initialTab,
           );
-
-  @override
-  PostFetcher get postFetcher => (page, tags) => postRepo.getPosts(
-        tags,
-        page,
-      );
 
   @override
   FavoriteAdder? get favoriteAdder =>

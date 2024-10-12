@@ -61,11 +61,6 @@ typedef CommentPageBuilder = Widget Function(
   int postId,
 );
 
-typedef PostFetcher = PostsOrError Function(
-  int page,
-  String tags,
-);
-
 typedef NoteFetcher = Future<List<Note>> Function(int postId);
 
 typedef FavoriteAdder = Future<bool> Function(int postId, WidgetRef ref);

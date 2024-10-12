@@ -118,11 +118,9 @@ class E621Builder
         DefaultPostImageDetailsUrlMixin
     implements BooruBuilder {
   E621Builder({
-    required this.postRepo,
     required this.noteRepo,
   });
 
-  final PostRepository<E621Post> postRepo;
   final NoteRepository noteRepo;
 
   @override
@@ -159,9 +157,6 @@ class E621Builder
             backgroundColor: backgroundColor,
             initialTab: initialTab,
           );
-
-  @override
-  PostFetcher get postFetcher => (page, tags) => postRepo.getPosts(tags, page);
 
   @override
   FavoriteAdder? get favoriteAdder => (postId, ref) => ref

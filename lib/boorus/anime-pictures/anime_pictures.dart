@@ -47,11 +47,9 @@ class AnimePicturesBuilder
         DefaultBooruUIMixin
     implements BooruBuilder {
   AnimePicturesBuilder({
-    required this.postRepo,
     required this.client,
   });
 
-  final PostRepository postRepo;
   final AnimePicturesClient client;
 
   @override
@@ -83,10 +81,6 @@ class AnimePicturesBuilder
             backgroundColor: backgroundColor,
             initialTab: initialTab,
           );
-
-  @override
-  PostFetcher get postFetcher =>
-      (page, tags, {limit}) => postRepo.getPosts(tags, page, limit: limit);
 
   @override
   late final DownloadFilenameGenerator<Post> downloadFilenameBuilder =
