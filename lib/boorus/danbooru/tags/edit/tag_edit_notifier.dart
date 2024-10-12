@@ -106,6 +106,23 @@ class TagEditNotifier extends Notifier<TagEditState> {
     return tags;
   }
 
+  Set<String> addTags(Iterable<String> tags) {
+    final newTags = tags.toSet().difference(state.tags);
+    if (newTags.isEmpty) return state.tags;
+
+    final newTagSet = {
+      ...state.tags,
+      ...newTags,
+    };
+
+    state = state.copyWith(tags: newTagSet, toBeAdded: {
+      ...state.toBeAdded,
+      ...newTags,
+    });
+
+    return newTagSet;
+  }
+
   void removeTag(String tag) {
     final tags = state.tags.toSet()..remove(tag);
     if (state.toBeAdded.contains(tag)) {
