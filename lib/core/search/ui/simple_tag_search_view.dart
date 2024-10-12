@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
@@ -133,10 +134,10 @@ class _SimpleTagSearchViewState extends ConsumerState<SimpleTagSearchView> {
                                   valueListenable: textEditingController,
                                   builder: (context, query, child) =>
                                       query.text.isEmpty
-                                          ? SearchButton2(
+                                          ? _AddButton(
                                               onTap: null,
                                             )
-                                          : SearchButton2(
+                                          : _AddButton(
                                               onTap: () {
                                                 widget.onSelected(
                                                   query.text.trimRight(),
@@ -243,6 +244,40 @@ class InputSelectorButton extends ConsumerWidget {
             ),
           )
           .toList(),
+    );
+  }
+}
+
+class _AddButton extends StatelessWidget {
+  const _AddButton({
+    required this.onTap,
+  });
+
+  final void Function()? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      child: Material(
+        color: onTap == null
+            ? context.colorScheme.onSurface.withOpacity(0.1)
+            : context.colorScheme.primary,
+        borderRadius: BorderRadius.circular(8),
+        child: InkWell(
+          customBorder: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          onTap: onTap,
+          child: Container(
+            margin: const EdgeInsets.all(4),
+            child: Icon(
+              Symbols.add,
+              color: context.colorScheme.onPrimary,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
