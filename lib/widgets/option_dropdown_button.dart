@@ -13,6 +13,7 @@ class OptionDropDownButton<T> extends StatelessWidget {
     required this.items,
     this.alignment = AlignmentDirectional.centerEnd,
     this.backgroundColor,
+    this.padding,
   });
 
   final T value;
@@ -20,6 +21,7 @@ class OptionDropDownButton<T> extends StatelessWidget {
   final List<DropdownMenuItem<T>> items;
   final AlignmentDirectional alignment;
   final Color? backgroundColor;
+  final EdgeInsetsGeometry? padding;
 
   @override
   Widget build(BuildContext context) {
@@ -33,10 +35,11 @@ class OptionDropDownButton<T> extends StatelessWidget {
           isDense: true,
           value: value,
           borderRadius: BorderRadius.circular(8),
-          padding: const EdgeInsets.symmetric(
-            horizontal: 8,
-            vertical: 8,
-          ),
+          padding: padding ??
+              const EdgeInsets.symmetric(
+                horizontal: 8,
+                vertical: 8,
+              ),
           icon: Padding(
             padding: const EdgeInsets.only(left: 4),
             child: Icon(
