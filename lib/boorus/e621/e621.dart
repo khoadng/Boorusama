@@ -119,12 +119,10 @@ class E621Builder
     implements BooruBuilder {
   E621Builder({
     required this.postRepo,
-    required this.autocompleteRepo,
     required this.noteRepo,
   });
 
   final PostRepository<E621Post> postRepo;
-  final AutocompleteRepository autocompleteRepo;
   final NoteRepository noteRepo;
 
   @override
@@ -164,10 +162,6 @@ class E621Builder
 
   @override
   PostFetcher get postFetcher => (page, tags) => postRepo.getPosts(tags, page);
-
-  @override
-  AutocompleteFetcher get autocompleteFetcher =>
-      (query) => autocompleteRepo.getAutocomplete(query);
 
   @override
   FavoriteAdder? get favoriteAdder => (postId, ref) => ref

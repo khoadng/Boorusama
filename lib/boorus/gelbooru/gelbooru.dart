@@ -214,10 +214,6 @@ class GelbooruBuilder
   NoteFetcher? get noteFetcher => (postId) => noteRepo.getNotes(postId);
 
   @override
-  AutocompleteFetcher get autocompleteFetcher =>
-      (query) => autocompleteRepo.getAutocomplete(query);
-
-  @override
   PostCountFetcher? get postCountFetcher => (config, tags, tagComposer) async {
         // Delay a bit to avoid this request running before the actual search, this is a hack used for the search page
         await Future.delayed(const Duration(milliseconds: 100));

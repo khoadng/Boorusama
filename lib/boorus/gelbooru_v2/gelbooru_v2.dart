@@ -132,13 +132,11 @@ class GelbooruV2Builder
     implements BooruBuilder {
   GelbooruV2Builder({
     required this.postRepo,
-    required this.autocompleteRepo,
     required this.noteRepo,
     required this.client,
   });
 
   final PostRepository<GelbooruV2Post> postRepo;
-  final AutocompleteRepository autocompleteRepo;
   final NoteRepository noteRepo;
   final GelbooruV2Client client;
 
@@ -185,10 +183,6 @@ class GelbooruV2Builder
 
   @override
   NoteFetcher? get noteFetcher => (postId) => noteRepo.getNotes(postId);
-
-  @override
-  AutocompleteFetcher get autocompleteFetcher =>
-      (query) => autocompleteRepo.getAutocomplete(query);
 
   @override
   SearchPageBuilder get searchPageBuilder => (context, initialQuery) =>

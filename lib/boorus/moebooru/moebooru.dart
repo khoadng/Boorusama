@@ -101,10 +101,6 @@ class MoebooruBuilder
   PostFetcher get postFetcher => (page, tags) => postRepo.getPosts(tags, page);
 
   @override
-  AutocompleteFetcher get autocompleteFetcher =>
-      (query) => autocompleteRepo.getAutocomplete(query);
-
-  @override
   SearchPageBuilder get searchPageBuilder =>
       (context, initialQuery) => SearchPageScaffold(
             initialQuery: initialQuery,

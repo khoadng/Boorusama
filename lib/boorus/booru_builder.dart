@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
-import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/favorites/favorites.dart';
 import 'package:boorusama/boorus/e621/e621.dart';
 import 'package:boorusama/boorus/e621/posts/posts.dart';
@@ -20,8 +19,6 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/boorus/sankaku/sankaku.dart';
 import 'package:boorusama/boorus/shimmie2/providers.dart';
 import 'package:boorusama/boorus/zerochan/zerochan.dart';
-import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
-import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
@@ -96,7 +93,6 @@ abstract class BooruBuilder {
 
   // Data Builders
   PostFetcher get postFetcher;
-  AutocompleteFetcher get autocompleteFetcher;
   NoteFetcher? get noteFetcher;
 
   // Action Builders
@@ -148,21 +144,15 @@ final booruBuildersProvider =
               ),
           BooruType.gelbooruV2: (config) => GelbooruV2Builder(
                 postRepo: ref.read(gelbooruV2PostRepoProvider(config)),
-                autocompleteRepo:
-                    ref.read(gelbooruV2AutocompleteRepoProvider(config)),
                 noteRepo: ref.read(gelbooruV2NoteRepoProvider(config)),
                 client: ref.read(gelbooruV2ClientProvider(config)),
               ),
           BooruType.e621: (config) => E621Builder(
-                autocompleteRepo:
-                    ref.read(e621AutocompleteRepoProvider(config)),
                 postRepo: ref.read(e621PostRepoProvider(config)),
                 noteRepo: ref.read(e621NoteRepoProvider(config)),
               ),
           BooruType.danbooru: (config) => DanbooruBuilder(
                 postRepo: ref.read(danbooruPostRepoProvider(config)),
-                autocompleteRepo:
-                    ref.read(danbooruAutocompleteRepoProvider(config)),
                 favoriteRepo: ref.read(danbooruFavoriteRepoProvider(config)),
                 postCountRepo: ref.read(danbooruPostCountRepoProvider(config)),
                 noteRepo: ref.read(danbooruNoteRepoProvider(config)),
@@ -170,36 +160,24 @@ final booruBuildersProvider =
               ),
           BooruType.gelbooruV1: (config) => GelbooruV1Builder(
                 postRepo: ref.read(gelbooruV1PostRepoProvider(config)),
-                client: GelbooruClient.gelbooru(),
               ),
           BooruType.sankaku: (config) => SankakuBuilder(
                 postRepository: ref.read(sankakuPostRepoProvider(config)),
-                autocompleteRepo:
-                    ref.read(sankakuAutocompleteRepoProvider(config)),
               ),
           BooruType.philomena: (config) => PhilomenaBuilder(
                 postRepo: ref.read(philomenaPostRepoProvider(config)),
-                autocompleteRepo:
-                    ref.read(philomenaAutoCompleteRepoProvider(config)),
               ),
           BooruType.shimmie2: (config) => Shimmie2Builder(
                 postRepo: ref.read(shimmie2PostRepoProvider(config)),
-                autocompleteRepo:
-                    ref.read(shimmie2AutocompleteRepoProvider(config)),
               ),
           BooruType.szurubooru: (config) => SzurubooruBuilder(
                 postRepo: ref.read(szurubooruPostRepoProvider(config)),
-                autocompleteRepo:
-                    ref.read(szurubooruAutocompleteRepoProvider(config)),
               ),
           BooruType.hydrus: (config) => HydrusBuilder(
                 postRepo: ref.read(hydrusPostRepoProvider(config)),
-                client: ref.read(hydrusClientProvider(config)),
               ),
           BooruType.animePictures: (config) => AnimePicturesBuilder(
                 client: ref.read(animePicturesClientProvider(config)),
                 postRepo: ref.read(animePicturesPostRepoProvider(config)),
-                autocompleteRepo:
-                    ref.read(animePicturesAutocompleteRepoProvider(config)),
               ),
         });

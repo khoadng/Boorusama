@@ -84,10 +84,6 @@ class ZerochanBuilder
   PostFetcher get postFetcher => (page, tags) => postRepo.getPosts(tags, page);
 
   @override
-  AutocompleteFetcher get autocompleteFetcher =>
-      (query) => autocompleteRepo.getAutocomplete(query.toLowerCase());
-
-  @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
       (context, config, payload) => PostDetailsLayoutSwitcher(
             initialIndex: payload.initialIndex,

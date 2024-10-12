@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/notes/notes.dart';
@@ -90,7 +89,6 @@ class DanbooruBuilder
     implements BooruBuilder {
   DanbooruBuilder({
     required this.postRepo,
-    required this.autocompleteRepo,
     required this.favoriteRepo,
     required this.postCountRepo,
     required this.noteRepo,
@@ -98,7 +96,6 @@ class DanbooruBuilder
   });
 
   final PostRepository<DanbooruPost> postRepo;
-  final AutocompleteRepository autocompleteRepo;
   final FavoritePostRepository favoriteRepo;
   final PostCountRepository postCountRepo;
   final NoteRepository noteRepo;
@@ -144,10 +141,6 @@ class DanbooruBuilder
         tags,
         page,
       );
-
-  @override
-  AutocompleteFetcher get autocompleteFetcher =>
-      (query) => autocompleteRepo.getAutocomplete(query);
 
   @override
   FavoriteAdder? get favoriteAdder =>

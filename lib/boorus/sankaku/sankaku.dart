@@ -48,15 +48,9 @@ class SankakuBuilder
     implements BooruBuilder {
   SankakuBuilder({
     required this.postRepository,
-    required this.autocompleteRepo,
   });
 
   final PostRepository<SankakuPost> postRepository;
-  final AutocompleteRepository autocompleteRepo;
-
-  @override
-  AutocompleteFetcher get autocompleteFetcher =>
-      (query) => autocompleteRepo.getAutocomplete(query);
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (

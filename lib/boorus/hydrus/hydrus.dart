@@ -153,6 +153,32 @@ final hydrusPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
   },
 );
 
+final hydrusAutocompleteRepoProvider =
+    Provider.family<AutocompleteRepository, BooruConfig>((ref, config) {
+  final client = ref.watch(hydrusClientProvider(config));
+
+  return AutocompleteRepositoryBuilder(
+    persistentStorageKey:
+        '${Uri.encodeComponent(config.url)}_autocomplete_cache_v1',
+    persistentStaleDuration: const Duration(minutes: 5),
+    autocomplete: (query) async {
+      final dtos = await client.getAutocomplete(query: query);
+
+      return dtos.map((e) {
+        // looking for xxx:tag format using regex
+        final category = RegExp(r'(\w+):').firstMatch(e.value)?.group(1);
+
+        return AutocompleteData(
+          label: e.value,
+          value: e.value,
+          category: category,
+          postCount: e.count,
+        );
+      }).toList();
+    },
+  );
+});
+
 class HydrusBuilder
     with
         PostCountNotSupportedMixin,
@@ -173,29 +199,10 @@ class HydrusBuilder
         DefaultBooruUIMixin
     implements BooruBuilder {
   HydrusBuilder({
-    required this.client,
     required this.postRepo,
   });
 
-  final HydrusClient client;
   final PostRepository postRepo;
-
-  @override
-  AutocompleteFetcher get autocompleteFetcher => (query) async {
-        final tags = await client.getAutocomplete(query: query);
-
-        return tags.map((e) {
-          // looking for xxx:tag format using regex
-          final category = RegExp(r'(\w+):').firstMatch(e.value)?.group(1);
-
-          return AutocompleteData(
-            label: e.value,
-            value: e.value,
-            category: category,
-            postCount: e.count,
-          );
-        }).toList();
-      };
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (

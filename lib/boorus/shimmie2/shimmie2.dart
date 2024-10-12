@@ -8,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/gelbooru_v2/gelbooru_v2.dart';
-import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/create/create_anon_config_page.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
@@ -40,15 +39,9 @@ class Shimmie2Builder
     implements BooruBuilder {
   Shimmie2Builder({
     required this.postRepo,
-    required this.autocompleteRepo,
   });
 
-  final AutocompleteRepository autocompleteRepo;
   final PostRepository postRepo;
-
-  @override
-  AutocompleteFetcher get autocompleteFetcher =>
-      (query) => autocompleteRepo.getAutocomplete(query);
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (

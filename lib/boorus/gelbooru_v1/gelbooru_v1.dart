@@ -13,7 +13,7 @@ import 'package:boorusama/boorus/gelbooru_v1/create_gelbooru_v1_config_page.dart
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
 import 'package:boorusama/clients/gelbooru/gelbooru_v1_client.dart';
-import 'package:boorusama/core/autocompletes/autocomplete.dart';
+import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
@@ -48,20 +48,9 @@ class GelbooruV1Builder
     implements BooruBuilder {
   GelbooruV1Builder({
     required this.postRepo,
-    required this.client,
   });
 
   final PostRepository postRepo;
-  final GelbooruClient client;
-
-  @override
-  AutocompleteFetcher get autocompleteFetcher =>
-      (tags) => client.autocomplete(term: tags).then((value) => value
-          .map((e) => AutocompleteData(
-                label: e.label ?? '<Unknown>',
-                value: e.value ?? '<Unknown>',
-              ))
-          .toList());
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (

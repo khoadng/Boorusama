@@ -66,10 +66,6 @@ typedef PostFetcher = PostsOrError Function(
   String tags,
 );
 
-typedef AutocompleteFetcher = Future<List<AutocompleteData>> Function(
-  String query,
-);
-
 typedef NoteFetcher = Future<List<Note>> Function(int postId);
 
 typedef FavoriteAdder = Future<bool> Function(int postId, WidgetRef ref);
