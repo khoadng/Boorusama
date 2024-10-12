@@ -390,12 +390,12 @@ class _CreateBulkDownloadTagListState
                           )
                       : const SizedBox.shrink(),
                 ),
-                onSubmitted: (context, text) {
+                onSubmitted: (context, text, _) {
                   context.navigator.pop();
                   notifier.addTag(text);
                 },
-                onSelected: (tag) {
-                  notifier.addTag(tag.value);
+                onSelected: (tag, _) {
+                  notifier.addTag(tag);
                 },
               );
             },

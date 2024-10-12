@@ -50,6 +50,10 @@ class SuggestionsNotifier
     return <String, IList<AutocompleteData>>{}.lock;
   }
 
+  void clear() {
+    state = <String, IList<AutocompleteData>>{}.lock;
+  }
+
   void getSuggestions(String query) {
     if (query.isEmpty) return;
 

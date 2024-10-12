@@ -242,8 +242,9 @@ void goToQuickSearchPage(
   bool ensureValidTag = false,
   required WidgetRef ref,
   Widget Function(String text)? floatingActionButton,
-  required void Function(AutocompleteData tag) onSelected,
-  void Function(BuildContext context, String text)? onSubmitted,
+  required void Function(String tag, bool isMultiple) onSelected,
+  void Function(BuildContext context, String text, bool isMultiple)?
+      onSubmitted,
   Widget Function(TextEditingController controller)? emptyBuilder,
 }) {
   showSimpleTagSearchView(

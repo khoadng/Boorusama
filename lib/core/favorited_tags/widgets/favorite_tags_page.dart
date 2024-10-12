@@ -71,7 +71,7 @@ class FavoriteTagsPage extends ConsumerWidget {
           goToQuickSearchPage(
             context,
             ref: ref,
-            onSubmitted: (context, text) {
+            onSubmitted: (context, text, _) {
               context.navigator.pop();
               favoritesNotifier.add(
                 text,
@@ -84,8 +84,8 @@ class FavoriteTagsPage extends ConsumerWidget {
                 // ],
               );
             },
-            onSelected: (tag) => favoritesNotifier.add(
-              tag.value,
+            onSelected: (tag, _) => favoritesNotifier.add(
+              tag,
               onDuplicate: (tag) => showErrorToast(
                 context,
                 '$tag already exists',

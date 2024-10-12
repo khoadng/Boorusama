@@ -102,8 +102,8 @@ class TagEditExpandContent extends ConsumerWidget {
                   goToQuickSearchPage(
                     context,
                     ref: ref,
-                    onSelected: (tag) {
-                      notifier.addTag(tag.value);
+                    onSelected: (tag, _) {
+                      notifier.addTag(tag);
                     },
                   );
                 },

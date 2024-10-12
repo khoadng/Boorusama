@@ -116,12 +116,12 @@ class BooruConfigSearchView extends ConsumerWidget {
             goToQuickSearchPage(
               context,
               ref: ref,
-              onSubmitted: (context, text) {
+              onSubmitted: (context, text, _) {
                 context.navigator.pop();
                 _addTag(ref, text, exclude: exclude);
               },
-              onSelected: (tag) {
-                _addTag(ref, tag.value, exclude: exclude);
+              onSelected: (tag, _) {
+                _addTag(ref, tag, exclude: exclude);
               },
             );
           },
