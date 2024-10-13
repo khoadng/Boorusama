@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/search/search.dart';
@@ -20,6 +21,8 @@ class SelectedTagList extends StatelessWidget {
     required this.onDelete,
     required this.onUpdate,
     required this.onBulkDownload,
+    this.extraTagsCount,
+    this.onOtherTagsCountTap,
   });
 
   final List<TagSearchItem> tags;
@@ -27,9 +30,17 @@ class SelectedTagList extends StatelessWidget {
   final void Function(TagSearchItem tag) onDelete;
   final void Function(TagSearchItem oldTag, String newTag)? onUpdate;
   final void Function(List<TagSearchItem> tags) onBulkDownload;
+  final int? extraTagsCount;
+  final void Function()? onOtherTagsCountTap;
 
   @override
   Widget build(BuildContext context) {
+    final tagItems = [
+      ...tags,
+      if (extraTagsCount != null && extraTagsCount! > 0)
+        '$extraTagsCount other${extraTagsCount! > 1 ? 's' : ''}',
+    ];
+
     return BooruAnimatedCrossFade(
       firstChild: Row(
         children: [
@@ -48,10 +59,85 @@ class SelectedTagList extends StatelessWidget {
             },
           ),
           Expanded(
-            child: _SelectedTagChips(
-              tags: tags,
-              onDelete: onDelete,
-              onUpdate: onUpdate,
+            child: SizedBox(
+              height: 35,
+              child: ListView.builder(
+                shrinkWrap: true,
+                scrollDirection: Axis.horizontal,
+                itemCount: tagItems.length,
+                itemBuilder: (context, index) {
+                  final it = tagItems[index];
+
+                  return switch (it) {
+                    TagSearchItem item => Builder(
+                        builder: (context) {
+                          final chip = SelectedTagChip(
+                            tagSearchItem: item,
+                            onDeleted: () => onDelete(item),
+                            onUpdated: (tag) => onUpdate?.call(item, tag),
+                          );
+
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 4),
+                            child: item.isRaw
+                                ? SelectedTagContextMenu(
+                                    tag: item.toString(),
+                                    child: chip,
+                                  )
+                                : GeneralTagContextMenu(
+                                    tag: item.rawTag,
+                                    child: chip,
+                                  ),
+                          );
+                        },
+                      ),
+                    String otherTagsCount => Center(
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            customBorder: const RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(12)),
+                            ),
+                            onTap: onOtherTagsCountTap,
+                            child: Container(
+                              margin: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Symbols.add,
+                                    size: 14,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .outlineVariant
+                                        .withOpacity(0.75),
+                                  ),
+                                  Text(
+                                    otherTagsCount,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall
+                                        ?.copyWith(
+                                          letterSpacing: 0,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .outlineVariant
+                                              .withOpacity(0.5),
+                                        ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    _ => Text('Unknown type: ${it.runtimeType}'),
+                  };
+                },
+              ),
             ),
           ),
         ],
@@ -62,51 +148,6 @@ class SelectedTagList extends StatelessWidget {
           : CrossFadeState.showSecond,
       duration: const Duration(
         milliseconds: 100,
-      ),
-    );
-  }
-}
-
-class _SelectedTagChips extends StatelessWidget {
-  const _SelectedTagChips({
-    required this.tags,
-    required this.onDelete,
-    required this.onUpdate,
-  });
-
-  final List<TagSearchItem> tags;
-  final void Function(TagSearchItem tag) onDelete;
-  final void Function(TagSearchItem oldTag, String newTag)? onUpdate;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 35,
-      child: ListView.builder(
-        shrinkWrap: true,
-        scrollDirection: Axis.horizontal,
-        itemCount: tags.length,
-        itemBuilder: (context, index) {
-          final tagItem = tags[index];
-          final chip = SelectedTagChip(
-            tagSearchItem: tagItem,
-            onDeleted: () => onDelete(tagItem),
-            onUpdated: (tag) => onUpdate?.call(tagItem, tag),
-          );
-
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4),
-            child: tagItem.isRaw
-                ? SelectedTagContextMenu(
-                    tag: tagItem.toString(),
-                    child: chip,
-                  )
-                : GeneralTagContextMenu(
-                    tag: tagItem.rawTag,
-                    child: chip,
-                  ),
-          );
-        },
       ),
     );
   }
