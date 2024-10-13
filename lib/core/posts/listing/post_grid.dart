@@ -169,6 +169,10 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
   @override
   Widget build(BuildContext context) {
     final settings = ref.watch(imageListingSettingsProvider);
+    final header = ResponsiveLayoutBuilder(
+      phone: (context) => _buildConfigHeader(Axis.horizontal),
+      pc: (context) => _buildConfigHeader(Axis.vertical),
+    );
 
     return PopScope(
       canPop: !multiSelect,
@@ -180,11 +184,8 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
         color: context.theme.scaffoldBackgroundColor,
         child: PostGridConfigRegion(
           postController: controller,
-          blacklistHeader: ResponsiveLayoutBuilder(
-            phone: (context) => _buildConfigHeader(Axis.horizontal),
-            pc: (context) => _buildConfigHeader(Axis.vertical),
-          ),
-          builder: (context, header) => ConditionalParentWidget(
+          blacklistHeader: header,
+          child: ConditionalParentWidget(
             condition: widget.safeArea,
             conditionalBuilder: (child) => SafeArea(
               bottom: false,

@@ -14,7 +14,7 @@ final gelbooruPostRepoProvider =
     final client = ref.watch(gelbooruClientProvider(config));
 
     return PostRepositoryBuilder(
-      tagComposer: GelbooruTagQueryComposer(config: config),
+      tagComposer: ref.watch(tagQueryComposerProvider(config)),
       fetch: (tags, page, {limit}) => client
           .getPosts(
             tags: tags,

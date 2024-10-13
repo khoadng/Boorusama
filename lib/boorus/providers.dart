@@ -40,6 +40,7 @@ import 'package:boorusama/core/blacklists/blacklists.dart';
 import 'package:boorusama/core/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
+import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
@@ -129,6 +130,27 @@ final noteRepoProvider = Provider.family<NoteRepository, BooruConfig>(
           BooruType.gelbooruV2 => ref.watch(gelbooruV2NoteRepoProvider(config)),
           _ => ref.watch(emptyNoteRepoProvider),
         });
+
+final tagQueryComposerProvider = Provider.family<TagQueryComposer, BooruConfig>(
+  (ref, config) => switch (config.booruType) {
+    BooruType.danbooru => DanbooruTagQueryComposer(config: config),
+    BooruType.gelbooru => GelbooruTagQueryComposer(config: config),
+    BooruType.gelbooruV2 => GelbooruV2TagQueryComposer(config: config),
+    BooruType.e621 => LegacyTagQueryComposer(config: config),
+    BooruType.moebooru => LegacyTagQueryComposer(config: config),
+    BooruType.szurubooru => SzurubooruTagQueryComposer(config: config),
+    _ => DefaultTagQueryComposer(config: config),
+  },
+);
+
+final downloadFileUrlExtractorProvider =
+    Provider.family<DownloadFileUrlExtractor, BooruConfig>(
+  (ref, config) => switch (config.booruType) {
+    BooruType.animePictures =>
+      ref.watch(animePicturesDownloadFileUrlExtractorProvider(config)),
+    _ => const UrlInsidePostExtractor(),
+  },
+);
 
 final postArtistCharacterRepoProvider =
     Provider.family<PostRepository, BooruConfig>(

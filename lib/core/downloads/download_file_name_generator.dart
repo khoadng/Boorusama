@@ -27,6 +27,7 @@ abstract class DownloadFilenameGenerator<T extends Post> {
     BooruConfig config,
     T post, {
     Map<String, String>? metadata,
+    required String downloadUrl,
   });
 
   Future<String> generateForBulkDownload(
@@ -34,6 +35,7 @@ abstract class DownloadFilenameGenerator<T extends Post> {
     BooruConfig config,
     T post, {
     Map<String, String>? metadata,
+    required String downloadUrl,
   });
 
   String generateSample(String format);
@@ -77,7 +79,6 @@ class DownloadFileNameBuilder<T extends Post>
     required this.sampleData,
     required this.defaultFileNameFormat,
     required this.defaultBulkDownloadFileNameFormat,
-    required this.downloadFileUrlExtractor,
     bool hasRating = true,
     bool hasMd5 = true,
     DownloadFilenameTokenHandler<T>? extensionHandler,
@@ -108,8 +109,6 @@ class DownloadFileNameBuilder<T extends Post>
 
   final TokenizerConfigs tokenizerConfigs = TokenizerConfigs.defaultConfigs();
 
-  final DownloadFileUrlExtractor downloadFileUrlExtractor;
-
   String _joinFileWithExtension(String fileName, String fileExt) {
     // check if file already has extension
     final fileNameExt = extension(fileName);
@@ -133,16 +132,8 @@ class DownloadFileNameBuilder<T extends Post>
     String? format,
     T post, {
     required Map<String, String>? metadata,
+    required String downloadUrl,
   }) async {
-    final urlData = await downloadFileUrlExtractor.getDownloadFileUrl(
-      post: post,
-      settings: settings,
-    );
-
-    if (urlData == null) return '';
-
-    final downloadUrl = urlData.url;
-
     final fallbackName = basename(downloadUrl);
 
     if (format == null || format.isEmpty) {
@@ -178,6 +169,7 @@ class DownloadFileNameBuilder<T extends Post>
     BooruConfig config,
     T post, {
     Map<String, String>? metadata,
+    required String downloadUrl,
   }) =>
       _generate(
         settings,
@@ -185,6 +177,7 @@ class DownloadFileNameBuilder<T extends Post>
         config.customDownloadFileNameFormat,
         post,
         metadata: metadata,
+        downloadUrl: downloadUrl,
       );
 
   @override
@@ -193,6 +186,7 @@ class DownloadFileNameBuilder<T extends Post>
     BooruConfig config,
     T post, {
     Map<String, String>? metadata,
+    required String downloadUrl,
   }) =>
       _generate(
         settings,
@@ -200,6 +194,7 @@ class DownloadFileNameBuilder<T extends Post>
         config.customBulkDownloadFileNameFormat,
         post,
         metadata: metadata,
+        downloadUrl: downloadUrl,
       );
 
   @override

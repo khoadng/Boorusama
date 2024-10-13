@@ -16,7 +16,7 @@ final moebooruPostRepoProvider =
     final client = ref.watch(moebooruClientProvider(config));
 
     return PostRepositoryBuilder(
-      tagComposer: LegacyTagQueryComposer(config: config),
+      tagComposer: ref.watch(tagQueryComposerProvider(config)),
       fetch: (tags, page, {limit}) => client
           .getPosts(
             page: page,

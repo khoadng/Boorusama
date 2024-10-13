@@ -15,7 +15,7 @@ final gelbooruV2PostRepoProvider =
     final client = ref.watch(gelbooruV2ClientProvider(config));
 
     return PostRepositoryBuilder(
-      tagComposer: GelbooruV2TagQueryComposer(config: config),
+      tagComposer: ref.watch(tagQueryComposerProvider(config)),
       fetch: (tags, page, {limit}) => client
           .getPosts(
             tags: tags,

@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme.dart';
@@ -42,12 +43,20 @@ class BooruConfigSearchView extends ConsumerWidget {
             const Divider(),
           ],
           const SizedBox(height: 12),
-          Text(
-            'Include these tags in every search',
-            style: TextStyle(
-              color: context.theme.colorScheme.onSurface.withOpacity(0.8),
-              fontSize: 13,
-            ),
+          Row(
+            children: [
+              Flexible(
+                child: Text(
+                  'Include these tags in every search',
+                  style: TextStyle(
+                    color: context.theme.colorScheme.onSurface.withOpacity(0.8),
+                    fontSize: 13,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              _buildTooltip(),
+            ],
           ),
           const SizedBox(height: 8),
           Builder(
@@ -59,12 +68,20 @@ class BooruConfigSearchView extends ConsumerWidget {
             },
           ),
           const SizedBox(height: 8),
-          Text(
-            'Exclude these tags in every search',
-            style: TextStyle(
-              color: context.theme.colorScheme.onSurface.withOpacity(0.8),
-              fontSize: 13,
-            ),
+          Row(
+            children: [
+              Flexible(
+                child: Text(
+                  'Exclude these tags in every search',
+                  style: TextStyle(
+                    color: context.theme.colorScheme.onSurface.withOpacity(0.8),
+                    fontSize: 13,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              _buildTooltip(),
+            ],
           ),
           const SizedBox(height: 8),
           Builder(
@@ -75,14 +92,33 @@ class BooruConfigSearchView extends ConsumerWidget {
               return _buildTagList(ref, tags, exclude: true);
             },
           ),
-          const SizedBox(height: 8),
-          const Row(
+          const SizedBox(height: 12),
+          Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(child: _EffectiveTagPreview()),
+              Expanded(
+                child: BooruConfigDataProvider(
+                  builder: (data) => _EffectiveTagPreview(
+                    configData: data,
+                  ),
+                ),
+              ),
             ],
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildTooltip() {
+    return Tooltip(
+      message:
+          'These tags will be appended to every search that the app makes, not just the ones you make manually.',
+      triggerMode: TooltipTriggerMode.tap,
+      showDuration: const Duration(seconds: 5),
+      child: const Icon(
+        Symbols.info,
+        size: 14,
       ),
     );
   }
@@ -181,13 +217,27 @@ List<String> queryAsList(String? query) {
 }
 
 class _EffectiveTagPreview extends ConsumerWidget {
-  const _EffectiveTagPreview();
+  const _EffectiveTagPreview({
+    required this.configData,
+  });
+
+  final BooruConfigData configData;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tags = ref.watch(alwaysIncludeTagsProvider);
 
-    final rawTags = queryAsList(tags);
+    final effectiveConfigData = configData.copyWith(
+      alwaysIncludeTags: () => tags,
+    );
+
+    final config = effectiveConfigData.toBooruConfig(id: -1);
+
+    if (config == null) return const SizedBox();
+
+    final tagComposer = ref.watch(tagQueryComposerProvider(config));
+
+    final rawTags = tagComposer.compose([]);
 
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -216,7 +266,7 @@ class _EffectiveTagPreview extends ConsumerWidget {
                 child: RawCompactChip(
                   backgroundColor: Colors.transparent,
                   label: Text(
-                    '<your search query>',
+                    '<any search query>',
                     style: TextStyle(
                       color: context.theme.colorScheme.onSecondaryContainer
                           .withOpacity(0.6),
@@ -236,7 +286,7 @@ class _EffectiveTagPreview extends ConsumerWidget {
                       children: [
                         if (e.startsWith('-'))
                           TextSpan(
-                            text: '-',
+                            text: '—',
                             style: TextStyle(
                               color: context.theme.colorScheme.error,
                               fontWeight: FontWeight.w600,

@@ -81,6 +81,7 @@ final hydrusClientProvider =
 final hydrusPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
   (ref, config) {
     final client = ref.watch(hydrusClientProvider(config));
+    final composer = ref.watch(tagQueryComposerProvider(config));
 
     Future<PostResult<HydrusPost>> getPosts(
       List<String> tags,
@@ -133,8 +134,6 @@ final hydrusPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
 
       return data;
     }
-
-    final composer = DefaultTagQueryComposer(config: config);
 
     return PostRepositoryBuilder(
       tagComposer: composer,
@@ -189,7 +188,6 @@ class HydrusBuilder
         LegacyGranularRatingOptionsBuilderMixin,
         UnknownMetatagsMixin,
         DefaultMultiSelectionActionsBuilderMixin,
-        DefaultDownloadFileUrlExtractorMixin,
         DefaultHomeMixin,
         DefaultTagColorMixin,
         DefaultPostGesturesHandlerMixin,
@@ -230,9 +228,8 @@ class HydrusBuilder
           );
 
   @override
-  late final DownloadFilenameGenerator<Post> downloadFilenameBuilder =
+  final DownloadFilenameGenerator<Post> downloadFilenameBuilder =
       DownloadFileNameBuilder<Post>(
-    downloadFileUrlExtractor: downloadFileUrlExtractor,
     defaultFileNameFormat: kGelbooruV2CustomDownloadFileNameFormat,
     defaultBulkDownloadFileNameFormat: kGelbooruV2CustomDownloadFileNameFormat,
     sampleData: kDanbooruPostSamples,
