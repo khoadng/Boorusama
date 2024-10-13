@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
@@ -20,9 +21,11 @@ class BooruConfigSearchView extends ConsumerWidget {
   const BooruConfigSearchView({
     super.key,
     required this.hasRatingFilter,
+    required this.config,
   });
 
   final bool hasRatingFilter;
+  final BooruConfig config;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -116,6 +119,7 @@ class BooruConfigSearchView extends ConsumerWidget {
             goToQuickSearchPage(
               context,
               ref: ref,
+              initialConfig: config,
               onSubmitted: (context, text, _) {
                 context.navigator.pop();
                 _addTag(ref, text, exclude: exclude);

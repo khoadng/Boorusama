@@ -81,6 +81,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
       'Search': searchTab ??
           BooruConfigSearchView(
             hasRatingFilter: hasRatingFilter,
+            config: config,
           ),
       if (tabsBuilder != null) ...tabsBuilder!(context),
       'booru.gestures': BooruConfigGesturesView(
