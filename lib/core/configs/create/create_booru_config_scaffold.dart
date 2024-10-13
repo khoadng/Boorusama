@@ -108,7 +108,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
           config: config,
         ),
         actions: [
-          BooruConfigSubmitButton(
+          BooruConfigDataProvider(
             builder: submitButtonBuilder != null
                 ? submitButtonBuilder!
                 : (data) => DefaultBooruSubmitButton(

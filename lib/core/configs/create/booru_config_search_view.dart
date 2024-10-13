@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme.dart';
@@ -91,27 +92,19 @@ class BooruConfigSearchView extends ConsumerWidget {
               return _buildTagList(ref, tags, exclude: true);
             },
           ),
-          const SizedBox(height: 4),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4),
-            child: Text(
-              '*',
-              style: context.textTheme.titleSmall?.copyWith(
-                color: context.theme.hintColor,
-                fontSize: 12,
-                fontWeight: FontWeight.w400,
+          const SizedBox(height: 12),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: BooruConfigDataProvider(
+                  builder: (data) => _EffectiveTagPreview(
+                    configData: data,
+                  ),
+                ),
               ),
-            ),
+            ],
           ),
-          const SizedBox(height: 8),
-          if (alwaysIncludeTags != null) ...[
-            const Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(child: _EffectiveTagPreview()),
-              ],
-            ),
-          ],
         ],
       ),
     );
@@ -224,13 +217,27 @@ List<String> queryAsList(String? query) {
 }
 
 class _EffectiveTagPreview extends ConsumerWidget {
-  const _EffectiveTagPreview();
+  const _EffectiveTagPreview({
+    required this.configData,
+  });
+
+  final BooruConfigData configData;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tags = ref.watch(alwaysIncludeTagsProvider);
 
-    final rawTags = queryAsList(tags);
+    final effectiveConfigData = configData.copyWith(
+      alwaysIncludeTags: () => tags,
+    );
+
+    final config = effectiveConfigData.toBooruConfig(id: -1);
+
+    if (config == null) return const SizedBox();
+
+    final tagComposer = ref.watch(tagQueryComposerProvider(config));
+
+    final rawTags = tagComposer.compose([]);
 
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -279,7 +286,7 @@ class _EffectiveTagPreview extends ConsumerWidget {
                       children: [
                         if (e.startsWith('-'))
                           TextSpan(
-                            text: '-',
+                            text: '—',
                             style: TextStyle(
                               color: context.theme.colorScheme.error,
                               fontWeight: FontWeight.w600,

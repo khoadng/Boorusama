@@ -30,7 +30,7 @@ final animePicturesPostRepoProvider =
     final client = ref.watch(animePicturesClientProvider(config));
 
     return PostRepositoryBuilder(
-      tagComposer: DefaultTagQueryComposer(config: config),
+      tagComposer: ref.watch(tagQueryComposerProvider(config)),
       fetch: (tags, page, {limit}) async {
         final posts = await client.getPosts(
           tags: tags,

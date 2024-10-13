@@ -21,7 +21,7 @@ final danbooruPostRepoProvider =
   final client = ref.watch(danbooruClientProvider(config));
 
   return PostRepositoryBuilder(
-    tagComposer: DanbooruTagQueryComposer(config: config),
+    tagComposer: ref.watch(tagQueryComposerProvider(config)),
     fetch: (tags, page, {limit}) async {
       final posts = await client
           .getPosts(

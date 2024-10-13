@@ -29,7 +29,7 @@ final zerochanPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
     final client = ref.watch(zerochanClientProvider(config));
 
     return PostRepositoryBuilder(
-      tagComposer: DefaultTagQueryComposer(config: config),
+      tagComposer: ref.watch(tagQueryComposerProvider(config)),
       getSettings: () async => ref.read(imageListingSettingsProvider),
       fetch: (tags, page, {limit}) async {
         final posts = await client.getPosts(

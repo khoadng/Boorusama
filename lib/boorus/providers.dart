@@ -130,6 +130,18 @@ final noteRepoProvider = Provider.family<NoteRepository, BooruConfig>(
           _ => ref.watch(emptyNoteRepoProvider),
         });
 
+final tagQueryComposerProvider = Provider.family<TagQueryComposer, BooruConfig>(
+  (ref, config) => switch (config.booruType) {
+    BooruType.danbooru => DanbooruTagQueryComposer(config: config),
+    BooruType.gelbooru => GelbooruTagQueryComposer(config: config),
+    BooruType.gelbooruV2 => GelbooruV2TagQueryComposer(config: config),
+    BooruType.e621 => LegacyTagQueryComposer(config: config),
+    BooruType.moebooru => LegacyTagQueryComposer(config: config),
+    BooruType.szurubooru => SzurubooruTagQueryComposer(config: config),
+    _ => DefaultTagQueryComposer(config: config),
+  },
+);
+
 final postArtistCharacterRepoProvider =
     Provider.family<PostRepository, BooruConfig>(
         (ref, config) => switch (config.booruType) {
