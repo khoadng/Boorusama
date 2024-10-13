@@ -17,14 +17,11 @@ class PostGridConfigRegion extends ConsumerWidget {
   const PostGridConfigRegion({
     super.key,
     required this.blacklistHeader,
-    required this.builder,
     required this.postController,
+    required this.child,
   });
 
-  final Widget Function(
-    BuildContext context,
-    Widget blacklistHeader,
-  ) builder;
+  final Widget child;
   final Widget blacklistHeader;
   final PostGridController<Post> postController;
 
@@ -51,10 +48,7 @@ class PostGridConfigRegion extends ConsumerWidget {
           ),
         ),
         Expanded(
-          child: builder(
-            context,
-            blacklistHeader,
-          ),
+          child: child,
         ),
       ],
     );
