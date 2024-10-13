@@ -27,7 +27,6 @@ class SzurubooruBuilder
         DefaultThumbnailUrlMixin,
         ArtistNotSupportedMixin,
         CharacterNotSupportedMixin,
-        NoteNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
         UnknownMetatagsMixin,
         DefaultMultiSelectionActionsBuilderMixin,

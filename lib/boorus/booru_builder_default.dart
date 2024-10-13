@@ -40,11 +40,6 @@ mixin PostCountNotSupportedMixin implements BooruBuilder {
   PostCountFetcher? get postCountFetcher => null;
 }
 
-mixin NoteNotSupportedMixin implements BooruBuilder {
-  @override
-  NoteFetcher? get noteFetcher => null;
-}
-
 mixin DefaultThumbnailUrlMixin implements BooruBuilder {
   @override
   GridThumbnailUrlBuilder get gridThumbnailUrlBuilder =>

@@ -12,7 +12,6 @@ import 'package:boorusama/clients/e621/e621_client.dart';
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'artists/artists.dart';
@@ -117,11 +116,7 @@ class E621Builder
         DefaultGranularRatingFiltererMixin,
         DefaultPostImageDetailsUrlMixin
     implements BooruBuilder {
-  E621Builder({
-    required this.noteRepo,
-  });
-
-  final NoteRepository noteRepo;
+  E621Builder();
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
@@ -227,9 +222,6 @@ class E621Builder
             'lore' => const Color(0xff218923),
             _ => const Color(0xffb4c7d8),
           };
-
-  @override
-  NoteFetcher? get noteFetcher => (postId) => noteRepo.getNotes(postId);
 
   @override
   late final DownloadFilenameGenerator downloadFilenameBuilder =

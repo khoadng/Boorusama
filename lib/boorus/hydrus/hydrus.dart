@@ -184,7 +184,6 @@ class HydrusBuilder
         PostCountNotSupportedMixin,
         ArtistNotSupportedMixin,
         CharacterNotSupportedMixin,
-        NoteNotSupportedMixin,
         DefaultThumbnailUrlMixin,
         CommentNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,

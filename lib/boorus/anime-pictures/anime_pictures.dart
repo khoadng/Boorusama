@@ -34,7 +34,6 @@ class AnimePicturesBuilder
         CommentNotSupportedMixin,
         ArtistNotSupportedMixin,
         CharacterNotSupportedMixin,
-        NoteNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
         UnknownMetatagsMixin,
         DefaultMultiSelectionActionsBuilderMixin,

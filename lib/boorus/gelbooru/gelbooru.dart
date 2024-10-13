@@ -158,11 +158,9 @@ class GelbooruBuilder
         DefaultTagColorMixin
     implements BooruBuilder {
   GelbooruBuilder({
-    required this.noteRepo,
     required this.client,
   });
 
-  final NoteRepository noteRepo;
   final GelbooruClient Function() client;
 
   @override
@@ -199,9 +197,6 @@ class GelbooruBuilder
             backgroundColor: backgroundColor,
             initialTab: initialTab,
           );
-
-  @override
-  NoteFetcher? get noteFetcher => (postId) => noteRepo.getNotes(postId);
 
   @override
   PostCountFetcher? get postCountFetcher => (config, tags, tagComposer) async {

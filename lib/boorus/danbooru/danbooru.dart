@@ -9,7 +9,6 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/tags/tags.dart';
@@ -90,13 +89,11 @@ class DanbooruBuilder
   DanbooruBuilder({
     required this.favoriteRepo,
     required this.postCountRepo,
-    required this.noteRepo,
     required this.tagInfo,
   });
 
   final FavoritePostRepository favoriteRepo;
   final PostCountRepository postCountRepo;
-  final NoteRepository noteRepo;
   final TagInfo tagInfo;
 
   @override
@@ -210,9 +207,6 @@ class DanbooruBuilder
             postId: postId,
             useAppBar: useAppBar,
           );
-
-  @override
-  NoteFetcher? get noteFetcher => (postId) => noteRepo.getNotes(postId);
 
   @override
   PostGestureHandlerBuilder get postGestureHandlerBuilder =>

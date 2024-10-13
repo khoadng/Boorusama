@@ -6,7 +6,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts/posts.dart';
@@ -62,11 +62,11 @@ class NotesControllerNotifier
     if (state.isInvalidNoteState(arg)) return;
 
     if (state.notes.isEmpty && arg.isTranslated) {
-      final fetcher = ref.readCurrentBooruBuilder()?.noteFetcher;
+      final noteRepo = ref.read(noteRepoProvider(ref.readConfig));
 
-      if (fetcher == null) return;
+      final notes = await noteRepo.getNotes(arg.id);
 
-      final notes = await fetcher(arg.id);
+      if (notes.isEmpty) return;
 
       state = state.copyWith(
         notes: notes.lock,

@@ -33,9 +33,7 @@ import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'anime-pictures/anime_pictures.dart';
 import 'anime-pictures/providers.dart';
-import 'danbooru/notes/notes.dart';
 import 'danbooru/posts/posts.dart';
-import 'e621/notes/notes.dart';
 import 'gelbooru_v2/gelbooru_v2.dart';
 import 'hydrus/hydrus.dart';
 import 'philomena/philomena.dart';
@@ -83,9 +81,6 @@ abstract class BooruBuilder {
 
   MultiSelectionActionsBuilder? get multiSelectionActionsBuilder;
 
-  // Data Builders
-  NoteFetcher? get noteFetcher;
-
   // Action Builders
   FavoriteAdder? get favoriteAdder;
   FavoriteRemover? get favoriteRemover;
@@ -119,20 +114,15 @@ final booruBuildersProvider =
           BooruType.zerochan: (config) => ZerochanBuilder(),
           BooruType.moebooru: (config) => MoebooruBuilder(),
           BooruType.gelbooru: (config) => GelbooruBuilder(
-                noteRepo: ref.read(gelbooruNoteRepoProvider(config)),
                 client: () => ref.read(gelbooruClientProvider(config)),
               ),
           BooruType.gelbooruV2: (config) => GelbooruV2Builder(
-                noteRepo: ref.read(gelbooruV2NoteRepoProvider(config)),
                 client: ref.read(gelbooruV2ClientProvider(config)),
               ),
-          BooruType.e621: (config) => E621Builder(
-                noteRepo: ref.read(e621NoteRepoProvider(config)),
-              ),
+          BooruType.e621: (config) => E621Builder(),
           BooruType.danbooru: (config) => DanbooruBuilder(
                 favoriteRepo: ref.read(danbooruFavoriteRepoProvider(config)),
                 postCountRepo: ref.read(danbooruPostCountRepoProvider(config)),
-                noteRepo: ref.read(danbooruNoteRepoProvider(config)),
                 tagInfo: ref.read(tagInfoProvider),
               ),
           BooruType.gelbooruV1: (config) => GelbooruV1Builder(),

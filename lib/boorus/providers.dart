@@ -40,6 +40,7 @@ import 'package:boorusama/core/blacklists/blacklists.dart';
 import 'package:boorusama/core/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
+import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/tags/tags.dart';
@@ -54,6 +55,7 @@ import 'package:boorusama/foundation/package_info.dart';
 import 'package:boorusama/functional.dart';
 import 'anime-pictures/providers.dart';
 import 'danbooru/danbooru_provider.dart';
+import 'danbooru/notes/notes.dart';
 import 'e621/e621.dart';
 import 'gelbooru_v2/gelbooru_v2.dart';
 import 'hydrus/favorites/favorites.dart';
@@ -119,6 +121,14 @@ final autocompleteRepoProvider = Provider.family<
         ref.watch(animePicturesAutocompleteRepoProvider(config)),
       BooruType.unknown => ref.watch(emptyAutocompleteRepoProvider),
     });
+
+final noteRepoProvider = Provider.family<NoteRepository, BooruConfig>(
+    (ref, config) => switch (config.booruType) {
+          BooruType.danbooru => ref.watch(danbooruNoteRepoProvider(config)),
+          BooruType.gelbooru => ref.watch(gelbooruNoteRepoProvider(config)),
+          BooruType.gelbooruV2 => ref.watch(gelbooruV2NoteRepoProvider(config)),
+          _ => ref.watch(emptyNoteRepoProvider),
+        });
 
 final postArtistCharacterRepoProvider =
     Provider.family<PostRepository, BooruConfig>(

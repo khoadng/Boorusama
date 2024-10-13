@@ -131,11 +131,9 @@ class GelbooruV2Builder
         DefaultTagColorMixin
     implements BooruBuilder {
   GelbooruV2Builder({
-    required this.noteRepo,
     required this.client,
   });
 
-  final NoteRepository noteRepo;
   final GelbooruV2Client client;
 
   @override
@@ -172,9 +170,6 @@ class GelbooruV2Builder
             backgroundColor: backgroundColor,
             initialTab: initialTab,
           );
-
-  @override
-  NoteFetcher? get noteFetcher => (postId) => noteRepo.getNotes(postId);
 
   @override
   SearchPageBuilder get searchPageBuilder => (context, initialQuery) =>

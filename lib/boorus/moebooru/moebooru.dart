@@ -40,7 +40,6 @@ class MoebooruBuilder
         FavoriteNotSupportedMixin,
         PostCountNotSupportedMixin,
         CommentNotSupportedMixin,
-        NoteNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
         UnknownMetatagsMixin,
         DefaultMultiSelectionActionsBuilderMixin,

@@ -24,7 +24,6 @@ class Shimmie2Builder
         CommentNotSupportedMixin,
         ArtistNotSupportedMixin,
         CharacterNotSupportedMixin,
-        NoteNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
         UnknownMetatagsMixin,
         DefaultMultiSelectionActionsBuilderMixin,
