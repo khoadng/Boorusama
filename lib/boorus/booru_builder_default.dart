@@ -257,12 +257,6 @@ mixin DefaultHomeMixin implements BooruBuilder {
           );
 }
 
-mixin DefaultDownloadFileUrlExtractorMixin implements BooruBuilder {
-  @override
-  final DownloadFileUrlExtractor downloadFileUrlExtractor =
-      const UrlInsidePostExtractor();
-}
-
 String Function(
   Post post,
 ) defaultPostImageUrlBuilder(

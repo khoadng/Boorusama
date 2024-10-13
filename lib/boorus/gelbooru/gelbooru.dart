@@ -145,7 +145,6 @@ Note gelbooruNoteToNote(NoteDto note) {
 class GelbooruBuilder
     with
         UnknownMetatagsMixin,
-        DefaultDownloadFileUrlExtractorMixin,
         DefaultMultiSelectionActionsBuilderMixin,
         DefaultHomeMixin,
         DefaultQuickFavoriteButtonBuilderMixin,
@@ -273,9 +272,8 @@ class GelbooruBuilder
       };
 
   @override
-  late final DownloadFilenameGenerator downloadFilenameBuilder =
+  final DownloadFilenameGenerator downloadFilenameBuilder =
       DownloadFileNameBuilder(
-    downloadFileUrlExtractor: downloadFileUrlExtractor,
     defaultFileNameFormat: kGelbooruCustomDownloadFileNameFormat,
     defaultBulkDownloadFileNameFormat: kGelbooruCustomDownloadFileNameFormat,
     sampleData: kDanbooruPostSamples,

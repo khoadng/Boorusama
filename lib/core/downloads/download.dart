@@ -143,8 +143,14 @@ Future<void> _download(
             booruConfig,
             downloadable,
             metadata: bulkMetadata,
+            downloadUrl: urlData.url,
           )
-        : fileNameBuilder.generate(settings, booruConfig, downloadable);
+        : fileNameBuilder.generate(
+            settings,
+            booruConfig,
+            downloadable,
+            downloadUrl: urlData.url,
+          );
 
     final fileName = await fileNameFuture;
 

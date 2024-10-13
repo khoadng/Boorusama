@@ -32,7 +32,6 @@ import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'anime-pictures/anime_pictures.dart';
-import 'anime-pictures/providers.dart';
 import 'danbooru/posts/posts.dart';
 import 'gelbooru_v2/gelbooru_v2.dart';
 import 'hydrus/hydrus.dart';
@@ -76,8 +75,6 @@ abstract class BooruBuilder {
   PostGestureHandlerBuilder get postGestureHandlerBuilder;
 
   MetatagExtractor? get metatagExtractor;
-
-  DownloadFileUrlExtractor get downloadFileUrlExtractor;
 
   MultiSelectionActionsBuilder? get multiSelectionActionsBuilder;
 
@@ -131,7 +128,5 @@ final booruBuildersProvider =
           BooruType.shimmie2: (config) => Shimmie2Builder(),
           BooruType.szurubooru: (config) => SzurubooruBuilder(),
           BooruType.hydrus: (config) => HydrusBuilder(),
-          BooruType.animePictures: (config) => AnimePicturesBuilder(
-                client: ref.read(animePicturesClientProvider(config)),
-              ),
+          BooruType.animePictures: (config) => AnimePicturesBuilder(),
         });

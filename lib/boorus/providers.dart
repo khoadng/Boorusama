@@ -40,6 +40,7 @@ import 'package:boorusama/core/blacklists/blacklists.dart';
 import 'package:boorusama/core/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
+import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
@@ -139,6 +140,15 @@ final tagQueryComposerProvider = Provider.family<TagQueryComposer, BooruConfig>(
     BooruType.moebooru => LegacyTagQueryComposer(config: config),
     BooruType.szurubooru => SzurubooruTagQueryComposer(config: config),
     _ => DefaultTagQueryComposer(config: config),
+  },
+);
+
+final downloadFileUrlExtractorProvider =
+    Provider.family<DownloadFileUrlExtractor, BooruConfig>(
+  (ref, config) => switch (config.booruType) {
+    BooruType.animePictures =>
+      ref.watch(animePicturesDownloadFileUrlExtractorProvider(config)),
+    _ => const UrlInsidePostExtractor(),
   },
 );
 

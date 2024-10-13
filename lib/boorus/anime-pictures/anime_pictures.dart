@@ -45,11 +45,7 @@ class AnimePicturesBuilder
         DefaultPostStatisticsPageBuilderMixin,
         DefaultBooruUIMixin
     implements BooruBuilder {
-  AnimePicturesBuilder({
-    required this.client,
-  });
-
-  final AnimePicturesClient client;
+  AnimePicturesBuilder();
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
@@ -82,9 +78,8 @@ class AnimePicturesBuilder
           );
 
   @override
-  late final DownloadFilenameGenerator<Post> downloadFilenameBuilder =
+  final DownloadFilenameGenerator<Post> downloadFilenameBuilder =
       DownloadFileNameBuilder<Post>(
-    downloadFileUrlExtractor: downloadFileUrlExtractor,
     defaultFileNameFormat: kGelbooruV2CustomDownloadFileNameFormat,
     defaultBulkDownloadFileNameFormat: kGelbooruV2CustomDownloadFileNameFormat,
     sampleData: kDanbooruPostSamples,
@@ -128,10 +123,6 @@ class AnimePicturesBuilder
       (context, config) => const AnimePicturesCurrentUserIdScope(
             child: AnimePicturesFavoritesPage(),
           );
-
-  @override
-  late final DownloadFileUrlExtractor downloadFileUrlExtractor =
-      AnimePicturesDownloadFileUrlExtractor(client);
 }
 
 class AnimePicturesCurrentUserIdScope extends ConsumerWidget {
@@ -203,9 +194,9 @@ class AnimePicturesFavoritesPage extends ConsumerWidget {
 class AnimePicturesDownloadFileUrlExtractor
     with SimpleCacheMixin<DownloadUrlData>
     implements DownloadFileUrlExtractor {
-  AnimePicturesDownloadFileUrlExtractor(
-    this.client,
-  );
+  AnimePicturesDownloadFileUrlExtractor({
+    required this.client,
+  });
 
   final AnimePicturesClient client;
 

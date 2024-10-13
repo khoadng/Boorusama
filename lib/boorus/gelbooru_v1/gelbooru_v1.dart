@@ -33,7 +33,6 @@ class GelbooruV1Builder
         CommentNotSupportedMixin,
         UnknownMetatagsMixin,
         DefaultMultiSelectionActionsBuilderMixin,
-        DefaultDownloadFileUrlExtractorMixin,
         DefaultHomeMixin,
         DefaultThumbnailUrlMixin,
         DefaultTagColorMixin,
@@ -84,9 +83,8 @@ class GelbooruV1Builder
           );
 
   @override
-  late final DownloadFilenameGenerator downloadFilenameBuilder =
+  final DownloadFilenameGenerator downloadFilenameBuilder =
       DownloadFileNameBuilder(
-    downloadFileUrlExtractor: downloadFileUrlExtractor,
     defaultFileNameFormat: kGelbooruCustomDownloadFileNameFormat,
     defaultBulkDownloadFileNameFormat: kGelbooruCustomDownloadFileNameFormat,
     sampleData: kDanbooruPostSamples,

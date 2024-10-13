@@ -391,6 +391,7 @@ class BulkDownloadNotifier extends Notifier<List<BulkDownloadTask>> {
             metadata: {
               'index': index.toString(),
             },
+            downloadUrl: urlData.url,
           );
 
           await downloader
