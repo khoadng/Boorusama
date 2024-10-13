@@ -136,7 +136,7 @@ class DownloadFileNameBuilder<T extends Post>
   }) async {
     final urlData = await downloadFileUrlExtractor.getDownloadFileUrl(
       post: post,
-      settings: settings,
+      quality: settings.downloadQuality,
     );
 
     if (urlData == null) return '';

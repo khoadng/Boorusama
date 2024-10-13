@@ -212,7 +212,7 @@ class AnimePicturesDownloadFileUrlExtractor
   @override
   Future<DownloadUrlData?> getDownloadFileUrl({
     required Post post,
-    required Settings settings,
+    required DownloadQuality quality,
   }) =>
       tryGet(
         post.id.toString(),

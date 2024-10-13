@@ -374,7 +374,7 @@ class BulkDownloadNotifier extends Notifier<List<BulkDownloadTask>> {
 
           final urlData = await downloadFileUrlExtractor.getDownloadFileUrl(
             post: item,
-            settings: settings,
+            quality: settings.downloadQuality,
           );
           if (urlData == null || urlData.url.isEmpty) continue;
 
