@@ -211,7 +211,7 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                             child: ValueListenableBuilder(
                               valueListenable: controller.hideOverlay,
                               builder: (_, hide, __) => AnimatedSwitcher(
-                                duration: Durations.extralong1,
+                                duration: Durations.long2,
                                 reverseDuration:
                                     const Duration(milliseconds: 10),
                                 child: hide
@@ -277,7 +277,7 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                                 valueListenable: controller.hideOverlay,
                                 builder: (context, value, child) {
                                   return AnimatedSwitcher(
-                                    duration: Durations.extralong1,
+                                    duration: Durations.long2,
                                     reverseDuration:
                                         const Duration(milliseconds: 10),
                                     child: value ? null : topRightWidgetRaw,

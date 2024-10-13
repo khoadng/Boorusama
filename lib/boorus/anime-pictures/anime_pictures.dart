@@ -12,7 +12,6 @@ import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/gelbooru_v2/gelbooru_v2.dart';
 import 'package:boorusama/clients/anime-pictures/anime_pictures_client.dart';
 import 'package:boorusama/clients/anime-pictures/types/types.dart';
-import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
@@ -35,7 +34,6 @@ class AnimePicturesBuilder
         CommentNotSupportedMixin,
         ArtistNotSupportedMixin,
         CharacterNotSupportedMixin,
-        NoteNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
         UnknownMetatagsMixin,
         DefaultMultiSelectionActionsBuilderMixin,
@@ -48,18 +46,10 @@ class AnimePicturesBuilder
         DefaultBooruUIMixin
     implements BooruBuilder {
   AnimePicturesBuilder({
-    required this.postRepo,
-    required this.autocompleteRepo,
     required this.client,
   });
 
-  final AutocompleteRepository autocompleteRepo;
-  final PostRepository postRepo;
   final AnimePicturesClient client;
-
-  @override
-  AutocompleteFetcher get autocompleteFetcher =>
-      (query) => autocompleteRepo.getAutocomplete(query);
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
@@ -90,10 +80,6 @@ class AnimePicturesBuilder
             backgroundColor: backgroundColor,
             initialTab: initialTab,
           );
-
-  @override
-  PostFetcher get postFetcher =>
-      (page, tags, {limit}) => postRepo.getPosts(tags, page, limit: limit);
 
   @override
   late final DownloadFilenameGenerator<Post> downloadFilenameBuilder =

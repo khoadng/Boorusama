@@ -29,7 +29,6 @@ part 'sankaku_provider.dart';
 class SankakuBuilder
     with
         PostCountNotSupportedMixin,
-        NoteNotSupportedMixin,
         DefaultThumbnailUrlMixin,
         CommentNotSupportedMixin,
         CharacterNotSupportedMixin,
@@ -46,17 +45,7 @@ class SankakuBuilder
         DefaultPostStatisticsPageBuilderMixin,
         DefaultBooruUIMixin
     implements BooruBuilder {
-  SankakuBuilder({
-    required this.postRepository,
-    required this.autocompleteRepo,
-  });
-
-  final PostRepository<SankakuPost> postRepository;
-  final AutocompleteRepository autocompleteRepo;
-
-  @override
-  AutocompleteFetcher get autocompleteFetcher =>
-      (query) => autocompleteRepo.getAutocomplete(query);
+  SankakuBuilder();
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
@@ -92,10 +81,6 @@ class SankakuBuilder
   @override
   HomePageBuilder get homePageBuilder =>
       (context, config) => const SankakuHomePage();
-
-  @override
-  PostFetcher get postFetcher =>
-      (tags, page, {limit}) => postRepository.getPosts(page, tags);
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>

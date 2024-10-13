@@ -4,6 +4,9 @@ import 'dart:convert';
 // Flutter imports:
 import 'package:flutter/foundation.dart';
 
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 // Project imports:
 import 'package:boorusama/core/autocompletes/autocomplete.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
@@ -65,3 +68,14 @@ class AutocompleteRepositoryBuilder
   @override
   String get debugTargetName => 'Autocomplete Builder';
 }
+
+class EmptyAutocompleteRepository implements AutocompleteRepository {
+  @override
+  Future<List<AutocompleteData>> getAutocomplete(String query) {
+    return Future.value([]);
+  }
+}
+
+final emptyAutocompleteRepoProvider = Provider<AutocompleteRepository>(
+  (_) => EmptyAutocompleteRepository(),
+);

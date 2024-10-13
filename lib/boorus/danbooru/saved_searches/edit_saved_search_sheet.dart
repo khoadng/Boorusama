@@ -176,21 +176,21 @@ class _SavedSearchSheetState extends ConsumerState<SavedSearchSheet> {
                       goToQuickSearchPage(
                         context,
                         ref: ref,
-                        onSelected: (tag) {
+                        onSelected: (tag, _) {
                           final baseOffset =
                               max(0, queryTextController.selection.baseOffset);
                           queryTextController
                             ..text = queryTextController.text.addCharAtPosition(
-                              tag.value,
+                              tag,
                               baseOffset,
                             )
                             ..selection = TextSelection.fromPosition(
                               TextPosition(
-                                offset: baseOffset + tag.value.length,
+                                offset: baseOffset + tag.length,
                               ),
                             );
                         },
-                        onSubmitted: (context, text) {
+                        onSubmitted: (context, text, _) {
                           context.navigator.pop();
 
                           queryTextController.text =

@@ -240,10 +240,12 @@ void goToCommentPage(BuildContext context, WidgetRef ref, int postId) {
 void goToQuickSearchPage(
   BuildContext context, {
   bool ensureValidTag = false,
+  BooruConfig? initialConfig,
   required WidgetRef ref,
   Widget Function(String text)? floatingActionButton,
-  required void Function(AutocompleteData tag) onSelected,
-  void Function(BuildContext context, String text)? onSubmitted,
+  required void Function(String tag, bool isMultiple) onSelected,
+  void Function(BuildContext context, String text, bool isMultiple)?
+      onSubmitted,
   Widget Function(TextEditingController controller)? emptyBuilder,
 }) {
   showSimpleTagSearchView(
@@ -255,6 +257,7 @@ void goToQuickSearchPage(
     floatingActionButton: floatingActionButton,
     builder: (_, isMobile) => isMobile
         ? SimpleTagSearchView(
+            initialConfig: initialConfig,
             onSubmitted: onSubmitted,
             ensureValidTag: ensureValidTag,
             floatingActionButton: floatingActionButton != null
@@ -266,6 +269,7 @@ void goToQuickSearchPage(
             emptyBuilder: emptyBuilder,
           )
         : SimpleTagSearchView(
+            initialConfig: initialConfig,
             onSubmitted: onSubmitted,
             backButton: IconButton(
               splashRadius: 16,

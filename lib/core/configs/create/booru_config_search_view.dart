@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
@@ -20,9 +21,11 @@ class BooruConfigSearchView extends ConsumerWidget {
   const BooruConfigSearchView({
     super.key,
     required this.hasRatingFilter,
+    required this.config,
   });
 
   final bool hasRatingFilter;
+  final BooruConfig config;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -34,7 +37,7 @@ class BooruConfigSearchView extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           if (hasRatingFilter) ...[
-            const SizedBox(height: 4),
+            const SizedBox(height: 12),
             const DefaultBooruRatingOptionsTile(),
             const Divider(),
           ],
@@ -116,12 +119,13 @@ class BooruConfigSearchView extends ConsumerWidget {
             goToQuickSearchPage(
               context,
               ref: ref,
-              onSubmitted: (context, text) {
+              initialConfig: config,
+              onSubmitted: (context, text, _) {
                 context.navigator.pop();
                 _addTag(ref, text, exclude: exclude);
               },
-              onSelected: (tag) {
-                _addTag(ref, tag.value, exclude: exclude);
+              onSelected: (tag, _) {
+                _addTag(ref, tag, exclude: exclude);
               },
             );
           },
@@ -208,14 +212,16 @@ class _EffectiveTagPreview extends ConsumerWidget {
             runAlignment: WrapAlignment.center,
             spacing: 5,
             children: [
-              RawCompactChip(
-                backgroundColor: Colors.transparent,
-                label: Text(
-                  '<your search query>',
-                  style: TextStyle(
-                    color: context.theme.colorScheme.onSecondaryContainer
-                        .withOpacity(0.6),
-                    fontStyle: FontStyle.italic,
+              IgnorePointer(
+                child: RawCompactChip(
+                  backgroundColor: Colors.transparent,
+                  label: Text(
+                    '<your search query>',
+                    style: TextStyle(
+                      color: context.theme.colorScheme.onSecondaryContainer
+                          .withOpacity(0.6),
+                      fontStyle: FontStyle.italic,
+                    ),
                   ),
                 ),
               ),
