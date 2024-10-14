@@ -128,7 +128,7 @@ class _PremiumPageState extends ConsumerState<PremiumPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: benefits
                               .map(
-                                (benefit) => BenefitCard2(
+                                (benefit) => BenefitCard(
                                   title: benefit.title,
                                   description: benefit.description,
                                 ),
@@ -298,22 +298,6 @@ class _SubscriptionPlansState extends ConsumerState<SubscriptionPlans> {
               ),
             ),
           ),
-          Center(
-            child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 4),
-              child: Text(
-                'Subscription auto renews for ${selected?.product.price ?? ''}/${selected?.typeDurationString} until canceled',
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w400,
-                      color: Theme.of(context)
-                          .colorScheme
-                          .onSurface
-                          .withOpacity(0.6),
-                    ),
-              ),
-            ),
-          ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: FilledButton(
@@ -329,7 +313,7 @@ class _SubscriptionPlansState extends ConsumerState<SubscriptionPlans> {
                     orElse: () => null,
                   ),
               child: ref.watch(packagePurchaseProvider).when(
-                    data: (state) => const Text('Purchase'),
+                    data: (state) => const Text('Subscribe'),
                     error: (e, st) => Text('Error: $e'),
                     loading: () => SizedBox(
                       width: 16,
@@ -339,6 +323,38 @@ class _SubscriptionPlansState extends ConsumerState<SubscriptionPlans> {
                       ),
                     ),
                   ),
+            ),
+          ),
+          Center(
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                vertical: 4,
+                horizontal: 16,
+              ),
+              child: RichText(
+                text: TextSpan(
+                  text: 'By subscribing, you agree to our ',
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w400,
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withOpacity(0.6),
+                      ),
+                  children: [
+                    TextSpan(
+                      text: 'Terms of Service',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                    const TextSpan(
+                        text:
+                            '. Subscription automatically renews until canceled. You can cancel anytime up to 24 hours before your current period ends.'),
+                  ],
+                ),
+              ),
             ),
           ),
           const SizedBox(height: 16),
@@ -437,8 +453,8 @@ class SubscriptionPlanTile extends StatelessWidget {
   }
 }
 
-class BenefitCard2 extends StatelessWidget {
-  const BenefitCard2({
+class BenefitCard extends StatelessWidget {
+  const BenefitCard({
     super.key,
     required this.title,
     required this.description,
@@ -489,41 +505,6 @@ class BenefitCard2 extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class BenefitCard extends StatelessWidget {
-  const BenefitCard({
-    super.key,
-    required this.title,
-    required this.description,
-  });
-
-  final String title;
-  final String description;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          title,
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          description,
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-              ),
-        ),
-      ],
     );
   }
 }
