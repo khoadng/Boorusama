@@ -96,7 +96,8 @@ Future<(InAppPurchase, SubscriptionManager, Package?)> initIap() async {
   return (iap, subscriptionManager, activePackage);
 }
 
-final subscriptionPackagesProvider = FutureProvider<List<Package>>((ref) async {
+final subscriptionPackagesProvider =
+    FutureProvider.autoDispose<List<Package>>((ref) async {
   final iap = ref.watch(iapProvider);
   return iap.getAvailablePackages();
 });

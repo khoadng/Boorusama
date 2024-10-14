@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 // Project imports:
 import 'package:boorusama/foundation/iap/iap.dart';
@@ -46,13 +45,25 @@ class _PremiumPageState extends ConsumerState<PremiumPage> {
   Widget _buildManage(Package package) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Manage Subscription'),
+        title: const Text(kPremiumBrandNameFull),
       ),
-      body: Center(
+      body: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 16,
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Text('Manage your subscription'),
+            Text(
+              'Your subscriptions'.toUpperCase(),
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withOpacity(0.6),
+                  ),
+            ),
             Text('You are subscribed to ${package.product.title}'),
             Container(
               padding: const EdgeInsets.all(8),
@@ -78,60 +89,98 @@ class _PremiumPageState extends ConsumerState<PremiumPage> {
         child: Stack(
           children: [
             Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Spacer(),
-                ConstrainedBox(
-                  constraints: const BoxConstraints(
-                    maxHeight: 150,
+                const SizedBox(height: 48),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
                   ),
-                  child: ref.watch(premiumBenefitProvider).when(
-                        data: (benefits) => PageView.builder(
-                          controller: pageController,
-                          itemCount: benefits.length,
-                          itemBuilder: (context, index) {
-                            final benefit = benefits[index];
-                            return BenefitCard(
-                              title: benefit.title,
-                              description: benefit.description,
-                            );
-                          },
+                  child: Row(
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 8),
+                        child: Image.asset(
+                          'assets/images/logo.png',
+                          width: 36,
+                          height: 36,
+                          isAntiAlias: true,
+                          filterQuality: FilterQuality.none,
                         ),
-                        error: (e, st) => Text('Error: $e'),
-                        loading: () => const CircularProgressIndicator(),
                       ),
+                      Expanded(
+                        child: Text(
+                          kPremiumBrandNameFull,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 26,
+                            letterSpacing: -1,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
+                const SizedBox(height: 16),
                 ref.watch(premiumBenefitProvider).when(
-                      data: (benefits) => SmoothPageIndicator(
-                        controller: pageController,
-                        count: benefits.length,
-                        effect: WormEffect(
-                          dotWidth: 8,
-                          dotHeight: 8,
-                          activeDotColor: Theme.of(context).colorScheme.primary,
-                          dotColor: Theme.of(context)
-                              .colorScheme
-                              .onSurface
-                              .withOpacity(0.25),
+                      data: (benefits) => SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: benefits
+                              .map(
+                                (benefit) => BenefitCard2(
+                                  title: benefit.title,
+                                  description: benefit.description,
+                                ),
+                              )
+                              .toList(),
                         ),
                       ),
-                      error: (e, st) => const SizedBox.shrink(),
-                      loading: () => const SizedBox.shrink(),
-                    ),
-                const Spacer(),
-                const Text('Select your plan'),
-                const SizedBox(height: 8),
-                ref.watch(subscriptionPackagesProvider).when(
-                      data: (products) => SubscriptionPlans(
-                        products: products,
-                        onPurchase: (package) async {
-                          ref
-                              .read(packagePurchaseProvider.notifier)
-                              .startPurchase(package);
-                        },
-                      ),
-                      error: (e, st) => Text('Error: $e'),
+                      error: (e, st) => Text('Error: ${e.toString()}'),
                       loading: () => const CircularProgressIndicator(),
                     ),
+                const Spacer(),
+                Container(
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 32,
+                    vertical: 16,
+                  ),
+                  child: FilledButton(
+                    style: FilledButton.styleFrom(
+                      minimumSize: const Size(0, 48),
+                    ),
+                    onPressed: ref.watch(packagePurchaseProvider).maybeWhen(
+                          data: (state) => () {
+                            showModalBottomSheet(
+                              context: context,
+                              builder: (context) {
+                                return SubscriptionPlanSelectModal(
+                                  onPurchase: (package) {
+                                    Navigator.of(context).pop();
+
+                                    ref
+                                        .read(packagePurchaseProvider.notifier)
+                                        .startPurchase(package);
+                                  },
+                                );
+                              },
+                            );
+                          },
+                          orElse: () => null,
+                        ),
+                    child: ref.watch(packagePurchaseProvider).when(
+                          data: (state) => const Text('Get Plus'),
+                          error: (e, st) => Text('Error: $e'),
+                          loading: () => SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(
+                              color: Theme.of(context).colorScheme.onPrimary,
+                            ),
+                          ),
+                        ),
+                  ),
+                ),
               ],
             ),
             if (widget.canGoBack)
@@ -147,6 +196,50 @@ class _PremiumPageState extends ConsumerState<PremiumPage> {
               ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class SubscriptionPlanSelectModal extends ConsumerWidget {
+  const SubscriptionPlanSelectModal({
+    super.key,
+    required this.onPurchase,
+  });
+
+  final void Function(Package) onPurchase;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.secondaryContainer,
+        borderRadius: const BorderRadius.vertical(
+          top: Radius.circular(16),
+        ),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SizedBox(height: 16),
+          ref.watch(subscriptionPackagesProvider).when(
+                data: (products) => SubscriptionPlans(
+                  products: products,
+                  onPurchase: onPurchase,
+                ),
+                error: (e, st) => Text('Error: $e'),
+                loading: () => Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: const CircularProgressIndicator(),
+                    ),
+                  ),
+                ),
+              ),
+        ],
       ),
     );
   }
@@ -171,74 +264,86 @@ class _SubscriptionPlansState extends ConsumerState<SubscriptionPlans> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        ...widget.products.map(
-          (product) => SubscriptionPlanTile(
-            selected: product == selected,
-            package: product,
-            saveIndicator: product.bestValue?.savings.toOption().fold(
-                  () => null,
-                  (value) => IgnorePointer(
-                    child: CompactChip(
-                      label: '${(value * 100).toStringAsFixed(0)}% off',
-                      backgroundColor: Theme.of(context).colorScheme.primary,
+    return Material(
+      color: Theme.of(context).colorScheme.secondaryContainer,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text('Select your plan'),
+            ],
+          ),
+          const SizedBox(height: 8),
+          ...widget.products.map(
+            (product) => SubscriptionPlanTile(
+              backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+              selected: product == selected,
+              package: product,
+              saveIndicator: product.bestValue?.savings.toOption().fold(
+                    () => null,
+                    (value) => IgnorePointer(
+                      child: CompactChip(
+                        label: '${(value * 100).toStringAsFixed(0)}% off',
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                      ),
                     ),
                   ),
-                ),
-            onTap: () => setState(
-              () {
-                selected = product;
-              },
+              onTap: () => setState(
+                () {
+                  selected = product;
+                },
+              ),
             ),
           ),
-        ),
-        Center(
-          child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 4),
-            child: Text(
-              'Subscription auto renews for ${selected?.product.price ?? ''}/${selected?.typeDurationString} until canceled',
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w400,
-                    color: Theme.of(context)
-                        .colorScheme
-                        .onSurface
-                        .withOpacity(0.6),
+          Center(
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              child: Text(
+                'Subscription auto renews for ${selected?.product.price ?? ''}/${selected?.typeDurationString} until canceled',
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w400,
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withOpacity(0.6),
+                    ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: FilledButton(
+              style: FilledButton.styleFrom(
+                minimumSize: const Size(0, 48),
+              ),
+              onPressed: ref.watch(packagePurchaseProvider).maybeWhen(
+                    data: (state) => () {
+                      if (selected != null) {
+                        widget.onPurchase(selected!);
+                      }
+                    },
+                    orElse: () => null,
                   ),
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: FilledButton(
-            style: FilledButton.styleFrom(
-              minimumSize: const Size(0, 48),
-            ),
-            onPressed: ref.watch(packagePurchaseProvider).maybeWhen(
-                  data: (state) => () {
-                    if (selected != null) {
-                      widget.onPurchase(selected!);
-                    }
-                  },
-                  orElse: () => null,
-                ),
-            child: ref.watch(packagePurchaseProvider).when(
-                  data: (state) => const Text('Get Plus'),
-                  error: (e, st) => Text('Error: $e'),
-                  loading: () => SizedBox(
-                    width: 16,
-                    height: 16,
-                    child: CircularProgressIndicator(
-                      color: Theme.of(context).colorScheme.onPrimary,
+              child: ref.watch(packagePurchaseProvider).when(
+                    data: (state) => const Text('Purchase'),
+                    error: (e, st) => Text('Error: $e'),
+                    loading: () => SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
                     ),
                   ),
-                ),
+            ),
           ),
-        ),
-        const SizedBox(height: 16),
-      ],
+          const SizedBox(height: 16),
+        ],
+      ),
     );
   }
 }
@@ -250,16 +355,19 @@ class SubscriptionPlanTile extends StatelessWidget {
     this.selected = false,
     this.onTap,
     this.saveIndicator,
+    this.backgroundColor,
   });
 
   final Package package;
   final bool selected;
   final void Function()? onTap;
   final Widget? saveIndicator;
+  final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context) {
     return Material(
+      color: backgroundColor,
       child: Padding(
         padding: const EdgeInsets.symmetric(
           vertical: 4,
@@ -324,6 +432,62 @@ class SubscriptionPlanTile extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class BenefitCard2 extends StatelessWidget {
+  const BenefitCard2({
+    super.key,
+    required this.title,
+    required this.description,
+  });
+
+  final String title;
+  final String description;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(
+        horizontal: 16,
+        vertical: 8,
+      ),
+      child: Row(
+        children: [
+          Text(
+            '•',
+            style: TextStyle(
+              fontSize: 32,
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  title,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  description,
+                  style: TextStyle(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withOpacity(0.6),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
