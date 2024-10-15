@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+// Project imports:
+import 'package:boorusama/core/images/images.dart';
+
 const _unknownSize = 26.0;
 const _faviconSize = 32.0;
 
@@ -40,6 +43,7 @@ class WebsiteLogo extends StatelessWidget {
       child: ExtendedImage.network(
         url,
         clearMemoryCacheIfFailed: false,
+        cacheMaxAge: kDefaultImageCacheDuration,
         fit: BoxFit.cover,
         loadStateChanged: (state) => switch (state.extendedImageLoadState) {
           LoadState.failed => Card(
