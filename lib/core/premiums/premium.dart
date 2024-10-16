@@ -1,15 +1,17 @@
 final defaultBenefits = <Benefit>[
   (
-    title: 'Customize your layout',
-    description: 'Change the layout of the app to your liking',
+    title: 'Customized layout for each profile',
+    description:
+        'Don\'t like the default layout? Want to see more or less information? Customize it!',
   ),
   (
-    title: 'Tailor your theme',
-    description: 'Adjust the app\'s theme to match your style',
+    title: 'Customized theme',
+    description:
+        'Do you want each profile to have a different theme? You can do it!',
   ),
   (
     title: 'Support indie developer',
-    description: 'Help me keep the app running and improving',
+    description: 'Help me as a solo developer to keep the app improving!',
   ),
 ];
 
