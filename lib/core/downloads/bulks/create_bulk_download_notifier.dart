@@ -15,6 +15,7 @@ class CreateBulkDownloadNotifier extends AutoDisposeNotifier<BulkDownloadTask> {
     return BulkDownloadTask.randomId(
       tags: ref.watch(createBulkDownloadInitialProvider) ?? [],
       path: '',
+      quality: ref.watch(bulkDownloadQualityProvider),
     );
   }
 

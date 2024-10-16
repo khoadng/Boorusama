@@ -11,6 +11,8 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/search_histories/search_histories.dart';
+import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/core/settings/widgets/widgets/settings_tile.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/android.dart';
 import 'package:boorusama/foundation/picker.dart';
@@ -164,6 +166,19 @@ class _CreateBulkDownloadTaskSheetState
                       task.options.copyWith(skipIfExists: value),
                     );
                   },
+                ),
+                SettingsTile(
+                  title: const Text('settings.download.quality').tr(),
+                  selectedOption:
+                      task.options.quality ?? DownloadQuality.original,
+                  items: DownloadQuality.values,
+                  onChanged: (value) {
+                    notifier.setOptions(
+                      task.options.copyWith(quality: () => value),
+                    );
+                  },
+                  optionBuilder: (value) =>
+                      Text('settings.download.qualities.${value.name}').tr(),
                 ),
               ],
               Container(
