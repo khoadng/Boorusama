@@ -107,7 +107,7 @@ class Offering extends Equatable {
 }
 
 abstract class InAppPurchase {
-  Future<Package?> restorePurchases();
+  Future<bool?> restorePurchases();
   Future<List<Package>> getAvailablePackages();
   Future<bool> purchasePackage(Package package);
 }

@@ -64,13 +64,9 @@ class SubscriptionNotifier extends Notifier<Package?> {
     state = null;
   }
 
-  Future<Package?> restoreSubscription() async {
-    final package = await iap.restorePurchases();
+  Future<bool?> restoreSubscription() async {
+    final res = await iap.restorePurchases();
 
-    if (package != null) {
-      state = package;
-    }
-
-    return package;
+    return res;
   }
 }

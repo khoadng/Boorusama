@@ -84,7 +84,6 @@ const _kVNDPackages = <Package>[
 Future<(InAppPurchase, SubscriptionManager, Package?)> initIap() async {
   final iap = DummyInAppPurchase(
     packages: _kPackages,
-    restorePackage: _kPackages.first,
   );
 
   final subscriptionManager = DummySubscriptionManager(

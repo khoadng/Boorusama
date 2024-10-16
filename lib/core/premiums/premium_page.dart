@@ -248,36 +248,38 @@ class PremiumOffersPage extends ConsumerWidget {
       (res) {
         if (res != null) {
           if (context.mounted) {
-            showSimpleSnackBar(
-              context: context,
-              content: const Text('Subscription restored!'),
-              duration: const Duration(seconds: 2),
-            );
+            if (res) {
+              showSimpleSnackBar(
+                context: context,
+                content: const Text('Subscription restored!'),
+                duration: const Duration(seconds: 2),
+              );
+            } else {
+              _showFailedRestore(context);
+            }
           }
         } else {
           if (context.mounted) {
-            showSimpleSnackBar(
-              context: context,
-              content: const Text(
-                'There was a problem restoring your subscription. Please try again later.',
-              ),
-              duration: const Duration(seconds: 2),
-            );
+            _showFailedRestore(context);
           }
         }
       },
     ).catchError(
       (e, st) {
         if (context.mounted) {
-          showSimpleSnackBar(
-            context: context,
-            content: Text(
-              'There was a problem restoring your subscription. Please try again later.',
-            ),
-            duration: const Duration(seconds: 2),
-          );
+          _showFailedRestore(context);
         }
       },
+    );
+  }
+
+  void _showFailedRestore(BuildContext context) {
+    showSimpleSnackBar(
+      context: context,
+      content: const Text(
+        'There was a problem restoring your subscription. Please try again later.',
+      ),
+      duration: const Duration(seconds: 2),
     );
   }
 

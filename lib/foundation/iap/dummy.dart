@@ -10,18 +10,16 @@ import 'iap.dart';
 class DummyInAppPurchase implements InAppPurchase {
   DummyInAppPurchase({
     required this.packages,
-    required this.restorePackage,
   });
 
   final List<Package> packages;
   final List<Package> purchasedPackages = [];
-  final Package? restorePackage;
 
   @override
-  Future<Package?> restorePurchases() async {
+  Future<bool?> restorePurchases() async {
     await Future.delayed(const Duration(seconds: 1));
 
-    return restorePackage;
+    return true;
   }
 
   @override
