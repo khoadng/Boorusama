@@ -74,7 +74,7 @@ class Package extends Equatable {
     DealData? Function()? deal,
   }) {
     return Package(
-      bestValue: deal != null ? deal() : this.bestValue,
+      bestValue: deal != null ? deal() : bestValue,
       id: id,
       product: product,
       type: type,
@@ -107,7 +107,7 @@ class Offering extends Equatable {
 }
 
 abstract class InAppPurchase {
-  Future<void> restorePurchases();
+  Future<Package?> restorePurchases();
   Future<List<Package>> getAvailablePackages();
   Future<bool> purchasePackage(Package package);
 }

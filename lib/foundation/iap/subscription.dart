@@ -27,6 +27,7 @@ class PackagePurchaseNotifier extends AutoDisposeAsyncNotifier<bool?> {
       state = const AsyncLoading();
 
       final notifier = ref.read(subscriptionNotifierProvider.notifier);
+
       await notifier.purchasePackage(package);
 
       state = const AsyncData(true);
@@ -61,5 +62,15 @@ class SubscriptionNotifier extends Notifier<Package?> {
 
   Future<void> cancelSubscription() async {
     state = null;
+  }
+
+  Future<Package?> restoreSubscription() async {
+    final package = await iap.restorePurchases();
+
+    if (package != null) {
+      state = package;
+    }
+
+    return package;
   }
 }

@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/foundation/iap/iap.dart';
+import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'premiums.dart';
@@ -23,14 +24,6 @@ class PremiumPage extends ConsumerStatefulWidget {
 }
 
 class _PremiumPageState extends ConsumerState<PremiumPage> {
-  final pageController = PageController();
-
-  @override
-  void dispose() {
-    pageController.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     final package = ref.watch(subscriptionNotifierProvider);
@@ -39,7 +32,9 @@ class _PremiumPageState extends ConsumerState<PremiumPage> {
       return _buildManage(package);
     }
 
-    return _buildOffers();
+    return PremiumOffersPage(
+      canGoBack: widget.canGoBack,
+    );
   }
 
   Widget _buildManage(Package package) {
@@ -81,8 +76,45 @@ class _PremiumPageState extends ConsumerState<PremiumPage> {
       ),
     );
   }
+}
 
-  Widget _buildOffers() {
+class PremiumOffersPage extends ConsumerWidget {
+  const PremiumOffersPage({
+    super.key,
+    required this.canGoBack,
+  });
+
+  final bool canGoBack;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.listen(
+      packagePurchaseProvider,
+      (prev, cur) {
+        cur.when(
+          data: (success) {
+            if (success == true) {
+              showDialog(
+                context: context,
+                builder: (context) => Dialog(
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(8)),
+                  ),
+                  child: const PremiumThanksDialog(),
+                ),
+              );
+            } else if (success == false) {
+              _showFailedPurchase(context);
+            }
+          },
+          loading: () {},
+          error: (_, __) {
+            _showFailedPurchase(context);
+          },
+        );
+      },
+    );
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       body: SafeArea(
@@ -140,37 +172,38 @@ class _PremiumPageState extends ConsumerState<PremiumPage> {
                       loading: () => const CircularProgressIndicator(),
                     ),
                 const Spacer(),
+                TextButton(
+                  style: TextButton.styleFrom(
+                    foregroundColor: Theme.of(context).colorScheme.onSurface,
+                  ),
+                  onPressed: ref.watch(packagePurchaseProvider).maybeWhen(
+                        loading: () => null,
+                        orElse: () {
+                          return () => restore(ref, context);
+                        },
+                      ),
+                  child: const Text('Restore subscription'),
+                ),
                 Container(
                   margin: const EdgeInsets.symmetric(
                     horizontal: 32,
-                    vertical: 16,
+                    vertical: 12,
                   ),
                   child: FilledButton(
                     style: FilledButton.styleFrom(
                       minimumSize: const Size(0, 48),
                     ),
-                    onPressed: ref.watch(packagePurchaseProvider).maybeWhen(
-                          data: (state) => () {
-                            showModalBottomSheet(
-                              context: context,
-                              builder: (context) {
-                                return SubscriptionPlanSelectModal(
-                                  onPurchase: (package) {
-                                    Navigator.of(context).pop();
-
-                                    ref
-                                        .read(packagePurchaseProvider.notifier)
-                                        .startPurchase(package);
-                                  },
-                                );
-                              },
-                            );
+                    onPressed: ref.watch(packagePurchaseProvider).when(
+                          data: (_) {
+                            return () => _showPlans(context, ref);
                           },
-                          orElse: () => null,
+                          loading: () => null,
+                          error: (_, __) {
+                            return () => _showPlans(context, ref);
+                          },
                         ),
-                    child: ref.watch(packagePurchaseProvider).when(
-                          data: (state) => const Text('Get Plus'),
-                          error: (e, st) => Text('Error: $e'),
+                    child: ref.watch(packagePurchaseProvider).maybeWhen(
+                          orElse: () => const Text('Get Plus'),
                           loading: () => SizedBox(
                             width: 16,
                             height: 16,
@@ -183,7 +216,7 @@ class _PremiumPageState extends ConsumerState<PremiumPage> {
                 ),
               ],
             ),
-            if (widget.canGoBack)
+            if (canGoBack)
               Positioned(
                 top: 4,
                 right: 8,
@@ -197,6 +230,71 @@ class _PremiumPageState extends ConsumerState<PremiumPage> {
           ],
         ),
       ),
+    );
+  }
+
+  void _showFailedPurchase(BuildContext context) {
+    return showSimpleSnackBar(
+      context: context,
+      content: const Text(
+        'There was a problem purchasing your subscription. Please try again later.',
+      ),
+      duration: const Duration(seconds: 2),
+    );
+  }
+
+  void restore(WidgetRef ref, BuildContext context) {
+    ref.read(subscriptionNotifierProvider.notifier).restoreSubscription().then(
+      (res) {
+        if (res != null) {
+          if (context.mounted) {
+            showSimpleSnackBar(
+              context: context,
+              content: const Text('Subscription restored!'),
+              duration: const Duration(seconds: 2),
+            );
+          }
+        } else {
+          if (context.mounted) {
+            showSimpleSnackBar(
+              context: context,
+              content: const Text(
+                'There was a problem restoring your subscription. Please try again later.',
+              ),
+              duration: const Duration(seconds: 2),
+            );
+          }
+        }
+      },
+    ).catchError(
+      (e, st) {
+        if (context.mounted) {
+          showSimpleSnackBar(
+            context: context,
+            content: Text(
+              'There was a problem restoring your subscription. Please try again later.',
+            ),
+            duration: const Duration(seconds: 2),
+          );
+        }
+      },
+    );
+  }
+
+  Future<dynamic> _showPlans(BuildContext context, WidgetRef ref) {
+    return showModalBottomSheet(
+      context: context,
+      builder: (modalContext) {
+        return SubscriptionPlanSelectModal(
+          onPurchase: (package) async {
+            Navigator.of(modalContext).pop();
+
+            await ref
+                .read(packagePurchaseProvider.notifier)
+                .startPurchase(package);
+          },
+        );
+      },
     );
   }
 }
@@ -305,16 +403,13 @@ class _SubscriptionPlansState extends ConsumerState<SubscriptionPlans> {
                 minimumSize: const Size(0, 48),
               ),
               onPressed: ref.watch(packagePurchaseProvider).maybeWhen(
-                    data: (state) => () {
-                      if (selected != null) {
-                        widget.onPurchase(selected!);
-                      }
+                    orElse: () {
+                      return () => _purchase();
                     },
-                    orElse: () => null,
+                    loading: () => null,
                   ),
-              child: ref.watch(packagePurchaseProvider).when(
-                    data: (state) => const Text('Subscribe'),
-                    error: (e, st) => Text('Error: $e'),
+              child: ref.watch(packagePurchaseProvider).maybeWhen(
+                    orElse: () => const Text('Subscribe'),
                     loading: () => SizedBox(
                       width: 16,
                       height: 16,
@@ -361,6 +456,12 @@ class _SubscriptionPlansState extends ConsumerState<SubscriptionPlans> {
         ],
       ),
     );
+  }
+
+  void _purchase() {
+    if (selected != null) {
+      widget.onPurchase(selected!);
+    }
   }
 }
 
