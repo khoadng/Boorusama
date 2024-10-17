@@ -44,6 +44,11 @@ final preDefinedColorSettings = [
     staticGreenScheme,
     nickname: 'Light Green',
   ),
+  ColorSettings.fromPredefinedScheme(
+    'coral_pink',
+    staticCoralPinkScheme,
+    nickname: 'Coral Pink',
+  ),
 ].whereNotNull().toList();
 
 ColorScheme? getSchemeFromColorSettings(ColorSettings? colorSettings) {
@@ -107,6 +112,22 @@ const staticGreenScheme = ColorScheme(
   onError: kOnErrorDarkColor,
   surface: Color(0xffa9e4a4),
   onSurface: Colors.black,
+);
+
+const staticCoralPinkScheme = ColorScheme(
+  brightness: Brightness.dark,
+  primary: Color(0xffef8987),
+  onPrimary: Colors.white,
+  secondary: Color(0xffef8987),
+  onSecondary: Colors.white,
+  secondaryContainer: Color(0xff2c1f1e),
+  onSecondaryContainer: Colors.white,
+  surfaceContainerHighest: Color(0xff3e2d2b),
+  onTertiaryContainer: Colors.white,
+  error: Color(0xffc10105),
+  onError: kOnErrorDarkColor,
+  surface: Color(0xff1f1615),
+  onSurface: Colors.white,
 );
 
 Color? _parseColor(dynamic color) => switch (color) {
