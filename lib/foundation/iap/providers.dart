@@ -1,4 +1,6 @@
 // Package imports:
+import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/foundation/revenuecat/revenuecat.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -81,7 +83,10 @@ const _kVNDPackages = <Package>[
   ),
 ];
 
-Future<(InAppPurchase, SubscriptionManager, Package?)> initIap() async {
+Future<(InAppPurchase, SubscriptionManager, Package?)> initIap() =>
+    isMobilePlatform() ? initRevenuecatIap() : _initDummyIap();
+
+Future<(InAppPurchase, SubscriptionManager, Package?)> _initDummyIap() async {
   final iap = DummyInAppPurchase(
     packages: _kPackages,
   );

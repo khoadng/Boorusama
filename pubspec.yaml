@@ -84,6 +84,7 @@ dependencies:
   permission_handler: ^11.3.1
   petitparser: ^6.0.2
   photo_view: ^0.15.0
+  purchases_flutter: ^8.1.5
   rate_my_app: 1.1.4 # DO NOT UPDATE, 2.0.0 is adding unnecessary permissions
   readmore: ^3.0.0
   recase: ^4.1.0
