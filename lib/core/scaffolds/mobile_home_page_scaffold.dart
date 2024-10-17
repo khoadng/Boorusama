@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/infinite_post_list_scaffold.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/functional.dart';
 
 class MobileHomePageScaffold extends ConsumerStatefulWidget {
   const MobileHomePageScaffold({
@@ -34,14 +34,13 @@ class _MobileHomePageScaffoldState
 
   @override
   Widget build(BuildContext context) {
-    final booruBuilder = ref.watch(booruBuilderProvider);
-    final fetcher = booruBuilder?.postFetcher;
+    final postRepo = ref.watch(postRepoProvider(ref.watchConfig));
 
     return PostScope(
       fetcher: (page) {
         final tags = selectedTagString.value;
 
-        return fetcher?.call(page, tags) ?? TaskEither.of(<Post>[].toResult());
+        return postRepo.getPosts(tags, page);
       },
       builder: (context, postController, errors) => InfinitePostListScaffold(
         errors: errors,

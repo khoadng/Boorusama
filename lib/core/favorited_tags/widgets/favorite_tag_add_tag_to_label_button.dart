@@ -25,7 +25,7 @@ class FavoriteTagAddTagToLabelButton extends ConsumerWidget {
         goToQuickSearchPage(
           context,
           ref: ref,
-          onSubmitted: (context, text) {
+          onSubmitted: (context, text, _) {
             context.navigator.pop();
             ref.read(favoriteTagsProvider.notifier).add(
               text,
@@ -34,9 +34,9 @@ class FavoriteTagAddTagToLabelButton extends ConsumerWidget {
               ],
             );
           },
-          onSelected: (tag) {
+          onSelected: (tag, _) {
             ref.read(favoriteTagsProvider.notifier).add(
-              tag.value,
+              tag,
               labels: [
                 label,
               ],

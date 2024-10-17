@@ -22,12 +22,10 @@ class DanbooruPostContextMenu extends ConsumerWidget {
     super.key,
     required this.post,
     this.onMultiSelect,
-    required this.hasAccount,
   });
 
   final DanbooruPost post;
   final void Function()? onMultiSelect;
-  final bool hasAccount;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -35,6 +33,7 @@ class DanbooruPostContextMenu extends ConsumerWidget {
     final bookmarkState = ref.watch(bookmarkProvider);
     final isBookmarked =
         bookmarkState.isBookmarked(post, booruConfig.booruType);
+    final hasAccount = booruConfig.hasLoginDetails();
 
     return GenericContextMenu(
       buttonConfigs: [
@@ -85,16 +84,17 @@ class DanbooruPostContextMenu extends ConsumerWidget {
           ),
         if (!booruConfig.hasStrictSFW)
           ContextMenuButtonConfig(
-            'Open in browser',
+            'post.detail.view_in_browser'.tr(),
             onPressed: () =>
                 launchExternalUrlString(post.getLink(booruConfig.url)),
           ),
-        ContextMenuButtonConfig(
-          'View tags',
-          onPressed: () {
-            goToDanbooruShowTaglistPage(ref, post.extractTags());
-          },
-        ),
+        if (post.tags.isNotEmpty)
+          ContextMenuButtonConfig(
+            'View tags',
+            onPressed: () {
+              goToDanbooruShowTaglistPage(ref, post.extractTags());
+            },
+          ),
         ContextMenuButtonConfig(
           'View tag history',
           onPressed: () => goToPostVersionPage(context, post),

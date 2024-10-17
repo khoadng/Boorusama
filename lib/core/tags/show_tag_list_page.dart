@@ -6,6 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import 'package:boorusama/core/blacklists/blacklists.dart';
+import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/flutter.dart';
@@ -16,6 +18,36 @@ import 'package:boorusama/widgets/widgets.dart';
 
 final selectedViewTagQueryProvider =
     StateProvider.autoDispose<String>((ref) => '');
+
+class DefaultShowTagListPage extends ConsumerWidget {
+  const DefaultShowTagListPage({
+    super.key,
+    required this.tags,
+  });
+
+  final List<Tag> tags;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final globalNotifier = ref.watch(globalBlacklistedTagsProvider.notifier);
+    final favoriteNotifier = ref.watch(favoriteTagsProvider.notifier);
+
+    return ShowTagListPage(
+      tags: tags,
+      onAddToGlobalBlacklist: (tag) {
+        globalNotifier.addTagWithToast(
+          context,
+          tag.rawName,
+        );
+      },
+      onAddToFavoriteTags: (tag) {
+        favoriteNotifier.add(
+          tag.rawName,
+        );
+      },
+    );
+  }
+}
 
 class ShowTagListPage extends ConsumerWidget {
   const ShowTagListPage({

@@ -53,6 +53,6 @@ class PostVotesNotifier
 
             final postIds = posts.map((e) => e.id).toList();
 
-            return repo.getPostVotes(postIds, user.id);
+            return repo.getPostVotesFromUser(postIds, user.id);
           };
 }

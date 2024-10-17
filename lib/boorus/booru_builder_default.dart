@@ -15,7 +15,7 @@ mixin FavoriteNotSupportedMixin implements BooruBuilder {
 mixin DefaultQuickFavoriteButtonBuilderMixin implements BooruBuilder {
   @override
   QuickFavoriteButtonBuilder get quickFavoriteButtonBuilder =>
-      (context, constraints, post) => DefaultQuickFavoriteButton(
+      (context, post) => DefaultQuickFavoriteButton(
             post: post,
           );
 }
@@ -38,11 +38,6 @@ mixin CommentNotSupportedMixin implements BooruBuilder {
 mixin PostCountNotSupportedMixin implements BooruBuilder {
   @override
   PostCountFetcher? get postCountFetcher => null;
-}
-
-mixin NoteNotSupportedMixin implements BooruBuilder {
-  @override
-  NoteFetcher? get noteFetcher => null;
 }
 
 mixin DefaultThumbnailUrlMixin implements BooruBuilder {
@@ -135,6 +130,14 @@ mixin DefaultPostGesturesHandlerMixin on BooruBuilder {
               (source) => launchExternalUrlString(source.url),
               () => false,
             ),
+          );
+}
+
+mixin DefaultMultiSelectionActionsBuilderMixin on BooruBuilder {
+  @override
+  MultiSelectionActionsBuilder? get multiSelectionActionsBuilder =>
+      (context, controller) => DefaultMultiSelectionActions(
+            controller: controller,
           );
 }
 
@@ -233,13 +236,14 @@ class DefaultSearchPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booruBuilder = ref.watch(booruBuilderProvider);
+    final postRepo = ref.watch(postRepoProvider(ref.watchConfig));
 
     return SearchPageScaffold(
       initialQuery: initialQuery,
-      fetcher: (page, controler) =>
-          booruBuilder?.postFetcher.call(page, controler.rawTagsString) ??
-          TaskEither.of(<Post>[].toResult()),
+      fetcher: (page, controler) => postRepo.getPostsFromController(
+        controler,
+        page,
+      ),
     );
   }
 }
@@ -267,66 +271,76 @@ String Function(
                 ) ??
             post.sampleImageUrl;
 
-Widget Function(
-  BuildContext context,
-  BoxConstraints constraints,
-)? defaultImagePreviewButtonBuilder(
-  WidgetRef ref,
-  Post post,
-) =>
-    switch (ref.watchConfig.defaultPreviewImageButtonActionType) {
-      ImageQuickActionType.bookmark => (context, _) => Container(
-            padding: const EdgeInsets.only(
-              top: 2,
-              bottom: 1,
-              right: 1,
-              left: 3,
-            ),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.black.withOpacity(0.5),
-            ),
-            child: BookmarkPostLikeButtonButton(
-              post: post,
-            ),
+class DefaultImagePreviewQuickActionButton extends ConsumerWidget {
+  const DefaultImagePreviewQuickActionButton({
+    super.key,
+    required this.post,
+  });
+
+  final Post post;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
+    final booruBuilder = ref.watchBooruBuilder(config);
+
+    return switch (config.defaultPreviewImageButtonActionType) {
+      ImageQuickActionType.bookmark => Container(
+          padding: const EdgeInsets.only(
+            top: 2,
+            bottom: 1,
+            right: 1,
+            left: 3,
           ),
-      ImageQuickActionType.download => (context, _) => DownloadPostButton(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.black.withOpacity(0.5),
+          ),
+          child: BookmarkPostLikeButtonButton(
+            post: post,
+          ),
+        ),
+      ImageQuickActionType.download => Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.black.withOpacity(0.5),
+          ),
+          child: DownloadPostButton(
             post: post,
             small: true,
           ),
-      ImageQuickActionType.artist => (context, constraints) => Builder(
-            builder: (context) {
-              final artist =
-                  post.artistTags != null && post.artistTags!.isNotEmpty
-                      ? chooseArtistTag(post.artistTags!)
-                      : null;
-              if (artist == null) return const SizedBox.shrink();
+        ),
+      ImageQuickActionType.artist => Builder(
+          builder: (context) {
+            final artist =
+                post.artistTags != null && post.artistTags!.isNotEmpty
+                    ? chooseArtistTag(post.artistTags!)
+                    : null;
+            if (artist == null) return const SizedBox.shrink();
 
-              return SizedBox(
-                width: constraints.maxWidth * 0.9,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Flexible(
-                      child: PostTagListChip(
-                        tag: Tag.noCount(
-                          name: artist,
-                          category: TagCategory.artist(),
-                        ),
-                        onTap: () => goToArtistPage(
-                          context,
-                          artist,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-      ImageQuickActionType.none => (context, _) => const SizedBox.shrink(),
-      ImageQuickActionType.defaultAction => null,
+            return PostTagListChip(
+              tag: Tag.noCount(
+                name: artist,
+                category: TagCategory.artist(),
+              ),
+              onTap: () => goToArtistPage(
+                context,
+                artist,
+              ),
+            );
+          },
+        ),
+      ImageQuickActionType.defaultAction =>
+        booruBuilder?.quickFavoriteButtonBuilder != null
+            ? booruBuilder!.quickFavoriteButtonBuilder!(
+                context,
+                post,
+              )
+            : const SizedBox.shrink(),
+      ImageQuickActionType.none => const SizedBox.shrink(),
     };
+  }
+}
 
 mixin UnknownMetatagsMixin implements BooruBuilder {
   @override

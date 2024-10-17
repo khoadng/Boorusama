@@ -20,14 +20,14 @@ class RelatedPostsSection<T extends Post> extends ConsumerWidget {
     required this.posts,
     required this.imageUrl,
     required this.onTap,
-    required this.onViewAll,
+    this.onViewAll,
     this.title,
   });
 
   final List<T> posts;
   final String Function(T) imageUrl;
   final void Function(int index) onTap;
-  final void Function() onViewAll;
+  final void Function()? onViewAll;
   final String? title;
 
   @override
@@ -35,6 +35,23 @@ class RelatedPostsSection<T extends Post> extends ConsumerWidget {
     if (posts.isEmpty) {
       return const SliverSizedBox();
     }
+
+    final listTile = ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+      visualDensity: VisualDensity.compact,
+      minVerticalPadding: 0,
+      trailing: onViewAll != null
+          ? const Icon(
+              Symbols.arrow_right_alt,
+            )
+          : null,
+      title: Text(
+        title ?? 'post.detail.related_posts'.tr(),
+        style: context.textTheme.titleLarge?.copyWith(
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
 
     return SliverList(
       delegate: SliverChildListDelegate([
@@ -47,26 +64,15 @@ class RelatedPostsSection<T extends Post> extends ConsumerWidget {
                   horizontal: 4,
                   vertical: 8,
                 ),
-                child: InkWell(
-                  onTap: onViewAll,
-                  customBorder: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: ListTile(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 8),
-                    visualDensity: VisualDensity.compact,
-                    minVerticalPadding: 0,
-                    trailing: const Icon(
-                      Symbols.arrow_right_alt,
-                    ),
-                    title: Text(
-                      title ?? 'post.detail.related_posts'.tr(),
-                      style: context.textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
+                child: onViewAll != null
+                    ? InkWell(
+                        onTap: onViewAll,
+                        customBorder: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: listTile,
+                      )
+                    : listTile,
               ),
             ),
             PreviewPostList(

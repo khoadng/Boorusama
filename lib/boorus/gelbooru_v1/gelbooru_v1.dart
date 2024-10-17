@@ -13,14 +13,13 @@ import 'package:boorusama/boorus/gelbooru_v1/create_gelbooru_v1_config_page.dart
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
 import 'package:boorusama/clients/gelbooru/gelbooru_v1_client.dart';
-import 'package:boorusama/core/autocompletes/autocomplete.dart';
+import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/foundation/html.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
-import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/info_container.dart';
 
 part 'providers.dart';
@@ -32,8 +31,8 @@ class GelbooruV1Builder
         ArtistNotSupportedMixin,
         CharacterNotSupportedMixin,
         CommentNotSupportedMixin,
-        NoteNotSupportedMixin,
         UnknownMetatagsMixin,
+        DefaultMultiSelectionActionsBuilderMixin,
         DefaultHomeMixin,
         DefaultThumbnailUrlMixin,
         DefaultTagColorMixin,
@@ -44,22 +43,7 @@ class GelbooruV1Builder
         DefaultPostStatisticsPageBuilderMixin,
         DefaultBooruUIMixin
     implements BooruBuilder {
-  GelbooruV1Builder({
-    required this.postRepo,
-    required this.client,
-  });
-
-  final PostRepository postRepo;
-  final GelbooruClient client;
-
-  @override
-  AutocompleteFetcher get autocompleteFetcher =>
-      (tags) => client.autocomplete(term: tags).then((value) => value
-          .map((e) => AutocompleteData(
-                label: e.label ?? '<Unknown>',
-                value: e.value ?? '<Unknown>',
-              ))
-          .toList());
+  GelbooruV1Builder();
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
@@ -99,13 +83,6 @@ class GelbooruV1Builder
           );
 
   @override
-  PostFetcher get postFetcher => (page, tags) => TaskEither.Do(($) async {
-        final posts = await $(postRepo.getPosts(tags, page));
-
-        return posts;
-      });
-
-  @override
   final DownloadFilenameGenerator downloadFilenameBuilder =
       DownloadFileNameBuilder(
     defaultFileNameFormat: kGelbooruCustomDownloadFileNameFormat,
@@ -127,7 +104,7 @@ class GelbooruV1SearchPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booruBuilder = ref.watch(booruBuilderProvider);
+    final postRepo = ref.watch(postRepoProvider(ref.watchConfig));
 
     return SearchPageScaffold(
       noticeBuilder: (context) => InfoContainer(
@@ -136,9 +113,10 @@ class GelbooruV1SearchPage extends ConsumerWidget {
         ),
       ),
       initialQuery: initialQuery,
-      fetcher: (page, controller) =>
-          booruBuilder?.postFetcher.call(page, controller.rawTagsString) ??
-          TaskEither.of(<Post>[].toResult()),
+      fetcher: (page, controller) => postRepo.getPostsFromController(
+        controller,
+        page,
+      ),
     );
   }
 }

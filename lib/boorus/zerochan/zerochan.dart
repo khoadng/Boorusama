@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
-import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/create/create_anon_config_page.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
@@ -28,10 +27,10 @@ class ZerochanBuilder
         PostCountNotSupportedMixin,
         ArtistNotSupportedMixin,
         CharacterNotSupportedMixin,
-        NoteNotSupportedMixin,
         DefaultThumbnailUrlMixin,
         CommentNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
+        DefaultMultiSelectionActionsBuilderMixin,
         DefaultHomeMixin,
         UnknownMetatagsMixin,
         DefaultPostImageDetailsUrlMixin,
@@ -40,13 +39,7 @@ class ZerochanBuilder
         DefaultPostStatisticsPageBuilderMixin,
         DefaultBooruUIMixin
     implements BooruBuilder {
-  ZerochanBuilder({
-    required this.postRepo,
-    required this.autocompleteRepo,
-  });
-
-  final AutocompleteRepository autocompleteRepo;
-  final PostRepository postRepo;
+  ZerochanBuilder();
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
@@ -77,13 +70,6 @@ class ZerochanBuilder
             backgroundColor: backgroundColor,
             initialTab: initialTab,
           );
-
-  @override
-  PostFetcher get postFetcher => (page, tags) => postRepo.getPosts(tags, page);
-
-  @override
-  AutocompleteFetcher get autocompleteFetcher =>
-      (query) => autocompleteRepo.getAutocomplete(query.toLowerCase());
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>

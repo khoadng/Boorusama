@@ -28,6 +28,7 @@ class SearchLandingView extends ConsumerStatefulWidget {
     this.backgroundColor,
     this.scrollController,
     this.disableAnimation = false,
+    this.reverseScheme = false,
   });
 
   final ValueChanged<SearchHistory>? onHistoryTap;
@@ -41,6 +42,7 @@ class SearchLandingView extends ConsumerStatefulWidget {
   final Color? backgroundColor;
   final ScrollController? scrollController;
   final bool disableAnimation;
+  final bool reverseScheme;
 
   @override
   ConsumerState<SearchLandingView> createState() => _SearchLandingViewState();
@@ -132,6 +134,7 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
                   children: [
                     const Divider(thickness: 1),
                     SearchHistorySection(
+                      reverseScheme: widget.reverseScheme,
                       histories: histories.histories,
                       onHistoryTap: (history) {
                         _onHistoryTap(history, ref);

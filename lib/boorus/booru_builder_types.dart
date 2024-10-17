@@ -37,8 +37,12 @@ typedef FavoritesPageBuilder = Widget Function(
 
 typedef QuickFavoriteButtonBuilder = Widget Function(
   BuildContext context,
-  BoxConstraints constraints,
   Post post,
+);
+
+typedef MultiSelectionActionsBuilder = Widget Function(
+  BuildContext context,
+  MultiSelectController<Post> controller,
 );
 
 typedef ArtistPageBuilder = Widget Function(
@@ -55,15 +59,6 @@ typedef CommentPageBuilder = Widget Function(
   BuildContext context,
   bool useAppBar,
   int postId,
-);
-
-typedef PostFetcher = PostsOrError Function(
-  int page,
-  String tags,
-);
-
-typedef AutocompleteFetcher = Future<List<AutocompleteData>> Function(
-  String query,
 );
 
 typedef NoteFetcher = Future<List<Note>> Function(int postId);

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
@@ -50,9 +49,7 @@ class _BookmarkPageState extends ConsumerState<BookmarkPage> {
         child: Scaffold(
           floatingActionButton: ScrollToTop(
             scrollController: scrollController,
-            child: FloatingActionButton(
-              heroTag: null,
-              child: const FaIcon(FontAwesomeIcons.angleUp),
+            child: BooruScrollToTopButton(
               onPressed: () => scrollController.jumpTo(0),
             ),
           ),

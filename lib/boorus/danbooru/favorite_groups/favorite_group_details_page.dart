@@ -251,7 +251,6 @@ class _FavoriteGroupDetailsPageState
                                       ContextMenuRegion(
                                     contextMenu: DanbooruPostContextMenu(
                                       post: post,
-                                      hasAccount: config.hasLoginDetails(),
                                     ),
                                     child: child,
                                   ),

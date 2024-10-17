@@ -11,9 +11,6 @@ import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
-import 'booru_config_listing_view.dart';
-import 'booru_config_search_view.dart';
-import 'booru_config_theme_view.dart';
 
 const kDefaultPreviewImageButtonAction = {
   '',
@@ -41,6 +38,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
     this.describePostPreviewQuickAction,
     this.submitButtonBuilder,
     required this.initialTab,
+    this.footer,
   });
 
   final Color? backgroundColor;
@@ -67,22 +65,24 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
 
   final String? initialTab;
 
+  final Widget? footer;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watch(initialBooruConfigProvider);
 
     final tabMap = {
       if (authTab != null) 'booru.authentication': authTab!,
-      'Theme': const BooruConfigThemeView(),
-      'Listing': searchTab ??
-          BooruConfigListingView(
-            config: config,
-          ),
+      'Listing': BooruConfigListingView(
+        config: config,
+      ),
       if (hasDownloadTab)
         'booru.download': BooruConfigDownloadView(config: config),
-      'Search': BooruConfigSearchView(
-        hasRatingFilter: hasRatingFilter,
-      ),
+      'Search': searchTab ??
+          BooruConfigSearchView(
+            hasRatingFilter: hasRatingFilter,
+            config: config,
+          ),
       if (tabsBuilder != null) ...tabsBuilder!(context),
       'booru.gestures': BooruConfigGesturesView(
         postDetailsGestureActions: postDetailsGestureActions,
@@ -108,7 +108,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
           config: config,
         ),
         actions: [
-          BooruConfigSubmitButton(
+          BooruConfigDataProvider(
             builder: submitButtonBuilder != null
                 ? submitButtonBuilder!
                 : (data) => DefaultBooruSubmitButton(
@@ -172,7 +172,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 12,
-                          vertical: 6,
+                          vertical: 12,
                         ),
                         child: Column(
                           children: [
@@ -187,6 +187,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
                           ],
                         ),
                       ),
+                    if (footer != null) footer!,
                   ],
                 ),
               ),

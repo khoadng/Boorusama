@@ -295,7 +295,10 @@ class UnknownConfigBooruSelector extends ConsumerWidget {
             ref.read(booruEngineProvider.notifier).state = value;
           },
           items: BooruType.values
-              .where((e) => e != BooruType.unknown && e != BooruType.gelbooru)
+              .where((e) =>
+                  e != BooruType.unknown &&
+                  e != BooruType.gelbooru &&
+                  e != BooruType.animePictures)
               .sorted((a, b) => a.stringify().compareTo(b.stringify()))
               .map((value) => DropdownMenuItem(
                     value: value,

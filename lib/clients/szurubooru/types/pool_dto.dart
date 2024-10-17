@@ -24,7 +24,7 @@ class PoolDto {
   final int? postCount;
   final String? description;
 
-  factory PoolDto.fromJson(Map<String, dynamic> json) {
+  factory PoolDto.fromJson(Map<String, dynamic> json, {String? baseUrl}) {
     return PoolDto(
       version: json['version'] as int?,
       id: json['id'] as int?,
@@ -32,7 +32,10 @@ class PoolDto {
       category: json['category'] as String?,
       posts: json['posts'] != null
           ? (json['posts'] as List)
-              .map((e) => MicroPostDto.fromJson(e as Map<String, dynamic>))
+              .map((e) => MicroPostDto.fromJson(
+                    e as Map<String, dynamic>,
+                    baseUrl: baseUrl,
+                  ))
               .toList()
           : null,
       creationTime: json['creationTime'] as String?,

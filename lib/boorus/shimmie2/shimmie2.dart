@@ -8,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/gelbooru_v2/gelbooru_v2.dart';
-import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/create/create_anon_config_page.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
@@ -25,9 +24,9 @@ class Shimmie2Builder
         CommentNotSupportedMixin,
         ArtistNotSupportedMixin,
         CharacterNotSupportedMixin,
-        NoteNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
         UnknownMetatagsMixin,
+        DefaultMultiSelectionActionsBuilderMixin,
         DefaultHomeMixin,
         DefaultTagColorMixin,
         DefaultPostGesturesHandlerMixin,
@@ -36,17 +35,7 @@ class Shimmie2Builder
         DefaultPostStatisticsPageBuilderMixin,
         DefaultBooruUIMixin
     implements BooruBuilder {
-  Shimmie2Builder({
-    required this.postRepo,
-    required this.autocompleteRepo,
-  });
-
-  final AutocompleteRepository autocompleteRepo;
-  final PostRepository postRepo;
-
-  @override
-  AutocompleteFetcher get autocompleteFetcher =>
-      (query) => autocompleteRepo.getAutocomplete(query);
+  Shimmie2Builder();
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
@@ -77,10 +66,6 @@ class Shimmie2Builder
             backgroundColor: backgroundColor,
             initialTab: initialTab,
           );
-
-  @override
-  PostFetcher get postFetcher =>
-      (page, tags, {limit}) => postRepo.getPosts(tags, page, limit: limit);
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>

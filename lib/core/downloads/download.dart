@@ -13,6 +13,7 @@ import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/foundation/permissions.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/toast.dart';
+import 'package:boorusama/router.dart';
 
 extension PostDownloadX on WidgetRef {
   Future<PermissionStatus?> _getPermissionStatus() async {
@@ -20,19 +21,15 @@ extension PostDownloadX on WidgetRef {
     return isAndroid() || isIOS() ? perm.storagePermission : null;
   }
 
-  Settings get settings => read(settingsProvider);
-
   void _showToastIfPossible({String? message}) {
     if (context.mounted) {
       showDownloadStartToast(context, message: message);
     }
   }
 
-  Future<void> download(
-    Post post, {
-    String? group,
-    String? downloadPath,
-  }) async {
+  Future<void> download(Post post) async {
+    final settings = read(settingsProvider);
+    final urlExtractor = read(downloadFileUrlExtractorProvider(readConfig));
     final perm = await _getPermissionStatus();
 
     await _download(
@@ -40,10 +37,12 @@ extension PostDownloadX on WidgetRef {
       post,
       permission: perm,
       settings: settings,
-      group: group,
-      downloadPath: downloadPath,
+      downloadFileUrlExtractor: urlExtractor,
       onStarted: () {
-        showDownloadStartToast(context);
+        final c = navigatorKey.currentState?.context;
+        if (c != null) {
+          showDownloadStartToast(c);
+        }
       },
     );
   }
@@ -53,6 +52,16 @@ extension PostDownloadX on WidgetRef {
     String? group,
     String? downloadPath,
   }) async {
+    final settings = read(settingsProvider);
+    final urlExtractor = read(downloadFileUrlExtractorProvider(readConfig));
+    final config = readConfig;
+
+    // ensure that the booru supports bulk download
+    if (!config.booruType.canDownloadMultipleFiles) {
+      showBulkDownloadUnsupportErrorToast(context);
+      return;
+    }
+
     final perm = await _getPermissionStatus();
 
     _showToastIfPossible(
@@ -68,6 +77,7 @@ extension PostDownloadX on WidgetRef {
         settings: settings,
         group: group,
         downloadPath: downloadPath,
+        downloadFileUrlExtractor: urlExtractor,
         bulkMetadata: {
           'total': posts.length.toString(),
           'index': i.toString(),
@@ -85,31 +95,66 @@ Future<void> _download(
   String? group,
   String? downloadPath,
   Map<String, String>? bulkMetadata,
+  required DownloadFileUrlExtractor downloadFileUrlExtractor,
   void Function()? onStarted,
 }) async {
   final booruConfig = ref.readConfig;
   final service = ref.read(downloadServiceProvider(booruConfig));
   final fileNameBuilder =
       ref.readBooruBuilder(booruConfig)?.downloadFilenameBuilder;
-  final downloadUrl = getDownloadFileUrl(downloadable, settings);
-
   final logger = ref.read(loggerProvider);
+
+  final headers = {
+    AppHttpHeaders.userAgentHeader:
+        ref.read(userAgentGeneratorProvider(booruConfig)).generate(),
+    ...ref.read(extraHttpHeaderProvider(booruConfig)),
+  };
+
+  final deviceStoragePermissionNotifier =
+      ref.read(deviceStoragePermissionProvider.notifier);
+
+  final urlData = await downloadFileUrlExtractor.getDownloadFileUrl(
+    post: downloadable,
+    quality: settings.downloadQuality,
+  );
 
   if (fileNameBuilder == null) {
     logger.logE('Single Download', 'No file name builder found, aborting...');
-    showErrorToast(ref.context, 'Download aborted, cannot create file name');
+    if (ref.context.mounted) {
+      showErrorToast(ref.context, 'Download aborted, cannot create file name');
+    }
     return;
   }
 
-  if (downloadUrl == null || downloadUrl.isEmpty) {
+  if (urlData == null || urlData.url.isEmpty) {
     logger.logE('Single Download', 'No download url found, aborting...');
-    showErrorToast(ref.context, 'Download aborted, no download url found');
+    if (ref.context.mounted) {
+      showErrorToast(ref.context, 'Download aborted, no download url found');
+    }
     return;
   }
 
-  Future<void> download() {
+  Future<void> download() async {
     onStarted?.call();
-    return service
+
+    final fileNameFuture = bulkMetadata != null
+        ? fileNameBuilder.generateForBulkDownload(
+            settings,
+            booruConfig,
+            downloadable,
+            metadata: bulkMetadata,
+            downloadUrl: urlData.url,
+          )
+        : fileNameBuilder.generate(
+            settings,
+            booruConfig,
+            downloadable,
+            downloadUrl: urlData.url,
+          );
+
+    final fileName = await fileNameFuture;
+
+    await service
         .downloadWithSettings(
           settings,
           config: booruConfig,
@@ -119,23 +164,12 @@ Future<void> _download(
             siteUrl: PostSource.from(downloadable.thumbnailImageUrl).url,
             group: group,
           ),
-          url: downloadUrl,
-          filename: bulkMetadata != null
-              ? fileNameBuilder.generateForBulkDownload(
-                  settings,
-                  booruConfig,
-                  downloadable,
-                  metadata: bulkMetadata,
-                )
-              : fileNameBuilder.generate(
-                  settings,
-                  booruConfig,
-                  downloadable,
-                ),
+          url: urlData.url,
+          filename: fileName,
           headers: {
-            AppHttpHeaders.userAgentHeader:
-                ref.read(userAgentGeneratorProvider(booruConfig)).generate(),
-            ...ref.read(extraHttpHeaderProvider(booruConfig)),
+            ...headers,
+            if (urlData.cookie != null)
+              AppHttpHeaders.cookieHeader: urlData.cookie!,
           },
           path: downloadPath,
         )
@@ -152,7 +186,7 @@ Future<void> _download(
     download();
   } else {
     logger.logI('Single Download', 'Permission not granted, requesting...');
-    ref.read(deviceStoragePermissionProvider.notifier).requestPermission(
+    deviceStoragePermissionNotifier.requestPermission(
       onDone: (isGranted) {
         if (isGranted) {
           download();

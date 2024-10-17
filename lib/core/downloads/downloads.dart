@@ -14,6 +14,7 @@ export 'download_provider.dart';
 export 'download_service.dart';
 export 'download_tasks_notifier.dart';
 export 'download_tile.dart';
+export 'download_url.dart';
 export 'download_utils.dart';
 export 'notification.dart';
 export 'types.dart';

@@ -6,6 +6,7 @@ import 'package:oktoast/oktoast.dart';
 
 // Project imports:
 import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/foundation/toast.dart';
 import 'l10n.dart';
 
 const String _basePath = '/storage/emulated';
@@ -130,5 +131,13 @@ void showDownloadStartToast(BuildContext context, {String? message}) {
     textPadding: const EdgeInsets.all(12),
     textStyle: TextStyle(color: context.colorScheme.surface),
     backgroundColor: context.colorScheme.onSurface,
+  );
+}
+
+void showBulkDownloadUnsupportErrorToast(BuildContext context) {
+  showErrorToast(
+    context,
+    duration: const Duration(seconds: 3),
+    'This booru does not support downloading multiple files',
   );
 }

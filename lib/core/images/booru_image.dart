@@ -82,6 +82,7 @@ class BooruImage extends ConsumerWidget {
         cacheWidth: cacheWidth,
         headers: _getHeaders(config, ref),
         shape: BoxShape.rectangle,
+        cacheMaxAge: kDefaultImageCacheDuration,
         borderRadius:
             borderRadius ?? const BorderRadius.all(Radius.circular(4)),
         fit: fit ?? BoxFit.fill,
@@ -102,6 +103,7 @@ class BooruImage extends ConsumerWidget {
           height: height,
           cacheHeight: cacheHeight,
           cacheWidth: cacheWidth,
+          cacheMaxAge: kDefaultImageCacheDuration,
           headers: _getHeaders(config, ref),
           shape: BoxShape.rectangle,
           borderRadius:
@@ -125,6 +127,7 @@ class BooruImage extends ConsumerWidget {
             cacheHeight: cacheHeight,
             cacheWidth: cacheWidth,
             shape: BoxShape.rectangle,
+            cacheMaxAge: kDefaultImageCacheDuration,
             fit: BoxFit.cover,
             borderRadius:
                 borderRadius ?? const BorderRadius.all(Radius.circular(4)),
@@ -154,6 +157,7 @@ class BooruImage extends ConsumerWidget {
                       cacheHeight: cacheHeight,
                       cacheWidth: cacheWidth,
                       shape: BoxShape.rectangle,
+                      cacheMaxAge: kDefaultImageCacheDuration,
                       fit: BoxFit.cover,
                       borderRadius: borderRadius ??
                           const BorderRadius.all(Radius.circular(4)),

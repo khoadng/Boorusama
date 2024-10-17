@@ -7,10 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/tags/tags.dart';
@@ -22,6 +20,7 @@ import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
+import 'package:boorusama/widgets/widgets.dart';
 import 'artists/danbooru_artist_page.dart';
 import 'comments/comments.dart';
 import 'configs/create_danbooru_config_page.dart';
@@ -82,25 +81,16 @@ const kDanbooruPostSamples = [
 ];
 
 class DanbooruBuilder
-    with
-        DefaultQuickFavoriteButtonBuilderMixin,
-        DefaultTagColorMixin,
-        NewGranularRatingOptionsBuilderMixin
+    with DefaultTagColorMixin, NewGranularRatingOptionsBuilderMixin
     implements BooruBuilder {
   DanbooruBuilder({
-    required this.postRepo,
-    required this.autocompleteRepo,
     required this.favoriteRepo,
     required this.postCountRepo,
-    required this.noteRepo,
     required this.tagInfo,
   });
 
-  final PostRepository<DanbooruPost> postRepo;
-  final AutocompleteRepository autocompleteRepo;
   final FavoritePostRepository favoriteRepo;
   final PostCountRepository postCountRepo;
-  final NoteRepository noteRepo;
   final TagInfo tagInfo;
 
   @override
@@ -137,16 +127,6 @@ class DanbooruBuilder
             backgroundColor: backgroundColor,
             initialTab: initialTab,
           );
-
-  @override
-  PostFetcher get postFetcher => (page, tags) => postRepo.getPosts(
-        tags,
-        page,
-      );
-
-  @override
-  AutocompleteFetcher get autocompleteFetcher =>
-      (query) => autocompleteRepo.getAutocomplete(query);
 
   @override
   FavoriteAdder? get favoriteAdder =>
@@ -224,9 +204,6 @@ class DanbooruBuilder
             postId: postId,
             useAppBar: useAppBar,
           );
-
-  @override
-  NoteFetcher? get noteFetcher => (postId) => noteRepo.getNotes(postId);
 
   @override
   PostGestureHandlerBuilder get postGestureHandlerBuilder =>
@@ -352,6 +329,26 @@ class DanbooruBuilder
   late final MetatagExtractor metatagExtractor = MetatagExtractor(
     metatags: tagInfo.metatags,
   );
+
+  @override
+  QuickFavoriteButtonBuilder get quickFavoriteButtonBuilder =>
+      (context, post) => castOrNull<DanbooruPost>(post).toOption().fold(
+            () => const SizedBox.shrink(),
+            (post) => DanbooruQuickFavoriteButton(
+              post: post,
+            ),
+          );
+
+  @override
+  MultiSelectionActionsBuilder? get multiSelectionActionsBuilder =>
+      (context, controller) {
+        final isDanController =
+            controller is MultiSelectController<DanbooruPost>;
+
+        return isDanController
+            ? DanbooruMultiSelectionActions(controller: controller)
+            : DefaultMultiSelectionActions(controller: controller);
+      };
 }
 
 bool handleDanbooruGestureAction(

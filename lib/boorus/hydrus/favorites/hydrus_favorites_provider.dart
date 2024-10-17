@@ -20,8 +20,8 @@ final hydrusFavoriteProvider =
   return favorites[postId] ?? false;
 });
 
-final hydrusCanFavoriteProvider = FutureProvider<bool>((ref) async {
-  final config = ref.watchConfig;
+final hydrusCanFavoriteProvider =
+    FutureProvider.family<bool, BooruConfig>((ref, config) async {
   final client = ref.read(hydrusClientProvider(config));
 
   final services = await client.getServicesCached();

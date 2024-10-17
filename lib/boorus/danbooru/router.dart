@@ -11,18 +11,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/core/blacklists/blacklists.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
+import 'package:boorusama/boorus/danbooru/tags/danbooru_show_tag_list_page.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/core/wikis/wikis.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'artists/artists.dart';
@@ -270,9 +266,8 @@ void goToPostVotesDetails(BuildContext context, DanbooruPost post) {
 }
 
 void goToSavedSearchCreatePage(
-  WidgetRef ref,
   BuildContext context, {
-  SavedSearch? initialValue,
+  String? initialValue,
 }) {
   if (kPreferredLayout.isMobile) {
     showMaterialModalBottomSheet(
@@ -281,19 +276,8 @@ void goToSavedSearchCreatePage(
         name: RouterPageConstant.savedSearchCreate,
       ),
       backgroundColor: context.colorScheme.secondaryContainer,
-      builder: (_) => EditSavedSearchSheet(
+      builder: (_) => CreateSavedSearchSheet(
         initialValue: initialValue,
-        onSubmit: (query, label) => ref
-            .read(danbooruSavedSearchesProvider(ref.readConfig).notifier)
-            .create(
-              query: query,
-              label: label,
-              onCreated: (data) => showSimpleSnackBar(
-                context: context,
-                duration: AppDurations.shortToast,
-                content: const Text('saved_search.saved_search_added').tr(),
-              ),
-            ),
       ),
     );
   } else {
@@ -323,19 +307,8 @@ void goToSavedSearchCreatePage(
                 Radius.circular(8),
               ),
             ),
-            child: EditSavedSearchSheet(
-              onSubmit: (query, label) => ref
-                  .read(danbooruSavedSearchesProvider(ref.readConfig).notifier)
-                  .create(
-                    query: query,
-                    label: label,
-                    onCreated: (data) => showSimpleSnackBar(
-                      context: context,
-                      duration: AppDurations.shortToast,
-                      content:
-                          const Text('saved_search.saved_search_added').tr(),
-                    ),
-                  ),
+            child: CreateSavedSearchSheet(
+              initialValue: initialValue,
             ),
           ),
         );
@@ -345,7 +318,6 @@ void goToSavedSearchCreatePage(
 }
 
 void goToSavedSearchPatchPage(
-  WidgetRef ref,
   BuildContext context,
   SavedSearch savedSearch,
 ) {
@@ -356,21 +328,7 @@ void goToSavedSearchPatchPage(
     ),
     backgroundColor: context.colorScheme.secondaryContainer,
     builder: (_) => EditSavedSearchSheet(
-      title: 'saved_search.update_saved_search'.tr(),
-      initialValue: savedSearch,
-      onSubmit: (query, label) =>
-          ref.read(danbooruSavedSearchesProvider(ref.readConfig).notifier).edit(
-                id: savedSearch.id,
-                label: label,
-                query: query,
-                onUpdated: (data) => showSimpleSnackBar(
-                  context: context,
-                  duration: AppDurations.shortToast,
-                  content: const Text(
-                    'saved_search.saved_search_updated',
-                  ).tr(),
-                ),
-              ),
+      savedSearch: savedSearch,
     ),
   );
 }
@@ -441,49 +399,11 @@ Future<bool?> goToDanbooruShowTaglistPage(
   WidgetRef ref,
   List<Tag> tags,
 ) {
-  final config = ref.readConfig;
-  final notifier = ref.read(danbooruBlacklistedTagsProvider(config).notifier);
-  final globalNotifier = ref.read(globalBlacklistedTagsProvider.notifier);
-  final favoriteNotifier = ref.read(favoriteTagsProvider.notifier);
-  final color = ref.context.colorScheme.onSurface;
-  final textColor = ref.context.colorScheme.surface;
-
   return showAdaptiveSheet(
     navigatorKey.currentContext ?? ref.context,
     expand: true,
-    builder: (dialogContext) => ShowTagListPage(
+    builder: (context) => DanbooruShowTagListPage(
       tags: tags,
-      onOpenWiki: (tag) {
-        launchWikiPage(config.url, tag.rawName);
-      },
-      onAddToBlacklist: config.hasLoginDetails()
-          ? (tag) {
-              notifier.addWithToast(
-                context: ref.context,
-                tag: tag.rawName,
-              );
-            }
-          : null,
-      onAddToGlobalBlacklist: (tag) {
-        globalNotifier.addTagWithToast(
-          ref.context,
-          tag.rawName,
-        );
-      },
-      onAddToFavoriteTags: (tag) async {
-        await favoriteNotifier.add(tag.rawName);
-
-        if (!dialogContext.mounted) return;
-
-        showSuccessToast(
-          ref.context,
-          'Added',
-          backgroundColor: color,
-          textStyle: TextStyle(
-            color: textColor,
-          ),
-        );
-      },
     ),
   );
 }

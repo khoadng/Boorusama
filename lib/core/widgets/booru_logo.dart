@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
 import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
 
 class BooruLogo extends StatelessWidget {
@@ -47,6 +48,7 @@ class BooruLogo extends StatelessWidget {
                 height: height ?? 24,
                 fit: BoxFit.cover,
                 clearMemoryCacheIfFailed: false,
+                cacheMaxAge: kDefaultImageCacheDuration,
                 loadStateChanged: (state) =>
                     switch (state.extendedImageLoadState) {
                   LoadState.failed => FaIcon(

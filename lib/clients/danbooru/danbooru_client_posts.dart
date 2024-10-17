@@ -104,10 +104,25 @@ mixin DanbooruClientPosts {
     }
   }
 
-  Future<List<PostVoteDto>> getPostVotes({
+  Future<List<PostVoteDto>> getPostVotesFromUser({
     int? page,
     required List<int> postIds,
     required int userId,
+    bool? isDeleted,
+    int limit = 100,
+  }) =>
+      getPostVotes(
+        page: page,
+        postIds: postIds,
+        userId: userId,
+        isDeleted: isDeleted,
+        limit: limit,
+      );
+
+  Future<List<PostVoteDto>> getPostVotes({
+    int? page,
+    required List<int> postIds,
+    int? userId,
     bool? isDeleted,
     int limit = 100,
   }) async {
@@ -120,7 +135,7 @@ mixin DanbooruClientPosts {
       queryParameters: {
         if (page != null) 'page': page,
         'search[post_id]': postIds.join(','),
-        'search[user_id]': userId,
+        if (userId != null) 'search[user_id]': userId,
         if (isDeleted != null) 'search[is_deleted]': isDeleted,
         'limit': limit,
       },

@@ -121,6 +121,7 @@ class GelbooruV2Builder
         DefaultThumbnailUrlMixin,
         PostCountNotSupportedMixin,
         UnknownMetatagsMixin,
+        DefaultMultiSelectionActionsBuilderMixin,
         DefaultHomeMixin,
         DefaultPostImageDetailsUrlMixin,
         DefaultGranularRatingFiltererMixin,
@@ -129,15 +130,9 @@ class GelbooruV2Builder
         DefaultTagColorMixin
     implements BooruBuilder {
   GelbooruV2Builder({
-    required this.postRepo,
-    required this.autocompleteRepo,
-    required this.noteRepo,
     required this.client,
   });
 
-  final PostRepository<GelbooruV2Post> postRepo;
-  final AutocompleteRepository autocompleteRepo;
-  final NoteRepository noteRepo;
   final GelbooruV2Client client;
 
   @override
@@ -174,19 +169,6 @@ class GelbooruV2Builder
             backgroundColor: backgroundColor,
             initialTab: initialTab,
           );
-
-  @override
-  PostFetcher get postFetcher => (page, tags) => postRepo.getPosts(
-        tags,
-        page,
-      );
-
-  @override
-  NoteFetcher? get noteFetcher => (postId) => noteRepo.getNotes(postId);
-
-  @override
-  AutocompleteFetcher get autocompleteFetcher =>
-      (query) => autocompleteRepo.getAutocomplete(query);
 
   @override
   SearchPageBuilder get searchPageBuilder => (context, initialQuery) =>

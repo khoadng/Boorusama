@@ -21,6 +21,7 @@ import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
@@ -80,6 +81,7 @@ final hydrusClientProvider =
 final hydrusPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
   (ref, config) {
     final client = ref.watch(hydrusClientProvider(config));
+    final composer = ref.watch(tagQueryComposerProvider(config));
 
     Future<PostResult<HydrusPost>> getPosts(
       List<String> tags,
@@ -133,8 +135,6 @@ final hydrusPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
       return data;
     }
 
-    final composer = DefaultTagQueryComposer(config: config);
-
     return PostRepositoryBuilder(
       tagComposer: composer,
       getSettings: () async => ref.read(imageListingSettingsProvider),
@@ -152,16 +152,42 @@ final hydrusPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
   },
 );
 
+final hydrusAutocompleteRepoProvider =
+    Provider.family<AutocompleteRepository, BooruConfig>((ref, config) {
+  final client = ref.watch(hydrusClientProvider(config));
+
+  return AutocompleteRepositoryBuilder(
+    persistentStorageKey:
+        '${Uri.encodeComponent(config.url)}_autocomplete_cache_v1',
+    persistentStaleDuration: const Duration(minutes: 5),
+    autocomplete: (query) async {
+      final dtos = await client.getAutocomplete(query: query);
+
+      return dtos.map((e) {
+        // looking for xxx:tag format using regex
+        final category = RegExp(r'(\w+):').firstMatch(e.value)?.group(1);
+
+        return AutocompleteData(
+          label: e.value,
+          value: e.value,
+          category: category,
+          postCount: e.count,
+        );
+      }).toList();
+    },
+  );
+});
+
 class HydrusBuilder
     with
         PostCountNotSupportedMixin,
         ArtistNotSupportedMixin,
         CharacterNotSupportedMixin,
-        NoteNotSupportedMixin,
         DefaultThumbnailUrlMixin,
         CommentNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
         UnknownMetatagsMixin,
+        DefaultMultiSelectionActionsBuilderMixin,
         DefaultHomeMixin,
         DefaultTagColorMixin,
         DefaultPostGesturesHandlerMixin,
@@ -169,30 +195,7 @@ class HydrusBuilder
         DefaultPostStatisticsPageBuilderMixin,
         DefaultBooruUIMixin
     implements BooruBuilder {
-  HydrusBuilder({
-    required this.client,
-    required this.postRepo,
-  });
-
-  final HydrusClient client;
-  final PostRepository postRepo;
-
-  @override
-  AutocompleteFetcher get autocompleteFetcher => (query) async {
-        final tags = await client.getAutocomplete(query: query);
-
-        return tags.map((e) {
-          // looking for xxx:tag format using regex
-          final category = RegExp(r'(\w+):').firstMatch(e.value)?.group(1);
-
-          return AutocompleteData(
-            label: e.value,
-            value: e.value,
-            category: category,
-            postCount: e.count,
-          );
-        }).toList();
-      };
+  HydrusBuilder();
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
@@ -241,16 +244,13 @@ class HydrusBuilder
       (imageQuality, rawPost, config) => rawPost.sampleImageUrl;
 
   @override
-  PostFetcher get postFetcher => (page, tags) => postRepo.getPosts(tags, page);
-
-  @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
       (context, config, payload) => PostDetailsLayoutSwitcher(
             initialIndex: payload.initialIndex,
             posts: payload.posts,
             scrollController: payload.scrollController,
-            desktop: (controller) => HydrusPostDetailsPage(
-              initialPage: controller.currentPage.value,
+            desktop: (controller) => HydrusPostDetailsDesktopPage(
+              initialIndex: controller.currentPage.value,
               controller: controller,
               posts: payload.posts,
               onExit: (page) => controller.onExit(page),
@@ -294,7 +294,7 @@ class HydrusBuilder
 
   @override
   QuickFavoriteButtonBuilder? get quickFavoriteButtonBuilder =>
-      (context, constraints, post) => HydrusQuickFavoriteButton(
+      (context, post) => HydrusQuickFavoriteButton(
             post: post,
           );
 }
@@ -334,8 +334,8 @@ class HydrusHomePage extends StatelessWidget {
   }
 }
 
-final ratingServiceNameProvider = FutureProvider<String?>((ref) async {
-  final config = ref.watchConfig;
+final ratingServiceNameProvider =
+    FutureProvider.family<String?, BooruConfig>((ref, config) async {
   final client = ref.read(hydrusClientProvider(config));
 
   final services = await client.getServicesCached();
@@ -373,6 +373,10 @@ class HydrusPostDetailsPage extends ConsumerWidget {
       swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
       onExit: onExit,
       onPageChangeIndexed: onPageChanged,
+      fileDetailsBuilder: (context, post) => DefaultFileDetailsSection(
+        post: post,
+        initialExpanded: true,
+      ),
       tagListBuilder: (context, post) => BasicTagList(
         tags: post.tags.toList(),
         onTap: (tag) => goToSearchPage(
@@ -389,6 +393,57 @@ class HydrusPostDetailsPage extends ConsumerWidget {
                   (post) => HydrusPostActionToolbar(post: post),
                 ),
       ),
+    );
+  }
+}
+
+class HydrusPostDetailsDesktopPage extends ConsumerWidget {
+  const HydrusPostDetailsDesktopPage({
+    super.key,
+    required this.initialIndex,
+    required this.posts,
+    required this.onExit,
+    required this.onPageChanged,
+    required this.controller,
+  });
+
+  final int initialIndex;
+  final List<Post> posts;
+  final void Function(int index) onExit;
+  final void Function(int page) onPageChanged;
+  final PostDetailsController<Post> controller;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return PostDetailsPageDesktopScaffold(
+      debounceDuration: Duration.zero,
+      initialIndex: initialIndex,
+      posts: posts,
+      onExit: onExit,
+      onPageChanged: onPageChanged,
+      imageUrlBuilder: defaultPostImageUrlBuilder(ref),
+      fileDetailsBuilder: (context, post) => DefaultFileDetailsSection(
+        post: post,
+        initialExpanded: true,
+      ),
+      tagListBuilder: (context, post) => BasicTagList(
+        tags: post.tags.toList(),
+        onTap: (tag) => goToSearchPage(
+          context,
+          tag: tag,
+        ),
+        unknownCategoryColor: ref.watch(tagColorProvider('general')),
+      ),
+      toolbarBuilder: (context, post) => ValueListenableBuilder(
+        valueListenable: controller.currentPost,
+        builder: (_, rawPost, __) =>
+            castOrNull<HydrusPost>(rawPost).toOption().fold(
+                  () => SimplePostActionToolbar(post: rawPost),
+                  (post) => HydrusPostActionToolbar(post: post),
+                ),
+      ),
+      topRightButtonsBuilder: (currentPage, expanded, post) =>
+          GeneralMoreActionButton(post: post),
     );
   }
 }
@@ -486,10 +541,11 @@ class HydrusPostActionToolbar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final canFav = ref.watch(hydrusCanFavoriteProvider).maybeWhen(
-          data: (fav) => fav,
-          orElse: () => false,
-        );
+    final canFav =
+        ref.watch(hydrusCanFavoriteProvider(ref.watchConfig)).maybeWhen(
+              data: (fav) => fav,
+              orElse: () => false,
+            );
 
     return PostActionToolbar(
       children: [

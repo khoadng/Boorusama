@@ -130,8 +130,8 @@ class BooruConfigNameField extends ConsumerWidget {
   }
 }
 
-class BooruConfigSubmitButton extends ConsumerWidget {
-  const BooruConfigSubmitButton({
+class BooruConfigDataProvider extends ConsumerWidget {
+  const BooruConfigDataProvider({
     super.key,
     required this.builder,
   });

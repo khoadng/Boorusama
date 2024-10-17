@@ -24,7 +24,10 @@ mixin SzurubooruClientPools {
     final results = response.data['results'] as List;
 
     return results
-        .map((e) => PoolDto.fromJson(e as Map<String, dynamic>))
+        .map((e) => PoolDto.fromJson(
+              e as Map<String, dynamic>,
+              baseUrl: dio.options.baseUrl,
+            ))
         .toList();
   }
 }
