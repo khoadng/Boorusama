@@ -191,6 +191,13 @@ final hasCustomListingSettingsProvider = Provider<bool>((ref) {
   return listingConfigs != null && listingConfigs.enable;
 });
 
+final hasCustomThemeSettingsProvider = Provider<bool>((ref) {
+  final themeConfigs =
+      ref.watch(currentBooruConfigProvider.select((value) => value.theme));
+
+  return themeConfigs != null && themeConfigs.enable;
+});
+
 final imageListingSettingsProvider = Provider<ImageListingSettings>((ref) {
   final listing = ref.watch(settingsProvider.select((value) => value.listing));
 
