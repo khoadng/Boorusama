@@ -7,20 +7,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/utils/flutter_utils.dart';
 import 'package:boorusama/widgets/widgets.dart';
-
-final _currentSelectColorSchemeProvider =
-    StateProvider.autoDispose<ColorSettings?>(
-  (ref) {
-    return ref.watch(themeConfigsProvider)?.colors;
-  },
-  dependencies: [
-    themeConfigsProvider,
-  ],
-);
 
 class BooruConfigThemeView extends ConsumerWidget {
   const BooruConfigThemeView({
@@ -29,9 +20,6 @@ class BooruConfigThemeView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final fallback = ref.watch(colorSchemeProvider);
-    final colors = ref.watch(_currentSelectColorSchemeProvider);
-
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -41,17 +29,19 @@ class BooruConfigThemeView extends ConsumerWidget {
             contentPadding: EdgeInsets.zero,
             visualDensity: VisualDensity.compact,
             title: const Text("Color scheme"),
-            subtitle: Text(
-              colors?.nickname ?? 'Default',
+            subtitle: BooruConfigDataProvider(
+              builder: (configData) => Text(
+                configData.themeTyped?.colors?.nickname ?? 'Default',
+              ),
             ),
-            onTap: () async {
-              _customizeTheme(context, fallback, colors, ref);
+            onTap: () {
+              _customizeTheme(ref, context);
             },
             trailing: FilledButton(
               style: FilledButton.styleFrom(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               ),
-              onPressed: () => _customizeTheme(context, fallback, colors, ref),
+              onPressed: () => _customizeTheme(ref, context),
               child: const Text('Customize'),
             ),
           ),
@@ -60,74 +50,105 @@ class BooruConfigThemeView extends ConsumerWidget {
     );
   }
 
-  Future<void> _customizeTheme(BuildContext context, ColorScheme fallback,
-      ColorSettings? colors, WidgetRef ref) {
+  Future<void> _customizeTheme(
+    WidgetRef ref,
+    BuildContext context,
+  ) {
+    final colors = ref.read(themeConfigsProvider)?.colors;
+
     return context.navigator.push(
       CupertinoPageRoute(
-        builder: (context) => Material(
-          color: Colors.transparent,
-          child: Stack(
-            children: [
-              Positioned.fill(
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: ThemePreviewApp(
-                        defaultScheme: fallback,
-                        currentScheme: colors,
-                        onSchemeChanged: (newScheme) {
-                          ref
-                              .read(_currentSelectColorSchemeProvider.notifier)
-                              .state = newScheme;
-                        },
-                      ),
-                    ),
-                  ],
-                ),
+        builder: (context) => ThemePreviewView(
+          colorSettings: colors,
+          onThemeUpdated: (colors) {
+            ref.updateTheme(
+              ThemeConfigs(
+                colors: colors,
+                enable: true,
               ),
-              // close button
-              Positioned(
-                top: 0,
-                left: 4,
-                child: SafeArea(
-                  child: CircularIconButton(
-                    icon: const Padding(
-                      padding: EdgeInsets.only(left: 8),
-                      child: Icon(
-                        Symbols.arrow_back_ios,
-                        color: Colors.white,
-                      ),
-                    ),
-                    onPressed: () {
-                      context.navigator.pop();
-                    },
-                  ),
-                ),
-              ),
-              Positioned(
-                top: 0,
-                right: 4,
-                child: SafeArea(
-                  child: TextButton(
-                    onPressed: () {
-                      final colors =
-                          ref.read(_currentSelectColorSchemeProvider);
-
-                      ref.updateTheme(
-                        ThemeConfigs(
-                          colors: colors,
-                          enable: true,
-                        ),
-                      );
-                      context.navigator.pop();
-                    },
-                    child: const Text('Save'),
-                  ),
-                ),
-              ),
-            ],
-          ),
+            );
+          },
         ),
+      ),
+    );
+  }
+}
+
+class ThemePreviewView extends ConsumerStatefulWidget {
+  const ThemePreviewView({
+    super.key,
+    required this.colorSettings,
+    required this.onThemeUpdated,
+  });
+
+  final ColorSettings? colorSettings;
+  final void Function(ColorSettings? colors) onThemeUpdated;
+
+  @override
+  ConsumerState<ThemePreviewView> createState() => _ThemePreviewViewState();
+}
+
+class _ThemePreviewViewState extends ConsumerState<ThemePreviewView> {
+  late ColorSettings? colors = widget.colorSettings;
+
+  @override
+  Widget build(BuildContext context) {
+    final fallback = ref.watch(colorSchemeProvider);
+
+    return Material(
+      color: Colors.transparent,
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: Column(
+              children: [
+                Expanded(
+                  child: ThemePreviewApp(
+                    defaultScheme: fallback,
+                    currentScheme: colors,
+                    onSchemeChanged: (newScheme) {
+                      setState(() {
+                        colors = newScheme;
+                      });
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // close button
+          Positioned(
+            top: 0,
+            left: 4,
+            child: SafeArea(
+              child: CircularIconButton(
+                icon: const Padding(
+                  padding: EdgeInsets.only(left: 8),
+                  child: Icon(
+                    Symbols.arrow_back_ios,
+                    color: Colors.white,
+                  ),
+                ),
+                onPressed: () {
+                  context.navigator.pop();
+                },
+              ),
+            ),
+          ),
+          Positioned(
+            top: 0,
+            right: 4,
+            child: SafeArea(
+              child: TextButton(
+                onPressed: () {
+                  widget.onThemeUpdated(colors);
+                  context.navigator.pop();
+                },
+                child: const Text('Save'),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

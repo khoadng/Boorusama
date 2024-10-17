@@ -11,6 +11,7 @@ import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
+import 'booru_config_theme_view.dart';
 
 const kDefaultPreviewImageButtonAction = {
   '',
@@ -76,6 +77,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
       'Listing': BooruConfigListingView(
         config: config,
       ),
+      'Theme': BooruConfigThemeView(),
       if (hasDownloadTab)
         'booru.download': BooruConfigDownloadView(config: config),
       'Search': searchTab ??
