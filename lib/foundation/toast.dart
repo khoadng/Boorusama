@@ -37,7 +37,7 @@ void showErrorToast(
         vertical: 60,
       ),
       textPadding: const EdgeInsets.all(4),
-      duration: duration,
+      duration: duration ?? const Duration(seconds: 4),
       backgroundColor: Theme.of(context).colorScheme.error,
       textStyle: TextStyle(
         color: Theme.of(context).colorScheme.onError,

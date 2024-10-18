@@ -35,6 +35,9 @@ final class JsonEncodingError extends ExportError {
   final StackTrace stackTrace;
 }
 
+const kInvalidLocationMessage =
+    'Cannot export to this location, try using "Download" or "Documents" folder. Create one if it does not exist.';
+
 final class DataExportError extends ExportError {
   const DataExportError({
     required this.error,
@@ -49,7 +52,7 @@ final class DataExportNotPermitted extends ExportError {
   const DataExportNotPermitted({
     required this.error,
     required this.stackTrace,
-  }) : super._('Cannot export data to this location');
+  }) : super._(kInvalidLocationMessage);
 
   final Object error;
   final StackTrace stackTrace;
