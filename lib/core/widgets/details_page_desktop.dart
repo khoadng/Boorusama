@@ -30,6 +30,7 @@ class DetailsPageDesktopController extends ChangeNotifier with UIOverlayMixin {
         _hideOverlay = ValueNotifier(hideOverlay);
 
   final ValueNotifier<bool> showInfo = ValueNotifier(false);
+  final ValueNotifier<bool> pageSwipe = ValueNotifier(true);
   late final ValueNotifier<int> currentPage;
   final int totalPages;
 
@@ -68,6 +69,11 @@ class DetailsPageDesktopController extends ChangeNotifier with UIOverlayMixin {
     if (currentPage.value > 0) {
       _pageController.add(PageDirection.previous);
     }
+  }
+
+  void setEnablePageSwipe(bool value) {
+    pageSwipe.value = value;
+    notifyListeners();
   }
 }
 

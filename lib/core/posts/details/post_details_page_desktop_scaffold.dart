@@ -11,7 +11,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts/details/common.dart';
 import 'package:boorusama/core/posts/posts.dart';
@@ -19,6 +21,7 @@ import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
+import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -189,6 +192,9 @@ class _PostDetailsDesktopScaffoldState<T extends Post>
 
   @override
   Widget build(BuildContext context) {
+    final booruBuilder = ref.watch(booruBuilderProvider);
+    final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
+
     return CallbackShortcuts(
       bindings: {
         const SingleActivator(
@@ -220,64 +226,93 @@ class _PostDetailsDesktopScaffoldState<T extends Post>
             );
           },
         ),
-        media: PageView.builder(
-          controller: pageController,
-          itemCount: widget.posts.length,
-          onPageChanged: (page) {
-            ref.read(allowFetchProvider.notifier).state = false;
-            _debounceTimer?.cancel();
-            _debounceTimer = Timer(
-              widget.debounceDuration ?? const Duration(seconds: 1),
-              () {
-                widget.onPageChanged(page);
-                controller.changePage(page);
+        media: ValueListenableBuilder(
+          valueListenable: controller.pageSwipe,
+          builder: (_, swipe, __) => PageView.builder(
+            controller: pageController,
+            itemCount: widget.posts.length,
+            physics: swipe ? null : const NeverScrollableScrollPhysics(),
+            onPageChanged: (page) {
+              ref.read(allowFetchProvider.notifier).state = false;
+              _debounceTimer?.cancel();
+              _debounceTimer = Timer(
+                widget.debounceDuration ?? const Duration(seconds: 1),
+                () {
+                  widget.onPageChanged(page);
+                  controller.changePage(page);
 
-                // if the info is not shown, don't fetch anything
-                if (!controller.showInfo.value) return;
+                  // if the info is not shown, don't fetch anything
+                  if (!controller.showInfo.value) return;
 
-                _fetchInfo(page);
-                widget.onPageLoaded?.call(widget.posts[page]);
-              },
-            );
-          },
-          itemBuilder: (context, index) {
-            final post = widget.posts[index];
-            final (prevPost, nextPost) =
-                widget.posts.getPrevAndNextPosts(index);
+                  _fetchInfo(page);
+                  widget.onPageLoaded?.call(widget.posts[page]);
+                },
+              );
+            },
+            itemBuilder: (context, index) {
+              final post = widget.posts[index];
+              final (prevPost, nextPost) =
+                  widget.posts.getPrevAndNextPosts(index);
 
-            return Stack(
-              children: [
-                if (nextPost != null && !nextPost.isVideo)
-                  PostDetailsPreloadImage(
-                    url: widget.imageUrlBuilder(nextPost),
+              return Stack(
+                children: [
+                  if (nextPost != null && !nextPost.isVideo)
+                    PostDetailsPreloadImage(
+                      url: widget.imageUrlBuilder(nextPost),
+                    ),
+                  if (prevPost != null && !prevPost.isVideo)
+                    PostDetailsPreloadImage(
+                      url: widget.imageUrlBuilder(prevPost),
+                    ),
+                  PostMedia(
+                    post: post,
+                    imageUrl: widget.imageUrlBuilder(post),
+                    // Prevent placeholder image from showing when first loaded a post with translated image
+                    placeholderImageUrl:
+                        post.isTranslated ? null : post.thumbnailImageUrl,
+                    imageOverlayBuilder: (constraints) =>
+                        noteOverlayBuilderDelegate(
+                      constraints,
+                      post,
+                      ref.watch(notesControllerProvider(post)),
+                    ),
+                    onImageTap: () {
+                      if (!controller.showInfo.value) {
+                        controller.toggleOverlay();
+                      }
+                    },
+                    onDoubleTap: booruBuilder?.canHandlePostGesture(
+                                  GestureType.doubleTap,
+                                  ref.watchConfig.postGestures?.fullview,
+                                ) ==
+                                true &&
+                            postGesturesHandler != null
+                        ? () => postGesturesHandler(
+                              ref,
+                              ref.watchConfig.postGestures?.fullview?.doubleTap,
+                              post,
+                            )
+                        : null,
+                    onLongPress: booruBuilder?.canHandlePostGesture(
+                                  GestureType.longPress,
+                                  ref.watchConfig.postGestures?.fullview,
+                                ) ==
+                                true &&
+                            postGesturesHandler != null
+                        ? () => postGesturesHandler(
+                              ref,
+                              ref.watchConfig.postGestures?.fullview?.longPress,
+                              post,
+                            )
+                        : null,
+                    onImageZoomUpdated: onZoomUpdated,
+                    autoPlay: true,
+                    inFocus: true,
                   ),
-                if (prevPost != null && !prevPost.isVideo)
-                  PostDetailsPreloadImage(
-                    url: widget.imageUrlBuilder(prevPost),
-                  ),
-                PostMedia(
-                  post: post,
-                  imageUrl: widget.imageUrlBuilder(post),
-                  // Prevent placeholder image from showing when first loaded a post with translated image
-                  placeholderImageUrl:
-                      post.isTranslated ? null : post.thumbnailImageUrl,
-                  imageOverlayBuilder: (constraints) =>
-                      noteOverlayBuilderDelegate(
-                    constraints,
-                    post,
-                    ref.watch(notesControllerProvider(post)),
-                  ),
-                  onImageTap: () {
-                    if (!controller.showInfo.value) {
-                      controller.toggleOverlay();
-                    }
-                  },
-                  autoPlay: true,
-                  inFocus: true,
-                ),
-              ],
-            );
-          },
+                ],
+              );
+            },
+          ),
         ),
         info: ValueListenableBuilder(
           valueListenable: controller.showInfo,
@@ -291,6 +326,10 @@ class _PostDetailsDesktopScaffoldState<T extends Post>
         ),
       ),
     );
+  }
+
+  void onZoomUpdated(bool zoom) {
+    controller.setEnablePageSwipe(!zoom);
   }
 
   Widget _buildInfo(BuildContext context, T post) {
