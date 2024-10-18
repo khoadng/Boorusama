@@ -7,9 +7,9 @@ class UserAgentGeneratorImpl implements UserAgentGenerator {
   UserAgentGeneratorImpl({
     required this.appVersion,
     required this.appName,
-    required BooruType booruType,
+    required BooruConfig config,
   }) {
-    if (booruType == BooruType.zerochan) {
+    if (config.booruType == BooruType.zerochan) {
       name = '${appName.sentenceCase}/$appVersion - boorusama';
     } else {
       name = '${appName.sentenceCase}/$appVersion';

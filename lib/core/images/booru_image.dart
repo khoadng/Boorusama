@@ -185,7 +185,7 @@ class BooruImage extends ConsumerWidget {
 
   Map<String, String> _getHeaders(BooruConfig config, WidgetRef ref) => {
         AppHttpHeaders.userAgentHeader:
-            ref.watch(userAgentGeneratorProvider(config.auth)).generate(),
+            ref.watch(userAgentGeneratorProvider(config)).generate(),
         ...ref.watch(extraHttpHeaderProvider(config)),
       };
 }

@@ -78,8 +78,8 @@ class PostMedia extends ConsumerWidget {
                             playbackSpeed:
                                 ref.watchPlaybackSpeed(post.videoUrl),
                             userAgent: ref
-                                .watch(userAgentGeneratorProvider(
-                                    ref.watchConfigAuth))
+                                .watch(
+                                    userAgentGeneratorProvider(ref.watchConfig))
                                 .generate(),
                             onZoomUpdated: onImageZoomUpdated,
                           )

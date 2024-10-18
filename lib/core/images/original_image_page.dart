@@ -190,7 +190,7 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
     return CachedNetworkImage(
       httpHeaders: {
         AppHttpHeaders.userAgentHeader:
-            ref.watch(userAgentGeneratorProvider(config.auth)).generate(),
+            ref.watch(userAgentGeneratorProvider(config)).generate(),
         ...ref.watch(extraHttpHeaderProvider(config)),
       },
       imageUrl: widget.imageUrl,

@@ -29,6 +29,7 @@ String _cleanUrl(String url) {
 Dio newDio(
   DioArgs args,
 ) {
+  final booruConfig = args.booruConfig;
   final dir = args.cacheDir;
   final logger = args.loggerService;
   final generator = args.userAgentGenerator;
@@ -80,6 +81,7 @@ Dio newDio(
   dio.interceptors.add(
     LoggingInterceptor(
       logger: logger,
+      booruConfig: booruConfig,
     ),
   );
 
