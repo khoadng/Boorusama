@@ -43,6 +43,5 @@ export 'sources/source_utils.dart';
 export 'statistics/post_statistics_page.dart';
 export 'statistics/statistics.dart';
 export 'translatable_mixin.dart';
-export 'utils.dart';
 export 'votes/post_vote.dart';
 export 'votes/vote_post_button.dart';

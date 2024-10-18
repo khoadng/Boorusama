@@ -1,6 +1,7 @@
 // Project imports:
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/search/search.dart';
+import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
 import 'package:boorusama/functional.dart';
 
