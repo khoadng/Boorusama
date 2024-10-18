@@ -6,6 +6,7 @@
 - Support swiping between images when in landscape mode
 - Hide system UI when UI overlay is hidden in image viewer
 - Fix an issue where changing orientation will cause the home page to reset
+- Fix a few issues when viewing notes
 - More UI/UX improvements to desktop version
 - Minor bug fixes, UI adjustments and translation updates
 
