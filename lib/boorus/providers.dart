@@ -217,21 +217,19 @@ class DioArgs {
     required this.cacheDir,
     required this.baseUrl,
     required this.userAgentGenerator,
-    required this.booruConfig,
     required this.loggerService,
     required this.booruFactory,
   });
   final Directory cacheDir;
   final String baseUrl;
   final UserAgentGenerator userAgentGenerator;
-  final BooruConfig booruConfig;
   final Logger loggerService;
   final BooruFactory booruFactory;
 }
 
 final dioArgsProvider = Provider.family<DioArgs, BooruConfig>((ref, config) {
   final cacheDir = ref.watch(httpCacheDirProvider);
-  final userAgentGenerator = ref.watch(userAgentGeneratorProvider(config));
+  final userAgentGenerator = ref.watch(userAgentGeneratorProvider(config.auth));
   final loggerService = ref.watch(loggerProvider);
   final booruFactory = ref.watch(booruFactoryProvider);
 
@@ -239,7 +237,6 @@ final dioArgsProvider = Provider.family<DioArgs, BooruConfig>((ref, config) {
     cacheDir: cacheDir,
     baseUrl: config.url,
     userAgentGenerator: userAgentGenerator,
-    booruConfig: config,
     loggerService: loggerService,
     booruFactory: booruFactory,
   );
@@ -261,7 +258,7 @@ final miscDataProvider = NotifierProvider.autoDispose
     .family<MiscDataNotifier, String, String>(MiscDataNotifier.new);
 
 final userAgentGeneratorProvider =
-    Provider.family<UserAgentGenerator, BooruConfig>(
+    Provider.family<UserAgentGenerator, BooruConfigAuth>(
   (ref, config) {
     final appVersion = ref.watch(packageInfoProvider).version;
     final appName = ref.watch(appInfoProvider).appName;
@@ -269,7 +266,7 @@ final userAgentGeneratorProvider =
     return UserAgentGeneratorImpl(
       appVersion: appVersion,
       appName: appName,
-      config: config,
+      booruType: config.booruType,
     );
   },
 );

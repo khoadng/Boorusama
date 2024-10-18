@@ -48,6 +48,18 @@ extension BooruWidgetRef on WidgetRef {
   /// Shortcut for `watch(currentBooruConfigProvider)`
   /// {@endtemplate}
   BooruConfig get watchConfig => watch(currentBooruConfigProvider);
+
+  /// {@template boorusama.booru.readConfig}
+  /// Shortcut for `read(currentBooruConfigProvider.select((value) => value.auth))`
+  /// {@endtemplate}
+  BooruConfigAuth get readConfigAuth =>
+      read(currentBooruConfigProvider.select((value) => value.auth));
+
+  /// {@template boorusama.booru.watchConfig}
+  /// Shortcut for `watch(currentBooruConfigProvider.select((value) => value.auth))`
+  ///  {@endtemplate}
+  BooruConfigAuth get watchConfigAuth =>
+      watch(currentBooruConfigProvider.select((value) => value.auth));
 }
 
 extension BooruAutoDisposeProviderRef<T> on AutoDisposeProviderRef<T> {
@@ -56,6 +68,14 @@ extension BooruAutoDisposeProviderRef<T> on AutoDisposeProviderRef<T> {
 
   /// {@macro boorusama.booru.watchConfig}
   BooruConfig get watchConfig => watch(currentBooruConfigProvider);
+
+  /// {@macro boorusama.booru.readConfig}
+  BooruConfigAuth get readConfigAuth =>
+      read(currentBooruConfigProvider.select((value) => value.auth));
+
+  /// {@macro boorusama.booru.watchConfig}
+  BooruConfigAuth get watchConfigAuth =>
+      watch(currentBooruConfigProvider.select((value) => value.auth));
 }
 
 extension BooruProviderRef<T> on ProviderRef<T> {
@@ -64,6 +84,14 @@ extension BooruProviderRef<T> on ProviderRef<T> {
 
   /// {@macro boorusama.booru.watchConfig}
   BooruConfig get watchConfig => watch(currentBooruConfigProvider);
+
+  /// {@macro boorusama.booru.readConfig}
+  BooruConfigAuth get readConfigAuth =>
+      read(currentBooruConfigProvider.select((value) => value.auth));
+
+  /// {@macro boorusama.booru.watchConfig}
+  BooruConfigAuth get watchConfigAuth =>
+      watch(currentBooruConfigProvider.select((value) => value.auth));
 }
 
 extension BooruFutureProviderRef<T> on FutureProviderRef<T> {
@@ -72,6 +100,14 @@ extension BooruFutureProviderRef<T> on FutureProviderRef<T> {
 
   /// {@macro boorusama.booru.watchConfig}
   BooruConfig get watchConfig => watch(currentBooruConfigProvider);
+
+  /// {@macro boorusama.booru.readConfig}
+  BooruConfigAuth get readConfigAuth =>
+      read(currentBooruConfigProvider.select((value) => value.auth));
+
+  /// {@macro boorusama.booru.watchConfig}
+  BooruConfigAuth get watchConfigAuth =>
+      watch(currentBooruConfigProvider.select((value) => value.auth));
 }
 
 extension BooruNotifierProviderRef<T> on NotifierProviderRef<T> {
@@ -80,6 +116,14 @@ extension BooruNotifierProviderRef<T> on NotifierProviderRef<T> {
 
   /// {@macro boorusama.booru.watchConfig}
   BooruConfig get watchConfig => watch(currentBooruConfigProvider);
+
+  /// {@macro boorusama.booru.readConfig}
+  BooruConfigAuth get readConfigAuth =>
+      read(currentBooruConfigProvider.select((value) => value.auth));
+
+  /// {@macro boorusama.booru.watchConfig}
+  BooruConfigAuth get watchConfigAuth =>
+      watch(currentBooruConfigProvider.select((value) => value.auth));
 }
 
 extension BooruAsyncNotifierProviderRef<T> on AsyncNotifierProviderRef<T> {
@@ -88,6 +132,14 @@ extension BooruAsyncNotifierProviderRef<T> on AsyncNotifierProviderRef<T> {
 
   /// {@macro boorusama.booru.watchConfig}
   BooruConfig get watchConfig => watch(currentBooruConfigProvider);
+
+  /// {@macro boorusama.booru.readConfig}
+  BooruConfigAuth get readConfigAuth =>
+      read(currentBooruConfigProvider.select((value) => value.auth));
+
+  /// {@macro boorusama.booru.watchConfig}
+  BooruConfigAuth get watchConfigAuth =>
+      watch(currentBooruConfigProvider.select((value) => value.auth));
 }
 
 extension BooruAutoDisposeFutureProviderRef<T>
@@ -97,6 +149,14 @@ extension BooruAutoDisposeFutureProviderRef<T>
 
   /// {@macro boorusama.booru.watchConfig}
   BooruConfig get watchConfig => watch(currentBooruConfigProvider);
+
+  /// {@macro boorusama.booru.readConfig}
+  BooruConfigAuth get readConfigAuth =>
+      read(currentBooruConfigProvider.select((value) => value.auth));
+
+  /// {@macro boorusama.booru.watchConfig}
+  BooruConfigAuth get watchConfigAuth =>
+      watch(currentBooruConfigProvider.select((value) => value.auth));
 }
 
 extension BooruAutoDisposeNotifierProviderRef<T>
@@ -106,4 +166,12 @@ extension BooruAutoDisposeNotifierProviderRef<T>
 
   /// {@macro boorusama.booru.watchConfig}
   BooruConfig get watchConfig => watch(currentBooruConfigProvider);
+
+  /// {@macro boorusama.booru.readConfig}
+  BooruConfigAuth get readConfigAuth =>
+      read(currentBooruConfigProvider.select((value) => value.auth));
+
+  /// {@macro boorusama.booru.watchConfig}
+  BooruConfigAuth get watchConfigAuth =>
+      watch(currentBooruConfigProvider.select((value) => value.auth));
 }

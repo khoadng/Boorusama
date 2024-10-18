@@ -2,7 +2,6 @@
 import 'package:dio/dio.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/foundation/http/http_utils.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
 import 'package:boorusama/foundation/path.dart';
@@ -18,11 +17,9 @@ const _kImageExtensions = {
 class LoggingInterceptor extends Interceptor {
   LoggingInterceptor({
     required this.logger,
-    required this.booruConfig,
   });
 
   final Logger logger;
-  final BooruConfig booruConfig;
   final Map<String, DateTime> requestTimeLogs = <String, DateTime>{};
 
   @override
@@ -75,11 +72,6 @@ class LoggingInterceptor extends Interceptor {
     if (response != null) {
       logger.logI('Network',
           'Completed ${response.requestOptions.method} to ${response.requestOptions.uri} with status: ${response.statusCodeOrZero}, body ${response.data}$durationText');
-
-      if (response.statusCode == 401) {
-        logger.logE('Network',
-            'Unauthorized using login: ${booruConfig.login} and api key: ${booruConfig.apiKey}');
-      }
     } else {
       logger.logE('Network', 'Completed with error: ${err.message}');
     }
