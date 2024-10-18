@@ -11,9 +11,9 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/saved_searches/saved_searches.dart';
 import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/generic_no_data_box.dart';
 
 class SavedSearchPage extends ConsumerWidget {
@@ -31,7 +31,7 @@ class SavedSearchPage extends ConsumerWidget {
         title: const Text('saved_search.saved_search').tr(),
         actions: [
           IconButton(
-            onPressed: () => goToSavedSearchCreatePage(ref, context),
+            onPressed: () => goToSavedSearchCreatePage(context),
             icon: const Icon(Symbols.add),
           ),
         ],
@@ -131,7 +131,7 @@ class _SuccessView extends ConsumerWidget {
         onDelete: () => ref
             .read(danbooruSavedSearchesProvider(ref.readConfig).notifier)
             .delete(savedSearch: savedSearch),
-        onEdit: () => goToSavedSearchPatchPage(ref, context, savedSearch),
+        onEdit: () => goToSavedSearchPatchPage(context, savedSearch),
       ),
     );
   }

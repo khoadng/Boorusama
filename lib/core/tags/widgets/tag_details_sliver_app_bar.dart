@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/router.dart';
 
 class TagDetailsSlilverAppBar extends ConsumerWidget {
   const TagDetailsSlilverAppBar({

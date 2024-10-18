@@ -1,10 +1,4 @@
 class CommentDto {
-  final int? id;
-  final String? createdAt;
-  final int? postId;
-  final String? creator;
-  final int? creatorId;
-  final String? body;
 
   CommentDto({
     this.id,
@@ -25,6 +19,12 @@ class CommentDto {
       body: json['body'],
     );
   }
+  final int? id;
+  final String? createdAt;
+  final int? postId;
+  final String? creator;
+  final int? creatorId;
+  final String? body;
 
   @override
   String toString() => body ?? '';

@@ -2,40 +2,6 @@
 import 'types.dart';
 
 class PostDto {
-  final int? id;
-  final int? version;
-  final String? creationTime;
-  final String? lastEditTime;
-  final String? safety;
-  final String? source;
-  final String? type;
-  final String? mimeType;
-  final String? checksum;
-  final String? checksumMD5;
-  final int? fileSize;
-  final int? canvasWidth;
-  final int? canvasHeight;
-  final String? contentUrl;
-  final String? thumbnailUrl;
-  final List<dynamic>? flags;
-  final List<TagDto>? tags;
-  final UserDto? user;
-  final int? score;
-  final int? ownScore;
-  final bool? ownFavorite;
-  final int? tagCount;
-  final int? favoriteCount;
-  final int? commentCount;
-  final int? noteCount;
-  final int? relationCount;
-  final int? featureCount;
-  final String? lastFeatureTime;
-  final List<dynamic>? favoritedBy;
-  final bool? hasCustomThumbnail;
-  final List<dynamic>? notes;
-  final List<CommentDto>? comments;
-  final List<dynamic>? pools;
-
   PostDto({
     this.id,
     this.version,
@@ -122,12 +88,42 @@ class PostDto {
       pools: json['pools'] as List<dynamic>?,
     );
   }
+  final int? id;
+  final int? version;
+  final String? creationTime;
+  final String? lastEditTime;
+  final String? safety;
+  final String? source;
+  final String? type;
+  final String? mimeType;
+  final String? checksum;
+  final String? checksumMD5;
+  final int? fileSize;
+  final int? canvasWidth;
+  final int? canvasHeight;
+  final String? contentUrl;
+  final String? thumbnailUrl;
+  final List<dynamic>? flags;
+  final List<TagDto>? tags;
+  final UserDto? user;
+  final int? score;
+  final int? ownScore;
+  final bool? ownFavorite;
+  final int? tagCount;
+  final int? favoriteCount;
+  final int? commentCount;
+  final int? noteCount;
+  final int? relationCount;
+  final int? featureCount;
+  final String? lastFeatureTime;
+  final List<dynamic>? favoritedBy;
+  final bool? hasCustomThumbnail;
+  final List<dynamic>? notes;
+  final List<CommentDto>? comments;
+  final List<dynamic>? pools;
 }
 
 class UserDto {
-  final String? name;
-  final String? avatarUrl;
-
   UserDto({
     this.name,
     this.avatarUrl,
@@ -139,4 +135,25 @@ class UserDto {
       avatarUrl: json['avatarUrl'] as String?,
     );
   }
+  final String? name;
+  final String? avatarUrl;
+}
+
+// A post resource stripped down to id and thumbnailUrl fields.
+class MicroPostDto {
+  const MicroPostDto({
+    this.id,
+    this.thumbnailUrl,
+  });
+
+  factory MicroPostDto.fromJson(Map<String, dynamic> json, {String? baseUrl}) {
+    final thumbnailUrl = json['thumbnailUrl'] as String?;
+    return MicroPostDto(
+      id: json['id'] as int?,
+      thumbnailUrl: thumbnailUrl != null ? '$baseUrl$thumbnailUrl' : null,
+    );
+  }
+
+  final int? id;
+  final String? thumbnailUrl;
 }

@@ -1,9 +1,10 @@
 // Project imports:
+import 'package:boorusama/core/search_histories/search_histories.dart';
 import 'filter_operator.dart';
 import 'search_utils.dart';
 import 'selected_tag_controller.dart';
 
-typedef HistoryAdder = void Function(String tag);
+typedef HistoryAdder = void Function(SelectedTagController controller);
 
 typedef QueryClearer = void Function();
 typedef QueryUpdater = void Function(String query);
@@ -31,11 +32,11 @@ mixin SearchMixin {
   void skipToResultWithTag(String tag) {
     selectedTagController.clear();
     selectedTagController.addTag(tag);
-    addHistory(selectedTagController.rawTags.join(' '));
+    addHistory(selectedTagController);
   }
 
   void search() {
-    addHistory(selectedTagController.rawTags.join(' '));
+    addHistory(selectedTagController);
   }
 
   void tapTag(String tag) {
@@ -47,8 +48,8 @@ mixin SearchMixin {
     clearQuery();
   }
 
-  void tapHistoryTag(String tag) {
-    selectedTagController.addTag(tag, isRaw: true);
+  void tapHistoryTag(SearchHistory history) {
+    selectedTagController.addTagFromSearchHistory(history);
   }
 
   void tapRawMetaTag(String tag) => updateQuery('$tag:');
@@ -67,10 +68,6 @@ mixin SearchMixin {
     }
 
     fetchSuggestions(current);
-  }
-
-  String getCurrentRawTags() {
-    return selectedTagController.rawTagsString;
   }
 
   SearchStateGetter get getSearchState;

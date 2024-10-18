@@ -1,19 +1,4 @@
 class CommentDto {
-  final int? id;
-  final DateTime? createdAt;
-  final int? postId;
-  final int? creatorId;
-  final String? body;
-  final int? score;
-  final DateTime? updatedAt;
-  final int? updaterId;
-  final bool? doNotBumpPost;
-  final bool? isHidden;
-  final bool? isSticky;
-  final String? warningType;
-  final int? warningUserId;
-  final String? creatorName;
-  final String? updaterName;
 
   CommentDto({
     this.id,
@@ -56,6 +41,21 @@ class CommentDto {
       updaterName: json['updater_name'],
     );
   }
+  final int? id;
+  final DateTime? createdAt;
+  final int? postId;
+  final int? creatorId;
+  final String? body;
+  final int? score;
+  final DateTime? updatedAt;
+  final int? updaterId;
+  final bool? doNotBumpPost;
+  final bool? isHidden;
+  final bool? isSticky;
+  final String? warningType;
+  final int? warningUserId;
+  final String? creatorName;
+  final String? updaterName;
 
   @override
   String toString() => body ?? '';

@@ -2,7 +2,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/moebooru/moebooru.dart';
 import 'package:boorusama/boorus/providers.dart';
@@ -17,17 +16,11 @@ final moebooruPostRepoProvider =
     final client = ref.watch(moebooruClientProvider(config));
 
     return PostRepositoryBuilder(
+      tagComposer: ref.watch(tagQueryComposerProvider(config)),
       fetch: (tags, page, {limit}) => client
           .getPosts(
             page: page,
-            tags: getTags(
-              config,
-              tags,
-              granularRatingQueries: (tags) => ref
-                  .readCurrentBooruBuilder()
-                  ?.granularRatingQueryBuilder
-                  ?.call(tags, config),
-            ),
+            tags: tags,
             limit: limit,
           )
           .then((value) => value

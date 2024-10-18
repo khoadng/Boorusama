@@ -26,16 +26,6 @@ class GelbooruV2Client with GelbooruClientFavorites {
             )),
         _baseUrl = baseUrl;
 
-  final Dio _dio;
-  final String? _baseUrl;
-  @override
-  final String? userId;
-  final String? apiKey;
-  @override
-  final String? passHash;
-  @override
-  Dio get dio => _dio;
-
   factory GelbooruV2Client.custom({
     Dio? dio,
     String? login,
@@ -50,6 +40,16 @@ class GelbooruV2Client with GelbooruClientFavorites {
         apiKey: apiKey,
         passHash: passHash,
       );
+
+  final Dio _dio;
+  final String? _baseUrl;
+  @override
+  final String? userId;
+  final String? apiKey;
+  @override
+  final String? passHash;
+  @override
+  Dio get dio => _dio;
 
   Future<List<PostV2Dto>> getPosts({
     int? page,
@@ -76,8 +76,8 @@ class GelbooruV2Client with GelbooruClientFavorites {
     final data = response.data;
 
     final result = switch (data) {
-      List l => l.map((item) => PostV2Dto.fromJson(item, baseUrl)).toList(),
-      String s => (jsonDecode(s) as List<dynamic>)
+      final List l => l.map((item) => PostV2Dto.fromJson(item, baseUrl)).toList(),
+      final String s => (jsonDecode(s) as List<dynamic>)
           .map<PostV2Dto>((item) => PostV2Dto.fromJson(item, baseUrl))
           .toList(),
       _ => <PostV2Dto>[],
@@ -102,8 +102,8 @@ class GelbooruV2Client with GelbooruClientFavorites {
     );
 
     return switch (response.data) {
-      List l => l.map((item) => AutocompleteDto.fromJson(item)).toList(),
-      String s => (jsonDecode(s) as List<dynamic>)
+      final List l => l.map((item) => AutocompleteDto.fromJson(item)).toList(),
+      final String s => (jsonDecode(s) as List<dynamic>)
           .map((item) => AutocompleteDto.fromJson(item))
           .toList(),
       _ => <AutocompleteDto>[],

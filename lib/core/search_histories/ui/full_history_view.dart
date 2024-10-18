@@ -11,6 +11,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/search_histories/search_histories.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/time.dart';
@@ -27,7 +28,7 @@ class FullHistoryPage extends ConsumerStatefulWidget {
 
   final Function() onClear;
   final Function(SearchHistory history) onRemove;
-  final Function(String history) onTap;
+  final Function(SearchHistory history) onTap;
   final ScrollController? scrollController;
 
   @override
@@ -94,7 +95,7 @@ class FullHistoryView extends ConsumerWidget {
     this.useAppbar = true,
   });
 
-  final ValueChanged<String> onHistoryTap;
+  final ValueChanged<SearchHistory> onHistoryTap;
   final void Function(SearchHistory item) onHistoryRemoved;
   final bool useAppbar;
   final ScrollController? scrollController;
@@ -125,7 +126,7 @@ class FullHistoryView extends ConsumerWidget {
                     animation: animation,
                     child: ListTile(
                       key: ValueKey(history.query),
-                      title: Text(history.query),
+                      title: SearchHistoryQueryWidget(history: history),
                       subtitle: DateTooltip(
                         date: history.createdAt,
                         child: Text(
@@ -134,8 +135,14 @@ class FullHistoryView extends ConsumerWidget {
                         ),
                       ),
                       onTap: () {
-                        onHistoryTap(history.query);
+                        onHistoryTap(history);
                       },
+                      contentPadding: kPreferredLayout.isDesktop
+                          ? const EdgeInsets.symmetric(
+                              horizontal: 12,
+                            )
+                          : null,
+                      minTileHeight: kPreferredLayout.isDesktop ? 0 : null,
                       trailing: IconButton(
                         onPressed: () => onHistoryRemoved(history),
                         icon: Icon(

@@ -96,12 +96,6 @@ enum SlideshowTransitionType {
   natural,
 }
 
-enum DownloaderProviderType {
-  appDecide,
-  dio,
-  backgroundDownloader,
-}
-
 enum DownloadFileExistedBehavior {
   appDecide,
   skip,
@@ -148,7 +142,6 @@ class Settings extends Equatable {
     required this.slideshowTransitionType,
     required this.slideshowDirection,
     required this.reduceAnimations,
-    required this.downloaderProviderType,
     required this.downloadFileExistedBehavior,
     required this.videoAudioDefaultState,
   });
@@ -212,9 +205,6 @@ class Settings extends Equatable {
         slideshowDirection = json['slideshowDirection'] != null
             ? SlideshowDirection.values[json['slideshowDirection']]
             : SlideshowDirection.forward,
-        downloaderProviderType = json['downloaderProviderType'] != null
-            ? DownloaderProviderType.values[json['downloaderProviderType']]
-            : DownloaderProviderType.appDecide,
         downloadFileExistedBehavior =
             json['downloadFileExistedBehavior'] != null
                 ? DownloadFileExistedBehavior
@@ -268,7 +258,6 @@ class Settings extends Equatable {
     slideshowTransitionType: SlideshowTransitionType.natural,
     slideshowDirection: SlideshowDirection.forward,
     reduceAnimations: false,
-    downloaderProviderType: DownloaderProviderType.appDecide,
     downloadFileExistedBehavior: DownloadFileExistedBehavior.appDecide,
     videoAudioDefaultState: VideoAudioDefaultState.unspecified,
   );
@@ -321,8 +310,6 @@ class Settings extends Equatable {
 
   final bool reduceAnimations;
 
-  final DownloaderProviderType downloaderProviderType;
-
   final DownloadFileExistedBehavior downloadFileExistedBehavior;
 
   final VideoAudioDefaultState videoAudioDefaultState;
@@ -354,7 +341,6 @@ class Settings extends Equatable {
     SlideshowTransitionType? slideshowTransitionType,
     SlideshowDirection? slideshowDirection,
     bool? reduceAnimations,
-    DownloaderProviderType? downloaderProviderType,
     DownloadFileExistedBehavior? downloadFileExistedBehavior,
     VideoAudioDefaultState? videoAudioDefaultState,
     ImageListingSettings? listing,
@@ -397,8 +383,6 @@ class Settings extends Equatable {
             slideshowTransitionType ?? this.slideshowTransitionType,
         slideshowDirection: slideshowDirection ?? this.slideshowDirection,
         reduceAnimations: reduceAnimations ?? this.reduceAnimations,
-        downloaderProviderType:
-            downloaderProviderType ?? this.downloaderProviderType,
         downloadFileExistedBehavior:
             downloadFileExistedBehavior ?? this.downloadFileExistedBehavior,
         videoAudioDefaultState:
@@ -436,7 +420,6 @@ class Settings extends Equatable {
       'slideshowTransitionType': slideshowTransitionType.index,
       'slideshowDirection': slideshowDirection.index,
       'reduceAnimations': reduceAnimations,
-      'downloaderProviderType': downloaderProviderType.index,
       'downloadFileExistedBehavior': downloadFileExistedBehavior.index,
       'videoAudioDefaultState': videoAudioDefaultState.index,
     };
@@ -470,16 +453,12 @@ class Settings extends Equatable {
         slideshowTransitionType,
         slideshowDirection,
         reduceAnimations,
-        downloaderProviderType,
         downloadFileExistedBehavior,
         videoAudioDefaultState,
       ];
 }
 
 class ListingConfigs extends Equatable {
-  final ImageListingSettings settings;
-  final bool enable;
-
   const ListingConfigs({
     required this.settings,
     required this.enable,
@@ -492,11 +471,20 @@ class ListingConfigs extends Equatable {
   factory ListingConfigs.fromJsonString(String? jsonString) =>
       switch (jsonString) {
         null => ListingConfigs.undefined(),
-        String s => tryDecodeJson(s).fold(
+        final String s => tryDecodeJson(s).fold(
             (_) => ListingConfigs.undefined(),
             (json) => ListingConfigs.fromJson(json),
           ),
       };
+
+  factory ListingConfigs.fromJson(Map<String, dynamic> json) {
+    return ListingConfigs(
+      settings: ImageListingSettings.fromJson(json['settings']),
+      enable: json['enable'],
+    );
+  }
+  final ImageListingSettings settings;
+  final bool enable;
 
   ListingConfigs copyWith({
     ImageListingSettings? settings,
@@ -517,30 +505,9 @@ class ListingConfigs extends Equatable {
       };
 
   String toJsonString() => jsonEncode(toJson());
-
-  factory ListingConfigs.fromJson(Map<String, dynamic> json) {
-    return ListingConfigs(
-      settings: ImageListingSettings.fromJson(json['settings']),
-      enable: json['enable'],
-    );
-  }
 }
 
 class ImageListingSettings extends Equatable {
-  final GridSize gridSize;
-  final ImageListType imageListType;
-  final ImageQuality imageQuality;
-  final PageMode pageMode;
-  final PageIndicatorPosition pageIndicatorPosition;
-  final bool showScoresInGrid;
-  final bool showPostListConfigHeader;
-  final MediaBlurCondition mediaBlurCondition;
-  final double imageGridSpacing;
-  final double imageBorderRadius;
-  final double imageGridPadding;
-  final double imageGridAspectRatio;
-  final int postsPerPage;
-
   const ImageListingSettings({
     required this.gridSize,
     required this.imageListType,
@@ -583,8 +550,20 @@ class ImageListingSettings extends Equatable {
         imageGridAspectRatio = json['imageGridAspectRatio'] ?? 0.7,
         imageGridPadding = json['imageGridPadding'] ?? 16,
         imageGridSpacing = json['imageGridSpacing'] ?? 4;
+  final GridSize gridSize;
+  final ImageListType imageListType;
+  final ImageQuality imageQuality;
+  final PageMode pageMode;
+  final PageIndicatorPosition pageIndicatorPosition;
+  final bool showScoresInGrid;
+  final bool showPostListConfigHeader;
+  final MediaBlurCondition mediaBlurCondition;
+  final double imageGridSpacing;
+  final double imageBorderRadius;
+  final double imageGridPadding;
+  final double imageGridAspectRatio;
+  final int postsPerPage;
 
-  //TODO: duplicate code
   bool get blurExplicitMedia =>
       mediaBlurCondition == MediaBlurCondition.explicitOnly;
 
@@ -675,9 +654,6 @@ extension SettingsX on Settings {
   bool get skipSlideshowTransition =>
       slideshowTransitionType == SlideshowTransitionType.none;
 
-  bool get useLegacyDownloader =>
-      downloaderProviderType == DownloaderProviderType.dio;
-
   bool get skipDownloadIfExists =>
       downloadFileExistedBehavior == DownloadFileExistedBehavior.skip;
 
@@ -719,14 +695,6 @@ extension PageIndicatorPositionX on PageIndicatorPosition {
 }
 
 extension SettingsUpdateX on WidgetRef {
-  Future<void> updateDownloaderStatus(Settings settings, bool legacy) {
-    return updateSettings(settings.copyWith(
-      downloaderProviderType: legacy
-          ? DownloaderProviderType.dio
-          : DownloaderProviderType.appDecide,
-    ));
-  }
-
   Future<void> updateDownloadFileExistedBehavior(
     Settings settings,
     bool skipIfExists,

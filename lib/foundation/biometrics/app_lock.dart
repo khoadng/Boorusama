@@ -8,8 +8,26 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'biometrics.dart';
+
+class AppLockWithSettings extends ConsumerWidget {
+  const AppLockWithSettings({
+    super.key,
+    required this.child,
+  });
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return AppLock(
+      enable: ref.watch(settingsProvider.select((s) => s.appLockEnabled)),
+      child: child,
+    );
+  }
+}
 
 class AppLock extends ConsumerStatefulWidget {
   const AppLock({
@@ -79,7 +97,6 @@ class _AppLockState extends ConsumerState<AppLock> {
                 return Center(
                     child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
                       'Please authenticate to use the app',

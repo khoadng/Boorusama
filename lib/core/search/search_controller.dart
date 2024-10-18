@@ -55,7 +55,7 @@ class SearchPageController extends ChangeNotifier with SearchMixin {
   }
 
   @override
-  HistoryAdder get addHistory => searchHistory.addHistory;
+  HistoryAdder get addHistory => searchHistory.addHistoryFromController;
 
   @override
   QueryClearer get clearQuery => () => textEditingController.clear();

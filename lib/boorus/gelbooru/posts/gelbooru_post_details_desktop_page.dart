@@ -1,28 +1,19 @@
-// Dart imports:
-import 'dart:async';
-
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/gelbooru/artists/artists.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/debounce_mixin.dart';
 import 'package:boorusama/functional.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import 'package:boorusama/router.dart';
 import 'gelbooru_post_details_page.dart';
-
-final allowFetchProvider = StateProvider<bool>((ref) {
-  return false;
-});
 
 class GelbooruPostDetailsDesktopPage extends ConsumerStatefulWidget {
   const GelbooruPostDetailsDesktopPage({
@@ -30,14 +21,12 @@ class GelbooruPostDetailsDesktopPage extends ConsumerStatefulWidget {
     required this.initialIndex,
     required this.posts,
     required this.onExit,
-    this.hasDetailsTagList = true,
     required this.onPageChanged,
   });
 
   final int initialIndex;
   final List<Post> posts;
   final void Function(int index) onExit;
-  final bool hasDetailsTagList;
   final void Function(int page) onPageChanged;
 
   @override
@@ -46,114 +35,67 @@ class GelbooruPostDetailsDesktopPage extends ConsumerStatefulWidget {
 }
 
 class _DanbooruPostDetailsDesktopPageState
-    extends ConsumerState<GelbooruPostDetailsDesktopPage> with DebounceMixin {
-  late var page = widget.initialIndex;
-  Timer? _debounceTimer;
+    extends ConsumerState<GelbooruPostDetailsDesktopPage> {
+  void _loadTags(Post post) {
+    final booruConfig = ref.readConfig;
 
-  @override
-  void dispose() {
-    super.dispose();
-    _debounceTimer?.cancel();
+    ref.read(tagsProvider(booruConfig).notifier).load(
+      post.tags,
+      onSuccess: (tags) {
+        if (!mounted) return;
+
+        ref.read(tagsProvider(booruConfig).notifier).load(
+              post.tags,
+              onSuccess: (tags) => ref.setGelbooruPostDetailsArtistMap(
+                post: post,
+                tags: tags,
+              ),
+            );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final post = widget.posts[page];
     final booruConfig = ref.watchConfig;
-    final gelArtistMap = ref.watch(gelbooruPostDetailsArtistMapProvider);
 
-    return CallbackShortcuts(
-      bindings: {
-        const SingleActivator(
-          LogicalKeyboardKey.keyF,
-          control: true,
-        ): () => goToOriginalImagePage(context, post),
+    return PostDetailsPageDesktopScaffold(
+      posts: widget.posts,
+      initialIndex: widget.initialIndex,
+      onExit: widget.onExit,
+      onPageChanged: widget.onPageChanged,
+      onPageLoaded: (post) {
+        ref.read(tagsProvider(booruConfig).notifier).load(
+          post.tags,
+          onSuccess: (tags) {
+            if (!mounted) return;
+            _loadTags(post);
+          },
+        );
       },
-      child: DetailsPageDesktop(
-        onExit: widget.onExit,
-        initialPage: widget.initialIndex,
-        totalPages: widget.posts.length,
-        onPageChanged: (page) {
-          widget.onPageChanged(page);
-          setState(() {
-            this.page = page;
-
-            ref.read(allowFetchProvider.notifier).state = false;
-
-            _debounceTimer?.cancel();
-            _debounceTimer = Timer(
-              const Duration(seconds: 1),
-              () {
-                ref.read(allowFetchProvider.notifier).state = true;
-
-                if (widget.hasDetailsTagList) {
-                  ref.read(tagsProvider(booruConfig).notifier).load(
-                    post.tags,
-                    onSuccess: (tags) {
-                      if (!mounted) return;
-
-                      ref.read(tagsProvider(booruConfig).notifier).load(
-                        post.tags,
-                        onSuccess: (tags) {
-                          if (!mounted) return;
-                          ref.setGelbooruPostDetailsArtistMap(
-                            post: post,
-                            tags: tags,
-                          );
-                        },
-                      );
-                    },
-                  );
-                }
-              },
-            );
-          });
+      imageUrlBuilder: defaultPostImageUrlBuilder(ref),
+      topRightButtonsBuilder: (currentPage, expanded, post) =>
+          GeneralMoreActionButton(post: post),
+      toolbarBuilder: (context, post) => SimplePostActionToolbar(post: post),
+      tagListBuilder: (context, post) => TagsTile(
+        tags: ref.watch(tagsProvider(booruConfig)),
+        post: post,
+        onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
+        onExpand: () {
+          _loadTags(post);
         },
-        topRightBuilder: (context) => GeneralMoreActionButton(
-          post: post,
-        ),
-        mediaBuilder: (context) {
-          return PostMedia(
-            post: post,
-            imageUrl: post.sampleImageUrl,
-            placeholderImageUrl: post.thumbnailImageUrl,
-            autoPlay: true,
-            inFocus: true,
-          );
-        },
-        infoBuilder: (context) {
-          return CustomScrollView(
-            slivers: [
-              SliverList(
-                delegate: SliverChildListDelegate(
-                  [
-                    FileDetailsSection(
-                      post: post,
-                      rating: post.rating,
-                    ),
-                    const Divider(height: 8, thickness: 1),
-                    SimplePostActionToolbar(post: post),
-                    const Divider(height: 8, thickness: 1),
-                    TagsTile(
-                      initialExpanded: true,
-                      tags: ref.watch(tagsProvider(booruConfig)),
-                      post: post,
-                      onTagTap: (tag) =>
-                          goToSearchPage(context, tag: tag.rawName),
-                    ),
-                  ],
-                ),
-              ),
-              if (allowFetch)
-                gelArtistMap.lookup(post.id).fold(
-                      () => const SliverSizedBox.shrink(),
-                      (tags) => tags.isNotEmpty
-                          ? ArtistPostList(
-                              artists: tags,
+      ),
+      sliverArtistPostsBuilder: (context, post) =>
+          ref.watch(gelbooruPostDetailsArtistMapProvider).lookup(post.id).fold(
+                () => [],
+                (tags) => tags.isNotEmpty
+                    ? tags
+                        .map((tag) => ArtistPostList(
+                              tag: tag,
                               builder: (tag) => ref
                                   .watch(gelbooruArtistPostsProvider(tag))
                                   .maybeWhen(
-                                    data: (data) => PreviewPostGrid(
+                                    data: (data) => SliverPreviewPostGrid(
                                       posts: data,
                                       onTap: (postIdx) => goToPostDetailsPage(
                                         context: context,
@@ -163,20 +105,12 @@ class _DanbooruPostDetailsDesktopPageState
                                       imageUrl: (item) => item.sampleImageUrl,
                                     ),
                                     orElse: () =>
-                                        const PreviewPostGridPlaceholder(
-                                      imageCount: 30,
-                                    ),
+                                        const SliverPreviewPostGridPlaceholder(),
                                   ),
-                            )
-                          : const SliverSizedBox.shrink(),
-                    ),
-              const SliverSizedBox(height: 24),
-            ],
-          );
-        },
-      ),
+                            ))
+                        .toList()
+                    : [],
+              ),
     );
   }
-
-  bool get allowFetch => ref.watch(allowFetchProvider);
 }

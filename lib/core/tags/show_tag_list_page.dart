@@ -1,23 +1,53 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/blacklists/blacklists.dart';
+import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/animations.dart';
+import 'package:boorusama/foundation/clipboard.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/toast.dart';
+import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 final selectedViewTagQueryProvider =
     StateProvider.autoDispose<String>((ref) => '');
+
+class DefaultShowTagListPage extends ConsumerWidget {
+  const DefaultShowTagListPage({
+    super.key,
+    required this.tags,
+  });
+
+  final List<Tag> tags;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final globalNotifier = ref.watch(globalBlacklistedTagsProvider.notifier);
+    final favoriteNotifier = ref.watch(favoriteTagsProvider.notifier);
+
+    return ShowTagListPage(
+      tags: tags,
+      onAddToGlobalBlacklist: (tag) {
+        globalNotifier.addTagWithToast(
+          context,
+          tag.rawName,
+        );
+      },
+      onAddToFavoriteTags: (tag) {
+        favoriteNotifier.add(
+          tag.rawName,
+        );
+      },
+    );
+  }
+}
 
 class ShowTagListPage extends ConsumerWidget {
   const ShowTagListPage({
@@ -100,16 +130,9 @@ class ShowTagListPage extends ConsumerWidget {
                           case 'open_wiki':
                             onOpenWiki?.call(tag);
                           case 'copy':
-                            Clipboard.setData(
-                              ClipboardData(
-                                text: tag.rawName,
-                              ),
-                            ).then(
-                              (_) => showSimpleSnackBar(
-                                context: context,
-                                content: const Text('Copied'),
-                                duration: AppDurations.shortToast,
-                              ),
+                            AppClipboard.copyWithDefaultToast(
+                              context,
+                              tag.rawName,
                             );
                             break;
                         }

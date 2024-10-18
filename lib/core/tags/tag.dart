@@ -13,6 +13,12 @@ class Tag extends Equatable {
     required this.postCount,
   });
 
+  factory Tag.fromJson(Map<String, dynamic> json) => Tag(
+        name: json['name'],
+        category: TagCategory.fromLegacyId(json['category']),
+        postCount: json['postCount'],
+      );
+
   const Tag.noCount({
     required this.name,
     required this.category,
@@ -33,12 +39,6 @@ class Tag extends Equatable {
         name: name ?? this.name,
         category: category ?? this.category,
         postCount: postCount ?? this.postCount,
-      );
-
-  factory Tag.fromJson(Map<String, dynamic> json) => Tag(
-        name: json['name'],
-        category: TagCategory.fromLegacyId(json['category']),
-        postCount: json['postCount'],
       );
 
   Map<String, dynamic> toJson() => {

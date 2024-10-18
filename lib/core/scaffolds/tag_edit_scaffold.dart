@@ -206,7 +206,6 @@ class _TagEditScaffoldState extends ConsumerState<TagEditUploadScaffold> {
             color: context.colorScheme.onSurface,
             thickness: 4,
             size: 75,
-            highlightedSize: 40,
             highlightedColor: context.colorScheme.primary,
           ),
         ),

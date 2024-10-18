@@ -9,15 +9,10 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/home/home.dart';
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/router.dart';
-import 'package:boorusama/core/scaffolds/infinite_post_list_scaffold.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme.dart';
-import '../feats/posts/posts.dart';
-import 'moebooru_desktop_home_page.dart';
+import 'package:boorusama/router.dart';
 import 'moebooru_popular_page.dart';
 import 'moebooru_popular_recent_page.dart';
 
@@ -36,9 +31,8 @@ class MoebooruHomePage extends ConsumerStatefulWidget {
 class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
   @override
   Widget build(BuildContext context) {
-    return BooruScope(
-      config: widget.config,
-      mobileMenuBuilder: (context, controller) => [
+    return HomePageScaffold(
+      mobileMenu: [
         SideMenuTile(
           icon: const Icon(
             Symbols.explore,
@@ -92,14 +86,6 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
       ],
       desktopMenuBuilder: (context, controller, constraints) => [
         HomeNavigationTile(
-          value: 0,
-          controller: controller,
-          constraints: constraints,
-          selectedIcon: Symbols.dashboard,
-          icon: Symbols.dashboard,
-          title: 'Home',
-        ),
-        HomeNavigationTile(
           value: 1,
           controller: controller,
           constraints: constraints,
@@ -115,65 +101,11 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
           icon: Symbols.local_fire_department,
           title: 'Hot',
         ),
-        ...coreDesktopTabBuilder(
-          context,
-          constraints,
-          controller,
-        ),
       ],
-      desktopViews: () {
-        final moebooruTabs = [
-          const MoebooruDesktopHomePage(),
-          const MoebooruPopularPage(),
-          const MoebooruPopularRecentPage(),
-        ];
-
-        return [
-          ...moebooruTabs,
-          ...coreDesktopViewBuilder(
-            previousItemCount: moebooruTabs.length,
-          ),
-        ];
-      },
-    );
-  }
-}
-
-class MoebooruMobileHomeView extends ConsumerWidget {
-  const MoebooruMobileHomeView({
-    super.key,
-    required this.controller,
-  });
-
-  final HomePageController controller;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
-
-    return PostScope(
-      fetcher: (page) => ref.read(moebooruPostRepoProvider(config)).getPosts(
-            '',
-            page,
-          ),
-      builder: (context, postController, errors) => InfinitePostListScaffold(
-        errors: errors,
-        controller: postController,
-        sliverHeaderBuilder: (context) => [
-          SliverAppBar(
-            backgroundColor: context.theme.scaffoldBackgroundColor,
-            toolbarHeight: kToolbarHeight * 1.2,
-            title: HomeSearchBar(
-              onMenuTap: controller.openMenu,
-              onTap: () => goToSearchPage(context),
-            ),
-            floating: true,
-            snap: true,
-            automaticallyImplyLeading: false,
-          ),
-          const SliverAppAnnouncementBanner(),
-        ],
-      ),
+      desktopViews: const [
+        MoebooruPopularPage(),
+        MoebooruPopularRecentPage(),
+      ],
     );
   }
 }

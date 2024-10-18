@@ -12,8 +12,8 @@ import 'package:boorusama/boorus/e621/tags/tags.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/artists/artists.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/router.dart';
 
 class E621PostDetailsPage extends ConsumerStatefulWidget {
   const E621PostDetailsPage({
@@ -22,12 +22,14 @@ class E621PostDetailsPage extends ConsumerStatefulWidget {
     required this.intitialIndex,
     required this.onExit,
     required this.onPageChanged,
+    required this.controller,
   });
 
   final int intitialIndex;
   final List<E621Post> posts;
   final void Function(int page) onExit;
   final void Function(int page) onPageChanged;
+  final PostDetailsController<Post> controller;
 
   @override
   ConsumerState<E621PostDetailsPage> createState() =>
@@ -44,29 +46,27 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage> {
       initialIndex: widget.intitialIndex,
       onExit: widget.onExit,
       onPageChangeIndexed: widget.onPageChanged,
-      toolbarBuilder: (context, post) => DefaultPostActionToolbar(post: post),
+      toolbar: DefaultPostDetailsActionToolbar(controller: widget.controller),
       swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
       sliverArtistPostsBuilder: (context, post) => post.artistTags.isNotEmpty
           ? post.artistTags
-              .map((tag) => ArtistPostList2(
+              .map((tag) => ArtistPostList(
                     tag: tag,
-                    builder: (tag) => ref
-                        .watch(e621ArtistPostsProvider(tag))
-                        .maybeWhen(
-                          data: (data) => SliverPreviewPostGrid(
-                            posts: data,
-                            onTap: (postIdx) => goToPostDetailsPage(
-                              context: context,
-                              posts: data,
-                              initialIndex: postIdx,
+                    builder: (tag) =>
+                        ref.watch(e621ArtistPostsProvider(tag)).maybeWhen(
+                              data: (data) => SliverPreviewPostGrid(
+                                posts: data,
+                                onTap: (postIdx) => goToPostDetailsPage(
+                                  context: context,
+                                  posts: data,
+                                  initialIndex: postIdx,
+                                ),
+                                imageUrl: (item) => item.thumbnailFromSettings(
+                                    ref.watch(imageListingSettingsProvider)),
+                              ),
+                              orElse: () =>
+                                  const SliverPreviewPostGridPlaceholder(),
                             ),
-                            imageUrl: (item) => item.thumbnailFromSettings(
-                                ref.watch(imageListingSettingsProvider)),
-                          ),
-                          orElse: () => const SliverPreviewPostGridPlaceholder(
-                            itemCount: 30,
-                          ),
-                        ),
                   ))
               .toList()
           : [],
@@ -98,7 +98,6 @@ class E621ArtistSection extends ConsumerWidget {
     final commentary = post.description;
 
     return ArtistSection(
-      //FIXME: shouldn't use danbooru's artist section, should separate it
       commentary: ArtistCommentary.description(commentary),
       artistTags: post.artistTags,
       source: post.source,

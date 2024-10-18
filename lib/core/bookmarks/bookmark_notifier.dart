@@ -2,6 +2,9 @@
 import 'dart:convert';
 import 'dart:io';
 
+// Flutter imports:
+import 'package:flutter/material.dart';
+
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
@@ -9,11 +12,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/backups/backups.dart';
 import 'package:boorusama/core/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
+import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/foundation/animations.dart';
+import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/permissions.dart';
@@ -120,7 +126,7 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
     }
   }
 
-  Future<void> exportAllBookmarks(String path) async {
+  Future<void> exportAllBookmarks(BuildContext context, String path) async {
     try {
       // request permission
       final deviceInfo = ref.read(deviceInfoProvider);
@@ -129,8 +135,8 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
       if (status != PermissionStatus.granted) {
         final status = await requestMediaPermissions(deviceInfo);
 
-        if (status != PermissionStatus.granted) {
-          showErrorToast('Permission to access storage denied');
+        if (context.mounted && status != PermissionStatus.granted) {
+          showErrorToast(context, 'Permission to access storage denied');
           return;
         }
       }
@@ -142,16 +148,25 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
       final jsonString = jsonEncode(json);
       await file.writeAsString(jsonString);
 
-      showSuccessToast(
-        '${state.bookmarks.length} bookmarks exported to ${file.path}',
-        duration: AppDurations.longToast,
-      );
+      if (context.mounted) {
+        showSuccessToast(
+          context,
+          '${state.bookmarks.length} bookmarks exported to ${file.path}',
+          duration: AppDurations.longToast,
+        );
+      }
     } catch (e) {
-      showErrorToast('Failed to export bookmarks: $e');
+      if (context.mounted) {
+        if (e is PathAccessException) {
+          showErrorToast(context, kInvalidLocationMessage);
+        } else {
+          showErrorToast(context, 'Failed to export bookmarks: $e');
+        }
+      }
     }
   }
 
-  Future<void> importBookmarks(File file) async {
+  Future<void> importBookmarks(BuildContext context, File file) async {
     try {
       final jsonString = file.readAsStringSync();
       final json = jsonDecode(jsonString) as List<dynamic>;
@@ -167,15 +182,26 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
 
         await bookmarkRepository.addBookmarkWithBookmarks(bookmarks);
         await getAllBookmarks();
-        showSuccessToast(
-          '${bookmarks.length} bookmarks imported',
-          duration: AppDurations.longToast,
-        );
+
+        if (context.mounted) {
+          showSuccessToast(
+            context,
+            '${bookmarks.length} bookmarks imported',
+            duration: AppDurations.longToast,
+          );
+        }
       } catch (e) {
-        showErrorToast('Failed to import bookmarks');
+        if (context.mounted) {
+          showErrorToast(
+            context,
+            'Failed to import bookmarks',
+          );
+        }
       }
     } catch (e) {
-      showErrorToast('Invalid export file');
+      if (context.mounted) {
+        showErrorToast(context, 'Invalid export file');
+      }
     }
   }
 
@@ -183,9 +209,8 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
       BooruConfig config, List<Bookmark> bookmarks) async {
     final settings = ref.read(settingsProvider);
     final tasks = bookmarks
-        .map((bookmark) => ref
-            .read(downloadServiceProvider(config))
-            .downloadWithSettings(
+        .map((bookmark) =>
+            ref.read(downloadServiceProvider(config)).downloadWithSettings(
               settings,
               config: config,
               url: bookmark.originalUrl,
@@ -193,11 +218,15 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
                 thumbnailUrl: bookmark.thumbnailUrl,
                 fileSize: null,
                 siteUrl: bookmark.sourceUrl,
+                group: null,
               ),
-              fileNameBuilder: () =>
-                  bookmark.md5 + extension(bookmark.originalUrl),
-            )
-            .run())
+              filename: bookmark.md5 + extension(bookmark.originalUrl),
+              headers: {
+                AppHttpHeaders.userAgentHeader:
+                    ref.read(userAgentGeneratorProvider(config)).generate(),
+                ...ref.read(extraHttpHeaderProvider(config)),
+              },
+            ).run())
         .toList();
     await Future.wait(tasks);
   }
@@ -209,59 +238,78 @@ extension BookmarkNotifierX on WidgetRef {
 
 extension BookmarkCubitToastX on BookmarkNotifier {
   Future<void> addBookmarkWithToast(
+    BuildContext context,
     int booruId,
     String booruUrl,
     Post post,
-  ) =>
-      addBookmark(
-        booruId,
-        booruUrl,
-        post,
-        onSuccess: () => showSuccessToast('bookmark.added'.tr()),
-        onError: () => showErrorToast('bookmark.failed_to_add'.tr()),
-      );
+  ) async {
+    await addBookmark(
+      booruId,
+      booruUrl,
+      post,
+      onSuccess: () => showSuccessToast(context, 'bookmark.added'.tr()),
+      onError: () => showErrorToast(context, 'bookmark.failed_to_add'.tr()),
+    );
+  }
 
   Future<void> addBookmarksWithToast(
+    BuildContext context,
     int booruId,
     String booruUrl,
     Iterable<Post> posts,
-  ) =>
-      addBookmarks(
-        booruId,
-        booruUrl,
-        posts,
-        onSuccess: () => showSuccessToast(
-          'bookmark.many_added'.tr().replaceAll('{0}', '${posts.length}'),
-        ),
-        onError: () => showErrorToast('bookmark.failed_to_add_many'.tr()),
-      );
+  ) async {
+    await addBookmarks(
+      booruId,
+      booruUrl,
+      posts,
+      onSuccess: () => showSuccessToast(
+        context,
+        'bookmark.many_added'.tr().replaceAll('{0}', '${posts.length}'),
+      ),
+      onError: () =>
+          showErrorToast(context, 'bookmark.failed_to_add_many'.tr()),
+    );
+  }
 
-  Future<void> removeBookmarkWithToast(Bookmark bookmark) => removeBookmark(
-        bookmark,
-        onSuccess: () => showSuccessToast('bookmark.removed'.tr()),
-        onError: () => showErrorToast('bookmark.failed_to_remove'.tr()),
-      );
+  Future<void> removeBookmarkWithToast(
+    BuildContext context,
+    Bookmark bookmark,
+  ) async {
+    await removeBookmark(
+      bookmark,
+      onSuccess: () => showSuccessToast(context, 'bookmark.removed'.tr()),
+      onError: () => showErrorToast(context, 'bookmark.failed_to_remove'.tr()),
+    );
+  }
 
-  Future<void> updateBookmarkWithToast(Bookmark bookmark) => updateBookmark(
-        bookmark,
-        onSuccess: () => showSuccessToast('bookmark.updated'.tr()),
-        onError: () => showErrorToast('bookmark.failed_to_update'.tr()),
-      );
+  Future<void> updateBookmarkWithToast(
+    BuildContext context,
+    Bookmark bookmark,
+  ) async {
+    await updateBookmark(
+      bookmark,
+      onSuccess: () => showSuccessToast(context, 'bookmark.updated'.tr()),
+      onError: () => showErrorToast(context, 'bookmark.failed_to_update'.tr()),
+    );
+  }
 
-  Future<void> getAllBookmarksWithToast() => getAllBookmarks(
-        onError: (error) => showErrorToast(
-            'bookmark.failed_to_load'.tr().replaceAll('{0}', error.toString())),
-      );
+  Future<void> getAllBookmarksWithToast(
+    BuildContext context,
+  ) async {
+    await getAllBookmarks(
+      onError: (error) => showErrorToast(context,
+          'bookmark.failed_to_load'.tr().replaceAll('{0}', error.toString())),
+    );
+  }
 }
 
 class BookmarkState extends Equatable {
-  final IList<Bookmark> bookmarks;
-  final String error;
-
   const BookmarkState({
     required this.bookmarks,
     this.error = '',
   });
+  final IList<Bookmark> bookmarks;
+  final String error;
 
   BookmarkState copyWith({
     IList<Bookmark>? bookmarks,

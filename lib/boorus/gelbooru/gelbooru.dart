@@ -23,7 +23,6 @@ import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/toast.dart';
-import 'package:boorusama/functional.dart';
 import 'artists/gelbooru_artist_page.dart';
 import 'comments/gelbooru_comment_page.dart';
 import 'configs/create_gelbooru_config_page.dart';
@@ -146,6 +145,9 @@ Note gelbooruNoteToNote(NoteDto note) {
 class GelbooruBuilder
     with
         UnknownMetatagsMixin,
+        DefaultMultiSelectionActionsBuilderMixin,
+        DefaultHomeMixin,
+        DefaultQuickFavoriteButtonBuilderMixin,
         DefaultThumbnailUrlMixin,
         DefaultThumbnailUrlMixin,
         DefaultPostImageDetailsUrlMixin,
@@ -155,15 +157,9 @@ class GelbooruBuilder
         DefaultTagColorMixin
     implements BooruBuilder {
   GelbooruBuilder({
-    required this.postRepo,
-    required this.autocompleteRepo,
-    required this.noteRepo,
     required this.client,
   });
 
-  final PostRepository<GelbooruPost> postRepo;
-  final AutocompleteRepository autocompleteRepo;
-  final NoteRepository noteRepo;
   final GelbooruClient Function() client;
 
   @override
@@ -193,38 +189,21 @@ class GelbooruBuilder
         context,
         config, {
         backgroundColor,
+        initialTab,
       }) =>
           CreateGelbooruConfigPage(
             config: config,
             backgroundColor: backgroundColor,
+            initialTab: initialTab,
           );
 
   @override
-  PostFetcher get postFetcher => (page, tags) => postRepo.getPosts(
-        tags,
-        page,
-      );
-
-  @override
-  NoteFetcher? get noteFetcher => (postId) => noteRepo.getNotes(postId);
-
-  @override
-  AutocompleteFetcher get autocompleteFetcher =>
-      (query) => autocompleteRepo.getAutocomplete(query);
-
-  @override
-  PostCountFetcher? get postCountFetcher =>
-      (config, tags, granularRatingQueryBuilder) async {
+  PostCountFetcher? get postCountFetcher => (config, tags, tagComposer) async {
         // Delay a bit to avoid this request running before the actual search, this is a hack used for the search page
         await Future.delayed(const Duration(milliseconds: 100));
 
         final result = await client().getPosts(
-          tags: getTags(
-            config,
-            tags,
-            granularRatingQueries: (tags) =>
-                granularRatingQueryBuilder?.call(tags, config),
-          ),
+          tags: tagComposer.compose(tags),
         );
 
         return result.count;
@@ -238,6 +217,7 @@ class GelbooruBuilder
   PostDetailsPageBuilder get postDetailsPageBuilder =>
       (context, config, payload) => PostDetailsLayoutSwitcher(
             initialIndex: payload.initialIndex,
+            posts: payload.posts,
             scrollController: payload.scrollController,
             desktop: (controller) => GelbooruPostDetailsDesktopPage(
               initialIndex: controller.currentPage.value,
@@ -247,6 +227,7 @@ class GelbooruBuilder
             ),
             mobile: (controller) => GelbooruPostDetailsPage(
               initialIndex: controller.currentPage.value,
+              controller: controller,
               posts: payload.posts.map((e) => e as GelbooruPost).toList(),
               onExit: (page) => controller.onExit(page),
               onPageChanged: (page) => controller.setPage(page),
@@ -283,28 +264,6 @@ class GelbooruBuilder
           );
 
   @override
-  GranularRatingQueryBuilder? get granularRatingQueryBuilder =>
-      (currentQuery, config) => switch (config.ratingFilter) {
-            BooruConfigRatingFilter.none => currentQuery,
-            BooruConfigRatingFilter.hideNSFW => [
-                ...currentQuery,
-                'rating:general',
-              ],
-            BooruConfigRatingFilter.hideExplicit => [
-                ...currentQuery,
-                '-rating:explicit',
-              ],
-            BooruConfigRatingFilter.custom =>
-              config.granularRatingFiltersWithoutUnknown.toOption().fold(
-                    () => currentQuery,
-                    (ratings) => [
-                      ...currentQuery,
-                      ...ratings.map((e) => '-rating:${e.toFullString()}'),
-                    ],
-                  ),
-          };
-
-  @override
   GranularRatingOptionsBuilder? get granularRatingOptionsBuilder => () => {
         Rating.explicit,
         Rating.questionable,
@@ -328,24 +287,22 @@ class GelbooruBuilder
   );
 
   @override
-  HomeViewBuilder get homeViewBuilder =>
-      (context, config, controller) => GelbooruMobileHomePage(
-            controller: controller,
-          );
-
-  @override
   FavoriteAdder? get favoriteAdder => client().canFavorite
       ? (postId, ref) async {
           final status = await ref
               .read(gelbooruFavoritesProvider(ref.readConfig).notifier)
               .add(postId);
 
-          if (status == AddFavoriteStatus.alreadyExists) {
-            showErrorToast('Already favorited');
-          } else if (status == AddFavoriteStatus.failure) {
-            showErrorToast('Failed to favorite');
-          } else {
-            showSuccessToast('Favorited');
+          final context = ref.context;
+
+          if (context.mounted) {
+            if (status == AddFavoriteStatus.alreadyExists) {
+              showErrorToast(context, 'Already favorited');
+            } else if (status == AddFavoriteStatus.failure) {
+              showErrorToast(context, 'Failed to favorite');
+            } else {
+              showSuccessToast(context, 'Favorited');
+            }
           }
 
           return status == AddFavoriteStatus.success;
@@ -359,7 +316,11 @@ class GelbooruBuilder
               .read(gelbooruFavoritesProvider(ref.readConfig).notifier)
               .remove(postId);
 
-          showSuccessToast('Favorite removed');
+          final context = ref.context;
+
+          if (context.mounted) {
+            showSuccessToast(context, 'Favorite removed');
+          }
 
           return true;
         }
@@ -379,8 +340,9 @@ class GelbooruSearchPage extends ConsumerWidget {
     final config = ref.watchConfig;
     return SearchPageScaffold(
       initialQuery: initialQuery,
-      fetcher: (page, tags) =>
-          ref.watch(gelbooruPostRepoProvider(config)).getPosts(tags, page),
+      fetcher: (page, controller) => ref
+          .watch(gelbooruPostRepoProvider(config))
+          .getPosts(controller.rawTagsString, page),
     );
   }
 }

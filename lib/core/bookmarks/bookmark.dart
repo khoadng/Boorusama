@@ -25,6 +25,24 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
     required this.realSourceUrl,
   });
 
+  factory Bookmark.fromJson(Map<String, dynamic> json) {
+    return Bookmark(
+      id: json['id'] as int,
+      booruId: json['booruId'] as int,
+      createdAt: DateTime.parse(json['createdAt'] as String),
+      updatedAt: DateTime.parse(json['updatedAt'] as String),
+      thumbnailUrl: json['thumbnailUrl'] as String,
+      sampleUrl: json['sampleUrl'] as String,
+      originalUrl: json['originalUrl'] as String,
+      sourceUrl: json['sourceUrl'] as String,
+      width: (json['width'] as num).toDouble(),
+      height: (json['height'] as num).toDouble(),
+      md5: json['md5'] as String,
+      tags: _parseTags(json['tags']),
+      realSourceUrl: json['realSourceUrl'] as String?,
+    );
+  }
+
   final int id;
   final int booruId;
   final DateTime createdAt;
@@ -107,24 +125,6 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
     );
   }
 
-  factory Bookmark.fromJson(Map<String, dynamic> json) {
-    return Bookmark(
-      id: json['id'] as int,
-      booruId: json['booruId'] as int,
-      createdAt: DateTime.parse(json['createdAt'] as String),
-      updatedAt: DateTime.parse(json['updatedAt'] as String),
-      thumbnailUrl: json['thumbnailUrl'] as String,
-      sampleUrl: json['sampleUrl'] as String,
-      originalUrl: json['originalUrl'] as String,
-      sourceUrl: json['sourceUrl'] as String,
-      width: (json['width'] as num).toDouble(),
-      height: (json['height'] as num).toDouble(),
-      md5: json['md5'] as String,
-      tags: _parseTags(json['tags']),
-      realSourceUrl: json['realSourceUrl'] as String?,
-    );
-  }
-
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -144,15 +144,15 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
 }
 
 Set<String> _parseTags(dynamic tags) => switch (tags) {
-      String s => tryDecodeJson(s).fold(
+      final String s => tryDecodeJson(s).fold(
           (l) => const {},
           (r) => _parseJsonTags(r),
         ),
-      List l => l.map((e) => e.toString()).toSet(),
+      final List l => l.map((e) => e.toString()).toSet(),
       _ => const {},
     };
 
 Set<String> _parseJsonTags(dynamic tags) => switch (tags) {
-      List l => l.map((e) => e.toString()).toSet(),
+      final List l => l.map((e) => e.toString()).toSet(),
       _ => const {},
     };

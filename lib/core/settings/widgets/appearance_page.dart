@@ -11,6 +11,7 @@ import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
+import 'widgets.dart';
 import 'widgets/settings_header.dart';
 import 'widgets/settings_page_scaffold.dart';
 import 'widgets/settings_slider_tile.dart';
@@ -70,10 +71,12 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
         }),
         const Divider(thickness: 1),
         SettingsHeader(label: 'settings.image_grid.image_grid'.tr()),
-        ImageListingSettingsSection(
-          listing: settings.listing,
-          onUpdate: (value) =>
-              ref.updateSettings(settings.copyWith(listing: value)),
+        ListingSettingsInteractionBlocker(
+          child: ImageListingSettingsSection(
+            listing: settings.listing,
+            onUpdate: (value) =>
+                ref.updateSettings(settings.copyWith(listing: value)),
+          ),
         ),
         const Divider(thickness: 1),
         SettingsHeader(label: 'settings.appearance.booru_config'.tr()),

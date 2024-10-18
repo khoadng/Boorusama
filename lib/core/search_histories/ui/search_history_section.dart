@@ -6,7 +6,9 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/search_histories/search_histories.dart';
+import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/time.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -19,13 +21,15 @@ class SearchHistorySection extends StatelessWidget {
     required this.histories,
     this.maxHistory = 5,
     this.showTime = false,
+    this.reverseScheme,
   });
 
-  final ValueChanged<String> onHistoryTap;
+  final ValueChanged<SearchHistory> onHistoryTap;
   final void Function()? onFullHistoryRequested;
   final List<SearchHistory> histories;
   final int maxHistory;
   final bool showTime;
+  final bool? reverseScheme;
 
   @override
   Widget build(BuildContext context) {
@@ -43,20 +47,25 @@ class SearchHistorySection extends StatelessWidget {
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    if (onFullHistoryRequested != null)
-                      IconButton(
-                        onPressed: onFullHistoryRequested,
-                        icon: const Icon(Symbols.manage_history),
-                      ),
+                    if (!Screen.of(context).size.isLarge)
+                      if (onFullHistoryRequested != null)
+                        IconButton(
+                          onPressed: onFullHistoryRequested,
+                          icon: const Icon(Symbols.manage_history),
+                        ),
                   ],
                 ),
               ),
               ...histories.take(maxHistory).map(
                     (item) => ListTile(
                       visualDensity: VisualDensity.compact,
-                      title: Text(item.query),
+                      title: SearchHistoryQueryWidget(
+                        history: item,
+                        reverseScheme: reverseScheme,
+                      ),
                       contentPadding: const EdgeInsets.only(left: 16),
-                      onTap: () => onHistoryTap(item.query),
+                      onTap: () => onHistoryTap(item),
+                      minTileHeight: isDesktopPlatform() ? 0 : null,
                       subtitle: showTime
                           ? DateTooltip(
                               date: item.createdAt,
@@ -71,5 +80,45 @@ class SearchHistorySection extends StatelessWidget {
             ],
           )
         : const SizedBox.shrink();
+  }
+}
+
+class SearchHistoryQueryWidget extends StatelessWidget {
+  const SearchHistoryQueryWidget({
+    super.key,
+    required this.history,
+    this.reverseScheme,
+  });
+
+  final SearchHistory history;
+  final bool? reverseScheme;
+
+  @override
+  Widget build(BuildContext context) {
+    return switch (history.queryType) {
+      QueryType.list => Wrap(
+          spacing: 4,
+          runSpacing: 4,
+          children: history
+              .queryAsList()
+              .map(
+                (e) => IgnorePointer(
+                  child: CompactChip(
+                    label: e,
+                    borderRadius: BorderRadius.circular(8),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 2,
+                      horizontal: 8,
+                    ),
+                    backgroundColor: reverseScheme == true
+                        ? context.colorScheme.surface
+                        : context.colorScheme.surfaceContainerHighest,
+                  ),
+                ),
+              )
+              .toList(),
+        ),
+      _ => Text(history.query),
+    };
   }
 }

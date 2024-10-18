@@ -55,18 +55,15 @@ final tagColorProvider = Provider.family<Color?, String>(
     // In case the color builder is null, which means there is no config selected
     if (colorBuilder == null) return null;
 
-    final themeMode =
-        ref.watch(settingsProvider.select((value) => value.themeMode));
+    final colorScheme = ref.watch(colorSchemeProvider);
 
-    final color = colorBuilder(themeMode, tag);
+    final color = colorBuilder(colorScheme.brightness, tag);
 
     final dynamicColors = ref
         .watch(settingsProvider.select((value) => value.enableDynamicColoring));
 
     // If dynamic colors are disabled, return the color as is
     if (!dynamicColors) return color;
-
-    final colorScheme = ref.watch(colorSchemeProvider);
 
     return color?.harmonizeWith(colorScheme.primary);
   },

@@ -78,7 +78,7 @@ class DataIOHandler {
             payload: data,
           ).toTaskEither());
 
-          return await $(TaskEither.tryCatch(
+          return $(TaskEither.tryCatch(
             () async {
               await exporter(path, jsonString);
 

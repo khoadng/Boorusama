@@ -5,6 +5,21 @@ part 'bookmark_hive_object.g.dart';
 
 @HiveType(typeId: 4)
 class BookmarkHiveObject extends HiveObject {
+
+  BookmarkHiveObject({
+    required this.booruId,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.thumbnailUrl,
+    required this.sampleUrl,
+    required this.originalUrl,
+    required this.sourceUrl,
+    required this.width,
+    required this.height,
+    required this.md5,
+    required this.tags,
+    required this.realSourceUrl,
+  });
   @HiveField(0)
   int? booruId;
 
@@ -40,19 +55,4 @@ class BookmarkHiveObject extends HiveObject {
 
   @HiveField(11)
   String? realSourceUrl;
-
-  BookmarkHiveObject({
-    required this.booruId,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.thumbnailUrl,
-    required this.sampleUrl,
-    required this.originalUrl,
-    required this.sourceUrl,
-    required this.width,
-    required this.height,
-    required this.md5,
-    required this.tags,
-    required this.realSourceUrl,
-  });
 }

@@ -33,7 +33,7 @@ extension DioResponseX<T> on Response<T> {
 }
 
 abstract interface class AppHttpHeaders {
-  static const cookieHeader = "cookie";
-  static const contentLengthHeader = "content-length";
-  static const userAgentHeader = "user-agent";
+  static const cookieHeader = 'cookie';
+  static const contentLengthHeader = 'content-length';
+  static const userAgentHeader = 'user-agent';
 }

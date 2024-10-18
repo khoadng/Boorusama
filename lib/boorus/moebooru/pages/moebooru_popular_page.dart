@@ -60,7 +60,7 @@ class _MoebooruPopularPageState extends ConsumerState<MoebooruPopularPage> {
             child: InfinitePostListScaffold(
               errors: errors,
               controller: controller,
-              sliverHeaderBuilder: (context) => [
+              sliverHeaders: [
                 SliverToBoxAdapter(
                   child: TimeScaleToggleSwitch(
                     onToggle: (category) {

@@ -6,21 +6,24 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/dmails/dmails.dart';
 import 'package:boorusama/boorus/danbooru/posts/posts.dart';
 import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/foundation/display.dart';
 import '../home/most_search_tag_list.dart';
 
 class LatestView extends ConsumerStatefulWidget {
   const LatestView({
     super.key,
-    required this.searchBar,
+    required this.controller,
   });
 
-  final Widget searchBar;
+  final HomePageController controller;
 
   @override
   ConsumerState<LatestView> createState() => _LatestViewState();
@@ -28,55 +31,79 @@ class LatestView extends ConsumerStatefulWidget {
 
 class _LatestViewState extends ConsumerState<LatestView> {
   final _autoScrollController = AutoScrollController();
-  final _selectedTag = ValueNotifier('');
+  final _selectedMostSearchedTag = ValueNotifier('');
+  late final selectedTagController = SelectedTagController.fromBooruBuilder(
+    builder: ref.readBooruBuilder(ref.readConfig),
+  );
 
   @override
   void dispose() {
     _autoScrollController.dispose();
-    _selectedTag.dispose();
+    _selectedMostSearchedTag.dispose();
+    selectedTagController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final config = ref.watchConfig;
+    final postRepo = ref.watch(danbooruPostRepoProvider(config));
 
     return PostScope(
-      fetcher: (page) => ref
-          .read(danbooruPostRepoProvider(config))
-          .getPosts(_selectedTag.value, page),
+      fetcher: (page) {
+        final tag = context.isLandscapeLayout
+            ? selectedTagString.value
+            : _selectedMostSearchedTag.value;
+
+        return postRepo.getPosts(tag, page);
+      },
       builder: (context, controller, errors) => DanbooruInfinitePostList(
         errors: errors,
         controller: controller,
         scrollController: _autoScrollController,
         sliverHeaders: [
-          SliverAppBar(
-            backgroundColor: context.theme.scaffoldBackgroundColor,
-            toolbarHeight: kToolbarHeight * 1.2,
-            primary: true,
-            title: widget.searchBar,
-            floating: true,
-            snap: true,
-            automaticallyImplyLeading: false,
+          SliverHomeSearchBar(
+            selectedTagController: selectedTagController,
+            controller: widget.controller,
+            selectedTagString: selectedTagString,
+            onSearch: () {
+              controller.refresh();
+            },
           ),
           const SliverAppAnnouncementBanner(),
           const SliverUnreadMailsBanner(),
-          SliverToBoxAdapter(
-            child: ValueListenableBuilder<String>(
-              valueListenable: _selectedTag,
-              builder: (context, value, child) => MostSearchTagList(
-                selected: value,
-                onSelected: (search) {
-                  _selectedTag.value =
-                      search.keyword == value ? '' : search.keyword;
-                  controller.refresh();
-                  _autoScrollController.jumpTo(0);
-                },
+          if (context.isLandscapeLayout)
+            SliverResultHeader(
+              selectedTagString: selectedTagString,
+              controller: controller,
+            ),
+          if (!context.isLandscapeLayout)
+            SliverToBoxAdapter(
+              child: ValueListenableBuilder<String>(
+                valueListenable: _selectedMostSearchedTag,
+                builder: (context, value, child) => MostSearchTagList(
+                  selected: value,
+                  onSelected: (search, sel) {
+                    _selectedMostSearchedTag.value =
+                        search.keyword == value ? '' : search.keyword;
+
+                    selectedTagString.value = search.keyword;
+                    if (sel) {
+                      selectedTagController.clear();
+                      selectedTagController.addTag(search.keyword);
+                    } else {
+                      selectedTagController.clear();
+                    }
+                    controller.refresh();
+                    _autoScrollController.jumpTo(0);
+                  },
+                ),
               ),
             ),
-          ),
         ],
       ),
     );
   }
+
+  var selectedTagString = ValueNotifier('');
 }

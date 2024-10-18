@@ -11,19 +11,6 @@ import 'package:boorusama/clients/danbooru/types/types.dart';
 import 'package:boorusama/core/posts/posts.dart';
 
 class DanbooruUpload extends Equatable {
-  final int id;
-  final String source;
-  final int uploaderId;
-  final String status;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-  final String refererUrl;
-  final String error;
-  final int mediaAssetCount;
-  final List<UploadMediaAssetsDto> uploadMediaAssets;
-  final List<MediaAssetDto> mediaAssets;
-  final int postedCount;
-  final DanbooruUser? uploader;
 
   const DanbooruUpload({
     required this.id,
@@ -40,6 +27,19 @@ class DanbooruUpload extends Equatable {
     required this.postedCount,
     required this.uploader,
   });
+  final int id;
+  final String source;
+  final int uploaderId;
+  final String status;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final String refererUrl;
+  final String error;
+  final int mediaAssetCount;
+  final List<UploadMediaAssetsDto> uploadMediaAssets;
+  final List<MediaAssetDto> mediaAssets;
+  final int postedCount;
+  final DanbooruUser? uploader;
 
   @override
   List<Object?> get props => [

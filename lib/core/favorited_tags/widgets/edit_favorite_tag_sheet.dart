@@ -31,7 +31,6 @@ class EditFavoriteTagSheet extends ConsumerStatefulWidget {
 }
 
 class _EditSavedSearchSheetState extends ConsumerState<EditFavoriteTagSheet> {
-  // final queryTextController = TextEditingController();
   final labelTextController = TextEditingController();
 
   final queryHasText = ValueNotifier(false);
@@ -42,25 +41,17 @@ class _EditSavedSearchSheetState extends ConsumerState<EditFavoriteTagSheet> {
   @override
   void initState() {
     super.initState();
-    // queryTextController
-    //     .textAsStream()
-    //     .distinct()
-    //     .listen((event) => queryHasText.value = event.isNotEmpty)
-    //     .addTo(compositeSubscription);
-
     labelTextController
         .textAsStream()
         .distinct()
         .listen((event) => labelsHasText.value = event.isNotEmpty)
         .addTo(compositeSubscription);
 
-    // queryTextController.text = widget.initialValue.name;
     labelTextController.text = widget.initialValue.labels?.join(' ') ?? '';
   }
 
   @override
   void dispose() {
-    // queryTextController.dispose();
     labelTextController.dispose();
     compositeSubscription.dispose();
     super.dispose();
@@ -90,47 +81,6 @@ class _EditSavedSearchSheetState extends ConsumerState<EditFavoriteTagSheet> {
             const SizedBox(
               height: 16,
             ),
-            // BooruTextField(
-            //   autofocus: true,
-            //   controller: queryTextController,
-            //   maxLines: null,
-            //   decoration: InputDecoration(
-            //     hintText: 'saved_search.saved_search_query'.tr(),
-            //     suffixIcon: Material(
-            //       color: Colors.transparent,
-            //       child: InkWell(
-            //         customBorder: const CircleBorder(),
-            //         onTap: () {
-            //           goToQuickSearchPage(
-            //             context,
-            //             ref: ref,
-            //             onSelected: (tag) {
-            //               final baseOffset =
-            //                   max(0, queryTextController.selection.baseOffset);
-            //               queryTextController
-            //                 ..text = queryTextController.text.addCharAtPosition(
-            //                   tag.value,
-            //                   baseOffset,
-            //                 )
-            //                 ..selection = TextSelection.fromPosition(
-            //                   TextPosition(
-            //                     offset: baseOffset + tag.value.length,
-            //                   ),
-            //                 );
-            //             },
-            //             onSubmitted: (context, text) {
-            //               context.navigator.pop();
-
-            //               queryTextController.text =
-            //                   '${queryTextController.text} $text';
-            //             },
-            //           );
-            //         },
-            //         child: const Icon(Symbols.add),
-            //       ),
-            //     ),
-            //   ),
-            // ),
             const SizedBox(
               height: 16,
             ),
@@ -144,7 +94,7 @@ class _EditSavedSearchSheetState extends ConsumerState<EditFavoriteTagSheet> {
             Container(
               margin: const EdgeInsets.all(8),
               child: Text(
-                "*A list of label to help categorize this tag. Space delimited.",
+                '*A list of label to help categorize this tag. Space delimited.',
                 style: context.textTheme.titleSmall?.copyWith(
                   color: context.theme.hintColor,
                   fontSize: 14,
@@ -160,7 +110,7 @@ class _EditSavedSearchSheetState extends ConsumerState<EditFavoriteTagSheet> {
                 children: [
                   FilledButton(
                     style: FilledButton.styleFrom(
-                      foregroundColor: context.iconTheme.color,
+                      foregroundColor: context.colorScheme.onSurface,
                       backgroundColor:
                           context.colorScheme.surfaceContainerHighest,
                       shape: const RoundedRectangleBorder(
@@ -174,7 +124,7 @@ class _EditSavedSearchSheetState extends ConsumerState<EditFavoriteTagSheet> {
                   ),
                   FilledButton(
                     style: FilledButton.styleFrom(
-                      foregroundColor: context.iconTheme.color,
+                      foregroundColor: context.colorScheme.onPrimary,
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(16)),
                       ),
@@ -191,27 +141,6 @@ class _EditSavedSearchSheetState extends ConsumerState<EditFavoriteTagSheet> {
                     },
                     child: const Text('generic.action.ok').tr(),
                   ),
-                  // ValueListenableBuilder<bool>(
-                  //   valueListenable: queryHasText,
-                  //   builder: (context, enable, _) => FilledButton(
-                  //     style: FilledButton.styleFrom(
-                  //       foregroundColor: context.iconTheme.color,
-                  //       shape: const RoundedRectangleBorder(
-                  //         borderRadius: BorderRadius.all(Radius.circular(16)),
-                  //       ),
-                  //     ),
-                  //     onPressed: enable
-                  //         ? () {
-                  //             widget.onSubmit(
-                  //               queryTextController.text,
-                  //               labelTextController.text,
-                  //             );
-                  //             context.navigator.pop();
-                  //           }
-                  //         : null,
-                  //     child: const Text('generic.action.ok').tr(),
-                  //   ),
-                  // ),
                 ],
               ),
             ),

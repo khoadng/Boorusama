@@ -21,9 +21,11 @@ class CreateDanbooruConfigPage extends StatelessWidget {
     this.backgroundColor,
     required this.config,
     this.isNewConfig = false,
+    this.initialTab,
   });
 
   final Color? backgroundColor;
+  final String? initialTab;
   final BooruConfig config;
   final bool isNewConfig;
 
@@ -35,6 +37,7 @@ class CreateDanbooruConfigPage extends StatelessWidget {
       ],
       child: CreateBooruConfigScaffold(
         isNewConfig: isNewConfig,
+        initialTab: initialTab,
         backgroundColor: backgroundColor,
         authTab: DefaultBooruAuthConfigView(
           showInstructionWhen: !config.hasStrictSFW,
@@ -87,6 +90,7 @@ class CreateDanbooruConfigPage extends StatelessWidget {
         postDetailsResolution: const DanbooruImageDetailsQualityProvider(),
         miscOptions: const [
           DanbooruHideDeletedSwitch(),
+          DanbooruHideBannedSwitch(),
         ],
         submitButtonBuilder: (data) => DanbooruBooruConfigSubmitButton(
           data: data,
@@ -109,6 +113,7 @@ class DanbooruBooruConfigSubmitButton extends ConsumerWidget {
     final config = ref.watch(initialBooruConfigProvider);
     final auth = ref.watch(authConfigDataProvider);
     final hideDeleted = ref.watch(hideDeletedProvider(config));
+    final hideBanned = ref.watch(bannedPostVisibilityProvider);
     final imageDetailsQuality = ref.watch(imageDetailsQualityProvider(config));
 
     return RawBooruConfigSubmitButton(
@@ -116,6 +121,7 @@ class DanbooruBooruConfigSubmitButton extends ConsumerWidget {
       data: data.copyWith(
         login: auth.login,
         apiKey: auth.apiKey,
+        bannedPostVisibility: hideBanned,
         deletedItemBehavior: hideDeleted
             ? BooruConfigDeletedItemBehavior.hide
             : BooruConfigDeletedItemBehavior.show,

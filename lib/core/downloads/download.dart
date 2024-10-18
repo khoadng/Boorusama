@@ -1,178 +1,200 @@
-// Dart imports:
-import 'dart:async';
-import 'dart:io';
-
 // Package imports:
-import 'package:dio/dio.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/foundation/path.dart';
-import 'package:boorusama/functional.dart';
+import 'package:boorusama/core/images/providers.dart';
+import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/foundation/http/http.dart';
+import 'package:boorusama/foundation/permissions.dart';
+import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/foundation/toast.dart';
+import 'package:boorusama/router.dart';
 
-DownloadPathOrError downloadUrl({
-  required Dio dio,
-  required DownloadNotifications notifications,
-  required String url,
-  required DownloadFilenameBuilder fileNameBuilder,
-  bool enableNotification = true,
-}) =>
-    TaskEither.Do(($) async {
-      final dir = await $(
-          tryGetDownloadDirectory().mapLeft((error) => GenericDownloadError(
-                message: error.name,
-                fileName: fileNameBuilder(),
-                savedPath: none(),
-              )));
+extension PostDownloadX on WidgetRef {
+  Future<PermissionStatus?> _getPermissionStatus() async {
+    final perm = await read(deviceStoragePermissionProvider.future);
+    return isAndroid() || isIOS() ? perm.storagePermission : null;
+  }
 
-      final path = await $(joinDownloadPath(fileNameBuilder(), dir));
+  void _showToastIfPossible({String? message}) {
+    if (context.mounted) {
+      showDownloadStartToast(context, message: message);
+    }
+  }
 
-      return _wrapWithNotification(
-        () => $(
-          downloadWithDio(
-            dio,
-            url: url,
-            path: path,
-            onReceiveProgress: onReceiveProgress(
-              notifications,
-              fileNameBuilder(),
-              path,
-              enableNotification,
-            ),
-          ),
-        ),
-        notifications: notifications,
-        path: path,
-        enableNotification: enableNotification,
-      );
-    });
+  Future<void> download(Post post) async {
+    final settings = read(settingsProvider);
+    final urlExtractor = read(downloadFileUrlExtractorProvider(readConfig));
+    final perm = await _getPermissionStatus();
 
-DownloadPathOrError downloadUrlCustomLocation({
-  required Dio dio,
-  required DownloadNotifications notifications,
-  required String path,
-  required String url,
-  required DownloadFilenameBuilder fileNameBuilder,
-  bool enableNotification = true,
-}) =>
-    TaskEither.Do(($) async {
-      final dir = await $(tryGetCustomDownloadDirectory(path)
-          .mapLeft((error) => GenericDownloadError(
-                message: error.name,
-                fileName: fileNameBuilder(),
-                savedPath: none(),
-              )));
-
-      final filePath = await $(joinDownloadPath(fileNameBuilder(), dir));
-
-      return _wrapWithNotification(
-        () => $(
-          downloadWithDio(
-            dio,
-            url: url,
-            path: filePath,
-            onReceiveProgress: onReceiveProgress(
-              notifications,
-              fileNameBuilder(),
-              filePath,
-              enableNotification,
-            ),
-          ),
-        ),
-        notifications: notifications,
-        path: filePath,
-        enableNotification: enableNotification,
-      );
-    });
-
-ProgressCallback onReceiveProgress(
-  DownloadNotifications notifications,
-  String fileName,
-  String path,
-  bool enableNotification,
-) =>
-    (received, total) async {
-      if (!enableNotification) return;
-
-      await notifications.showUpdatedProgress(
-        fileName,
-        path,
-        received: received,
-        total: total,
-      );
-    };
-
-DownloadPathOrError downloadWithDio(
-  Dio dio, {
-  required String url,
-  required String path,
-  required ProgressCallback onReceiveProgress,
-}) =>
-    TaskEither.tryCatch(
-      () {
-        var previousPercent = 0;
-
-        return dio.download(
-          url,
-          path,
-          onReceiveProgress: (count, total) {
-            final percent = (count / total * 100).toInt();
-
-            if (percent != previousPercent) {
-              previousPercent = percent;
-
-              onReceiveProgress(count, total);
-            }
-          },
-        ).then((value) => path);
-      },
-      (error, stackTrace) {
-        final fileName = basename(path);
-
-        return switch (error) {
-          FileSystemException e => FileSystemDownloadError(
-              savedPath: some(path),
-              fileName: fileName,
-              error: e,
-            ),
-          DioException e => HttpDownloadError(
-              savedPath: some(path),
-              fileName: fileName,
-              exception: e,
-            ),
-          _ => GenericDownloadError(
-              savedPath: some(path),
-              fileName: fileName,
-              message: error.toString(),
-            ),
-        };
+    await _download(
+      this,
+      post,
+      permission: perm,
+      settings: settings,
+      downloadFileUrlExtractor: urlExtractor,
+      onStarted: () {
+        final c = navigatorKey.currentState?.context;
+        if (c != null) {
+          showDownloadStartToast(c);
+        }
       },
     );
+  }
 
-DownloadPathOrError joinDownloadPath(
-  String fileName,
-  Directory directory,
-) =>
-    TaskEither.fromEither(Either.of(join(directory.path, fileName)));
+  Future<void> bulkDownload(
+    List<Post> posts, {
+    String? group,
+    String? downloadPath,
+  }) async {
+    final settings = read(settingsProvider);
+    final urlExtractor = read(downloadFileUrlExtractorProvider(readConfig));
+    final config = readConfig;
 
-Future<String> _wrapWithNotification(
-  Future<String> Function() fn, {
-  required DownloadNotifications notifications,
-  required String path,
-  bool enableNotification = true,
+    // ensure that the booru supports bulk download
+    if (!config.booruType.canDownloadMultipleFiles) {
+      showBulkDownloadUnsupportErrorToast(context);
+      return;
+    }
+
+    final perm = await _getPermissionStatus();
+
+    _showToastIfPossible(
+      message: 'Downloading ${posts.length} files...',
+    );
+
+    for (int i = 0; i < posts.length; i++) {
+      final post = posts[i];
+      await _download(
+        this,
+        post,
+        permission: perm,
+        settings: settings,
+        group: group,
+        downloadPath: downloadPath,
+        downloadFileUrlExtractor: urlExtractor,
+        bulkMetadata: {
+          'total': posts.length.toString(),
+          'index': i.toString(),
+        },
+      );
+    }
+  }
+}
+
+Future<void> _download(
+  WidgetRef ref,
+  Post downloadable, {
+  PermissionStatus? permission,
+  required Settings settings,
+  String? group,
+  String? downloadPath,
+  Map<String, String>? bulkMetadata,
+  required DownloadFileUrlExtractor downloadFileUrlExtractor,
+  void Function()? onStarted,
 }) async {
-  final fileName = path.split('/').last;
+  final booruConfig = ref.readConfig;
+  final service = ref.read(downloadServiceProvider(booruConfig));
+  final fileNameBuilder =
+      ref.readBooruBuilder(booruConfig)?.downloadFilenameBuilder;
+  final logger = ref.read(loggerProvider);
 
-  if (enableNotification) {
-    await notifications.showInProgress(fileName, path);
+  final headers = {
+    AppHttpHeaders.userAgentHeader:
+        ref.read(userAgentGeneratorProvider(booruConfig)).generate(),
+    ...ref.read(extraHttpHeaderProvider(booruConfig)),
+  };
+
+  final deviceStoragePermissionNotifier =
+      ref.read(deviceStoragePermissionProvider.notifier);
+
+  final urlData = await downloadFileUrlExtractor.getDownloadFileUrl(
+    post: downloadable,
+    quality: settings.downloadQuality,
+  );
+
+  if (fileNameBuilder == null) {
+    logger.logE('Single Download', 'No file name builder found, aborting...');
+    if (ref.context.mounted) {
+      showErrorToast(ref.context, 'Download aborted, cannot create file name');
+    }
+    return;
   }
 
-  final result = await fn();
-
-  if (enableNotification) {
-    await Future.delayed(const Duration(milliseconds: 500));
-    await notifications.showCompleted(fileName, path);
+  if (urlData == null || urlData.url.isEmpty) {
+    logger.logE('Single Download', 'No download url found, aborting...');
+    if (ref.context.mounted) {
+      showErrorToast(ref.context, 'Download aborted, no download url found');
+    }
+    return;
   }
 
-  return result;
+  Future<void> download() async {
+    onStarted?.call();
+
+    final fileNameFuture = bulkMetadata != null
+        ? fileNameBuilder.generateForBulkDownload(
+            settings,
+            booruConfig,
+            downloadable,
+            metadata: bulkMetadata,
+            downloadUrl: urlData.url,
+          )
+        : fileNameBuilder.generate(
+            settings,
+            booruConfig,
+            downloadable,
+            downloadUrl: urlData.url,
+          );
+
+    final fileName = await fileNameFuture;
+
+    await service
+        .downloadWithSettings(
+          settings,
+          config: booruConfig,
+          metadata: DownloaderMetadata(
+            thumbnailUrl: downloadable.thumbnailImageUrl,
+            fileSize: downloadable.fileSize,
+            siteUrl: PostSource.from(downloadable.thumbnailImageUrl).url,
+            group: group,
+          ),
+          url: urlData.url,
+          filename: fileName,
+          headers: {
+            ...headers,
+            if (urlData.cookie != null)
+              AppHttpHeaders.cookieHeader: urlData.cookie!,
+          },
+          path: downloadPath,
+        )
+        .run();
+  }
+
+  // Platform doesn't require permissions, just download it right away
+  if (permission == null) {
+    download();
+    return;
+  }
+
+  if (permission == PermissionStatus.granted) {
+    download();
+  } else {
+    logger.logI('Single Download', 'Permission not granted, requesting...');
+    deviceStoragePermissionNotifier.requestPermission(
+      onDone: (isGranted) {
+        if (isGranted) {
+          download();
+        } else {
+          logger.logI('Single Download',
+              'Storage permission request denied, aborting...');
+        }
+      },
+    );
+  }
 }

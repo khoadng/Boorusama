@@ -52,7 +52,6 @@ class _ExplicitContentBlockOverlayState
               child: ActionChip(
                 side: BorderSide(
                   color: Theme.of(context).hintColor.withOpacity(0.1),
-                  width: 1,
                 ),
                 label: Text(
                   'Explicit'.toUpperCase(),

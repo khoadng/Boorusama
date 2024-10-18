@@ -29,6 +29,7 @@ final philomenaPostRepoProvider =
   final client = ref.watch(philomenaClientProvider(config));
 
   return PostRepositoryBuilder(
+    tagComposer: ref.watch(tagQueryComposerProvider(config)),
     getSettings: () async => ref.read(imageListingSettingsProvider),
     fetch: (tags, page, {limit}) async {
       final isEmpty = tags.join(' ').isEmpty;
@@ -101,12 +102,12 @@ String? _parseVideoThumbnail(ImageDto e) =>
         );
 
 const _kSlugReplacement = [
-  ["-colon-", ":"],
-  ["-dash-", "-"],
-  ["-fwslash-", "/"],
-  ["-bwslash-", "\\"],
-  ["-dot-", "."],
-  ["-plus-", "+"]
+  ['-colon-', ':'],
+  ['-dash-', '-'],
+  ['-fwslash-', '/'],
+  ['-bwslash-', r'\'],
+  ['-dot-', '.'],
+  ['-plus-', '+']
 ];
 
 final philomenaAutoCompleteRepoProvider =

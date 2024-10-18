@@ -183,7 +183,7 @@ extension StackTraceX on StackTrace {
   String prettyPrinted({int? maxFrames}) {
     Iterable<String> lines = toString().trimRight().split('\n');
     if (kIsWeb && lines.isNotEmpty) {
-      lines = lines.skipWhile((String line) {
+      lines = lines.skipWhile((line) {
         return line.contains('StackTrace.current') ||
             line.contains('dart-sdk/lib/_internal') ||
             line.contains('dart:sdk_internal');

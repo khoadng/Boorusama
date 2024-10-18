@@ -21,7 +21,7 @@ class LoggingInterceptor extends Interceptor {
     required this.booruConfig,
   });
 
-  final LoggerService logger;
+  final Logger logger;
   final BooruConfig booruConfig;
   final Map<String, DateTime> requestTimeLogs = <String, DateTime>{};
 

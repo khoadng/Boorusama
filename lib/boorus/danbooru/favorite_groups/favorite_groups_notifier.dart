@@ -10,9 +10,9 @@ import '../users/users.dart';
 import 'favorite_groups.dart';
 
 class FavoriteGroupsNotifier
-    extends FamilyNotifier<List<FavoriteGroup>?, BooruConfig> {
+    extends FamilyNotifier<List<DanbooruFavoriteGroup>?, BooruConfig> {
   @override
-  List<FavoriteGroup>? build(BooruConfig arg) {
+  List<DanbooruFavoriteGroup>? build(BooruConfig arg) {
     refresh();
     return null;
   }
@@ -76,7 +76,7 @@ class FavoriteGroupsNotifier
 
   // delete a favorite group
   Future<void> delete({
-    required FavoriteGroup group,
+    required DanbooruFavoriteGroup group,
   }) async {
     final success = await repo.deleteFavoriteGroup(
       id: group.id,
@@ -88,7 +88,7 @@ class FavoriteGroupsNotifier
   }
 
   Future<void> edit({
-    required FavoriteGroup group,
+    required DanbooruFavoriteGroup group,
     String? initialIds,
     String? name,
     bool? isPrivate,
@@ -117,10 +117,10 @@ class FavoriteGroupsNotifier
   }
 
   Future<void> addToGroup({
-    required FavoriteGroup group,
+    required DanbooruFavoriteGroup group,
     required List<int> postIds,
     void Function(String message, bool translatable)? onFailure,
-    void Function(FavoriteGroup group)? onSuccess,
+    void Function(DanbooruFavoriteGroup group)? onSuccess,
   }) async {
     final duplicates = postIds.where((e) => group.postIds.contains(e)).toList();
 
@@ -154,10 +154,10 @@ class FavoriteGroupsNotifier
   }
 
   Future<void> removeFromGroup({
-    required FavoriteGroup group,
+    required DanbooruFavoriteGroup group,
     required List<int> postIds,
     void Function(String message, bool translatable)? onFailure,
-    void Function(FavoriteGroup group)? onSuccess,
+    void Function(DanbooruFavoriteGroup group)? onSuccess,
   }) async {
     final items = [...group.postIds]
       ..removeWhere((element) => postIds.contains(element));

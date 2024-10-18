@@ -11,7 +11,6 @@ import 'package:reorderables/reorderables.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/display.dart';
@@ -63,7 +62,6 @@ class _BooruSelectorVerticalState extends ConsumerState<BooruSelectorVertical>
         child: ref.watch(configsProvider).maybeWhen(
               data: (configs) => CustomScrollView(
                 reverse: reverseScroll,
-                scrollDirection: Axis.vertical,
                 slivers: [
                   ReorderableSliverList(
                     onReorderStarted: (index) => show(configs[index]),
@@ -80,7 +78,6 @@ class _BooruSelectorVerticalState extends ConsumerState<BooruSelectorVertical>
                               .read(currentBooruConfigProvider.notifier)
                               .update(config),
                           selected: currentConfig == config,
-                          direction: Axis.vertical,
                         );
                       },
                       childCount: configs.length,
@@ -179,7 +176,10 @@ mixin BooruSelectorActionMixin<T extends ConsumerStatefulWidget>
         buttonConfigs: [
           ContextMenuButtonConfig(
             'generic.action.edit'.tr(),
-            onPressed: () => context.go('/boorus/${config.id}/update'),
+            onPressed: () => goToUpdateBooruConfigPage(
+              context,
+              config: config,
+            ),
           ),
           ContextMenuButtonConfig(
             'generic.action.duplicate'.tr(),
@@ -207,7 +207,8 @@ mixin BooruSelectorActionMixin<T extends ConsumerStatefulWidget>
                       onConfirm: () =>
                           ref.read(booruConfigProvider.notifier).delete(
                                 config,
-                                onFailure: (message) => showErrorToast(message),
+                                onFailure: (message) =>
+                                    showErrorToast(context, message),
                               ),
                     ),
                   ),
@@ -224,7 +225,8 @@ mixin BooruSelectorActionMixin<T extends ConsumerStatefulWidget>
                     onConfirm: () =>
                         ref.read(booruConfigProvider.notifier).delete(
                               config,
-                              onFailure: (message) => showErrorToast(message),
+                              onFailure: (message) =>
+                                  showErrorToast(context, message),
                             ),
                   ),
                 );

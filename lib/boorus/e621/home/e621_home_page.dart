@@ -9,17 +9,12 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import 'package:boorusama/boorus/e621/favorites/favorites.dart';
 import 'package:boorusama/boorus/e621/popular/e621_popular_page.dart';
-import 'package:boorusama/boorus/e621/posts/posts.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/home/home.dart';
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/router.dart';
-import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme.dart';
-import 'e621_desktop_home_page.dart';
+import 'package:boorusama/router.dart';
 
 class E621HomePage extends ConsumerStatefulWidget {
   const E621HomePage({
@@ -38,9 +33,8 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
   Widget build(BuildContext context) {
     final config = ref.watchConfig;
 
-    return BooruScope(
-      config: widget.config,
-      mobileMenuBuilder: (context, controller) => [
+    return HomePageScaffold(
+      mobileMenu: [
         SideMenuTile(
           icon: const Icon(Symbols.explore),
           title: const Text('Popular'),
@@ -61,14 +55,6 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
       ],
       desktopMenuBuilder: (context, controller, constraints) => [
         HomeNavigationTile(
-          value: 0,
-          controller: controller,
-          constraints: constraints,
-          selectedIcon: Symbols.dashboard,
-          icon: Symbols.dashboard,
-          title: 'Home',
-        ),
-        HomeNavigationTile(
           value: 1,
           controller: controller,
           constraints: constraints,
@@ -86,69 +72,15 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
             title: 'Favorites',
           ),
         ],
-        ...coreDesktopTabBuilder(
-          context,
-          constraints,
-          controller,
-        ),
       ],
-      desktopViews: () {
-        final e621Tabs = [
-          const E621DesktopHomePage(),
-          const E621PopularPage(),
-          if (config.hasLoginDetails()) ...[
-            E621FavoritesPage(
-              username: config.login!,
-            ),
-          ],
-        ];
-
-        return [
-          ...e621Tabs,
-          ...coreDesktopViewBuilder(
-            previousItemCount: e621Tabs.length,
+      desktopViews: [
+        const E621PopularPage(),
+        if (config.hasLoginDetails()) ...[
+          E621FavoritesPage(
+            username: config.login!,
           ),
-        ];
-      },
-    );
-  }
-}
-
-class E621MobileHomeView extends ConsumerWidget {
-  const E621MobileHomeView({
-    super.key,
-    required this.controller,
-  });
-
-  final HomePageController controller;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
-
-    return PostScope(
-      fetcher: (page) => ref.read(e621PostRepoProvider(config)).getPosts(
-            '',
-            page,
-          ),
-      builder: (context, postController, errors) => InfinitePostListScaffold(
-        errors: errors,
-        controller: postController,
-        sliverHeaderBuilder: (context) => [
-          SliverAppBar(
-            backgroundColor: context.theme.scaffoldBackgroundColor,
-            toolbarHeight: kToolbarHeight * 1.2,
-            title: HomeSearchBar(
-              onMenuTap: controller.openMenu,
-              onTap: () => goToSearchPage(context),
-            ),
-            floating: true,
-            snap: true,
-            automaticallyImplyLeading: false,
-          ),
-          const SliverAppAnnouncementBanner(),
         ],
-      ),
+      ],
     );
   }
 }

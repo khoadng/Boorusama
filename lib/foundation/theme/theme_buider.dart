@@ -70,15 +70,15 @@ class ThemeBuilder extends ConsumerWidget {
 // https://github.com/material-foundation/flutter-packages/issues/582
 (ColorScheme light, ColorScheme dark) _generateDynamicColourSchemes(
     ColorScheme lightDynamic, ColorScheme darkDynamic) {
-  var lightBase = ColorScheme.fromSeed(seedColor: lightDynamic.primary);
-  var darkBase = ColorScheme.fromSeed(
+  final lightBase = ColorScheme.fromSeed(seedColor: lightDynamic.primary);
+  final darkBase = ColorScheme.fromSeed(
       seedColor: darkDynamic.primary, brightness: Brightness.dark);
 
-  var lightAdditionalColours = _extractAdditionalColours(lightBase);
-  var darkAdditionalColours = _extractAdditionalColours(darkBase);
+  final lightAdditionalColours = _extractAdditionalColours(lightBase);
+  final darkAdditionalColours = _extractAdditionalColours(darkBase);
 
-  var lightScheme = _insertAdditionalColours(lightBase, lightAdditionalColours);
-  var darkScheme = _insertAdditionalColours(darkBase, darkAdditionalColours);
+  final lightScheme = _insertAdditionalColours(lightBase, lightAdditionalColours);
+  final darkScheme = _insertAdditionalColours(darkBase, darkAdditionalColours);
 
   return (lightScheme.harmonized(), darkScheme.harmonized());
 }

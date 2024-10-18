@@ -1,20 +1,16 @@
-// Dart imports:
-import 'dart:async';
-
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/debounce_mixin.dart';
+import 'package:boorusama/router.dart';
 import 'widgets/moebooru_comment_section.dart';
 import 'widgets/moebooru_information_section.dart';
 
@@ -38,112 +34,35 @@ class MoebooruPostDetailsDesktopPage extends ConsumerStatefulWidget {
 }
 
 class _MoebooruPostDetailsDesktopPageState
-    extends ConsumerState<MoebooruPostDetailsDesktopPage> with DebounceMixin {
-  late var page = widget.initialIndex;
-  Timer? _debounceTimer;
-  var loading = false;
-
-  @override
-  void dispose() {
-    super.dispose();
-    _debounceTimer?.cancel();
-  }
-
+    extends ConsumerState<MoebooruPostDetailsDesktopPage> {
   @override
   Widget build(BuildContext context) {
-    final post = widget.posts[page];
-    final booruConfig = ref.watchConfig;
+    final config = ref.watchConfig;
 
-    return CallbackShortcuts(
-      bindings: {
-        const SingleActivator(
-          LogicalKeyboardKey.keyF,
-          control: true,
-        ): () => goToOriginalImagePage(context, post),
-      },
-      child: DetailsPageDesktop(
-        onExit: widget.onExit,
-        initialPage: widget.initialIndex,
-        totalPages: widget.posts.length,
-        onPageChanged: (page) {
-          widget.onPageChanged(page);
-          setState(() {
-            this.page = page;
-            loading = true;
-          });
-          ref
-              .read(tagsProvider(booruConfig).notifier)
-              .load(widget.posts[page].tags);
-          _debounceTimer?.cancel();
-          _debounceTimer = Timer(
-            const Duration(seconds: 1),
-            () {
-              setState(() => loading = false);
-            },
-          );
-        },
-        topRightBuilder: (context) => GeneralMoreActionButton(
-          post: post,
+    return PostDetailsPageDesktopScaffold(
+      posts: widget.posts,
+      initialIndex: widget.initialIndex,
+      onExit: widget.onExit,
+      onPageChanged: widget.onPageChanged,
+      imageUrlBuilder: defaultPostImageUrlBuilder(ref),
+      topRightButtonsBuilder: (currentPage, expanded, post) =>
+          GeneralMoreActionButton(post: post),
+      infoBuilder: (context, post) => MoebooruInformationSection(
+        post: post,
+        tags: ref.watch(tagsProvider(config)),
+      ),
+      toolbarBuilder: (context, post) => SimplePostActionToolbar(post: post),
+      tagListBuilder: (context, post) => TagsTile(
+        post: post,
+        tags: ref.watch(tagsProvider(config)),
+        onTagTap: (tag) => goToSearchPage(
+          context,
+          tag: tag.rawName,
         ),
-        mediaBuilder: (context) {
-          return PostMedia(
-            post: post,
-            imageUrl: post.sampleImageUrl,
-            placeholderImageUrl: post.thumbnailImageUrl,
-            autoPlay: true,
-            inFocus: true,
-          );
-        },
-        infoBuilder: (context) {
-          return CustomScrollView(
-            slivers: [
-              SliverList(
-                delegate: SliverChildListDelegate(
-                  [
-                    MoebooruInformationSection(
-                      post: post,
-                      tags: ref.watch(tagsProvider(booruConfig)),
-                    ),
-                    const Divider(
-                      thickness: 1.5,
-                    ),
-                    SimplePostActionToolbar(post: post),
-                    const Divider(
-                      thickness: 1.5,
-                      height: 4,
-                    ),
-                    FileDetailsSection(
-                      post: post,
-                      rating: post.rating,
-                    ),
-                    const Divider(
-                      thickness: 1.5,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: TagsTile(
-                        post: post,
-                        tags: ref.watch(tagsProvider(booruConfig)),
-                        onTagTap: (tag) => goToSearchPage(
-                          context,
-                          tag: tag.rawName,
-                        ),
-                      ),
-                    ),
-                    post.source.whenWeb(
-                      (source) => SourceSection(source: source),
-                      () => const SizedBox.shrink(),
-                    ),
-                    MoebooruCommentSection(
-                      post: post,
-                      allowFetch: !loading,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          );
-        },
+      ),
+      commentBuilder: (context, post) => MoebooruCommentSection(
+        post: post,
+        allowFetch: true,
       ),
     );
   }

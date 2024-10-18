@@ -40,20 +40,14 @@ class CommentList extends StatelessWidget {
 
               return ListTile(
                 title: CommentItem(
-                  hasVoteSection: authenticated,
-                  onVoteChanged: (event, commentVote) {
-                    if (event == VoteEvent.upvoted) {
-                      onUpvote(comment);
-                    } else if (event == VoteEvent.downvote) {
-                      onDownvote(comment);
-                    } else if (event == VoteEvent.voteRemoved) {
-                      onClearVote(comment, commentVote);
-                    } else {
-                      //TODO: unknown vote event
-                    }
+                  hasVoteSection: true,
+                  onVoteChanged: (event, commentVote) => switch (event) {
+                    VoteEvent.upvoted => onUpvote(comment),
+                    VoteEvent.downvote => onDownvote(comment),
+                    VoteEvent.voteRemoved => onClearVote(comment, commentVote),
                   },
                   comment: comment,
-                  onReply: () => onReply(comment),
+                  onReply: authenticated ? () => onReply(comment) : null,
                   moreBuilder: (context) => authenticated
                       ? BooruPopupMenuButton(
                           onSelected: (value) {
@@ -66,12 +60,12 @@ class CommentList extends StatelessWidget {
                             }
                           },
                           itemBuilder: {
-                              'edit': const Text('comment.list.edit').tr(),
-                              'reply': const Text('comment.list.reply').tr(),
-                              if (comment.isSelf)
-                                'delete':
-                                    const Text('comment.list.delete').tr(),
-                            })
+                            'edit': const Text('comment.list.edit').tr(),
+                            'reply': const Text('comment.list.reply').tr(),
+                            if (comment.isSelf)
+                              'delete': const Text('comment.list.delete').tr(),
+                          },
+                        )
                       : const SizedBox.shrink(),
                 ),
               );

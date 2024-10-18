@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/theme.dart';
@@ -145,7 +144,6 @@ class BooruSelectorItem extends StatelessWidget {
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   if (direction == Axis.horizontal)
                     const SizedBox(height: 12)
@@ -157,22 +155,14 @@ class BooruSelectorItem extends StatelessWidget {
                             vertical: hideLabel ? 4 : 0,
                           )
                         : null,
-                    child: switch (PostSource.from(config.url)) {
-                      WebSource source => ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: BooruLogo(
-                            source: source,
-                            width: logoSize,
-                            height: logoSize,
-                          ),
-                        ),
-                      _ => Card(
-                          child: SizedBox(
-                            width: logoSize,
-                            height: logoSize,
-                          ),
-                        ),
-                    },
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: BooruLogo.fromConfig(
+                        config,
+                        width: logoSize,
+                        height: logoSize,
+                      ),
+                    ),
                   ),
                   if (direction == Axis.horizontal && hideLabel)
                     const SizedBox(height: 8)

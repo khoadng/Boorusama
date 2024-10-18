@@ -1,6 +1,4 @@
 class TagSummaryDto {
-  final int? version;
-  final String? data;
 
   TagSummaryDto({this.version, this.data});
 
@@ -10,6 +8,8 @@ class TagSummaryDto {
       data: json['data'],
     );
   }
+  final int? version;
+  final String? data;
 
   Map<String, dynamic> toJson() {
     return {

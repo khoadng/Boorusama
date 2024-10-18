@@ -27,6 +27,6 @@ final moebooruAllTagsProvider =
       .sorted((a, b) => a.rawName.compareTo(b.rawName));
 
   return {
-    for (var tag in tags) tag.rawName: tag,
+    for (final tag in tags) tag.rawName: tag,
   };
 });

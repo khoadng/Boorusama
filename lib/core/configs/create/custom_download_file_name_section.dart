@@ -1,6 +1,5 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:expandable/expandable.dart';
@@ -17,6 +16,7 @@ import 'package:boorusama/core/filename_generators/filename_generators.dart';
 import 'package:boorusama/core/posts/post.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/clipboard.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
@@ -197,7 +197,7 @@ class _DownloadFormatCardState extends ConsumerState<DownloadFormatCard> {
           )
         : const SizedBox();
 
-    return Container(
+    return DecoratedBox(
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(4)),
         border: Border.all(color: context.theme.hintColor),
@@ -210,7 +210,7 @@ class _DownloadFormatCardState extends ConsumerState<DownloadFormatCard> {
         ),
         header: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: Text(widget.title, style: context.textTheme.bodyMedium!),
+          child: Text(widget.title, style: context.textTheme.bodyMedium),
         ),
         collapsed: preview,
         expanded: Column(
@@ -337,7 +337,7 @@ class AvailableTokens extends ConsumerWidget {
                   downloadFilenameBuilder?.getTokenOptions(token);
 
               if (tokenOptions == null) {
-                showErrorToast('Token $token is not available');
+                showErrorToast(context, 'Token $token is not available');
                 return;
               }
 
@@ -384,7 +384,6 @@ class TokenOptionHelpModal extends StatelessWidget {
       body: tokenOptions.isNotEmpty
           ? Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -429,8 +428,7 @@ class TokenOptionHelpModal extends StatelessWidget {
                             : null,
                         trailing: IconButton(
                           onPressed: () {
-                            Clipboard.setData(ClipboardData(text: option))
-                                .then((value) => showSuccessToast('Copied'));
+                            AppClipboard.copyWithDefaultToast(context, option);
                           },
                           icon: const Icon(Symbols.copy_all),
                         ),

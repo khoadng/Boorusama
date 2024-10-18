@@ -3,13 +3,12 @@ import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
 
 class SettingsRepositoryLoggerInterceptor implements SettingsRepository {
-  final SettingsRepository repository;
-  final LoggerService _logger;
-
   SettingsRepositoryLoggerInterceptor(
     this.repository, {
-    required LoggerService logger,
+    required Logger logger,
   }) : _logger = logger;
+  final SettingsRepository repository;
+  final Logger _logger;
 
   @override
   Future<bool> save(Settings setting) async => repository.save(setting);
@@ -17,7 +16,7 @@ class SettingsRepositoryLoggerInterceptor implements SettingsRepository {
   @override
   SettingsOrError load() =>
       repository.load().map((settings) => settings).mapLeft((error) {
-        _logger.logE('Settings', "Failed to load settings: $error");
+        _logger.logE('Settings', 'Failed to load settings: $error');
         return error;
       });
 }

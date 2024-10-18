@@ -52,7 +52,6 @@ extension PostShareX on WidgetRef {
 
     Screen.of(context).size == ScreenSize.small
         ? showMaterialModalBottomSheet(
-            expand: false,
             context: context,
             barrierColor: Colors.black45,
             backgroundColor: Colors.transparent,

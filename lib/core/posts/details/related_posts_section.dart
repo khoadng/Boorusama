@@ -2,13 +2,13 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:filesize/filesize.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/foundation/filesize.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/sliver_sized_box.dart';
@@ -20,14 +20,14 @@ class RelatedPostsSection<T extends Post> extends ConsumerWidget {
     required this.posts,
     required this.imageUrl,
     required this.onTap,
-    required this.onViewAll,
+    this.onViewAll,
     this.title,
   });
 
   final List<T> posts;
   final String Function(T) imageUrl;
   final void Function(int index) onTap;
-  final void Function() onViewAll;
+  final void Function()? onViewAll;
   final String? title;
 
   @override
@@ -35,6 +35,23 @@ class RelatedPostsSection<T extends Post> extends ConsumerWidget {
     if (posts.isEmpty) {
       return const SliverSizedBox();
     }
+
+    final listTile = ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+      visualDensity: VisualDensity.compact,
+      minVerticalPadding: 0,
+      trailing: onViewAll != null
+          ? const Icon(
+              Symbols.arrow_right_alt,
+            )
+          : null,
+      title: Text(
+        title ?? 'post.detail.related_posts'.tr(),
+        style: context.textTheme.titleLarge?.copyWith(
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
 
     return SliverList(
       delegate: SliverChildListDelegate([
@@ -47,26 +64,15 @@ class RelatedPostsSection<T extends Post> extends ConsumerWidget {
                   horizontal: 4,
                   vertical: 8,
                 ),
-                child: InkWell(
-                  onTap: onViewAll,
-                  customBorder: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: ListTile(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 8),
-                    visualDensity: VisualDensity.compact,
-                    minVerticalPadding: 0,
-                    trailing: const Icon(
-                      Symbols.arrow_right_alt,
-                    ),
-                    title: Text(
-                      title ?? 'post.detail.related_posts'.tr(),
-                      style: context.textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
+                child: onViewAll != null
+                    ? InkWell(
+                        onTap: onViewAll,
+                        customBorder: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: listTile,
+                      )
+                    : listTile,
               ),
             ),
             PreviewPostList(
@@ -83,7 +89,6 @@ class RelatedPostsSection<T extends Post> extends ConsumerWidget {
                   Align(
                     alignment: Alignment.bottomLeft,
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -112,7 +117,7 @@ class RelatedPostsSection<T extends Post> extends ConsumerWidget {
                                   const BorderRadius.all(Radius.circular(4)),
                             ),
                             child: Text(
-                              filesize(post.fileSize, 1),
+                              Filesize.parse(post.fileSize, round: 1),
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,

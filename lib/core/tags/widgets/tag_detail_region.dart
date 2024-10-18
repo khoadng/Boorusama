@@ -30,30 +30,32 @@ class TagDetailsRegion extends ConsumerWidget {
         : Material(
             color: context.colorScheme.surface,
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(width: 4),
                 SizedBox(
                   width: max(context.screenWidth * 0.25, 350),
                   child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            IconButton(
-                              iconSize: 28,
-                              splashRadius: 24,
-                              icon: const Icon(
-                                Symbols.close,
+                    child: SafeArea(
+                      left: false,
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              IconButton(
+                                iconSize: 28,
+                                splashRadius: 24,
+                                icon: const Icon(
+                                  Symbols.close,
+                                ),
+                                onPressed: () => Navigator.of(context).pop(),
                               ),
-                              onPressed: () => Navigator.of(context).pop(),
-                            ),
-                            const Spacer(),
-                          ],
-                        ),
-                        detailsBuilder(context),
-                      ],
+                              const Spacer(),
+                            ],
+                          ),
+                          detailsBuilder(context),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -61,8 +63,13 @@ class TagDetailsRegion extends ConsumerWidget {
                   width: 12,
                   thickness: 1,
                 ),
+                const SizedBox(width: 8),
                 Expanded(
-                  child: builder(context),
+                  child: MediaQuery.removeViewPadding(
+                    context: context,
+                    removeLeft: true,
+                    child: builder(context),
+                  ),
                 ),
               ],
             ),

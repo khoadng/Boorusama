@@ -89,6 +89,12 @@ final listingConfigsProvider = StateProvider.autoDispose<ListingConfigs?>(
   dependencies: [booruConfigDataProvider],
 );
 
+final alwaysIncludeTagsProvider = StateProvider.autoDispose<String?>(
+  (ref) => ref.watch(
+      booruConfigDataProvider.select((value) => value.alwaysIncludeTags)),
+  dependencies: [booruConfigDataProvider],
+);
+
 final configNameProvider = StateProvider.autoDispose<String>(
   (ref) => ref.watch(booruConfigDataProvider.select((value) => value.name)),
   dependencies: [booruConfigDataProvider],
@@ -128,6 +134,9 @@ extension UpdateDataX on WidgetRef {
 
   void updateListing(ListingConfigs? data) =>
       read(listingConfigsProvider.notifier).state = data;
+
+  void updateAlwaysIncludeTags(String? data) =>
+      read(alwaysIncludeTagsProvider.notifier).state = data;
 
   void updateName(String data) =>
       read(configNameProvider.notifier).state = data;

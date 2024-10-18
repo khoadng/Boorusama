@@ -7,7 +7,9 @@ import 'package:boorusama/functional.dart';
 
 final globalBlacklistedTagRepoProvider =
     Provider<GlobalBlacklistedTagRepository>(
-        (ref) => throw UnimplementedError());
+  (ref) => throw UnimplementedError(),
+  name: 'globalBlacklistedTagRepoProvider',
+);
 
 final globalBlacklistedTagsProvider =
     NotifierProvider<GlobalBlacklistedTagsNotifier, IList<BlacklistedTag>>(

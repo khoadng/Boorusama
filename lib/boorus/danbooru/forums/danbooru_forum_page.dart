@@ -42,13 +42,17 @@ class _DanbooruForumPageState extends ConsumerState<DanbooruForumPage> {
   }
 
   Future<void> _fetchPage(int pageKey) async {
+    final config = ref.readConfig;
+
     final topics = await ref
-        .read(danbooruForumTopicRepoProvider(ref.readConfig))
+        .read(danbooruForumTopicRepoProvider(config))
         .getForumTopicsOrEmpty(pageKey);
 
     await ref
-        .watch(danbooruCreatorsProvider(ref.readConfig).notifier)
+        .watch(danbooruCreatorsProvider(config).notifier)
         .load(topics.map((e) => e.creatorId).toList());
+
+    if (!mounted) return;
 
     if (topics.isEmpty) {
       pagingController.appendLastPage([]);

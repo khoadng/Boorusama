@@ -8,6 +8,16 @@ mixin FavoriteNotSupportedMixin implements BooruBuilder {
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder => null;
+  @override
+  QuickFavoriteButtonBuilder? get quickFavoriteButtonBuilder => null;
+}
+
+mixin DefaultQuickFavoriteButtonBuilderMixin implements BooruBuilder {
+  @override
+  QuickFavoriteButtonBuilder get quickFavoriteButtonBuilder =>
+      (context, post) => DefaultQuickFavoriteButton(
+            post: post,
+          );
 }
 
 mixin ArtistNotSupportedMixin implements BooruBuilder {
@@ -30,11 +40,6 @@ mixin PostCountNotSupportedMixin implements BooruBuilder {
   PostCountFetcher? get postCountFetcher => null;
 }
 
-mixin NoteNotSupportedMixin implements BooruBuilder {
-  @override
-  NoteFetcher? get noteFetcher => null;
-}
-
 mixin DefaultThumbnailUrlMixin implements BooruBuilder {
   @override
   GridThumbnailUrlBuilder get gridThumbnailUrlBuilder =>
@@ -52,15 +57,14 @@ mixin DefaultThumbnailUrlMixin implements BooruBuilder {
 
 mixin DefaultTagColorMixin implements BooruBuilder {
   @override
-  TagColorBuilder get tagColorBuilder => (themeMode, tagType) {
-        final colors = themeMode == AppThemeMode.light
-            ? TagColors.dark()
-            : TagColors.light();
+  TagColorBuilder get tagColorBuilder => (brightness, tagType) {
+        final colors =
+            brightness.isLight ? TagColors.dark() : TagColors.light();
 
         return switch (tagType) {
           '0' || 'general' || 'tag' => colors.general,
-          '1' || 'artist' => colors.artist,
-          '3' || 'copyright' => colors.copyright,
+          '1' || 'artist' || 'creator' || 'studio' => colors.artist,
+          '3' || 'copyright' || 'series' => colors.copyright,
           '4' || 'character' => colors.character,
           '5' || 'meta' || 'metadata' => colors.meta,
           _ => colors.general,
@@ -129,6 +133,14 @@ mixin DefaultPostGesturesHandlerMixin on BooruBuilder {
           );
 }
 
+mixin DefaultMultiSelectionActionsBuilderMixin on BooruBuilder {
+  @override
+  MultiSelectionActionsBuilder? get multiSelectionActionsBuilder =>
+      (context, controller) => DefaultMultiSelectionActions(
+            controller: controller,
+          );
+}
+
 extension BooruBuilderGestures on BooruBuilder {
   bool canHandlePostGesture(
     GestureType gesture,
@@ -164,74 +176,10 @@ mixin NewGranularRatingOptionsBuilderMixin on BooruBuilder {
       };
 }
 
-mixin NoGranularRatingQueryBuilderMixin on BooruBuilder {
-  @override
-  GranularRatingQueryBuilder? get granularRatingQueryBuilder => null;
-}
-
-mixin LegacyGranularRatingQueryBuilderMixin on BooruBuilder {
-  @override
-  GranularRatingQueryBuilder? get granularRatingQueryBuilder =>
-      (currentQuery, config) => switch (config.ratingFilter) {
-            BooruConfigRatingFilter.none => currentQuery,
-            BooruConfigRatingFilter.hideNSFW => [
-                ...currentQuery,
-                'rating:safe',
-              ],
-            BooruConfigRatingFilter.hideExplicit => [
-                ...currentQuery,
-                '-rating:explicit',
-              ],
-            BooruConfigRatingFilter.custom =>
-              config.granularRatingFiltersWithoutUnknown.toOption().fold(
-                    () => currentQuery,
-                    (ratings) => [
-                      ...currentQuery,
-                      ...ratings.map((e) => '-rating:${e.toFullString(
-                            legacy: true,
-                          )}'),
-                    ],
-                  ),
-          };
-}
-
-mixin NewGranularRatingQueryBuilderMixin on BooruBuilder {
-  @override
-  GranularRatingQueryBuilder? get granularRatingQueryBuilder =>
-      (currentQuery, config) => switch (config.ratingFilter) {
-            BooruConfigRatingFilter.none => currentQuery,
-            BooruConfigRatingFilter.hideNSFW => [
-                ...currentQuery,
-                'rating:g',
-              ],
-            BooruConfigRatingFilter.hideExplicit => [
-                ...currentQuery,
-                '-rating:e',
-                '-rating:q',
-              ],
-            BooruConfigRatingFilter.custom =>
-              config.granularRatingFiltersWithoutUnknown.toOption().fold(
-                    () => currentQuery,
-                    (ratings) => [
-                      ...currentQuery,
-                      ...ratings.map((e) => '-rating:${e.toShortString()}'),
-                    ],
-                  ),
-          };
-}
-
 mixin DefaultBooruUIMixin implements BooruBuilder {
   @override
-  HomePageBuilder get homePageBuilder => (context, config) => HomePageScaffold(
-        onPostTap:
-            (context, posts, post, scrollController, settings, initialIndex) =>
-                goToPostDetailsPage(
-          context: context,
-          posts: posts,
-          initialIndex: initialIndex,
-        ),
-        onSearchTap: () => goToSearchPage(context),
-      );
+  HomePageBuilder get homePageBuilder =>
+      (context, config) => const HomePageScaffold();
 
   @override
   SearchPageBuilder get searchPageBuilder =>
@@ -241,9 +189,22 @@ mixin DefaultBooruUIMixin implements BooruBuilder {
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) => DefaultPostDetailsPage(
+      (context, config, payload) {
+        return PostDetailsLayoutSwitcher(
+          initialIndex: payload.initialIndex,
+          posts: payload.posts,
+          scrollController: payload.scrollController,
+          desktop: (controller) => DefaultPostDetailsDesktopPage(
+            initialIndex: controller.currentPage.value,
+            posts: payload.posts,
+            onExit: (page) => controller.onExit(page),
+            onPageChanged: (page) => controller.setPage(page),
+          ),
+          mobile: (controller) => DefaultPostDetailsPage(
             payload: payload,
-          );
+          ),
+        );
+      };
 }
 
 class DefaultPostDetailsPage extends ConsumerWidget {
@@ -275,13 +236,14 @@ class DefaultSearchPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booruBuilder = ref.watch(booruBuilderProvider);
+    final postRepo = ref.watch(postRepoProvider(ref.watchConfig));
 
     return SearchPageScaffold(
       initialQuery: initialQuery,
-      fetcher: (page, tags) =>
-          booruBuilder?.postFetcher.call(page, tags) ??
-          TaskEither.of(<Post>[].toResult()),
+      fetcher: (page, controler) => postRepo.getPostsFromController(
+        controler,
+        page,
+      ),
     );
   }
 }
@@ -309,66 +271,76 @@ String Function(
                 ) ??
             post.sampleImageUrl;
 
-Widget Function(
-  BuildContext context,
-  BoxConstraints constraints,
-)? defaultImagePreviewButtonBuilder(
-  WidgetRef ref,
-  Post post,
-) =>
-    switch (ref.watchConfig.defaultPreviewImageButtonActionType) {
-      ImageQuickActionType.bookmark => (context, _) => Container(
-            padding: const EdgeInsets.only(
-              top: 2,
-              bottom: 1,
-              right: 1,
-              left: 3,
-            ),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.black.withOpacity(0.5),
-            ),
-            child: BookmarkPostLikeButtonButton(
-              post: post,
-            ),
+class DefaultImagePreviewQuickActionButton extends ConsumerWidget {
+  const DefaultImagePreviewQuickActionButton({
+    super.key,
+    required this.post,
+  });
+
+  final Post post;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
+    final booruBuilder = ref.watchBooruBuilder(config);
+
+    return switch (config.defaultPreviewImageButtonActionType) {
+      ImageQuickActionType.bookmark => Container(
+          padding: const EdgeInsets.only(
+            top: 2,
+            bottom: 1,
+            right: 1,
+            left: 3,
           ),
-      ImageQuickActionType.download => (context, _) => DownloadPostButton(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.black.withOpacity(0.5),
+          ),
+          child: BookmarkPostLikeButtonButton(
+            post: post,
+          ),
+        ),
+      ImageQuickActionType.download => Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.black.withOpacity(0.5),
+          ),
+          child: DownloadPostButton(
             post: post,
             small: true,
           ),
-      ImageQuickActionType.artist => (context, constraints) => Builder(
-            builder: (context) {
-              final artist =
-                  post.artistTags != null && post.artistTags!.isNotEmpty
-                      ? chooseArtistTag(post.artistTags!)
-                      : null;
-              if (artist == null) return const SizedBox.shrink();
+        ),
+      ImageQuickActionType.artist => Builder(
+          builder: (context) {
+            final artist =
+                post.artistTags != null && post.artistTags!.isNotEmpty
+                    ? chooseArtistTag(post.artistTags!)
+                    : null;
+            if (artist == null) return const SizedBox.shrink();
 
-              return SizedBox(
-                width: constraints.maxWidth * 0.9,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Flexible(
-                      child: PostTagListChip(
-                        tag: Tag.noCount(
-                          name: artist,
-                          category: TagCategory.artist(),
-                        ),
-                        onTap: () => goToArtistPage(
-                          context,
-                          artist,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-      ImageQuickActionType.none => (context, _) => const SizedBox.shrink(),
-      ImageQuickActionType.defaultAction => null,
+            return PostTagListChip(
+              tag: Tag.noCount(
+                name: artist,
+                category: TagCategory.artist(),
+              ),
+              onTap: () => goToArtistPage(
+                context,
+                artist,
+              ),
+            );
+          },
+        ),
+      ImageQuickActionType.defaultAction =>
+        booruBuilder?.quickFavoriteButtonBuilder != null
+            ? booruBuilder!.quickFavoriteButtonBuilder!(
+                context,
+                post,
+              )
+            : const SizedBox.shrink(),
+      ImageQuickActionType.none => const SizedBox.shrink(),
     };
+  }
+}
 
 mixin UnknownMetatagsMixin implements BooruBuilder {
   @override

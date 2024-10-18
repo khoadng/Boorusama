@@ -6,6 +6,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/search/search.dart';
+import 'package:boorusama/core/tags/tag_colors.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/string.dart';
@@ -28,13 +29,11 @@ class SelectedTagChip extends StatelessWidget {
     final hasOperator = tagSearchItem.operator != FilterOperator.none;
     final hasMeta = tagSearchItem.metatag != null;
     final isRaw = tagSearchItem.isRaw;
-    final hasAny = hasMeta || hasOperator || isRaw;
 
     return GestureDetector(
       onTap: () {
         showDialog(
           context: context,
-          barrierDismissible: true,
           builder: (c) {
             return SelectedTagEditDialog(
               tag: tagSearchItem,
@@ -49,104 +48,74 @@ class SelectedTagChip extends StatelessWidget {
           },
         );
       },
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (isRaw)
-            Chip(
-              visualDensity: const ShrinkVisualDensity(),
-              backgroundColor: context.colorScheme.errorContainer,
-              labelPadding: EdgeInsets.zero,
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(8),
-                  bottomLeft: Radius.circular(8),
-                ),
-              ),
-              label: Text(
-                'RAW',
-                style: TextStyle(
-                  color: context.colorScheme.onErrorContainer,
-                  letterSpacing: -1,
-                ),
-              ),
-            )
-          else if (hasOperator)
-            Chip(
-              visualDensity: const ShrinkVisualDensity(),
-              backgroundColor: context.colorScheme.tertiary,
-              labelPadding: EdgeInsets.zero,
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(8),
-                  bottomLeft: Radius.circular(8),
-                ),
-              ),
-              label: Text(
-                filterOperatorToStringCharacter(tagSearchItem.operator),
-                style: TextStyle(
-                  color: context.colorScheme.onTertiary,
-                  letterSpacing: -1,
-                ),
-              ),
+      child: Chip(
+        visualDensity: const ShrinkVisualDensity(),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+        ),
+        backgroundColor: context.colorScheme.secondaryContainer,
+        deleteIcon: Icon(
+          Symbols.close,
+          color: context.colorScheme.error,
+          size: 18,
+          weight: 600,
+        ),
+        onDeleted: () => onDeleted?.call(),
+        labelPadding: const EdgeInsets.symmetric(horizontal: 2),
+        label: RichText(
+          text: TextSpan(
+            style: const TextStyle(
+              fontWeight: FontWeight.w500,
             ),
-          if (hasMeta)
-            Chip(
-              visualDensity: const ShrinkVisualDensity(),
-              backgroundColor: context.colorScheme.secondary,
-              labelPadding: EdgeInsets.zero,
-              shape: _getOutlineBorderForMetaChip(hasOperator),
-              label: Text(
-                tagSearchItem.metatag!,
-                style: TextStyle(
-                  color: context.colorScheme.onSecondary,
+            children: [
+              if (isRaw) ...[
+                TextSpan(
+                  text: 'RAW   ',
+                  style: TextStyle(
+                    color: context.brightness == Brightness.light
+                        ? TagColors.dark().character
+                        : TagColors.light().character,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: -1,
+                    fontSize: 13,
+                  ),
                 ),
-              ),
-            ),
-          Chip(
-            visualDensity: const ShrinkVisualDensity(),
-            backgroundColor: context.colorScheme.secondaryContainer,
-            shape: hasAny
-                ? const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(8),
-                      bottomRight: Radius.circular(8),
-                    ),
-                  )
-                : null,
-            deleteIcon: Icon(
-              Symbols.close,
-              color: context.colorScheme.error,
-              size: 18,
-              weight: 600,
-            ),
-            onDeleted: () => onDeleted?.call(),
-            labelPadding: const EdgeInsets.symmetric(horizontal: 2),
-            label: ConstrainedBox(
-              constraints: BoxConstraints(
-                maxWidth: context.screenWidth * 0.85,
-              ),
-              child: Text(
-                tagSearchItem.isRaw
+              ] else if (hasOperator)
+                TextSpan(
+                  text: '—',
+                  style: TextStyle(
+                    color: context.brightness == Brightness.light
+                        ? TagColors.dark().copyright
+                        : TagColors.light().copyright,
+                  ),
+                ),
+              if (hasMeta)
+                TextSpan(
+                  text: '${tagSearchItem.metatag}: ',
+                  style: TextStyle(
+                    color: context.brightness == Brightness.light
+                        ? TagColors.dark().meta
+                        : TagColors.light().meta,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: -0.5,
+                    fontSize: 15,
+                  ),
+                ),
+              TextSpan(
+                text: isRaw
                     ? tagSearchItem.tag
                     : tagSearchItem.tag.replaceUnderscoreWithSpace(),
-                overflow: TextOverflow.fade,
+                style: TextStyle(
+                  color: context.colorScheme.onSecondaryContainer,
+                ),
               ),
-            ),
+              const TextSpan(
+                text: ' ',
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
-  }
-
-  OutlinedBorder? _getOutlineBorderForMetaChip(bool hasOperator) {
-    return !hasOperator
-        ? const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(8),
-              bottomLeft: Radius.circular(8),
-            ),
-          )
-        : const RoundedRectangleBorder();
   }
 }

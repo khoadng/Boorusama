@@ -64,7 +64,7 @@ class PostModalShare extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             switch (sourceLink) {
-              WebSource s => ListTile(
+              final WebSource s => ListTile(
                   title: const Text('post.detail.share.source').tr(),
                   subtitle: Text(s.uri.toString()),
                   leading: WebsiteLogo(url: s.faviconUrl),
@@ -78,10 +78,7 @@ class PostModalShare extends ConsumerWidget {
             ListTile(
               title: const Text('post.detail.share.booru').tr(),
               subtitle: Text(booruLink),
-              leading: PostSource.from(booruLink).whenWeb(
-                (source) => BooruLogo(source: source),
-                () => const Icon(Symbols.box),
-              ),
+              leading: BooruLogo(source: booruLink),
               onTap: () {
                 context.navigator.pop();
                 Share.share(

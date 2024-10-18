@@ -17,7 +17,7 @@ class FavoriteGroupRepositoryApi implements FavoriteGroupRepository {
   final DanbooruClient client;
 
   @override
-  Future<List<FavoriteGroup>> getFavoriteGroupsByCreatorName({
+  Future<List<DanbooruFavoriteGroup>> getFavoriteGroupsByCreatorName({
     required String name,
     int? page,
   }) =>
@@ -106,12 +106,12 @@ class FavoriteGroupRepositoryApi implements FavoriteGroupRepository {
   }
 }
 
-FavoriteGroup favoriteGroupDtoToFavoriteGroup(FavoriteGroupDto d) =>
-    FavoriteGroup(
+DanbooruFavoriteGroup favoriteGroupDtoToFavoriteGroup(FavoriteGroupDto d) =>
+    DanbooruFavoriteGroup(
       id: d.id!,
       name: d.name ?? '',
       creator:
-          d.creator == null ? Creator.empty() : creatorDtoToCreator(d.creator!),
+          d.creator == null ? Creator.empty() : creatorDtoToCreator(d.creator),
       createdAt: d.createdAt!,
       updatedAt: d.updatedAt!,
       isPublic: d.isPublic ?? false,

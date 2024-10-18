@@ -3,23 +3,19 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_symbols_icons/symbols.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/search/result_view.dart';
-import 'package:boorusama/boorus/danbooru/search/trending_section.dart';
+import 'package:boorusama/boorus/danbooru/posts/posts.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/search/search.dart';
-import 'package:boorusama/core/search_histories/search_histories.dart';
 import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
 import '../danbooru_provider.dart';
+import '../related_tags/related_tags.dart';
+import 'trending_section.dart';
 
 class DanbooruSearchPage extends ConsumerWidget {
   const DanbooruSearchPage({
@@ -31,9 +27,12 @@ class DanbooruSearchPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
+    final postRepo = ref.watch(danbooruPostRepoProvider(config));
+
     return SearchPageScaffold(
-      // just return empty, we dont need to fetch anything
-      fetcher: (page, tags) => TaskEither.right(<Post>[].toResult()),
+      fetcher: (page, controller) =>
+          postRepo.getPosts(controller.rawTagsString, page),
       initialQuery: initialQuery,
       queryPattern: {
         RegExp('(${ref.watch(metatagsProvider).map((e) => e.name).join('|')})+:'):
@@ -55,15 +54,74 @@ class DanbooruSearchPage extends ConsumerWidget {
         scrollController,
         selectedTagController,
         searchController,
-      ) =>
-          _buildDefaultSearchResults(
-        ref,
-        didSearchOnce,
-        selectedTagString,
-        scrollController,
-        selectedTagController,
-        searchController,
-      ),
+        errors,
+        postController,
+      ) {
+        return DanbooruInfinitePostList(
+          scrollController: scrollController,
+          controller: postController,
+          errors: errors,
+          sliverHeaders: [
+            SliverSearchAppBar(
+              search: () {
+                didSearchOnce.value = true;
+                searchController.search();
+                postController.refresh();
+                selectedTagString.value = selectedTagController.rawTagsString;
+              },
+              searchController: searchController,
+              selectedTagController: selectedTagController,
+              metatagsBuilder: (context, ref) => _buildMetatagSection(
+                ref,
+                searchController,
+                popOnSelect: true,
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: SelectedTagListWithData(
+                controller: searchController.selectedTagController,
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: ValueListenableBuilder(
+                valueListenable: selectedTagString,
+                builder: (context, selectedTags, _) => RelatedTagSection(
+                  query: selectedTags,
+                  onAdded: (tag) {
+                    selectedTagController.addTag(tag.tag);
+                    postController.refresh();
+                    selectedTagString.value =
+                        selectedTagController.rawTagsString;
+                    searchController.search();
+                  },
+                  onNegated: (tag) {
+                    selectedTagController.negateTag(tag.tag);
+                    postController.refresh();
+                    selectedTagString.value =
+                        selectedTagController.rawTagsString;
+                    searchController.search();
+                  },
+                ),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: Row(
+                children: [
+                  ValueListenableBuilder(
+                    valueListenable: selectedTagString,
+                    builder: (context, selectedTags, _) =>
+                        ResultHeaderWithProvider(
+                      selectedTags: selectedTags.split(' '),
+                      onRefresh: null,
+                    ),
+                  ),
+                  const Spacer(),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -82,108 +140,6 @@ class DanbooruSearchPage extends ConsumerWidget {
         if (popOnSelect) {
           ref.context.pop();
         }
-      },
-    );
-  }
-
-  Widget _buildDefaultSearchResults(
-    WidgetRef ref,
-    ValueNotifier<bool> didSearchOnce,
-    ValueNotifier<String> selectedTagString,
-    AutoScrollController scrollController,
-    SelectedTagController selectedTagController,
-    SearchPageController searchController,
-  ) {
-    final context = ref.context;
-
-    return ResultView(
-      scrollController: scrollController,
-      selectedTagString: selectedTagString,
-      searchController: searchController,
-      onRelatedTagAdded: (tag, postController) {
-        selectedTagController.addTag(tag.tag);
-        postController.refresh();
-        selectedTagString.value = selectedTagController.rawTagsString;
-        searchController.search();
-      },
-      onRelatedTagNegated: (tag, postController) {
-        selectedTagController.negateTag(tag.tag);
-        postController.refresh();
-        selectedTagString.value = selectedTagController.rawTagsString;
-        searchController.search();
-      },
-      headerBuilder: (postController) {
-        void search() {
-          didSearchOnce.value = true;
-          searchController.search();
-          postController.refresh();
-          selectedTagString.value = selectedTagController.rawTagsString;
-        }
-
-        return [
-          SliverAppBar(
-            floating: true,
-            snap: true,
-            automaticallyImplyLeading: false,
-            titleSpacing: 0,
-            toolbarHeight: kToolbarHeight * 1.2,
-            backgroundColor: context.theme.scaffoldBackgroundColor,
-            title: SearchAppBar(
-              autofocus: false,
-              queryEditingController: searchController.textEditingController,
-              leading:
-                  (!context.canPop() ? null : const SearchAppBarBackButton()),
-              innerSearchButton: Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: SearchButton2(
-                  onTap: search,
-                ),
-              ),
-              trailingSearchButton: IconButton(
-                onPressed: () => showAppModalBarBottomSheet(
-                  context: context,
-                  builder: (context) => Scaffold(
-                    body: SafeArea(
-                      child: Container(
-                        padding: const EdgeInsets.only(top: 8),
-                        child: SearchLandingView(
-                          scrollController: ModalScrollController.of(context),
-                          onHistoryCleared: () => ref
-                              .read(searchHistoryProvider.notifier)
-                              .clearHistories(),
-                          onHistoryRemoved: (value) => ref
-                              .read(searchHistoryProvider.notifier)
-                              .removeHistory(value.query),
-                          onHistoryTap: (value) {
-                            searchController.tapHistoryTag(value);
-                            context.pop();
-                          },
-                          onTagTap: (value) {
-                            searchController.tapTag(value);
-                            context.pop();
-                          },
-                          onRawTagTap: (value) {
-                            selectedTagController.addTag(
-                              value,
-                              isRaw: true,
-                            );
-                            context.pop();
-                          },
-                          metatagsBuilder: (context) => _buildMetatagSection(
-                            ref,
-                            searchController,
-                            popOnSelect: true,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                icon: const Icon(Symbols.add),
-              ),
-            ),
-          ),
-        ];
       },
     );
   }

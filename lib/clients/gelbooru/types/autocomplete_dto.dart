@@ -43,7 +43,7 @@ class AutocompleteDto {
   final match = RegExp(r'(.*) \((\d+)\)').firstMatch(input);
 
   if (match == null) {
-    throw Exception('can\'t parse tag label');
+    throw Exception("can't parse tag label");
   }
 
   final count = int.parse(match.group(2)!);

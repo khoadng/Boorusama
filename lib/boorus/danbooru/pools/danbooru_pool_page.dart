@@ -50,7 +50,7 @@ class _PostList extends ConsumerWidget {
               ],
             ),
             SliverPinnedHeader(
-              child: Container(
+              child: ColoredBox(
                 color: context.colorScheme.surface,
                 child: DefaultTabController(
                   initialIndex:
@@ -190,7 +190,9 @@ class _PoolPagedSliverGridState extends ConsumerState<PoolPagedSliverGrid> {
         controller.appendPage(newItems, nextPageKey);
       }
     } catch (error) {
-      controller.error = error;
+      if (mounted) {
+        controller.error = error;
+      }
     }
   }
 

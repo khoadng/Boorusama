@@ -9,10 +9,11 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:boorusama/boorus/danbooru/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/posts/posts.dart';
 import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/favorites/favorites.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class DanbooruFavoritesPage extends ConsumerWidget {
@@ -27,11 +28,11 @@ class DanbooruFavoritesPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfig;
     final query = buildFavoriteQuery(username);
+    final postRepo = ref.watch(danbooruPostRepoProvider(config));
 
     return CustomContextMenuOverlay(
       child: PostScope(
-        fetcher: (page) =>
-            ref.read(danbooruPostRepoProvider(config)).getPosts(query, page),
+        fetcher: (page) => postRepo.getPosts(query, page),
         builder: (context, controller, errors) => DanbooruInfinitePostList(
           errors: errors,
           controller: controller,
@@ -55,6 +56,32 @@ class DanbooruFavoritesPage extends ConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class DanbooruQuickFavoriteButton extends ConsumerWidget {
+  const DanbooruQuickFavoriteButton({
+    super.key,
+    required this.post,
+  });
+
+  final DanbooruPost post;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isFaved =
+        post.isBanned ? false : ref.watch(danbooruFavoriteProvider(post.id));
+
+    return QuickFavoriteButton(
+      isFaved: isFaved,
+      onFavToggle: (isFaved) async {
+        if (!isFaved) {
+          ref.danbooruFavorites.remove(post.id);
+        } else {
+          ref.danbooruFavorites.add(post.id);
+        }
+      },
     );
   }
 }

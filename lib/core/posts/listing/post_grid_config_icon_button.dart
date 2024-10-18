@@ -117,66 +117,81 @@ class PostGridActionSheet extends ConsumerWidget {
         ref.watchBooruBuilder(ref.watchConfig)?.postStatisticsPageBuilder;
     final settingsNotifier = ref.watch(settingsProvider.notifier);
 
-    var mobileButtons = [
-      MobilePostGridConfigTile(
-        value: pageMode.localize().tr(),
-        title: 'settings.result_layout.result_layout'.tr(),
-        onTap: () {
+    final mobileButtons = [
+      ListingSettingsInteractionBlocker(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 4,
+          vertical: 4,
+        ),
+        onNavigateAway: () {
           if (popOnSelect) context.navigator.pop();
-          showMaterialModalBottomSheet(
-            context: context,
-            builder: (_) => OptionActionSheet(
-              onChanged: onModeChanged,
-              optionName: (option) => option.localize().tr(),
-              options: PageMode.values,
-            ),
-          );
         },
-      ),
-      MobilePostGridConfigTile(
-        value: gridSize.localize().tr(),
-        title: 'settings.image_grid.image_grid'.tr(),
-        onTap: () {
-          if (popOnSelect) context.navigator.pop();
-          showMaterialModalBottomSheet(
-            context: context,
-            builder: (_) => OptionActionSheet(
-              onChanged: onGridChanged,
-              optionName: (option) => option.localize().tr(),
-              options: GridSize.values,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            MobilePostGridConfigTile(
+              value: pageMode.localize().tr(),
+              title: 'settings.result_layout.result_layout'.tr(),
+              onTap: () {
+                if (popOnSelect) context.navigator.pop();
+                showMaterialModalBottomSheet(
+                  context: context,
+                  builder: (_) => OptionActionSheet(
+                    onChanged: onModeChanged,
+                    optionName: (option) => option.localize().tr(),
+                    options: PageMode.values,
+                  ),
+                );
+              },
             ),
-          );
-        },
-      ),
-      MobilePostGridConfigTile(
-        value: imageListType.localize().tr(),
-        title: 'settings.image_list.image_list'.tr(),
-        onTap: () {
-          if (popOnSelect) context.navigator.pop();
-          showMaterialModalBottomSheet(
-            context: context,
-            builder: (_) => OptionActionSheet(
-              onChanged: onImageListChanged,
-              optionName: (option) => option.localize().tr(),
-              options: ImageListType.values,
+            MobilePostGridConfigTile(
+              value: gridSize.localize().tr(),
+              title: 'settings.image_grid.image_grid'.tr(),
+              onTap: () {
+                if (popOnSelect) context.navigator.pop();
+                showMaterialModalBottomSheet(
+                  context: context,
+                  builder: (_) => OptionActionSheet(
+                    onChanged: onGridChanged,
+                    optionName: (option) => option.localize().tr(),
+                    options: GridSize.values,
+                  ),
+                );
+              },
             ),
-          );
-        },
-      ),
-      MobilePostGridConfigTile(
-        value: imageQuality.localize().tr(),
-        title: 'settings.image_grid.image_quality.image_quality'.tr(),
-        onTap: () {
-          if (popOnSelect) context.navigator.pop();
-          showMaterialModalBottomSheet(
-            context: context,
-            builder: (_) => OptionActionSheet(
-              onChanged: onImageQualityChanged,
-              optionName: (option) => option.localize().tr(),
-              options: [...ImageQuality.values]..remove(ImageQuality.original),
+            MobilePostGridConfigTile(
+              value: imageListType.localize().tr(),
+              title: 'settings.image_list.image_list'.tr(),
+              onTap: () {
+                if (popOnSelect) context.navigator.pop();
+                showMaterialModalBottomSheet(
+                  context: context,
+                  builder: (_) => OptionActionSheet(
+                    onChanged: onImageListChanged,
+                    optionName: (option) => option.localize().tr(),
+                    options: ImageListType.values,
+                  ),
+                );
+              },
             ),
-          );
-        },
+            MobilePostGridConfigTile(
+              value: imageQuality.localize().tr(),
+              title: 'settings.image_grid.image_quality.image_quality'.tr(),
+              onTap: () {
+                if (popOnSelect) context.navigator.pop();
+                showMaterialModalBottomSheet(
+                  context: context,
+                  builder: (_) => OptionActionSheet(
+                    onChanged: onImageQualityChanged,
+                    optionName: (option) => option.localize().tr(),
+                    options: [...ImageQuality.values]
+                      ..remove(ImageQuality.original),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
       ),
       if (postStatsPageBuilder != null && postController.items.isNotEmpty) ...[
         const Divider(),
@@ -374,7 +389,6 @@ class DesktopPostGridConfigTile<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisSize: MainAxisSize.max,
       children: [
         Container(
           width: 80,
@@ -385,7 +399,7 @@ class DesktopPostGridConfigTile<T> extends StatelessWidget {
         Expanded(
           child: Container(
             constraints: const BoxConstraints(minWidth: 150),
-            child: OptionDropDownButton(
+            child: OptionDropDownButtonDesktop(
               alignment: AlignmentDirectional.centerStart,
               onChanged: (value) => value != null ? onChanged(value) : null,
               value: value,

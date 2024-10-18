@@ -129,12 +129,12 @@ class _FavoriteGroupList extends ConsumerWidget {
   }
 
   Widget _buildList(
-    List<FavoriteGroup> groups,
+    List<DanbooruFavoriteGroup> groups,
     BuildContext context,
     WidgetRef ref,
     BooruConfig config,
   ) {
-    return ImplicitlyAnimatedList<FavoriteGroup>(
+    return ImplicitlyAnimatedList<DanbooruFavoriteGroup>(
       items: groups,
       controller: ModalScrollController.of(context),
       areItemsTheSame: (oldItem, newItem) => oldItem == newItem,

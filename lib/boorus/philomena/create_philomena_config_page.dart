@@ -16,11 +16,13 @@ class CreatePhilomenaConfigPage extends StatelessWidget {
     required this.config,
     this.backgroundColor,
     this.isNewConfig = false,
+    this.initialTab,
   });
 
   final BooruConfig config;
   final Color? backgroundColor;
   final bool isNewConfig;
+  final String? initialTab;
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +32,7 @@ class CreatePhilomenaConfigPage extends StatelessWidget {
       ],
       child: CreateBooruConfigScaffold(
         isNewConfig: isNewConfig,
+        initialTab: initialTab,
         backgroundColor: backgroundColor,
         authTab: const PhilomenaAuthConfigView(),
         postDetailsResolution: const PhilomenaImageDetailsQualityProvider(),

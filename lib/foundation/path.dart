@@ -66,13 +66,13 @@ TaskEither<DirectoryError, Directory> _tryGetAndroidDownloadDirectory() =>
 
 TaskEither<DirectoryError, Directory> _tryGetIosDownloadDirectory() =>
     TaskEither.tryCatch(
-      () async => await getApplicationDocumentsDirectory(),
+      () async => getApplicationDocumentsDirectory(),
       (error, stackTrace) => DirectoryError.unknownError,
     );
 
 TaskEither<DirectoryError, Directory> _tryGetWindowsDirectory(String path) =>
     TaskEither.tryCatch(
-      () async => await getDownloadsDirectory(),
+      () async => getDownloadsDirectory(),
       (error, stackTrace) => DirectoryError.unknownError,
     ).flatMap((dir) => dir.toOption().fold(
           () => TaskEither.left(DirectoryError.directoryNotFound),
@@ -81,7 +81,7 @@ TaskEither<DirectoryError, Directory> _tryGetWindowsDirectory(String path) =>
 
 TaskEither<DirectoryError, Directory> _tryGetLinuxDownloadDirectory() =>
     TaskEither.tryCatch(
-      () async => await getDownloadsDirectory(),
+      () async => getDownloadsDirectory(),
       (error, stackTrace) => DirectoryError.unknownError,
     ).flatMap((dir) => dir.toOption().fold(
           () => TaskEither.left(DirectoryError.directoryNotFound),

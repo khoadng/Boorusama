@@ -26,7 +26,7 @@ class _LazyIndexedStackState extends State<LazyIndexedStack> {
   late List<bool> _activated = _initializeActivatedList();
 
   List<bool> _initializeActivatedList() =>
-      List<bool>.generate(widget.children.length, (int i) => i == widget.index);
+      List<bool>.generate(widget.children.length, (i) => i == widget.index);
 
   @override
   void didUpdateWidget(covariant LazyIndexedStack oldWidget) {

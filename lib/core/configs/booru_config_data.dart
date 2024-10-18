@@ -5,6 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/types.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/gestures.dart';
 
 class BooruConfigData extends Equatable {
@@ -17,6 +18,7 @@ class BooruConfigData extends Equatable {
     required this.name,
     required this.deletedItemBehavior,
     required this.ratingFilter,
+    required this.bannedPostVisibility,
     required this.url,
     required this.customDownloadFileNameFormat,
     required this.customBulkDownloadFileNameFormat,
@@ -26,6 +28,7 @@ class BooruConfigData extends Equatable {
     required this.postGestures,
     required this.defaultPreviewImageButtonAction,
     required this.listing,
+    required this.alwaysIncludeTags,
   });
 
   factory BooruConfigData.anonymous({
@@ -48,6 +51,7 @@ class BooruConfigData extends Equatable {
         name: name,
         deletedItemBehavior: BooruConfigDeletedItemBehavior.show.index,
         ratingFilter: filter.index,
+        bannedPostVisibility: BooruConfigBannedPostVisibility.show.index,
         customDownloadFileNameFormat: customDownloadFileNameFormat,
         customBulkDownloadFileNameFormat: customBulkDownloadFileNameFormat,
         customDownloadLocation: null,
@@ -56,6 +60,7 @@ class BooruConfigData extends Equatable {
         postGestures: null,
         defaultPreviewImageButtonAction: null,
         listing: null,
+        alwaysIncludeTags: null,
       );
 
   static BooruConfigData? fromJson(Map<String, dynamic> json) {
@@ -68,8 +73,9 @@ class BooruConfigData extends Equatable {
         passHash: json['passHash'] as String?,
         url: json['url'] as String,
         name: json['name'] as String,
-        deletedItemBehavior: json['deletedItemBehavior'] as int,
-        ratingFilter: json['ratingFilter'] as int,
+        deletedItemBehavior: parseIntSafe(json['deletedItemBehavior']),
+        ratingFilter: parseIntSafe(json['ratingFilter']),
+        bannedPostVisibility: parseIntSafe(json['bannedPostVisibility']),
         customDownloadFileNameFormat:
             json['customDownloadFileNameFormat'] as String?,
         customBulkDownloadFileNameFormat:
@@ -82,6 +88,7 @@ class BooruConfigData extends Equatable {
         defaultPreviewImageButtonAction:
             json['defaultPreviewImageButtonAction'] as String?,
         listing: json['listing'] as String?,
+        alwaysIncludeTags: json['alwaysIncludeTags'] as String?,
       );
     } catch (e) {
       return null;
@@ -99,6 +106,7 @@ class BooruConfigData extends Equatable {
       'name': name,
       'deletedItemBehavior': deletedItemBehavior,
       'ratingFilter': ratingFilter,
+      'bannedPostVisibility': bannedPostVisibility,
       'customDownloadFileNameFormat': customDownloadFileNameFormat,
       'customBulkDownloadFileNameFormat': customBulkDownloadFileNameFormat,
       'customDownloadLocation': customDownloadLocation,
@@ -107,6 +115,7 @@ class BooruConfigData extends Equatable {
       'postGestures': postGestures,
       'defaultPreviewImageButtonAction': defaultPreviewImageButtonAction,
       'listing': listing,
+      'alwaysIncludeTags': alwaysIncludeTags,
     };
   }
 
@@ -118,6 +127,7 @@ class BooruConfigData extends Equatable {
   final String name;
   final int deletedItemBehavior;
   final int ratingFilter;
+  final int bannedPostVisibility;
   final String url;
   final String? customDownloadFileNameFormat;
   final String? customBulkDownloadFileNameFormat;
@@ -127,6 +137,7 @@ class BooruConfigData extends Equatable {
   final String? postGestures;
   final String? defaultPreviewImageButtonAction;
   final String? listing;
+  final String? alwaysIncludeTags;
 
   @override
   List<Object?> get props => [
@@ -138,6 +149,7 @@ class BooruConfigData extends Equatable {
         name,
         deletedItemBehavior,
         ratingFilter,
+        bannedPostVisibility,
         url,
         customDownloadFileNameFormat,
         customBulkDownloadFileNameFormat,
@@ -147,6 +159,7 @@ class BooruConfigData extends Equatable {
         postGestures,
         defaultPreviewImageButtonAction,
         listing,
+        alwaysIncludeTags,
       ];
 }
 
@@ -171,6 +184,15 @@ extension BooruConfigDataX on BooruConfigData {
 
     return BooruConfigRatingFilter.values[ratingFilter];
   }
+
+  BooruConfigBannedPostVisibility? get bannedPostVisibilityTyped {
+    if (bannedPostVisibility < 0 ||
+        bannedPostVisibility >= BooruConfigBannedPostVisibility.values.length) {
+      return null;
+    }
+
+    return BooruConfigBannedPostVisibility.values[bannedPostVisibility];
+  }
 }
 
 extension BooruConfigDataCopyWith on BooruConfigData {
@@ -183,6 +205,7 @@ extension BooruConfigDataCopyWith on BooruConfigData {
     String? name,
     BooruConfigDeletedItemBehavior? deletedItemBehavior,
     BooruConfigRatingFilter? ratingFilter,
+    BooruConfigBannedPostVisibility? bannedPostVisibility,
     String? url,
     String? Function()? customDownloadFileNameFormat,
     String? Function()? customBulkDownloadFileNameFormat,
@@ -192,6 +215,7 @@ extension BooruConfigDataCopyWith on BooruConfigData {
     PostGestureConfig? Function()? postGestures,
     String? Function()? defaultPreviewImageButtonAction,
     ListingConfigs? Function()? listing,
+    String? Function()? alwaysIncludeTags,
   }) {
     return BooruConfigData(
       booruId: booruId ?? this.booruId,
@@ -205,6 +229,9 @@ extension BooruConfigDataCopyWith on BooruConfigData {
           : this.deletedItemBehavior,
       ratingFilter:
           ratingFilter != null ? ratingFilter.index : this.ratingFilter,
+      bannedPostVisibility: bannedPostVisibility != null
+          ? bannedPostVisibility.index
+          : this.bannedPostVisibility,
       url: url ?? this.url,
       customDownloadFileNameFormat: customDownloadFileNameFormat != null
           ? customDownloadFileNameFormat()
@@ -229,6 +256,9 @@ extension BooruConfigDataCopyWith on BooruConfigData {
           ? defaultPreviewImageButtonAction()
           : this.defaultPreviewImageButtonAction,
       listing: listing != null ? listing()?.toJsonString() : this.listing,
+      alwaysIncludeTags: alwaysIncludeTags != null
+          ? alwaysIncludeTags()
+          : this.alwaysIncludeTags,
     );
   }
 }

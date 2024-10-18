@@ -10,77 +10,72 @@ import 'package:readmore/readmore.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/settings/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import 'l10n.dart';
 
 final downloadFilterProvider =
-    StateProvider.family<DownloadFilter2, String?>((ref, initialFilter) {
+    StateProvider.family<DownloadFilter, String?>((ref, initialFilter) {
   return _convertFilter(initialFilter);
 });
 
-DownloadFilter2 _convertFilter(String? filter) => switch (filter) {
-      'error' => DownloadFilter2.failed,
-      'running' => DownloadFilter2.inProgress,
-      'complete' => DownloadFilter2.completed,
-      _ => DownloadFilter2.all,
+final downloadGroupProvider = Provider<String>(
+  (ref) => FileDownloader.defaultGroup,
+  name: 'downloadGroupProvider',
+);
+
+DownloadFilter _convertFilter(String? filter) => switch (filter) {
+      'error' => DownloadFilter.failed,
+      'running' => DownloadFilter.inProgress,
+      'complete' => DownloadFilter.completed,
+      _ => DownloadFilter.all,
     };
 
 final downloadFilteredProvider =
     Provider.family<List<TaskUpdate>, String?>((ref, initialFilter) {
   final filter = ref.watch(downloadFilterProvider(initialFilter));
+  final group = ref.watch(downloadGroupProvider);
   final state = ref.watch(downloadTasksProvider);
 
   return switch (filter) {
-    DownloadFilter2.all => state.toList(),
-    DownloadFilter2.pending => state
-        .whereType<TaskStatusUpdate>()
-        .where((e) => e.status == TaskStatus.enqueued)
-        .toList(),
-    DownloadFilter2.paused => state
-        .whereType<TaskStatusUpdate>()
-        .where((e) => e.status == TaskStatus.paused)
-        .toList(),
-    DownloadFilter2.inProgress =>
-      state.whereType<TaskProgressUpdate>().toList(),
-    DownloadFilter2.completed => state
-        .whereType<TaskStatusUpdate>()
-        .where((e) => e.status == TaskStatus.complete)
-        .toList(),
-    DownloadFilter2.failed => state
-        .whereType<TaskStatusUpdate>()
-        .where((e) =>
-            e.status == TaskStatus.failed || e.status == TaskStatus.notFound)
-        .toList(),
-    DownloadFilter2.canceled => state
-        .whereType<TaskStatusUpdate>()
-        .where((e) => e.status == TaskStatus.canceled)
-        .toList(),
+    DownloadFilter.all => state.all(group),
+    DownloadFilter.pending => state.pending(group),
+    DownloadFilter.paused => state.paused(group),
+    DownloadFilter.inProgress => state.inProgress(group),
+    DownloadFilter.completed => state.completed(group),
+    DownloadFilter.failed => state.failed(group),
+    DownloadFilter.canceled => state.canceled(group),
   };
-});
+}, dependencies: [
+  downloadGroupProvider,
+]);
 
 class DownloadManagerGatewayPage extends ConsumerWidget {
   const DownloadManagerGatewayPage({
     super.key,
     this.filter,
+    this.group,
   });
 
   final String? filter;
+  final String? group;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final useLegacy = ref
-        .watch(settingsProvider.select((value) => value.useLegacyDownloader));
-
-    return useLegacy
-        ? const DisabledDownloadManagerPage()
-        : DownloadManagerPage(filter: filter);
+    return ProviderScope(
+      overrides: [
+        downloadGroupProvider
+            .overrideWithValue(group ?? FileDownloader.defaultGroup),
+      ],
+      child: DownloadManagerPage(
+        filter: filter,
+      ),
+    );
   }
 }
 
@@ -129,13 +124,13 @@ class DisabledDownloadManagerPage extends StatelessWidget {
 }
 
 const _filterOptions = [
-  DownloadFilter2.all,
-  DownloadFilter2.inProgress,
-  DownloadFilter2.pending,
-  DownloadFilter2.paused,
-  DownloadFilter2.failed,
-  DownloadFilter2.canceled,
-  DownloadFilter2.completed,
+  DownloadFilter.all,
+  DownloadFilter.inProgress,
+  DownloadFilter.pending,
+  DownloadFilter.paused,
+  DownloadFilter.failed,
+  DownloadFilter.canceled,
+  DownloadFilter.completed,
 ];
 
 class DownloadManagerPage extends ConsumerStatefulWidget {
@@ -184,24 +179,31 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
   @override
   Widget build(BuildContext context) {
     final tasks = ref.watch(downloadFilteredProvider(widget.filter));
+    final group = ref.watch(downloadGroupProvider);
+    final isDefaultGroup = group == FileDownloader.defaultGroup;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Downloads'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () {
-              openDownloadSettingsPage(context);
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.clear),
-            onPressed: () {
-              ref.read(downloadTasksProvider.notifier).state = [];
-            },
-          ),
-        ],
+        title: const Text(DownloadTranslations.downloadManagerTitle).tr(),
+        actions: isDefaultGroup
+            ? [
+                IconButton(
+                  icon: const Icon(Icons.settings),
+                  onPressed: () {
+                    openDownloadSettingsPage(context);
+                  },
+                ),
+                IconButton(
+                  icon: const Icon(Icons.clear),
+                  onPressed: () {
+                    // clear default group only
+                    ref.read(downloadTasksProvider.notifier).clear(
+                          FileDownloader.defaultGroup,
+                        );
+                  },
+                ),
+              ]
+            : null,
       ),
       body: SafeArea(
         child: Column(
@@ -218,8 +220,7 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
                   searchable: false,
                   options: _filterOptions,
                   hasNullOption: false,
-                  optionLabelBuilder: (value) =>
-                      value?.name.sentenceCase ?? 'Unknown',
+                  optionLabelBuilder: (value) => value!.localize().tr(),
                   onSelected: (value) {
                     if (value == null) return;
 
@@ -277,36 +278,13 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
                         children: [
                           Container(
                             padding: const EdgeInsets.symmetric(vertical: 24),
-                            child: switch (ref
-                                .watch(downloadFilterProvider(widget.filter))) {
-                              DownloadFilter2.failed =>
-                                const Text('No failed downloads'),
-                              DownloadFilter2.inProgress =>
-                                const Text('No downloads in progress'),
-                              DownloadFilter2.pending =>
-                                const Text('No pending downloads'),
-                              DownloadFilter2.paused =>
-                                const Text('No paused downloads'),
-                              DownloadFilter2.completed =>
-                                const Text('No completed downloads'),
-                              DownloadFilter2.canceled =>
-                                const Text('No canceled downloads'),
-                              _ => const Text('No downloads'),
-                            },
+                            child: Text(
+                              ref
+                                  .watch(downloadFilterProvider(widget.filter))
+                                  .emptyLocalize(),
+                            ),
                           ),
                           const Spacer(),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 24,
-                              horizontal: 8,
-                            ),
-                            child: Text(
-                              'This feature is still in experimental phase, please report any issues to the developer. You can also switch back to the legacy downloader in the settings.',
-                              style: context.textTheme.bodySmall?.copyWith(
-                                color: context.theme.hintColor,
-                              ),
-                            ),
-                          ),
                         ],
                       ),
               ),
@@ -329,14 +307,11 @@ class RetryAllFailedButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final failed = ref
-        .watch(downloadFilteredProvider(filter))
-        .whereType<TaskStatusUpdate>()
-        .where((e) => e.status == TaskStatus.failed)
-        .toList();
+    final failed = ref.watch(downloadTasksProvider).failed(
+          ref.watch(downloadGroupProvider),
+        );
 
-    return ref.watch(downloadFilterProvider(filter)) ==
-                DownloadFilter2.failed &&
+    return ref.watch(downloadFilterProvider(filter)) == DownloadFilter.failed &&
             failed.isNotEmpty
         ? Padding(
             padding: const EdgeInsets.all(12),
@@ -350,7 +325,7 @@ class RetryAllFailedButton extends ConsumerWidget {
                   FileDownloader().enqueue(dt);
                 }
               },
-              child: const Text('Retry all'),
+              child: const Text(DownloadTranslations.retryAllFailed).tr(),
             ),
           )
         : const SizedBox.shrink();
@@ -364,12 +339,12 @@ final _checkResumableProvider =
 
 extension TaskCancelX on TaskUpdate {
   bool get isCanceled => switch (this) {
-        TaskStatusUpdate u => u.status == TaskStatus.canceled,
+        final TaskStatusUpdate u => u.status == TaskStatus.canceled,
         TaskProgressUpdate _ => false,
       };
 
   bool get canCancel => switch (this) {
-        TaskStatusUpdate u => switch (u.status) {
+        final TaskStatusUpdate u => switch (u.status) {
             TaskStatus.failed => false,
             TaskStatus.paused => false,
             TaskStatus.running => true,
@@ -415,11 +390,12 @@ class SimpleDownloadTile extends ConsumerWidget {
       fileSize: task.fileSize,
       networkSpeed: switch (task) {
         TaskStatusUpdate _ => null,
-        TaskProgressUpdate p => p.hasNetworkSpeed ? p.networkSpeed : null,
+        final TaskProgressUpdate p => p.hasNetworkSpeed ? p.networkSpeed : null,
       },
       timeRemaining: switch (task) {
         TaskStatusUpdate _ => null,
-        TaskProgressUpdate p => p.hasTimeRemaining ? p.timeRemaining : null,
+        final TaskProgressUpdate p =>
+          p.hasTimeRemaining ? p.timeRemaining : null,
       },
       onCancel: task.canCancel ? onCancel : null,
       builder: (_) => RawDownloadTile(
@@ -427,7 +403,7 @@ class SimpleDownloadTile extends ConsumerWidget {
         strikeThrough: task.isCanceled,
         color: task.isCanceled ? context.theme.hintColor : null,
         trailing: switch (task) {
-          TaskStatusUpdate s => switch (s.status) {
+          final TaskStatusUpdate s => switch (s.status) {
               TaskStatus.failed =>
                 ref.watch(_checkResumableProvider(task.task)).when(
                       data: (value) => value
@@ -487,8 +463,8 @@ class SimpleDownloadTile extends ConsumerWidget {
             ),
         },
         subtitle: switch (task) {
-          TaskStatusUpdate s => _TaskSubtitle(task: s),
-          TaskProgressUpdate p => p.progress >= 0
+          final TaskStatusUpdate s => _TaskSubtitle(task: s),
+          final TaskProgressUpdate p => p.progress >= 0
               ? LinearPercentIndicator(
                   lineHeight: 2,
                   percent: p.progress,

@@ -15,11 +15,13 @@ class CreateGelbooruV2ConfigPage extends StatelessWidget {
     required this.config,
     this.backgroundColor,
     this.isNewConfig = false,
+    this.initialTab,
   });
 
   final BooruConfig config;
   final Color? backgroundColor;
   final bool isNewConfig;
+  final String? initialTab;
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +31,7 @@ class CreateGelbooruV2ConfigPage extends StatelessWidget {
       ],
       child: CreateBooruConfigScaffold(
         isNewConfig: isNewConfig,
+        initialTab: initialTab,
         backgroundColor: backgroundColor,
         authTab: const GelbooruV2AuthView(),
         hasRatingFilter: true,

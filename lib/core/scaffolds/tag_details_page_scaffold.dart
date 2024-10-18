@@ -54,7 +54,6 @@ class _DanbooruTagDetailsPageState<T extends Post>
             () => TagTitleName(tagName: widget.tagName),
             () => Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Expanded(
                       child: widget.otherNamesBuilder(context),

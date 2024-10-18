@@ -8,39 +8,25 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'multi_select_controller.dart';
 
-typedef ScrollableWidgetBuilder<T> = Widget Function(
-    BuildContext context, List<T> items, IndexedWidgetBuilder itemBuilder);
-
 typedef FooterBuilder<T> = Widget Function(
   BuildContext context,
   List<T> selectedItems,
 );
 
-typedef HeaderBuilder<T> = Widget Function(
-  BuildContext context,
-  List<T> selectedItems,
-  VoidCallback clearSelected,
-  VoidCallback selectAll,
-);
-
 class MultiSelectWidget<T> extends StatefulWidget {
   const MultiSelectWidget({
     super.key,
-    required this.items,
-    required this.itemBuilder,
-    required this.scrollableWidgetBuilder,
-    this.footerBuilder,
-    this.headerBuilder,
+    this.footer,
+    this.header,
     this.multiSelectController,
     this.onMultiSelectChanged,
+    required this.child,
   });
-  final List<T> items;
-  final IndexedWidgetBuilder itemBuilder;
-  final ScrollableWidgetBuilder<T> scrollableWidgetBuilder;
-  final FooterBuilder<T>? footerBuilder;
-  final HeaderBuilder<T>? headerBuilder;
+  final Widget? footer;
+  final Widget? header;
   final MultiSelectController<T>? multiSelectController;
   final void Function(bool multiSelect)? onMultiSelectChanged;
+  final Widget child;
 
   @override
   State<MultiSelectWidget<T>> createState() => _MultiSelectWidgetState<T>();
@@ -82,48 +68,22 @@ class _MultiSelectWidgetState<T> extends State<MultiSelectWidget<T>> {
     return Scaffold(
         appBar: PreferredSize(
             preferredSize: const Size.fromHeight(kToolbarHeight),
-            child: multiSelect && widget.headerBuilder != null
-                ? widget.headerBuilder!(
-                    context,
-                    _controller.selectedItems,
-                    _controller.clearSelected,
-                    () => _controller.selectAll(widget.items),
-                  )
+            child: multiSelect && widget.header != null
+                ? widget.header!
                 : const SizedBox.shrink()),
-        body: widget.scrollableWidgetBuilder(
-          context,
-          widget.items,
-          (context, index) {
-            return multiSelect
-                ? SelectableItem(
-                    index: index,
-                    isSelected:
-                        _controller.selectedItems.contains(widget.items[index]),
-                    onTap: () =>
-                        _controller.toggleSelection(widget.items[index]),
-                    itemBuilder: widget.itemBuilder,
-                  )
-                : widget.itemBuilder(context, index);
-          },
-        ),
-        bottomSheet: multiSelect && widget.footerBuilder != null
+        body: widget.child,
+        bottomSheet: multiSelect && widget.footer != null
             ? Padding(
                 padding: EdgeInsets.only(
                   bottom: MediaQuery.viewPaddingOf(context).bottom,
                 ),
-                child:
-                    widget.footerBuilder!(context, _controller.selectedItems),
+                child: widget.footer,
               )
             : const SizedBox.shrink());
   }
 }
 
 class SelectableItem extends StatefulWidget {
-  final int index;
-  final bool isSelected;
-  final VoidCallback onTap;
-  final IndexedWidgetBuilder itemBuilder;
-
   const SelectableItem({
     super.key,
     required this.isSelected,
@@ -131,6 +91,10 @@ class SelectableItem extends StatefulWidget {
     required this.itemBuilder,
     required this.index,
   });
+  final int index;
+  final bool isSelected;
+  final VoidCallback onTap;
+  final IndexedWidgetBuilder itemBuilder;
 
   @override
   State<SelectableItem> createState() => _SelectableItemState();
@@ -200,7 +164,7 @@ class _SelectableItemState extends State<SelectableItem>
                 child: Icon(
                   FontAwesomeIcons.check,
                   size: 18,
-                  color: context.colorScheme.onSurface,
+                  color: context.colorScheme.onPrimary,
                 ),
               ),
           ],

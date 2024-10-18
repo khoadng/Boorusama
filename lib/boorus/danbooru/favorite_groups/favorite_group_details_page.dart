@@ -16,10 +16,10 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/router.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../posts/posts.dart';
@@ -34,7 +34,7 @@ class FavoriteGroupDetailsPage extends ConsumerStatefulWidget {
     required this.postIds,
   });
 
-  final FavoriteGroup group;
+  final DanbooruFavoriteGroup group;
   final Queue<int> postIds;
 
   @override
@@ -251,7 +251,6 @@ class _FavoriteGroupDetailsPageState
                                       ContextMenuRegion(
                                     contextMenu: DanbooruPostContextMenu(
                                       post: post,
-                                      hasAccount: config.hasLoginDetails(),
                                     ),
                                     child: child,
                                   ),

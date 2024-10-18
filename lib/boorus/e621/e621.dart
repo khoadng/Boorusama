@@ -6,22 +6,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/e621/artists/artists.dart';
 import 'package:boorusama/boorus/e621/configs/configs.dart';
-import 'package:boorusama/boorus/e621/favorites/favorites.dart';
-import 'package:boorusama/boorus/e621/home/home.dart';
-import 'package:boorusama/boorus/e621/posts/posts.dart';
-import 'package:boorusama/boorus/e621/tags/tags.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/e621/e621_client.dart';
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/comments/comment.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/scaffolds/comment_page_scaffold.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
+import 'artists/artists.dart';
+import 'comments/comments.dart';
+import 'favorites/favorites.dart';
+import 'home/home.dart';
+import 'posts/posts.dart';
+import 'tags/tags.dart';
 
 final e621ClientProvider =
     Provider.family<E621Client, BooruConfig>((ref, booruConfig) {
@@ -107,23 +105,17 @@ class E621Builder
         PostCountNotSupportedMixin,
         CharacterNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
-        LegacyGranularRatingQueryBuilderMixin,
         UnknownMetatagsMixin,
+        DefaultMultiSelectionActionsBuilderMixin,
+        DefaultHomeMixin,
+        DefaultQuickFavoriteButtonBuilderMixin,
         DefaultThumbnailUrlMixin,
         DefaultPostGesturesHandlerMixin,
         DefaultPostStatisticsPageBuilderMixin,
         DefaultGranularRatingFiltererMixin,
         DefaultPostImageDetailsUrlMixin
     implements BooruBuilder {
-  E621Builder({
-    required this.postRepo,
-    required this.autocompleteRepo,
-    required this.noteRepo,
-  });
-
-  final PostRepository<E621Post> postRepo;
-  final AutocompleteRepository autocompleteRepo;
-  final NoteRepository noteRepo;
+  E621Builder();
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
@@ -152,18 +144,13 @@ class E621Builder
         context,
         config, {
         backgroundColor,
+        initialTab,
       }) =>
           CreateE621ConfigPage(
             config: config,
             backgroundColor: backgroundColor,
+            initialTab: initialTab,
           );
-
-  @override
-  PostFetcher get postFetcher => (page, tags) => postRepo.getPosts(tags, page);
-
-  @override
-  AutocompleteFetcher get autocompleteFetcher =>
-      (query) => autocompleteRepo.getAutocomplete(query);
 
   @override
   FavoriteAdder? get favoriteAdder => (postId, ref) => ref
@@ -185,6 +172,7 @@ class E621Builder
   PostDetailsPageBuilder get postDetailsPageBuilder =>
       (context, config, payload) => PostDetailsLayoutSwitcher(
             initialIndex: payload.initialIndex,
+            posts: payload.posts,
             scrollController: payload.scrollController,
             desktop: (controller) => E621PostDetailsDesktopPage(
               initialIndex: controller.currentPage.value,
@@ -194,6 +182,7 @@ class E621Builder
             ),
             mobile: (controller) => E621PostDetailsPage(
               intitialIndex: controller.currentPage.value,
+              controller: controller,
               posts: payload.posts.map((e) => e as E621Post).toList(),
               onExit: (page) => controller.onExit(page),
               onPageChanged: (page) => controller.setPage(page),
@@ -221,7 +210,7 @@ class E621Builder
 
   @override
   TagColorBuilder get tagColorBuilder =>
-      (context, tagType) => switch (tagType) {
+      (brightness, tagType) => switch (tagType) {
             'general' => const Color(0xffb4c7d8),
             'artist' => const Color(0xfff2ad04),
             'copyright' => const Color(0xffd60ad8),
@@ -232,9 +221,6 @@ class E621Builder
             'lore' => const Color(0xff218923),
             _ => const Color(0xffb4c7d8),
           };
-
-  @override
-  NoteFetcher? get noteFetcher => (postId) => noteRepo.getNotes(postId);
 
   @override
   final DownloadFilenameGenerator downloadFilenameBuilder =
@@ -257,40 +243,4 @@ class E621Builder
       'source': (post, config) => config.downloadUrl,
     },
   );
-
-  @override
-  HomeViewBuilder get homeViewBuilder =>
-      (context, config, controller) => E621MobileHomeView(
-            controller: controller,
-          );
-}
-
-class E621CommentPage extends ConsumerWidget {
-  const E621CommentPage({
-    super.key,
-    required this.postId,
-  });
-
-  final int postId;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final client = ref.watch(e621ClientProvider(ref.watchConfig));
-
-    return CommentPageScaffold(
-      postId: postId,
-      fetcher: (id) => client.getComments(postId: postId, page: 1).then(
-            (value) => value
-                .map((e) => SimpleComment(
-                      id: e.id ?? 0,
-                      body: e.body ?? '',
-                      createdAt: e.createdAt ?? DateTime(1),
-                      updatedAt: e.updatedAt ?? DateTime(1),
-                      creatorName: e.creatorName ?? '',
-                      creatorId: e.creatorId ?? 0,
-                    ))
-                .toList(),
-          ),
-    );
-  }
 }

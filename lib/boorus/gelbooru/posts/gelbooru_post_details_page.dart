@@ -11,9 +11,9 @@ import 'package:boorusama/boorus/gelbooru/artists/artists.dart';
 import 'package:boorusama/boorus/gelbooru/posts/posts.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/functional.dart';
+import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 final gelbooruPostDetailsArtistMapProvider = StateProvider.autoDispose(
@@ -31,12 +31,14 @@ class GelbooruPostDetailsPage extends ConsumerStatefulWidget {
     required this.initialIndex,
     required this.onExit,
     required this.onPageChanged,
+    required this.controller,
   });
 
   final int initialIndex;
   final List<GelbooruPost> posts;
   final void Function(int page) onExit;
   final void Function(int page) onPageChanged;
+  final PostDetailsController<Post> controller;
 
   @override
   ConsumerState<GelbooruPostDetailsPage> createState() =>
@@ -55,7 +57,7 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailsPage> {
       initialIndex: widget.initialIndex,
       onExit: widget.onExit,
       onPageChangeIndexed: widget.onPageChanged,
-      toolbarBuilder: (context, post) => DefaultPostActionToolbar(post: post),
+      toolbar: DefaultPostDetailsActionToolbar(controller: widget.controller),
       swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
       fileDetailsBuilder: (context, post) => DefaultFileDetailsSection(
         post: post,
@@ -63,10 +65,10 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailsPage> {
       ),
       sliverArtistPostsBuilder: (context, post) =>
           ref.watch(gelbooruPostDetailsArtistMapProvider).lookup(post.id).fold(
-                () => [],
+                () => const [],
                 (tags) => tags.isNotEmpty
                     ? tags
-                        .map((tag) => ArtistPostList2(
+                        .map((tag) => ArtistPostList(
                               tag: tag,
                               builder: (tag) => ref
                                   .watch(gelbooruArtistPostsProvider(tag))
@@ -81,9 +83,7 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailsPage> {
                                       imageUrl: (item) => item.sampleImageUrl,
                                     ),
                                     orElse: () =>
-                                        const SliverPreviewPostGridPlaceholder(
-                                      itemCount: 30,
-                                    ),
+                                        const SliverPreviewPostGridPlaceholder(),
                                   ),
                             ))
                         .toList()

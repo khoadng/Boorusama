@@ -1,5 +1,6 @@
 // Flutter imports:
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -21,6 +22,7 @@ import 'package:boorusama/foundation/scrolling.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/router.dart';
+import 'package:boorusama/widgets/widgets.dart';
 import 'help_us_translate_page.dart';
 
 class SettingsPage extends ConsumerStatefulWidget {
@@ -125,7 +127,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     onTap: () => context.go('/settings/language'),
                   ),
                   SettingTile(
-                    title: 'download.download'.tr(),
+                    title: 'settings.download.title'.tr(),
                     leading: const FaIcon(
                       FontAwesomeIcons.download,
                     ),
@@ -168,7 +170,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     onTap: () => context.go('/settings/accessibility'),
                   ),
                   SettingTile(
-                    title: 'Image Viewer',
+                    title: 'settings.image_viewer.image_viewer'.tr(),
                     leading: const FaIcon(
                       FontAwesomeIcons.image,
                     ),
@@ -192,8 +194,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                       leading: const FaIcon(
                         FontAwesomeIcons.gear,
                       ),
-                      onTap: () =>
-                          context.push('/boorus/${ref.watchConfig.id}/update'),
+                      onTap: () => goToUpdateBooruConfigPage(
+                        context,
+                        config: ref.watchConfig,
+                      ),
                     ),
                   ],
                   const Divider(),
@@ -483,6 +487,117 @@ class _SettingsSection extends StatelessWidget {
         style: context.textTheme.titleSmall!
             .copyWith(color: context.theme.hintColor),
       ),
+    );
+  }
+}
+
+class SettingsInteractionBlocker extends ConsumerWidget {
+  const SettingsInteractionBlocker({
+    super.key,
+    this.padding,
+    required this.description,
+    required this.block,
+    required this.child,
+  });
+
+  final Widget child;
+  final EdgeInsetsGeometry? padding;
+  final bool block;
+  final Widget description;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        GrayedOut(
+          grayedOut: block,
+          child: child,
+        ),
+        if (block)
+          Padding(
+            padding: padding ??
+                const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 8,
+                ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: Icon(
+                    Icons.info,
+                    color: context.colorScheme.error,
+                    size: 14,
+                  ),
+                ),
+                Expanded(
+                  child: description,
+                ),
+              ],
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+class ListingSettingsInteractionBlocker extends ConsumerWidget {
+  const ListingSettingsInteractionBlocker({
+    super.key,
+    this.padding,
+    this.onNavigateAway,
+    required this.child,
+  });
+
+  final Widget child;
+  final EdgeInsetsGeometry? padding;
+  final void Function()? onNavigateAway;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final hasCustomListing = ref.watch(hasCustomListingSettingsProvider);
+    final config = ref.watchConfig;
+
+    return SettingsInteractionBlocker(
+      padding: padding,
+      block: hasCustomListing,
+      description: RichText(
+        text: TextSpan(
+          style: context.textTheme.titleSmall?.copyWith(
+            color: context.theme.hintColor,
+            fontSize: 12,
+            fontWeight: FontWeight.w400,
+          ),
+          children: [
+            const TextSpan(
+              text: 'These settings are overridden by custom listing. Go to ',
+            ),
+            TextSpan(
+              text: "Booru's profile",
+              recognizer: TapGestureRecognizer()
+                ..onTap = () {
+                  goToUpdateBooruConfigPage(
+                    context,
+                    config: config,
+                    initialTab: 'listing',
+                  );
+
+                  onNavigateAway?.call();
+                },
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: context.colorScheme.primary,
+              ),
+            ),
+            const TextSpan(
+              text: ' page instead.',
+            ),
+          ],
+        ),
+      ),
+      child: child,
     );
   }
 }

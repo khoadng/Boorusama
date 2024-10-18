@@ -20,14 +20,23 @@ import 'package:boorusama/functional.dart';
 class ExploreMostViewedPage extends ConsumerWidget {
   const ExploreMostViewedPage({
     super.key,
+    required this.onBack,
   });
 
-  static Widget routeOf(BuildContext context) => CustomContextMenuOverlay(
+  final void Function()? onBack;
+
+  static Widget routeOf(
+    BuildContext context, {
+    void Function()? onBack,
+  }) =>
+      CustomContextMenuOverlay(
         child: ProviderScope(
           overrides: [
             dateProvider.overrideWith((ref) => DateTime.now()),
           ],
-          child: const ExploreMostViewedPage(),
+          child: ExploreMostViewedPage(
+            onBack: onBack,
+          ),
         ),
       );
 
@@ -45,6 +54,7 @@ class ExploreMostViewedPage extends ConsumerWidget {
       builder: (context, controller, errors) => _MostViewedContent(
         controller: controller,
         errors: errors,
+        onBack: onBack,
       ),
     );
   }
@@ -54,10 +64,12 @@ class _MostViewedContent extends ConsumerWidget {
   const _MostViewedContent({
     required this.controller,
     this.errors,
+    required this.onBack,
   });
 
   final PostGridController<DanbooruPost> controller;
   final BooruError? errors;
+  final void Function()? onBack;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -74,7 +86,7 @@ class _MostViewedContent extends ConsumerWidget {
       },
     );
 
-    return Container(
+    return ColoredBox(
       color: context.colorScheme.surface,
       child: SafeArea(
         child: Column(
@@ -87,6 +99,7 @@ class _MostViewedContent extends ConsumerWidget {
                 sliverHeaders: [
                   ExploreSliverAppBar(
                     title: 'explore.most_viewed'.tr(),
+                    onBack: onBack,
                   ),
                 ],
               ),

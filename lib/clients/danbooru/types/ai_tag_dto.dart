@@ -7,13 +7,13 @@ class AITagDto {
     required this.tag,
   });
 
-  final int? score;
-  final TagDto? tag;
-
   factory AITagDto.fromJson(Map<String, dynamic> json) {
     return AITagDto(
       score: json['score'],
       tag: json['tag'] != null ? TagDto.fromJson(json['tag']) : null,
     );
   }
+
+  final int? score;
+  final TagDto? tag;
 }

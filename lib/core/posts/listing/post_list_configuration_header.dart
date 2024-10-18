@@ -2,20 +2,25 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/string.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 typedef HiddenData = ({
   String name,
   int count,
   bool active,
 });
+
+const _tagThreshold = 30;
 
 class PostListConfigurationHeader extends StatefulWidget {
   const PostListConfigurationHeader({
@@ -71,37 +76,6 @@ class _PostListConfigurationHeaderState
 
   @override
   Widget build(BuildContext context) {
-    var tags = hiddenTags != null
-        ? [
-            for (var tag in hiddenTags!)
-              _BadgedChip(
-                label: tag.name.replaceUnderscoreWithSpace(),
-                count: tag.count,
-                active: tag.active,
-                onChanged: (value) => widget.onChanged(tag.name, value),
-              ),
-            if (allTagsHidden != null)
-              ActionChip(
-                visualDensity: const ShrinkVisualDensity(),
-                side: BorderSide(
-                  width: 1,
-                  color: context.theme.hintColor,
-                ),
-                shape: StadiumBorder(
-                  side: BorderSide(
-                    width: 1,
-                    color: context.theme.hintColor,
-                  ),
-                ),
-                label: allTagsHidden!
-                    ? const Text('blacklisted_tags.reenable_all').tr()
-                    : const Text('blacklisted_tags.disable_all').tr(),
-                onPressed:
-                    allTagsHidden! ? widget.onEnableAll : widget.onDisableAll,
-              ),
-          ]
-        : null;
-
     return Card(
       color: widget.axis == Axis.horizontal && expanded
           ? null
@@ -145,59 +119,44 @@ class _PostListConfigurationHeaderState
                     widget.onExpansionChanged?.call(value);
                   })
                 },
-                title: Row(
-                  children: [
-                    const SizedBox(width: 8),
-                    const Text('blacklisted_tags.blacklisted_header_title')
-                        .tr(),
-                    const SizedBox(width: 8),
-                    if (widget.hiddenCount != null)
-                      if (widget.hiddenCount! > 0)
-                        Chip(
-                          padding: EdgeInsets.zero,
-                          visualDensity: const ShrinkVisualDensity(),
-                          backgroundColor: context.colorScheme.primary,
-                          label: Text(
-                            '${widget.hiddenCount} of ${widget.postCount}',
-                            style: TextStyle(
-                              color: context.colorScheme.onPrimary,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                    const Spacer(),
-                    expanded
-                        ? const SizedBox.shrink()
-                        : FittedBox(
-                            child: widget.trailing,
-                          ),
-                  ],
+                title: LayoutBuilder(
+                  builder: (context, constraints) {
+                    return Row(
+                      children: [
+                        const SizedBox(width: 8),
+                        const Text('blacklisted_tags.blacklisted_header_title')
+                            .tr(),
+                        if (constraints.maxWidth > 250)
+                          const SizedBox(width: 8),
+                        if (widget.hiddenCount != null)
+                          if (widget.hiddenCount! > 0)
+                            if (constraints.maxWidth > 250)
+                              Chip(
+                                padding: EdgeInsets.zero,
+                                visualDensity: const ShrinkVisualDensity(),
+                                backgroundColor: context.colorScheme.primary,
+                                label: Text(
+                                  '${widget.hiddenCount} of ${widget.postCount}',
+                                  style: TextStyle(
+                                    color: context.colorScheme.onPrimary,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                        const Spacer(),
+                        expanded
+                            ? const SizedBox.shrink()
+                            : FittedBox(
+                                child: widget.trailing,
+                              ),
+                      ],
+                    );
+                  },
                 ),
                 expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  if (tags != null)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 8),
-                      child: widget.axis == Axis.horizontal
-                          ? Wrap(
-                              spacing: 4,
-                              runSpacing: 4,
-                              children: tags,
-                            )
-                          : Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                for (var tag in tags)
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 4,
-                                    ),
-                                    child: tag,
-                                  ),
-                              ],
-                            ),
-                    )
+                  if (hiddenTags != null)
+                    _buildTags()
                   else
                     const SizedBox(
                       height: 36,
@@ -223,6 +182,150 @@ class _PostListConfigurationHeaderState
                 ),
               ),
       ),
+    );
+  }
+
+  Widget _buildTags() {
+    final tags = [
+      for (final tag in hiddenTags!)
+        _BadgedChip(
+          label: tag.name.replaceUnderscoreWithSpace(),
+          count: tag.count,
+          active: tag.active,
+          onChanged: (value) => widget.onChanged(tag.name, value),
+        ),
+    ];
+
+    final tagsNonPaginated = [
+      ...tags,
+      if (allTagsHidden != null)
+        ActionChip(
+          visualDensity: const ShrinkVisualDensity(),
+          side: BorderSide(
+            color: context.theme.hintColor,
+          ),
+          shape: StadiumBorder(
+            side: BorderSide(
+              color: context.theme.hintColor,
+            ),
+          ),
+          label: allTagsHidden!
+              ? const Text('blacklisted_tags.reenable_all').tr()
+              : const Text('blacklisted_tags.disable_all').tr(),
+          onPressed: allTagsHidden! ? widget.onEnableAll : widget.onDisableAll,
+        ),
+    ];
+
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: 8,
+        vertical: kPreferredLayout.isMobile ? 8 : 0,
+      ),
+      child: widget.axis == Axis.horizontal
+          ? Builder(
+              builder: (context) {
+                // if more than threshold tags, paginate
+                if (tags.length > _tagThreshold) {
+                  return _TagPages(
+                    allTags: tags,
+                    threshold: _tagThreshold,
+                    allTagsHidden: allTagsHidden ?? false,
+                    onEnableAll: widget.onEnableAll,
+                    onDisableAll: widget.onDisableAll,
+                  );
+                } else {
+                  return Wrap(
+                    spacing: 4,
+                    runSpacing: 4,
+                    children: tagsNonPaginated,
+                  );
+                }
+              },
+            )
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                for (final tag in tagsNonPaginated)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 4,
+                    ),
+                    child: tag,
+                  ),
+              ],
+            ),
+    );
+  }
+}
+
+final _currentPageProvider = StateProvider<int>((ref) => 1);
+
+class _TagPages extends ConsumerWidget {
+  const _TagPages({
+    required this.allTags,
+    required this.threshold,
+    required this.allTagsHidden,
+    required this.onEnableAll,
+    required this.onDisableAll,
+  });
+
+  final List<Widget> allTags;
+  final int threshold;
+  final bool allTagsHidden;
+  final void Function() onEnableAll;
+  final void Function() onDisableAll;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currentPage = ref.watch(_currentPageProvider);
+    final tags =
+        allTags.skip((currentPage - 1) * threshold).take(threshold).toList();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Wrap(
+          spacing: 4,
+          runSpacing: 4,
+          children: tags,
+        ),
+        const SizedBox(height: 8),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            FilledButton(
+              onPressed: allTagsHidden ? onEnableAll : onDisableAll,
+              style: FilledButton.styleFrom(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 4,
+                  horizontal: 8,
+                ),
+              ),
+              child: Text(
+                allTagsHidden
+                    ? 'blacklisted_tags.reenable_all'
+                    : 'blacklisted_tags.disable_all',
+              ).tr(),
+            ),
+          ],
+        ),
+        PageSelector(
+          pageInput: false,
+          currentPage: currentPage,
+          totalResults: allTags.length,
+          itemPerPage: threshold,
+          onPrevious: () {
+            final page = currentPage - 1;
+            ref.read(_currentPageProvider.notifier).state = page;
+          },
+          onNext: () {
+            final page = currentPage + 1;
+            ref.read(_currentPageProvider.notifier).state = page;
+          },
+          onPageSelect: (page) =>
+              ref.read(_currentPageProvider.notifier).state = page,
+        ),
+      ],
     );
   }
 }
@@ -262,7 +365,6 @@ class _BadgedChip extends StatelessWidget {
         visualDensity: const ShrinkVisualDensity(),
         selected: active,
         side: BorderSide(
-          width: 1,
           color: active ? context.theme.hintColor : Colors.transparent,
         ),
         backgroundColor: context.colorScheme.surface,

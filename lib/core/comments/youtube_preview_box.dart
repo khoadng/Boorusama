@@ -9,6 +9,7 @@ import 'package:html/parser.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 
@@ -62,11 +63,12 @@ class YoutubePreviewBox extends StatelessWidget {
                               child: ExtendedImage.network(
                                 data.previewImage!,
                                 fit: BoxFit.contain,
+                                cacheMaxAge: kDefaultImageCacheDuration,
                               ),
                             ),
                             if (data.isVideo)
                               Align(
-                                child: Container(
+                                child: DecoratedBox(
                                   decoration: const BoxDecoration(
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(8)),

@@ -8,10 +8,12 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/foundation/android.dart';
 import 'package:boorusama/foundation/device_info_service.dart';
-import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/html.dart';
 import 'package:boorusama/foundation/picker.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/widgets/widgets.dart';
+import 'l10n.dart';
 
 class DownloadFolderSelectorSection extends StatefulWidget {
   const DownloadFolderSelectorSection({
@@ -58,7 +60,7 @@ class _DownloadFolderSelectorSectionState
       children: [
         const SizedBox(height: 16),
         Text(
-          widget.title ?? 'settings.download.path'.tr(),
+          widget.title ?? DownloadTranslations.downloadPath.tr(),
         ),
         const SizedBox(height: 4),
         Material(
@@ -91,7 +93,7 @@ class _DownloadFolderSelectorSectionState
                           )
                         : Text(
                             widget.hint ??
-                                'settings.download.select_a_folder'.tr(),
+                                DownloadTranslations.downloadSelectFolder.tr(),
                             overflow: TextOverflow.fade,
                             style: context.textTheme.titleMedium!
                                 .copyWith(color: context.theme.hintColor),
@@ -136,6 +138,33 @@ class _DownloadFolderSelectorSectionState
   bool showPath() => storagePath != null && storagePath!.isNotEmpty;
 
   Future<void> _pickFolder() => pickDirectoryPathToastOnError(
+        context: context,
         onPick: (path) => widget.onPathChanged(path),
       );
+}
+
+class DownloadPathWarning extends StatelessWidget {
+  const DownloadPathWarning({
+    super.key,
+    required this.releaseName,
+    required this.allowedFolders,
+    this.padding,
+  });
+
+  final String releaseName;
+  final List<String> allowedFolders;
+  final EdgeInsetsGeometry? padding;
+
+  @override
+  Widget build(BuildContext context) {
+    return WarningContainer(
+      margin: padding,
+      contentBuilder: (context) => AppHtml(
+        data: DownloadTranslations.downloadSelectFolderWarning
+            .tr()
+            .replaceAll('{0}', allowedFolders.join(', '))
+            .replaceAll('{1}', releaseName),
+      ),
+    );
+  }
 }

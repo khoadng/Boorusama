@@ -10,10 +10,10 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/settings/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
+import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class DanbooruMoreActionButton extends ConsumerWidget {
@@ -40,7 +40,6 @@ class DanbooruMoreActionButton extends ConsumerWidget {
           onSelected: (value) {
             switch (value) {
               case 'download':
-                showDownloadStartToast(context);
                 ref.download(post);
                 break;
               case 'add_to_favgroup':
@@ -79,7 +78,7 @@ class DanbooruMoreActionButton extends ConsumerWidget {
             if (booruConfig.hasLoginDetails())
               'add_to_favgroup':
                   const Text('post.action.add_to_favorite_group').tr(),
-            'show_tag_list': const Text('View tags'),
+            if (post.tags.isNotEmpty) 'show_tag_list': const Text('View tags'),
             'tag_history': const Text('View tag history'),
             if (!booruConfig.hasStrictSFW)
               'view_in_browser': const Text('post.detail.view_in_browser').tr(),

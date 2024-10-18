@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/router.dart';
+import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/router.dart';
 
 class SelectedTagListWithData extends ConsumerWidget {
   const SelectedTagListWithData({
@@ -19,7 +21,10 @@ class SelectedTagListWithData extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
+    final config = ref.watchConfig;
+    final tagComposer = ref.watch(tagQueryComposerProvider(config));
+
+    return ColoredBox(
         color: context.theme.scaffoldBackgroundColor,
         child: ValueListenableBuilder(
           valueListenable: controller,
@@ -27,6 +32,14 @@ class SelectedTagListWithData extends ConsumerWidget {
             return Column(
               children: [
                 SelectedTagList(
+                  extraTagsCount: tagComposer.compose([]).length,
+                  onOtherTagsCountTap: () {
+                    goToUpdateBooruConfigPage(
+                      context,
+                      config: config,
+                      initialTab: 'search',
+                    );
+                  },
                   tags: tags,
                   onClear: () {
                     controller.clear();

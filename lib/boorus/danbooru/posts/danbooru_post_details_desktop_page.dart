@@ -15,8 +15,8 @@ import 'package:boorusama/boorus/danbooru/posts/posts.dart';
 import 'package:boorusama/core/artists/artists.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
+import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../tags/details/danbooru_tags_tile.dart';
 
@@ -119,7 +119,7 @@ class _DanbooruPostDetailsDesktopPageState
               ),
       sliverArtistPostsBuilder: (context, post) => post.artistTags.isNotEmpty
           ? post.artistTags
-              .map((tag) => ArtistPostList2(
+              .map((tag) => ArtistPostList(
                     tag: tag,
                     builder: (tag) => ref
                         .watch(danbooruPostDetailsArtistProvider(tag))
@@ -133,9 +133,8 @@ class _DanbooruPostDetailsDesktopPageState
                             ),
                             imageUrl: (item) => item.url360x360,
                           ),
-                          orElse: () => const SliverPreviewPostGridPlaceholder(
-                            itemCount: 30,
-                          ),
+                          orElse: () =>
+                              const SliverPreviewPostGridPlaceholder(),
                         ),
                   ))
               .toList()
@@ -148,6 +147,7 @@ class _DanbooruPostDetailsDesktopPageState
                 data: (_) => CharacterPostList(tags: post.characterTags),
                 orElse: () => const SliverSizedBox.shrink(),
               ),
+      parts: kDefaultPostDetailsNoSourceParts,
     );
   }
 }

@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/tags/metatag.dart';
+import 'package:boorusama/foundation/html.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
 
@@ -128,20 +129,18 @@ class TagSuggestionItem extends StatelessWidget {
   Widget _buildTitle() {
     final color = textColorBuilder != null ? textColorBuilder!(tag) : null;
 
-    return Html(
+    return AppHtml(
       style: {
         'p': Style(
           fontSize: FontSize.medium,
           color: color,
           margin: Margins.zero,
         ),
-        'body': Style(
-          margin: Margins.zero,
-        ),
         'b': Style(
           fontWeight: FontWeight.w900,
         ),
       },
+      selectable: false,
       data: tag.toDisplayHtml(currentQuery, metatagExtractor),
     );
   }
