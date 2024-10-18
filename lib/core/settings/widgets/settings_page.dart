@@ -127,7 +127,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     onTap: () => context.go('/settings/language'),
                   ),
                   SettingTile(
-                    title: 'download.download'.tr(),
+                    title: 'settings.download.title'.tr(),
                     leading: const FaIcon(
                       FontAwesomeIcons.download,
                     ),
