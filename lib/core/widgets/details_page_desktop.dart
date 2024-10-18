@@ -168,145 +168,149 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
               body: Row(
                 children: [
                   Expanded(
-                    child: Stack(
-                      children: [
-                        widget.media,
-                        if (kPreferredLayout.isDesktop)
-                          ValueListenableBuilder(
-                            valueListenable: controller.currentPage,
-                            builder: (context, page, child) => page <
-                                    widget.totalPages - 1
-                                ? Align(
-                                    alignment: Alignment.centerRight,
-                                    child: MaterialButton(
-                                      color: Colors.black.withOpacity(0.5),
-                                      shape: const CircleBorder(),
-                                      padding: const EdgeInsets.all(12),
-                                      onPressed: () => controller.nextPage(),
-                                      child: const Icon(
-                                        Symbols.arrow_forward,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  )
-                                : const SizedBox.shrink(),
-                          ),
-                        if (kPreferredLayout.isDesktop)
-                          ValueListenableBuilder(
-                            valueListenable: controller.currentPage,
-                            builder: (context, page, child) => page > 0
-                                ? Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: MaterialButton(
-                                      color: Colors.black.withOpacity(0.5),
-                                      shape: const CircleBorder(),
-                                      padding: const EdgeInsets.all(12),
-                                      onPressed: () =>
-                                          controller.previousPage(),
-                                      child: const Icon(
-                                        Symbols.arrow_back,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  )
-                                : const SizedBox.shrink(),
-                          ),
-                        SafeArea(
-                          child: Align(
-                            alignment: Alignment.topLeft,
-                            child: ValueListenableBuilder(
-                              valueListenable: controller.hideOverlay,
-                              builder: (_, hide, __) => AnimatedSwitcher(
-                                duration: Durations.long2,
-                                reverseDuration:
-                                    const Duration(milliseconds: 10),
-                                child: hide
-                                    ? null
-                                    : Padding(
-                                        padding: const EdgeInsets.all(8),
-                                        child: CircularIconButton(
-                                          onPressed: () => _onExit(false),
-                                          icon: const Icon(
-                                            Symbols.close,
-                                            color: Colors.white,
-                                          ),
+                    child: MediaQuery.removePadding(
+                      context: context,
+                      removeRight: true,
+                      child: Stack(
+                        children: [
+                          widget.media,
+                          if (kPreferredLayout.isDesktop)
+                            ValueListenableBuilder(
+                              valueListenable: controller.currentPage,
+                              builder: (context, page, child) => page <
+                                      widget.totalPages - 1
+                                  ? Align(
+                                      alignment: Alignment.centerRight,
+                                      child: MaterialButton(
+                                        color: Colors.black.withOpacity(0.5),
+                                        shape: const CircleBorder(),
+                                        padding: const EdgeInsets.all(12),
+                                        onPressed: () => controller.nextPage(),
+                                        child: const Icon(
+                                          Symbols.arrow_forward,
+                                          color: Colors.white,
                                         ),
                                       ),
+                                    )
+                                  : const SizedBox.shrink(),
+                            ),
+                          if (kPreferredLayout.isDesktop)
+                            ValueListenableBuilder(
+                              valueListenable: controller.currentPage,
+                              builder: (context, page, child) => page > 0
+                                  ? Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: MaterialButton(
+                                        color: Colors.black.withOpacity(0.5),
+                                        shape: const CircleBorder(),
+                                        padding: const EdgeInsets.all(12),
+                                        onPressed: () =>
+                                            controller.previousPage(),
+                                        child: const Icon(
+                                          Symbols.arrow_back,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    )
+                                  : const SizedBox.shrink(),
+                            ),
+                          SafeArea(
+                            child: Align(
+                              alignment: Alignment.topLeft,
+                              child: ValueListenableBuilder(
+                                valueListenable: controller.hideOverlay,
+                                builder: (_, hide, __) => AnimatedSwitcher(
+                                  duration: Durations.long2,
+                                  reverseDuration:
+                                      const Duration(milliseconds: 10),
+                                  child: hide
+                                      ? null
+                                      : Padding(
+                                          padding: const EdgeInsets.all(8),
+                                          child: CircularIconButton(
+                                            onPressed: () => _onExit(false),
+                                            icon: const Icon(
+                                              Symbols.close,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        if (widget.topRight != null)
-                          Builder(
-                            builder: (context) {
-                              final topRightWidgetRaw = Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  if (isSmall)
-                                    CircularIconButton(
-                                      onPressed: () =>
-                                          showMaterialModalBottomSheet(
-                                        context: context,
-                                        backgroundColor: context
-                                            .theme.scaffoldBackgroundColor,
-                                        builder: (context) => widget.info,
+                          if (widget.topRight != null)
+                            Builder(
+                              builder: (context) {
+                                final topRightWidgetRaw = Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    if (isSmall)
+                                      CircularIconButton(
+                                        onPressed: () =>
+                                            showMaterialModalBottomSheet(
+                                          context: context,
+                                          backgroundColor: context
+                                              .theme.scaffoldBackgroundColor,
+                                          builder: (context) => widget.info,
+                                        ),
+                                        icon: const Icon(
+                                          Symbols.info,
+                                          color: Colors.white,
+                                        ),
+                                      )
+                                    else
+                                      CircularIconButton(
+                                        onPressed: () => setState(
+                                          () {
+                                            controller.toggleShowInfo();
+                                            ref
+                                                .read(miscDataProvider(
+                                                        kShowInfoStateCacheKey)
+                                                    .notifier)
+                                                .put(controller.showInfo.value
+                                                    .toString());
+                                          },
+                                        ),
+                                        icon: const Icon(
+                                          Symbols.info,
+                                          color: Colors.white,
+                                        ),
                                       ),
-                                      icon: const Icon(
-                                        Symbols.info,
-                                        color: Colors.white,
-                                      ),
-                                    )
-                                  else
-                                    CircularIconButton(
-                                      onPressed: () => setState(
-                                        () {
-                                          controller.toggleShowInfo();
-                                          ref
-                                              .read(miscDataProvider(
-                                                      kShowInfoStateCacheKey)
-                                                  .notifier)
-                                              .put(controller.showInfo.value
-                                                  .toString());
-                                        },
-                                      ),
-                                      icon: const Icon(
-                                        Symbols.info,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  const SizedBox(width: 8),
-                                  widget.topRight!,
-                                ],
-                              );
+                                    const SizedBox(width: 8),
+                                    widget.topRight!,
+                                  ],
+                                );
 
-                              final topRightWidget = ValueListenableBuilder(
-                                valueListenable: controller.hideOverlay,
-                                builder: (context, value, child) {
-                                  return AnimatedSwitcher(
-                                    duration: Durations.long2,
-                                    reverseDuration:
-                                        const Duration(milliseconds: 10),
-                                    child: value ? null : topRightWidgetRaw,
-                                  );
-                                },
-                              );
-
-                              return hasStatusBar()
-                                  ? Positioned(
-                                      top: 4,
-                                      right: 4,
-                                      child: SafeArea(
-                                        child: topRightWidget,
-                                      ),
-                                    )
-                                  : Positioned(
-                                      top: 8,
-                                      right: 12,
-                                      child: topRightWidget,
+                                final topRightWidget = ValueListenableBuilder(
+                                  valueListenable: controller.hideOverlay,
+                                  builder: (context, value, child) {
+                                    return AnimatedSwitcher(
+                                      duration: Durations.long2,
+                                      reverseDuration:
+                                          const Duration(milliseconds: 10),
+                                      child: value ? null : topRightWidgetRaw,
                                     );
-                            },
-                          ),
-                      ],
+                                  },
+                                );
+
+                                return hasStatusBar()
+                                    ? Positioned(
+                                        top: 4,
+                                        right: 4,
+                                        child: SafeArea(
+                                          child: topRightWidget,
+                                        ),
+                                      )
+                                    : Positioned(
+                                        top: 8,
+                                        right: 12,
+                                        child: topRightWidget,
+                                      );
+                              },
+                            ),
+                        ],
+                      ),
                     ),
                   ),
                   const VerticalDivider(
@@ -314,18 +318,22 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                     thickness: 1,
                   ),
                   if (!isSmall)
-                    ValueListenableBuilder(
-                      valueListenable: controller.showInfo,
-                      builder: (context, value, child) {
-                        return value
-                            ? Container(
-                                constraints:
-                                    const BoxConstraints(maxWidth: 400),
-                                color: context.colorScheme.surface,
-                                child: widget.info,
-                              )
-                            : const SizedBox.shrink();
-                      },
+                    MediaQuery.removePadding(
+                      context: context,
+                      removeLeft: true,
+                      child: ValueListenableBuilder(
+                        valueListenable: controller.showInfo,
+                        builder: (context, value, child) {
+                          return value
+                              ? Container(
+                                  constraints:
+                                      const BoxConstraints(maxWidth: 400),
+                                  color: context.colorScheme.surface,
+                                  child: widget.info,
+                                )
+                              : const SizedBox.shrink();
+                        },
+                      ),
                     ),
                 ],
               ),
