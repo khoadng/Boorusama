@@ -92,6 +92,9 @@ class PostGridController<T extends Post> extends ChangeNotifier {
       ...Map.fromIterable(tags, value: (_) => true),
     };
     await _filter();
+
+    if (!mountedChecker()) return;
+
     notifyListeners();
   }
 
@@ -193,6 +196,9 @@ class PostGridController<T extends Post> extends ChangeNotifier {
 
     _clear();
     await _addAll(newItems.posts);
+
+    if (!mountedChecker()) return;
+
     _hasMore = newItems.posts.isNotEmpty;
     count.value = newItems.total;
     _setRefreshing(false);
