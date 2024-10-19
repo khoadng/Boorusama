@@ -387,7 +387,7 @@ class _TagEditPageInternalState extends ConsumerState<TagEditPageInternal> {
                 scrollController: scrollController,
                 sourceBuilder: widget.sourceBuilder,
               ),
-            _ => const SizedBox(),
+            _ => const SizedBox.shrink(),
           },
         ),
       ),
