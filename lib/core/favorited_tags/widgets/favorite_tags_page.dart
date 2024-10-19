@@ -9,12 +9,12 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme_utils.dart';
 import 'package:boorusama/foundation/toast.dart';
+import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../favorited_tags.dart';
 
@@ -71,11 +71,12 @@ class FavoriteTagsPage extends ConsumerWidget {
           goToQuickSearchPage(
             context,
             ref: ref,
-            onSubmitted: (context, text) {
+            onSubmitted: (context, text, _) {
               context.navigator.pop();
               favoritesNotifier.add(
                 text,
                 onDuplicate: (tag) => showErrorToast(
+                  context,
                   '$tag already exists',
                 ),
                 // labels: [
@@ -83,9 +84,10 @@ class FavoriteTagsPage extends ConsumerWidget {
                 // ],
               );
             },
-            onSelected: (tag) => favoritesNotifier.add(
-              tag.value,
+            onSelected: (tag, _) => favoritesNotifier.add(
+              tag,
               onDuplicate: (tag) => showErrorToast(
+                context,
                 '$tag already exists',
               ),
               // labels: [

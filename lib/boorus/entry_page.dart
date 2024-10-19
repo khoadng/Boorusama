@@ -6,14 +6,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/home/home.dart';
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/app_update/app_update.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
@@ -21,8 +20,6 @@ import 'package:boorusama/foundation/permissions.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
-import 'package:boorusama/functional.dart';
-import 'package:boorusama/widgets/widgets.dart';
 
 class EntryPage extends ConsumerStatefulWidget {
   const EntryPage({
@@ -72,61 +69,74 @@ class _EntryPageState extends ConsumerState<EntryPage> {
       );
     }
 
-    final config = ref.watchConfig;
-
-    ref.listen(
-      bulkDownloadStateProvider(config)
-          .select((value) => value.downloadStatuses),
-      (previous, next) {
-        if (previous == null) return;
-        if (previous.values.any((e) => e is! DownloadDone) &&
-            next.values.isNotEmpty &&
-            next.values.all((t) => t is DownloadDone)) {
-          showSimpleSnackBar(
-            context: context,
-            duration: AppDurations.longToast,
-            action: SnackBarAction(
-              label: 'generic.view'.tr(),
-              onPressed: () => goToBulkDownloadPage(context, [], ref: ref),
+    return BulkDownloadNotificationScope(
+      child: Column(
+        children: [
+          Expanded(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (context.isLandscapeLayout) ...[
+                  SafeArea(
+                    right: false,
+                    child: _SidebarSettingsListener(
+                      builder: (_, bottom, __) => bottom
+                          ? const SizedBox.shrink()
+                          : const BooruSelector(),
+                    ),
+                  ),
+                  const SafeArea(
+                    bottom: false,
+                    left: false,
+                    right: false,
+                    child: VerticalDivider(
+                      thickness: 1,
+                      width: 1,
+                    ),
+                  ),
+                ],
+                const Expanded(
+                  child: _Boorus(),
+                ),
+              ],
             ),
-            behavior: SnackBarBehavior.fixed,
-            content:
-                const Text('download.bulk.all_done_notification_message').tr(),
-          );
-        }
-      },
+          ),
+          if (context.isLandscapeLayout)
+            _SidebarSettingsListener(
+              builder: (_, bottom, hideLabel) => bottom
+                  ? SizedBox(
+                      height: kBottomNavigationBarHeight - (hideLabel ? 4 : -8),
+                      child: const BooruSelector(
+                        direction: Axis.horizontal,
+                      ),
+                    )
+                  : const SizedBox.shrink(),
+            ),
+        ],
+      ),
     );
+  }
+}
 
-    return OrientationBuilder(
-      builder: (context, orientation) => ConditionalParentWidget(
-        condition: kPreferredLayout.isDesktop ||
-            (kPreferredLayout.isMobile && orientation.isLandscape),
-        conditionalBuilder: (child) => Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ConditionalParentWidget(
-              condition: orientation.isLandscape,
-              conditionalBuilder: (child) => SafeArea(
-                right: false,
-                child: child,
-              ),
-              child: const BooruSelector(),
-            ),
-            const SafeArea(
-              bottom: false,
-              left: false,
-              right: false,
-              child: VerticalDivider(
-                thickness: 1,
-                width: 1,
-              ),
-            ),
-            Expanded(
-              child: child,
-            )
-          ],
-        ),
-        child: const _Boorus(),
+class _SidebarSettingsListener extends ConsumerWidget {
+  const _SidebarSettingsListener({required this.builder});
+
+  final Widget Function(BuildContext context, bool isBottom, bool hideLabel)
+      builder;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final pos = ref.watch(
+        settingsProvider.select((value) => value.booruConfigSelectorPosition));
+    final hideLabel = ref
+        .watch(settingsProvider.select((value) => value.hideBooruConfigLabel));
+
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 300),
+      child: builder(
+        context,
+        pos == BooruConfigSelectorPosition.bottom,
+        hideLabel,
       ),
     );
   }
@@ -186,12 +196,9 @@ class _Boorus extends ConsumerWidget {
                             config,
                           );
                     },
-                    leading: PostSource.from(config.url).whenWeb(
-                      (source) => ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: BooruLogo(source: source),
-                      ),
-                      () => const SizedBox.shrink(),
+                    leading: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: BooruLogo(source: config.url),
                     ),
                   );
                 },

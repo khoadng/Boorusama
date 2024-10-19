@@ -74,7 +74,6 @@ final danbooruAutocompleteRepoProvider =
       });
 });
 
-//FIXME: Desktop won't work
 final danbooruTagListProvider = NotifierProviderFamily<DanbooruTagListNotifier,
     IMap<int, DanbooruTagDetails>, BooruConfig>(DanbooruTagListNotifier.new);
 
@@ -85,7 +84,7 @@ class DanbooruTagListNotifier
     return <int, DanbooruTagDetails>{}.lock;
   }
 
-  void setTags(
+  Future<void> setTags(
     int postId, {
     List<String>? addedTags,
     List<String>? removedTags,

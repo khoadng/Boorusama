@@ -28,6 +28,7 @@ class AddBookmarksButton extends ConsumerWidget {
       onPressed: posts.isNotEmpty
           ? () async {
               ref.bookmarks.addBookmarksWithToast(
+                context,
                 booruConfig.booruId,
                 booruConfig.url,
                 posts,

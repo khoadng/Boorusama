@@ -1,0 +1,87 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:like_button/like_button.dart';
+import 'package:material_symbols_icons/symbols.dart';
+
+// Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/foundation/theme.dart';
+
+class QuickFavoriteButton extends ConsumerWidget {
+  const QuickFavoriteButton({
+    super.key,
+    this.onFavToggle,
+    required this.isFaved,
+  });
+
+  final void Function(bool value)? onFavToggle;
+  final bool isFaved;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Container(
+      padding: const EdgeInsets.only(
+        top: 2,
+        bottom: 1,
+        right: 1,
+        left: 3,
+      ),
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: Colors.black.withOpacity(0.5),
+      ),
+      child: LikeButton(
+        isLiked: isFaved,
+        onTap: (isLiked) {
+          onFavToggle?.call(!isLiked);
+
+          return Future.value(!isLiked);
+        },
+        likeBuilder: (isLiked) {
+          return Icon(
+            isLiked ? Symbols.favorite : Symbols.favorite,
+            color: isLiked ? context.colors.upvoteColor : Colors.white,
+            fill: isLiked ? 1 : 0,
+          );
+        },
+      ),
+    );
+  }
+}
+
+class DefaultQuickFavoriteButton extends ConsumerWidget {
+  const DefaultQuickFavoriteButton({
+    super.key,
+    required this.post,
+  });
+
+  final Post post;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
+    final booruBuilder = ref.watchBooruBuilder(config);
+    final favoriteAdder = booruBuilder?.favoriteAdder;
+    final favoriteRemover = booruBuilder?.favoriteRemover;
+    final canFavorite = favoriteAdder != null && favoriteRemover != null;
+
+    return canFavorite
+        ? QuickFavoriteButton(
+            isFaved: ref.watch(favoriteProvider(post.id)),
+            onFavToggle: (isFaved) async {
+              if (isFaved) {
+                await favoriteAdder(post.id, ref);
+              } else {
+                await favoriteRemover(post.id, ref);
+              }
+            },
+          )
+        : const SizedBox.shrink();
+  }
+}

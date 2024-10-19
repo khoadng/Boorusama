@@ -10,15 +10,15 @@ class WikiStateLoading extends WikiState {
 }
 
 class WikiStateLoaded extends WikiState {
-  final Wiki wiki;
 
   const WikiStateLoaded(this.wiki);
+  final Wiki wiki;
 }
 
 class WikiStateError extends WikiState {
-  final String message;
 
   const WikiStateError(this.message);
+  final String message;
 }
 
 class WikiStateNotFound extends WikiState {

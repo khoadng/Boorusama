@@ -8,10 +8,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/settings/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
+import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class GeneralMoreActionButton extends ConsumerWidget {
@@ -40,7 +40,6 @@ class GeneralMoreActionButton extends ConsumerWidget {
           onSelected: (value) {
             switch (value) {
               case 'download':
-                showDownloadStartToast(context);
                 if (onDownload != null) {
                   onDownload!(post);
                 } else {
@@ -77,7 +76,7 @@ class GeneralMoreActionButton extends ConsumerWidget {
             'download': const Text('download.download').tr(),
             if (!booru.hasStrictSFW)
               'view_in_browser': const Text('post.detail.view_in_browser').tr(),
-            'show_tag_list': const Text('View tags'),
+            if (post.tags.isNotEmpty) 'show_tag_list': const Text('View tags'),
             if (post.hasFullView)
               'view_original':
                   const Text('post.image_fullview.view_original').tr(),

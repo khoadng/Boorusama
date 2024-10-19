@@ -13,21 +13,19 @@ import 'package:boorusama/core/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
+import 'package:boorusama/router.dart';
 
 class DanbooruPostContextMenu extends ConsumerWidget {
   const DanbooruPostContextMenu({
     super.key,
     required this.post,
     this.onMultiSelect,
-    required this.hasAccount,
   });
 
   final DanbooruPost post;
   final void Function()? onMultiSelect;
-  final bool hasAccount;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -35,6 +33,7 @@ class DanbooruPostContextMenu extends ConsumerWidget {
     final bookmarkState = ref.watch(bookmarkProvider);
     final isBookmarked =
         bookmarkState.isBookmarked(post, booruConfig.booruType);
+    final hasAccount = booruConfig.hasLoginDetails();
 
     return GenericContextMenu(
       buttonConfigs: [
@@ -50,7 +49,6 @@ class DanbooruPostContextMenu extends ConsumerWidget {
         ContextMenuButtonConfig(
           'download.download'.tr(),
           onPressed: () {
-            showDownloadStartToast(context);
             ref.download(post);
           },
         ),
@@ -59,6 +57,7 @@ class DanbooruPostContextMenu extends ConsumerWidget {
             'post.detail.add_to_bookmark'.tr(),
             onPressed: () => ref.bookmarks
               ..addBookmarkWithToast(
+                context,
                 booruConfig.booruId,
                 booruConfig.url,
                 post,
@@ -69,6 +68,7 @@ class DanbooruPostContextMenu extends ConsumerWidget {
             'post.detail.remove_from_bookmark'.tr(),
             onPressed: () => ref.bookmarks
               ..removeBookmarkWithToast(
+                context,
                 bookmarkState.getBookmark(post, booruConfig.booruType)!,
               ),
           ),
@@ -84,16 +84,17 @@ class DanbooruPostContextMenu extends ConsumerWidget {
           ),
         if (!booruConfig.hasStrictSFW)
           ContextMenuButtonConfig(
-            'Open in browser',
+            'post.detail.view_in_browser'.tr(),
             onPressed: () =>
                 launchExternalUrlString(post.getLink(booruConfig.url)),
           ),
-        ContextMenuButtonConfig(
-          'View tags',
-          onPressed: () {
-            goToDanbooruShowTaglistPage(ref, post.extractTags());
-          },
-        ),
+        if (post.tags.isNotEmpty)
+          ContextMenuButtonConfig(
+            'View tags',
+            onPressed: () {
+              goToDanbooruShowTaglistPage(ref, post.extractTags());
+            },
+          ),
         ContextMenuButtonConfig(
           'View tag history',
           onPressed: () => goToPostVersionPage(context, post),
@@ -141,7 +142,6 @@ class FavoriteGroupsPostContextMenu extends ConsumerWidget {
         ContextMenuButtonConfig(
           'download.download'.tr(),
           onPressed: () {
-            showDownloadStartToast(context);
             ref.download(post);
           },
         ),

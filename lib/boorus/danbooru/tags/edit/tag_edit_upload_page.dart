@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:collection/collection.dart';
-import 'package:filesize/filesize.dart';
 import 'package:flutter_portal/flutter_portal.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -24,6 +23,7 @@ import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/animations.dart';
+import 'package:boorusama/foundation/filesize.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
@@ -32,6 +32,7 @@ import 'package:boorusama/router.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'tag_edit_favorite_view.dart';
+import 'tag_edit_notifier.dart';
 import 'tag_edit_page.dart';
 import 'tag_edit_wiki_view.dart';
 
@@ -66,7 +67,7 @@ class TagEditUploadPage extends ConsumerStatefulWidget {
 class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
   String _buildDetails(DanbooruPost post) {
     final fileSizeText =
-        post.fileSize > 0 ? '• ${filesize(post.fileSize, 1)}' : '';
+        post.fileSize > 0 ? '• ${Filesize.parse(post.fileSize, round: 1)}' : '';
     return '${post.width.toInt()}x${post.height.toInt()} • ${post.format.toUpperCase()} $fileSizeText';
   }
 
@@ -94,6 +95,7 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
           loading: () {},
           error: (error, stackTrace) {
             showErrorToast(
+              context,
               error.toString(),
               duration: AppDurations.longToast,
             );
@@ -371,7 +373,6 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
                           )
                       else
                         Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             const SizedBox(width: 16),
@@ -583,7 +584,6 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
                           horizontal: 12,
                         ),
                         child: Wrap(
-                          alignment: WrapAlignment.start,
                           spacing: 4,
                           children: [
                             for (final tag in translatedTags)
@@ -683,7 +683,7 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
           },
           children: [
             if (ref.watch(tagEditUploadRelatedExpandedProvider))
-              Container(
+              DecoratedBox(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
                 ),

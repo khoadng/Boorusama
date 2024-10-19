@@ -46,7 +46,11 @@ class _SelectedTagEditDialogState extends ConsumerState<SelectedTagEditDialog> {
 
     Future.delayed(
       Duration.zero,
-      () => Navigator.of(context).pop(),
+      () {
+        if (context.mounted) {
+          Navigator.of(context).pop();
+        }
+      },
     );
   }
 
@@ -84,22 +88,24 @@ class _SelectedTagEditDialogState extends ConsumerState<SelectedTagEditDialog> {
           ),
         ),
         ValueListenableBuilder(
-          valueListenable: showSuggestions,
-          builder: (_, show, __) {
-            if (!show) return const SizedBox.shrink();
+          valueListenable: controller,
+          builder: (_, query, __) {
+            final currentQuery = query.text.lastQuery;
 
-            return SizedBox(
-              height: 300,
-              child: ValueListenableBuilder(
-                valueListenable: controller,
-                builder: (_, query, __) {
-                  final currentQuery = query.text.lastQuery;
+            if (currentQuery == null) return const SizedBox.shrink();
 
-                  if (currentQuery == null) return const SizedBox.shrink();
+            final tags = ref.watch(suggestionProvider(currentQuery));
 
-                  final tags = ref.watch(suggestionProvider(currentQuery));
+            if (tags.isEmpty) return const SizedBox.shrink();
 
-                  return TagSuggestionItems(
+            return ValueListenableBuilder(
+              valueListenable: showSuggestions,
+              builder: (_, show, __) {
+                if (!show) return const SizedBox.shrink();
+
+                return SizedBox(
+                  height: 300,
+                  child: TagSuggestionItems(
                     tags: tags,
                     onItemTap: (tag) {
                       // replace the last word with the selected tag
@@ -116,9 +122,9 @@ class _SelectedTagEditDialogState extends ConsumerState<SelectedTagEditDialog> {
                       bottomRight: Radius.circular(8),
                     ),
                     elevation: 0,
-                  );
-                },
-              ),
+                  ),
+                );
+              },
             );
           },
         ),

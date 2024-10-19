@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -38,7 +39,8 @@ class LanguagePage extends ConsumerWidget {
           itemCount: supportedLanguages.length,
           itemBuilder: (context, index) {
             final e = supportedLanguages[index].name;
-            return RadioListTile<String>(
+
+            return RadioListTile(
               activeColor: context.colorScheme.primary,
               groupValue: settings.language,
               value: e,
@@ -46,14 +48,12 @@ class LanguagePage extends ConsumerWidget {
               onChanged: (value) {
                 if (value == null) return;
                 final locale = supportedLanguages
-                    .firstWhere(
+                    .firstWhereOrNull(
                       (element) => element.name == value,
                     )
-                    .locale;
+                    ?.locale;
                 ref.updateSettings(settings.copyWith(language: value));
-                final data = locale.split('-');
-
-                context.setLocale(Locale(data[0], data[1]));
+                context.setLocaleFromString(locale);
               },
             );
           },

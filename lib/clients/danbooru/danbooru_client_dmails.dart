@@ -60,7 +60,6 @@ mixin DanbooruClientDmails {
   }) async {
     await _markDmail(
       id: id,
-      isRead: false,
       cancelToken: cancelToken,
     );
   }

@@ -69,7 +69,7 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
         widget.onDragEnd?.call();
         isDragging.value = false;
       },
-      onTapDown: (TapDownDetails details) {
+      onTapDown: (details) {
         _seekToRelativePosition(details.globalPosition);
       },
       child: Center(

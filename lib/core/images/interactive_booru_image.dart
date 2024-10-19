@@ -112,8 +112,10 @@ class _InteractiveBooruImageState extends ConsumerState<InteractiveBooruImage> {
                             ? constraints.maxHeight
                             : null,
                         fit: BoxFit.contain,
+                        cacheMaxAge: kDefaultImageCacheDuration,
                         headers: {
                           AppHttpHeaders.userAgentHeader: ua,
+                          ...ref.watch(extraHttpHeaderProvider(config)),
                         },
                       ),
                       ...widget.imageOverlayBuilder?.call(constraints) ?? [],
@@ -130,9 +132,11 @@ class _InteractiveBooruImageState extends ConsumerState<InteractiveBooruImage> {
                   height: constraints.maxHeight.isFinite
                       ? constraints.maxHeight
                       : null,
+                  cacheMaxAge: kDefaultImageCacheDuration,
                   fit: BoxFit.contain,
                   headers: {
                     AppHttpHeaders.userAgentHeader: ua,
+                    ...ref.watch(extraHttpHeaderProvider(config)),
                   },
                 ),
               ),

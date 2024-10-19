@@ -24,9 +24,9 @@ String grammarToHtmlString(List<dynamic> value) {
 }
 
 String mapDataToString(dynamic data) => switch (data) {
-      BBCode c => parseBBcodeToHtml(c),
+      final BBCode c => parseBBcodeToHtml(c),
       LineBreakElement _ => '<br>',
-      UrlElement url => parseUrl(url),
+      final UrlElement url => parseUrl(url),
       String _ => data,
       _ => data.toString(),
     };

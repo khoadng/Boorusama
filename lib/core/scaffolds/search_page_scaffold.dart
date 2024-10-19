@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_symbols_icons/symbols.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
@@ -17,8 +15,7 @@ import 'package:boorusama/core/scaffolds/infinite_post_list_scaffold.dart';
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/search_histories/search_histories.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/router.dart';
 
 class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
@@ -37,7 +34,10 @@ class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
 
   final Widget Function(BuildContext context)? noticeBuilder;
 
-  final PostsOrErrorCore<T> Function(int page, String tags) fetcher;
+  final PostsOrErrorCore<T> Function(
+    int page,
+    SelectedTagController selectedTagController,
+  ) fetcher;
 
   final Map<RegExp, TextStyle>? queryPattern;
 
@@ -52,6 +52,8 @@ class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     AutoScrollController scrollController,
     SelectedTagController selectedTagController,
     SearchPageController searchController,
+    BooruError? errors,
+    PostGridController<T> postController,
   )? resultBuilder;
 
   @override
@@ -143,20 +145,27 @@ class _SearchPageScaffoldState<T extends Post>
                   }
 
                   return searchOnce
-                      ? widget.resultBuilder != null
-                          ? widget.resultBuilder!(
-                              _didSearchOnce,
-                              selectedTagString,
-                              _scrollController,
-                              selectedTagController,
-                              searchController,
-                            )
-                          : _buildDefaultSearchResults(
-                              selectedTagController,
-                              searchController,
-                              focus,
-                              textController,
-                            )
+                      ? PostScope(
+                          fetcher: (page) => widget.fetcher(
+                            page,
+                            searchController.selectedTagController,
+                          ),
+                          builder: (context, controller, errors) =>
+                              widget.resultBuilder != null
+                                  ? widget.resultBuilder!(
+                                      _didSearchOnce,
+                                      selectedTagString,
+                                      _scrollController,
+                                      selectedTagController,
+                                      searchController,
+                                      errors,
+                                      controller,
+                                    )
+                                  : _buildDefaultSearchResults(
+                                      errors,
+                                      controller,
+                                    ),
+                        )
                       : _buildInitial(context, search);
                 },
               ),
@@ -203,9 +212,8 @@ class _SearchPageScaffoldState<T extends Post>
             child: SearchLandingView(
               onHistoryCleared: () =>
                   ref.read(searchHistoryProvider.notifier).clearHistories(),
-              onHistoryRemoved: (value) => ref
-                  .read(searchHistoryProvider.notifier)
-                  .removeHistory(value.query),
+              onHistoryRemoved: (value) =>
+                  ref.read(searchHistoryProvider.notifier).removeHistory(value),
               onHistoryTap: (value) {
                 searchController.tapHistoryTag(value);
               },
@@ -236,110 +244,44 @@ class _SearchPageScaffoldState<T extends Post>
   }
 
   Widget _buildDefaultSearchResults(
-    SelectedTagController selectedTagController,
-    SearchPageController searchController,
-    FocusNode focus,
-    RichTextController textController,
+    BooruError? errors,
+    PostGridController controller,
   ) {
-    return PostScope(
-      fetcher: (page) => widget.fetcher(
-        page,
-        searchController.getCurrentRawTags(),
-      ),
-      builder: (context, controller, errors) {
-        void search() {
-          searchController.search();
-          selectedTagString.value = selectedTagController.rawTagsString;
-          controller.refresh();
-        }
-
-        final slivers = [
-          SliverAppBar(
-            floating: true,
-            snap: true,
-            automaticallyImplyLeading: false,
-            titleSpacing: 0,
-            toolbarHeight: kToolbarHeight * 1.2,
-            backgroundColor: context.theme.scaffoldBackgroundColor,
-            title: SearchAppBar(
-              autofocus: false,
-              queryEditingController: textController,
-              leading:
-                  (!context.canPop() ? null : const SearchAppBarBackButton()),
-              innerSearchButton: Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: SearchButton2(
-                  onTap: search,
-                ),
-              ),
-              trailingSearchButton: IconButton(
-                onPressed: () => showAppModalBarBottomSheet(
-                  context: context,
-                  builder: (context) => Scaffold(
-                    body: SafeArea(
-                      child: Container(
-                        padding: const EdgeInsets.only(top: 8),
-                        child: SearchLandingView(
-                          scrollController: ModalScrollController.of(context),
-                          onHistoryCleared: () => ref
-                              .read(searchHistoryProvider.notifier)
-                              .clearHistories(),
-                          onHistoryRemoved: (value) => ref
-                              .read(searchHistoryProvider.notifier)
-                              .removeHistory(value.query),
-                          onHistoryTap: (value) {
-                            searchController.tapHistoryTag(value);
-                            context.pop();
-                          },
-                          onTagTap: (value) {
-                            searchController.tapTag(value);
-                            context.pop();
-                          },
-                          onRawTagTap: (value) {
-                            selectedTagController.addTag(
-                              value,
-                              isRaw: true,
-                            );
-                            context.pop();
-                          },
-                        ),
-                      ),
-                    ),
+    return InfinitePostListScaffold(
+      errors: errors,
+      controller: controller,
+      sliverHeaders: [
+        SliverSearchAppBar(
+          search: () {
+            searchController.search();
+            selectedTagString.value = selectedTagController.rawTagsString;
+            controller.refresh();
+          },
+          searchController: searchController,
+          selectedTagController: selectedTagController,
+        ),
+        SliverToBoxAdapter(
+            child: SelectedTagListWithData(
+          controller: selectedTagController,
+        )),
+        SliverToBoxAdapter(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ...[
+                ValueListenableBuilder(
+                  valueListenable: selectedTagString,
+                  builder: (context, value, _) => ResultHeaderWithProvider(
+                    selectedTags: value.split(' '),
+                    onRefresh: null,
                   ),
                 ),
-                icon: const Icon(Symbols.add),
-              ),
-            ),
+                const Spacer(),
+              ]
+            ],
           ),
-          SliverToBoxAdapter(
-              child: SelectedTagListWithData(
-            controller: selectedTagController,
-          )),
-          SliverToBoxAdapter(
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ...[
-                  ValueListenableBuilder(
-                    valueListenable: selectedTagString,
-                    builder: (context, value, _) => ResultHeaderWithProvider(
-                      selectedTags: value.split(' '),
-                      onRefresh: null,
-                    ),
-                  ),
-                  const Spacer(),
-                ]
-              ],
-            ),
-          ),
-        ];
-
-        return InfinitePostListScaffold(
-          errors: errors,
-          controller: controller,
-          sliverHeaderBuilder: (context) => slivers,
-        );
-      },
+        ),
+      ],
     );
   }
 }

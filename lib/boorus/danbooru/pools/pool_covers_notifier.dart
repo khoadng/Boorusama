@@ -30,11 +30,11 @@ class PoolCoversNotifier
     if (poolsToFetch.isEmpty) return;
 
     final poolCoverMap = <int, PoolCover?>{
-      for (var e in poolsToFetch) e.id: null,
+      for (final e in poolsToFetch) e.id: null,
     };
 
     final postPoolMap = <int, int>{
-      for (var pool in poolsToFetch) pool.postIds.last: pool.id,
+      for (final pool in poolsToFetch) pool.postIds.last: pool.id,
     };
 
     final r = await postRepo
@@ -46,10 +46,10 @@ class PoolCoversNotifier
             ));
 
     final postMap = <int, DanbooruPost>{
-      for (var post in r.posts) post.id: post,
+      for (final post in r.posts) post.id: post,
     };
 
-    for (var postId in postPoolMap.keys) {
+    for (final postId in postPoolMap.keys) {
       if (postMap.containsKey(postId)) {
         poolCoverMap[postPoolMap[postId]!] = (
           url: postToCoverUrl(postMap[postId]!),

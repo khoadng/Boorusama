@@ -2,7 +2,7 @@
 import 'package:boorusama/foundation/error.dart';
 
 String translateBooruError(BooruError error) => switch (error) {
-      AppError e => switch (e.type) {
+      final AppError e => switch (e.type) {
           AppErrorType.cannotReachServer =>
             'Cannot reach server, please check your connection',
           AppErrorType.failedToParseJSON =>
@@ -13,7 +13,7 @@ String translateBooruError(BooruError error) => switch (error) {
           AppErrorType.booruConfigNotFound => 'Booru config not found',
           AppErrorType.unknown => 'generic.errors.unknown',
         },
-      ServerError e => switch (e.httpStatusCode) {
+      final ServerError e => switch (e.httpStatusCode) {
           401 => 'search.errors.forbidden',
           403 => 'search.errors.access_denied',
           410 => 'search.errors.pagination_limit',
@@ -24,5 +24,5 @@ String translateBooruError(BooruError error) => switch (error) {
           503 => 'search.errors.down',
           _ => 'generic.errors.unknown',
         },
-      UnknownError e => e.error.toString(),
+      final UnknownError e => e.error.toString(),
     };

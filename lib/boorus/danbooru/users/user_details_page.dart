@@ -3,57 +3,99 @@ import 'dart:math';
 
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Package imports:
-import 'package:collection/collection.dart';
-import 'package:fl_chart/fl_chart.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/clipboard.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/package_info.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
+import 'package:boorusama/router.dart';
 import 'package:boorusama/string.dart';
-import 'package:boorusama/time.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../favorites/favorites.dart';
 import '../posts/posts.dart';
 import '../related_tags/related_tags.dart';
 import '../reports/reports.dart';
 import '../router.dart';
+import 'user_charts.dart';
 import 'users.dart';
 
-typedef DanbooruReportDataParams = ({
-  String username,
-  String tag,
-  int uploadCount,
-});
+class DanbooruReportDataParams extends Equatable {
+  const DanbooruReportDataParams({
+    required this.username,
+    required this.tag,
+    required this.uploadCount,
+  });
+
+  DanbooruReportDataParams.forUser(
+    DanbooruUser user,
+  )   : username = user.name,
+        tag = 'user:${user.name}',
+        uploadCount = user.uploadCount;
+
+  DanbooruReportDataParams withDateRange({
+    DateTime? from,
+    DateTime? to,
+  }) {
+    return DanbooruReportDataParams(
+      username: username,
+      tag: tag,
+      uploadCount: uploadCount,
+    );
+  }
+
+  final String username;
+  final String tag;
+  final int uploadCount;
+
+  @override
+  List<Object?> get props => [username, tag, uploadCount];
+}
 
 typedef DanbooruCopyrightDataParams = ({
   String username,
   int uploadCount,
 });
 
-final userDataProvider = FutureProvider.family<List<DanbooruReportDataPoint>,
-    DanbooruReportDataParams>((ref, params) async {
+final userDataProvider = FutureProvider.autoDispose
+    .family<List<DanbooruReportDataPoint>, DanbooruReportDataParams>(
+        (ref, params) async {
   final tag = params.tag;
   final config = ref.watchConfig;
+  final now = DateTime.now();
+
+  final selectedRange = ref.watch(selectedUploadDateRangeSelectorTypeProvider);
+  final from = switch (selectedRange) {
+    UploadDateRangeSelectorType.last7Days =>
+      now.subtract(const Duration(days: 7)),
+    UploadDateRangeSelectorType.last30Days =>
+      now.subtract(const Duration(days: 30)),
+    UploadDateRangeSelectorType.last3Months =>
+      now.subtract(const Duration(days: 90)),
+    UploadDateRangeSelectorType.last6Months =>
+      now.subtract(const Duration(days: 180)),
+    UploadDateRangeSelectorType.lastYear =>
+      now.subtract(const Duration(days: 365)),
+  };
+
   final data =
       await ref.watch(danbooruPostReportProvider(config)).getPostReports(
     tags: [
       tag,
     ],
     period: DanbooruReportPeriod.day,
-    from: DateTime.now().subtract(const Duration(days: 30)),
+    from: from,
     to: DateTime.now(),
   );
 
@@ -63,7 +105,7 @@ final userDataProvider = FutureProvider.family<List<DanbooruReportDataPoint>,
 });
 
 final userCopyrightDataProvider =
-    FutureProvider.family<RelatedTag, DanbooruCopyrightDataParams>(
+    FutureProvider.family<DanbooruRelatedTag, DanbooruCopyrightDataParams>(
         (ref, params) async {
   final username = params.username;
   final config = ref.watchConfig;
@@ -73,6 +115,8 @@ final userCopyrightDataProvider =
         category: TagCategory.copyright(),
       );
 });
+
+const _kTopCopyrigthTags = 5;
 
 class UserDetailsPage extends ConsumerWidget {
   const UserDetailsPage({
@@ -102,7 +146,7 @@ class UserDetailsPage extends ConsumerWidget {
             },
             onSelected: (value) {
               if (value == 0) {
-                Clipboard.setData(ClipboardData(text: uid.toString()));
+                AppClipboard.copy(uid.toString());
               }
             },
           ),
@@ -111,7 +155,7 @@ class UserDetailsPage extends ConsumerWidget {
       body: SafeArea(
         bottom: false,
         child: state.when(
-          data: (user) => Container(
+          data: (user) => DecoratedBox(
             decoration: BoxDecoration(
               color: context.theme.scaffoldBackgroundColor,
               borderRadius: const BorderRadius.all(Radius.circular(8)),
@@ -168,26 +212,35 @@ class UserDetailsPage extends ConsumerWidget {
                           child: SizedBox(
                             height: 220,
                             child: ref
-                                .watch(userDataProvider((
-                                  username: username,
-                                  tag: 'user:$username',
-                                  uploadCount: user.uploadCount,
-                                )))
+                                .watch(userDataProvider(
+                                  DanbooruReportDataParams.forUser(user),
+                                ))
                                 .maybeWhen(
                                   data: (data) => Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.stretch,
                                     children: [
-                                      Text(
-                                        '${data.sumBy((e) => e.postCount).toString()} uploads in the last 30 days',
-                                        style: context.textTheme.titleMedium!
-                                            .copyWith(
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              '${data.sumBy((e) => e.postCount).toString()} uploads',
+                                              style: context
+                                                  .textTheme.titleMedium!
+                                                  .copyWith(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                          const UploadDateRangeSelectorButton(),
+                                        ],
                                       ),
                                       const SizedBox(height: 16),
                                       Expanded(
-                                          child: _buildChart(context, data)),
+                                        child: UserUploadDailyDeltaChart(
+                                          data: data,
+                                        ),
+                                      ),
                                     ],
                                   ),
                                   orElse: () => const SizedBox(
@@ -196,9 +249,7 @@ class UserDetailsPage extends ConsumerWidget {
                                       child: SizedBox(
                                         width: 15,
                                         height: 15,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 4,
-                                        ),
+                                        child: CircularProgressIndicator(),
                                       ),
                                     ),
                                   ),
@@ -212,7 +263,10 @@ class UserDetailsPage extends ConsumerWidget {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               Text(
-                                'Top 5 copyrights',
+                                'Top {0} copyrights'.replaceFirst(
+                                  '{0}',
+                                  _kTopCopyrigthTags.toString(),
+                                ),
                                 style: context.textTheme.titleMedium?.copyWith(
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -225,7 +279,9 @@ class UserDetailsPage extends ConsumerWidget {
                                   )))
                                   .maybeWhen(
                                     data: (data) => _buildTags(
-                                      data.tags.take(5).toList(),
+                                      data.tags
+                                          .take(_kTopCopyrigthTags)
+                                          .toList(),
                                       context,
                                       ref,
                                     ),
@@ -291,7 +347,7 @@ class UserDetailsPage extends ConsumerWidget {
   }
 
   Widget _buildTags(
-    List<RelatedTagItem> tags,
+    List<DanbooruRelatedTagItem> tags,
     BuildContext context,
     WidgetRef ref,
   ) {
@@ -316,7 +372,7 @@ class UserDetailsPage extends ConsumerWidget {
                       text: e.tag.replaceUnderscoreWithSpace(),
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
-                        color: context.themeMode.isDark
+                        color: context.isDark
                             ? ref.watch(
                                 tagColorProvider(TagCategory.copyright().name))
                             : Colors.white,
@@ -325,7 +381,7 @@ class UserDetailsPage extends ConsumerWidget {
                         TextSpan(
                           text: '  ${(e.frequency * 100).toStringAsFixed(1)}%',
                           style: context.textTheme.bodySmall?.copyWith(
-                            color: context.themeMode.isLight
+                            color: context.isLight
                                 ? Colors.white.withOpacity(0.85)
                                 : null,
                           ),
@@ -336,80 +392,6 @@ class UserDetailsPage extends ConsumerWidget {
             ),
           )
           .toList(),
-    );
-  }
-
-  Widget _buildChart(BuildContext context, List<DanbooruReportDataPoint> data) {
-    final seen = <int>{};
-    final titles = <int, String>{};
-
-    for (var i = 0; i < data.length; i++) {
-      final month = data[i].date.month;
-      if (!seen.contains(month)) {
-        titles[i] = parseIntToMonthString(month);
-        seen.add(data[i].date.month);
-      } else {
-        titles[i] = '';
-      }
-    }
-
-    return BarChart(
-      BarChartData(
-        barTouchData: BarTouchData(
-          enabled: true,
-          touchTooltipData: BarTouchTooltipData(
-            getTooltipColor: (_) => context.colorScheme.surfaceContainerHighest,
-            fitInsideHorizontally: true,
-            getTooltipItem: (group, groupIndex, rod, rodIndex) {
-              final date = data[groupIndex].date;
-              return BarTooltipItem(
-                  '${date.day}/${date.month}/${date.year}',
-                  context.textTheme.bodySmall?.copyWith(
-                        color: context.theme.textTheme.bodyLarge?.color,
-                      ) ??
-                      const TextStyle(),
-                  children: [
-                    TextSpan(
-                      text: '\n${rod.toY.toInt()} posts',
-                      style: context.textTheme.bodySmall?.copyWith(
-                        color: context.colorScheme.primary,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ]);
-            },
-          ),
-        ),
-        titlesData: FlTitlesData(
-          topTitles: const AxisTitles(
-            sideTitles: SideTitles(showTitles: false),
-          ),
-          rightTitles: const AxisTitles(
-            sideTitles: SideTitles(showTitles: false),
-          ),
-          bottomTitles: AxisTitles(
-              sideTitles: SideTitles(
-            reservedSize: 30,
-            showTitles: true,
-            getTitlesWidget: (value, meta) => SideTitleWidget(
-              axisSide: meta.axisSide,
-              child: Text(
-                titles[value.toInt()]!,
-              ),
-            ),
-          )),
-        ),
-        barGroups: data
-            .mapIndexed((idx, e) => BarChartGroupData(
-                  x: idx,
-                  barRods: [
-                    BarChartRodData(
-                      toY: e.postCount.toDouble(),
-                    )
-                  ],
-                ))
-            .toList(),
-      ),
     );
   }
 }
@@ -534,6 +516,53 @@ class _PreviewList extends ConsumerWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+enum UploadDateRangeSelectorType {
+  last7Days,
+  last30Days,
+  last3Months,
+  last6Months,
+  lastYear,
+}
+
+extension UploadDateRangeSelectorTypeExtension on UploadDateRangeSelectorType {
+  String get name => switch (this) {
+        UploadDateRangeSelectorType.last7Days => 'Last 7 days',
+        UploadDateRangeSelectorType.last30Days => 'Last 30 days',
+        UploadDateRangeSelectorType.last3Months => 'Last 3 months',
+        UploadDateRangeSelectorType.last6Months => 'Last 6 months',
+        UploadDateRangeSelectorType.lastYear => 'Last year'
+      };
+}
+
+final selectedUploadDateRangeSelectorTypeProvider =
+    StateProvider.autoDispose<UploadDateRangeSelectorType>(
+        (ref) => UploadDateRangeSelectorType.last30Days);
+
+class UploadDateRangeSelectorButton extends ConsumerWidget {
+  const UploadDateRangeSelectorButton({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return OptionDropDownButton(
+      alignment: AlignmentDirectional.centerStart,
+      value: ref.watch(selectedUploadDateRangeSelectorTypeProvider),
+      onChanged: (value) => ref
+          .read(selectedUploadDateRangeSelectorTypeProvider.notifier)
+          .state = value ?? UploadDateRangeSelectorType.last30Days,
+      items: UploadDateRangeSelectorType.values
+          .map(
+            (value) => DropdownMenuItem(
+              value: value,
+              child: Text(value.name),
+            ),
+          )
+          .toList(),
     );
   }
 }

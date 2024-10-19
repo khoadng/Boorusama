@@ -3,7 +3,6 @@ import 'dart:io';
 
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,6 +14,7 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/animations.dart';
+import 'package:boorusama/foundation/clipboard.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/loggers/app_logger.dart';
 import 'package:boorusama/foundation/loggers/logger.dart';
@@ -22,6 +22,7 @@ import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/scrolling.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
+import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class DebugLogsPage extends ConsumerStatefulWidget {
@@ -52,11 +53,10 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
     // Function to copy logs to clipboard
     void copyLogsToClipboard() {
       final data = ref.read(appLoggerProvider).dump();
-      Clipboard.setData(ClipboardData(text: data));
-
-      showSimpleSnackBar(
-        context: context,
-        content: const Text('settings.debug_logs.logs_copied').tr(),
+      AppClipboard.copyAndToast(
+        context,
+        data,
+        message: 'settings.debug_logs.logs_copied'.tr(),
       );
     }
 
@@ -73,7 +73,7 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
             IconButton(
               icon: const Icon(Symbols.download),
               onPressed: () async {
-                await writeLogsToFile(logs);
+                await writeLogsToFile(context, logs);
               },
             ),
           ],
@@ -97,9 +97,12 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
     );
   }
 
-  Future<void> writeLogsToFile(List<LogData> logs) async =>
+  Future<void> writeLogsToFile(
+    BuildContext context,
+    List<LogData> logs,
+  ) async =>
       tryGetDownloadDirectory().run().then((value) => value.fold(
-            (error) => showErrorToast(error.name),
+            (error) => showErrorToast(context, error.name),
             (directory) async {
               final file = File('${directory.path}/boorusama_logs.txt');
               final buffer = StringBuffer();
@@ -108,10 +111,14 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
                     '[${log.dateTime}][${log.serviceName}]: ${log.message}\n');
               }
               await file.writeAsString(buffer.toString());
-              showSuccessToast(
-                'Logs written to ${file.path}',
-                duration: AppDurations.longToast,
-              );
+
+              if (context.mounted) {
+                showSuccessToast(
+                  context,
+                  'Logs written to ${file.path}',
+                  duration: AppDurations.longToast,
+                );
+              }
             },
           ));
 
@@ -126,7 +133,6 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 8),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
@@ -136,7 +142,6 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
                 ),
               ),
               Wrap(
-                spacing: 0,
                 children: [
                   Text(
                     '[${log.serviceName}]: ',
@@ -146,7 +151,7 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
                     ),
                   ),
                   ReadMoreText(
-                    log.message,
+                    _formatLog(log.message),
                     trimExpandedText: ' less',
                     trimCollapsedText: ' more',
                     trimMode: TrimMode.Line,
@@ -169,4 +174,10 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
       },
     );
   }
+}
+
+String _formatLog(String message) {
+  final msg = tryDecodeFullUri(message).getOrElse(() => message);
+
+  return msg;
 }

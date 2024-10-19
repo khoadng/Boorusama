@@ -1,17 +1,4 @@
 class ArtistDto {
-  final int? id;
-  final String? name;
-  final DateTime? updatedAt;
-  final bool? isActive;
-  final List<String>? otherNames;
-  final String? groupName;
-  // final int? linkedUserId;
-  final DateTime? createdAt;
-  final int? creatorId;
-  final bool? isLocked;
-  // final Map<String, dynamic>? notes;
-  final List<List<dynamic>>? domains;
-  final List<UrlDto>? urls;
 
   ArtistDto({
     this.id,
@@ -54,19 +41,25 @@ class ArtistDto {
       urls: urlList,
     );
   }
+  final int? id;
+  final String? name;
+  final DateTime? updatedAt;
+  final bool? isActive;
+  final List<String>? otherNames;
+  final String? groupName;
+  // final int? linkedUserId;
+  final DateTime? createdAt;
+  final int? creatorId;
+  final bool? isLocked;
+  // final Map<String, dynamic>? notes;
+  final List<List<dynamic>>? domains;
+  final List<UrlDto>? urls;
 
   @override
   String toString() => name ?? '';
 }
 
 class UrlDto {
-  final int? id;
-  final int? artistId;
-  final String? url;
-  final String? normalizedUrl;
-  final DateTime? createdAt;
-  final DateTime? updatedAt;
-  final bool? isActive;
 
   UrlDto({
     this.id,
@@ -89,4 +82,11 @@ class UrlDto {
       isActive: json['is_active'],
     );
   }
+  final int? id;
+  final int? artistId;
+  final String? url;
+  final String? normalizedUrl;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+  final bool? isActive;
 }

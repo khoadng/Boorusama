@@ -36,7 +36,7 @@ class CloudflareChallengeInterceptor extends Interceptor {
   final Set<int> triggerOnStatus;
 
   @override
-  void onRequest(
+  Future<void> onRequest(
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
@@ -101,6 +101,7 @@ class CloudflareChallengeInterceptor extends Interceptor {
                   _block = false;
 
                   showSuccessToast(
+                    context,
                     'Cloudflare challenge solved, you can close this screen now',
                   );
                 },
@@ -191,7 +192,6 @@ class _CloudflareChallengeSolverPageState
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(4)),
         border: Border.all(
-          width: 1,
           color: Colors.white,
         ),
       ),

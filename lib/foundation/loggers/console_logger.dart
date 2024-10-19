@@ -2,34 +2,65 @@
 import 'dart:developer' as developer;
 
 // Package imports:
+import 'package:equatable/equatable.dart';
 import 'package:intl/intl.dart';
 
 // Project imports:
+import 'package:boorusama/functional.dart';
+import 'console.dart';
 import 'logger.dart';
 
-class ConsoleLogger extends LoggerService {
+class ConsoleLoggerOptions extends Equatable {
+  const ConsoleLoggerOptions({
+    required this.decodeUriParameters,
+  });
+
+  const ConsoleLoggerOptions.defaults() : decodeUriParameters = false;
+
+  final bool decodeUriParameters;
+
+  @override
+  List<Object?> get props => [
+        decodeUriParameters,
+      ];
+}
+
+class ConsoleLogger extends Logger {
+  ConsoleLogger({
+    required this.options,
+  });
+
+  final ConsoleLoggerOptions options;
+
   String _formatDateTime(DateTime dateTime) {
     return DateFormat('yyyy-MM-dd, hh:mm:ss').format(dateTime);
   }
 
-  // compose log message
-  String _composeMessage(String serviceName, String message, String colorCode) {
-    return '\x1B[33m${_formatDateTime(DateTime.now())}\x1B[0m -> \x1B[35m$serviceName\x1B[0m -> $colorCode$message\x1B[0m';
+  String _composeMessage(String serviceName, String message, String color) {
+    final msg = options.decodeUriParameters
+        ? tryDecodeFullUri(message).getOrElse(() => message)
+        : message;
+
+    final time = colorize(_formatDateTime(DateTime.now()), yellow);
+    final service = colorize(serviceName, magenta);
+    final m = colorize(msg, color);
+
+    return '$time -> $service -> $m';
   }
 
   @override
   void logI(String serviceName, String message) {
-    developer.log(_composeMessage(serviceName, message, '\x1B[34m'));
+    developer.log(_composeMessage(serviceName, message, blue));
   }
 
   @override
   void logW(String serviceName, String message) {
-    developer.log(_composeMessage(serviceName, message, '\x1B[33m'));
+    developer.log(_composeMessage(serviceName, message, yellow));
   }
 
   @override
   void logE(String serviceName, String message) {
-    developer.log(_composeMessage(serviceName, message, '\x1B[31m'));
+    developer.log(_composeMessage(serviceName, message, red));
   }
 
   @override

@@ -7,9 +7,6 @@ class TagDto {
     required this.type,
   });
 
-  final String? value;
-  final String? type;
-
   factory TagDto.fromHtmlElement(Element element) {
     // value is the data-tag attribute
     final value = element.attributes['data-tag'] ?? element.text.trim();
@@ -21,4 +18,7 @@ class TagDto {
       type: type,
     );
   }
+
+  final String? value;
+  final String? type;
 }

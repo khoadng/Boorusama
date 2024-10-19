@@ -20,6 +20,7 @@ class TagsTile extends ConsumerWidget {
     required this.tags,
     this.tagColorBuilder,
     this.padding,
+    this.initialCount,
   });
 
   final Post post;
@@ -30,9 +31,12 @@ class TagsTile extends ConsumerWidget {
   final List<TagGroupItem>? tags;
   final Color? Function(Tag tag)? tagColorBuilder;
   final EdgeInsetsGeometry? padding;
+  final int? initialCount;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final count = initialCount ?? post.tags.length;
+
     return Theme(
       data: context.theme.copyWith(
         listTileTheme: context.theme.listTileTheme.copyWith(
@@ -42,7 +46,7 @@ class TagsTile extends ConsumerWidget {
       ),
       child: ExpansionTile(
         initiallyExpanded: initialExpanded,
-        title: Text('${post.tags.length} tags'),
+        title: Text('$count tags'),
         controlAffinity: ListTileControlAffinity.trailing,
         onExpansionChanged: (value) =>
             value ? onExpand?.call() : onCollapse?.call(),

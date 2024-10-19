@@ -6,29 +6,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
-import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/favorites/favorites.dart';
 import 'package:boorusama/boorus/e621/e621.dart';
-import 'package:boorusama/boorus/e621/posts/posts.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
 import 'package:boorusama/boorus/gelbooru_v1/gelbooru_v1.dart';
-import 'package:boorusama/boorus/gelbooru_v2/posts/posts_v2.dart';
-import 'package:boorusama/boorus/moebooru/feats/autocomplete/moebooru_autocomplete_provider.dart';
-import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/moebooru/moebooru.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/boorus/sankaku/sankaku.dart';
-import 'package:boorusama/boorus/shimmie2/providers.dart';
 import 'package:boorusama/boorus/zerochan/zerochan.dart';
-import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
-import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
+import 'package:boorusama/core/favorites/favorites.dart';
 import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/tags/tags.dart';
@@ -37,15 +29,14 @@ import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/functional.dart';
-import 'package:boorusama/routes.dart';
-import 'danbooru/notes/notes.dart';
+import 'package:boorusama/router.dart';
+import 'package:boorusama/widgets/widgets.dart';
+import 'anime-pictures/anime_pictures.dart';
 import 'danbooru/posts/posts.dart';
-import 'e621/notes/notes.dart';
 import 'gelbooru_v2/gelbooru_v2.dart';
+import 'hydrus/hydrus.dart';
 import 'philomena/philomena.dart';
-import 'philomena/providers.dart';
 import 'shimmie2/shimmie2.dart';
-import 'szurubooru/providers.dart';
 import 'szurubooru/szurubooru.dart';
 
 part 'booru_builder_types.dart';
@@ -64,6 +55,8 @@ abstract class BooruBuilder {
   CharacterPageBuilder? get characterPageBuilder;
   CommentPageBuilder? get commentPageBuilder;
 
+  QuickFavoriteButtonBuilder? get quickFavoriteButtonBuilder;
+
   HomeViewBuilder get homeViewBuilder;
 
   GridThumbnailUrlBuilder get gridThumbnailUrlBuilder;
@@ -77,17 +70,13 @@ abstract class BooruBuilder {
   PostStatisticsPageBuilder get postStatisticsPageBuilder;
 
   GranularRatingFilterer? get granularRatingFilterer;
-  GranularRatingQueryBuilder? get granularRatingQueryBuilder;
   GranularRatingOptionsBuilder? get granularRatingOptionsBuilder;
 
   PostGestureHandlerBuilder get postGestureHandlerBuilder;
 
   MetatagExtractor? get metatagExtractor;
 
-  // Data Builders
-  PostFetcher get postFetcher;
-  AutocompleteFetcher get autocompleteFetcher;
-  NoteFetcher? get noteFetcher;
+  MultiSelectionActionsBuilder? get multiSelectionActionsBuilder;
 
   // Action Builders
   FavoriteAdder? get favoriteAdder;
@@ -119,67 +108,25 @@ abstract class BooruBuilder {
 final booruBuildersProvider =
     Provider<Map<BooruType, BooruBuilder Function(BooruConfig config)>>((ref) =>
         {
-          BooruType.zerochan: (config) => ZerochanBuilder(
-                postRepo: ref.read(zerochanPostRepoProvider(config)),
-                autocompleteRepo:
-                    ref.read(zerochanAutoCompleteRepoProvider(config)),
-              ),
-          BooruType.moebooru: (config) => MoebooruBuilder(
-                postRepo: ref.read(moebooruPostRepoProvider(config)),
-                autocompleteRepo:
-                    ref.read(moebooruAutocompleteRepoProvider(config)),
-              ),
+          BooruType.zerochan: (config) => ZerochanBuilder(),
+          BooruType.moebooru: (config) => MoebooruBuilder(),
           BooruType.gelbooru: (config) => GelbooruBuilder(
-                postRepo: ref.read(gelbooruPostRepoProvider(config)),
-                autocompleteRepo:
-                    ref.read(gelbooruAutocompleteRepoProvider(config)),
-                noteRepo: ref.read(gelbooruNoteRepoProvider(config)),
                 client: () => ref.read(gelbooruClientProvider(config)),
               ),
           BooruType.gelbooruV2: (config) => GelbooruV2Builder(
-                postRepo: ref.read(gelbooruV2PostRepoProvider(config)),
-                autocompleteRepo:
-                    ref.read(gelbooruV2AutocompleteRepoProvider(config)),
-                noteRepo: ref.read(gelbooruV2NoteRepoProvider(config)),
                 client: ref.read(gelbooruV2ClientProvider(config)),
               ),
-          BooruType.e621: (config) => E621Builder(
-                autocompleteRepo:
-                    ref.read(e621AutocompleteRepoProvider(config)),
-                postRepo: ref.read(e621PostRepoProvider(config)),
-                noteRepo: ref.read(e621NoteRepoProvider(config)),
-              ),
+          BooruType.e621: (config) => E621Builder(),
           BooruType.danbooru: (config) => DanbooruBuilder(
-                postRepo: ref.read(danbooruPostRepoProvider(config)),
-                autocompleteRepo:
-                    ref.read(danbooruAutocompleteRepoProvider(config)),
                 favoriteRepo: ref.read(danbooruFavoriteRepoProvider(config)),
                 postCountRepo: ref.read(danbooruPostCountRepoProvider(config)),
-                noteRepo: ref.read(danbooruNoteRepoProvider(config)),
                 tagInfo: ref.read(tagInfoProvider),
               ),
-          BooruType.gelbooruV1: (config) => GelbooruV1Builder(
-                postRepo: ref.read(gelbooruV1PostRepoProvider(config)),
-                client: GelbooruClient.gelbooru(),
-              ),
-          BooruType.sankaku: (config) => SankakuBuilder(
-                postRepository: ref.read(sankakuPostRepoProvider(config)),
-                autocompleteRepo:
-                    ref.read(sankakuAutocompleteRepoProvider(config)),
-              ),
-          BooruType.philomena: (config) => PhilomenaBuilder(
-                postRepo: ref.read(philomenaPostRepoProvider(config)),
-                autocompleteRepo:
-                    ref.read(philomenaAutoCompleteRepoProvider(config)),
-              ),
-          BooruType.shimmie2: (config) => Shimmie2Builder(
-                postRepo: ref.read(shimmie2PostRepoProvider(config)),
-                autocompleteRepo:
-                    ref.read(shimmie2AutocompleteRepoProvider(config)),
-              ),
-          BooruType.szurubooru: (config) => SzurubooruBuilder(
-                postRepo: ref.read(szurubooruPostRepoProvider(config)),
-                autocompleteRepo:
-                    ref.read(szurubooruAutocompleteRepoProvider(config)),
-              ),
+          BooruType.gelbooruV1: (config) => GelbooruV1Builder(),
+          BooruType.sankaku: (config) => SankakuBuilder(),
+          BooruType.philomena: (config) => PhilomenaBuilder(),
+          BooruType.shimmie2: (config) => Shimmie2Builder(),
+          BooruType.szurubooru: (config) => SzurubooruBuilder(),
+          BooruType.hydrus: (config) => HydrusBuilder(),
+          BooruType.animePictures: (config) => AnimePicturesBuilder(),
         });

@@ -60,7 +60,7 @@ class CreatorRepositoryFromUserRepo implements CreatorRepository {
         // handle the exception
       }
 
-      for (var e in creators) {
+      for (final e in creators) {
         if (!box.containsKey(e.id.toString()) ||
             DateTime.parse(box.get(e.id.toString())['time'])
                 .isBefore(twoDaysAgo)) {

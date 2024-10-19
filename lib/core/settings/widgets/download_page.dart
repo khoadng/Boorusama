@@ -8,9 +8,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
+import 'package:boorusama/core/downloads/l10n.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/settings/widgets/widgets/settings_tile.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'widgets/settings_page_scaffold.dart';
 
 class DownloadPage extends ConsumerStatefulWidget {
@@ -32,7 +32,7 @@ class _DownloadPageState extends ConsumerState<DownloadPage> {
 
     return SettingsPageScaffold(
       hasAppBar: widget.hasAppBar,
-      title: const Text('download.download').tr(),
+      title: const Text('settings.download.title').tr(),
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -55,39 +55,14 @@ class _DownloadPageState extends ConsumerState<DownloadPage> {
         ),
         const SizedBox(height: 4),
         ListTile(
-          title: const Text('Ignore files that already downloaded'),
+          title: const Text(DownloadTranslations.skipDownloadIfExists).tr(),
           subtitle: const Text(
-            'This will prevent downloading files that already exist in the folder. This is useful when you don\'t want to download the same file multiple times.',
-          ),
+            DownloadTranslations.skipDownloadIfExistsExplanation,
+          ).tr(),
           trailing: Switch(
             value: settings.skipDownloadIfExists,
-            onChanged: settings.useLegacyDownloader
-                ? null
-                : (value) async {
-                    await ref.updateDownloadFileExistedBehavior(
-                        settings, value);
-                  },
-          ),
-        ),
-        const SizedBox(height: 4),
-        ListTile(
-          title: const Text('Use legacy downloader'),
-          subtitle: const Text(
-            'This may be useful if you are experiencing issues with the new download manager. It will be removed in the future when the new download manager is stable.',
-          ),
-          trailing: Switch(
-            value: settings.useLegacyDownloader,
             onChanged: (value) async {
-              await ref.updateDownloaderStatus(settings, value);
-              // Don't allow the user to enable the skipDownloadIfExists
-              if (value) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  ref.updateDownloadFileExistedBehavior(
-                    ref.read(settingsProvider),
-                    false,
-                  );
-                });
-              }
+              await ref.updateDownloadFileExistedBehavior(settings, value);
             },
           ),
         ),

@@ -106,7 +106,7 @@ class PostMedia extends ConsumerWidget {
                         speed: ref.watchPlaybackSpeed(post.videoUrl),
                         onZoomUpdated: onImageZoomUpdated,
                       )
-                : OrientationBuilder(
+                : PerformanceOrientationBuilder(
                     builder: (context, orientation) => BooruVideo(
                       url: post.videoUrl,
                       aspectRatio: post.aspectRatio,
@@ -123,7 +123,7 @@ class PostMedia extends ConsumerWidget {
                   )
         : InteractiveBooruImage(
             useHero: useHero,
-            heroTag: "${post.id}_hero",
+            heroTag: '${post.id}_hero',
             aspectRatio: post.aspectRatio,
             imageUrl: imageUrl,
             placeholderImageUrl: placeholderImageUrl,
@@ -137,15 +137,8 @@ class PostMedia extends ConsumerWidget {
             onZoomUpdated: onImageZoomUpdated,
           );
 
-    return OrientationBuilder(
-      builder: (_, orientation) => Padding(
-        padding: orientation == Orientation.portrait
-            ? EdgeInsets.zero
-            : EdgeInsets.only(
-                bottom: 8 + MediaQuery.viewPaddingOf(context).bottom,
-              ),
-        child: media,
-      ),
+    return PerformanceOrientationBuilder(
+      builder: (_, orientation) => media,
     );
   }
 }

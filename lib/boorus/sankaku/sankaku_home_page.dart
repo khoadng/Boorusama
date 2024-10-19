@@ -9,9 +9,9 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:boorusama/boorus/sankaku/sankaku.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/home/home.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/router.dart';
 
 class SankakuHomePage extends ConsumerWidget {
   const SankakuHomePage({super.key});
@@ -20,9 +20,8 @@ class SankakuHomePage extends ConsumerWidget {
     final config = ref.watchConfig;
     final login = config.login;
 
-    return BooruScope(
-      config: config,
-      mobileMenuBuilder: (context, controller) => [
+    return HomePageScaffold(
+      mobileMenu: [
         if (login != null)
           SideMenuTile(
             icon: const Icon(Symbols.favorite),
@@ -33,14 +32,6 @@ class SankakuHomePage extends ConsumerWidget {
           ),
       ],
       desktopMenuBuilder: (context, controller, constraints) => [
-        HomeNavigationTile(
-          value: 0,
-          controller: controller,
-          constraints: constraints,
-          selectedIcon: Symbols.dashboard,
-          icon: Symbols.dashboard,
-          title: 'Home',
-        ),
         if (login != null)
           HomeNavigationTile(
             value: 1,
@@ -50,25 +41,8 @@ class SankakuHomePage extends ConsumerWidget {
             icon: Symbols.favorite,
             title: 'Favorites',
           ),
-        ...coreDesktopTabBuilder(
-          context,
-          constraints,
-          controller,
-        ),
       ],
-      desktopViews: () {
-        final sankakuTabs = [
-          const DesktopHomePageScaffold(),
-          if (login != null) SankakuFavoritesPage(username: login)
-        ];
-
-        return [
-          ...sankakuTabs,
-          ...coreDesktopViewBuilder(
-            previousItemCount: sankakuTabs.length,
-          ),
-        ];
-      },
+      desktopViews: [if (login != null) SankakuFavoritesPage(username: login)],
     );
   }
 }

@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:filesize/filesize.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -12,6 +11,7 @@ import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/display.dart';
+import 'package:boorusama/foundation/filesize.dart';
 
 class DanbooruPostStatisticsPage extends ConsumerWidget {
   const DanbooruPostStatisticsPage({
@@ -53,7 +53,7 @@ class DanbooruPostStatisticsPage extends ConsumerWidget {
                     builder: (context) => StatisticalSummaryDetailsPage(
                       title: 'File size',
                       stats: stats.fileSizes,
-                      formatter: (value) => filesize(value.round()),
+                      formatter: (value) => Filesize.parse(value.round()),
                     ),
                   );
                 },
@@ -66,7 +66,7 @@ class DanbooruPostStatisticsPage extends ConsumerWidget {
           PostStatsTile(
             title: 'Average',
             value:
-                '${filesize(stats.fileSizes.mean.round())} ± ${filesize(stats.fileSizes.standardDeviation.round())}',
+                '${Filesize.parse(stats.fileSizes.mean.round())} ± ${Filesize.parse(stats.fileSizes.standardDeviation.round())}',
           ),
           const Divider(),
           PostStatsSectionTitle(

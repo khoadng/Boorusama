@@ -15,17 +15,28 @@ class PostVoteApiRepositoryApi implements PostVoteRepository {
   final DanbooruClient client;
 
   @override
+  Future<List<DanbooruPostVote>> getPostVotesFromUser(
+    List<int> postIds,
+    int userId,
+  ) =>
+      client
+          .getPostVotesFromUser(
+            postIds: postIds,
+            userId: userId,
+            isDeleted: false,
+          )
+          .then((value) => value.map(postVoteDtoToPostVote).toList());
+
+  @override
   Future<List<DanbooruPostVote>> getPostVotes(
-      List<int> postIds, int userId) async {
-    return client
-        .getPostVotes(
-          postIds: postIds,
-          userId: userId,
-          isDeleted: false,
-          limit: 100,
-        )
-        .then((value) => value.map(postVoteDtoToPostVote).toList());
-  }
+    int postId, {
+    int? page,
+  }) =>
+      client.getPostVotes(
+        postIds: [postId],
+        isDeleted: false,
+        page: page,
+      ).then((value) => value.map(postVoteDtoToPostVote).toList());
 
   Future<DanbooruPostVote?> _vote(int postId, int score) => client
       .votePost(

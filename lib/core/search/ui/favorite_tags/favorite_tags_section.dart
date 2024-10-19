@@ -38,12 +38,12 @@ class FavoriteTagsSection extends ConsumerWidget {
       sortType: FavoriteTagsSortType.nameAZ,
       builder: (_, tags, labels, selected) => OptionTagsArenaNoEdit(
         title: 'favorite_tags.favorites'.tr(),
-        titleTrailing: () => FavoriteTagLabelSelectorField(
+        titleTrailing: FavoriteTagLabelSelectorField(
           selected: selected,
           labels: labels,
           onSelect: (value) => notifier.put(value),
         ),
-        childrenBuilder: () => _buildFavoriteTags(ref, tags),
+        children: _buildFavoriteTags(ref, tags),
       ),
     );
   }
@@ -55,7 +55,7 @@ class FavoriteTagsSection extends ConsumerWidget {
     return [
       ...tags.mapIndexed((index, tag) {
         final colors = ref.context.generateChipColors(
-          ref.context.themeMode.isDark ? Colors.white : Colors.black,
+          ref.context.isDark ? Colors.white : Colors.black,
           ref.watch(settingsProvider),
         );
 
@@ -72,7 +72,6 @@ class FavoriteTagsSection extends ConsumerWidget {
           side: colors != null
               ? BorderSide(
                   color: colors.borderColor,
-                  width: 1,
                 )
               : null,
           deleteIcon: Icon(
@@ -94,61 +93,56 @@ class OptionTagsArenaNoEdit extends StatelessWidget {
     super.key,
     required this.title,
     this.titleTrailing,
-    required this.childrenBuilder,
+    required this.children,
   });
 
   final String title;
-  final Widget Function()? titleTrailing;
-  final List<Widget> Function() childrenBuilder;
+  final Widget? titleTrailing;
+  final List<Widget> children;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 1),
-          child: SizedBox(
-            height: 48,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
               children: [
-                Row(
-                  children: [
-                    Text(
-                      title.toUpperCase(),
-                      style: context.textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    FilledButton(
-                      style: FilledButton.styleFrom(
-                        visualDensity: VisualDensity.compact,
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        minimumSize: const Size(32, 32),
-                        shape: const CircleBorder(),
-                        backgroundColor:
-                            context.colorScheme.surfaceContainerHighest,
-                      ),
-                      onPressed: () => context.push('/favorite_tags'),
-                      child: Icon(
-                        Symbols.settings,
-                        size: 16,
-                        color: context.colorScheme.onSurfaceVariant,
-                        fill: 1,
-                      ),
-                    ),
-                  ],
+                Text(
+                  title.toUpperCase(),
+                  style: context.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
-                titleTrailing?.call() ?? const SizedBox.shrink(),
+                FilledButton(
+                  style: FilledButton.styleFrom(
+                    visualDensity: VisualDensity.compact,
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    minimumSize: const Size(32, 32),
+                    shape: const CircleBorder(),
+                    backgroundColor:
+                        context.colorScheme.surfaceContainerHighest,
+                  ),
+                  onPressed: () => context.push('/favorite_tags'),
+                  child: Icon(
+                    Symbols.settings,
+                    size: 16,
+                    color: context.colorScheme.onSurfaceVariant,
+                    fill: 1,
+                  ),
+                ),
               ],
             ),
-          ),
+            titleTrailing ?? const SizedBox.shrink(),
+          ],
         ),
+        const SizedBox(height: 2),
         Wrap(
           spacing: 4,
           runSpacing: isDesktopPlatform() ? 4 : 0,
-          children: childrenBuilder(),
+          children: children,
         ),
       ],
     );

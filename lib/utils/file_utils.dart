@@ -5,15 +5,15 @@ import 'dart:io';
 import 'package:boorusama/foundation/path.dart';
 
 class DirectorySizeInfo {
-  final int size;
-  final int fileCount;
-  final int directoryCount;
 
   DirectorySizeInfo({
     required this.size,
     required this.fileCount,
     required this.directoryCount,
   });
+  final int size;
+  final int fileCount;
+  final int directoryCount;
 
   static DirectorySizeInfo zero =
       DirectorySizeInfo(directoryCount: 0, fileCount: 0, size: 0);
@@ -25,9 +25,9 @@ Future<DirectorySizeInfo> getDirectorySize(Directory dir) async {
   int directoryCount = 0;
 
   try {
-    await for (var entity in dir.list(recursive: false, followLinks: false)) {
+    await for (final entity in dir.list(followLinks: false)) {
       if (entity is Directory) {
-        var subDirSizeInfo = await getDirectorySize(entity);
+        final subDirSizeInfo = await getDirectorySize(entity);
         size += subDirSizeInfo.size;
         fileCount += subDirSizeInfo.fileCount;
         directoryCount += subDirSizeInfo.directoryCount + 1;

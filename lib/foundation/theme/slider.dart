@@ -64,8 +64,8 @@ class CustomSliderThumbShape extends RoundSliderThumbShape {
 }
 
 class CustomSliderOverlayShape extends RoundSliderOverlayShape {
-  final double thumbRadius;
   const CustomSliderOverlayShape({this.thumbRadius = 10.0});
+  final double thumbRadius;
 
   @override
   void paint(

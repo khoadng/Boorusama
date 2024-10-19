@@ -11,6 +11,7 @@ typedef UpdateConfigPageBuilder = Widget Function(
   BuildContext context,
   BooruConfig config, {
   Color? backgroundColor,
+  String? initialTab,
 });
 
 typedef HomePageBuilder = Widget Function(
@@ -34,6 +35,16 @@ typedef FavoritesPageBuilder = Widget Function(
   BooruConfig config,
 );
 
+typedef QuickFavoriteButtonBuilder = Widget Function(
+  BuildContext context,
+  Post post,
+);
+
+typedef MultiSelectionActionsBuilder = Widget Function(
+  BuildContext context,
+  MultiSelectController<Post> controller,
+);
+
 typedef ArtistPageBuilder = Widget Function(
   BuildContext context,
   String artistName,
@@ -48,15 +59,6 @@ typedef CommentPageBuilder = Widget Function(
   BuildContext context,
   bool useAppBar,
   int postId,
-);
-
-typedef PostFetcher = PostsOrError Function(
-  int page,
-  String tags,
-);
-
-typedef AutocompleteFetcher = Future<List<AutocompleteData>> Function(
-  String query,
 );
 
 typedef NoteFetcher = Future<List<Note>> Function(int postId);
@@ -75,7 +77,7 @@ typedef GranularRatingOptionsBuilder = Set<Rating> Function();
 typedef PostCountFetcher = Future<int?> Function(
   BooruConfig config,
   List<String> tags,
-  GranularRatingQueryBuilder? granularRatingQueryBuilder,
+  TagQueryComposer tagQueryComposer,
 );
 
 typedef GridThumbnailUrlBuilder = String Function(
@@ -84,7 +86,7 @@ typedef GridThumbnailUrlBuilder = String Function(
 );
 
 typedef TagColorBuilder = Color? Function(
-  AppThemeMode themeMode,
+  Brightness brightness,
   String? tagType,
 );
 

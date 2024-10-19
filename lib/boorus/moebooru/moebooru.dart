@@ -18,7 +18,6 @@ import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/functional.dart';
 import 'configs/create_moebooru_config_page.dart';
-import 'feats/autocomplete/autocomplete.dart';
 import 'feats/posts/posts.dart';
 import 'pages/moebooru_home_page.dart';
 import 'pages/moebooru_post_details_desktop_page.dart';
@@ -41,10 +40,11 @@ class MoebooruBuilder
         FavoriteNotSupportedMixin,
         PostCountNotSupportedMixin,
         CommentNotSupportedMixin,
-        NoteNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
-        LegacyGranularRatingQueryBuilderMixin,
         UnknownMetatagsMixin,
+        DefaultMultiSelectionActionsBuilderMixin,
+        DefaultHomeMixin,
+        DefaultBooruUIMixin,
         DefaultThumbnailUrlMixin,
         DefaultTagColorMixin,
         DefaultPostGesturesHandlerMixin,
@@ -52,13 +52,7 @@ class MoebooruBuilder
         DefaultGranularRatingFiltererMixin,
         DefaultPostStatisticsPageBuilderMixin
     implements BooruBuilder {
-  MoebooruBuilder({
-    required this.postRepo,
-    required this.autocompleteRepo,
-  });
-
-  final PostRepository<MoebooruPost> postRepo;
-  final MoebooruAutocompleteRepository autocompleteRepo;
+  MoebooruBuilder();
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
@@ -87,24 +81,12 @@ class MoebooruBuilder
         context,
         config, {
         backgroundColor,
+        initialTab,
       }) =>
           CreateMoebooruConfigPage(
             config: config,
             backgroundColor: backgroundColor,
-          );
-
-  @override
-  PostFetcher get postFetcher => (page, tags) => postRepo.getPosts(tags, page);
-
-  @override
-  AutocompleteFetcher get autocompleteFetcher =>
-      (query) => autocompleteRepo.getAutocomplete(query);
-
-  @override
-  SearchPageBuilder get searchPageBuilder =>
-      (context, initialQuery) => SearchPageScaffold(
-            initialQuery: initialQuery,
-            fetcher: (page, tags) => postFetcher(page, tags),
+            initialTab: initialTab,
           );
 
   @override
@@ -134,6 +116,7 @@ class MoebooruBuilder
   PostDetailsPageBuilder get postDetailsPageBuilder =>
       (context, config, payload) => PostDetailsLayoutSwitcher(
             initialIndex: payload.initialIndex,
+            posts: payload.posts,
             scrollController: payload.scrollController,
             desktop: (controller) => MoebooruPostDetailsDesktopPage(
               initialIndex: controller.currentPage.value,
@@ -143,6 +126,7 @@ class MoebooruBuilder
             ),
             mobile: (controller) => MoebooruPostDetailsPage(
               initialPage: controller.currentPage.value,
+              controller: controller,
               posts: payload.posts.map((e) => e as MoebooruPost).toList(),
               onExit: (page) => controller.onExit(page),
               onPageChanged: (page) => controller.setPage(page),
@@ -163,10 +147,6 @@ class MoebooruBuilder
       'source': (post, config) => config.downloadUrl,
     },
   );
-
-  @override
-  HomeViewBuilder get homeViewBuilder => (context, config, controller) =>
-      MoebooruMobileHomeView(controller: controller);
 }
 
 class MoebooruFavoritesPage extends ConsumerWidget {

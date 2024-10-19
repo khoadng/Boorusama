@@ -130,8 +130,8 @@ class BooruConfigNameField extends ConsumerWidget {
   }
 }
 
-class BooruConfigSubmitButton extends ConsumerWidget {
-  const BooruConfigSubmitButton({
+class BooruConfigDataProvider extends ConsumerWidget {
+  const BooruConfigDataProvider({
     super.key,
     required this.builder,
   });
@@ -155,6 +155,7 @@ class BooruConfigSubmitButton extends ConsumerWidget {
         ref.watch(defaultPreviewImageButtonActionProvider);
     final gestures = ref.watch(postGesturesConfigDataProvider);
     final listing = ref.watch(listingConfigsProvider);
+    final alwaysIncludeTags = ref.watch(alwaysIncludeTagsProvider);
 
     return builder(data.copyWith(
       granularRatingFilter: () => granularRatingFilter,
@@ -166,6 +167,7 @@ class BooruConfigSubmitButton extends ConsumerWidget {
       defaultPreviewImageButtonAction: () => defaultPreviewImageButtonAction,
       postGestures: () => gestures,
       listing: () => listing,
+      alwaysIncludeTags: () => alwaysIncludeTags,
       name: configName,
     ));
   }
@@ -189,7 +191,7 @@ class DefaultBooruApiKeyField extends ConsumerWidget {
 
     return CreateBooruApiKeyField(
       text: apiKey,
-      labelText: isPassword ? 'booru.password_label'.tr() : null,
+      labelText: isPassword ? 'booru.password_label'.tr() : labelText,
       hintText: hintText ?? 'e.g: o6H5u8QrxC7dN3KvF9D2bM4p',
       onChanged: ref.updateApiKey,
     );

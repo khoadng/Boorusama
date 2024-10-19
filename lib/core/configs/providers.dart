@@ -16,6 +16,7 @@ final booruConfigProvider =
     settingsProvider,
     currentBooruConfigProvider,
   ],
+  name: 'booruConfigProvider',
 );
 
 final configsProvider = FutureProvider.autoDispose<IList<BooruConfig>>((ref) {

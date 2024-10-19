@@ -36,14 +36,16 @@ class SearchButton2 extends StatelessWidget {
     required this.onTap,
   });
 
-  final void Function() onTap;
+  final void Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
     return Semantics(
       button: true,
       child: Material(
-        color: context.colorScheme.primary,
+        color: onTap == null
+            ? context.colorScheme.onSurface.withOpacity(0.1)
+            : context.colorScheme.primary,
         borderRadius: BorderRadius.circular(8),
         child: InkWell(
           customBorder: RoundedRectangleBorder(

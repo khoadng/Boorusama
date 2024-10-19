@@ -32,7 +32,7 @@ void main() {
 
     test('should return null when object is null', () {
       // ignore: avoid_init_to_null
-      Object? nullValue = null;
+      const Object? nullValue = null;
       expect(nullValue.toDoubleOrNull(), isNull);
     });
   });

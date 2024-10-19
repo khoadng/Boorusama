@@ -81,7 +81,6 @@ class _InfiniteLoadListState extends State<InfiniteLoadList>
       ),
       body: ImprovedScrolling(
         scrollController: _scrollController,
-        enableKeyboardScrolling: false,
         enableMMBScrolling: true,
         child: widget.builder(
           context,

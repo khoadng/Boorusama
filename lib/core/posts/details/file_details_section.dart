@@ -1,16 +1,15 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Package imports:
-import 'package:filesize/filesize.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/foundation/clipboard.dart';
+import 'package:boorusama/foundation/filesize.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/string.dart';
 
 class DefaultFileDetailsSection extends StatelessWidget {
@@ -19,15 +18,18 @@ class DefaultFileDetailsSection extends StatelessWidget {
     required this.post,
     this.uploaderName,
     this.customDetails,
+    this.initialExpanded = false,
   });
 
   final Post post;
+  final bool initialExpanded;
   final String? uploaderName;
   final Map<String, Widget>? customDetails;
 
   @override
   Widget build(BuildContext context) {
     return FileDetailsSection(
+      initialExpanded: initialExpanded,
       post: post,
       rating: post.rating,
       uploader: uploaderName != null
@@ -51,17 +53,20 @@ class FileDetailsSection extends StatelessWidget {
     required this.rating,
     this.uploader,
     this.customDetails,
+    this.initialExpanded = false,
   });
 
   final Post post;
   final Rating rating;
   final Widget? uploader;
   final Map<String, Widget>? customDetails;
+  final bool initialExpanded;
 
   @override
   Widget build(BuildContext context) {
-    final fileSizeText =
-        post.fileSize > 0 ? ' • ${filesize(post.fileSize, 1)}' : '';
+    final fileSizeText = post.fileSize > 0
+        ? ' • ${Filesize.parse(post.fileSize, round: 1)}'
+        : '';
 
     final resolutionText = post.width > 0 && post.height > 0
         ? '${post.width.toInt()}x${post.height.toInt()} • '
@@ -82,6 +87,7 @@ class FileDetailsSection extends StatelessWidget {
         dividerColor: Colors.transparent,
       ),
       child: ExpansionTile(
+        initiallyExpanded: initialExpanded,
         title: Text(
           'post.detail.file_details'.tr(),
         ),
@@ -97,7 +103,6 @@ class FileDetailsSection extends StatelessWidget {
               valueLabel: post.id.toString(),
               valueTrailing: Material(
                 color: Colors.transparent,
-                elevation: 0,
                 child: InkWell(
                   customBorder: const CircleBorder(),
                   child: const Icon(
@@ -105,8 +110,10 @@ class FileDetailsSection extends StatelessWidget {
                     size: 18,
                   ),
                   onTap: () {
-                    Clipboard.setData(ClipboardData(text: post.id.toString()))
-                        .then((value) => showSuccessToast('Copied'));
+                    AppClipboard.copyWithDefaultToast(
+                      context,
+                      post.id.toString(),
+                    );
                   },
                 ),
               )),
@@ -117,7 +124,7 @@ class FileDetailsSection extends StatelessWidget {
           if (post.fileSize > 0)
             _FileDetailTile(
               title: 'post.detail.size'.tr(),
-              valueLabel: filesize(post.fileSize, 1),
+              valueLabel: Filesize.parse(post.fileSize, round: 1),
             ),
           if (post.width > 0 && post.height > 0)
             _FileDetailTile(

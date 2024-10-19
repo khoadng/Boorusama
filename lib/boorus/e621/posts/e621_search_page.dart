@@ -22,8 +22,9 @@ class E621SearchPage extends ConsumerWidget {
 
     return SearchPageScaffold(
       initialQuery: initialQuery,
-      fetcher: (page, tags) =>
-          ref.read(e621PostRepoProvider(config)).getPosts(tags, page),
+      fetcher: (page, controller) => ref
+          .read(e621PostRepoProvider(config))
+          .getPosts(controller.rawTagsString, page),
     );
   }
 }

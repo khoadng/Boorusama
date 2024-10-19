@@ -13,6 +13,8 @@ const int kSankaku = 27;
 const int kPhilomenaId = 28;
 const int kShimmie2Id = 29;
 const int kSzurubooruId = 30;
+const int kHydrusId = 31;
+const int kAnimePicturesId = 32;
 
 enum NetworkProtocol {
   https_1_1,
@@ -26,7 +28,7 @@ NetworkProtocol? stringToNetworkProtocol(String value) => switch (value) {
     };
 
 NetworkProtocol _parseProtocol(dynamic value) => switch (value) {
-      String s => stringToNetworkProtocol(s) ?? NetworkProtocol.https_1_1,
+      final String s => stringToNetworkProtocol(s) ?? NetworkProtocol.https_1_1,
       _ => NetworkProtocol.https_1_1,
     };
 
@@ -61,6 +63,7 @@ sealed class Booru extends Equatable {
         'philomena' => Philomena.from(name, data),
         'shimmie2' => Shimmie2.from(name, data),
         'szurubooru' => Szurubooru.from(name, data),
+        'anime-pictures' => AnimePictures.from(name, data),
         _ => throw Exception('Unknown booru: $name'),
       };
 
@@ -89,24 +92,28 @@ extension BooruX on Booru {
         Philomena _ => kPhilomenaId,
         Shimmie2 _ => kShimmie2Id,
         Szurubooru _ => kSzurubooruId,
+        Hydrus _ => kHydrusId,
+        AnimePictures _ => kAnimePicturesId,
       };
 
   bool hasSite(String url) => switch (this) {
-        Danbooru d => d.sites.any((e) => e.url == url),
-        Gelbooru g => g.sites.contains(url),
-        GelbooruV1 g => g.sites.contains(url),
-        GelbooruV2 g => g.sites.any((e) => e.url == url),
-        Moebooru m => m.sites.any((e) => e.url == url),
-        E621 e => e.sites.contains(url),
-        Zerochan z => z.sites.contains(url),
-        Sankaku s => s.sites.contains(url),
-        Philomena p => p.sites.contains(url),
-        Shimmie2 s => s.sites.contains(url),
-        Szurubooru s => s.sites.contains(url),
+        final Danbooru d => d.sites.any((e) => e.url == url),
+        final Gelbooru g => g.sites.contains(url),
+        final GelbooruV1 g => g.sites.contains(url),
+        final GelbooruV2 g => g.sites.any((e) => e.url == url),
+        final Moebooru m => m.sites.any((e) => e.url == url),
+        final E621 e => e.sites.contains(url),
+        final Zerochan z => z.sites.contains(url),
+        final Sankaku s => s.sites.contains(url),
+        final Philomena p => p.sites.contains(url),
+        final Shimmie2 s => s.sites.contains(url),
+        final Szurubooru s => s.sites.contains(url),
+        final Hydrus h => h.sites.contains(url),
+        final AnimePictures a => a.sites.contains(url),
       };
 
   NetworkProtocol? getSiteProtocol(String url) => switch (this) {
-        Moebooru m => m.sites
+        final Moebooru m => m.sites
                 .firstWhereOrNull((e) => url.contains(e.url))
                 ?.overrideProtocol ??
             protocol,
@@ -114,26 +121,26 @@ extension BooruX on Booru {
       };
 
   String? getSalt(String url) => switch (this) {
-        Moebooru m =>
+        final Moebooru m =>
           m.sites.firstWhereOrNull((e) => url.contains(e.url))?.salt,
         _ => null,
       };
 
   bool? hasAiTagSupported(String url) => switch (this) {
-        Danbooru d =>
+        final Danbooru d =>
           d.sites.firstWhereOrNull((e) => url.contains(e.url))?.aiTagSupport ??
               false,
         _ => null,
       };
 
   String getApiUrl(String url) => switch (this) {
-        GelbooruV2 g =>
+        final GelbooruV2 g =>
           g.sites.firstWhereOrNull((e) => url.contains(e.url))?.apiUrl ?? url,
         _ => url,
       };
 
   bool? hasCensoredTagsBanned(String url) => switch (this) {
-        Danbooru d => d.sites
+        final Danbooru d => d.sites
                 .firstWhereOrNull((e) => url.contains(e.url))
                 ?.censoredTagsBanned ??
             false,
@@ -142,7 +149,8 @@ extension BooruX on Booru {
 
   //TODO: This is fine for now, but we must have a different url for each site, currently there is only one site for each booru
   String? getLoginUrl() => switch (this) {
-        Gelbooru g => g.loginUrl,
+        final Gelbooru g => g.loginUrl,
+        final AnimePictures a => a.loginUrl,
         _ => null,
       };
 
@@ -441,6 +449,47 @@ class Szurubooru extends Booru {
   final List<String> sites;
 }
 
+class Hydrus extends Booru {
+  const Hydrus({
+    required super.name,
+    required super.protocol,
+    required this.sites,
+  });
+
+  factory Hydrus.from(String name, dynamic data) {
+    return Hydrus(
+      name: name,
+      protocol: _parseProtocol(data['protocol']),
+      sites: List.from(data['sites']),
+    );
+  }
+
+  final List<String> sites;
+}
+
+class AnimePictures extends Booru with PassHashAuthMixin {
+  const AnimePictures({
+    required super.name,
+    required super.protocol,
+    required this.sites,
+    required this.loginUrl,
+  });
+
+  factory AnimePictures.from(String name, dynamic data) {
+    return AnimePictures(
+      name: name,
+      protocol: _parseProtocol(data['protocol']),
+      sites: List.from(data['sites']),
+      loginUrl: data['login-url'],
+    );
+  }
+
+  final List<String> sites;
+
+  @override
+  final String? loginUrl;
+}
+
 enum BooruType {
   unknown,
   danbooru,
@@ -454,6 +503,8 @@ enum BooruType {
   philomena,
   shimmie2,
   szurubooru,
+  hydrus,
+  animePictures,
 }
 
 extension BooruTypeX on BooruType {
@@ -470,6 +521,8 @@ extension BooruTypeX on BooruType {
         BooruType.philomena => 'Philomena',
         BooruType.shimmie2 => 'Shimmie2',
         BooruType.szurubooru => 'Szurubooru',
+        BooruType.hydrus => 'Hydrus',
+        BooruType.animePictures => 'Anime Pictures',
       };
 
   bool get isGelbooruBased =>
@@ -491,6 +544,10 @@ extension BooruTypeX on BooruType {
 
   bool get supportBlacklistedTags => isDanbooruBased;
 
+  bool get canDownloadMultipleFiles => this != BooruType.animePictures;
+
+  bool get masonryLayoutUnsupported => this == BooruType.gelbooruV1;
+
   bool get hasUnknownFullImageUrl =>
       this == BooruType.zerochan || this == BooruType.gelbooruV1;
 
@@ -506,6 +563,8 @@ extension BooruTypeX on BooruType {
         BooruType.philomena => kPhilomenaId,
         BooruType.shimmie2 => kShimmie2Id,
         BooruType.szurubooru => kSzurubooruId,
+        BooruType.hydrus => kHydrusId,
+        BooruType.animePictures => kAnimePicturesId,
         BooruType.unknown => 0,
       };
 }
@@ -522,6 +581,8 @@ BooruType intToBooruType(int? value) => switch (value) {
       kPhilomenaId => BooruType.philomena,
       kShimmie2Id => BooruType.shimmie2,
       kSzurubooruId => BooruType.szurubooru,
+      kHydrusId => BooruType.hydrus,
+      kAnimePicturesId => BooruType.animePictures,
       _ => BooruType.unknown
     };
 

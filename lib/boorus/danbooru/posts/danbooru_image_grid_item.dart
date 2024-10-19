@@ -1,18 +1,15 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Package imports:
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:oktoast/oktoast.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/danbooru/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/posts/posts.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/foundation/clipboard.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/string.dart';
@@ -40,8 +37,6 @@ class DanbooruImageGridItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isFaved =
-        post.isBanned ? false : ref.watch(danbooruFavoriteProvider(post.id));
     final artistTags = [...post.artistTags]..remove('banned_artist');
     final settings = ref.watch(imageListingSettingsProvider);
 
@@ -63,13 +58,13 @@ class DanbooruImageGridItem extends ConsumerWidget {
                         width: 18,
                         height: 18,
                         child: switch (post.source) {
-                          WebSource source =>
+                          final WebSource source =>
                             WebsiteLogo(url: source.faviconUrl),
                           _ => const SizedBox.shrink(),
                         },
                       ),
                       const SizedBox(width: 4),
-                      const AutoSizeText(
+                      const Text(
                         maxLines: 1,
                         'Banned post',
                         style: TextStyle(
@@ -78,34 +73,34 @@ class DanbooruImageGridItem extends ConsumerWidget {
                       ),
                     ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: Wrap(
-                      children: [
-                        for (final tag in artistTags)
-                          ActionChip(
-                            visualDensity: VisualDensity.compact,
-                            label: AutoSizeText(
-                              tag.replaceUnderscoreWithSpace(),
-                              minFontSize: 6,
-                              maxLines: 1,
-                              style: TextStyle(
-                                color: context.colorScheme.onErrorContainer,
+                  if (artistTags.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: Wrap(
+                        children: [
+                          for (final tag in artistTags)
+                            ActionChip(
+                              visualDensity: VisualDensity.compact,
+                              label: Text(
+                                tag.replaceUnderscoreWithSpace(),
+                                maxLines: 1,
+                                style: TextStyle(
+                                  color: context.colorScheme.onErrorContainer,
+                                ),
                               ),
+                              backgroundColor:
+                                  context.colorScheme.errorContainer,
+                              onPressed: () {
+                                AppClipboard.copyAndToast(
+                                  context,
+                                  artistTags.join(' '),
+                                  message: 'Tag copied to clipboard',
+                                );
+                              },
                             ),
-                            backgroundColor: context.colorScheme.errorContainer,
-                            onPressed: () {
-                              Clipboard.setData(
-                                      ClipboardData(text: artistTags.join(' ')))
-                                  .then((value) => showToast(
-                                        'Tag copied to clipboard',
-                                        position: ToastPosition.bottom,
-                                      ));
-                            },
-                          ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
                 ],
               ),
             ),
@@ -119,20 +114,14 @@ class DanbooruImageGridItem extends ConsumerWidget {
         isGif: post.isGif,
         isAI: post.isAI,
         hideOverlay: hideOverlay,
-        isFaved: isFaved,
-        enableFav: !post.isBanned && enableFav,
-        onFavToggle: (isFaved) async {
-          if (!isFaved) {
-            ref.danbooruFavorites.remove(post.id);
-          } else {
-            ref.danbooruFavorites.add(post.id);
-          }
-        },
-        quickActionButtonBuilder: defaultImagePreviewButtonBuilder(ref, post),
+        quickActionButton: !post.isBanned && enableFav
+            ? DefaultImagePreviewQuickActionButton(post: post)
+            : null,
         autoScrollOptions: autoScrollOptions,
         onTap: post.isBanned
             ? switch (post.source) {
-                WebSource source => () => launchExternalUrlString(source.url),
+                final WebSource source => () =>
+                    launchExternalUrlString(source.url),
                 _ => null,
               }
             : onTap,

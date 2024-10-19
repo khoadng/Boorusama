@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 // Package imports:
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:like_button/like_button.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
@@ -33,16 +32,13 @@ class ImageGridItem extends StatelessWidget {
     this.isTranslated,
     this.autoScrollOptions,
     required this.image,
-    this.enableFav = false,
-    this.onFavToggle,
-    this.isFaved,
     this.hideOverlay = false,
     this.duration,
     this.hasSound,
     this.score,
     this.isAI = false,
     this.isGif = false,
-    this.quickActionButtonBuilder,
+    this.quickActionButton,
     this.borderRadius,
   });
 
@@ -54,17 +50,13 @@ class ImageGridItem extends StatelessWidget {
   final bool? hasComments;
   final bool? hasParentOrChildren;
   final bool? isTranslated;
-  final bool enableFav;
-  final void Function(bool value)? onFavToggle;
-  final bool? isFaved;
   final bool hideOverlay;
   final double? duration;
   final bool? hasSound;
   final int? score;
   final bool isAI;
   final bool isGif;
-  final Widget Function(BuildContext context, BoxConstraints constraints)?
-      quickActionButtonBuilder;
+  final Widget? quickActionButton;
   final BorderRadius? borderRadius;
 
   @override
@@ -77,79 +69,44 @@ class ImageGridItem extends StatelessWidget {
         key: ValueKey(autoScrollOptions!.index),
         child: child,
       ),
-      child: LayoutBuilder(
-        builder: (context, constraints) => Stack(
-          children: [
-            _buildImage(context),
-            if (!hideOverlay)
-              if (quickActionButtonBuilder != null)
-                Positioned(
-                  bottom: 4,
-                  right: 4,
-                  child: quickActionButtonBuilder!(context, constraints),
-                )
-              else if (enableFav)
-                Positioned(
-                  bottom: 4,
-                  right: 4,
-                  child: Container(
-                    padding: const EdgeInsets.only(
-                      top: 2,
-                      bottom: 1,
-                      right: 1,
-                      left: 3,
-                    ),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.black.withOpacity(0.5),
-                    ),
-                    child: LikeButton(
-                      isLiked: isFaved,
-                      onTap: (isLiked) {
-                        onFavToggle?.call(!isLiked);
-
-                        return Future.value(!isLiked);
-                      },
-                      likeBuilder: (isLiked) {
-                        return Icon(
-                          isLiked ? Symbols.favorite : Symbols.favorite,
-                          color: isLiked
-                              ? context.colors.upvoteColor
-                              : Colors.white,
-                          fill: isLiked ? 1 : 0,
-                        );
-                      },
-                    ),
-                  ),
-                ),
-            if (score != null)
+      child: Stack(
+        children: [
+          _buildImage(context),
+          if (!hideOverlay)
+            if (quickActionButton != null)
               Positioned(
                 bottom: 4,
-                left: 4,
-                child: Container(
-                  constraints: const BoxConstraints(minWidth: 28),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-                  decoration: const BoxDecoration(
-                    color: Colors.black,
-                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                  ),
-                  child: Text(
-                    NumberFormat.compact().format(score),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: score! > 0
-                          ? Colors.red
-                          : score! < 0
-                              ? Colors.blue
-                              : Colors.white,
-                      fontWeight: FontWeight.w800,
-                    ),
+                right: 4,
+                child: quickActionButton!,
+              )
+            else
+              const SizedBox.shrink(),
+          if (score != null)
+            Positioned(
+              bottom: 4,
+              left: 4,
+              child: Container(
+                constraints: const BoxConstraints(minWidth: 28),
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                decoration: const BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                ),
+                child: Text(
+                  NumberFormat.compact().format(score),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: score! > 0
+                        ? Colors.red
+                        : score! < 0
+                            ? Colors.blue
+                            : Colors.white,
+                    fontWeight: FontWeight.w800,
                   ),
                 ),
               ),
-          ],
-        ),
+            ),
+        ],
       ),
     );
   }
@@ -184,18 +141,23 @@ class ImageGridItem extends StatelessWidget {
               const ImageOverlayIcon(icon: FontAwesomeIcons.images, size: 16),
             if (isAI)
               Container(
-                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 6),
+                padding: const EdgeInsets.symmetric(horizontal: 6),
                 height: 25,
                 decoration: BoxDecoration(
                   color: Colors.black.withOpacity(0.7),
                   borderRadius: const BorderRadius.all(Radius.circular(4)),
                 ),
-                child: const Text(
-                  'AI',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w800,
-                    color: Colors.white,
-                  ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'AI',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
                 ),
               ),
           ],
@@ -208,11 +170,10 @@ class ImageGridItem extends StatelessWidget {
     return Stack(
       children: [
         image,
-        if (!hideOverlay)
-          Padding(
-            padding: const EdgeInsets.only(top: 1, left: 1),
-            child: _buildOverlayIcon(context),
-          ),
+        Padding(
+          padding: const EdgeInsets.only(top: 1, left: 1),
+          child: _buildOverlayIcon(context),
+        ),
         Positioned.fill(
           child: Material(
             color: Colors.transparent,

@@ -43,7 +43,7 @@ class SearchAppBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final searchAppBar = BooruSearchBar(
+    var searchBar = BooruSearchBar(
       dense: dense,
       autofocus: autofocus ?? false,
       onTapOutside: onTapOutside,
@@ -70,34 +70,28 @@ class SearchAppBar extends ConsumerWidget {
       onSubmitted: onSubmitted,
     );
 
-    return AppBar(
-      automaticallyImplyLeading: false,
-      toolbarHeight: height ?? kToolbarHeight * 1.2,
-      title: trailingSearchButton != null
-          ? LayoutBuilder(
-              builder: (context, constraints) => Row(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  if (constraints.maxWidth > 700)
-                    Spacer(
-                      flex: constraints.maxWidth > 1000 ? 3 : 1,
+    return LayoutBuilder(
+      builder: (context, constraints) => AppBar(
+        automaticallyImplyLeading: false,
+        toolbarHeight: height ?? kToolbarHeight * 1.2,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            constraints.maxWidth < 600
+                ? Expanded(
+                    child: searchBar,
+                  )
+                : ConstrainedBox(
+                    constraints: const BoxConstraints(
+                      maxWidth: 480,
                     ),
-                  Flexible(
-                    flex: 4,
-                    child: searchAppBar,
+                    child: searchBar,
                   ),
-                  const SizedBox(width: 4),
-                  trailingSearchButton!,
-                  if (constraints.maxWidth > 700)
-                    Spacer(
-                      flex: constraints.maxWidth > 1000 ? 3 : 1,
-                    ),
-                ],
-              ),
-            )
-          : searchAppBar,
+            if (trailingSearchButton != null) const SizedBox(width: 4),
+            if (trailingSearchButton != null) trailingSearchButton!,
+          ],
+        ),
+      ),
     );
   }
 }

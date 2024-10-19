@@ -35,7 +35,6 @@ class SettingsTile<T> extends StatelessWidget {
       title: title,
       trailing: OptionDropDownButton<T>(
         backgroundColor: Colors.transparent,
-        alignment: AlignmentDirectional.centerEnd,
         value: selectedOption,
         onChanged: (newValue) {
           if (newValue != null) onChanged(newValue);

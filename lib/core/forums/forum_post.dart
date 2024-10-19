@@ -46,7 +46,7 @@ class ForumPostRepositoryBuilder<T extends ForumPost>
     int? limit,
   }) =>
       TaskEither.Do(($) async {
-        var value = await $(tryFetchRemoteData(
+        final value = await $(tryFetchRemoteData(
           fetcher: () => fetch(topicId, page: page, limit: limit),
         ));
 

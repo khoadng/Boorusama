@@ -7,11 +7,11 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/search_histories/search_histories.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/router.dart';
 import 'selected_tag_edit_dialog.dart';
 
 class SearchLandingView extends ConsumerStatefulWidget {
@@ -27,9 +27,11 @@ class SearchLandingView extends ConsumerStatefulWidget {
     this.noticeBuilder,
     this.backgroundColor,
     this.scrollController,
+    this.disableAnimation = false,
+    this.reverseScheme = false,
   });
 
-  final ValueChanged<String>? onHistoryTap;
+  final ValueChanged<SearchHistory>? onHistoryTap;
   final ValueChanged<String>? onTagTap;
   final ValueChanged<String>? onRawTagTap;
   final ValueChanged<SearchHistory> onHistoryRemoved;
@@ -39,6 +41,8 @@ class SearchLandingView extends ConsumerStatefulWidget {
   final Widget Function(BuildContext context)? noticeBuilder;
   final Color? backgroundColor;
   final ScrollController? scrollController;
+  final bool disableAnimation;
+  final bool reverseScheme;
 
   @override
   ConsumerState<SearchLandingView> createState() => _SearchLandingViewState();
@@ -46,10 +50,12 @@ class SearchLandingView extends ConsumerStatefulWidget {
 
 class _SearchLandingViewState extends ConsumerState<SearchLandingView>
     with TickerProviderStateMixin {
-  late final animationController = AnimationController(
-    vsync: this,
-    duration: kThemeAnimationDuration,
-  );
+  late final animationController = !widget.disableAnimation
+      ? AnimationController(
+          vsync: this,
+          duration: kThemeAnimationDuration,
+        )
+      : null;
 
   @override
   void initState() {
@@ -59,7 +65,7 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
         const Duration(milliseconds: 100),
         () {
           if (!mounted) return;
-          animationController.forward();
+          animationController?.forward();
         },
       );
     });
@@ -67,7 +73,7 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
 
   @override
   void dispose() {
-    animationController.dispose();
+    animationController?.dispose();
     super.dispose();
   }
 
@@ -76,89 +82,94 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
     final selectedLabel =
         ref.watch(miscDataProvider(kSearchSelectedFavoriteTagLabelKey));
 
+    final view = SingleChildScrollView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      controller: widget.scrollController,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (widget.noticeBuilder != null) ...[
+            widget.noticeBuilder!.call(context),
+          ],
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: QueryActionsSection(
+              childrenBuilder: () => [],
+              onTagAdded: (value) {
+                widget.onRawTagTap?.call(value);
+              },
+            ),
+          ),
+          const Divider(thickness: 1),
+          if (widget.metatagsBuilder != null) ...[
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: widget.metatagsBuilder!(context),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            const Divider(thickness: 1),
+          ],
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: FavoriteTagsSection(
+              selectedLabel: selectedLabel,
+              onTagTap: (value) {
+                _onTagTap(value, ref);
+              },
+            ),
+          ),
+          const SizedBox(height: 8),
+          if (widget.trendingBuilder != null) ...[
+            const Divider(thickness: 1),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: widget.trendingBuilder!.call(context),
+            ),
+            const SizedBox(height: 8),
+          ],
+          ref.watch(searchHistoryProvider).maybeWhen(
+                data: (histories) => Column(
+                  children: [
+                    const Divider(thickness: 1),
+                    SearchHistorySection(
+                      reverseScheme: widget.reverseScheme,
+                      histories: histories.histories,
+                      onHistoryTap: (history) {
+                        _onHistoryTap(history, ref);
+                      },
+                      onFullHistoryRequested: () {
+                        goToSearchHistoryPage(
+                          context,
+                          onClear: () => _onHistoryCleared(),
+                          onRemove: (value) => _onHistoryRemoved(value),
+                          onTap: (value) {
+                            context.navigator.pop();
+                            _onHistoryTap(value, ref);
+                          },
+                        );
+                      },
+                    ),
+                  ],
+                ),
+                orElse: () => const SizedBox.shrink(),
+              ),
+          SizedBox(
+            height: MediaQuery.viewPaddingOf(context).bottom + 12,
+          ),
+        ],
+      ),
+    );
+
     return Container(
       color: widget.backgroundColor,
-      child: FadeTransition(
-        opacity: animationController,
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          controller: widget.scrollController,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (widget.noticeBuilder != null) ...[
-                widget.noticeBuilder!.call(context),
-              ],
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: QueryActionsSection(
-                  childrenBuilder: () => [],
-                  onTagAdded: (value) {
-                    widget.onRawTagTap?.call(value);
-                  },
-                ),
-              ),
-              const Divider(thickness: 1),
-              if (widget.metatagsBuilder != null) ...[
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: widget.metatagsBuilder!(context),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                const Divider(thickness: 1),
-              ],
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: FavoriteTagsSection(
-                  selectedLabel: selectedLabel,
-                  onTagTap: (value) {
-                    _onTagTap(value, ref);
-                  },
-                ),
-              ),
-              const SizedBox(height: 8),
-              if (widget.trendingBuilder != null) ...[
-                const Divider(thickness: 1),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: widget.trendingBuilder!.call(context),
-                ),
-                const SizedBox(height: 8),
-              ],
-              ref.watch(searchHistoryProvider).maybeWhen(
-                    data: (histories) => Column(
-                      children: [
-                        const Divider(thickness: 1),
-                        SearchHistorySection(
-                          histories: histories.histories,
-                          onHistoryTap: (history) {
-                            _onHistoryTap(history, ref);
-                          },
-                          onFullHistoryRequested: () {
-                            goToSearchHistoryPage(
-                              context,
-                              onClear: () => _onHistoryCleared(),
-                              onRemove: (value) => _onHistoryRemoved(value),
-                              onTap: (value) {
-                                context.navigator.pop();
-                                _onHistoryTap(value, ref);
-                              },
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                    orElse: () => const SizedBox.shrink(),
-                  ),
-              SizedBox(
-                height: MediaQuery.viewPaddingOf(context).bottom + 12,
-              ),
-            ],
-          ),
-        ),
-      ),
+      child: animationController != null
+          ? FadeTransition(
+              opacity: animationController!,
+              child: view,
+            )
+          : view,
     );
   }
 
@@ -166,7 +177,7 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
     widget.onTagTap?.call(value);
   }
 
-  void _onHistoryTap(String value, WidgetRef ref) {
+  void _onHistoryTap(SearchHistory value, WidgetRef ref) {
     widget.onHistoryTap?.call(value);
   }
 
@@ -217,7 +228,6 @@ class QueryActionsSection extends StatelessWidget {
                     onPressed: () {
                       showDialog(
                         context: context,
-                        barrierDismissible: true,
                         builder: (c) {
                           return SelectedTagEditDialog(
                             tag: const TagSearchItem.raw(tag: ''),

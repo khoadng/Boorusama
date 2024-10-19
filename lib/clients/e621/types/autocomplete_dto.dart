@@ -7,12 +7,6 @@ class AutocompleteDto {
     this.antecedentName,
   });
 
-  final int? id;
-  final String? name;
-  final int? postCount;
-  final int? category;
-  final String? antecedentName;
-
   factory AutocompleteDto.fromJson(Map<String, dynamic> json) {
     return AutocompleteDto(
       id: json['id'],
@@ -22,6 +16,12 @@ class AutocompleteDto {
       antecedentName: json['antecedent_name'],
     );
   }
+
+  final int? id;
+  final String? name;
+  final int? postCount;
+  final int? category;
+  final String? antecedentName;
 
   @override
   String toString() => name ?? '';

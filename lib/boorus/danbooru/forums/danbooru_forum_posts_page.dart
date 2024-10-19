@@ -16,6 +16,7 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/dtext/dtext.dart';
 import 'package:boorusama/core/forums/forums.dart';
 import 'package:boorusama/core/users/users.dart';
+import 'package:boorusama/foundation/html.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/string.dart';
 
@@ -38,9 +39,10 @@ class DanbooruForumPostsPage extends ConsumerStatefulWidget {
 
 class _DanbooruForumPostsPageState
     extends ConsumerState<DanbooruForumPostsPage> {
-  final int _pageSize = 20;
   late final pagingController = PagingController<int, DanbooruForumPost>(
-    firstPageKey: (widget.responseCount / _pageSize).ceil(),
+    firstPageKey: DanbooruForumUtils.getFirstPageKey(
+      responseCount: widget.responseCount,
+    ),
   );
 
   @override
@@ -56,19 +58,22 @@ class _DanbooruForumPostsPageState
   }
 
   Future<void> _fetchPage(int pageKey) async {
+    if (pageKey <= 0) {
+      pagingController.appendLastPage([]);
+      return;
+    }
+
     final posts = await ref
         .read(danbooruForumPostRepoProvider(ref.readConfig))
         .getForumPostsOrEmpty(
           widget.topicId,
           page: pageKey,
-          limit: _pageSize,
+          limit: DanbooruForumUtils.postPerPage,
         );
 
-    if (posts.isEmpty || pageKey == 1) {
-      pagingController.appendLastPage([]);
-    } else {
-      pagingController.appendPage(posts, pageKey - 1);
-    }
+    if (!mounted) return;
+
+    pagingController.appendPage(posts, pageKey - 1);
   }
 
   @override
@@ -124,7 +129,7 @@ class _DanbooruForumPostsPageState
               username: creatorName,
             ),
           ),
-          Html(
+          AppHtml(
             onLinkTap: !config.hasStrictSFW
                 ? (url, attributes, element) =>
                     url != null ? launchExternalUrlString(url) : null
@@ -138,7 +143,7 @@ class _DanbooruForumPostsPageState
                 margin: Margins.only(left: 4, bottom: 16),
                 border: const Border(
                     left: BorderSide(color: Colors.grey, width: 3)),
-              )
+              ),
             },
             data: dtext(post.body, booruUrl: config.url),
           ),

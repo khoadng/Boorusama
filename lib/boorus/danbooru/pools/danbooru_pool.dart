@@ -95,10 +95,5 @@ extension DanbooruPoolX on DanbooruPool {
 
   String get _query => 'pool:$id';
 
-  String toQuery(PoolDetailsOrder? order) => switch (order) {
-        PoolDetailsOrder.oldest => '$_query order:id',
-        _ => _query,
-      };
-
   String toSearchQuery() => _query;
 }

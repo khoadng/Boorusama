@@ -9,11 +9,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/downloads/downloads.dart';
+import 'package:boorusama/core/downloads/download.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
+import 'package:boorusama/router.dart';
 
 class GeneralPostContextMenu extends ConsumerWidget {
   const GeneralPostContextMenu({
@@ -50,7 +50,6 @@ class GeneralPostContextMenu extends ConsumerWidget {
         ContextMenuButtonConfig(
           'download.download'.tr(),
           onPressed: () {
-            showDownloadStartToast(context);
             ref.download(post);
           },
         ),
@@ -59,6 +58,7 @@ class GeneralPostContextMenu extends ConsumerWidget {
             'post.detail.add_to_bookmark'.tr(),
             onPressed: () => ref.bookmarks
               ..addBookmarkWithToast(
+                context,
                 booruConfig.booruId,
                 booruConfig.url,
                 post,
@@ -69,18 +69,20 @@ class GeneralPostContextMenu extends ConsumerWidget {
             'post.detail.remove_from_bookmark'.tr(),
             onPressed: () => ref.bookmarks
               ..removeBookmarkWithToast(
+                context,
                 bookmarkState.getBookmark(post, booruConfig.booruType)!,
               ),
           ),
-        ContextMenuButtonConfig(
-          'View tags',
-          onPressed: () {
-            goToShowTaglistPage(ref, post.extractTags());
-          },
-        ),
+        if (post.tags.isNotEmpty)
+          ContextMenuButtonConfig(
+            'View tags',
+            onPressed: () {
+              goToShowTaglistPage(ref, post.extractTags());
+            },
+          ),
         if (!booruConfig.hasStrictSFW)
           ContextMenuButtonConfig(
-            'Open in browser',
+            'post.detail.view_in_browser'.tr(),
             onPressed: () =>
                 launchExternalUrlString(post.getLink(booruConfig.url)),
           ),

@@ -20,10 +20,6 @@ class MoebooruClient {
               headers: headers ?? {},
             ));
 
-  final Dio _dio;
-  final String? login;
-  final String? passwordHashed;
-
   factory MoebooruClient.yandere({
     Dio? dio,
     String? login,
@@ -60,6 +56,10 @@ class MoebooruClient {
         login: login,
         passwordHashed: apiKey,
       );
+
+  final Dio _dio;
+  final String? login;
+  final String? passwordHashed;
 
   Future<List<PostDto>> getPosts({
     int? page,

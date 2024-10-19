@@ -5,15 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/infinite_post_list_scaffold.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/functional.dart';
+import 'package:boorusama/foundation/display.dart';
 
-class MobileHomePageScaffold extends ConsumerWidget {
+class MobileHomePageScaffold extends ConsumerStatefulWidget {
   const MobileHomePageScaffold({
     super.key,
     required this.controller,
@@ -24,29 +24,41 @@ class MobileHomePageScaffold extends ConsumerWidget {
   final void Function() onSearchTap;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final booruBuilder = ref.watch(booruBuilderProvider);
-    final fetcher = booruBuilder?.postFetcher;
+  ConsumerState<MobileHomePageScaffold> createState() =>
+      _MobileHomePageScaffoldState();
+}
+
+class _MobileHomePageScaffoldState
+    extends ConsumerState<MobileHomePageScaffold> {
+  final selectedTagString = ValueNotifier('');
+
+  @override
+  Widget build(BuildContext context) {
+    final postRepo = ref.watch(postRepoProvider(ref.watchConfig));
 
     return PostScope(
-      fetcher: (page) =>
-          fetcher?.call(page, '') ?? TaskEither.of(<Post>[].toResult()),
+      fetcher: (page) {
+        final tags = selectedTagString.value;
+
+        return postRepo.getPosts(tags, page);
+      },
       builder: (context, postController, errors) => InfinitePostListScaffold(
         errors: errors,
         controller: postController,
-        sliverHeaderBuilder: (context) => [
-          SliverAppBar(
-            backgroundColor: context.theme.scaffoldBackgroundColor,
-            toolbarHeight: kToolbarHeight * 1.2,
-            title: HomeSearchBar(
-              onMenuTap: controller.openMenu,
-              onTap: onSearchTap,
-            ),
-            floating: true,
-            snap: true,
-            automaticallyImplyLeading: false,
+        sliverHeaders: [
+          SliverHomeSearchBar(
+            controller: widget.controller,
+            selectedTagString: selectedTagString,
+            onSearch: () {
+              postController.refresh();
+            },
           ),
           const SliverAppAnnouncementBanner(),
+          if (context.isLandscapeLayout)
+            SliverResultHeader(
+              selectedTagString: selectedTagString,
+              controller: postController,
+            ),
         ],
       ),
     );

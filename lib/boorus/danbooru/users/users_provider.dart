@@ -48,7 +48,7 @@ final danbooruCurrentUserProvider =
         .then((value) => value.data['id']);
 
     id = switch (data) {
-      int i => i,
+      final int i => i,
       _ => null,
     };
 

@@ -21,19 +21,22 @@ class SearchHistoryHiveObjectAdapter
       query: fields[0] as String,
       createdAt: fields[1] as DateTime,
       searchCount: fields[2] as int?,
+      type: fields[3] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, SearchHistoryHiveObject obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.query)
       ..writeByte(1)
       ..write(obj.createdAt)
       ..writeByte(2)
-      ..write(obj.searchCount);
+      ..write(obj.searchCount)
+      ..writeByte(3)
+      ..write(obj.type);
   }
 
   @override

@@ -21,5 +21,5 @@ class EmptyPostCountRepository implements PostCountRepository {
   const EmptyPostCountRepository();
 
   @override
-  Future<int?> count(List<String> tags) => Future<int?>.value(null);
+  Future<int?> count(List<String> tags) => Future<int?>.value();
 }

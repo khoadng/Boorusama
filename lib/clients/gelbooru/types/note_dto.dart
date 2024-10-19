@@ -1,10 +1,4 @@
 class NoteDto {
-  final int? id;
-  final String? body;
-  final int? width;
-  final int? height;
-  final int? y;
-  final int? x;
 
   NoteDto({
     this.id,
@@ -14,6 +8,12 @@ class NoteDto {
     this.y,
     this.x,
   });
+  final int? id;
+  final String? body;
+  final int? width;
+  final int? height;
+  final int? y;
+  final int? x;
 
   NoteDto copyWith({
     int? Function()? id,

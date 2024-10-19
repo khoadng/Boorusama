@@ -1,3 +1,6 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -108,6 +111,7 @@ class FavoriteTagsNotifier extends Notifier<List<FavoriteTag>> {
   }
 
   Future<void> exportWithLabels({
+    required BuildContext context,
     required String path,
   }) async {
     await ref
@@ -119,13 +123,14 @@ class FavoriteTagsNotifier extends Notifier<List<FavoriteTag>> {
         .run()
         .then(
           (value) => value.fold(
-            (l) => showErrorToast(l.toString()),
-            (r) => showSuccessToast('Favorite tags exported to $path'),
+            (l) => showErrorToast(context, l.toString()),
+            (r) => showSuccessToast(context, 'Favorite tags exported to $path'),
           ),
         );
   }
 
   Future<void> importWithLabels({
+    required BuildContext context,
     required String path,
   }) async {
     await ref
@@ -136,7 +141,7 @@ class FavoriteTagsNotifier extends Notifier<List<FavoriteTag>> {
         .run()
         .then(
           (value) => value.fold(
-            (l) => showErrorToast(l.toString()),
+            (l) => showErrorToast(context, l.toString()),
             (r) => repo.createFrom(r).then((value) => load()),
           ),
         );

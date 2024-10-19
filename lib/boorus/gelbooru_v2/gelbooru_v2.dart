@@ -9,7 +9,6 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/gelbooru_v2/artists/artists.dart';
 import 'package:boorusama/boorus/gelbooru_v2/comments/comments.dart';
-import 'package:boorusama/boorus/gelbooru_v2/home/gelbooru_v2_mobile_home_page.dart';
 import 'package:boorusama/boorus/gelbooru_v2/posts/posts_v2.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/gelbooru/gelbooru_v2_client.dart';
@@ -22,7 +21,6 @@ import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
-import 'package:boorusama/functional.dart';
 import 'create_gelbooru_v2_config_page.dart';
 import 'home/gelbooru_v2_home_page.dart';
 import 'posts/gelbooru_v2_post_details_desktop_page.dart';
@@ -123,6 +121,8 @@ class GelbooruV2Builder
         DefaultThumbnailUrlMixin,
         PostCountNotSupportedMixin,
         UnknownMetatagsMixin,
+        DefaultMultiSelectionActionsBuilderMixin,
+        DefaultHomeMixin,
         DefaultPostImageDetailsUrlMixin,
         DefaultGranularRatingFiltererMixin,
         DefaultPostGesturesHandlerMixin,
@@ -130,15 +130,9 @@ class GelbooruV2Builder
         DefaultTagColorMixin
     implements BooruBuilder {
   GelbooruV2Builder({
-    required this.postRepo,
-    required this.autocompleteRepo,
-    required this.noteRepo,
     required this.client,
   });
 
-  final PostRepository<GelbooruV2Post> postRepo;
-  final AutocompleteRepository autocompleteRepo;
-  final NoteRepository noteRepo;
   final GelbooruV2Client client;
 
   @override
@@ -168,24 +162,13 @@ class GelbooruV2Builder
         context,
         config, {
         backgroundColor,
+        initialTab,
       }) =>
           CreateGelbooruV2ConfigPage(
             config: config,
             backgroundColor: backgroundColor,
+            initialTab: initialTab,
           );
-
-  @override
-  PostFetcher get postFetcher => (page, tags) => postRepo.getPosts(
-        tags,
-        page,
-      );
-
-  @override
-  NoteFetcher? get noteFetcher => (postId) => noteRepo.getNotes(postId);
-
-  @override
-  AutocompleteFetcher get autocompleteFetcher =>
-      (query) => autocompleteRepo.getAutocomplete(query);
 
   @override
   SearchPageBuilder get searchPageBuilder => (context, initialQuery) =>
@@ -193,22 +176,28 @@ class GelbooruV2Builder
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) => PostDetailsLayoutSwitcher(
-            initialIndex: payload.initialIndex,
-            scrollController: payload.scrollController,
-            desktop: (controller) => GelbooruV2PostDetailsDesktopPage(
-              initialIndex: controller.currentPage.value,
-              posts: payload.posts.map((e) => e as GelbooruV2Post).toList(),
-              onExit: (page) => controller.onExit(page),
-              onPageChanged: (page) => controller.setPage(page),
-            ),
-            mobile: (controller) => GelbooruV2PostDetailsPage(
-              initialIndex: controller.currentPage.value,
-              posts: payload.posts.map((e) => e as GelbooruV2Post).toList(),
-              onExit: (page) => controller.onExit(page),
-              onPageChanged: (page) => controller.setPage(page),
-            ),
-          );
+      (context, config, payload) {
+        final posts = payload.posts.map((e) => e as GelbooruV2Post).toList();
+
+        return PostDetailsLayoutSwitcher(
+          initialIndex: payload.initialIndex,
+          posts: posts,
+          scrollController: payload.scrollController,
+          desktop: (controller) => GelbooruV2PostDetailsDesktopPage(
+            initialIndex: controller.currentPage.value,
+            posts: posts,
+            onExit: (page) => controller.onExit(page),
+            onPageChanged: (page) => controller.setPage(page),
+          ),
+          mobile: (controller) => GelbooruV2PostDetailsPage(
+            initialIndex: controller.currentPage.value,
+            controller: controller,
+            posts: posts,
+            onExit: (page) => controller.onExit(page),
+            onPageChanged: (page) => controller.setPage(page),
+          ),
+        );
+      };
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
@@ -240,30 +229,6 @@ class GelbooruV2Builder
           );
 
   @override
-  GranularRatingQueryBuilder? get granularRatingQueryBuilder =>
-      (currentQuery, config) => switch (config.ratingFilter) {
-            BooruConfigRatingFilter.none => currentQuery,
-            BooruConfigRatingFilter.hideNSFW => [
-                ...currentQuery,
-                'rating:safe',
-              ],
-            BooruConfigRatingFilter.hideExplicit => [
-                ...currentQuery,
-                '-rating:explicit',
-              ],
-            BooruConfigRatingFilter.custom =>
-              config.granularRatingFiltersWithoutUnknown.toOption().fold(
-                    () => currentQuery,
-                    (ratings) => [
-                      ...currentQuery,
-                      ...ratings.map((e) => '-rating:${e.toFullString(
-                            legacy: true,
-                          )}'),
-                    ],
-                  ),
-          };
-
-  @override
   GranularRatingOptionsBuilder? get granularRatingOptionsBuilder => () => {
         Rating.explicit,
         Rating.questionable,
@@ -284,12 +249,6 @@ class GelbooruV2Builder
       'source': (post, config) => config.downloadUrl,
     },
   );
-
-  @override
-  HomeViewBuilder get homeViewBuilder =>
-      (context, config, controller) => GelbooruV2MobileHomePage(
-            controller: controller,
-          );
 }
 
 class GelbooruV2SearchPage extends ConsumerWidget {
@@ -305,8 +264,9 @@ class GelbooruV2SearchPage extends ConsumerWidget {
     final config = ref.watchConfig;
     return SearchPageScaffold(
       initialQuery: initialQuery,
-      fetcher: (page, tags) =>
-          ref.watch(gelbooruV2PostRepoProvider(config)).getPosts(tags, page),
+      fetcher: (page, controller) => ref
+          .watch(gelbooruV2PostRepoProvider(config))
+          .getPosts(controller.rawTagsString, page),
     );
   }
 }

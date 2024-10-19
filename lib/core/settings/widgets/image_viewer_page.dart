@@ -32,7 +32,7 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
 
     return SettingsPageScaffold(
       hasAppBar: widget.hasAppBar,
-      title: const Text('Image Viewer'),
+      title: const Text('settings.image_viewer.image_viewer').tr(),
       children: [
         SettingsHeader(label: 'settings.general'.tr()),
         SettingsTile(

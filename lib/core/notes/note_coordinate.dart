@@ -55,3 +55,27 @@ extension NoteCoordX on Note {
     );
   }
 }
+
+enum NoteQuadrant {
+  topLeft,
+  topRight,
+  bottomLeft,
+  bottomRight,
+}
+
+extension NoteCoordinateQuadrant on NoteCoordinate {
+  NoteQuadrant calculateQuadrant(double screenWidth, double screenHeight) {
+    final halfWidth = screenWidth / 2;
+    final halfHeight = screenHeight / 2;
+
+    if (x < halfWidth && y < halfHeight) {
+      return NoteQuadrant.topLeft;
+    } else if (x > halfWidth && y < halfHeight) {
+      return NoteQuadrant.topRight;
+    } else if (x < halfWidth && y > halfHeight) {
+      return NoteQuadrant.bottomLeft;
+    } else {
+      return NoteQuadrant.bottomRight;
+    }
+  }
+}

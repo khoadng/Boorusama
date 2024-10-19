@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/core/comments/comments.dart';
 import 'package:boorusama/core/configs/configs.dart';
+import '../danbooru.dart';
 import 'comment_votes_provider.dart';
 import 'danbooru_comment.dart';
 import 'danbooru_comment_vote.dart';
@@ -32,7 +33,10 @@ class CommentVotesNotifier
   }
 
   // upvote
-  Future<void> upvote(int commentId) async {
+  Future<void> upvote(
+    int commentId, {
+    void Function(String msg)? onFailed,
+  }) async {
     final vote = await repo.upvoteComment(commentId);
     state = {
       ...state,
@@ -70,4 +74,23 @@ class CommentVotesNotifier
       commentVote.commentId: currentVote.copyWith(score: newScore),
     };
   }
+}
+
+extension CommentVotesNotifierX on CommentVotesNotifier {
+  Future<void> guardUpvote(WidgetRef ref, int commentId) async => guardLogin(
+        ref,
+        () async => upvote(commentId),
+      );
+
+  Future<void> guardDownvote(WidgetRef ref, int commentId) async => guardLogin(
+        ref,
+        () async => downvote(commentId),
+      );
+
+  Future<void> guardUnvote(
+          WidgetRef ref, DanbooruCommentVote? commentVote) async =>
+      guardLogin(
+        ref,
+        () async => unvote(commentVote),
+      );
 }

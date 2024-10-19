@@ -11,6 +11,7 @@ import 'package:photo_view/photo_view.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
@@ -52,10 +53,11 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
     });
   }
 
-  Future<void> _pop() async {
+  Future<void> _pop(bool didPop) async {
     await setDeviceToAutoRotateMode();
+    showSystemStatus();
 
-    if (mounted) {
+    if (mounted && !didPop) {
       context.navigator.pop();
     }
   }
@@ -69,10 +71,13 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
       },
       child: PopScope(
         canPop: false,
-        onPopInvoked: (didPop) {
-          if (didPop) return;
+        onPopInvokedWithResult: (didPop, _) {
+          if (didPop) {
+            _pop(didPop);
+            return;
+          }
 
-          _pop();
+          _pop(didPop);
         },
         child: Focus(
           autofocus: true,
@@ -85,52 +90,67 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
   Widget _buildBody() {
     return GestureDetector(
       onTap: () {
-        if (!zoom) {
-          setState(() {
-            overlay = !overlay;
-          });
-        }
+        setState(() {
+          _setOverlay(!overlay);
+        });
       },
       child: Scaffold(
         extendBodyBehindAppBar: true,
         appBar: AppBar(
           toolbarHeight: kToolbarHeight * 1.3,
           automaticallyImplyLeading: false,
-          leading: overlay
-              ? IconButton(
-                  icon: const Icon(Symbols.close, color: Colors.white),
-                  onPressed: _pop,
-                )
-              : null,
+          leading: AnimatedSwitcher(
+            duration: Durations.extralong1,
+            reverseDuration: const Duration(milliseconds: 10),
+            child: overlay
+                ? IconButton(
+                    icon: const Icon(Symbols.close, color: Colors.white),
+                    onPressed: () => _pop(false),
+                  )
+                : null,
+          ),
           actions: [
-            if (kPreferredLayout.isMobile && overlay)
-              IconButton(
-                onPressed: () {
-                  if (currentRotation == Orientation.portrait) {
-                    setState(() {
-                      setDeviceToLandscapeMode();
-                      currentRotation = Orientation.landscape;
-                    });
-                  } else {
-                    setState(() {
-                      setDeviceToPortraitMode();
-                      currentRotation = Orientation.portrait;
-                    });
-                  }
-                },
-                color: Colors.white,
-                icon: currentRotation == Orientation.portrait
-                    ? const Icon(Symbols.rotate_left)
-                    : const Icon(Symbols.rotate_right),
+            if (kPreferredLayout.isMobile)
+              AnimatedSwitcher(
+                duration: Durations.extralong1,
+                reverseDuration: const Duration(milliseconds: 10),
+                child: overlay
+                    ? IconButton(
+                        onPressed: () {
+                          if (currentRotation == Orientation.portrait) {
+                            setState(() {
+                              setDeviceToLandscapeMode();
+                              currentRotation = Orientation.landscape;
+                            });
+                          } else {
+                            setState(() {
+                              setDeviceToPortraitMode();
+                              currentRotation = Orientation.portrait;
+                            });
+                          }
+                        },
+                        color: Colors.white,
+                        icon: currentRotation == Orientation.portrait
+                            ? const Icon(Symbols.rotate_left)
+                            : const Icon(Symbols.rotate_right),
+                      )
+                    : null,
               ),
-            if (kPreferredLayout.isDesktop && overlay) ...[
-              IconButton(
-                onPressed: () => turn.value = (turn.value - 0.25) % 1,
-                color: Colors.white,
-                icon: const Icon(Symbols.rotate_left),
+            if (kPreferredLayout.isDesktop)
+              AnimatedSwitcher(
+                duration: Durations.extralong1,
+                reverseDuration: const Duration(milliseconds: 10),
+                child: overlay
+                    ? Container(
+                        margin: const EdgeInsets.only(right: 12),
+                        child: IconButton(
+                          onPressed: () => turn.value = (turn.value - 0.25) % 1,
+                          color: Colors.white,
+                          icon: const Icon(Symbols.rotate_left),
+                        ),
+                      )
+                    : null,
               ),
-              const SizedBox(width: 12),
-            ],
           ],
         ),
         body: Stack(
@@ -145,14 +165,19 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
                 child: _buildImage(),
               ),
             ),
-            if (overlay)
-              ShadowGradientOverlay(
-                alignment: Alignment.topCenter,
-                colors: <Color>[
-                  const Color.fromARGB(60, 0, 0, 0),
-                  Colors.black12.withOpacity(0),
-                ],
-              ),
+            AnimatedSwitcher(
+              duration: Durations.extralong1,
+              reverseDuration: const Duration(milliseconds: 10),
+              child: overlay
+                  ? ShadowGradientOverlay(
+                      alignment: Alignment.topCenter,
+                      colors: <Color>[
+                        const Color.fromARGB(60, 0, 0, 0),
+                        Colors.black12.withOpacity(0),
+                      ],
+                    )
+                  : null,
+            ),
           ],
         ),
       ),
@@ -166,6 +191,7 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
       httpHeaders: {
         AppHttpHeaders.userAgentHeader:
             ref.watch(userAgentGeneratorProvider(config)).generate(),
+        ...ref.watch(extraHttpHeaderProvider(config)),
       },
       imageUrl: widget.imageUrl,
       imageBuilder: (context, imageProvider) => Hero(
@@ -178,7 +204,7 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
             if (value != PhotoViewScaleState.initial) {
               setState(() {
                 zoom = true;
-                overlay = false;
+                _setOverlay(false);
               });
             } else {
               setState(() => zoom = false);
@@ -193,5 +219,15 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
         ),
       ),
     );
+  }
+
+  void _setOverlay(bool value) {
+    overlay = value;
+
+    if (overlay) {
+      showSystemStatus();
+    } else {
+      hideSystemStatus();
+    }
   }
 }

@@ -8,7 +8,7 @@ typedef LogData = ({
   LogLevel level,
 });
 
-class AppLogger implements LoggerService {
+class AppLogger implements Logger {
   final List<LogData> _logs = [];
 
   @override

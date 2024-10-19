@@ -29,6 +29,7 @@ void main() {
         item,
         const TagSearchItem(
           tag: 'tag',
+          originalTag: 'tag',
           operator: FilterOperator.none,
         ),
       );
@@ -44,6 +45,7 @@ void main() {
         item,
         const TagSearchItem(
           tag: '',
+          originalTag: '',
           operator: FilterOperator.none,
         ),
       );
@@ -59,6 +61,7 @@ void main() {
         item,
         const TagSearchItem(
           tag: ':p',
+          originalTag: ':p',
           operator: FilterOperator.none,
         ),
       );
@@ -74,6 +77,7 @@ void main() {
         item,
         const TagSearchItem(
           tag: 'tag',
+          originalTag: '-tag',
           operator: FilterOperator.not,
         ),
       );
@@ -89,6 +93,7 @@ void main() {
         item,
         const TagSearchItem(
           tag: 'tag',
+          originalTag: 'foo:tag',
           metatag: 'foo',
           operator: FilterOperator.none,
         ),
@@ -105,6 +110,7 @@ void main() {
         item,
         const TagSearchItem(
           tag: '>10',
+          originalTag: 'foo:>10',
           metatag: 'foo',
           operator: FilterOperator.none,
         ),
@@ -121,6 +127,7 @@ void main() {
         item,
         const TagSearchItem(
           tag: 'wrong:tag',
+          originalTag: 'wrong:tag',
           operator: FilterOperator.none,
         ),
       );
@@ -130,6 +137,7 @@ void main() {
       test('tag with operator', () {
         const item = TagSearchItem(
           tag: 'tag',
+          originalTag: 'tag',
           operator: FilterOperator.not,
         );
 
@@ -142,6 +150,7 @@ void main() {
       test('tag with metatag', () {
         const item = TagSearchItem(
           tag: 'tag',
+          originalTag: 'tag',
           operator: FilterOperator.none,
           metatag: 'foo',
         );
@@ -155,6 +164,7 @@ void main() {
       test('tag with metatag and operator', () {
         const item = TagSearchItem(
           tag: 'tag',
+          originalTag: 'tag',
           operator: FilterOperator.not,
           metatag: 'foo',
         );

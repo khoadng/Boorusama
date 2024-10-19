@@ -12,18 +12,16 @@ import 'package:gal/gal.dart';
 import 'package:media_scanner/media_scanner.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/booru.dart';
 import 'package:boorusama/core/configs/booru_config.dart';
 import 'package:boorusama/core/configs/providers.dart';
-import 'package:boorusama/core/downloads/download_service.dart';
-import 'package:boorusama/core/downloads/types.dart';
-import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/functional.dart' as fp;
 import 'package:boorusama/router.dart';
+import 'downloads.dart';
+import 'l10n.dart';
 
 extension FileDownloadX on FileDownloader {
   Future<String> enqueueIfNeeded(
@@ -46,7 +44,7 @@ extension FileDownloadX on FileDownloader {
 
 extension TaskUpdateX on TaskUpdate {
   int? get fileSize => switch (this) {
-        TaskStatusUpdate s => () {
+        final TaskStatusUpdate s => () {
             final defaultSize =
                 DownloaderMetadata.fromJsonString(task.metaData).fileSize;
             final fileSizeString = s.responseHeaders.toOption().fold(
@@ -58,7 +56,7 @@ extension TaskUpdateX on TaskUpdate {
 
             return fileSize ?? defaultSize;
           }(),
-        TaskProgressUpdate p => p.expectedFileSize,
+        final TaskProgressUpdate p => p.expectedFileSize,
       };
 }
 
@@ -66,10 +64,11 @@ class BackgroundDownloader implements DownloadService {
   @override
   DownloadPathOrError download({
     required String url,
-    required DownloadFilenameBuilder fileNameBuilder,
+    required String filename,
     DownloaderMetadata? metadata,
     int? fileSize,
     bool? skipIfExists,
+    Map<String, String>? headers,
   }) =>
       fp.TaskEither.Do(
         ($) async {
@@ -78,7 +77,7 @@ class BackgroundDownloader implements DownloadService {
 
           final task = DownloadTask(
             url: url,
-            filename: fileNameBuilder(),
+            filename: filename,
             allowPause: true,
             retries: 1,
             baseDirectory: downloadDir != null
@@ -87,6 +86,8 @@ class BackgroundDownloader implements DownloadService {
             directory: downloadDir != null ? downloadDir.path : '',
             updates: Updates.statusAndProgress,
             metaData: metadata?.toJsonString() ?? '',
+            headers: headers,
+            group: metadata?.group ?? FileDownloader.defaultGroup,
           );
 
           return FileDownloader().enqueueIfNeeded(
@@ -100,21 +101,24 @@ class BackgroundDownloader implements DownloadService {
   DownloadPathOrError downloadCustomLocation({
     required String url,
     required String path,
-    required DownloadFilenameBuilder fileNameBuilder,
+    required String filename,
     DownloaderMetadata? metadata,
     bool? skipIfExists,
+    Map<String, String>? headers,
   }) =>
       fp.TaskEither.Do(
         ($) async {
           final task = DownloadTask(
             url: url,
-            filename: fileNameBuilder(),
+            filename: filename,
             baseDirectory: BaseDirectory.root,
             directory: path,
             allowPause: true,
             retries: 1,
             updates: Updates.statusAndProgress,
             metaData: metadata?.toJsonString() ?? '',
+            headers: headers,
+            group: metadata?.group ?? FileDownloader.defaultGroup,
           );
 
           return FileDownloader().enqueueIfNeeded(
@@ -135,19 +139,14 @@ class BackgroundDownloaderBuilder extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final useLegacy = ref
-        .watch(settingsProvider.select((value) => value.useLegacyDownloader));
-
-    return useLegacy
-        ? child
-        : BackgroundDownloaderScope(
-            onTapNotification: (task, notificationType) {
-              context.go(
-                '/download_manager?filter=${notificationType.name}',
-              );
-            },
-            child: child,
-          );
+    return BackgroundDownloaderScope(
+      onTapNotification: (task, notificationType) {
+        context.go(
+          '/download_manager?filter=${notificationType.name}',
+        );
+      },
+      child: child,
+    );
   }
 }
 
@@ -172,11 +171,6 @@ class _BackgroundDownloaderScopeState
   late StreamSubscription<TaskUpdate> downloadUpdates;
 
   void _update(TaskUpdate update) {
-    final totalTasks = ref.read(downloadTasksProvider);
-
-    final index =
-        totalTasks.indexWhere((element) => element.task == update.task);
-
     if (update case TaskStatusUpdate()) {
       if (update.status case TaskStatus.complete) {
         WidgetsBinding.instance.addPostFrameCallback(
@@ -230,18 +224,7 @@ class _BackgroundDownloaderScopeState
       }
     }
 
-    if (index == -1) {
-      ref.read(downloadTasksProvider.notifier).state = [
-        ...totalTasks,
-        update,
-      ];
-      return;
-    } else {
-      totalTasks[index] = update;
-      ref.read(downloadTasksProvider.notifier).state = [
-        ...totalTasks,
-      ];
-    }
+    ref.read(downloadTasksProvider.notifier).addOrUpdate(update);
   }
 
   @override
@@ -261,13 +244,13 @@ class _BackgroundDownloaderScopeState
             '{filename}',
             '{progress}',
           ),
-          complete: const TaskNotification(
+          complete: TaskNotification(
             '{filename}',
-            'completed',
+            DownloadTranslations.downloadCompletedNotification.tr(),
           ),
-          error: const TaskNotification(
+          error: TaskNotification(
             '{filename}',
-            'failed',
+            DownloadTranslations.downloadFailedNotification.tr(),
           ),
           progressBar: true,
         );
@@ -300,7 +283,3 @@ class _BackgroundDownloaderScopeState
     return widget.child;
   }
 }
-
-final downloadTasksProvider = StateProvider<List<TaskUpdate>>((ref) {
-  return [];
-});

@@ -11,16 +11,81 @@ import 'package:rxdart/rxdart.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/saved_searches/saved_searches.dart';
-import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/foundation/toast.dart';
+import 'package:boorusama/router.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/utils/stream/text_editing_controller_utils.dart';
 
-class EditSavedSearchSheet extends ConsumerStatefulWidget {
+class CreateSavedSearchSheet extends ConsumerWidget {
+  const CreateSavedSearchSheet({
+    super.key,
+    this.initialValue,
+  });
+
+  final String? initialValue;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final notifier =
+        ref.watch(danbooruSavedSearchesProvider(ref.watchConfig).notifier);
+
+    return SavedSearchSheet(
+      initialValue: initialValue != null
+          ? SavedSearch.empty().copyWith(query: initialValue)
+          : null,
+      onSubmit: (query, label) => notifier.create(
+        query: query,
+        label: label,
+        onCreated: (data) => showSimpleSnackBar(
+          context: context,
+          duration: AppDurations.shortToast,
+          content: const Text('saved_search.saved_search_added').tr(),
+        ),
+      ),
+    );
+  }
+}
+
+class EditSavedSearchSheet extends ConsumerWidget {
   const EditSavedSearchSheet({
+    super.key,
+    required this.savedSearch,
+  });
+
+  final SavedSearch savedSearch;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final notifier =
+        ref.watch(danbooruSavedSearchesProvider(ref.watchConfig).notifier);
+
+    return SavedSearchSheet(
+      title: 'saved_search.update_saved_search'.tr(),
+      initialValue: savedSearch,
+      onSubmit: (query, label) => notifier.edit(
+        id: savedSearch.id,
+        label: label,
+        query: query,
+        onUpdated: (data) => showSimpleSnackBar(
+          context: context,
+          duration: AppDurations.shortToast,
+          content: const Text(
+            'saved_search.saved_search_updated',
+          ).tr(),
+        ),
+      ),
+    );
+  }
+}
+
+class SavedSearchSheet extends ConsumerStatefulWidget {
+  const SavedSearchSheet({
     super.key,
     required this.onSubmit,
     this.initialValue,
@@ -32,11 +97,10 @@ class EditSavedSearchSheet extends ConsumerStatefulWidget {
   final void Function(String name, String key) onSubmit;
 
   @override
-  ConsumerState<EditSavedSearchSheet> createState() =>
-      _EditSavedSearchSheetState();
+  ConsumerState<SavedSearchSheet> createState() => _SavedSearchSheetState();
 }
 
-class _EditSavedSearchSheetState extends ConsumerState<EditSavedSearchSheet> {
+class _SavedSearchSheetState extends ConsumerState<SavedSearchSheet> {
   final queryTextController = TextEditingController();
   final labelTextController = TextEditingController();
 
@@ -112,21 +176,21 @@ class _EditSavedSearchSheetState extends ConsumerState<EditSavedSearchSheet> {
                       goToQuickSearchPage(
                         context,
                         ref: ref,
-                        onSelected: (tag) {
+                        onSelected: (tag, _) {
                           final baseOffset =
                               max(0, queryTextController.selection.baseOffset);
                           queryTextController
                             ..text = queryTextController.text.addCharAtPosition(
-                              tag.value,
+                              tag,
                               baseOffset,
                             )
                             ..selection = TextSelection.fromPosition(
                               TextPosition(
-                                offset: baseOffset + tag.value.length,
+                                offset: baseOffset + tag.length,
                               ),
                             );
                         },
-                        onSubmitted: (context, text) {
+                        onSubmitted: (context, text, _) {
                           context.navigator.pop();
 
                           queryTextController.text =
@@ -176,7 +240,7 @@ class _EditSavedSearchSheetState extends ConsumerState<EditSavedSearchSheet> {
                 children: [
                   FilledButton(
                     style: FilledButton.styleFrom(
-                      foregroundColor: context.iconTheme.color,
+                      foregroundColor: context.colorScheme.onSurface,
                       backgroundColor:
                           context.colorScheme.surfaceContainerHighest,
                       shape: const RoundedRectangleBorder(
@@ -192,7 +256,7 @@ class _EditSavedSearchSheetState extends ConsumerState<EditSavedSearchSheet> {
                     valueListenable: queryHasText,
                     builder: (context, enable, _) => FilledButton(
                       style: FilledButton.styleFrom(
-                        foregroundColor: context.iconTheme.color,
+                        foregroundColor: context.colorScheme.onPrimary,
                         shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(16)),
                         ),

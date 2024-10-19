@@ -12,7 +12,7 @@ final sankakuClientProvider = Provider.family<SankakuClient, BooruConfig>(
       username: config.login,
       password: config.apiKey,
       headers: switch (booru) {
-        Sankaku s => s.headers,
+        final Sankaku s => s.headers,
         _ => null,
       },
     );
@@ -25,6 +25,7 @@ final sankakuPostRepoProvider =
     final client = ref.watch(sankakuClientProvider(config));
 
     return PostRepositoryBuilder(
+      tagComposer: ref.watch(tagQueryComposerProvider(config)),
       getSettings: () async => ref.read(imageListingSettingsProvider),
       fetch: (tags, page, {limit}) async {
         final posts = await client.getPosts(

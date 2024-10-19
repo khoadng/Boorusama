@@ -14,9 +14,11 @@ class CreateGelbooruV1ConfigPage extends StatelessWidget {
     required this.config,
     this.backgroundColor,
     this.isNewConfig = false,
+    this.initialTab,
   });
 
   final BooruConfig config;
+  final String? initialTab;
   final Color? backgroundColor;
   final bool isNewConfig;
 
@@ -29,6 +31,7 @@ class CreateGelbooruV1ConfigPage extends StatelessWidget {
       child: CreateBooruConfigScaffold(
         isNewConfig: isNewConfig,
         backgroundColor: backgroundColor,
+        initialTab: initialTab,
       ),
     );
   }

@@ -8,6 +8,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/foundation/html.dart';
 import 'package:boorusama/foundation/theme.dart';
 
 class DismissableInfoContainer extends ConsumerStatefulWidget {
@@ -37,87 +38,118 @@ class _DismissableInfoContainerState
 
   @override
   Widget build(BuildContext context) {
+    if (_isDismissed) {
+      return const SizedBox.shrink();
+    }
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final small = constraints.maxWidth < 700;
+
+        final content = Container(
+          constraints: small
+              ? null
+              : const BoxConstraints(
+                  maxWidth: 700,
+                ),
+          child: Stack(
+            children: [
+              _buildContent(),
+              if (!widget.forceShow) _buildCloseButton(),
+            ],
+          ),
+        );
+
+        return small
+            ? content
+            : Row(
+                children: [
+                  content,
+                ],
+              );
+      },
+    );
+  }
+
+  Widget _buildContent() {
     final colors = context.generateChipColors(
       widget.mainColor ?? Colors.grey,
       ref.watch(settingsProvider),
     );
 
-    if (_isDismissed) {
-      return const SizedBox.shrink();
-    }
-
-    return Stack(
-      children: [
-        Container(
-          margin: widget.padding ??
-              const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 8,
-              ),
-          padding: const EdgeInsets.symmetric(
-            horizontal: 4,
+    return Container(
+      margin: widget.padding ??
+          const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 8,
           ),
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.all(Radius.circular(4)),
-            color: colors?.backgroundColor,
-            border: colors != null
-                ? Border.all(
-                    color: colors.borderColor,
-                    width: 1,
-                  )
-                : null,
-          ),
-          width: MediaQuery.sizeOf(context).width,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+      padding: const EdgeInsets.symmetric(
+        horizontal: 4,
+      ),
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.all(Radius.circular(4)),
+        color: colors?.backgroundColor,
+        border: colors != null
+            ? Border.all(
+                color: colors.borderColor,
+              )
+            : null,
+      ),
+      width: MediaQuery.sizeOf(context).width,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
             children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Html(
-                      style: {
-                        'body': Style(
-                          color: colors?.foregroundColor,
-                        ),
-                      },
-                      data: widget.content,
-                    ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: AppHtml(
+                    style: {
+                      'body': Style(
+                        color: colors?.foregroundColor,
+                      ),
+                    },
+                    data: widget.content,
                   ),
-                  Container(
-                    width: 20,
-                  ),
-                ],
+                ),
               ),
               Container(
-                padding: widget.actions.isNotEmpty
-                    ? const EdgeInsets.only(
-                        left: 4,
-                        bottom: 8,
-                      )
-                    : null,
-                child: OverflowBar(
-                  children: widget.actions,
-                ),
+                width: 20,
               ),
             ],
           ),
+          Container(
+            padding: widget.actions.isNotEmpty
+                ? const EdgeInsets.only(
+                    left: 4,
+                    bottom: 8,
+                  )
+                : null,
+            child: OverflowBar(
+              children: widget.actions,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCloseButton() {
+    return Positioned(
+      top: 8,
+      right: 12,
+      child: IconButton(
+        icon: Icon(
+          Symbols.close,
+          color: context.colorScheme.onError,
         ),
-        if (!widget.forceShow)
-          Positioned(
-              top: 8,
-              right: 12,
-              child: IconButton(
-                icon: Icon(
-                  Symbols.close,
-                  color: context.colorScheme.onError,
-                ),
-                onPressed: () {
-                  setState(() {
-                    _isDismissed = true;
-                  });
-                },
-              )),
-      ],
+        onPressed: () {
+          setState(() {
+            _isDismissed = true;
+          });
+        },
+      ),
     );
   }
 }

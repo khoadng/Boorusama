@@ -28,7 +28,7 @@ import 'package:boorusama/widgets/widgets.dart';
 import 'widgets/platforms/platforms.dart';
 
 const kMinSideBarWidth = 62.0;
-const kMaxSideBarWidth = 280.0;
+const kMaxSideBarWidth = 250.0;
 
 class App extends StatelessWidget {
   const App({
@@ -141,7 +141,6 @@ class AppFailedToInitialize extends ConsumerWidget {
                       ),
                       const SizedBox(height: 12),
                       MarkdownBody(
-                        shrinkWrap: true,
                         data: data,
                       ),
                       const SizedBox(height: 16),
@@ -224,6 +223,7 @@ class AppFailedToInitialize extends ConsumerWidget {
     String data,
   ) =>
       pickDirectoryPathToastOnError(
+        context: context,
         onPick: (path) async {
           final file = File('$path/boorusama_crash.txt');
           await file.writeAsString(data);

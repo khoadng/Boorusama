@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:flutter_tags_x/flutter_tags_x.dart' hide TagsState;
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
@@ -64,15 +63,14 @@ class PostTagList extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Tags(
-          alignment: WrapAlignment.start,
+        Wrap(
           spacing: 4,
           runSpacing: 6,
-          itemCount: tags.length,
-          itemBuilder: (index) {
-            final tag = tags[index];
-            return itemBuilder(context, tag);
-          },
+          children: tags
+              .map(
+                (tag) => itemBuilder(context, tag),
+              )
+              .toList(),
         ),
         const SizedBox(height: 8),
       ],
@@ -114,7 +112,6 @@ class PostTagListChip extends ConsumerWidget {
         side: colors != null
             ? BorderSide(
                 color: colors.borderColor,
-                width: 1,
               )
             : BorderSide.none,
       ),
@@ -136,7 +133,7 @@ class PostTagListChip extends ConsumerWidget {
                   text: '  ${NumberFormat.compact().format(tag.postCount)}',
                   style: context.textTheme.bodySmall?.copyWith(
                     fontSize: 11,
-                    color: context.themeMode.isLight
+                    color: context.isLight
                         ? Colors.white.withOpacity(0.85)
                         : Colors.grey.withOpacity(0.85),
                   ),

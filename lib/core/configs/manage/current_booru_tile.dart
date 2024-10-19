@@ -23,13 +23,7 @@ class CurrentBooruTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final booruConfig = ref.watchConfig;
     final source = PostSource.from(booruConfig.url);
-
-    final logo = switch (source) {
-      WebSource s => BooruLogo(
-          source: s,
-        ),
-      _ => const SizedBox.shrink(),
-    };
+    final logo = BooruLogo.fromConfig(booruConfig);
 
     return LayoutBuilder(
       builder: (context, constraints) => constraints.maxWidth > kMinSideBarWidth

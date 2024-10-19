@@ -11,3 +11,14 @@ extension IntX on int {
     return (log(abs()) / ln10 + epsilonOffset).floor() + 1;
   }
 }
+
+int parseIntSafe(
+  dynamic value, {
+  int fallback = 0,
+}) =>
+    switch (value) {
+      final int i => i,
+      final double d => d.toInt(),
+      final String s => int.tryParse(s) ?? fallback,
+      _ => fallback,
+    };

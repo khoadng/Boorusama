@@ -5,25 +5,6 @@ import 'package:equatable/equatable.dart';
 import 'package:boorusama/boorus/danbooru/users/users.dart';
 
 class DanbooruPostVersion extends Equatable {
-  final int id;
-  final int postId;
-  final String tags;
-  final List<String> addedTags;
-  final List<String> removedTags;
-  final int updaterId;
-  final DateTime updatedAt;
-  final String rating;
-  final bool ratingChanged;
-  final int? parentId;
-  final bool parentChanged;
-  final String source;
-  final bool sourceChanged;
-  final int version;
-  final String obsoleteAddedTags;
-  final String obsoleteRemovedTags;
-  final String unchangedTags;
-
-  final Creator updater;
 
   const DanbooruPostVersion({
     required this.id,
@@ -45,6 +26,25 @@ class DanbooruPostVersion extends Equatable {
     required this.unchangedTags,
     required this.updater,
   });
+  final int id;
+  final int postId;
+  final String tags;
+  final List<String> addedTags;
+  final List<String> removedTags;
+  final int updaterId;
+  final DateTime updatedAt;
+  final String rating;
+  final bool ratingChanged;
+  final int? parentId;
+  final bool parentChanged;
+  final String source;
+  final bool sourceChanged;
+  final int version;
+  final String obsoleteAddedTags;
+  final String obsoleteRemovedTags;
+  final String unchangedTags;
+
+  final Creator updater;
 
   @override
   List<Object?> get props => [

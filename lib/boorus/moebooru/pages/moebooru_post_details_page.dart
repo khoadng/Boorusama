@@ -14,9 +14,9 @@ import 'package:boorusama/boorus/moebooru/moebooru.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'widgets/moebooru_comment_section.dart';
 import 'widgets/moebooru_information_section.dart';
@@ -37,7 +37,7 @@ List<TagGroupItem> createMoebooruTagGroupItems(
 ) {
   final tags = <Tag>[];
 
-  for (var tag in tagStrings) {
+  for (final tag in tagStrings) {
     if (allTagsMap.containsKey(tag)) {
       tags.add(allTagsMap[tag]!);
     }
@@ -55,12 +55,14 @@ class MoebooruPostDetailsPage extends ConsumerStatefulWidget {
     required this.initialPage,
     required this.onExit,
     required this.onPageChanged,
+    required this.controller,
   });
 
   final List<MoebooruPost> posts;
   final int initialPage;
   final void Function(int page) onExit;
   final void Function(int page) onPageChanged;
+  final PostDetailsController<Post> controller;
 
   @override
   ConsumerState<MoebooruPostDetailsPage> createState() =>
@@ -79,7 +81,7 @@ class _MoebooruPostDetailsPageState
     });
   }
 
-  void _loadFavoriteUsers(int postId) async {
+  Future<void> _loadFavoriteUsers(int postId) async {
     final config = ref.readConfig;
     final booru = config.createBooruFrom(ref.read(booruFactoryProvider));
 
@@ -92,14 +94,13 @@ class _MoebooruPostDetailsPageState
         }
         return;
       },
-      orElse: () => Future.value(null),
+      orElse: () => Future.value(),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     final config = ref.watchConfig;
-    final booru = config.createBooruFrom(ref.watch(booruFactoryProvider));
 
     return PostDetailsPageScaffold(
       posts: posts,
@@ -122,7 +123,7 @@ class _MoebooruPostDetailsPageState
               return artistTags != null && artistTags.isNotEmpty
                   ? artistTags
                       .map(
-                        (tag) => ArtistPostList2(
+                        (tag) => ArtistPostList(
                           tag: tag,
                           builder: (tag) => ref
                               .watch(moebooruPostDetailsArtistProvider(tag))
@@ -137,9 +138,7 @@ class _MoebooruPostDetailsPageState
                                   imageUrl: (item) => item.thumbnailImageUrl,
                                 ),
                                 orElse: () =>
-                                    const SliverPreviewPostGridPlaceholder(
-                                  itemCount: 30,
-                                ),
+                                    const SliverPreviewPostGridPlaceholder(),
                               ),
                         ),
                       )
@@ -184,41 +183,11 @@ class _MoebooruPostDetailsPageState
           tag: tag.rawName,
         ),
       ),
-      toolbarBuilder: (context, post) {
-        final notifier = ref.watch(moebooruFavoritesProvider(post.id).notifier);
-
-        return booru?.whenMoebooru(
-                data: (data) => data.supportsFavorite(config.url)
-                    ? SimplePostActionToolbar(
-                        isFaved: ref
-                            .watch(moebooruFavoritesProvider(post.id))
-                            ?.contains(config.login),
-                        addFavorite: () => ref
-                            .read(moebooruClientProvider(config))
-                            .favoritePost(postId: post.id)
-                            .then((value) {
-                          notifier.clear();
-                        }),
-                        removeFavorite: () => ref
-                            .read(moebooruClientProvider(config))
-                            .unfavoritePost(postId: post.id)
-                            .then((value) {
-                          notifier.clear();
-                        }),
-                        isAuthorized: config.hasLoginDetails(),
-                        forceHideFav: !config.hasLoginDetails(),
-                        post: post,
-                      )
-                    : SimplePostActionToolbar(post: post),
-                orElse: () => SimplePostActionToolbar(post: post)) ??
-            SimplePostActionToolbar(post: post);
-      },
+      toolbar: MoebooruPostDetailsActionToolbar(controller: widget.controller),
       commentsBuilder: (context, post) => MoebooruCommentSection(post: post),
       topRightButtonsBuilder: (currentPage, expanded, post, controller) => [
         GeneralMoreActionButton(
           post: post,
-          //FIXME: temporary disable slideshow when user is logged in to prevent server spam
-          onStartSlideshow: null,
         ),
       ],
       infoBuilder: (context, post) =>
@@ -262,5 +231,53 @@ class _MoebooruPostDetailsPageState
         (e) => TagCategory.fromLegacyId(e.category) == TagCategory.character());
     final characterTags = tag?.tags.map((e) => e.rawName).toSet();
     return characterTags;
+  }
+}
+
+class MoebooruPostDetailsActionToolbar extends ConsumerWidget {
+  const MoebooruPostDetailsActionToolbar({
+    super.key,
+    required this.controller,
+  });
+
+  final PostDetailsController controller;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
+    final booru = config.createBooruFrom(ref.watch(booruFactoryProvider));
+
+    return ValueListenableBuilder(
+      valueListenable: controller.currentPost,
+      builder: (_, post, __) {
+        final notifier = ref.watch(moebooruFavoritesProvider(post.id).notifier);
+
+        return booru?.whenMoebooru(
+                data: (data) => data.supportsFavorite(config.url)
+                    ? SimplePostActionToolbar(
+                        isFaved: ref
+                            .watch(moebooruFavoritesProvider(post.id))
+                            ?.contains(config.login),
+                        addFavorite: () => ref
+                            .read(moebooruClientProvider(config))
+                            .favoritePost(postId: post.id)
+                            .then((value) {
+                          notifier.clear();
+                        }),
+                        removeFavorite: () => ref
+                            .read(moebooruClientProvider(config))
+                            .unfavoritePost(postId: post.id)
+                            .then((value) {
+                          notifier.clear();
+                        }),
+                        isAuthorized: config.hasLoginDetails(),
+                        forceHideFav: !config.hasLoginDetails(),
+                        post: post,
+                      )
+                    : SimplePostActionToolbar(post: post),
+                orElse: () => SimplePostActionToolbar(post: post)) ??
+            SimplePostActionToolbar(post: post);
+      },
+    );
   }
 }

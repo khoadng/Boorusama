@@ -7,18 +7,7 @@ import 'package:equatable/equatable.dart';
 // Project imports:
 import 'package:boorusama/functional.dart';
 
-typedef DownloadFilenameBuilder = String Function();
-
 enum DownloadFilter {
-  all,
-  pending,
-  paused,
-  inProgress,
-  completed,
-  failed,
-}
-
-enum DownloadFilter2 {
   all,
   pending,
   paused,
@@ -33,25 +22,17 @@ class DownloaderMetadata extends Equatable {
     required this.thumbnailUrl,
     required this.fileSize,
     required this.siteUrl,
+    required this.group,
   });
-
-  final String? thumbnailUrl;
-  final int? fileSize;
-  final String? siteUrl;
 
   factory DownloaderMetadata.fromJson(Map<String, dynamic> json) {
     return DownloaderMetadata(
       thumbnailUrl: json['thumbnailUrl'],
       fileSize: json['fileSize'],
       siteUrl: json['siteUrl'],
+      group: json['group'],
     );
   }
-
-  static const DownloaderMetadata empty = DownloaderMetadata(
-    thumbnailUrl: null,
-    fileSize: null,
-    siteUrl: null,
-  );
 
   factory DownloaderMetadata.fromJsonString(String jsonString) {
     return tryDecodeJson(jsonString).fold(
@@ -60,11 +41,24 @@ class DownloaderMetadata extends Equatable {
     );
   }
 
+  final String? thumbnailUrl;
+  final int? fileSize;
+  final String? siteUrl;
+  final String? group;
+
+  static const DownloaderMetadata empty = DownloaderMetadata(
+    thumbnailUrl: null,
+    fileSize: null,
+    siteUrl: null,
+    group: null,
+  );
+
   Map<String, dynamic> toJson() {
     return {
       'thumbnailUrl': thumbnailUrl,
       'fileSize': fileSize,
       'siteUrl': siteUrl,
+      'group': group,
     };
   }
 
@@ -73,5 +67,5 @@ class DownloaderMetadata extends Equatable {
   }
 
   @override
-  List<Object?> get props => [thumbnailUrl, fileSize];
+  List<Object?> get props => [thumbnailUrl, fileSize, siteUrl, group];
 }

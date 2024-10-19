@@ -22,6 +22,8 @@ extension BooruConfigDataConverter on BooruConfigData? {
           BooruConfigRatingFilter.values[booruConfigData.ratingFilter],
       deletedItemBehavior: BooruConfigDeletedItemBehavior
           .values[booruConfigData.deletedItemBehavior],
+      bannedPostVisibility: BooruConfigBannedPostVisibility
+          .values[booruConfigData.bannedPostVisibility],
       customDownloadFileNameFormat:
           booruConfigData.customDownloadFileNameFormat,
       customBulkDownloadFileNameFormat:
@@ -39,6 +41,7 @@ extension BooruConfigDataConverter on BooruConfigData? {
       listing: booruConfigData.listing == null
           ? null
           : ListingConfigs.fromJsonString(booruConfigData.listing),
+      alwaysIncludeTags: booruConfigData.alwaysIncludeTags,
     );
   }
 }
@@ -54,6 +57,7 @@ extension BooruConfigConverter on BooruConfig {
       name: name,
       deletedItemBehavior: deletedItemBehavior.index,
       ratingFilter: ratingFilter.index,
+      bannedPostVisibility: bannedPostVisibility.index,
       url: url,
       customDownloadFileNameFormat: customDownloadFileNameFormat,
       customBulkDownloadFileNameFormat: customBulkDownloadFileNameFormat,
@@ -65,6 +69,7 @@ extension BooruConfigConverter on BooruConfig {
       postGestures: postGestures?.toJsonString(),
       defaultPreviewImageButtonAction: defaultPreviewImageButtonAction,
       listing: listing?.toJsonString(),
+      alwaysIncludeTags: alwaysIncludeTags,
     );
   }
 }

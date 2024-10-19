@@ -14,11 +14,11 @@ class PostV1Dto {
   });
 
   factory PostV1Dto.fromHTML(Element html) {
-    var linkElement = html.firstChild!;
-    var imageElement = linkElement.firstChild!;
+    final linkElement = html.firstChild!;
+    final imageElement = linkElement.firstChild!;
 
-    final id = linkElement.attributes["id"]!.substring(1);
-    var thumbUrl = imageElement.attributes["src"]!;
+    final id = linkElement.attributes['id']!.substring(1);
+    var thumbUrl = imageElement.attributes['src']!;
 
     // if thumbUrl not starts with https, add it
     if (!thumbUrl.startsWith('https') && thumbUrl.startsWith('//')) {
@@ -30,7 +30,7 @@ class PostV1Dto {
         .replaceFirst('thumbnails', 'images')
         .replaceFirst('thumbnail_', '');
 
-    final tags = imageElement.attributes["title"];
+    final tags = imageElement.attributes['title'];
 
     final md5 = thumbUrl.substring(
         thumbUrl.lastIndexOf('_') + 1, thumbUrl.lastIndexOf('.'));

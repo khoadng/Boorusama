@@ -5,6 +5,13 @@ part 'blacklisted_tag_hive_object.g.dart';
 
 @HiveType(typeId: 3)
 class BlacklistedTagHiveObject extends HiveObject {
+
+  BlacklistedTagHiveObject({
+    required this.name,
+    required this.isActive,
+    required this.createdDate,
+    required this.updatedDate,
+  });
   @HiveField(0)
   String name;
 
@@ -16,11 +23,4 @@ class BlacklistedTagHiveObject extends HiveObject {
 
   @HiveField(3)
   DateTime updatedDate;
-
-  BlacklistedTagHiveObject({
-    required this.name,
-    required this.isActive,
-    required this.createdDate,
-    required this.updatedDate,
-  });
 }

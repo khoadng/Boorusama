@@ -2,19 +2,6 @@
 import 'types.dart';
 
 class UploadDto {
-  final int? id;
-  final String? source;
-  final int? uploaderId;
-  final String? status;
-  final DateTime? createdAt;
-  final DateTime? updatedAt;
-  final String? refererUrl;
-  final String? error;
-  final int? mediaAssetCount;
-  final List<UploadMediaAssetsDto>? uploadMediaAssets;
-  final List<dynamic>? posts;
-  final UserDto? uploader;
-  final List<MediaAssetDto>? mediaAssets;
 
   UploadDto({
     this.id,
@@ -59,18 +46,22 @@ class UploadDto {
           .toList(),
     );
   }
+  final int? id;
+  final String? source;
+  final int? uploaderId;
+  final String? status;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+  final String? refererUrl;
+  final String? error;
+  final int? mediaAssetCount;
+  final List<UploadMediaAssetsDto>? uploadMediaAssets;
+  final List<dynamic>? posts;
+  final UserDto? uploader;
+  final List<MediaAssetDto>? mediaAssets;
 }
 
 class UploadMediaAssetsDto {
-  final int? id;
-  final DateTime? createdAt;
-  final DateTime? updatedAt;
-  final int? uploadId;
-  final int? mediaAssetId;
-  final String? status;
-  final String? sourceUrl;
-  final String? error;
-  final String? pageUrl;
 
   UploadMediaAssetsDto({
     this.id,
@@ -101,4 +92,13 @@ class UploadMediaAssetsDto {
       pageUrl: json['page_url'] as String?,
     );
   }
+  final int? id;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+  final int? uploadId;
+  final int? mediaAssetId;
+  final String? status;
+  final String? sourceUrl;
+  final String? error;
+  final String? pageUrl;
 }

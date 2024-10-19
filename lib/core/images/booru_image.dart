@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
@@ -79,11 +80,9 @@ class BooruImage extends ConsumerWidget {
         height: height,
         cacheHeight: cacheHeight,
         cacheWidth: cacheWidth,
-        headers: {
-          AppHttpHeaders.userAgentHeader:
-              ref.watch(userAgentGeneratorProvider(config)).generate(),
-        },
+        headers: _getHeaders(config, ref),
         shape: BoxShape.rectangle,
+        cacheMaxAge: kDefaultImageCacheDuration,
         borderRadius:
             borderRadius ?? const BorderRadius.all(Radius.circular(4)),
         fit: fit ?? BoxFit.fill,
@@ -104,15 +103,13 @@ class BooruImage extends ConsumerWidget {
           height: height,
           cacheHeight: cacheHeight,
           cacheWidth: cacheWidth,
-          headers: {
-            AppHttpHeaders.userAgentHeader:
-                ref.watch(userAgentGeneratorProvider(config)).generate(),
-          },
+          cacheMaxAge: kDefaultImageCacheDuration,
+          headers: _getHeaders(config, ref),
           shape: BoxShape.rectangle,
           borderRadius:
               borderRadius ?? const BorderRadius.all(Radius.circular(4)),
           fit: fit ?? BoxFit.fill,
-          loadStateChanged: _buildImageState,
+          loadStateChanged: (state) => _buildImageState(state, ref, config),
         ),
       );
     }
@@ -124,26 +121,28 @@ class BooruImage extends ConsumerWidget {
         Expanded(
           child: ExtendedImage.network(
             imageUrl,
-            headers: {
-              AppHttpHeaders.userAgentHeader:
-                  ref.watch(userAgentGeneratorProvider(config)).generate(),
-            },
+            headers: _getHeaders(config, ref),
             width: width ?? double.infinity,
             height: height ?? double.infinity,
             cacheHeight: cacheHeight,
             cacheWidth: cacheWidth,
             shape: BoxShape.rectangle,
+            cacheMaxAge: kDefaultImageCacheDuration,
             fit: BoxFit.cover,
             borderRadius:
                 borderRadius ?? const BorderRadius.all(Radius.circular(4)),
-            loadStateChanged: _buildImageState,
+            loadStateChanged: (state) => _buildImageState(state, ref, config),
           ),
         ),
       ],
     );
   }
 
-  Widget? _buildImageState(ExtendedImageState state) =>
+  Widget? _buildImageState(
+    ExtendedImageState state,
+    WidgetRef ref,
+    BooruConfig config,
+  ) =>
       switch (state.extendedImageLoadState) {
         LoadState.loading => placeholderUrl.toOption().fold(
               () => ImagePlaceHolder(
@@ -158,6 +157,7 @@ class BooruImage extends ConsumerWidget {
                       cacheHeight: cacheHeight,
                       cacheWidth: cacheWidth,
                       shape: BoxShape.rectangle,
+                      cacheMaxAge: kDefaultImageCacheDuration,
                       fit: BoxFit.cover,
                       borderRadius: borderRadius ??
                           const BorderRadius.all(Radius.circular(4)),
@@ -169,6 +169,7 @@ class BooruImage extends ConsumerWidget {
                                   const BorderRadius.all(Radius.circular(8)),
                             )
                           : null,
+                      headers: _getHeaders(config, ref),
                     )
                   : ImagePlaceHolder(
                       borderRadius: borderRadius ??
@@ -180,6 +181,12 @@ class BooruImage extends ConsumerWidget {
                 borderRadius ?? const BorderRadius.all(Radius.circular(8)),
           ),
         LoadState.completed => null,
+      };
+
+  Map<String, String> _getHeaders(BooruConfig config, WidgetRef ref) => {
+        AppHttpHeaders.userAgentHeader:
+            ref.watch(userAgentGeneratorProvider(config)).generate(),
+        ...ref.watch(extraHttpHeaderProvider(config)),
       };
 }
 
@@ -224,7 +231,7 @@ class ErrorPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return DecoratedBox(
       decoration: BoxDecoration(
         color: context.colorScheme.surfaceContainerHighest,
         borderRadius:

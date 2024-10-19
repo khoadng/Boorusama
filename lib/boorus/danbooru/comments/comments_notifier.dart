@@ -59,7 +59,7 @@ class CommentsNotifier
       postId: comments,
     };
 
-    // fetch comment votes
+    // fetch comment votes, no need to wait
     ref
         .read(danbooruCommentVotesProvider(arg).notifier)
         .fetch(comments.map((e) => e.id).toList());

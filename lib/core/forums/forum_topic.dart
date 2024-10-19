@@ -36,7 +36,7 @@ class ForumTopicRepositoryBuilder<T extends ForumTopic>
   @override
   TaskEither<BooruError, List<T>> getForumTopics(int page) =>
       TaskEither.Do(($) async {
-        var value = await $(tryFetchRemoteData(
+        final value = await $(tryFetchRemoteData(
           fetcher: () => fetch(page),
         ));
 

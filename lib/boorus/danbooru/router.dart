@@ -11,19 +11,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/core/blacklists/blacklists.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
-import 'package:boorusama/core/router.dart';
+import 'package:boorusama/boorus/danbooru/tags/danbooru_show_tag_list_page.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/core/wikis/wikis.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'artists/artists.dart';
@@ -40,7 +35,6 @@ import 'pools/pool_search_page.dart';
 import 'pools/pools.dart';
 import 'posts/posts.dart';
 import 'related_tags/related_tags.dart';
-import 'router_page_constant.dart';
 import 'saved_searches/saved_searches.dart';
 import 'tags/tags.dart';
 import 'uploads/danbooru_my_uploads_page.dart';
@@ -56,12 +50,12 @@ void goToPoolDetailPage(BuildContext context, DanbooruPool pool) {
 
 void goToPostVersionPage(BuildContext context, DanbooruPost post) {
   if (kPreferredLayout.isMobile) {
-    showMaterialModalBottomSheet(
-      context: context,
-      duration: AppDurations.bottomSheet,
-      builder: (_) => DanbooruPostVersionsPage(
-        postId: post.id,
-        previewUrl: post.url720x720,
+    context.navigator.push(
+      CupertinoPageRoute(
+        builder: (_) => DanbooruPostVersionsPage(
+          postId: post.id,
+          previewUrl: post.url720x720,
+        ),
       ),
     );
   } else {
@@ -154,7 +148,7 @@ void goToPoolPage(BuildContext context, WidgetRef ref) {
 
 void goToBlacklistedTagPage(BuildContext context) {
   context.navigator.push(CupertinoPageRoute(
-    builder: (_) => const BlacklistedTagsPage(),
+    builder: (_) => const DanbooruBlacklistedTagsPage(),
   ));
 }
 
@@ -246,9 +240,9 @@ void goToPoolSearchPage(BuildContext context, WidgetRef ref) {
 
 void goToRelatedTagsPage(
   BuildContext context, {
-  required RelatedTag relatedTag,
-  required void Function(RelatedTagItem tag) onAdded,
-  required void Function(RelatedTagItem tag) onNegated,
+  required DanbooruRelatedTag relatedTag,
+  required void Function(DanbooruRelatedTagItem tag) onAdded,
+  required void Function(DanbooruRelatedTagItem tag) onNegated,
 }) {
   showAdaptiveSheet(
     context,
@@ -272,9 +266,8 @@ void goToPostVotesDetails(BuildContext context, DanbooruPost post) {
 }
 
 void goToSavedSearchCreatePage(
-  WidgetRef ref,
   BuildContext context, {
-  SavedSearch? initialValue,
+  String? initialValue,
 }) {
   if (kPreferredLayout.isMobile) {
     showMaterialModalBottomSheet(
@@ -283,19 +276,8 @@ void goToSavedSearchCreatePage(
         name: RouterPageConstant.savedSearchCreate,
       ),
       backgroundColor: context.colorScheme.secondaryContainer,
-      builder: (_) => EditSavedSearchSheet(
+      builder: (_) => CreateSavedSearchSheet(
         initialValue: initialValue,
-        onSubmit: (query, label) => ref
-            .read(danbooruSavedSearchesProvider(ref.readConfig).notifier)
-            .create(
-              query: query,
-              label: label,
-              onCreated: (data) => showSimpleSnackBar(
-                context: context,
-                duration: AppDurations.shortToast,
-                content: const Text('saved_search.saved_search_added').tr(),
-              ),
-            ),
       ),
     );
   } else {
@@ -325,19 +307,8 @@ void goToSavedSearchCreatePage(
                 Radius.circular(8),
               ),
             ),
-            child: EditSavedSearchSheet(
-              onSubmit: (query, label) => ref
-                  .read(danbooruSavedSearchesProvider(ref.readConfig).notifier)
-                  .create(
-                    query: query,
-                    label: label,
-                    onCreated: (data) => showSimpleSnackBar(
-                      context: context,
-                      duration: AppDurations.shortToast,
-                      content:
-                          const Text('saved_search.saved_search_added').tr(),
-                    ),
-                  ),
+            child: CreateSavedSearchSheet(
+              initialValue: initialValue,
             ),
           ),
         );
@@ -347,7 +318,6 @@ void goToSavedSearchCreatePage(
 }
 
 void goToSavedSearchPatchPage(
-  WidgetRef ref,
   BuildContext context,
   SavedSearch savedSearch,
 ) {
@@ -358,21 +328,7 @@ void goToSavedSearchPatchPage(
     ),
     backgroundColor: context.colorScheme.secondaryContainer,
     builder: (_) => EditSavedSearchSheet(
-      title: 'saved_search.update_saved_search'.tr(),
-      initialValue: savedSearch,
-      onSubmit: (query, label) =>
-          ref.read(danbooruSavedSearchesProvider(ref.readConfig).notifier).edit(
-                id: savedSearch.id,
-                label: label,
-                query: query,
-                onUpdated: (data) => showSimpleSnackBar(
-                  context: context,
-                  duration: AppDurations.shortToast,
-                  content: const Text(
-                    'saved_search.saved_search_updated',
-                  ).tr(),
-                ),
-              ),
+      savedSearch: savedSearch,
     ),
   );
 }
@@ -393,7 +349,7 @@ Future<Object?> goToFavoriteGroupCreatePage(
 
 Future<Object?> goToFavoriteGroupEditPage(
   BuildContext context,
-  FavoriteGroup group,
+  DanbooruFavoriteGroup group,
 ) {
   return showGeneralDialog(
     context: context,
@@ -413,7 +369,7 @@ void goToFavoriteGroupPage(BuildContext context) {
 
 void goToFavoriteGroupDetailsPage(
   BuildContext context,
-  FavoriteGroup group,
+  DanbooruFavoriteGroup group,
 ) {
   context.navigator.push(CupertinoPageRoute(
     builder: (_) => CustomContextMenuOverlay(
@@ -443,44 +399,11 @@ Future<bool?> goToDanbooruShowTaglistPage(
   WidgetRef ref,
   List<Tag> tags,
 ) {
-  final config = ref.readConfig;
-  final notifier = ref.read(danbooruBlacklistedTagsProvider(config).notifier);
-  final globalNotifier = ref.read(globalBlacklistedTagsProvider.notifier);
-  final favoriteNotifier = ref.read(favoriteTagsProvider.notifier);
-  final color = ref.context.colorScheme.onSurface;
-  final textColor = ref.context.colorScheme.surface;
-
   return showAdaptiveSheet(
     navigatorKey.currentContext ?? ref.context,
     expand: true,
-    builder: (dialogContext) => ShowTagListPage(
+    builder: (context) => DanbooruShowTagListPage(
       tags: tags,
-      onOpenWiki: (tag) {
-        launchWikiPage(config.url, tag.rawName);
-      },
-      onAddToBlacklist: config.hasLoginDetails()
-          ? (tag) {
-              notifier.addWithToast(
-                tag: tag.rawName,
-              );
-            }
-          : null,
-      onAddToGlobalBlacklist: (tag) {
-        globalNotifier.addTagWithToast(
-          tag.rawName,
-        );
-      },
-      onAddToFavoriteTags: (tag) {
-        favoriteNotifier.add(tag.rawName).then(
-              (_) => showSuccessToast(
-                'Added',
-                backgroundColor: color,
-                textStyle: TextStyle(
-                  color: textColor,
-                ),
-              ),
-            );
-      },
     ),
   );
 }

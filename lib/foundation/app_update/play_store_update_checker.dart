@@ -40,7 +40,7 @@ class PlayStoreUpdateChecker implements AppUpdateChecker {
       final response = await _client.get(Uri.parse(url));
       if (response.statusCode < 200 || response.statusCode >= 300) {
         return UpdateError(
-            'Can\'t find an app in the Play Store with the id: $id');
+            "Can't find an app in the Play Store with the id: $id");
       }
 
       final document = _decodeResults(response.body);
@@ -82,7 +82,7 @@ class PlayStoreUpdateChecker implements AppUpdateChecker {
     assert(id.isNotEmpty);
     if (id.isEmpty) return null;
 
-    Map<String, dynamic> parameters = {'id': id};
+    final Map<String, dynamic> parameters = {'id': id};
     if (country != null && country.isNotEmpty) {
       parameters['gl'] = country;
     }
@@ -102,12 +102,12 @@ class PlayStoreUpdateChecker implements AppUpdateChecker {
 extension DocumentX on Document {
   String? extractVersion() {
     try {
-      const patternName = ",\"name\":\"";
-      const patternVersion = ",[[[\"";
-      const patternCallback = "AF_initDataCallback";
-      const patternEndOfString = "\"";
+      const patternName = ',"name":"';
+      const patternVersion = ',[[["';
+      const patternCallback = 'AF_initDataCallback';
+      const patternEndOfString = '"';
 
-      final scripts = getElementsByTagName("script");
+      final scripts = getElementsByTagName('script');
       final infoElements =
           scripts.where((element) => element.text.contains(patternName));
       final additionalInfoElements =
@@ -126,7 +126,7 @@ extension DocumentX on Document {
           nameElement.substring(storeNameStartIndex, storeNameEndIndex);
 
       final versionElement = additionalInfoElementsFiltered
-          .where((element) => element.text.contains("\"$storeName\""))
+          .where((element) => element.text.contains('"$storeName"'))
           .first
           .text;
       final storeVersionStartIndex =
@@ -190,4 +190,4 @@ Document? _decodeResults(String jsonResponse) {
   return null;
 }
 
-final releaseNotesSpan = RegExp(r'>(.*?)</span>');
+final releaseNotesSpan = RegExp('>(.*?)</span>');

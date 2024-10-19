@@ -3,17 +3,14 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:collection/collection.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_symbols_icons/symbols.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/core/blacklists/blacklists.dart';
-import 'package:boorusama/core/router.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -43,55 +40,70 @@ class BlacklistedTagPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('blacklist.manage.title').tr(),
-        actions: [
-          IconButton(
-            onPressed: () {
-              showMaterialModalBottomSheet(
-                context: context,
-                backgroundColor: context.colorScheme.secondaryContainer,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                builder: (context) => BlacklistedTagConfigSheet(
-                  onSorted: (value) {
-                    ref
-                        .read(selectedBlacklistedTagsSortTypeProvider.notifier)
-                        .state = value;
-                  },
-                ),
-              );
-            },
-            icon: const Icon(
-              Icons.sort,
-              fill: 1,
-              size: 20,
-            ),
-          ),
-          IconButton(
-            onPressed: () {
-              goToBlacklistedTagsSearchPage(
-                context,
-                onSelectDone: (tagItems, currentQuery) {
-                  final tagString = [
-                    ...tagItems.map((e) => e.toString()),
-                    if (currentQuery.isNotEmpty) currentQuery,
-                  ].join(' ');
+    final tags = ref.watch(globalBlacklistedTagsProvider);
+    final sortType = ref.watch(selectedBlacklistedTagsSortTypeProvider);
+    final sortedTags = sortBlacklistedTags(tags, sortType);
 
+    return BlacklistedTagsViewScaffold(
+      title: 'blacklist.manage.title'.tr(),
+      actions: [
+        IconButton(
+          onPressed: () {
+            showMaterialModalBottomSheet(
+              context: context,
+              backgroundColor: context.colorScheme.secondaryContainer,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              builder: (context) => BlacklistedTagConfigSheet(
+                onSorted: (value) {
                   ref
-                      .read(globalBlacklistedTagsProvider.notifier)
-                      .addTagWithToast(tagString);
-                  context.navigator.pop();
+                      .read(selectedBlacklistedTagsSortTypeProvider.notifier)
+                      .state = value;
                 },
-              );
-            },
-            icon: const Icon(Symbols.add),
+              ),
+            );
+          },
+          icon: const Icon(
+            Icons.sort,
+            fill: 1,
+            size: 20,
           ),
-        ],
-      ),
-      body: const SafeArea(child: BlacklistedTagsList()),
+        ),
+      ],
+      tags: sortedTags.map((e) => e.name).toList(),
+      onAddTag: (tag) {
+        ref
+            .read(globalBlacklistedTagsProvider.notifier)
+            .addTagWithToast(context, tag);
+      },
+      onEditTap: (oldTag, newTag) {
+        final oldBlacklistedTag =
+            sortedTags.firstWhereOrNull((e) => e.name == oldTag);
+
+        if (oldBlacklistedTag == null) {
+          showErrorToast(context, 'Cannot find tag $oldTag');
+          return;
+        }
+
+        ref.read(globalBlacklistedTagsProvider.notifier).updateTag(
+              oldTag: oldBlacklistedTag,
+              newTag: newTag,
+            );
+      },
+      onRemoveTag: (tag) {
+        final blacklistedTag =
+            sortedTags.firstWhereOrNull((e) => e.name == tag);
+
+        if (blacklistedTag == null) {
+          showErrorToast(context, 'Cannot find tag $tag');
+          return;
+        }
+
+        ref
+            .read(globalBlacklistedTagsProvider.notifier)
+            .removeTag(blacklistedTag);
+      },
     );
   }
 }
@@ -110,115 +122,6 @@ List<BlacklistedTag> sortBlacklistedTags(
       BlacklistedTagsSortType.nameZA =>
         tags.sortedByCompare((e) => e.name, (a, b) => b.compareTo(a))
     };
-
-class BlacklistedTagsList extends ConsumerWidget {
-  const BlacklistedTagsList({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final tags = ref.watch(globalBlacklistedTagsProvider);
-    final sortType = ref.watch(selectedBlacklistedTagsSortTypeProvider);
-    final sortedTags = sortBlacklistedTags(tags, sortType);
-
-    return sortedTags.toOption().fold(
-          () => const Center(child: CircularProgressIndicator()),
-          (tags) => tags.isNotEmpty
-              ? CustomScrollView(
-                  slivers: [
-                    SliverToBoxAdapter(
-                      child: WarningContainer(
-                          title: 'Limitation',
-                          contentBuilder: (context) => Html(
-                                style: {
-                                  'body': Style(
-                                    color: context.colorScheme.onSurface,
-                                    margin: Margins.zero,
-                                  ),
-                                },
-                                data: 'blacklisted_tags.limitation_notice'.tr(),
-                              )),
-                    ),
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          final tag = tags[index];
-
-                          return BlacklistedTagTile(
-                            tag: tag.name,
-                            onRemoveTag: (_) => ref
-                                .read(globalBlacklistedTagsProvider.notifier)
-                                .removeTag(tag),
-                            onEditTap: () {
-                              goToBlacklistedTagsSearchPage(
-                                context,
-                                initialTags: tag.name.split(' '),
-                                onSelectDone: (tagItems, currentQuery) {
-                                  final tagString = [
-                                    ...tagItems.map((e) => e.toString()),
-                                    if (currentQuery.isNotEmpty) currentQuery,
-                                  ].join(' ');
-
-                                  ref
-                                      .read(globalBlacklistedTagsProvider
-                                          .notifier)
-                                      .updateTag(
-                                        oldTag: tag,
-                                        newTag: tagString,
-                                      );
-                                  context.navigator.pop();
-                                },
-                              );
-                            },
-                          );
-                        },
-                        childCount: tags.length,
-                      ),
-                    ),
-                  ],
-                )
-              : const Center(child: Text('No blacklisted tags')),
-        );
-  }
-}
-
-// ignore: prefer-single-widget-per-file
-class BlacklistedTagTile extends StatelessWidget {
-  const BlacklistedTagTile({
-    super.key,
-    required this.tag,
-    required this.onEditTap,
-    required this.onRemoveTag,
-  });
-
-  final String tag;
-  final VoidCallback onEditTap;
-  final void Function(String tag) onRemoveTag;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(tag),
-      trailing: BooruPopupMenuButton(
-        onSelected: (value) {
-          switch (value) {
-            case 'remove':
-              onRemoveTag.call(tag);
-              break;
-            case 'edit':
-              onEditTap.call();
-              break;
-          }
-        },
-        itemBuilder: {
-          'remove': const Text('blacklisted_tags.remove').tr(),
-          'edit': const Text('blacklisted_tags.edit').tr(),
-        },
-      ),
-    );
-  }
-}
 
 class BlacklistedTagConfigSheet extends StatelessWidget {
   const BlacklistedTagConfigSheet({

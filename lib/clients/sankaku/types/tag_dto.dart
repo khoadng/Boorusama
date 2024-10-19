@@ -1,19 +1,4 @@
 class TagDto {
-  final int? id;
-  final String? nameEn;
-  final String? nameJa;
-  final int? type;
-  final int? count;
-  final int? postCount;
-  final int? poolCount;
-  final int? seriesCount;
-  final String? locale;
-  final String? rating;
-  final int? version;
-  final String? tagName;
-  final int? totalPostCount;
-  final int? totalPoolCount;
-  final String? name;
 
   TagDto({
     this.id,
@@ -52,6 +37,21 @@ class TagDto {
       name: json['name'],
     );
   }
+  final int? id;
+  final String? nameEn;
+  final String? nameJa;
+  final int? type;
+  final int? count;
+  final int? postCount;
+  final int? poolCount;
+  final int? seriesCount;
+  final String? locale;
+  final String? rating;
+  final int? version;
+  final String? tagName;
+  final int? totalPostCount;
+  final int? totalPoolCount;
+  final String? name;
 
   @override
   String toString() => '$name ($count)';

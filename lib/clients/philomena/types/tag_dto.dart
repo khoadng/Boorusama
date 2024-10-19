@@ -1,18 +1,4 @@
 class TagDto {
-  final String? aliasedTag;
-  final List<String>? aliases;
-  final String? category;
-  final String? description;
-  // final List<dynamic> dnpEntries;
-  final int? id;
-  final int? images;
-  final List<String>? impliedByTags;
-  final List<String>? impliedTags;
-  final String? name;
-  final String? nameInNamespace;
-  // final dynamic namespace;
-  final String? shortDescription;
-  final String? slug;
   // final dynamic spoilerImageUri;
 
   TagDto({
@@ -57,6 +43,20 @@ class TagDto {
       // spoilerImageUri: json['spoiler_image_uri'],
     );
   }
+  final String? aliasedTag;
+  final List<String>? aliases;
+  final String? category;
+  final String? description;
+  // final List<dynamic> dnpEntries;
+  final int? id;
+  final int? images;
+  final List<String>? impliedByTags;
+  final List<String>? impliedTags;
+  final String? name;
+  final String? nameInNamespace;
+  // final dynamic namespace;
+  final String? shortDescription;
+  final String? slug;
 
   @override
   String toString() => '$name';

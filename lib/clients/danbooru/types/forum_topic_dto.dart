@@ -1,16 +1,4 @@
 class ForumTopicDto {
-  final int? id;
-  final int? creatorId;
-  final int? updaterId;
-  final String? title;
-  final int? responseCount;
-  final bool? isSticky;
-  final bool? isLocked;
-  final String? createdAt;
-  final String? updatedAt;
-  final bool? isDeleted;
-  final int? categoryId;
-  final int? minLevel;
 
   ForumTopicDto({
     this.id,
@@ -43,6 +31,18 @@ class ForumTopicDto {
       minLevel: json['min_level'],
     );
   }
+  final int? id;
+  final int? creatorId;
+  final int? updaterId;
+  final String? title;
+  final int? responseCount;
+  final bool? isSticky;
+  final bool? isLocked;
+  final String? createdAt;
+  final String? updatedAt;
+  final bool? isDeleted;
+  final int? categoryId;
+  final int? minLevel;
 
   @override
   String toString() => title ?? '';

@@ -67,7 +67,7 @@ class SettingsNotifier extends Notifier<Settings> {
         .run()
         .then(
           (value) => value.fold(
-            (l) => showErrorToast(l.toString()),
+            (l) => showErrorToast(context, l.toString()),
             (r) async {
               //FIXME: Duplicate code, abstract import with check
               final appVersion = ref.read(appVersionProvider);
@@ -92,7 +92,7 @@ class SettingsNotifier extends Notifier<Settings> {
         );
   }
 
-  Future<void> exportSettings(String path) async {
+  Future<void> exportSettings(BuildContext context, String path) async {
     await ref
         .read(settingIOHandlerProvider)
         .export(
@@ -102,8 +102,8 @@ class SettingsNotifier extends Notifier<Settings> {
         .run()
         .then(
           (value) => value.fold(
-            (l) => showErrorToast(l.toString()),
-            (r) => showSuccessToast('Settings exported to $path'),
+            (l) => showErrorToast(context, l.toString()),
+            (r) => showSuccessToast(context, 'Settings exported to $path'),
           ),
         );
   }

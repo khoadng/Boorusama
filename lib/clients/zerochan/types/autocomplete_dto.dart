@@ -1,9 +1,4 @@
 class AutocompleteDto {
-  final String? value;
-  final String? alias;
-  final String? type;
-  final int? total;
-  final String? icon;
 
   AutocompleteDto({
     this.value,
@@ -22,6 +17,11 @@ class AutocompleteDto {
       icon: json['icon'] as String?,
     );
   }
+  final String? value;
+  final String? alias;
+  final String? type;
+  final int? total;
+  final String? icon;
 
   @override
   String toString() => value.toString();

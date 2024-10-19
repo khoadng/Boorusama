@@ -11,39 +11,41 @@ import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
-class DefaultMultiSelectionActions extends ConsumerWidget {
+class DefaultMultiSelectionActions<T extends Post> extends ConsumerWidget {
   const DefaultMultiSelectionActions({
     super.key,
-    required this.selectedPosts,
-    required this.endMultiSelect,
+    required this.controller,
+    this.extraActions,
   });
 
-  final Iterable<Post> selectedPosts;
-  final void Function() endMultiSelect;
+  final MultiSelectController<T> controller;
+  final List<Widget>? extraActions;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return MultiSelectionActionBar(
-      children: [
-        IconButton(
-          onPressed: selectedPosts.isNotEmpty
-              ? () {
-                  showDownloadStartToast(context);
-                  // ignore: prefer_foreach
-                  for (final p in selectedPosts) {
-                    ref.download(p);
-                  }
+    return ValueListenableBuilder(
+      valueListenable: controller.selectedItemsNotifier,
+      builder: (context, selectedPosts, child) {
+        return MultiSelectionActionBar(
+          children: [
+            IconButton(
+              onPressed: selectedPosts.isNotEmpty
+                  ? () {
+                      ref.bulkDownload(selectedPosts);
 
-                  endMultiSelect();
-                }
-              : null,
-          icon: const Icon(Symbols.download),
-        ),
-        AddBookmarksButton(
-          posts: selectedPosts,
-          onPressed: endMultiSelect,
-        ),
-      ],
+                      controller.disableMultiSelect();
+                    }
+                  : null,
+              icon: const Icon(Symbols.download),
+            ),
+            AddBookmarksButton(
+              posts: selectedPosts,
+              onPressed: controller.disableMultiSelect,
+            ),
+            if (extraActions != null) ...extraActions!,
+          ],
+        );
+      },
     );
   }
 }

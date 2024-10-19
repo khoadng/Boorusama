@@ -5,7 +5,31 @@ enum PageDirection {
   previous,
 }
 
-class DetailsPageController extends ChangeNotifier {
+mixin UIOverlayMixin on ChangeNotifier {
+  ValueNotifier<bool> get hideOverlay;
+
+  void toggleOverlay() {
+    hideOverlay.value = !hideOverlay.value;
+    if (hideOverlay.value) {
+      hideSystemStatus();
+    } else {
+      showSystemStatus();
+    }
+    notifyListeners();
+  }
+
+  // set overlay value
+  void setHideOverlay(bool value) {
+    hideOverlay.value = value;
+    notifyListeners();
+  }
+
+  void restoreSystemStatus() {
+    showSystemStatus();
+  }
+}
+
+class DetailsPageController extends ChangeNotifier with UIOverlayMixin {
   DetailsPageController({
     bool swipeDownToDismiss = true,
     bool hideOverlay = false,
@@ -18,12 +42,15 @@ class DetailsPageController extends ChangeNotifier {
 
   var _enablePageSwipe = true;
   final _slideshow = ValueNotifier<bool>(false);
+  final _expanded = ValueNotifier<bool>(false);
   late final ValueNotifier<bool> _hideOverlay;
 
   bool get swipeDownToDismiss => _enableSwipeDownToDismiss;
   bool get pageSwipe => _enablePageSwipe;
+  @override
   ValueNotifier<bool> get hideOverlay => _hideOverlay;
   ValueNotifier<bool> get slideshow => _slideshow;
+  ValueNotifier<bool> get expanded => _expanded;
 
   // use stream event to change to next page or previous page
   final StreamController<PageDirection> _pageController =
@@ -48,6 +75,7 @@ class DetailsPageController extends ChangeNotifier {
     disablePageSwipe();
     disableSwipeDownToDismiss();
     if (!_hideOverlay.value) setHideOverlay(true);
+    hideSystemStatus();
     notifyListeners();
   }
 
@@ -56,7 +84,7 @@ class DetailsPageController extends ChangeNotifier {
     enablePageSwipe();
     enableSwipeDownToDismiss();
     setHideOverlay(false);
-
+    showSystemStatus();
     notifyListeners();
   }
 
@@ -80,20 +108,13 @@ class DetailsPageController extends ChangeNotifier {
     notifyListeners();
   }
 
-  // set overlay value
-  void setHideOverlay(bool value) {
-    _hideOverlay.value = value;
-    notifyListeners();
-  }
-
-  // set enable swipe page
   void setEnablePageSwipe(bool value) {
     _enablePageSwipe = value;
     notifyListeners();
   }
 
-  void toggleOverlay() {
-    _hideOverlay.value = !_hideOverlay.value;
+  void setExpanded(bool value) {
+    _expanded.value = value;
     notifyListeners();
   }
 

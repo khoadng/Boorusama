@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -18,8 +17,8 @@ import 'package:boorusama/core/artists/artists.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../pools/pool_tiles.dart';
 import '../tags/details/danbooru_tags_tile.dart';
@@ -31,12 +30,14 @@ class DanbooruPostDetailsPage extends ConsumerStatefulWidget {
     required this.intitialIndex,
     required this.onExit,
     required this.onPageChanged,
+    required this.controller,
   });
 
   final int intitialIndex;
   final List<DanbooruPost> posts;
   final void Function(int page) onExit;
   final void Function(int page) onPageChanged;
+  final PostDetailsController<DanbooruPost> controller;
 
   @override
   ConsumerState<DanbooruPostDetailsPage> createState() =>
@@ -57,12 +58,14 @@ class _DanbooruPostDetailsPageState
         onExit: widget.onExit,
         parts: kDefaultPostDetailsNoSourceParts,
         onPageChangeIndexed: widget.onPageChanged,
-        toolbarBuilder: (context, post) =>
-            DanbooruPostActionToolbar(post: post),
+        toolbar: ValueListenableBuilder(
+          valueListenable: widget.controller.currentPost,
+          builder: (_, post, __) => DanbooruPostActionToolbar(post: post),
+        ),
         swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
         sliverArtistPostsBuilder: (context, post) => post.artistTags.isNotEmpty
             ? post.artistTags
-                .map((tag) => ArtistPostList2(
+                .map((tag) => ArtistPostList(
                       tag: tag,
                       builder: (tag) => ref
                           .watch(danbooruPostDetailsArtistProvider(tag))
@@ -77,9 +80,7 @@ class _DanbooruPostDetailsPageState
                               imageUrl: (item) => item.url360x360,
                             ),
                             orElse: () =>
-                                const SliverPreviewPostGridPlaceholder(
-                              itemCount: 30,
-                            ),
+                                const SliverPreviewPostGridPlaceholder(),
                           ),
                     ))
                 .toList()
@@ -164,7 +165,6 @@ class DanbooruFileDetails extends ConsumerWidget {
       uploader: uploader != null
           ? Material(
               color: Colors.transparent,
-              elevation: 0,
               child: InkWell(
                 onTap: () => goToUserDetailsPage(
                   ref,
@@ -172,7 +172,7 @@ class DanbooruFileDetails extends ConsumerWidget {
                   uid: uploader.id,
                   username: uploader.name,
                 ),
-                child: AutoSizeText(
+                child: Text(
                   uploader.name.replaceAll('_', ' '),
                   maxLines: 1,
                   style: TextStyle(
@@ -187,7 +187,6 @@ class DanbooruFileDetails extends ConsumerWidget {
           ? {
               'Approver': Material(
                 color: Colors.transparent,
-                elevation: 0,
                 child: InkWell(
                   onTap: () => goToUserDetailsPage(
                     ref,
@@ -195,7 +194,7 @@ class DanbooruFileDetails extends ConsumerWidget {
                     uid: approver.id,
                     username: approver.name,
                   ),
-                  child: AutoSizeText(
+                  child: Text(
                     approver.name.replaceAll('_', ' '),
                     maxLines: 1,
                     style: TextStyle(

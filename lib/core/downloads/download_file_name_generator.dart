@@ -22,18 +22,20 @@ abstract class DownloadFilenameGenerator<T extends Post> {
   List<String> getTokenOptions(String token);
   TokenOptionDocs? getDocsForTokenOption(String token, String tokenOption);
 
-  String generate(
+  Future<String> generate(
     Settings settings,
     BooruConfig config,
     T post, {
     Map<String, String>? metadata,
+    required String downloadUrl,
   });
 
-  String generateForBulkDownload(
+  Future<String> generateForBulkDownload(
     Settings settings,
     BooruConfig config,
     T post, {
     Map<String, String>? metadata,
+    required String downloadUrl,
   });
 
   String generateSample(String format);
@@ -116,20 +118,22 @@ class DownloadFileNameBuilder<T extends Post>
 
     final ext = fileExt.startsWith('.') ? fileExt : '.$fileExt';
 
-    return fileName.endsWith(ext) ? fileName : '$fileName$ext';
+    // make sure to clean up the file name to avoid invalid file names
+    final cleanedFileName = fileName.replaceAll(RegExp(r'[<>:"/\\|?*]'), '_');
+
+    return cleanedFileName.endsWith(ext)
+        ? cleanedFileName
+        : '$cleanedFileName$ext';
   }
 
-  String _generate(
+  Future<String> _generate(
     Settings settings,
     BooruConfig config,
     String? format,
     T post, {
     required Map<String, String>? metadata,
-  }) {
-    final downloadUrl = getDownloadFileUrl(post, settings);
-
-    if (downloadUrl == null) return '';
-
+    required String downloadUrl,
+  }) async {
     final fallbackName = basename(downloadUrl);
 
     if (format == null || format.isEmpty) {
@@ -160,11 +164,12 @@ class DownloadFileNameBuilder<T extends Post>
   }
 
   @override
-  String generate(
+  Future<String> generate(
     Settings settings,
     BooruConfig config,
     T post, {
     Map<String, String>? metadata,
+    required String downloadUrl,
   }) =>
       _generate(
         settings,
@@ -172,14 +177,16 @@ class DownloadFileNameBuilder<T extends Post>
         config.customDownloadFileNameFormat,
         post,
         metadata: metadata,
+        downloadUrl: downloadUrl,
       );
 
   @override
-  String generateForBulkDownload(
+  Future<String> generateForBulkDownload(
     Settings settings,
     BooruConfig config,
     T post, {
     Map<String, String>? metadata,
+    required String downloadUrl,
   }) =>
       _generate(
         settings,
@@ -187,6 +194,7 @@ class DownloadFileNameBuilder<T extends Post>
         config.customBulkDownloadFileNameFormat,
         post,
         metadata: metadata,
+        downloadUrl: downloadUrl,
       );
 
   @override

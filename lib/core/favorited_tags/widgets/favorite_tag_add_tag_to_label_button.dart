@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/router.dart';
 import '../favorited_tags.dart';
 
 class FavoriteTagAddTagToLabelButton extends ConsumerWidget {
@@ -25,7 +25,7 @@ class FavoriteTagAddTagToLabelButton extends ConsumerWidget {
         goToQuickSearchPage(
           context,
           ref: ref,
-          onSubmitted: (context, text) {
+          onSubmitted: (context, text, _) {
             context.navigator.pop();
             ref.read(favoriteTagsProvider.notifier).add(
               text,
@@ -34,9 +34,9 @@ class FavoriteTagAddTagToLabelButton extends ConsumerWidget {
               ],
             );
           },
-          onSelected: (tag) {
+          onSelected: (tag, _) {
             ref.read(favoriteTagsProvider.notifier).add(
-              tag.value,
+              tag,
               labels: [
                 label,
               ],

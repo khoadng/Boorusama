@@ -30,7 +30,8 @@ class BooruConfigGesturesView extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const BooruConfigSettingsHeader(label: 'Image viewer'),
+          BooruConfigSettingsHeader(
+              label: 'settings.image_viewer.image_viewer'.tr()),
           WarningContainer(
             margin: const EdgeInsets.symmetric(vertical: 12),
             title: 'Limitation',

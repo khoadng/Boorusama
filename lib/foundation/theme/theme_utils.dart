@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import 'colors.dart';
-import 'theme_mode.dart';
 
 extension ThemeX on BuildContext {
   ThemeData get theme => Theme.of(this);
@@ -11,12 +10,17 @@ extension ThemeX on BuildContext {
   IconThemeData get iconTheme => theme.iconTheme;
   ColorScheme get colorScheme => theme.colorScheme;
 
+  Brightness get brightness => theme.brightness;
+  Brightness get onBrightness =>
+      brightness == Brightness.light ? Brightness.dark : Brightness.light;
+
+  bool get isDark => brightness == Brightness.dark;
+  bool get isLight => !isDark;
+
   BoorusamaColors get colors => Theme.of(this).extension<BoorusamaColors>()!;
-  AppThemeMode get themeMode => switch (colors.themeMode) {
-        AppThemeMode.system =>
-          MediaQuery.platformBrightnessOf(this) == Brightness.dark
-              ? AppThemeMode.dark
-              : AppThemeMode.light,
-        _ => colors.themeMode,
-      };
+}
+
+extension BrightnessX on Brightness {
+  bool get isDark => this == Brightness.dark;
+  bool get isLight => !isDark;
 }

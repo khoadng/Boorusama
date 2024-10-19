@@ -1,10 +1,13 @@
+// Dart imports:
+import 'dart:convert';
+
 // Project imports:
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
-import 'related_tag.dart';
+import 'danbooru_related_tag.dart';
 
 abstract class RelatedTagRepository {
-  Future<RelatedTag> getRelatedTag(
+  Future<DanbooruRelatedTag> getRelatedTag(
     String query, {
     TagCategory? category,
     RelatedType? order,
@@ -13,7 +16,7 @@ abstract class RelatedTagRepository {
 }
 
 class RelatedTagRepositoryBuilder
-    with SimpleCacheMixin<RelatedTag>
+    with SimpleCacheMixin<DanbooruRelatedTag>
     implements RelatedTagRepository {
   RelatedTagRepositoryBuilder({
     required this.fetch,
@@ -24,7 +27,7 @@ class RelatedTagRepositoryBuilder
     );
   }
 
-  final Future<RelatedTag> Function(
+  final Future<DanbooruRelatedTag> Function(
     String query, {
     TagCategory? category,
     RelatedType? order,
@@ -32,14 +35,19 @@ class RelatedTagRepositoryBuilder
   }) fetch;
 
   @override
-  Future<RelatedTag> getRelatedTag(
+  Future<DanbooruRelatedTag> getRelatedTag(
     String query, {
     TagCategory? category,
     RelatedType? order,
     int? limit,
   }) =>
       tryGet(
-        query,
+        jsonEncode({
+          'query': query,
+          'category': category?.name,
+          'order': order?.name,
+          'limit': limit,
+        }),
         orElse: () => fetch(
           query,
           category: category,
@@ -49,5 +57,5 @@ class RelatedTagRepositoryBuilder
       );
 
   @override
-  late Cache<RelatedTag> cache;
+  late Cache<DanbooruRelatedTag> cache;
 }

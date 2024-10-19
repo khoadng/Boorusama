@@ -21,6 +21,7 @@ class BooruConfig extends Equatable {
     required this.name,
     required this.ratingFilter,
     required this.deletedItemBehavior,
+    required this.bannedPostVisibility,
     required this.url,
     required this.customDownloadFileNameFormat,
     required this.customBulkDownloadFileNameFormat,
@@ -30,126 +31,12 @@ class BooruConfig extends Equatable {
     required this.postGestures,
     required this.defaultPreviewImageButtonAction,
     required this.listing,
+    required this.alwaysIncludeTags,
   });
-
-  static const BooruConfig empty = BooruConfig(
-    id: -2,
-    booruId: -1,
-    booruIdHint: -1,
-    apiKey: null,
-    login: null,
-    passHash: null,
-    name: '',
-    deletedItemBehavior: BooruConfigDeletedItemBehavior.show,
-    ratingFilter: BooruConfigRatingFilter.none,
-    url: '',
-    customDownloadFileNameFormat: null,
-    customBulkDownloadFileNameFormat: null,
-    customDownloadLocation: null,
-    imageDetaisQuality: null,
-    granularRatingFilters: null,
-    postGestures: null,
-    defaultPreviewImageButtonAction: null,
-    listing: null,
-  );
-
-  static BooruConfig defaultConfig({
-    required BooruType booruType,
-    required String url,
-    required String? customDownloadFileNameFormat,
-  }) =>
-      BooruConfig(
-        id: -1,
-        booruId: booruType.toBooruId(),
-        booruIdHint: booruType.toBooruId(),
-        apiKey: null,
-        login: null,
-        passHash: null,
-        name: 'new profile',
-        deletedItemBehavior: BooruConfigDeletedItemBehavior.show,
-        ratingFilter: BooruConfigRatingFilter.none,
-        url: url,
-        customDownloadFileNameFormat: customDownloadFileNameFormat,
-        customBulkDownloadFileNameFormat: customDownloadFileNameFormat,
-        customDownloadLocation: null,
-        imageDetaisQuality: null,
-        granularRatingFilters: null,
-        postGestures: null,
-        defaultPreviewImageButtonAction: null,
-        listing: null,
-      );
-
-  final int id;
-  final int booruId;
-  final int booruIdHint;
-  final String url;
-  final String? apiKey;
-  final String? login;
-  final String? passHash;
-  final String name;
-  final BooruConfigDeletedItemBehavior deletedItemBehavior;
-  final BooruConfigRatingFilter ratingFilter;
-  final String? customDownloadFileNameFormat;
-  final String? customBulkDownloadFileNameFormat;
-  final String? customDownloadLocation;
-  final String? imageDetaisQuality;
-  final Set<Rating>? granularRatingFilters;
-  final PostGestureConfig? postGestures;
-  final String? defaultPreviewImageButtonAction;
-  final ListingConfigs? listing;
-
-  BooruConfig copyWith({
-    String? url,
-    String? apiKey,
-    String? login,
-    String? name,
-  }) {
-    return BooruConfig(
-      id: id,
-      booruId: booruId,
-      booruIdHint: booruIdHint,
-      url: url ?? this.url,
-      apiKey: apiKey ?? this.apiKey,
-      login: login ?? this.login,
-      name: name ?? this.name,
-      passHash: passHash,
-      deletedItemBehavior: deletedItemBehavior,
-      ratingFilter: ratingFilter,
-      customDownloadFileNameFormat: customDownloadFileNameFormat,
-      customBulkDownloadFileNameFormat: customBulkDownloadFileNameFormat,
-      customDownloadLocation: customDownloadLocation,
-      imageDetaisQuality: imageDetaisQuality,
-      granularRatingFilters: granularRatingFilters,
-      postGestures: postGestures,
-      defaultPreviewImageButtonAction: defaultPreviewImageButtonAction,
-      listing: listing,
-    );
-  }
-
-  @override
-  List<Object?> get props => [
-        id,
-        booruId,
-        booruIdHint,
-        apiKey,
-        login,
-        passHash,
-        name,
-        deletedItemBehavior,
-        ratingFilter,
-        url,
-        customDownloadFileNameFormat,
-        customBulkDownloadFileNameFormat,
-        customDownloadLocation,
-        imageDetaisQuality,
-        granularRatingFilters,
-        postGestures,
-        defaultPreviewImageButtonAction,
-        listing,
-      ];
 
   factory BooruConfig.fromJson(Map<String, dynamic> json) {
     final ratingFilter = json['ratingFilter'] as int?;
+    final bannedPostVisibility = json['bannedPostVisibility'] as int?;
 
     return BooruConfig(
       id: json['id'] as int,
@@ -166,6 +53,11 @@ class BooruConfig extends Equatable {
           ? BooruConfigRatingFilter.values.getOrNull(ratingFilter) ??
               BooruConfigRatingFilter.hideNSFW
           : BooruConfigRatingFilter.hideNSFW,
+      bannedPostVisibility: bannedPostVisibility != null
+          ? BooruConfigBannedPostVisibility.values
+                  .getOrNull(bannedPostVisibility) ??
+              BooruConfigBannedPostVisibility.show
+          : BooruConfigBannedPostVisibility.show,
       customDownloadFileNameFormat:
           json['customDownloadFileNameFormat'] as String?,
       customBulkDownloadFileNameFormat:
@@ -184,7 +76,139 @@ class BooruConfig extends Equatable {
       listing: json['listing'] == null
           ? null
           : ListingConfigs.fromJson(json['listing'] as Map<String, dynamic>),
+      alwaysIncludeTags: json['alwaysIncludeTags'] as String?,
     );
+  }
+
+  static const BooruConfig empty = BooruConfig(
+    id: -2,
+    booruId: -1,
+    booruIdHint: -1,
+    apiKey: null,
+    login: null,
+    passHash: null,
+    name: '',
+    deletedItemBehavior: BooruConfigDeletedItemBehavior.show,
+    ratingFilter: BooruConfigRatingFilter.none,
+    bannedPostVisibility: BooruConfigBannedPostVisibility.show,
+    url: '',
+    customDownloadFileNameFormat: null,
+    customBulkDownloadFileNameFormat: null,
+    customDownloadLocation: null,
+    imageDetaisQuality: null,
+    granularRatingFilters: null,
+    postGestures: null,
+    defaultPreviewImageButtonAction: null,
+    listing: null,
+    alwaysIncludeTags: null,
+  );
+
+  static BooruConfig defaultConfig({
+    required BooruType booruType,
+    required String url,
+    required String? customDownloadFileNameFormat,
+  }) =>
+      BooruConfig(
+        id: -1,
+        booruId: booruType.toBooruId(),
+        booruIdHint: booruType.toBooruId(),
+        apiKey: null,
+        login: null,
+        passHash: null,
+        name: 'new profile',
+        deletedItemBehavior: BooruConfigDeletedItemBehavior.show,
+        ratingFilter: BooruConfigRatingFilter.none,
+        bannedPostVisibility: BooruConfigBannedPostVisibility.show,
+        url: url,
+        customDownloadFileNameFormat: customDownloadFileNameFormat,
+        customBulkDownloadFileNameFormat: customDownloadFileNameFormat,
+        customDownloadLocation: null,
+        imageDetaisQuality: null,
+        granularRatingFilters: null,
+        postGestures: null,
+        defaultPreviewImageButtonAction: null,
+        listing: null,
+        alwaysIncludeTags: null,
+      );
+
+  final int id;
+  final int booruId;
+  final int booruIdHint;
+  final String url;
+  final String? apiKey;
+  final String? login;
+  final String? passHash;
+  final String name;
+  final BooruConfigDeletedItemBehavior deletedItemBehavior;
+  final BooruConfigRatingFilter ratingFilter;
+  final BooruConfigBannedPostVisibility bannedPostVisibility;
+  final String? customDownloadFileNameFormat;
+  final String? customBulkDownloadFileNameFormat;
+  final String? customDownloadLocation;
+  final String? imageDetaisQuality;
+  final Set<Rating>? granularRatingFilters;
+  final PostGestureConfig? postGestures;
+  final String? defaultPreviewImageButtonAction;
+  final ListingConfigs? listing;
+  final String? alwaysIncludeTags;
+
+  BooruConfig copyWith({
+    String? url,
+    String? apiKey,
+    String? login,
+    String? name,
+  }) {
+    return BooruConfig(
+      id: id,
+      booruId: booruId,
+      booruIdHint: booruIdHint,
+      url: url ?? this.url,
+      apiKey: apiKey ?? this.apiKey,
+      login: login ?? this.login,
+      name: name ?? this.name,
+      passHash: passHash,
+      deletedItemBehavior: deletedItemBehavior,
+      ratingFilter: ratingFilter,
+      bannedPostVisibility: bannedPostVisibility,
+      customDownloadFileNameFormat: customDownloadFileNameFormat,
+      customBulkDownloadFileNameFormat: customBulkDownloadFileNameFormat,
+      customDownloadLocation: customDownloadLocation,
+      imageDetaisQuality: imageDetaisQuality,
+      granularRatingFilters: granularRatingFilters,
+      postGestures: postGestures,
+      defaultPreviewImageButtonAction: defaultPreviewImageButtonAction,
+      listing: listing,
+      alwaysIncludeTags: alwaysIncludeTags,
+    );
+  }
+
+  @override
+  List<Object?> get props => [
+        id,
+        booruId,
+        booruIdHint,
+        apiKey,
+        login,
+        passHash,
+        name,
+        deletedItemBehavior,
+        ratingFilter,
+        bannedPostVisibility,
+        url,
+        customDownloadFileNameFormat,
+        customBulkDownloadFileNameFormat,
+        customDownloadLocation,
+        imageDetaisQuality,
+        granularRatingFilters,
+        postGestures,
+        defaultPreviewImageButtonAction,
+        listing,
+        alwaysIncludeTags,
+      ];
+
+  @override
+  String toString() {
+    return 'Config(id=$id, booruId=$booruIdHint, name=$name, url=$url, login=${hasLoginDetails()})';
   }
 
   Map<String, dynamic> toJson() {
@@ -199,6 +223,7 @@ class BooruConfig extends Equatable {
       'name': name,
       'deletedItemBehavior': deletedItemBehavior.index,
       'ratingFilter': ratingFilter.index,
+      'bannedPostVisibility': bannedPostVisibility.index,
       'customDownloadFileNameFormat': customDownloadFileNameFormat,
       'customBulkDownloadFileNameFormat': customBulkDownloadFileNameFormat,
       'customDownloadLocation': customDownloadLocation,
@@ -209,6 +234,7 @@ class BooruConfig extends Equatable {
       'postGestures': postGestures?.toJson(),
       'defaultPreviewImageButtonAction': defaultPreviewImageButtonAction,
       'listing': listing?.toJson(),
+      'alwaysIncludeTags': alwaysIncludeTags,
     };
   }
 }
@@ -240,6 +266,11 @@ enum BooruConfigRatingFilter {
   custom,
 }
 
+enum BooruConfigBannedPostVisibility {
+  show,
+  hide,
+}
+
 extension BooruConfigRatingFilterX on BooruConfigRatingFilter {
   String getRatingTerm() => switch (this) {
         BooruConfigRatingFilter.none => 'None',
@@ -264,6 +295,9 @@ extension BooruConfigNullX on BooruConfig? {
 
     return true;
   }
+
+  bool get hideBannedPosts =>
+      this?.bannedPostVisibility == BooruConfigBannedPostVisibility.hide;
 }
 
 extension BooruConfigX on BooruConfig {

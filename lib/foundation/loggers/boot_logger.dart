@@ -7,7 +7,7 @@ typedef BootLogData = ({
   LogLevel level,
 });
 
-class BootLogger implements LoggerService {
+class BootLogger implements Logger {
   final List<BootLogData> _logs = [];
 
   @override

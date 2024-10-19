@@ -10,9 +10,11 @@ class ExploreSliverAppBar extends StatelessWidget {
   const ExploreSliverAppBar({
     super.key,
     required this.title,
+    required this.onBack,
   });
 
   final String title;
+  final void Function()? onBack;
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +25,12 @@ class ExploreSliverAppBar extends StatelessWidget {
             context.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
       ),
       floating: true,
+      leading: onBack != null
+          ? IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: onBack,
+            )
+          : null,
       backgroundColor: context.theme.scaffoldBackgroundColor,
     );
   }

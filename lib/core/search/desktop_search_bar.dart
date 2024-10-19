@@ -16,6 +16,7 @@ import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/search_histories/search_histories.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
+import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
 
 class DesktopSearchbar extends ConsumerStatefulWidget {
@@ -57,9 +58,11 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                 anchor: const Aligned(
                   follower: Alignment.topCenter,
                   target: Alignment.bottomCenter,
-                  offset: Offset(-32, 0),
+                  offset: Offset(-28, 0),
                 ),
-                portalFollower: _buildOverlay(),
+                portalFollower: LayoutBuilder(
+                  builder: (context, constraints) => _buildOverlay(constraints),
+                ),
                 child: Focus(
                   onFocusChange: (value) => showSuggestions.value = value,
                   child: _buildSearchBar(),
@@ -84,6 +87,12 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
       height: kToolbarHeight * 0.9,
       queryEditingController: textEditingController,
       onFocusChanged: (value) => showSuggestions.value = value,
+      onTapOutside: isDesktopPlatform()
+          ? () {
+              showSuggestions.value = false;
+              FocusScope.of(context).unfocus();
+            }
+          : null,
       onChanged: (value) =>
           ref.read(suggestionsProvider(config).notifier).getSuggestions(value),
       onSubmitted: (value) {
@@ -108,11 +117,14 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
     );
   }
 
-  Widget _buildOverlay() {
+  Widget _buildOverlay(BoxConstraints constraints) {
     return Container(
       constraints: BoxConstraints(
-        maxWidth: min(context.screenWidth * 0.8, 500),
-        maxHeight: min(context.screenHeight * 0.8, 400),
+        maxWidth: min(
+          context.screenWidth * 0.7,
+          500,
+        ),
+        maxHeight: min(context.screenHeight * 0.8, 500),
       ),
       child: ValueListenableBuilder(
         valueListenable: textEditingController,
@@ -151,6 +163,8 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: SearchLandingView(
+                        disableAnimation: true,
+                        reverseScheme: true,
                         backgroundColor:
                             context.colorScheme.surfaceContainerHighest,
                         onHistoryCleared: () => ref
@@ -158,7 +172,7 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                             .clearHistories(),
                         onHistoryRemoved: (value) => ref
                             .read(searchHistoryProvider.notifier)
-                            .removeHistory(value.query),
+                            .removeHistory(value),
                         onTagTap: (value) {
                           selectedTagController.addTag(
                             value,
@@ -172,7 +186,7 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                           isRaw: true,
                         ),
                         onHistoryTap: (value) {
-                          selectedTagController.addTag(value, isRaw: true);
+                          selectedTagController.addTagFromSearchHistory(value);
                           FocusScope.of(context).unfocus();
                         },
                         metatagsBuilder: (context) => DanbooruMetatagsSection(

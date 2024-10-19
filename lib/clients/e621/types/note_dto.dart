@@ -15,20 +15,6 @@ class NoteDto {
     this.creatorName,
   });
 
-  final int? id;
-  final String? createdAt;
-  final String? updatedAt;
-  final int? creatorId;
-  final int? x;
-  final int? y;
-  final int? width;
-  final int? height;
-  final int? version;
-  final bool? isActive;
-  final int? postId;
-  final String? body;
-  final String? creatorName;
-
   factory NoteDto.fromJson(Map<String, dynamic> json) {
     return NoteDto(
       id: json['id'],
@@ -46,6 +32,20 @@ class NoteDto {
       creatorName: json['creator_name'],
     );
   }
+
+  final int? id;
+  final String? createdAt;
+  final String? updatedAt;
+  final int? creatorId;
+  final int? x;
+  final int? y;
+  final int? width;
+  final int? height;
+  final int? version;
+  final bool? isActive;
+  final int? postId;
+  final String? body;
+  final String? creatorName;
 
   @override
   String toString() => body ?? '';

@@ -35,10 +35,13 @@ Parser wikiLink(String wikiUrl) => (string('[[') &
     .map((value) => UrlElement('$wikiUrl${value[1]}', displayText: value[1]));
 
 class UrlElement {
+  UrlElement(
+    this.url, {
+    this.displayText,
+  });
+
   final String url;
   final String? displayText;
-
-  UrlElement(this.url, {this.displayText});
 
   @override
   String toString() => 'UrlElement{url: $url, displayText: $displayText}';

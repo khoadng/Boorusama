@@ -1,3 +1,6 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -104,27 +107,30 @@ class GlobalBlacklistedTagsNotifier extends Notifier<IList<BlacklistedTag>> {
 }
 
 extension GlobalBlacklistedTagsNotifierX on GlobalBlacklistedTagsNotifier {
-  Future<void> addTagWithToast(String tag) async {
+  Future<void> addTagWithToast(BuildContext context, String tag) async {
     await addTag(
       tag,
-      onSuccess: () => showSuccessToast('Tag added'),
-      onError: () => showErrorToast('Failed to add tag'),
+      onSuccess: () => showSuccessToast(context, 'Tag added'),
+      onError: () => showErrorToast(context, 'Failed to add tag'),
     );
   }
 
-  Future<void> addTagStringWithToast(String tagString) async {
+  Future<void> addTagStringWithToast(
+      BuildContext context, String tagString) async {
     await addTagString(
       tagString,
-      onSuccess: (tags) => showSuccessToast('${tags.length} tags added'),
-      onError: () => showErrorToast('Failed to add tags'),
+      onSuccess: (tags) =>
+          showSuccessToast(context, '${tags.length} tags added'),
+      onError: () => showErrorToast(context, 'Failed to add tags'),
     );
   }
 
-  Future<void> removeTagWithToast(BlacklistedTag tag) async {
+  Future<void> removeTagWithToast(
+      BuildContext context, BlacklistedTag tag) async {
     await removeTag(
       tag,
-      onSuccess: () => showSuccessToast('Tag removed'),
-      onError: () => showErrorToast('Failed to remove tag'),
+      onSuccess: () => showSuccessToast(context, 'Tag removed'),
+      onError: () => showErrorToast(context, 'Failed to remove tag'),
     );
   }
 }

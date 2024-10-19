@@ -81,4 +81,7 @@ class TagRepositoryBuilder
 
   @override
   final bool Function(Tag data) shouldUsePersistentStorage;
+
+  @override
+  final bool enableDebugPrint = false;
 }

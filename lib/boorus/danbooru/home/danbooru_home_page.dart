@@ -13,15 +13,15 @@ import 'package:share_handler/share_handler.dart';
 // Project imports:
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/home/home.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
+import 'package:boorusama/router.dart';
 import 'package:boorusama/utils/flutter_utils.dart';
 import '../artists/artists.dart';
 import '../blacklist/blacklist.dart';
-import '../explores/explore_page.dart';
+import '../explores/danbooru_explore_page.dart';
 import '../favorite_groups/favorite_groups.dart';
 import '../favorites/favorites.dart';
 import '../forums/forums.dart';
@@ -30,7 +30,6 @@ import '../router.dart';
 import '../saved_searches/saved_searches.dart';
 import '../tags/tags.dart';
 import '../users/users.dart';
-import 'home.dart';
 
 class DanbooruHomePage extends ConsumerStatefulWidget {
   const DanbooruHomePage({
@@ -125,14 +124,12 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
       },
     );
 
-    return BooruScope(
-      config: widget.config,
-      mobileMenuBuilder: (context, controller) => [
+    return HomePageScaffold(
+      mobileMenu: [
         if (widget.config.hasLoginDetails() && userId != null)
           SideMenuTile(
-            icon: Icon(
+            icon: const _Icon(
               Symbols.account_box,
-              fill: context.themeMode.isLight ? 0 : 1,
             ),
             title: const Text('profile.profile').tr(),
             onTap: () {
@@ -146,9 +143,8 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
             },
           ),
         SideMenuTile(
-          icon: Icon(
+          icon: const _Icon(
             Symbols.explore,
-            fill: context.themeMode.isLight ? 0 : 1,
           ),
           title: const Text('explore.explore').tr(),
           onTap: () => context.navigator.push(CupertinoPageRoute(
@@ -156,13 +152,12 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
                     appBar: AppBar(
                       title: const Text('explore.explore').tr(),
                     ),
-                    body: const ExplorePage(),
+                    body: const DanbooruExplorePage(),
                   ))),
         ),
         SideMenuTile(
-          icon: Icon(
+          icon: const _Icon(
             Symbols.photo_album,
-            fill: context.themeMode.isLight ? 0 : 1,
           ),
           title: const Text('Pools'),
           onTap: () {
@@ -170,9 +165,8 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
           },
         ),
         SideMenuTile(
-          icon: Icon(
+          icon: const _Icon(
             Symbols.forum,
-            fill: context.themeMode.isLight ? 0 : 1,
           ),
           title: const Text('forum.forum').tr(),
           onTap: () {
@@ -180,9 +174,8 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
           },
         ),
         SideMenuTile(
-          icon: const Icon(
+          icon: const _Icon(
             Symbols.search,
-            fill: 1,
           ),
           title: const Text('Artists'),
           onTap: () {
@@ -191,9 +184,8 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
         ),
         if (widget.config.hasLoginDetails()) ...[
           SideMenuTile(
-            icon: Icon(
+            icon: const _Icon(
               Symbols.favorite,
-              fill: context.themeMode.isLight ? 0 : 1,
             ),
             title: Text('profile.favorites'.tr()),
             onTap: () {
@@ -201,9 +193,8 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
             },
           ),
           SideMenuTile(
-            icon: Icon(
+            icon: const _Icon(
               Symbols.collections,
-              fill: context.themeMode.isLight ? 0 : 1,
             ),
             title: const Text('favorite_groups.favorite_groups').tr(),
             onTap: () {
@@ -211,9 +202,8 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
             },
           ),
           SideMenuTile(
-            icon: const Icon(
+            icon: const _Icon(
               Symbols.search,
-              fill: 1,
             ),
             title: const Text('saved_search.saved_search').tr(),
             onTap: () {
@@ -221,9 +211,8 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
             },
           ),
           SideMenuTile(
-            icon: const Icon(
+            icon: const _Icon(
               Symbols.tag,
-              fill: 1,
             ),
             title: const Text(
               'blacklisted_tags.blacklisted_tags',
@@ -235,14 +224,6 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
         ]
       ],
       desktopMenuBuilder: (context, controller, constraints) => [
-        HomeNavigationTile(
-          value: 0,
-          controller: controller,
-          constraints: constraints,
-          selectedIcon: Symbols.dashboard,
-          icon: Symbols.dashboard,
-          title: 'Home',
-        ),
         HomeNavigationTile(
           value: 1,
           controller: controller,
@@ -318,50 +299,50 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
             title: 'blacklisted_tags.blacklisted_tags'.tr(),
           ),
         ],
-        ...coreDesktopTabBuilder(
-          context,
-          constraints,
-          controller,
-        ),
       ],
-      desktopViews: () {
-        final danbooruTabs = [
-          // 0
-          const DanbooruDesktopHomePage(),
-          // 1
-          const ExplorePageDesktop(),
-          // 2
-          const DanbooruPoolPage(),
-          // 3
-          const DanbooruForumPage(),
-          // 4
-          const DanbooruArtistSearchPage(),
-          if (widget.config.hasLoginDetails()) ...[
-            if (userId != null)
-              // 5
-              UserDetailsPage(
-                uid: userId,
-                username: widget.config.login!,
-                hasAppBar: false,
-              ),
-            // 6
-            DanbooruFavoritesPage(username: widget.config.login!),
-            // 7
-            const FavoriteGroupsPage(),
-            // 8
-            const SavedSearchFeedPage(),
-            // 9
-            const BlacklistedTagsPage(),
-          ],
-        ];
+      desktopViews: [
+        // 1
+        const DanbooruExplorePageDesktop(),
+        // 2
+        const DanbooruPoolPage(),
+        // 3
+        const DanbooruForumPage(),
+        // 4
+        const DanbooruArtistSearchPage(),
+        if (widget.config.hasLoginDetails()) ...[
+          if (userId != null)
+            // 5
+            UserDetailsPage(
+              uid: userId,
+              username: widget.config.login!,
+              hasAppBar: false,
+            ),
+          // 6
+          DanbooruFavoritesPage(username: widget.config.login!),
+          // 7
+          const FavoriteGroupsPage(),
+          // 8
+          const SavedSearchFeedPage(),
+          // 9
+          const DanbooruBlacklistedTagsPage(),
+        ],
+      ],
+    );
+  }
+}
 
-        return [
-          ...danbooruTabs,
-          ...coreDesktopViewBuilder(
-            previousItemCount: danbooruTabs.length,
-          ),
-        ];
-      },
+class _Icon extends StatelessWidget {
+  const _Icon(
+    this.icon,
+  );
+
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return Icon(
+      icon,
+      fill: context.isLight ? 0 : 1,
     );
   }
 }

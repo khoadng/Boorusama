@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -10,6 +9,7 @@ import 'package:boorusama/core/comments/comments.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/dtext/dtext.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/foundation/html.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 
@@ -25,7 +25,8 @@ class CommentPageScaffold extends ConsumerStatefulWidget {
 
   final int postId;
   final CommentFetcher fetcher;
-  final Widget Function(BuildContext, Comment)? commentItemBuilder;
+  final Widget Function(BuildContext context, Comment comment)?
+      commentItemBuilder;
 
   @override
   ConsumerState<CommentPageScaffold> createState() =>
@@ -100,12 +101,7 @@ class _CommentItem extends StatelessWidget {
           createdAt: comment.createdAt,
         ),
         const SizedBox(height: 4),
-        Html(
-          style: {
-            'body': Style(
-              margin: Margins.zero,
-            ),
-          },
+        AppHtml(
           data: dtext(
             comment.body,
             booruUrl: config.url,

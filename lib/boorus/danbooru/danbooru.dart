@@ -7,13 +7,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/home/home.dart';
-import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/dart.dart';
@@ -23,6 +19,8 @@ import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/functional.dart';
+import 'package:boorusama/router.dart';
+import 'package:boorusama/widgets/widgets.dart';
 import 'artists/danbooru_artist_page.dart';
 import 'comments/comments.dart';
 import 'configs/create_danbooru_config_page.dart';
@@ -83,25 +81,16 @@ const kDanbooruPostSamples = [
 ];
 
 class DanbooruBuilder
-    with
-        DefaultTagColorMixin,
-        NewGranularRatingOptionsBuilderMixin,
-        NewGranularRatingQueryBuilderMixin
+    with DefaultTagColorMixin, NewGranularRatingOptionsBuilderMixin
     implements BooruBuilder {
   DanbooruBuilder({
-    required this.postRepo,
-    required this.autocompleteRepo,
     required this.favoriteRepo,
     required this.postCountRepo,
-    required this.noteRepo,
     required this.tagInfo,
   });
 
-  final PostRepository<DanbooruPost> postRepo;
-  final AutocompleteRepository autocompleteRepo;
   final FavoritePostRepository favoriteRepo;
   final PostCountRepository postCountRepo;
-  final NoteRepository noteRepo;
   final TagInfo tagInfo;
 
   @override
@@ -131,21 +120,13 @@ class DanbooruBuilder
         context,
         config, {
         backgroundColor,
+        initialTab,
       }) =>
           CreateDanbooruConfigPage(
             config: config,
             backgroundColor: backgroundColor,
+            initialTab: initialTab,
           );
-
-  @override
-  PostFetcher get postFetcher => (page, tags) => postRepo.getPosts(
-        tags,
-        page,
-      );
-
-  @override
-  AutocompleteFetcher get autocompleteFetcher =>
-      (query) => autocompleteRepo.getAutocomplete(query);
 
   @override
   FavoriteAdder? get favoriteAdder =>
@@ -156,12 +137,8 @@ class DanbooruBuilder
       (postId, ref) => ref.danbooruFavorites.remove(postId).then((_) => true);
 
   @override
-  PostCountFetcher? get postCountFetcher =>
-      (config, tags, granularRatingQueryBuilder) => postCountRepo.count({
-            ...tags,
-            if (granularRatingQueryBuilder != null)
-              ...granularRatingQueryBuilder(tags, config),
-          }.toList());
+  PostCountFetcher? get postCountFetcher => (config, tags, tagComposer) =>
+      postCountRepo.count(tagComposer.compose(tags));
 
   @override
   SearchPageBuilder get searchPageBuilder =>
@@ -169,22 +146,28 @@ class DanbooruBuilder
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) => PostDetailsLayoutSwitcher(
-            initialIndex: payload.initialIndex,
-            scrollController: payload.scrollController,
-            desktop: (controller) => DanbooruPostDetailsDesktopPage(
-              initialIndex: controller.currentPage.value,
-              posts: payload.posts.map((e) => e as DanbooruPost).toList(),
-              onExit: (page) => controller.onExit(page),
-              onPageChanged: (page) => controller.setPage(page),
-            ),
-            mobile: (controller) => DanbooruPostDetailsPage(
-              intitialIndex: controller.currentPage.value,
-              posts: payload.posts.map((e) => e as DanbooruPost).toList(),
-              onExit: (page) => controller.onExit(page),
-              onPageChanged: (page) => controller.setPage(page),
-            ),
-          );
+      (context, config, payload) {
+        final posts = payload.posts.map((e) => e as DanbooruPost).toList();
+
+        return PostDetailsLayoutSwitcher<DanbooruPost>(
+          initialIndex: payload.initialIndex,
+          posts: posts,
+          scrollController: payload.scrollController,
+          desktop: (controller) => DanbooruPostDetailsDesktopPage(
+            initialIndex: controller.currentPage.value,
+            posts: posts,
+            onExit: (page) => controller.onExit(page),
+            onPageChanged: (page) => controller.setPage(page),
+          ),
+          mobile: (controller) => DanbooruPostDetailsPage(
+            intitialIndex: controller.currentPage.value,
+            posts: posts,
+            onExit: (page) => controller.onExit(page),
+            onPageChanged: (page) => controller.setPage(page),
+            controller: controller,
+          ),
+        );
+      };
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
@@ -221,9 +204,6 @@ class DanbooruBuilder
             postId: postId,
             useAppBar: useAppBar,
           );
-
-  @override
-  NoteFetcher? get noteFetcher => (postId) => noteRepo.getNotes(postId);
 
   @override
   PostGestureHandlerBuilder get postGestureHandlerBuilder =>
@@ -341,10 +321,7 @@ class DanbooruBuilder
   @override
   HomeViewBuilder get homeViewBuilder => (context, config, controller) {
         return LatestView(
-          searchBar: HomeSearchBar(
-            onMenuTap: controller.openMenu,
-            onTap: () => goToSearchPage(context),
-          ),
+          controller: controller,
         );
       };
 
@@ -352,6 +329,26 @@ class DanbooruBuilder
   late final MetatagExtractor metatagExtractor = MetatagExtractor(
     metatags: tagInfo.metatags,
   );
+
+  @override
+  QuickFavoriteButtonBuilder get quickFavoriteButtonBuilder =>
+      (context, post) => castOrNull<DanbooruPost>(post).toOption().fold(
+            () => const SizedBox.shrink(),
+            (post) => DanbooruQuickFavoriteButton(
+              post: post,
+            ),
+          );
+
+  @override
+  MultiSelectionActionsBuilder? get multiSelectionActionsBuilder =>
+      (context, controller) {
+        final isDanController =
+            controller is MultiSelectController<DanbooruPost>;
+
+        return isDanController
+            ? DanbooruMultiSelectionActions(controller: controller)
+            : DefaultMultiSelectionActions(controller: controller);
+      };
 }
 
 bool handleDanbooruGestureAction(
@@ -397,45 +394,66 @@ bool handleDanbooruGestureAction(
 
 extension DanbooruX on WidgetRef {
   void danbooruToggleFavorite(int postId) {
-    _guardLogin(() {
+    _guardLogin(() async {
       final isFaved = read(danbooruFavoriteProvider(postId));
       if (isFaved) {
-        danbooruFavorites.remove(postId).then(
-              (_) => _showSuccessSnackBar('Removed from favorites'),
-            );
+        await danbooruFavorites.remove(postId);
+        if (context.mounted) {
+          _showSuccessSnackBar(
+            context,
+            'Removed from favorites',
+          );
+        }
       } else {
-        danbooruFavorites.add(postId).then(
-              (_) => _showSuccessSnackBar('Added to favorites'),
-            );
+        await danbooruFavorites.add(postId);
+        if (context.mounted) {
+          _showSuccessSnackBar(
+            context,
+            'Added to favorites',
+          );
+        }
       }
     });
   }
 
   void danbooruRemoveVote(int postId) {
-    _guardLogin(() {
-      read(danbooruPostVotesProvider(readConfig).notifier)
-          .removeVote(postId)
-          .then(
-            (_) => _showSuccessSnackBar('Vote removed'),
-          );
+    _guardLogin(() async {
+      await read(danbooruPostVotesProvider(readConfig).notifier)
+          .removeVote(postId);
+
+      if (context.mounted) {
+        _showSuccessSnackBar(
+          context,
+          'Vote removed',
+        );
+      }
     });
   }
 
   void danbooruUpvote(int postId) {
-    _guardLogin(() {
-      read(danbooruPostVotesProvider(readConfig).notifier).upvote(postId).then(
-            (_) => _showSuccessSnackBar('Upvoted'),
-          );
+    _guardLogin(() async {
+      await read(danbooruPostVotesProvider(readConfig).notifier).upvote(postId);
+
+      if (context.mounted) {
+        _showSuccessSnackBar(
+          context,
+          'Upvoted',
+        );
+      }
     });
   }
 
   void danbooruDownvote(int postId) {
-    _guardLogin(() {
-      read(danbooruPostVotesProvider(readConfig).notifier)
-          .downvote(postId)
-          .then(
-            (_) => _showSuccessSnackBar('Downvoted'),
-          );
+    _guardLogin(() async {
+      await read(danbooruPostVotesProvider(readConfig).notifier)
+          .downvote(postId);
+
+      if (context.mounted) {
+        _showSuccessSnackBar(
+          context,
+          'Downvoted',
+        );
+      }
     });
   }
 
@@ -449,10 +467,12 @@ extension DanbooruX on WidgetRef {
   }
 
   void _showSuccessSnackBar(
+    BuildContext context,
     String message, {
     Color? backgroundColor,
   }) {
     showSuccessToast(
+      context,
       message,
       backgroundColor: backgroundColor,
       duration: AppDurations.shortToast,
@@ -460,18 +480,22 @@ extension DanbooruX on WidgetRef {
   }
 
   void _guardLogin(void Function() action) {
-    if (!readConfig.hasLoginDetails()) {
-      showSimpleSnackBar(
-        context: context,
-        content: const Text(
-          'post.detail.login_required_notice',
-        ).tr(),
-        duration: AppDurations.shortToast,
-      );
-
-      return;
-    }
-
-    action();
+    guardLogin(this, action);
   }
+}
+
+void guardLogin(WidgetRef ref, void Function() action) {
+  if (!ref.readConfig.hasLoginDetails()) {
+    showSimpleSnackBar(
+      context: ref.context,
+      content: const Text(
+        'post.detail.login_required_notice',
+      ).tr(),
+      duration: AppDurations.shortToast,
+    );
+
+    return;
+  }
+
+  action();
 }

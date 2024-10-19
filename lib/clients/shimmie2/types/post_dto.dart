@@ -2,21 +2,6 @@
 import 'package:xml/xml.dart';
 
 class PostDto {
-  final int? id;
-  final String? md5;
-  final String? fileName;
-  final String? fileUrl;
-  final int? height;
-  final int? width;
-  final String? previewUrl;
-  final int? previewHeight;
-  final int? previewWidth;
-  final String? rating;
-  final DateTime? date;
-  final List<String>? tags;
-  final String? source;
-  final int? score;
-  final String? author;
 
   PostDto({
     this.id,
@@ -64,6 +49,21 @@ class PostDto {
       author: xml.getAttribute('author'),
     );
   }
+  final int? id;
+  final String? md5;
+  final String? fileName;
+  final String? fileUrl;
+  final int? height;
+  final int? width;
+  final String? previewUrl;
+  final int? previewHeight;
+  final int? previewWidth;
+  final String? rating;
+  final DateTime? date;
+  final List<String>? tags;
+  final String? source;
+  final int? score;
+  final String? author;
 
   @override
   String toString() => '$id: $fileUrl';

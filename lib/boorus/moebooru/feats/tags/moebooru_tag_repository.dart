@@ -23,7 +23,7 @@ class MoebooruTagRepository extends TagRepository {
     final value = tags.map((e) => e.trim()).toList();
 
     final data = await repo.getTagSummaries();
-    final map = {for (var item in data) item.name: item};
+    final map = {for (final item in data) item.name: item};
 
     return value
         .map((e) => map[e])

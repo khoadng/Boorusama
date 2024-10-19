@@ -15,7 +15,7 @@ class ExploreSection extends StatelessWidget {
 
   final Widget Function(BuildContext context) builder;
   final String title;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -28,13 +28,15 @@ class ExploreSection extends StatelessWidget {
             style: context.textTheme.titleLarge!
                 .copyWith(fontWeight: FontWeight.w700),
           ),
-          trailing: TextButton(
-            onPressed: onPressed,
-            child: Text(
-              'explore.see_more',
-              style: context.textTheme.labelLarge,
-            ).tr(),
-          ),
+          trailing: onPressed != null
+              ? TextButton(
+                  onPressed: onPressed,
+                  child: Text(
+                    'explore.see_more',
+                    style: context.textTheme.labelLarge,
+                  ).tr(),
+                )
+              : null,
         ),
         builder(context),
       ],

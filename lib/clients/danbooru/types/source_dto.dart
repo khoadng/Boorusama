@@ -2,14 +2,6 @@
 import 'package:boorusama/clients/danbooru/types/artist_dto.dart' as d;
 
 class SourceDto {
-  final ArtistDto? artist;
-  final List<d.ArtistDto>? artists;
-  final List<ImageUrlsDto>? imageUrls;
-  final String? pageUrl;
-  final List<TagsDto>? tags;
-  final List<String>? normalizedTags;
-  final List<TranslatedTagsDto>? translatedTags;
-  final ArtistCommentaryDto? artistCommentary;
 
   const SourceDto({
     required this.artist,
@@ -47,14 +39,17 @@ class SourceDto {
           : null,
     );
   }
+  final ArtistDto? artist;
+  final List<d.ArtistDto>? artists;
+  final List<ImageUrlsDto>? imageUrls;
+  final String? pageUrl;
+  final List<TagsDto>? tags;
+  final List<String>? normalizedTags;
+  final List<TranslatedTagsDto>? translatedTags;
+  final ArtistCommentaryDto? artistCommentary;
 }
 
 class ArtistDto {
-  final String? name;
-  final String? tagName;
-  final List<String>? otherNames;
-  final String? profileUrl;
-  final List<String>? profileUrls;
 
   const ArtistDto({
     required this.name,
@@ -77,10 +72,14 @@ class ArtistDto {
           .toList(),
     );
   }
+  final String? name;
+  final String? tagName;
+  final List<String>? otherNames;
+  final String? profileUrl;
+  final List<String>? profileUrls;
 }
 
 class ImageUrlsDto {
-  final String? imageUrl;
 
   const ImageUrlsDto({
     required this.imageUrl,
@@ -91,11 +90,10 @@ class ImageUrlsDto {
       imageUrl: json,
     );
   }
+  final String? imageUrl;
 }
 
 class TagsDto {
-  final String? tagName;
-  final String? tagUrl;
 
   const TagsDto({
     required this.tagName,
@@ -108,12 +106,11 @@ class TagsDto {
       tagUrl: json.length > 1 ? json[1] as String? : null,
     );
   }
+  final String? tagName;
+  final String? tagUrl;
 }
 
 class TranslatedTagsDto {
-  final String? name;
-  final int? postCount;
-  final int? category;
 
   const TranslatedTagsDto({
     required this.name,
@@ -128,13 +125,12 @@ class TranslatedTagsDto {
       category: json['category'] as int?,
     );
   }
+  final String? name;
+  final int? postCount;
+  final int? category;
 }
 
 class ArtistCommentaryDto {
-  final String? title;
-  final String? dtextTitle;
-  final String? description;
-  final String? dtextDescription;
 
   const ArtistCommentaryDto({
     required this.title,
@@ -151,4 +147,8 @@ class ArtistCommentaryDto {
       dtextDescription: json['dtext_description'] as String?,
     );
   }
+  final String? title;
+  final String? dtextTitle;
+  final String? description;
+  final String? dtextDescription;
 }
