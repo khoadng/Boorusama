@@ -54,6 +54,11 @@ final preDefinedColorSettings = [
     staticHackerScheme,
     nickname: 'Hacker',
   ),
+  ColorSettings.fromPredefinedScheme(
+    'cyberpunk',
+    staticCyberpunkScheme,
+    nickname: 'Cyberpunk',
+  ),
 ].whereNotNull().toList();
 
 ColorScheme? getSchemeFromColorSettings(ColorSettings? colorSettings) {
@@ -155,6 +160,30 @@ const staticHackerScheme = ColorScheme(
   onError: kOnErrorDarkColor,
   surface: Color(0xff000000),
   onSurface: kHackerPrimaryColor,
+);
+
+const kCyberpunkPrimaryColor = Color(0xfffcec0c);
+const kCyberpunkSurfaceColor = Color(0xff120c15);
+const kCyberpunkSecondaryContainerColor = Color(0xff30161c);
+const kCyberpunkOnSurfaceColor = Color(0xff02d6f1);
+const kCyberpunkOutlineColor = Color(0xff34736a);
+const kCyberpunkErrorColor = Color(0xffff6159);
+
+const staticCyberpunkScheme = ColorScheme(
+  brightness: Brightness.dark,
+  primary: kCyberpunkPrimaryColor,
+  onPrimary: Colors.black,
+  secondary: kCyberpunkPrimaryColor,
+  onSecondary: Colors.black,
+  secondaryContainer: kCyberpunkSecondaryContainerColor,
+  onSecondaryContainer: kCyberpunkOnSurfaceColor,
+  surfaceContainerHighest: kCyberpunkSecondaryContainerColor,
+  outline: kCyberpunkOutlineColor,
+  outlineVariant: kCyberpunkOutlineColor,
+  error: kCyberpunkErrorColor,
+  onError: kOnErrorDarkColor,
+  surface: kCyberpunkSurfaceColor,
+  onSurface: kCyberpunkOnSurfaceColor,
 );
 
 Color? _parseColor(dynamic color) => switch (color) {
