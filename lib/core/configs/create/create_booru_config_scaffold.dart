@@ -73,15 +73,16 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
 
     final tabMap = {
       if (authTab != null) 'booru.authentication': authTab!,
-      'Listing': searchTab ??
-          BooruConfigListingView(
-            config: config,
-          ),
+      'Listing': BooruConfigListingView(
+        config: config,
+      ),
       if (hasDownloadTab)
         'booru.download': BooruConfigDownloadView(config: config),
-      'Search': BooruConfigSearchView(
-        hasRatingFilter: hasRatingFilter,
-      ),
+      'Search': searchTab ??
+          BooruConfigSearchView(
+            hasRatingFilter: hasRatingFilter,
+            config: config,
+          ),
       if (tabsBuilder != null) ...tabsBuilder!(context),
       'booru.gestures': BooruConfigGesturesView(
         postDetailsGestureActions: postDetailsGestureActions,
@@ -107,7 +108,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
           config: config,
         ),
         actions: [
-          BooruConfigSubmitButton(
+          BooruConfigDataProvider(
             builder: submitButtonBuilder != null
                 ? submitButtonBuilder!
                 : (data) => DefaultBooruSubmitButton(

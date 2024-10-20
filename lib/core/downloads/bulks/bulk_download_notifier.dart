@@ -17,6 +17,7 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/foundation/permissions.dart';
@@ -60,27 +61,36 @@ class BulkDownloadOptions extends Equatable {
   const BulkDownloadOptions({
     required this.notications,
     required this.skipIfExists,
+    required this.quality,
   });
 
   const BulkDownloadOptions.defaults()
       : notications = true,
+        quality = null,
         skipIfExists = true;
 
   BulkDownloadOptions copyWith({
     bool? notications,
     bool? skipIfExists,
+    DownloadQuality? Function()? quality,
   }) {
     return BulkDownloadOptions(
       notications: notications ?? this.notications,
       skipIfExists: skipIfExists ?? this.skipIfExists,
+      quality: quality != null ? quality() : this.quality,
     );
   }
 
   final bool notications;
   final bool skipIfExists;
+  final DownloadQuality? quality;
 
   @override
-  List<Object?> get props => [notications, skipIfExists];
+  List<Object?> get props => [
+        notications,
+        skipIfExists,
+        quality,
+      ];
 }
 
 class BulkDownloadTask extends Equatable with DownloadMixin {
@@ -102,6 +112,7 @@ class BulkDownloadTask extends Equatable with DownloadMixin {
   BulkDownloadTask.randomId({
     required this.tags,
     required this.path,
+    required DownloadQuality quality,
   })  : id = 'task${DateTime.now().millisecondsSinceEpoch}',
         estimatedDownloadSize = null,
         coverUrl = null,
@@ -110,7 +121,9 @@ class BulkDownloadTask extends Equatable with DownloadMixin {
         siteUrl = null,
         pageProgress = null,
         error = null,
-        options = const BulkDownloadOptions.defaults(),
+        options = const BulkDownloadOptions.defaults().copyWith(
+          quality: () => quality,
+        ),
         status = BulkDownloadTaskStatus.created;
 
   BulkDownloadTask copyWith({
@@ -374,7 +387,7 @@ class BulkDownloadNotifier extends Notifier<List<BulkDownloadTask>> {
 
           final urlData = await downloadFileUrlExtractor.getDownloadFileUrl(
             post: item,
-            settings: settings,
+            quality: task.options.quality ?? settings.downloadQuality,
           );
           if (urlData == null || urlData.url.isEmpty) continue;
 
@@ -391,6 +404,7 @@ class BulkDownloadNotifier extends Notifier<List<BulkDownloadTask>> {
             metadata: {
               'index': index.toString(),
             },
+            downloadUrl: urlData.url,
           );
 
           await downloader

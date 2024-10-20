@@ -35,10 +35,13 @@ import 'package:boorusama/clients/sankaku/sankaku_client.dart';
 import 'package:boorusama/clients/shimmie2/shimmie2_client.dart';
 import 'package:boorusama/clients/szurubooru/szurubooru_client.dart';
 import 'package:boorusama/clients/zerochan/zerochan_client.dart';
+import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/blacklists/blacklists.dart';
 import 'package:boorusama/core/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
+import 'package:boorusama/core/downloads/downloads.dart';
+import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/tags/tags.dart';
@@ -52,8 +55,13 @@ import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/package_info.dart';
 import 'package:boorusama/functional.dart';
 import 'anime-pictures/providers.dart';
+import 'danbooru/danbooru_provider.dart';
+import 'danbooru/notes/notes.dart';
+import 'e621/e621.dart';
+import 'gelbooru_v2/gelbooru_v2.dart';
 import 'hydrus/favorites/favorites.dart';
 import 'hydrus/hydrus.dart';
+import 'moebooru/feats/autocomplete/autocomplete.dart';
 import 'philomena/providers.dart';
 import 'shimmie2/providers.dart';
 import 'szurubooru/providers.dart';
@@ -90,6 +98,59 @@ final postRepoProvider = Provider.family<PostRepository, BooruConfig>(
             ref.watch(animePicturesPostRepoProvider(config)),
           BooruType.unknown => ref.watch(emptyPostRepoProvider),
         });
+
+final autocompleteRepoProvider = Provider.family<
+    AutocompleteRepository, BooruConfig>((ref, config) => switch (
+        config.booruType) {
+      BooruType.danbooru => ref.watch(danbooruAutocompleteRepoProvider(config)),
+      BooruType.gelbooru => ref.watch(gelbooruAutocompleteRepoProvider(config)),
+      BooruType.gelbooruV1 =>
+        ref.watch(gelbooruV1AutocompleteRepoProvider(config)),
+      BooruType.gelbooruV2 =>
+        ref.watch(gelbooruV2AutocompleteRepoProvider(config)),
+      BooruType.moebooru => ref.watch(moebooruAutocompleteRepoProvider(config)),
+      BooruType.e621 => ref.watch(e621AutocompleteRepoProvider(config)),
+      BooruType.sankaku => ref.watch(sankakuAutocompleteRepoProvider(config)),
+      BooruType.philomena =>
+        ref.watch(philomenaAutoCompleteRepoProvider(config)),
+      BooruType.shimmie2 => ref.watch(shimmie2AutocompleteRepoProvider(config)),
+      BooruType.zerochan => ref.watch(zerochanAutoCompleteRepoProvider(config)),
+      BooruType.szurubooru =>
+        ref.watch(szurubooruAutocompleteRepoProvider(config)),
+      BooruType.hydrus => ref.watch(hydrusAutocompleteRepoProvider(config)),
+      BooruType.animePictures =>
+        ref.watch(animePicturesAutocompleteRepoProvider(config)),
+      BooruType.unknown => ref.watch(emptyAutocompleteRepoProvider),
+    });
+
+final noteRepoProvider = Provider.family<NoteRepository, BooruConfig>(
+    (ref, config) => switch (config.booruType) {
+          BooruType.danbooru => ref.watch(danbooruNoteRepoProvider(config)),
+          BooruType.gelbooru => ref.watch(gelbooruNoteRepoProvider(config)),
+          BooruType.gelbooruV2 => ref.watch(gelbooruV2NoteRepoProvider(config)),
+          _ => ref.watch(emptyNoteRepoProvider),
+        });
+
+final tagQueryComposerProvider = Provider.family<TagQueryComposer, BooruConfig>(
+  (ref, config) => switch (config.booruType) {
+    BooruType.danbooru => DanbooruTagQueryComposer(config: config),
+    BooruType.gelbooru => GelbooruTagQueryComposer(config: config),
+    BooruType.gelbooruV2 => GelbooruV2TagQueryComposer(config: config),
+    BooruType.e621 => LegacyTagQueryComposer(config: config),
+    BooruType.moebooru => LegacyTagQueryComposer(config: config),
+    BooruType.szurubooru => SzurubooruTagQueryComposer(config: config),
+    _ => DefaultTagQueryComposer(config: config),
+  },
+);
+
+final downloadFileUrlExtractorProvider =
+    Provider.family<DownloadFileUrlExtractor, BooruConfig>(
+  (ref, config) => switch (config.booruType) {
+    BooruType.animePictures =>
+      ref.watch(animePicturesDownloadFileUrlExtractorProvider(config)),
+    _ => const UrlInsidePostExtractor(),
+  },
+);
 
 final postArtistCharacterRepoProvider =
     Provider.family<PostRepository, BooruConfig>(

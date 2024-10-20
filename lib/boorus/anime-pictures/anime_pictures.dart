@@ -12,7 +12,6 @@ import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/gelbooru_v2/gelbooru_v2.dart';
 import 'package:boorusama/clients/anime-pictures/anime_pictures_client.dart';
 import 'package:boorusama/clients/anime-pictures/types/types.dart';
-import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
@@ -35,7 +34,6 @@ class AnimePicturesBuilder
         CommentNotSupportedMixin,
         ArtistNotSupportedMixin,
         CharacterNotSupportedMixin,
-        NoteNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
         UnknownMetatagsMixin,
         DefaultMultiSelectionActionsBuilderMixin,
@@ -47,19 +45,7 @@ class AnimePicturesBuilder
         DefaultPostStatisticsPageBuilderMixin,
         DefaultBooruUIMixin
     implements BooruBuilder {
-  AnimePicturesBuilder({
-    required this.postRepo,
-    required this.autocompleteRepo,
-    required this.client,
-  });
-
-  final AutocompleteRepository autocompleteRepo;
-  final PostRepository postRepo;
-  final AnimePicturesClient client;
-
-  @override
-  AutocompleteFetcher get autocompleteFetcher =>
-      (query) => autocompleteRepo.getAutocomplete(query);
+  AnimePicturesBuilder();
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
@@ -92,13 +78,8 @@ class AnimePicturesBuilder
           );
 
   @override
-  PostFetcher get postFetcher =>
-      (page, tags, {limit}) => postRepo.getPosts(tags, page, limit: limit);
-
-  @override
-  late final DownloadFilenameGenerator<Post> downloadFilenameBuilder =
+  final DownloadFilenameGenerator<Post> downloadFilenameBuilder =
       DownloadFileNameBuilder<Post>(
-    downloadFileUrlExtractor: downloadFileUrlExtractor,
     defaultFileNameFormat: kGelbooruV2CustomDownloadFileNameFormat,
     defaultBulkDownloadFileNameFormat: kGelbooruV2CustomDownloadFileNameFormat,
     sampleData: kDanbooruPostSamples,
@@ -142,10 +123,6 @@ class AnimePicturesBuilder
       (context, config) => const AnimePicturesCurrentUserIdScope(
             child: AnimePicturesFavoritesPage(),
           );
-
-  @override
-  late final DownloadFileUrlExtractor downloadFileUrlExtractor =
-      AnimePicturesDownloadFileUrlExtractor(client);
 }
 
 class AnimePicturesCurrentUserIdScope extends ConsumerWidget {
@@ -217,16 +194,16 @@ class AnimePicturesFavoritesPage extends ConsumerWidget {
 class AnimePicturesDownloadFileUrlExtractor
     with SimpleCacheMixin<DownloadUrlData>
     implements DownloadFileUrlExtractor {
-  AnimePicturesDownloadFileUrlExtractor(
-    this.client,
-  );
+  AnimePicturesDownloadFileUrlExtractor({
+    required this.client,
+  });
 
   final AnimePicturesClient client;
 
   @override
   Future<DownloadUrlData?> getDownloadFileUrl({
     required Post post,
-    required Settings settings,
+    required DownloadQuality quality,
   }) =>
       tryGet(
         post.id.toString(),

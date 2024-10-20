@@ -13,3 +13,7 @@ final notesControllerProvider = NotifierProvider.autoDispose
     currentBooruConfigProvider,
   ],
 );
+
+final emptyNoteRepoProvider = Provider<NoteRepository>(
+  (_) => const EmptyNoteRepository(),
+);

@@ -5,7 +5,7 @@ final gelbooruV1PostRepoProvider = Provider.family<PostRepository, BooruConfig>(
     final client = ref.watch(gelbooruV1ClientProvider(config));
 
     return PostRepositoryBuilder(
-      tagComposer: DefaultTagQueryComposer(config: config),
+      tagComposer: ref.watch(tagQueryComposerProvider(config)),
       getSettings: () async => ref.read(imageListingSettingsProvider),
       fetch: (tags, page, {limit}) async {
         final posts = await client.getPosts(
@@ -49,6 +49,27 @@ final gelbooruV1PostRepoProvider = Provider.family<PostRepository, BooruConfig>(
     );
   },
 );
+
+final gelbooruV1AutocompleteRepoProvider =
+    Provider.family<AutocompleteRepository, BooruConfig>((ref, config) {
+  final client = GelbooruClient.gelbooru();
+
+  return AutocompleteRepositoryBuilder(
+    persistentStorageKey:
+        '${Uri.encodeComponent(config.url)}_autocomplete_cache_v1',
+    persistentStaleDuration: const Duration(days: 1),
+    autocomplete: (query) async {
+      final dtos = await client.autocomplete(term: query);
+
+      return dtos
+          .map((e) => AutocompleteData(
+                label: e.label ?? '<Unknown>',
+                value: e.value ?? '<Unknown>',
+              ))
+          .toList();
+    },
+  );
+});
 
 final gelbooruV1ClientProvider =
     Provider.family<GelbooruV1Client, BooruConfig>((ref, booruConfig) {

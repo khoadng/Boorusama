@@ -70,6 +70,9 @@ class SearchHistoryNotifier extends AsyncNotifier<SearchHistoryState> {
     }
 
     final queries = controller.tags.map((e) => e.originalTag).toList();
+
+    if (queries.isEmpty) return;
+
     final json = jsonEncode(queries);
 
     await addHistory(json, queryType: QueryType.list);

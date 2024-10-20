@@ -12,7 +12,6 @@ import 'package:boorusama/clients/e621/e621_client.dart';
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'artists/artists.dart';
@@ -107,7 +106,6 @@ class E621Builder
         CharacterNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
         UnknownMetatagsMixin,
-        DefaultDownloadFileUrlExtractorMixin,
         DefaultMultiSelectionActionsBuilderMixin,
         DefaultHomeMixin,
         DefaultQuickFavoriteButtonBuilderMixin,
@@ -117,15 +115,7 @@ class E621Builder
         DefaultGranularRatingFiltererMixin,
         DefaultPostImageDetailsUrlMixin
     implements BooruBuilder {
-  E621Builder({
-    required this.postRepo,
-    required this.autocompleteRepo,
-    required this.noteRepo,
-  });
-
-  final PostRepository<E621Post> postRepo;
-  final AutocompleteRepository autocompleteRepo;
-  final NoteRepository noteRepo;
+  E621Builder();
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
@@ -161,13 +151,6 @@ class E621Builder
             backgroundColor: backgroundColor,
             initialTab: initialTab,
           );
-
-  @override
-  PostFetcher get postFetcher => (page, tags) => postRepo.getPosts(tags, page);
-
-  @override
-  AutocompleteFetcher get autocompleteFetcher =>
-      (query) => autocompleteRepo.getAutocomplete(query);
 
   @override
   FavoriteAdder? get favoriteAdder => (postId, ref) => ref
@@ -240,12 +223,8 @@ class E621Builder
           };
 
   @override
-  NoteFetcher? get noteFetcher => (postId) => noteRepo.getNotes(postId);
-
-  @override
-  late final DownloadFilenameGenerator downloadFilenameBuilder =
+  final DownloadFilenameGenerator downloadFilenameBuilder =
       DownloadFileNameBuilder<E621Post>(
-    downloadFileUrlExtractor: downloadFileUrlExtractor,
     defaultFileNameFormat: kBoorusamaCustomDownloadFileNameFormat,
     defaultBulkDownloadFileNameFormat:
         kBoorusamaBulkDownloadCustomFileNameFormat,

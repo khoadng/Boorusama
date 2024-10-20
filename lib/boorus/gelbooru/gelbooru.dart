@@ -145,7 +145,6 @@ Note gelbooruNoteToNote(NoteDto note) {
 class GelbooruBuilder
     with
         UnknownMetatagsMixin,
-        DefaultDownloadFileUrlExtractorMixin,
         DefaultMultiSelectionActionsBuilderMixin,
         DefaultHomeMixin,
         DefaultQuickFavoriteButtonBuilderMixin,
@@ -158,15 +157,9 @@ class GelbooruBuilder
         DefaultTagColorMixin
     implements BooruBuilder {
   GelbooruBuilder({
-    required this.postRepo,
-    required this.autocompleteRepo,
-    required this.noteRepo,
     required this.client,
   });
 
-  final PostRepository<GelbooruPost> postRepo;
-  final AutocompleteRepository autocompleteRepo;
-  final NoteRepository noteRepo;
   final GelbooruClient Function() client;
 
   @override
@@ -203,19 +196,6 @@ class GelbooruBuilder
             backgroundColor: backgroundColor,
             initialTab: initialTab,
           );
-
-  @override
-  PostFetcher get postFetcher => (page, tags) => postRepo.getPosts(
-        tags,
-        page,
-      );
-
-  @override
-  NoteFetcher? get noteFetcher => (postId) => noteRepo.getNotes(postId);
-
-  @override
-  AutocompleteFetcher get autocompleteFetcher =>
-      (query) => autocompleteRepo.getAutocomplete(query);
 
   @override
   PostCountFetcher? get postCountFetcher => (config, tags, tagComposer) async {
@@ -292,9 +272,8 @@ class GelbooruBuilder
       };
 
   @override
-  late final DownloadFilenameGenerator downloadFilenameBuilder =
+  final DownloadFilenameGenerator downloadFilenameBuilder =
       DownloadFileNameBuilder(
-    downloadFileUrlExtractor: downloadFileUrlExtractor,
     defaultFileNameFormat: kGelbooruCustomDownloadFileNameFormat,
     defaultBulkDownloadFileNameFormat: kGelbooruCustomDownloadFileNameFormat,
     sampleData: kDanbooruPostSamples,

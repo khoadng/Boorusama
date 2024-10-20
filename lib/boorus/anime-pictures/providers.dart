@@ -7,9 +7,11 @@ import 'package:boorusama/clients/anime-pictures/anime_pictures_client.dart';
 import 'package:boorusama/clients/anime-pictures/types/types.dart';
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
+import 'anime_pictures.dart';
 
 final animePicturesClientProvider =
     Provider.family<AnimePicturesClient, BooruConfig>(
@@ -30,7 +32,7 @@ final animePicturesPostRepoProvider =
     final client = ref.watch(animePicturesClientProvider(config));
 
     return PostRepositoryBuilder(
-      tagComposer: DefaultTagQueryComposer(config: config),
+      tagComposer: ref.watch(tagQueryComposerProvider(config)),
       fetch: (tags, page, {limit}) async {
         final posts = await client.getPosts(
           tags: tags,
@@ -79,6 +81,13 @@ final animePicturesAutocompleteRepoProvider =
     );
   },
 );
+
+final animePicturesDownloadFileUrlExtractorProvider =
+    Provider.family<DownloadFileUrlExtractor, BooruConfig>((ref, config) {
+  return AnimePicturesDownloadFileUrlExtractor(
+    client: ref.watch(animePicturesClientProvider(config)),
+  );
+});
 
 typedef TopParams = ({
   BooruConfig config,

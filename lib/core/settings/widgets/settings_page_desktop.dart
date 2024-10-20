@@ -110,7 +110,7 @@ class _LargeLayoutState extends ConsumerState<_LargeLayout> {
                           index == 2 ? context.colorScheme.onSecondary : null,
                       tileColor:
                           index == 2 ? context.colorScheme.secondary : null,
-                      title: const Text('download.download').tr(),
+                      title: const Text('settings.download.title').tr(),
                       onTap: () => currentTab.value = 2,
                     ),
                     ListTile(

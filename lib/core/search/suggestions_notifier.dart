@@ -2,7 +2,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/configs.dart';
@@ -50,6 +49,10 @@ class SuggestionsNotifier
     return <String, IList<AutocompleteData>>{}.lock;
   }
 
+  void clear() {
+    state = <String, IList<AutocompleteData>>{}.lock;
+  }
+
   void getSuggestions(String query) {
     if (query.isEmpty) return;
 
@@ -59,16 +62,14 @@ class SuggestionsNotifier
     if (sanitized.length == 1 && op != FilterOperator.none) return;
 
     final fallback = ref.read(fallbackSuggestionsProvider.notifier);
-    final booruBuilder = ref.read(booruBuilderProvider);
-    final autocompleteFetcher = booruBuilder?.autocompleteFetcher;
+    final autocompleteRepo = ref.read(autocompleteRepoProvider(arg));
     final booruTagTypeStore = ref.read(booruTagTypeStoreProvider);
     final tagInfo = ref.read(tagInfoProvider);
 
     debounce(
       'suggestions',
       () async {
-        final data = await (autocompleteFetcher?.call(sanitized) ??
-            Future.value(<AutocompleteData>[]));
+        final data = await autocompleteRepo.getAutocomplete(sanitized);
 
         await booruTagTypeStore.saveAutocompleteIfNotExist(arg.booruType, data);
 

@@ -83,7 +83,7 @@
     "settings": {
         "language": {
             "language": "Мова",
-            "language_name": "український"
+            "language_name": "Українська"
         },
         "appearance": {
             "booru_config": "Профіль Booru",
@@ -113,7 +113,8 @@
             },
             "select_a_folder": "Вибрати папку",
             "path": "Шлях завантаження",
-            "quality": "Якість завантажуваних фото"
+            "quality": "Якість завантажуваних фото",
+            "title": "Завантажити"
         },
         "help_us_translate": "Допоможіть нам з перекладом",
         "privacy": {

@@ -1,15 +1,14 @@
-// Dart imports:
-import 'dart:io';
-
 // Flutter imports:
 import 'package:flutter/foundation.dart';
 
-bool isAndroid() => isNotWeb() && Platform.isAndroid;
-bool isIOS() => isNotWeb() && Platform.isIOS;
+final _platform = defaultTargetPlatform;
+
+bool isAndroid() => isNotWeb() && _platform == TargetPlatform.android;
+bool isIOS() => isNotWeb() && _platform == TargetPlatform.iOS;
 bool isApple() => isNotWeb() && (isIOS() || isMacOS());
-bool isLinux() => isNotWeb() && Platform.isLinux;
-bool isMacOS() => isNotWeb() && Platform.isMacOS;
-bool isWindows() => isNotWeb() && Platform.isWindows;
+bool isLinux() => isNotWeb() && _platform == TargetPlatform.linux;
+bool isMacOS() => isNotWeb() && _platform == TargetPlatform.macOS;
+bool isWindows() => isNotWeb() && _platform == TargetPlatform.windows;
 bool isWeb() => kIsWeb;
 bool isNotWeb() => !kIsWeb;
 

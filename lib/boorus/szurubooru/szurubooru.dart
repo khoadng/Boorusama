@@ -11,7 +11,6 @@ import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/gelbooru_v2/gelbooru_v2.dart';
 import 'package:boorusama/boorus/szurubooru/favorites/favorites.dart';
 import 'package:boorusama/boorus/szurubooru/providers.dart';
-import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/comments/comments.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
@@ -30,11 +29,9 @@ class SzurubooruBuilder
         DefaultThumbnailUrlMixin,
         ArtistNotSupportedMixin,
         CharacterNotSupportedMixin,
-        NoteNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
         UnknownMetatagsMixin,
         DefaultQuickFavoriteButtonBuilderMixin,
-        DefaultDownloadFileUrlExtractorMixin,
         DefaultHomeMixin,
         DefaultTagColorMixin,
         DefaultPostImageDetailsUrlMixin,
@@ -43,17 +40,7 @@ class SzurubooruBuilder
         DefaultPostStatisticsPageBuilderMixin,
         DefaultBooruUIMixin
     implements BooruBuilder {
-  SzurubooruBuilder({
-    required this.postRepo,
-    required this.autocompleteRepo,
-  });
-
-  final AutocompleteRepository autocompleteRepo;
-  final PostRepository postRepo;
-
-  @override
-  AutocompleteFetcher get autocompleteFetcher =>
-      (query) => autocompleteRepo.getAutocomplete(query);
+  SzurubooruBuilder();
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
@@ -84,10 +71,6 @@ class SzurubooruBuilder
             backgroundColor: backgroundColor,
             initialTab: initialTab,
           );
-
-  @override
-  PostFetcher get postFetcher =>
-      (page, tags, {limit}) => postRepo.getPosts(tags, page, limit: limit);
 
   @override
   CommentPageBuilder? get commentPageBuilder =>
@@ -142,9 +125,8 @@ class SzurubooruBuilder
           );
 
   @override
-  late final DownloadFilenameGenerator<Post> downloadFilenameBuilder =
+  final DownloadFilenameGenerator<Post> downloadFilenameBuilder =
       DownloadFileNameBuilder<Post>(
-    downloadFileUrlExtractor: downloadFileUrlExtractor,
     defaultFileNameFormat: kGelbooruV2CustomDownloadFileNameFormat,
     defaultBulkDownloadFileNameFormat: kGelbooruV2CustomDownloadFileNameFormat,
     sampleData: kDanbooruPostSamples,

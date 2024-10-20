@@ -15,13 +15,17 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/display.dart';
+import 'package:boorusama/foundation/filesize.dart';
+import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/keyboard.dart';
 import 'package:boorusama/foundation/networking/network_provider.dart';
 import 'package:boorusama/foundation/networking/network_state.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
+import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 typedef ItemWidgetBuilder<T> = Widget Function(
@@ -169,6 +173,10 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
   @override
   Widget build(BuildContext context) {
     final settings = ref.watch(imageListingSettingsProvider);
+    final header = ResponsiveLayoutBuilder(
+      phone: (context) => _buildConfigHeader(Axis.horizontal),
+      pc: (context) => _buildConfigHeader(Axis.vertical),
+    );
 
     return PopScope(
       canPop: !multiSelect,
@@ -180,11 +188,8 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
         color: context.theme.scaffoldBackgroundColor,
         child: PostGridConfigRegion(
           postController: controller,
-          blacklistHeader: ResponsiveLayoutBuilder(
-            phone: (context) => _buildConfigHeader(Axis.horizontal),
-            pc: (context) => _buildConfigHeader(Axis.vertical),
-          ),
-          builder: (context, header) => ConditionalParentWidget(
+          blacklistHeader: header,
+          child: ConditionalParentWidget(
             condition: widget.safeArea,
             conditionalBuilder: (child) => SafeArea(
               bottom: false,
@@ -309,6 +314,16 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                             trueChild: const SliverSizedBox.shrink(),
                             falseChild: const SliverToBoxAdapter(
                               child: HighresPreviewOnMobileDataWarningBanner(),
+                            ),
+                          ),
+                          ConditionalValueListenableBuilder(
+                            valueListenable: refreshing,
+                            useFalseChildAsCache: true,
+                            trueChild: const SliverSizedBox.shrink(),
+                            falseChild: const SliverToBoxAdapter(
+                              child: TooMuchCachedImagesWarningBanner(
+                                threshold: _kImageCacheThreshold,
+                              ),
                             ),
                           ),
                           const SliverSizedBox(
@@ -571,5 +586,84 @@ class HighresPreviewOnMobileDataWarningBanner extends ConsumerWidget {
             : const SizedBox.shrink(),
       _ => const SizedBox.shrink(),
     };
+  }
+}
+
+final _imageCachesProvider = FutureProvider<int>((ref) async {
+  final miscData = ref.watch(miscDataBoxProvider);
+  final hideWarning = miscData.get(_kHideImageCacheWarningKey) == 'true';
+
+  if (hideWarning) return -1;
+
+  final imageCacheSize = await getImageCacheSize();
+
+  return imageCacheSize.size;
+});
+
+// Only need check once at the start
+final _cacheImageActionsPerformedProvider = StateProvider<bool>((ref) => false);
+
+const _kHideImageCacheWarningKey = 'hide_image_cache_warning';
+
+// 1GB threshold
+const _kImageCacheThreshold = 1000 * 1024 * 1024;
+
+class TooMuchCachedImagesWarningBanner extends ConsumerWidget {
+  const TooMuchCachedImagesWarningBanner({
+    super.key,
+    required this.threshold,
+  });
+
+  final int threshold;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final performed = ref.watch(_cacheImageActionsPerformedProvider);
+
+    if (performed) return const SizedBox.shrink();
+
+    return ref.watch(_imageCachesProvider).when(
+          data: (cacheSize) {
+            if (cacheSize > threshold) {
+              final miscData = ref.watch(miscDataBoxProvider);
+
+              return DismissableInfoContainer(
+                mainColor: context.colorScheme.primary,
+                content:
+                    "The app has stored <b>${Filesize.parse(cacheSize)}</b> worth of images. Would you like to clear it to free up some space?",
+                actions: [
+                  FilledButton(
+                    onPressed: () async {
+                      ref
+                          .read(_cacheImageActionsPerformedProvider.notifier)
+                          .state = true;
+                      await clearImageCache();
+
+                      final c = navigatorKey.currentState?.context;
+
+                      if (c != null && c.mounted) {
+                        showSuccessToast(context, 'Cache cleared');
+                      }
+                    },
+                    child: const Text('settings.performance.clear_cache').tr(),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      miscData.put(_kHideImageCacheWarningKey, 'true');
+                      ref
+                          .read(_cacheImageActionsPerformedProvider.notifier)
+                          .state = true;
+                    },
+                    child: const Text("Don't show again"),
+                  ),
+                ],
+              );
+            } else {
+              return const SizedBox.shrink();
+            }
+          },
+          loading: () => const SizedBox.shrink(),
+          error: (e, _) => const SizedBox.shrink(),
+        );
   }
 }

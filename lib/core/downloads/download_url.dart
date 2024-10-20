@@ -26,7 +26,7 @@ class DownloadUrlData extends Equatable {
 abstract interface class DownloadFileUrlExtractor {
   Future<DownloadUrlData?> getDownloadFileUrl({
     required Post post,
-    required Settings settings,
+    required DownloadQuality quality,
   });
 }
 
@@ -36,7 +36,7 @@ final class UrlInsidePostExtractor implements DownloadFileUrlExtractor {
   @override
   Future<DownloadUrlData?> getDownloadFileUrl({
     required Post post,
-    required Settings settings,
+    required DownloadQuality quality,
   }) async {
     if (post.isVideo) return DownloadUrlData.urlOnly(post.videoUrl);
 
@@ -46,7 +46,7 @@ final class UrlInsidePostExtractor implements DownloadFileUrlExtractor {
       post.thumbnailImageUrl
     ];
 
-    final url = switch (settings.downloadQuality) {
+    final url = switch (quality) {
       DownloadQuality.original => urls.firstWhereOrNull((e) => e.isNotEmpty),
       DownloadQuality.sample =>
         urls.skip(1).firstWhereOrNull((e) => e.isNotEmpty),

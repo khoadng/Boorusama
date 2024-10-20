@@ -423,7 +423,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
       builder: (_, expanded, __) => ValueListenableBuilder(
         valueListenable: _controller.hideOverlay,
         builder: (_, hide, __) => AnimatedSwitcher(
-          duration: Durations.extralong1,
+          duration: Durations.long2,
           child: !hide
               ? Align(
                   alignment: Alignment(
@@ -453,7 +453,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
     return ValueListenableBuilder(
       valueListenable: _controller.hideOverlay,
       builder: (_, hide, __) => AnimatedSwitcher(
-        duration: Durations.extralong1,
+        duration: Durations.long2,
         child: !hide
             ? Align(
                 alignment: Alignment(

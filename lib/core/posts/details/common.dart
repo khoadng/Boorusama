@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:extended_image/extended_image.dart';
 
 // Project imports:
+import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
 
 extension PostDetailsUtils<T extends Post> on List<T> {
@@ -32,6 +33,7 @@ class PostDetailsPreloadImage extends StatelessWidget {
       height: 1,
       cacheHeight: 10,
       cacheWidth: 10,
+      cacheMaxAge: kDefaultImageCacheDuration,
     );
   }
 }

@@ -10,7 +10,6 @@ import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/gelbooru_v2/gelbooru_v2.dart';
 import 'package:boorusama/boorus/philomena/create_philomena_config_page.dart';
 import 'package:boorusama/core/artists/artists.dart';
-import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
@@ -24,7 +23,6 @@ class PhilomenaBuilder
     with
         FavoriteNotSupportedMixin,
         PostCountNotSupportedMixin,
-        NoteNotSupportedMixin,
         DefaultThumbnailUrlMixin,
         CommentNotSupportedMixin,
         ArtistNotSupportedMixin,
@@ -32,24 +30,13 @@ class PhilomenaBuilder
         LegacyGranularRatingOptionsBuilderMixin,
         UnknownMetatagsMixin,
         DefaultMultiSelectionActionsBuilderMixin,
-        DefaultDownloadFileUrlExtractorMixin,
         DefaultHomeMixin,
         DefaultGranularRatingFiltererMixin,
         DefaultPostGesturesHandlerMixin,
         DefaultPostStatisticsPageBuilderMixin,
         DefaultBooruUIMixin
     implements BooruBuilder {
-  PhilomenaBuilder({
-    required this.postRepo,
-    required this.autocompleteRepo,
-  });
-
-  final PostRepository postRepo;
-  final AutocompleteRepository autocompleteRepo;
-
-  @override
-  AutocompleteFetcher get autocompleteFetcher =>
-      (query) => autocompleteRepo.getAutocomplete(query);
+  PhilomenaBuilder();
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
@@ -80,9 +67,6 @@ class PhilomenaBuilder
             backgroundColor: backgroundColor,
             initialTab: initialTab,
           );
-
-  @override
-  PostFetcher get postFetcher => (page, tags) => postRepo.getPosts(tags, page);
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
@@ -121,9 +105,8 @@ class PhilomenaBuilder
           };
 
   @override
-  late final DownloadFilenameGenerator<Post> downloadFilenameBuilder =
+  final DownloadFilenameGenerator<Post> downloadFilenameBuilder =
       DownloadFileNameBuilder<Post>(
-    downloadFileUrlExtractor: downloadFileUrlExtractor,
     defaultFileNameFormat: kGelbooruV2CustomDownloadFileNameFormat,
     defaultBulkDownloadFileNameFormat: kGelbooruV2CustomDownloadFileNameFormat,
     sampleData: kDanbooruPostSamples,

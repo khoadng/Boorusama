@@ -40,11 +40,6 @@ mixin PostCountNotSupportedMixin implements BooruBuilder {
   PostCountFetcher? get postCountFetcher => null;
 }
 
-mixin NoteNotSupportedMixin implements BooruBuilder {
-  @override
-  NoteFetcher? get noteFetcher => null;
-}
-
 mixin DefaultThumbnailUrlMixin implements BooruBuilder {
   @override
   GridThumbnailUrlBuilder get gridThumbnailUrlBuilder =>
@@ -241,13 +236,14 @@ class DefaultSearchPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booruBuilder = ref.watch(booruBuilderProvider);
+    final postRepo = ref.watch(postRepoProvider(ref.watchConfig));
 
     return SearchPageScaffold(
       initialQuery: initialQuery,
-      fetcher: (page, controler) =>
-          booruBuilder?.postFetcher.call(page, controler.rawTagsString) ??
-          TaskEither.of(<Post>[].toResult()),
+      fetcher: (page, controler) => postRepo.getPostsFromController(
+        controler,
+        page,
+      ),
     );
   }
 }
@@ -259,12 +255,6 @@ mixin DefaultHomeMixin implements BooruBuilder {
             controller: controller,
             onSearchTap: () => goToSearchPage(context),
           );
-}
-
-mixin DefaultDownloadFileUrlExtractorMixin implements BooruBuilder {
-  @override
-  final DownloadFileUrlExtractor downloadFileUrlExtractor =
-      const UrlInsidePostExtractor();
 }
 
 String Function(
