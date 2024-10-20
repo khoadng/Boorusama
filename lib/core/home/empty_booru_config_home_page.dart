@@ -55,7 +55,7 @@ class _EmptyBooruConfigHomePageState
                     Text(
                       'Add a profile to continue',
                       style: context.textTheme.titleMedium?.copyWith(
-                        color: context.theme.hintColor,
+                        color: context.colorScheme.hintColor,
                       ),
                     ),
                     const SizedBox(height: 16),

@@ -68,7 +68,7 @@ class _InfoChip extends StatelessWidget {
           backgroundColor: leftColor,
           labelPadding: const EdgeInsets.symmetric(horizontal: 1),
           shape: RoundedRectangleBorder(
-            side: BorderSide(color: context.theme.hintColor),
+            side: BorderSide(color: context.colorScheme.hintColor),
             borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(8),
               bottomLeft: Radius.circular(8),
@@ -80,7 +80,7 @@ class _InfoChip extends StatelessWidget {
           visualDensity: const ShrinkVisualDensity(),
           backgroundColor: rightColor,
           shape: RoundedRectangleBorder(
-            side: BorderSide(color: context.theme.hintColor),
+            side: BorderSide(color: context.colorScheme.hintColor),
             borderRadius: const BorderRadius.only(
               topRight: Radius.circular(8),
               bottomRight: Radius.circular(8),

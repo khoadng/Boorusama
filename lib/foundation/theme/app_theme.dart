@@ -23,6 +23,8 @@ const staticLightScheme = ColorScheme(
   onError: kOnErrorLightColor,
   surface: GreyscaleShades.gray242,
   onSurface: kOnSurfaceLightColor,
+  outline: GreyscaleShades.gray110,
+  outlineVariant: GreyscaleShades.gray60,
 );
 
 const staticDarkScheme = ColorScheme(
@@ -40,6 +42,8 @@ const staticDarkScheme = ColorScheme(
   onError: kOnErrorDarkColor,
   surface: GreyscaleShades.gray24,
   onSurface: Colors.white,
+  outline: GreyscaleShades.gray160,
+  outlineVariant: GreyscaleShades.gray60,
 );
 
 const staticBlackScheme = ColorScheme(
@@ -57,7 +61,7 @@ const staticBlackScheme = ColorScheme(
   onError: kOnErrorAmoledDarkColor,
   surface: Colors.black,
   onSurface: Colors.white,
-  outline: Colors.white,
+  outline: GreyscaleShades.gray160,
   outlineVariant: GreyscaleShades.gray60,
 );
 
@@ -138,11 +142,6 @@ class AppTheme {
             downvoteColor: Colors.blueAccent,
           ),
         ],
-        listTileTheme: const ListTileThemeData(
-          subtitleTextStyle: TextStyle(
-            color: kHintLightColor,
-          ),
-        ),
       );
 
   static ThemeData darkTheme({
@@ -151,7 +150,6 @@ class AppTheme {
       defaultTheme(colorScheme: colorScheme).copyWith(
         brightness: Brightness.dark,
         dividerTheme: DividerThemeData(
-          color: colorScheme.outlineVariant.withOpacity(0.1),
           endIndent: 0,
           indent: 0,
         ),
@@ -164,11 +162,6 @@ class AppTheme {
             downvoteColor: Colors.blueAccent,
           ),
         ],
-        listTileTheme: const ListTileThemeData(
-          subtitleTextStyle: TextStyle(
-            color: kHintAmoledDarkColor,
-          ),
-        ),
       );
 
   static ThemeData defaultTheme({
@@ -244,9 +237,9 @@ class AppTheme {
             ),
           ),
         ),
-        listTileTheme: const ListTileThemeData(
+        listTileTheme: ListTileThemeData(
           subtitleTextStyle: TextStyle(
-            color: kHintAmoledDarkColor,
+            color: colorScheme.outline,
           ),
         ),
         colorScheme: colorScheme,
@@ -276,4 +269,8 @@ class AppTheme {
           dividerHeight: 0.1,
         ),
       );
+}
+
+extension ColorSchemeAlias on ColorScheme {
+  Color get hintColor => outline;
 }

@@ -45,7 +45,7 @@ class UserInfoBox extends ConsumerWidget {
               Text(
                 DateFormat('yyyy-MM-dd').format(user.joinedDate),
                 style: TextStyle(
-                  color: context.theme.hintColor,
+                  color: context.colorScheme.hintColor,
                 ),
               ),
             ],

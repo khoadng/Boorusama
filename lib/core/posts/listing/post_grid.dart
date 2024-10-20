@@ -185,7 +185,7 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
         _onWillPop();
       },
       child: ColoredBox(
-        color: context.theme.scaffoldBackgroundColor,
+        color: context.colorScheme.surface,
         child: PostGridConfigRegion(
           postController: controller,
           blacklistHeader: header,
@@ -436,7 +436,7 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
       rightSwipeWidget: Chip(
         visualDensity: VisualDensity.compact,
         side: BorderSide(
-          color: context.theme.hintColor,
+          color: context.colorScheme.hintColor,
         ),
         backgroundColor: context.colorScheme.surface,
         label: Row(
@@ -454,7 +454,7 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
       leftSwipeWidget: Chip(
         visualDensity: VisualDensity.compact,
         side: BorderSide(
-          color: context.theme.hintColor,
+          color: context.colorScheme.hintColor,
         ),
         backgroundColor: context.colorScheme.surface,
         label: Row(

@@ -68,7 +68,7 @@ class _DownloadFolderSelectorSectionState
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(4),
             side: BorderSide(
-              color: context.theme.hintColor,
+              color: context.colorScheme.hintColor,
             ),
           ),
           child: InkWell(
@@ -96,7 +96,7 @@ class _DownloadFolderSelectorSectionState
                                 DownloadTranslations.downloadSelectFolder.tr(),
                             overflow: TextOverflow.fade,
                             style: context.textTheme.titleMedium!
-                                .copyWith(color: context.theme.hintColor),
+                                .copyWith(color: context.colorScheme.hintColor),
                           ),
                   ),
                 ),

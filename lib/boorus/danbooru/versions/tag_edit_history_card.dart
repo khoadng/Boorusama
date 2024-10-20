@@ -81,7 +81,7 @@ class TagEditHistoryCard extends StatelessWidget {
                             locale: context.locale,
                           ),
                           style: TextStyle(
-                            color: context.theme.hintColor,
+                            color: context.colorScheme.hintColor,
                           ),
                         ),
                       ),

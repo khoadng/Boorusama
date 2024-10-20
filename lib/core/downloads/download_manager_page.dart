@@ -105,7 +105,7 @@ class DisabledDownloadManagerPage extends StatelessWidget {
               Text(
                 'You are using the legacy downloader. Please enable the new downloader in the settings.',
                 style: context.textTheme.bodyMedium?.copyWith(
-                  color: context.theme.hintColor,
+                  color: context.colorScheme.hintColor,
                 ),
               ),
               const SizedBox(height: 16),
@@ -401,7 +401,7 @@ class SimpleDownloadTile extends ConsumerWidget {
       builder: (_) => RawDownloadTile(
         fileName: task.task.filename,
         strikeThrough: task.isCanceled,
-        color: task.isCanceled ? context.theme.hintColor : null,
+        color: task.isCanceled ? context.colorScheme.hintColor : null,
         trailing: switch (task) {
           final TaskStatusUpdate s => switch (s.status) {
               TaskStatus.failed =>
@@ -529,7 +529,7 @@ class _TaskSubtitle extends ConsumerWidget {
         color: context.colorScheme.primary,
       ),
       style: TextStyle(
-        color: Theme.of(context).hintColor,
+        color: Theme.of(context).colorScheme.hintColor,
         fontSize: 12,
       ),
     );

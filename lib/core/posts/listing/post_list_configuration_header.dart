@@ -202,11 +202,11 @@ class _PostListConfigurationHeaderState
         ActionChip(
           visualDensity: const ShrinkVisualDensity(),
           side: BorderSide(
-            color: context.theme.hintColor,
+            color: context.colorScheme.hintColor,
           ),
           shape: StadiumBorder(
             side: BorderSide(
-              color: context.theme.hintColor,
+              color: context.colorScheme.hintColor,
             ),
           ),
           label: allTagsHidden!
@@ -365,7 +365,7 @@ class _BadgedChip extends StatelessWidget {
         visualDensity: const ShrinkVisualDensity(),
         selected: active,
         side: BorderSide(
-          color: active ? context.theme.hintColor : Colors.transparent,
+          color: active ? context.colorScheme.hintColor : Colors.transparent,
         ),
         backgroundColor: context.colorScheme.surface,
         label: Text(label),

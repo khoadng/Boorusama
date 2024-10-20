@@ -48,7 +48,7 @@ class SimplePostStatsTile extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
-                      color: context.theme.hintColor,
+                      color: context.colorScheme.hintColor,
                     ),
                   ),
                 ],
@@ -72,7 +72,7 @@ class SimplePostStatsTile extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
-                      color: context.theme.hintColor,
+                      color: context.colorScheme.hintColor,
                     ),
                   ),
                 ],
@@ -94,7 +94,7 @@ class SimplePostStatsTile extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
-                      color: context.theme.hintColor,
+                      color: context.colorScheme.hintColor,
                     ),
                   ),
                 ],

@@ -25,7 +25,7 @@ class SelectedTagListWithData extends ConsumerWidget {
     final tagComposer = ref.watch(tagQueryComposerProvider(config));
 
     return ColoredBox(
-        color: context.theme.scaffoldBackgroundColor,
+        color: context.colorScheme.surface,
         child: ValueListenableBuilder(
           valueListenable: controller,
           builder: (context, tags, child) {

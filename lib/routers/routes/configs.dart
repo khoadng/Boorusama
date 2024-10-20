@@ -24,7 +24,7 @@ class BoorusRoutes {
         redirect: (context, state) =>
             kPreferredLayout.isMobile ? null : '/desktop/boorus/add',
         builder: (context, state) => AddBooruPage(
-          backgroundColor: context.theme.scaffoldBackgroundColor,
+          backgroundColor: context.colorScheme.surface,
           setCurrentBooruOnSubmit:
               state.uri.queryParameters['setAsCurrent']?.toBool() ?? false,
         ),
@@ -72,7 +72,7 @@ class BoorusRoutes {
             child: booruBuilder?.updateConfigPageBuilder(
                   context,
                   config,
-                  backgroundColor: context.theme.scaffoldBackgroundColor,
+                  backgroundColor: context.colorScheme.surface,
                   initialTab: q,
                 ) ??
                 Scaffold(

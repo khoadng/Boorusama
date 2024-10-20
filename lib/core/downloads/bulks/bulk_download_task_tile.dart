@@ -151,7 +151,7 @@ class BulkDownloadTaskTile extends ConsumerWidget {
                               overflow: TextOverflow.fade,
                               softWrap: false,
                               style: TextStyle(
-                                color: context.theme.hintColor,
+                                color: context.colorScheme.hintColor,
                                 fontSize: 12,
                               ),
                             ),
@@ -215,7 +215,7 @@ class BulkDownloadTaskTile extends ConsumerWidget {
                                     BulkDownloadTaskStatus.canceled,
                                 color: task.status ==
                                         BulkDownloadTaskStatus.canceled
-                                    ? context.theme.hintColor
+                                    ? context.colorScheme.hintColor
                                     : null,
                               ),
                               !isCompleted &&
@@ -276,7 +276,9 @@ class BulkDownloadTaskTile extends ConsumerWidget {
                                         color: context.colorScheme.primary,
                                       ),
                                       style: TextStyle(
-                                        color: Theme.of(context).hintColor,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .hintColor,
                                         fontSize: 12,
                                       ),
                                     ),

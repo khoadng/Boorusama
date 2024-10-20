@@ -406,7 +406,7 @@ class SettingTile extends StatelessWidget {
                           subtitle!,
                           style: TextStyle(
                             fontSize: 14,
-                            color: context.theme.hintColor,
+                            color: context.colorScheme.hintColor,
                           ),
                         ),
                       ],
@@ -485,7 +485,7 @@ class _SettingsSection extends StatelessWidget {
       child: Text(
         label.toUpperCase(),
         style: context.textTheme.titleSmall!
-            .copyWith(color: context.theme.hintColor),
+            .copyWith(color: context.colorScheme.hintColor),
       ),
     );
   }
@@ -566,7 +566,7 @@ class ListingSettingsInteractionBlocker extends ConsumerWidget {
       description: RichText(
         text: TextSpan(
           style: context.textTheme.titleSmall?.copyWith(
-            color: context.theme.hintColor,
+            color: context.colorScheme.hintColor,
             fontSize: 12,
             fontWeight: FontWeight.w400,
           ),

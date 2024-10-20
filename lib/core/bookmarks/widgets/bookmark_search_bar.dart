@@ -104,7 +104,7 @@ class BookmarkSearchBar extends ConsumerWidget {
                       Text(
                         ref.watch(tagCountProvider(e)).toString(),
                         style: TextStyle(
-                          color: Theme.of(context).hintColor,
+                          color: Theme.of(context).colorScheme.hintColor,
                         ),
                       ),
                     ],

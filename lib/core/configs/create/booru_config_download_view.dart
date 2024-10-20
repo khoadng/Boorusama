@@ -40,7 +40,7 @@ class BooruConfigDownloadView extends ConsumerWidget {
           Text(
             'Leave empty to use the download location in settings.',
             style: ref.context.textTheme.titleSmall?.copyWith(
-              color: ref.context.theme.hintColor,
+              color: ref.context.colorScheme.hintColor,
               fontSize: 11,
               fontWeight: FontWeight.w400,
             ),

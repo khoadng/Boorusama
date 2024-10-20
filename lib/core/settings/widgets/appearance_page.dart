@@ -191,7 +191,7 @@ class _ImageListingSettingsSectionState
               ? Text(
                   'settings.image_grid.image_quality.high_quality_notice',
                   style: TextStyle(
-                    color: context.theme.hintColor,
+                    color: context.colorScheme.hintColor,
                   ),
                 ).tr()
               : null,
@@ -228,7 +228,7 @@ class _ImageListingSettingsSectionState
           subtitle: Text(
             'settings.performance.posts_per_page_explain',
             style: TextStyle(
-              color: context.theme.hintColor,
+              color: context.colorScheme.hintColor,
             ),
           ).tr(),
           selectedOption: settings.postsPerPage,
