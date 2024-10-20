@@ -183,9 +183,7 @@ class AppTheme {
           titleTextStyle: TextStyle(
             fontWeight: FontWeight.w700,
             fontSize: 22,
-            color: colorScheme.brightness == Brightness.light
-                ? Colors.black
-                : Colors.white,
+            color: colorScheme.onSurface,
           ),
         ),
         chipTheme: const ChipThemeData(
@@ -206,6 +204,9 @@ class AppTheme {
         ),
         floatingActionButtonTheme: const FloatingActionButtonThemeData(
           shape: CircleBorder(),
+        ),
+        iconTheme: IconThemeData(
+          color: colorScheme.onSurface,
         ),
         inputDecorationTheme: InputDecorationTheme(
           floatingLabelBehavior: FloatingLabelBehavior.always,
