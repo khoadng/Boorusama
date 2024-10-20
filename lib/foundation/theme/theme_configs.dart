@@ -145,11 +145,13 @@ const staticHackerScheme = ColorScheme(
   secondaryContainer: Color(0xff000000),
   onSecondaryContainer: Colors.green,
   surfaceContainerHighest: Color(0xff000000),
+  outline: Colors.green,
+  outlineVariant: Colors.green,
   onTertiaryContainer: Colors.green,
   error: Color(0xffff0000),
   onError: kOnErrorDarkColor,
   surface: Color(0xff000000),
-  onSurface: Colors.green,
+  onSurface: Color(0xff00ff00),
 );
 
 Color? _parseColor(dynamic color) => switch (color) {
