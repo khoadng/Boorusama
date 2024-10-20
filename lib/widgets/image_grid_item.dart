@@ -141,18 +141,23 @@ class ImageGridItem extends StatelessWidget {
               const ImageOverlayIcon(icon: FontAwesomeIcons.images, size: 16),
             if (isAI)
               Container(
-                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 6),
+                padding: const EdgeInsets.symmetric(horizontal: 6),
                 height: 25,
                 decoration: BoxDecoration(
                   color: Colors.black.withOpacity(0.7),
                   borderRadius: const BorderRadius.all(Radius.circular(4)),
                 ),
-                child: const Text(
-                  'AI',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w800,
-                    color: Colors.white,
-                  ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'AI',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
                 ),
               ),
           ],

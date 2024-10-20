@@ -32,7 +32,7 @@ class _DownloadPageState extends ConsumerState<DownloadPage> {
 
     return SettingsPageScaffold(
       hasAppBar: widget.hasAppBar,
-      title: const Text('download.download').tr(),
+      title: const Text('settings.download.title').tr(),
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),

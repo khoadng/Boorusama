@@ -2,9 +2,9 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts/utils.dart';
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/functional.dart';
