@@ -5,11 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
-final predefined = [
-  null,
-  ...preDefinedColorSettings,
-];
-
 final _kPrimaryColors = {
   'red': Colors.red,
   'pink': Colors.pink,
@@ -44,7 +39,8 @@ class BuiltInColorSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = currentScheme?.toColorScheme();
+    final colorScheme = currentScheme?.toColorScheme() ??
+        preDefinedColorSettings.first.toColorScheme()!;
 
     return SizedBox(
       height: 200,
@@ -53,7 +49,7 @@ class BuiltInColorSelector extends StatelessWidget {
           Wrap(
             runSpacing: 8,
             children: [
-              ...predefined.map((e) {
+              ...preDefinedColorSettings.map((e) {
                 final selected = e == currentScheme;
 
                 return Padding(
@@ -65,7 +61,7 @@ class BuiltInColorSelector extends StatelessWidget {
                     onTap: () {
                       onSchemeChanged(e);
                     },
-                    colorScheme: colorScheme!,
+                    colorScheme: colorScheme,
                     selected: selected,
                   ),
                 );
