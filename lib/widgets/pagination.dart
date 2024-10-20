@@ -133,7 +133,7 @@ class _PageSelectorState extends State<PageSelector> {
                         fontWeight: FontWeight.bold,
                       )
                     : TextStyle(
-                        color: Theme.of(context).hintColor,
+                        color: Theme.of(context).colorScheme.outline,
                       ),
               ),
             ),

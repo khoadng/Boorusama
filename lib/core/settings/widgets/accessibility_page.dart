@@ -52,7 +52,7 @@ class _AccessibilityPageState extends ConsumerState<AccessibilityPage> {
           subtitle: Text(
             'settings.accessibility.swipeAreaToOpenSidebarDescription',
             style: TextStyle(
-              color: context.theme.hintColor,
+              color: context.colorScheme.hintColor,
             ),
           ).tr(),
           selectedOption: settings.swipeAreaToOpenSidebarPercentage,

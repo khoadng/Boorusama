@@ -74,7 +74,7 @@ class _TagEditFavoriteViewState extends ConsumerState<TagEditFavoriteView> {
                         return FilterChip(
                           side: selected && !context.isLight
                               ? BorderSide(
-                                  color: context.theme.hintColor,
+                                  color: context.colorScheme.hintColor,
                                   width: 0.5,
                                 )
                               : null,

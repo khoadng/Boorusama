@@ -40,7 +40,7 @@ class _PerformancePageState extends ConsumerState<PerformancePage> {
             subtitle: Text(
               'settings.performance.posts_per_page_explain',
               style: TextStyle(
-                color: context.theme.hintColor,
+                color: context.colorScheme.hintColor,
               ),
             ).tr(),
             selectedOption: settings.listing.postsPerPage,
@@ -56,7 +56,7 @@ class _PerformancePageState extends ConsumerState<PerformancePage> {
           child: Text(
             'This has been moved to Settings > Appearance',
             style: TextStyle(
-              color: context.theme.hintColor,
+              color: context.colorScheme.hintColor,
             ),
           ),
         ),

@@ -72,9 +72,10 @@ class BooruVideoProgressBar extends StatelessWidget {
               barHeight: 4,
               handleHeight: 8,
               drawShadow: true,
-              backgroundColor: Theme.of(context).hintColor.withOpacity(0.2),
+              backgroundColor:
+                  Theme.of(context).colorScheme.hintColor.withOpacity(0.2),
               playedColor: Theme.of(context).colorScheme.primary,
-              bufferedColor: Theme.of(context).hintColor,
+              bufferedColor: Theme.of(context).colorScheme.hintColor,
               handleColor: Theme.of(context).colorScheme.primary,
             ),
           ),

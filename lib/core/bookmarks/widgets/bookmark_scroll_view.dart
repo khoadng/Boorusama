@@ -48,7 +48,7 @@ class BookmarkScrollView extends ConsumerWidget {
           pinned: true,
           automaticallyImplyLeading: false,
           titleSpacing: 0,
-          backgroundColor: context.theme.scaffoldBackgroundColor,
+          backgroundColor: context.colorScheme.surface,
           title: const BookmarkAppBar(),
         ),
         SliverToBoxAdapter(

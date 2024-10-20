@@ -110,7 +110,7 @@ class _CreateBulkDownloadTaskSheetState
                       .tr()
                       .toUpperCase(),
                   style: context.theme.textTheme.titleSmall?.copyWith(
-                    color: context.theme.hintColor,
+                    color: context.colorScheme.hintColor,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
@@ -267,7 +267,7 @@ class _CreateBulkDownloadTaskSheetState
               decoration: BoxDecoration(
                 color: context.colorScheme.surfaceContainerHighest,
                 border: Border.fromBorderSide(
-                  BorderSide(color: context.theme.hintColor),
+                  BorderSide(color: context.colorScheme.hintColor),
                 ),
                 borderRadius: const BorderRadius.all(Radius.circular(4)),
               ),
@@ -284,7 +284,7 @@ class _CreateBulkDownloadTaskSheetState
                         DownloadTranslations.bulkDownloadSelectFolder.tr(),
                         overflow: TextOverflow.fade,
                         style: context.theme.textTheme.titleMedium!
-                            .copyWith(color: context.theme.hintColor),
+                            .copyWith(color: context.colorScheme.hintColor),
                       ),
                 trailing: IconButton(
                   onPressed: () => _pickFolder(context),

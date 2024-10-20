@@ -250,8 +250,8 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                                         onPressed: () =>
                                             showMaterialModalBottomSheet(
                                           context: context,
-                                          backgroundColor: context
-                                              .theme.scaffoldBackgroundColor,
+                                          backgroundColor:
+                                              context.colorScheme.surface,
                                           builder: (context) => widget.info,
                                         ),
                                         icon: const Icon(

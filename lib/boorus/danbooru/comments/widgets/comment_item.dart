@@ -51,7 +51,7 @@ class CommentItem extends ConsumerWidget {
             child: Text(
               '${'comment.list.last_updated'.tr()}: ${comment.updatedAt.fuzzify(locale: Localizations.localeOf(context))}',
               style: TextStyle(
-                color: context.theme.hintColor,
+                color: context.colorScheme.hintColor,
                 fontStyle: FontStyle.italic,
                 fontSize: 12,
               ),

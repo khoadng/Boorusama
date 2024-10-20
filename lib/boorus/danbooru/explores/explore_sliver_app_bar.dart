@@ -31,7 +31,7 @@ class ExploreSliverAppBar extends StatelessWidget {
               onPressed: onBack,
             )
           : null,
-      backgroundColor: context.theme.scaffoldBackgroundColor,
+      backgroundColor: context.colorScheme.surface,
     );
   }
 }

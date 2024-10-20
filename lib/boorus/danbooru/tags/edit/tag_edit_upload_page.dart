@@ -278,7 +278,8 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
                               Text(
                                 '${similar.toInt()}% Similar',
                                 style: context.textTheme.bodySmall?.copyWith(
-                                  color: Theme.of(context).hintColor,
+                                  color:
+                                      Theme.of(context).colorScheme.hintColor,
                                 ),
                               ),
                             ],

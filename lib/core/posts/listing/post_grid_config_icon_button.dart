@@ -316,7 +316,7 @@ class MobilePostGridConfigTile extends StatelessWidget {
             Text(
               value,
               style: TextStyle(
-                color: context.theme.hintColor,
+                color: context.colorScheme.hintColor,
                 fontSize: 14,
               ),
             ),

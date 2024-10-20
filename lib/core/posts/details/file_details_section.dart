@@ -94,7 +94,7 @@ class FileDetailsSection extends StatelessWidget {
         subtitle: Text(
           '$resolutionText$fileFormatText$fileSizeText • $ratingText',
           style: TextStyle(
-            color: context.theme.hintColor,
+            color: context.colorScheme.hintColor,
           ),
         ),
         children: [

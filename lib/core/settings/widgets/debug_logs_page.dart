@@ -138,7 +138,7 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
               Text(
                 log.dateTime.toString(),
                 style: TextStyle(
-                  color: context.theme.hintColor,
+                  color: context.colorScheme.hintColor,
                 ),
               ),
               Wrap(

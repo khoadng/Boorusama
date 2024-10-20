@@ -79,7 +79,7 @@ class OtherNameChip extends StatelessWidget {
         child: RawChip(
           onPressed: () {},
           side: BorderSide(
-            color: context.theme.hintColor,
+            color: context.colorScheme.hintColor,
             width: 0.5,
           ),
           padding: const EdgeInsets.all(4),

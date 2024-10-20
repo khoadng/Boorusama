@@ -126,7 +126,7 @@ class ChangelogDialog extends StatelessWidget {
                             child: Text(
                               '${'comment.list.last_updated'.tr()}: ${u.lastUpdated?.fuzzify(locale: Localizations.localeOf(context))}',
                               style: TextStyle(
-                                color: context.theme.hintColor,
+                                color: context.colorScheme.hintColor,
                                 fontStyle: FontStyle.italic,
                                 fontSize: 12,
                               ),

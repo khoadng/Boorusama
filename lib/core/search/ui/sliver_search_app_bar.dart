@@ -48,7 +48,7 @@ class _SliverSearchAppBarState extends ConsumerState<SliverSearchAppBar> {
       automaticallyImplyLeading: false,
       titleSpacing: 0,
       toolbarHeight: kToolbarHeight * 1.2,
-      backgroundColor: context.theme.scaffoldBackgroundColor,
+      backgroundColor: context.colorScheme.surface,
       title: FocusScope(
         node: focusScope,
         child: SearchAppBar(

@@ -43,7 +43,7 @@ class _PostList extends ConsumerWidget {
           slivers: [
             SliverAppBar(
               titleSpacing: 0,
-              backgroundColor: context.theme.scaffoldBackgroundColor,
+              backgroundColor: context.colorScheme.surface,
               title: const Text('pool.pool_gallery').tr(),
               actions: const [
                 PoolSearchButton(),

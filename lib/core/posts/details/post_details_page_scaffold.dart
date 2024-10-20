@@ -295,7 +295,7 @@ class _PostDetailPageScaffoldState<T extends Post>
       bottomSheet: widget.infoBuilder != null
           ? DecoratedBox(
               decoration: BoxDecoration(
-                color: context.theme.scaffoldBackgroundColor.withOpacity(0.8),
+                color: context.colorScheme.surface.withOpacity(0.8),
                 border: Border(
                   top: BorderSide(
                     color: context.theme.dividerColor,
