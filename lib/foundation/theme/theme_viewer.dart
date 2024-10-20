@@ -108,16 +108,15 @@ class _ThemePreviewAppState extends State<ThemePreviewApp> {
             children: [
               const SizedBox(height: 48),
               Container(
-                height: MediaQuery.sizeOf(context).height * 0.7,
+                height: MediaQuery.sizeOf(context).height * 0.6,
                 constraints: const BoxConstraints(
-                  maxHeight: 700,
+                  maxHeight: 600,
                 ),
                 child: PageView(
                   controller: pageController,
                   children: pages,
                 ),
               ),
-              const SizedBox(height: 12),
               SmoothPageIndicator(
                 controller: pageController,
                 count: pages.length,
@@ -278,7 +277,8 @@ class PreviewFrame extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return Transform.scale(
+      scale: 0.85,
       child: Container(
         padding: padding ??
             const EdgeInsets.symmetric(
@@ -286,7 +286,7 @@ class PreviewFrame extends StatelessWidget {
               horizontal: 12,
             ),
         margin: const EdgeInsets.symmetric(
-          horizontal: 40,
+          horizontal: 60,
         ),
         decoration: BoxDecoration(
           border: Border.all(
@@ -498,11 +498,6 @@ class PreviewPostActionToolbar extends StatelessWidget {
           voteState: VoteState.downvoted,
           onDownvote: () => {},
           onRemoveDownvote: () => {},
-        ),
-        IgnorePointer(
-          child: BookmarkPostButton(
-            post: _previewPost,
-          ),
         ),
         IgnorePointer(child: DownloadPostButton(post: _previewPost)),
         IgnorePointer(child: SharePostButton(post: _previewPost)),
