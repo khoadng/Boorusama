@@ -135,23 +135,26 @@ const staticCoralPinkScheme = ColorScheme(
   onSurface: Colors.white,
 );
 
+const kHackerPrimaryColor = Color(0xff00ff00);
+const kHackerPrimaryVariantColor = Color(0xff388e3c);
+
 // hacker theme, green text on black background
 const staticHackerScheme = ColorScheme(
   brightness: Brightness.dark,
-  primary: Color(0xff00ff00),
+  primary: kHackerPrimaryColor,
   onPrimary: Colors.black,
-  secondary: Color(0xff00ff00),
+  secondary: kHackerPrimaryColor,
   onSecondary: Colors.black,
   secondaryContainer: Color(0xff000000),
-  onSecondaryContainer: Colors.green,
+  onSecondaryContainer: kHackerPrimaryColor,
   surfaceContainerHighest: Color(0xff000000),
-  outline: Colors.green,
-  outlineVariant: Colors.green,
-  onTertiaryContainer: Colors.green,
+  outline: kHackerPrimaryVariantColor,
+  outlineVariant: kHackerPrimaryVariantColor,
+  onTertiaryContainer: kHackerPrimaryVariantColor,
   error: Color(0xffff0000),
   onError: kOnErrorDarkColor,
   surface: Color(0xff000000),
-  onSurface: Color(0xff00ff00),
+  onSurface: kHackerPrimaryColor,
 );
 
 Color? _parseColor(dynamic color) => switch (color) {
@@ -175,6 +178,8 @@ class ColorSettings extends Equatable {
   final Color? onError;
   final Color? surface;
   final Color? onSurface;
+  final Color? outline;
+  final Color? outlineVariant;
 
   final bool isPredefined;
 
@@ -193,6 +198,8 @@ class ColorSettings extends Equatable {
     required this.onError,
     required this.surface,
     required this.onSurface,
+    required this.outline,
+    this.outlineVariant,
     this.nickname,
     required this.isPredefined,
   });
@@ -217,6 +224,8 @@ class ColorSettings extends Equatable {
       onError: colorScheme.onError,
       surface: colorScheme.surface,
       onSurface: colorScheme.onSurface,
+      outline: colorScheme.outline,
+      outlineVariant: colorScheme.outlineVariant,
       nickname: nickname,
       isPredefined: true,
     );
@@ -244,6 +253,8 @@ class ColorSettings extends Equatable {
       onError: colorScheme.onError,
       surface: colorScheme.surface,
       onSurface: colorScheme.onSurface,
+      outline: colorScheme.outline,
+      outlineVariant: colorScheme.outlineVariant,
       nickname: nickname,
       isPredefined: false,
     );
@@ -276,6 +287,8 @@ class ColorSettings extends Equatable {
       surfaceContainerHighest: surfaceContainerHighest,
       onTertiaryContainer: onTertiaryContainer,
       tertiaryContainer: onTertiaryContainer,
+      outline: outline,
+      outlineVariant: outlineVariant,
     );
   }
 
@@ -300,6 +313,8 @@ class ColorSettings extends Equatable {
         onError: _parseColor(json['onError']),
         surface: _parseColor(json['surface']),
         onSurface: _parseColor(json['onSurface']),
+        outline: _parseColor(json['outline']),
+        outlineVariant: _parseColor(json['outlineVariant']),
         nickname: json['nickname'],
         isPredefined: json['isPredefined'],
       );
@@ -324,6 +339,8 @@ class ColorSettings extends Equatable {
       'onError': onError?.hex,
       'surface': surface?.hex,
       'onSurface': onSurface?.hex,
+      'outline': outline?.hex,
+      'outlineVariant': outlineVariant?.hex,
       'nickname': nickname,
       'isPredefined': isPredefined,
     };
@@ -345,6 +362,8 @@ class ColorSettings extends Equatable {
         onError,
         surface,
         onSurface,
+        outline,
+        outlineVariant,
         nickname,
         isPredefined,
       ];
