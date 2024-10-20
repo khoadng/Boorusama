@@ -90,6 +90,8 @@ const staticDanbooruDarkScheme = ColorScheme(
   onError: kOnErrorDarkColor,
   surface: Color(0xff1f1e2d),
   onSurface: Colors.white,
+  outline: GreyscaleShades.gray160,
+  outlineVariant: GreyscaleShades.gray60,
 );
 
 const staticDanbooruLightScheme = ColorScheme(
@@ -106,6 +108,8 @@ const staticDanbooruLightScheme = ColorScheme(
   onError: Colors.black,
   surface: Color(0xfffefeff),
   onSurface: Colors.black,
+  outline: GreyscaleShades.gray110,
+  outlineVariant: GreyscaleShades.gray60,
 );
 
 const staticGreenScheme = ColorScheme(
@@ -122,6 +126,8 @@ const staticGreenScheme = ColorScheme(
   onError: kOnErrorDarkColor,
   surface: Color(0xffa9e4a4),
   onSurface: Colors.black,
+  outline: GreyscaleShades.gray110,
+  outlineVariant: GreyscaleShades.gray60,
 );
 
 const staticCoralPinkScheme = ColorScheme(
@@ -138,6 +144,8 @@ const staticCoralPinkScheme = ColorScheme(
   onError: kOnErrorDarkColor,
   surface: Color(0xff1f1615),
   onSurface: Colors.white,
+  outline: GreyscaleShades.gray160,
+  outlineVariant: GreyscaleShades.gray60,
 );
 
 const kHackerPrimaryColor = Color(0xff00ff00);
