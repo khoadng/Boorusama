@@ -49,6 +49,11 @@ final preDefinedColorSettings = [
     staticCoralPinkScheme,
     nickname: 'Coral Pink',
   ),
+  ColorSettings.fromPredefinedScheme(
+    'hacker',
+    staticHackerScheme,
+    nickname: 'Hacker',
+  ),
 ].whereNotNull().toList();
 
 ColorScheme? getSchemeFromColorSettings(ColorSettings? colorSettings) {
@@ -128,6 +133,23 @@ const staticCoralPinkScheme = ColorScheme(
   onError: kOnErrorDarkColor,
   surface: Color(0xff1f1615),
   onSurface: Colors.white,
+);
+
+// hacker theme, green text on black background
+const staticHackerScheme = ColorScheme(
+  brightness: Brightness.dark,
+  primary: Color(0xff00ff00),
+  onPrimary: Colors.black,
+  secondary: Color(0xff00ff00),
+  onSecondary: Colors.black,
+  secondaryContainer: Color(0xff000000),
+  onSecondaryContainer: Colors.green,
+  surfaceContainerHighest: Color(0xff000000),
+  onTertiaryContainer: Colors.green,
+  error: Color(0xffff0000),
+  onError: kOnErrorDarkColor,
+  surface: Color(0xff000000),
+  onSurface: Colors.green,
 );
 
 Color? _parseColor(dynamic color) => switch (color) {
