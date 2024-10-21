@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/theme.dart';
 
 class CommentBox extends ConsumerStatefulWidget {
   const CommentBox({
@@ -59,10 +60,18 @@ class _CommentBoxState extends ConsumerState<CommentBox> {
     return ValueListenableBuilder(
       valueListenable: widget.commentReply,
       builder: (_, comment, __) => Container(
-        decoration: const BoxDecoration(
-          border: Border(top: BorderSide(color: Colors.grey)),
+        decoration: BoxDecoration(
+          border: Border(
+            top: BorderSide(
+              color: context.colorScheme.outlineVariant,
+            ),
+          ),
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        padding: const EdgeInsets.only(
+          top: 8,
+          left: 12,
+          right: 12,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -71,13 +80,11 @@ class _CommentBoxState extends ConsumerState<CommentBox> {
               focusNode: widget.focus,
               controller: textEditingController,
               decoration: InputDecoration(
-                isDense: true,
-                filled: false,
+                hintStyle: TextStyle(
+                  color: context.colorScheme.hintColor,
+                ),
                 hintText: 'comment.create.hint'.tr(),
-                border: const UnderlineInputBorder(),
-                focusedBorder: const UnderlineInputBorder(),
-                suffix: IconButton(
-                  visualDensity: VisualDensity.compact,
+                suffixIcon: IconButton(
                   icon: const Icon(Symbols.fullscreen),
                   onPressed: () {
                     final content = textEditingController.text;

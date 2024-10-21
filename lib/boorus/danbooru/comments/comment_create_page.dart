@@ -78,10 +78,9 @@ class _CommentCreatePageState extends ConsumerState<CommentCreatePage> {
                   child: BooruTextField(
                     controller: textEditingController,
                     decoration: InputDecoration(
-                      hintText: 'comment.create.hint'.tr(),
                       filled: false,
-                      border: const OutlineInputBorder(),
-                      focusedBorder: const OutlineInputBorder(),
+                      focusedBorder: InputBorder.none,
+                      hintText: '${'comment.create.hint'.tr()}...',
                     ),
                     autofocus: true,
                     keyboardType: TextInputType.multiline,

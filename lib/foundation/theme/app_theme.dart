@@ -202,6 +202,9 @@ class AppTheme {
           color: colorScheme.onSurface,
         ),
         inputDecorationTheme: InputDecorationTheme(
+          hintStyle: TextStyle(
+            color: colorScheme.outline,
+          ),
           floatingLabelBehavior: FloatingLabelBehavior.always,
           filled: true,
           enabledBorder: const OutlineInputBorder(
