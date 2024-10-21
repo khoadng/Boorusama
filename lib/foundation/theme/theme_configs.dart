@@ -172,7 +172,7 @@ const staticHackerScheme = ColorScheme(
 
 const kCyberpunkPrimaryColor = Color(0xfffcec0c);
 const kCyberpunkSurfaceColor = Color(0xff120c15);
-const kCyberpunkSecondaryContainerColor = Color(0xff30161c);
+const kCyberpunkSecondaryContainerColor = Color(0xff141824);
 const kCyberpunkOnSurfaceColor = Color(0xff02d6f1);
 const kCyberpunkOutlineColor = Color(0xff34736a);
 const kCyberpunkErrorColor = Color(0xffff6159);
