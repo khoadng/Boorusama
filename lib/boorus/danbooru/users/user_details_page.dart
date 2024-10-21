@@ -28,7 +28,6 @@ import '../posts/posts.dart';
 import '../related_tags/related_tags.dart';
 import '../reports/reports.dart';
 import '../router.dart';
-import 'user_charts.dart';
 import 'users.dart';
 
 class DanbooruReportDataParams extends Equatable {

@@ -39,7 +39,7 @@ import 'saved_searches/saved_searches.dart';
 import 'tags/tags.dart';
 import 'uploads/danbooru_my_uploads_page.dart';
 import 'uploads/uploads.dart';
-import 'users/user_details_page.dart';
+import 'users/users.dart';
 import 'versions/danbooru_post_versions_page.dart';
 
 void goToPoolDetailPage(BuildContext context, DanbooruPool pool) {
@@ -258,11 +258,19 @@ void goToRelatedTagsPage(
 }
 
 void goToPostFavoritesDetails(BuildContext context, DanbooruPost post) {
-  //FIXME: re enable this later
+  context.navigator.push(CupertinoPageRoute(
+    builder: (_) => DanbooruFavoriterListPage(
+      postId: post.id,
+    ),
+  ));
 }
 
 void goToPostVotesDetails(BuildContext context, DanbooruPost post) {
-  //FIXME: re enable this later
+  context.navigator.push(CupertinoPageRoute(
+    builder: (_) => DanbooruVoterListPage(
+      postId: post.id,
+    ),
+  ));
 }
 
 void goToSavedSearchCreatePage(

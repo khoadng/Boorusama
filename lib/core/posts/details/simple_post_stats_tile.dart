@@ -15,6 +15,7 @@ class SimplePostStatsTile extends StatelessWidget {
     required this.score,
     this.onFavCountTap,
     this.onScoreTap,
+    this.onTotalCommentsTap,
     this.votePercentText,
   });
 
@@ -22,8 +23,9 @@ class SimplePostStatsTile extends StatelessWidget {
   final int favCount;
   final int score;
   final EdgeInsets padding;
-  final void Function(BuildContext context)? onFavCountTap;
-  final void Function(BuildContext context)? onScoreTap;
+  final void Function()? onFavCountTap;
+  final void Function()? onScoreTap;
+  final void Function()? onTotalCommentsTap;
   final String? votePercentText;
 
   @override
@@ -34,7 +36,7 @@ class SimplePostStatsTile extends StatelessWidget {
         children: [
           _StatButton(
             enable: onFavCountTap != null,
-            onTap: () => onFavCountTap?.call(context),
+            onTap: () => onFavCountTap?.call(),
             child: RichText(
               text: TextSpan(
                 text: '$favCount ',
@@ -57,7 +59,7 @@ class SimplePostStatsTile extends StatelessWidget {
           ),
           _StatButton(
             enable: onScoreTap != null,
-            onTap: () => onScoreTap?.call(context),
+            onTap: () => onScoreTap?.call(),
             child: RichText(
               text: TextSpan(
                 text: '$score ',
@@ -80,7 +82,8 @@ class SimplePostStatsTile extends StatelessWidget {
             ),
           ),
           _StatButton(
-            enable: true,
+            enable: onTotalCommentsTap != null,
+            onTap: () => onTotalCommentsTap?.call(),
             child: RichText(
               text: TextSpan(
                 text: '$totalComments ',
