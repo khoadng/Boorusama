@@ -127,7 +127,7 @@ class _SimpleTagSearchViewState extends ConsumerState<SimpleTagSearchView> {
                     Expanded(
                       child: BooruSearchBar(
                         focus: focus,
-                        queryEditingController: textEditingController,
+                        controller: textEditingController,
                         leading: widget.backButton,
                         trailing: isMultiple
                             ? Padding(

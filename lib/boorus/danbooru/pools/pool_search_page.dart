@@ -37,7 +37,7 @@ class _PoolSearchPageState extends ConsumerState<PoolSearchPage> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: _SearchBar(textEditingController: textEditingController),
+        title: _SearchBar(controller: textEditingController),
       ),
       body: switch (mode) {
         PoolSearchMode.suggestion => _SuggestionView(
@@ -134,10 +134,10 @@ class _SuggestionView extends ConsumerWidget {
 
 class _SearchBar extends ConsumerWidget {
   const _SearchBar({
-    required this.textEditingController,
+    required this.controller,
   });
 
-  final TextEditingController textEditingController;
+  final TextEditingController controller;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -151,12 +151,12 @@ class _SearchBar extends ConsumerWidget {
           Symbols.arrow_back,
         ),
       ),
-      queryEditingController: textEditingController,
+      controller: controller,
       autofocus: true,
       trailing: query != null && query.isNotEmpty
           ? IconButton(
               onPressed: () {
-                textEditingController.clear();
+                controller.clear();
                 ref.read(danbooruPoolQueryProvider.notifier).state = '';
               },
               icon: const Icon(Symbols.close),

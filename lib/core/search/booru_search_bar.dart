@@ -15,7 +15,7 @@ class BooruSearchBar extends StatefulWidget {
     this.onChanged,
     this.enabled = true,
     this.autofocus = false,
-    this.queryEditingController,
+    this.controller,
     this.hintText,
     this.onSubmitted,
     this.constraints,
@@ -35,7 +35,7 @@ class BooruSearchBar extends StatefulWidget {
   final BoxConstraints? constraints;
   final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onSubmitted;
-  final TextEditingController? queryEditingController;
+  final TextEditingController? controller;
   final String? hintText;
   final FocusNode? focus;
   final bool? dense;
@@ -50,11 +50,11 @@ class BooruSearchBar extends StatefulWidget {
 
 class _BooruSearchBarState extends State<BooruSearchBar> {
   late TextEditingController controller =
-      widget.queryEditingController ?? TextEditingController();
+      widget.controller ?? TextEditingController();
 
   @override
   void dispose() {
-    if (widget.queryEditingController == null) {
+    if (widget.controller == null) {
       controller.dispose();
     }
 
@@ -108,16 +108,13 @@ class _BooruSearchBarState extends State<BooruSearchBar> {
                   disabledBorder: InputBorder.none,
                   hoverColor: Colors.transparent,
                   contentPadding: widget.contentPadding ??
-                      const EdgeInsets.only(
-                        bottom: 11,
-                        top: 11,
-                        right: 4,
+                      const EdgeInsets.symmetric(
+                        vertical: 12,
                       ),
                   hintText: widget.hintText ?? 'search.hint'.tr(),
                 ),
                 autofocus: widget.autofocus,
                 controller: controller,
-                style: context.theme.inputDecorationTheme.hintStyle,
               ),
             ),
             widget.trailing ?? const SizedBox.shrink(),

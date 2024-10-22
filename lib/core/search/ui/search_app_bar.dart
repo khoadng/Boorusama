@@ -12,7 +12,7 @@ import 'package:boorusama/router.dart';
 class SearchAppBar extends ConsumerWidget {
   const SearchAppBar({
     super.key,
-    required this.queryEditingController,
+    required this.controller,
     this.onSubmitted,
     this.focusNode,
     required this.leading,
@@ -27,7 +27,7 @@ class SearchAppBar extends ConsumerWidget {
     this.innerSearchButton,
   });
 
-  final TextEditingController queryEditingController;
+  final TextEditingController controller;
   final FocusNode? focusNode;
   final Widget? leading;
   final void Function(String value)? onSubmitted;
@@ -48,18 +48,18 @@ class SearchAppBar extends ConsumerWidget {
       autofocus: autofocus ?? false,
       onTapOutside: onTapOutside,
       focus: focusNode,
-      queryEditingController: queryEditingController,
+      controller: controller,
       onFocusChanged: onFocusChanged,
       leading: leading,
       trailing: ValueListenableBuilder(
-        valueListenable: queryEditingController,
+        valueListenable: controller,
         builder: (context, value, child) {
           return value.text.isNotEmpty
               ? IconButton(
                   splashRadius: 16,
                   icon: const Icon(Symbols.close),
                   onPressed: () {
-                    queryEditingController.clear();
+                    controller.clear();
                     onClear?.call();
                   },
                 )
