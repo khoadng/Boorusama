@@ -118,26 +118,19 @@ class _ThemePreviewAppState extends State<ThemePreviewApp> {
                       },
                     ),
                     const SizedBox(height: 24),
-                    if (_category == ThemeCategory.accent)
-                      AccentColorSelector(
-                        onSchemeChanged: (color) {
-                          setState(() {
-                            _currentScheme = color;
-                            widget.onSchemeChanged(color);
-                          });
-                        },
-                        initialScheme: _currentScheme,
-                      )
-                    else
-                      BuiltInColorSelector(
-                        onSchemeChanged: (color) {
-                          setState(() {
-                            _currentScheme = color;
-                            widget.onSchemeChanged(color);
-                          });
-                        },
-                        currentScheme: _currentScheme,
-                      ),
+                    switch (_category) {
+                      ThemeCategory.builtIn => BuiltInColorSelector(
+                          onSchemeChanged: _onSchemeChanged,
+                          currentScheme: _currentScheme,
+                        ),
+                      ThemeCategory.accent => AccentColorSelector(
+                          onSchemeChanged: _onSchemeChanged,
+                          initialScheme: _currentScheme,
+                        ),
+                      ThemeCategory.image => ExtractImageColorSelector(
+                          onSchemeChanged: _onSchemeChanged,
+                        ),
+                    }
                   ],
                 ),
               ),
@@ -147,5 +140,12 @@ class _ThemePreviewAppState extends State<ThemePreviewApp> {
         ),
       ),
     );
+  }
+
+  void _onSchemeChanged(color) {
+    setState(() {
+      _currentScheme = color;
+      widget.onSchemeChanged(color);
+    });
   }
 }

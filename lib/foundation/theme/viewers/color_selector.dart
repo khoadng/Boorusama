@@ -1,8 +1,13 @@
+// Dart imports:
+import 'dart:io';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 
 // Project imports:
+import 'package:boorusama/foundation/picker.dart';
 import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 final _kPrimaryColors = {
@@ -54,12 +59,13 @@ class BuiltInColorSelector extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(
                     horizontal: 4,
                   ),
-                  child: _PreviewColor(
-                    color: e,
+                  child: _PreviewBasicColor(
+                    primary: e.primary ?? Colors.transparent,
+                    onPrimary: e.onPrimary ?? colorScheme.onPrimary,
+                    onSurface: e.onSurface ?? colorScheme.onSurface,
                     onTap: () {
                       onSchemeChanged(e);
                     },
-                    colorScheme: colorScheme,
                     selected: selected,
                   ),
                 );
@@ -176,9 +182,176 @@ class _AccentColorSelectorState extends State<AccentColorSelector> {
   }
 }
 
+class ExtractImageColorSelector extends StatefulWidget {
+  const ExtractImageColorSelector({
+    super.key,
+    required this.onSchemeChanged,
+    this.initialScheme,
+  });
+
+  final void Function(ColorSettings? color) onSchemeChanged;
+  final ColorSettings? initialScheme;
+
+  @override
+  State<ExtractImageColorSelector> createState() =>
+      _ExtractImageColorSelectorState();
+}
+
+class _ExtractImageColorSelectorState extends State<ExtractImageColorSelector> {
+  late var _settings = widget.initialScheme;
+  late var _isDark = widget.initialScheme?.brightness == Brightness.dark;
+  var _imagePath = '';
+  var _variant = DynamicSchemeVariant.tonalSpot;
+
+  Future<void> _pickFile({
+    required void Function(String path) onPick,
+  }) {
+    return pickSingleFilePathToastOnError(
+      context: context,
+      onPick: (path) {
+        onPick(path);
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      child: Column(
+        children: [
+          if (_imagePath.isNotEmpty)
+            Container(
+              margin: const EdgeInsets.only(
+                bottom: 12,
+              ),
+              child: Image.file(
+                File(_imagePath),
+                width: 120,
+                height: 120,
+              ),
+            ),
+          _buildPickButton(context),
+          if (_imagePath.isNotEmpty)
+            Container(
+              margin: const EdgeInsets.only(
+                top: 12,
+              ),
+              child: SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                title: const Text('Dark mode'),
+                value: _isDark,
+                onChanged: (value) async {
+                  setState(() {
+                    _isDark = value;
+                  });
+
+                  await _updateScheme(
+                    _imagePath,
+                    _variant,
+                    value ? Brightness.dark : Brightness.light,
+                  );
+                },
+              ),
+            ),
+          if (_imagePath.isNotEmpty)
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              visualDensity: VisualDensity.compact,
+              title: const Text('Variants'),
+              trailing: OptionDropDownButton(
+                alignment: AlignmentDirectional.centerStart,
+                value: _variant,
+                onChanged: (value) async {
+                  if (value == null) return;
+
+                  await _updateScheme(
+                    _imagePath,
+                    value,
+                    _isDark ? Brightness.dark : Brightness.light,
+                  );
+
+                  setState(() {
+                    _variant = value;
+                  });
+                },
+                items: DynamicSchemeVariant.values
+                    .map((value) => DropdownMenuItem(
+                          value: value,
+                          child: Text(value.name.sentenceCase),
+                        ))
+                    .toList(),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPickButton(
+    BuildContext context,
+  ) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        FilledButton(
+          style: FilledButton.styleFrom(
+            backgroundColor: context.colorScheme.secondaryContainer,
+          ),
+          onPressed: () {
+            _pickFile(
+              onPick: (path) async {
+                await _updateScheme(
+                  path,
+                  _variant,
+                  _isDark ? Brightness.dark : Brightness.light,
+                );
+              },
+            );
+          },
+          child: Text(
+            'Pick an image',
+            style: TextStyle(
+              color: context.colorScheme.onSecondaryContainer,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _updateScheme(
+    String path,
+    DynamicSchemeVariant variant,
+    Brightness brightness,
+  ) async {
+    final imageProvider = FileImage(
+      File(path),
+    );
+
+    final cs = await ColorScheme.fromImageProvider(
+      provider: imageProvider,
+      dynamicSchemeVariant: variant,
+      brightness: brightness,
+    );
+
+    final settings = ColorSettings.fromCustomScheme(
+      'image-pick',
+      cs,
+      nickname: 'Image',
+    );
+
+    setState(() {
+      _imagePath = path;
+      _settings = settings;
+      widget.onSchemeChanged(_settings);
+    });
+  }
+}
+
 enum ThemeCategory {
   builtIn,
   accent,
+  image,
 }
 
 class CategoryToggleSwitch extends StatelessWidget {
@@ -194,21 +367,15 @@ class CategoryToggleSwitch extends StatelessWidget {
     return Center(
       child: BooruSegmentedButton(
         initialValue: ThemeCategory.builtIn,
-        fixedWidth: 120,
         segments: {
           ThemeCategory.builtIn: 'Built-in',
           ThemeCategory.accent: 'Accent',
+          ThemeCategory.image: 'Image',
         },
         onChanged: (value) => onToggle(value),
       ),
     );
   }
-}
-
-bool _sameish(Color a, Color b, [int threshold = 10]) {
-  return (a.red - b.red).abs() < threshold &&
-      (a.green - b.green).abs() < threshold &&
-      (a.blue - b.blue).abs() < threshold;
 }
 
 class _PreviewBasicColor extends StatelessWidget {
@@ -242,80 +409,6 @@ class _PreviewBasicColor extends StatelessWidget {
                 Icons.check,
                 color: onPrimary,
                 size: 36,
-              )
-            : null,
-      ),
-    );
-  }
-}
-
-class _PreviewColor extends StatelessWidget {
-  const _PreviewColor({
-    required this.color,
-    required this.onTap,
-    required this.colorScheme,
-    required this.selected,
-  });
-
-  final ColorSettings? color;
-  final ColorScheme colorScheme;
-  final void Function() onTap;
-  final bool selected;
-
-  @override
-  Widget build(BuildContext context) {
-    final c = color;
-
-    final sameColorWithSurface = c != null &&
-        _sameish(c.surface ?? Colors.transparent, colorScheme.surface, 20);
-
-    if (c == null) {
-      return GestureDetector(
-        onTap: onTap,
-        child: Container(
-          width: 52,
-          height: 52,
-          decoration: BoxDecoration(
-            color: Colors.transparent,
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(
-              color: selected ? colorScheme.primary : colorScheme.onSurface,
-              width: selected ? 2.5 : 1.3,
-            ),
-          ),
-          child: Icon(
-            Icons.refresh,
-            color: colorScheme.onSurface,
-          ),
-        ),
-      );
-    }
-
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 52,
-        height: 52,
-        decoration: BoxDecoration(
-          color: c.surface ?? Colors.transparent,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            color: selected
-                ? colorScheme.primary
-                : sameColorWithSurface
-                    ? colorScheme.onSurface
-                    : Colors.transparent,
-            width: selected
-                ? 2.5
-                : sameColorWithSurface
-                    ? 1.3
-                    : 0,
-          ),
-        ),
-        child: selected
-            ? Icon(
-                Icons.check,
-                color: colorScheme.onSurface,
               )
             : null,
       ),
