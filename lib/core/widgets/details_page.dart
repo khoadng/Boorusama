@@ -500,7 +500,6 @@ class _NavigationButtonBar extends StatelessWidget {
             padding: EdgeInsets.only(left: 8),
             child: Icon(
               Symbols.arrow_back_ios,
-              color: Colors.white,
             ),
           ),
           onPressed: onBack,
@@ -511,7 +510,6 @@ class _NavigationButtonBar extends StatelessWidget {
         CircularIconButton(
           icon: const Icon(
             Symbols.home,
-            color: Colors.white,
             fill: 1,
           ),
           onPressed: () => goToHomePage(context),

@@ -229,10 +229,7 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                                           padding: const EdgeInsets.all(8),
                                           child: CircularIconButton(
                                             onPressed: () => _onExit(false),
-                                            icon: const Icon(
-                                              Symbols.close,
-                                              color: Colors.white,
-                                            ),
+                                            icon: const Icon(Symbols.close),
                                           ),
                                         ),
                                 ),
@@ -254,10 +251,7 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                                               context.colorScheme.surface,
                                           builder: (context) => widget.info,
                                         ),
-                                        icon: const Icon(
-                                          Symbols.info,
-                                          color: Colors.white,
-                                        ),
+                                        icon: const Icon(Symbols.info),
                                       )
                                     else
                                       CircularIconButton(
@@ -272,10 +266,7 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                                                     .toString());
                                           },
                                         ),
-                                        icon: const Icon(
-                                          Symbols.info,
-                                          color: Colors.white,
-                                        ),
+                                        icon: const Icon(Symbols.info),
                                       ),
                                     const SizedBox(width: 8),
                                     widget.topRight!,

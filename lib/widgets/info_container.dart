@@ -22,9 +22,7 @@ class InfoContainer extends StatelessWidget {
       titleBackgroundColor:
           Theme.of(context).colorScheme.primary.withOpacity(0.2),
       title: title ?? 'Info',
-      titleColor: Theme.of(context).brightness == Brightness.light
-          ? Colors.black
-          : Colors.white,
+      titleColor: Theme.of(context).colorScheme.onSurface,
       contentBuilder: contentBuilder,
     );
   }
@@ -54,9 +52,7 @@ class WarningContainer extends StatelessWidget {
       titleBackgroundColor:
           Theme.of(context).colorScheme.error.withOpacity(0.2),
       title: title,
-      titleColor: Theme.of(context).brightness == Brightness.light
-          ? Colors.black
-          : Colors.white,
+      titleColor: Theme.of(context).colorScheme.onSurface,
       contentBuilder: contentBuilder,
     );
   }
@@ -146,7 +142,7 @@ class _TemplateContainerState extends State<TemplateContainer> {
                             !isExpanded
                                 ? Icons.keyboard_arrow_down
                                 : Icons.keyboard_arrow_up,
-                            color: Theme.of(context).colorScheme.onError,
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
                         ),
                       ),

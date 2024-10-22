@@ -161,10 +161,7 @@ class BookmarkScrollView extends ConsumerWidget {
                             right: 5,
                             child: CircularIconButton(
                               padding: const EdgeInsets.all(4),
-                              icon: const Icon(
-                                Symbols.close,
-                                color: Colors.white,
-                              ),
+                              icon: const Icon(Symbols.close),
                               onPressed: () => ref.bookmarks
                                   .removeBookmarkWithToast(context, bookmark),
                             ),

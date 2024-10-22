@@ -61,7 +61,7 @@ class PoolGridItem extends ConsumerWidget {
             top: 4,
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 6),
-              height: 32,
+              height: 28,
               decoration: BoxDecoration(
                 color: Colors.black.withOpacity(0.7),
                 borderRadius: const BorderRadius.all(Radius.circular(4)),
@@ -81,7 +81,7 @@ class PoolGridItem extends ConsumerWidget {
                     Symbols.photo_library,
                     color: Colors.white,
                     fill: 1,
-                    size: 20,
+                    size: 18,
                   ),
                 ],
               ),

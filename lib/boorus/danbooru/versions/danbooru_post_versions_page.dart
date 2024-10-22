@@ -81,10 +81,7 @@ class _DanbooruPostVersionsPageState
           child: CircularIconButton(
             icon: const Padding(
               padding: EdgeInsets.only(left: 4),
-              child: Icon(
-                Symbols.arrow_back_ios,
-                color: Colors.white,
-              ),
+              child: Icon(Symbols.arrow_back_ios),
             ),
             onPressed: () => Navigator.of(context).pop(),
           ),
