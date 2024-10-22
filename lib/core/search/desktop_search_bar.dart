@@ -85,7 +85,7 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
       dense: true,
       autofocus: false,
       height: kToolbarHeight * 0.9,
-      queryEditingController: textEditingController,
+      controller: textEditingController,
       onFocusChanged: (value) => showSuggestions.value = value,
       onTapOutside: isDesktopPlatform()
           ? () {

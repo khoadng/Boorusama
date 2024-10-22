@@ -192,7 +192,7 @@ class _SearchPageScaffoldState<T extends Post>
         child: SearchAppBar(
           focusNode: focus,
           autofocus: ref.watch(settingsProvider).autoFocusSearchBar,
-          queryEditingController: textController,
+          controller: textController,
           leading: (!context.canPop() ? null : const SearchAppBarBackButton()),
         ),
       ),
@@ -337,7 +337,7 @@ class _SuggestionViewState extends State<SuggestionView> {
         preferredSize: const Size.fromHeight(kToolbarHeight * 1.2),
         child: SearchAppBar(
           focusNode: focus,
-          queryEditingController: textController,
+          controller: textController,
           onSubmitted: (value) => widget.searchController.submit(value),
           leading: (!context.canPop() ? null : const SearchAppBarBackButton()),
         ),
