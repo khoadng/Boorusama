@@ -198,9 +198,9 @@ class UnknownBooruSubmitButton extends ConsumerWidget {
                       : null,
                   child: const Text('Verify'),
                 ),
-          loading: () => const CreateBooruSubmitButton(
+          loading: () => CreateBooruSubmitButton(
             fill: true,
-            backgroundColor: Colors.grey,
+            backgroundColor: context.colorScheme.hintColor,
             onSubmit: null,
             child: Center(
               child: SizedBox(

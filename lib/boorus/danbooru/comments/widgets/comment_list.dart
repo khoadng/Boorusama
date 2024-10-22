@@ -60,7 +60,8 @@ class CommentList extends StatelessWidget {
                             }
                           },
                           itemBuilder: {
-                            'edit': const Text('comment.list.edit').tr(),
+                            if (comment.isSelf)
+                              'edit': const Text('comment.list.edit').tr(),
                             'reply': const Text('comment.list.reply').tr(),
                             if (comment.isSelf)
                               'delete': const Text('comment.list.delete').tr(),

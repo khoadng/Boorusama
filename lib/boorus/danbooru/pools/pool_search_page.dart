@@ -12,6 +12,7 @@ import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/theme.dart';
 
 class PoolSearchPage extends ConsumerStatefulWidget {
   const PoolSearchPage({super.key});
@@ -107,7 +108,9 @@ class _SuggestionView extends ConsumerWidget {
                           ),
                           trailing: Text(
                             NumberFormat.compact().format(pool.postCount),
-                            style: const TextStyle(color: Colors.grey),
+                            style: TextStyle(
+                              color: context.colorScheme.hintColor,
+                            ),
                           ),
                           onTap: () {
                             FocusManager.instance.primaryFocus?.unfocus();

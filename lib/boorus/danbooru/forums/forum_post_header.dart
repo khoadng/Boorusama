@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:boorusama/boorus/danbooru/users/users.dart';
 import 'package:boorusama/core/users/users.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/string.dart';
 
 class ForumPostHeader extends StatelessWidget {
@@ -43,7 +44,10 @@ class ForumPostHeader extends StatelessWidget {
         ),
         Text(
           DateFormat('MMM d, yyyy hh:mm a').format(createdAt.toLocal()),
-          style: const TextStyle(color: Colors.grey, fontSize: 12),
+          style: TextStyle(
+            color: context.colorScheme.hintColor,
+            fontSize: 12,
+          ),
         ),
       ],
     );

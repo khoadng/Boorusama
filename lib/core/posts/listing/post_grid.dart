@@ -637,12 +637,16 @@ class TooMuchCachedImagesWarningBanner extends ConsumerWidget {
                       ref
                           .read(_cacheImageActionsPerformedProvider.notifier)
                           .state = true;
-                      await clearImageCache();
+                      final success = await clearImageCache();
 
                       final c = navigatorKey.currentState?.context;
 
                       if (c != null && c.mounted) {
-                        showSuccessToast(context, 'Cache cleared');
+                        if (success) {
+                          showSuccessToast(context, 'Cache cleared');
+                        } else {
+                          showErrorToast(context, 'Failed to clear cache');
+                        }
                       }
                     },
                     child: const Text('settings.performance.clear_cache').tr(),
