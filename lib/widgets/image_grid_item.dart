@@ -96,11 +96,11 @@ class ImageGridItem extends StatelessWidget {
                   NumberFormat.compact().format(score),
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: score! > 0
-                        ? Colors.red
-                        : score! < 0
-                            ? Colors.blue
-                            : Colors.white,
+                    color: switch (score!) {
+                      > 0 => context.colors.upvoteColor,
+                      < 0 => context.colors.downvoteColor,
+                      _ => Colors.white,
+                    },
                     fontWeight: FontWeight.w800,
                   ),
                 ),

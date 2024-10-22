@@ -24,7 +24,14 @@ class CircularIconButton extends StatelessWidget {
         onTap: onPressed,
         child: Padding(
           padding: padding ?? const EdgeInsets.all(8),
-          child: icon,
+          child: Theme(
+            data: Theme.of(context).copyWith(
+              iconTheme: Theme.of(context).iconTheme.copyWith(
+                    color: Colors.white,
+                  ),
+            ),
+            child: icon,
+          ),
         ),
       ),
     );
