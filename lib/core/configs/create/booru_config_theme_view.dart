@@ -25,24 +25,42 @@ class BooruConfigThemeView extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            visualDensity: VisualDensity.compact,
-            title: const Text("Color scheme"),
-            subtitle: BooruConfigDataProvider(
-              builder: (configData) => Text(
-                configData.themeTyped?.colors?.nickname ?? 'Default',
+          BooruConfigDataProvider(
+            builder: (config) => SwitchListTile(
+              title: const Text("Custom theme"),
+              value: config.themeTyped?.enable ?? false,
+              onChanged: (value) => ref.updateTheme(
+                config.themeTyped?.copyWith(enable: value),
               ),
+              contentPadding: EdgeInsets.zero,
             ),
-            onTap: () {
-              _customizeTheme(ref, context);
-            },
-            trailing: FilledButton(
-              style: FilledButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          ),
+          BooruConfigDataProvider(
+            builder: (config) => GrayedOut(
+              grayedOut: config.themeTyped?.enable != true,
+              child: ListTile(
+                contentPadding: EdgeInsets.zero,
+                visualDensity: VisualDensity.compact,
+                title: const Text("Colors"),
+                subtitle: BooruConfigDataProvider(
+                  builder: (configData) => Text(
+                    configData.themeTyped?.colors?.nickname ?? 'Default',
+                  ),
+                ),
+                onTap: () {
+                  _customizeTheme(ref, context);
+                },
+                trailing: FilledButton(
+                  style: FilledButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
+                  ),
+                  onPressed: () => _customizeTheme(ref, context),
+                  child: const Text('Customize'),
+                ),
               ),
-              onPressed: () => _customizeTheme(ref, context),
-              child: const Text('Customize'),
             ),
           ),
         ],

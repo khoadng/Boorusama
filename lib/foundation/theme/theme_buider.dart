@@ -28,8 +28,9 @@ class ThemeBuilder extends ConsumerWidget {
     final systemDarkMode =
         MediaQuery.platformBrightnessOf(context) == Brightness.dark;
 
-    final customColorScheme =
-        getSchemeFromColorSettings(ref.watchConfig.theme?.colors);
+    final customColorScheme = ref.watchConfig.theme?.enable == true
+        ? getSchemeFromColorSettings(ref.watchConfig.theme?.colors)
+        : null;
 
     return DynamicColorBuilder(
       builder: (lightOrigin, darkOrigin) {

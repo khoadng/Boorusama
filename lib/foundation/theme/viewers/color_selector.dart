@@ -23,8 +23,6 @@ final _kPrimaryColors = {
   'orange': Colors.orange,
   'deepOrange': Colors.deepOrange,
   'brown': Colors.brown,
-  'grey': Colors.grey,
-  'blueGrey': Colors.blueGrey,
 };
 
 class BuiltInColorSelector extends StatelessWidget {
