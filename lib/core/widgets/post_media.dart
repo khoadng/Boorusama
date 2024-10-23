@@ -70,8 +70,7 @@ class PostMedia extends ConsumerWidget {
                             onCurrentPositionChanged:
                                 onCurrentVideoPositionChanged,
                             onVisibilityChanged: onVideoVisibilityChanged,
-                            backgroundColor:
-                                context.colors.videoPlayerBackgroundColor,
+                            backgroundColor: context.colorScheme.surface,
                             onWebmVideoPlayerCreated: onWebmVideoPlayerCreated,
                             autoPlay: autoPlay,
                             sound: ref.isGlobalVideoSoundOn,
