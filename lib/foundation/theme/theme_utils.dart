@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'colors.dart';
+import '../theme.dart';
 
 extension ThemeX on BuildContext {
   ThemeData get theme => Theme.of(this);
@@ -18,6 +18,8 @@ extension ThemeX on BuildContext {
   bool get isLight => !isDark;
 
   BoorusamaColors get colors => Theme.of(this).extension<BoorusamaColors>()!;
+  ExtendedColorScheme get extendedColorScheme =>
+      Theme.of(this).extension<ExtendedColorScheme>()!;
 }
 
 extension BrightnessX on Brightness {

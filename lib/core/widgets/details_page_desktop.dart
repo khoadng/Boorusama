@@ -182,13 +182,15 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                                   ? Align(
                                       alignment: Alignment.centerRight,
                                       child: MaterialButton(
-                                        color: Colors.black.withOpacity(0.5),
+                                        color: context.extendedColorScheme
+                                            .surfaceContainerOverlay,
                                         shape: const CircleBorder(),
                                         padding: const EdgeInsets.all(12),
                                         onPressed: () => controller.nextPage(),
-                                        child: const Icon(
+                                        child: Icon(
                                           Symbols.arrow_forward,
-                                          color: Colors.white,
+                                          color: context.extendedColorScheme
+                                              .onSurfaceContainerOverlay,
                                         ),
                                       ),
                                     )
@@ -201,14 +203,16 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                                   ? Align(
                                       alignment: Alignment.centerLeft,
                                       child: MaterialButton(
-                                        color: Colors.black.withOpacity(0.5),
+                                        color: context.extendedColorScheme
+                                            .surfaceContainerOverlay,
                                         shape: const CircleBorder(),
                                         padding: const EdgeInsets.all(12),
                                         onPressed: () =>
                                             controller.previousPage(),
-                                        child: const Icon(
+                                        child: Icon(
                                           Symbols.arrow_back,
-                                          color: Colors.white,
+                                          color: context.extendedColorScheme
+                                              .onSurfaceContainerOverlay,
                                         ),
                                       ),
                                     )
