@@ -78,7 +78,7 @@ class _PostListConfigurationHeaderState
   Widget build(BuildContext context) {
     return Card(
       color: widget.axis == Axis.horizontal && expanded
-          ? null
+          ? context.colorScheme.surface
           : Colors.transparent,
       elevation: widget.axis == Axis.horizontal && expanded ? null : 0,
       shadowColor: widget.axis == Axis.horizontal && expanded
