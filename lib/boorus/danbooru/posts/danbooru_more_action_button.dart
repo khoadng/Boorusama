@@ -12,6 +12,7 @@ import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -33,10 +34,10 @@ class DanbooruMoreActionButton extends ConsumerWidget {
     return SizedBox(
       width: 40,
       child: Material(
-        color: Colors.black.withOpacity(0.5),
+        color: context.extendedColorScheme.surfaceContainerOverlay,
         shape: const CircleBorder(),
         child: BooruPopupMenuButton(
-          iconColor: Colors.white,
+          iconColor: context.extendedColorScheme.onSurfaceContainerOverlay,
           onSelected: (value) {
             switch (value) {
               case 'download':

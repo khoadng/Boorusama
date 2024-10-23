@@ -8,6 +8,7 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -63,7 +64,7 @@ class PoolGridItem extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(horizontal: 6),
               height: 28,
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.7),
+                color: context.extendedColorScheme.surfaceContainerOverlayDim,
                 borderRadius: const BorderRadius.all(Radius.circular(4)),
               ),
               child: Row(
@@ -71,15 +72,17 @@ class PoolGridItem extends ConsumerWidget {
                 children: [
                   Text(
                     pool.postCount.toString(),
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.w700,
-                      color: Colors.white,
+                      color: context
+                          .extendedColorScheme.onSurfaceContainerOverlayDim,
                     ),
                   ),
                   const SizedBox(width: 4),
-                  const Icon(
+                  Icon(
                     Symbols.photo_library,
-                    color: Colors.white,
+                    color: context
+                        .extendedColorScheme.onSurfaceContainerOverlayDim,
                     fill: 1,
                     size: 18,
                   ),

@@ -77,6 +77,27 @@ const staticBlackScheme = ColorScheme(
   outlineVariant: GreyscaleShades.gray60,
 );
 
+const staticLightExtendedScheme = ExtendedColorScheme(
+  surfaceContainerOverlay: Colors.black54,
+  onSurfaceContainerOverlay: Colors.white,
+  surfaceContainerOverlayDim: Color(0xb3000000),
+  onSurfaceContainerOverlayDim: Colors.white70,
+);
+
+const staticDarkExtendedScheme = ExtendedColorScheme(
+  surfaceContainerOverlay: Colors.black54,
+  onSurfaceContainerOverlay: Colors.white,
+  surfaceContainerOverlayDim: Color(0xb3000000),
+  onSurfaceContainerOverlayDim: Colors.white70,
+);
+
+const staticBlackExtendedScheme = ExtendedColorScheme(
+  surfaceContainerOverlay: Colors.black54,
+  onSurfaceContainerOverlay: Colors.white,
+  surfaceContainerOverlayDim: Color(0xb3000000),
+  onSurfaceContainerOverlayDim: Colors.white70,
+);
+
 class AppTheme {
   AppTheme._();
 
@@ -114,12 +135,15 @@ class AppTheme {
       switch (mode) {
         AppThemeMode.light => lightTheme(
             colorScheme: colorScheme,
+            extendedColorScheme: staticLightExtendedScheme,
           ),
         AppThemeMode.dark => darkTheme(
             colorScheme: colorScheme,
+            extendedColorScheme: staticDarkExtendedScheme,
           ),
         AppThemeMode.amoledDark => darkTheme(
             colorScheme: colorScheme,
+            extendedColorScheme: staticBlackExtendedScheme,
           ).copyWith(
             dividerTheme: const DividerThemeData(
               endIndent: 0,
@@ -129,14 +153,17 @@ class AppTheme {
         AppThemeMode.system => systemDarkMode
             ? darkTheme(
                 colorScheme: colorScheme,
+                extendedColorScheme: staticDarkExtendedScheme,
               )
             : lightTheme(
                 colorScheme: colorScheme,
+                extendedColorScheme: staticLightExtendedScheme,
               ),
       };
 
   static ThemeData lightTheme({
     required ColorScheme colorScheme,
+    required ExtendedColorScheme extendedColorScheme,
   }) =>
       defaultTheme(colorScheme: colorScheme).copyWith(
         brightness: Brightness.light,
@@ -145,16 +172,18 @@ class AppTheme {
           endIndent: 0,
           indent: 0,
         ),
-        extensions: const [
+        extensions: [
           BoorusamaColors(
             upvoteColor: Colors.redAccent,
             downvoteColor: Colors.blueAccent,
           ),
+          extendedColorScheme,
         ],
       );
 
   static ThemeData darkTheme({
     required ColorScheme colorScheme,
+    required ExtendedColorScheme extendedColorScheme,
   }) =>
       defaultTheme(colorScheme: colorScheme).copyWith(
         brightness: Brightness.dark,
@@ -162,11 +191,12 @@ class AppTheme {
           endIndent: 0,
           indent: 0,
         ),
-        extensions: const [
+        extensions: [
           BoorusamaColors(
             upvoteColor: Colors.redAccent,
             downvoteColor: Colors.blueAccent,
           ),
+          extendedColorScheme,
         ],
       );
 

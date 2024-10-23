@@ -10,6 +10,7 @@ import 'package:webview_flutter_android/webview_flutter_android.dart';
 
 // Project imports:
 import 'package:boorusama/dart.dart';
+import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class WebmVideoController {
@@ -266,8 +267,8 @@ class _EmbeddedWebViewWebmState extends State<EmbeddedWebViewWebm> {
 
   Widget _buildHitArea() {
     return CenterPlayButton(
-      backgroundColor: Colors.black54,
-      iconColor: Colors.white,
+      backgroundColor: context.extendedColorScheme.surfaceContainerOverlay,
+      iconColor: context.extendedColorScheme.onSurfaceContainerOverlay,
       isFinished: false,
       isPlaying: webmVideoController.isPlaying,
       show: showPlay,

@@ -99,7 +99,8 @@ class RelatedPostsSection<T extends Post> extends ConsumerWidget {
                             width: 25,
                             height: 25,
                             decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(0.7),
+                              color: context
+                                  .extendedColorScheme.surfaceContainerOverlay,
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(4)),
                             ),
@@ -112,15 +113,17 @@ class RelatedPostsSection<T extends Post> extends ConsumerWidget {
                             padding: const EdgeInsets.all(4),
                             margin: const EdgeInsets.all(1),
                             decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(0.7),
+                              color: context
+                                  .extendedColorScheme.surfaceContainerOverlay,
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(4)),
                             ),
                             child: Text(
                               Filesize.parse(post.fileSize, round: 1),
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                color: Colors.white,
+                                color: context.extendedColorScheme
+                                    .onSurfaceContainerOverlay,
                               ),
                             ),
                           ),
@@ -128,15 +131,17 @@ class RelatedPostsSection<T extends Post> extends ConsumerWidget {
                           padding: const EdgeInsets.all(4),
                           margin: const EdgeInsets.all(1),
                           decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.7),
+                            color: context
+                                .extendedColorScheme.surfaceContainerOverlay,
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(4)),
                           ),
                           child: Text(
                             '${post.width.toInt()}x${post.height.toInt()}',
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                              color: context.extendedColorScheme
+                                  .onSurfaceContainerOverlay,
                             ),
                           ),
                         ),

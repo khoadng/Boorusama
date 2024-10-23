@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Project imports:
+import 'package:boorusama/foundation/theme.dart';
+
 class ImageOverlayIcon extends StatelessWidget {
   const ImageOverlayIcon({
     super.key,
@@ -17,12 +20,12 @@ class ImageOverlayIcon extends StatelessWidget {
       width: 25,
       height: 25,
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.7),
+        color: context.extendedColorScheme.surfaceContainerOverlayDim,
         borderRadius: const BorderRadius.all(Radius.circular(4)),
       ),
       child: Icon(
         icon,
-        color: Colors.white70,
+        color: context.extendedColorScheme.onSurfaceContainerOverlayDim,
         size: size,
       ),
     );
