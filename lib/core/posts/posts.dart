@@ -5,7 +5,6 @@ export 'details/bookmark_post_button.dart';
 export 'details/comment_post_button.dart';
 export 'details/download_post_button.dart';
 export 'details/file_details_section.dart';
-export 'details/info_chips.dart';
 export 'details/information_section.dart';
 export 'details/post_details_page_desktop_scaffold.dart';
 export 'details/post_details_page_mixin.dart';
