@@ -41,7 +41,7 @@ class _ThemePreviewAppState extends State<ThemePreviewApp> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = _currentScheme?.toColorScheme() ?? widget.defaultScheme;
+    final colorScheme = _currentScheme?.colorScheme ?? widget.defaultScheme;
 
     final pages = [
       PreviewHome(
@@ -57,9 +57,11 @@ class _ThemePreviewAppState extends State<ThemePreviewApp> {
       theme: colorScheme.brightness == Brightness.dark
           ? AppTheme.darkTheme(
               colorScheme: colorScheme,
+              extendedColorScheme: staticDarkExtendedScheme,
             )
           : AppTheme.lightTheme(
               colorScheme: colorScheme,
+              extendedColorScheme: staticLightExtendedScheme,
             ),
       home: Material(
         child: SingleChildScrollView(

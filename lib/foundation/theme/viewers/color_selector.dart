@@ -42,8 +42,8 @@ class BuiltInColorSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = currentScheme?.toColorScheme() ??
-        preDefinedColorSettings.first.toColorScheme()!;
+    final colorScheme = currentScheme?.colorScheme ??
+        preDefinedColorSettings.first.colorScheme!;
 
     return SizedBox(
       height: 200,
@@ -54,15 +54,16 @@ class BuiltInColorSelector extends StatelessWidget {
             children: [
               ...preDefinedColorSettings.map((e) {
                 final selected = e == currentScheme;
+                final cs = e.colorScheme;
 
                 return Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 4,
                   ),
                   child: _PreviewBasicColor(
-                    primary: e.primary ?? Colors.transparent,
-                    onPrimary: e.onPrimary ?? colorScheme.onPrimary,
-                    onSurface: e.onSurface ?? colorScheme.onSurface,
+                    primary: cs?.primary ?? Colors.transparent,
+                    onPrimary: cs?.onPrimary ?? colorScheme.onPrimary,
+                    onSurface: cs?.onSurface ?? colorScheme.onSurface,
                     onTap: () {
                       onSchemeChanged(e);
                     },
@@ -94,8 +95,9 @@ class AccentColorSelector extends StatefulWidget {
 
 class _AccentColorSelectorState extends State<AccentColorSelector> {
   late var _settings = widget.initialScheme;
-  late var _currentScheme = _settings?.toColorScheme();
-  late var _isDark = widget.initialScheme?.brightness == Brightness.dark;
+  late var _currentScheme = _settings?.colorScheme;
+  late var _isDark =
+      widget.initialScheme?.colorScheme?.brightness == Brightness.dark;
 
   @override
   Widget build(BuildContext context) {
@@ -199,7 +201,8 @@ class ExtractImageColorSelector extends StatefulWidget {
 
 class _ExtractImageColorSelectorState extends State<ExtractImageColorSelector> {
   late var _settings = widget.initialScheme;
-  late var _isDark = widget.initialScheme?.brightness == Brightness.dark;
+  late var _isDark =
+      widget.initialScheme?.colorScheme?.brightness == Brightness.dark;
   var _imagePath = '';
   var _variant = DynamicSchemeVariant.tonalSpot;
 

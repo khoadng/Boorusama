@@ -9,9 +9,9 @@ import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
+import 'color_scheme_converter.dart';
 
 final preDefinedColorSettings = [
   ColorSettings.fromPredefinedScheme(
@@ -68,11 +68,11 @@ ColorScheme? getSchemeFromColorSettings(ColorSettings? colorSettings) {
         .firstWhereOrNull(
           (e) => e.name == colorSettings!.name,
         )
-        ?.toColorScheme();
+        ?.colorScheme;
 
     return scheme;
   } else {
-    return colorSettings?.toColorScheme();
+    return colorSettings?.colorScheme;
   }
 }
 
@@ -194,77 +194,34 @@ const staticCyberpunkScheme = ColorScheme(
   onSurface: kCyberpunkOnSurfaceColor,
 );
 
-Color? _parseColor(dynamic color) => switch (color) {
-      String s => ColorUtils.hexToColor(s),
-      _ => null,
-    };
-
 class ColorSettings extends Equatable {
   final String name;
   final String? nickname;
-  final Brightness brightness;
-  final Color? secondaryContainer;
-  final Color? onSecondaryContainer;
-  final Color? onTertiaryContainer;
-  final Color? surfaceContainerHighest;
-  final Color? primary;
-  final Color? onPrimary;
-  final Color? secondary;
-  final Color? onSecondary;
-  final Color? error;
-  final Color? onError;
-  final Color? surface;
-  final Color? onSurface;
-  final Color? outline;
-  final Color? outlineVariant;
-
   final bool isPredefined;
+
+  final ColorScheme? colorScheme;
+  final ExtendedColorScheme? extendedColorScheme;
 
   const ColorSettings({
     required this.name,
-    required this.brightness,
-    required this.secondaryContainer,
-    required this.onSecondaryContainer,
-    required this.onTertiaryContainer,
-    required this.surfaceContainerHighest,
-    required this.primary,
-    required this.onPrimary,
-    required this.secondary,
-    required this.onSecondary,
-    required this.error,
-    required this.onError,
-    required this.surface,
-    required this.onSurface,
-    required this.outline,
-    this.outlineVariant,
     this.nickname,
     required this.isPredefined,
+    required this.colorScheme,
+    required this.extendedColorScheme,
   });
 
   static ColorSettings? fromPredefinedScheme(
     String name,
     ColorScheme colorScheme, {
     String? nickname,
+    ExtendedColorScheme? extendedColorScheme,
   }) {
     return ColorSettings(
       name: name,
-      brightness: colorScheme.brightness,
-      secondaryContainer: colorScheme.secondaryContainer,
-      onSecondaryContainer: colorScheme.onSecondaryContainer,
-      onTertiaryContainer: colorScheme.onTertiaryContainer,
-      surfaceContainerHighest: colorScheme.surfaceContainerHighest,
-      primary: colorScheme.primary,
-      onPrimary: colorScheme.onPrimary,
-      secondary: colorScheme.secondary,
-      onSecondary: colorScheme.onSecondary,
-      error: colorScheme.error,
-      onError: colorScheme.onError,
-      surface: colorScheme.surface,
-      onSurface: colorScheme.onSurface,
-      outline: colorScheme.outline,
-      outlineVariant: colorScheme.outlineVariant,
       nickname: nickname,
       isPredefined: true,
+      colorScheme: colorScheme,
+      extendedColorScheme: extendedColorScheme,
     );
   }
 
@@ -272,60 +229,16 @@ class ColorSettings extends Equatable {
     String name,
     ColorScheme? colorScheme, {
     String? nickname,
+    ExtendedColorScheme? extendedColorScheme,
   }) {
     if (colorScheme == null) return null;
 
     return ColorSettings(
       name: name,
-      brightness: colorScheme.brightness,
-      secondaryContainer: colorScheme.secondaryContainer,
-      onSecondaryContainer: colorScheme.onSecondaryContainer,
-      onTertiaryContainer: colorScheme.onTertiaryContainer,
-      surfaceContainerHighest: colorScheme.surfaceContainerHighest,
-      primary: colorScheme.primary,
-      onPrimary: colorScheme.onPrimary,
-      secondary: colorScheme.secondary,
-      onSecondary: colorScheme.onSecondary,
-      error: colorScheme.error,
-      onError: colorScheme.onError,
-      surface: colorScheme.surface,
-      onSurface: colorScheme.onSurface,
-      outline: colorScheme.outline,
-      outlineVariant: colorScheme.outlineVariant,
       nickname: nickname,
       isPredefined: false,
-    );
-  }
-
-  ColorScheme? toColorScheme() {
-    if (primary == null ||
-        onPrimary == null ||
-        secondary == null ||
-        onSecondary == null ||
-        error == null ||
-        onError == null ||
-        surface == null ||
-        onSurface == null) {
-      return null;
-    }
-
-    return ColorScheme(
-      brightness: brightness,
-      primary: primary!,
-      onPrimary: onPrimary!,
-      secondary: secondary!,
-      onSecondary: onSecondary!,
-      error: error!,
-      onError: onError!,
-      surface: surface!,
-      onSurface: onSurface!,
-      secondaryContainer: secondaryContainer,
-      onSecondaryContainer: onSecondaryContainer,
-      surfaceContainerHighest: surfaceContainerHighest,
-      onTertiaryContainer: onTertiaryContainer,
-      tertiaryContainer: onTertiaryContainer,
-      outline: outline,
-      outlineVariant: outlineVariant,
+      colorScheme: colorScheme,
+      extendedColorScheme: extendedColorScheme,
     );
   }
 
@@ -333,27 +246,10 @@ class ColorSettings extends Equatable {
     try {
       return ColorSettings(
         name: json['name'],
-        brightness: switch (json['brightness']) {
-          'light' => Brightness.light,
-          'dark' => Brightness.dark,
-          _ => Brightness.dark,
-        },
-        secondaryContainer: _parseColor(json['secondaryContainer']),
-        onSecondaryContainer: _parseColor(json['onSecondaryContainer']),
-        onTertiaryContainer: _parseColor(json['onTertiaryContainer']),
-        surfaceContainerHighest: _parseColor(json['surfaceContainerHighest']),
-        primary: _parseColor(json['primary']),
-        onPrimary: _parseColor(json['onPrimary']),
-        secondary: _parseColor(json['secondary']),
-        onSecondary: _parseColor(json['onSecondary']),
-        error: _parseColor(json['error']),
-        onError: _parseColor(json['onError']),
-        surface: _parseColor(json['surface']),
-        onSurface: _parseColor(json['onSurface']),
-        outline: _parseColor(json['outline']),
-        outlineVariant: _parseColor(json['outlineVariant']),
         nickname: json['nickname'],
         isPredefined: json['isPredefined'],
+        colorScheme: colorSchemeFromJson(json['scheme']),
+        extendedColorScheme: extendedColorSchemeFromJson(json['extended']),
       );
     } catch (e) {
       return null;
@@ -363,46 +259,21 @@ class ColorSettings extends Equatable {
   Map<String, dynamic> toJson() {
     return {
       'name': name,
-      'brightness': brightness.name,
-      'secondaryContainer': secondaryContainer?.hex,
-      'onSecondaryContainer': onSecondaryContainer?.hex,
-      'onTertiaryContainer': onTertiaryContainer?.hex,
-      'surfaceContainerHighest': surfaceContainerHighest?.hex,
-      'primary': primary?.hex,
-      'onPrimary': onPrimary?.hex,
-      'secondary': secondary?.hex,
-      'onSecondary': onSecondary?.hex,
-      'error': error?.hex,
-      'onError': onError?.hex,
-      'surface': surface?.hex,
-      'onSurface': onSurface?.hex,
-      'outline': outline?.hex,
-      'outlineVariant': outlineVariant?.hex,
       'nickname': nickname,
       'isPredefined': isPredefined,
+      if (colorScheme != null) 'scheme': colorScheme!.toJson(),
+      if (extendedColorScheme != null)
+        'extended': extendedColorScheme!.toJson(),
     };
   }
 
   @override
   List<Object?> get props => [
         name,
-        brightness,
-        secondaryContainer,
-        onSecondaryContainer,
-        onTertiaryContainer,
-        surfaceContainerHighest,
-        primary,
-        onPrimary,
-        secondary,
-        onSecondary,
-        error,
-        onError,
-        surface,
-        onSurface,
-        outline,
-        outlineVariant,
         nickname,
         isPredefined,
+        colorScheme,
+        extendedColorScheme,
       ];
 }
 

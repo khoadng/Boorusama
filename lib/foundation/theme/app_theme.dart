@@ -162,9 +162,11 @@ class AppTheme {
         null => switch (colorScheme.brightness) {
             Brightness.light => lightTheme(
                 colorScheme: colorScheme,
+                extendedColorScheme: staticLightExtendedScheme,
               ),
             Brightness.dark => darkTheme(
                 colorScheme: colorScheme,
+                extendedColorScheme: staticDarkExtendedScheme,
               ),
           },
       };
