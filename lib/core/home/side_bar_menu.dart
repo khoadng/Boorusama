@@ -49,7 +49,7 @@ class SideBarMenu extends ConsumerWidget {
         children: [
           if (position == BooruConfigSelectorPosition.side)
             ColoredBox(
-              color: context.colorScheme.secondaryContainer,
+              color: context.colorScheme.surfaceContainer,
               child: const SafeArea(
                 bottom: false,
                 child: BooruSelector(),

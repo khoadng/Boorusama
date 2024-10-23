@@ -35,7 +35,7 @@ class TagEditContainer extends ConsumerWidget {
 
     return Container(
       height: height,
-      color: context.colorScheme.secondaryContainer,
+      color: context.colorScheme.surfaceContainerLow,
       child: Column(
         children: [
           _buildAppSheetAppbar(ref, context, title),

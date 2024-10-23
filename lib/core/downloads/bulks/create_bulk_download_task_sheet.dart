@@ -75,7 +75,7 @@ class _CreateBulkDownloadTaskSheetState
         .select((value) => value.androidDeviceInfo?.version.sdkInt));
 
     return Material(
-      color: context.colorScheme.secondaryContainer,
+      color: context.colorScheme.surfaceContainer,
       child: Container(
         margin: EdgeInsets.only(
           bottom: MediaQuery.viewInsetsOf(context).bottom,
@@ -318,7 +318,6 @@ void goToNewBulkDownloadTaskPage(
         top: Radius.circular(16),
       ),
     ),
-    backgroundColor: context.colorScheme.secondaryContainer,
     builder: (_) => CreateBulkDownloadTaskSheet(
       initialValue: initialValue,
       title: DownloadTranslations.bulkDownloadNewDownloadTitle.tr(),

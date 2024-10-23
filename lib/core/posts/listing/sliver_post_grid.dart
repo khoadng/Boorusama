@@ -257,7 +257,7 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
                 (context, _) {
                   return Container(
                     decoration: BoxDecoration(
-                      color: context.colorScheme.surfaceContainerHighest,
+                      color: context.colorScheme.surfaceContainerLowest,
                       borderRadius: BorderRadius.circular(
                         imageBorderRadius,
                       ),

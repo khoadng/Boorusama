@@ -32,7 +32,7 @@ int getUserHexColor(UserLevel level) => switch (level) {
     };
 
 extension UserColor on UserLevel {
-  Color toColor(BuildContext context) => context.colors.themeMode.isLight
+  Color toColor(BuildContext context) => context.isLight
       ? Color(getUserHexColor(this))
       : Color(getUserHexOnDarkColor(this));
 }
