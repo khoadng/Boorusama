@@ -13,7 +13,7 @@ void main() {
     () {
       test(
         'Color to Hex',
-        () => expect(Colors.red.hex, '#f44336'),
+        () => expect(Colors.red.hexWithoutAlpha, '#f44336'),
       );
 
       test(

@@ -67,7 +67,9 @@ ChipColors? generateChipColorsFromColorScheme(
 extension ColorX on Color {
   bool get isWhite => computeLuminance() > 0.6;
 
-  String get hex => ColorUtils.colorToHex(this);
+  String get hex => ColorUtils.colorToHex(this, includeAlpha: true);
+
+  String get hexWithoutAlpha => ColorUtils.colorToHex(this);
 }
 
 class ColorUtils {
