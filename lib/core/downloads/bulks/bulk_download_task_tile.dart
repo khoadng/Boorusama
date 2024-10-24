@@ -156,8 +156,7 @@ class _DetailsInkWell extends ConsumerWidget {
         ref.watch(_currentDownloadTaskProvider(id).select((e) => e.status));
 
     return InkWell(
-      onTap: status != BulkDownloadTaskStatus.queue &&
-              status != BulkDownloadTaskStatus.created
+      onTap: status != BulkDownloadTaskStatus.created
           ? () {
               context.push(
                 '/download_manager?group=$id',
@@ -358,22 +357,37 @@ class _ProgressBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final id = ref.watch(_currentDownloadTaskIdProvider);
+    final status =
+        ref.watch(_currentDownloadTaskProvider(id).select((e) => e.status));
     final progress = ref.watch(
       percentCompletedProvider(id),
     );
 
-    return LinearPercentIndicator(
-      lineHeight: 2,
-      percent: progress,
-      padding: const EdgeInsets.symmetric(
-        horizontal: 4,
-      ),
-      animation: true,
-      animateFromLastPercent: true,
-      trailing: Text(
-        '${(progress * 100).floor()}%',
-      ),
-    );
+    return status == BulkDownloadTaskStatus.queue
+        ? Padding(
+            padding: const EdgeInsets.only(
+              top: 10,
+              right: 40,
+              left: 4,
+            ),
+            child: LinearProgressIndicator(
+              color: Colors.red,
+              minHeight: 2,
+            ),
+          )
+        : LinearPercentIndicator(
+            lineHeight: 2,
+            percent: progress,
+            progressColor: Colors.red,
+            padding: const EdgeInsets.symmetric(
+              horizontal: 4,
+            ),
+            animation: true,
+            animateFromLastPercent: true,
+            trailing: Text(
+              '${(progress * 100).floor()}%',
+            ),
+          );
   }
 }
 
