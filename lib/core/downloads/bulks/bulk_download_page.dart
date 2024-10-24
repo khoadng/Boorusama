@@ -5,11 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import '../l10n.dart';
-import 'bulk_download_task_tile.dart';
-import 'create_bulk_download_task_sheet.dart';
-import 'providers.dart';
 
 class BulkDownloadPage extends ConsumerWidget {
   const BulkDownloadPage({
@@ -33,13 +31,9 @@ class BulkDownloadPage extends ConsumerWidget {
                 child: tasks.isNotEmpty
                     ? ListView.builder(
                         itemCount: tasks.length,
-                        itemBuilder: (context, index) {
-                          final task = tasks[index];
-
-                          return BulkDownloadTaskTile(
-                            task: task,
-                          );
-                        },
+                        itemBuilder: (context, index) => BulkDownloadTaskTile(
+                          taskId: tasks[index].id,
+                        ),
                       )
                     : Center(
                         child: const Text(
