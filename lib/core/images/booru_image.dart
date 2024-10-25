@@ -209,7 +209,7 @@ class ImagePlaceHolder extends StatelessWidget {
       width: width?.toDouble(),
       height: height?.toDouble(),
       decoration: BoxDecoration(
-        color: context.colorScheme.surfaceContainerLowest.withOpacity(0.5),
+        color: context.colorScheme.surfaceContainerHigh.withOpacity(0.5),
         borderRadius:
             borderRadius ?? const BorderRadius.all(Radius.circular(4)),
       ),

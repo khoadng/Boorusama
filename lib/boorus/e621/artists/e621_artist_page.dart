@@ -48,7 +48,7 @@ class _E621ArtistPageState extends ConsumerState<E621ArtistPage> {
           controller.refresh();
         },
         tagName: widget.artistName,
-        otherNamesBuilder: (_) => artist.when(
+        otherNames: artist.when(
           data: (data) => TagOtherNames(otherNames: data.otherNames),
           error: (error, stackTrace) => const SizedBox(height: 40, width: 40),
           loading: () => const TagOtherNames(otherNames: null),

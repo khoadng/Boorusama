@@ -12,7 +12,6 @@ import 'package:boorusama/boorus/danbooru/posts/posts.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/foundation/caching/lru_cacher.dart';
 import '../post_votes/post_votes.dart';
 import '../users/users.dart';
 
@@ -39,12 +38,8 @@ final danbooruPostRepoProvider =
                   ))
               .toList());
 
-      final filteredPosts = config.hideBannedPosts
-          ? posts.where((e) => !e.isBanned).toList()
-          : posts;
-
-      return ref.read(danbooruPostFetchTransformerProvider(config))(
-          filteredPosts.toResult());
+      return ref
+          .read(danbooruPostFetchTransformerProvider(config))(posts.toResult());
     },
     getSettings: () async => ref.read(imageListingSettingsProvider),
   );
@@ -104,43 +99,37 @@ typedef PostFetchTransformer = Future<PostResult<DanbooruPost>> Function(
 final danbooruPostFetchTransformerProvider =
     Provider.family<PostFetchTransformer, BooruConfig>((ref, config) {
   return (r) async {
+    final posts = _filter(
+      r.posts,
+      config.hideBannedPosts,
+    );
+
     final user = await ref.read(danbooruCurrentUserProvider(config).future);
 
     if (user != null) {
-      final ids = r.posts.map((e) => e.id).toList();
+      final ids = posts.map((e) => e.id).toList();
 
       ref.read(danbooruFavoritesProvider(config).notifier).checkFavorites(ids);
-      ref.read(danbooruPostVotesProvider(config).notifier).getVotes(r.posts);
+      ref.read(danbooruPostVotesProvider(config).notifier).getVotes(posts);
       ref.read(danbooruTagListProvider(config).notifier).removeTags(ids);
     }
 
-    final value = await Future.value(r.posts).then(filterFlashFiles());
-
-    return r.copyWith(posts: value);
+    return r.copyWith(
+      posts: posts,
+    );
   };
 });
 
-Future<List<DanbooruPost>> Function(List<DanbooruPost> posts)
-    filterFlashFiles() => filterUnsupportedFormat({'swf'});
-
-Future<List<DanbooruPost>> Function(List<DanbooruPost> posts)
-    filterUnsupportedFormat(
-  Set<String> fileExtensions,
-) =>
-        (posts) async => posts
-            .where((e) => !fileExtensions.contains(e.format))
-            .where((e) => !e.metaTags.contains('flash'))
-            .toList();
-
-final danbooruArtistCharacterPostRepoProvider =
-    Provider.family<PostRepository<DanbooruPost>, BooruConfig>((ref, config) {
-  final postRepo = ref.watch(danbooruPostRepoProvider(config));
-
-  return DanbooruArtistCharacterPostRepository(
-    repository: postRepo,
-    cache: LruCacher(),
+List<DanbooruPost> _filter(List<DanbooruPost> posts, bool hideBannedPosts) {
+  posts.removeWhere(
+    (e) =>
+        (hideBannedPosts && e.isBanned) ||
+        (e.format == 'swf' || e.format == '.swf') ||
+        e.metaTags.contains('flash'),
   );
-});
+
+  return posts;
+}
 
 final danbooruPostCountRepoProvider =
     Provider.family<PostCountRepository, BooruConfig>((ref, config) {
