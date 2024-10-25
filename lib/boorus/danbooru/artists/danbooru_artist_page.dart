@@ -14,11 +14,9 @@ class DanbooruArtistPage extends ConsumerStatefulWidget {
   const DanbooruArtistPage({
     super.key,
     required this.artistName,
-    required this.backgroundImageUrl,
   });
 
   final String artistName;
-  final String backgroundImageUrl;
 
   @override
   ConsumerState<DanbooruArtistPage> createState() => _DanbooruArtistPageState();
@@ -32,14 +30,14 @@ class _DanbooruArtistPageState extends ConsumerState<DanbooruArtistPage> {
     return CustomContextMenuOverlay(
       child: DanbooruTagDetailsPage(
         tagName: widget.artistName,
-        otherNamesBuilder: (_) => artist.when(
+        otherNames: artist.when(
           data: (data) => data.otherNames.isNotEmpty
               ? TagOtherNames(otherNames: data.otherNames)
               : const SizedBox.shrink(),
           error: (error, stackTrace) => const SizedBox(height: 40, width: 40),
           loading: () => const TagOtherNames(otherNames: null),
         ),
-        extraBuilder: (context) => [
+        extras: [
           const SizedBox(height: 8),
           artist.when(
             data: (artist) => DanbooruArtistUrlChips(
@@ -49,7 +47,6 @@ class _DanbooruArtistPageState extends ConsumerState<DanbooruArtistPage> {
             error: (e, st) => const SizedBox.shrink(),
           ),
         ],
-        backgroundImageUrl: widget.backgroundImageUrl,
       ),
     );
   }

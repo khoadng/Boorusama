@@ -24,15 +24,13 @@ class DanbooruTagDetailsPage extends ConsumerStatefulWidget {
   const DanbooruTagDetailsPage({
     super.key,
     required this.tagName,
-    required this.otherNamesBuilder,
-    required this.backgroundImageUrl,
-    this.extraBuilder,
+    required this.otherNames,
+    this.extras,
   });
 
   final String tagName;
-  final String backgroundImageUrl;
-  final Widget Function(BuildContext context) otherNamesBuilder;
-  final List<Widget> Function(BuildContext context)? extraBuilder;
+  final Widget otherNames;
+  final List<Widget>? extras;
 
   @override
   ConsumerState<DanbooruTagDetailsPage> createState() =>
@@ -54,8 +52,8 @@ class _DanbooruTagDetailsPageState
         children: [
           TagTitleName(tagName: widget.tagName),
           const SizedBox(height: 12),
-          widget.otherNamesBuilder(context),
-          ...widget.extraBuilder?.call(context) ?? [],
+          widget.otherNames,
+          ...widget.extras ?? [],
           isDesktopPlatform()
               ? const SizedBox(height: 36)
               : const SizedBox.shrink(),
@@ -81,13 +79,12 @@ class _DanbooruTagDetailsPageState
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Expanded(
-                      child: widget.otherNamesBuilder(context),
+                      child: widget.otherNames,
                     ),
                   ],
                 ),
-            if (widget.extraBuilder != null)
-              for (final extra in widget.extraBuilder!.call(context))
-                () => extra,
+            if (widget.extras != null)
+              for (final extra in widget.extras!) () => extra,
             () => const SizedBox(height: 20),
             () => _buildTagCloud(),
             () => const SizedBox(height: 20),

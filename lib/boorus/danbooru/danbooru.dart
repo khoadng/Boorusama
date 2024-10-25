@@ -183,13 +183,12 @@ class DanbooruBuilder
             );
 
   @override
-  ArtistPageBuilder? get artistPageBuilder => (context, artistName) =>
-      DanbooruArtistPage(artistName: artistName, backgroundImageUrl: '');
+  ArtistPageBuilder? get artistPageBuilder =>
+      (context, artistName) => DanbooruArtistPage(artistName: artistName);
 
   @override
-  CharacterPageBuilder? get characterPageBuilder =>
-      (context, characterName) => DanbooruCharacterPage(
-          characterName: characterName, backgroundImageUrl: '');
+  CharacterPageBuilder? get characterPageBuilder => (context, characterName) =>
+      DanbooruCharacterPage(characterName: characterName);
 
   @override
   GridThumbnailUrlBuilder get gridThumbnailUrlBuilder =>
