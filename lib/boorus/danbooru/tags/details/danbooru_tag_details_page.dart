@@ -36,7 +36,7 @@ class _DanbooruTagDetailsPageState
   @override
   Widget build(BuildContext context) {
     final config = ref.watchConfig;
-    final postRepo = ref.watch(danbooruArtistCharacterPostRepoProvider(config));
+    final postRepo = ref.watch(danbooruPostRepoProvider(config));
 
     return PostScope(
       fetcher: (page) => postRepo.getPosts(

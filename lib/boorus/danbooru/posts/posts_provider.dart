@@ -12,7 +12,6 @@ import 'package:boorusama/boorus/danbooru/posts/posts.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/foundation/caching/lru_cacher.dart';
 import '../post_votes/post_votes.dart';
 import '../users/users.dart';
 
@@ -131,16 +130,6 @@ Future<List<DanbooruPost>> Function(List<DanbooruPost> posts)
             .where((e) => !fileExtensions.contains(e.format))
             .where((e) => !e.metaTags.contains('flash'))
             .toList();
-
-final danbooruArtistCharacterPostRepoProvider =
-    Provider.family<PostRepository<DanbooruPost>, BooruConfig>((ref, config) {
-  final postRepo = ref.watch(danbooruPostRepoProvider(config));
-
-  return DanbooruArtistCharacterPostRepository(
-    repository: postRepo,
-    cache: LruCacher(),
-  );
-});
 
 final danbooruPostCountRepoProvider =
     Provider.family<PostCountRepository, BooruConfig>((ref, config) {
