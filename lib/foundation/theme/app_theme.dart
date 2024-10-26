@@ -292,6 +292,42 @@ class AppTheme {
           thumbShape: const CustomSliderThumbShape(),
           overlayShape: const CustomSliderOverlayShape(),
         ),
+        switchTheme: SwitchThemeData(
+          // Copy from _SwitchDefaultsM3
+          thumbColor: WidgetStateProperty.resolveWith(
+            (states) {
+              if (states.contains(WidgetState.disabled)) {
+                if (states.contains(WidgetState.selected)) {
+                  return colorScheme.surface.withOpacity(1.0);
+                }
+                return colorScheme.onSurface.withOpacity(0.38);
+              }
+              if (states.contains(WidgetState.selected)) {
+                // Workaround for when primaryContainer is not provided
+                // if (states.contains(WidgetState.pressed)) {
+                //   return colorScheme.primaryContainer;
+                // }
+                // if (states.contains(WidgetState.hovered)) {
+                //   return colorScheme.primaryContainer;
+                // }
+                // if (states.contains(WidgetState.focused)) {
+                //   return colorScheme.primaryContainer;
+                // }
+                return colorScheme.onPrimary;
+              }
+              if (states.contains(WidgetState.pressed)) {
+                return colorScheme.onSurfaceVariant;
+              }
+              if (states.contains(WidgetState.hovered)) {
+                return colorScheme.onSurfaceVariant;
+              }
+              if (states.contains(WidgetState.focused)) {
+                return colorScheme.onSurfaceVariant;
+              }
+              return colorScheme.outline;
+            },
+          ),
+        ),
         tabBarTheme: TabBarTheme(
           tabAlignment: TabAlignment.start,
           indicatorColor: colorScheme.onSurface,
