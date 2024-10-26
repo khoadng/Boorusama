@@ -153,3 +153,14 @@ const Map<String, Color> namedColors = {
   'yellow': Color(0xFFFFFF00),
   'yellowgreen': Color(0xFF9ACD32),
 };
+
+const Map<String, Color> primaryColors = {
+  'red': Color(0xFFFF0000),
+  'green': Color(0xFF008000),
+  'blue': Color(0xFF0000FF),
+  'yellow': Color(0xFFFFFF00),
+  'orange': Color(0xFFFFA500),
+  'purple': Color(0xFF800080),
+  'pink': Color(0xFFFFC0CB),
+  'brown': Color(0xFFA52A2A),
+};

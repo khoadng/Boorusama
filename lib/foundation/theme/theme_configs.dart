@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 // Flutter imports:
+import 'package:boorusama/dart.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -16,64 +17,76 @@ import 'color_scheme_converter.dart';
 final preDefinedColorSettings = [
   ColorSettings.fromPredefinedScheme(
     'boorusama_light',
-    staticLightScheme,
     nickname: 'Light',
   ),
   ColorSettings.fromPredefinedScheme(
     'boorusama_dark',
-    staticDarkScheme,
     nickname: 'Dark',
   ),
   ColorSettings.fromPredefinedScheme(
     'boorusama_black',
-    staticBlackScheme,
     nickname: 'Midnight',
   ),
   ColorSettings.fromPredefinedScheme(
     'danbooru_dark',
-    staticDanbooruDarkScheme,
     nickname: 'Dark Blue',
   ),
   ColorSettings.fromPredefinedScheme(
     'danbooru_light',
-    staticDanbooruLightScheme,
     nickname: 'Light Blue',
   ),
   ColorSettings.fromPredefinedScheme(
     'green',
-    staticGreenScheme,
     nickname: 'Light Green',
   ),
   ColorSettings.fromPredefinedScheme(
     'coral_pink',
-    staticCoralPinkScheme,
     nickname: 'Coral Pink',
   ),
   ColorSettings.fromPredefinedScheme(
     'hacker',
-    staticHackerScheme,
     nickname: 'Hacker',
   ),
   ColorSettings.fromPredefinedScheme(
     'cyberpunk',
-    staticCyberpunkScheme,
     nickname: 'Cyberpunk',
   ),
 ].whereNotNull().toList();
 
-ColorScheme? getSchemeFromColorSettings(ColorSettings? colorSettings) {
-  // if is predefined, use the predefined color scheme instead
-  if (colorSettings?.isPredefined == true) {
-    final scheme = preDefinedColorSettings
-        .firstWhereOrNull(
-          (e) => e.name == colorSettings!.name,
-        )
-        ?.colorScheme;
+ColorScheme? getSchemeFromPredefined(String? name) {
+  return switch (name) {
+    'boorusama_light' => staticLightScheme,
+    'boorusama_dark' => staticDarkScheme,
+    'boorusama_black' => staticBlackScheme,
+    'danbooru_dark' => staticDanbooruDarkScheme,
+    'danbooru_light' => staticDanbooruLightScheme,
+    'green' => staticGreenScheme,
+    'coral_pink' => staticCoralPinkScheme,
+    'hacker' => staticHackerScheme,
+    'cyberpunk' => staticCyberpunkScheme,
+    _ => null,
+  };
+}
 
-    return scheme;
-  } else {
-    return colorSettings?.colorScheme;
-  }
+ColorScheme? getSchemeFromColorSettings(ColorSettings? colorSettings) {
+  final settings = colorSettings;
+  if (settings == null) return null;
+
+  return switch (settings.schemeType) {
+    SchemeType.builtIn => getSchemeFromPredefined(settings.name),
+    SchemeType.accent => () {
+        final accentColor = settings.name;
+        final color = ColorUtils.hexToColor(accentColor);
+
+        if (color == null) return null;
+
+        return ColorScheme.fromSeed(
+          seedColor: color,
+          brightness: settings.brightness ?? Brightness.dark,
+        );
+      }(),
+    _ => colorSettings?.colorScheme,
+  };
 }
 
 const staticDanbooruDarkScheme = ColorScheme(
@@ -217,23 +230,113 @@ const staticCyberpunkScheme = ColorScheme(
   onSurface: kCyberpunkOnSurfaceColor,
 );
 
+enum SchemeType {
+  builtIn,
+  accent,
+  image,
+  custom,
+}
+
+SchemeType? _parseSchemeType(String? schemeType) => switch (schemeType) {
+      'builtIn' => SchemeType.builtIn,
+      'accent' => SchemeType.accent,
+      'image' => SchemeType.image,
+      'custom' => SchemeType.custom,
+      _ => null,
+    };
+
+extension SchemeTypeX on SchemeType {
+  String get value => switch (this) {
+        SchemeType.builtIn => 'builtIn',
+        SchemeType.accent => 'accent',
+        SchemeType.image => 'image',
+        SchemeType.custom => 'custom',
+      };
+}
+
 class ColorSettings extends Equatable {
+  const ColorSettings({
+    required this.name,
+    this.nickname,
+    required this.brightness,
+    required this.colorScheme,
+    required this.extendedColorScheme,
+    required String schemeType,
+  }) : _schemeType = schemeType;
+
   final String name;
   final String? nickname;
-  final bool isPredefined;
+  final Brightness? brightness;
 
   final ColorScheme? colorScheme;
   final ExtendedColorScheme? extendedColorScheme;
 
-  const ColorSettings({
-    required this.name,
-    this.nickname,
-    required this.isPredefined,
-    required this.colorScheme,
-    required this.extendedColorScheme,
-  });
+  final String _schemeType;
+
+  SchemeType? get schemeType => _parseSchemeType(_schemeType);
 
   static ColorSettings? fromPredefinedScheme(
+    String name, {
+    String? nickname,
+  }) {
+    return ColorSettings(
+      name: name,
+      nickname: nickname,
+      colorScheme: null,
+      extendedColorScheme: null,
+      brightness: null,
+      schemeType: SchemeType.builtIn.value,
+    );
+  }
+
+  ColorSettings copyWith({
+    Brightness? brightness,
+  }) {
+    return ColorSettings(
+      brightness: brightness ?? this.brightness,
+      name: name,
+      nickname: nickname,
+      colorScheme: colorScheme,
+      extendedColorScheme: extendedColorScheme,
+      schemeType: _schemeType,
+    );
+  }
+
+  static ColorSettings fromAccentColor(
+    Color color, {
+    required Brightness brightness,
+  }) {
+    final name = color.hexWithoutAlpha;
+    final nickname = namedColors.entries
+            .firstWhereOrNull((e) => e.value.hexWithoutAlpha == name)
+            ?.key ??
+        name;
+
+    return ColorSettings(
+      name: name,
+      nickname: nickname,
+      schemeType: SchemeType.accent.value,
+      colorScheme: null,
+      extendedColorScheme: null,
+      brightness: brightness,
+    );
+  }
+
+  static ColorSettings fromImage(
+    ColorScheme colorScheme, {
+    required Brightness brightness,
+  }) {
+    return ColorSettings(
+      name: 'image',
+      nickname: 'image',
+      schemeType: SchemeType.image.value,
+      colorScheme: colorScheme,
+      extendedColorScheme: null,
+      brightness: brightness,
+    );
+  }
+
+  static ColorSettings fromCustomScheme(
     String name,
     ColorScheme colorScheme, {
     String? nickname,
@@ -242,26 +345,10 @@ class ColorSettings extends Equatable {
     return ColorSettings(
       name: name,
       nickname: nickname,
-      isPredefined: true,
+      schemeType: SchemeType.custom.value,
       colorScheme: colorScheme,
       extendedColorScheme: extendedColorScheme,
-    );
-  }
-
-  static ColorSettings? fromCustomScheme(
-    String name,
-    ColorScheme? colorScheme, {
-    String? nickname,
-    ExtendedColorScheme? extendedColorScheme,
-  }) {
-    if (colorScheme == null) return null;
-
-    return ColorSettings(
-      name: name,
-      nickname: nickname,
-      isPredefined: false,
-      colorScheme: colorScheme,
-      extendedColorScheme: extendedColorScheme,
+      brightness: colorScheme.brightness,
     );
   }
 
@@ -270,9 +357,11 @@ class ColorSettings extends Equatable {
       return ColorSettings(
         name: json['name'],
         nickname: json['nickname'],
-        isPredefined: json['isPredefined'],
+        schemeType: json['schemeType'],
         colorScheme: colorSchemeFromJson(json['scheme']),
         extendedColorScheme: extendedColorSchemeFromJson(json['extended']),
+        brightness:
+            json['brightness'] == 'dark' ? Brightness.dark : Brightness.light,
       );
     } catch (e) {
       return null;
@@ -283,10 +372,11 @@ class ColorSettings extends Equatable {
     return {
       'name': name,
       'nickname': nickname,
-      'isPredefined': isPredefined,
+      'schemeType': _schemeType,
       if (colorScheme != null) 'scheme': colorScheme!.toJson(),
       if (extendedColorScheme != null)
         'extended': extendedColorScheme!.toJson(),
+      'brightness': brightness == Brightness.dark ? 'dark' : 'light',
     };
   }
 
@@ -294,9 +384,10 @@ class ColorSettings extends Equatable {
   List<Object?> get props => [
         name,
         nickname,
-        isPredefined,
+        _schemeType,
         colorScheme,
         extendedColorScheme,
+        brightness,
       ];
 }
 

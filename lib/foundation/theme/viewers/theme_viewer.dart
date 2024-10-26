@@ -31,7 +31,12 @@ class _ThemePreviewAppState extends State<ThemePreviewApp> {
 
   final pageController = PageController();
 
-  var _category = ThemeCategory.builtIn;
+  late var _category = switch (_currentScheme?.schemeType) {
+    SchemeType.builtIn => ThemeCategory.builtIn,
+    SchemeType.accent => ThemeCategory.accent,
+    SchemeType.image => ThemeCategory.image,
+    _ => ThemeCategory.builtIn,
+  };
 
   @override
   void dispose() {
@@ -41,7 +46,8 @@ class _ThemePreviewAppState extends State<ThemePreviewApp> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = _currentScheme?.colorScheme ?? widget.defaultScheme;
+    final colorScheme =
+        getSchemeFromColorSettings(_currentScheme) ?? widget.defaultScheme;
 
     final pages = [
       PreviewHome(
@@ -113,6 +119,7 @@ class _ThemePreviewAppState extends State<ThemePreviewApp> {
                       ),
                     ),
                     CategoryToggleSwitch(
+                      initialCategory: _category,
                       onToggle: (category) {
                         setState(() {
                           _category = category;
@@ -131,6 +138,7 @@ class _ThemePreviewAppState extends State<ThemePreviewApp> {
                         ),
                       ThemeCategory.image => ExtractImageColorSelector(
                           onSchemeChanged: _onSchemeChanged,
+                          initialScheme: _currentScheme,
                         ),
                     }
                   ],
@@ -144,10 +152,10 @@ class _ThemePreviewAppState extends State<ThemePreviewApp> {
     );
   }
 
-  void _onSchemeChanged(color) {
+  void _onSchemeChanged(ColorSettings? settings) {
     setState(() {
-      _currentScheme = color;
-      widget.onSchemeChanged(color);
+      _currentScheme = settings;
+      widget.onSchemeChanged(settings);
     });
   }
 }

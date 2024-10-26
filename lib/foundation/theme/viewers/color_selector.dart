@@ -2,6 +2,7 @@
 import 'dart:io';
 
 // Flutter imports:
+import 'package:boorusama/dart.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
@@ -9,26 +10,6 @@ import 'package:boorusama/foundation/picker.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
-
-final _kPrimaryColors = {
-  'red': Colors.red,
-  'pink': Colors.pink,
-  'purple': Colors.purple,
-  'deepPurple': Colors.deepPurple,
-  'indigo': Colors.indigo,
-  'blue': Colors.blue,
-  'lightBlue': Colors.lightBlue,
-  'cyan': Colors.cyan,
-  'teal': Colors.teal,
-  'green': Colors.green,
-  'lightGreen': Colors.lightGreen,
-  'lime': Colors.lime,
-  'yellow': Colors.yellow,
-  'amber': Colors.amber,
-  'orange': Colors.orange,
-  'deepOrange': Colors.deepOrange,
-  'brown': Colors.brown,
-};
 
 class BuiltInColorSelector extends StatelessWidget {
   const BuiltInColorSelector({
@@ -42,8 +23,14 @@ class BuiltInColorSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = currentScheme?.colorScheme ??
-        preDefinedColorSettings.first.colorScheme!;
+    final colorScheme = getSchemeFromPredefined(currentScheme?.name) ??
+        getSchemeFromPredefined(preDefinedColorSettings.first.name);
+
+    if (colorScheme == null) {
+      return Center(
+        child: Text('Error: Color scheme not found'),
+      );
+    }
 
     return SizedBox(
       height: 200,
@@ -53,8 +40,8 @@ class BuiltInColorSelector extends StatelessWidget {
             runSpacing: 8,
             children: [
               ...preDefinedColorSettings.map((e) {
-                final selected = e == currentScheme;
-                final cs = e.colorScheme;
+                final selected = e.name == currentScheme?.name;
+                final cs = getSchemeFromPredefined(e.name);
 
                 return Padding(
                   padding: const EdgeInsets.symmetric(
@@ -95,7 +82,7 @@ class AccentColorSelector extends StatefulWidget {
 
 class _AccentColorSelectorState extends State<AccentColorSelector> {
   late var _settings = widget.initialScheme;
-  late var _currentScheme = _settings?.colorScheme;
+  late var _currentScheme = getSchemeFromColorSettings(widget.initialScheme);
   late var _isDark =
       widget.initialScheme?.colorScheme?.brightness == Brightness.dark;
 
@@ -107,20 +94,15 @@ class _AccentColorSelectorState extends State<AccentColorSelector> {
           Wrap(
             runSpacing: 8,
             children: [
-              ..._kPrimaryColors.keys.map(
+              ...primaryColors.keys.map(
                 (e) {
-                  final color = _kPrimaryColors[e]!;
+                  final color = primaryColors[e]!;
                   final cs = ColorScheme.fromSeed(
                     seedColor: color,
                     brightness: _isDark ? Brightness.dark : Brightness.light,
                   );
-                  final settings = ColorSettings.fromCustomScheme(
-                    'basic-$e-${_isDark ? 'dark' : 'light'}',
-                    cs,
-                    nickname: e,
-                  );
 
-                  final selected = _settings?.name == settings?.name;
+                  final selected = _settings?.name == color.hexWithoutAlpha;
 
                   return Padding(
                     padding: const EdgeInsets.symmetric(
@@ -129,7 +111,11 @@ class _AccentColorSelectorState extends State<AccentColorSelector> {
                     child: _PreviewBasicColor(
                       onTap: () {
                         setState(() {
-                          _settings = settings;
+                          _settings = ColorSettings.fromAccentColor(
+                            color,
+                            brightness:
+                                _isDark ? Brightness.dark : Brightness.light,
+                          );
                           _currentScheme = cs;
                           widget.onSchemeChanged(_settings);
                         });
@@ -162,17 +148,8 @@ class _AccentColorSelectorState extends State<AccentColorSelector> {
                   brightness: value ? Brightness.dark : Brightness.light,
                 );
 
-                // change name to reflect the new brightness
-                // basic-red-light -> basic-red-dark
-                final newSchemeName = st.name.replaceFirst(
-                  value ? '-light' : '-dark',
-                  value ? '-dark' : '-light',
-                );
-
-                _settings = ColorSettings.fromCustomScheme(
-                  newSchemeName,
-                  _currentScheme,
-                  nickname: st.nickname,
+                _settings = st.copyWith(
+                  brightness: value ? Brightness.dark : Brightness.light,
                 );
                 widget.onSchemeChanged(_settings);
               });
@@ -205,6 +182,8 @@ class _ExtractImageColorSelectorState extends State<ExtractImageColorSelector> {
       widget.initialScheme?.colorScheme?.brightness == Brightness.dark;
   var _imagePath = '';
   var _variant = DynamicSchemeVariant.tonalSpot;
+  // ignore: unused_field
+  late var _currentScheme = getSchemeFromColorSettings(widget.initialScheme);
 
   Future<void> _pickFile({
     required void Function(String path) onPick,
@@ -232,6 +211,36 @@ class _ExtractImageColorSelectorState extends State<ExtractImageColorSelector> {
                 width: 120,
                 height: 120,
               ),
+            )
+          else if (widget.initialScheme?.colorScheme != null)
+            Container(
+              width: 120,
+              height: 120,
+              margin: const EdgeInsets.only(
+                bottom: 12,
+              ),
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: widget.initialScheme?.colorScheme?.primary,
+                      ),
+                    ),
+                  ),
+                  Positioned.fill(
+                    child: ClipPath(
+                      clipper: SplashClipper(),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: widget
+                              .initialScheme?.colorScheme?.secondaryContainer,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           _buildPickButton(context),
           if (_imagePath.isNotEmpty)
@@ -257,33 +266,21 @@ class _ExtractImageColorSelectorState extends State<ExtractImageColorSelector> {
               ),
             ),
           if (_imagePath.isNotEmpty)
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              visualDensity: VisualDensity.compact,
-              title: const Text('Variants'),
-              trailing: OptionDropDownButton(
-                alignment: AlignmentDirectional.centerStart,
-                value: _variant,
-                onChanged: (value) async {
-                  if (value == null) return;
+            ColorVariantSelector(
+              variant: _variant,
+              onChanged: (value) async {
+                if (value == null) return;
 
-                  await _updateScheme(
-                    _imagePath,
-                    value,
-                    _isDark ? Brightness.dark : Brightness.light,
-                  );
+                await _updateScheme(
+                  _imagePath,
+                  value,
+                  _isDark ? Brightness.dark : Brightness.light,
+                );
 
-                  setState(() {
-                    _variant = value;
-                  });
-                },
-                items: DynamicSchemeVariant.values
-                    .map((value) => DropdownMenuItem(
-                          value: value,
-                          child: Text(value.name.sentenceCase),
-                        ))
-                    .toList(),
-              ),
+                setState(() {
+                  _variant = value;
+                });
+              },
             ),
         ],
       ),
@@ -312,7 +309,9 @@ class _ExtractImageColorSelectorState extends State<ExtractImageColorSelector> {
             );
           },
           child: Text(
-            'Pick an image',
+            widget.initialScheme?.colorScheme != null
+                ? 'Change image'
+                : 'Pick an image',
             style: TextStyle(
               color: context.colorScheme.onSecondaryContainer,
             ),
@@ -337,17 +336,48 @@ class _ExtractImageColorSelectorState extends State<ExtractImageColorSelector> {
       brightness: brightness,
     );
 
-    final settings = ColorSettings.fromCustomScheme(
-      'image-pick',
+    final settings = ColorSettings.fromImage(
       cs,
-      nickname: 'Image',
+      brightness: brightness,
     );
 
     setState(() {
       _imagePath = path;
       _settings = settings;
+      _currentScheme = cs;
       widget.onSchemeChanged(_settings);
     });
+  }
+}
+
+class ColorVariantSelector extends StatelessWidget {
+  const ColorVariantSelector({
+    super.key,
+    required this.variant,
+    required this.onChanged,
+  });
+
+  final DynamicSchemeVariant variant;
+  final void Function(DynamicSchemeVariant? value) onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      contentPadding: EdgeInsets.zero,
+      visualDensity: VisualDensity.compact,
+      title: const Text('Variants'),
+      trailing: OptionDropDownButton(
+        alignment: AlignmentDirectional.centerStart,
+        value: variant,
+        onChanged: onChanged,
+        items: DynamicSchemeVariant.values
+            .map((value) => DropdownMenuItem(
+                  value: value,
+                  child: Text(value.name.sentenceCase),
+                ))
+            .toList(),
+      ),
+    );
   }
 }
 
@@ -357,19 +387,38 @@ enum ThemeCategory {
   image,
 }
 
+class SplashClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final path = Path();
+
+    path.moveTo(size.width, 0);
+    path.lineTo(size.width, size.height);
+    path.lineTo(0, size.height);
+    path.lineTo(size.width, 0);
+
+    return path;
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
+}
+
 class CategoryToggleSwitch extends StatelessWidget {
   const CategoryToggleSwitch({
     super.key,
     required this.onToggle,
+    required this.initialCategory,
   });
 
   final void Function(ThemeCategory category) onToggle;
+  final ThemeCategory initialCategory;
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: BooruSegmentedButton(
-        initialValue: ThemeCategory.builtIn,
+        initialValue: initialCategory,
         segments: {
           ThemeCategory.builtIn: 'Built-in',
           ThemeCategory.accent: 'Accent',
