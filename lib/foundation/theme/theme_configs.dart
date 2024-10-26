@@ -83,6 +83,8 @@ ColorScheme? getSchemeFromColorSettings(ColorSettings? colorSettings) {
         return ColorScheme.fromSeed(
           seedColor: color,
           brightness: settings.brightness ?? Brightness.dark,
+          dynamicSchemeVariant:
+              settings.dynamicSchemeVariant ?? DynamicSchemeVariant.tonalSpot,
         );
       }(),
     _ => colorSettings?.colorScheme,
@@ -254,6 +256,35 @@ extension SchemeTypeX on SchemeType {
       };
 }
 
+DynamicSchemeVariant? _parseDynamicSchemeVariant(
+        String? dynamicSchemeVariant) =>
+    switch (dynamicSchemeVariant) {
+      'tonalSpot' => DynamicSchemeVariant.tonalSpot,
+      'fidelity' => DynamicSchemeVariant.fidelity,
+      'monochrome' => DynamicSchemeVariant.monochrome,
+      'neutral' => DynamicSchemeVariant.neutral,
+      'vibrant' => DynamicSchemeVariant.vibrant,
+      'expressive' => DynamicSchemeVariant.expressive,
+      'content' => DynamicSchemeVariant.content,
+      'rainbow' => DynamicSchemeVariant.rainbow,
+      'fruitSalad' => DynamicSchemeVariant.fruitSalad,
+      _ => null,
+    };
+
+extension DynamicSchemeVariantX on DynamicSchemeVariant {
+  String get value => switch (this) {
+        DynamicSchemeVariant.tonalSpot => 'tonalSpot',
+        DynamicSchemeVariant.fidelity => 'fidelity',
+        DynamicSchemeVariant.monochrome => 'monochrome',
+        DynamicSchemeVariant.neutral => 'neutral',
+        DynamicSchemeVariant.vibrant => 'vibrant',
+        DynamicSchemeVariant.expressive => 'expressive',
+        DynamicSchemeVariant.content => 'content',
+        DynamicSchemeVariant.rainbow => 'rainbow',
+        DynamicSchemeVariant.fruitSalad => 'fruitSalad',
+      };
+}
+
 class ColorSettings extends Equatable {
   const ColorSettings({
     required this.name,
@@ -262,7 +293,9 @@ class ColorSettings extends Equatable {
     required this.colorScheme,
     required this.extendedColorScheme,
     required String schemeType,
-  }) : _schemeType = schemeType;
+    required String? dynamicSchemeVariant,
+  })  : _schemeType = schemeType,
+        _dynamicSchemeVariant = dynamicSchemeVariant;
 
   final String name;
   final String? nickname;
@@ -272,8 +305,11 @@ class ColorSettings extends Equatable {
   final ExtendedColorScheme? extendedColorScheme;
 
   final String _schemeType;
+  final String? _dynamicSchemeVariant;
 
   SchemeType? get schemeType => _parseSchemeType(_schemeType);
+  DynamicSchemeVariant? get dynamicSchemeVariant =>
+      _parseDynamicSchemeVariant(_dynamicSchemeVariant);
 
   static ColorSettings? fromPredefinedScheme(
     String name, {
@@ -286,25 +322,29 @@ class ColorSettings extends Equatable {
       extendedColorScheme: null,
       brightness: null,
       schemeType: SchemeType.builtIn.value,
+      dynamicSchemeVariant: null,
     );
   }
 
   ColorSettings copyWith({
     Brightness? brightness,
+    ColorScheme? colorScheme,
   }) {
     return ColorSettings(
       brightness: brightness ?? this.brightness,
       name: name,
       nickname: nickname,
-      colorScheme: colorScheme,
+      colorScheme: colorScheme ?? this.colorScheme,
       extendedColorScheme: extendedColorScheme,
       schemeType: _schemeType,
+      dynamicSchemeVariant: _dynamicSchemeVariant,
     );
   }
 
   static ColorSettings fromAccentColor(
     Color color, {
     required Brightness brightness,
+    required DynamicSchemeVariant dynamicSchemeVariant,
   }) {
     final name = color.hexWithoutAlpha;
     final nickname = namedColors.entries
@@ -319,12 +359,14 @@ class ColorSettings extends Equatable {
       colorScheme: null,
       extendedColorScheme: null,
       brightness: brightness,
+      dynamicSchemeVariant: dynamicSchemeVariant.value,
     );
   }
 
   static ColorSettings fromImage(
     ColorScheme colorScheme, {
     required Brightness brightness,
+    required DynamicSchemeVariant dynamicSchemeVariant,
   }) {
     return ColorSettings(
       name: 'image',
@@ -333,6 +375,7 @@ class ColorSettings extends Equatable {
       colorScheme: colorScheme,
       extendedColorScheme: null,
       brightness: brightness,
+      dynamicSchemeVariant: dynamicSchemeVariant.value,
     );
   }
 
@@ -349,6 +392,7 @@ class ColorSettings extends Equatable {
       colorScheme: colorScheme,
       extendedColorScheme: extendedColorScheme,
       brightness: colorScheme.brightness,
+      dynamicSchemeVariant: null,
     );
   }
 
@@ -362,6 +406,7 @@ class ColorSettings extends Equatable {
         extendedColorScheme: extendedColorSchemeFromJson(json['extended']),
         brightness:
             json['brightness'] == 'dark' ? Brightness.dark : Brightness.light,
+        dynamicSchemeVariant: json['dynamicSchemeVariant'],
       );
     } catch (e) {
       return null;
@@ -377,6 +422,7 @@ class ColorSettings extends Equatable {
       if (extendedColorScheme != null)
         'extended': extendedColorScheme!.toJson(),
       'brightness': brightness == Brightness.dark ? 'dark' : 'light',
+      'dynamicSchemeVariant': _dynamicSchemeVariant,
     };
   }
 
@@ -388,6 +434,7 @@ class ColorSettings extends Equatable {
         colorScheme,
         extendedColorScheme,
         brightness,
+        _dynamicSchemeVariant,
       ];
 }
 
