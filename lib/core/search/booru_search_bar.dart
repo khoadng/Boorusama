@@ -112,6 +112,10 @@ class _BooruSearchBarState extends State<BooruSearchBar> {
                         vertical: 12,
                       ),
                   hintText: widget.hintText ?? 'search.hint'.tr(),
+                  hintStyle: TextStyle(
+                    color:
+                        context.colorScheme.onSurfaceVariant.withOpacity(0.5),
+                  ),
                 ),
                 autofocus: widget.autofocus,
                 controller: controller,

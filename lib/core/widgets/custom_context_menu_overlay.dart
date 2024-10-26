@@ -22,7 +22,7 @@ class CustomContextMenuOverlay extends StatelessWidget {
   Widget build(BuildContext context) {
     return ContextMenuOverlay(
       cardBuilder: (context, children) => Material(
-        color: backgroundColor ?? context.colorScheme.secondaryContainer,
+        color: backgroundColor ?? context.colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(4),
         elevation: 4,
         child: Container(
@@ -78,7 +78,10 @@ class _ContextMenuTileState extends State<ContextMenuTile> {
                   widget.config.label,
                   style: widget.config.labelStyle ??
                       TextStyle(
-                        color: context.colorScheme.onSurface.withOpacity(0.75),
+                        color: kPreferredLayout.isMobile
+                            ? context.colorScheme.onSurfaceVariant
+                            : context.colorScheme.onSurfaceVariant
+                                .withOpacity(0.75),
                       ),
                 ),
         ),

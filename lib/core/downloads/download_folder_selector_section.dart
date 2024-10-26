@@ -64,7 +64,7 @@ class _DownloadFolderSelectorSectionState
         ),
         const SizedBox(height: 4),
         Material(
-          color: context.colorScheme.surfaceContainerHighest,
+          color: context.colorScheme.surfaceContainer,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(4),
             side: BorderSide(

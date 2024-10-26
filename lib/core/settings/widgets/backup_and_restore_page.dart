@@ -400,7 +400,7 @@ class BackupRestoreTile extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: context.colorScheme.secondaryContainer,
+        color: context.colorScheme.surfaceContainer,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
