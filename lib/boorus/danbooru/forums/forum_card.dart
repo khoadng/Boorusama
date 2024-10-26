@@ -58,13 +58,13 @@ class ForumCard extends ConsumerWidget {
                     Icon(
                       Symbols.push_pin,
                       size: 20,
-                      color: Theme.of(context).hintColor,
+                      color: Theme.of(context).colorScheme.hintColor,
                     ),
                   if (isLocked)
                     Icon(
                       Symbols.lock_outline,
                       size: 20,
-                      color: Theme.of(context).hintColor,
+                      color: Theme.of(context).colorScheme.hintColor,
                     ),
                   const SizedBox(width: 4),
                   Expanded(

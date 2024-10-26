@@ -1,11 +1,13 @@
 // Dart imports:
 import 'dart:io';
 
+// Package imports:
+import 'package:extended_image/extended_image.dart';
+
 // Project imports:
 import 'package:boorusama/foundation/path.dart';
 
 class DirectorySizeInfo {
-
   DirectorySizeInfo({
     required this.size,
     required this.fileCount,
@@ -15,8 +17,11 @@ class DirectorySizeInfo {
   final int fileCount;
   final int directoryCount;
 
-  static DirectorySizeInfo zero =
-      DirectorySizeInfo(directoryCount: 0, fileCount: 0, size: 0);
+  static DirectorySizeInfo zero = DirectorySizeInfo(
+    directoryCount: 0,
+    fileCount: 0,
+    size: 0,
+  );
 }
 
 Future<DirectorySizeInfo> getDirectorySize(Directory dir) async {
@@ -54,7 +59,8 @@ Future<DirectorySizeInfo> getCacheSize() async {
 
 Future<DirectorySizeInfo> getImageCacheSize() async {
   final cacheDir = await getTemporaryDirectory();
-  final imageCacheDir = Directory('${cacheDir.path}/cacheimage');
+  final path = join(cacheDir.path, cacheImageFolderName);
+  final imageCacheDir = Directory(path);
   return getDirectorySize(imageCacheDir);
 }
 
@@ -66,11 +72,8 @@ Future<void> clearCache() async {
   }
 }
 
-Future<void> clearImageCache() async {
-  final cacheDir = await getTemporaryDirectory();
-  final imageCacheDir = Directory('${cacheDir.path}/cacheimage');
+Future<bool> clearImageCache() async {
+  final success = await clearDiskCachedImages();
 
-  if (imageCacheDir.existsSync()) {
-    await imageCacheDir.delete(recursive: true);
-  }
+  return success;
 }

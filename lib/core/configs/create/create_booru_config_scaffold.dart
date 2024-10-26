@@ -179,7 +179,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
                             Text(
                               'Not sure? Leave it as it is, you can change it later.',
                               style: context.textTheme.titleSmall?.copyWith(
-                                color: context.theme.hintColor,
+                                color: context.colorScheme.hintColor,
                                 fontSize: 12,
                                 fontWeight: FontWeight.w400,
                               ),

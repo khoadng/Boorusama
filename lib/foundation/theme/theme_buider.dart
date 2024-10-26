@@ -69,18 +69,21 @@ class ThemeBuilder extends ConsumerWidget {
 //TODO: temp solution
 // https://github.com/material-foundation/flutter-packages/issues/582
 (ColorScheme light, ColorScheme dark) _generateDynamicColourSchemes(
-    ColorScheme lightDynamic, ColorScheme darkDynamic) {
-  final lightBase = ColorScheme.fromSeed(seedColor: lightDynamic.primary);
-  final darkBase = ColorScheme.fromSeed(
-      seedColor: darkDynamic.primary, brightness: Brightness.dark);
+  ColorScheme lightDynamic,
+  ColorScheme darkDynamic,
+) {
+  final lightAdditionalColours = _extractAdditionalColours(lightDynamic);
+  final darkAdditionalColours = _extractAdditionalColours(darkDynamic);
 
-  final lightAdditionalColours = _extractAdditionalColours(lightBase);
-  final darkAdditionalColours = _extractAdditionalColours(darkBase);
+  final lightScheme =
+      _insertAdditionalColours(lightDynamic, lightAdditionalColours);
+  final darkScheme =
+      _insertAdditionalColours(darkDynamic, darkAdditionalColours);
 
-  final lightScheme = _insertAdditionalColours(lightBase, lightAdditionalColours);
-  final darkScheme = _insertAdditionalColours(darkBase, darkAdditionalColours);
-
-  return (lightScheme.harmonized(), darkScheme.harmonized());
+  return (
+    lightScheme.harmonized(),
+    darkScheme.harmonized(),
+  );
 }
 
 List<Color> _extractAdditionalColours(ColorScheme scheme) => [
@@ -95,7 +98,9 @@ List<Color> _extractAdditionalColours(ColorScheme scheme) => [
     ];
 
 ColorScheme _insertAdditionalColours(
-        ColorScheme scheme, List<Color> additionalColours) =>
+  ColorScheme scheme,
+  List<Color> additionalColours,
+) =>
     scheme.copyWith(
       surface: additionalColours[0],
       surfaceDim: additionalColours[1],

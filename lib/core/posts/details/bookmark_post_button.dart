@@ -98,7 +98,9 @@ class BookmarkPostLikeButtonButton extends ConsumerWidget {
       likeBuilder: (isLiked) {
         return Icon(
           isLiked ? Symbols.bookmark : Symbols.bookmark,
-          color: isLiked ? context.colors.upvoteColor : Colors.white,
+          color: isLiked
+              ? context.colors.upvoteColor
+              : context.extendedColorScheme.onSurfaceContainerOverlay,
           fill: isLiked ? 1 : 0,
         );
       },

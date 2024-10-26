@@ -209,7 +209,7 @@ class ImagePlaceHolder extends StatelessWidget {
       width: width?.toDouble(),
       height: height?.toDouble(),
       decoration: BoxDecoration(
-        color: context.colorScheme.surfaceContainerHighest.withOpacity(0.5),
+        color: context.colorScheme.surfaceContainerHigh.withOpacity(0.5),
         borderRadius:
             borderRadius ?? const BorderRadius.all(Radius.circular(4)),
       ),
@@ -233,7 +233,7 @@ class ErrorPlaceholder extends StatelessWidget {
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: context.colorScheme.surfaceContainerHighest,
+        color: context.colorScheme.surfaceContainerLowest,
         borderRadius:
             borderRadius ?? const BorderRadius.all(Radius.circular(4)),
       ),

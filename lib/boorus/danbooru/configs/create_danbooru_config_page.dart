@@ -44,7 +44,7 @@ class CreateDanbooruConfigPage extends StatelessWidget {
           customInstruction: RichText(
             text: TextSpan(
               style: context.textTheme.titleSmall?.copyWith(
-                color: context.theme.hintColor,
+                color: context.colorScheme.hintColor,
                 fontSize: 12,
                 fontWeight: FontWeight.w400,
               ),

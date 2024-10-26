@@ -137,9 +137,10 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
 class _PostDetailPageScaffoldState<T extends Post>
     extends ConsumerState<PostDetailsPageScaffold<T>>
     with PostDetailsPageMixin<PostDetailsPageScaffold<T>, T> {
+  late final _posts = widget.posts;
   late final _controller = DetailsPageController(
     initialPage: widget.initialIndex,
-    swipeDownToDismiss: !widget.posts[widget.initialIndex].isVideo,
+    swipeDownToDismiss: !posts[widget.initialIndex].isVideo,
     hideOverlay: ref.read(settingsProvider).hidePostDetailsOverlay,
   );
 
@@ -152,7 +153,7 @@ class _PostDetailPageScaffoldState<T extends Post>
       .updateInformation(posts[page]);
 
   @override
-  List<T> get posts => widget.posts;
+  List<T> get posts => _posts;
 
   @override
   int get initialPage => widget.initialIndex;
@@ -231,15 +232,16 @@ class _PostDetailPageScaffoldState<T extends Post>
     final config = ref.watchConfig;
     final booruBuilder = ref.watchBooruBuilder(config);
     final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
+    final focusedPost = posts[currentPage];
 
     Widget buildShareChild() {
       return Column(
         children: [
           if (widget.infoBuilder != null)
-            widget.infoBuilder!(context, posts[currentPage]),
+            widget.infoBuilder!(context, focusedPost),
           widget.toolbar != null
               ? widget.toolbar!
-              : SimplePostActionToolbar(post: posts[currentPage]),
+              : SimplePostActionToolbar(post: focusedPost),
         ],
       );
     }
@@ -248,18 +250,17 @@ class _PostDetailPageScaffoldState<T extends Post>
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (posts[currentPage].isVideo)
+          if (focusedPost.isVideo)
             ValueListenableBuilder(
               valueListenable: videoProgress,
               builder: (_, progress, __) => VideoSoundScope(
                 builder: (context, soundOn) => BooruVideoProgressBar(
                   soundOn: soundOn,
                   progress: progress,
-                  playbackSpeed:
-                      ref.watchPlaybackSpeed(posts[currentPage].videoUrl),
+                  playbackSpeed: ref.watchPlaybackSpeed(focusedPost.videoUrl),
                   onSeek: (position) => onVideoSeekTo(position, currentPage),
                   onSpeedChanged: (speed) =>
-                      ref.setPlaybackSpeed(posts[currentPage].videoUrl, speed),
+                      ref.setPlaybackSpeed(focusedPost.videoUrl, speed),
                   onSoundToggle: (value) => ref.setGlobalVideoSound(value),
                 ),
               ),
@@ -295,7 +296,7 @@ class _PostDetailPageScaffoldState<T extends Post>
       bottomSheet: widget.infoBuilder != null
           ? DecoratedBox(
               decoration: BoxDecoration(
-                color: context.theme.scaffoldBackgroundColor.withOpacity(0.8),
+                color: context.colorScheme.surface.withOpacity(0.8),
                 border: Border(
                   top: BorderSide(
                     color: context.theme.dividerColor,
@@ -307,10 +308,10 @@ class _PostDetailPageScaffoldState<T extends Post>
             )
           : buildBottomSheet(),
       targetSwipeDown: SwipeTargetImage(
-        imageUrl: posts[currentPage].isVideo
-            ? posts[currentPage].videoThumbnailUrl
-            : widget.swipeImageUrlBuilder(posts[currentPage]),
-        aspectRatio: posts[currentPage].aspectRatio,
+        imageUrl: focusedPost.isVideo
+            ? focusedPost.videoThumbnailUrl
+            : widget.swipeImageUrlBuilder(focusedPost),
+        aspectRatio: focusedPost.aspectRatio,
       ),
       expandedBuilder: (context, page, expanded, enableSwipe) {
         final post = posts[page];
@@ -528,28 +529,27 @@ class _PostDetailPageScaffoldState<T extends Post>
           ),
         );
       },
-      pageCount: widget.posts.length,
+      pageCount: posts.length,
       topRightButtonsBuilder: (expanded) =>
           widget.topRightButtonsBuilder != null
               ? widget.topRightButtonsBuilder!(
                   currentPage,
                   expanded,
-                  posts[currentPage],
+                  focusedPost,
                   controller,
                 )
               : [
                   NoteActionButtonWithProvider(
-                    post: posts[currentPage],
+                    post: focusedPost,
                     expanded: expanded,
-                    noteState:
-                        ref.watch(notesControllerProvider(posts[currentPage])),
+                    noteState: ref.watch(notesControllerProvider(focusedPost)),
                   ),
                   GeneralMoreActionButton(
-                    post: widget.posts[currentPage],
+                    post: focusedPost,
                     onStartSlideshow: () => controller.startSlideshow(),
                   ),
                 ],
-      onExpanded: () => widget.onExpanded?.call(posts[currentPage]),
+      onExpanded: () => widget.onExpanded?.call(focusedPost),
     );
   }
 }

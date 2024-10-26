@@ -96,11 +96,11 @@ class ImageGridItem extends StatelessWidget {
                   NumberFormat.compact().format(score),
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: score! > 0
-                        ? Colors.red
-                        : score! < 0
-                            ? Colors.blue
-                            : Colors.white,
+                    color: switch (score!) {
+                      > 0 => context.colors.upvoteColor,
+                      < 0 => context.colors.downvoteColor,
+                      _ => Colors.white,
+                    },
                     fontWeight: FontWeight.w800,
                   ),
                 ),
@@ -144,17 +144,18 @@ class ImageGridItem extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 6),
                 height: 25,
                 decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.7),
+                  color: context.extendedColorScheme.surfaceContainerOverlayDim,
                   borderRadius: const BorderRadius.all(Radius.circular(4)),
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
+                    Text(
                       'AI',
                       style: TextStyle(
                         fontWeight: FontWeight.w800,
-                        color: Colors.white,
+                        color: context
+                            .extendedColorScheme.onSurfaceContainerOverlayDim,
                       ),
                     ),
                   ],

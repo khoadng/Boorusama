@@ -83,7 +83,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
           Text(
             'Basic Auth',
             style: context.textTheme.titleSmall?.copyWith(
-              color: context.theme.hintColor,
+              color: context.colorScheme.hintColor,
               fontSize: 14,
               fontWeight: FontWeight.w700,
             ),
@@ -92,7 +92,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
           Text(
             'Provide this information to view your favorites. This only provides read access to your account.',
             style: context.textTheme.titleSmall?.copyWith(
-              color: context.theme.hintColor,
+              color: context.colorScheme.hintColor,
               fontSize: 12,
               fontWeight: FontWeight.w400,
             ),
@@ -109,7 +109,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
           RichText(
             text: TextSpan(
               style: context.textTheme.titleSmall?.copyWith(
-                color: context.theme.hintColor,
+                color: context.colorScheme.hintColor,
                 fontSize: 12,
                 fontWeight: FontWeight.w400,
               ),
@@ -164,7 +164,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
           Text(
             'Advanced Auth',
             style: context.textTheme.titleSmall?.copyWith(
-              color: context.theme.hintColor,
+              color: context.colorScheme.hintColor,
               fontSize: 14,
               fontWeight: FontWeight.w700,
             ),
@@ -173,7 +173,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
           Text(
             'Provide this information allows you to edit your favorites. This provides write access to your account. Note that if you change your password, you need to log in again.',
             style: context.textTheme.titleSmall?.copyWith(
-              color: context.theme.hintColor,
+              color: context.colorScheme.hintColor,
               fontSize: 12,
               fontWeight: FontWeight.w400,
             ),

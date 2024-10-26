@@ -185,7 +185,7 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
         _onWillPop();
       },
       child: ColoredBox(
-        color: context.theme.scaffoldBackgroundColor,
+        color: context.colorScheme.surface,
         child: PostGridConfigRegion(
           postController: controller,
           blacklistHeader: header,
@@ -436,7 +436,7 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
       rightSwipeWidget: Chip(
         visualDensity: VisualDensity.compact,
         side: BorderSide(
-          color: context.theme.hintColor,
+          color: context.colorScheme.hintColor,
         ),
         backgroundColor: context.colorScheme.surface,
         label: Row(
@@ -454,7 +454,7 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
       leftSwipeWidget: Chip(
         visualDensity: VisualDensity.compact,
         side: BorderSide(
-          color: context.theme.hintColor,
+          color: context.colorScheme.hintColor,
         ),
         backgroundColor: context.colorScheme.surface,
         label: Row(
@@ -637,12 +637,16 @@ class TooMuchCachedImagesWarningBanner extends ConsumerWidget {
                       ref
                           .read(_cacheImageActionsPerformedProvider.notifier)
                           .state = true;
-                      await clearImageCache();
+                      final success = await clearImageCache();
 
                       final c = navigatorKey.currentState?.context;
 
                       if (c != null && c.mounted) {
-                        showSuccessToast(context, 'Cache cleared');
+                        if (success) {
+                          showSuccessToast(context, 'Cache cleared');
+                        } else {
+                          showErrorToast(context, 'Failed to clear cache');
+                        }
                       }
                     },
                     child: const Text('settings.performance.clear_cache').tr(),

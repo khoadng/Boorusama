@@ -48,7 +48,7 @@ class BookmarkScrollView extends ConsumerWidget {
           pinned: true,
           automaticallyImplyLeading: false,
           titleSpacing: 0,
-          backgroundColor: context.theme.scaffoldBackgroundColor,
+          backgroundColor: context.colorScheme.surface,
           title: const BookmarkAppBar(),
         ),
         SliverToBoxAdapter(
@@ -161,10 +161,7 @@ class BookmarkScrollView extends ConsumerWidget {
                             right: 5,
                             child: CircularIconButton(
                               padding: const EdgeInsets.all(4),
-                              icon: const Icon(
-                                Symbols.close,
-                                color: Colors.white,
-                              ),
+                              icon: const Icon(Symbols.close),
                               onPressed: () => ref.bookmarks
                                   .removeBookmarkWithToast(context, bookmark),
                             ),

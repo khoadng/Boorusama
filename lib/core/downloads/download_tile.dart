@@ -111,7 +111,7 @@ class DownloadTileBuilder extends StatelessWidget {
                           overflow: TextOverflow.fade,
                           softWrap: false,
                           style: TextStyle(
-                            color: context.theme.hintColor,
+                            color: context.colorScheme.hintColor,
                             fontSize: 12,
                           ),
                         ),

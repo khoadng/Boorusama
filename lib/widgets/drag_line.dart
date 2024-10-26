@@ -17,7 +17,7 @@ class DragLine extends StatelessWidget {
       height: 6,
       decoration: ShapeDecoration(
         shape: const StadiumBorder(),
-        color: Theme.of(context).hintColor,
+        color: Theme.of(context).colorScheme.outline,
       ),
     );
   }

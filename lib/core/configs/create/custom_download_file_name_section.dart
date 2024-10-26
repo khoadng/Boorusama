@@ -200,7 +200,7 @@ class _DownloadFormatCardState extends ConsumerState<DownloadFormatCard> {
     return DecoratedBox(
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(4)),
-        border: Border.all(color: context.theme.hintColor),
+        border: Border.all(color: context.colorScheme.hintColor),
       ),
       child: ExpandablePanel(
         theme: ExpandableThemeData(
@@ -300,7 +300,7 @@ class FilenamePreview extends StatelessWidget {
             filename,
             style: context.textTheme.bodyMedium?.copyWith(
               fontWeight: FontWeight.w700,
-              color: context.theme.hintColor,
+              color: context.colorScheme.hintColor,
             ),
           )),
         ],

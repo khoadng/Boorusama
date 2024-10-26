@@ -40,7 +40,7 @@ class TagSuggestionItems extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Material(
-      color: backgroundColor ?? context.theme.scaffoldBackgroundColor,
+      color: backgroundColor ?? context.colorScheme.surface,
       elevation: elevation ?? 4,
       borderRadius: borderRadius ?? const BorderRadius.all(Radius.circular(8)),
       child: ListView.builder(
@@ -116,7 +116,7 @@ class TagSuggestionItem extends StatelessWidget {
                 child: Text(
                   NumberFormat.compact().format(tag.postCount),
                   style: TextStyle(
-                    color: context.theme.hintColor,
+                    color: context.colorScheme.hintColor,
                   ),
                 ),
               ),

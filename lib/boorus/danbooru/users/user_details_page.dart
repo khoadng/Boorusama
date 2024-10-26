@@ -28,7 +28,6 @@ import '../posts/posts.dart';
 import '../related_tags/related_tags.dart';
 import '../reports/reports.dart';
 import '../router.dart';
-import 'user_charts.dart';
 import 'users.dart';
 
 class DanbooruReportDataParams extends Equatable {
@@ -157,7 +156,7 @@ class UserDetailsPage extends ConsumerWidget {
         child: state.when(
           data: (user) => DecoratedBox(
             decoration: BoxDecoration(
-              color: context.theme.scaffoldBackgroundColor,
+              color: context.colorScheme.surface,
               borderRadius: const BorderRadius.all(Radius.circular(8)),
             ),
             child: CustomScrollView(

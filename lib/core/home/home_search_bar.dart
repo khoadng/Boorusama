@@ -175,7 +175,7 @@ class _VersionChangeVisualizedText extends StatelessWidget {
             text: status.currentVersion,
             style: context.textTheme.bodyLarge?.copyWith(
               fontWeight: FontWeight.w800,
-              color: context.theme.hintColor,
+              color: context.colorScheme.hintColor,
             ),
           ),
           const TextSpan(text: '  ➞  '),
@@ -283,7 +283,7 @@ class _SliverHomeSearchBarState
         onTap: () => goToSearchPage(context),
       );
       return SliverAppBar(
-        backgroundColor: context.theme.scaffoldBackgroundColor,
+        backgroundColor: context.colorScheme.surface,
         toolbarHeight: kToolbarHeight * 1.2,
         title: LayoutBuilder(
           builder: (context, constraints) {

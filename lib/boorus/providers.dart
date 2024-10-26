@@ -155,14 +155,13 @@ final downloadFileUrlExtractorProvider =
 final postArtistCharacterRepoProvider =
     Provider.family<PostRepository, BooruConfig>(
         (ref, config) => switch (config.booruType) {
-              BooruType.danbooru =>
-                ref.watch(danbooruArtistCharacterPostRepoProvider(config)),
               BooruType.gelbooru =>
                 ref.watch(gelbooruArtistCharacterPostRepoProvider(config)),
               BooruType.gelbooruV2 =>
                 ref.watch(gelbooruV2ArtistCharacterPostRepoProvider(config)),
               BooruType.gelbooruV1 =>
                 ref.watch(gelbooruV1PostRepoProvider(config)),
+              BooruType.danbooru ||
               BooruType.moebooru ||
               BooruType.e621 ||
               BooruType.philomena ||

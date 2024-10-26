@@ -12,6 +12,7 @@ import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/theme.dart';
 
 class PoolSearchPage extends ConsumerStatefulWidget {
   const PoolSearchPage({super.key});
@@ -36,7 +37,7 @@ class _PoolSearchPageState extends ConsumerState<PoolSearchPage> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: _SearchBar(textEditingController: textEditingController),
+        title: _SearchBar(controller: textEditingController),
       ),
       body: switch (mode) {
         PoolSearchMode.suggestion => _SuggestionView(
@@ -107,7 +108,9 @@ class _SuggestionView extends ConsumerWidget {
                           ),
                           trailing: Text(
                             NumberFormat.compact().format(pool.postCount),
-                            style: const TextStyle(color: Colors.grey),
+                            style: TextStyle(
+                              color: context.colorScheme.hintColor,
+                            ),
                           ),
                           onTap: () {
                             FocusManager.instance.primaryFocus?.unfocus();
@@ -131,10 +134,10 @@ class _SuggestionView extends ConsumerWidget {
 
 class _SearchBar extends ConsumerWidget {
   const _SearchBar({
-    required this.textEditingController,
+    required this.controller,
   });
 
-  final TextEditingController textEditingController;
+  final TextEditingController controller;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -148,12 +151,12 @@ class _SearchBar extends ConsumerWidget {
           Symbols.arrow_back,
         ),
       ),
-      queryEditingController: textEditingController,
+      controller: controller,
       autofocus: true,
       trailing: query != null && query.isNotEmpty
           ? IconButton(
               onPressed: () {
-                textEditingController.clear();
+                controller.clear();
                 ref.read(danbooruPoolQueryProvider.notifier).state = '';
               },
               icon: const Icon(Symbols.close),

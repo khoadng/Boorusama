@@ -38,7 +38,7 @@ class FavoritesPageScaffold<T extends Post> extends ConsumerWidget {
               floating: true,
               elevation: 0,
               shadowColor: Colors.transparent,
-              backgroundColor: context.theme.scaffoldBackgroundColor,
+              backgroundColor: context.colorScheme.surface,
               actions: [
                 if (favQueryBuilder != null)
                   IconButton(

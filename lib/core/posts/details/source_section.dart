@@ -34,7 +34,7 @@ class SourceSection extends StatelessWidget {
           child: Text(
             title ?? 'post.detail.source_label'.tr(),
             style: context.textTheme.titleLarge?.copyWith(
-              color: context.theme.hintColor,
+              color: context.colorScheme.hintColor,
               fontSize: 16,
             ),
           ),
@@ -48,7 +48,7 @@ class SourceSection extends StatelessWidget {
               onTap: () => launchExternalUrlString(source.url),
               child: DecoratedBox(
                 decoration: BoxDecoration(
-                  border: Border.all(color: context.theme.hintColor),
+                  border: Border.all(color: context.colorScheme.hintColor),
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Padding(

@@ -34,7 +34,7 @@ class QuickFavoriteButton extends ConsumerWidget {
       ),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: Colors.black.withOpacity(0.5),
+        color: context.extendedColorScheme.surfaceContainerOverlay,
       ),
       child: LikeButton(
         isLiked: isFaved,
@@ -46,7 +46,9 @@ class QuickFavoriteButton extends ConsumerWidget {
         likeBuilder: (isLiked) {
           return Icon(
             isLiked ? Symbols.favorite : Symbols.favorite,
-            color: isLiked ? context.colors.upvoteColor : Colors.white,
+            color: isLiked
+                ? context.colors.upvoteColor
+                : context.extendedColorScheme.onSurfaceContainerOverlay,
             fill: isLiked ? 1 : 0,
           );
         },

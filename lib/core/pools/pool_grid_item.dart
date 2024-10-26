@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class PoolGridItem extends ConsumerWidget {
@@ -64,9 +65,9 @@ class PoolGridItem extends ConsumerWidget {
             top: 4,
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 6),
-              height: 32,
+              height: 28,
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.7),
+                color: context.extendedColorScheme.surfaceContainerOverlayDim,
                 borderRadius: const BorderRadius.all(Radius.circular(4)),
               ),
               child: Row(
@@ -74,17 +75,19 @@ class PoolGridItem extends ConsumerWidget {
                 children: [
                   Text(
                     total.toString(),
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.w700,
-                      color: Colors.white,
+                      color: context
+                          .extendedColorScheme.onSurfaceContainerOverlayDim,
                     ),
                   ),
                   const SizedBox(width: 4),
-                  const Icon(
+                  Icon(
                     Symbols.photo_library,
-                    color: Colors.white,
+                    color: context
+                        .extendedColorScheme.onSurfaceContainerOverlayDim,
                     fill: 1,
-                    size: 20,
+                    size: 18,
                   ),
                 ],
               ),

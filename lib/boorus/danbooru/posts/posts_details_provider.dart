@@ -11,7 +11,7 @@ import 'package:boorusama/core/posts/posts.dart';
 final danbooruPostDetailsArtistProvider = FutureProvider.family
     .autoDispose<List<DanbooruPost>, String>((ref, tag) async {
   return ref
-      .watch(danbooruArtistCharacterPostRepoProvider(ref.watchConfig))
+      .watch(danbooruPostRepoProvider(ref.watchConfig))
       .getPostsFromTagWithBlacklist(
         tag: tag,
         blacklist: ref.watch(blacklistTagsProvider(ref.watchConfig).future),

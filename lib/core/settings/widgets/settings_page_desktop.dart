@@ -307,7 +307,7 @@ class _SettingsSection extends StatelessWidget {
       child: Text(
         label.toUpperCase(),
         style: context.textTheme.titleSmall!
-            .copyWith(color: context.theme.hintColor),
+            .copyWith(color: context.colorScheme.hintColor),
       ),
     );
   }

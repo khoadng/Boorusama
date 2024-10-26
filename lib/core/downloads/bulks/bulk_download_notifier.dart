@@ -1,6 +1,5 @@
-// Package imports:
-import 'package:background_downloader/background_downloader.dart'
-    hide PermissionStatus;
+// Dart imports:
+import 'dart:isolate';
 
 // Flutter imports:
 import 'package:flutter/material.dart';
@@ -23,6 +22,12 @@ import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/foundation/permissions.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/router.dart';
+
+import 'package:background_downloader/background_downloader.dart'
+    hide PermissionStatus;
+
+
+
 
 const _serviceName = 'Bulk Download Manager';
 
@@ -223,28 +228,6 @@ class BulkDownloadNotifier extends Notifier<List<BulkDownloadTask>> {
     ];
   }
 
-  List<Post> _filterBlacklistedTags(
-    List<Post> posts,
-    Iterable<List<TagExpression>>? patterns,
-  ) {
-    if (patterns == null || patterns.isEmpty) {
-      return posts;
-    }
-
-    final filterIds = <int>{};
-
-    for (final post in posts) {
-      for (final pattern in patterns) {
-        if (post.containsTagPattern(pattern)) {
-          filterIds.add(post.id);
-          break;
-        }
-      }
-    }
-
-    return posts.where((e) => !filterIds.contains(e.id)).toList();
-  }
-
   Future<List<Post>> getPosts(
     String tags,
     int page,
@@ -259,7 +242,7 @@ class BulkDownloadNotifier extends Notifier<List<BulkDownloadTask>> {
       limit: _perPage,
     );
 
-    final filteredItems = _filterBlacklistedTags(r.posts, patterns);
+    final filteredItems = await _filterBlacklistedTags(r.posts, patterns);
 
     return filteredItems;
   }
@@ -491,6 +474,36 @@ class BulkDownloadNotifier extends Notifier<List<BulkDownloadTask>> {
       updateTaskStatus(group, BulkDownloadTaskStatus.inProgress);
     }
   }
+}
+
+Future<List<Post>> _filterBlacklistedTags(
+  List<Post> posts,
+  Iterable<List<TagExpression>>? patterns,
+) =>
+    Isolate.run(
+      () => _filterInIsolate(posts, patterns),
+    );
+
+List<Post> _filterInIsolate(
+  List<Post> posts,
+  Iterable<List<TagExpression>>? patterns,
+) {
+  if (patterns == null || patterns.isEmpty) {
+    return posts;
+  }
+
+  final filterIds = <int>{};
+
+  for (final post in posts) {
+    for (final pattern in patterns) {
+      if (post.containsTagPattern(pattern)) {
+        filterIds.add(post.id);
+        break;
+      }
+    }
+  }
+
+  return posts.where((e) => !filterIds.contains(e.id)).toList();
 }
 
 final bulkDownloadOnTapStreamProvider = StreamProvider<String>(

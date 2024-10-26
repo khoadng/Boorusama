@@ -48,12 +48,12 @@ class _SliverSearchAppBarState extends ConsumerState<SliverSearchAppBar> {
       automaticallyImplyLeading: false,
       titleSpacing: 0,
       toolbarHeight: kToolbarHeight * 1.2,
-      backgroundColor: context.theme.scaffoldBackgroundColor,
+      backgroundColor: context.colorScheme.surface,
       title: FocusScope(
         node: focusScope,
         child: SearchAppBar(
           autofocus: false,
-          queryEditingController: widget.searchController.textEditingController,
+          controller: widget.searchController.textEditingController,
           leading: (!context.canPop() ? null : const SearchAppBarBackButton()),
           innerSearchButton: Padding(
             padding: const EdgeInsets.only(right: 8),

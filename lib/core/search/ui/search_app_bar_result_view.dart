@@ -24,7 +24,7 @@ class SearchAppBarResultView extends ConsumerWidget {
     return SliverAppBar(
       titleSpacing: 0,
       toolbarHeight: kToolbarHeight * 1.2,
-      backgroundColor: context.theme.scaffoldBackgroundColor,
+      backgroundColor: context.colorScheme.surface,
       title: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: BooruSearchBar(

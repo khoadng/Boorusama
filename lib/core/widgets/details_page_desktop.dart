@@ -182,13 +182,15 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                                   ? Align(
                                       alignment: Alignment.centerRight,
                                       child: MaterialButton(
-                                        color: Colors.black.withOpacity(0.5),
+                                        color: context.extendedColorScheme
+                                            .surfaceContainerOverlay,
                                         shape: const CircleBorder(),
                                         padding: const EdgeInsets.all(12),
                                         onPressed: () => controller.nextPage(),
-                                        child: const Icon(
+                                        child: Icon(
                                           Symbols.arrow_forward,
-                                          color: Colors.white,
+                                          color: context.extendedColorScheme
+                                              .onSurfaceContainerOverlay,
                                         ),
                                       ),
                                     )
@@ -201,14 +203,16 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                                   ? Align(
                                       alignment: Alignment.centerLeft,
                                       child: MaterialButton(
-                                        color: Colors.black.withOpacity(0.5),
+                                        color: context.extendedColorScheme
+                                            .surfaceContainerOverlay,
                                         shape: const CircleBorder(),
                                         padding: const EdgeInsets.all(12),
                                         onPressed: () =>
                                             controller.previousPage(),
-                                        child: const Icon(
+                                        child: Icon(
                                           Symbols.arrow_back,
-                                          color: Colors.white,
+                                          color: context.extendedColorScheme
+                                              .onSurfaceContainerOverlay,
                                         ),
                                       ),
                                     )
@@ -229,10 +233,7 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                                           padding: const EdgeInsets.all(8),
                                           child: CircularIconButton(
                                             onPressed: () => _onExit(false),
-                                            icon: const Icon(
-                                              Symbols.close,
-                                              color: Colors.white,
-                                            ),
+                                            icon: const Icon(Symbols.close),
                                           ),
                                         ),
                                 ),
@@ -250,14 +251,11 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                                         onPressed: () =>
                                             showMaterialModalBottomSheet(
                                           context: context,
-                                          backgroundColor: context
-                                              .theme.scaffoldBackgroundColor,
+                                          backgroundColor:
+                                              context.colorScheme.surface,
                                           builder: (context) => widget.info,
                                         ),
-                                        icon: const Icon(
-                                          Symbols.info,
-                                          color: Colors.white,
-                                        ),
+                                        icon: const Icon(Symbols.info),
                                       )
                                     else
                                       CircularIconButton(
@@ -272,10 +270,7 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                                                     .toString());
                                           },
                                         ),
-                                        icon: const Icon(
-                                          Symbols.info,
-                                          color: Colors.white,
-                                        ),
+                                        icon: const Icon(Symbols.info),
                                       ),
                                     const SizedBox(width: 8),
                                     widget.topRight!,

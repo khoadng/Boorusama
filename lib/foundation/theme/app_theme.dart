@@ -10,11 +10,15 @@ import 'package:boorusama/foundation/theme.dart';
 
 const staticLightScheme = ColorScheme(
   brightness: Brightness.light,
-  secondaryContainer: GreyscaleShades.gray212,
+  secondaryContainer: GreyscaleShades.gray220,
   onSecondaryContainer: kOnSurfaceLightColor,
   tertiaryContainer: GreyscaleShades.gray220,
   onTertiaryContainer: kOnSurfaceLightColor,
-  surfaceContainerHighest: GreyscaleShades.gray226,
+  surfaceContainerLowest: GreyscaleShades.gray226,
+  surfaceContainerLow: GreyscaleShades.gray224,
+  surfaceContainer: GreyscaleShades.gray220,
+  surfaceContainerHigh: GreyscaleShades.gray216,
+  surfaceContainerHighest: GreyscaleShades.gray214,
   primary: kPrimaryLightColor,
   onPrimary: kOnPrimaryLightColor,
   secondary: kPrimaryLightColor,
@@ -23,6 +27,8 @@ const staticLightScheme = ColorScheme(
   onError: kOnErrorLightColor,
   surface: GreyscaleShades.gray242,
   onSurface: kOnSurfaceLightColor,
+  outline: GreyscaleShades.gray110,
+  outlineVariant: GreyscaleShades.gray60,
 );
 
 const staticDarkScheme = ColorScheme(
@@ -31,7 +37,11 @@ const staticDarkScheme = ColorScheme(
   onSecondaryContainer: Colors.white,
   tertiaryContainer: GreyscaleShades.gray48,
   onTertiaryContainer: Colors.white,
-  surfaceContainerHighest: GreyscaleShades.gray46,
+  surfaceContainerLowest: GreyscaleShades.gray38,
+  surfaceContainerLow: GreyscaleShades.gray42,
+  surfaceContainer: GreyscaleShades.gray46,
+  surfaceContainerHigh: GreyscaleShades.gray50,
+  surfaceContainerHighest: GreyscaleShades.gray54,
   primary: kPrimaryDarkColor,
   onPrimary: kOnPrimaryDarkColor,
   secondary: kPrimaryDarkColor,
@@ -40,6 +50,8 @@ const staticDarkScheme = ColorScheme(
   onError: kOnErrorDarkColor,
   surface: GreyscaleShades.gray24,
   onSurface: Colors.white,
+  outline: GreyscaleShades.gray160,
+  outlineVariant: GreyscaleShades.gray60,
 );
 
 const staticBlackScheme = ColorScheme(
@@ -48,7 +60,11 @@ const staticBlackScheme = ColorScheme(
   onSecondaryContainer: Colors.white,
   tertiaryContainer: GreyscaleShades.gray28,
   onTertiaryContainer: Colors.white,
-  surfaceContainerHighest: GreyscaleShades.gray24,
+  surfaceContainerLowest: GreyscaleShades.gray24,
+  surfaceContainerLow: GreyscaleShades.gray28,
+  surfaceContainer: GreyscaleShades.gray32,
+  surfaceContainerHigh: GreyscaleShades.gray36,
+  surfaceContainerHighest: GreyscaleShades.gray40,
   primary: kPrimaryAmoledDarkColor,
   onPrimary: kOnPrimaryAmoledDarkColor,
   secondary: kPrimaryAmoledDarkColor,
@@ -57,8 +73,29 @@ const staticBlackScheme = ColorScheme(
   onError: kOnErrorAmoledDarkColor,
   surface: Colors.black,
   onSurface: Colors.white,
-  outline: Colors.white,
+  outline: GreyscaleShades.gray160,
   outlineVariant: GreyscaleShades.gray60,
+);
+
+const staticLightExtendedScheme = ExtendedColorScheme(
+  surfaceContainerOverlay: Colors.black54,
+  onSurfaceContainerOverlay: Colors.white,
+  surfaceContainerOverlayDim: Color(0xb3000000),
+  onSurfaceContainerOverlayDim: Colors.white70,
+);
+
+const staticDarkExtendedScheme = ExtendedColorScheme(
+  surfaceContainerOverlay: Colors.black54,
+  onSurfaceContainerOverlay: Colors.white,
+  surfaceContainerOverlayDim: Color(0xb3000000),
+  onSurfaceContainerOverlayDim: Colors.white70,
+);
+
+const staticBlackExtendedScheme = ExtendedColorScheme(
+  surfaceContainerOverlay: Colors.black54,
+  onSurfaceContainerOverlay: Colors.white,
+  surfaceContainerOverlayDim: Color(0xb3000000),
+  onSurfaceContainerOverlayDim: Colors.white70,
 );
 
 class AppTheme {
@@ -98,12 +135,15 @@ class AppTheme {
       switch (mode) {
         AppThemeMode.light => lightTheme(
             colorScheme: colorScheme,
+            extendedColorScheme: staticLightExtendedScheme,
           ),
         AppThemeMode.dark => darkTheme(
             colorScheme: colorScheme,
+            extendedColorScheme: staticDarkExtendedScheme,
           ),
         AppThemeMode.amoledDark => darkTheme(
             colorScheme: colorScheme,
+            extendedColorScheme: staticBlackExtendedScheme,
           ).copyWith(
             dividerTheme: const DividerThemeData(
               endIndent: 0,
@@ -113,14 +153,17 @@ class AppTheme {
         AppThemeMode.system => systemDarkMode
             ? darkTheme(
                 colorScheme: colorScheme,
+                extendedColorScheme: staticDarkExtendedScheme,
               )
             : lightTheme(
                 colorScheme: colorScheme,
+                extendedColorScheme: staticLightExtendedScheme,
               ),
       };
 
   static ThemeData lightTheme({
     required ColorScheme colorScheme,
+    required ExtendedColorScheme extendedColorScheme,
   }) =>
       defaultTheme(colorScheme: colorScheme).copyWith(
         brightness: Brightness.light,
@@ -129,46 +172,32 @@ class AppTheme {
           endIndent: 0,
           indent: 0,
         ),
-        extensions: const [
+        extensions: [
           BoorusamaColors(
-            videoPlayerBackgroundColor: Colors.white,
-            themeMode: AppThemeMode.light,
-            selectedColor: Colors.grey,
             upvoteColor: Colors.redAccent,
             downvoteColor: Colors.blueAccent,
           ),
+          extendedColorScheme,
         ],
-        listTileTheme: const ListTileThemeData(
-          subtitleTextStyle: TextStyle(
-            color: kHintLightColor,
-          ),
-        ),
       );
 
   static ThemeData darkTheme({
     required ColorScheme colorScheme,
+    required ExtendedColorScheme extendedColorScheme,
   }) =>
       defaultTheme(colorScheme: colorScheme).copyWith(
         brightness: Brightness.dark,
         dividerTheme: DividerThemeData(
-          color: colorScheme.outlineVariant.withOpacity(0.1),
           endIndent: 0,
           indent: 0,
         ),
-        extensions: const [
+        extensions: [
           BoorusamaColors(
-            videoPlayerBackgroundColor: Colors.black,
-            themeMode: AppThemeMode.amoledDark,
-            selectedColor: Color.fromARGB(255, 74, 74, 74),
             upvoteColor: Colors.redAccent,
             downvoteColor: Colors.blueAccent,
           ),
+          extendedColorScheme,
         ],
-        listTileTheme: const ListTileThemeData(
-          subtitleTextStyle: TextStyle(
-            color: kHintAmoledDarkColor,
-          ),
-        ),
       );
 
   static ThemeData defaultTheme({
@@ -183,9 +212,7 @@ class AppTheme {
           titleTextStyle: TextStyle(
             fontWeight: FontWeight.w700,
             fontSize: 22,
-            color: colorScheme.brightness == Brightness.light
-                ? Colors.black
-                : Colors.white,
+            color: colorScheme.onSurface,
           ),
         ),
         chipTheme: const ChipThemeData(
@@ -207,7 +234,13 @@ class AppTheme {
         floatingActionButtonTheme: const FloatingActionButtonThemeData(
           shape: CircleBorder(),
         ),
+        iconTheme: IconThemeData(
+          color: colorScheme.onSurface,
+        ),
         inputDecorationTheme: InputDecorationTheme(
+          hintStyle: TextStyle(
+            color: colorScheme.outline,
+          ),
           floatingLabelBehavior: FloatingLabelBehavior.always,
           filled: true,
           enabledBorder: const OutlineInputBorder(
@@ -243,9 +276,9 @@ class AppTheme {
             ),
           ),
         ),
-        listTileTheme: const ListTileThemeData(
+        listTileTheme: ListTileThemeData(
           subtitleTextStyle: TextStyle(
-            color: kHintAmoledDarkColor,
+            color: colorScheme.outline,
           ),
         ),
         colorScheme: colorScheme,
@@ -275,4 +308,8 @@ class AppTheme {
           dividerHeight: 0.1,
         ),
       );
+}
+
+extension ColorSchemeAlias on ColorScheme {
+  Color get hintColor => outline;
 }
