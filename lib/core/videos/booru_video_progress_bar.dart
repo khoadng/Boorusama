@@ -179,7 +179,7 @@ class BooruVideoOptionSheet extends StatelessWidget {
     return Material(
       color: kPreferredLayout.isDesktop
           ? context.colorScheme.surface
-          : context.colorScheme.secondaryContainer,
+          : context.colorScheme.surfaceContainer,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4),
         child: Column(

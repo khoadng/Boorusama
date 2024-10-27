@@ -32,7 +32,7 @@ class TagEditHistoryCard extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border.all(),
         borderRadius: BorderRadius.circular(8),
-        color: context.colorScheme.secondaryContainer,
+        color: context.colorScheme.surfaceContainer,
       ),
       child: Row(
         children: [

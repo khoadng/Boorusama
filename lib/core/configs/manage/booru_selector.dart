@@ -56,7 +56,7 @@ class _BooruSelectorVerticalState extends ConsumerState<BooruSelectorVertical>
 
     return Container(
       width: 68,
-      color: context.colorScheme.surfaceContainer,
+      color: context.colorScheme.surfaceContainerHigh,
       child: ScrollConfiguration(
         behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
         child: ref.watch(configsProvider).maybeWhen(

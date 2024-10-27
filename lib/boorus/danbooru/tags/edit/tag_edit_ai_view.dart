@@ -77,13 +77,13 @@ class _TagEditAITagViewState extends ConsumerState<TagEditAITagView> {
                     selectedColor: colors?.backgroundColor,
                     backgroundColor: selected
                         ? colors?.backgroundColor
-                        : context.colorScheme.secondaryContainer,
-                    side: selected
-                        ? colors != null
-                            ? BorderSide(
-                                color: colors.borderColor,
-                              )
-                            : null
+                        : context.colorScheme.surfaceContainer,
+                    side: colors != null
+                        ? BorderSide(
+                            color: selected
+                                ? colors.borderColor
+                                : Colors.transparent,
+                          )
                         : null,
                     onSelected: (value) => value
                         ? widget.onAdded(tag.name)
@@ -99,9 +99,8 @@ class _TagEditAITagViewState extends ConsumerState<TagEditAITagView> {
                           style: TextStyle(
                             color: selected
                                 ? colors?.foregroundColor
-                                : context.colorScheme.onSecondaryContainer,
-                            fontWeight:
-                                selected ? FontWeight.w700 : FontWeight.w500,
+                                : context.colorScheme.onSurfaceVariant,
+                            fontWeight: FontWeight.w500,
                           ),
                           children: [
                             TextSpan(
@@ -112,7 +111,7 @@ class _TagEditAITagViewState extends ConsumerState<TagEditAITagView> {
                                     ? !selected
                                         ? null
                                         : Colors.white.withOpacity(0.85)
-                                    : Colors.grey.withOpacity(0.85),
+                                    : context.colorScheme.hintColor,
                               ),
                             ),
                           ],
