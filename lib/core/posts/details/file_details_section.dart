@@ -186,7 +186,7 @@ class _FileDetailTile extends StatelessWidget {
         builder: (context, constrainst) => Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: context.colorScheme.secondaryContainer,
+            color: context.colorScheme.surfaceContainer,
             borderRadius: const BorderRadius.all(Radius.circular(4)),
           ),
           width: constrainst.maxWidth * 0.55,

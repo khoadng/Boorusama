@@ -133,10 +133,11 @@ class BooruConfigSearchView extends ConsumerWidget {
     return Wrap(
       runAlignment: WrapAlignment.center,
       spacing: 5,
+      runSpacing: 5,
       children: [
         ...tags.map(
           (e) => Chip(
-            backgroundColor: context.theme.colorScheme.surfaceContainerHighest,
+            backgroundColor: context.theme.colorScheme.secondaryContainer,
             label: exclude
                 ? Text(e.substring(1).replaceAll('_', ' '))
                 : Text(e.replaceAll('_', ' ')),
@@ -245,8 +246,13 @@ class _EffectiveTagPreview extends ConsumerWidget {
         vertical: 8,
       ),
       decoration: BoxDecoration(
-        color: context.theme.colorScheme.secondaryContainer,
+        color:
+            context.theme.colorScheme.surfaceContainerLowest.withOpacity(0.6),
         borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: context.theme.colorScheme.outlineVariant.withOpacity(0.6),
+          width: 0.5,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -254,13 +260,14 @@ class _EffectiveTagPreview extends ConsumerWidget {
           Text(
             'Preview',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: context.theme.colorScheme.onSecondaryContainer,
+                  color: context.theme.colorScheme.onSurfaceVariant,
                 ),
           ),
           const SizedBox(height: 8),
           Wrap(
             runAlignment: WrapAlignment.center,
             spacing: 5,
+            runSpacing: 5,
             children: [
               IgnorePointer(
                 child: RawCompactChip(
@@ -268,7 +275,7 @@ class _EffectiveTagPreview extends ConsumerWidget {
                   label: Text(
                     '<any search query>',
                     style: TextStyle(
-                      color: context.theme.colorScheme.onSecondaryContainer
+                      color: context.theme.colorScheme.onSurfaceVariant
                           .withOpacity(0.6),
                       fontStyle: FontStyle.italic,
                     ),
@@ -303,8 +310,7 @@ class _EffectiveTagPreview extends ConsumerWidget {
                       ],
                     ),
                   ),
-                  backgroundColor:
-                      context.theme.colorScheme.surfaceContainerHighest,
+                  backgroundColor: context.theme.colorScheme.secondaryContainer,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(4),
                   ),

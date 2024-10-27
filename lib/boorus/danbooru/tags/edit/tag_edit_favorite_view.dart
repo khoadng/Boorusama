@@ -72,12 +72,6 @@ class _TagEditFavoriteViewState extends ConsumerState<TagEditFavoriteView> {
                         final selected = widget.isSelected(tag.name);
 
                         return FilterChip(
-                          side: selected && !context.isLight
-                              ? BorderSide(
-                                  color: context.colorScheme.hintColor,
-                                  width: 0.5,
-                                )
-                              : null,
                           selected: selected,
                           showCheckmark: false,
                           visualDensity: VisualDensity.compact,
@@ -88,6 +82,11 @@ class _TagEditFavoriteViewState extends ConsumerState<TagEditFavoriteView> {
                               : widget.onRemoved(tag.name),
                           label: Text(
                             tag.name.replaceUnderscoreWithSpace(),
+                            style: TextStyle(
+                              color: selected
+                                  ? context.colorScheme.onPrimary
+                                  : context.colorScheme.onSurface,
+                            ),
                           ),
                         );
                       }).toList(),

@@ -68,7 +68,7 @@ class _DownloadFolderSelectorSectionState
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(4),
             side: BorderSide(
-              color: context.colorScheme.hintColor,
+              color: context.colorScheme.outlineVariant,
             ),
           ),
           child: InkWell(

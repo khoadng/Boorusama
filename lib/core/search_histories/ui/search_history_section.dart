@@ -63,7 +63,7 @@ class SearchHistorySection extends StatelessWidget {
                         history: item,
                         reverseScheme: reverseScheme,
                       ),
-                      contentPadding: const EdgeInsets.only(left: 16),
+                      contentPadding: const EdgeInsets.only(left: 12),
                       onTap: () => onHistoryTap(item),
                       minTileHeight: isDesktopPlatform() ? 0 : null,
                       subtitle: showTime
