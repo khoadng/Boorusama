@@ -64,7 +64,7 @@ class _BooruSearchBarState extends State<BooruSearchBar> {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: context.colorScheme.secondaryContainer,
+      color: context.colorScheme.surfaceContainerHighest,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
       ),
