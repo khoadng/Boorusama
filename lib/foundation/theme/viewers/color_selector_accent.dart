@@ -1,7 +1,9 @@
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/theme.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
 
+// Project imports:
+import 'package:boorusama/dart.dart';
+import 'package:boorusama/foundation/theme.dart';
 import 'widgets.dart';
 
 class AccentColorSelector extends StatefulWidget {

@@ -10,6 +10,9 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/foundation/theme.dart';
 
+//FIXME: remove this when premium is implemented
+const kHasPremium = true;
+
 class ThemeBuilder extends ConsumerWidget {
   const ThemeBuilder({
     super.key,
@@ -25,11 +28,15 @@ class ThemeBuilder extends ConsumerWidget {
     final enableDynamicColor = ref
         .watch(settingsProvider.select((value) => value.enableDynamicColoring));
 
+    final colors = ref.watch(settingsProvider.select((value) => value.colors));
+
     final systemDarkMode =
         MediaQuery.platformBrightnessOf(context) == Brightness.dark;
 
-    final customColorScheme = ref.watchConfig.theme?.enable == true
-        ? getSchemeFromColorSettings(ref.watchConfig.theme?.colors)
+    final customColorScheme = kHasPremium
+        ? ref.watchConfig.theme?.enable == true
+            ? getSchemeFromColorSettings(ref.watchConfig.theme?.colors)
+            : getSchemeFromColorSettings(colors)
         : null;
 
     return DynamicColorBuilder(

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:boorusama/foundation/theme.dart';
-
 import 'widgets.dart';
 
 class BuiltInColorSelector extends StatelessWidget {

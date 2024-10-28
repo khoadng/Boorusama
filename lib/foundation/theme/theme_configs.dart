@@ -2,7 +2,6 @@
 import 'dart:convert';
 
 // Flutter imports:
-import 'package:boorusama/dart.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -10,6 +9,7 @@ import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
 import 'color_scheme_converter.dart';

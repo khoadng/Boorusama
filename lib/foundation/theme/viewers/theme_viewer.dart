@@ -7,8 +7,8 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 // Project imports:
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/string.dart';
-import 'color_selector_builtin.dart';
 import 'color_selector_accent.dart';
+import 'color_selector_builtin.dart';
 import 'color_selector_image.dart';
 import 'page_preview.dart';
 import 'widgets.dart';
