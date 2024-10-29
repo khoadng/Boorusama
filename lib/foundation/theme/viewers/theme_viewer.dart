@@ -35,10 +35,12 @@ class _ThemePreviewAppState extends State<ThemePreviewApp> {
   final pageController = PageController();
 
   late var _category = switch (_currentScheme?.schemeType) {
+    SchemeType.basic => ThemeCategory.basic,
     SchemeType.builtIn => ThemeCategory.builtIn,
     SchemeType.accent => ThemeCategory.accent,
     SchemeType.image => ThemeCategory.image,
-    _ => ThemeCategory.builtIn,
+    SchemeType.custom => throw UnimplementedError(),
+    null => ThemeCategory.builtIn,
   };
 
   @override
