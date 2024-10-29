@@ -40,7 +40,7 @@ class TagChipsPlaceholder extends ConsumerWidget {
               right: 4,
             ),
             child: ChoiceChip(
-              disabledColor: colorScheme.surfaceContainerLowest,
+              disabledColor: colorScheme.surfaceContainer,
               label: SizedBox(width: Random().nextInt(40).toDouble() + 40),
               selected: false,
               padding: const EdgeInsets.all(4),

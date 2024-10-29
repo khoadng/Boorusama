@@ -105,7 +105,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SettingsTile<AppThemeMode>(
+        SettingsTile(
           title: const Text('settings.theme.theme').tr(),
           selectedOption: settings.themeMode,
           items: AppThemeMode.values,
@@ -113,27 +113,29 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
               ref.updateSettings(settings.copyWith(themeMode: value)),
           optionBuilder: (value) => Text(value.localize()).tr(),
         ),
-        Builder(builder: (context) {
-          return SwitchListTile(
-            title: const Text('settings.theme.dynamic_color').tr(),
-            subtitle: dynamicColorSupported
-                ? !isDesktopPlatform()
-                    ? const Text(
-                        'settings.theme.dynamic_color_mobile_description',
-                      ).tr()
-                    : const Text(
-                        'settings.theme.dynamic_color_desktop_description',
-                      ).tr()
-                : Text(
-                    '${!isDesktopPlatform() ? 'settings.theme.dynamic_color_mobile_description'.tr() : 'settings.theme.dynamic_color_desktop_description'.tr()}. ${'settings.theme.dynamic_color_unsupported_description'.tr()}',
-                  ),
-            value: settings.enableDynamicColoring,
-            onChanged: dynamicColorSupported
-                ? (value) => ref.updateSettings(
-                    settings.copyWith(enableDynamicColoring: value))
-                : null,
-          );
-        }),
+        Builder(
+          builder: (context) {
+            return SwitchListTile(
+              title: const Text('settings.theme.dynamic_color').tr(),
+              subtitle: dynamicColorSupported
+                  ? !isDesktopPlatform()
+                      ? const Text(
+                          'settings.theme.dynamic_color_mobile_description',
+                        ).tr()
+                      : const Text(
+                          'settings.theme.dynamic_color_desktop_description',
+                        ).tr()
+                  : Text(
+                      '${!isDesktopPlatform() ? 'settings.theme.dynamic_color_mobile_description'.tr() : 'settings.theme.dynamic_color_desktop_description'.tr()}. ${'settings.theme.dynamic_color_unsupported_description'.tr()}',
+                    ),
+              value: settings.enableDynamicColoring,
+              onChanged: dynamicColorSupported
+                  ? (value) => ref.updateSettings(
+                      settings.copyWith(enableDynamicColoring: value))
+                  : null,
+            );
+          },
+        ),
         Container(
           margin: const EdgeInsets.symmetric(
             vertical: 4,
