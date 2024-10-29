@@ -7,11 +7,15 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 // Project imports:
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/string.dart';
+import 'package:boorusama/widgets/widgets.dart';
 import 'color_selector_accent.dart';
 import 'color_selector_builtin.dart';
 import 'color_selector_image.dart';
 import 'page_preview.dart';
 import 'widgets.dart';
+
+const _kMinSheetSize = 0.3;
+const _kMaxSheetSize = 0.7;
 
 class ThemePreviewApp extends StatefulWidget {
   const ThemePreviewApp({
@@ -54,15 +58,6 @@ class _ThemePreviewAppState extends State<ThemePreviewApp> {
     final colorScheme =
         getSchemeFromColorSettings(_currentScheme) ?? widget.defaultScheme;
 
-    final pages = [
-      PreviewHome(
-        colorScheme: colorScheme,
-      ),
-      PreviewDetails(
-        colorScheme: colorScheme,
-      ),
-    ];
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: colorScheme.brightness == Brightness.dark
@@ -75,106 +70,157 @@ class _ThemePreviewAppState extends State<ThemePreviewApp> {
               extendedColorScheme: staticLightExtendedScheme,
             ),
       home: Material(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Stack(
           children: [
-            Flexible(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    padding: EdgeInsets.only(
-                      top: MediaQuery.viewPaddingOf(context).top + 20,
-                    ),
-                    child: Text(
-                      (_currentScheme?.nickname ??
-                              _currentScheme?.name ??
-                              'Default')
-                          .sentenceCase,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 20,
-                        color: colorScheme.onSurface,
-                      ),
-                    ),
-                  ),
-                  Flexible(
-                    child: LayoutBuilder(
-                      builder: (_, c) => Container(
-                        constraints: BoxConstraints(
-                          maxHeight: 600,
-                        ),
-                        child: PageView(
-                          controller: pageController,
-                          children: pages,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SmoothPageIndicator(
-                    controller: pageController,
-                    count: pages.length,
-                    effect: WormEffect(
-                      activeDotColor: colorScheme.primary,
-                      dotColor: colorScheme.outlineVariant.withOpacity(0.25),
-                      dotHeight: 8,
-                      dotWidth: 16,
-                    ),
-                  ),
-                ],
+            Padding(
+              padding: EdgeInsets.only(
+                top: MediaQuery.viewPaddingOf(context).top + 20,
+                bottom: MediaQuery.sizeOf(context).height * _kMinSheetSize + 28,
               ),
+              child: _buildPageView(colorScheme),
             ),
-            Container(
-              margin: const EdgeInsets.only(
-                left: 16,
-                right: 16,
-                top: 16,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  switch (_category) {
-                    ThemeCategory.basic => BasicColorSelector(
-                        onSchemeChanged: _onSchemeChanged,
-                        currentScheme: _currentScheme,
-                      ),
-                    ThemeCategory.builtIn => BuiltInColorSelector(
-                        onSchemeChanged: _onSchemeChanged,
-                        currentScheme: _currentScheme,
-                      ),
-                    ThemeCategory.accent => AccentColorSelector(
-                        onSchemeChanged: _onSchemeChanged,
-                        initialScheme: _currentScheme,
-                      ),
-                    ThemeCategory.image => ExtractImageColorSelector(
-                        onSchemeChanged: _onSchemeChanged,
-                        initialScheme: _currentScheme,
-                      ),
+            Column(
+              children: [
+                Expanded(
+                  child: DraggableScrollableSheet(
+                    snap: true,
+                    minChildSize: switch (_category) {
+                      ThemeCategory.basic => 0.12,
+                      ThemeCategory.builtIn => 0.18,
+                      _ => _kMinSheetSize,
+                    },
+                    maxChildSize: _kMaxSheetSize,
+                    initialChildSize: _kMinSheetSize,
+                    builder: (context, scrollController) {
+                      return ColoredBox(
+                        color: context.colorScheme.surface,
+                        child: CustomScrollView(
+                          controller: scrollController,
+                          slivers: [
+                            const SliverDivider(
+                              height: 1,
+                            ),
+                            const SliverSizedBox(
+                              height: 8,
+                            ),
+                            SliverToBoxAdapter(
+                              child: Center(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: colorScheme.hintColor,
+                                    borderRadius: const BorderRadius.all(
+                                      Radius.circular(10),
+                                    ),
+                                  ),
+                                  height: 4,
+                                  width: 40,
+                                ),
+                              ),
+                            ),
+                            SliverToBoxAdapter(
+                              child: _buildOptions(),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                CategoryToggleSwitch(
+                  initialCategory: _category,
+                  onToggle: (category) {
+                    setState(() {
+                      _category = category;
+                    });
                   },
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 8,
-                    ),
-                    child: CategoryToggleSwitch(
-                      initialCategory: _category,
-                      onToggle: (category) {
-                        setState(() {
-                          _category = category;
-                        });
-                      },
-                    ),
-                  ),
-                  SizedBox(
-                    height: MediaQuery.viewPaddingOf(context).bottom,
-                  ),
-                ],
-              ),
+                ),
+                SizedBox(
+                  height: MediaQuery.viewPaddingOf(context).bottom,
+                ),
+              ],
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildOptions() {
+    return Container(
+      margin: const EdgeInsets.only(
+        left: 12,
+        right: 12,
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          switch (_category) {
+            ThemeCategory.basic => BasicColorSelector(
+                onSchemeChanged: _onSchemeChanged,
+                currentScheme: _currentScheme,
+              ),
+            ThemeCategory.builtIn => BuiltInColorSelector(
+                onSchemeChanged: _onSchemeChanged,
+                currentScheme: _currentScheme,
+              ),
+            ThemeCategory.accent => AccentColorSelector(
+                onSchemeChanged: _onSchemeChanged,
+                initialScheme: _currentScheme,
+              ),
+            ThemeCategory.image => ExtractImageColorSelector(
+                onSchemeChanged: _onSchemeChanged,
+                initialScheme: _currentScheme,
+              ),
+          },
+        ],
+      ),
+    );
+  }
+
+  Column _buildPageView(
+    ColorScheme colorScheme,
+  ) {
+    final pages = const [
+      PreviewHome(),
+      PreviewDetails(),
+    ];
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          (_currentScheme?.nickname ?? _currentScheme?.name ?? 'Default')
+              .sentenceCase,
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 20,
+            color: colorScheme.onSurface,
+          ),
+        ),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 8,
+              vertical: 16,
+            ),
+            child: PageView(
+              controller: pageController,
+              children: pages,
+            ),
+          ),
+        ),
+        SmoothPageIndicator(
+          controller: pageController,
+          count: pages.length,
+          effect: WormEffect(
+            activeDotColor: colorScheme.primary,
+            dotColor: colorScheme.outlineVariant.withOpacity(0.25),
+            dotHeight: 8,
+            dotWidth: 16,
+          ),
+        ),
+      ],
     );
   }
 

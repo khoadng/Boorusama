@@ -12,6 +12,7 @@ import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/dart.dart';
+import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 final _kRandomTags = [
@@ -28,36 +29,31 @@ final _kRandomTags = [
 class PreviewFrame extends StatelessWidget {
   const PreviewFrame({
     super.key,
-    required this.colorScheme,
     this.padding,
     required this.child,
   });
 
   final Widget child;
-  final ColorScheme colorScheme;
   final EdgeInsetsGeometry? padding;
 
   @override
   Widget build(BuildContext context) {
-    return Transform.scale(
-      scale: 0.85,
-      child: Container(
-        padding: padding ??
-            const EdgeInsets.symmetric(
-              vertical: 12,
-              horizontal: 12,
-            ),
-        margin: const EdgeInsets.symmetric(
-          horizontal: 60,
-        ),
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: colorScheme.onSurface,
+    return Container(
+      padding: padding ??
+          const EdgeInsets.symmetric(
+            vertical: 12,
+            horizontal: 12,
           ),
-          borderRadius: BorderRadius.circular(8.0),
-        ),
-        child: child,
+      margin: const EdgeInsets.symmetric(
+        horizontal: 60,
       ),
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: context.colorScheme.onSurface,
+        ),
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      child: child,
     );
   }
 }
@@ -65,17 +61,14 @@ class PreviewFrame extends StatelessWidget {
 class PreviewHome extends StatelessWidget {
   const PreviewHome({
     super.key,
-    required this.colorScheme,
   });
-
-  final ColorScheme colorScheme;
 
   @override
   Widget build(BuildContext context) {
-    final isDark = colorScheme.brightness == Brightness.dark;
+    final colorScheme = context.colorScheme;
+    final isDark = context.colorScheme.brightness == Brightness.dark;
 
     return PreviewFrame(
-      colorScheme: colorScheme,
       child: CustomScrollView(
         physics: const NeverScrollableScrollPhysics(),
         slivers: [
@@ -172,19 +165,17 @@ final _previewPost = DanbooruPost.empty().copyWith(
 class PreviewDetails extends StatelessWidget {
   const PreviewDetails({
     super.key,
-    required this.colorScheme,
   });
-
-  final ColorScheme colorScheme;
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = context.colorScheme;
+
     return PreviewFrame(
       padding: const EdgeInsets.symmetric(
         vertical: 16,
         horizontal: 4,
       ),
-      colorScheme: colorScheme,
       child: CustomScrollView(
         slivers: [
           const SliverToBoxAdapter(
