@@ -130,6 +130,14 @@ class CategoryToggleSwitch extends StatelessWidget {
           ThemeCategory.image: 'Image',
         },
         onChanged: (value) => onToggle(value),
+        selectedColor: context.colorScheme.surface,
+        unselectedColor: context.colorScheme.surface,
+        selectedTextStyle: TextStyle(
+          color: context.colorScheme.primary,
+        ),
+        unselectedTextStyle: TextStyle(
+          color: context.colorScheme.onSurface,
+        ),
       ),
     );
   }
