@@ -60,3 +60,59 @@ class BuiltInColorSelector extends StatelessWidget {
     );
   }
 }
+
+class BasicColorSelector extends StatelessWidget {
+  const BasicColorSelector({
+    super.key,
+    required this.onSchemeChanged,
+    required this.currentScheme,
+  });
+
+  final void Function(ColorSettings? color) onSchemeChanged;
+  final ColorSettings? currentScheme;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = getSchemeFromBasic(currentScheme?.name) ??
+        getSchemeFromBasic(basicColorSettings.first.name);
+
+    if (colorScheme == null) {
+      return Center(
+        child: Text('Error: Color scheme not found'),
+      );
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        vertical: 8,
+      ),
+      child: Column(
+        children: [
+          Wrap(
+            runSpacing: 8,
+            children: [
+              ...basicColorSettings.map((e) {
+                final selected = e.name == currentScheme?.name;
+                final cs = getSchemeFromBasic(e.name);
+
+                return Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 4,
+                  ),
+                  child: PreviewColorContainer(
+                    primary: cs?.primary ?? Colors.transparent,
+                    onSurface: cs?.onSurface ?? colorScheme.onSurface,
+                    onTap: () {
+                      onSchemeChanged(e);
+                    },
+                    selected: selected,
+                  ),
+                );
+              }),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}

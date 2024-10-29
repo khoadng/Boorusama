@@ -134,6 +134,10 @@ class _ThemePreviewAppState extends State<ThemePreviewApp> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   switch (_category) {
+                    ThemeCategory.basic => BasicColorSelector(
+                        onSchemeChanged: _onSchemeChanged,
+                        currentScheme: _currentScheme,
+                      ),
                     ThemeCategory.builtIn => BuiltInColorSelector(
                         onSchemeChanged: _onSchemeChanged,
                         currentScheme: _currentScheme,

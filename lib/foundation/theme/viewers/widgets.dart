@@ -87,6 +87,7 @@ class DarkModeToggleButton extends StatelessWidget {
 }
 
 enum ThemeCategory {
+  basic,
   builtIn,
   accent,
   image,
@@ -125,6 +126,7 @@ class CategoryToggleSwitch extends StatelessWidget {
       child: BooruSegmentedButton(
         initialValue: initialCategory,
         segments: {
+          ThemeCategory.basic: 'Basic',
           ThemeCategory.builtIn: 'Built-in',
           ThemeCategory.accent: 'Accent',
           ThemeCategory.image: 'Image',

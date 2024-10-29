@@ -16,18 +16,6 @@ import 'color_scheme_converter.dart';
 
 final preDefinedColorSettings = [
   ColorSettings.fromPredefinedScheme(
-    'boorusama_light',
-    nickname: 'Light',
-  ),
-  ColorSettings.fromPredefinedScheme(
-    'boorusama_dark',
-    nickname: 'Dark',
-  ),
-  ColorSettings.fromPredefinedScheme(
-    'boorusama_black',
-    nickname: 'Midnight',
-  ),
-  ColorSettings.fromPredefinedScheme(
     'danbooru_dark',
     nickname: 'Dark Blue',
   ),
@@ -53,11 +41,32 @@ final preDefinedColorSettings = [
   ),
 ].whereNotNull().toList();
 
-ColorScheme? getSchemeFromPredefined(String? name) {
+final basicColorSettings = [
+  ColorSettings.fromBasicScheme(
+    'boorusama_light',
+    nickname: 'Light',
+  ),
+  ColorSettings.fromBasicScheme(
+    'boorusama_dark',
+    nickname: 'Dark',
+  ),
+  ColorSettings.fromBasicScheme(
+    'boorusama_black',
+    nickname: 'Midnight',
+  ),
+].whereNotNull().toList();
+
+ColorScheme? getSchemeFromBasic(String? name) {
   return switch (name) {
     'boorusama_light' => staticLightScheme,
     'boorusama_dark' => staticDarkScheme,
     'boorusama_black' => staticBlackScheme,
+    _ => null,
+  };
+}
+
+ColorScheme? getSchemeFromPredefined(String? name) {
+  return switch (name) {
     'danbooru_dark' => staticDanbooruDarkScheme,
     'danbooru_light' => staticDanbooruLightScheme,
     'green' => staticGreenScheme,
@@ -73,6 +82,7 @@ ColorScheme? getSchemeFromColorSettings(ColorSettings? colorSettings) {
   if (settings == null) return null;
 
   return switch (settings.schemeType) {
+    SchemeType.basic => getSchemeFromBasic(settings.name),
     SchemeType.builtIn => getSchemeFromPredefined(settings.name),
     SchemeType.accent => () {
         final accentColor = settings.name;
@@ -233,6 +243,7 @@ const staticCyberpunkScheme = ColorScheme(
 );
 
 enum SchemeType {
+  basic,
   builtIn,
   accent,
   image,
@@ -240,6 +251,7 @@ enum SchemeType {
 }
 
 SchemeType? _parseSchemeType(String? schemeType) => switch (schemeType) {
+      'basic' => SchemeType.basic,
       'builtIn' => SchemeType.builtIn,
       'accent' => SchemeType.accent,
       'image' => SchemeType.image,
@@ -249,6 +261,7 @@ SchemeType? _parseSchemeType(String? schemeType) => switch (schemeType) {
 
 extension SchemeTypeX on SchemeType {
   String get value => switch (this) {
+        SchemeType.basic => 'basic',
         SchemeType.builtIn => 'builtIn',
         SchemeType.accent => 'accent',
         SchemeType.image => 'image',
@@ -310,6 +323,21 @@ class ColorSettings extends Equatable {
   SchemeType? get schemeType => _parseSchemeType(_schemeType);
   DynamicSchemeVariant? get dynamicSchemeVariant =>
       _parseDynamicSchemeVariant(_dynamicSchemeVariant);
+
+  static ColorSettings? fromBasicScheme(
+    String name, {
+    String? nickname,
+  }) {
+    return ColorSettings(
+      name: name,
+      nickname: nickname,
+      colorScheme: null,
+      extendedColorScheme: null,
+      brightness: null,
+      schemeType: SchemeType.basic.value,
+      dynamicSchemeVariant: null,
+    );
+  }
 
   static ColorSettings? fromPredefinedScheme(
     String name, {
