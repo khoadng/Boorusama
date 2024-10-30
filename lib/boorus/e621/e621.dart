@@ -206,7 +206,10 @@ class E621Builder
 
   @override
   CommentPageBuilder? get commentPageBuilder =>
-      (context, useAppBar, postId) => E621CommentPage(postId: postId);
+      (context, useAppBar, postId) => E621CommentPage(
+            postId: postId,
+            useAppBar: useAppBar,
+          );
 
   @override
   TagColorBuilder get tagColorBuilder =>

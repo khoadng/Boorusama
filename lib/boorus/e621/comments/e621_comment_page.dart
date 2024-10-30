@@ -16,9 +16,11 @@ class E621CommentPage extends ConsumerWidget {
   const E621CommentPage({
     super.key,
     required this.postId,
+    required this.useAppBar,
   });
 
   final int postId;
+  final bool useAppBar;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -27,6 +29,7 @@ class E621CommentPage extends ConsumerWidget {
 
     return CommentPageScaffold(
       postId: postId,
+      useAppBar: useAppBar,
       commentItemBuilder: (context, comment) => _CommentItem(
         comment: comment,
         config: config,

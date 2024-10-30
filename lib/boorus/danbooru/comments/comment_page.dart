@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/dart.dart';
+import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
 
@@ -90,10 +90,7 @@ class _CommentPageState extends ConsumerState<CommentPage> {
       child: Scaffold(
         appBar: widget.useAppBar
             ? AppBar(
-                leading: IconButton(
-                  icon: const Icon(Symbols.keyboard_arrow_down),
-                  onPressed: () => _pop(),
-                ),
+                title: const Text('comment.comments').tr(),
               )
             : null,
         body: SafeArea(
