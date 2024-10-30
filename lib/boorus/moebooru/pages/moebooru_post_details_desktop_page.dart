@@ -62,7 +62,6 @@ class _MoebooruPostDetailsDesktopPageState
       ),
       commentBuilder: (context, post) => MoebooruCommentSection(
         post: post,
-        allowFetch: true,
       ),
     );
   }

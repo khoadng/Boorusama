@@ -630,7 +630,7 @@ class TooMuchCachedImagesWarningBanner extends ConsumerWidget {
               return DismissableInfoContainer(
                 mainColor: context.colorScheme.primary,
                 content:
-                    "The app has stored <b>${Filesize.parse(cacheSize)}</b> worth of images. Would you like to clear it to free up some space?",
+                    'The app has stored <b>${Filesize.parse(cacheSize)}</b> worth of images. Would you like to clear it to free up some space?',
                 actions: [
                   FilledButton(
                     onPressed: () async {

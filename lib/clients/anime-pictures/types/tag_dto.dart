@@ -35,17 +35,6 @@ class TagDto {
     required this.views,
   });
 
-  final int? id;
-  final String? tag;
-  final String? tagRu;
-  final String? tagJp;
-  final int? num;
-  final int? numPub;
-  final AnimePicturesTagType? type;
-  final String? alias;
-  final int? parent;
-  final int? views;
-
   factory TagDto.fromJson(Map<String, dynamic> json) {
     return TagDto(
       id: json['id'],
@@ -60,4 +49,15 @@ class TagDto {
       views: json['views'],
     );
   }
+
+  final int? id;
+  final String? tag;
+  final String? tagRu;
+  final String? tagJp;
+  final int? num;
+  final int? numPub;
+  final AnimePicturesTagType? type;
+  final String? alias;
+  final int? parent;
+  final int? views;
 }

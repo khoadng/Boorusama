@@ -300,7 +300,7 @@ class DefaultImagePreviewQuickActionButton extends ConsumerWidget {
             post: post,
           ),
         ),
-      ImageQuickActionType.download => Container(
+      ImageQuickActionType.download => DecoratedBox(
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: context.extendedColorScheme.surfaceContainerOverlay,

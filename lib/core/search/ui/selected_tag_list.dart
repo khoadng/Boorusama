@@ -69,7 +69,7 @@ class SelectedTagList extends StatelessWidget {
                   final it = tagItems[index];
 
                   return switch (it) {
-                    TagSearchItem item => Builder(
+                    final TagSearchItem item => Builder(
                         builder: (context) {
                           final chip = SelectedTagChip(
                             tagSearchItem: item,
@@ -91,7 +91,7 @@ class SelectedTagList extends StatelessWidget {
                           );
                         },
                       ),
-                    String otherTagsCount => Center(
+                    final String otherTagsCount => Center(
                         child: Material(
                           color: Colors.transparent,
                           child: InkWell(

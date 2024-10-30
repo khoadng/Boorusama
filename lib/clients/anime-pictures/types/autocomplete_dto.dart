@@ -9,11 +9,6 @@ class AutocompleteDto {
     this.id,
   });
 
-  final String? t;
-  final String? t2;
-  final AnimePicturesTagType? c;
-  final int? id;
-
   factory AutocompleteDto.fromJson(Map<String, dynamic> json) {
     final tag = json['t'] as String?;
     final tag2 = json['t2'] as String?;
@@ -27,6 +22,11 @@ class AutocompleteDto {
       id: json['id'],
     );
   }
+
+  final String? t;
+  final String? t2;
+  final AnimePicturesTagType? c;
+  final int? id;
 }
 
 String? stripBoldHtmlTags(String? input) {

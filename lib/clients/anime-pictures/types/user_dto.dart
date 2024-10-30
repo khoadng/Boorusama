@@ -10,15 +10,6 @@ class UserDto {
     required this.registerDate,
   });
 
-  final int? id;
-  final String? name;
-  final int? avatarVersion;
-  final bool? isAvatar;
-  final int? siteScore;
-  final List<String>? groups;
-  final int? gender;
-  final DateTime? registerDate;
-
   factory UserDto.fromJson(Map<String, dynamic> json) {
     final registerDate = json['register_date'] != null
         ? DateTime.tryParse(json['register_date'])
@@ -35,6 +26,15 @@ class UserDto {
       registerDate: registerDate,
     );
   }
+
+  final int? id;
+  final String? name;
+  final int? avatarVersion;
+  final bool? isAvatar;
+  final int? siteScore;
+  final List<String>? groups;
+  final int? gender;
+  final DateTime? registerDate;
 }
 
 extension UserDtoX on UserDto {

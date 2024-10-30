@@ -522,7 +522,6 @@ class SettingsInteractionBlocker extends ConsumerWidget {
                   vertical: 8,
                 ),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Padding(
                   padding: const EdgeInsets.only(right: 8),
