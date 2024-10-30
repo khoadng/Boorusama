@@ -105,22 +105,21 @@ class _FavoriteTagsFilterScopeState
     }).toList();
 
     final sortedTags = filteredTagsWithQuery.toList()
-      ..sort((a, b) {
-        switch (sortType) {
-          case FavoriteTagsSortType.recentlyAdded:
-            return b.createdAt.compareTo(a.createdAt);
-          case FavoriteTagsSortType.recentlyUpdated:
-            if (a.updatedAt == null || b.updatedAt == null) return 0;
-
-            return b.updatedAt!.compareTo(a.updatedAt!);
-          case FavoriteTagsSortType.nameAZ:
-            return a.name.compareTo(b.name);
-          case FavoriteTagsSortType.nameZA:
-            return b.name.compareTo(a.name);
-          default:
-            return 0;
-        }
-      });
+      ..sort(
+        (a, b) => switch (sortType) {
+          FavoriteTagsSortType.recentlyAdded =>
+            b.createdAt.compareTo(a.createdAt),
+          FavoriteTagsSortType.recentlyUpdated => switch ((
+              a.updatedAt,
+              b.updatedAt
+            )) {
+              (DateTime ua, DateTime ub) => ub.compareTo(ua),
+              _ => 0,
+            },
+          FavoriteTagsSortType.nameAZ => a.name.compareTo(b.name),
+          FavoriteTagsSortType.nameZA => b.name.compareTo(a.name),
+        },
+      );
 
     return widget.builder(
       context,
