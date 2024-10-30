@@ -11,7 +11,6 @@ import 'package:sliver_tools/sliver_tools.dart';
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/filename_generators/filename_generators.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts/details/common.dart';
@@ -20,6 +19,7 @@ import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/videos/videos.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/theme.dart';
@@ -296,7 +296,7 @@ class _PostDetailPageScaffoldState<T extends Post>
       bottomSheet: widget.infoBuilder != null
           ? DecoratedBox(
               decoration: BoxDecoration(
-                color: context.colorScheme.surface.withOpacity(0.8),
+                color: context.colorScheme.surface.applyOpacity(0.8),
                 border: Border(
                   top: BorderSide(
                     color: context.theme.dividerColor,
@@ -521,7 +521,7 @@ class _PostDetailPageScaffoldState<T extends Post>
                             : null,
                       },
                     )
-                    .whereNotNull(),
+                    .nonNulls,
               SliverSizedBox(
                 height: MediaQuery.paddingOf(context).bottom + 72,
               ),

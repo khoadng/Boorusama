@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:context_menus/context_menus.dart';
 
 // Project imports:
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/theme.dart';
 
@@ -81,7 +82,7 @@ class _ContextMenuTileState extends State<ContextMenuTile> {
                         color: kPreferredLayout.isMobile
                             ? context.colorScheme.onSurfaceVariant
                             : context.colorScheme.onSurfaceVariant
-                                .withOpacity(0.75),
+                                .applyOpacity(0.75),
                       ),
                 ),
         ),

@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:equatable/equatable.dart';
 
+// Project imports:
+import 'package:boorusama/dart.dart';
+
 class ExtendedColorScheme extends ThemeExtension<ExtendedColorScheme>
     with EquatableMixin {
   const ExtendedColorScheme({
@@ -22,13 +25,13 @@ class ExtendedColorScheme extends ThemeExtension<ExtendedColorScheme>
   final Color? _onSurfaceContainerOverlayDim;
 
   Color get surfaceContainerOverlay =>
-      _surfaceContainerOverlay ?? Colors.black.withOpacity(0.5);
+      _surfaceContainerOverlay ?? Colors.black.applyOpacity(0.5);
 
   Color get onSurfaceContainerOverlay =>
       _onSurfaceContainerOverlay ?? Colors.white;
 
   Color get surfaceContainerOverlayDim =>
-      _surfaceContainerOverlayDim ?? Colors.black.withOpacity(0.7);
+      _surfaceContainerOverlayDim ?? Colors.black.applyOpacity(0.7);
 
   Color get onSurfaceContainerOverlayDim =>
       _onSurfaceContainerOverlayDim ?? Colors.white70;

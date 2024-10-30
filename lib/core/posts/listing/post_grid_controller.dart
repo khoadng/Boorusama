@@ -209,7 +209,9 @@ class PostGridController<T extends Post> extends ChangeNotifier {
   Future<void> fetchMore() async {
     if (_loading ||
         !_hasMore ||
-        (_debounceTimer != null && _debounceTimer!.isActive)) return;
+        (_debounceTimer != null && _debounceTimer!.isActive)) {
+      return;
+    }
 
     _debounceTimer?.cancel();
     _debounceTimer = Timer(debounceDuration, () async {

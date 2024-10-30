@@ -64,7 +64,6 @@ class SearchHistoryNotifier extends AsyncNotifier<SearchHistoryState> {
     if (anyRaw) {
       await addHistory(
         controller.rawTagsString,
-        queryType: QueryType.simple,
       );
       return;
     }

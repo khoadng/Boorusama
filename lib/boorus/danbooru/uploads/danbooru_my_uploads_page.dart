@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:collection/collection.dart';
 import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -19,6 +18,7 @@ import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/users/users.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/filesize.dart';
 import 'package:boorusama/foundation/theme.dart';
@@ -167,11 +167,7 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
                     },
                   );
 
-          return uploads
-              .map((e) => e.previewPost)
-              .whereNotNull()
-              .toList()
-              .toResult();
+          return uploads.map((e) => e.previewPost).nonNulls.toList().toResult();
         },
       ),
       builder: (context, controller, errors) => LayoutBuilder(
@@ -253,7 +249,7 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
                         child,
                         Positioned.fill(
                           child: Container(
-                            color: Colors.black.withOpacity(0.8),
+                            color: Colors.black.applyOpacity(0.8),
                           ),
                         ),
                       ],
@@ -307,7 +303,7 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
                           width: 25,
                           height: 25,
                           decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.7),
+                            color: Colors.black.applyOpacity(0.7),
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(4)),
                           ),
@@ -319,7 +315,7 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
                         padding: const EdgeInsets.all(4),
                         margin: const EdgeInsets.all(1),
                         decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.7),
+                          color: Colors.black.applyOpacity(0.7),
                           borderRadius:
                               const BorderRadius.all(Radius.circular(4)),
                         ),
@@ -335,7 +331,7 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
                         padding: const EdgeInsets.all(4),
                         margin: const EdgeInsets.all(1),
                         decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.7),
+                          color: Colors.black.applyOpacity(0.7),
                           borderRadius:
                               const BorderRadius.all(Radius.circular(4)),
                         ),
@@ -365,7 +361,7 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
       child: Container(
         padding: const EdgeInsets.all(4),
         decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.7),
+          color: Colors.black.applyOpacity(0.7),
           borderRadius: const BorderRadius.all(Radius.circular(4)),
         ),
         child: Row(
@@ -402,7 +398,7 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
           vertical: 4,
         ),
         decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.8),
+          color: Colors.black.applyOpacity(0.8),
         ),
         child: RichText(
           text: TextSpan(
@@ -440,7 +436,7 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
           vertical: 2,
         ),
         decoration: BoxDecoration(
-          color: context.colorScheme.surface.withOpacity(0.8),
+          color: context.colorScheme.surface.applyOpacity(0.8),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Builder(

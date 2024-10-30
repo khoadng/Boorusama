@@ -30,33 +30,6 @@ class PostDto {
     this.bigPreview,
   });
 
-  final int? id;
-  final String? md5;
-  final String? md5Pixels;
-  final int? width;
-  final int? height;
-  final String? pubtime;
-  final String? datetime;
-  final int? score;
-  final int? scoreNumber;
-  final int? size;
-  final int? downloadCount;
-  final EroticLevel? erotics;
-  final List<int>? color;
-  final String? ext;
-  final int? status;
-  final int? statusType;
-  final int? redirectId;
-  final bool? spoiler;
-  final bool? haveAlpha;
-  final int? tagsCount;
-  final double? artefactsDegree;
-  final double? smoothDegree;
-
-  final String? smallPreview;
-  final String? mediumPreview;
-  final String? bigPreview;
-
   factory PostDto.fromJson(Map<String, dynamic> json, String baseUrl) {
     final extRaw = json['ext'];
     final haveAlpha = json['have_alpha'];
@@ -122,6 +95,33 @@ class PostDto {
       bigPreview: big,
     );
   }
+
+  final int? id;
+  final String? md5;
+  final String? md5Pixels;
+  final int? width;
+  final int? height;
+  final String? pubtime;
+  final String? datetime;
+  final int? score;
+  final int? scoreNumber;
+  final int? size;
+  final int? downloadCount;
+  final EroticLevel? erotics;
+  final List<int>? color;
+  final String? ext;
+  final int? status;
+  final int? statusType;
+  final int? redirectId;
+  final bool? spoiler;
+  final bool? haveAlpha;
+  final int? tagsCount;
+  final double? artefactsDegree;
+  final double? smoothDegree;
+
+  final String? smallPreview;
+  final String? mediumPreview;
+  final String? bigPreview;
 }
 
 enum TopLength {
@@ -146,15 +146,15 @@ class PostDetailsTagDto {
     required this.user,
   });
 
-  final TagDto? tag;
-  final UserDto? user;
-
   factory PostDetailsTagDto.fromJson(Map<String, dynamic> json) {
     return PostDetailsTagDto(
       tag: json['tag'] != null ? TagDto.fromJson(json['tag']) : null,
       user: json['user'] != null ? UserDto.fromJson(json['user']) : null,
     );
   }
+
+  final TagDto? tag;
+  final UserDto? user;
 }
 
 class PostDetailsFavoritesUserDto {
@@ -162,9 +162,6 @@ class PostDetailsFavoritesUserDto {
     required this.user,
     required this.favorite,
   });
-
-  final UserDto? user;
-  final FavoriteDto? favorite;
 
   factory PostDetailsFavoritesUserDto.fromJson(Map<String, dynamic> json) {
     return PostDetailsFavoritesUserDto(
@@ -174,6 +171,9 @@ class PostDetailsFavoritesUserDto {
           : null,
     );
   }
+
+  final UserDto? user;
+  final FavoriteDto? favorite;
 }
 
 class PostDetailsDto {
@@ -187,15 +187,6 @@ class PostDetailsDto {
     required this.fileUrl,
     required this.tied,
   });
-
-  final PostDto? post;
-  final UserDto? user;
-  final UserDto? moderator;
-  final List<PostDetailsTagDto>? tags;
-  final bool starIt;
-  final List<PostDetailsFavoritesUserDto>? favoritesUsers;
-  final String? fileUrl;
-  final List<PostDto>? tied;
 
   factory PostDetailsDto.fromJson(Map<String, dynamic> json, String baseUrl) {
     return PostDetailsDto(
@@ -224,6 +215,15 @@ class PostDetailsDto {
           : null,
     );
   }
+
+  final PostDto? post;
+  final UserDto? user;
+  final UserDto? moderator;
+  final List<PostDetailsTagDto>? tags;
+  final bool starIt;
+  final List<PostDetailsFavoritesUserDto>? favoritesUsers;
+  final String? fileUrl;
+  final List<PostDto>? tied;
 }
 
 String? createUrl(

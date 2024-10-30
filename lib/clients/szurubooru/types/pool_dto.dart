@@ -14,16 +14,6 @@ class PoolDto {
     this.description,
   });
 
-  final int? version;
-  final int? id;
-  final List<String>? names;
-  final String? category;
-  final List<MicroPostDto>? posts;
-  final String? creationTime;
-  final String? lastEditTime;
-  final int? postCount;
-  final String? description;
-
   factory PoolDto.fromJson(Map<String, dynamic> json, {String? baseUrl}) {
     return PoolDto(
       version: json['version'] as int?,
@@ -44,4 +34,14 @@ class PoolDto {
       description: json['description'] as String?,
     );
   }
+
+  final int? version;
+  final int? id;
+  final List<String>? names;
+  final String? category;
+  final List<MicroPostDto>? posts;
+  final String? creationTime;
+  final String? lastEditTime;
+  final int? postCount;
+  final String? description;
 }

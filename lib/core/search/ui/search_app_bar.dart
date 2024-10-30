@@ -43,7 +43,7 @@ class SearchAppBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    var searchBar = BooruSearchBar(
+    final searchBar = BooruSearchBar(
       dense: dense,
       autofocus: autofocus ?? false,
       onTapOutside: onTapOutside,

@@ -1,3 +1,6 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
 // Package imports:
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,43 +13,6 @@ import 'package:boorusama/foundation/networking/networking.dart';
 const _serviceName = 'Connectivity';
 
 final connectivityProvider = StreamProvider<List<ConnectivityResult>>((ref) {
-  final logger = ref.watch(loggerProvider);
-  final analytics = ref.watch(analyticsProvider);
-
-  ref.listenSelf(
-    (previous, next) {
-      next.when(
-        data: (data) {
-          if (data.isEmpty || data.contains(ConnectivityResult.none)) {
-            analytics.updateNetworkInfo(
-              const AnalyticsNetworkInfo.disconnected(),
-            );
-            logger.logW(_serviceName, 'Network disconnected');
-          } else {
-            analytics.updateNetworkInfo(
-              AnalyticsNetworkInfo.connected(data.prettyString),
-            );
-            logger.logI(
-              _serviceName,
-              'Connected to ${data.prettyString}',
-            );
-          }
-        },
-        error: (error, stackTrace) {
-          analytics.updateNetworkInfo(
-            AnalyticsNetworkInfo.error(error.toString()),
-          );
-
-          logger.logE(
-            _serviceName,
-            'Error: $error',
-          );
-        },
-        loading: () => logger.logI(_serviceName, 'Network connecting...'),
-      );
-    },
-  );
-
   return Connectivity().onConnectivityChanged;
 });
 
@@ -63,3 +29,55 @@ final networkStateProvider = Provider<NetworkState>((ref) {
         error: (_, __) => NetworkDisconnectedState(),
       );
 });
+
+class NetworkListener extends ConsumerWidget {
+  const NetworkListener({
+    super.key,
+    required this.child,
+  });
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final logger = ref.watch(loggerProvider);
+    final analytics = ref.watch(analyticsProvider);
+
+    ref.listen(
+      connectivityProvider,
+      (previous, next) {
+        next.when(
+          data: (data) {
+            if (data.isEmpty || data.contains(ConnectivityResult.none)) {
+              analytics.updateNetworkInfo(
+                const AnalyticsNetworkInfo.disconnected(),
+              );
+              logger.logW(_serviceName, 'Network disconnected');
+            } else {
+              analytics.updateNetworkInfo(
+                AnalyticsNetworkInfo.connected(data.prettyString),
+              );
+              logger.logI(
+                _serviceName,
+                'Connected to ${data.prettyString}',
+              );
+            }
+          },
+          error: (error, stackTrace) {
+            analytics.updateNetworkInfo(
+              AnalyticsNetworkInfo.error(error.toString()),
+            );
+
+            logger.logE(
+              _serviceName,
+              'Error: $error',
+            );
+          },
+          loading: () => logger.logI(_serviceName, 'Network connecting...'),
+        );
+      },
+    );
+
+    return child;
+  }
+}

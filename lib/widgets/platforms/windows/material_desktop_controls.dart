@@ -19,6 +19,7 @@ import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 
 // Project imports:
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/theme.dart';
 
 class MaterialDesktopControls extends StatefulWidget {
@@ -606,8 +607,9 @@ class _MaterialDesktopControlsState extends State<MaterialDesktopControls>
             ChewieProgressColors(
               playedColor: context.theme.colorScheme.secondary,
               handleColor: context.theme.colorScheme.secondary,
-              bufferedColor: context.theme.colorScheme.surface.withOpacity(0.5),
-              backgroundColor: context.theme.disabledColor.withOpacity(0.5),
+              bufferedColor:
+                  context.theme.colorScheme.surface.applyOpacity(0.5),
+              backgroundColor: context.theme.disabledColor.applyOpacity(0.5),
             ),
       ),
     );

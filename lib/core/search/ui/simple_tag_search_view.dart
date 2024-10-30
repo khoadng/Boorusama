@@ -14,6 +14,7 @@ import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/search/ui/selected_tag_edit_dialog.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/theme.dart';
@@ -263,7 +264,7 @@ class _AddButton extends StatelessWidget {
       button: true,
       child: Material(
         color: onTap == null
-            ? context.colorScheme.onSurface.withOpacity(0.1)
+            ? context.colorScheme.onSurface.applyOpacity(0.1)
             : context.colorScheme.primary,
         borderRadius: BorderRadius.circular(8),
         child: InkWell(

@@ -136,7 +136,7 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
                       .map((e) => e.post != null
                           ? postDtoToPostNoMetadata(e.post!)
                           : null)
-                      .whereNotNull()
+                      .nonNulls
                       .toList();
                   final pixelPerfectDup = posts.firstWhereOrNull(
                       (e) => e.pixelHash == widget.post.pixelHash);
@@ -353,7 +353,7 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
                                           artistUrls: artist.sortedUrls!
                                               .where((e) => e.isActive == true)
                                               .map((e) => e.url)
-                                              .whereNotNull()
+                                              .nonNulls
                                               .toList(),
                                         ),
                                     ],

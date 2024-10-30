@@ -21,12 +21,14 @@ class CommentPageScaffold extends ConsumerStatefulWidget {
     required this.postId,
     required this.fetcher,
     this.commentItemBuilder,
+    required this.useAppBar,
   });
 
   final int postId;
   final CommentFetcher fetcher;
   final Widget Function(BuildContext context, Comment comment)?
       commentItemBuilder;
+  final bool useAppBar;
 
   @override
   ConsumerState<CommentPageScaffold> createState() =>
@@ -51,9 +53,11 @@ class _CommentPageScaffoldState extends ConsumerState<CommentPageScaffold> {
     final config = ref.watchConfig;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('comment.comments').tr(),
-      ),
+      appBar: widget.useAppBar
+          ? AppBar(
+              title: const Text('comment.comments').tr(),
+            )
+          : null,
       body: comments != null
           ? comments!.isNotEmpty
               ? Padding(

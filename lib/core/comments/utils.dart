@@ -1,13 +1,12 @@
 // Flutter imports:
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
@@ -20,12 +19,9 @@ Future<T?> showCommentPage<T>(
   required Widget Function(BuildContext context, bool useAppBar) builder,
 }) =>
     Screen.of(context).size == ScreenSize.small
-        ? showMaterialModalBottomSheet<T>(
-            context: context,
-            settings: settings,
-            duration: AppDurations.bottomSheet,
+        ? context.navigator.push(CupertinoPageRoute(
             builder: (context) => builder(context, true),
-          )
+          ))
         : showSideSheetFromRight(
             settings: settings,
             width: context.screenWidth * 0.41,

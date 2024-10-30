@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/tags/tags.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
@@ -110,7 +111,7 @@ class _TagEditAITagViewState extends ConsumerState<TagEditAITagView> {
                                 color: context.isLight
                                     ? !selected
                                         ? null
-                                        : Colors.white.withOpacity(0.85)
+                                        : Colors.white.applyOpacity(0.85)
                                     : context.colorScheme.hintColor,
                               ),
                             ),

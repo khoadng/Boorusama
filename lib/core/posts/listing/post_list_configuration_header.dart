@@ -292,7 +292,6 @@ class _TagPages extends ConsumerWidget {
         ),
         const SizedBox(height: 8),
         Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             FilledButton(

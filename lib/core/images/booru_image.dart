@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/images/images.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
@@ -209,7 +210,7 @@ class ImagePlaceHolder extends StatelessWidget {
       width: width?.toDouble(),
       height: height?.toDouble(),
       decoration: BoxDecoration(
-        color: context.colorScheme.surfaceContainerHigh.withOpacity(0.5),
+        color: context.colorScheme.surfaceContainerHigh.applyOpacity(0.5),
         borderRadius:
             borderRadius ?? const BorderRadius.all(Radius.circular(4)),
       ),
@@ -245,7 +246,7 @@ class ErrorPlaceholder extends StatelessWidget {
           ),
           child: Image.asset(
             'assets/images/error.png',
-            color: context.colorScheme.surface.withOpacity(0.7),
+            color: context.colorScheme.surface.applyOpacity(0.7),
           ),
         ),
       ),

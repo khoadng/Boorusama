@@ -71,6 +71,7 @@ class _CommentBoxState extends ConsumerState<CommentBox> {
           top: 8,
           left: 12,
           right: 12,
+          bottom: 8,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

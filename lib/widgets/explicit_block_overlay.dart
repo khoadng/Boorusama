@@ -51,7 +51,7 @@ class _ExplicitContentBlockOverlayState
               height: widget.height,
               child: ActionChip(
                 side: BorderSide(
-                  color: Theme.of(context).colorScheme.outline.withOpacity(0.1),
+                  color: Theme.of(context).colorScheme.outline.withAlpha(25),
                 ),
                 label: Text(
                   'Explicit'.toUpperCase(),
