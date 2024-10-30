@@ -16,6 +16,7 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/providers.dart';
 import 'package:boorusama/core/settings/widgets/about_page.dart';
 import 'package:boorusama/core/settings/widgets/debug_logs_page.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/scrolling.dart';
@@ -371,7 +372,7 @@ class SettingTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
         // color: selected ? context.colorScheme.secondary : Colors.transparent,
         child: InkWell(
-          hoverColor: context.theme.hoverColor.withOpacity(0.1),
+          hoverColor: context.theme.hoverColor.applyOpacity(0.1),
           borderRadius: BorderRadius.circular(8),
           onTap: onTap,
           child: Container(

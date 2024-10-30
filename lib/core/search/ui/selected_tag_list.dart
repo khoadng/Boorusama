@@ -10,6 +10,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -113,7 +114,7 @@ class SelectedTagList extends StatelessWidget {
                                     color: Theme.of(context)
                                         .colorScheme
                                         .outline
-                                        .withOpacity(0.75),
+                                        .applyOpacity(0.75),
                                   ),
                                   Text(
                                     otherTagsCount,
@@ -125,7 +126,7 @@ class SelectedTagList extends StatelessWidget {
                                           color: Theme.of(context)
                                               .colorScheme
                                               .outline
-                                              .withOpacity(0.5),
+                                              .applyOpacity(0.5),
                                         ),
                                   ),
                                 ],

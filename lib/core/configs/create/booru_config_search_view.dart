@@ -11,6 +11,7 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
@@ -49,7 +50,8 @@ class BooruConfigSearchView extends ConsumerWidget {
                 child: Text(
                   'Include these tags in every search',
                   style: TextStyle(
-                    color: context.theme.colorScheme.onSurface.withOpacity(0.8),
+                    color:
+                        context.theme.colorScheme.onSurface.applyOpacity(0.8),
                     fontSize: 13,
                   ),
                 ),
@@ -74,7 +76,8 @@ class BooruConfigSearchView extends ConsumerWidget {
                 child: Text(
                   'Exclude these tags in every search',
                   style: TextStyle(
-                    color: context.theme.colorScheme.onSurface.withOpacity(0.8),
+                    color:
+                        context.theme.colorScheme.onSurface.applyOpacity(0.8),
                     fontSize: 13,
                   ),
                 ),
@@ -247,10 +250,10 @@ class _EffectiveTagPreview extends ConsumerWidget {
       ),
       decoration: BoxDecoration(
         color:
-            context.theme.colorScheme.surfaceContainerLowest.withOpacity(0.6),
+            context.theme.colorScheme.surfaceContainerLowest.applyOpacity(0.6),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: context.theme.colorScheme.outlineVariant.withOpacity(0.6),
+          color: context.theme.colorScheme.outlineVariant.applyOpacity(0.6),
           width: 0.5,
         ),
       ),
@@ -276,7 +279,7 @@ class _EffectiveTagPreview extends ConsumerWidget {
                     '<any search query>',
                     style: TextStyle(
                       color: context.theme.colorScheme.onSurfaceVariant
-                          .withOpacity(0.6),
+                          .applyOpacity(0.6),
                       fontStyle: FontStyle.italic,
                     ),
                   ),

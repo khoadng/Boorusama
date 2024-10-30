@@ -250,7 +250,7 @@ class _ImageInkWellWithBorderOnFocusState
         ),
         InkWell(
           focusNode: node,
-          focusColor: context.colorScheme.primary.withOpacity(0.2),
+          focusColor: context.colorScheme.primary.withAlpha(50),
           highlightColor: Colors.transparent,
           splashFactory: FasterInkSplash.splashFactory,
           splashColor: Colors.black38,

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 
@@ -114,7 +115,7 @@ class _BooruSearchBarState extends State<BooruSearchBar> {
                   hintText: widget.hintText ?? 'search.hint'.tr(),
                   hintStyle: TextStyle(
                     color:
-                        context.colorScheme.onSurfaceVariant.withOpacity(0.5),
+                        context.colorScheme.onSurfaceVariant.applyOpacity(0.5),
                   ),
                 ),
                 autofocus: widget.autofocus,
