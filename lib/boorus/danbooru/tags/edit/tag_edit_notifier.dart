@@ -74,7 +74,7 @@ class TagEditNotifier extends Notifier<TagEditState> {
 
   @override
   TagEditState build() {
-    ref.listenSelf(
+    listenSelf(
       (prev, current) {
         if (prev?.selectedTag != current.selectedTag) {
           setExpandMode(TagEditExpandMode.related);
