@@ -1,5 +1,4 @@
 // Package imports:
-import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -21,9 +20,8 @@ final danbooruDmailsProvider = FutureProvider.autoDispose
   ref.invalidate(danbooruUnreadDmailsProvider);
 
   if (dmails.isNotEmpty) {
-    final userList = dmails
-        .expand((e) => {e.fromId, e.toId, e.ownerId}.whereNotNull())
-        .toList();
+    final userList =
+        dmails.expand((e) => {e.fromId, e.toId, e.ownerId}.nonNulls).toList();
 
     ref.read(danbooruCreatorsProvider(config).notifier).load(userList);
   }

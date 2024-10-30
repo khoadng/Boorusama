@@ -81,8 +81,7 @@ final sankakuPostRepoProvider =
                 thumbnailImageUrl: e.previewUrl ?? '',
                 sampleImageUrl: e.sampleUrl ?? '',
                 originalImageUrl: e.fileUrl ?? '',
-                tags:
-                    e.tags?.map((e) => e.tagName).whereNotNull().toSet() ?? {},
+                tags: e.tags?.map((e) => e.tagName).nonNulls.toSet() ?? {},
                 rating: mapStringToRating(e.rating),
                 hasComment: e.hasComments ?? false,
                 isTranslated: false,

@@ -160,7 +160,7 @@ extension FileDtoX on FileDto {
         .map((e) => e['storage_tags'] != null
             ? e['storage_tags'] as Map<String, dynamic>
             : null)
-        .whereNotNull()
+        .nonNulls
         .expand((e) => e.values)
         .expand((e) => e)
         .toList();

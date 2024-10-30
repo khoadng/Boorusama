@@ -2,7 +2,6 @@
 import 'package:flutter/foundation.dart';
 
 // Package imports:
-import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
@@ -40,7 +39,7 @@ class InMemoryBooruConfigRepository implements BooruConfigRepository {
           final id = ids.isEmpty ? 1 : ids.last + 1;
           return data.toBooruConfig(id: id);
         })
-        .whereNotNull()
+        .nonNulls
         .toList();
 
     _configs.addAll(newConfigs);

@@ -1,5 +1,4 @@
 // Package imports:
-import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -59,7 +58,7 @@ class FavoriteGroupsNotifier
     final idString = initialIds.split(' ');
     final ids = idString.map((e) => int.tryParse(e)).toList();
 
-    final validIds = ids.whereNotNull().toList();
+    final validIds = ids.nonNulls.toList();
 
     final success = await repo.createFavoriteGroup(
       name: name,
@@ -101,7 +100,7 @@ class FavoriteGroupsNotifier
         )
         .toList();
 
-    final validIds = ids.whereNotNull().toList();
+    final validIds = ids.nonNulls.toList();
     final success = await repo.editFavoriteGroup(
       id: group.id,
       name: name ?? group.name,

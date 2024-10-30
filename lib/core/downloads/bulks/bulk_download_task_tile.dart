@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:collection/collection.dart';
 import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -276,7 +275,7 @@ class _InfoText extends ConsumerWidget {
     final infoText = [
       fileSizeText,
       totalItemText,
-    ].whereNotNull().join(' • ');
+    ].nonNulls.join(' • ');
 
     final siteUrl =
         ref.watch(_currentDownloadTaskProvider(id).select((e) => e.siteUrl));

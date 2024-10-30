@@ -3,7 +3,6 @@ import 'dart:async';
 import 'dart:convert';
 
 // Package imports:
-import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
 
 // Project imports:
@@ -147,7 +146,7 @@ class HydrusClient {
 
     return _services!.entries
         .map((e) => ServiceDto.fromJson(e.value, e.key))
-        .whereNotNull()
+        .nonNulls
         .toList();
   }
 
@@ -160,7 +159,7 @@ class HydrusClient {
 
     return services.entries
         .map((e) => ServiceDto.fromJson(e.value, e.key))
-        .whereNotNull()
+        .nonNulls
         .toList();
   }
 

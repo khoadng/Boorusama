@@ -11,7 +11,6 @@ import 'package:sliver_tools/sliver_tools.dart';
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/filename_generators/filename_generators.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts/details/common.dart';
@@ -521,7 +520,7 @@ class _PostDetailPageScaffoldState<T extends Post>
                             : null,
                       },
                     )
-                    .whereNotNull(),
+                    .nonNulls,
               SliverSizedBox(
                 height: MediaQuery.paddingOf(context).bottom + 72,
               ),

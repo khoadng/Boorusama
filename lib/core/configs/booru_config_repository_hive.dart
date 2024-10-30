@@ -2,7 +2,6 @@
 import 'dart:convert';
 
 // Package imports:
-import 'package:collection/collection.dart';
 import 'package:hive/hive.dart';
 
 // Project imports:
@@ -58,7 +57,7 @@ class HiveBooruConfigRepository implements BooruConfigRepository {
             id: castOrNull<int>(e),
           );
         })
-        .whereNotNull()
+        .nonNulls
         .toList();
   }
 

@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:collection/collection.dart';
 import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -167,11 +166,7 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
                     },
                   );
 
-          return uploads
-              .map((e) => e.previewPost)
-              .whereNotNull()
-              .toList()
-              .toResult();
+          return uploads.map((e) => e.previewPost).nonNulls.toList().toResult();
         },
       ),
       builder: (context, controller, errors) => LayoutBuilder(

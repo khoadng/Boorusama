@@ -1,5 +1,4 @@
 // Package imports:
-import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
 import 'package:html/parser.dart';
 
@@ -100,7 +99,7 @@ mixin GelbooruClientFavorites {
     final thumbs =
         html.getElementsByClassName('thumb').map((e) => e.firstChild).toList();
 
-    return thumbs.whereNotNull().map((e) {
+    return thumbs.nonNulls.map((e) {
       final id = int.tryParse(e.attributes['id']?.substring(1) ?? '');
       final imgSrc = e.firstChild?.attributes['src'];
       final tags = e.firstChild?.attributes['title'];
