@@ -54,15 +54,42 @@ final basicColorSettings = [
     'boorusama_black',
     nickname: 'Midnight',
   ),
+  ColorSettings.fromBasicScheme(
+    'boorusama_system',
+    nickname: 'System',
+    followSystemDarkMode: true,
+  ),
 ].whereNotNull().toList();
 
-ColorScheme? getSchemeFromBasic(String? name) {
-  return switch (name) {
-    'boorusama_light' => staticLightScheme,
-    'boorusama_dark' => staticDarkScheme,
-    'boorusama_black' => staticBlackScheme,
-    _ => null,
-  };
+ColorScheme? getSchemeFromBasic(
+  String? name, {
+  required bool systemDarkMode,
+  required ColorScheme? dynamicLightScheme,
+  required ColorScheme? dynamicDarkScheme,
+  required bool enableDynamicColoring,
+  required bool? followSystemDarkMode,
+}) {
+  final mode = followSystemDarkMode == true
+      ? AppThemeMode.system
+      : switch (name) {
+          'boorusama_light' => AppThemeMode.light,
+          'boorusama_dark' => AppThemeMode.dark,
+          'boorusama_black' => AppThemeMode.amoledDark,
+          _ => AppThemeMode.amoledDark,
+        };
+
+  final (dark, light) = enableDynamicColoring
+      ? dynamicLightScheme != null && dynamicDarkScheme != null
+          ? (dynamicDarkScheme, dynamicLightScheme)
+          : (null, null)
+      : (null, null);
+
+  return AppTheme.generateScheme(
+    mode,
+    systemDarkMode: systemDarkMode,
+    dynamicLightScheme: light,
+    dynamicDarkScheme: dark,
+  );
 }
 
 ColorScheme? getSchemeFromPredefined(String? name) {
@@ -77,12 +104,24 @@ ColorScheme? getSchemeFromPredefined(String? name) {
   };
 }
 
-ColorScheme? getSchemeFromColorSettings(ColorSettings? colorSettings) {
+ColorScheme? getSchemeFromColorSettings(
+  ColorSettings? colorSettings, {
+  required ColorScheme? dynamicLightScheme,
+  required ColorScheme? dynamicDarkScheme,
+  required bool systemDarkMode,
+}) {
   final settings = colorSettings;
   if (settings == null) return null;
 
   return switch (settings.schemeType) {
-    SchemeType.basic => getSchemeFromBasic(settings.name),
+    SchemeType.basic => getSchemeFromBasic(
+        settings.name,
+        systemDarkMode: systemDarkMode,
+        dynamicLightScheme: dynamicLightScheme,
+        dynamicDarkScheme: dynamicDarkScheme,
+        enableDynamicColoring: settings.enableDynamicColoring,
+        followSystemDarkMode: settings.followSystemDarkMode,
+      ),
     SchemeType.builtIn => getSchemeFromPredefined(settings.name),
     SchemeType.accent => () {
         final accentColor = settings.name;
@@ -307,12 +346,16 @@ class ColorSettings extends Equatable {
     required this.extendedColorScheme,
     required String schemeType,
     required String? dynamicSchemeVariant,
+    required this.enableDynamicColoring,
+    required this.followSystemDarkMode,
   })  : _schemeType = schemeType,
         _dynamicSchemeVariant = dynamicSchemeVariant;
 
   final String name;
   final String? nickname;
   final Brightness? brightness;
+  final bool enableDynamicColoring;
+  final bool? followSystemDarkMode;
 
   final ColorScheme? colorScheme;
   final ExtendedColorScheme? extendedColorScheme;
@@ -327,6 +370,7 @@ class ColorSettings extends Equatable {
   static ColorSettings? fromBasicScheme(
     String name, {
     String? nickname,
+    bool? followSystemDarkMode,
   }) {
     return ColorSettings(
       name: name,
@@ -336,6 +380,8 @@ class ColorSettings extends Equatable {
       brightness: null,
       schemeType: SchemeType.basic.value,
       dynamicSchemeVariant: null,
+      enableDynamicColoring: false,
+      followSystemDarkMode: followSystemDarkMode,
     );
   }
 
@@ -351,12 +397,15 @@ class ColorSettings extends Equatable {
       brightness: null,
       schemeType: SchemeType.builtIn.value,
       dynamicSchemeVariant: null,
+      enableDynamicColoring: false,
+      followSystemDarkMode: null,
     );
   }
 
   ColorSettings copyWith({
     Brightness? brightness,
     ColorScheme? colorScheme,
+    bool? enableDynamicColoring,
   }) {
     return ColorSettings(
       brightness: brightness ?? this.brightness,
@@ -366,6 +415,9 @@ class ColorSettings extends Equatable {
       extendedColorScheme: extendedColorScheme,
       schemeType: _schemeType,
       dynamicSchemeVariant: _dynamicSchemeVariant,
+      enableDynamicColoring:
+          enableDynamicColoring ?? this.enableDynamicColoring,
+      followSystemDarkMode: followSystemDarkMode,
     );
   }
 
@@ -388,6 +440,8 @@ class ColorSettings extends Equatable {
       extendedColorScheme: null,
       brightness: brightness,
       dynamicSchemeVariant: dynamicSchemeVariant.value,
+      enableDynamicColoring: false,
+      followSystemDarkMode: null,
     );
   }
 
@@ -404,6 +458,8 @@ class ColorSettings extends Equatable {
       extendedColorScheme: null,
       brightness: brightness,
       dynamicSchemeVariant: dynamicSchemeVariant.value,
+      enableDynamicColoring: false,
+      followSystemDarkMode: null,
     );
   }
 
@@ -421,6 +477,8 @@ class ColorSettings extends Equatable {
       extendedColorScheme: extendedColorScheme,
       brightness: colorScheme.brightness,
       dynamicSchemeVariant: null,
+      enableDynamicColoring: false,
+      followSystemDarkMode: null,
     );
   }
 
@@ -435,6 +493,8 @@ class ColorSettings extends Equatable {
         brightness:
             json['brightness'] == 'dark' ? Brightness.dark : Brightness.light,
         dynamicSchemeVariant: json['dynamicSchemeVariant'],
+        enableDynamicColoring: json['enableDynamicColoring'],
+        followSystemDarkMode: json['followSystemDarkMode'],
       );
     } catch (e) {
       return null;
@@ -451,6 +511,8 @@ class ColorSettings extends Equatable {
         'extended': extendedColorScheme!.toJson(),
       'brightness': brightness == Brightness.dark ? 'dark' : 'light',
       'dynamicSchemeVariant': _dynamicSchemeVariant,
+      'enableDynamicColoring': enableDynamicColoring,
+      'followSystemDarkMode': followSystemDarkMode,
     };
   }
 
@@ -463,6 +525,8 @@ class ColorSettings extends Equatable {
         extendedColorScheme,
         brightness,
         _dynamicSchemeVariant,
+        enableDynamicColoring,
+        followSystemDarkMode,
       ];
 }
 

@@ -33,12 +33,6 @@ class ThemeBuilder extends ConsumerWidget {
     final systemDarkMode =
         MediaQuery.platformBrightnessOf(context) == Brightness.dark;
 
-    final customColorScheme = kHasPremium
-        ? ref.watchConfig.theme?.enable == true
-            ? getSchemeFromColorSettings(ref.watchConfig.theme?.colors)
-            : getSchemeFromColorSettings(colors)
-        : null;
-
     return DynamicColorBuilder(
       builder: (lightOrigin, darkOrigin) {
         final (light, dark) = enableDynamicColor
@@ -46,6 +40,22 @@ class ThemeBuilder extends ConsumerWidget {
                 ? _generateDynamicColourSchemes(lightOrigin, darkOrigin)
                 : (null, null)
             : (null, null);
+
+        final customColorScheme = kHasPremium
+            ? ref.watchConfig.theme?.enable == true
+                ? getSchemeFromColorSettings(
+                    ref.watchConfig.theme?.colors,
+                    dynamicDarkScheme: dark,
+                    dynamicLightScheme: light,
+                    systemDarkMode: systemDarkMode,
+                  )
+                : getSchemeFromColorSettings(
+                    colors,
+                    dynamicDarkScheme: dark,
+                    dynamicLightScheme: light,
+                    systemDarkMode: systemDarkMode,
+                  )
+            : null;
 
         final scheme = customColorScheme ??
             AppTheme.generateScheme(

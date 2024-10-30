@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 // Project imports:
@@ -14,8 +15,8 @@ import 'color_selector_image.dart';
 import 'page_preview.dart';
 import 'widgets.dart';
 
-const _kMinSheetSize = 0.3;
-const _kMaxSheetSize = 0.7;
+const _kMinSheetSize = 0.24;
+const _kMaxSheetSize = 0.65;
 
 class ThemePreviewApp extends StatefulWidget {
   const ThemePreviewApp({
@@ -44,7 +45,7 @@ class _ThemePreviewAppState extends State<ThemePreviewApp> {
     SchemeType.accent => ThemeCategory.accent,
     SchemeType.image => ThemeCategory.image,
     SchemeType.custom => throw UnimplementedError(),
-    null => ThemeCategory.builtIn,
+    null => ThemeCategory.basic,
   };
 
   @override
@@ -55,93 +56,105 @@ class _ThemePreviewAppState extends State<ThemePreviewApp> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme =
-        getSchemeFromColorSettings(_currentScheme) ?? widget.defaultScheme;
+    //FIXME: potential performance issue due to this widget being rebuilt multiple times
+    return DynamicColorBuilder(
+      builder: (light, dark) {
+        final systemDarkMode =
+            MediaQuery.platformBrightnessOf(context) == Brightness.dark;
 
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: colorScheme.brightness == Brightness.dark
-          ? AppTheme.darkTheme(
-              colorScheme: colorScheme,
-              extendedColorScheme: staticDarkExtendedScheme,
-            )
-          : AppTheme.lightTheme(
-              colorScheme: colorScheme,
-              extendedColorScheme: staticLightExtendedScheme,
-            ),
-      home: Material(
-        child: Stack(
-          children: [
-            Padding(
-              padding: EdgeInsets.only(
-                top: MediaQuery.viewPaddingOf(context).top + 20,
-                bottom: MediaQuery.sizeOf(context).height * _kMinSheetSize + 28,
-              ),
-              child: _buildPageView(colorScheme),
-            ),
-            Column(
+        final colorScheme = getSchemeFromColorSettings(
+              _currentScheme,
+              dynamicLightScheme: light,
+              dynamicDarkScheme: dark,
+              systemDarkMode: systemDarkMode,
+            ) ??
+            widget.defaultScheme;
+
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.themeFrom(
+            null,
+            colorScheme: colorScheme,
+            systemDarkMode: systemDarkMode,
+          ),
+          home: Material(
+            child: Stack(
               children: [
-                Expanded(
-                  child: DraggableScrollableSheet(
-                    snap: true,
-                    minChildSize: switch (_category) {
-                      ThemeCategory.basic => 0.12,
-                      ThemeCategory.builtIn => 0.18,
-                      _ => _kMinSheetSize,
-                    },
-                    maxChildSize: _kMaxSheetSize,
-                    initialChildSize: _kMinSheetSize,
-                    builder: (context, scrollController) {
-                      return ColoredBox(
-                        color: context.colorScheme.surface,
-                        child: CustomScrollView(
-                          controller: scrollController,
-                          slivers: [
-                            const SliverDivider(
-                              height: 1,
-                            ),
-                            const SliverSizedBox(
-                              height: 8,
-                            ),
-                            SliverToBoxAdapter(
-                              child: Center(
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: colorScheme.hintColor,
-                                    borderRadius: const BorderRadius.all(
-                                      Radius.circular(10),
+                Padding(
+                  padding: EdgeInsets.only(
+                    top: MediaQuery.viewPaddingOf(context).top + 20,
+                    bottom: MediaQuery.sizeOf(context).height * _kMinSheetSize +
+                        120,
+                  ),
+                  child: _buildPageView(colorScheme),
+                ),
+                Column(
+                  children: [
+                    Expanded(
+                      child: DraggableScrollableSheet(
+                        snap: true,
+                        minChildSize: switch (_category) {
+                          ThemeCategory.accent => 0.3,
+                          _ => _kMinSheetSize,
+                        },
+                        maxChildSize: _kMaxSheetSize,
+                        initialChildSize: switch (_category) {
+                          ThemeCategory.accent => 0.3,
+                          _ => _kMinSheetSize,
+                        },
+                        builder: (context, scrollController) {
+                          return ColoredBox(
+                            color: context.colorScheme.surface,
+                            child: CustomScrollView(
+                              controller: scrollController,
+                              slivers: [
+                                const SliverDivider(
+                                  height: 1,
+                                ),
+                                const SliverSizedBox(
+                                  height: 8,
+                                ),
+                                SliverToBoxAdapter(
+                                  child: Center(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: colorScheme.hintColor,
+                                        borderRadius: const BorderRadius.all(
+                                          Radius.circular(10),
+                                        ),
+                                      ),
+                                      height: 4,
+                                      width: 40,
                                     ),
                                   ),
-                                  height: 4,
-                                  width: 40,
                                 ),
-                              ),
+                                SliverToBoxAdapter(
+                                  child: _buildOptions(),
+                                ),
+                              ],
                             ),
-                            SliverToBoxAdapter(
-                              child: _buildOptions(),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                CategoryToggleSwitch(
-                  initialCategory: _category,
-                  onToggle: (category) {
-                    setState(() {
-                      _category = category;
-                    });
-                  },
-                ),
-                SizedBox(
-                  height: MediaQuery.viewPaddingOf(context).bottom,
+                          );
+                        },
+                      ),
+                    ),
+                    CategoryToggleSwitch(
+                      initialCategory: _category,
+                      onToggle: (category) {
+                        setState(() {
+                          _category = category;
+                        });
+                      },
+                    ),
+                    SizedBox(
+                      height: MediaQuery.viewPaddingOf(context).bottom,
+                    ),
+                  ],
                 ),
               ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
@@ -201,7 +214,7 @@ class _ThemePreviewAppState extends State<ThemePreviewApp> {
         Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: 8,
+              horizontal: 20,
               vertical: 16,
             ),
             child: PageView(

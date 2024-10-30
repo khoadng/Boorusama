@@ -152,12 +152,14 @@ class PreviewColorContainer extends StatelessWidget {
     required this.onSurface,
     required this.selected,
     required this.onTap,
+    this.followSystem = false,
   });
 
   final Color primary;
   final Color onSurface;
   final void Function() onTap;
   final bool selected;
+  final bool followSystem;
 
   @override
   Widget build(BuildContext context) {
@@ -167,16 +169,27 @@ class PreviewColorContainer extends StatelessWidget {
         width: 52,
         height: 52,
         decoration: BoxDecoration(
-          color: primary,
+          color: followSystem ? null : primary,
           borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: followSystem ? context.colorScheme.onSurface : primary,
+            width: 1,
+          ),
         ),
         child: selected
-            ? Icon(
-                Icons.check,
-                color: primary.computeLuminance() > 0.5
-                    ? Colors.black
-                    : Colors.white,
-                size: 36,
+            ? Builder(
+                builder: (context) {
+                  final iconSurfaceColor =
+                      followSystem ? context.colorScheme.surface : primary;
+
+                  return Icon(
+                    Icons.check,
+                    color: iconSurfaceColor.computeLuminance() > 0.5
+                        ? Colors.black
+                        : Colors.white,
+                    size: 36,
+                  );
+                },
               )
             : null,
       ),
