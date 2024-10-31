@@ -154,13 +154,15 @@ const Map<String, Color> namedColors = {
   'yellowgreen': Color(0xFF9ACD32),
 };
 
-const Map<String, Color> primaryColors = {
-  'red': Color(0xFFFF0000),
-  'green': Color(0xFF008000),
-  'blue': Color(0xFF0000FF),
-  'yellow': Color(0xFFFFFF00),
-  'orange': Color(0xFFFFA500),
-  'purple': Color(0xFF800080),
-  'pink': Color(0xFFFFC0CB),
-  'brown': Color(0xFFA52A2A),
+const Map<String, Color> themeAccentColors = {
+  'darkslateblue': Color(0xFF483D8B), // Rich deep blue
+  'deeppink': Color(0xFFFF1493), // Vibrant pink
+  'darkturquoise': Color(0xFF00CED1), // Bright teal
+  'darkorange': Color(0xFFFF8C00), // Warm orange
+  'darkviolet': Color(0xFF9400D3), // Deep purple
+  'forestgreen': Color(0xFF228B22), // Natural green
+  'crimson': Color(0xFFDC143C), // Deep red
+  'dodgerblue': Color(0xFF1E90FF), // Bright blue
+  'darkgoldenrod': Color(0xFFB8860B), // Rich gold
+  'darkcyan': Color(0xFF008B8B), // Deep teal
 };

@@ -97,9 +97,9 @@ class _AccentColorSelectorState extends State<AccentColorSelector> {
                       Wrap(
                         runSpacing: 8,
                         children: [
-                          ...primaryColors.keys.map(
+                          ...themeAccentColors.keys.map(
                             (e) {
-                              final color = primaryColors[e]!;
+                              final color = themeAccentColors[e]!;
                               final cs = ColorScheme.fromSeed(
                                 seedColor: color,
                                 brightness: _isDark
