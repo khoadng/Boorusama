@@ -145,11 +145,11 @@ const staticDanbooruDarkScheme = ColorScheme(
   secondaryContainer: Color(0xff2c2c3e),
   onSecondaryContainer: Colors.white,
   onTertiaryContainer: Colors.white,
-  surfaceContainerLowest: Color(0xff3e4059),
-  surfaceContainerLow: Color(0xff3e4059),
-  surfaceContainer: Color(0xff3e4059),
-  surfaceContainerHigh: Color(0xff3e4059),
-  surfaceContainerHighest: Color(0xff3e4059),
+  surfaceContainerLowest: Color(0xff36384f), // Darkest
+  surfaceContainerLow: Color(0xff393b54), // Darker
+  surfaceContainer: Color(0xff3e4059), // Middle
+  surfaceContainerHigh: Color(0xff454760), // Lighter
+  surfaceContainerHighest: Color(0xff4c4e67), // Lightest
   primary: Color(0xff019ae6),
   onPrimary: Colors.white,
   secondary: Color(0xff019ae6),
@@ -167,11 +167,11 @@ const staticDanbooruLightScheme = ColorScheme(
   secondaryContainer: Color(0xfff2f6fe),
   onSecondaryContainer: Colors.black,
   onTertiaryContainer: Colors.black,
-  surfaceContainerLowest: Color(0xfff2f6fe),
-  surfaceContainerLow: Color(0xfff2f6fe),
-  surfaceContainer: Color(0xfff2f6fe),
-  surfaceContainerHigh: Color(0xfff2f6fe),
-  surfaceContainerHighest: Color(0xfff2f6fe),
+  surfaceContainerLowest: Color(0xfffafbfe), // Lightest
+  surfaceContainerLow: Color(0xfff6f8fd), // Lighter
+  surfaceContainer: Color(0xfff2f6fe), // Middle
+  surfaceContainerHigh: Color(0xffe4ebf6), // Slightly darker
+  surfaceContainerHighest: Color(0xffd5dfee), // Darkest, but still soft
   primary: Color(0xff0174f9),
   onPrimary: Colors.white,
   secondary: Color(0xff0174f9),
@@ -189,11 +189,11 @@ const staticGreenScheme = ColorScheme(
   secondaryContainer: Color(0xff93c292),
   onSecondaryContainer: Colors.black,
   onTertiaryContainer: Colors.black,
-  surfaceContainerLowest: Color(0xff93c292),
-  surfaceContainerLow: Color(0xff93c292),
-  surfaceContainer: Color(0xff93c292),
-  surfaceContainerHigh: Color(0xff93c292),
-  surfaceContainerHighest: Color(0xff93c292),
+  surfaceContainerLowest: Color(0xff95c394), // Lightest
+  surfaceContainerLow: Color(0xff94c393), // Lighter
+  surfaceContainer: Color(0xff93c292), // Middle
+  surfaceContainerHigh: Color(0xff92bf91), // Slightly darker
+  surfaceContainerHighest: Color(0xff90bd8f), // Darkest
   primary: Color(0xff000198),
   onPrimary: Colors.white,
   secondary: Color(0xff000198),
@@ -214,11 +214,11 @@ const staticCoralPinkScheme = ColorScheme(
   onSecondary: Colors.white,
   secondaryContainer: Color(0xff2c1f1e),
   onSecondaryContainer: Colors.white,
-  surfaceContainerLowest: Color(0xff3e2d2b),
-  surfaceContainerLow: Color(0xff3e2d2b),
-  surfaceContainer: Color(0xff3e2d2b),
-  surfaceContainerHigh: Color(0xff3e2d2b),
-  surfaceContainerHighest: Color(0xff3e2d2b),
+  surfaceContainerLowest: Color(0xff3d2c2a), // Darkest
+  surfaceContainerLow: Color(0xff3e2d2b), // Slightly darker
+  surfaceContainer: Color(0xff3e2d2b), // Middle
+  surfaceContainerHigh: Color(0xff42302e), // Slightly lighter
+  surfaceContainerHighest: Color(0xff453331), // Lightest
   onTertiaryContainer: Colors.white,
   error: Color(0xffc10105),
   onError: kOnErrorDarkColor,
@@ -255,7 +255,6 @@ const staticHackerScheme = ColorScheme(
 
 const kCyberpunkPrimaryColor = Color(0xfffcec0c);
 const kCyberpunkSurfaceColor = Color(0xff120c15);
-const kCyberpunkSecondaryContainerColor = Color(0xff141824);
 const kCyberpunkOnSurfaceColor = Color(0xff02d6f1);
 const kCyberpunkOutlineColor = Color(0xff34736a);
 const kCyberpunkErrorColor = Color(0xffff6159);
@@ -266,13 +265,13 @@ const staticCyberpunkScheme = ColorScheme(
   onPrimary: Colors.black,
   secondary: kCyberpunkPrimaryColor,
   onSecondary: Colors.black,
-  secondaryContainer: kCyberpunkSecondaryContainerColor,
+  secondaryContainer: Color(0xff141824),
   onSecondaryContainer: kCyberpunkOnSurfaceColor,
-  surfaceContainerLowest: kCyberpunkSecondaryContainerColor,
-  surfaceContainerLow: kCyberpunkSecondaryContainerColor,
-  surfaceContainer: kCyberpunkSecondaryContainerColor,
-  surfaceContainerHigh: kCyberpunkSecondaryContainerColor,
-  surfaceContainerHighest: kCyberpunkSecondaryContainerColor,
+  surfaceContainerLowest: Color(0xff151a27), // Darkest
+  surfaceContainerLow: Color(0xff161b29), // Slightly darker
+  surfaceContainer: Color(0xff141824), // Middle
+  surfaceContainerHigh: Color(0xff121623), // Slightly lighter
+  surfaceContainerHighest: Color(0xff0f1320), // Lightest
   outline: kCyberpunkOutlineColor,
   outlineVariant: kCyberpunkOutlineColor,
   error: kCyberpunkErrorColor,
