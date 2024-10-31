@@ -29,31 +29,30 @@ class ColorVariantSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: context.colorScheme.surface,
-      padding: const EdgeInsets.only(bottom: 4),
-      child: ChoiceOptionSelectorList(
-        hasNullOption: false,
-        searchable: false,
-        options: _kVariantsOptions,
-        sheetTitle: 'Variants',
-        onSelected: (value) {
-          onChanged(value);
-        },
-        selectedOption: variant,
-        optionLabelBuilder: (value) => switch (value) {
-          null => 'None',
-          DynamicSchemeVariant.tonalSpot => 'Tonal',
-          DynamicSchemeVariant.fidelity => 'Fidelity',
-          DynamicSchemeVariant.monochrome => 'Monochrome',
-          DynamicSchemeVariant.neutral => 'Neutral',
-          DynamicSchemeVariant.vibrant => 'Vibrant',
-          DynamicSchemeVariant.expressive => 'Expressive',
-          DynamicSchemeVariant.content => 'Content',
-          DynamicSchemeVariant.rainbow => 'Rainbow',
-          DynamicSchemeVariant.fruitSalad => 'Fruit Salad',
-        },
-      ),
+    return OptionDropDownButton(
+      alignment: AlignmentDirectional.centerStart,
+      value: variant,
+      onChanged: onChanged,
+      items: _kVariantsOptions
+          .map(
+            (value) => DropdownMenuItem(
+              value: value,
+              child: Text(
+                switch (value) {
+                  DynamicSchemeVariant.tonalSpot => 'Tonal',
+                  DynamicSchemeVariant.fidelity => 'Fidelity',
+                  DynamicSchemeVariant.monochrome => 'Monochrome',
+                  DynamicSchemeVariant.neutral => 'Neutral',
+                  DynamicSchemeVariant.vibrant => 'Vibrant',
+                  DynamicSchemeVariant.expressive => 'Expressive',
+                  DynamicSchemeVariant.content => 'Content',
+                  DynamicSchemeVariant.rainbow => 'Rainbow',
+                  DynamicSchemeVariant.fruitSalad => 'Fruit Salad',
+                },
+              ),
+            ),
+          )
+          .toList(),
     );
   }
 }
@@ -71,7 +70,7 @@ class DarkModeToggleButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CircularIconButton(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(8),
       backgroundColor: isDark
           ? context.colorScheme.primary
           : context.colorScheme.surfaceContainerHighest,
@@ -90,7 +89,6 @@ enum ThemeCategory {
   basic,
   builtIn,
   accent,
-  image,
 }
 
 class SplashClipper extends CustomClipper<Path> {
@@ -129,7 +127,6 @@ class CategoryToggleSwitch extends StatelessWidget {
           ThemeCategory.basic: 'Basic',
           ThemeCategory.builtIn: 'Built-in',
           ThemeCategory.accent: 'Accent',
-          ThemeCategory.image: 'Image',
         },
         onChanged: (value) => onToggle(value),
         selectedColor: context.colorScheme.primaryContainer,

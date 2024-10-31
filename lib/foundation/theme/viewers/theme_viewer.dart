@@ -11,7 +11,6 @@ import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'color_selector_accent.dart';
 import 'color_selector_builtin.dart';
-import 'color_selector_image.dart';
 import 'page_preview.dart';
 import 'widgets.dart';
 
@@ -43,7 +42,6 @@ class _ThemePreviewAppState extends State<ThemePreviewApp> {
     SchemeType.basic => ThemeCategory.basic,
     SchemeType.builtIn => ThemeCategory.builtIn,
     SchemeType.accent => ThemeCategory.accent,
-    SchemeType.image => ThemeCategory.image,
     SchemeType.custom => throw UnimplementedError(),
     null => ThemeCategory.basic,
   };
@@ -181,10 +179,6 @@ class _ThemePreviewAppState extends State<ThemePreviewApp> {
                 onSchemeChanged: _onSchemeChanged,
                 initialScheme: _currentScheme,
               ),
-            ThemeCategory.image => ExtractImageColorSelector(
-                onSchemeChanged: _onSchemeChanged,
-                initialScheme: _currentScheme,
-              ),
           },
         ],
       ),
@@ -212,11 +206,8 @@ class _ThemePreviewAppState extends State<ThemePreviewApp> {
           ),
         ),
         Expanded(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 20,
-              vertical: 16,
-            ),
+          child: Transform.scale(
+            scale: 0.88,
             child: PageView(
               controller: pageController,
               children: pages,

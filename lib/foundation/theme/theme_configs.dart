@@ -284,7 +284,6 @@ enum SchemeType {
   basic,
   builtIn,
   accent,
-  image,
   custom,
 }
 
@@ -292,7 +291,6 @@ SchemeType? _parseSchemeType(String? schemeType) => switch (schemeType) {
       'basic' => SchemeType.basic,
       'builtIn' => SchemeType.builtIn,
       'accent' => SchemeType.accent,
-      'image' => SchemeType.image,
       'custom' => SchemeType.custom,
       _ => null,
     };
@@ -302,7 +300,6 @@ extension SchemeTypeX on SchemeType {
         SchemeType.basic => 'basic',
         SchemeType.builtIn => 'builtIn',
         SchemeType.accent => 'accent',
-        SchemeType.image => 'image',
         SchemeType.custom => 'custom',
       };
 }
@@ -436,24 +433,6 @@ class ColorSettings extends Equatable {
       nickname: nickname,
       schemeType: SchemeType.accent.value,
       colorScheme: null,
-      extendedColorScheme: null,
-      brightness: brightness,
-      dynamicSchemeVariant: dynamicSchemeVariant.value,
-      enableDynamicColoring: false,
-      followSystemDarkMode: null,
-    );
-  }
-
-  static ColorSettings fromImage(
-    ColorScheme colorScheme, {
-    required Brightness brightness,
-    required DynamicSchemeVariant dynamicSchemeVariant,
-  }) {
-    return ColorSettings(
-      name: 'image',
-      nickname: 'image',
-      schemeType: SchemeType.image.value,
-      colorScheme: colorScheme,
       extendedColorScheme: null,
       brightness: brightness,
       dynamicSchemeVariant: dynamicSchemeVariant.value,

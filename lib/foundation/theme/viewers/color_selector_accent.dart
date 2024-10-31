@@ -36,110 +36,113 @@ class _AccentColorSelectorState extends State<AccentColorSelector> {
       ),
       child: Column(
         children: [
-          ColorVariantSelector(
-            variant: _variant,
-            onChanged: (value) async {
-              if (value == null) return;
-              if (_currentColor == null) return;
+          Row(
+            children: [
+              DarkModeToggleButton(
+                isDark: _isDark,
+                onChanged: (value) {
+                  final color = ColorUtils.hexToColor(_currentColor);
 
-              setState(() {
-                _settings = ColorSettings.fromAccentColor(
-                  ColorUtils.hexToColor(_currentColor)!,
-                  brightness: _isDark ? Brightness.dark : Brightness.light,
-                  dynamicSchemeVariant: value,
-                );
+                  if (color == null) return;
 
-                _variant = value;
+                  setState(() {
+                    _isDark = value;
 
-                widget.onSchemeChanged(_settings);
-              });
-            },
+                    _settings = ColorSettings.fromAccentColor(
+                      color,
+                      brightness: value ? Brightness.dark : Brightness.light,
+                      dynamicSchemeVariant: _variant,
+                    );
+                    widget.onSchemeChanged(_settings);
+                  });
+                },
+              ),
+              const SizedBox(
+                width: 6,
+              ),
+              SizedBox(
+                height: 28,
+                child: const VerticalDivider(
+                  thickness: 2,
+                ),
+              ),
+              ColorVariantSelector(
+                variant: _variant,
+                onChanged: (value) async {
+                  if (value == null) return;
+                  if (_currentColor == null) return;
+
+                  setState(() {
+                    _settings = ColorSettings.fromAccentColor(
+                      ColorUtils.hexToColor(_currentColor)!,
+                      brightness: _isDark ? Brightness.dark : Brightness.light,
+                      dynamicSchemeVariant: value,
+                    );
+
+                    _variant = value;
+
+                    widget.onSchemeChanged(_settings);
+                  });
+                },
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Row(
+            children: [
+              Text(
+                'Default',
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
+                ),
+              ),
+            ],
           ),
           Padding(
             padding: const EdgeInsets.only(
-              top: 16,
+              top: 8,
               bottom: 12,
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            child: Wrap(
+              runSpacing: 8,
               children: [
-                DarkModeToggleButton(
-                  isDark: _isDark,
-                  onChanged: (value) {
-                    final color = ColorUtils.hexToColor(_currentColor);
+                ...themeAccentColors.keys.map(
+                  (e) {
+                    final color = themeAccentColors[e]!;
+                    final cs = ColorScheme.fromSeed(
+                      seedColor: color,
+                      brightness: _isDark ? Brightness.dark : Brightness.light,
+                      dynamicSchemeVariant: _variant,
+                    );
 
-                    if (color == null) return;
+                    final selected = _settings?.name == color.hexWithoutAlpha;
 
-                    setState(() {
-                      _isDark = value;
-
-                      _settings = ColorSettings.fromAccentColor(
-                        color,
-                        brightness: value ? Brightness.dark : Brightness.light,
-                        dynamicSchemeVariant: _variant,
-                      );
-                      widget.onSchemeChanged(_settings);
-                    });
-                  },
-                ),
-                const SizedBox(
-                  width: 8,
-                ),
-                SizedBox(
-                  height: 48,
-                  child: const VerticalDivider(
-                    thickness: 3,
-                  ),
-                ),
-                Expanded(
-                  child: Column(
-                    children: [
-                      Wrap(
-                        runSpacing: 8,
-                        children: [
-                          ...themeAccentColors.keys.map(
-                            (e) {
-                              final color = themeAccentColors[e]!;
-                              final cs = ColorScheme.fromSeed(
-                                seedColor: color,
-                                brightness: _isDark
-                                    ? Brightness.dark
-                                    : Brightness.light,
-                                dynamicSchemeVariant: _variant,
-                              );
-
-                              final selected =
-                                  _settings?.name == color.hexWithoutAlpha;
-
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 4,
-                                ),
-                                child: PreviewColorContainer(
-                                  onTap: () {
-                                    setState(() {
-                                      _settings = ColorSettings.fromAccentColor(
-                                        color,
-                                        brightness: _isDark
-                                            ? Brightness.dark
-                                            : Brightness.light,
-                                        dynamicSchemeVariant: _variant,
-                                      );
-                                      _currentColor = color.hexWithoutAlpha;
-                                      widget.onSchemeChanged(_settings);
-                                    });
-                                  },
-                                  selected: selected,
-                                  primary: color,
-                                  onSurface: cs.onSurface,
-                                ),
-                              );
-                            },
-                          ),
-                        ],
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 4,
                       ),
-                    ],
-                  ),
+                      child: PreviewColorContainer(
+                        onTap: () {
+                          setState(() {
+                            _settings = ColorSettings.fromAccentColor(
+                              color,
+                              brightness:
+                                  _isDark ? Brightness.dark : Brightness.light,
+                              dynamicSchemeVariant: _variant,
+                            );
+                            _currentColor = color.hexWithoutAlpha;
+                            widget.onSchemeChanged(_settings);
+                          });
+                        },
+                        selected: selected,
+                        primary: color,
+                        onSurface: cs.onSurface,
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
