@@ -41,7 +41,7 @@ class SideBarMenu extends ConsumerWidget {
         settingsProvider.select((value) => value.booruConfigSelectorPosition));
 
     return Container(
-      color: context.colorScheme.surface,
+      color: context.colorScheme.surfaceContainerLowest,
       constraints:
           BoxConstraints.expand(width: min(context.screenWidth * 0.85, 500)),
       child: Row(

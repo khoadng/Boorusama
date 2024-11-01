@@ -10,7 +10,7 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
 import 'blacklisted_tags_notifier.dart';
 
-final danbooruBlacklistedTagsProvider = NotifierProvider.family<
+final danbooruBlacklistedTagsProvider = AsyncNotifierProvider.family<
     BlacklistedTagsNotifier, List<String>?, BooruConfig>(
   BlacklistedTagsNotifier.new,
   dependencies: [
@@ -31,7 +31,7 @@ final danbooruBlacklistedTagsWithCensoredTagsProvider = FutureProvider
   }
 
   final danbooruBlacklistedTags =
-      ref.watch(danbooruBlacklistedTagsProvider(config));
+      await ref.watch(danbooruBlacklistedTagsProvider(config).future);
   final isUnverified = config.isUnverified();
   final booruFactory = ref.watch(booruFactoryProvider);
   final censoredTagsBanned = booruFactory

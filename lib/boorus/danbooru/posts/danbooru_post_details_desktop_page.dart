@@ -88,14 +88,20 @@ class _DanbooruPostDetailsDesktopPageState
       artistInfoBuilder: (context, post) => DanbooruArtistSection(
         post: post,
         commentary:
-            ref.watch(danbooruArtistCommentaryProvider(post.id)).value ??
-                const ArtistCommentary.empty(),
+            ref.watch(danbooruArtistCommentaryProvider(post.id)).maybeWhen(
+                  data: (commentary) => commentary,
+                  orElse: () => const ArtistCommentary.empty(),
+                ),
       ),
       statsTileBuilder: (context, post) => Padding(
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: DanbooruPostStatsTile(
           post: post,
-          commentCount: ref.watch(danbooruCommentCountProvider(post.id)).value,
+          commentCount:
+              ref.watch(danbooruCommentCountProvider(post.id)).maybeWhen(
+                    data: (count) => count,
+                    orElse: () => null,
+                  ),
         ),
       ),
       tagListBuilder: (context, post) => DanbooruTagsTile(
