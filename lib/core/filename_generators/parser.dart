@@ -1,7 +1,6 @@
 // Project imports:
 import 'token.dart';
 import 'token_option.dart';
-import 'utils.dart';
 
 typedef TokenData = ({
   Token token,
@@ -52,7 +51,7 @@ List<TokenOption> parseTokenOptions(
     value
         .split(',')
         .map((value) => parseTokenOption(value, token, configs))
-        .whereNotNull()
+        .nonNulls
         .toList();
 
 TokenOption? parseTokenOption(
@@ -63,8 +62,4 @@ List<String> parseParts(
   String format,
   RegExp regExp,
 ) =>
-    regExp
-        .allMatches(format)
-        .map((match) => match.group(1))
-        .whereNotNull()
-        .toList();
+    regExp.allMatches(format).map((match) => match.group(1)).nonNulls.toList();

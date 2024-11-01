@@ -200,7 +200,10 @@ class _DownloadFormatCardState extends ConsumerState<DownloadFormatCard> {
     return DecoratedBox(
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(4)),
-        border: Border.all(color: context.colorScheme.hintColor),
+        border: Border.all(
+          color: context.colorScheme.outlineVariant,
+          width: 2,
+        ),
       ),
       child: ExpandablePanel(
         theme: ExpandableThemeData(

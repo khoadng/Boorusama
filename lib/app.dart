@@ -18,6 +18,7 @@ import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/device_info_service.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/picker.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/scrolling.dart';
@@ -47,13 +48,15 @@ class App extends StatelessWidget {
         child: AnalyticsScope(
           builder: (analyticsEnabled) => ThemeBuilder(
             builder: (theme, themeMode) => RouterBuilder(
-              builder: (context, router) => ScrollBehaviorBuilder(
-                builder: (context, behavior) => _buildApp(
-                  theme,
-                  themeMode,
-                  context,
-                  router,
-                  behavior,
+              builder: (context, router) => NetworkListener(
+                child: ScrollBehaviorBuilder(
+                  builder: (context, behavior) => _buildApp(
+                    theme,
+                    themeMode,
+                    context,
+                    router,
+                    behavior,
+                  ),
                 ),
               ),
             ),

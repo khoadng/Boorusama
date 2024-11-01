@@ -1,10 +1,4 @@
 class FavoriteDto {
-  final int? id;
-  final int? juserId;
-  final int? post;
-  final DateTime? addtime;
-  final dynamic folder;
-
   FavoriteDto({
     required this.id,
     required this.juserId,
@@ -25,4 +19,10 @@ class FavoriteDto {
       folder: json['folder'],
     );
   }
+
+  final int? id;
+  final int? juserId;
+  final int? post;
+  final DateTime? addtime;
+  final dynamic folder;
 }

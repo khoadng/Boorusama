@@ -33,42 +33,13 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
   @override
   Widget build(BuildContext context) {
     final settings = ref.watch(settingsProvider);
-    final dynamicColorSupported = ref.watch(dynamicColorSupportProvider);
 
     return SettingsPageScaffold(
       hasAppBar: widget.hasAppBar,
       title: const Text('settings.appearance.appearance').tr(),
       children: [
         SettingsHeader(label: 'settings.general'.tr()),
-        SettingsTile<AppThemeMode>(
-          title: const Text('settings.theme.theme').tr(),
-          selectedOption: settings.themeMode,
-          items: AppThemeMode.values,
-          onChanged: (value) =>
-              ref.updateSettings(settings.copyWith(themeMode: value)),
-          optionBuilder: (value) => Text(value.localize()).tr(),
-        ),
-        Builder(builder: (context) {
-          return SwitchListTile(
-            title: const Text('settings.theme.dynamic_color').tr(),
-            subtitle: dynamicColorSupported
-                ? !isDesktopPlatform()
-                    ? const Text(
-                        'settings.theme.dynamic_color_mobile_description',
-                      ).tr()
-                    : const Text(
-                        'settings.theme.dynamic_color_desktop_description',
-                      ).tr()
-                : Text(
-                    '${!isDesktopPlatform() ? 'settings.theme.dynamic_color_mobile_description'.tr() : 'settings.theme.dynamic_color_desktop_description'.tr()}. ${'settings.theme.dynamic_color_unsupported_description'.tr()}',
-                  ),
-            value: settings.enableDynamicColoring,
-            onChanged: dynamicColorSupported
-                ? (value) => ref.updateSettings(
-                    settings.copyWith(enableDynamicColoring: value))
-                : null,
-          );
-        }),
+        _buildSimpleTheme(settings),
         const Divider(thickness: 1),
         SettingsHeader(label: 'settings.image_grid.image_grid'.tr()),
         ListingSettingsInteractionBlocker(
@@ -98,6 +69,47 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
         ),
         const SizedBox(
           height: 10,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSimpleTheme(Settings settings) {
+    final dynamicColorSupported = ref.watch(dynamicColorSupportProvider);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SettingsTile(
+          title: const Text('settings.theme.theme').tr(),
+          selectedOption: settings.themeMode,
+          items: AppThemeMode.values,
+          onChanged: (value) =>
+              ref.updateSettings(settings.copyWith(themeMode: value)),
+          optionBuilder: (value) => Text(value.localize()).tr(),
+        ),
+        Builder(
+          builder: (context) {
+            return SwitchListTile(
+              title: const Text('settings.theme.dynamic_color').tr(),
+              subtitle: dynamicColorSupported
+                  ? !isDesktopPlatform()
+                      ? const Text(
+                          'settings.theme.dynamic_color_mobile_description',
+                        ).tr()
+                      : const Text(
+                          'settings.theme.dynamic_color_desktop_description',
+                        ).tr()
+                  : Text(
+                      '${!isDesktopPlatform() ? 'settings.theme.dynamic_color_mobile_description'.tr() : 'settings.theme.dynamic_color_desktop_description'.tr()}. ${'settings.theme.dynamic_color_unsupported_description'.tr()}',
+                    ),
+              value: settings.enableDynamicColoring,
+              onChanged: dynamicColorSupported
+                  ? (value) => ref.updateSettings(
+                      settings.copyWith(enableDynamicColoring: value))
+                  : null,
+            );
+          },
         ),
       ],
     );

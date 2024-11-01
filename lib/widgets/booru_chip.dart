@@ -66,7 +66,7 @@ class BooruChip extends ConsumerWidget {
                   ? BorderSide(
                       color: !disabled
                           ? colors?.borderColor ?? Colors.transparent
-                          : colors?.borderColor.withOpacity(0.5) ??
+                          : colors?.borderColor.withAlpha(127) ??
                               Colors.transparent,
                     )
                   : null,
@@ -94,7 +94,7 @@ class BooruChip extends ConsumerWidget {
                   ? BorderSide(
                       color: !disabled
                           ? colors?.borderColor ?? Colors.transparent
-                          : colors?.borderColor.withOpacity(0.5) ??
+                          : colors?.borderColor.withAlpha(127) ??
                               Colors.transparent,
                     )
                   : null,

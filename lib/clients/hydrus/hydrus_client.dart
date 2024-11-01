@@ -3,7 +3,6 @@ import 'dart:async';
 import 'dart:convert';
 
 // Package imports:
-import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
 
 // Project imports:
@@ -53,7 +52,8 @@ class HydrusClient {
   }) async {
     final params = switch (tags) {
       '' || null => jsonEncode(['system:everything']),
-      List l => l.isEmpty ? jsonEncode(['system:everything']) : jsonEncode(l),
+      final List l =>
+        l.isEmpty ? jsonEncode(['system:everything']) : jsonEncode(l),
       _ => jsonEncode(tags),
     };
 
@@ -146,7 +146,7 @@ class HydrusClient {
 
     return _services!.entries
         .map((e) => ServiceDto.fromJson(e.value, e.key))
-        .whereNotNull()
+        .nonNulls
         .toList();
   }
 
@@ -159,7 +159,7 @@ class HydrusClient {
 
     return services.entries
         .map((e) => ServiceDto.fromJson(e.value, e.key))
-        .whereNotNull()
+        .nonNulls
         .toList();
   }
 

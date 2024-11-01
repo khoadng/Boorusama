@@ -1,8 +1,3 @@
-extension CollectionX<T> on Iterable<T?> {
-  Iterable<T> whereNotNull() =>
-      where((element) => element != null).map((e) => e!);
-}
-
 extension StringX on String {
   String capitalize() {
     if (isEmpty) return this;

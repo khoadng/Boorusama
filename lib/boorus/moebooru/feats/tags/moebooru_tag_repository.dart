@@ -1,5 +1,4 @@
 // Package imports:
-import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
 
 // Project imports:
@@ -25,11 +24,7 @@ class MoebooruTagRepository extends TagRepository {
     final data = await repo.getTagSummaries();
     final map = {for (final item in data) item.name: item};
 
-    return value
-        .map((e) => map[e])
-        .whereNotNull()
-        .map(tagSummaryToTag)
-        .toList();
+    return value.map((e) => map[e]).nonNulls.map(tagSummaryToTag).toList();
   }
 }
 

@@ -70,6 +70,10 @@ extension ColorX on Color {
   String get hex => ColorUtils.colorToHex(this, includeAlpha: true);
 
   String get hexWithoutAlpha => ColorUtils.colorToHex(this);
+
+  Color applyOpacity(final double opacity) {
+    return withOpacity(opacity);
+  }
 }
 
 class ColorUtils {

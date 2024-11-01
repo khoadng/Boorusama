@@ -13,15 +13,18 @@ class GelbooruV2CommentPage extends ConsumerWidget {
   const GelbooruV2CommentPage({
     super.key,
     required this.postId,
+    required this.useAppBar,
   });
 
   final int postId;
+  final bool useAppBar;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfig;
     return CommentPageScaffold(
       postId: postId,
+      useAppBar: useAppBar,
       fetcher: (postId) =>
           ref.watch(gelbooruV2CommentRepoProvider(config)).getComments(postId),
     );

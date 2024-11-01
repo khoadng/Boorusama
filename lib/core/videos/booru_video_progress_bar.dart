@@ -8,6 +8,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/theme.dart';
@@ -73,7 +74,7 @@ class BooruVideoProgressBar extends StatelessWidget {
               handleHeight: 8,
               drawShadow: true,
               backgroundColor:
-                  Theme.of(context).colorScheme.hintColor.withOpacity(0.2),
+                  Theme.of(context).colorScheme.hintColor.applyOpacity(0.2),
               playedColor: Theme.of(context).colorScheme.primary,
               bufferedColor: Theme.of(context).colorScheme.hintColor,
               handleColor: Theme.of(context).colorScheme.primary,
@@ -179,7 +180,7 @@ class BooruVideoOptionSheet extends StatelessWidget {
     return Material(
       color: kPreferredLayout.isDesktop
           ? context.colorScheme.surface
-          : context.colorScheme.secondaryContainer,
+          : context.colorScheme.surfaceContainer,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4),
         child: Column(

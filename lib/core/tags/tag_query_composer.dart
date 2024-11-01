@@ -1,9 +1,6 @@
 // Dart imports:
 import 'dart:convert';
 
-// Package imports:
-import 'package:collection/collection.dart';
-
 // Project imports:
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
@@ -131,7 +128,7 @@ class DanbooruTagQueryComposer implements TagQueryComposer {
         BooruConfigDeletedItemBehavior.show => null,
         BooruConfigDeletedItemBehavior.hide => '-status:deleted'
       },
-    ].whereNotNull().toList();
+    ].nonNulls.toList();
 
     return _composer.compose(newTags);
   }

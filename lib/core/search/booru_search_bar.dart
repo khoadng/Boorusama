@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 
@@ -64,7 +65,7 @@ class _BooruSearchBarState extends State<BooruSearchBar> {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: context.colorScheme.secondaryContainer,
+      color: context.colorScheme.surfaceContainerHighest,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
       ),
@@ -112,6 +113,10 @@ class _BooruSearchBarState extends State<BooruSearchBar> {
                         vertical: 12,
                       ),
                   hintText: widget.hintText ?? 'search.hint'.tr(),
+                  hintStyle: TextStyle(
+                    color:
+                        context.colorScheme.onSurfaceVariant.applyOpacity(0.5),
+                  ),
                 ),
                 autofocus: widget.autofocus,
                 controller: controller,

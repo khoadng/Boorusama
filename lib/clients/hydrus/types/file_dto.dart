@@ -5,44 +5,6 @@ import 'package:collection/collection.dart';
 import 'package:boorusama/clients/hydrus/types/types.dart';
 
 class FileDto {
-  final int? fileId;
-  final String? hash;
-  final int? size;
-  final String? mime;
-  final bool? filetypeForced;
-  final String? filetypeHuman;
-  final int? filetypeEnum;
-  final String? ext;
-  final int? width;
-  final int? height;
-  final int? thumbnailWidth;
-  final int? thumbnailHeight;
-  final int? duration;
-  final int? timeModified;
-  final Map<String, dynamic>? timeModifiedDetails;
-  final Map<String, dynamic>? fileServices;
-  final Map<String, dynamic>? ipfsMultihashes;
-  final bool? hasAudio;
-  final String? blurhash;
-  final String? pixelHash;
-  final int? numFrames;
-  final int? numWords;
-  final bool? isInbox;
-  final bool? isLocal;
-  final bool? isTrashed;
-  final bool? isDeleted;
-  final bool? hasExif;
-  final bool? hasHumanReadableEmbeddedMetadata;
-  final bool? hasIccProfile;
-  final bool? hasTransparency;
-  final List<String>? knownUrls;
-  final Map<String, dynamic>? ratings;
-  final Map<String, Map<String, dynamic>>? tags;
-
-  final String imageUrl;
-  final String thumbnailUrl;
-  final bool? faved;
-
   const FileDto({
     required this.fileId,
     required this.hash,
@@ -151,6 +113,44 @@ class FileDto {
       faved: faved,
     );
   }
+
+  final int? fileId;
+  final String? hash;
+  final int? size;
+  final String? mime;
+  final bool? filetypeForced;
+  final String? filetypeHuman;
+  final int? filetypeEnum;
+  final String? ext;
+  final int? width;
+  final int? height;
+  final int? thumbnailWidth;
+  final int? thumbnailHeight;
+  final int? duration;
+  final int? timeModified;
+  final Map<String, dynamic>? timeModifiedDetails;
+  final Map<String, dynamic>? fileServices;
+  final Map<String, dynamic>? ipfsMultihashes;
+  final bool? hasAudio;
+  final String? blurhash;
+  final String? pixelHash;
+  final int? numFrames;
+  final int? numWords;
+  final bool? isInbox;
+  final bool? isLocal;
+  final bool? isTrashed;
+  final bool? isDeleted;
+  final bool? hasExif;
+  final bool? hasHumanReadableEmbeddedMetadata;
+  final bool? hasIccProfile;
+  final bool? hasTransparency;
+  final List<String>? knownUrls;
+  final Map<String, dynamic>? ratings;
+  final Map<String, Map<String, dynamic>>? tags;
+
+  final String imageUrl;
+  final String thumbnailUrl;
+  final bool? faved;
 }
 
 extension FileDtoX on FileDto {
@@ -160,7 +160,7 @@ extension FileDtoX on FileDto {
         .map((e) => e['storage_tags'] != null
             ? e['storage_tags'] as Map<String, dynamic>
             : null)
-        .whereNotNull()
+        .nonNulls
         .expand((e) => e.values)
         .expand((e) => e)
         .toList();

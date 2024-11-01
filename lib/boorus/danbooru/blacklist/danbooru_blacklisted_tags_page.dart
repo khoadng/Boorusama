@@ -19,49 +19,56 @@ class DanbooruBlacklistedTagsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfig;
-    final tags = ref.watch(danbooruBlacklistedTagsProvider(config));
+    final notifier =
+        ref.watch(danbooruBlacklistedTagsProvider(config).notifier);
 
-    return BlacklistedTagsViewScaffold(
-      title: 'blacklisted_tags.blacklisted_tags'.tr(),
-      actions: [
-        if (tags != null)
-          ImportExportTagButton(
-            tags: tags,
-            onImport: (tagString) => ref
-                .read(danbooruBlacklistedTagsProvider(config).notifier)
-                .addFromStringWithToast(
+    return ref.watch(danbooruBlacklistedTagsProvider(config)).when(
+          data: (tags) {
+            return BlacklistedTagsViewScaffold(
+              title: 'blacklisted_tags.blacklisted_tags'.tr(),
+              actions: [
+                if (tags != null)
+                  ImportExportTagButton(
+                    tags: tags,
+                    onImport: (tagString) => notifier.addFromStringWithToast(
+                      context: context,
+                      tagString: tagString,
+                    ),
+                  )
+                else
+                  const SizedBox.shrink(),
+              ],
+              tags: tags,
+              onAddTag: (tag) {
+                notifier.addWithToast(
                   context: context,
-                  tagString: tagString,
-                ),
-          )
-        else
-          const SizedBox.shrink(),
-      ],
-      tags: tags,
-      onAddTag: (tag) {
-        ref
-            .read(danbooruBlacklistedTagsProvider(ref.readConfig).notifier)
-            .addWithToast(
-              context: context,
-              tag: tag,
+                  tag: tag,
+                );
+              },
+              onEditTap: (oldTag, newTag) {
+                notifier.replace(
+                  oldTag: oldTag,
+                  newTag: newTag,
+                );
+              },
+              onRemoveTag: (tag) {
+                notifier.removeWithToast(
+                  context: context,
+                  tag: tag,
+                );
+              },
             );
-      },
-      onEditTap: (oldTag, newTag) {
-        ref
-            .read(danbooruBlacklistedTagsProvider(ref.readConfig).notifier)
-            .replace(
-              oldTag: oldTag,
-              newTag: newTag,
-            );
-      },
-      onRemoveTag: (tag) {
-        ref
-            .read(danbooruBlacklistedTagsProvider(ref.readConfig).notifier)
-            .removeWithToast(
-              context: context,
-              tag: tag,
-            );
-      },
-    );
+          },
+          error: (e, __) => Scaffold(
+            body: Center(
+              child: Text('Error: $e'),
+            ),
+          ),
+          loading: () => const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          ),
+        );
   }
 }

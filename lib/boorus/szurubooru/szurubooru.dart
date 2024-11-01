@@ -74,7 +74,10 @@ class SzurubooruBuilder
 
   @override
   CommentPageBuilder? get commentPageBuilder =>
-      (context, useAppBar, postId) => SzurubooruCommentPage(postId: postId);
+      (context, useAppBar, postId) => SzurubooruCommentPage(
+            postId: postId,
+            useAppBar: useAppBar,
+          );
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
@@ -216,9 +219,11 @@ class SzurubooruCommentPage extends ConsumerWidget {
   const SzurubooruCommentPage({
     super.key,
     required this.postId,
+    required this.useAppBar,
   });
 
   final int postId;
+  final bool useAppBar;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -226,6 +231,7 @@ class SzurubooruCommentPage extends ConsumerWidget {
 
     return CommentPageScaffold(
       postId: postId,
+      useAppBar: useAppBar,
       fetcher: (id) => client.getComments(postId: postId).then(
             (value) => value
                 .map((e) => SimpleComment(

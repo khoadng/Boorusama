@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
-import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
@@ -446,7 +445,7 @@ class _PostDetailsDesktopScaffoldState<T extends Post>
                       : null,
               },
             )
-            .whereNotNull(),
+            .nonNulls,
         const SliverSizedBox(height: 24),
       ],
     );
