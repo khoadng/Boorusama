@@ -12,6 +12,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/clipboard.dart';
 import 'package:boorusama/foundation/display.dart';
@@ -28,7 +29,6 @@ import '../posts/posts.dart';
 import '../related_tags/related_tags.dart';
 import '../reports/reports.dart';
 import '../router.dart';
-import 'user_charts.dart';
 import 'users.dart';
 
 class DanbooruReportDataParams extends Equatable {
@@ -157,7 +157,7 @@ class UserDetailsPage extends ConsumerWidget {
         child: state.when(
           data: (user) => DecoratedBox(
             decoration: BoxDecoration(
-              color: context.theme.scaffoldBackgroundColor,
+              color: context.colorScheme.surface,
               borderRadius: const BorderRadius.all(Radius.circular(8)),
             ),
             child: CustomScrollView(
@@ -382,7 +382,7 @@ class UserDetailsPage extends ConsumerWidget {
                           text: '  ${(e.frequency * 100).toStringAsFixed(1)}%',
                           style: context.textTheme.bodySmall?.copyWith(
                             color: context.isLight
-                                ? Colors.white.withOpacity(0.85)
+                                ? Colors.white.applyOpacity(0.85)
                                 : null,
                           ),
                         ),

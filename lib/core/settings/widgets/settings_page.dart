@@ -16,6 +16,7 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/providers.dart';
 import 'package:boorusama/core/settings/widgets/about_page.dart';
 import 'package:boorusama/core/settings/widgets/debug_logs_page.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/scrolling.dart';
@@ -127,7 +128,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     onTap: () => context.go('/settings/language'),
                   ),
                   SettingTile(
-                    title: 'download.download'.tr(),
+                    title: 'settings.download.title'.tr(),
                     leading: const FaIcon(
                       FontAwesomeIcons.download,
                     ),
@@ -371,7 +372,7 @@ class SettingTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
         // color: selected ? context.colorScheme.secondary : Colors.transparent,
         child: InkWell(
-          hoverColor: context.theme.hoverColor.withOpacity(0.1),
+          hoverColor: context.theme.hoverColor.applyOpacity(0.1),
           borderRadius: BorderRadius.circular(8),
           onTap: onTap,
           child: Container(
@@ -406,7 +407,7 @@ class SettingTile extends StatelessWidget {
                           subtitle!,
                           style: TextStyle(
                             fontSize: 14,
-                            color: context.theme.hintColor,
+                            color: context.colorScheme.hintColor,
                           ),
                         ),
                       ],
@@ -485,7 +486,7 @@ class _SettingsSection extends StatelessWidget {
       child: Text(
         label.toUpperCase(),
         style: context.textTheme.titleSmall!
-            .copyWith(color: context.theme.hintColor),
+            .copyWith(color: context.colorScheme.hintColor),
       ),
     );
   }
@@ -522,7 +523,6 @@ class SettingsInteractionBlocker extends ConsumerWidget {
                   vertical: 8,
                 ),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Padding(
                   padding: const EdgeInsets.only(right: 8),
@@ -566,7 +566,7 @@ class ListingSettingsInteractionBlocker extends ConsumerWidget {
       description: RichText(
         text: TextSpan(
           style: context.textTheme.titleSmall?.copyWith(
-            color: context.theme.hintColor,
+            color: context.colorScheme.hintColor,
             fontSize: 12,
             fontWeight: FontWeight.w400,
           ),

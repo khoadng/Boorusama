@@ -9,6 +9,7 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
@@ -234,7 +235,7 @@ class DefaultBooruInstructionText extends StatelessWidget {
     return Text(
       text,
       style: context.textTheme.titleSmall?.copyWith(
-        color: context.theme.hintColor,
+        color: context.colorScheme.hintColor,
         fontSize: 12,
         fontWeight: FontWeight.w400,
       ),
@@ -412,7 +413,7 @@ class CreateBooruRatingOptionsTile extends StatelessWidget {
           Text(
             'Choose ${singleSelection ? 'a rating' : 'rating(s)'} that you want to exclude from the search.',
             style: context.textTheme.bodySmall?.copyWith(
-              color: context.theme.colorScheme.onSurface.withOpacity(0.6),
+              color: context.theme.colorScheme.onSurface.applyOpacity(0.6),
             ),
           ),
           const SizedBox(height: 8),

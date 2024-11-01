@@ -105,7 +105,7 @@ class PostActionToolbar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 4),
-      color: context.theme.scaffoldBackgroundColor,
+      color: context.colorScheme.surface,
       child: OverflowBar(
         alignment: MainAxisAlignment.spaceEvenly,
         children: children,

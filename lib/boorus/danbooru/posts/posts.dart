@@ -1,5 +1,4 @@
 export 'common.dart';
-export 'danbooru_artist_character_post_repository.dart';
 export 'danbooru_creator_preloader.dart';
 export 'danbooru_favorite_group_post_mixin.dart';
 export 'danbooru_image_grid_item.dart';

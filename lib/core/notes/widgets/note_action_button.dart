@@ -48,7 +48,6 @@ class NoteActionButton extends StatelessWidget {
               child: FaIcon(
                 FontAwesomeIcons.eyeSlash,
                 size: 18,
-                color: Colors.white,
               ),
             )
           : const Padding(
@@ -56,7 +55,6 @@ class NoteActionButton extends StatelessWidget {
               child: FaIcon(
                 FontAwesomeIcons.eye,
                 size: 18,
-                color: Colors.white,
               ),
             ),
       onPressed: onToggleNotes,

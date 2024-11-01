@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
-import 'package:collection/collection.dart';
 import 'package:easy_localization/easy_localization.dart' as el;
 import 'package:easy_logger/easy_logger.dart';
 import 'package:equatable/equatable.dart';
@@ -141,7 +140,7 @@ Future<List<BooruLanguage>> loadLanguageNames() async {
   final tasks = await Future.wait(
       supportedLocales.map((e) => e.toLanguageTag()).map(loadLanguage));
 
-  return tasks.whereNotNull().toList();
+  return tasks.nonNulls.toList();
 }
 
 Future<BooruLanguage?> loadLanguage(String lang) async {

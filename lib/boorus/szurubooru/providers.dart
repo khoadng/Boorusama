@@ -54,7 +54,7 @@ final szurubooruPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
                   originalImageUrl: e.contentUrl ?? '',
                   tags: e.tags
                           ?.map((e) => e.names?.firstOrNull)
-                          .whereNotNull()
+                          .nonNulls
                           .toSet() ??
                       {},
                   tagDetails: e.tags

@@ -40,7 +40,7 @@ class _ArtistPageScaffoldState<T extends Post>
           controller.refresh();
         },
         tagName: widget.artistName,
-        otherNamesBuilder: (_) => const SizedBox(height: 40, width: 40),
+        otherNames: const SizedBox(height: 40, width: 40),
         gridBuilder: (context, slivers) => InfinitePostListScaffold(
           errors: errors,
           controller: controller,

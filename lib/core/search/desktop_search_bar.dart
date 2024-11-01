@@ -85,7 +85,7 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
       dense: true,
       autofocus: false,
       height: kToolbarHeight * 0.9,
-      queryEditingController: textEditingController,
+      controller: textEditingController,
       onFocusChanged: (value) => showSuggestions.value = value,
       onTapOutside: isDesktopPlatform()
           ? () {
@@ -136,8 +136,7 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
               query.text.isNotEmpty
                   ? TagSuggestionItems(
                       dense: true,
-                      backgroundColor:
-                          context.colorScheme.surfaceContainerHighest,
+                      backgroundColor: context.colorScheme.surfaceContainer,
                       tags: suggestionTags,
                       currentQuery: query.text,
                       onItemTap: (tag) {
@@ -159,14 +158,13 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                         vertical: 8,
                       ),
                       decoration: BoxDecoration(
-                        color: context.colorScheme.surfaceContainerHighest,
+                        color: context.colorScheme.surfaceContainer,
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: SearchLandingView(
                         disableAnimation: true,
                         reverseScheme: true,
-                        backgroundColor:
-                            context.colorScheme.surfaceContainerHighest,
+                        backgroundColor: context.colorScheme.surfaceContainer,
                         onHistoryCleared: () => ref
                             .read(searchHistoryProvider.notifier)
                             .clearHistories(),

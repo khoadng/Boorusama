@@ -158,7 +158,7 @@ class BooruConfigGesturesView extends ConsumerWidget {
           Text(
             'Override the default gestures for this profile, select "None" to keep the original behavior.',
             style: ref.context.textTheme.titleSmall?.copyWith(
-              color: ref.context.theme.hintColor,
+              color: ref.context.colorScheme.hintColor,
               fontSize: 14,
               fontWeight: FontWeight.w400,
             ),

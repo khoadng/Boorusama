@@ -58,6 +58,9 @@ class _AppHtmlState extends State<AppHtml> {
           margin: Margins.zero,
           color: Theme.of(context).colorScheme.onSurface,
         ),
+        'a': Style(
+          color: Theme.of(context).colorScheme.primary,
+        ),
       },
     };
 

@@ -125,7 +125,12 @@ Future<T?> showAdaptiveSheet<T>(
     return showSideSheetFromRight<T>(
       settings: settings,
       width: width ?? 320,
-      body: builder(context),
+      body: MediaQuery.removePadding(
+        context: context,
+        removeLeft: true,
+        removeRight: true,
+        child: builder(context),
+      ),
       context: context,
     );
   }

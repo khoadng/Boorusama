@@ -96,7 +96,7 @@ class _AnimePicturesAuthViewState extends ConsumerState<AnimePicturesAuthView> {
           Text(
             'Cookie Auth',
             style: context.textTheme.titleSmall?.copyWith(
-              color: context.theme.hintColor,
+              color: context.colorScheme.hintColor,
               fontSize: 14,
               fontWeight: FontWeight.w700,
             ),
@@ -105,7 +105,7 @@ class _AnimePicturesAuthViewState extends ConsumerState<AnimePicturesAuthView> {
           Text(
             'Provide this information so the app can access more content. Note that if you change your password or something looks wrong after some time, try to login again.',
             style: context.textTheme.titleSmall?.copyWith(
-              color: context.theme.hintColor,
+              color: context.colorScheme.hintColor,
               fontSize: 12,
               fontWeight: FontWeight.w400,
             ),

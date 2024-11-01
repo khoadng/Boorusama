@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:collection/collection.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -61,7 +60,7 @@ class DownloadTileBuilder extends StatelessWidget {
       fileSizeText,
       networkSpeedText,
       timeRemainingText,
-    ].whereNotNull().join(' • ');
+    ].nonNulls.join(' • ');
 
     return Container(
       margin: const EdgeInsets.symmetric(
@@ -111,7 +110,7 @@ class DownloadTileBuilder extends StatelessWidget {
                           overflow: TextOverflow.fade,
                           softWrap: false,
                           style: TextStyle(
-                            color: context.theme.hintColor,
+                            color: context.colorScheme.hintColor,
                             fontSize: 12,
                           ),
                         ),

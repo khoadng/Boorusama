@@ -108,7 +108,11 @@ class _DanbooruPostDetailsPageState
                 ),
         statsTileBuilder: (context, post) => DanbooruPostStatsTile(
           post: post,
-          commentCount: ref.watch(danbooruCommentCountProvider(post.id)).value,
+          commentCount:
+              ref.watch(danbooruCommentCountProvider(post.id)).maybeWhen(
+                    data: (count) => count,
+                    orElse: () => null,
+                  ),
         ),
         tagListBuilder: (context, post) => DanbooruTagsTile(post: post),
         infoBuilder: (context, post) => SimpleInformationSection(
@@ -118,8 +122,10 @@ class _DanbooruPostDetailsPageState
         artistInfoBuilder: (context, post) => DanbooruArtistSection(
           post: post,
           commentary:
-              ref.watch(danbooruArtistCommentaryProvider(post.id)).value ??
-                  const ArtistCommentary.empty(),
+              ref.watch(danbooruArtistCommentaryProvider(post.id)).maybeWhen(
+                    data: (commentary) => commentary,
+                    orElse: () => const ArtistCommentary.empty(),
+                  ),
         ),
         placeholderImageUrlBuilder: (post, currentPage) =>
             currentPage == widget.intitialIndex && post.isTranslated
@@ -227,6 +233,9 @@ class DanbooruPostStatsTile extends ConsumerWidget {
       favCount: post.favCount,
       totalComments: commentCount ?? 0,
       votePercentText: _generatePercentText(post),
+      onScoreTap: () => goToPostVotesDetails(context, post),
+      onFavCountTap: () => goToPostFavoritesDetails(context, post),
+      onTotalCommentsTap: () => goToCommentPage(context, ref, post.id),
     );
   }
 

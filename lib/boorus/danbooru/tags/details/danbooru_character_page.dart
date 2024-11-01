@@ -14,25 +14,22 @@ class DanbooruCharacterPage extends ConsumerWidget {
   const DanbooruCharacterPage({
     super.key,
     required this.characterName,
-    required this.backgroundImageUrl,
   });
 
   final String characterName;
-  final String backgroundImageUrl;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return CustomContextMenuOverlay(
       child: DanbooruTagDetailsPage(
         tagName: characterName,
-        otherNamesBuilder: (context) =>
-            switch (ref.watch(danbooruWikiProvider(characterName))) {
+        otherNames: switch (ref.watch(danbooruWikiProvider(characterName))) {
           WikiStateLoading _ => const TagOtherNames(otherNames: null),
-          final WikiStateLoaded s => TagOtherNames(otherNames: s.wiki.otherNames),
+          final WikiStateLoaded s =>
+            TagOtherNames(otherNames: s.wiki.otherNames),
           WikiStateError _ => const SizedBox.shrink(),
           WikiStateNotFound _ => const SizedBox.shrink(),
         },
-        backgroundImageUrl: backgroundImageUrl,
       ),
     );
   }

@@ -10,6 +10,7 @@ import 'package:webview_flutter_android/webview_flutter_android.dart';
 
 // Project imports:
 import 'package:boorusama/dart.dart';
+import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class WebmVideoController {
@@ -129,7 +130,7 @@ String urlToHtml(
   Color backgroundColor = Colors.black,
   bool? muted,
 }) {
-  final colorText = backgroundColor == Colors.black ? 'black' : 'white';
+  final colorText = backgroundColor.hexWithoutAlpha;
   final mutedText = muted == true ? 'muted' : '';
   late final String videoHtml = '''
 <!DOCTYPE html>
@@ -142,11 +143,12 @@ String urlToHtml(
     align-items: center;
     height: 100vh;
     margin: 0;
+    background-color: $colorText;
   }
 </style>
 </head>
 <body>
-  <video id="video" allowfullscreen width="100%" height="100%" style="background-color:$colorText;vertical-align: middle;display: inline-block;" $mutedText loop>
+  <video id="video" allowfullscreen width="100%" height="100%" style="background-color:$colorText;vertical-align: middle;display: inline-block;" $mutedText loop poster="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
     <source src=$url#t=0.01 type="video/webm" />
   </video>
 </body>
@@ -265,8 +267,8 @@ class _EmbeddedWebViewWebmState extends State<EmbeddedWebViewWebm> {
 
   Widget _buildHitArea() {
     return CenterPlayButton(
-      backgroundColor: Colors.black54,
-      iconColor: Colors.white,
+      backgroundColor: context.extendedColorScheme.surfaceContainerOverlay,
+      iconColor: context.extendedColorScheme.onSurfaceContainerOverlay,
       isFinished: false,
       isPlaying: webmVideoController.isPlaying,
       show: showPlay,

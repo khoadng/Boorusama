@@ -55,7 +55,7 @@ class FavoriteTagsSection extends ConsumerWidget {
     return [
       ...tags.mapIndexed((index, tag) {
         final colors = ref.context.generateChipColors(
-          ref.context.isDark ? Colors.white : Colors.black,
+          ref.context.colorScheme.onSurface,
           ref.watch(settingsProvider),
         );
 

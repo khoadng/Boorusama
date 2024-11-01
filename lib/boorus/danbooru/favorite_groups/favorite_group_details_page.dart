@@ -285,10 +285,7 @@ class _FavoriteGroupDetailsPageState
                                     right: 4,
                                     child: CircularIconButton(
                                       padding: const EdgeInsets.all(4),
-                                      icon: const Icon(
-                                        Symbols.close,
-                                        color: Colors.white,
-                                      ),
+                                      icon: const Icon(Symbols.close),
                                       onPressed: () {
                                         controller
                                             .remove([post.id], (e) => e.id);

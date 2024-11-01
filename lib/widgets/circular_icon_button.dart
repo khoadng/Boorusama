@@ -1,22 +1,30 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Project imports:
+import 'package:boorusama/foundation/theme.dart';
+
 class CircularIconButton extends StatelessWidget {
   const CircularIconButton({
     super.key,
     required this.icon,
     this.onPressed,
     this.padding,
+    this.backgroundColor,
+    this.iconColor,
   });
 
   final Widget icon;
   final VoidCallback? onPressed;
   final EdgeInsets? padding;
+  final Color? backgroundColor;
+  final Color? iconColor;
 
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.black.withOpacity(0.5),
+      color: backgroundColor ??
+          context.extendedColorScheme.surfaceContainerOverlay,
       shape: const CircleBorder(),
       child: InkWell(
         splashFactory: InkRipple.splashFactory,
@@ -24,7 +32,15 @@ class CircularIconButton extends StatelessWidget {
         onTap: onPressed,
         child: Padding(
           padding: padding ?? const EdgeInsets.all(8),
-          child: icon,
+          child: Theme(
+            data: Theme.of(context).copyWith(
+              iconTheme: Theme.of(context).iconTheme.copyWith(
+                    color: iconColor ??
+                        context.extendedColorScheme.onSurfaceContainerOverlay,
+                  ),
+            ),
+            child: icon,
+          ),
         ),
       ),
     );

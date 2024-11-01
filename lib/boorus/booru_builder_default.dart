@@ -294,16 +294,16 @@ class DefaultImagePreviewQuickActionButton extends ConsumerWidget {
           ),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: Colors.black.withOpacity(0.5),
+            color: context.extendedColorScheme.surfaceContainerOverlay,
           ),
           child: BookmarkPostLikeButtonButton(
             post: post,
           ),
         ),
-      ImageQuickActionType.download => Container(
+      ImageQuickActionType.download => DecoratedBox(
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: Colors.black.withOpacity(0.5),
+            color: context.extendedColorScheme.surfaceContainerOverlay,
           ),
           child: DownloadPostButton(
             post: post,

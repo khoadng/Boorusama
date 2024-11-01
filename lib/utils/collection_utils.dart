@@ -59,7 +59,9 @@ extension ListX<E> on List<E> {
     if (oldIndex < 0 ||
         oldIndex >= length ||
         newIndex < 0 ||
-        newIndex >= length) return false;
+        newIndex >= length) {
+      return false;
+    }
 
     final item = removeAt(oldIndex);
 

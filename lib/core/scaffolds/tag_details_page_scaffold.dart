@@ -9,24 +9,25 @@ import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/display.dart';
+import 'package:boorusama/foundation/platform.dart';
 
 class TagDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   const TagDetailsPageScaffold({
     super.key,
     required this.tagName,
-    required this.otherNamesBuilder,
-    this.extraBuilder,
+    required this.otherNames,
+    this.extras,
     required this.gridBuilder,
     this.onCategoryToggle,
   });
 
   final String tagName;
-  final Widget Function(BuildContext context) otherNamesBuilder;
+  final Widget otherNames;
   final Widget Function(
     BuildContext context,
     List<Widget> slivers,
   ) gridBuilder;
-  final List<Widget> Function(BuildContext context)? extraBuilder;
+  final List<Widget>? extras;
   final void Function(TagFilterCategory category)? onCategoryToggle;
 
   @override
@@ -44,9 +45,11 @@ class _DanbooruTagDetailsPageState<T extends Post>
           children: [
             TagTitleName(tagName: widget.tagName),
             const SizedBox(height: 12),
-            widget.otherNamesBuilder(context),
-            ...widget.extraBuilder?.call(context) ?? [],
-            const SizedBox(height: 36),
+            widget.otherNames,
+            ...widget.extras ?? [],
+            isDesktopPlatform()
+                ? const SizedBox(height: 36)
+                : const SizedBox.shrink(),
           ],
         ),
         builder: (context) {
@@ -56,13 +59,12 @@ class _DanbooruTagDetailsPageState<T extends Post>
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Expanded(
-                      child: widget.otherNamesBuilder(context),
+                      child: widget.otherNames,
                     ),
                   ],
                 ),
-            if (widget.extraBuilder != null)
-              for (final extra in widget.extraBuilder!.call(context))
-                () => extra,
+            if (widget.extras != null)
+              for (final extra in widget.extras!) () => extra,
             () => const SizedBox(height: 20),
             () => Padding(
                   padding: const EdgeInsets.only(bottom: 10),

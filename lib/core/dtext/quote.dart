@@ -19,7 +19,7 @@ class Quote extends StatelessWidget {
       decoration: BoxDecoration(
         color: context.colorScheme.surfaceContainerHighest,
         border: Border.all(
-          color: context.theme.hintColor,
+          color: context.colorScheme.hintColor,
         ),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 6),

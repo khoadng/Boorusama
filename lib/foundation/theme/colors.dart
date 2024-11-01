@@ -37,32 +37,19 @@ const kHintLightColor = Color.fromARGB(255, 79, 86, 96);
 
 class BoorusamaColors extends ThemeExtension<BoorusamaColors> {
   const BoorusamaColors({
-    required this.videoPlayerBackgroundColor,
-    required this.themeMode,
-    required this.selectedColor,
     required this.upvoteColor,
     required this.downvoteColor,
   });
 
-  final Color videoPlayerBackgroundColor;
-  final AppThemeMode themeMode;
-  final Color selectedColor;
   final Color upvoteColor;
   final Color downvoteColor;
 
   @override
   ThemeExtension<BoorusamaColors> copyWith({
-    Color? videoPlayerBackgroundColor,
-    AppThemeMode? themeMode,
-    Color? selectedColor,
     Color? upvoteColor,
     Color? downvoteColor,
   }) =>
       BoorusamaColors(
-        videoPlayerBackgroundColor:
-            videoPlayerBackgroundColor ?? this.videoPlayerBackgroundColor,
-        themeMode: themeMode ?? this.themeMode,
-        selectedColor: selectedColor ?? this.selectedColor,
         upvoteColor: upvoteColor ?? this.upvoteColor,
         downvoteColor: downvoteColor ?? this.downvoteColor,
       );
@@ -75,15 +62,6 @@ class BoorusamaColors extends ThemeExtension<BoorusamaColors> {
     if (other is! BoorusamaColors) return this;
 
     return BoorusamaColors(
-      videoPlayerBackgroundColor: Color.lerp(
-            videoPlayerBackgroundColor,
-            other.videoPlayerBackgroundColor,
-            t,
-          ) ??
-          videoPlayerBackgroundColor,
-      themeMode: other.themeMode,
-      selectedColor:
-          Color.lerp(selectedColor, other.selectedColor, t) ?? selectedColor,
       upvoteColor: Color.lerp(upvoteColor, other.upvoteColor, t) ?? upvoteColor,
       downvoteColor:
           Color.lerp(downvoteColor, other.downvoteColor, t) ?? downvoteColor,

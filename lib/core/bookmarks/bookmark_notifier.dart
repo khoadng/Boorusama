@@ -12,6 +12,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/backups/backups.dart';
 import 'package:boorusama/core/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
@@ -156,7 +157,11 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
       }
     } catch (e) {
       if (context.mounted) {
-        showErrorToast(context, 'Failed to export bookmarks: $e');
+        if (e is PathAccessException) {
+          showErrorToast(context, kInvalidLocationMessage);
+        } else {
+          showErrorToast(context, 'Failed to export bookmarks: $e');
+        }
       }
     }
   }

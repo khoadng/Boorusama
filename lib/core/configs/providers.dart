@@ -50,57 +50,7 @@ extension BooruWidgetRef on WidgetRef {
   BooruConfig get watchConfig => watch(currentBooruConfigProvider);
 }
 
-extension BooruAutoDisposeProviderRef<T> on AutoDisposeProviderRef<T> {
-  /// {@macro boorusama.booru.readConfig}
-  BooruConfig get readConfig => read(currentBooruConfigProvider);
-
-  /// {@macro boorusama.booru.watchConfig}
-  BooruConfig get watchConfig => watch(currentBooruConfigProvider);
-}
-
-extension BooruProviderRef<T> on ProviderRef<T> {
-  /// {@macro boorusama.booru.readConfig}
-  BooruConfig get readConfig => read(currentBooruConfigProvider);
-
-  /// {@macro boorusama.booru.watchConfig}
-  BooruConfig get watchConfig => watch(currentBooruConfigProvider);
-}
-
-extension BooruFutureProviderRef<T> on FutureProviderRef<T> {
-  /// {@macro boorusama.booru.readConfig}
-  BooruConfig get readConfig => read(currentBooruConfigProvider);
-
-  /// {@macro boorusama.booru.watchConfig}
-  BooruConfig get watchConfig => watch(currentBooruConfigProvider);
-}
-
-extension BooruNotifierProviderRef<T> on NotifierProviderRef<T> {
-  /// {@macro boorusama.booru.readConfig}
-  BooruConfig get readConfig => read(currentBooruConfigProvider);
-
-  /// {@macro boorusama.booru.watchConfig}
-  BooruConfig get watchConfig => watch(currentBooruConfigProvider);
-}
-
-extension BooruAsyncNotifierProviderRef<T> on AsyncNotifierProviderRef<T> {
-  /// {@macro boorusama.booru.readConfig}
-  BooruConfig get readConfig => read(currentBooruConfigProvider);
-
-  /// {@macro boorusama.booru.watchConfig}
-  BooruConfig get watchConfig => watch(currentBooruConfigProvider);
-}
-
-extension BooruAutoDisposeFutureProviderRef<T>
-    on AutoDisposeFutureProviderRef<T> {
-  /// {@macro boorusama.booru.readConfig}
-  BooruConfig get readConfig => read(currentBooruConfigProvider);
-
-  /// {@macro boorusama.booru.watchConfig}
-  BooruConfig get watchConfig => watch(currentBooruConfigProvider);
-}
-
-extension BooruAutoDisposeNotifierProviderRef<T>
-    on AutoDisposeNotifierProviderRef<T> {
+extension BooruAutoDisposeProviderRef<T> on Ref<T> {
   /// {@macro boorusama.booru.readConfig}
   BooruConfig get readConfig => read(currentBooruConfigProvider);
 

@@ -10,6 +10,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:boorusama/clients/danbooru/types/types.dart';
 import 'package:boorusama/core/configs/providers.dart';
 import 'package:boorusama/core/users/users.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/time.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -89,7 +90,7 @@ class _DanbooruDmailPageState extends ConsumerState<DanbooruDmailPage> {
                                   ? TextStyle(
                                       color: fromUser?.level
                                           .toColor(context)
-                                          .withOpacity(0.7),
+                                          .applyOpacity(0.7),
                                     )
                                   : TextStyle(
                                       color: fromUser?.level.toColor(context),

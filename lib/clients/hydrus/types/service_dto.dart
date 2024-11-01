@@ -64,11 +64,6 @@ ServiceType? intToServiceType(int? value) => switch (value) {
     };
 
 class ServiceDto {
-  final String key;
-  final String name;
-  final ServiceType type;
-  final String prettyType;
-
   ServiceDto({
     required this.key,
     required this.name,
@@ -92,4 +87,9 @@ class ServiceDto {
       prettyType: prettyType,
     );
   }
+
+  final String key;
+  final String name;
+  final ServiceType type;
+  final String prettyType;
 }

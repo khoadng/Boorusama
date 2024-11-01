@@ -226,6 +226,7 @@ class GelbooruV2Builder
   CommentPageBuilder? get commentPageBuilder =>
       (context, useAppBar, postId) => GelbooruV2CommentPage(
             postId: postId,
+            useAppBar: useAppBar,
           );
 
   @override

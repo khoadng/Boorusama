@@ -64,11 +64,12 @@ class _DownloadFolderSelectorSectionState
         ),
         const SizedBox(height: 4),
         Material(
-          color: context.colorScheme.surfaceContainerHighest,
+          color: context.colorScheme.surfaceContainer,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(4),
             side: BorderSide(
-              color: context.theme.hintColor,
+              color: context.colorScheme.outlineVariant,
+              width: 2,
             ),
           ),
           child: InkWell(
@@ -96,7 +97,7 @@ class _DownloadFolderSelectorSectionState
                                 DownloadTranslations.downloadSelectFolder.tr(),
                             overflow: TextOverflow.fade,
                             style: context.textTheme.titleMedium!
-                                .copyWith(color: context.theme.hintColor),
+                                .copyWith(color: context.colorScheme.hintColor),
                           ),
                   ),
                 ),
