@@ -15,7 +15,7 @@ Future<void> initRevenuecat() async {
       : kRevenuecatAppleApiKey.isNotEmpty;
 
   // check if key is available
-  if (hasKey) {
+  if (!hasKey) {
     throw Exception(
         'Revenuecat API key is empty, make sure to set it in your environment');
   }
@@ -29,6 +29,8 @@ Future<void> initRevenuecat() async {
 
 Future<(InAppPurchase, SubscriptionManager, Package?)>
     initRevenuecatIap() async {
+  await initRevenuecat();
+
   final iap = RevenuecatPurchase();
   final subscriptionManager = RevenuecatSubscriptionManager();
 
