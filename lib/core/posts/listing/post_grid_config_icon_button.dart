@@ -273,7 +273,7 @@ class PostGridActionSheet extends ConsumerWidget {
     return Material(
       color: kPreferredLayout.isDesktop
           ? context.colorScheme.surface
-          : context.colorScheme.secondaryContainer,
+          : context.colorScheme.surfaceContainer,
       child: ConditionalParentWidget(
         condition: kPreferredLayout.isMobile,
         conditionalBuilder: (child) => Padding(
@@ -316,7 +316,7 @@ class MobilePostGridConfigTile extends StatelessWidget {
             Text(
               value,
               style: TextStyle(
-                color: context.theme.hintColor,
+                color: context.colorScheme.hintColor,
                 fontSize: 14,
               ),
             ),

@@ -14,12 +14,20 @@ class BooruSegmentedButton<T> extends StatefulWidget {
     required this.initialValue,
     this.fixedWidth,
     required this.onChanged,
+    this.selectedColor,
+    this.unselectedColor,
+    this.selectedTextStyle,
+    this.unselectedTextStyle,
   });
 
   final T? initialValue;
   final Map<T, String> segments;
   final double? fixedWidth;
   final void Function(T value) onChanged;
+  final Color? selectedColor;
+  final Color? unselectedColor;
+  final TextStyle? selectedTextStyle;
+  final TextStyle? unselectedTextStyle;
 
   @override
   State<BooruSegmentedButton<T>> createState() => _BooruSegmentedButtonState();
@@ -36,24 +44,30 @@ class _BooruSegmentedButtonState<T> extends State<BooruSegmentedButton<T>> {
         for (final entry in widget.segments.entries)
           entry.key: Text(
             entry.value,
-            style: TextStyle(
-              fontWeight: FontWeight.w500,
-              color: selected == entry.key
-                  ? context.colorScheme.onPrimary
-                  : context.colorScheme.onSurfaceVariant,
-            ),
+            style: selected == entry.key
+                ? widget.selectedTextStyle ??
+                    TextStyle(
+                      fontWeight: FontWeight.w500,
+                      color: context.colorScheme.onPrimary,
+                    )
+                : widget.unselectedTextStyle ??
+                    TextStyle(
+                      fontWeight: FontWeight.w500,
+                      color: context.colorScheme.onSurfaceVariant,
+                    ),
           ),
       },
       height: 32,
       fixedWidth: widget.fixedWidth,
       thumbDecoration: BoxDecoration(
-        color: context.colorScheme.primary,
+        color: widget.selectedColor ?? context.colorScheme.primary,
         borderRadius: BorderRadius.circular(8),
       ),
       innerPadding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
-        color: context.colorScheme.surfaceContainerHighest,
+        color: widget.unselectedColor ??
+            context.colorScheme.surfaceContainerHighest,
       ),
       onValueChanged: (v) {
         setState(() {

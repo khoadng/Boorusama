@@ -179,7 +179,7 @@ class _Boorus extends ConsumerWidget {
               Text(
                 'Select a profile from the list below to continue',
                 style: context.textTheme.titleMedium?.copyWith(
-                  color: context.theme.hintColor,
+                  color: context.colorScheme.hintColor,
                 ),
               ),
             const SizedBox(height: 16),

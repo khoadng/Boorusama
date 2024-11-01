@@ -64,12 +64,14 @@ class SearchHistoryNotifier extends AsyncNotifier<SearchHistoryState> {
     if (anyRaw) {
       await addHistory(
         controller.rawTagsString,
-        queryType: QueryType.simple,
       );
       return;
     }
 
     final queries = controller.tags.map((e) => e.originalTag).toList();
+
+    if (queries.isEmpty) return;
+
     final json = jsonEncode(queries);
 
     await addHistory(json, queryType: QueryType.list);

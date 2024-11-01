@@ -91,7 +91,7 @@ class TagEditExpandContent extends ConsumerWidget {
           child: const TagEditAITagViewWithStates(),
         ),
       null => Container(
-          margin: const EdgeInsets.only(left: 8, bottom: 20, top: 8),
+          margin: const EdgeInsets.only(left: 8, bottom: 8, top: 8),
           height: 42,
           child: ListView(
             scrollDirection: Axis.horizontal,

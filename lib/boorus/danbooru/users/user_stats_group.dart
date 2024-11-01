@@ -88,7 +88,7 @@ class _StatsButton extends StatelessWidget {
         ),
         Text(
           title,
-          style: TextStyle(color: context.theme.hintColor),
+          style: TextStyle(color: context.colorScheme.hintColor),
         ),
       ],
     );

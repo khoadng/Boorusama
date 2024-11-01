@@ -13,6 +13,7 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/http/http.dart';
@@ -173,7 +174,7 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
                       alignment: Alignment.topCenter,
                       colors: <Color>[
                         const Color.fromARGB(60, 0, 0, 0),
-                        Colors.black12.withOpacity(0),
+                        Colors.black12.applyOpacity(0),
                       ],
                     )
                   : null,

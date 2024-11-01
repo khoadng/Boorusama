@@ -9,6 +9,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
@@ -134,8 +135,8 @@ class PostTagListChip extends ConsumerWidget {
                   style: context.textTheme.bodySmall?.copyWith(
                     fontSize: 11,
                     color: context.isLight
-                        ? Colors.white.withOpacity(0.85)
-                        : Colors.grey.withOpacity(0.85),
+                        ? Colors.white.applyOpacity(0.85)
+                        : Colors.grey.applyOpacity(0.85),
                   ),
                 ),
             ],

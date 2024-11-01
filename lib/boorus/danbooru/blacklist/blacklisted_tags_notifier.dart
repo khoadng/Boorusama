@@ -13,10 +13,10 @@ import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/toast.dart';
 
 class BlacklistedTagsNotifier
-    extends FamilyNotifier<List<String>?, BooruConfig> {
+    extends FamilyAsyncNotifier<List<String>?, BooruConfig> {
   @override
-  List<String>? build(BooruConfig arg) {
-    final user = ref.watch(danbooruCurrentUserProvider(arg)).value;
+  Future<List<String>?> build(BooruConfig arg) async {
+    final user = await ref.watch(danbooruCurrentUserProvider(arg).future);
 
     if (user == null) return null;
 
@@ -29,15 +29,16 @@ class BlacklistedTagsNotifier
     void Function(Object e)? onFailure,
   }) async {
     final user = await ref.read(danbooruCurrentUserProvider(arg).future);
+    final currentTags = state.value;
 
-    if (state == null || user == null) {
+    if (currentTags == null || user == null) {
       onFailure?.call('Not logged in or no blacklisted tags found');
 
       return;
     }
 
     // Duplicate tags are not allowed
-    final tags = [...state!, ...tagSet];
+    final tags = [...currentTags, ...tagSet];
 
     try {
       await ref.read(danbooruClientProvider(arg)).setBlacklistedTags(
@@ -47,7 +48,7 @@ class BlacklistedTagsNotifier
 
       onSuccess?.call(tags);
 
-      state = tags;
+      state = AsyncValue.data(tags);
     } catch (e) {
       onFailure?.call(e);
     }
@@ -60,14 +61,15 @@ class BlacklistedTagsNotifier
     void Function()? onFailure,
   }) async {
     final user = await ref.read(danbooruCurrentUserProvider(arg).future);
+    final currentTags = state.value;
 
-    if (state == null || user == null) {
+    if (currentTags == null || user == null) {
       onFailure?.call();
 
       return;
     }
 
-    final tags = [...state!]..remove(tag);
+    final tags = [...currentTags]..remove(tag);
 
     try {
       await ref
@@ -76,7 +78,7 @@ class BlacklistedTagsNotifier
 
       onSuccess?.call(tags);
 
-      state = tags;
+      state = AsyncValue.data(tags);
     } catch (e) {
       onFailure?.call();
     }
@@ -90,15 +92,16 @@ class BlacklistedTagsNotifier
     void Function(String message)? onFailure,
   }) async {
     final user = await ref.read(danbooruCurrentUserProvider(arg).future);
+    final currentTags = state.value;
 
-    if (state == null || user == null) {
+    if (currentTags == null || user == null) {
       onFailure?.call('Fail to replace tag');
 
       return;
     }
 
     final tags = [
-      ...[...state!]..remove(oldTag),
+      ...[...currentTags]..remove(oldTag),
       newTag,
     ];
 
@@ -109,7 +112,7 @@ class BlacklistedTagsNotifier
 
       onSuccess?.call(tags);
 
-      state = tags;
+      state = AsyncValue.data(tags);
     } catch (e) {
       onFailure?.call('Fail to replace tag');
     }

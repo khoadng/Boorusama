@@ -71,7 +71,7 @@ class _RelatedTagHeaderState extends ConsumerState<RelatedTagHeader> {
                   foregroundColor: context.iconTheme.color,
                   backgroundColor: context.colorScheme.surfaceContainerHighest,
                   side: BorderSide(
-                    color: context.theme.hintColor,
+                    color: context.colorScheme.hintColor,
                   ),
                 ),
                 onPressed: () => goToRelatedTagsPage(

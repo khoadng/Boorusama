@@ -46,7 +46,7 @@ class MoebooruCommentSection extends ConsumerWidget {
                   Text(
                     'comment.comments'.tr(),
                     style: context.textTheme.titleLarge?.copyWith(
-                      color: context.theme.hintColor,
+                      color: context.colorScheme.hintColor,
                       fontSize: 16,
                     ),
                   ),

@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
@@ -146,13 +147,11 @@ class _RelatedTagChips extends ConsumerWidget {
           selectedColor: colors?.backgroundColor,
           backgroundColor: selected
               ? colors?.backgroundColor
-              : context.colorScheme.secondaryContainer,
-          side: selected
-              ? colors != null
-                  ? BorderSide(
-                      color: colors.borderColor,
-                    )
-                  : null
+              : context.colorScheme.surfaceContainer,
+          side: colors != null
+              ? BorderSide(
+                  color: selected ? colors.borderColor : Colors.transparent,
+                )
               : null,
           onSelected: (value) =>
               value ? onAdded(tag.name) : onRemoved(tag.name),
@@ -167,8 +166,8 @@ class _RelatedTagChips extends ConsumerWidget {
                 style: TextStyle(
                   color: selected
                       ? colors?.foregroundColor
-                      : context.colorScheme.onSecondaryContainer,
-                  fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                      : context.colorScheme.onSurfaceVariant,
+                  fontWeight: FontWeight.w500,
                 ),
                 children: [
                   TextSpan(
@@ -178,8 +177,8 @@ class _RelatedTagChips extends ConsumerWidget {
                       color: context.isLight
                           ? !selected
                               ? null
-                              : Colors.white.withOpacity(0.85)
-                          : Colors.grey.withOpacity(0.85),
+                              : Colors.white.applyOpacity(0.85)
+                          : context.colorScheme.hintColor,
                     ),
                   ),
                 ],

@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Project imports:
+import 'package:boorusama/dart.dart';
+
 class InfoContainer extends StatelessWidget {
   const InfoContainer({
     super.key,
@@ -19,12 +22,9 @@ class InfoContainer extends StatelessWidget {
         Icons.info,
         color: Theme.of(context).colorScheme.primary,
       ),
-      titleBackgroundColor:
-          Theme.of(context).colorScheme.primary.withOpacity(0.2),
+      titleBackgroundColor: Theme.of(context).colorScheme.primary.withAlpha(50),
       title: title ?? 'Info',
-      titleColor: Theme.of(context).brightness == Brightness.light
-          ? Colors.black
-          : Colors.white,
+      titleColor: Theme.of(context).colorScheme.onSurface,
       contentBuilder: contentBuilder,
     );
   }
@@ -52,11 +52,9 @@ class WarningContainer extends StatelessWidget {
         color: Theme.of(context).colorScheme.error,
       ),
       titleBackgroundColor:
-          Theme.of(context).colorScheme.error.withOpacity(0.2),
+          Theme.of(context).colorScheme.error.applyOpacity(0.2),
       title: title,
-      titleColor: Theme.of(context).brightness == Brightness.light
-          ? Colors.black
-          : Colors.white,
+      titleColor: Theme.of(context).colorScheme.onSurface,
       contentBuilder: contentBuilder,
     );
   }
@@ -146,7 +144,7 @@ class _TemplateContainerState extends State<TemplateContainer> {
                             !isExpanded
                                 ? Icons.keyboard_arrow_down
                                 : Icons.keyboard_arrow_up,
-                            color: Theme.of(context).colorScheme.onError,
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
                         ),
                       ),

@@ -1,5 +1,4 @@
 // Package imports:
-import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -47,7 +46,7 @@ class CommentsNotifier
                       .allMatches(comment.body)
                       .map((match) => Uri.tryParse(
                           comment.body.substring(match.start, match.end)))
-                      .whereNotNull()
+                      .nonNulls
                       .where((e) => e.host.contains(youtubeUrl))
                       .toList(),
                 ))

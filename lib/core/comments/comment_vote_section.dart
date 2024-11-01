@@ -33,63 +33,60 @@ class CommentVoteSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _VoteButton(
-            onTap: () {
-              VoteEvent event;
-              if (voteState == CommentVoteState.downvoted) {
-                event = VoteEvent.upvoted;
-              } else if (voteState == CommentVoteState.unvote) {
-                event = VoteEvent.upvoted;
-              } else {
-                event = VoteEvent.voteRemoved;
-              }
-              onVote?.call(event);
-            },
-            icon: Icon(
-              Symbols.arrow_upward_alt,
-              color: voteState == CommentVoteState.upvoted
-                  ? context.colors.upvoteColor
-                  : context.iconTheme.color,
-              size: 24,
-            ),
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _VoteButton(
+          onTap: () {
+            VoteEvent event;
+            if (voteState == CommentVoteState.downvoted) {
+              event = VoteEvent.upvoted;
+            } else if (voteState == CommentVoteState.unvote) {
+              event = VoteEvent.upvoted;
+            } else {
+              event = VoteEvent.voteRemoved;
+            }
+            onVote?.call(event);
+          },
+          icon: Icon(
+            Symbols.arrow_upward_alt,
+            color: voteState == CommentVoteState.upvoted
+                ? context.colors.upvoteColor
+                : context.iconTheme.color,
+            size: 24,
           ),
-          Text(
-            score.toString(),
-            style: const TextStyle(fontSize: 14),
+        ),
+        Text(
+          score.toString(),
+          style: const TextStyle(fontSize: 14),
+        ),
+        _VoteButton(
+          onTap: () {
+            VoteEvent event;
+            if (voteState == CommentVoteState.upvoted) {
+              event = VoteEvent.downvote;
+            } else if (voteState == CommentVoteState.unvote) {
+              event = VoteEvent.downvote;
+            } else {
+              event = VoteEvent.voteRemoved;
+            }
+            onVote?.call(event);
+          },
+          icon: Icon(
+            Symbols.arrow_downward_alt,
+            color: voteState == CommentVoteState.downvoted
+                ? context.colors.downvoteColor
+                : context.iconTheme.color,
+            size: 24,
           ),
-          _VoteButton(
-            onTap: () {
-              VoteEvent event;
-              if (voteState == CommentVoteState.upvoted) {
-                event = VoteEvent.downvote;
-              } else if (voteState == CommentVoteState.unvote) {
-                event = VoteEvent.downvote;
-              } else {
-                event = VoteEvent.voteRemoved;
-              }
-              onVote?.call(event);
-            },
-            icon: Icon(
-              Symbols.arrow_downward_alt,
-              color: voteState == CommentVoteState.downvoted
-                  ? context.colors.downvoteColor
-                  : context.iconTheme.color,
-              size: 24,
-            ),
+        ),
+        if (onReply != null)
+          TextButton(
+            onPressed: onReply,
+            child: const Text('comment.list.reply').tr(),
           ),
-          if (onReply != null)
-            TextButton(
-              onPressed: onReply,
-              child: const Text('comment.list.reply').tr(),
-            ),
-          if (moreBuilder != null) moreBuilder!(context),
-        ],
-      ),
+        if (moreBuilder != null) moreBuilder!(context),
+      ],
     );
   }
 }
@@ -105,9 +102,12 @@ class _VoteButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
       height: 24,
-      width: 30,
+      width: 24,
+      margin: const EdgeInsets.symmetric(
+        horizontal: 4,
+      ),
       child: IconButton(
         iconSize: 16,
         splashRadius: 16,

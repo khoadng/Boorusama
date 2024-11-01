@@ -11,6 +11,7 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
@@ -49,7 +50,8 @@ class BooruConfigSearchView extends ConsumerWidget {
                 child: Text(
                   'Include these tags in every search',
                   style: TextStyle(
-                    color: context.theme.colorScheme.onSurface.withOpacity(0.8),
+                    color:
+                        context.theme.colorScheme.onSurface.applyOpacity(0.8),
                     fontSize: 13,
                   ),
                 ),
@@ -74,7 +76,8 @@ class BooruConfigSearchView extends ConsumerWidget {
                 child: Text(
                   'Exclude these tags in every search',
                   style: TextStyle(
-                    color: context.theme.colorScheme.onSurface.withOpacity(0.8),
+                    color:
+                        context.theme.colorScheme.onSurface.applyOpacity(0.8),
                     fontSize: 13,
                   ),
                 ),
@@ -133,10 +136,11 @@ class BooruConfigSearchView extends ConsumerWidget {
     return Wrap(
       runAlignment: WrapAlignment.center,
       spacing: 5,
+      runSpacing: 5,
       children: [
         ...tags.map(
           (e) => Chip(
-            backgroundColor: context.theme.colorScheme.surfaceContainerHighest,
+            backgroundColor: context.theme.colorScheme.secondaryContainer,
             label: exclude
                 ? Text(e.substring(1).replaceAll('_', ' '))
                 : Text(e.replaceAll('_', ' ')),
@@ -245,8 +249,13 @@ class _EffectiveTagPreview extends ConsumerWidget {
         vertical: 8,
       ),
       decoration: BoxDecoration(
-        color: context.theme.colorScheme.secondaryContainer,
+        color:
+            context.theme.colorScheme.surfaceContainerLowest.applyOpacity(0.6),
         borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: context.theme.colorScheme.outlineVariant.applyOpacity(0.6),
+          width: 0.5,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -254,13 +263,14 @@ class _EffectiveTagPreview extends ConsumerWidget {
           Text(
             'Preview',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: context.theme.colorScheme.onSecondaryContainer,
+                  color: context.theme.colorScheme.onSurfaceVariant,
                 ),
           ),
           const SizedBox(height: 8),
           Wrap(
             runAlignment: WrapAlignment.center,
             spacing: 5,
+            runSpacing: 5,
             children: [
               IgnorePointer(
                 child: RawCompactChip(
@@ -268,8 +278,8 @@ class _EffectiveTagPreview extends ConsumerWidget {
                   label: Text(
                     '<any search query>',
                     style: TextStyle(
-                      color: context.theme.colorScheme.onSecondaryContainer
-                          .withOpacity(0.6),
+                      color: context.theme.colorScheme.onSurfaceVariant
+                          .applyOpacity(0.6),
                       fontStyle: FontStyle.italic,
                     ),
                   ),
@@ -303,8 +313,7 @@ class _EffectiveTagPreview extends ConsumerWidget {
                       ],
                     ),
                   ),
-                  backgroundColor:
-                      context.theme.colorScheme.surfaceContainerHighest,
+                  backgroundColor: context.theme.colorScheme.secondaryContainer,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(4),
                   ),

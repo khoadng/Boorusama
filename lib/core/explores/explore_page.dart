@@ -10,6 +10,7 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
@@ -204,7 +205,7 @@ class ExploreList extends ConsumerWidget {
                         alignment: Alignment.bottomCenter,
                         colors: [
                           const Color(0xC2000000),
-                          Colors.black12.withOpacity(0),
+                          Colors.black12.applyOpacity(0),
                         ],
                       ),
                     ),

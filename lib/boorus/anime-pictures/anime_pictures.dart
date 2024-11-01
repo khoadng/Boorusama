@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -250,7 +249,7 @@ final postTagsProvider =
         order: _mapToOrder(c),
         tags: postDetails.tags
                 ?.where((e) => e.tag?.type == c)
-                .whereNotNull()
+                .nonNulls
                 .map((e) => e.tag!)
                 .map((e) => Tag(
                       name: e.tag ?? '???',

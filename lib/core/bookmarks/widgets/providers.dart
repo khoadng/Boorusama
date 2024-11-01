@@ -130,7 +130,7 @@ final availableBooruUrlsProvider = Provider.autoDispose<List<String>>((ref) {
   return bookmarks
       .map((e) => e.sourceUrl)
       .map((e) => Uri.tryParse(e))
-      .whereNotNull()
+      .nonNulls
       .map((e) => e.host)
       .toSet()
       .toList();

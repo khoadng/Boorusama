@@ -23,7 +23,6 @@ export 'explicit_block_overlay.dart';
 export 'fade_page_route.dart';
 export 'faster_ink_splash.dart';
 export 'filterable_scope.dart';
-export 'floating_glassy_card.dart';
 export 'generic_no_data_box.dart';
 export 'grayed_out.dart';
 export 'grid_size_adjustment_buttons.dart';

@@ -117,9 +117,13 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
   Widget build(BuildContext context) {
     final content = ValueListenableBuilder(
       valueListenable: widget.controller,
-      builder: (context, value, child) => LazyIndexedStack(
-        index: value,
-        children: widget.views,
+      builder: (context, value, child) => MediaQuery.removePadding(
+        context: context,
+        removeLeft: true,
+        child: LazyIndexedStack(
+          index: value,
+          children: widget.views,
+        ),
       ),
     );
 
@@ -130,7 +134,7 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
             right: false,
             child: DecoratedBox(
               decoration: BoxDecoration(
-                color: context.colorScheme.surfaceContainerHighest,
+                color: context.colorScheme.surfaceContainerLow,
               ),
               child: Column(
                 children: [

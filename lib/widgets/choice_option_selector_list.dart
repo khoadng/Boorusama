@@ -119,7 +119,7 @@ class _ChoiceOptionSelectorListState<T>
                     disabled: !selected,
                     color: selected
                         ? context.colorScheme.onSurface
-                        : context.theme.hintColor,
+                        : context.colorScheme.hintColor,
                     onPressed: () => _onSelect(null, index),
                     label: Text(
                       widget.optionLabelBuilder(null),
@@ -138,7 +138,7 @@ class _ChoiceOptionSelectorListState<T>
                     disabled: !selected,
                     color: selected
                         ? context.colorScheme.onSurface
-                        : context.theme.hintColor,
+                        : context.colorScheme.hintColor,
                     onPressed: () => _onSelect(o.data, index),
                     label: Text(
                       widget.optionLabelBuilder(o.data),

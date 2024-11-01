@@ -170,7 +170,7 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
                 AppClipboard.copyAndToast(
                   context,
                   tagString,
-                  message: 'favorite_tags.export_notification',
+                  message: 'favorite_tags.export_notification'.tr(),
                 );
               },
             );
@@ -400,7 +400,7 @@ class BackupRestoreTile extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: context.colorScheme.secondaryContainer,
+        color: context.colorScheme.surfaceContainer,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
@@ -432,7 +432,7 @@ class BackupRestoreTile extends StatelessWidget {
                     subtitle!,
                     style: TextStyle(
                       fontWeight: FontWeight.w400,
-                      color: context.theme.hintColor,
+                      color: context.colorScheme.hintColor,
                     ),
                   ),
                 if (extra != null) ...extra!,

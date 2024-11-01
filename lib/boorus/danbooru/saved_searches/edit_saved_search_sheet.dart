@@ -226,7 +226,7 @@ class _SavedSearchSheetState extends ConsumerState<SavedSearchSheet> {
               child: Text(
                 'saved_search.saved_search_labels_description'.tr(),
                 style: context.textTheme.titleSmall?.copyWith(
-                  color: context.theme.hintColor,
+                  color: context.colorScheme.hintColor,
                   fontSize: 14,
                   fontWeight: FontWeight.w400,
                   fontStyle: FontStyle.italic,

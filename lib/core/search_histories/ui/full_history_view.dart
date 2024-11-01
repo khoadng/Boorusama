@@ -147,7 +147,7 @@ class FullHistoryView extends ConsumerWidget {
                         onPressed: () => onHistoryRemoved(history),
                         icon: Icon(
                           Symbols.close,
-                          color: context.theme.hintColor,
+                          color: context.colorScheme.hintColor,
                         ),
                       ),
                     ),
