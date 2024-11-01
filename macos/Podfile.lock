@@ -157,6 +157,12 @@ PODS:
   - PromisesObjC (2.4.0)
   - PromisesSwift (2.4.0):
     - PromisesObjC (= 2.4.0)
+  - purchases_flutter (8.1.5):
+    - FlutterMacOS
+    - PurchasesHybridCommon (= 13.5.0)
+  - PurchasesHybridCommon (13.5.0):
+    - RevenueCat (= 5.6.0)
+  - RevenueCat (5.6.0)
   - share_plus (0.0.1):
     - FlutterMacOS
   - shared_preferences_foundation (0.0.1):
@@ -191,6 +197,7 @@ DEPENDENCIES:
   - local_auth_darwin (from `Flutter/ephemeral/.symlinks/plugins/local_auth_darwin/darwin`)
   - package_info_plus (from `Flutter/ephemeral/.symlinks/plugins/package_info_plus/macos`)
   - path_provider_foundation (from `Flutter/ephemeral/.symlinks/plugins/path_provider_foundation/darwin`)
+  - purchases_flutter (from `Flutter/ephemeral/.symlinks/plugins/purchases_flutter/macos`)
   - share_plus (from `Flutter/ephemeral/.symlinks/plugins/share_plus/macos`)
   - shared_preferences_foundation (from `Flutter/ephemeral/.symlinks/plugins/shared_preferences_foundation/darwin`)
   - sqflite_darwin (from `Flutter/ephemeral/.symlinks/plugins/sqflite_darwin/darwin`)
@@ -217,6 +224,8 @@ SPEC REPOS:
     - nanopb
     - PromisesObjC
     - PromisesSwift
+    - PurchasesHybridCommon
+    - RevenueCat
 
 EXTERNAL SOURCES:
   bitsdojo_window_macos:
@@ -247,6 +256,8 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/package_info_plus/macos
   path_provider_foundation:
     :path: Flutter/ephemeral/.symlinks/plugins/path_provider_foundation/darwin
+  purchases_flutter:
+    :path: Flutter/ephemeral/.symlinks/plugins/purchases_flutter/macos
   share_plus:
     :path: Flutter/ephemeral/.symlinks/plugins/share_plus/macos
   shared_preferences_foundation:
@@ -293,6 +304,9 @@ SPEC CHECKSUMS:
   path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   PromisesSwift: 9d77319bbe72ebf6d872900551f7eeba9bce2851
+  purchases_flutter: 544f01dee8ccf8c899c6e6d295bfb81d9610fc97
+  PurchasesHybridCommon: 7c6fb07b091588d82180eec2590035f216ffbf55
+  RevenueCat: a7117d40c27bc1e8a48e41ca4ea6856209664097
   share_plus: fd717ef89a2801d3491e737630112b80c310640e
   shared_preferences_foundation: fcdcbc04712aee1108ac7fda236f363274528f78
   sqflite_darwin: a553b1fd6fe66f53bbb0fe5b4f5bab93f08d7a13
