@@ -19,9 +19,12 @@ extension PackageX on Package {
         null => 0,
       };
 
-  Package withDealFrom(Package other) => copyWith(
-        deal: () => _compareWith(other),
-      );
+  Package withDealFrom(Package? other) => switch (other) {
+        null => this,
+        Package p => copyWith(
+            deal: () => _compareWith(p),
+          ),
+      };
 
   DealData? _compareWith(Package other) {
     if (type != PackageType.monthly) {

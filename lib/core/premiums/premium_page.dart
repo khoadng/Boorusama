@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -442,19 +443,24 @@ class _SubscriptionPlansState extends ConsumerState<SubscriptionPlans> {
                   children: [
                     TextSpan(
                       text: 'Terms of Service',
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          //FIXME: open terms of service
+                        },
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.primary,
                       ),
                     ),
                     const TextSpan(
-                        text:
-                            '. Subscription automatically renews until canceled. You can cancel anytime up to 24 hours before your current period ends.'),
+                      text:
+                          '. Subscription automatically renews until canceled. You can cancel anytime up to 24 hours before your current period ends.',
+                    ),
                   ],
                 ),
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 36),
         ],
       ),
     );
@@ -515,7 +521,11 @@ class SubscriptionPlanTile extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Text(package.product.title),
+                    Text(switch (package.type) {
+                      null => '???',
+                      PackageType.monthly => 'Monthly',
+                      PackageType.annual => 'Yearly',
+                    }),
                     if (saveIndicator != null) ...[
                       const SizedBox(width: 8),
                       saveIndicator!,
