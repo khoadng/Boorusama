@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/foundation/iap/iap.dart';
+import 'package:boorusama/foundation/loggers/loggers.dart';
 
 final iapProvider = Provider<InAppPurchase>((ref) {
   throw UnimplementedError();
@@ -81,7 +82,9 @@ const _kVNDPackages = <Package>[
   ),
 ];
 
-Future<(InAppPurchase, SubscriptionManager, Package?)> initIap() async {
+Future<(InAppPurchase, SubscriptionManager, Package?)> initIap(
+  Logger logger,
+) async {
   final iap = DummyInAppPurchase(
     packages: _kPackages,
   );

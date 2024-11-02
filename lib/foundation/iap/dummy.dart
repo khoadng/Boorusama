@@ -69,4 +69,7 @@ class DummySubscriptionManager implements SubscriptionManager {
 
     return package.id == id;
   }
+
+  @override
+  String? get managementURL => '';
 }
