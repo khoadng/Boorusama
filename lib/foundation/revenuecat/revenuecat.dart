@@ -6,6 +6,7 @@ import 'package:purchases_flutter/purchases_flutter.dart' as rc;
 
 // Project imports:
 import 'package:boorusama/foundation/iap/iap.dart';
+import 'package:boorusama/foundation/loggers/loggers.dart';
 import 'constants.dart';
 import 'revenuecat.dart';
 
@@ -29,13 +30,14 @@ Future<void> initRevenuecat() async {
   await rc.Purchases.configure(configuration);
 }
 
-Future<(InAppPurchase, SubscriptionManager, Package?)>
-    initRevenuecatIap() async {
+Future<(InAppPurchase, SubscriptionManager, Package?)> initRevenuecatIap(
+  Logger logger,
+) async {
   await initRevenuecat();
 
   final customerInfo = await rc.Purchases.getCustomerInfo();
 
-  final iap = RevenuecatPurchase();
+  final iap = RevenuecatPurchase(logger);
   final subscriptionManager = RevenuecatSubscriptionManager(
     managementURL: customerInfo.managementURL,
   );

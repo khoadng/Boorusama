@@ -87,7 +87,7 @@ const _kVNDPackages = <Package>[
 Future<(InAppPurchase, SubscriptionManager, Package?)> initIap(
   Logger logger,
 ) =>
-    isMobilePlatform() ? initRevenuecatIap() : _initDummyIap();
+    isMobilePlatform() ? initRevenuecatIap(logger) : _initDummyIap();
 
 Future<(InAppPurchase, SubscriptionManager, Package?)> _initDummyIap() async {
   final iap = DummyInAppPurchase(

@@ -2,11 +2,18 @@
 import 'package:purchases_flutter/purchases_flutter.dart';
 
 // Project imports:
+import 'package:boorusama/foundation/loggers/loggers.dart';
 import '../iap/iap.dart' as i;
 import 'constants.dart';
 import 'converter.dart';
 
+const _kServiceName = 'Revenuecat';
+
 class RevenuecatPurchase implements i.InAppPurchase {
+  RevenuecatPurchase(this.logger);
+
+  final Logger logger;
+
   final Map<String, Package> _packages = {};
 
   @override
@@ -37,12 +44,22 @@ class RevenuecatPurchase implements i.InAppPurchase {
     final revenuecatPackage = _packages[package.id];
 
     if (revenuecatPackage == null) {
+      logger.logE(_kServiceName, 'Package not found: ${package.id}');
+
       return Future.value(false);
     }
 
     final customerInfo = await Purchases.purchasePackage(revenuecatPackage);
 
-    return customerInfo.entitlements.all[kPremiumKey]?.isActive ?? false;
+    final entitlement = customerInfo.entitlements.all[kPremiumKey];
+
+    if (entitlement == null) {
+      logger.logE(_kServiceName, 'Entitlement not found: $kPremiumKey');
+
+      return Future.value(false);
+    }
+
+    return entitlement.isActive;
   }
 
   @override
