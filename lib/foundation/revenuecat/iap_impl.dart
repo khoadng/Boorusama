@@ -54,7 +54,9 @@ class RevenuecatPurchase implements i.InAppPurchase {
 }
 
 class RevenuecatSubscriptionManager implements i.SubscriptionManager {
-  const RevenuecatSubscriptionManager();
+  const RevenuecatSubscriptionManager({
+    required this.managementURL,
+  });
 
   @override
   Future<bool> hasActiveSubscription(String id) async {
@@ -62,4 +64,7 @@ class RevenuecatSubscriptionManager implements i.SubscriptionManager {
 
     return customerInfo.entitlements.all[id]?.isActive ?? false;
   }
+
+  @override
+  final String? managementURL;
 }

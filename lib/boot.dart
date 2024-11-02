@@ -285,7 +285,7 @@ Future<void> boot(BootLogger bootLogger) async {
   // Prepare for Android 15
   showSystemStatus();
 
-  final (iap, subManager, activeSubs) = await initIap();
+  final (iap, subManager, activeSubs) = await initIap(logger);
 
   logger.logI('Start up',
       'Initialization done in ${stopwatch.elapsed.inMilliseconds}ms');

@@ -6,8 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/foundation/iap/iap.dart';
 import 'package:boorusama/foundation/toast.dart';
+import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'premiums.dart';
@@ -39,6 +41,10 @@ class _PremiumPageState extends ConsumerState<PremiumPage> {
   }
 
   Widget _buildManage(Package package) {
+    final susbscriptionManager = ref.read(subscriptionManagerProvider);
+    final managementURL = susbscriptionManager.managementURL;
+    final logger = ref.read(loggerProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(kPremiumBrandNameFull),
@@ -61,17 +67,31 @@ class _PremiumPageState extends ConsumerState<PremiumPage> {
                   ),
             ),
             Text('You are subscribed to ${package.product.title}'),
-            Container(
-              padding: const EdgeInsets.all(8),
-              child: ElevatedButton(
-                onPressed: () {
-                  ref
-                      .read(subscriptionNotifierProvider.notifier)
-                      .cancelSubscription();
-                },
-                child: const Text('Cancel Subscription (debug)'),
+            if (managementURL != null)
+              Container(
+                padding: const EdgeInsets.all(8),
+                child: ElevatedButton(
+                  onPressed: () {
+                    // open management URL
+                    logger.logI('Subscription',
+                        'Opening management URL: $managementURL');
+                    launchExternalUrlString(managementURL);
+                  },
+                  child: const Text('Cancel'),
+                ),
+              )
+            else
+              Container(
+                padding: const EdgeInsets.all(8),
+                child: ElevatedButton(
+                  onPressed: () {
+                    ref
+                        .read(subscriptionNotifierProvider.notifier)
+                        .cancelSubscription();
+                  },
+                  child: const Text('Cancel Subscription (debug)'),
+                ),
               ),
-            ),
           ],
         ),
       ),
@@ -247,20 +267,14 @@ class PremiumOffersPage extends ConsumerWidget {
   void restore(WidgetRef ref, BuildContext context) {
     ref.read(subscriptionNotifierProvider.notifier).restoreSubscription().then(
       (res) {
-        if (res != null) {
-          if (context.mounted) {
-            if (res) {
-              showSimpleSnackBar(
-                context: context,
-                content: const Text('Subscription restored!'),
-                duration: const Duration(seconds: 2),
-              );
-            } else {
-              _showFailedRestore(context);
-            }
-          }
-        } else {
-          if (context.mounted) {
+        if (context.mounted) {
+          if (res) {
+            showSimpleSnackBar(
+              context: context,
+              content: const Text('Subscription restored!'),
+              duration: const Duration(seconds: 2),
+            );
+          } else {
             _showFailedRestore(context);
           }
         }

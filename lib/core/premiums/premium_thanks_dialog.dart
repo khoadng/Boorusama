@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Project imports:
+import 'package:boorusama/foundation/theme.dart';
+
 class PremiumThanksDialog extends StatelessWidget {
   const PremiumThanksDialog({super.key});
 
@@ -25,7 +28,7 @@ class PremiumThanksDialog extends StatelessWidget {
             'You now can access premium features. Enjoy!',
             style: TextStyle(
               fontWeight: FontWeight.w400,
-              color: Theme.of(context).colorScheme.outline.withOpacity(0.5),
+              color: Theme.of(context).colorScheme.hintColor,
             ),
           ),
           const SizedBox(height: 20),

@@ -1,10 +1,11 @@
 // Package imports:
-import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/foundation/revenuecat/revenuecat.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/foundation/iap/iap.dart';
+import 'package:boorusama/foundation/loggers/loggers.dart';
+import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/foundation/revenuecat/revenuecat.dart';
 
 final iapProvider = Provider<InAppPurchase>((ref) {
   throw UnimplementedError();
@@ -83,7 +84,9 @@ const _kVNDPackages = <Package>[
   ),
 ];
 
-Future<(InAppPurchase, SubscriptionManager, Package?)> initIap() =>
+Future<(InAppPurchase, SubscriptionManager, Package?)> initIap(
+  Logger logger,
+) =>
     isMobilePlatform() ? initRevenuecatIap() : _initDummyIap();
 
 Future<(InAppPurchase, SubscriptionManager, Package?)> _initDummyIap() async {
