@@ -35,15 +35,17 @@ Future<(InAppPurchase, SubscriptionManager, Package?)> initRevenuecatIap(
 ) async {
   await initRevenuecat();
 
-  final customerInfo = await rc.Purchases.getCustomerInfo();
-
   final iap = RevenuecatPurchase(logger);
+
+  await iap.init();
+
   final subscriptionManager = RevenuecatSubscriptionManager(
-    managementURL: customerInfo.managementURL,
+    logger: logger,
+    purchase: iap,
   );
 
-  final activePackage =
-      await getActiveSubscriptionPackage(subscriptionManager, iap);
+  final activePackages =
+      await getActiveSubscriptionPackages(subscriptionManager);
 
-  return (iap, subscriptionManager, activePackage);
+  return (iap, subscriptionManager, activePackages?.firstOrNull);
 }

@@ -1,8 +1,13 @@
+// Flutter imports:
+import 'package:collection/collection.dart';
+import 'package:flutter/services.dart';
+
 // Package imports:
 import 'package:purchases_flutter/purchases_flutter.dart';
 
 // Project imports:
 import 'package:boorusama/foundation/loggers/loggers.dart';
+import 'package:boorusama/foundation/platform.dart';
 import '../iap/iap.dart' as i;
 import 'constants.dart';
 import 'converter.dart';
@@ -16,12 +21,18 @@ class RevenuecatPurchase implements i.InAppPurchase {
 
   final Map<String, Package> _packages = {};
 
+  Future<void> init() async {
+    await getAvailablePackages();
+  }
+
   @override
   Future<List<i.Package>> getAvailablePackages() async {
     final offerings = await Purchases.getOfferings();
 
     if (offerings.current == null ||
         offerings.current!.availablePackages.isEmpty) {
+      logger.logW(_kServiceName, 'No available packages found');
+
       return [];
     }
 
@@ -34,9 +45,41 @@ class RevenuecatPurchase implements i.InAppPurchase {
       _packages[package.identifier] = package;
     }
 
-    return packages
-        .map((package) => mapRevenuecatPackageToPackage(package))
-        .toList();
+    return getPackagesFromNames(
+      packages.map((e) => e.identifier).toList(),
+    );
+  }
+
+  List<i.Package> getPackagesFromNames(List<String> names) {
+    final packages = <i.Package>[];
+
+    for (final name in names) {
+      final package = _packages[name];
+
+      if (package != null) {
+        packages.add(mapRevenuecatPackageToPackage(package));
+      }
+    }
+
+    return packages;
+  }
+
+  List<i.Package> getPackagesFromProductSkus(List<String> skus) {
+    final packages = <i.Package>[];
+
+    for (final sku in skus) {
+      // find the package that has the same product sku
+      final package = _packages.entries
+          .firstWhereOrNull(
+              (element) => element.value.storeProduct.identifier == sku)
+          ?.value;
+
+      if (package != null) {
+        packages.add(mapRevenuecatPackageToPackage(package));
+      }
+    }
+
+    return packages;
   }
 
   @override
@@ -49,31 +92,89 @@ class RevenuecatPurchase implements i.InAppPurchase {
       return Future.value(false);
     }
 
-    final customerInfo = await Purchases.purchasePackage(revenuecatPackage);
+    try {
+      final customerInfo = await Purchases.purchasePackage(revenuecatPackage);
 
-    final entitlement = customerInfo.entitlements.all[kPremiumKey];
+      final entitlement = customerInfo.entitlements.all[kPremiumKey];
 
-    if (entitlement == null) {
-      logger.logE(_kServiceName, 'Entitlement not found: $kPremiumKey');
+      if (entitlement == null) {
+        logger.logE(_kServiceName, 'Entitlement not found: $kPremiumKey');
 
-      return Future.value(false);
+        return Future.value(false);
+      }
+
+      return entitlement.isActive;
+    } on PlatformException catch (e) {
+      final errorCode = PurchasesErrorHelper.getErrorCode(e);
+
+      logger.logE(
+        _kServiceName,
+        'Failed to purchase package: ${package.id}, $errorCode',
+      );
+
+      if (errorCode != PurchasesErrorCode.purchaseCancelledError) {
+        rethrow;
+      }
+
+      return false;
     }
-
-    return entitlement.isActive;
   }
 
   @override
   Future<bool?> restorePurchases() async {
-    final customerInfo = await Purchases.restorePurchases();
+    try {
+      final customerInfo = await Purchases.restorePurchases();
 
-    return customerInfo.entitlements.all[kPremiumKey]?.isActive;
+      final entitlement = customerInfo.entitlements.all[kPremiumKey];
+
+      if (entitlement == null) {
+        logger.logE(_kServiceName, 'Entitlement not found: $kPremiumKey');
+
+        return Future.value(false);
+      }
+
+      logger.logI(_kServiceName, 'Restored purchases successfully');
+
+      logger.logI(
+        _kServiceName,
+        'Entitlement status: ${entitlement.isActive}, period: ${entitlement.periodType.name}',
+      );
+
+      return entitlement.isActive;
+    } on PlatformException catch (e) {
+      final errorCode = PurchasesErrorHelper.getErrorCode(e);
+
+      logger.logE(
+        _kServiceName,
+        'Failed to restore purchases, $errorCode',
+      );
+
+      if (errorCode != PurchasesErrorCode.purchaseCancelledError) {
+        rethrow;
+      }
+
+      return false;
+    }
   }
+
+  @override
+  String? describePurchaseError(Object error) => switch (error) {
+        PlatformException pe => PurchasesErrorHelper.getErrorCode(pe).name,
+        _ => null,
+      };
 }
+
+const _kFallbackAndroidManagementURL =
+    'https://play.google.com/store/account/subscriptions';
 
 class RevenuecatSubscriptionManager implements i.SubscriptionManager {
   const RevenuecatSubscriptionManager({
-    required this.managementURL,
+    required this.logger,
+    required this.purchase,
   });
+
+  final Logger logger;
+  final RevenuecatPurchase purchase;
 
   @override
   Future<bool> hasActiveSubscription(String id) async {
@@ -83,5 +184,31 @@ class RevenuecatSubscriptionManager implements i.SubscriptionManager {
   }
 
   @override
-  final String? managementURL;
+  Future<List<i.Package>> getActiveSubscriptions() async {
+    final customerInfo = await Purchases.getCustomerInfo();
+
+    logger.logI(
+      _kServiceName,
+      'Active subscriptions: ${customerInfo.activeSubscriptions}',
+    );
+
+    final skus = customerInfo.activeSubscriptions;
+
+    return purchase.getPackagesFromProductSkus(skus);
+  }
+
+  @override
+  Future<String?> get managementURL async {
+    final customerInfo = await Purchases.getCustomerInfo();
+
+    var managementURL = customerInfo.managementURL;
+
+    if (managementURL == null) {
+      logger.logW(_kServiceName, 'Management URL is null, using fallback');
+
+      managementURL = isAndroid() ? _kFallbackAndroidManagementURL : null;
+    }
+
+    return managementURL;
+  }
 }
