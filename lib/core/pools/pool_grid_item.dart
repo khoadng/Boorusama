@@ -6,19 +6,22 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/pools/pools.dart';
-import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class PoolGridItem extends ConsumerWidget {
   const PoolGridItem({
     super.key,
-    required this.pool,
+    required this.image,
+    required this.onTap,
+    required this.total,
+    required this.name,
   });
 
-  final DanbooruPool pool;
+  final Widget image;
+  final void Function() onTap;
+  final int total;
+  final String name;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -33,7 +36,7 @@ class PoolGridItem extends ConsumerWidget {
               Flexible(
                 child: Stack(
                   children: [
-                    Positioned.fill(child: PoolImage(pool: pool)),
+                    Positioned.fill(child: image),
                     Positioned.fill(
                       child: Material(
                         color: Colors.transparent,
@@ -41,7 +44,7 @@ class PoolGridItem extends ConsumerWidget {
                           highlightColor: Colors.transparent,
                           splashFactory: FasterInkSplash.splashFactory,
                           splashColor: Colors.black38,
-                          onTap: () => goToPoolDetailPage(context, pool),
+                          onTap: onTap,
                         ),
                       ),
                     ),
@@ -50,7 +53,7 @@ class PoolGridItem extends ConsumerWidget {
               ),
               const SizedBox(height: 8),
               Text(
-                pool.name.replaceUnderscoreWithSpace(),
+                name.replaceAll('_', ' '),
                 style: const TextStyle(fontWeight: FontWeight.w600),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -71,7 +74,7 @@ class PoolGridItem extends ConsumerWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    pool.postCount.toString(),
+                    total.toString(),
                     style: TextStyle(
                       fontWeight: FontWeight.w700,
                       color: context
