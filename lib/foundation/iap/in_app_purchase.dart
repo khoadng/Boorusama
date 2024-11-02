@@ -113,6 +113,8 @@ abstract class InAppPurchase {
   Future<bool?> restorePurchases();
   Future<List<Package>> getAvailablePackages();
   Future<bool> purchasePackage(Package package);
+
+  String? describePurchaseError(Object error);
 }
 
 class ProductDetails extends Equatable {

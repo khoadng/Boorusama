@@ -51,6 +51,11 @@ class DummyInAppPurchase implements InAppPurchase {
 
     return Future.value(true);
   }
+
+  @override
+  String? describePurchaseError(Object error) {
+    return error.toString();
+  }
 }
 
 class DummySubscriptionManager implements SubscriptionManager {
@@ -71,5 +76,10 @@ class DummySubscriptionManager implements SubscriptionManager {
   }
 
   @override
-  String? get managementURL => '';
+  Future<String?> get managementURL => Future.value(null);
+
+  @override
+  Future<List<Package>> getActiveSubscriptions() {
+    return Future.value(iap.purchasedPackages);
+  }
 }

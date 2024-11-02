@@ -13,19 +13,12 @@ final subscriptionManagerProvider = Provider<SubscriptionManager>((ref) {
   throw UnimplementedError();
 });
 
-Future<Package?> getActiveSubscriptionPackage(
+Future<List<Package>?> getActiveSubscriptionPackages(
   SubscriptionManager manager,
-  InAppPurchase iap,
 ) async {
-  final packages = await iap.getAvailablePackages();
+  final packages = await manager.getActiveSubscriptions();
 
-  for (final package in packages) {
-    if (await manager.hasActiveSubscription(package.id)) {
-      return package;
-    }
-  }
-
-  return null;
+  return packages;
 }
 
 const _kPackages = <Package>[
@@ -93,10 +86,10 @@ Future<(InAppPurchase, SubscriptionManager, Package?)> initIap(
     iap: iap,
   );
 
-  final activePackage =
-      await getActiveSubscriptionPackage(subscriptionManager, iap);
+  final activePackages =
+      await getActiveSubscriptionPackages(subscriptionManager);
 
-  return (iap, subscriptionManager, activePackage);
+  return (iap, subscriptionManager, activePackages?.firstOrNull);
 }
 
 final subscriptionPackagesProvider =

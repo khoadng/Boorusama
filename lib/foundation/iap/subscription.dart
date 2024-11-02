@@ -8,7 +8,9 @@ import 'iap.dart';
 abstract class SubscriptionManager {
   Future<bool> hasActiveSubscription(String id);
 
-  String? get managementURL;
+  Future<String?> get managementURL;
+
+  Future<List<Package>> getActiveSubscriptions();
 }
 
 final subscriptionNotifierProvider =
@@ -70,13 +72,23 @@ class SubscriptionNotifier extends Notifier<Package?> {
   }
 
   Future<void> purchasePackage(Package package) async {
-    final success = await iap.purchasePackage(package);
-    if (success) {
-      state = package;
+    try {
+      final success = await iap.purchasePackage(package);
+      if (success) {
+        state = package;
+      }
+    } on Exception catch (e) {
+      final error = iap.describePurchaseError(e);
+
+      if (error == null) {
+        rethrow;
+      } else {
+        throw Exception(error);
+      }
     }
   }
 
-  Future<void> cancelSubscription() async {
+  Future<void> debugCancelSubscription() async {
     state = null;
   }
 
@@ -87,7 +99,10 @@ class SubscriptionNotifier extends Notifier<Package?> {
 
     final res = await iap.restorePurchases();
 
-    final activePackage = await getActiveSubscriptionPackage(manager, iap);
+    logger.logI('Subscription', 'Restore result: $res');
+
+    final activePackages = await getActiveSubscriptionPackages(manager);
+    final activePackage = activePackages?.firstOrNull;
 
     logger.logI('Subscription', 'Active package: ${activePackage?.id}');
 

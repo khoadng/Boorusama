@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -41,8 +42,6 @@ class _PremiumPageState extends ConsumerState<PremiumPage> {
   }
 
   Widget _buildManage(Package package) {
-    final susbscriptionManager = ref.read(subscriptionManagerProvider);
-    final managementURL = susbscriptionManager.managementURL;
     final logger = ref.read(loggerProvider);
 
     return Scaffold(
@@ -67,31 +66,57 @@ class _PremiumPageState extends ConsumerState<PremiumPage> {
                   ),
             ),
             Text('You are subscribed to ${package.product.title}'),
-            if (managementURL != null)
-              Container(
-                padding: const EdgeInsets.all(8),
-                child: ElevatedButton(
-                  onPressed: () {
-                    // open management URL
-                    logger.logI('Subscription',
-                        'Opening management URL: $managementURL');
-                    launchExternalUrlString(managementURL);
-                  },
-                  child: const Text('Cancel'),
+            ref.watch(premiumManagementURLProvider).when(
+                  data: (url) => kDebugMode
+                      ? Container(
+                          padding: const EdgeInsets.all(8),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              ref
+                                  .read(subscriptionNotifierProvider.notifier)
+                                  .debugCancelSubscription();
+                            },
+                            child: const Text('Cancel Subscription (debug)'),
+                          ),
+                        )
+                      : Container(
+                          padding: const EdgeInsets.all(8),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              if (url == null) {
+                                logger.logW('Subscription',
+                                    'Management URL is null. Cannot open.');
+
+                                showErrorToast(
+                                  context,
+                                  'Failed to open subscription management',
+                                );
+
+                                return;
+                              }
+
+                              // open management URL
+                              logger.logI(
+                                'Subscription',
+                                'Opening management URL: $url',
+                              );
+                              launchExternalUrlString(url);
+                            },
+                            child: const Text('Manage Subscription'),
+                          ),
+                        ),
+                  error: (e, st) => const SizedBox.shrink(),
+                  loading: () => const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(16),
+                      child: SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),
+                  ),
                 ),
-              )
-            else
-              Container(
-                padding: const EdgeInsets.all(8),
-                child: ElevatedButton(
-                  onPressed: () {
-                    ref
-                        .read(subscriptionNotifierProvider.notifier)
-                        .cancelSubscription();
-                  },
-                  child: const Text('Cancel Subscription (debug)'),
-                ),
-              ),
           ],
         ),
       ),

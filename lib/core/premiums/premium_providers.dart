@@ -2,7 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/iap/subscription.dart';
+import 'package:boorusama/foundation/iap/iap.dart';
 import 'premiums.dart';
 
 const kPremiumEnabled = true;
@@ -17,4 +17,10 @@ final hasPremiumProvider = Provider<bool>((ref) {
 
 final premiumBenefitProvider = FutureProvider<List<Benefit>>((ref) {
   return Future.value(defaultBenefits);
+});
+
+final premiumManagementURLProvider = FutureProvider<String?>((ref) {
+  if (!kPremiumEnabled) return Future.value(null);
+
+  return ref.watch(subscriptionManagerProvider).managementURL;
 });
