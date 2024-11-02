@@ -1,5 +1,7 @@
+// Package imports:
 import 'package:purchases_flutter/purchases_flutter.dart';
 
+// Project imports:
 import '../iap/iap.dart' as i;
 
 i.Package mapRevenuecatPackageToPackage(Package package) {
