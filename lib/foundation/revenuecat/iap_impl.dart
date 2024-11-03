@@ -22,6 +22,12 @@ class RevenuecatPurchase implements i.InAppPurchase {
   final Map<String, Package> _packages = {};
 
   Future<void> init() async {
+    logger.logI(_kServiceName, 'Initializing...');
+
+    final appUserId = await Purchases.appUserID;
+
+    logger.logI(_kServiceName, 'App user ID: $appUserId');
+
     await getAvailablePackages();
   }
 
@@ -186,11 +192,6 @@ class RevenuecatSubscriptionManager implements i.SubscriptionManager {
   @override
   Future<List<i.Package>> getActiveSubscriptions() async {
     final customerInfo = await Purchases.getCustomerInfo();
-
-    logger.logI(
-      _kServiceName,
-      'Active subscriptions: ${customerInfo.activeSubscriptions}',
-    );
 
     final skus = customerInfo.activeSubscriptions;
 
