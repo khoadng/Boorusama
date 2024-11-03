@@ -39,6 +39,7 @@ class DebugLogsPage extends ConsumerStatefulWidget {
 
 class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
   final scrollController = ScrollController();
+  String? selectedOption;
 
   @override
   void dispose() {
@@ -49,6 +50,7 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
   @override
   Widget build(BuildContext context) {
     final logs = ref.watch(debugLogsProvider);
+    final services = logs.map((e) => e.serviceName).toSet();
 
     // Function to copy logs to clipboard
     void copyLogsToClipboard() {
@@ -93,7 +95,25 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
         ),
         body: child,
       ),
-      child: _buildBody(logs),
+      child: Column(
+        children: [
+          ChoiceOptionSelectorList(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            options: services.toList(),
+            selectedOption: selectedOption,
+            searchable: false,
+            optionLabelBuilder: (option) => option ?? 'All',
+            onSelected: (value) {
+              setState(() {
+                selectedOption = value;
+              });
+            },
+          ),
+          Expanded(
+            child: _buildBody(logs),
+          ),
+        ],
+      ),
     );
   }
 
@@ -128,6 +148,11 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
       controller: scrollController,
       itemCount: logs.length,
       itemBuilder: (context, index) {
+        if (selectedOption != null &&
+            logs[index].serviceName != selectedOption) {
+          return const SizedBox.shrink();
+        }
+
         final log = logs[index];
 
         return Padding(
