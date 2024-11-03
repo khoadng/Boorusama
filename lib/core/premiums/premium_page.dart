@@ -150,7 +150,7 @@ class PremiumOffersPage extends ConsumerWidget {
                 ),
               );
             } else if (success == false) {
-              _showFailedPurchase(context);
+              // User cancelled purchase
             }
           },
           loading: () {},
