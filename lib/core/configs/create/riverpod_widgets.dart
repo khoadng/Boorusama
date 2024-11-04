@@ -18,16 +18,15 @@ import 'package:boorusama/widgets/option_dropdown_button.dart';
 class DefaultImageDetailsQualityTile extends ConsumerWidget {
   const DefaultImageDetailsQualityTile({
     super.key,
-    required this.config,
   });
-
-  final BooruConfig config;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return CreateBooruGeneralPostDetailsResolutionOptionTile(
-      value: ref.watch(defaultImageDetailsQualityProvider),
-      onChanged: (value) => ref.updateImageDetailsQuality(value),
+      value: ref.watch(editBooruConfigProvider(
+        ref.watch(editBooruConfigIdProvider),
+      ).select((value) => value.imageDetaisQuality)),
+      onChanged: (value) => ref.editNotifier.updateImageDetailsQuality(value),
     );
   }
 }
@@ -35,27 +34,26 @@ class DefaultImageDetailsQualityTile extends ConsumerWidget {
 class RawBooruConfigSubmitButton extends ConsumerWidget {
   const RawBooruConfigSubmitButton({
     super.key,
-    required this.config,
-    required this.data,
     required this.enable,
     this.backgroundColor,
     this.child,
   });
 
   final bool enable;
-  final BooruConfig config;
-  final BooruConfigData data;
   final Color? backgroundColor;
   final Widget? child;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final id = ref.watch(editBooruConfigIdProvider);
+    final data = ref.watch(editBooruConfigProvider(id));
+
     return CreateBooruSubmitButton(
       backgroundColor: backgroundColor,
-      onSubmit: enable
+      onSubmit: data.name.isNotEmpty && enable
           ? () {
               ref.read(booruConfigProvider.notifier).addOrUpdate(
-                    config: config,
+                    id: id,
                     newConfig: data,
                   );
 
@@ -70,24 +68,16 @@ class RawBooruConfigSubmitButton extends ConsumerWidget {
 class DefaultBooruSubmitButton extends ConsumerWidget {
   const DefaultBooruSubmitButton({
     super.key,
-    required this.data,
   });
-
-  final BooruConfigData data;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watch(initialBooruConfigProvider);
-    final auth = ref.watch(authConfigDataProvider);
+    final id = ref.watch(editBooruConfigIdProvider);
+    final auth = ref.watch(editBooruConfigProvider(id)
+        .select((value) => AuthConfigData.fromConfig(value)));
 
     return RawBooruConfigSubmitButton(
-      config: config,
-      data: data.copyWith(
-        login: auth.login,
-        apiKey: auth.apiKey,
-        passHash: () => auth.passHash,
-      ),
-      enable: auth.isValid && config.name.isNotEmpty,
+      enable: auth.isValid,
     );
   }
 }
@@ -106,12 +96,16 @@ class DefaultBooruRatingOptionsTile extends ConsumerWidget {
 
     return CreateBooruRatingOptionsTile(
       config: config,
-      initialGranularRatingFilters: ref.watch(granularRatingFilterProvider),
-      value: ref.watch(ratingFilterProvider),
+      initialGranularRatingFilters: ref.watch(editBooruConfigProvider(
+        ref.watch(editBooruConfigIdProvider),
+      ).select((value) => value.granularRatingFilterTyped)),
+      value: ref.watch(editBooruConfigProvider(
+        ref.watch(editBooruConfigIdProvider),
+      ).select((value) => value.ratingFilterTyped)),
       onChanged: (value) =>
-          value != null ? ref.updateRatingFilter(value) : null,
+          value != null ? ref.editNotifier.updateRatingFilter(value) : null,
       onGranularRatingFiltersChanged: (value) =>
-          ref.updateGranularRatingFilter(value),
+          ref.editNotifier.updateGranularRatingFilter(value),
       options: options,
     );
   }
@@ -124,9 +118,12 @@ class BooruConfigNameField extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final id = ref.watch(editBooruConfigIdProvider);
+
     return CreateBooruConfigNameField(
-      text: ref.watch(configNameProvider),
-      onChanged: (value) => ref.updateName(value),
+      text:
+          ref.watch(editBooruConfigProvider(id).select((value) => value.name)),
+      onChanged: (value) => ref.editNotifier.updateName(value),
     );
   }
 }
@@ -141,36 +138,10 @@ class BooruConfigDataProvider extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final data = ref.watch(booruConfigDataProvider);
-    final defaultImageDetailsQuality =
-        ref.watch(defaultImageDetailsQualityProvider);
-    final ratingFilter = ref.watch(ratingFilterProvider);
-    final granularRatingFilter = ref.watch(granularRatingFilterProvider);
-    final customDownloadFileNameFormat =
-        ref.watch(customDownloadFileNameFormatProvider);
-    final customBulkDownloadFileNameFormat =
-        ref.watch(customBulkDownloadFileNameFormatProvider);
-    final customDownloadLocation = ref.watch(customDownloadLocationProvider);
-    final configName = ref.watch(configNameProvider);
-    final defaultPreviewImageButtonAction =
-        ref.watch(defaultPreviewImageButtonActionProvider);
-    final gestures = ref.watch(postGesturesConfigDataProvider);
-    final listing = ref.watch(listingConfigsProvider);
-    final alwaysIncludeTags = ref.watch(alwaysIncludeTagsProvider);
+    final data = ref
+        .watch(editBooruConfigProvider(ref.watch(editBooruConfigIdProvider)));
 
-    return builder(data.copyWith(
-      granularRatingFilter: () => granularRatingFilter,
-      ratingFilter: ratingFilter,
-      imageDetaisQuality: () => defaultImageDetailsQuality,
-      customDownloadFileNameFormat: () => customDownloadFileNameFormat,
-      customBulkDownloadFileNameFormat: () => customBulkDownloadFileNameFormat,
-      customDownloadLocation: () => customDownloadLocation,
-      defaultPreviewImageButtonAction: () => defaultPreviewImageButtonAction,
-      postGestures: () => gestures,
-      listing: () => listing,
-      alwaysIncludeTags: () => alwaysIncludeTags,
-      name: configName,
-    ));
+    return builder(data);
   }
 }
 
@@ -188,13 +159,15 @@ class DefaultBooruApiKeyField extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final apiKey = ref.watch(apiKeyProvider);
+    final apiKey = ref.watch(editBooruConfigProvider(
+      ref.watch(editBooruConfigIdProvider),
+    ).select((value) => value.apiKey));
 
     return CreateBooruApiKeyField(
       text: apiKey,
       labelText: isPassword ? 'booru.password_label'.tr() : labelText,
       hintText: hintText ?? 'e.g: o6H5u8QrxC7dN3KvF9D2bM4p',
-      onChanged: ref.updateApiKey,
+      onChanged: ref.editNotifier.updateApiKey,
     );
   }
 }
@@ -211,13 +184,15 @@ class DefaultBooruLoginField extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final login = ref.watch(loginProvider);
+    final login = ref.watch(editBooruConfigProvider(
+      ref.watch(editBooruConfigIdProvider),
+    ).select((value) => value.login));
 
     return CreateBooruLoginField(
       text: login,
       labelText: labelText ?? 'booru.login_name_label'.tr(),
       hintText: hintText ?? 'e.g: my_login',
-      onChanged: ref.updateLogin,
+      onChanged: ref.editNotifier.updateLogin,
     );
   }
 }
