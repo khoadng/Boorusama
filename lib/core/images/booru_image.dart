@@ -76,7 +76,13 @@ class BooruImage extends ConsumerWidget {
         cacheMaxAge: kDefaultImageCacheDuration,
         borderRadius: borderRadius ?? _defaultRadius,
         fit: fit ?? BoxFit.fill,
-        loadStateChanged: (state) => _buildImageState(state, ref, config),
+        loadStateChanged: (state) => aspectRatio != null
+            ? _buildImageState(state, ref, config)
+            : state.extendedImageLoadState == LoadState.loading
+                ? ImagePlaceHolder(
+                    borderRadius: borderRadius ?? _defaultRadius,
+                  )
+                : null,
       ),
     );
   }
