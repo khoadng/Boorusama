@@ -50,31 +50,31 @@ class AnimePicturesBuilder
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
         context,
-        url,
-        booruType, {
+        id, {
         backgroundColor,
       }) =>
-          CreateAnimePicturesConfigPage(
+          CreateBooruConfigScope(
+            id: id,
             config: BooruConfig.defaultConfig(
-              booruType: booruType,
-              url: url,
+              booruType: id.booruType,
+              url: id.url,
               customDownloadFileNameFormat: null,
             ),
-            backgroundColor: backgroundColor,
-            isNewConfig: true,
+            child: CreateAnimePicturesConfigPage(
+              backgroundColor: backgroundColor,
+            ),
           );
 
   @override
   UpdateConfigPageBuilder get updateConfigPageBuilder => (
         context,
-        configId, {
+        id, {
         backgroundColor,
         initialTab,
       }) =>
           UpdateBooruConfigScope(
-            configId: configId,
-            builder: (config) => CreateAnimePicturesConfigPage(
-              config: config,
+            id: id,
+            child: CreateAnimePicturesConfigPage(
               backgroundColor: backgroundColor,
               initialTab: initialTab,
             ),

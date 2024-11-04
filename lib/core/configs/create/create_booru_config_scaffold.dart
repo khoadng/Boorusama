@@ -24,17 +24,17 @@ const kDefaultPreviewImageButtonAction = {
 class UpdateBooruConfigScope extends ConsumerWidget {
   const UpdateBooruConfigScope({
     super.key,
-    required this.configId,
-    required this.builder,
+    required this.id,
+    required this.child,
   });
 
-  final int configId;
-  final Widget Function(BooruConfig config) builder;
+  final EditBooruConfigId id;
+  final Widget child;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final configs = ref.watch(booruConfigProvider);
-    final config = configs?.firstWhereOrNull((e) => e.id == configId);
+    final config = configs?.firstWhereOrNull((e) => e.id == id.id);
 
     if (config == null) {
       return Scaffold(
@@ -45,7 +45,37 @@ class UpdateBooruConfigScope extends ConsumerWidget {
       );
     }
 
-    return builder(config);
+    return ProviderScope(
+      overrides: [
+        editBooruConfigIdProvider.overrideWithValue(id),
+        initialBooruConfigProvider.overrideWithValue(config),
+      ],
+      child: child,
+    );
+  }
+}
+
+class CreateBooruConfigScope extends ConsumerWidget {
+  const CreateBooruConfigScope({
+    super.key,
+    required this.config,
+    required this.child,
+    required this.id,
+  });
+
+  final EditBooruConfigId id;
+  final BooruConfig config;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ProviderScope(
+      overrides: [
+        editBooruConfigIdProvider.overrideWithValue(id),
+        initialBooruConfigProvider.overrideWithValue(config),
+      ],
+      child: child,
+    );
   }
 }
 
@@ -54,7 +84,6 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
     super.key,
     this.backgroundColor,
     this.tabsBuilder,
-    required this.isNewConfig,
     this.authTab,
     this.searchTab,
     this.postDetailsResolution,
@@ -65,7 +94,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
     this.postPreviewQuickActionButtonActions = kDefaultPreviewImageButtonAction,
     this.describePostDetailsAction,
     this.describePostPreviewQuickAction,
-    this.submitButtonBuilder,
+    this.submitButton,
     required this.initialTab,
     this.footer,
   });
@@ -88,9 +117,8 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
 
   final Set<String?> postPreviewQuickActionButtonActions;
   final String Function(String? action)? describePostPreviewQuickAction;
-  final bool isNewConfig;
 
-  final Widget Function(BooruConfigData data)? submitButtonBuilder;
+  final Widget? submitButton;
 
   final String? initialTab;
 
@@ -99,12 +127,11 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watch(initialBooruConfigProvider);
+    final editId = ref.watch(editBooruConfigIdProvider);
 
     final tabMap = {
       if (authTab != null) 'booru.authentication': authTab!,
-      'Listing': BooruConfigListingView(
-        config: config,
-      ),
+      'Listing': const BooruConfigListingView(),
       if (hasDownloadTab)
         'booru.download': BooruConfigDownloadView(config: config),
       'Search': searchTab ??
@@ -123,7 +150,6 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
             postPreviewQuickActionButtonActions,
         describePostPreviewQuickAction: describePostPreviewQuickAction,
         describePostDetailsAction: describePostDetailsAction,
-        config: config,
         postDetailsResolution: postDetailsResolution,
         miscOptions: miscOptions,
       ),
@@ -134,16 +160,13 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
       appBar: AppBar(
         titleSpacing: 0,
         title: SelectedBooruChip(
-          config: config,
+          booruType: editId.booruType,
+          url: editId.url,
         ),
         actions: [
-          BooruConfigDataProvider(
-            builder: submitButtonBuilder != null
-                ? submitButtonBuilder!
-                : (data) => DefaultBooruSubmitButton(
-                      data: data,
-                    ),
-          ),
+          submitButton != null
+              ? submitButton!
+              : const DefaultBooruSubmitButton(),
         ],
       ),
       body: SafeArea(
@@ -197,7 +220,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
                         ),
                       ),
                     ),
-                    if (isNewConfig)
+                    if (editId.isNew)
                       Padding(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 12,

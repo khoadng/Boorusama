@@ -121,19 +121,20 @@ class E621Builder
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
         context,
-        url,
-        booruType, {
+        id, {
         backgroundColor,
       }) =>
-          CreateE621ConfigPage(
+          CreateBooruConfigScope(
+            id: id,
             config: BooruConfig.defaultConfig(
-              booruType: booruType,
-              url: url,
+              booruType: id.booruType,
+              url: id.url,
               customDownloadFileNameFormat:
                   kBoorusamaCustomDownloadFileNameFormat,
             ),
-            backgroundColor: backgroundColor,
-            isNewConfig: true,
+            child: CreateE621ConfigPage(
+              backgroundColor: backgroundColor,
+            ),
           );
 
   @override
@@ -143,14 +144,13 @@ class E621Builder
   @override
   UpdateConfigPageBuilder get updateConfigPageBuilder => (
         context,
-        configId, {
+        id, {
         backgroundColor,
         initialTab,
       }) =>
           UpdateBooruConfigScope(
-            configId: configId,
-            builder: (config) => CreateE621ConfigPage(
-              config: config,
+            id: id,
+            child: CreateE621ConfigPage(
               backgroundColor: backgroundColor,
               initialTab: initialTab,
             ),

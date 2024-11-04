@@ -2,14 +2,13 @@ part of 'booru_builder.dart';
 
 typedef CreateConfigPageBuilder = Widget Function(
   BuildContext context,
-  String url,
-  BooruType booruType, {
+  EditBooruConfigId id, {
   Color? backgroundColor,
 });
 
 typedef UpdateConfigPageBuilder = Widget Function(
   BuildContext context,
-  int configId, {
+  EditBooruConfigId id, {
   Color? backgroundColor,
   String? initialTab,
 });

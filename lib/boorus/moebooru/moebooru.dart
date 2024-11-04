@@ -58,19 +58,20 @@ class MoebooruBuilder
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
         context,
-        url,
-        booruType, {
+        id, {
         backgroundColor,
       }) =>
-          CreateMoebooruConfigPage(
+          CreateBooruConfigScope(
+            id: id,
             config: BooruConfig.defaultConfig(
-              booruType: booruType,
-              url: url,
+              booruType: id.booruType,
+              url: id.url,
               customDownloadFileNameFormat:
                   kGelbooruCustomDownloadFileNameFormat,
             ),
-            backgroundColor: backgroundColor,
-            isNewConfig: true,
+            child: CreateMoebooruConfigPage(
+              backgroundColor: backgroundColor,
+            ),
           );
 
   @override
@@ -80,14 +81,13 @@ class MoebooruBuilder
   @override
   UpdateConfigPageBuilder get updateConfigPageBuilder => (
         context,
-        configId, {
+        id, {
         backgroundColor,
         initialTab,
       }) =>
           UpdateBooruConfigScope(
-            configId: configId,
-            builder: (config) => CreateMoebooruConfigPage(
-              config: config,
+            id: id,
+            child: CreateMoebooruConfigPage(
               backgroundColor: backgroundColor,
               initialTab: initialTab,
             ),

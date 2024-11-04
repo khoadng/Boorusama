@@ -139,19 +139,20 @@ class GelbooruV2Builder
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
         context,
-        url,
-        booruType, {
+        id, {
         backgroundColor,
       }) =>
-          CreateGelbooruV2ConfigPage(
+          CreateBooruConfigScope(
+            id: id,
             config: BooruConfig.defaultConfig(
-              booruType: booruType,
-              url: url,
+              booruType: id.booruType,
+              url: id.url,
               customDownloadFileNameFormat:
                   kGelbooruV2CustomDownloadFileNameFormat,
             ),
-            backgroundColor: backgroundColor,
-            isNewConfig: true,
+            child: CreateGelbooruV2ConfigPage(
+              backgroundColor: backgroundColor,
+            ),
           );
 
   @override
@@ -161,14 +162,13 @@ class GelbooruV2Builder
   @override
   UpdateConfigPageBuilder get updateConfigPageBuilder => (
         context,
-        configId, {
+        id, {
         backgroundColor,
         initialTab,
       }) =>
           UpdateBooruConfigScope(
-            configId: configId,
-            builder: (config) => CreateGelbooruV2ConfigPage(
-              config: config,
+            id: id,
+            child: CreateGelbooruV2ConfigPage(
               backgroundColor: backgroundColor,
               initialTab: initialTab,
             ),

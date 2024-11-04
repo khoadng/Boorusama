@@ -97,19 +97,20 @@ class DanbooruBuilder
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
         context,
-        url,
-        booruType, {
+        id, {
         backgroundColor,
       }) =>
-          CreateDanbooruConfigPage(
+          CreateBooruConfigScope(
+            id: id,
             config: BooruConfig.defaultConfig(
-              booruType: booruType,
-              url: url,
+              booruType: id.booruType,
+              url: id.url,
               customDownloadFileNameFormat:
                   kBoorusamaCustomDownloadFileNameFormat,
             ),
-            backgroundColor: backgroundColor,
-            isNewConfig: true,
+            child: CreateDanbooruConfigPage(
+              backgroundColor: backgroundColor,
+            ),
           );
 
   @override
@@ -119,14 +120,13 @@ class DanbooruBuilder
   @override
   UpdateConfigPageBuilder get updateConfigPageBuilder => (
         context,
-        configId, {
+        id, {
         backgroundColor,
         initialTab,
       }) =>
           UpdateBooruConfigScope(
-            configId: configId,
-            builder: (config) => CreateDanbooruConfigPage(
-              config: config,
+            id: id,
+            child: CreateDanbooruConfigPage(
               backgroundColor: backgroundColor,
               initialTab: initialTab,
             ),

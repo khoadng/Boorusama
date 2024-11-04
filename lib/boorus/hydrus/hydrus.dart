@@ -200,31 +200,31 @@ class HydrusBuilder
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
         context,
-        url,
-        booruType, {
+        id, {
         backgroundColor,
       }) =>
-          CreateHydrusConfigPage(
+          CreateBooruConfigScope(
+            id: id,
             config: BooruConfig.defaultConfig(
-              booruType: booruType,
-              url: url,
+              booruType: id.booruType,
+              url: id.url,
               customDownloadFileNameFormat: null,
             ),
-            backgroundColor: backgroundColor,
-            isNewConfig: true,
+            child: CreateHydrusConfigPage(
+              backgroundColor: backgroundColor,
+            ),
           );
 
   @override
   UpdateConfigPageBuilder get updateConfigPageBuilder => (
         context,
-        configId, {
+        id, {
         backgroundColor,
         initialTab,
       }) =>
           UpdateBooruConfigScope(
-            configId: configId,
-            builder: (config) => CreateHydrusConfigPage(
-              config: config,
+            id: id,
+            child: CreateHydrusConfigPage(
               backgroundColor: backgroundColor,
               initialTab: initialTab,
             ),
@@ -454,30 +454,20 @@ class HydrusPostDetailsDesktopPage extends ConsumerWidget {
 class CreateHydrusConfigPage extends ConsumerWidget {
   const CreateHydrusConfigPage({
     super.key,
-    required this.config,
     this.backgroundColor,
-    this.isNewConfig = false,
     this.initialTab,
   });
 
-  final BooruConfig config;
   final Color? backgroundColor;
-  final bool isNewConfig;
   final String? initialTab;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ProviderScope(
-      overrides: [
-        initialBooruConfigProvider.overrideWithValue(config),
-      ],
-      child: CreateBooruConfigScaffold(
-        authTab: const HydrusAuthConfigView(),
-        isNewConfig: isNewConfig,
-        backgroundColor: backgroundColor,
-        initialTab: initialTab,
-        submitButtonBuilder: (data) => HydrusConfigSubmitButton(data: data),
-      ),
+    return CreateBooruConfigScaffold(
+      authTab: const HydrusAuthConfigView(),
+      backgroundColor: backgroundColor,
+      initialTab: initialTab,
+      submitButton: const HydrusConfigSubmitButton(),
     );
   }
 }
@@ -514,22 +504,17 @@ class HydrusAuthConfigView extends ConsumerWidget {
 class HydrusConfigSubmitButton extends ConsumerWidget {
   const HydrusConfigSubmitButton({
     super.key,
-    required this.data,
   });
-
-  final BooruConfigData data;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watch(initialBooruConfigProvider);
-    final auth = ref.watch(authConfigDataProvider);
+    final apiKey = ref.watch(
+        editBooruConfigProvider(ref.watch(editBooruConfigIdProvider)).select(
+      (value) => value.apiKey,
+    ));
 
     return RawBooruConfigSubmitButton(
-      config: config,
-      data: data.copyWith(
-        apiKey: auth.apiKey,
-      ),
-      enable: auth.apiKey.isNotEmpty,
+      enable: apiKey.isNotEmpty,
     );
   }
 }
