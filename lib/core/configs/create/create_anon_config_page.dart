@@ -5,34 +5,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/create/create.dart';
 
 class CreateAnonConfigPage extends ConsumerWidget {
   const CreateAnonConfigPage({
     super.key,
-    required this.config,
     this.backgroundColor,
-    this.isNewConfig = false,
     this.initialTab,
   });
 
-  final BooruConfig config;
   final Color? backgroundColor;
-  final bool isNewConfig;
   final String? initialTab;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ProviderScope(
-      overrides: [
-        initialBooruConfigProvider.overrideWithValue(config),
-      ],
-      child: CreateBooruConfigScaffold(
-        isNewConfig: isNewConfig,
-        backgroundColor: backgroundColor,
-        initialTab: initialTab,
-      ),
+    return CreateBooruConfigScaffold(
+      backgroundColor: backgroundColor,
+      initialTab: initialTab,
     );
   }
 }

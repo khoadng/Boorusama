@@ -21,6 +21,7 @@ import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
+import '../../core/configs/create/create.dart';
 import 'create_gelbooru_v2_config_page.dart';
 import 'home/gelbooru_v2_home_page.dart';
 import 'posts/gelbooru_v2_post_details_desktop_page.dart';
@@ -138,19 +139,20 @@ class GelbooruV2Builder
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
         context,
-        url,
-        booruType, {
+        id, {
         backgroundColor,
       }) =>
-          CreateGelbooruV2ConfigPage(
+          CreateBooruConfigScope(
+            id: id,
             config: BooruConfig.defaultConfig(
-              booruType: booruType,
-              url: url,
+              booruType: id.booruType,
+              url: id.url,
               customDownloadFileNameFormat:
                   kGelbooruV2CustomDownloadFileNameFormat,
             ),
-            backgroundColor: backgroundColor,
-            isNewConfig: true,
+            child: CreateGelbooruV2ConfigPage(
+              backgroundColor: backgroundColor,
+            ),
           );
 
   @override
@@ -160,14 +162,16 @@ class GelbooruV2Builder
   @override
   UpdateConfigPageBuilder get updateConfigPageBuilder => (
         context,
-        config, {
+        id, {
         backgroundColor,
         initialTab,
       }) =>
-          CreateGelbooruV2ConfigPage(
-            config: config,
-            backgroundColor: backgroundColor,
-            initialTab: initialTab,
+          UpdateBooruConfigScope(
+            id: id,
+            child: CreateGelbooruV2ConfigPage(
+              backgroundColor: backgroundColor,
+              initialTab: initialTab,
+            ),
           );
 
   @override

@@ -15,6 +15,7 @@ import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
+import '../../core/configs/create/create.dart';
 import 'providers.dart';
 import 'zerochan_post.dart';
 
@@ -44,31 +45,34 @@ class ZerochanBuilder
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
         context,
-        url,
-        booruType, {
+        id, {
         backgroundColor,
       }) =>
-          CreateAnonConfigPage(
+          CreateBooruConfigScope(
+            id: id,
             config: BooruConfig.defaultConfig(
-              booruType: booruType,
-              url: url,
+              booruType: id.booruType,
+              url: id.url,
               customDownloadFileNameFormat: null,
             ),
-            backgroundColor: backgroundColor,
-            isNewConfig: true,
+            child: CreateAnonConfigPage(
+              backgroundColor: backgroundColor,
+            ),
           );
 
   @override
   UpdateConfigPageBuilder get updateConfigPageBuilder => (
         context,
-        config, {
+        id, {
         backgroundColor,
         initialTab,
       }) =>
-          CreateAnonConfigPage(
-            config: config,
-            backgroundColor: backgroundColor,
-            initialTab: initialTab,
+          UpdateBooruConfigScope(
+            id: id,
+            child: CreateAnonConfigPage(
+              backgroundColor: backgroundColor,
+              initialTab: initialTab,
+            ),
           );
 
   @override

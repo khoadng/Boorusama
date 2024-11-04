@@ -17,6 +17,7 @@ import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/foundation/html.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import '../../core/configs/create/create.dart';
 import 'create_szurubooru_config_page.dart';
 import 'szurubooru_home_page.dart';
 import 'szurubooru_post_details_page.dart';
@@ -44,31 +45,34 @@ class SzurubooruBuilder
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
         context,
-        url,
-        booruType, {
+        id, {
         backgroundColor,
       }) =>
-          CreateSzurubooruConfigPage(
+          CreateBooruConfigScope(
+            id: id,
             config: BooruConfig.defaultConfig(
-              booruType: booruType,
-              url: url,
+              booruType: id.booruType,
+              url: id.url,
               customDownloadFileNameFormat: null,
             ),
-            backgroundColor: backgroundColor,
-            isNewConfig: true,
+            child: CreateSzurubooruConfigPage(
+              backgroundColor: backgroundColor,
+            ),
           );
 
   @override
   UpdateConfigPageBuilder get updateConfigPageBuilder => (
         context,
-        config, {
+        id, {
         backgroundColor,
         initialTab,
       }) =>
-          CreateSzurubooruConfigPage(
-            config: config,
-            backgroundColor: backgroundColor,
-            initialTab: initialTab,
+          UpdateBooruConfigScope(
+            id: id,
+            child: CreateSzurubooruConfigPage(
+              backgroundColor: backgroundColor,
+              initialTab: initialTab,
+            ),
           );
 
   @override

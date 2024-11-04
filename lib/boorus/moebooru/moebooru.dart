@@ -17,6 +17,7 @@ import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/functional.dart';
+import '../../core/configs/create/create.dart';
 import 'configs/create_moebooru_config_page.dart';
 import 'feats/posts/posts.dart';
 import 'pages/moebooru_home_page.dart';
@@ -57,19 +58,20 @@ class MoebooruBuilder
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
         context,
-        url,
-        booruType, {
+        id, {
         backgroundColor,
       }) =>
-          CreateMoebooruConfigPage(
+          CreateBooruConfigScope(
+            id: id,
             config: BooruConfig.defaultConfig(
-              booruType: booruType,
-              url: url,
+              booruType: id.booruType,
+              url: id.url,
               customDownloadFileNameFormat:
                   kGelbooruCustomDownloadFileNameFormat,
             ),
-            backgroundColor: backgroundColor,
-            isNewConfig: true,
+            child: CreateMoebooruConfigPage(
+              backgroundColor: backgroundColor,
+            ),
           );
 
   @override
@@ -79,14 +81,16 @@ class MoebooruBuilder
   @override
   UpdateConfigPageBuilder get updateConfigPageBuilder => (
         context,
-        config, {
+        id, {
         backgroundColor,
         initialTab,
       }) =>
-          CreateMoebooruConfigPage(
-            config: config,
-            backgroundColor: backgroundColor,
-            initialTab: initialTab,
+          UpdateBooruConfigScope(
+            id: id,
+            child: CreateMoebooruConfigPage(
+              backgroundColor: backgroundColor,
+              initialTab: initialTab,
+            ),
           );
 
   @override

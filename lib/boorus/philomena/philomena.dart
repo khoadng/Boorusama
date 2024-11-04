@@ -17,6 +17,7 @@ import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
+import '../../core/configs/create/create.dart';
 import 'philomena_post.dart';
 
 class PhilomenaBuilder
@@ -41,31 +42,34 @@ class PhilomenaBuilder
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
         context,
-        url,
-        booruType, {
+        id, {
         backgroundColor,
       }) =>
-          CreatePhilomenaConfigPage(
+          CreateBooruConfigScope(
+            id: id,
             config: BooruConfig.defaultConfig(
-              booruType: booruType,
-              url: url,
+              booruType: id.booruType,
+              url: id.url,
               customDownloadFileNameFormat: null,
             ),
-            backgroundColor: backgroundColor,
-            isNewConfig: true,
+            child: CreatePhilomenaConfigPage(
+              backgroundColor: backgroundColor,
+            ),
           );
 
   @override
   UpdateConfigPageBuilder get updateConfigPageBuilder => (
         context,
-        config, {
+        id, {
         backgroundColor,
         initialTab,
       }) =>
-          CreatePhilomenaConfigPage(
-            config: config,
-            backgroundColor: backgroundColor,
-            initialTab: initialTab,
+          UpdateBooruConfigScope(
+            id: id,
+            child: CreatePhilomenaConfigPage(
+              backgroundColor: backgroundColor,
+              initialTab: initialTab,
+            ),
           );
 
   @override

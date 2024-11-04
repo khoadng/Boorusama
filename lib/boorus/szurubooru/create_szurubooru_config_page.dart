@@ -5,36 +5,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/create/create.dart';
 
 class CreateSzurubooruConfigPage extends ConsumerWidget {
   const CreateSzurubooruConfigPage({
     super.key,
     this.backgroundColor,
-    required this.config,
-    this.isNewConfig = false,
     this.initialTab,
   });
 
   final Color? backgroundColor;
-  final BooruConfig config;
-  final bool isNewConfig;
   final String? initialTab;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ProviderScope(
-      overrides: [
-        initialBooruConfigProvider.overrideWithValue(config),
-      ],
-      child: CreateBooruConfigScaffold(
-        hasRatingFilter: true,
-        isNewConfig: isNewConfig,
-        initialTab: initialTab,
-        backgroundColor: backgroundColor,
-        authTab: const SzurubooruAuthConfigView(),
-      ),
+    return CreateBooruConfigScaffold(
+      hasRatingFilter: true,
+      initialTab: initialTab,
+      backgroundColor: backgroundColor,
+      authTab: const SzurubooruAuthConfigView(),
     );
   }
 }

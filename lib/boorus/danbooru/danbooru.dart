@@ -21,6 +21,7 @@ import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import '../../core/configs/create/create.dart';
 import 'artists/danbooru_artist_page.dart';
 import 'comments/comments.dart';
 import 'configs/create_danbooru_config_page.dart';
@@ -96,19 +97,20 @@ class DanbooruBuilder
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
         context,
-        url,
-        booruType, {
+        id, {
         backgroundColor,
       }) =>
-          CreateDanbooruConfigPage(
+          CreateBooruConfigScope(
+            id: id,
             config: BooruConfig.defaultConfig(
-              booruType: booruType,
-              url: url,
+              booruType: id.booruType,
+              url: id.url,
               customDownloadFileNameFormat:
                   kBoorusamaCustomDownloadFileNameFormat,
             ),
-            backgroundColor: backgroundColor,
-            isNewConfig: true,
+            child: CreateDanbooruConfigPage(
+              backgroundColor: backgroundColor,
+            ),
           );
 
   @override
@@ -118,14 +120,16 @@ class DanbooruBuilder
   @override
   UpdateConfigPageBuilder get updateConfigPageBuilder => (
         context,
-        config, {
+        id, {
         backgroundColor,
         initialTab,
       }) =>
-          CreateDanbooruConfigPage(
-            config: config,
-            backgroundColor: backgroundColor,
-            initialTab: initialTab,
+          UpdateBooruConfigScope(
+            id: id,
+            child: CreateDanbooruConfigPage(
+              backgroundColor: backgroundColor,
+              initialTab: initialTab,
+            ),
           );
 
   @override

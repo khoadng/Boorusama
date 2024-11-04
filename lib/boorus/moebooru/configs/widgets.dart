@@ -53,7 +53,7 @@ class _MoebooruPasswordFieldState extends ConsumerState<MoebooruPasswordField> {
       labelText: 'booru.password_label'.tr(),
       onChanged: (value) => setState(() {
         if (value.isEmpty) {
-          ref.updateApiKey(value);
+          ref.editNotifier.updateApiKey(value);
           return;
         }
 
@@ -63,7 +63,7 @@ class _MoebooruPasswordFieldState extends ConsumerState<MoebooruPasswordField> {
           booru: config.createBooruFrom(booruFactory),
           password: value,
         );
-        ref.updateApiKey(hashed);
+        ref.editNotifier.updateApiKey(hashed);
       }),
     );
   }
@@ -79,9 +79,11 @@ class MoebooruHashedPasswordField extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final hashedPassword = ref.watch(apiKeyProvider);
+    final hashedPassword = ref.watch(editBooruConfigProvider(
+      ref.watch(editBooruConfigIdProvider),
+    ).select((value) => value.apiKey));
 
-    return hashedPassword?.isNotEmpty == true
+    return hashedPassword.isNotEmpty == true
         ? Padding(
             padding: const EdgeInsets.all(8),
             child: Row(
@@ -94,7 +96,7 @@ class MoebooruHashedPasswordField extends ConsumerWidget {
                 const SizedBox(width: 4),
                 Expanded(
                   child: Text(
-                    hashedPassword ?? '',
+                    hashedPassword,
                     style: context.textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.w800,
                     ),
@@ -103,7 +105,7 @@ class MoebooruHashedPasswordField extends ConsumerWidget {
                 IconButton(
                   splashRadius: 12,
                   onPressed: () {
-                    ref.updateApiKey('');
+                    ref.editNotifier.updateApiKey('');
                     passwordController.clear();
                   },
                   icon: const Icon(Symbols.close),

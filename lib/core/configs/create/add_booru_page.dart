@@ -56,10 +56,20 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
             this.url = url;
           }),
         ),
-      AddBooruPhase.newUnknownBooru => AddUnknownBooruPage(
-          url: url,
-          setCurrentBooruOnSubmit: widget.setCurrentBooruOnSubmit,
-          backgroundColor: widget.backgroundColor,
+      AddBooruPhase.newUnknownBooru => CreateBooruConfigScope(
+          id: EditBooruConfigId.newId(
+            booruType: BooruType.unknown,
+            url: url,
+          ),
+          config: BooruConfig.defaultConfig(
+            booruType: BooruType.unknown,
+            url: url,
+            customDownloadFileNameFormat: null,
+          ),
+          child: AddUnknownBooruPage(
+            setCurrentBooruOnSubmit: widget.setCurrentBooruOnSubmit,
+            backgroundColor: widget.backgroundColor,
+          ),
         ),
       AddBooruPhase.newKnownBooru => _buildNewKnownBooru(booru!, url),
     };
@@ -77,8 +87,10 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
     return booruBuilder != null
         ? booruBuilder(
             context,
-            booruUrl,
-            booruType,
+            EditBooruConfigId.newId(
+              booruType: booruType,
+              url: booruUrl,
+            ),
             backgroundColor: widget.backgroundColor,
           )
         : Scaffold(
