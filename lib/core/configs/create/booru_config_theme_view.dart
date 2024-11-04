@@ -20,35 +20,35 @@ class BooruConfigThemeView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = ref.watch(editBooruConfigProvider(
+      ref.watch(editBooruConfigIdProvider),
+    ).select((value) => value.themeTyped));
+
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          BooruConfigDataProvider(
-            builder: (config) => SwitchListTile(
-              title: const Text("Custom theme"),
-              value: config.themeTyped?.enable ?? false,
-              onChanged: (value) => ref.editNotifier.updateTheme(
-                config.themeTyped?.copyWith(enable: value),
-              ),
-              contentPadding: EdgeInsets.zero,
+          SwitchListTile(
+            title: const Text("Custom theme"),
+            value: theme?.enable ?? false,
+            onChanged: (value) => ref.editNotifier.updateTheme(
+              theme?.copyWith(enable: value),
             ),
+            contentPadding: EdgeInsets.zero,
           ),
-          BooruConfigDataProvider(
-            builder: (config) => GrayedOut(
-              grayedOut: config.themeTyped?.enable != true,
-              child: ThemeListTile(
-                colorSettings: config.themeTyped?.colors,
-                onThemeUpdated: (colors) {
-                  ref.editNotifier.updateTheme(
-                    ThemeConfigs(
-                      colors: colors,
-                      enable: true,
-                    ),
-                  );
-                },
-              ),
+          GrayedOut(
+            grayedOut: theme?.enable != true,
+            child: ThemeListTile(
+              colorSettings: theme?.colors,
+              onThemeUpdated: (colors) {
+                ref.editNotifier.updateTheme(
+                  ThemeConfigs(
+                    colors: colors,
+                    enable: true,
+                  ),
+                );
+              },
             ),
           ),
         ],
