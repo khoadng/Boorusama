@@ -9,7 +9,7 @@ typedef CreateConfigPageBuilder = Widget Function(
 
 typedef UpdateConfigPageBuilder = Widget Function(
   BuildContext context,
-  BooruConfig config, {
+  int configId, {
   Color? backgroundColor,
   String? initialTab,
 });

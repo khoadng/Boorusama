@@ -15,6 +15,7 @@ import 'package:boorusama/clients/gelbooru/gelbooru_v2_client.dart';
 import 'package:boorusama/clients/gelbooru/types/note_dto.dart';
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts/posts.dart';
@@ -160,14 +161,17 @@ class GelbooruV2Builder
   @override
   UpdateConfigPageBuilder get updateConfigPageBuilder => (
         context,
-        config, {
+        configId, {
         backgroundColor,
         initialTab,
       }) =>
-          CreateGelbooruV2ConfigPage(
-            config: config,
-            backgroundColor: backgroundColor,
-            initialTab: initialTab,
+          UpdateBooruConfigScope(
+            configId: configId,
+            builder: (config) => CreateGelbooruV2ConfigPage(
+              config: config,
+              backgroundColor: backgroundColor,
+              initialTab: initialTab,
+            ),
           );
 
   @override

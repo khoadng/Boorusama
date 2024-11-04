@@ -12,6 +12,7 @@ import 'package:boorusama/boorus/szurubooru/favorites/favorites.dart';
 import 'package:boorusama/boorus/szurubooru/providers.dart';
 import 'package:boorusama/core/comments/comments.dart';
 import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
@@ -61,14 +62,17 @@ class SzurubooruBuilder
   @override
   UpdateConfigPageBuilder get updateConfigPageBuilder => (
         context,
-        config, {
+        configId, {
         backgroundColor,
         initialTab,
       }) =>
-          CreateSzurubooruConfigPage(
-            config: config,
-            backgroundColor: backgroundColor,
-            initialTab: initialTab,
+          UpdateBooruConfigScope(
+            configId: configId,
+            builder: (config) => CreateSzurubooruConfigPage(
+              config: config,
+              backgroundColor: backgroundColor,
+              initialTab: initialTab,
+            ),
           );
 
   @override

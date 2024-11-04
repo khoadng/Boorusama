@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/gelbooru_v2/gelbooru_v2.dart';
 import 'package:boorusama/boorus/philomena/create_philomena_config_page.dart';
 import 'package:boorusama/core/artists/artists.dart';
 import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/dart.dart';
@@ -58,14 +59,17 @@ class PhilomenaBuilder
   @override
   UpdateConfigPageBuilder get updateConfigPageBuilder => (
         context,
-        config, {
+        configId, {
         backgroundColor,
         initialTab,
       }) =>
-          CreatePhilomenaConfigPage(
-            config: config,
-            backgroundColor: backgroundColor,
-            initialTab: initialTab,
+          UpdateBooruConfigScope(
+            configId: configId,
+            builder: (config) => CreatePhilomenaConfigPage(
+              config: config,
+              backgroundColor: backgroundColor,
+              initialTab: initialTab,
+            ),
           );
 
   @override

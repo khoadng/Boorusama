@@ -71,7 +71,7 @@ class BoorusRoutes {
             key: state.pageKey,
             child: booruBuilder?.updateConfigPageBuilder(
                   context,
-                  config,
+                  config.id,
                   backgroundColor: context.colorScheme.surface,
                   initialTab: q,
                 ) ??
@@ -116,7 +116,7 @@ class BoorusRoutes {
               padding: const EdgeInsets.all(16),
               child: booruBuilder?.updateConfigPageBuilder(
                     context,
-                    config,
+                    config.id,
                   ) ??
                   Scaffold(
                     appBar: AppBar(),

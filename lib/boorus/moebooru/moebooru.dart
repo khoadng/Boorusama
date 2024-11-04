@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/moebooru/moebooru_client.dart';
 import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
@@ -79,14 +80,17 @@ class MoebooruBuilder
   @override
   UpdateConfigPageBuilder get updateConfigPageBuilder => (
         context,
-        config, {
+        configId, {
         backgroundColor,
         initialTab,
       }) =>
-          CreateMoebooruConfigPage(
-            config: config,
-            backgroundColor: backgroundColor,
-            initialTab: initialTab,
+          UpdateBooruConfigScope(
+            configId: configId,
+            builder: (config) => CreateMoebooruConfigPage(
+              config: config,
+              backgroundColor: backgroundColor,
+              initialTab: initialTab,
+            ),
           );
 
   @override

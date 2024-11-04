@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -19,6 +20,34 @@ const kDefaultPreviewImageButtonAction = {
   kDownloadAction,
   kViewArtistAction,
 };
+
+class UpdateBooruConfigScope extends ConsumerWidget {
+  const UpdateBooruConfigScope({
+    super.key,
+    required this.configId,
+    required this.builder,
+  });
+
+  final int configId;
+  final Widget Function(BooruConfig config) builder;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final configs = ref.watch(booruConfigProvider);
+    final config = configs?.firstWhereOrNull((e) => e.id == configId);
+
+    if (config == null) {
+      return Scaffold(
+        appBar: AppBar(),
+        body: Center(
+          child: Text('Config not found'),
+        ),
+      );
+    }
+
+    return builder(config);
+  }
+}
 
 class CreateBooruConfigScaffold extends ConsumerWidget {
   const CreateBooruConfigScaffold({
