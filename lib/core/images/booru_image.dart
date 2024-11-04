@@ -17,6 +17,8 @@ import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/nullable_aspect_ratio.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
+const _defaultRadius = BorderRadius.all(Radius.circular(8));
+
 class BooruImage extends ConsumerWidget {
   const BooruImage({
     super.key,
@@ -48,24 +50,11 @@ class BooruImage extends ConsumerWidget {
     final config = ref.watchConfig;
 
     if (imageUrl.isEmpty) {
-      return forceFill
-          ? Column(
-              children: [
-                Expanded(
-                  child: ImagePlaceHolder(
-                    borderRadius: borderRadius ??
-                        const BorderRadius.all(Radius.circular(8)),
-                  ),
-                )
-              ],
-            )
-          : NullableAspectRatio(
-              aspectRatio: aspectRatio,
-              child: ImagePlaceHolder(
-                borderRadius:
-                    borderRadius ?? const BorderRadius.all(Radius.circular(8)),
-              ),
-            );
+      return _EmptyImage(
+        borderRadius: borderRadius,
+        forceFill: forceFill,
+        aspectRatio: aspectRatio,
+      );
     }
 
     return forceFill
@@ -74,8 +63,9 @@ class BooruImage extends ConsumerWidget {
   }
 
   Widget _builderNormalImage(WidgetRef ref, BooruConfig config) {
-    if (aspectRatio == null) {
-      return ExtendedImage.network(
+    return NullableAspectRatio(
+      aspectRatio: aspectRatio,
+      child: ExtendedImage.network(
         imageUrl,
         width: width,
         height: height,
@@ -84,36 +74,11 @@ class BooruImage extends ConsumerWidget {
         headers: _getHeaders(config, ref),
         shape: BoxShape.rectangle,
         cacheMaxAge: kDefaultImageCacheDuration,
-        borderRadius:
-            borderRadius ?? const BorderRadius.all(Radius.circular(4)),
+        borderRadius: borderRadius ?? _defaultRadius,
         fit: fit ?? BoxFit.fill,
-        loadStateChanged: (state) =>
-            state.extendedImageLoadState == LoadState.loading
-                ? ImagePlaceHolder(
-                    borderRadius: borderRadius ??
-                        const BorderRadius.all(Radius.circular(8)),
-                  )
-                : null,
-      );
-    } else {
-      return NullableAspectRatio(
-        aspectRatio: aspectRatio,
-        child: ExtendedImage.network(
-          imageUrl,
-          width: width,
-          height: height,
-          cacheHeight: cacheHeight,
-          cacheWidth: cacheWidth,
-          cacheMaxAge: kDefaultImageCacheDuration,
-          headers: _getHeaders(config, ref),
-          shape: BoxShape.rectangle,
-          borderRadius:
-              borderRadius ?? const BorderRadius.all(Radius.circular(4)),
-          fit: fit ?? BoxFit.fill,
-          loadStateChanged: (state) => _buildImageState(state, ref, config),
-        ),
-      );
-    }
+        loadStateChanged: (state) => _buildImageState(state, ref, config),
+      ),
+    );
   }
 
   Widget _builForceFillImage(WidgetRef ref, BooruConfig config) {
@@ -122,16 +87,15 @@ class BooruImage extends ConsumerWidget {
         Expanded(
           child: ExtendedImage.network(
             imageUrl,
-            headers: _getHeaders(config, ref),
             width: width ?? double.infinity,
             height: height ?? double.infinity,
+            headers: _getHeaders(config, ref),
             cacheHeight: cacheHeight,
             cacheWidth: cacheWidth,
             shape: BoxShape.rectangle,
             cacheMaxAge: kDefaultImageCacheDuration,
+            borderRadius: borderRadius ?? _defaultRadius,
             fit: BoxFit.cover,
-            borderRadius:
-                borderRadius ?? const BorderRadius.all(Radius.circular(4)),
             loadStateChanged: (state) => _buildImageState(state, ref, config),
           ),
         ),
@@ -147,8 +111,7 @@ class BooruImage extends ConsumerWidget {
       switch (state.extendedImageLoadState) {
         LoadState.loading => placeholderUrl.toOption().fold(
               () => ImagePlaceHolder(
-                borderRadius:
-                    borderRadius ?? const BorderRadius.all(Radius.circular(8)),
+                borderRadius: borderRadius ?? _defaultRadius,
               ),
               (url) => url.isNotBlank()
                   ? ExtendedImage.network(
@@ -160,26 +123,21 @@ class BooruImage extends ConsumerWidget {
                       shape: BoxShape.rectangle,
                       cacheMaxAge: kDefaultImageCacheDuration,
                       fit: BoxFit.cover,
-                      borderRadius: borderRadius ??
-                          const BorderRadius.all(Radius.circular(4)),
-                      loadStateChanged: (state) => state
-                                  .extendedImageLoadState ==
-                              LoadState.loading
-                          ? ImagePlaceHolder(
-                              borderRadius: borderRadius ??
-                                  const BorderRadius.all(Radius.circular(8)),
-                            )
-                          : null,
+                      borderRadius: borderRadius ?? _defaultRadius,
+                      loadStateChanged: (state) =>
+                          state.extendedImageLoadState == LoadState.loading
+                              ? ImagePlaceHolder(
+                                  borderRadius: borderRadius ?? _defaultRadius,
+                                )
+                              : null,
                       headers: _getHeaders(config, ref),
                     )
                   : ImagePlaceHolder(
-                      borderRadius: borderRadius ??
-                          const BorderRadius.all(Radius.circular(8)),
+                      borderRadius: borderRadius ?? _defaultRadius,
                     ),
             ),
         LoadState.failed => ErrorPlaceholder(
-            borderRadius:
-                borderRadius ?? const BorderRadius.all(Radius.circular(8)),
+            borderRadius: borderRadius ?? _defaultRadius,
           ),
         LoadState.completed => null,
       };
@@ -189,6 +147,38 @@ class BooruImage extends ConsumerWidget {
             ref.watch(userAgentGeneratorProvider(config)).generate(),
         ...ref.watch(extraHttpHeaderProvider(config)),
       };
+}
+
+class _EmptyImage extends StatelessWidget {
+  const _EmptyImage({
+    required this.borderRadius,
+    required this.forceFill,
+    this.aspectRatio,
+  });
+
+  final BorderRadiusGeometry? borderRadius;
+  final bool forceFill;
+  final double? aspectRatio;
+
+  @override
+  Widget build(BuildContext context) {
+    final placeholder = ImagePlaceHolder(
+      borderRadius: borderRadius ?? _defaultRadius,
+    );
+
+    return forceFill
+        ? Column(
+            children: [
+              Expanded(
+                child: placeholder,
+              )
+            ],
+          )
+        : NullableAspectRatio(
+            aspectRatio: aspectRatio,
+            child: placeholder,
+          );
+  }
 }
 
 // ignore: prefer-single-widget-per-file
@@ -201,21 +191,20 @@ class ImagePlaceHolder extends StatelessWidget {
   });
 
   final BorderRadiusGeometry? borderRadius;
-  final int? width;
-  final int? height;
+  final double? width;
+  final double? height;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: width?.toDouble(),
-      height: height?.toDouble(),
+      width: width,
+      height: height,
       decoration: BoxDecoration(
         color: context.colorScheme.surfaceContainerHigh.applyOpacity(0.5),
-        borderRadius:
-            borderRadius ?? const BorderRadius.all(Radius.circular(4)),
+        borderRadius: borderRadius ?? _defaultRadius,
       ),
       child: LayoutBuilder(
-        builder: (context, constraints) => Container(),
+        builder: (context, constraints) => const SizedBox.shrink(),
       ),
     );
   }
@@ -235,8 +224,7 @@ class ErrorPlaceholder extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: context.colorScheme.surfaceContainerLowest,
-        borderRadius:
-            borderRadius ?? const BorderRadius.all(Radius.circular(4)),
+        borderRadius: borderRadius ?? _defaultRadius,
       ),
       child: LayoutBuilder(
         builder: (context, constraints) => Container(
