@@ -218,7 +218,8 @@ class _PoolPagedSliverGridState extends ConsumerState<PoolPagedSliverGrid> {
       sliver: PagedSliverGrid(
         pagingController: controller,
         builderDelegate: PagedChildBuilderDelegate<DanbooruPool>(
-          itemBuilder: (context, pool, index) => PoolGridItem(pool: pool),
+          itemBuilder: (context, pool, index) =>
+              DanbooruPoolGridItem(pool: pool),
           firstPageProgressIndicatorBuilder: (context) => const Center(
             child: CircularProgressIndicator.adaptive(),
           ),

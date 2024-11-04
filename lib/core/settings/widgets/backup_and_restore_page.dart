@@ -170,7 +170,7 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
                 AppClipboard.copyAndToast(
                   context,
                   tagString,
-                  message: 'favorite_tags.export_notification',
+                  message: 'favorite_tags.export_notification'.tr(),
                 );
               },
             );

@@ -29,7 +29,7 @@ class BooruConfigThemeView extends ConsumerWidget {
             builder: (config) => SwitchListTile(
               title: const Text("Custom theme"),
               value: config.themeTyped?.enable ?? false,
-              onChanged: (value) => ref.updateTheme(
+              onChanged: (value) => ref.editNotifier.updateTheme(
                 config.themeTyped?.copyWith(enable: value),
               ),
               contentPadding: EdgeInsets.zero,
@@ -41,7 +41,7 @@ class BooruConfigThemeView extends ConsumerWidget {
               child: ThemeListTile(
                 colorSettings: config.themeTyped?.colors,
                 onThemeUpdated: (colors) {
-                  ref.updateTheme(
+                  ref.editNotifier.updateTheme(
                     ThemeConfigs(
                       colors: colors,
                       enable: true,

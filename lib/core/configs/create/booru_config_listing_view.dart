@@ -14,15 +14,14 @@ import 'package:boorusama/widgets/widgets.dart';
 class BooruConfigListingView extends ConsumerWidget {
   const BooruConfigListingView({
     super.key,
-    required this.config,
   });
-
-  final BooruConfig config;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final listing =
-        ref.watch(listingConfigsProvider) ?? ListingConfigs.undefined();
+    final listing = ref.watch(
+            editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
+                .select((value) => value.listingTyped)) ??
+        ListingConfigs.undefined();
     final enable = listing.enable;
     final settings = listing.settings;
 
@@ -36,7 +35,7 @@ class BooruConfigListingView extends ConsumerWidget {
               'Override the global settings for this the profile. If enabled, global settings will be ignored until this is disabled.',
             ),
             value: enable,
-            onChanged: (value) => ref.updateListing(
+            onChanged: (value) => ref.editNotifier.updateListing(
               listing.copyWith(enable: value),
             ),
             contentPadding: const EdgeInsets.symmetric(horizontal: 4),
@@ -46,7 +45,7 @@ class BooruConfigListingView extends ConsumerWidget {
             grayedOut: !enable,
             child: ImageListingSettingsSection(
               listing: settings,
-              onUpdate: (value) => ref.updateListing(
+              onUpdate: (value) => ref.editNotifier.updateListing(
                 listing.copyWith(settings: value),
               ),
               itemPadding: const EdgeInsets.symmetric(

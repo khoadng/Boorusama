@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/core/configs/export_import/export_import.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/core/settings/settings.dart';
@@ -95,14 +96,14 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?>
 
   Future<void> update({
     required BooruConfigData booruConfigData,
-    required BooruConfig oldConfig,
+    required int oldConfigId,
     void Function(String message)? onFailure,
     void Function(BooruConfig booruConfig)? onSuccess,
   }) async {
     if (state == null) return;
     final updatedConfig = await ref
         .read(booruConfigRepoProvider)
-        .update(oldConfig.id, booruConfigData);
+        .update(oldConfigId, booruConfigData);
 
     if (updatedConfig == null) {
       onFailure?.call('Failed to update account');
@@ -111,7 +112,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?>
     }
 
     final newConfigs =
-        state!.replaceFirst(updatedConfig, (item) => item.id == oldConfig.id);
+        state!.replaceFirst(updatedConfig, (item) => item.id == oldConfigId);
 
     onSuccess?.call(updatedConfig);
 
@@ -154,17 +155,17 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?>
 
 extension BooruConfigNotifierX on BooruConfigNotifier {
   void addOrUpdate({
-    required BooruConfig config,
+    required EditBooruConfigId id,
     required BooruConfigData newConfig,
   }) {
-    if (config.isDefault()) {
+    if (id.isNew) {
       ref.read(booruConfigProvider.notifier).add(
             data: newConfig,
           );
     } else {
       ref.read(booruConfigProvider.notifier).update(
             booruConfigData: newConfig,
-            oldConfig: config,
+            oldConfigId: id.id,
             onSuccess: (booruConfig) {
               // if edit current config, update current config
               final currentConfig = ref.read(currentBooruConfigProvider);

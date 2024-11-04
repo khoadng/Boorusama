@@ -6,36 +6,25 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/gelbooru/configs/widgets.dart';
-import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/create/create.dart';
 
 class CreateGelbooruV2ConfigPage extends StatelessWidget {
   const CreateGelbooruV2ConfigPage({
     super.key,
-    required this.config,
     this.backgroundColor,
-    this.isNewConfig = false,
     this.initialTab,
   });
 
-  final BooruConfig config;
   final Color? backgroundColor;
-  final bool isNewConfig;
   final String? initialTab;
 
   @override
   Widget build(BuildContext context) {
-    return ProviderScope(
-      overrides: [
-        initialBooruConfigProvider.overrideWithValue(config),
-      ],
-      child: CreateBooruConfigScaffold(
-        isNewConfig: isNewConfig,
-        initialTab: initialTab,
-        backgroundColor: backgroundColor,
-        authTab: const GelbooruV2AuthView(),
-        hasRatingFilter: true,
-      ),
+    return CreateBooruConfigScaffold(
+      initialTab: initialTab,
+      backgroundColor: backgroundColor,
+      authTab: const GelbooruV2AuthView(),
+      hasRatingFilter: true,
     );
   }
 }
@@ -49,10 +38,12 @@ class GelbooruV2AuthView extends ConsumerStatefulWidget {
 
 class _GelbooruAuthViewState extends ConsumerState<GelbooruV2AuthView> {
   late final loginController = TextEditingController(
-    text: ref.read(loginProvider),
+    text: ref.read(editBooruConfigProvider(ref.read(editBooruConfigIdProvider))
+        .select((value) => value.login)),
   );
   late final apiKeyController = TextEditingController(
-    text: ref.read(apiKeyProvider),
+    text: ref.read(editBooruConfigProvider(ref.read(editBooruConfigIdProvider))
+        .select((value) => value.apiKey)),
   );
 
   @override
