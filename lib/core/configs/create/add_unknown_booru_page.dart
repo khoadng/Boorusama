@@ -18,105 +18,92 @@ import 'package:boorusama/widgets/widgets.dart';
 class AddUnknownBooruPage extends ConsumerWidget {
   const AddUnknownBooruPage({
     super.key,
-    required this.url,
     this.setCurrentBooruOnSubmit = false,
     this.backgroundColor,
   });
 
-  final String url;
   final bool setCurrentBooruOnSubmit;
   final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ProviderScope(
-      overrides: [
-        initialBooruConfigProvider.overrideWithValue(
-          BooruConfig.defaultConfig(
-            booruType: BooruType.unknown,
-            url: url,
-            customDownloadFileNameFormat: null,
+    return Material(
+      color: backgroundColor,
+      child: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: MediaQuery.viewPaddingOf(context).top,
+                ),
+                const SizedBox(height: 32),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                  child: Text(
+                    'Select a booru engine to continue',
+                    style: context.textTheme.headlineSmall!
+                        .copyWith(fontWeight: FontWeight.w900),
+                  ),
+                ),
+                const Divider(
+                  thickness: 2,
+                  endIndent: 16,
+                  indent: 16,
+                ),
+                const InvalidBooruWarningContainer(),
+                const UnknownConfigBooruSelector(),
+                const BooruConfigNameField(),
+                const SizedBox(height: 16),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const BooruUrlField(),
+                      if (ref.watch(booruEngineProvider) != BooruType.hydrus)
+                        const SizedBox(height: 16),
+                      if (ref.watch(booruEngineProvider) != BooruType.hydrus)
+                        Text(
+                          'Advanced options (optional)',
+                          style: context.textTheme.titleMedium,
+                        ),
+                      if (ref.watch(booruEngineProvider) != BooruType.hydrus)
+                        const DefaultBooruInstructionText(
+                          '*These options only be used if the site allows it.',
+                        ),
+                      //FIXME: make this part of the config customisable
+                      if (ref.watch(booruEngineProvider) != BooruType.hydrus)
+                        const SizedBox(height: 16),
+                      if (ref.watch(booruEngineProvider) != BooruType.hydrus)
+                        const DefaultBooruLoginField(),
+                      const SizedBox(height: 16),
+                      const DefaultBooruApiKeyField(),
+                      const SizedBox(height: 16),
+                      const UnknownBooruSubmitButton(),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-      ],
-      child: Material(
-        color: backgroundColor,
-        child: Stack(
-          children: [
-            SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    height: MediaQuery.viewPaddingOf(context).top,
-                  ),
-                  const SizedBox(height: 32),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
-                    ),
-                    child: Text(
-                      'Select a booru engine to continue',
-                      style: context.textTheme.headlineSmall!
-                          .copyWith(fontWeight: FontWeight.w900),
-                    ),
-                  ),
-                  const Divider(
-                    thickness: 2,
-                    endIndent: 16,
-                    indent: 16,
-                  ),
-                  const InvalidBooruWarningContainer(),
-                  const UnknownConfigBooruSelector(),
-                  const BooruConfigNameField(),
-                  const SizedBox(height: 16),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        const BooruUrlField(),
-                        if (ref.watch(booruEngineProvider) != BooruType.hydrus)
-                          const SizedBox(height: 16),
-                        if (ref.watch(booruEngineProvider) != BooruType.hydrus)
-                          Text(
-                            'Advanced options (optional)',
-                            style: context.textTheme.titleMedium,
-                          ),
-                        if (ref.watch(booruEngineProvider) != BooruType.hydrus)
-                          const DefaultBooruInstructionText(
-                            '*These options only be used if the site allows it.',
-                          ),
-                        //FIXME: make this part of the config customisable
-                        if (ref.watch(booruEngineProvider) != BooruType.hydrus)
-                          const SizedBox(height: 16),
-                        if (ref.watch(booruEngineProvider) != BooruType.hydrus)
-                          const DefaultBooruLoginField(),
-                        const SizedBox(height: 16),
-                        const DefaultBooruApiKeyField(),
-                        const SizedBox(height: 16),
-                        const UnknownBooruSubmitButton(),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+          Positioned(
+            top: MediaQuery.viewPaddingOf(context).top,
+            right: 8,
+            child: IconButton(
+              onPressed: context.navigator.pop,
+              icon: const Icon(Symbols.close),
             ),
-            Positioned(
-              top: MediaQuery.viewPaddingOf(context).top,
-              right: 8,
-              child: IconButton(
-                onPressed: context.navigator.pop,
-                icon: const Icon(Symbols.close),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -141,10 +128,12 @@ class UnknownBooruSubmitButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final data = ref.watch(booruConfigDataProvider);
+    final editId = ref.watch(editBooruConfigIdProvider);
     final config = ref.watch(initialBooruConfigProvider);
-    final auth = ref.watch(authConfigDataProvider);
-    final configName = ref.watch(configNameProvider);
+    final auth = ref.watch(editBooruConfigProvider(editId)
+        .select((value) => AuthConfigData.fromConfig(value)));
+    final configName = ref
+        .watch(editBooruConfigProvider(editId).select((value) => value.name));
     final url = ref.watch(_siteUrlProvider(config));
     final engine = ref.watch(booruEngineProvider);
 
@@ -155,30 +144,26 @@ class UnknownBooruSubmitButton extends ConsumerWidget {
 
     return ref.watch(_validateConfigProvider).when(
           data: (value) => value != null
-              ? CreateBooruSubmitButton(
-                  fill: true,
-                  backgroundColor: value ? Colors.green : null,
-                  onSubmit: isValid
-                      ? () {
-                          final finalData = data.copyWith(
-                            name: configName,
-                            booruIdHint: () => engine.toBooruId(),
-                            login: auth.login,
-                            apiKey: auth.apiKey,
-                            url: url,
-                          );
+              ? BooruConfigDataProvider(
+                  builder: (data) => CreateBooruSubmitButton(
+                    fill: true,
+                    backgroundColor: value ? Colors.green : null,
+                    onSubmit: isValid
+                        ? () {
+                            ref.read(booruConfigProvider.notifier).addOrUpdate(
+                                  id: editId,
+                                  newConfig: data.copyWith(
+                                    booruIdHint: () => engine.toBooruId(),
+                                  ),
+                                );
 
-                          ref.read(booruConfigProvider.notifier).addOrUpdate(
-                                config: config,
-                                newConfig: finalData,
-                              );
-
-                          context.navigator.pop();
-                        }
-                      : null,
-                  child: value == true
-                      ? const Text('booru.config_booru_confirm').tr()
-                      : const Text('Verify'),
+                            context.navigator.pop();
+                          }
+                        : null,
+                    child: value == true
+                        ? const Text('booru.config_booru_confirm').tr()
+                        : const Text('Verify'),
+                  ),
                 )
               : CreateBooruSubmitButton(
                   fill: true,

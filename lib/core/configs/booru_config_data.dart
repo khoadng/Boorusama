@@ -193,6 +193,15 @@ extension BooruConfigDataX on BooruConfigData {
 
     return BooruConfigBannedPostVisibility.values[bannedPostVisibility];
   }
+
+  BooruConfigDeletedItemBehavior get deletedItemBehaviorTyped {
+    if (deletedItemBehavior < 0 ||
+        deletedItemBehavior >= BooruConfigDeletedItemBehavior.values.length) {
+      return BooruConfigDeletedItemBehavior.show;
+    }
+
+    return BooruConfigDeletedItemBehavior.values[deletedItemBehavior];
+  }
 }
 
 extension BooruConfigDataCopyWith on BooruConfigData {

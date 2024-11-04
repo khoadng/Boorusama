@@ -23,10 +23,22 @@ class BooruLogo extends StatelessWidget {
     super.key,
     this.width,
     this.height,
-  })  : source = config.booruType == BooruType.hydrus
-            ? 'assets/images/hydrus-logo.png'
-            : config.url,
-        _isFixedIcon = config.booruType == BooruType.hydrus;
+  })  : source = _sourceFromType(config.booruType, config.url),
+        _isFixedIcon = _isFixed(config.booruType);
+
+  BooruLogo.fromBooruType(
+    BooruType booruType,
+    String url, {
+    super.key,
+    this.width,
+    this.height,
+  })  : source = _sourceFromType(booruType, url),
+        _isFixedIcon = _isFixed(booruType);
+
+  static String _sourceFromType(BooruType booruType, String url) =>
+      booruType == BooruType.hydrus ? 'assets/images/hydrus-logo.png' : url;
+
+  static bool _isFixed(BooruType booruType) => booruType == BooruType.hydrus;
 
   final String source;
   final double? width;

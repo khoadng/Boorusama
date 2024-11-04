@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/widgets/option_dropdown_button.dart';
@@ -18,11 +17,9 @@ class BooruConfigMiscView extends ConsumerWidget {
     required this.describePostPreviewQuickAction,
     this.describePostDetailsAction,
     this.miscOptions,
-    required this.config,
     this.postDetailsResolution,
   });
 
-  final BooruConfig config;
   final Set<String?> postDetailsGestureActions;
   final String Function(String? action)? describePostDetailsAction;
 
@@ -49,9 +46,11 @@ class BooruConfigMiscView extends ConsumerWidget {
             ),
             trailing: OptionDropDownButton(
               alignment: AlignmentDirectional.centerStart,
-              value: ref.watch(defaultPreviewImageButtonActionProvider),
+              value: ref.watch(editBooruConfigProvider(
+                      ref.watch(editBooruConfigIdProvider))
+                  .select((value) => value.defaultPreviewImageButtonAction)),
               onChanged: (value) =>
-                  ref.updateDefaultPreviewImageButtonAction(value),
+                  ref.editNotifier.updateDefaultPreviewImageButtonAction(value),
               items: postPreviewQuickActionButtonActions
                   .map((value) => DropdownMenuItem(
                         value: value,
@@ -65,7 +64,7 @@ class BooruConfigMiscView extends ConsumerWidget {
           if (postDetailsResolution != null)
             postDetailsResolution!
           else
-            DefaultImageDetailsQualityTile(config: config),
+            const DefaultImageDetailsQualityTile(),
           if (miscOptions != null) ...miscOptions!,
         ],
       ),
