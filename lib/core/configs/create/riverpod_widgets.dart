@@ -110,7 +110,12 @@ class UpdateBooruConfigButton extends ConsumerWidget {
     final editId = ref.watch(editBooruConfigIdProvider);
 
     return BooruConfigDataProvider(
-      builder: (data) => TextButton(
+      builder: (data) => FilledButton(
+        style: FilledButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
         onPressed: canSubmit(data)
             ? () {
                 ref.read(booruConfigProvider.notifier).addOrUpdate(

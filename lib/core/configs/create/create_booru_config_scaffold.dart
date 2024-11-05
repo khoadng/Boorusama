@@ -410,9 +410,10 @@ class SaveReminderBanner extends ConsumerWidget {
       ),
       padding: const EdgeInsets.symmetric(
         horizontal: 12,
+        vertical: 8,
       ),
       decoration: BoxDecoration(
-        color: context.colorScheme.primaryContainer,
+        color: context.colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
@@ -451,7 +452,7 @@ class BooruConfigEntry extends ConsumerWidget {
     final editId = ref.watch(editBooruConfigIdProvider);
 
     return Material(
-      color: context.colorScheme.surfaceContainerLow,
+      color: context.colorScheme.surfaceContainerLowest,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
       ),
@@ -473,7 +474,6 @@ class BooruConfigEntry extends ConsumerWidget {
         },
         child: Container(
           margin: const EdgeInsets.symmetric(
-            vertical: 4,
             horizontal: 8,
           ),
           child: overview,
