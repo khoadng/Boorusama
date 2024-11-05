@@ -1,4 +1,6 @@
 // Package imports:
+import 'package:collection/collection.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -6,7 +8,14 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/gestures.dart';
-import 'types.dart';
+
+final editBooruConfigIdProvider = Provider.autoDispose<EditBooruConfigId>(
+  (ref) => throw UnimplementedError(),
+);
+
+final editBooruConfigProvider = NotifierProvider.autoDispose
+    .family<EditBooruConfigNotifier, BooruConfigData, EditBooruConfigId>(
+        EditBooruConfigNotifier.new);
 
 final initialBooruConfigProvider = Provider.autoDispose<BooruConfig>(
   (ref) => throw UnimplementedError(),
@@ -17,150 +26,156 @@ final booruConfigDataProvider = StateProvider.autoDispose<BooruConfigData>(
   dependencies: [initialBooruConfigProvider],
 );
 
-final authConfigDataProvider = StateProvider.autoDispose<AuthConfigData>(
-  (ref) => ref.watch(booruConfigDataProvider.select(AuthConfigData.fromConfig)),
-  dependencies: [booruConfigDataProvider],
-);
-
-final loginProvider = StateProvider.autoDispose<String?>(
-  (ref) => ref.watch(authConfigDataProvider.select((value) => value.login)),
-  dependencies: [authConfigDataProvider],
-);
-
-final apiKeyProvider = StateProvider.autoDispose<String?>(
-  (ref) => ref.watch(authConfigDataProvider.select((value) => value.apiKey)),
-  dependencies: [authConfigDataProvider],
-);
-
-final postGesturesConfigDataProvider =
-    StateProvider.autoDispose<PostGestureConfig?>(
-  (ref) => ref.watch(
-      booruConfigDataProvider.select((value) => value.postGesturesConfigTyped)),
-  dependencies: [booruConfigDataProvider],
-);
-
-final defaultPreviewImageButtonActionProvider =
-    StateProvider.autoDispose<String?>(
-  (ref) => ref.watch(booruConfigDataProvider
-      .select((value) => value.defaultPreviewImageButtonAction)),
-  dependencies: [booruConfigDataProvider],
-);
-
-final granularRatingFilterProvider = StateProvider.autoDispose<Set<Rating>?>(
-  (ref) => ref.watch(booruConfigDataProvider
-      .select((value) => value.granularRatingFilterTyped)),
-  dependencies: [booruConfigDataProvider],
-);
-
-final defaultImageDetailsQualityProvider = StateProvider.autoDispose<String?>(
-  (ref) => ref.watch(
-      booruConfigDataProvider.select((value) => value.imageDetaisQuality)),
-  dependencies: [booruConfigDataProvider],
-);
-
-final ratingFilterProvider =
-    StateProvider.autoDispose<BooruConfigRatingFilter?>(
-  (ref) => ref.watch(
-      booruConfigDataProvider.select((value) => value.ratingFilterTyped)),
-  dependencies: [booruConfigDataProvider],
-);
-
-final customBulkDownloadFileNameFormatProvider =
-    StateProvider.autoDispose<String?>(
-  (ref) => ref.watch(booruConfigDataProvider
-      .select((value) => value.customBulkDownloadFileNameFormat)),
-  dependencies: [booruConfigDataProvider],
-);
-final customDownloadFileNameFormatProvider = StateProvider.autoDispose<String?>(
-  (ref) => ref.watch(booruConfigDataProvider
-      .select((value) => value.customDownloadFileNameFormat)),
-  dependencies: [booruConfigDataProvider],
-);
-
-final customDownloadLocationProvider = StateProvider.autoDispose<String?>(
-  (ref) => ref.watch(
-      booruConfigDataProvider.select((value) => value.customDownloadLocation)),
-  dependencies: [booruConfigDataProvider],
-);
-
-final listingConfigsProvider = StateProvider.autoDispose<ListingConfigs?>(
-  (ref) =>
-      ref.watch(booruConfigDataProvider.select((value) => value.listingTyped)),
-  dependencies: [booruConfigDataProvider],
-);
-
-final alwaysIncludeTagsProvider = StateProvider.autoDispose<String?>(
-  (ref) => ref.watch(
-      booruConfigDataProvider.select((value) => value.alwaysIncludeTags)),
-  dependencies: [booruConfigDataProvider],
-);
-
-final configNameProvider = StateProvider.autoDispose<String>(
-  (ref) => ref.watch(booruConfigDataProvider.select((value) => value.name)),
-  dependencies: [booruConfigDataProvider],
-);
-
 extension UpdateDataX on WidgetRef {
-  void updateAuthConfigData(
-    AuthConfigData data,
+  EditBooruConfigNotifier get editNotifier =>
+      read(editBooruConfigProvider(read(editBooruConfigIdProvider)).notifier);
+}
+
+class EditBooruConfigId extends Equatable {
+  const EditBooruConfigId({
+    required this.id,
+    required this.booruType,
+    required this.url,
+  });
+
+  const EditBooruConfigId.newId({
+    required BooruType booruType,
+    required String url,
+  }) : this(id: -1, booruType: booruType, url: url);
+
+  EditBooruConfigId.fromConfig(
+    BooruConfig config,
+  )   : id = config.id,
+        booruType = config.booruType,
+        url = config.url;
+
+  final int id;
+  final BooruType booruType;
+  final String url;
+
+  bool get isNew => id == -1;
+
+  @override
+  List<Object> get props => [id, booruType, url];
+}
+
+class EditBooruConfigNotifier
+    extends AutoDisposeFamilyNotifier<BooruConfigData, EditBooruConfigId> {
+  @override
+  BooruConfigData build(EditBooruConfigId arg) {
+    final configs = ref.watch(booruConfigProvider);
+    final defaultConfig = BooruConfig.defaultConfig(
+      booruType: arg.booruType,
+      url: arg.url,
+      customDownloadFileNameFormat: null,
+    );
+    final config =
+        arg.isNew ? null : configs?.firstWhereOrNull((e) => e.id == arg.id);
+
+    return (config ?? defaultConfig).toBooruConfigData();
+  }
+
+  void updateLogin(
+    String login,
   ) =>
-      read(authConfigDataProvider.notifier).state = data;
+      state = state.copyWith(login: login);
+
+  void updateApiKey(
+    String apiKey,
+  ) =>
+      state = state.copyWith(apiKey: apiKey);
+
+  void updatePassHash(
+    String? Function()? passHash,
+  ) =>
+      state = state.copyWith(passHash: passHash);
+
+  void updateLoginAndApiKey(
+    String login,
+    String apiKey,
+  ) {
+    state = state.copyWith(
+      login: login,
+      apiKey: apiKey,
+    );
+  }
+
+  void updateName(
+    String name,
+  ) =>
+      state = state.copyWith(name: name);
+
+  void updateAlwaysIncludeTags(
+    String? alwaysIncludeTags,
+  ) =>
+      state = state.copyWith(alwaysIncludeTags: () => alwaysIncludeTags);
+
+  void updateListing(
+    ListingConfigs? listing,
+  ) =>
+      state = state.copyWith(listing: () => listing);
+
+  void updateCustomDownloadLocation(
+    String? customDownloadLocation,
+  ) =>
+      state =
+          state.copyWith(customDownloadLocation: () => customDownloadLocation);
+
+  void updateCustomDownloadFileNameFormat(
+    String? customDownloadFileNameFormat,
+  ) =>
+      state = state.copyWith(
+          customDownloadFileNameFormat: () => customDownloadFileNameFormat);
+
+  void updateCustomBulkDownloadFileNameFormat(
+    String? customBulkDownloadFileNameFormat,
+  ) =>
+      state = state.copyWith(
+          customBulkDownloadFileNameFormat: () =>
+              customBulkDownloadFileNameFormat);
+
+  void updateImageDetailsQuality(
+    String? imageDetailsQuality,
+  ) =>
+      state = state.copyWith(imageDetaisQuality: () => imageDetailsQuality);
+
+  void updateDefaultPreviewImageButtonAction(
+    String? defaultPreviewImageButtonAction,
+  ) =>
+      state = state.copyWith(
+          defaultPreviewImageButtonAction: () =>
+              defaultPreviewImageButtonAction);
+
+  void updateGranularRatingFilter(
+    Set<Rating>? granularRatingFilter,
+  ) =>
+      state = state.copyWith(granularRatingFilter: () => granularRatingFilter);
+
+  void updateRatingFilter(
+    BooruConfigRatingFilter? ratingFilter,
+  ) =>
+      state = state.copyWith(ratingFilter: ratingFilter);
 
   void updateGesturesConfigData(
     PostGestureConfig? data,
   ) =>
-      read(postGesturesConfigDataProvider.notifier).state = data;
+      state = state.copyWith(postGestures: () => data);
 
-  void updateRatingFilter(BooruConfigRatingFilter? data) =>
-      read(ratingFilterProvider.notifier).state = data;
+  void updateBannedPostVisibility(
+    bool bannedPostVisibility,
+  ) =>
+      state = state.copyWith(
+        bannedPostVisibility: bannedPostVisibility
+            ? BooruConfigBannedPostVisibility.hide
+            : BooruConfigBannedPostVisibility.show,
+      );
 
-  void updateGranularRatingFilter(Set<Rating>? data) =>
-      read(granularRatingFilterProvider.notifier).state = data;
-
-  void updateDefaultPreviewImageButtonAction(String? data) =>
-      read(defaultPreviewImageButtonActionProvider.notifier).state = data;
-
-  void updateImageDetailsQuality(String? data) =>
-      read(defaultImageDetailsQualityProvider.notifier).state = data;
-
-  void updateCustomBulkDownloadFileNameFormat(String? data) =>
-      read(customBulkDownloadFileNameFormatProvider.notifier).state = data;
-
-  void updateCustomDownloadFileNameFormat(String? data) =>
-      read(customDownloadFileNameFormatProvider.notifier).state = data;
-
-  void updateCustomDownloadLocation(String? data) =>
-      read(customDownloadLocationProvider.notifier).state = data;
-
-  void updateListing(ListingConfigs? data) =>
-      read(listingConfigsProvider.notifier).state = data;
-
-  void updateAlwaysIncludeTags(String? data) =>
-      read(alwaysIncludeTagsProvider.notifier).state = data;
-
-  void updateName(String data) =>
-      read(configNameProvider.notifier).state = data;
-
-  void updateLoginAndApiKey(String login, String apiKey) {
-    final auth = read(authConfigDataProvider);
-    updateAuthConfigData(auth.copyWith(
-      login: login,
-      apiKey: apiKey,
-    ));
-  }
-
-  void updateApiKey(String value) {
-    final auth = read(authConfigDataProvider);
-    updateAuthConfigData(auth.copyWith(apiKey: value));
-  }
-
-  void updatePassHash(String? value) {
-    final auth = read(authConfigDataProvider);
-    updateAuthConfigData(auth.copyWith(passHash: () => value));
-  }
-
-  void updateLogin(String value) {
-    final auth = read(authConfigDataProvider);
-    updateAuthConfigData(auth.copyWith(login: value));
-  }
+  void updateDeletedItemBehavior(
+    bool hideDeleted,
+  ) =>
+      state = state.copyWith(
+        deletedItemBehavior: hideDeleted
+            ? BooruConfigDeletedItemBehavior.hide
+            : BooruConfigDeletedItemBehavior.show,
+      );
 }

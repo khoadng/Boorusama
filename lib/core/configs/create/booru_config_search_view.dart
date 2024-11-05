@@ -31,7 +31,9 @@ class BooruConfigSearchView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final alwaysIncludeTags = ref.watch(alwaysIncludeTagsProvider);
+    final alwaysIncludeTags = ref.watch(
+        editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
+            .select((value) => value.alwaysIncludeTags));
 
     return SingleChildScrollView(
       child: Column(
@@ -175,6 +177,10 @@ class BooruConfigSearchView extends ConsumerWidget {
     );
   }
 
+  String? alwaysIncludeTags(WidgetRef ref) =>
+      ref.read(editBooruConfigProvider(ref.read(editBooruConfigIdProvider))
+          .select((value) => value.alwaysIncludeTags));
+
   void _addTag(
     WidgetRef ref,
     String tag, {
@@ -182,13 +188,13 @@ class BooruConfigSearchView extends ConsumerWidget {
   }) {
     if (tag.isEmpty) return;
 
-    final tags = queryAsList(ref.read(alwaysIncludeTagsProvider));
+    final tags = queryAsList(alwaysIncludeTags(ref));
 
     tags.add(exclude ? '-$tag' : tag);
 
     final json = jsonEncode(tags);
 
-    ref.updateAlwaysIncludeTags(json);
+    ref.editNotifier.updateAlwaysIncludeTags(json);
   }
 
   void _removeTag(
@@ -197,13 +203,13 @@ class BooruConfigSearchView extends ConsumerWidget {
   ) {
     if (tag.isEmpty) return;
 
-    final tags = queryAsList(ref.read(alwaysIncludeTagsProvider)).toList();
+    final tags = queryAsList(alwaysIncludeTags(ref));
 
     tags.remove(tag);
 
     final json = jsonEncode(tags);
 
-    ref.updateAlwaysIncludeTags(json);
+    ref.editNotifier.updateAlwaysIncludeTags(json);
   }
 }
 
@@ -229,7 +235,9 @@ class _EffectiveTagPreview extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tags = ref.watch(alwaysIncludeTagsProvider);
+    final tags = ref.watch(
+        editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
+            .select((value) => value.alwaysIncludeTags));
 
     final effectiveConfigData = configData.copyWith(
       alwaysIncludeTags: () => tags,

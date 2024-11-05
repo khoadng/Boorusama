@@ -237,6 +237,8 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
         .select((value) => value.imageBorderRadius));
     final imageGridAspectRatio = ref.watch(imageListingSettingsProvider
         .select((value) => value.imageGridAspectRatio));
+    final postsPerPage = ref.watch(
+        imageListingSettingsProvider.select((value) => value.postsPerPage));
 
     return Builder(
       builder: (context) {
@@ -254,24 +256,17 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
                 crossAxisSpacing: imageGridSpacing,
               ),
               delegate: SliverChildBuilderDelegate(
-                (context, _) {
-                  return Container(
-                    decoration: BoxDecoration(
-                      color: context.colorScheme.surfaceContainerLowest,
-                      borderRadius: BorderRadius.circular(
-                        imageBorderRadius,
-                      ),
-                    ),
-                  );
-                },
-                childCount: 100,
+                (context, _) => ImagePlaceHolder(
+                  borderRadius: BorderRadius.circular(imageBorderRadius),
+                ),
+                childCount: postsPerPage,
               ),
             ),
           ImageListType.masonry => SliverMasonryGrid.count(
               crossAxisCount: crossAxisCount,
               mainAxisSpacing: imageGridSpacing,
               crossAxisSpacing: imageGridSpacing,
-              childCount: 100,
+              childCount: postsPerPage,
               itemBuilder: (context, index) {
                 return createRandomPlaceholderContainer(
                   context,
