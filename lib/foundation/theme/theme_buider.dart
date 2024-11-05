@@ -72,13 +72,23 @@ class ThemeBuilder extends ConsumerWidget {
   ColorScheme lightDynamic,
   ColorScheme darkDynamic,
 ) {
-  final lightAdditionalColours = _extractAdditionalColours(lightDynamic);
-  final darkAdditionalColours = _extractAdditionalColours(darkDynamic);
+  final lightBase = ColorScheme.fromSeed(seedColor: lightDynamic.primary);
+  final darkBase = ColorScheme.fromSeed(
+    seedColor: darkDynamic.primary,
+    brightness: Brightness.dark,
+  );
 
-  final lightScheme =
-      _insertAdditionalColours(lightDynamic, lightAdditionalColours);
-  final darkScheme =
-      _insertAdditionalColours(darkDynamic, darkAdditionalColours);
+  final lightAdditionalColours = _extractAdditionalColours(lightBase);
+  final darkAdditionalColours = _extractAdditionalColours(darkBase);
+
+  final lightScheme = _insertAdditionalColours(
+    lightBase,
+    lightAdditionalColours,
+  );
+  final darkScheme = _insertAdditionalColours(
+    darkBase,
+    darkAdditionalColours,
+  );
 
   return (
     lightScheme.harmonized(),
