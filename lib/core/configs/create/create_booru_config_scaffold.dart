@@ -1,14 +1,15 @@
 // Flutter imports:
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/create/create.dart';
-import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
@@ -83,7 +84,6 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
   const CreateBooruConfigScaffold({
     super.key,
     this.backgroundColor,
-    this.tabsBuilder,
     this.authTab,
     this.searchTab,
     this.postDetailsResolution,
@@ -100,7 +100,6 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
   });
 
   final Color? backgroundColor;
-  final Map<String, Widget> Function(BuildContext context)? tabsBuilder;
 
   final Widget? authTab;
   final Widget? searchTab;
@@ -130,30 +129,84 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
     final editId = ref.watch(editBooruConfigIdProvider);
 
     final tabMap = {
-      if (authTab != null) 'booru.authentication': authTab!,
-      'Listing': const BooruConfigListingView(),
-      if (hasDownloadTab)
-        'booru.download': BooruConfigDownloadView(config: config),
-      'Search': searchTab ??
-          BooruConfigSearchView(
-            hasRatingFilter: hasRatingFilter,
-            config: config,
+      if (authTab != null)
+        'booru.authentication': BooruConfigEntry(
+          title: 'booru.authentication'.tr(),
+          overview: BooruConfigOverviewCard(
+            title: 'booru.authentication'.tr(),
+            icon: Symbols.account_circle,
+            child: BooruConfigDataProvider(
+              builder: (data) => data.login.isNotEmpty
+                  ? Text(data.login)
+                  : const Text('Anonymous'),
+            ),
           ),
-      if (tabsBuilder != null) ...tabsBuilder!(context),
-      'booru.gestures': BooruConfigGesturesView(
-        postDetailsGestureActions: postDetailsGestureActions,
-        describePostDetailsAction: describePostDetailsAction,
+          details: authTab!,
+        ),
+      'Listing': BooruConfigEntry(
+        title: 'Listing',
+        overview: BooruConfigOverviewCard(
+          title: 'Listing',
+          icon: Symbols.dashboard,
+          child: BooruConfigDataProvider(
+            builder: (data) => Text(
+              data.listingTyped?.enable == true ? 'Custom' : 'Default',
+            ),
+          ),
+        ),
+        details: const BooruConfigListingView(),
       ),
-      'booru.misc': BooruConfigMiscView(
-        postDetailsGestureActions: postDetailsGestureActions,
-        postPreviewQuickActionButtonActions:
-            postPreviewQuickActionButtonActions,
-        describePostPreviewQuickAction: describePostPreviewQuickAction,
-        describePostDetailsAction: describePostDetailsAction,
-        postDetailsResolution: postDetailsResolution,
-        miscOptions: miscOptions,
+      if (hasDownloadTab)
+        'booru.download': BooruConfigEntry(
+          title: 'booru.download'.tr(),
+          overview: BooruConfigOverviewCard(
+            title: 'booru.download'.tr(),
+            icon: Symbols.download,
+          ),
+          details: BooruConfigDownloadView(config: config),
+        ),
+      'Search': BooruConfigEntry(
+        title: 'Search'.tr(),
+        overview: BooruConfigOverviewCard(
+          title: 'Search'.tr(),
+          icon: Symbols.search,
+        ),
+        details: searchTab ??
+            BooruConfigSearchView(
+              hasRatingFilter: hasRatingFilter,
+              config: config,
+            ),
+      ),
+      'booru.gestures': BooruConfigEntry(
+        title: 'booru.gestures'.tr(),
+        overview: BooruConfigOverviewCard(
+          title: 'booru.gestures'.tr(),
+          icon: Symbols.gesture,
+        ),
+        details: BooruConfigGesturesView(
+          postDetailsGestureActions: postDetailsGestureActions,
+          describePostDetailsAction: describePostDetailsAction,
+        ),
+      ),
+      'booru.misc': BooruConfigEntry(
+        title: 'booru.misc'.tr(),
+        overview: BooruConfigOverviewCard(
+          title: 'booru.misc'.tr(),
+          icon: Symbols.settings,
+        ),
+        details: BooruConfigMiscView(
+          postDetailsGestureActions: postDetailsGestureActions,
+          postPreviewQuickActionButtonActions:
+              postPreviewQuickActionButtonActions,
+          describePostPreviewQuickAction: describePostPreviewQuickAction,
+          describePostDetailsAction: describePostDetailsAction,
+          postDetailsResolution: postDetailsResolution,
+          miscOptions: miscOptions,
+        ),
       ),
     };
+
+    final submitBtn = submitButton ?? const DefaultBooruSubmitButton();
 
     return Scaffold(
       backgroundColor: backgroundColor,
@@ -164,88 +217,69 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
           url: editId.url,
         ),
         actions: [
-          submitButton != null
-              ? submitButton!
-              : const DefaultBooruSubmitButton(),
+          editId.isNew ? submitBtn : const SizedBox.shrink(),
         ],
       ),
-      body: SafeArea(
-        child: Column(
+      body: SubConfigOpener(
+        query: initialTab,
+        config: config,
+        editId: editId,
+        tabMap: tabMap,
+        child: SafeArea(
+            child: Stack(
           children: [
-            const SizedBox(height: 8),
-            const BooruConfigNameField(),
-            Expanded(
-              child: _TabControllerProvider(
-                initialIndex: _findInitialIndexFromQuery(
-                  initialTab,
-                  tabMap,
-                ),
-                tabMap: tabMap,
-                length: tabMap.length,
-                animationDuration:
-                    Screen.of(context).size.isLarge ? Duration.zero : null,
-                builder: (controller) => Column(
-                  children: [
-                    const SizedBox(height: 4),
-                    TabBar(
-                      controller: controller,
-                      labelPadding: const EdgeInsets.symmetric(
+            Positioned.fill(
+              child: Column(
+                children: [
+                  const SizedBox(height: 8),
+                  const BooruConfigNameField(),
+                  Expanded(
+                    child: ListView.builder(
+                      padding: const EdgeInsets.symmetric(
                         horizontal: 12,
+                        vertical: 8,
                       ),
-                      isScrollable: true,
-                      tabs: [
-                        for (final tab in tabMap.keys) Tab(text: tab.tr()),
-                      ],
+                      itemCount: tabMap.length,
+                      itemBuilder: (context, index) {
+                        final tab = tabMap.values.elementAt(index);
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 2),
+                          child: tab,
+                        );
+                      },
                     ),
-                    Expanded(
-                      child: Container(
-                        constraints: const BoxConstraints(
-                          maxWidth: 700,
-                        ),
-                        margin: const EdgeInsets.symmetric(horizontal: 8),
-                        child: TabBarView(
-                          controller: controller,
-                          physics: const NeverScrollableScrollPhysics(),
-                          children: [
-                            for (final tab in tabMap.values)
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical:
-                                      Screen.of(context).size.isLarge ? 16 : 8,
-                                ),
-                                child: tab,
-                              ),
-                          ],
-                        ),
+                  ),
+                  if (editId.isNew)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 12,
                       ),
-                    ),
-                    if (editId.isNew)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 12,
-                        ),
-                        child: Column(
-                          children: [
-                            Text(
-                              'Not sure? Leave it as it is, you can change it later.',
-                              style: context.textTheme.titleSmall?.copyWith(
-                                color: context.colorScheme.hintColor,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w400,
-                              ),
+                      child: Column(
+                        children: [
+                          Text(
+                            'Not sure? Leave it as it is, you can change it later.',
+                            style: context.textTheme.titleSmall?.copyWith(
+                              color: context.colorScheme.hintColor,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    if (footer != null) footer!,
-                  ],
-                ),
+                    ),
+                  if (footer != null) footer!,
+                ],
+              ),
+            ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: SaveReminderBanner(
+                saveButton: submitBtn,
               ),
             ),
           ],
-        ),
+        )),
       ),
     );
   }
@@ -272,6 +306,272 @@ int _findInitialIndexFromQuery(
   }
 
   return 0;
+}
+
+class SubConfigOpener extends StatefulWidget {
+  const SubConfigOpener({
+    super.key,
+    required this.child,
+    this.query,
+    required this.tabMap,
+    required this.config,
+    required this.editId,
+  });
+
+  final BooruConfig config;
+  final EditBooruConfigId editId;
+  final Widget child;
+  final String? query;
+  final Map<String, BooruConfigEntry> tabMap;
+
+  @override
+  State<SubConfigOpener> createState() => _SubConfigOpenerState();
+}
+
+class _SubConfigOpenerState extends State<SubConfigOpener> {
+  late final initialQuery = widget.query;
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (initialQuery != null) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        final index = _findInitialIndexFromQuery(
+          initialQuery,
+          widget.tabMap,
+        );
+
+        if (index >= 0) {
+          final key = widget.tabMap.keys.elementAt(index);
+          final details = widget.tabMap[key]?.details;
+          final title = widget.tabMap[key]?.title;
+
+          if (details == null || title == null) {
+            return;
+          }
+
+          Navigator.of(context).push(
+            CupertinoPageRoute(
+                builder: (context) => _Details(
+                      config: widget.config,
+                      editId: widget.editId,
+                      title: title,
+                      details: details,
+                    )),
+          );
+        }
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.child;
+  }
+}
+
+class SaveReminderBanner extends ConsumerWidget {
+  const SaveReminderBanner({
+    super.key,
+    required this.saveButton,
+  });
+
+  final Widget saveButton;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final id = ref.watch(editBooruConfigIdProvider);
+
+    // Don't show the banner if it's a new config
+    if (id.isNew) {
+      return const SizedBox.shrink();
+    }
+
+    final data = ref.watch(editBooruConfigProvider(id));
+    final initialData = ref.watch(initialBooruConfigProvider);
+
+    final isDirty = data != initialData.toBooruConfigData();
+
+    if (!isDirty) {
+      return const SizedBox.shrink();
+    }
+
+    return Container(
+      constraints: const BoxConstraints(
+        maxWidth: 500,
+      ),
+      margin: const EdgeInsets.symmetric(
+        horizontal: 12,
+        vertical: 8,
+      ),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 12,
+      ),
+      decoration: BoxDecoration(
+        color: context.colorScheme.primaryContainer,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              'You have unsaved changes!',
+              style: TextStyle(
+                color: context.colorScheme.onPrimaryContainer,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          saveButton,
+        ],
+      ),
+    );
+  }
+}
+
+class BooruConfigEntry extends ConsumerWidget {
+  const BooruConfigEntry({
+    super.key,
+    required this.title,
+    required this.overview,
+    required this.details,
+  });
+
+  final String title;
+  final Widget overview;
+  final Widget details;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watch(initialBooruConfigProvider);
+    final editId = ref.watch(editBooruConfigIdProvider);
+
+    return Material(
+      color: context.colorScheme.surfaceContainerLow,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: InkWell(
+        customBorder: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        onTap: () {
+          Navigator.of(context).push(
+            CupertinoPageRoute(
+              builder: (context) => _Details(
+                config: config,
+                editId: editId,
+                title: title,
+                details: details,
+              ),
+            ),
+          );
+        },
+        child: Container(
+          margin: const EdgeInsets.symmetric(
+            vertical: 4,
+            horizontal: 8,
+          ),
+          child: overview,
+        ),
+      ),
+    );
+  }
+}
+
+class _Details extends StatelessWidget {
+  const _Details({
+    required this.config,
+    required this.editId,
+    required this.title,
+    required this.details,
+  });
+
+  final BooruConfig config;
+  final EditBooruConfigId editId;
+  final String title;
+  final Widget details;
+
+  @override
+  Widget build(BuildContext context) {
+    return ProviderScope(
+      overrides: [
+        initialBooruConfigProvider.overrideWithValue(config),
+        editBooruConfigIdProvider.overrideWithValue(editId),
+      ],
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(title),
+        ),
+        body: Container(
+          margin: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 4,
+          ),
+          child: details,
+        ),
+      ),
+    );
+  }
+}
+
+class BooruConfigOverviewCard extends ConsumerWidget {
+  const BooruConfigOverviewCard({
+    super.key,
+    required this.title,
+    this.icon,
+    this.child,
+  });
+
+  final String title;
+  final Widget? child;
+  final IconData? icon;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        vertical: 12,
+      ),
+      child: Row(
+        children: [
+          const SizedBox(width: 8),
+          Icon(
+            color: context.colorScheme.onSurfaceVariant.withAlpha(232),
+            icon ?? Symbols.settings,
+            fill: 1,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              title,
+              style: TextStyle(
+                color: context.colorScheme.onSurfaceVariant,
+                fontWeight: FontWeight.w500,
+                fontSize: 15,
+              ),
+            ),
+          ),
+          if (child != null)
+            DefaultTextStyle(
+              style: TextStyle(
+                color: context.colorScheme.hintColor,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: child!,
+              ),
+            ),
+          Icon(
+            Icons.arrow_forward_ios,
+            color: context.colorScheme.onSurfaceVariant,
+            size: 16,
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class _TabControllerProvider extends StatefulWidget {
