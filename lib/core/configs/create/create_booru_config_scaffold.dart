@@ -94,7 +94,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
     this.postPreviewQuickActionButtonActions = kDefaultPreviewImageButtonAction,
     this.describePostDetailsAction,
     this.describePostPreviewQuickAction,
-    this.submitButton,
+    this.canSubmit,
     required this.initialTab,
     this.footer,
   });
@@ -118,11 +118,11 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
   final Set<String?> postPreviewQuickActionButtonActions;
   final String Function(String? action)? describePostPreviewQuickAction;
 
-  final Widget? submitButton;
-
   final String? initialTab;
 
   final Widget? footer;
+
+  final bool Function(BooruConfigData config)? canSubmit;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -164,9 +164,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
           url: editId.url,
         ),
         actions: [
-          submitButton != null
-              ? submitButton!
-              : const DefaultBooruSubmitButton(),
+          CreateOrUpdateBooruConfigButton(canSubmit: canSubmit),
         ],
       ),
       body: SafeArea(
