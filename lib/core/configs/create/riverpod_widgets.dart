@@ -31,53 +31,98 @@ class DefaultImageDetailsQualityTile extends ConsumerWidget {
   }
 }
 
-class RawBooruConfigSubmitButton extends ConsumerWidget {
-  const RawBooruConfigSubmitButton({
+bool defaultCanSubmit(BooruConfigData config) {
+  return config.name.isNotEmpty;
+}
+
+bool validLoginAndApiKey(BooruConfigData config) {
+  return AuthConfigData.fromConfig(config).isValid;
+}
+
+bool alwaysSubmit(BooruConfigData config) {
+  return true;
+}
+
+bool apiKeyRequired(BooruConfigData config) {
+  return config.apiKey.isNotEmpty;
+}
+
+class CreateOrUpdateBooruConfigButton extends ConsumerWidget {
+  const CreateOrUpdateBooruConfigButton({
     super.key,
-    required this.enable,
-    this.backgroundColor,
-    this.child,
+    required this.canSubmit,
   });
 
-  final bool enable;
-  final Color? backgroundColor;
-  final Widget? child;
+  final bool Function(BooruConfigData config)? canSubmit;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final id = ref.watch(editBooruConfigIdProvider);
-    final data = ref.watch(editBooruConfigProvider(id));
+    final editId = ref.watch(editBooruConfigIdProvider);
 
-    return CreateBooruSubmitButton(
-      backgroundColor: backgroundColor,
-      onSubmit: data.name.isNotEmpty && enable
-          ? () {
-              ref.read(booruConfigProvider.notifier).addOrUpdate(
-                    id: id,
-                    newConfig: data,
-                  );
+    final effectiveCanSubmit = canSubmit ?? defaultCanSubmit;
 
-              context.navigator.pop();
-            }
-          : null,
-      child: child,
+    return editId.isNew
+        ? CreateNewBooruConfigButton(canSubmit: effectiveCanSubmit)
+        : UpdateBooruConfigButton(canSubmit: effectiveCanSubmit);
+  }
+}
+
+class CreateNewBooruConfigButton extends ConsumerWidget {
+  const CreateNewBooruConfigButton({
+    super.key,
+    required this.canSubmit,
+  });
+
+  final bool Function(BooruConfigData config) canSubmit;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final editId = ref.watch(editBooruConfigIdProvider);
+
+    return BooruConfigDataProvider(
+      builder: (data) => TextButton(
+        onPressed: canSubmit(data) && data.name.isNotEmpty
+            ? () {
+                ref.read(booruConfigProvider.notifier).addOrUpdate(
+                      id: editId,
+                      newConfig: data,
+                    );
+
+                context.navigator.pop();
+              }
+            : null,
+        child: const Text('favorite_groups.create').tr(),
+      ),
     );
   }
 }
 
-class DefaultBooruSubmitButton extends ConsumerWidget {
-  const DefaultBooruSubmitButton({
+class UpdateBooruConfigButton extends ConsumerWidget {
+  const UpdateBooruConfigButton({
     super.key,
+    required this.canSubmit,
   });
+
+  final bool Function(BooruConfigData config) canSubmit;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final id = ref.watch(editBooruConfigIdProvider);
-    final auth = ref.watch(editBooruConfigProvider(id)
-        .select((value) => AuthConfigData.fromConfig(value)));
+    final editId = ref.watch(editBooruConfigIdProvider);
 
-    return RawBooruConfigSubmitButton(
-      enable: auth.isValid,
+    return BooruConfigDataProvider(
+      builder: (data) => TextButton(
+        onPressed: canSubmit(data)
+            ? () {
+                ref.read(booruConfigProvider.notifier).addOrUpdate(
+                      id: editId,
+                      newConfig: data,
+                    );
+
+                context.navigator.pop();
+              }
+            : null,
+        child: Text('Save'),
+      ),
     );
   }
 }
