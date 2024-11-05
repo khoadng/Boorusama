@@ -165,10 +165,10 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
           ),
           details: BooruConfigDownloadView(config: config),
         ),
-      'Search': BooruConfigEntry(
-        title: 'Search'.tr(),
+      'Search and Filter': BooruConfigEntry(
+        title: 'Search and Filter'.tr(),
         overview: BooruConfigOverviewCard(
-          title: 'Search'.tr(),
+          title: 'Search and Filter'.tr(),
           icon: Symbols.search,
         ),
         details: searchTab ??
@@ -227,62 +227,63 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
         editId: editId,
         tabMap: tabMap,
         child: SafeArea(
-            child: Stack(
-          children: [
-            Positioned.fill(
-              child: Column(
-                children: [
-                  const SizedBox(height: 8),
-                  const BooruConfigNameField(),
-                  Expanded(
-                    child: ListView.builder(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 8,
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: Column(
+                  children: [
+                    const SizedBox(height: 8),
+                    const BooruConfigNameField(),
+                    Expanded(
+                      child: ListView.builder(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 8,
+                        ),
+                        itemCount: tabMap.length,
+                        itemBuilder: (context, index) {
+                          final tab = tabMap.values.elementAt(index);
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 2),
+                            child: tab,
+                          );
+                        },
                       ),
-                      itemCount: tabMap.length,
-                      itemBuilder: (context, index) {
-                        final tab = tabMap.values.elementAt(index);
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 2),
-                          child: tab,
-                        );
-                      },
                     ),
-                  ),
-                  if (editId.isNew)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 12,
-                      ),
-                      child: Column(
-                        children: [
-                          Text(
-                            'Not sure? Leave it as it is, you can change it later.',
-                            style: context.textTheme.titleSmall?.copyWith(
-                              color: context.colorScheme.hintColor,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w400,
+                    if (editId.isNew)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 12,
+                        ),
+                        child: Column(
+                          children: [
+                            Text(
+                              'Not sure? Leave it as it is, you can change it later.',
+                              style: context.textTheme.titleSmall?.copyWith(
+                                color: context.colorScheme.hintColor,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w400,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  if (footer != null) footer!,
-                ],
-              ),
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: SaveReminderBanner(
-                saveButton: UpdateBooruConfigButton(
-                  canSubmit: canSubmit ?? defaultCanSubmit,
+                    if (footer != null) footer!,
+                  ],
                 ),
               ),
-            ),
-          ],
-        )),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: SaveReminderBanner(
+                  saveButton: UpdateBooruConfigButton(
+                    canSubmit: canSubmit ?? defaultCanSubmit,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -572,69 +573,6 @@ class BooruConfigOverviewCard extends ConsumerWidget {
             size: 16,
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _TabControllerProvider extends StatefulWidget {
-  const _TabControllerProvider({
-    required this.tabMap,
-    required this.animationDuration,
-    required this.length,
-    this.initialIndex,
-    required this.builder,
-  });
-
-  final Map<String, Widget> tabMap;
-  final Duration? animationDuration;
-  final int length;
-  final int? initialIndex;
-  final Widget Function(TabController controller) builder;
-
-  @override
-  State<_TabControllerProvider> createState() => _TabControllerProviderState();
-}
-
-class _TabControllerProviderState extends State<_TabControllerProvider>
-    with SingleTickerProviderStateMixin {
-  late final _controller = TabController(
-    length: widget.length,
-    vsync: this,
-    animationDuration: widget.animationDuration,
-    initialIndex: widget.initialIndex ?? 0,
-  );
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return widget.builder(_controller);
-  }
-}
-
-class BooruConfigSettingsHeader extends StatelessWidget {
-  const BooruConfigSettingsHeader({
-    super.key,
-    required this.label,
-  });
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-      child: Text(
-        label,
-        style: TextStyle(
-          color: context.colorScheme.primary,
-          fontWeight: FontWeight.w500,
-        ),
       ),
     );
   }

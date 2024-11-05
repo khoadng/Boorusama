@@ -171,3 +171,26 @@ class BooruConfigGesturesView extends ConsumerWidget {
     );
   }
 }
+
+class BooruConfigSettingsHeader extends StatelessWidget {
+  const BooruConfigSettingsHeader({
+    super.key,
+    required this.label,
+  });
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+      child: Text(
+        label,
+        style: TextStyle(
+          color: context.colorScheme.primary,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+    );
+  }
+}
