@@ -94,7 +94,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
     this.postPreviewQuickActionButtonActions = kDefaultPreviewImageButtonAction,
     this.describePostDetailsAction,
     this.describePostPreviewQuickAction,
-    this.submitButton,
+    this.canSubmit,
     required this.initialTab,
     this.footer,
   });
@@ -117,11 +117,11 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
   final Set<String?> postPreviewQuickActionButtonActions;
   final String Function(String? action)? describePostPreviewQuickAction;
 
-  final Widget? submitButton;
-
   final String? initialTab;
 
   final Widget? footer;
+
+  final bool Function(BooruConfigData config)? canSubmit;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -206,8 +206,6 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
       ),
     };
 
-    final submitBtn = submitButton ?? const DefaultBooruSubmitButton();
-
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
@@ -217,7 +215,10 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
           url: editId.url,
         ),
         actions: [
-          editId.isNew ? submitBtn : const SizedBox.shrink(),
+          editId.isNew
+              ? CreateNewBooruConfigButton(
+                  canSubmit: canSubmit ?? defaultCanSubmit)
+              : const SizedBox.shrink(),
         ],
       ),
       body: SubConfigOpener(
@@ -275,7 +276,9 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
             Align(
               alignment: Alignment.bottomCenter,
               child: SaveReminderBanner(
-                saveButton: submitBtn,
+                saveButton: UpdateBooruConfigButton(
+                  canSubmit: canSubmit ?? defaultCanSubmit,
+                ),
               ),
             ),
           ],

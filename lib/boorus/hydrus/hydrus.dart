@@ -467,7 +467,7 @@ class CreateHydrusConfigPage extends ConsumerWidget {
       authTab: const HydrusAuthConfigView(),
       backgroundColor: backgroundColor,
       initialTab: initialTab,
-      submitButton: const HydrusConfigSubmitButton(),
+      canSubmit: apiKeyRequired,
     );
   }
 }
@@ -497,24 +497,6 @@ class HydrusAuthConfigView extends ConsumerWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class HydrusConfigSubmitButton extends ConsumerWidget {
-  const HydrusConfigSubmitButton({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final apiKey = ref.watch(
-        editBooruConfigProvider(ref.watch(editBooruConfigIdProvider)).select(
-      (value) => value.apiKey,
-    ));
-
-    return RawBooruConfigSubmitButton(
-      enable: apiKey.isNotEmpty,
     );
   }
 }

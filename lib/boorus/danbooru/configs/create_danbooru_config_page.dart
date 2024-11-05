@@ -83,24 +83,7 @@ class CreateDanbooruConfigPage extends ConsumerWidget {
         DanbooruHideDeletedSwitch(),
         DanbooruHideBannedSwitch(),
       ],
-      submitButton: const DanbooruBooruConfigSubmitButton(),
-    );
-  }
-}
-
-class DanbooruBooruConfigSubmitButton extends ConsumerWidget {
-  const DanbooruBooruConfigSubmitButton({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final editId = ref.watch(editBooruConfigIdProvider);
-    final auth = ref.watch(editBooruConfigProvider(editId)
-        .select((value) => AuthConfigData.fromConfig(value)));
-
-    return RawBooruConfigSubmitButton(
-      enable: auth.isValid,
+      canSubmit: validLoginAndApiKey,
     );
   }
 }
