@@ -218,17 +218,22 @@ class PremiumOffersPage extends ConsumerWidget {
                       loading: () => const CircularProgressIndicator(),
                     ),
                 const Spacer(),
-                TextButton(
-                  style: TextButton.styleFrom(
-                    foregroundColor: Theme.of(context).colorScheme.onSurface,
+                Container(
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 12,
                   ),
-                  onPressed: ref.watch(packagePurchaseProvider).maybeWhen(
-                        loading: () => null,
-                        orElse: () {
-                          return () => restore(ref, context);
-                        },
-                      ),
-                  child: const Text('Restore subscription'),
+                  child: TextButton(
+                    style: TextButton.styleFrom(
+                      foregroundColor: Theme.of(context).colorScheme.onSurface,
+                    ),
+                    onPressed: ref.watch(packagePurchaseProvider).maybeWhen(
+                          loading: () => null,
+                          orElse: () {
+                            return () => restore(ref, context);
+                          },
+                        ),
+                    child: const Text('Restore subscription'),
+                  ),
                 ),
                 Container(
                   margin: const EdgeInsets.symmetric(
@@ -353,7 +358,7 @@ class SubscriptionPlanSelectModal extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.secondaryContainer,
+        color: Theme.of(context).colorScheme.surfaceContainer,
         borderRadius: const BorderRadius.vertical(
           top: Radius.circular(16),
         ),
@@ -405,7 +410,7 @@ class _SubscriptionPlansState extends ConsumerState<SubscriptionPlans> {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Theme.of(context).colorScheme.secondaryContainer,
+      color: Theme.of(context).colorScheme.surfaceContainer,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -419,7 +424,7 @@ class _SubscriptionPlansState extends ConsumerState<SubscriptionPlans> {
           const SizedBox(height: 8),
           ...widget.products.map(
             (product) => SubscriptionPlanTile(
-              backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+              backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
               selected: product == selected,
               package: product,
               saveIndicator: product.bestValue?.savings.toOption().fold(
@@ -427,7 +432,10 @@ class _SubscriptionPlansState extends ConsumerState<SubscriptionPlans> {
                     (value) => IgnorePointer(
                       child: CompactChip(
                         label: '${(value * 100).toStringAsFixed(0)}% off',
-                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        textColor:
+                            Theme.of(context).colorScheme.onPrimaryContainer,
+                        backgroundColor:
+                            Theme.of(context).colorScheme.primaryContainer,
                       ),
                     ),
                   ),
