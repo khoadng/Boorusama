@@ -20,6 +20,8 @@ class SettingsPageScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return ConditionalParentWidget(
       condition: hasAppBar,
       conditionalBuilder: (child) => Scaffold(
@@ -32,14 +34,24 @@ class SettingsPageScaffold extends StatelessWidget {
         child: Center(
           heightFactor: 1,
           child: Container(
-            padding: padding,
             constraints: const BoxConstraints(
               maxWidth: 700,
             ),
-            child: ListView(
-              shrinkWrap: true,
-              primary: false,
-              children: children,
+            child: Theme(
+              data: theme.copyWith(
+                listTileTheme: theme.listTileTheme.copyWith(
+                  contentPadding: EdgeInsets.zero,
+                ),
+              ),
+              child: ListView(
+                padding: padding ??
+                    const EdgeInsets.symmetric(
+                      horizontal: 16,
+                    ),
+                shrinkWrap: true,
+                primary: false,
+                children: children,
+              ),
             ),
           ),
         ),

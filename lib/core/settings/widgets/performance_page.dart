@@ -51,13 +51,10 @@ class _PerformancePageState extends ConsumerState<PerformancePage> {
             ),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.only(left: 16),
-          child: Text(
-            'This has been moved to Settings > Appearance',
-            style: TextStyle(
-              color: context.colorScheme.hintColor,
-            ),
+        Text(
+          'This has been moved to Settings > Appearance',
+          style: TextStyle(
+            color: context.colorScheme.hintColor,
           ),
         ),
       ],

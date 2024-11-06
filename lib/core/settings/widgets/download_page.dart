@@ -34,17 +34,14 @@ class _DownloadPageState extends ConsumerState<DownloadPage> {
       hasAppBar: widget.hasAppBar,
       title: const Text('settings.download.title').tr(),
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: DownloadFolderSelectorSection(
-            storagePath: settings.downloadPath,
-            onPathChanged: (path) =>
-                ref.updateSettings(settings.copyWith(downloadPath: path)),
-            deviceInfo: ref.watch(deviceInfoProvider),
-          ),
+        DownloadFolderSelectorSection(
+          storagePath: settings.downloadPath,
+          onPathChanged: (path) =>
+              ref.updateSettings(settings.copyWith(downloadPath: path)),
+          deviceInfo: ref.watch(deviceInfoProvider),
         ),
         const SizedBox(height: 12),
-        SettingsTile<DownloadQuality>(
+        SettingsTile(
           title: const Text('settings.download.quality').tr(),
           selectedOption: settings.downloadQuality,
           items: DownloadQuality.values,

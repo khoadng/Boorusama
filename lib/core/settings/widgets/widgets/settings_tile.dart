@@ -29,7 +29,7 @@ class SettingsTile<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      contentPadding: padding,
+      contentPadding: padding ?? EdgeInsets.zero,
       leading: leading,
       subtitle: subtitle,
       title: title,
