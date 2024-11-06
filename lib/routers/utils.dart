@@ -304,9 +304,6 @@ Future<T?> showDesktopDialogWindow<T>(
         return Dialog(
           backgroundColor:
               backgroundColor ?? context.colorScheme.surfaceContainerHighest,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-          ),
           child: Container(
             width: width ?? context.screenWidth * 0.8,
             height: height ?? context.screenHeight * 0.8,

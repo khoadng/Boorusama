@@ -54,9 +54,6 @@ class HomeSearchBar extends ConsumerWidget {
                     showDialog(
                       context: context,
                       builder: (context) => Dialog(
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(8)),
-                        ),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 16,

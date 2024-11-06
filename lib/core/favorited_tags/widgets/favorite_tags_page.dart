@@ -120,7 +120,7 @@ class FavoriteTagsPage extends ConsumerWidget {
                     onPressed: () {
                       showMaterialModalBottomSheet(
                         context: context,
-                        backgroundColor: context.colorScheme.secondaryContainer,
+                        backgroundColor: context.colorScheme.surfaceContainer,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),

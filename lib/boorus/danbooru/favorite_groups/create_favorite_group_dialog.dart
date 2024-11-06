@@ -61,12 +61,9 @@ class _EditFavoriteGroupDialogState
 
   @override
   Widget build(BuildContext context) {
-    final config = ref.readConfig;
+    final config = ref.watchConfig;
 
     return Dialog(
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(8)),
-      ),
       child: SingleChildScrollView(
         child: Container(
           margin: const EdgeInsets.symmetric(

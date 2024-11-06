@@ -457,9 +457,6 @@ class ImportBooruConfigsAlertDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(8)),
-      ),
       child: Container(
         constraints: const BoxConstraints(maxWidth: 650),
         margin: const EdgeInsets.symmetric(horizontal: 20),

@@ -236,9 +236,12 @@ class PlaybackSpeedActionSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: context.colorScheme.secondaryContainer,
+      color: context.colorScheme.surfaceContainer,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+        padding: const EdgeInsets.symmetric(
+          vertical: 8,
+          horizontal: 4,
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: speeds

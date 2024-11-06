@@ -153,9 +153,6 @@ Future<T?> showAdaptiveBottomSheet<T>(
               horizontal: 28,
               vertical: 24,
             ),
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(12)),
-            ),
             child: Container(
               constraints: const BoxConstraints(
                 maxHeight: 400,

@@ -34,9 +34,6 @@ class BackwardImportAlertDialog extends ConsumerWidget {
     final appVersion = ref.watch(appVersionProvider);
 
     return Dialog(
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(8)),
-      ),
       child: Container(
         constraints: const BoxConstraints(maxWidth: 650),
         margin: const EdgeInsets.symmetric(horizontal: 20),
