@@ -25,6 +25,7 @@ class BooruConfigThemeView extends ConsumerWidget {
     ).select((value) => value.themeTyped));
 
     return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
