@@ -93,7 +93,7 @@ class _CustomDownloadFileNameSectionState
         const SizedBox(height: 16),
         RichText(
           text: TextSpan(
-            text: 'Custom filename format ',
+            text: 'Custom filename format',
             style: TextStyle(
               color: context.colorScheme.onSurface,
             ),
@@ -117,7 +117,10 @@ class _CustomDownloadFileNameSectionState
           onChanged: widget.onBulkDownloadChanged,
           config: widget.config,
           previewBuilder: (generator, format) => Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 4,
+            ),
             child: Column(
               children: generator
                   .generateSamples(format)
@@ -199,10 +202,11 @@ class _DownloadFormatCardState extends ConsumerState<DownloadFormatCard> {
 
     return DecoratedBox(
       decoration: BoxDecoration(
+        color: context.colorScheme.surfaceContainer,
         borderRadius: const BorderRadius.all(Radius.circular(4)),
         border: Border.all(
           color: context.colorScheme.outlineVariant,
-          width: 2,
+          width: 1.5,
         ),
       ),
       child: ExpandablePanel(
@@ -213,31 +217,39 @@ class _DownloadFormatCardState extends ConsumerState<DownloadFormatCard> {
         ),
         header: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: Text(widget.title, style: context.textTheme.bodyMedium),
+          child: Text(
+            widget.title,
+            style: context.textTheme.bodyMedium,
+          ),
         ),
         collapsed: preview,
         expanded: Column(
           children: [
             preview,
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 12),
               child: FormatEditingField(
                 controller: textController,
                 onChanged: widget.onChanged,
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 12,
+              ),
               child: Row(
                 children: [
-                  FilledButton(
-                    onPressed: () {
-                      setState(() {
-                        textController.text = widget.defaultFileNameFormat;
-                        widget.onChanged?.call(widget.defaultFileNameFormat);
-                      });
-                    },
-                    child: const Text('Reset'),
+                  Expanded(
+                    child: FilledButton(
+                      onPressed: () {
+                        setState(() {
+                          textController.text = widget.defaultFileNameFormat;
+                          widget.onChanged?.call(widget.defaultFileNameFormat);
+                        });
+                      },
+                      child: const Text('Reset'),
+                    ),
                   ),
                 ],
               ),
@@ -302,7 +314,7 @@ class FilenamePreview extends StatelessWidget {
               child: Text(
             filename,
             style: context.textTheme.bodyMedium?.copyWith(
-              fontWeight: FontWeight.w700,
+              fontWeight: FontWeight.w600,
               color: context.colorScheme.hintColor,
             ),
           )),

@@ -36,6 +36,7 @@ class BooruConfigSearchView extends ConsumerWidget {
             .select((value) => value.alwaysIncludeTags));
 
     return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -245,7 +246,7 @@ class _EffectiveTagPreview extends ConsumerWidget {
 
     final config = effectiveConfigData.toBooruConfig(id: -1);
 
-    if (config == null) return const SizedBox();
+    if (config == null) return const SizedBox.shrink();
 
     final tagComposer = ref.watch(tagQueryComposerProvider(config));
 
@@ -257,8 +258,7 @@ class _EffectiveTagPreview extends ConsumerWidget {
         vertical: 8,
       ),
       decoration: BoxDecoration(
-        color:
-            context.theme.colorScheme.surfaceContainerLowest.applyOpacity(0.6),
+        color: context.theme.colorScheme.surfaceContainer.applyOpacity(0.6),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
           color: context.theme.colorScheme.outlineVariant.applyOpacity(0.6),

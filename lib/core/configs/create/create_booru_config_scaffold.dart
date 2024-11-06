@@ -200,20 +200,11 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
                         constraints: const BoxConstraints(
                           maxWidth: 700,
                         ),
-                        margin: const EdgeInsets.symmetric(horizontal: 8),
                         child: TabBarView(
                           controller: controller,
                           physics: const NeverScrollableScrollPhysics(),
                           children: [
-                            for (final tab in tabMap.values)
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical:
-                                      Screen.of(context).size.isLarge ? 16 : 8,
-                                ),
-                                child: tab,
-                              ),
+                            for (final tab in tabMap.values) tab,
                           ],
                         ),
                       ),

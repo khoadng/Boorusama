@@ -69,7 +69,7 @@ class _DownloadFolderSelectorSectionState
             borderRadius: BorderRadius.circular(4),
             side: BorderSide(
               color: context.colorScheme.outlineVariant,
-              width: 2,
+              width: 1.5,
             ),
           ),
           child: InkWell(
@@ -82,11 +82,7 @@ class _DownloadFolderSelectorSectionState
               children: [
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.only(
-                      left: 12,
-                      top: 8,
-                      bottom: 8,
-                    ),
+                    padding: const EdgeInsets.all(12),
                     child: showPath()
                         ? Text(
                             storagePath!,
@@ -101,15 +97,18 @@ class _DownloadFolderSelectorSectionState
                           ),
                   ),
                 ),
-                !showPath()
-                    ? IconButton(
-                        onPressed: () => _pickFolder(),
-                        icon: const Icon(Symbols.folder),
-                      )
-                    : IconButton(
-                        onPressed: () => widget.onPathChanged(''),
-                        icon: const Icon(Symbols.clear),
-                      ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 4),
+                  child: !showPath()
+                      ? IconButton(
+                          onPressed: () => _pickFolder(),
+                          icon: const Icon(Symbols.folder),
+                        )
+                      : IconButton(
+                          onPressed: () => widget.onPathChanged(''),
+                          icon: const Icon(Symbols.clear),
+                        ),
+                ),
               ],
             ),
           ),
