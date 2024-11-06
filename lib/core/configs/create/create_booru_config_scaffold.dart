@@ -95,7 +95,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
     this.postPreviewQuickActionButtonActions = kDefaultPreviewImageButtonAction,
     this.describePostDetailsAction,
     this.describePostPreviewQuickAction,
-    this.submitButton,
+    this.canSubmit,
     required this.initialTab,
     this.footer,
   });
@@ -119,11 +119,11 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
   final Set<String?> postPreviewQuickActionButtonActions;
   final String Function(String? action)? describePostPreviewQuickAction;
 
-  final Widget? submitButton;
-
   final String? initialTab;
 
   final Widget? footer;
+
+  final bool Function(BooruConfigData config)? canSubmit;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -166,9 +166,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
           url: editId.url,
         ),
         actions: [
-          submitButton != null
-              ? submitButton!
-              : const DefaultBooruSubmitButton(),
+          CreateOrUpdateBooruConfigButton(canSubmit: canSubmit),
         ],
       ),
       body: SafeArea(
@@ -204,20 +202,11 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
                         constraints: const BoxConstraints(
                           maxWidth: 700,
                         ),
-                        margin: const EdgeInsets.symmetric(horizontal: 8),
                         child: TabBarView(
                           controller: controller,
                           physics: const NeverScrollableScrollPhysics(),
                           children: [
-                            for (final tab in tabMap.values)
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical:
-                                      Screen.of(context).size.isLarge ? 16 : 8,
-                                ),
-                                child: tab,
-                              ),
+                            for (final tab in tabMap.values) tab,
                           ],
                         ),
                       ),

@@ -25,7 +25,7 @@ class CreatePhilomenaConfigPage extends StatelessWidget {
       backgroundColor: backgroundColor,
       authTab: const PhilomenaAuthConfigView(),
       postDetailsResolution: const PhilomenaImageDetailsQualityProvider(),
-      submitButton: const PhilomenaConfigSubmitButton(),
+      canSubmit: alwaysSubmit,
     );
   }
 }
@@ -38,6 +38,7 @@ class PhilomenaAuthConfigView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return const SingleChildScrollView(
+      padding: EdgeInsets.symmetric(horizontal: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -71,19 +72,6 @@ class PhilomenaImageDetailsQualityProvider extends ConsumerWidget {
       value: imageDetailsQuality,
       items: PhilomenaPostQualityType.values.map((e) => e.stringify()).toList(),
       onChanged: (value) => ref.editNotifier.updateImageDetailsQuality(value),
-    );
-  }
-}
-
-class PhilomenaConfigSubmitButton extends ConsumerWidget {
-  const PhilomenaConfigSubmitButton({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return RawBooruConfigSubmitButton(
-      enable: true,
     );
   }
 }

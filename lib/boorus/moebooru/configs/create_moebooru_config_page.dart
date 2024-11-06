@@ -52,6 +52,7 @@ class _MoebooruAuthConfigViewState
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
