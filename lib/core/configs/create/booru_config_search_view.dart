@@ -35,6 +35,7 @@ class BooruConfigSearchView extends ConsumerWidget {
             .select((value) => value.alwaysIncludeTags));
 
     return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -241,7 +242,7 @@ class _EffectiveTagPreview extends ConsumerWidget {
 
     final config = effectiveConfigData.toBooruConfig(id: -1);
 
-    if (config == null) return const SizedBox();
+    if (config == null) return const SizedBox.shrink();
 
     final tagComposer = ref.watch(tagQueryComposerProvider(config));
 

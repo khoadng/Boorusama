@@ -29,6 +29,7 @@ class BooruConfigDownloadView extends ConsumerWidget {
             .select((value) => value.customDownloadLocation));
 
     return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
