@@ -263,46 +263,6 @@ class DefaultBooruInstructionText extends StatelessWidget {
   }
 }
 
-class DefaultBooruAuthConfigView extends ConsumerWidget {
-  const DefaultBooruAuthConfigView({
-    super.key,
-    this.instruction,
-    this.showInstructionWhen = true,
-    this.customInstruction,
-  });
-
-  final String? instruction;
-  final Widget? customInstruction;
-  final bool showInstructionWhen;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const SizedBox(height: 24),
-          const DefaultBooruLoginField(),
-          const SizedBox(height: 16),
-          const DefaultBooruApiKeyField(),
-          const SizedBox(height: 8),
-          if (showInstructionWhen)
-            if (customInstruction != null)
-              customInstruction!
-            else if (instruction != null)
-              DefaultBooruInstructionText(
-                instruction!,
-              )
-            else
-              const SizedBox.shrink(),
-        ],
-      ),
-    );
-  }
-}
-
 class CreateBooruConfigGranularRatingOptions extends ConsumerStatefulWidget {
   const CreateBooruConfigGranularRatingOptions({
     super.key,

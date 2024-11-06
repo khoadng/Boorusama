@@ -86,9 +86,9 @@ class EditBooruConfigNotifier
       state = state.copyWith(apiKey: apiKey);
 
   void updatePassHash(
-    String? Function()? passHash,
+    String? passHash,
   ) =>
-      state = state.copyWith(passHash: passHash);
+      state = state.copyWith(passHash: () => passHash);
 
   void updateLoginAndApiKey(
     String login,

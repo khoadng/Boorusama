@@ -70,6 +70,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
             .select((value) => value.passHash));
 
     return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -262,7 +263,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
 
               if (pashHash != null) {
                 ref.editNotifier.updatePassHash(
-                  () => pashHash.value,
+                  pashHash.value,
                 );
                 if (uid != null) {
                   ref.editNotifier.updateLogin(uid.value);
