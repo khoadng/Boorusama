@@ -344,7 +344,7 @@ class OptionActionSheet<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: context.colorScheme.secondaryContainer,
+      color: context.colorScheme.surfaceContainer,
       child: Container(
         padding: const EdgeInsets.symmetric(
           vertical: 8,

@@ -26,6 +26,7 @@ class BooruConfigListingView extends ConsumerWidget {
     final settings = listing.settings;
 
     return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

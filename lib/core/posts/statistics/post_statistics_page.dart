@@ -378,13 +378,13 @@ class PostStatsTile extends StatelessWidget {
             ),
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: context.colorScheme.secondaryContainer,
+              color: context.colorScheme.surfaceContainerHigh,
               borderRadius: const BorderRadius.all(Radius.circular(4)),
             ),
             child: Text(
               value,
               style: TextStyle(
-                color: context.colorScheme.onSecondaryContainer,
+                color: context.colorScheme.onSurfaceVariant,
                 fontSize: 14,
               ),
             ),
