@@ -41,7 +41,7 @@ class SideBarMenu extends ConsumerWidget {
         settingsProvider.select((value) => value.booruConfigSelectorPosition));
 
     return Container(
-      color: context.colorScheme.surfaceContainerLowest,
+      color: context.colorScheme.surfaceContainerLow,
       constraints:
           BoxConstraints.expand(width: min(context.screenWidth * 0.85, 500)),
       child: Row(
@@ -57,7 +57,7 @@ class SideBarMenu extends ConsumerWidget {
             ),
           Expanded(
             child: ColoredBox(
-              color: context.colorScheme.surfaceContainerLowest,
+              color: context.colorScheme.surfaceContainerLow,
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 child: Column(

@@ -229,7 +229,7 @@ class ErrorPlaceholder extends StatelessWidget {
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: context.colorScheme.surfaceContainerLowest,
+        color: context.colorScheme.surfaceContainerLow,
         borderRadius: borderRadius ?? _defaultRadius,
       ),
       child: LayoutBuilder(
@@ -240,7 +240,7 @@ class ErrorPlaceholder extends StatelessWidget {
           ),
           child: Image.asset(
             'assets/images/error.png',
-            color: context.colorScheme.surface.applyOpacity(0.7),
+            color: context.colorScheme.surface,
           ),
         ),
       ),
