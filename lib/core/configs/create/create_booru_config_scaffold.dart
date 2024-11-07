@@ -146,11 +146,11 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
       'Listing': BooruConfigEntry(
         title: 'Listing',
         overview: BooruConfigOverviewCard(
-          title: 'Listing',
+          title: 'Custom listing',
           icon: Symbols.dashboard,
           child: BooruConfigDataProvider(
             builder: (data) => Text(
-              data.listingTyped?.enable == true ? 'Custom' : 'Default',
+              data.listingTyped?.enable == true ? 'On' : 'Off',
             ),
           ),
         ),
@@ -165,7 +165,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
           ),
           details: BooruConfigDownloadView(config: config),
         ),
-      'Search and Filter': BooruConfigEntry(
+      'Search': BooruConfigEntry(
         title: 'Search and Filter'.tr(),
         overview: BooruConfigOverviewCard(
           title: 'Search and Filter'.tr(),
@@ -510,7 +510,6 @@ class _Details extends StatelessWidget {
         ),
         body: Container(
           margin: const EdgeInsets.symmetric(
-            horizontal: 12,
             vertical: 4,
           ),
           child: details,
