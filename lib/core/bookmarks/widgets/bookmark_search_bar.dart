@@ -32,7 +32,10 @@ class BookmarkSearchBar extends ConsumerWidget {
     final selectedTag = ref.watch(selectedTagsProvider);
 
     return Container(
-      margin: const EdgeInsets.all(8),
+      margin: const EdgeInsets.symmetric(
+        vertical: 8,
+        horizontal: 12,
+      ),
       height: kPreferredLayout.isDesktop ? 34 : null,
       child: SearchField(
         animationDuration: const Duration(milliseconds: 100),
@@ -52,6 +55,7 @@ class BookmarkSearchBar extends ConsumerWidget {
           borderRadius: BorderRadius.circular(8),
         ),
         searchInputDecoration: SearchInputDecoration(
+          cursorColor: Theme.of(context).colorScheme.primary,
           prefixIcon: const Icon(Symbols.search),
           suffixIcon: selectedTag.isNotEmpty
               ? InkWell(
