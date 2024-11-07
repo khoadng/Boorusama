@@ -51,7 +51,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
         ),
         const Divider(thickness: 1),
         SettingsHeader(label: 'settings.appearance.booru_config'.tr()),
-        SettingsTile<BooruConfigSelectorPosition>(
+        SettingsTile(
           title: const Text('settings.appearance.booru_config_placement').tr(),
           selectedOption: settings.booruConfigSelectorPosition,
           items: const [...BooruConfigSelectorPosition.values],
@@ -59,7 +59,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
               settings.copyWith(booruConfigSelectorPosition: value)),
           optionBuilder: (value) => Text(value.localize()),
         ),
-        SettingsTile<BooruConfigLabelVisibility>(
+        SettingsTile(
           title: const Text('Label').tr(),
           selectedOption: settings.booruConfigLabelVisibility,
           items: const [...BooruConfigLabelVisibility.values],
@@ -178,24 +178,22 @@ class _ImageListingSettingsSectionState
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SettingsTile<GridSize>(
+        SettingsTile(
           title: const Text('settings.image_grid.grid_size.grid_size').tr(),
           selectedOption: settings.gridSize,
           items: GridSize.values,
           onChanged: (value) => _onUpdate(settings.copyWith(gridSize: value)),
           optionBuilder: (value) => Text(value.localize().tr()),
-          padding: widget.itemPadding,
         ),
-        SettingsTile<ImageListType>(
+        SettingsTile(
           title: const Text('settings.image_list.image_list').tr(),
           selectedOption: settings.imageListType,
           items: ImageListType.values,
           onChanged: (value) =>
               _onUpdate(settings.copyWith(imageListType: value)),
           optionBuilder: (value) => Text(value.localize()).tr(),
-          padding: widget.itemPadding,
         ),
-        SettingsTile<ImageQuality>(
+        SettingsTile(
           title: const Text(
             'settings.image_grid.image_quality.image_quality',
           ).tr(),
@@ -212,9 +210,8 @@ class _ImageListingSettingsSectionState
           onChanged: (value) =>
               _onUpdate(settings.copyWith(imageQuality: value)),
           optionBuilder: (value) => Text(value.localize()).tr(),
-          padding: widget.itemPadding,
         ),
-        SettingsTile<PageMode>(
+        SettingsTile(
           title: const Text('settings.result_layout.result_layout').tr(),
           selectedOption: settings.pageMode,
           subtitle: settings.pageMode == PageMode.infinite
@@ -223,17 +220,15 @@ class _ImageListingSettingsSectionState
           items: const [...PageMode.values],
           onChanged: (value) => _onUpdate(settings.copyWith(pageMode: value)),
           optionBuilder: (value) => Text(value.localize()).tr(),
-          padding: widget.itemPadding,
         ),
         if (settings.pageMode == PageMode.paginated)
-          SettingsTile<PageIndicatorPosition>(
+          SettingsTile(
             title: const Text('settings.page_indicator.page_indicator').tr(),
             selectedOption: settings.pageIndicatorPosition,
             items: const [...PageIndicatorPosition.values],
             onChanged: (value) =>
                 _onUpdate(settings.copyWith(pageIndicatorPosition: value)),
             optionBuilder: (value) => Text(value.localize()).tr(),
-            padding: widget.itemPadding,
           ),
         SettingsTile(
           title: const Text('settings.performance.posts_per_page').tr(),
@@ -253,14 +248,12 @@ class _ImageListingSettingsSectionState
           optionBuilder: (value) => Text(
             value.toString(),
           ),
-          padding: widget.itemPadding,
         ),
         SwitchListTile(
           title: const Text('settings.appearance.show_scores').tr(),
           value: settings.showScoresInGrid,
           onChanged: (value) =>
               _onUpdate(settings.copyWith(showScoresInGrid: value)),
-          contentPadding: widget.itemPadding,
         ),
         SwitchListTile(
           title: const Text('settings.appearance.show_post_list_config_header')
@@ -269,7 +262,6 @@ class _ImageListingSettingsSectionState
           onChanged: (value) => _onUpdate(settings.copyWith(
             showPostListConfigHeader: value,
           )),
-          contentPadding: widget.itemPadding,
         ),
         SwitchListTile(
           title: const Text('Blur explicit content').tr(),
@@ -278,7 +270,6 @@ class _ImageListingSettingsSectionState
               mediaBlurCondition: value
                   ? MediaBlurCondition.explicitOnly
                   : MediaBlurCondition.none)),
-          contentPadding: widget.itemPadding,
         ),
         const SizedBox(height: 4),
         _buildSpacingSlider(settings),
@@ -304,7 +295,7 @@ class _ImageListingSettingsSectionState
           onChangeEnd: (value) =>
               _onUpdate(settings.copyWith(imageBorderRadius: value)),
           onChanged: (value) => _borderRadiusSliderValue.value = value,
-          padding: widget.itemPadding,
+          padding: EdgeInsets.zero,
         );
       },
     );
@@ -322,7 +313,7 @@ class _ImageListingSettingsSectionState
           onChangeEnd: (value) =>
               _onUpdate(settings.copyWith(imageGridSpacing: value)),
           onChanged: (value) => _spacingSliderValue.value = value,
-          padding: widget.itemPadding,
+          padding: EdgeInsets.zero,
         );
       },
     );
@@ -340,7 +331,7 @@ class _ImageListingSettingsSectionState
           onChangeEnd: (value) =>
               _onUpdate(settings.copyWith(imageGridPadding: value)),
           onChanged: (value) => _paddingSliderValue.value = value,
-          padding: widget.itemPadding,
+          padding: EdgeInsets.zero,
         );
       },
     );
@@ -359,7 +350,7 @@ class _ImageListingSettingsSectionState
           onChangeEnd: (value) =>
               _onUpdate(settings.copyWith(imageGridAspectRatio: value)),
           onChanged: (value) => _aspectRatioSliderValue.value = value,
-          padding: widget.itemPadding,
+          padding: EdgeInsets.zero,
         );
       },
     );

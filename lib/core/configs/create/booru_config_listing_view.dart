@@ -26,34 +26,38 @@ class BooruConfigListingView extends ConsumerWidget {
     final settings = listing.settings;
 
     return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SwitchListTile(
-            title: const Text("Enable profile's specific settings"),
-            subtitle: const Text(
-              'Override the global settings for this the profile. If enabled, global settings will be ignored until this is disabled.',
-            ),
-            value: enable,
-            onChanged: (value) => ref.editNotifier.updateListing(
-              listing.copyWith(enable: value),
-            ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-          ),
-          const Divider(),
-          GrayedOut(
-            grayedOut: !enable,
-            child: ImageListingSettingsSection(
-              listing: settings,
-              onUpdate: (value) => ref.editNotifier.updateListing(
-                listing.copyWith(settings: value),
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: Theme(
+        data: Theme.of(context).copyWith(
+          listTileTheme: Theme.of(context).listTileTheme.copyWith(
+                contentPadding: EdgeInsets.zero,
               ),
-              itemPadding: const EdgeInsets.symmetric(
-                horizontal: 4,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SwitchListTile(
+              title: const Text("Enable profile's specific settings"),
+              subtitle: const Text(
+                'Override the global settings for this the profile. If enabled, global settings will be ignored until this is disabled.',
+              ),
+              value: enable,
+              onChanged: (value) => ref.editNotifier.updateListing(
+                listing.copyWith(enable: value),
               ),
             ),
-          ),
-        ],
+            const Divider(),
+            GrayedOut(
+              grayedOut: !enable,
+              child: ImageListingSettingsSection(
+                listing: settings,
+                onUpdate: (value) => ref.editNotifier.updateListing(
+                  listing.copyWith(settings: value),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

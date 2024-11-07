@@ -29,6 +29,7 @@ class BooruConfigGesturesView extends ConsumerWidget {
             .select((value) => value.postGesturesConfigTyped));
 
     return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,

@@ -39,9 +39,6 @@ class _ImportTagsDialogState extends ConsumerState<ImportTagsDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(8)),
-      ),
       child: SingleChildScrollView(
         child: Container(
           margin: const EdgeInsets.symmetric(

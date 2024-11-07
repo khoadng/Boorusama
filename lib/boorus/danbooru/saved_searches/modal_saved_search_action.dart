@@ -22,7 +22,7 @@ class ModalSavedSearchAction extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: context.colorScheme.secondaryContainer,
+      color: context.colorScheme.surfaceContainer,
       child: SafeArea(
         top: false,
         child: Column(
