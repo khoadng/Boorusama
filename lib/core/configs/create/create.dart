@@ -1,5 +1,6 @@
 export 'add_booru_page.dart';
 export 'add_unknown_booru_page.dart';
+export 'booru_config_auth_view.dart';
 export 'booru_config_download_view.dart';
 export 'booru_config_gestures_view.dart';
 export 'booru_config_listing_view.dart';

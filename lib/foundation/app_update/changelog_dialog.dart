@@ -52,9 +52,6 @@ class ChangelogDialog extends StatelessWidget {
         horizontal: 28,
         vertical: 24,
       ),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(12)),
-      ),
       child: Container(
         constraints: const BoxConstraints(maxWidth: 650),
         margin: const EdgeInsets.symmetric(
