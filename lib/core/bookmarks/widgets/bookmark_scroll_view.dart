@@ -35,8 +35,6 @@ class BookmarkScrollView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final settings = ref.watch(imageListingSettingsProvider);
-    final edit = ref.watch(bookmarkEditProvider);
     final hasBookmarks = ref.watch(hasBookmarkProvider);
 
     return CustomScrollView(
@@ -65,7 +63,7 @@ class BookmarkScrollView extends ConsumerWidget {
         if (hasBookmarks)
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Text(
                 '${ref.watch(filteredBookmarksProvider).length} bookmarks',
                 style: context.textTheme.titleLarge,
@@ -74,107 +72,63 @@ class BookmarkScrollView extends ConsumerWidget {
           ),
         if (hasBookmarks)
           const SliverToBoxAdapter(
-            child: Row(
-              children: [
-                BookmarkSortButton(),
-                Spacer(),
-                BookmarkGridUpdateButtons(),
-              ],
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8),
+              child: Row(
+                children: [
+                  BookmarkSortButton(),
+                  Spacer(),
+                  BookmarkGridUpdateButtons(),
+                ],
+              ),
             ),
           ),
         const SliverSizedBox(height: 8),
-        if (hasBookmarks)
-          Builder(
-            builder: (context) {
-              final bookmarks = ref.watch(filteredBookmarksProvider);
+        const SliverBookmarkGrid(),
+      ],
+    );
+  }
+}
 
-              if (bookmarks.isEmpty) {
-                return const SliverToBoxAdapter(
-                  child: NoDataBox(),
-                );
-              }
+class SliverBookmarkGrid extends ConsumerWidget {
+  const SliverBookmarkGrid({
+    super.key,
+  });
 
-              return SliverMasonryGrid.count(
-                crossAxisCount:
-                    ref.watch(selectRowCountProvider(Screen.of(context).size)),
-                mainAxisSpacing: settings.imageGridSpacing,
-                crossAxisSpacing: settings.imageGridSpacing,
-                childCount: bookmarks.length,
-                itemBuilder: (context, index) {
-                  final bookmark = bookmarks[index];
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final spacing = ref.watch(imageListingSettingsProvider.select(
+      (value) => value.imageGridSpacing,
+    ));
+    final padding = ref.watch(imageListingSettingsProvider.select(
+      (value) => value.imageGridPadding,
+    ));
+    final hasBookmarks = ref.watch(hasBookmarkProvider);
+    final bookmarks = ref.watch(filteredBookmarksProvider);
 
-                  return ContextMenuRegion(
-                    contextMenu: GenericContextMenu(
-                      buttonConfigs: [
-                        ContextMenuButtonConfig(
-                          'download.download'.tr(),
-                          onPressed: () => ref.bookmarks.downloadBookmarks(
-                            ref.watchConfig,
-                            [bookmark],
-                          ),
-                        ),
-                        // remove bookmark
-                        ContextMenuButtonConfig(
-                          'post.detail.remove_from_bookmark'.tr(),
-                          onPressed: () =>
-                              ref.bookmarks.removeBookmarkWithToast(
-                            context,
-                            bookmark,
-                          ),
-                        ),
-                        if (!ref.watchConfig.hasStrictSFW)
-                          ContextMenuButtonConfig(
-                            'Open source in browser',
-                            onPressed: () =>
-                                launchExternalUrlString(bookmark.sourceUrl),
-                          ),
-                      ],
+    return hasBookmarks
+        ? SliverPadding(
+            padding: EdgeInsets.symmetric(
+              horizontal: padding,
+            ),
+            sliver: bookmarks.isEmpty
+                ? const SliverToBoxAdapter(
+                    child: NoDataBox(),
+                  )
+                : SliverMasonryGrid.count(
+                    crossAxisCount: ref
+                        .watch(selectRowCountProvider(Screen.of(context).size)),
+                    mainAxisSpacing: spacing,
+                    crossAxisSpacing: spacing,
+                    childCount: bookmarks.length,
+                    itemBuilder: (context, index) => _buildItem(
+                      ref,
+                      bookmarks[index],
+                      index,
                     ),
-                    child: Stack(
-                      children: [
-                        ImageGridItem(
-                          borderRadius: BorderRadius.circular(
-                            settings.imageBorderRadius,
-                          ),
-                          isAnimated: bookmark.isVideo,
-                          isAI: bookmark.isAI,
-                          onTap: () =>
-                              context.go('/bookmarks/details?index=$index'),
-                          image: BooruImage(
-                            borderRadius: BorderRadius.circular(
-                                settings.imageBorderRadius),
-                            aspectRatio: bookmark.aspectRatio,
-                            fit: BoxFit.cover,
-                            imageUrl: bookmark.isVideo
-                                ? bookmark.thumbnailUrl
-                                : bookmark.sampleUrl,
-                            placeholderUrl: bookmark.thumbnailUrl,
-                          ),
-                        ),
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: BooruLogo(source: bookmark.sourceUrl),
-                        ),
-                        if (edit)
-                          Positioned(
-                            top: 5,
-                            right: 5,
-                            child: CircularIconButton(
-                              padding: const EdgeInsets.all(4),
-                              icon: const Icon(Symbols.close),
-                              onPressed: () => ref.bookmarks
-                                  .removeBookmarkWithToast(context, bookmark),
-                            ),
-                          ),
-                      ],
-                    ),
-                  );
-                },
-              );
-            },
+                  ),
           )
-        else
-          const SliverToBoxAdapter(
+        : const SliverToBoxAdapter(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
               child: Text(
@@ -183,8 +137,84 @@ class BookmarkScrollView extends ConsumerWidget {
                 textAlign: TextAlign.center,
               ),
             ),
+          );
+  }
+
+  Widget _buildItem(
+    WidgetRef ref,
+    Bookmark bookmark,
+    int index,
+  ) {
+    final edit = ref.watch(bookmarkEditProvider);
+    final borderRadius = ref.watch(imageListingSettingsProvider.select(
+      (value) => value.imageBorderRadius,
+    ));
+    final context = ref.context;
+
+    return ContextMenuRegion(
+      contextMenu: GenericContextMenu(
+        buttonConfigs: [
+          ContextMenuButtonConfig(
+            'download.download'.tr(),
+            onPressed: () => ref.bookmarks.downloadBookmarks(
+              ref.watchConfig,
+              [bookmark],
+            ),
           ),
-      ],
+          // remove bookmark
+          ContextMenuButtonConfig(
+            'post.detail.remove_from_bookmark'.tr(),
+            onPressed: () => ref.bookmarks.removeBookmarkWithToast(
+              context,
+              bookmark,
+            ),
+          ),
+          if (!ref.watchConfig.hasStrictSFW)
+            ContextMenuButtonConfig(
+              'Open source in browser',
+              onPressed: () => launchExternalUrlString(bookmark.sourceUrl),
+            ),
+        ],
+      ),
+      child: Stack(
+        children: [
+          ImageGridItem(
+            borderRadius: BorderRadius.circular(
+              borderRadius,
+            ),
+            isAnimated: bookmark.isVideo,
+            isAI: bookmark.isAI,
+            onTap: () => context.go('/bookmarks/details?index=$index'),
+            image: BooruImage(
+              borderRadius: BorderRadius.circular(borderRadius),
+              aspectRatio: bookmark.aspectRatio,
+              fit: BoxFit.cover,
+              imageUrl:
+                  bookmark.isVideo ? bookmark.thumbnailUrl : bookmark.sampleUrl,
+              placeholderUrl: bookmark.thumbnailUrl,
+            ),
+          ),
+          Positioned(
+            top: 4,
+            left: 4,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: BooruLogo(source: bookmark.sourceUrl),
+            ),
+          ),
+          if (edit)
+            Positioned(
+              top: 5,
+              right: 5,
+              child: CircularIconButton(
+                padding: const EdgeInsets.all(4),
+                icon: const Icon(Symbols.close),
+                onPressed: () =>
+                    ref.bookmarks.removeBookmarkWithToast(context, bookmark),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }
