@@ -115,6 +115,7 @@ class UpdateBooruConfigButton extends ConsumerWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
           ),
+          backgroundColor: context.colorScheme.primaryContainer,
         ),
         onPressed: canSubmit(data)
             ? () {
