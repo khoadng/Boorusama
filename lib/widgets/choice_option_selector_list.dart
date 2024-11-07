@@ -120,7 +120,11 @@ class _ChoiceOptionSelectorListState<T>
                     color: selected
                         ? context.colorScheme.onSurface
                         : context.theme.hintColor,
-                    onPressed: () => _onSelect(null, index),
+                    onPressed: () => _onSelect(
+                      null,
+                      index,
+                      options.length,
+                    ),
                     label: Text(
                       widget.optionLabelBuilder(null),
                       style: TextStyle(
@@ -139,7 +143,11 @@ class _ChoiceOptionSelectorListState<T>
                     color: selected
                         ? context.colorScheme.onSurface
                         : context.theme.hintColor,
-                    onPressed: () => _onSelect(o.data, index),
+                    onPressed: () => _onSelect(
+                      o.data,
+                      index,
+                      options.length,
+                    ),
                     label: Text(
                       widget.optionLabelBuilder(o.data),
                       style: TextStyle(
@@ -175,7 +183,11 @@ class _ChoiceOptionSelectorListState<T>
                                 onTap: () {
                                   Navigator.pop(context);
                                   final valueIndex = options.indexOf(option);
-                                  _onSelect(option.data, valueIndex);
+                                  _onSelect(
+                                    option.data,
+                                    valueIndex,
+                                    options.length,
+                                  );
                                 },
                               ),
                             ));
@@ -189,11 +201,15 @@ class _ChoiceOptionSelectorListState<T>
     );
   }
 
-  void _onSelect(T? value, int index) {
+  void _onSelect(T? value, int index, int total) {
+    // attempt tot scroll to adjecent index to make it obvious that there is still more options
+    final targetIndex = index + 1;
+    final effectiveIndex = targetIndex < total ? targetIndex : index;
+
     widget.onSelected?.call(value);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       scrollController.scrollToIndex(
-        index,
+        effectiveIndex,
         preferPosition: AutoScrollPosition.end,
         duration: const Duration(milliseconds: 300),
       );
