@@ -453,7 +453,7 @@ class BooruConfigEntry extends ConsumerWidget {
     final editId = ref.watch(editBooruConfigIdProvider);
 
     return Material(
-      color: context.colorScheme.surfaceContainerLowest,
+      color: context.colorScheme.surfaceContainer,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
       ),
