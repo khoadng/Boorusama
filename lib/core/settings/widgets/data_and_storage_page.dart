@@ -33,10 +33,7 @@ final tagHighlightingCacheProvider =
 class DataAndStoragePage extends ConsumerStatefulWidget {
   const DataAndStoragePage({
     super.key,
-    this.hasAppBar = true,
   });
-
-  final bool hasAppBar;
 
   @override
   ConsumerState<DataAndStoragePage> createState() => _DataAndStoragePageState();
@@ -48,7 +45,6 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
     final settings = ref.watch(settingsProvider);
 
     return SettingsPageScaffold(
-      hasAppBar: widget.hasAppBar,
       title: const Text('settings.data_and_storage.data_and_storage').tr(),
       children: [
         const SettingsHeader(label: 'Cache'),

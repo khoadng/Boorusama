@@ -14,8 +14,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/providers.dart';
-import 'package:boorusama/core/settings/widgets/about_page.dart';
-import 'package:boorusama/core/settings/widgets/debug_logs_page.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
@@ -24,32 +22,137 @@ import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import 'help_us_translate_page.dart';
+import 'widgets.dart';
 
-class SettingsPage extends ConsumerStatefulWidget {
+const _entries = [
+  SettingEntry(
+    title: 'settings.appearance.appearance',
+    icon: FontAwesomeIcons.paintRoller,
+    content: AppearancePage(),
+  ),
+  SettingEntry(
+    title: 'settings.language.language',
+    icon: Symbols.translate,
+    content: LanguagePage(),
+  ),
+  SettingEntry(
+    title: 'settings.download.title',
+    icon: FontAwesomeIcons.download,
+    content: DownloadPage(),
+  ),
+  SettingEntry(
+    title: 'settings.performance.performance',
+    icon: FontAwesomeIcons.gaugeSimpleHigh,
+    content: PerformancePage(),
+  ),
+  SettingEntry(
+    title: 'settings.data_and_storage.data_and_storage',
+    icon: FontAwesomeIcons.database,
+    content: DataAndStoragePage(),
+  ),
+  SettingEntry(
+    title: 'settings.backup_and_restore.backup_and_restore',
+    icon: FontAwesomeIcons.cloudArrowDown,
+    content: BackupAndRestorePage(),
+  ),
+  SettingEntry(
+    title: 'settings.search.search',
+    icon: FontAwesomeIcons.magnifyingGlass,
+    content: SearchSettingsPage(),
+  ),
+  SettingEntry(
+    title: 'settings.accessibility.accessibility',
+    icon: FontAwesomeIcons.universalAccess,
+    content: AccessibilityPage(),
+  ),
+  SettingEntry(
+    title: 'settings.image_viewer.image_viewer',
+    icon: FontAwesomeIcons.image,
+    content: ImageViewerPage(),
+  ),
+  SettingEntry(
+    title: 'settings.privacy.privacy',
+    icon: FontAwesomeIcons.shieldHalved,
+    content: PrivacyPage(),
+  ),
+];
+
+class SettingsPage extends StatelessWidget {
   const SettingsPage({
     super.key,
     this.scrollTo,
-    this.largeScreen = false,
   });
 
   final String? scrollTo;
-  final bool largeScreen;
 
   @override
-  ConsumerState<SettingsPage> createState() => _SettingsPageState();
+  Widget build(BuildContext context) {
+    return Theme(
+      data: Theme.of(context).copyWith(
+        iconTheme: Theme.of(context).iconTheme.copyWith(
+              size: 18,
+            ),
+      ),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            'settings.settings'.tr(),
+          ),
+        ),
+        body: SettingsPageDynamicScope(
+          options: SettingsPageDynamicOptions(
+            scrollTo: scrollTo,
+          ),
+          child: LayoutBuilder(
+            //TODO: Don't separate the settings page into two pages, merge them into one to prevent code duplication and unnecessary rebuilds when resizing the window
+            builder: (context, constraints) => constraints.maxWidth > 600
+                ? const SettingsPageScope(
+                    options: SettingsPageOptions(
+                      showIcon: false,
+                      dense: true,
+                      entries: _entries,
+                    ),
+                    child: SettingsLargePage(),
+                  )
+                : const SettingsPageScope(
+                    options: SettingsPageOptions(
+                      showIcon: true,
+                      dense: false,
+                      entries: _entries,
+                    ),
+                    child: SettingsSmallPage(),
+                  ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
-class _SettingsPageState extends ConsumerState<SettingsPage> {
+class SettingsSmallPage extends ConsumerStatefulWidget {
+  const SettingsSmallPage({super.key});
+
+  @override
+  ConsumerState<SettingsSmallPage> createState() => _SettingsSmallPageState();
+}
+
+class _SettingsSmallPageState extends ConsumerState<SettingsSmallPage> {
   final scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
+  }
 
-    if (widget.scrollTo != null) {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    final scrollTo = SettingsPageDynamicScope.of(context).options.scrollTo;
+
+    if (scrollTo != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (widget.scrollTo == 'support') {
+        if (scrollTo == 'support') {
           scrollController.animateToWithAccessibility(
             scrollController.position.maxScrollExtent,
             duration: const Duration(milliseconds: 400),
@@ -69,35 +172,9 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: !widget.largeScreen
-          ? AppBar(
-              title: Text(
-                'settings.settings'.tr(),
-              ),
-            )
-          : null,
-      body: SettingsPageScope(
-        options: SettingsPageOptions(
-          showIcon: !widget.largeScreen,
-          dense: widget.largeScreen,
-        ),
-        child: Theme(
-          data: Theme.of(context).copyWith(
-            iconTheme: Theme.of(context).iconTheme.copyWith(
-                  size: 18,
-                ),
-          ),
-          child: _buildBody(),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildBody() {
-    final appInfo = ref.watch(appInfoProvider);
     ref.watch(settingsProvider.select((value) => value.language));
-    final booruBuilder = ref.watch(booruBuilderProvider);
+    final options = SettingsPageScope.of(context).options;
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -110,180 +187,23 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 _SettingsSection(
                   label: 'settings.app_settings'.tr(),
                 ),
-                SettingTile(
-                  leading: const FaIcon(
-                    FontAwesomeIcons.paintRoller,
-                  ),
-                  title: 'settings.appearance.appearance'.tr(),
-                  onTap: () => context.go('/settings/appearance'),
-                ),
-                SettingTile(
-                  title: 'settings.language.language'.tr(),
-                  leading: const FaIcon(
-                    Symbols.translate,
-                    size: 20,
-                  ),
-                  onTap: () => context.go('/settings/language'),
-                ),
-                SettingTile(
-                  title: 'settings.download.title'.tr(),
-                  leading: const FaIcon(
-                    FontAwesomeIcons.download,
-                  ),
-                  onTap: () => context.go('/settings/download'),
-                ),
-                SettingTile(
-                  title: 'settings.performance.performance'.tr(),
-                  leading: const FaIcon(
-                    FontAwesomeIcons.gaugeSimpleHigh,
-                  ),
-                  onTap: () => context.go('/settings/performance'),
-                ),
-                SettingTile(
-                  title: 'settings.data_and_storage.data_and_storage'.tr(),
-                  onTap: () => context.go('/settings/data_and_storage'),
-                  leading: const FaIcon(
-                    FontAwesomeIcons.database,
-                  ),
-                ),
-                SettingTile(
-                  title: 'settings.backup_and_restore.backup_and_restore'.tr(),
-                  leading: const FaIcon(
-                    FontAwesomeIcons.cloudArrowDown,
-                  ),
-                  onTap: () => context.go('/settings/backup_and_restore'),
-                ),
-                SettingTile(
-                  title: 'settings.search.search'.tr(),
-                  leading: const FaIcon(
-                    FontAwesomeIcons.magnifyingGlass,
-                  ),
-                  onTap: () => context.go('/settings/search'),
-                ),
-                SettingTile(
-                  title: 'settings.accessibility.accessibility'.tr(),
-                  leading: const FaIcon(
-                    FontAwesomeIcons.universalAccess,
-                  ),
-                  onTap: () => context.go('/settings/accessibility'),
-                ),
-                SettingTile(
-                  title: 'settings.image_viewer.image_viewer'.tr(),
-                  leading: const FaIcon(
-                    FontAwesomeIcons.image,
-                  ),
-                  onTap: () => context.go('/settings/image_viewer'),
-                ),
-                SettingTile(
-                  title: 'settings.privacy.privacy'.tr(),
-                  leading: const FaIcon(
-                    FontAwesomeIcons.shieldHalved,
-                  ),
-                  onTap: () => context.go('/settings/privacy'),
-                ),
-                if (booruBuilder != null) ...[
-                  const Divider(),
-                  _SettingsSection(
-                    label: 'settings.booru_settings.booru_settings'.tr(),
-                  ),
+                for (final entry in options.entries) ...[
                   SettingTile(
-                    title: 'settings.booru_settings.edit_current_profile'.tr(),
-                    leading: const FaIcon(
-                      FontAwesomeIcons.gear,
+                    title: entry.title.tr(),
+                    leading: FaIcon(
+                      entry.icon,
                     ),
-                    onTap: () => goToUpdateBooruConfigPage(
-                      context,
-                      config: ref.watchConfig,
+                    onTap: () => context.navigator.push(
+                      CupertinoPageRoute(
+                        builder: (_) => SettingsPageScope(
+                          options: options,
+                          child: entry.content,
+                        ),
+                      ),
                     ),
                   ),
                 ],
-                const Divider(),
-                _SettingsSection(
-                  label: 'settings.other_settings'.tr(),
-                ),
-                SettingTile(
-                  title: 'settings.changelog'.tr(),
-                  leading: const FaIcon(
-                    FontAwesomeIcons.solidNoteSticky,
-                  ),
-                  onTap: () => context.go('/settings/changelog'),
-                ),
-                SettingTile(
-                  title: 'settings.debug_logs.debug_logs'.tr(),
-                  leading: const FaIcon(
-                    FontAwesomeIcons.bug,
-                  ),
-                  onTap: () => context.navigator.push(CupertinoPageRoute(
-                      builder: (_) => const DebugLogsPage())),
-                ),
-                SettingTile(
-                  title: 'settings.information'.tr(),
-                  leading: const FaIcon(
-                    Symbols.info,
-                    size: 24,
-                  ),
-                  onTap: () => showDialog(
-                    context: context,
-                    builder: (context) => const AboutPage(),
-                  ),
-                ),
-                const Divider(),
-                _SettingsSection(
-                  label: 'settings.contribute'.tr(),
-                ),
-                SettingTile(
-                  title: 'settings.help_us_translate'.tr(),
-                  leading: const FaIcon(
-                    Symbols.language,
-                    size: 24,
-                  ),
-                  onTap: () => context.navigator.push(
-                    CupertinoPageRoute(
-                      builder: (_) => const HelpUseTranslatePage(),
-                    ),
-                  ),
-                ),
-                SettingTile(
-                  title: 'settings.source_code'.tr(),
-                  leading: const FaIcon(
-                    FontAwesomeIcons.code,
-                  ),
-                  onTap: () => launchExternalUrl(
-                    Uri.parse(appInfo.githubUrl),
-                    mode: LaunchMode.externalApplication,
-                  ),
-                ),
-                const Divider(),
-                _SettingsSection(
-                  label: 'settings.support'.tr(),
-                ),
-                SettingTile(
-                  title: 'settings.contact_developer'.tr(),
-                  subtitle: 'settings.contact_developer_description'.tr(),
-                  leading: const FaIcon(
-                    Symbols.email,
-                    size: 24,
-                  ),
-                  onTap: () => launchExternalUrl(
-                    Uri.parse('mailto:${appInfo.supportEmail}'),
-                    mode: LaunchMode.externalApplication,
-                  ),
-                ),
-                SettingTile(
-                  title: 'settings.feature_request_and_bug_report'.tr(),
-                  subtitle:
-                      'settings.feature_request_and_bug_report_description'
-                          .tr(),
-                  leading: const FaIcon(
-                    Symbols.bug_report,
-                    size: 24,
-                  ),
-                  onTap: () => launchExternalUrl(
-                    Uri.parse('${appInfo.githubUrl}/issues'),
-                    mode: LaunchMode.externalApplication,
-                  ),
-                ),
-                const SizedBox(height: 16),
+                const SettingsPageOtherSection(),
               ],
             ),
           ),
@@ -295,17 +215,257 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   }
 }
 
-class SettingsPageOptions extends Equatable {
+class SettingsLargePage extends ConsumerStatefulWidget {
+  const SettingsLargePage({super.key});
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _SettingsLargePageState();
+}
+
+class _SettingsLargePageState extends ConsumerState<SettingsLargePage> {
+  var _selectedEntry = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    final entries = SettingsPageScope.of(context).options.entries;
+
+    ref.watch(settingsProvider.select((value) => value.language));
+    final options = SettingsPageScope.of(context).options;
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SizedBox(
+          width: 240,
+          child: ListView(
+            children: [
+              for (final entry in entries)
+                SettingTile(
+                  title: entry.title.tr(),
+                  leading: FaIcon(
+                    entry.icon,
+                  ),
+                  selected: entries.indexOf(entry) == _selectedEntry,
+                  showLeading: options.showIcon,
+                  onTap: () => setState(() {
+                    _selectedEntry = entries.indexOf(entry);
+                  }),
+                ),
+              const SettingsPageOtherSection(),
+              _Divider(),
+              const _Footer(),
+            ],
+          ),
+        ),
+        const VerticalDivider(
+          width: 1,
+        ),
+        Flexible(
+          child: MediaQuery.removePadding(
+            context: context,
+            removeLeft: true,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: 600,
+              ),
+              child: entries[_selectedEntry].content,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class SettingsPageOtherSection extends ConsumerWidget {
+  const SettingsPageOtherSection({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final appInfo = ref.watch(appInfoProvider);
+    final booruBuilder = ref.watch(booruBuilderProvider);
+    final options = SettingsPageScope.of(context).options;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (booruBuilder != null) ...[
+          const Divider(),
+          _SettingsSection(
+            label: 'settings.booru_settings.booru_settings'.tr(),
+          ),
+          SettingTile(
+            title: 'settings.booru_settings.edit_current_profile'.tr(),
+            leading: const FaIcon(
+              FontAwesomeIcons.gear,
+            ),
+            onTap: () => goToUpdateBooruConfigPage(
+              context,
+              config: ref.watchConfig,
+            ),
+          ),
+        ],
+        const Divider(),
+        _SettingsSection(
+          label: 'settings.other_settings'.tr(),
+        ),
+        SettingTile(
+          title: 'settings.changelog'.tr(),
+          leading: const FaIcon(
+            FontAwesomeIcons.solidNoteSticky,
+          ),
+          onTap: () => context.navigator.push(
+            CupertinoPageRoute(
+              builder: (_) => const ChangelogPage(),
+            ),
+          ),
+        ),
+        SettingTile(
+          title: 'settings.debug_logs.debug_logs'.tr(),
+          leading: const FaIcon(
+            FontAwesomeIcons.bug,
+          ),
+          onTap: () => context.navigator.push(CupertinoPageRoute(
+            builder: (_) => SettingsPageScope(
+              options: options,
+              child: const DebugLogsPage(),
+            ),
+          )),
+        ),
+        SettingTile(
+          title: 'settings.information'.tr(),
+          leading: const FaIcon(
+            Symbols.info,
+            size: 24,
+          ),
+          onTap: () => showDialog(
+            context: context,
+            builder: (context) => const AboutPage(),
+          ),
+        ),
+        const Divider(),
+        _SettingsSection(
+          label: 'settings.contribute'.tr(),
+        ),
+        SettingTile(
+          title: 'settings.help_us_translate'.tr(),
+          leading: const FaIcon(
+            Symbols.language,
+            size: 24,
+          ),
+          onTap: () => context.navigator.push(
+            CupertinoPageRoute(
+              builder: (_) => const HelpUseTranslatePage(),
+            ),
+          ),
+        ),
+        SettingTile(
+          title: 'settings.source_code'.tr(),
+          leading: const FaIcon(
+            FontAwesomeIcons.code,
+          ),
+          onTap: () => launchExternalUrl(
+            Uri.parse(appInfo.githubUrl),
+            mode: LaunchMode.externalApplication,
+          ),
+        ),
+        const Divider(),
+        _SettingsSection(
+          label: 'settings.support'.tr(),
+        ),
+        SettingTile(
+          title: 'settings.contact_developer'.tr(),
+          subtitle: 'settings.contact_developer_description'.tr(),
+          leading: const FaIcon(
+            Symbols.email,
+            size: 24,
+          ),
+          onTap: () => launchExternalUrl(
+            Uri.parse('mailto:${appInfo.supportEmail}'),
+            mode: LaunchMode.externalApplication,
+          ),
+        ),
+        SettingTile(
+          title: 'settings.feature_request_and_bug_report'.tr(),
+          subtitle: 'settings.feature_request_and_bug_report_description'.tr(),
+          leading: const FaIcon(
+            Symbols.bug_report,
+            size: 24,
+          ),
+          onTap: () => launchExternalUrl(
+            Uri.parse('${appInfo.githubUrl}/issues'),
+            mode: LaunchMode.externalApplication,
+          ),
+        ),
+        const SizedBox(height: 16),
+      ],
+    );
+  }
+}
+
+class SettingEntry {
+  const SettingEntry({
+    required this.title,
+    required this.content,
+    required this.icon,
+  });
+
+  final String title;
+  final Widget content;
+  final IconData icon;
+}
+
+// This should be always constant
+class SettingsPageOptions {
   const SettingsPageOptions({
     required this.showIcon,
     required this.dense,
+    required this.entries,
   });
 
   final bool showIcon;
   final bool dense;
+  final List<SettingEntry> entries;
+}
+
+class SettingsPageDynamicOptions extends Equatable {
+  const SettingsPageDynamicOptions({
+    this.scrollTo,
+  });
+
+  final String? scrollTo;
 
   @override
-  List<Object?> get props => [showIcon, dense];
+  List<Object?> get props => [scrollTo];
+}
+
+class SettingsPageDynamicScope extends InheritedWidget {
+  const SettingsPageDynamicScope({
+    super.key,
+    required this.options,
+    required super.child,
+  });
+
+  static SettingsPageDynamicScope of(BuildContext context) {
+    final item =
+        context.dependOnInheritedWidgetOfExactType<SettingsPageDynamicScope>();
+
+    if (item == null) {
+      throw FlutterError(
+          'SettingsPageDynamicScope.of was called with a context that '
+          'does not contain a SettingsPageDynamicScope.');
+    }
+
+    return item;
+  }
+
+  final SettingsPageDynamicOptions options;
+
+  @override
+  bool updateShouldNotify(SettingsPageDynamicScope oldWidget) {
+    return options != oldWidget.options;
+  }
 }
 
 class SettingsPageScope extends InheritedWidget {
@@ -343,6 +503,7 @@ class SettingTile extends StatelessWidget {
     this.onTap,
     this.showLeading,
     this.subtitle,
+    this.selected,
   });
 
   final bool? showLeading;
@@ -350,6 +511,7 @@ class SettingTile extends StatelessWidget {
   final void Function()? onTap;
   final Widget leading;
   final String? subtitle;
+  final bool? selected;
 
   @override
   Widget build(BuildContext context) {
@@ -363,6 +525,9 @@ class SettingTile extends StatelessWidget {
         vertical: 2,
       ),
       child: Material(
+        color: selected == true
+            ? context.colorScheme.primaryContainer
+            : Colors.transparent,
         borderRadius: BorderRadius.circular(8),
         child: InkWell(
           hoverColor: context.theme.hoverColor.applyOpacity(0.1),
@@ -398,9 +563,12 @@ class SettingTile extends StatelessWidget {
                     children: [
                       Text(
                         title,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w400,
+                          color: selected == true
+                              ? context.colorScheme.onPrimaryContainer
+                              : null,
                         ),
                       ),
                       if (subtitle != null) ...[

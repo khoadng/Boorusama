@@ -16,10 +16,7 @@ import 'widgets/settings_page_scaffold.dart';
 class PerformancePage extends ConsumerStatefulWidget {
   const PerformancePage({
     super.key,
-    this.hasAppBar = true,
   });
-
-  final bool hasAppBar;
 
   @override
   ConsumerState<PerformancePage> createState() => _PerformancePageState();
@@ -31,7 +28,6 @@ class _PerformancePageState extends ConsumerState<PerformancePage> {
     final settings = ref.watch(settingsProvider);
 
     return SettingsPageScaffold(
-      hasAppBar: widget.hasAppBar,
       title: const Text('settings.performance.performance').tr(),
       children: [
         GrayedOut(

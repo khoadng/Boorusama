@@ -32,10 +32,7 @@ import 'widgets/settings_page_scaffold.dart';
 class BackupAndRestorePage extends ConsumerStatefulWidget {
   const BackupAndRestorePage({
     super.key,
-    this.hasAppBar = true,
   });
-
-  final bool hasAppBar;
 
   @override
   ConsumerState<BackupAndRestorePage> createState() => _DownloadPageState();
@@ -45,7 +42,6 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
   @override
   Widget build(BuildContext context) {
     return SettingsPageScaffold(
-      hasAppBar: widget.hasAppBar,
       title: const Text('settings.backup_and_restore.backup_and_restore').tr(),
       padding: const EdgeInsets.symmetric(horizontal: 8),
       children: [

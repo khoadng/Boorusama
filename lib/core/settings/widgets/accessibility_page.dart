@@ -15,10 +15,7 @@ import 'widgets/settings_page_scaffold.dart';
 class AccessibilityPage extends ConsumerStatefulWidget {
   const AccessibilityPage({
     super.key,
-    this.hasAppBar = true,
   });
-
-  final bool hasAppBar;
 
   @override
   ConsumerState<AccessibilityPage> createState() => _AccessibilityPageState();
@@ -30,7 +27,6 @@ class _AccessibilityPageState extends ConsumerState<AccessibilityPage> {
     final settings = ref.watch(settingsProvider);
 
     return SettingsPageScaffold(
-      hasAppBar: widget.hasAppBar,
       title: const Text('settings.accessibility.accessibility').tr(),
       children: [
         SwitchListTile(

@@ -28,10 +28,7 @@ import 'package:boorusama/widgets/widgets.dart';
 class DebugLogsPage extends ConsumerStatefulWidget {
   const DebugLogsPage({
     super.key,
-    this.hasAppBar = true,
   });
-
-  final bool hasAppBar;
 
   @override
   ConsumerState<DebugLogsPage> createState() => _DebugLogsPageState();
@@ -62,40 +59,36 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
       );
     }
 
-    return ConditionalParentWidget(
-      condition: widget.hasAppBar,
-      conditionalBuilder: (child) => Scaffold(
-        appBar: AppBar(
-          title: const Text('settings.debug_logs.debug_logs').tr(),
-          actions: [
-            IconButton(
-              icon: const Icon(Symbols.content_copy),
-              onPressed: copyLogsToClipboard,
-            ),
-            IconButton(
-              icon: const Icon(Symbols.download),
-              onPressed: () async {
-                await writeLogsToFile(context, logs);
-              },
-            ),
-          ],
-        ),
-        floatingActionButton: ScrollToBottom(
-          scrollController: scrollController,
-          child: BooruScrollToBottomButton(
-            onPressed: () {
-              scrollController.animateToWithAccessibility(
-                scrollController.position.maxScrollExtent,
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeOut,
-                reduceAnimations: ref.read(settingsProvider).reduceAnimations,
-              );
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('settings.debug_logs.debug_logs').tr(),
+        actions: [
+          IconButton(
+            icon: const Icon(Symbols.content_copy),
+            onPressed: copyLogsToClipboard,
+          ),
+          IconButton(
+            icon: const Icon(Symbols.download),
+            onPressed: () async {
+              await writeLogsToFile(context, logs);
             },
           ),
-        ),
-        body: child,
+        ],
       ),
-      child: Column(
+      floatingActionButton: ScrollToBottom(
+        scrollController: scrollController,
+        child: BooruScrollToBottomButton(
+          onPressed: () {
+            scrollController.animateToWithAccessibility(
+              scrollController.position.maxScrollExtent,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeOut,
+              reduceAnimations: ref.read(settingsProvider).reduceAnimations,
+            );
+          },
+        ),
+      ),
+      body: Column(
         children: [
           ChoiceOptionSelectorList(
             padding: const EdgeInsets.symmetric(horizontal: 8),

@@ -16,10 +16,7 @@ import 'widgets/settings_page_scaffold.dart';
 class DownloadPage extends ConsumerStatefulWidget {
   const DownloadPage({
     super.key,
-    this.hasAppBar = true,
   });
-
-  final bool hasAppBar;
 
   @override
   ConsumerState<DownloadPage> createState() => _DownloadPageState();
@@ -31,7 +28,6 @@ class _DownloadPageState extends ConsumerState<DownloadPage> {
     final settings = ref.watch(settingsProvider);
 
     return SettingsPageScaffold(
-      hasAppBar: widget.hasAppBar,
       title: const Text('settings.download.title').tr(),
       children: [
         DownloadFolderSelectorSection(

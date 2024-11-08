@@ -20,10 +20,7 @@ import 'widgets/settings_tile.dart';
 class AppearancePage extends ConsumerStatefulWidget {
   const AppearancePage({
     super.key,
-    this.hasAppBar = true,
   });
-
-  final bool hasAppBar;
 
   @override
   ConsumerState<AppearancePage> createState() => _AppearancePageState();
@@ -35,7 +32,6 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
     final settings = ref.watch(settingsProvider);
 
     return SettingsPageScaffold(
-      hasAppBar: widget.hasAppBar,
       title: const Text('settings.appearance.appearance').tr(),
       children: [
         SettingsHeader(label: 'settings.general'.tr()),

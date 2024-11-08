@@ -16,10 +16,7 @@ import 'widgets/settings_page_scaffold.dart';
 class ImageViewerPage extends ConsumerStatefulWidget {
   const ImageViewerPage({
     super.key,
-    this.hasAppBar = true,
   });
-
-  final bool hasAppBar;
 
   @override
   ConsumerState<ImageViewerPage> createState() => _ImageViewerPageState();
@@ -31,7 +28,6 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
     final settings = ref.watch(settingsProvider);
 
     return SettingsPageScaffold(
-      hasAppBar: widget.hasAppBar,
       title: const Text('settings.image_viewer.image_viewer').tr(),
       children: [
         SettingsHeader(label: 'settings.general'.tr()),

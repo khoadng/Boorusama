@@ -14,10 +14,7 @@ import 'widgets/settings_page_scaffold.dart';
 class SearchSettingsPage extends ConsumerStatefulWidget {
   const SearchSettingsPage({
     super.key,
-    this.hasAppBar = true,
   });
-
-  final bool hasAppBar;
 
   @override
   ConsumerState<SearchSettingsPage> createState() => _SearchSettingsPageState();
@@ -29,7 +26,6 @@ class _SearchSettingsPageState extends ConsumerState<SearchSettingsPage> {
     final settings = ref.watch(settingsProvider);
 
     return SettingsPageScaffold(
-      hasAppBar: widget.hasAppBar,
       title: const Text('settings.search.search').tr(),
       children: [
         ListTile(

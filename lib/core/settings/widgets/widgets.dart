@@ -13,4 +13,3 @@ export 'performance_page.dart';
 export 'privacy_page.dart';
 export 'search_settings_page.dart';
 export 'settings_page.dart';
-export 'settings_page_desktop.dart';
