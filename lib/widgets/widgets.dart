@@ -32,6 +32,7 @@ export 'image_grid_item.dart';
 export 'image_overlay_icon.dart';
 export 'info_container.dart';
 export 'interactive_image.dart';
+export 'layout_builder_extra.dart';
 export 'lazy_indexed_stack.dart';
 export 'modal.dart';
 export 'modal_options.dart';

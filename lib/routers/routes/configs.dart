@@ -21,8 +21,12 @@ class BoorusRoutes {
 
   static GoRoute add(Ref ref) => GoRoute(
         path: 'boorus/add',
-        redirect: (context, state) =>
-            kPreferredLayout.isMobile ? null : '/desktop/boorus/add',
+        redirect: (context, state) => !context.orientation.isLandscape
+            ? null
+            : Uri(
+                path: '/desktop/boorus/add',
+                queryParameters: state.uri.queryParameters,
+              ).toString(),
         builder: (context, state) => AddBooruPage(
           backgroundColor: context.colorScheme.surface,
           setCurrentBooruOnSubmit:
@@ -44,9 +48,12 @@ class BoorusRoutes {
 
   static GoRoute update(Ref ref) => GoRoute(
         path: 'boorus/:id/update',
-        redirect: (context, state) => kPreferredLayout.isMobile
+        redirect: (context, state) => !context.orientation.isLandscape
             ? null
-            : '/desktop/boorus/${state.pathParameters['id']}/update',
+            : Uri(
+                path: '/desktop/boorus/${state.pathParameters['id']}/update',
+                queryParameters: state.uri.queryParameters,
+              ).toString(),
         pageBuilder: (context, state) {
           final idParam = state.pathParameters['id'];
           final id = idParam?.toInt();
@@ -91,6 +98,7 @@ class BoorusRoutes {
         pageBuilder: (context, state) {
           final idParam = state.pathParameters['id'];
           final id = idParam?.toInt();
+          final q = state.uri.queryParameters['q'];
           final config = ref
               .read(booruConfigProvider)
               ?.firstWhere((element) => element.id == id);
@@ -117,6 +125,7 @@ class BoorusRoutes {
               child: booruBuilder?.updateConfigPageBuilder(
                     context,
                     EditBooruConfigId.fromConfig(config),
+                    initialTab: q,
                   ) ??
                   Scaffold(
                     appBar: AppBar(),

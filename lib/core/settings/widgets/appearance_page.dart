@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -11,6 +10,7 @@ import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/router.dart';
 import 'widgets.dart';
 import 'widgets/settings_header.dart';
 import 'widgets/settings_page_scaffold.dart';
@@ -113,10 +113,13 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
 }
 
 Future<void> openAppearancePage(BuildContext context) {
-  return Navigator.of(context).push(
-    CupertinoPageRoute(
-      builder: (context) => const AppearancePage(),
-    ),
+  return context.push(
+    Uri(
+      path: '/settings',
+      queryParameters: {
+        'initial': 'appearance',
+      },
+    ).toString(),
   );
 }
 

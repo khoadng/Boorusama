@@ -77,13 +77,24 @@ const _entries = [
   ),
 ];
 
-class SettingsPage extends StatelessWidget {
+const double _kThresholdWidth = 550;
+
+class SettingsPage extends StatefulWidget {
   const SettingsPage({
     super.key,
     this.scrollTo,
+    this.initial,
   });
 
   final String? scrollTo;
+  final String? initial;
+
+  @override
+  State<SettingsPage> createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
+  final _selected = ValueNotifier<String?>(null);
 
   @override
   Widget build(BuildContext context) {
@@ -101,27 +112,40 @@ class SettingsPage extends StatelessWidget {
         ),
         body: SettingsPageDynamicScope(
           options: SettingsPageDynamicOptions(
-            scrollTo: scrollTo,
+            scrollTo: widget.scrollTo,
           ),
           child: LayoutBuilder(
-            //TODO: Don't separate the settings page into two pages, merge them into one to prevent code duplication and unnecessary rebuilds when resizing the window
-            builder: (context, constraints) => constraints.maxWidth > 600
-                ? const SettingsPageScope(
-                    options: SettingsPageOptions(
-                      showIcon: false,
-                      dense: true,
-                      entries: _entries,
-                    ),
-                    child: SettingsLargePage(),
-                  )
-                : const SettingsPageScope(
-                    options: SettingsPageOptions(
-                      showIcon: true,
-                      dense: false,
-                      entries: _entries,
-                    ),
-                    child: SettingsSmallPage(),
-                  ),
+            builder: (context, constraints) {
+              //TODO: Don't separate the settings page into two pages, merge them into one to prevent code duplication and unnecessary rebuilds when resizing the window
+              return constraints.maxWidth > _kThresholdWidth
+                  ? SettingsPageScope(
+                      options: const SettingsPageOptions(
+                        showIcon: false,
+                        dense: true,
+                        entries: _entries,
+                      ),
+                      child: ValueListenableBuilder(
+                        valueListenable: _selected,
+                        builder: (_, selected, __) => SettingsLargePage(
+                          initial: selected ?? widget.initial,
+                          onTabChanged: (tab) => _selected.value = tab,
+                        ),
+                      ),
+                    )
+                  : SettingsPageScope(
+                      options: const SettingsPageOptions(
+                        showIcon: true,
+                        dense: false,
+                        entries: _entries,
+                      ),
+                      child: ValueListenableBuilder(
+                        valueListenable: _selected,
+                        builder: (_, selected, __) => SettingsSmallPage(
+                          initial: selected ?? widget.initial,
+                        ),
+                      ),
+                    );
+            },
           ),
         ),
       ),
@@ -130,7 +154,12 @@ class SettingsPage extends StatelessWidget {
 }
 
 class SettingsSmallPage extends ConsumerStatefulWidget {
-  const SettingsSmallPage({super.key});
+  const SettingsSmallPage({
+    super.key,
+    this.initial,
+  });
+
+  final String? initial;
 
   @override
   ConsumerState<SettingsSmallPage> createState() => _SettingsSmallPageState();
@@ -142,6 +171,35 @@ class _SettingsSmallPageState extends ConsumerState<SettingsSmallPage> {
   @override
   void initState() {
     super.initState();
+    final initial = widget.initial;
+
+    if (initial != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        // open the initial page
+        final page = _findInitialPage(initial);
+
+        if (page != null) {
+          context.navigator.push(
+            CupertinoPageRoute(
+              builder: (_) => Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: SettingsPageScope(
+                      options: SettingsPageScope.of(context).options,
+                      child: page,
+                    ),
+                  ),
+                  WidthThresholdPopper(
+                    targetWidth: _kThresholdWidth,
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+      });
+    }
   }
 
   @override
@@ -162,6 +220,18 @@ class _SettingsSmallPageState extends ConsumerState<SettingsSmallPage> {
         }
       });
     }
+  }
+
+  Widget? _findInitialPage(String initial) {
+    final options = SettingsPageScope.of(context).options;
+    for (final entry in options.entries) {
+      // fuzzy search
+      if (entry.title.toLowerCase().contains(initial.toLowerCase())) {
+        return entry.content;
+      }
+    }
+
+    return null;
   }
 
   @override
@@ -216,7 +286,14 @@ class _SettingsSmallPageState extends ConsumerState<SettingsSmallPage> {
 }
 
 class SettingsLargePage extends ConsumerStatefulWidget {
-  const SettingsLargePage({super.key});
+  const SettingsLargePage({
+    super.key,
+    this.initial,
+    this.onTabChanged,
+  });
+
+  final String? initial;
+  final void Function(String tab)? onTabChanged;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -224,7 +301,23 @@ class SettingsLargePage extends ConsumerStatefulWidget {
 }
 
 class _SettingsLargePageState extends ConsumerState<SettingsLargePage> {
-  var _selectedEntry = 0;
+  late var _selectedEntry = _findInitialIndex(widget.initial);
+
+  int _findInitialIndex(String? initial) {
+    if (initial == null) {
+      return 0;
+    }
+
+    final options = SettingsPageScope.of(context).options;
+    for (final entry in options.entries) {
+      // fuzzy search
+      if (entry.title.toLowerCase().contains(initial.toLowerCase())) {
+        return options.entries.indexOf(entry);
+      }
+    }
+
+    return 0;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -251,6 +344,7 @@ class _SettingsLargePageState extends ConsumerState<SettingsLargePage> {
                   showLeading: options.showIcon,
                   onTap: () => setState(() {
                     _selectedEntry = entries.indexOf(entry);
+                    widget.onTabChanged?.call(entry.title);
                   }),
                 ),
               const SettingsPageOtherSection(),

@@ -56,7 +56,7 @@ class BooruDialog extends StatelessWidget {
                 maxWidth:
                     min(MediaQuery.sizeOf(context).width * 0.8, width ?? 500),
                 maxHeight:
-                    min(MediaQuery.sizeOf(context).height * 0.8, height ?? 800),
+                    min(MediaQuery.sizeOf(context).height * 0.9, height ?? 800),
               ),
               decoration: BoxDecoration(
                 borderRadius: borderRadius ?? BorderRadius.circular(8),

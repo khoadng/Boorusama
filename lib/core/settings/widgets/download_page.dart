@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -11,6 +10,7 @@ import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/downloads/l10n.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/settings/widgets/widgets/settings_tile.dart';
+import 'package:boorusama/router.dart';
 import 'widgets/settings_page_scaffold.dart';
 
 class DownloadPage extends ConsumerStatefulWidget {
@@ -65,9 +65,12 @@ class _DownloadPageState extends ConsumerState<DownloadPage> {
 }
 
 Future<void> openDownloadSettingsPage(BuildContext context) {
-  return Navigator.of(context).push(
-    CupertinoPageRoute(
-      builder: (context) => const DownloadPage(),
-    ),
+  return context.push(
+    Uri(
+      path: '/settings',
+      queryParameters: {
+        'initial': 'download',
+      },
+    ).toString(),
   );
 }

@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -149,9 +148,12 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
 }
 
 Future<void> openImageViewerSettingsPage(BuildContext context) {
-  return Navigator.of(context).push(
-    CupertinoPageRoute(
-      builder: (context) => const ImageViewerPage(),
-    ),
+  return context.push(
+    Uri(
+      path: '/settings',
+      queryParameters: {
+        'initial': 'viewer',
+      },
+    ).toString(),
   );
 }
