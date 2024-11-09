@@ -112,11 +112,10 @@ class Routes {
             );
           } else {
             return builder != null
-                ? CustomTransitionPage(
+                ? FastFadePage(
                     key: state.pageKey,
                     name: state.name,
                     child: builder(context, config, payload),
-                    transitionsBuilder: fadeTransitionBuilder(),
                   )
                 : MaterialPage(
                     key: state.pageKey,

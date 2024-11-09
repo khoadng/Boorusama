@@ -18,23 +18,20 @@ GoRouterPageBuilder genericMobilePageBuilder({
           child: builder(context, state),
         );
 
-GoRouterPageBuilder largeScreenAwarePageBuilder({
+GoRouterPageBuilder largeScreenAwarePageBuilder<T>({
   required Widget Function(BuildContext context, GoRouterState state) builder,
 }) =>
     (context, state) {
       return context.orientation.isPortrait
-          ? CupertinoPage(
+          ? CupertinoPage<T>(
               key: state.pageKey,
               name: state.name,
               child: builder(context, state),
             )
-          : CustomTransitionPage(
+          : FastFadePage<T>(
               key: state.pageKey,
               name: state.name,
               child: builder(context, state),
-              transitionDuration: const Duration(milliseconds: 200),
-              reverseTransitionDuration: const Duration(milliseconds: 200),
-              transitionsBuilder: fadeTransitionBuilder(),
             );
     };
 
@@ -52,3 +49,29 @@ GoRouterPageBuilder platformAwarePageBuilder<T>({
             name: state.name,
             child: builder(context, state),
           );
+
+class FastFadePageRoute<T> extends PageRouteBuilder<T> {
+  FastFadePageRoute({
+    super.settings,
+    required this.child,
+  }) : super(
+          transitionDuration: const Duration(milliseconds: 100),
+          reverseTransitionDuration: const Duration(milliseconds: 100),
+          pageBuilder: (context, animation, secondaryAnimation) => child,
+          transitionsBuilder: fadeTransitionBuilder(),
+        );
+
+  final Widget child;
+}
+
+class FastFadePage<T> extends CustomTransitionPage<T> {
+  FastFadePage({
+    required super.child,
+    super.name,
+    super.key,
+  }) : super(
+          transitionsBuilder: fadeTransitionBuilder(),
+          transitionDuration: const Duration(milliseconds: 100),
+          reverseTransitionDuration: const Duration(milliseconds: 100),
+        );
+}

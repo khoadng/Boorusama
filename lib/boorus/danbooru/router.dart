@@ -49,7 +49,7 @@ void goToPoolDetailPage(BuildContext context, DanbooruPool pool) {
 }
 
 void goToPostVersionPage(BuildContext context, DanbooruPost post) {
-  if (kPreferredLayout.isMobile) {
+  if (context.orientation.isPortrait) {
     context.navigator.push(
       CupertinoPageRoute(
         builder: (_) => DanbooruPostVersionsPage(
@@ -422,15 +422,15 @@ void goToTagEditPage(
   BuildContext context, {
   required DanbooruPost post,
 }) {
-  if (Screen.of(context).size == ScreenSize.small) {
+  if (context.orientation.isPortrait) {
     context.navigator.push(CupertinoPageRoute(
       builder: (context) => TagEditPage(
         post: post,
       ),
     ));
   } else {
-    context.navigator.push(MaterialPageRoute(
-      builder: (context) => TagEditPage(
+    context.navigator.push(FastFadePageRoute(
+      child: TagEditPage(
         post: post,
       ),
     ));

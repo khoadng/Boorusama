@@ -96,7 +96,7 @@ void goToPostDetailsPage<T extends Post>({
       initialIndex: initialIndex,
       posts: posts,
       scrollController: scrollController,
-      isDesktop: kPreferredLayout.isDesktop,
+      isDesktop: context.orientation.isLandscape,
     ),
   );
 }
