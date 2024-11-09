@@ -7,14 +7,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/core/configs/create/create.dart';
 
-class BooruConfigMiscView extends ConsumerWidget {
-  const BooruConfigMiscView({
+class BooruConfigViewerView extends ConsumerWidget {
+  const BooruConfigViewerView({
     super.key,
-    this.miscOptions,
     this.postDetailsResolution,
   });
 
-  final List<Widget>? miscOptions;
   final Widget? postDetailsResolution;
 
   @override
@@ -29,7 +27,6 @@ class BooruConfigMiscView extends ConsumerWidget {
             postDetailsResolution!
           else
             const DefaultImageDetailsQualityTile(),
-          if (miscOptions != null) ...miscOptions!,
         ],
       ),
     );

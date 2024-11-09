@@ -20,10 +20,11 @@ class SettingsPageScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final options = SettingsPageScope.of(context).options;
+    final options = SettingsPageScope.maybeOf(context)?.options;
+    final hasAppBar = !(options?.dense ?? false);
 
     return ConditionalParentWidget(
-      condition: !options.dense,
+      condition: hasAppBar,
       conditionalBuilder: (child) => Scaffold(
         appBar: AppBar(
           title: title,

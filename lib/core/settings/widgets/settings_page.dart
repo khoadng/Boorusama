@@ -487,6 +487,10 @@ class SettingsPageScope extends InheritedWidget {
     return item;
   }
 
+  static SettingsPageScope? maybeOf(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<SettingsPageScope>();
+  }
+
   final SettingsPageOptions options;
 
   @override

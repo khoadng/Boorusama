@@ -89,7 +89,6 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
     this.postDetailsResolution,
     this.hasDownloadTab = true,
     this.hasRatingFilter = false,
-    this.miscOptions,
     this.postDetailsGestureActions = kDefaultGestureActions,
     this.postPreviewQuickActionButtonActions = kDefaultPreviewImageButtonAction,
     this.describePostDetailsAction,
@@ -109,8 +108,6 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
 
   final bool hasDownloadTab;
   final bool hasRatingFilter;
-
-  final List<Widget>? miscOptions;
 
   final Set<String?> postDetailsGestureActions;
   final String Function(String? action)? describePostDetailsAction;
@@ -148,9 +145,8 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
         postDetailsGestureActions: postDetailsGestureActions,
         describePostDetailsAction: describePostDetailsAction,
       ),
-      'booru.misc': BooruConfigMiscView(
+      'settings.image_viewer.image_viewer': BooruConfigViewerView(
         postDetailsResolution: postDetailsResolution,
-        miscOptions: miscOptions,
       ),
     };
 
