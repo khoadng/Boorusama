@@ -9,12 +9,18 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/settings/widgets/widgets.dart';
+import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class BooruConfigListingView extends ConsumerWidget {
   const BooruConfigListingView({
     super.key,
+    required this.postPreviewQuickActionButtonActions,
+    required this.describePostPreviewQuickAction,
   });
+
+  final Set<String?> postPreviewQuickActionButtonActions;
+  final String Function(String? action)? describePostPreviewQuickAction;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -36,6 +42,31 @@ class BooruConfigListingView extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              visualDensity: VisualDensity.compact,
+              title: const Text("Thumbnail's button"),
+              subtitle: const Text(
+                'Change the default button at the right bottom of the thumbnail.',
+              ),
+              trailing: OptionDropDownButton(
+                alignment: AlignmentDirectional.centerStart,
+                value: ref.watch(editBooruConfigProvider(
+                        ref.watch(editBooruConfigIdProvider))
+                    .select((value) => value.defaultPreviewImageButtonAction)),
+                onChanged: (value) => ref.editNotifier
+                    .updateDefaultPreviewImageButtonAction(value),
+                items: postPreviewQuickActionButtonActions
+                    .map((value) => DropdownMenuItem(
+                          value: value,
+                          child: Text(describePostPreviewQuickAction != null
+                              ? describePostPreviewQuickAction!(value)
+                              : describeImagePreviewQuickAction(value)),
+                        ))
+                    .toList(),
+              ),
+            ),
+            const Divider(),
             SwitchListTile(
               title: const Text("Enable profile's specific settings"),
               subtitle: const Text(
@@ -46,7 +77,6 @@ class BooruConfigListingView extends ConsumerWidget {
                 listing.copyWith(enable: value),
               ),
             ),
-            const Divider(),
             GrayedOut(
               grayedOut: !enable,
               child: ImageListingSettingsSection(

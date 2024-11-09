@@ -131,7 +131,11 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
 
     final tabMap = {
       if (authTab != null) 'booru.authentication': authTab!,
-      'Listing': const BooruConfigListingView(),
+      'Listing': BooruConfigListingView(
+        postPreviewQuickActionButtonActions:
+            postPreviewQuickActionButtonActions,
+        describePostPreviewQuickAction: describePostPreviewQuickAction,
+      ),
       if (hasDownloadTab)
         'booru.download': BooruConfigDownloadView(config: config),
       'Search': searchTab ??
@@ -145,11 +149,6 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
         describePostDetailsAction: describePostDetailsAction,
       ),
       'booru.misc': BooruConfigMiscView(
-        postDetailsGestureActions: postDetailsGestureActions,
-        postPreviewQuickActionButtonActions:
-            postPreviewQuickActionButtonActions,
-        describePostPreviewQuickAction: describePostPreviewQuickAction,
-        describePostDetailsAction: describePostDetailsAction,
         postDetailsResolution: postDetailsResolution,
         miscOptions: miscOptions,
       ),
