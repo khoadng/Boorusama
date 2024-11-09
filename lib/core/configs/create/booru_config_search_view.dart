@@ -24,9 +24,11 @@ class BooruConfigSearchView extends ConsumerWidget {
     super.key,
     required this.hasRatingFilter,
     required this.config,
+    this.extras,
   });
 
   final bool hasRatingFilter;
+  final List<Widget>? extras;
   final BooruConfig config;
 
   @override
@@ -44,6 +46,10 @@ class BooruConfigSearchView extends ConsumerWidget {
           if (hasRatingFilter) ...[
             const SizedBox(height: 12),
             const DefaultBooruRatingOptionsTile(),
+            const Divider(),
+          ],
+          if (extras != null) ...[
+            ...extras!,
             const Divider(),
           ],
           const SizedBox(height: 12),

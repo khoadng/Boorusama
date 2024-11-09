@@ -79,10 +79,14 @@ class CreateDanbooruConfigPage extends ConsumerWidget {
         _ => describeDefaultGestureAction(action),
       },
       postDetailsResolution: const DanbooruImageDetailsQualityProvider(),
-      miscOptions: const [
-        DanbooruHideDeletedSwitch(),
-        DanbooruHideBannedSwitch(),
-      ],
+      searchTab: BooruConfigSearchView(
+        hasRatingFilter: true,
+        config: config,
+        extras: const [
+          DanbooruHideDeletedSwitch(),
+          DanbooruHideBannedSwitch(),
+        ],
+      ),
       canSubmit: validLoginAndApiKey,
     );
   }
