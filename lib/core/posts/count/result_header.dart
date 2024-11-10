@@ -12,11 +12,11 @@ import 'package:boorusama/widgets/widgets.dart';
 class ResultHeaderWithProvider extends ConsumerWidget {
   const ResultHeaderWithProvider({
     super.key,
-    required this.selectedTags,
+    required this.selectedTagsString,
     required this.onRefresh,
   });
 
-  final List<String> selectedTags;
+  final String selectedTagsString;
   final Future<void> Function(bool maintainPage)? onRefresh;
 
   @override
@@ -25,7 +25,7 @@ class ResultHeaderWithProvider extends ConsumerWidget {
 
     if (fetcher == null) return const SizedBox.shrink();
 
-    return ref.watch(postCountProvider(selectedTags.join(' '))).when(
+    return ref.watch(postCountProvider(selectedTagsString)).when(
           data: (data) => data != null
               ? ResultHeader(
                   count: data,
@@ -133,7 +133,7 @@ class SliverResultHeader extends StatelessWidget {
                     ValueListenableBuilder(
                       valueListenable: selectedTagString,
                       builder: (context, value, _) => ResultHeaderWithProvider(
-                        selectedTags: value.split(' '),
+                        selectedTagsString: value,
                         onRefresh: (maintainPage) => controller.refresh(
                           maintainPage: maintainPage,
                         ),
