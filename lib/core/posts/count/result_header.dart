@@ -43,6 +43,39 @@ class ResultHeaderWithProvider extends ConsumerWidget {
   }
 }
 
+class ResultHeaderFromController extends ConsumerWidget {
+  const ResultHeaderFromController({
+    super.key,
+    required this.controller,
+    required this.onRefresh,
+    this.hasCount = false,
+  });
+
+  final bool hasCount;
+  final PostGridController<Post> controller;
+  final Future<void> Function(bool maintainPage)? onRefresh;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (!hasCount) return const SizedBox.shrink();
+
+    return ValueListenableBuilder(
+      valueListenable: controller.count,
+      builder: (context, data, _) => data != null
+          ? ResultHeader(
+              count: data,
+              loading: false,
+              onRefresh: onRefresh != null
+                  ? () async {
+                      await onRefresh!(true);
+                    }
+                  : null,
+            )
+          : const ResultHeader(count: 0, loading: true),
+    );
+  }
+}
+
 class ResultHeader extends StatelessWidget {
   const ResultHeader({
     super.key,

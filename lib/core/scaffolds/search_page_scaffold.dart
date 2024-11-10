@@ -271,9 +271,11 @@ class _SearchPageScaffoldState<T extends Post>
               ...[
                 ValueListenableBuilder(
                   valueListenable: selectedTagString,
-                  builder: (context, value, _) => ResultHeaderWithProvider(
-                    selectedTags: value.split(' '),
+                  builder: (context, value, _) => ResultHeaderFromController(
+                    controller: controller,
                     onRefresh: null,
+                    hasCount: ref.watchConfig.booruType.postCountMethod ==
+                        PostCountMethod.search,
                   ),
                 ),
                 const Spacer(),

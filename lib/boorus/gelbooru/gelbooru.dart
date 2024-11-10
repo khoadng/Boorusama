@@ -146,6 +146,7 @@ Note gelbooruNoteToNote(NoteDto note) {
 class GelbooruBuilder
     with
         UnknownMetatagsMixin,
+        PostCountNotSupportedMixin,
         DefaultMultiSelectionActionsBuilderMixin,
         DefaultHomeMixin,
         DefaultQuickFavoriteButtonBuilderMixin,
@@ -200,18 +201,6 @@ class GelbooruBuilder
               initialTab: initialTab,
             ),
           );
-
-  @override
-  PostCountFetcher? get postCountFetcher => (config, tags, tagComposer) async {
-        // Delay a bit to avoid this request running before the actual search, this is a hack used for the search page
-        await Future.delayed(const Duration(milliseconds: 100));
-
-        final result = await client().getPosts(
-          tags: tagComposer.compose(tags),
-        );
-
-        return result.count;
-      };
 
   @override
   SearchPageBuilder get searchPageBuilder =>

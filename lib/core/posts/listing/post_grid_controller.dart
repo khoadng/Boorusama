@@ -187,6 +187,7 @@ class PostGridController<T extends Post> extends ChangeNotifier {
       PageMode.infinite => _kFirstPage,
       PageMode.paginated => maintainPage ? _page : _kFirstPage,
     };
+    count.value = null;
     notifyListeners();
 
     final newItems =
