@@ -27,11 +27,13 @@ class DetailsPageDesktopController extends ChangeNotifier with UIOverlayMixin {
     required this.totalPages,
     bool hideOverlay = false,
   })  : currentPage = ValueNotifier(initialPage),
+        currentRealtimePage = ValueNotifier(initialPage),
         _hideOverlay = ValueNotifier(hideOverlay);
 
   final ValueNotifier<bool> showInfo = ValueNotifier(false);
   final ValueNotifier<bool> pageSwipe = ValueNotifier(true);
   late final ValueNotifier<int> currentPage;
+  late final ValueNotifier<int> currentRealtimePage;
   final int totalPages;
 
   final StreamController<PageDirection> _pageController =
@@ -56,6 +58,11 @@ class DetailsPageDesktopController extends ChangeNotifier with UIOverlayMixin {
 
   void changePage(int page) {
     currentPage.value = page;
+    notifyListeners();
+  }
+
+  void changeRealtimePage(int page) {
+    currentRealtimePage.value = page;
     notifyListeners();
   }
 

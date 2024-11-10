@@ -150,16 +150,14 @@ class _PostDetailsDesktopScaffoldState<T extends Post>
   void initState() {
     super.initState();
     _pageSubscription = controller.pageStream.listen((event) {
-      if (event == PageDirection.next) {
-        pageController.nextPage(
-          duration: const Duration(milliseconds: 200),
-          curve: Curves.easeInOut,
-        );
-      } else {
-        pageController.previousPage(
-          duration: const Duration(milliseconds: 200),
-          curve: Curves.easeInOut,
-        );
+      final currentRealtimePage = controller.currentRealtimePage.value;
+      final pageIndex = switch (event) {
+        PageDirection.next => currentRealtimePage + 1,
+        PageDirection.previous => currentRealtimePage - 1,
+      };
+
+      if (pageIndex >= 0 && pageIndex < widget.posts.length) {
+        pageController.jumpToPage(pageIndex);
       }
     });
 
@@ -232,6 +230,7 @@ class _PostDetailsDesktopScaffoldState<T extends Post>
             itemCount: widget.posts.length,
             physics: swipe ? null : const NeverScrollableScrollPhysics(),
             onPageChanged: (page) {
+              controller.changeRealtimePage(page);
               ref.read(allowFetchProvider.notifier).state = false;
               _debounceTimer?.cancel();
               _debounceTimer = Timer(
