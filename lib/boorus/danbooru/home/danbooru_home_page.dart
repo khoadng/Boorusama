@@ -312,13 +312,11 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
         if (widget.config.hasLoginDetails()) ...[
           if (userId != null)
             // 5
-            UserDetailsPage(
-              uid: userId,
-              username: widget.config.login!,
+            const DanbooruProfilePage(
               hasAppBar: false,
             ),
           // 6
-          DanbooruFavoritesPage(username: widget.config.login!),
+          const DanbooruFavoritesPage(),
           // 7
           const FavoriteGroupsPage(),
           // 8

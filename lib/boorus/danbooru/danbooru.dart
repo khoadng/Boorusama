@@ -175,16 +175,7 @@ class DanbooruBuilder
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
-      (context, config) => config.login != null
-          ? DanbooruFavoritesPage(username: config.login!)
-          : Scaffold(
-              appBar: AppBar(
-                title: const Text('Favorites'),
-              ),
-              body: const Center(
-                child: Text('You must be logged in to view your favorites'),
-              ),
-            );
+      (context, config) => const DanbooruFavoritesPage();
 
   @override
   ArtistPageBuilder? get artistPageBuilder =>

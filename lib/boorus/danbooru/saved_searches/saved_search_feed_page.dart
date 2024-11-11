@@ -10,6 +10,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:boorusama/boorus/danbooru/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/saved_searches/saved_searches.dart';
+import 'package:boorusama/boorus/danbooru/users/users.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/tags/tags.dart';
@@ -42,6 +43,11 @@ class _SavedSearchFeedPageState extends ConsumerState<SavedSearchFeedPage> {
   @override
   Widget build(BuildContext context) {
     final config = ref.watchConfig;
+
+    if (!config.hasLoginDetails()) {
+      return const UnauthorizedPage();
+    }
+
     final savedSearcheAsync = ref.watch(danbooruSavedSearchesProvider(config));
 
     return savedSearcheAsync.when(

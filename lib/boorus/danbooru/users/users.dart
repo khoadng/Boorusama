@@ -3,6 +3,7 @@ export 'creator.dart';
 export 'creator_repository.dart';
 export 'creators_notifier.dart';
 export 'parser.dart';
+export 'unauthorized_page.dart';
 export 'user.dart';
 export 'user_charts.dart';
 export 'user_details_page.dart';
