@@ -3,6 +3,7 @@ export 'add_unknown_booru_page.dart';
 export 'booru_config_auth_view.dart';
 export 'booru_config_download_view.dart';
 export 'booru_config_gestures_view.dart';
+export 'booru_config_layout_view.dart';
 export 'booru_config_listing_view.dart';
 export 'booru_config_viewer_view.dart';
 export 'booru_config_search_view.dart';

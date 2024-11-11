@@ -86,6 +86,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
     this.tabsBuilder,
     this.authTab,
     this.searchTab,
+    this.layoutTab,
     this.postDetailsResolution,
     this.hasDownloadTab = true,
     this.hasRatingFilter = false,
@@ -103,6 +104,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
 
   final Widget? authTab;
   final Widget? searchTab;
+  final Widget? layoutTab;
 
   final Widget? postDetailsResolution;
 
@@ -141,6 +143,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
             config: config,
           ),
       if (tabsBuilder != null) ...tabsBuilder!(context),
+      'Layout': layoutTab ?? const DefaultBooruConfigLayoutView(),
       'booru.gestures': BooruConfigGesturesView(
         postDetailsGestureActions: postDetailsGestureActions,
         describePostDetailsAction: describePostDetailsAction,

@@ -1,3 +1,4 @@
+export 'booru_desktop_scope.dart';
 export 'booru_scope.dart';
 export 'empty_booru_config_home_page.dart';
 export 'home_navigation_tile.dart';
@@ -6,3 +7,4 @@ export 'home_page_scaffold.dart';
 export 'home_search_bar.dart';
 export 'side_bar_menu.dart';
 export 'side_menu_tile.dart';
+export 'user_custom_home_builder.dart';

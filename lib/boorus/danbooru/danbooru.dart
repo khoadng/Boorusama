@@ -6,10 +6,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/boorus/danbooru/explores/explores.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
+import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/tags/tags.dart';
@@ -314,8 +316,16 @@ class DanbooruBuilder
 
   @override
   HomeViewBuilder get homeViewBuilder => (context, config, controller) {
-        return LatestView(
-          controller: controller,
+        return UserCustomHomeBuilder(
+          homePageController: controller,
+          defaultView: LatestView(
+            controller: controller,
+          ),
+          builder: (context, viewName) => switch (viewName) {
+            'favorites' => const DanbooruFavoritesPage(),
+            'explore' => const DanbooruExplorePage(),
+            _ => null,
+          },
         );
       };
 

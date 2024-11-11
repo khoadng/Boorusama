@@ -18,7 +18,6 @@ import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/router.dart';
-import 'booru_desktop_scope.dart';
 
 const String kMenuWidthCacheKey = 'menu_width';
 

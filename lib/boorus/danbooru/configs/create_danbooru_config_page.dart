@@ -14,6 +14,12 @@ import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import 'widgets.dart';
 
+const kDanbooruAltHomeView = [
+  ...kDefaultAltHomeView,
+  'explore',
+  'favorites',
+];
+
 class CreateDanbooruConfigPage extends ConsumerWidget {
   const CreateDanbooruConfigPage({
     super.key,
@@ -78,6 +84,14 @@ class CreateDanbooruConfigPage extends ConsumerWidget {
         kEditAction => 'Edit',
         _ => describeDefaultGestureAction(action),
       },
+      layoutTab: BooruConfigLayoutView(
+        altHomeView: kDanbooruAltHomeView,
+        describeHomeView: (value) => switch (value) {
+          'favorites' => 'Favorites',
+          'explore' => 'Explore',
+          _ => defaultDescribeHomeView(value),
+        },
+      ),
       postDetailsResolution: const DanbooruImageDetailsQualityProvider(),
       searchTab: BooruConfigSearchView(
         hasRatingFilter: true,
