@@ -1,10 +1,38 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 // Project imports:
-import 'package:boorusama/boorus/danbooru/users/users.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
+import 'users.dart';
+
+class UserDetailsInfoView extends ConsumerWidget {
+  const UserDetailsInfoView({
+    super.key,
+    required this.uid,
+    required this.isSelf,
+    required this.user,
+  });
+
+  final bool isSelf;
+  final DanbooruUser user;
+  final int uid;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          const SizedBox(height: 12),
+          UserStatsGroup(user: user),
+        ],
+      ),
+    );
+  }
+}
 
 class UserStatsGroup extends StatelessWidget {
   const UserStatsGroup({

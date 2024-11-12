@@ -19,8 +19,6 @@ import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import 'booru_selector_item.dart';
-import 'remove_booru_alert_dialog.dart';
 
 class BooruSelector extends ConsumerWidget {
   const BooruSelector({
