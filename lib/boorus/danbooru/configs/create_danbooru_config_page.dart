@@ -69,21 +69,25 @@ class CreateDanbooruConfigPage extends ConsumerWidget {
           ),
         ),
       ),
-      hasRatingFilter: true,
-      postDetailsGestureActions: const {
-        ...kDefaultGestureActions,
-        kToggleFavoriteAction,
-        kUpvoteAction,
-        kDownvoteAction,
-        kEditAction,
-      },
-      describePostDetailsAction: (action) => switch (action) {
-        kToggleFavoriteAction => 'Toggle favorite',
-        kUpvoteAction => 'Upvote',
-        kDownvoteAction => 'Downvote',
-        kEditAction => 'Edit',
-        _ => describeDefaultGestureAction(action),
-      },
+      gestureTab: BooruConfigGesturesView(
+        postDetailsGestureActions: const {
+          ...kDefaultGestureActions,
+          kToggleFavoriteAction,
+          kUpvoteAction,
+          kDownvoteAction,
+          kEditAction,
+        },
+        describePostDetailsAction: (action) => switch (action) {
+          kToggleFavoriteAction => 'Toggle favorite',
+          kUpvoteAction => 'Upvote',
+          kDownvoteAction => 'Downvote',
+          kEditAction => 'Edit',
+          _ => describeDefaultGestureAction(action),
+        },
+      ),
+      imageViewerTab: BooruConfigViewerView(
+        postDetailsResolution: const DanbooruImageDetailsQualityProvider(),
+      ),
       layoutTab: BooruConfigLayoutView(
         altHomeView: kDanbooruAltHomeView,
         describeHomeView: (value) => switch (value) {
@@ -92,7 +96,6 @@ class CreateDanbooruConfigPage extends ConsumerWidget {
           _ => defaultDescribeHomeView(value),
         },
       ),
-      postDetailsResolution: const DanbooruImageDetailsQualityProvider(),
       searchTab: BooruConfigSearchView(
         hasRatingFilter: true,
         config: config,

@@ -16,7 +16,6 @@ import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/search_histories/search_histories.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/error.dart';
-import 'package:boorusama/router.dart';
 
 class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   const SearchPageScaffold({
@@ -186,6 +185,8 @@ class _SearchPageScaffoldState<T extends Post>
     BuildContext context,
     void Function() search,
   ) {
+    final parentRoute = ModalRoute.of(context);
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight * 1.2),
@@ -193,7 +194,9 @@ class _SearchPageScaffoldState<T extends Post>
           focusNode: focus,
           autofocus: ref.watch(settingsProvider).autoFocusSearchBar,
           controller: textController,
-          leading: (!context.canPop() ? null : const SearchAppBarBackButton()),
+          leading: (parentRoute?.impliesAppBarDismissal ?? false)
+              ? const SearchAppBarBackButton()
+              : null,
         ),
       ),
       floatingActionButton: ValueListenableBuilder(
@@ -334,6 +337,8 @@ class _SuggestionViewState extends State<SuggestionView> {
 
   @override
   Widget build(BuildContext context) {
+    final parentRoute = ModalRoute.of(context);
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight * 1.2),
@@ -341,7 +346,9 @@ class _SuggestionViewState extends State<SuggestionView> {
           focusNode: focus,
           controller: textController,
           onSubmitted: (value) => widget.searchController.submit(value),
-          leading: (!context.canPop() ? null : const SearchAppBarBackButton()),
+          leading: (parentRoute?.impliesAppBarDismissal ?? false)
+              ? const SearchAppBarBackButton()
+              : null,
         ),
       ),
       body: DefaultSearchSuggestionView(
