@@ -42,6 +42,8 @@ class _SliverSearchAppBarState extends ConsumerState<SliverSearchAppBar> {
 
   @override
   Widget build(BuildContext context) {
+    final parentRoute = ModalRoute.of(context);
+
     return SliverAppBar(
       floating: true,
       snap: true,
@@ -54,7 +56,9 @@ class _SliverSearchAppBarState extends ConsumerState<SliverSearchAppBar> {
         child: SearchAppBar(
           autofocus: false,
           controller: widget.searchController.textEditingController,
-          leading: (!context.canPop() ? null : const SearchAppBarBackButton()),
+          leading: (parentRoute?.impliesAppBarDismissal ?? false)
+              ? const SearchAppBarBackButton()
+              : null,
           innerSearchButton: Padding(
             padding: const EdgeInsets.only(right: 8),
             child: SearchButton2(
