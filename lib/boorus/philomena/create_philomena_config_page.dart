@@ -24,7 +24,9 @@ class CreatePhilomenaConfigPage extends StatelessWidget {
       initialTab: initialTab,
       backgroundColor: backgroundColor,
       authTab: const PhilomenaAuthConfigView(),
-      postDetailsResolution: const PhilomenaImageDetailsQualityProvider(),
+      imageViewerTab: const BooruConfigViewerView(
+        postDetailsResolution: PhilomenaImageDetailsQualityProvider(),
+      ),
       canSubmit: alwaysSubmit,
     );
   }

@@ -24,7 +24,9 @@ class CreateGelbooruV2ConfigPage extends StatelessWidget {
       initialTab: initialTab,
       backgroundColor: backgroundColor,
       authTab: const GelbooruV2AuthView(),
-      hasRatingFilter: true,
+      searchTab: DefaultBooruConfigSearchView(
+        hasRatingFilter: true,
+      ),
     );
   }
 }

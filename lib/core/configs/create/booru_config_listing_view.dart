@@ -12,6 +12,17 @@ import 'package:boorusama/core/settings/widgets/widgets.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
+class DefaultBooruConfigListingView extends ConsumerWidget {
+  const DefaultBooruConfigListingView({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return BooruConfigListingView(
+      postPreviewQuickActionButtonActions: kDefaultPreviewImageButtonAction,
+      describePostPreviewQuickAction: null,
+    );
+  }
+}
+
 class BooruConfigListingView extends ConsumerWidget {
   const BooruConfigListingView({
     super.key,

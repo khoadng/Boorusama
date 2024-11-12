@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/foundation/theme.dart';
@@ -14,13 +13,11 @@ import 'package:boorusama/foundation/theme.dart';
 class BooruConfigDownloadView extends ConsumerWidget {
   const BooruConfigDownloadView({
     super.key,
-    required this.config,
   });
-
-  final BooruConfig config;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watch(initialBooruConfigProvider);
     final id = ref.watch(editBooruConfigIdProvider);
     final customDownloadFileNameFormat = ref.watch(editBooruConfigProvider(id)
         .select((value) => value.customDownloadFileNameFormat));

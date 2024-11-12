@@ -33,7 +33,9 @@ class CreateGelbooruConfigPage extends ConsumerWidget {
       backgroundColor: backgroundColor,
       initialTab: initialTab,
       authTab: const GelbooruAuthView(),
-      hasRatingFilter: true,
+      searchTab: DefaultBooruConfigSearchView(
+        hasRatingFilter: true,
+      ),
     );
   }
 }

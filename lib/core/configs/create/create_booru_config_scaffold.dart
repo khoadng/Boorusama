@@ -83,37 +83,25 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
   const CreateBooruConfigScaffold({
     super.key,
     this.backgroundColor,
-    this.tabsBuilder,
     this.authTab,
     this.searchTab,
-    this.postDetailsResolution,
-    this.hasDownloadTab = true,
-    this.hasRatingFilter = false,
-    this.postDetailsGestureActions = kDefaultGestureActions,
-    this.postPreviewQuickActionButtonActions = kDefaultPreviewImageButtonAction,
-    this.describePostDetailsAction,
-    this.describePostPreviewQuickAction,
+    this.downloadTab,
+    this.gestureTab,
+    this.imageViewerTab,
+    this.listingTab,
     this.canSubmit,
     required this.initialTab,
     this.footer,
   });
 
   final Color? backgroundColor;
-  final Map<String, Widget> Function(BuildContext context)? tabsBuilder;
 
   final Widget? authTab;
   final Widget? searchTab;
-
-  final Widget? postDetailsResolution;
-
-  final bool hasDownloadTab;
-  final bool hasRatingFilter;
-
-  final Set<String?> postDetailsGestureActions;
-  final String Function(String? action)? describePostDetailsAction;
-
-  final Set<String?> postPreviewQuickActionButtonActions;
-  final String Function(String? action)? describePostPreviewQuickAction;
+  final Widget? downloadTab;
+  final Widget? gestureTab;
+  final Widget? imageViewerTab;
+  final Widget? listingTab;
 
   final String? initialTab;
 
@@ -123,31 +111,16 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watch(initialBooruConfigProvider);
     final editId = ref.watch(editBooruConfigIdProvider);
 
     final tabMap = {
       if (authTab != null) 'booru.authentication': authTab!,
-      'Listing': BooruConfigListingView(
-        postPreviewQuickActionButtonActions:
-            postPreviewQuickActionButtonActions,
-        describePostPreviewQuickAction: describePostPreviewQuickAction,
-      ),
-      if (hasDownloadTab)
-        'booru.download': BooruConfigDownloadView(config: config),
-      'Search': searchTab ??
-          BooruConfigSearchView(
-            hasRatingFilter: hasRatingFilter,
-            config: config,
-          ),
-      if (tabsBuilder != null) ...tabsBuilder!(context),
-      'booru.gestures': BooruConfigGesturesView(
-        postDetailsGestureActions: postDetailsGestureActions,
-        describePostDetailsAction: describePostDetailsAction,
-      ),
-      'settings.image_viewer.image_viewer': BooruConfigViewerView(
-        postDetailsResolution: postDetailsResolution,
-      ),
+      'Listing': listingTab ?? const DefaultBooruConfigListingView(),
+      'booru.download': downloadTab ?? const BooruConfigDownloadView(),
+      'Search': searchTab ?? const DefaultBooruConfigSearchView(),
+      'booru.gestures': gestureTab ?? const DefaultBooruConfigGesturesView(),
+      'settings.image_viewer.image_viewer':
+          imageViewerTab ?? const BooruConfigViewerView(),
     };
 
     return Scaffold(
