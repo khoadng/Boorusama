@@ -1,4 +1,8 @@
 // Flutter imports:
+import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/router.dart';
+import 'package:boorusama/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -42,6 +46,7 @@ class UserCustomHomeBuilder extends ConsumerWidget {
 
     return CustomHomeContainer(
       homePageController: homePageController,
+      canSearch: viewName == 'search',
       child: view,
     );
   }
@@ -75,6 +80,7 @@ class FallbackHomeBuilder extends ConsumerWidget {
 
     return CustomHomeContainer(
       homePageController: homePageController,
+      canSearch: viewName == 'search',
       child: view,
     );
   }
@@ -85,31 +91,72 @@ class CustomHomeContainer extends ConsumerWidget {
     super.key,
     required this.homePageController,
     required this.child,
+    required this.canSearch,
   });
 
+  final bool canSearch;
   final HomePageController homePageController;
   final Widget child;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final appInfo = ref.watch(appInfoProvider);
+    final appName = appInfo.appName;
+
     return Column(
       children: [
         AppBar(
           toolbarHeight: 40,
           title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              IconButton(
-                splashRadius: 16,
-                icon: const Icon(Symbols.menu),
-                onPressed: () {
-                  homePageController.openMenu();
-                },
+              Row(
+                children: [
+                  IconButton(
+                    splashRadius: 16,
+                    icon: const Icon(Symbols.menu),
+                    onPressed: () {
+                      homePageController.openMenu();
+                    },
+                  ),
+                  Image.asset(
+                    'assets/images/logo.png',
+                    width: 18,
+                    height: 18,
+                    isAntiAlias: true,
+                    filterQuality: FilterQuality.none,
+                  ),
+                  const SizedBox(width: 8),
+                  Material(
+                    color: Colors.transparent,
+                    child: Text(
+                      appName,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: context.colorScheme.onSurface,
+                        fontSize: 18,
+                        letterSpacing: -1,
+                      ),
+                    ),
+                  ),
+                ],
               ),
+              if (!canSearch)
+                CircularIconButton(
+                  onPressed: () {
+                    goToSearchPage(context);
+                  },
+                  icon: Icon(Symbols.search),
+                ),
             ],
           ),
         ),
         Expanded(
-          child: child,
+          child: MediaQuery.removePadding(
+            context: context,
+            removeTop: true,
+            child: child,
+          ),
         ),
       ],
     );
