@@ -11,7 +11,6 @@ import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'firebase_analytics.dart';
 import 'firebase_crashlytics.dart';
-import 'firebase_options.dart';
 
 export 'firebase_analytics.dart';
 export 'firebase_crashlytics.dart';
@@ -22,9 +21,7 @@ Future<(AnalyticsInterface? analytics, ErrorReporter? reporter)>
     return (null, null);
   }
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp();
 
   final firebaseAnalytics = FirebaseAnalyticsImpl(
     dataCollectingStatus: settings.dataCollectingStatus,
