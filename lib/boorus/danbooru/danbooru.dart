@@ -6,8 +6,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/boorus/danbooru/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/explores/explores.dart';
+import 'package:boorusama/boorus/danbooru/favorite_groups/favorite_groups.dart';
+import 'package:boorusama/boorus/danbooru/forums/forums.dart';
+import 'package:boorusama/boorus/danbooru/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/boorus/danbooru/saved_searches/saved_searches.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
@@ -321,11 +326,7 @@ class DanbooruBuilder
           defaultView: LatestView(
             controller: controller,
           ),
-          builder: (context, viewKey) => switch (viewKey?.name) {
-            'favorites' => const DanbooruFavoritesPage(),
-            'explore' => const DanbooruExplorePage(),
-            _ => null,
-          },
+          data: kDanbooruAltHomeView,
         );
       };
 
@@ -354,6 +355,38 @@ class DanbooruBuilder
             : DefaultMultiSelectionActions(controller: controller);
       };
 }
+
+final kDanbooruAltHomeView = {
+  ...kDefaultAltHomeView,
+  CustomHomeViewKey('explore'): CustomHomeDataBuilder(
+    displayName: 'Explore',
+    builder: (context, _) => const DanbooruExplorePage(),
+  ),
+  CustomHomeViewKey('favorites'): CustomHomeDataBuilder(
+    displayName: 'Favorites',
+    builder: (context, _) => const DanbooruFavoritesPage(),
+  ),
+  CustomHomeViewKey('artists'): CustomHomeDataBuilder(
+    displayName: 'Artists',
+    builder: (context, _) => const DanbooruArtistSearchPage(),
+  ),
+  CustomHomeViewKey('forum'): CustomHomeDataBuilder(
+    displayName: 'Forum',
+    builder: (context, _) => const DanbooruForumPage(),
+  ),
+  CustomHomeViewKey('favgroup'): CustomHomeDataBuilder(
+    displayName: 'Favorite groups',
+    builder: (context, _) => const FavoriteGroupsPage(),
+  ),
+  CustomHomeViewKey('saved_searches'): CustomHomeDataBuilder(
+    displayName: 'Saved searches',
+    builder: (context, _) => SavedSearchFeedPage.of(context),
+  ),
+  CustomHomeViewKey('pools'): CustomHomeDataBuilder(
+    displayName: 'Pools',
+    builder: (context, _) => const DanbooruPoolPage(),
+  ),
+};
 
 bool handleDanbooruGestureAction(
   String? action, {

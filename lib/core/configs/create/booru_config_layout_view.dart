@@ -18,7 +18,7 @@ class DefaultBooruConfigLayoutView extends StatelessWidget {
     return BooruConfigLayoutView(
       altHomeView: kDefaultAltHomeView.keys.toList(),
       decribeView: (viewKey) =>
-          kDefaultAltHomeView[viewKey]?['displayName'] ?? 'Unknown',
+          kDefaultAltHomeView[viewKey]?.displayName ?? 'Unknown',
     );
   }
 }

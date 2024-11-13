@@ -1,5 +1,13 @@
+// Flutter imports:
+import 'package:flutter/widgets.dart';
+
 // Package imports:
 import 'package:equatable/equatable.dart';
+
+// Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/core/bookmarks/bookmarks.dart';
+import 'package:boorusama/core/downloads/downloads.dart';
 
 const _kDefaultView = 'default';
 
@@ -38,14 +46,39 @@ extension CustomViewKeyX on CustomHomeViewKey? {
   bool get isAlt => !isDefault;
 }
 
+class CustomHomeDataBuilder extends Equatable {
+  const CustomHomeDataBuilder({
+    required this.displayName,
+    required this.builder,
+  });
+
+  final String displayName;
+  final Widget Function(BuildContext context, BooruBuilder booruBuilder)?
+      builder;
+
+  @override
+  List<Object?> get props => [
+        displayName,
+        builder,
+      ];
+}
+
 final kDefaultAltHomeView = {
-  CustomHomeViewKey.defaultValue(): {
-    'displayName': 'Default',
-  },
-  CustomHomeViewKey('search'): {
-    'displayName': 'Search',
-  },
-  CustomHomeViewKey('bookmark'): {
-    'displayName': 'Bookmark',
-  }
+  CustomHomeViewKey.defaultValue(): CustomHomeDataBuilder(
+    displayName: 'Default',
+    builder: null,
+  ),
+  CustomHomeViewKey('search'): CustomHomeDataBuilder(
+    displayName: 'Search',
+    builder: (context, booruBuilder) =>
+        booruBuilder.searchPageBuilder(context, null),
+  ),
+  CustomHomeViewKey('bookmark'): CustomHomeDataBuilder(
+    displayName: 'Bookmarks',
+    builder: (context, booruBuilder) => const BookmarkPage(),
+  ),
+  CustomHomeViewKey('bulk_download'): CustomHomeDataBuilder(
+    displayName: 'Bulk Download',
+    builder: (context, booruBuilder) => const BulkDownloadPage(),
+  ),
 };

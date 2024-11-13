@@ -8,7 +8,6 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/bookmarks/widgets/bookmark_page.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
@@ -18,62 +17,26 @@ class UserCustomHomeBuilder extends ConsumerWidget {
   const UserCustomHomeBuilder({
     super.key,
     required this.defaultView,
-    this.builder,
     required this.homePageController,
+    required this.data,
   });
 
   final Widget defaultView;
-  final Widget? Function(BuildContext context, CustomHomeViewKey? viewKey)?
-      builder;
   final HomePageController homePageController;
+  final Map<CustomHomeViewKey, CustomHomeDataBuilder> data;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final viewKey = ref.watchConfig.layout?.home;
+    final booruBuilder = ref.watch(booruBuilderProvider);
 
-    final view = builder?.call(
-      context,
-      viewKey,
-    );
+    final viewBuilder = data[viewKey]?.builder;
 
-    if (view == null) {
-      return FallbackHomeBuilder(
-        defaultView: defaultView,
-        homePageController: homePageController,
-      );
+    if (viewKey == null || booruBuilder == null || viewBuilder == null) {
+      return defaultView;
     }
 
-    return CustomHomeContainer(
-      homePageController: homePageController,
-      child: view,
-    );
-  }
-}
-
-class FallbackHomeBuilder extends ConsumerWidget {
-  const FallbackHomeBuilder({
-    super.key,
-    required this.defaultView,
-    required this.homePageController,
-  });
-
-  final Widget defaultView;
-  final HomePageController homePageController;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final viewKey = ref.watchConfig.layout?.home;
-    final searchPageBuilder =
-        ref.watch(booruBuilderProvider)?.searchPageBuilder;
-
-    final view = switch (viewKey?.name) {
-      'bookmark' => const BookmarkPage(),
-      'search' =>
-        searchPageBuilder != null ? searchPageBuilder(context, null) : null,
-      _ => null,
-    };
-
-    if (view == null) return defaultView;
+    final view = viewBuilder(context, booruBuilder);
 
     return CustomHomeContainer(
       homePageController: homePageController,
