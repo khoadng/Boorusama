@@ -84,7 +84,7 @@ class SzurubooruBuilder
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
-      (context, config) => SzurubooruFavoritesPage(username: config.name);
+      (context, config) => const SzurubooruFavoritesPage();
 
   @override
   FavoriteAdder? get favoriteAdder => (postId, ref) => ref
@@ -210,7 +210,22 @@ class SzurubooruCommentPage extends ConsumerWidget {
 }
 
 class SzurubooruFavoritesPage extends ConsumerWidget {
-  const SzurubooruFavoritesPage({
+  const SzurubooruFavoritesPage({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
+
+    return BooruConfigAuthFailsafe(
+      child: SzurubooruFavoritesPageInternal(
+        username: config.login!,
+      ),
+    );
+  }
+}
+
+class SzurubooruFavoritesPageInternal extends ConsumerWidget {
+  const SzurubooruFavoritesPageInternal({
     super.key,
     required this.username,
   });

@@ -205,14 +205,7 @@ class GelbooruV2Builder
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
-      (context, config) => config.hasLoginDetails()
-          ? GelbooruV2FavoritesPage(uid: config.login!)
-          : const Scaffold(
-              body: Center(
-                child: Text(
-                    'You need to provide login details to use this feature.'),
-              ),
-            );
+      (context, config) => const GelbooruV2FavoritesPage();
 
   @override
   ArtistPageBuilder? get artistPageBuilder =>
@@ -277,7 +270,22 @@ class GelbooruV2SearchPage extends ConsumerWidget {
 }
 
 class GelbooruV2FavoritesPage extends ConsumerWidget {
-  const GelbooruV2FavoritesPage({
+  const GelbooruV2FavoritesPage({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
+
+    return BooruConfigAuthFailsafe(
+      child: GelbooruV2FavoritesPageInternal(
+        uid: config.login!,
+      ),
+    );
+  }
+}
+
+class GelbooruV2FavoritesPageInternal extends ConsumerWidget {
+  const GelbooruV2FavoritesPageInternal({
     super.key,
     required this.uid,
   });

@@ -195,14 +195,7 @@ class E621Builder
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
-      (context, config) => config.hasLoginDetails()
-          ? E621FavoritesPage(username: config.login!)
-          : const Scaffold(
-              body: Center(
-                child: Text(
-                    'You need to provide login details to use this feature.'),
-              ),
-            );
+      (context, config) => const E621FavoritesPage();
 
   @override
   ArtistPageBuilder? get artistPageBuilder =>

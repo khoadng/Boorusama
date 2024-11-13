@@ -5,27 +5,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/e621/posts/posts.dart';
+import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 
-class E621FavoritesPage extends ConsumerWidget {
-  const E621FavoritesPage({super.key});
+class MoebooruFavoritesPage extends ConsumerWidget {
+  const MoebooruFavoritesPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfig;
 
     return BooruConfigAuthFailsafe(
-      child: E621FavoritesPageInternal(
+      child: MoebooruFavoritesPageInternalPage(
         username: config.login!,
       ),
     );
   }
 }
 
-class E621FavoritesPageInternal extends ConsumerWidget {
-  const E621FavoritesPageInternal({
+class MoebooruFavoritesPageInternalPage extends ConsumerWidget {
+  const MoebooruFavoritesPageInternalPage({
     super.key,
     required this.username,
   });
@@ -35,11 +35,12 @@ class E621FavoritesPageInternal extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfig;
-    final query = 'fav:${config.login?.replaceAll(' ', '_')}';
+    final query = 'vote:3:$username order:vote';
 
     return FavoritesPageScaffold(
-        favQueryBuilder: () => query,
-        fetcher: (page) =>
-            ref.read(e621PostRepoProvider(config)).getPosts(query, page));
+      favQueryBuilder: () => query,
+      fetcher: (page) =>
+          ref.read(moebooruPostRepoProvider(config)).getPosts(query, page),
+    );
   }
 }

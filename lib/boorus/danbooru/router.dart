@@ -120,7 +120,7 @@ void goToExploreMostViewedPage(BuildContext context) {
 
 void goToSavedSearchPage(BuildContext context, String? username) {
   context.navigator.push(CupertinoPageRoute(
-    builder: (_) => SavedSearchFeedPage.of(context),
+    builder: (_) => const SavedSearchFeedPage(),
   ));
 }
 

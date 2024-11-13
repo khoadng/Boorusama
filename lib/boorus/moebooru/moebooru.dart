@@ -20,6 +20,7 @@ import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/functional.dart';
 import 'configs/create_moebooru_config_page.dart';
 import 'feats/posts/posts.dart';
+import 'pages/moebooru_favorites_page.dart';
 import 'pages/moebooru_home_page.dart';
 import 'pages/moebooru_post_details_desktop_page.dart';
 import 'pages/moebooru_post_details_page.dart';
@@ -107,14 +108,7 @@ class MoebooruBuilder
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
-      (context, config) => config.hasLoginDetails()
-          ? MoebooruFavoritesPage(username: config.login!)
-          : const Scaffold(
-              body: Center(
-                child: Text(
-                    'You need to provide login details to use this feature.'),
-              ),
-            );
+      (context, config) => const MoebooruFavoritesPage();
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
@@ -151,27 +145,6 @@ class MoebooruBuilder
       'source': (post, config) => config.downloadUrl,
     },
   );
-}
-
-class MoebooruFavoritesPage extends ConsumerWidget {
-  const MoebooruFavoritesPage({
-    super.key,
-    required this.username,
-  });
-
-  final String username;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
-    final query = 'vote:3:$username order:vote';
-
-    return FavoritesPageScaffold(
-      favQueryBuilder: () => query,
-      fetcher: (page) =>
-          ref.read(moebooruPostRepoProvider(config)).getPosts(query, page),
-    );
-  }
 }
 
 class MoebooruArtistPage extends ConsumerWidget {

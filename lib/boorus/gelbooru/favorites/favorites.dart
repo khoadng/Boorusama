@@ -13,7 +13,22 @@ import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/functional.dart';
 
 class GelbooruFavoritesPage extends ConsumerWidget {
-  const GelbooruFavoritesPage({
+  const GelbooruFavoritesPage({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
+
+    return BooruConfigAuthFailsafe(
+      child: GelbooruFavoritesPageInternal(
+        uid: config.login!,
+      ),
+    );
+  }
+}
+
+class GelbooruFavoritesPageInternal extends ConsumerWidget {
+  const GelbooruFavoritesPageInternal({
     super.key,
     required this.uid,
   });
