@@ -69,16 +69,16 @@ final kDefaultAltHomeView = {
     builder: null,
   ),
   CustomHomeViewKey('search'): CustomHomeDataBuilder(
-    displayName: 'Search',
+    displayName: 'settings.search.search',
     builder: (context, booruBuilder) =>
         booruBuilder.searchPageBuilder(context, null),
   ),
   CustomHomeViewKey('bookmark'): CustomHomeDataBuilder(
-    displayName: 'Bookmarks',
+    displayName: 'sideMenu.your_bookmarks',
     builder: (context, booruBuilder) => const BookmarkPage(),
   ),
   CustomHomeViewKey('bulk_download'): CustomHomeDataBuilder(
-    displayName: 'Bulk Download',
+    displayName: 'sideMenu.bulk_download',
     builder: (context, booruBuilder) => const BulkDownloadPage(),
   ),
 };

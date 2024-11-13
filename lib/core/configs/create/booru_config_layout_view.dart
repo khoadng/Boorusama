@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/home/home.dart';
+import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'create.dart';
 
@@ -62,7 +63,7 @@ class BooruConfigLayoutView extends ConsumerWidget {
               items: altHomeView
                   .map((value) => DropdownMenuItem(
                         value: value,
-                        child: Text(decribeView(value)),
+                        child: Text(decribeView(value)).tr(),
                       ))
                   .toList(),
             ),

@@ -91,7 +91,7 @@ class SideBarMenu extends ConsumerWidget {
                         if (viewKey.isAlt)
                           SideMenuTile(
                             icon: const Icon(Symbols.search),
-                            title: const Text('Search'),
+                            title: const Text('settings.search.search').tr(),
                             onTap: () {
                               if (popOnSelect) context.navigator.pop();
                               goToSearchPage(context);

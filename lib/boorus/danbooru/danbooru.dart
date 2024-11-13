@@ -29,7 +29,6 @@ import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import 'artists/danbooru_artist_page.dart';
 import 'comments/comments.dart';
 import 'configs/create_danbooru_config_page.dart';
 import 'favorites/favorites.dart';
@@ -359,11 +358,11 @@ class DanbooruBuilder
 final kDanbooruAltHomeView = {
   ...kDefaultAltHomeView,
   CustomHomeViewKey('explore'): CustomHomeDataBuilder(
-    displayName: 'Explore',
+    displayName: 'explore.explore',
     builder: (context, _) => const DanbooruExplorePage(),
   ),
   CustomHomeViewKey('favorites'): CustomHomeDataBuilder(
-    displayName: 'Favorites',
+    displayName: 'profile.favorites',
     builder: (context, _) => const DanbooruFavoritesPage(),
   ),
   CustomHomeViewKey('artists'): CustomHomeDataBuilder(
@@ -371,15 +370,15 @@ final kDanbooruAltHomeView = {
     builder: (context, _) => const DanbooruArtistSearchPage(),
   ),
   CustomHomeViewKey('forum'): CustomHomeDataBuilder(
-    displayName: 'Forum',
+    displayName: 'forum.forum',
     builder: (context, _) => const DanbooruForumPage(),
   ),
   CustomHomeViewKey('favgroup'): CustomHomeDataBuilder(
-    displayName: 'Favorite groups',
+    displayName: 'favorite_groups.favorite_groups',
     builder: (context, _) => const FavoriteGroupsPage(),
   ),
   CustomHomeViewKey('saved_searches'): CustomHomeDataBuilder(
-    displayName: 'Saved searches',
+    displayName: 'saved_search.saved_search',
     builder: (context, _) => SavedSearchFeedPage.of(context),
   ),
   CustomHomeViewKey('pools'): CustomHomeDataBuilder(

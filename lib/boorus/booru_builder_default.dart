@@ -251,9 +251,13 @@ class DefaultSearchPage extends ConsumerWidget {
 mixin DefaultHomeMixin implements BooruBuilder {
   @override
   HomeViewBuilder get homeViewBuilder =>
-      (context, config, controller) => MobileHomePageScaffold(
-            controller: controller,
-            onSearchTap: () => goToSearchPage(context),
+      (context, config, controller) => UserCustomHomeBuilder(
+            homePageController: controller,
+            defaultView: MobileHomePageScaffold(
+              controller: controller,
+              onSearchTap: () => goToSearchPage(context),
+            ),
+            data: kDefaultAltHomeView,
           );
 }
 
