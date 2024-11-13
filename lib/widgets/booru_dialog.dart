@@ -62,7 +62,7 @@ class BooruDialog extends StatelessWidget {
                 borderRadius: borderRadius ?? BorderRadius.circular(8),
                 color: color,
               ),
-              padding: const EdgeInsets.all(16),
+              padding: padding ?? const EdgeInsets.all(16),
               child: child,
             ),
           ),

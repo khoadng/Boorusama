@@ -31,6 +31,11 @@ const _entries = [
     content: AppearancePage(),
   ),
   SettingEntry(
+    title: 'Layout',
+    icon: FontAwesomeIcons.borderAll,
+    content: LayoutPage(),
+  ),
+  SettingEntry(
     title: 'settings.language.language',
     icon: Symbols.translate,
     content: LanguagePage(),
@@ -39,11 +44,6 @@ const _entries = [
     title: 'settings.download.title',
     icon: FontAwesomeIcons.download,
     content: DownloadPage(),
-  ),
-  SettingEntry(
-    title: 'settings.performance.performance',
-    icon: FontAwesomeIcons.gaugeSimpleHigh,
-    content: PerformancePage(),
   ),
   SettingEntry(
     title: 'settings.data_and_storage.data_and_storage',

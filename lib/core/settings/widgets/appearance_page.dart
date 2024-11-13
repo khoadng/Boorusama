@@ -45,24 +45,6 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
                 ref.updateSettings(settings.copyWith(listing: value)),
           ),
         ),
-        const Divider(thickness: 1),
-        SettingsHeader(label: 'settings.appearance.booru_config'.tr()),
-        SettingsTile(
-          title: const Text('settings.appearance.booru_config_placement').tr(),
-          selectedOption: settings.booruConfigSelectorPosition,
-          items: const [...BooruConfigSelectorPosition.values],
-          onChanged: (value) => ref.updateSettings(
-              settings.copyWith(booruConfigSelectorPosition: value)),
-          optionBuilder: (value) => Text(value.localize()),
-        ),
-        SettingsTile(
-          title: const Text('Label').tr(),
-          selectedOption: settings.booruConfigLabelVisibility,
-          items: const [...BooruConfigLabelVisibility.values],
-          onChanged: (value) => ref.updateSettings(
-              settings.copyWith(booruConfigLabelVisibility: value)),
-          optionBuilder: (value) => Text(value.localize()),
-        ),
         const SizedBox(
           height: 10,
         ),
