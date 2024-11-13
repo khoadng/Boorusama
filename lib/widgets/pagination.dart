@@ -80,8 +80,6 @@ class PageSelector extends StatefulWidget {
 }
 
 class _PageSelectorState extends State<PageSelector> {
-  var pageInputMode = false;
-
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -153,48 +151,11 @@ class _PageSelectorState extends State<PageSelector> {
             ),
             if (widget.pageInput)
               if (!isLowPageCount)
-                if (!pageInputMode)
-                  IconButton(
-                    padding: EdgeInsets.zero,
-                    visualDensity: VisualDensity.compact,
-                    onPressed: () {
-                      setState(() {
-                        pageInputMode = !pageInputMode;
-                      });
-                    },
-                    icon: const Icon(Symbols.more_horiz),
-                  )
-                else
-                  SizedBox(
-                    width: 50,
-                    child: Focus(
-                      onFocusChange: (value) {
-                        if (!value) {
-                          setState(() {
-                            pageInputMode = false;
-                          });
-                        }
-                      },
-                      child: TextField(
-                        autofocus: true,
-                        onTapOutside: (_) {
-                          setState(() {
-                            pageInputMode = false;
-                          });
-                        },
-                        decoration: const InputDecoration(
-                          isDense: true,
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 2,
-                          ),
-                        ),
-                        textInputAction: TextInputAction.done,
-                        keyboardType: TextInputType.number,
-                        onSubmitted: onSubmit,
-                      ),
-                    ),
-                  ),
+                _PageInputBox(
+                  onSubmit: onSubmit,
+                )
+              else
+                const SizedBox(width: 50),
             IconButton(
               onPressed: isLastPage ? null : widget.onNext,
               padding: EdgeInsets.zero,
@@ -211,9 +172,6 @@ class _PageSelectorState extends State<PageSelector> {
   }
 
   void onSubmit(String value) {
-    setState(() {
-      pageInputMode = !pageInputMode;
-    });
     final lastPage = calculateTotalPage(
       widget.totalResults,
       widget.itemPerPage,
@@ -227,5 +185,88 @@ class _PageSelectorState extends State<PageSelector> {
     if (page != null) {
       widget.onPageSelect(page);
     }
+  }
+}
+
+class _PageInputController extends ValueNotifier<bool> {
+  _PageInputController() : super(false);
+
+  void showInput() {
+    value = true;
+  }
+
+  void hideInput() {
+    value = false;
+  }
+}
+
+class _PageInputBox extends StatefulWidget {
+  const _PageInputBox({
+    required this.onSubmit,
+  });
+
+  final void Function(String value) onSubmit;
+
+  @override
+  State<_PageInputBox> createState() => __PageInputBoxState();
+}
+
+class __PageInputBoxState extends State<_PageInputBox> {
+  final _controller = _PageInputController();
+  late var pageInputMode = _controller.value;
+  final focus = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(() {
+      setState(() {
+        pageInputMode = _controller.value;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+    focus.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return !pageInputMode
+        ? IconButton(
+            padding: EdgeInsets.zero,
+            visualDensity: VisualDensity.compact,
+            onPressed: () {
+              _controller.showInput();
+              focus.requestFocus();
+            },
+            icon: const Icon(Symbols.more_horiz),
+          )
+        : SizedBox(
+            width: 40,
+            child: TextField(
+              focusNode: focus,
+              onTapOutside: (_) => _controller.hideInput(),
+              decoration: const InputDecoration(
+                isDense: true,
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 4,
+                  vertical: 2,
+                ),
+              ),
+              textInputAction: TextInputAction.go,
+              // Workaround for iOS to show a submit button with the number keyboard
+              keyboardType: Theme.of(context).platform == TargetPlatform.iOS
+                  ? TextInputType.numberWithOptions(signed: true)
+                  : TextInputType.number,
+              onSubmitted: (value) {
+                _controller.hideInput();
+                widget.onSubmit(value);
+              },
+            ),
+          );
   }
 }
