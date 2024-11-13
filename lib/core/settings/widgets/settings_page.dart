@@ -41,11 +41,6 @@ const _entries = [
     content: DownloadPage(),
   ),
   SettingEntry(
-    title: 'settings.performance.performance',
-    icon: FontAwesomeIcons.gaugeSimpleHigh,
-    content: PerformancePage(),
-  ),
-  SettingEntry(
     title: 'settings.data_and_storage.data_and_storage',
     icon: FontAwesomeIcons.database,
     content: DataAndStoragePage(),

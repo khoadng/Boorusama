@@ -9,7 +9,6 @@ export 'download_page.dart';
 export 'help_us_translate_page.dart';
 export 'image_viewer_page.dart';
 export 'language_page.dart';
-export 'performance_page.dart';
 export 'privacy_page.dart';
 export 'search_settings_page.dart';
 export 'settings_page.dart';
