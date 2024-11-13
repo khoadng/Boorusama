@@ -229,14 +229,7 @@ class GelbooruBuilder
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
-      (context, config) => config.hasLoginDetails()
-          ? GelbooruFavoritesPage(uid: config.login!)
-          : const Scaffold(
-              body: Center(
-                child: Text(
-                    'You need to provide login details to use this feature.'),
-              ),
-            );
+      (context, config) => const GelbooruFavoritesPage();
 
   @override
   ArtistPageBuilder? get artistPageBuilder =>

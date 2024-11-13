@@ -42,13 +42,28 @@ class SankakuHomePage extends ConsumerWidget {
             title: 'Favorites',
           ),
       ],
-      desktopViews: [if (login != null) SankakuFavoritesPage(username: login)],
+      desktopViews: [if (login != null) const SankakuFavoritesPage()],
     );
   }
 }
 
 class SankakuFavoritesPage extends ConsumerWidget {
-  const SankakuFavoritesPage({
+  const SankakuFavoritesPage({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
+
+    return BooruConfigAuthFailsafe(
+      child: SankakuFavoritesPageInternal(
+        username: config.login!,
+      ),
+    );
+  }
+}
+
+class SankakuFavoritesPageInternal extends ConsumerWidget {
+  const SankakuFavoritesPageInternal({
     super.key,
     required this.username,
   });

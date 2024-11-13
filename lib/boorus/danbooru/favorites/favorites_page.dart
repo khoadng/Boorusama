@@ -8,7 +8,6 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/users/users.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/favorites/favorites.dart';
 import 'package:boorusama/core/posts/posts.dart';
@@ -18,18 +17,31 @@ import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class DanbooruFavoritesPage extends ConsumerWidget {
-  const DanbooruFavoritesPage({
-    super.key,
-  });
+  const DanbooruFavoritesPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfig;
-    final username = config.login;
 
-    if (username == null || username.isEmpty) {
-      return const UnauthorizedPage();
-    }
+    return BooruConfigAuthFailsafe(
+      child: DanbooruFavoritesPageInternal(
+        username: config.login!,
+      ),
+    );
+  }
+}
+
+class DanbooruFavoritesPageInternal extends ConsumerWidget {
+  const DanbooruFavoritesPageInternal({
+    super.key,
+    required this.username,
+  });
+
+  final String username;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
 
     final query = buildFavoriteQuery(username);
     final postRepo = ref.watch(danbooruPostRepoProvider(config));

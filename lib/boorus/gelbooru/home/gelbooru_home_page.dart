@@ -57,8 +57,7 @@ class _GelbooruHomePageState extends ConsumerState<GelbooruHomePage> {
           ),
       ],
       desktopViews: [
-        if (favoritePageBuilder != null && ref.watchConfig.hasLoginDetails())
-          GelbooruFavoritesPage(uid: ref.watchConfig.login!),
+        if (favoritePageBuilder != null) GelbooruFavoritesPage(),
       ],
     );
   }

@@ -45,7 +45,7 @@ class SzurubooruHomePage extends StatelessWidget {
       ],
       desktopViews: [
         if (config.hasLoginDetails()) ...[
-          SzurubooruFavoritesPage(username: config.name),
+          const SzurubooruFavoritesPage(),
         ],
       ],
     );

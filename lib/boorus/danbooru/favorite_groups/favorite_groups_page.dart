@@ -17,7 +17,18 @@ import '../router.dart';
 import 'favorite_groups.dart';
 
 class FavoriteGroupsPage extends ConsumerWidget {
-  const FavoriteGroupsPage({
+  const FavoriteGroupsPage({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return BooruConfigAuthFailsafe(
+      child: const FavoriteGroupsPageInternal(),
+    );
+  }
+}
+
+class FavoriteGroupsPageInternal extends ConsumerWidget {
+  const FavoriteGroupsPageInternal({
     super.key,
   });
 
