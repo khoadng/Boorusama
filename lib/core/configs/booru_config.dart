@@ -1,12 +1,13 @@
-// Package imports:
+// Dart imports:
 import 'dart:convert';
 
-import 'package:boorusama/core/home/home.dart';
+// Package imports:
 import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/gestures.dart';

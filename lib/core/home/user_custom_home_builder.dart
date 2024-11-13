@@ -1,6 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/routers/utils.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -11,7 +9,9 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/bookmarks/widgets/bookmark_page.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/router.dart';
 import 'home.dart';
 
 class UserCustomHomeBuilder extends ConsumerWidget {

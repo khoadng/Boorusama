@@ -1,14 +1,13 @@
 // Flutter imports:
-import 'package:boorusama/core/configs/configs.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/widgets/widgets.dart';
-
 import 'create.dart';
 
 class DefaultBooruConfigLayoutView extends StatelessWidget {
