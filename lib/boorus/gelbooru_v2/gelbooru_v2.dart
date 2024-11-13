@@ -17,6 +17,7 @@ import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
+import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
@@ -247,7 +248,19 @@ class GelbooruV2Builder
       'source': (post, config) => config.downloadUrl,
     },
   );
+
+  @override
+  Map<CustomHomeViewKey, CustomHomeDataBuilder> get customHomeViewBuilders =>
+      kGelbooruV2AltHomeView;
 }
+
+final kGelbooruV2AltHomeView = {
+  ...kDefaultAltHomeView,
+  CustomHomeViewKey('favorites'): CustomHomeDataBuilder(
+    displayName: 'profile.favorites',
+    builder: (context, _) => const GelbooruV2FavoritesPage(),
+  ),
+};
 
 class GelbooruV2SearchPage extends ConsumerWidget {
   const GelbooruV2SearchPage({

@@ -5,21 +5,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'create.dart';
 
-class DefaultBooruConfigLayoutView extends StatelessWidget {
+class DefaultBooruConfigLayoutView extends ConsumerWidget {
   const DefaultBooruConfigLayoutView({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watch(initialBooruConfigProvider);
+    final booruBuilder = ref.watchBooruBuilder(config);
+    final data = booruBuilder?.customHomeViewBuilders ?? kDefaultAltHomeView;
+
     return BooruConfigLayoutView(
-      altHomeView: kDefaultAltHomeView.keys.toList(),
-      decribeView: (viewKey) =>
-          kDefaultAltHomeView[viewKey]?.displayName ?? 'Unknown',
+      altHomeView: data.keys.toList(),
+      decribeView: (viewKey) => data[viewKey]?.displayName ?? 'Unknown',
     );
   }
 }

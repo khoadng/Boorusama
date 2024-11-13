@@ -82,11 +82,6 @@ class CreateDanbooruConfigPage extends ConsumerWidget {
       imageViewerTab: BooruConfigViewerView(
         postDetailsResolution: const DanbooruImageDetailsQualityProvider(),
       ),
-      layoutTab: BooruConfigLayoutView(
-        altHomeView: kDanbooruAltHomeView.keys.toList(),
-        decribeView: (viewKey) =>
-            kDanbooruAltHomeView[viewKey]?.displayName ?? 'Unknown',
-      ),
       searchTab: BooruConfigSearchView(
         hasRatingFilter: true,
         config: config,

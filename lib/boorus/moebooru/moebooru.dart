@@ -13,6 +13,7 @@ import 'package:boorusama/clients/moebooru/moebooru_client.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
+import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/tags/tags.dart';
@@ -22,6 +23,8 @@ import 'configs/create_moebooru_config_page.dart';
 import 'feats/posts/posts.dart';
 import 'pages/moebooru_favorites_page.dart';
 import 'pages/moebooru_home_page.dart';
+import 'pages/moebooru_popular_page.dart';
+import 'pages/moebooru_popular_recent_page.dart';
 import 'pages/moebooru_post_details_desktop_page.dart';
 import 'pages/moebooru_post_details_page.dart';
 
@@ -145,7 +148,27 @@ class MoebooruBuilder
       'source': (post, config) => config.downloadUrl,
     },
   );
+
+  @override
+  Map<CustomHomeViewKey, CustomHomeDataBuilder> get customHomeViewBuilders =>
+      kMoebooruAltHomeView;
 }
+
+final kMoebooruAltHomeView = {
+  ...kDefaultAltHomeView,
+  CustomHomeViewKey('favorites'): CustomHomeDataBuilder(
+    displayName: 'profile.favorites',
+    builder: (context, _) => const MoebooruFavoritesPage(),
+  ),
+  CustomHomeViewKey('popular'): CustomHomeDataBuilder(
+    displayName: 'Popular',
+    builder: (context, _) => const MoebooruPopularPage(),
+  ),
+  CustomHomeViewKey('hot'): CustomHomeDataBuilder(
+    displayName: 'Hot',
+    builder: (context, _) => const MoebooruPopularRecentPage(),
+  ),
+};
 
 class MoebooruArtistPage extends ConsumerWidget {
   const MoebooruArtistPage({

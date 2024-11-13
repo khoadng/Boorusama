@@ -79,6 +79,8 @@ abstract class BooruBuilder {
 
   MultiSelectionActionsBuilder? get multiSelectionActionsBuilder;
 
+  Map<CustomHomeViewKey, CustomHomeDataBuilder> get customHomeViewBuilders;
+
   // Action Builders
   FavoriteAdder? get favoriteAdder;
   FavoriteRemover? get favoriteRemover;

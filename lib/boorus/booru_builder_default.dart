@@ -257,8 +257,11 @@ mixin DefaultHomeMixin implements BooruBuilder {
               controller: controller,
               onSearchTap: () => goToSearchPage(context),
             ),
-            data: kDefaultAltHomeView,
           );
+
+  @override
+  final Map<CustomHomeViewKey, CustomHomeDataBuilder> customHomeViewBuilders =
+      kDefaultAltHomeView;
 }
 
 String Function(

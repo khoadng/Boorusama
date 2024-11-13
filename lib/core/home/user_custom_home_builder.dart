@@ -18,17 +18,18 @@ class UserCustomHomeBuilder extends ConsumerWidget {
     super.key,
     required this.defaultView,
     required this.homePageController,
-    required this.data,
   });
 
   final Widget defaultView;
   final HomePageController homePageController;
-  final Map<CustomHomeViewKey, CustomHomeDataBuilder> data;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final viewKey = ref.watchConfig.layout?.home;
     final booruBuilder = ref.watch(booruBuilderProvider);
+    final data = booruBuilder?.customHomeViewBuilders;
+
+    if (data == null) return defaultView;
 
     final viewBuilder = data[viewKey]?.builder;
 

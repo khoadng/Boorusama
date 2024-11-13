@@ -325,7 +325,6 @@ class DanbooruBuilder
           defaultView: LatestView(
             controller: controller,
           ),
-          data: kDanbooruAltHomeView,
         );
       };
 
@@ -353,39 +352,40 @@ class DanbooruBuilder
             ? DanbooruMultiSelectionActions(controller: controller)
             : DefaultMultiSelectionActions(controller: controller);
       };
-}
 
-final kDanbooruAltHomeView = {
-  ...kDefaultAltHomeView,
-  CustomHomeViewKey('explore'): CustomHomeDataBuilder(
-    displayName: 'explore.explore',
-    builder: (context, _) => const DanbooruExplorePage(),
-  ),
-  CustomHomeViewKey('favorites'): CustomHomeDataBuilder(
-    displayName: 'profile.favorites',
-    builder: (context, _) => const DanbooruFavoritesPage(),
-  ),
-  CustomHomeViewKey('artists'): CustomHomeDataBuilder(
-    displayName: 'Artists',
-    builder: (context, _) => const DanbooruArtistSearchPage(),
-  ),
-  CustomHomeViewKey('forum'): CustomHomeDataBuilder(
-    displayName: 'forum.forum',
-    builder: (context, _) => const DanbooruForumPage(),
-  ),
-  CustomHomeViewKey('favgroup'): CustomHomeDataBuilder(
-    displayName: 'favorite_groups.favorite_groups',
-    builder: (context, _) => const FavoriteGroupsPage(),
-  ),
-  CustomHomeViewKey('saved_searches'): CustomHomeDataBuilder(
-    displayName: 'saved_search.saved_search',
-    builder: (context, _) => SavedSearchFeedPage.of(context),
-  ),
-  CustomHomeViewKey('pools'): CustomHomeDataBuilder(
-    displayName: 'Pools',
-    builder: (context, _) => const DanbooruPoolPage(),
-  ),
-};
+  @override
+  final Map<CustomHomeViewKey, CustomHomeDataBuilder> customHomeViewBuilders = {
+    ...kDefaultAltHomeView,
+    CustomHomeViewKey('explore'): CustomHomeDataBuilder(
+      displayName: 'explore.explore',
+      builder: (context, _) => const DanbooruExplorePage(),
+    ),
+    CustomHomeViewKey('favorites'): CustomHomeDataBuilder(
+      displayName: 'profile.favorites',
+      builder: (context, _) => const DanbooruFavoritesPage(),
+    ),
+    CustomHomeViewKey('artists'): CustomHomeDataBuilder(
+      displayName: 'Artists',
+      builder: (context, _) => const DanbooruArtistSearchPage(),
+    ),
+    CustomHomeViewKey('forum'): CustomHomeDataBuilder(
+      displayName: 'forum.forum',
+      builder: (context, _) => const DanbooruForumPage(),
+    ),
+    CustomHomeViewKey('favgroup'): CustomHomeDataBuilder(
+      displayName: 'favorite_groups.favorite_groups',
+      builder: (context, _) => const FavoriteGroupsPage(),
+    ),
+    CustomHomeViewKey('saved_searches'): CustomHomeDataBuilder(
+      displayName: 'saved_search.saved_search',
+      builder: (context, _) => const SavedSearchFeedPage(),
+    ),
+    CustomHomeViewKey('pools'): CustomHomeDataBuilder(
+      displayName: 'Pools',
+      builder: (context, _) => const DanbooruPoolPage(),
+    ),
+  };
+}
 
 bool handleDanbooruGestureAction(
   String? action, {
