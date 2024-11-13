@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/routers/widgets/failsafe_page.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -45,7 +46,9 @@ class _HomePageScaffoldState extends ConsumerState<HomePageScaffold> {
   @override
   Widget build(BuildContext context) {
     final config = ref.watchConfig;
-    final customHome = ref.watchBooruBuilder(ref.watchConfig)?.homeViewBuilder;
+    final booruBuilder = ref.watchBooruBuilder(config);
+    final customHome = booruBuilder?.homeViewBuilder;
+    final viewKey = config.layout?.home;
 
     final views = [
       if (customHome != null)
@@ -76,12 +79,17 @@ class _HomePageScaffoldState extends ConsumerState<HomePageScaffold> {
           context,
           constraints,
           controller,
+          viewKey,
         ),
       ],
       desktopViews: [
         ...views,
         ...coreDesktopViewBuilder(
           previousItemCount: views.length,
+          viewKey: viewKey,
+          searchPageBuilder: () =>
+              booruBuilder?.searchPageBuilder.call(context, null) ??
+              const UnimplementedPage(),
         ),
       ],
     );

@@ -9,16 +9,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/create/create.dart';
+import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import 'widgets.dart';
 
-const kDanbooruAltHomeView = [
+final kDanbooruAltHomeView = {
   ...kDefaultAltHomeView,
-  'explore',
-  'favorites',
-];
+  CustomHomeViewKey('explore'): {
+    'displayName': 'Explore',
+  },
+  CustomHomeViewKey('favorites'): {
+    'displayName': 'Favorites',
+  },
+};
 
 class CreateDanbooruConfigPage extends ConsumerWidget {
   const CreateDanbooruConfigPage({
@@ -89,12 +94,9 @@ class CreateDanbooruConfigPage extends ConsumerWidget {
         postDetailsResolution: const DanbooruImageDetailsQualityProvider(),
       ),
       layoutTab: BooruConfigLayoutView(
-        altHomeView: kDanbooruAltHomeView,
-        describeHomeView: (value) => switch (value) {
-          'favorites' => 'Favorites',
-          'explore' => 'Explore',
-          _ => defaultDescribeHomeView(value),
-        },
+        altHomeView: kDanbooruAltHomeView.keys.toList(),
+        decribeView: (viewKey) =>
+            kDanbooruAltHomeView[viewKey]?['displayName'] ?? 'Unknown',
       ),
       searchTab: BooruConfigSearchView(
         hasRatingFilter: true,

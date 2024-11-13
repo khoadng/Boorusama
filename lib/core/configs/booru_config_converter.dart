@@ -42,6 +42,9 @@ extension BooruConfigDataConverter on BooruConfigData? {
           ? null
           : ListingConfigs.fromJsonString(booruConfigData.listing),
       alwaysIncludeTags: booruConfigData.alwaysIncludeTags,
+      layout: booruConfigData.layout != null
+          ? LayoutConfigs.fromJsonString(booruConfigData.layout)
+          : null,
     );
   }
 }
@@ -70,6 +73,7 @@ extension BooruConfigConverter on BooruConfig {
       defaultPreviewImageButtonAction: defaultPreviewImageButtonAction,
       listing: listing?.toJsonString(),
       alwaysIncludeTags: alwaysIncludeTags,
+      layout: layout?.toJsonString(),
     );
   }
 }

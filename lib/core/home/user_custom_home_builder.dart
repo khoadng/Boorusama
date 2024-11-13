@@ -1,8 +1,6 @@
 // Flutter imports:
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/routers/utils.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -11,8 +9,9 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/bookmarks/widgets/bookmark_page.dart';
-import 'package:boorusama/core/configs/create/create.dart';
+import 'package:boorusama/foundation/theme.dart';
 import 'home.dart';
 
 class UserCustomHomeBuilder extends ConsumerWidget {
@@ -24,17 +23,17 @@ class UserCustomHomeBuilder extends ConsumerWidget {
   });
 
   final Widget defaultView;
-  final Widget? Function(BuildContext context, String viewName)? builder;
+  final Widget? Function(BuildContext context, CustomHomeViewKey? viewKey)?
+      builder;
   final HomePageController homePageController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    //FIXME: use the value from the config instead
-    final viewName = ref.watch(selectedHomeViewProvider) ?? '';
+    final viewKey = ref.watchConfig.layout?.home;
 
     final view = builder?.call(
       context,
-      viewName,
+      viewKey,
     );
 
     if (view == null) {
@@ -46,7 +45,6 @@ class UserCustomHomeBuilder extends ConsumerWidget {
 
     return CustomHomeContainer(
       homePageController: homePageController,
-      canSearch: viewName == 'search',
       child: view,
     );
   }
@@ -64,12 +62,11 @@ class FallbackHomeBuilder extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    //FIXME: use the value from the config instead
-    final viewName = ref.watch(selectedHomeViewProvider) ?? '';
+    final viewKey = ref.watchConfig.layout?.home;
     final searchPageBuilder =
         ref.watch(booruBuilderProvider)?.searchPageBuilder;
 
-    final view = switch (viewName) {
+    final view = switch (viewKey?.name) {
       'bookmark' => const BookmarkPage(),
       'search' =>
         searchPageBuilder != null ? searchPageBuilder(context, null) : null,
@@ -80,7 +77,6 @@ class FallbackHomeBuilder extends ConsumerWidget {
 
     return CustomHomeContainer(
       homePageController: homePageController,
-      canSearch: viewName == 'search',
       child: view,
     );
   }
@@ -91,10 +87,8 @@ class CustomHomeContainer extends ConsumerWidget {
     super.key,
     required this.homePageController,
     required this.child,
-    required this.canSearch,
   });
 
-  final bool canSearch;
   final HomePageController homePageController;
   final Widget child;
 
@@ -102,6 +96,7 @@ class CustomHomeContainer extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final appInfo = ref.watch(appInfoProvider);
     final appName = appInfo.appName;
+    final config = ref.watchConfig;
 
     return Column(
       children: [
@@ -139,15 +134,25 @@ class CustomHomeContainer extends ConsumerWidget {
                       ),
                     ),
                   ),
+                  const SizedBox(width: 4),
+                  InkWell(
+                    customBorder: const CircleBorder(),
+                    onTap: () => goToUpdateBooruConfigPage(
+                      context,
+                      config: config,
+                      initialTab: 'layout',
+                    ),
+                    child: Container(
+                      margin: const EdgeInsets.all(4),
+                      child: const Icon(
+                        Symbols.settings,
+                        size: 18,
+                        fill: 1,
+                      ),
+                    ),
+                  ),
                 ],
               ),
-              if (!canSearch)
-                CircularIconButton(
-                  onPressed: () {
-                    goToSearchPage(context);
-                  },
-                  icon: Icon(Symbols.search),
-                ),
             ],
           ),
         ),

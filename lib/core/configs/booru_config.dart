@@ -1,4 +1,7 @@
 // Package imports:
+import 'dart:convert';
+
+import 'package:boorusama/core/home/home.dart';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
@@ -32,6 +35,7 @@ class BooruConfig extends Equatable {
     required this.defaultPreviewImageButtonAction,
     required this.listing,
     required this.alwaysIncludeTags,
+    required this.layout,
   });
 
   factory BooruConfig.fromJson(Map<String, dynamic> json) {
@@ -77,6 +81,9 @@ class BooruConfig extends Equatable {
           ? null
           : ListingConfigs.fromJson(json['listing'] as Map<String, dynamic>),
       alwaysIncludeTags: json['alwaysIncludeTags'] as String?,
+      layout: json['layout'] == null
+          ? null
+          : LayoutConfigs.fromJson(json['layout'] as Map<String, dynamic>),
     );
   }
 
@@ -101,6 +108,7 @@ class BooruConfig extends Equatable {
     defaultPreviewImageButtonAction: null,
     listing: null,
     alwaysIncludeTags: null,
+    layout: null,
   );
 
   static BooruConfig defaultConfig({
@@ -129,6 +137,7 @@ class BooruConfig extends Equatable {
         defaultPreviewImageButtonAction: null,
         listing: null,
         alwaysIncludeTags: null,
+        layout: null,
       );
 
   final int id;
@@ -151,6 +160,7 @@ class BooruConfig extends Equatable {
   final String? defaultPreviewImageButtonAction;
   final ListingConfigs? listing;
   final String? alwaysIncludeTags;
+  final LayoutConfigs? layout;
 
   BooruConfig copyWith({
     String? url,
@@ -179,6 +189,7 @@ class BooruConfig extends Equatable {
       defaultPreviewImageButtonAction: defaultPreviewImageButtonAction,
       listing: listing,
       alwaysIncludeTags: alwaysIncludeTags,
+      layout: layout,
     );
   }
 
@@ -204,6 +215,7 @@ class BooruConfig extends Equatable {
         defaultPreviewImageButtonAction,
         listing,
         alwaysIncludeTags,
+        layout,
       ];
 
   @override
@@ -235,6 +247,7 @@ class BooruConfig extends Equatable {
       'defaultPreviewImageButtonAction': defaultPreviewImageButtonAction,
       'listing': listing?.toJson(),
       'alwaysIncludeTags': alwaysIncludeTags,
+      'layout': layout?.toJson(),
     };
   }
 }
@@ -335,4 +348,46 @@ enum ImageQuickActionType {
   download,
   bookmark,
   artist,
+}
+
+class LayoutConfigs extends Equatable {
+  const LayoutConfigs({
+    required this.home,
+  });
+
+  LayoutConfigs.undefined() : home = CustomHomeViewKey.defaultValue();
+
+  final CustomHomeViewKey? home;
+
+  factory LayoutConfigs.fromJson(Map<String, dynamic> json) {
+    return LayoutConfigs(
+      home: CustomHomeViewKey.fromJson(json['home']),
+    );
+  }
+
+  LayoutConfigs copyWith({
+    CustomHomeViewKey? home,
+  }) {
+    return LayoutConfigs(
+      home: home,
+    );
+  }
+
+  static LayoutConfigs? fromJsonString(String? jsonString) {
+    if (jsonString == null) return null;
+
+    return LayoutConfigs.fromJson(
+        jsonDecode(jsonString) as Map<String, dynamic>);
+  }
+
+  String toJsonString() => jsonEncode(toJson());
+
+  Map<String, dynamic> toJson() {
+    return {
+      'home': home?.toJson(),
+    };
+  }
+
+  @override
+  List<Object?> get props => [home];
 }

@@ -29,6 +29,7 @@ class BooruConfigData extends Equatable {
     required this.defaultPreviewImageButtonAction,
     required this.listing,
     required this.alwaysIncludeTags,
+    required this.layout,
   });
 
   factory BooruConfigData.anonymous({
@@ -61,6 +62,7 @@ class BooruConfigData extends Equatable {
         defaultPreviewImageButtonAction: null,
         listing: null,
         alwaysIncludeTags: null,
+        layout: null,
       );
 
   static BooruConfigData? fromJson(Map<String, dynamic> json) {
@@ -89,6 +91,7 @@ class BooruConfigData extends Equatable {
             json['defaultPreviewImageButtonAction'] as String?,
         listing: json['listing'] as String?,
         alwaysIncludeTags: json['alwaysIncludeTags'] as String?,
+        layout: json['layout'] as String?,
       );
     } catch (e) {
       return null;
@@ -116,6 +119,7 @@ class BooruConfigData extends Equatable {
       'defaultPreviewImageButtonAction': defaultPreviewImageButtonAction,
       'listing': listing,
       'alwaysIncludeTags': alwaysIncludeTags,
+      'layout': layout,
     };
   }
 
@@ -138,6 +142,7 @@ class BooruConfigData extends Equatable {
   final String? defaultPreviewImageButtonAction;
   final String? listing;
   final String? alwaysIncludeTags;
+  final String? layout;
 
   @override
   List<Object?> get props => [
@@ -160,6 +165,7 @@ class BooruConfigData extends Equatable {
         defaultPreviewImageButtonAction,
         listing,
         alwaysIncludeTags,
+        layout,
       ];
 }
 
@@ -170,6 +176,10 @@ extension BooruConfigDataX on BooruConfigData {
 
   ListingConfigs? get listingTyped {
     return ListingConfigs.fromJsonString(listing);
+  }
+
+  LayoutConfigs? get layoutTyped {
+    return LayoutConfigs.fromJsonString(layout);
   }
 
   Set<Rating>? get granularRatingFilterTyped {
@@ -225,6 +235,7 @@ extension BooruConfigDataCopyWith on BooruConfigData {
     String? Function()? defaultPreviewImageButtonAction,
     ListingConfigs? Function()? listing,
     String? Function()? alwaysIncludeTags,
+    LayoutConfigs? Function()? layout,
   }) {
     return BooruConfigData(
       booruId: booruId ?? this.booruId,
@@ -268,6 +279,7 @@ extension BooruConfigDataCopyWith on BooruConfigData {
       alwaysIncludeTags: alwaysIncludeTags != null
           ? alwaysIncludeTags()
           : this.alwaysIncludeTags,
+      layout: layout != null ? layout()?.toJsonString() : this.layout,
     );
   }
 }

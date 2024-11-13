@@ -1,5 +1,6 @@
 export 'booru_desktop_scope.dart';
 export 'booru_scope.dart';
+export 'custom_home.dart';
 export 'empty_booru_config_home_page.dart';
 export 'home_navigation_tile.dart';
 export 'home_page_controller.dart';

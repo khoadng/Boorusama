@@ -14,6 +14,7 @@ import 'package:boorusama/core/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
+import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
@@ -130,18 +131,27 @@ class Routes {
         path: 'search',
         name: '/search',
         pageBuilder: (context, state) {
+          final config = ref.read(currentBooruConfigProvider);
           final booruBuilder = ref.readCurrentBooruBuilder();
           final builder = booruBuilder?.searchPageBuilder;
           final query = state.uri.queryParameters[kInitialQueryKey];
+          final customHomeViewKey = config.layout?.home;
+          final page = builder != null
+              ? builder(context, query)
+              : const UnimplementedPage();
 
-          return CustomTransitionPage(
-            key: state.pageKey,
-            name: state.name,
-            child: builder != null
-                ? builder(context, query)
-                : const UnimplementedPage(),
-            transitionsBuilder: fadeTransitionBuilder(),
-          );
+          return customHomeViewKey.isAlt
+              ? CupertinoPage(
+                  key: state.pageKey,
+                  name: state.name,
+                  child: page,
+                )
+              : CustomTransitionPage(
+                  key: state.pageKey,
+                  name: state.name,
+                  child: page,
+                  transitionsBuilder: fadeTransitionBuilder(),
+                );
         },
       );
 

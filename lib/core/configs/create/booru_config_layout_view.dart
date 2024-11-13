@@ -1,28 +1,15 @@
 // Flutter imports:
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
-const kDefaultAltHomeView = [
-  'default',
-  'search',
-  'bookmark',
-];
-
-final selectedHomeViewProvider = StateProvider<String?>((ref) {
-  return 'default';
-});
-
-String? defaultDescribeHomeView(String value) => switch (value) {
-      'default' => 'Default',
-      'search' => 'Search',
-      'bookmark' => 'Bookmark',
-      _ => null,
-    };
+import 'create.dart';
 
 class DefaultBooruConfigLayoutView extends StatelessWidget {
   const DefaultBooruConfigLayoutView({super.key});
@@ -30,8 +17,9 @@ class DefaultBooruConfigLayoutView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BooruConfigLayoutView(
-      altHomeView: kDefaultAltHomeView,
-      describeHomeView: defaultDescribeHomeView,
+      altHomeView: kDefaultAltHomeView.keys.toList(),
+      decribeView: (viewKey) =>
+          kDefaultAltHomeView[viewKey]?['displayName'] ?? 'Unknown',
     );
   }
 }
@@ -40,14 +28,19 @@ class BooruConfigLayoutView extends ConsumerWidget {
   const BooruConfigLayoutView({
     super.key,
     required this.altHomeView,
-    required this.describeHomeView,
+    required this.decribeView,
   });
 
-  final List<String> altHomeView;
-  final String? Function(String value) describeHomeView;
+  final List<CustomHomeViewKey> altHomeView;
+  final String Function(CustomHomeViewKey viewKey) decribeView;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final layout = ref.watch(
+            editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
+                .select((value) => value.layoutTyped)) ??
+        LayoutConfigs.undefined();
+
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Column(
@@ -63,13 +56,14 @@ class BooruConfigLayoutView extends ConsumerWidget {
             ),
             trailing: OptionDropDownButton(
               alignment: AlignmentDirectional.centerStart,
-              value: ref.watch(selectedHomeViewProvider),
-              onChanged: (value) =>
-                  ref.read(selectedHomeViewProvider.notifier).state = value,
+              value: layout.home,
+              onChanged: (value) => ref.editNotifier.updateLayout(
+                layout.copyWith(home: value),
+              ),
               items: altHomeView
                   .map((value) => DropdownMenuItem(
                         value: value,
-                        child: Text(describeHomeView(value) ?? 'Default'),
+                        child: Text(decribeView(value)),
                       ))
                   .toList(),
             ),

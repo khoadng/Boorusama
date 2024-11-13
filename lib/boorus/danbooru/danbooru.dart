@@ -321,7 +321,7 @@ class DanbooruBuilder
           defaultView: LatestView(
             controller: controller,
           ),
-          builder: (context, viewName) => switch (viewName) {
+          builder: (context, viewKey) => switch (viewKey?.name) {
             'favorites' => const DanbooruFavoritesPage(),
             'explore' => const DanbooruExplorePage(),
             _ => null,

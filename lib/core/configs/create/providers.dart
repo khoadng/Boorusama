@@ -178,4 +178,9 @@ class EditBooruConfigNotifier
             ? BooruConfigDeletedItemBehavior.hide
             : BooruConfigDeletedItemBehavior.show,
       );
+
+  void updateLayout(
+    LayoutConfigs? layout,
+  ) =>
+      state = state.copyWith(layout: () => layout);
 }

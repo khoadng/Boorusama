@@ -2,6 +2,7 @@
 import 'dart:math';
 
 // Flutter imports:
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -12,12 +13,12 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/manage/booru_selector.dart';
 import 'package:boorusama/core/configs/manage/current_booru_tile.dart';
+import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
-import 'side_menu_tile.dart';
 
 class SideBarMenu extends ConsumerWidget {
   const SideBarMenu({
@@ -39,6 +40,7 @@ class SideBarMenu extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final position = ref.watch(
         settingsProvider.select((value) => value.booruConfigSelectorPosition));
+    final viewKey = ref.watchConfig.layout?.home;
 
     return Container(
       color: context.colorScheme.surfaceContainerLow,
@@ -86,6 +88,15 @@ class SideBarMenu extends ConsumerWidget {
                           )),
                     ] else
                       ...[
+                        if (viewKey.isAlt)
+                          SideMenuTile(
+                            icon: const Icon(Symbols.search),
+                            title: const Text('Search'),
+                            onTap: () {
+                              if (popOnSelect) context.navigator.pop();
+                              goToSearchPage(context);
+                            },
+                          ),
                         SideMenuTile(
                           icon: const Icon(Symbols.favorite),
                           title: const Text('sideMenu.your_bookmarks').tr(),
