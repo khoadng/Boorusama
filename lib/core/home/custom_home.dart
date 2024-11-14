@@ -43,7 +43,7 @@ class CustomHomeViewKey extends Equatable {
 
 extension CustomViewKeyX on CustomHomeViewKey? {
   bool get isDefault => this == const CustomHomeViewKey.defaultValue();
-  bool get isAlt => !isDefault;
+  bool get isAlt => !isDefault && this != null;
 }
 
 class CustomHomeDataBuilder extends Equatable {
