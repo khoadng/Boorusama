@@ -126,6 +126,9 @@ class _StatButton extends StatelessWidget {
     return ConditionalParentWidget(
       condition: enable,
       conditionalBuilder: (child) => InkWell(
+        customBorder: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+        ),
         onTap: onTap,
         child: child,
       ),

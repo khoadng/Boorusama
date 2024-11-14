@@ -169,24 +169,38 @@ class DanbooruFileDetails extends ConsumerWidget {
       post: post,
       rating: tagDetails != null ? tagDetails.rating : post.rating,
       uploader: uploader != null
-          ? Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: () => goToUserDetailsPage(
-                  ref,
-                  context,
-                  uid: uploader.id,
-                  username: uploader.name,
-                ),
-                child: Text(
-                  uploader.name.replaceAll('_', ' '),
-                  maxLines: 1,
-                  style: TextStyle(
-                    color: uploader.getColor(context),
-                    fontSize: 14,
+          ? Row(
+              children: [
+                Flexible(
+                  child: Material(
+                    color: Colors.transparent,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                    ),
+                    child: InkWell(
+                      customBorder: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                      ),
+                      onTap: () => goToUserDetailsPage(
+                        ref,
+                        context,
+                        uid: uploader.id,
+                        username: uploader.name,
+                      ),
+                      child: Text(
+                        uploader.name.replaceAll('_', ' '),
+                        maxLines: 1,
+                        softWrap: false,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: uploader.getColor(context),
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-              ),
+              ],
             )
           : null,
       customDetails: approver != null
