@@ -12,7 +12,7 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/users/users.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/users/users.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import 'package:boorusama/foundation/theme.dart';
 
 class DanbooruVoterListPage extends ConsumerWidget {
   const DanbooruVoterListPage({
@@ -30,17 +30,28 @@ class DanbooruVoterListPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Voters'),
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Flexible(
+              child: const Text('Voters'),
+            ),
+            const SizedBox(width: 4),
+            Tooltip(
+              message: 'Downvotes and private votes are hidden.',
+              triggerMode: TooltipTriggerMode.tap,
+              showDuration: const Duration(seconds: 3),
+              child: Icon(
+                Icons.info,
+                size: 18,
+                color: Theme.of(context).colorScheme.hintColor,
+              ),
+            ),
+          ],
+        ),
       ),
       body: CustomScrollView(
         slivers: [
-          SliverToBoxAdapter(
-            child: InfoContainer(
-              title: '',
-              contentBuilder: (context) =>
-                  const Text('Downvotes and private votes are hidden.'),
-            ),
-          ),
           DanbooruSliverUserListPage(
             fetchUsers: (page) async {
               final votes = await voteRepo.getPostVotes(postId, page: page);
@@ -71,18 +82,28 @@ class DanbooruFavoriterListPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Users who favorited'),
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Flexible(
+              child: const Text('Users who favorited'),
+            ),
+            const SizedBox(width: 4),
+            Tooltip(
+              message: 'Only public favorites are shown.',
+              triggerMode: TooltipTriggerMode.tap,
+              showDuration: const Duration(seconds: 3),
+              child: Icon(
+                Icons.info,
+                size: 18,
+                color: Theme.of(context).colorScheme.hintColor,
+              ),
+            ),
+          ],
+        ),
       ),
       body: CustomScrollView(
         slivers: [
-          SliverToBoxAdapter(
-            child: InfoContainer(
-              title: '',
-              contentBuilder: (context) => const Text(
-                'Only public favorites are shown.',
-              ),
-            ),
-          ),
           DanbooruSliverUserListPage(
             fetchUsers: (page) async {
               final votes =
