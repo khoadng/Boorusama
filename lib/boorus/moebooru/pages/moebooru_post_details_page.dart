@@ -183,7 +183,6 @@ class _MoebooruPostDetailsPageState
           tag: tag.rawName,
         ),
       ),
-      toolbar: const MoebooruPostDetailsActionToolbar(),
       commentsBuilder: (context, post) => MoebooruCommentSection(post: post),
       topRightButtonsBuilder: (currentPage, expanded, post, controller) => [
         GeneralMoreActionButton(

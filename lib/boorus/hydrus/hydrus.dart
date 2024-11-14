@@ -302,6 +302,11 @@ class HydrusBuilder
       (context, post) => HydrusQuickFavoriteButton(
             post: post,
           );
+
+  @override
+  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
+    toolbarBuilder: (context) => const HydrusPostActionToolbar(),
+  );
 }
 
 class HydrusHomePage extends StatelessWidget {
@@ -390,7 +395,6 @@ class HydrusPostDetailsPage extends ConsumerWidget {
         ),
         unknownCategoryColor: ref.watch(tagColorProvider('general')),
       ),
-      toolbar: const HydrusPostActionToolbar(),
     );
   }
 }
@@ -432,7 +436,6 @@ class HydrusPostDetailsDesktopPage extends ConsumerWidget {
         ),
         unknownCategoryColor: ref.watch(tagColorProvider('general')),
       ),
-      toolbar: const HydrusPostActionToolbar(),
       topRightButtonsBuilder: (currentPage, expanded, post) =>
           GeneralMoreActionButton(post: post),
     );

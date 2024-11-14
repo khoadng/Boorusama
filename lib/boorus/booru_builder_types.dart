@@ -111,3 +111,11 @@ typedef HomeViewBuilder = Widget Function(
   BooruConfig config,
   HomePageController controller,
 );
+
+class PostDetailsUIBuilder {
+  const PostDetailsUIBuilder({
+    this.toolbarBuilder,
+  });
+
+  final Widget Function(BuildContext context)? toolbarBuilder;
+}

@@ -148,6 +148,9 @@ class PhilomenaBuilder
                       null => post.representation.small,
                     }),
           );
+
+  @override
+  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder();
 }
 
 class PhilomenaPostDetailsPage extends ConsumerWidget {

@@ -139,6 +139,9 @@ class SankakuBuilder
       'source': (post, config) => sanitizedUrl(config.downloadUrl),
     },
   );
+
+  @override
+  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder();
 }
 
 class SankakuPostDetailsPage extends ConsumerWidget {

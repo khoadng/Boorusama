@@ -328,6 +328,9 @@ class _PostDetailsDesktopScaffoldState<T extends Post>
   }
 
   Widget _buildInfo(BuildContext context, T post) {
+    final booruBuilder = ref.watch(booruBuilderProvider);
+    final toolbarBuilder = booruBuilder?.postDetailsUIBuilder.toolbarBuilder;
+
     return CustomScrollView(
       slivers: [
         ...widget.parts
@@ -347,9 +350,13 @@ class _PostDetailsDesktopScaffoldState<T extends Post>
                     ? SliverToBoxAdapter(
                         child: widget.toolbar,
                       )
-                    : SliverToBoxAdapter(
-                        child: DefaultPostActionToolbar(post: post),
-                      ),
+                    : toolbarBuilder != null
+                        ? SliverToBoxAdapter(
+                            child: toolbarBuilder(context),
+                          )
+                        : SliverToBoxAdapter(
+                            child: DefaultPostActionToolbar(post: post),
+                          ),
                 PostDetailsPart.artistInfo => widget.artistInfoBuilder != null
                     ? SliverToBoxAdapter(
                         child: Column(

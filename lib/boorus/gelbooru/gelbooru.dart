@@ -312,6 +312,9 @@ class GelbooruBuilder
           return true;
         }
       : null;
+
+  @override
+  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder();
 }
 
 class GelbooruSearchPage extends ConsumerWidget {

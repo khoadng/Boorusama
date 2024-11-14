@@ -9,6 +9,7 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/gelbooru_v2/gelbooru_v2.dart';
 import 'package:boorusama/boorus/szurubooru/favorites/favorites.dart';
+import 'package:boorusama/boorus/szurubooru/post_votes/post_votes.dart';
 import 'package:boorusama/boorus/szurubooru/providers.dart';
 import 'package:boorusama/core/comments/comments.dart';
 import 'package:boorusama/core/configs/configs.dart';
@@ -146,6 +147,11 @@ class SzurubooruBuilder
       'height': (post, config) => post.height.toString(),
       'source': (post, config) => post.source.url,
     },
+  );
+
+  @override
+  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
+    toolbarBuilder: (context) => const SzurubooruPostActionToolbar(),
   );
 }
 

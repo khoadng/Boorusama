@@ -91,6 +91,9 @@ class Shimmie2Builder
       'source': (post, config) => post.source.url,
     },
   );
+
+  @override
+  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder();
 }
 
 class Shimmie2PostDetailsPage extends ConsumerWidget {

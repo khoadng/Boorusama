@@ -248,4 +248,7 @@ class E621Builder
       'source': (post, config) => config.downloadUrl,
     },
   );
+
+  @override
+  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder();
 }

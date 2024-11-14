@@ -96,6 +96,9 @@ class GelbooruV1Builder
       'source': (post, config) => config.downloadUrl,
     },
   );
+
+  @override
+  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder();
 }
 
 class GelbooruV1SearchPage extends ConsumerWidget {

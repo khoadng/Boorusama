@@ -79,6 +79,8 @@ abstract class BooruBuilder {
 
   MultiSelectionActionsBuilder? get multiSelectionActionsBuilder;
 
+  PostDetailsUIBuilder get postDetailsUIBuilder;
+
   // Action Builders
   FavoriteAdder? get favoriteAdder;
   FavoriteRemover? get favoriteRemover;

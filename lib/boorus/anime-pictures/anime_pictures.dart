@@ -126,6 +126,9 @@ class AnimePicturesBuilder
       (context, config) => const AnimePicturesCurrentUserIdScope(
             child: AnimePicturesFavoritesPage(),
           );
+
+  @override
+  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder();
 }
 
 class AnimePicturesCurrentUserIdScope extends ConsumerWidget {

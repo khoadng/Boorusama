@@ -132,6 +132,9 @@ class ZerochanBuilder
       'source': (post, config) => post.source.url,
     },
   );
+
+  @override
+  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder();
 }
 
 class ZerochanPostDetailsPage extends ConsumerWidget {

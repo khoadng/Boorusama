@@ -75,7 +75,6 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     required this.posts,
     required this.initialIndex,
     required this.onExit,
-    this.toolbar,
     this.sliverArtistPostsBuilder,
     this.sliverCharacterPostsBuilder,
     this.onExpanded,
@@ -95,6 +94,7 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     this.sourceSectionBuilder,
     this.parts = kDefaultPostDetailsParts,
     this.postDetailsController,
+    this.uiBuilder,
   });
 
   final int initialIndex;
@@ -105,7 +105,6 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   final void Function(int index)? onPageChangeIndexed;
   final String Function(T post) swipeImageUrlBuilder;
   final String? Function(T post, int currentPage)? placeholderImageUrlBuilder;
-  final Widget? toolbar;
   final List<Widget> Function(BuildContext context, T post)?
       sliverArtistPostsBuilder;
   final Widget Function(BuildContext context, T post)?
@@ -127,6 +126,8 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
       DetailsPageController controller)? topRightButtonsBuilder;
 
   final PostDetailsController<T>? postDetailsController;
+
+  final PostDetailsUIBuilder? uiBuilder;
 
   @override
   ConsumerState<PostDetailsPageScaffold<T>> createState() =>
@@ -231,6 +232,8 @@ class _PostDetailPageScaffoldState<T extends Post>
     final config = ref.watchConfig;
     final booruBuilder = ref.watchBooruBuilder(config);
     final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
+    final toolbarBuilder = widget.uiBuilder?.toolbarBuilder ??
+        booruBuilder?.postDetailsUIBuilder.toolbarBuilder;
     final focusedPost = posts[currentPage];
 
     Widget buildShareChild() {
@@ -238,8 +241,8 @@ class _PostDetailPageScaffoldState<T extends Post>
         children: [
           if (widget.infoBuilder != null)
             widget.infoBuilder!(context, focusedPost),
-          widget.toolbar != null
-              ? widget.toolbar!
+          toolbarBuilder != null
+              ? toolbarBuilder(context)
               : DefaultPostActionToolbar(post: focusedPost),
         ],
       );
@@ -411,9 +414,9 @@ class _PostDetailPageScaffoldState<T extends Post>
                                 child: widget.infoBuilder!(context, post),
                               )
                             : null,
-                        PostDetailsPart.toolbar => widget.toolbar != null
+                        PostDetailsPart.toolbar => toolbarBuilder != null
                             ? SliverToBoxAdapter(
-                                child: widget.toolbar,
+                                child: toolbarBuilder(context),
                               )
                             : const SliverToBoxAdapter(
                                 child: DefaultInheritedPostActionToolbar(),

@@ -145,6 +145,11 @@ class MoebooruBuilder
       'source': (post, config) => config.downloadUrl,
     },
   );
+
+  @override
+  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
+    toolbarBuilder: (context) => const MoebooruPostDetailsActionToolbar(),
+  );
 }
 
 class MoebooruArtistPage extends ConsumerWidget {

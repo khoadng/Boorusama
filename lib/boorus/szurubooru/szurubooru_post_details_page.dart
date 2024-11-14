@@ -12,7 +12,6 @@ import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
-import 'post_votes/post_votes.dart';
 import 'szurubooru_post.dart';
 
 class SzurubooruPostDetailsPage extends ConsumerWidget {
@@ -64,7 +63,6 @@ class SzurubooruPostDetailsPage extends ConsumerWidget {
                   onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
                 ),
               ),
-      toolbar: const SzurubooruPostActionToolbar(),
       fileDetailsBuilder: (context, rawPost) => DefaultFileDetailsSection(
         post: rawPost,
         uploaderName: castOrNull<SzurubooruPost>(rawPost)?.uploaderName,
@@ -121,7 +119,6 @@ class SzurubooruPostDetailsDesktopPage extends ConsumerWidget {
                   onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
                 ),
               ),
-      toolbar: const SzurubooruPostActionToolbar(),
       topRightButtonsBuilder: (currentPage, expanded, post) =>
           GeneralMoreActionButton(post: post),
       fileDetailsBuilder: (context, rawPost) => DefaultFileDetailsSection(

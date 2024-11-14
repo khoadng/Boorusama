@@ -344,6 +344,11 @@ class DanbooruBuilder
             ? DanbooruMultiSelectionActions(controller: controller)
             : DefaultMultiSelectionActions(controller: controller);
       };
+
+  @override
+  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
+    toolbarBuilder: (context) => const DanbooruInheritedPostActionToolbar(),
+  );
 }
 
 bool handleDanbooruGestureAction(
