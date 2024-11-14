@@ -54,3 +54,37 @@ class TrendingTags extends ConsumerWidget {
         : const SizedBox.shrink();
   }
 }
+
+class TrendingTagsPlaceholder extends StatelessWidget {
+  const TrendingTagsPlaceholder({
+    super.key,
+    required this.tags,
+  });
+
+  final List<TrendingTag> tags;
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: 6,
+      runSpacing: isMobilePlatform() ? -2 : 8,
+      children: tags.map((e) {
+        return BooruChip(
+          chipColors: (
+            backgroundColor: context.colorScheme.surfaceContainerLow,
+            borderColor: Colors.transparent,
+            foregroundColor: Colors.transparent,
+          ),
+          visualDensity: VisualDensity.compact,
+          onPressed: () {},
+          label: Text(
+            e.name.keyword,
+            style: const TextStyle(
+              color: Colors.transparent,
+            ),
+          ),
+        );
+      }).toList(),
+    );
+  }
+}
