@@ -250,34 +250,47 @@ class MoebooruPostDetailsActionToolbar extends ConsumerWidget {
     return ValueListenableBuilder(
       valueListenable: controller.currentPost,
       builder: (_, post, __) {
-        final notifier = ref.watch(moebooruFavoritesProvider(post.id).notifier);
-
         return booru?.whenMoebooru(
                 data: (data) => data.supportsFavorite(config.url)
-                    ? SimplePostActionToolbar(
-                        isFaved: ref
-                            .watch(moebooruFavoritesProvider(post.id))
-                            ?.contains(config.login),
-                        addFavorite: () => ref
-                            .read(moebooruClientProvider(config))
-                            .favoritePost(postId: post.id)
-                            .then((value) {
-                          notifier.clear();
-                        }),
-                        removeFavorite: () => ref
-                            .read(moebooruClientProvider(config))
-                            .unfavoritePost(postId: post.id)
-                            .then((value) {
-                          notifier.clear();
-                        }),
-                        isAuthorized: config.hasLoginDetails(),
-                        forceHideFav: !config.hasLoginDetails(),
-                        post: post,
-                      )
-                    : SimplePostActionToolbar(post: post),
-                orElse: () => SimplePostActionToolbar(post: post)) ??
-            SimplePostActionToolbar(post: post);
+                    ? _Toolbar(post: post)
+                    : DefaultPostActionToolbar(post: post),
+                orElse: () => DefaultPostActionToolbar(post: post)) ??
+            DefaultPostActionToolbar(post: post);
       },
+    );
+  }
+}
+
+class _Toolbar extends ConsumerWidget {
+  const _Toolbar({
+    required this.post,
+  });
+
+  final Post post;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
+    final notifier = ref.watch(moebooruFavoritesProvider(post.id).notifier);
+
+    return SimplePostActionToolbar(
+      isFaved:
+          ref.watch(moebooruFavoritesProvider(post.id))?.contains(config.login),
+      addFavorite: () => ref
+          .read(moebooruClientProvider(config))
+          .favoritePost(postId: post.id)
+          .then((value) {
+        notifier.clear();
+      }),
+      removeFavorite: () => ref
+          .read(moebooruClientProvider(config))
+          .unfavoritePost(postId: post.id)
+          .then((value) {
+        notifier.clear();
+      }),
+      isAuthorized: config.hasLoginDetails(),
+      forceHideFav: !config.hasLoginDetails(),
+      post: post,
     );
   }
 }

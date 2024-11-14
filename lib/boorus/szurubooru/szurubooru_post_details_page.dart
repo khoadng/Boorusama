@@ -25,8 +25,8 @@ class SzurubooruPostDetailsPage extends ConsumerWidget {
     required this.initialPage,
   });
 
-  final List<Post> posts;
-  final PostDetailsController<Post> controller;
+  final List<SzurubooruPost> posts;
+  final PostDetailsController<SzurubooruPost> controller;
   final void Function(int page) onExit;
   final void Function(int page) onPageChanged;
   final int initialPage;
@@ -66,11 +66,7 @@ class SzurubooruPostDetailsPage extends ConsumerWidget {
               ),
       toolbar: ValueListenableBuilder(
         valueListenable: controller.currentPost,
-        builder: (_, rawPost, __) =>
-            castOrNull<SzurubooruPost>(rawPost).toOption().fold(
-                  () => SimplePostActionToolbar(post: rawPost),
-                  (post) => SzurubooruPostActionToolbar(post: post),
-                ),
+        builder: (_, post, __) => SzurubooruPostActionToolbar(post: post),
       ),
       fileDetailsBuilder: (context, rawPost) => DefaultFileDetailsSection(
         post: rawPost,

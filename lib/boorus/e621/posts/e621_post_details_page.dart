@@ -46,7 +46,6 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage> {
       initialIndex: widget.intitialIndex,
       onExit: widget.onExit,
       onPageChangeIndexed: widget.onPageChanged,
-      toolbar: DefaultPostDetailsActionToolbar(controller: widget.controller),
       swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
       sliverArtistPostsBuilder: (context, post) => post.artistTags.isNotEmpty
           ? post.artistTags

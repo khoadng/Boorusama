@@ -51,10 +51,6 @@ class _DanbooruPostDetailsDesktopPageState
       infoBuilder: (context, post) => SimpleInformationSection(post: post),
       topRightButtonsBuilder: (currentPage, expanded, post) =>
           GeneralMoreActionButton(post: post),
-      toolbar: ValueListenableBuilder(
-        valueListenable: widget.controller.currentPost,
-        builder: (_, post, __) => DefaultPostActionToolbar(post: post),
-      ),
       tagListBuilder: (context, post) => E621TagsTile(
         post: post,
       ),

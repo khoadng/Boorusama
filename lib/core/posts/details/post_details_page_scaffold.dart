@@ -241,7 +241,7 @@ class _PostDetailPageScaffoldState<T extends Post>
             widget.infoBuilder!(context, focusedPost),
           widget.toolbar != null
               ? widget.toolbar!
-              : SimplePostActionToolbar(post: focusedPost),
+              : DefaultPostActionToolbar(post: focusedPost),
         ],
       );
     }
@@ -416,7 +416,9 @@ class _PostDetailPageScaffoldState<T extends Post>
                             ? SliverToBoxAdapter(
                                 child: widget.toolbar,
                               )
-                            : null,
+                            : SliverToBoxAdapter(
+                                child: DefaultPostActionToolbar(post: post),
+                              ),
                         PostDetailsPart.artistInfo =>
                           widget.artistInfoBuilder != null
                               ? SliverToBoxAdapter(

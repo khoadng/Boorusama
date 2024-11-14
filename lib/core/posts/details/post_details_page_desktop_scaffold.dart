@@ -349,7 +349,7 @@ class _PostDetailsDesktopScaffoldState<T extends Post>
                         child: widget.toolbar,
                       )
                     : SliverToBoxAdapter(
-                        child: SimplePostActionToolbar(post: post),
+                        child: DefaultPostActionToolbar(post: post),
                       ),
                 PostDetailsPart.artistInfo => widget.artistInfoBuilder != null
                     ? SliverToBoxAdapter(

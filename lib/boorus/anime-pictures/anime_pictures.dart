@@ -350,9 +350,6 @@ class AnimePicturesPostDetailsPage extends ConsumerWidget {
                 ),
                 error: (e, _) => Text('Error: $e'),
               ),
-      toolbar: DefaultPostDetailsActionToolbar(
-        controller: controller,
-      ),
       fileDetailsBuilder: (context, post) => DefaultFileDetailsSection(
         post: post,
         initialExpanded: true,
@@ -389,12 +386,6 @@ class AnimePicturesPostDetailsDesktopPage extends ConsumerWidget {
       fileDetailsBuilder: (context, post) => DefaultFileDetailsSection(
         post: post,
         initialExpanded: true,
-      ),
-      toolbar: ValueListenableBuilder(
-        valueListenable: controller.currentPost,
-        builder: (_, post, __) => DefaultPostActionToolbar(
-          post: post,
-        ),
       ),
       sliverRelatedPostsBuilder: (context, post) => ref
           .watch(postDetailsProvider(post.id))

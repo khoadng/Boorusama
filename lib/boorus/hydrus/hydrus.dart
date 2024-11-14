@@ -22,10 +22,8 @@ import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
-import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'favorites/favorites.dart';
@@ -366,8 +364,8 @@ class HydrusPostDetailsPage extends ConsumerWidget {
     required this.initialPage,
   });
 
-  final List<Post> posts;
-  final PostDetailsController<Post> controller;
+  final List<HydrusPost> posts;
+  final PostDetailsController<HydrusPost> controller;
   final void Function(int page) onExit;
   final void Function(int page) onPageChanged;
   final int initialPage;
@@ -394,11 +392,7 @@ class HydrusPostDetailsPage extends ConsumerWidget {
       ),
       toolbar: ValueListenableBuilder(
         valueListenable: controller.currentPost,
-        builder: (_, rawPost, __) =>
-            castOrNull<HydrusPost>(rawPost).toOption().fold(
-                  () => SimplePostActionToolbar(post: rawPost),
-                  (post) => HydrusPostActionToolbar(post: post),
-                ),
+        builder: (_, post, __) => HydrusPostActionToolbar(post: post),
       ),
     );
   }
