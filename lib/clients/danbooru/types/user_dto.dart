@@ -16,6 +16,9 @@ class UserDto {
     required this.commentCount,
     required this.forumPostCount,
     required this.favoriteGroupCount,
+    required this.positiveFeedbackCount,
+    required this.neutralFeedbackCount,
+    required this.negativeFeedbackCount,
   });
 
   factory UserDto.fromJson(Map<String, dynamic> json) {
@@ -38,6 +41,9 @@ class UserDto {
       commentCount: json['comment_count'],
       forumPostCount: json['forum_post_count'],
       favoriteGroupCount: json['favorite_group_count'],
+      positiveFeedbackCount: json['positive_feedback_count'],
+      neutralFeedbackCount: json['neutral_feedback_count'],
+      negativeFeedbackCount: json['negative_feedback_count'],
     );
   }
 
@@ -58,6 +64,10 @@ class UserDto {
   final int? commentCount;
   final int? forumPostCount;
   final int? favoriteGroupCount;
+
+  final int? positiveFeedbackCount;
+  final int? neutralFeedbackCount;
+  final int? negativeFeedbackCount;
 
   @override
   String toString() => name ?? '';
