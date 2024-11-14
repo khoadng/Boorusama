@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/core/home/home.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -19,6 +20,7 @@ import 'artists/artists.dart';
 import 'comments/comments.dart';
 import 'favorites/favorites.dart';
 import 'home/home.dart';
+import 'popular/e621_popular_page.dart';
 import 'posts/posts.dart';
 import 'tags/tags.dart';
 
@@ -243,4 +245,20 @@ class E621Builder
       'source': (post, config) => config.downloadUrl,
     },
   );
+
+  @override
+  Map<CustomHomeViewKey, CustomHomeDataBuilder> get customHomeViewBuilders =>
+      ke621AltHomeView;
 }
+
+final ke621AltHomeView = {
+  ...kDefaultAltHomeView,
+  CustomHomeViewKey('favorites'): CustomHomeDataBuilder(
+    displayName: 'profile.favorites',
+    builder: (context, _) => const E621FavoritesPage(),
+  ),
+  CustomHomeViewKey('popular'): CustomHomeDataBuilder(
+    displayName: 'Popular',
+    builder: (context, _) => const E621PopularPage(),
+  ),
+};
