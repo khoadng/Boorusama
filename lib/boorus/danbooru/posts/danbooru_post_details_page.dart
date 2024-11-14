@@ -58,10 +58,7 @@ class _DanbooruPostDetailsPageState
         onExit: widget.onExit,
         parts: kDefaultPostDetailsNoSourceParts,
         onPageChangeIndexed: widget.onPageChanged,
-        toolbar: ValueListenableBuilder(
-          valueListenable: widget.controller.currentPost,
-          builder: (_, post, __) => DanbooruPostActionToolbar(post: post),
-        ),
+        toolbar: const DanbooruInheritedPostActionToolbar(),
         swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
         sliverArtistPostsBuilder: (context, post) => post.artistTags.isNotEmpty
             ? post.artistTags

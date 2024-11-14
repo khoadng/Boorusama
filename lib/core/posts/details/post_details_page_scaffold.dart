@@ -13,7 +13,6 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/notes/notes.dart';
-import 'package:boorusama/core/posts/details/common.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/tags/tags.dart';
@@ -416,8 +415,8 @@ class _PostDetailPageScaffoldState<T extends Post>
                             ? SliverToBoxAdapter(
                                 child: widget.toolbar,
                               )
-                            : SliverToBoxAdapter(
-                                child: DefaultPostActionToolbar(post: post),
+                            : const SliverToBoxAdapter(
+                                child: DefaultInheritedPostActionToolbar(),
                               ),
                         PostDetailsPart.artistInfo =>
                           widget.artistInfoBuilder != null
@@ -552,23 +551,6 @@ class _PostDetailPageScaffoldState<T extends Post>
                   ),
                 ],
       onExpanded: () => widget.onExpanded?.call(focusedPost),
-    );
-  }
-}
-
-class DefaultPostDetailsActionToolbar extends StatelessWidget {
-  const DefaultPostDetailsActionToolbar({
-    super.key,
-    required this.controller,
-  });
-
-  final PostDetailsController controller;
-
-  @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: controller.currentPost,
-      builder: (_, post, __) => DefaultPostActionToolbar(post: post),
     );
   }
 }

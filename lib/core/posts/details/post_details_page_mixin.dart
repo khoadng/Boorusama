@@ -151,11 +151,14 @@ class _PostDetailsLayoutSwitcherState<T extends Post>
   Widget build(BuildContext context) {
     return PostDetailsScope(
       controller: controller,
-      child: FlexibleLayoutSwitcher(
-        desktop: () => widget.desktop != null
-            ? widget.desktop!(controller)
-            : widget.mobile(controller),
-        mobile: () => widget.mobile(controller),
+      child: CurrentPostScope(
+        post: controller.currentPost,
+        child: FlexibleLayoutSwitcher(
+          desktop: () => widget.desktop != null
+              ? widget.desktop!(controller)
+              : widget.mobile(controller),
+          mobile: () => widget.mobile(controller),
+        ),
       ),
     );
   }

@@ -16,13 +16,12 @@ import 'post_votes.dart';
 class SzurubooruPostActionToolbar extends ConsumerWidget {
   const SzurubooruPostActionToolbar({
     super.key,
-    required this.post,
   });
-
-  final SzurubooruPost post;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final post = InheritedPost.of<SzurubooruPost>(context);
+
     final config = ref.watchConfig;
     final isFaved = ref.watch(szurubooruFavoriteProvider(post.id));
     final postVote = ref.watch(szurubooruPostVoteProvider(post.id));

@@ -57,7 +57,6 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailsPage> {
       initialIndex: widget.initialIndex,
       onExit: widget.onExit,
       onPageChangeIndexed: widget.onPageChanged,
-      toolbar: DefaultPostDetailsActionToolbar(controller: widget.controller),
       swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
       fileDetailsBuilder: (context, post) => DefaultFileDetailsSection(
         post: post,

@@ -64,10 +64,7 @@ class SzurubooruPostDetailsPage extends ConsumerWidget {
                   onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
                 ),
               ),
-      toolbar: ValueListenableBuilder(
-        valueListenable: controller.currentPost,
-        builder: (_, post, __) => SzurubooruPostActionToolbar(post: post),
-      ),
+      toolbar: const SzurubooruPostActionToolbar(),
       fileDetailsBuilder: (context, rawPost) => DefaultFileDetailsSection(
         post: rawPost,
         uploaderName: castOrNull<SzurubooruPost>(rawPost)?.uploaderName,
@@ -124,10 +121,7 @@ class SzurubooruPostDetailsDesktopPage extends ConsumerWidget {
                   onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
                 ),
               ),
-      toolbar: ValueListenableBuilder(
-        valueListenable: controller.currentPost,
-        builder: (_, post, __) => SzurubooruPostActionToolbar(post: post),
-      ),
+      toolbar: const SzurubooruPostActionToolbar(),
       topRightButtonsBuilder: (currentPage, expanded, post) =>
           GeneralMoreActionButton(post: post),
       fileDetailsBuilder: (context, rawPost) => DefaultFileDetailsSection(

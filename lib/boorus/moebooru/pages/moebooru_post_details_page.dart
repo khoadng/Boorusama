@@ -183,7 +183,7 @@ class _MoebooruPostDetailsPageState
           tag: tag.rawName,
         ),
       ),
-      toolbar: MoebooruPostDetailsActionToolbar(controller: widget.controller),
+      toolbar: const MoebooruPostDetailsActionToolbar(),
       commentsBuilder: (context, post) => MoebooruCommentSection(post: post),
       topRightButtonsBuilder: (currentPage, expanded, post, controller) => [
         GeneralMoreActionButton(
@@ -237,27 +237,20 @@ class _MoebooruPostDetailsPageState
 class MoebooruPostDetailsActionToolbar extends ConsumerWidget {
   const MoebooruPostDetailsActionToolbar({
     super.key,
-    required this.controller,
   });
-
-  final PostDetailsController controller;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfig;
+    final post = InheritedPost.of<Post>(context);
     final booru = config.createBooruFrom(ref.watch(booruFactoryProvider));
 
-    return ValueListenableBuilder(
-      valueListenable: controller.currentPost,
-      builder: (_, post, __) {
-        return booru?.whenMoebooru(
-                data: (data) => data.supportsFavorite(config.url)
-                    ? _Toolbar(post: post)
-                    : DefaultPostActionToolbar(post: post),
-                orElse: () => DefaultPostActionToolbar(post: post)) ??
-            DefaultPostActionToolbar(post: post);
-      },
-    );
+    return booru?.whenMoebooru(
+            data: (data) => data.supportsFavorite(config.url)
+                ? _Toolbar(post: post)
+                : DefaultPostActionToolbar(post: post),
+            orElse: () => DefaultPostActionToolbar(post: post)) ??
+        DefaultPostActionToolbar(post: post);
   }
 }
 

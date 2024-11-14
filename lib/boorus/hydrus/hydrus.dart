@@ -390,10 +390,7 @@ class HydrusPostDetailsPage extends ConsumerWidget {
         ),
         unknownCategoryColor: ref.watch(tagColorProvider('general')),
       ),
-      toolbar: ValueListenableBuilder(
-        valueListenable: controller.currentPost,
-        builder: (_, post, __) => HydrusPostActionToolbar(post: post),
-      ),
+      toolbar: const HydrusPostActionToolbar(),
     );
   }
 }
@@ -435,10 +432,7 @@ class HydrusPostDetailsDesktopPage extends ConsumerWidget {
         ),
         unknownCategoryColor: ref.watch(tagColorProvider('general')),
       ),
-      toolbar: ValueListenableBuilder(
-        valueListenable: controller.currentPost,
-        builder: (_, post, __) => HydrusPostActionToolbar(post: post),
-      ),
+      toolbar: const HydrusPostActionToolbar(),
       topRightButtonsBuilder: (currentPage, expanded, post) =>
           GeneralMoreActionButton(post: post),
     );
@@ -499,13 +493,11 @@ class HydrusAuthConfigView extends ConsumerWidget {
 class HydrusPostActionToolbar extends ConsumerWidget {
   const HydrusPostActionToolbar({
     super.key,
-    required this.post,
   });
-
-  final HydrusPost post;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final post = InheritedPost.of<HydrusPost>(context);
     final canFav =
         ref.watch(hydrusCanFavoriteProvider(ref.watchConfig)).maybeWhen(
               data: (fav) => fav,

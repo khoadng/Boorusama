@@ -14,6 +14,19 @@ import '../favorites/favorites.dart';
 import '../post_votes/post_votes.dart';
 import 'posts.dart';
 
+class DanbooruInheritedPostActionToolbar extends StatelessWidget {
+  const DanbooruInheritedPostActionToolbar({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final post = InheritedPost.maybeOf<DanbooruPost>(context);
+
+    return post != null
+        ? DanbooruPostActionToolbar(post: post)
+        : const SizedBox.shrink();
+  }
+}
+
 class DanbooruPostActionToolbar extends ConsumerWidget {
   const DanbooruPostActionToolbar({
     super.key,

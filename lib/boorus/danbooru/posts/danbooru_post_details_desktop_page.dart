@@ -82,10 +82,7 @@ class _DanbooruPostDetailsDesktopPageState
           DanbooruMoreActionButton(
         post: post,
       ),
-      toolbar: ValueListenableBuilder(
-        valueListenable: widget.controller.currentPost,
-        builder: (_, post, __) => DanbooruPostActionToolbar(post: post),
-      ),
+      toolbar: const DanbooruInheritedPostActionToolbar(),
       infoBuilder: (context, post) => SimpleInformationSection(
         post: post,
         showSource: true,

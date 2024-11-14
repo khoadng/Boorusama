@@ -73,10 +73,7 @@ class _BookmarkDetailsPageState
     return PostDetailsPageScaffold(
       posts: posts,
       swipeImageUrlBuilder: (post) => post.sampleImageUrl,
-      toolbar: ValueListenableBuilder(
-        valueListenable: widget.controller.currentPost,
-        builder: (context, post, _) => BookmarkPostActionToolbar(post: post),
-      ),
+      toolbar: const BookmarkPostActionToolbar(),
       sourceSectionBuilder: (context, post) => Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -116,13 +113,12 @@ class _BookmarkDetailsPageState
 class BookmarkPostActionToolbar extends ConsumerWidget {
   const BookmarkPostActionToolbar({
     super.key,
-    required this.post,
   });
-
-  final Post post;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final post = InheritedPost.of<BookmarkPost>(context);
+
     return PostActionToolbar(
       children: [
         BookmarkPostButton(post: post),
