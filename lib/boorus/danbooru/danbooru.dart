@@ -162,6 +162,7 @@ class DanbooruBuilder
             posts: posts,
             onExit: (page) => controller.onExit(page),
             onPageChanged: (page) => controller.setPage(page),
+            controller: controller,
           ),
           mobile: (controller) => DanbooruPostDetailsPage(
             intitialIndex: controller.currentPage.value,

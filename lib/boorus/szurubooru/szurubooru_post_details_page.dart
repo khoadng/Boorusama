@@ -91,10 +91,10 @@ class SzurubooruPostDetailsDesktopPage extends ConsumerWidget {
   });
 
   final int initialIndex;
-  final List<Post> posts;
+  final List<SzurubooruPost> posts;
   final void Function(int index) onExit;
   final void Function(int page) onPageChanged;
-  final PostDetailsController<Post> controller;
+  final PostDetailsController<SzurubooruPost> controller;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -128,13 +128,9 @@ class SzurubooruPostDetailsDesktopPage extends ConsumerWidget {
                   onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
                 ),
               ),
-      toolbarBuilder: (context, post) => ValueListenableBuilder(
+      toolbar: ValueListenableBuilder(
         valueListenable: controller.currentPost,
-        builder: (_, rawPost, __) =>
-            castOrNull<SzurubooruPost>(rawPost).toOption().fold(
-                  () => SimplePostActionToolbar(post: rawPost),
-                  (post) => SzurubooruPostActionToolbar(post: post),
-                ),
+        builder: (_, post, __) => SzurubooruPostActionToolbar(post: post),
       ),
       topRightButtonsBuilder: (currentPage, expanded, post) =>
           GeneralMoreActionButton(post: post),

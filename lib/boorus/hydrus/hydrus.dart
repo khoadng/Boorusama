@@ -248,25 +248,29 @@ class HydrusBuilder
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) => PostDetailsLayoutSwitcher(
-            initialIndex: payload.initialIndex,
-            posts: payload.posts,
-            scrollController: payload.scrollController,
-            desktop: (controller) => HydrusPostDetailsDesktopPage(
-              initialIndex: controller.currentPage.value,
-              controller: controller,
-              posts: payload.posts,
-              onExit: (page) => controller.onExit(page),
-              onPageChanged: (page) => controller.setPage(page),
-            ),
-            mobile: (controller) => HydrusPostDetailsPage(
-              initialPage: controller.currentPage.value,
-              controller: controller,
-              posts: payload.posts,
-              onExit: (page) => controller.onExit(page),
-              onPageChanged: (page) => controller.setPage(page),
-            ),
-          );
+      (context, config, payload) {
+        final posts = payload.posts.map((e) => e as HydrusPost).toList();
+
+        return PostDetailsLayoutSwitcher(
+          initialIndex: payload.initialIndex,
+          posts: posts,
+          scrollController: payload.scrollController,
+          desktop: (controller) => HydrusPostDetailsDesktopPage(
+            initialIndex: controller.currentPage.value,
+            controller: controller,
+            posts: posts,
+            onExit: (page) => controller.onExit(page),
+            onPageChanged: (page) => controller.setPage(page),
+          ),
+          mobile: (controller) => HydrusPostDetailsPage(
+            initialPage: controller.currentPage.value,
+            controller: controller,
+            posts: posts,
+            onExit: (page) => controller.onExit(page),
+            onPageChanged: (page) => controller.setPage(page),
+          ),
+        );
+      };
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
@@ -411,10 +415,10 @@ class HydrusPostDetailsDesktopPage extends ConsumerWidget {
   });
 
   final int initialIndex;
-  final List<Post> posts;
+  final List<HydrusPost> posts;
   final void Function(int index) onExit;
   final void Function(int page) onPageChanged;
-  final PostDetailsController<Post> controller;
+  final PostDetailsController<HydrusPost> controller;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -437,13 +441,9 @@ class HydrusPostDetailsDesktopPage extends ConsumerWidget {
         ),
         unknownCategoryColor: ref.watch(tagColorProvider('general')),
       ),
-      toolbarBuilder: (context, post) => ValueListenableBuilder(
+      toolbar: ValueListenableBuilder(
         valueListenable: controller.currentPost,
-        builder: (_, rawPost, __) =>
-            castOrNull<HydrusPost>(rawPost).toOption().fold(
-                  () => SimplePostActionToolbar(post: rawPost),
-                  (post) => HydrusPostActionToolbar(post: post),
-                ),
+        builder: (_, post, __) => HydrusPostActionToolbar(post: post),
       ),
       topRightButtonsBuilder: (currentPage, expanded, post) =>
           GeneralMoreActionButton(post: post),

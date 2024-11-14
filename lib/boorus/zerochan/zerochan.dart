@@ -184,7 +184,6 @@ class ZerochanPostDetailsDesktopPage extends ConsumerWidget {
       onPageChanged: onPageChanged,
       imageUrlBuilder: defaultPostImageUrlBuilder(ref),
       tagListBuilder: (context, post) => ZerochanTagsTile(post: post),
-      toolbarBuilder: (context, post) => SimplePostActionToolbar(post: post),
       topRightButtonsBuilder: (currentPage, expanded, post) =>
           GeneralMoreActionButton(post: post),
     );

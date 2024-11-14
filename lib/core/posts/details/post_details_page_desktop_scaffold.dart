@@ -59,14 +59,12 @@ class _DefaultPostDetailsDesktopPageState
       imageUrlBuilder: (post) => post.sampleImageUrl,
       topRightButtonsBuilder: (currentPage, expanded, post) =>
           GeneralMoreActionButton(post: post),
-      toolbarBuilder: (context, post) => SimplePostActionToolbar(post: post),
       tagListBuilder: (context, post) => BasicTagList(
         tags: post.tags.toList(),
         onTap: (tag) => goToSearchPage(context, tag: tag),
       ),
-      fileDetailsBuilder: (context, post) => FileDetailsSection(
+      fileDetailsBuilder: (context, post) => DefaultFileDetailsSection(
         post: post,
-        rating: post.rating,
       ),
     );
   }
@@ -81,7 +79,7 @@ class PostDetailsPageDesktopScaffold<T extends Post>
     required this.onExit,
     required this.onPageChanged,
     this.topRightButtonsBuilder,
-    this.toolbarBuilder,
+    this.toolbar,
     this.artistInfoBuilder,
     this.statsTileBuilder,
     this.tagListBuilder,
@@ -106,7 +104,7 @@ class PostDetailsPageDesktopScaffold<T extends Post>
   final void Function(T post)? onPageLoaded;
   final Widget Function(int currentPage, bool expanded, T post)?
       topRightButtonsBuilder;
-  final Widget Function(BuildContext context, T post)? toolbarBuilder;
+  final Widget? toolbar;
   final Widget Function(BuildContext context, T post)? artistInfoBuilder;
   final Widget Function(BuildContext context, T post)? statsTileBuilder;
   final Widget Function(BuildContext context, T post)? tagListBuilder;
@@ -346,11 +344,13 @@ class _PostDetailsDesktopScaffoldState<T extends Post>
                         child: widget.infoBuilder!(context, post),
                       )
                     : null,
-                PostDetailsPart.toolbar => widget.toolbarBuilder != null
+                PostDetailsPart.toolbar => widget.toolbar != null
                     ? SliverToBoxAdapter(
-                        child: widget.toolbarBuilder!(context, post),
+                        child: widget.toolbar,
                       )
-                    : null,
+                    : SliverToBoxAdapter(
+                        child: SimplePostActionToolbar(post: post),
+                      ),
                 PostDetailsPart.artistInfo => widget.artistInfoBuilder != null
                     ? SliverToBoxAdapter(
                         child: Column(

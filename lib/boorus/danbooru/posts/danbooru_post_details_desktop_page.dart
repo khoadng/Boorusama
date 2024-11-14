@@ -27,12 +27,14 @@ class DanbooruPostDetailsDesktopPage extends ConsumerStatefulWidget {
     required this.posts,
     required this.onExit,
     required this.onPageChanged,
+    required this.controller,
   });
 
   final int initialIndex;
   final List<DanbooruPost> posts;
   final void Function(int index) onExit;
   final void Function(int page) onPageChanged;
+  final PostDetailsController<DanbooruPost> controller;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -80,7 +82,10 @@ class _DanbooruPostDetailsDesktopPageState
           DanbooruMoreActionButton(
         post: post,
       ),
-      toolbarBuilder: (context, post) => DanbooruPostActionToolbar(post: post),
+      toolbar: ValueListenableBuilder(
+        valueListenable: widget.controller.currentPost,
+        builder: (_, post, __) => DanbooruPostActionToolbar(post: post),
+      ),
       infoBuilder: (context, post) => SimpleInformationSection(
         post: post,
         showSource: true,

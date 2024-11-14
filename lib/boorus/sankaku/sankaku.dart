@@ -246,7 +246,6 @@ class SankakuPostDetailsDesktopPage extends ConsumerWidget {
               .toList()
           : [],
       tagListBuilder: (context, post) => SankakuTagsTile(post: post),
-      toolbarBuilder: (context, post) => SimplePostActionToolbar(post: post),
       topRightButtonsBuilder: (currentPage, expanded, post) =>
           GeneralMoreActionButton(post: post),
       parts: kDefaultPostDetailsNoSourceParts,

@@ -20,6 +20,7 @@ import 'package:boorusama/foundation/html.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'create_szurubooru_config_page.dart';
 import 'szurubooru_home_page.dart';
+import 'szurubooru_post.dart';
 import 'szurubooru_post_details_page.dart';
 
 class SzurubooruBuilder
@@ -110,25 +111,29 @@ class SzurubooruBuilder
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) => PostDetailsLayoutSwitcher(
-            initialIndex: payload.initialIndex,
-            posts: payload.posts,
-            scrollController: payload.scrollController,
-            desktop: (controller) => SzurubooruPostDetailsDesktopPage(
-              initialIndex: controller.currentPage.value,
-              controller: controller,
-              posts: payload.posts,
-              onExit: (page) => controller.onExit(page),
-              onPageChanged: (page) => controller.setPage(page),
-            ),
-            mobile: (controller) => SzurubooruPostDetailsPage(
-              initialPage: controller.currentPage.value,
-              controller: controller,
-              posts: payload.posts,
-              onExit: (page) => controller.onExit(page),
-              onPageChanged: (page) => controller.setPage(page),
-            ),
-          );
+      (context, config, payload) {
+        final posts = payload.posts.map((e) => e as SzurubooruPost).toList();
+
+        return PostDetailsLayoutSwitcher(
+          initialIndex: payload.initialIndex,
+          posts: posts,
+          scrollController: payload.scrollController,
+          desktop: (controller) => SzurubooruPostDetailsDesktopPage(
+            initialIndex: controller.currentPage.value,
+            controller: controller,
+            posts: posts,
+            onExit: (page) => controller.onExit(page),
+            onPageChanged: (page) => controller.setPage(page),
+          ),
+          mobile: (controller) => SzurubooruPostDetailsPage(
+            initialPage: controller.currentPage.value,
+            controller: controller,
+            posts: posts,
+            onExit: (page) => controller.onExit(page),
+            onPageChanged: (page) => controller.setPage(page),
+          ),
+        );
+      };
 
   @override
   final DownloadFilenameGenerator<Post> downloadFilenameBuilder =

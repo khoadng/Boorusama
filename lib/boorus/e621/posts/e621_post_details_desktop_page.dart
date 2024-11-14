@@ -21,12 +21,14 @@ class E621PostDetailsDesktopPage extends ConsumerStatefulWidget {
     required this.posts,
     required this.onExit,
     required this.onPageChanged,
+    required this.controller,
   });
 
   final int initialIndex;
   final List<E621Post> posts;
   final void Function(int index) onExit;
   final void Function(int page) onPageChanged;
+  final PostDetailsController<E621Post> controller;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -49,7 +51,10 @@ class _DanbooruPostDetailsDesktopPageState
       infoBuilder: (context, post) => SimpleInformationSection(post: post),
       topRightButtonsBuilder: (currentPage, expanded, post) =>
           GeneralMoreActionButton(post: post),
-      toolbarBuilder: (context, post) => DefaultPostActionToolbar(post: post),
+      toolbar: ValueListenableBuilder(
+        valueListenable: widget.controller.currentPost,
+        builder: (_, post, __) => DefaultPostActionToolbar(post: post),
+      ),
       tagListBuilder: (context, post) => E621TagsTile(
         post: post,
       ),

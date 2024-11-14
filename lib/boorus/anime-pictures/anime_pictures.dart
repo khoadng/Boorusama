@@ -390,8 +390,11 @@ class AnimePicturesPostDetailsDesktopPage extends ConsumerWidget {
         post: post,
         initialExpanded: true,
       ),
-      toolbarBuilder: (context, post) => DefaultPostActionToolbar(
-        post: post,
+      toolbar: ValueListenableBuilder(
+        valueListenable: controller.currentPost,
+        builder: (_, post, __) => DefaultPostActionToolbar(
+          post: post,
+        ),
       ),
       sliverRelatedPostsBuilder: (context, post) => ref
           .watch(postDetailsProvider(post.id))

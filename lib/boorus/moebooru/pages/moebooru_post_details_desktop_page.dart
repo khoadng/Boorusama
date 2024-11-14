@@ -51,7 +51,6 @@ class _MoebooruPostDetailsDesktopPageState
         post: post,
         tags: ref.watch(tagsProvider(config)),
       ),
-      toolbarBuilder: (context, post) => SimplePostActionToolbar(post: post),
       tagListBuilder: (context, post) => TagsTile(
         post: post,
         tags: ref.watch(tagsProvider(config)),

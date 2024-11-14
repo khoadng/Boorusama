@@ -44,7 +44,6 @@ class _DanbooruPostDetailsDesktopPageState
       imageUrlBuilder: defaultPostImageUrlBuilder(ref),
       topRightButtonsBuilder: (currentPage, expanded, post) =>
           GeneralMoreActionButton(post: post),
-      toolbarBuilder: (context, post) => SimplePostActionToolbar(post: post),
       tagListBuilder: (context, post) => GelbooruV2TagsTile(
         post: post,
         onTagsLoaded: (tags) => ref.setGelbooruPostDetailsArtistMap(
