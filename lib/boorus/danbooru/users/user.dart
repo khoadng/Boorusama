@@ -18,6 +18,9 @@ class DanbooruUser extends Equatable {
     required this.commentCount,
     required this.forumPostCount,
     required this.favoriteGroupCount,
+    required this.positiveFeedbackCount,
+    required this.neutralFeedbackCount,
+    required this.negativeFeedbackCount,
   });
 
   factory DanbooruUser.placeholder() => DanbooruUser(
@@ -31,6 +34,9 @@ class DanbooruUser extends Equatable {
         commentCount: 0,
         forumPostCount: 0,
         favoriteGroupCount: 0,
+        positiveFeedbackCount: 0,
+        neutralFeedbackCount: 0,
+        negativeFeedbackCount: 0,
       );
 
   final UserId id;
@@ -43,6 +49,9 @@ class DanbooruUser extends Equatable {
   final int commentCount;
   final int forumPostCount;
   final int favoriteGroupCount;
+  final int positiveFeedbackCount;
+  final int neutralFeedbackCount;
+  final int negativeFeedbackCount;
 
   @override
   List<Object?> get props => [
@@ -56,6 +65,9 @@ class DanbooruUser extends Equatable {
         commentCount,
         forumPostCount,
         favoriteGroupCount,
+        positiveFeedbackCount,
+        neutralFeedbackCount,
+        negativeFeedbackCount,
       ];
 }
 
@@ -77,6 +89,9 @@ extension UserX on DanbooruUser {
         commentCount: commentCount,
         forumPostCount: forumPostCount,
         favoriteGroupCount: favoriteGroupCount,
+        positiveFeedbackCount: positiveFeedbackCount,
+        neutralFeedbackCount: neutralFeedbackCount,
+        negativeFeedbackCount: negativeFeedbackCount,
       );
 }
 

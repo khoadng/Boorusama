@@ -18,6 +18,9 @@ DanbooruUser userDtoToUser(
     commentCount: d.commentCount ?? 0,
     forumPostCount: d.forumPostCount ?? 0,
     favoriteGroupCount: d.favoriteGroupCount ?? 0,
+    positiveFeedbackCount: d.positiveFeedbackCount ?? 0,
+    neutralFeedbackCount: d.neutralFeedbackCount ?? 0,
+    negativeFeedbackCount: d.negativeFeedbackCount ?? 0,
   );
 }
 

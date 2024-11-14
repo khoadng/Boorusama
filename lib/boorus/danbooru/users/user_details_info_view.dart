@@ -27,9 +27,102 @@ class UserDetailsInfoView extends ConsumerWidget {
       child: Column(
         children: [
           const SizedBox(height: 12),
-          UserStatsGroup(user: user),
+          UserDetailsSectionCard(
+            title: 'Activity',
+            child: UserStatsGroup(user: user),
+          ),
+          const SizedBox(height: 24),
+          UserDetailsSectionCard(
+            title: 'Feedbacks',
+            child: UserFeedbacksGroup(user: user),
+          ),
         ],
       ),
+    );
+  }
+}
+
+class UserDetailsSectionCard extends StatelessWidget {
+  const UserDetailsSectionCard({
+    super.key,
+    required this.child,
+    required this.title,
+  });
+
+  final Widget child;
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 12),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 12,
+        vertical: 12,
+      ),
+      decoration: BoxDecoration(
+        color: context.colorScheme.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 12),
+          child,
+        ],
+      ),
+    );
+  }
+}
+
+class UserFeedbacksGroup extends StatelessWidget {
+  const UserFeedbacksGroup({
+    super.key,
+    required this.user,
+  });
+
+  final DanbooruUser user;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            _StatsButton(
+              num: user.positiveFeedbackCount,
+              title: 'Positive',
+            ),
+          ],
+        ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            _StatsButton(
+              num: user.neutralFeedbackCount,
+              title: 'Neutral',
+            ),
+          ],
+        ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            _StatsButton(
+              num: user.negativeFeedbackCount,
+              title: 'Negative',
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
