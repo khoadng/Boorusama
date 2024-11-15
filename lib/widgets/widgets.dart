@@ -59,7 +59,6 @@ export 'slide_in_route.dart';
 export 'sliver_divider.dart';
 export 'sliver_sized_box.dart';
 export 'square_chip.dart';
-export 'swipe_down_to_dismiss_mixin.dart';
 export 'swipe_to.dart';
 export 'tag_changed_text.dart';
 export 'tag_cloud.dart';

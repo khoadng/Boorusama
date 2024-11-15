@@ -479,14 +479,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.0.1"
-  exprollable_page_view:
-    dependency: "direct main"
-    description:
-      name: exprollable_page_view
-      sha256: "2abb112129b15237079690dd6374c829910b62c66c718d82346c0dc417c9d202"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.1"
   extended_image:
     dependency: "direct main"
     description:

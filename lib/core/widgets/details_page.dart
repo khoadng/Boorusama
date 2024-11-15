@@ -5,8 +5,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:exprollable_page_view/exprollable_page_view.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -17,126 +15,89 @@ import 'package:boorusama/foundation/mobile.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import 'post_details_page_view.dart';
 
 part 'details_page_controller.dart';
 
 double getTopActionIconAlignValue() => hasStatusBar() ? -0.92 : -1;
 
-class DetailsPage<T> extends ConsumerStatefulWidget {
+class DetailsPage<T> extends StatefulWidget {
   const DetailsPage({
     super.key,
-    required this.intitialIndex,
-    required this.targetSwipeDown,
-    required this.expandedBuilder,
-    required this.pageCount,
-    required this.topRightButtonsBuilder,
-    this.onExpanded,
-    this.bottomSheet,
-    required this.onExit,
-    this.controller,
-    this.onSwipeDownEnd,
     required this.currentSettings,
+    this.controller,
+    required this.info,
+    required this.intitialIndex,
+    required this.itemBuilder,
+    required this.itemCount,
+    this.onExpanded,
+    required this.onExit,
+    this.onSwipeDownThresholdReached,
+    this.bottomSheet,
+    required this.topRightButtons,
   });
 
   final int intitialIndex;
-  final Widget targetSwipeDown;
-  final Widget Function(
-    BuildContext context,
-    int page,
-    bool expanded,
-    bool enableSwipe,
-  ) expandedBuilder;
-  final int pageCount;
-  final List<Widget> Function(bool expanded) topRightButtonsBuilder;
-  final void Function()? onExpanded;
-  final Widget? bottomSheet;
-  final void Function(int index) onExit;
+
   final DetailsPageController? controller;
-  final void Function(int currentPage)? onSwipeDownEnd;
+
+  final Widget topRightButtons;
+  final Widget info;
+  final Widget? bottomSheet;
+
+  final void Function()? onExpanded;
+  final void Function(int index) onExit;
+  final void Function()? onSwipeDownThresholdReached;
+
   final Settings Function() currentSettings;
 
+  final IndexedWidgetBuilder itemBuilder;
+  final int itemCount;
+
   @override
-  ConsumerState<DetailsPage> createState() => _DetailsPageState();
+  State<DetailsPage> createState() => _DetailsPageState();
 }
 
-class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
-    with
-        TickerProviderStateMixin,
-        SwipeDownToDismissMixin<DetailsPage<T>>,
-        AutomaticSlideMixin {
-  late final controller = ExprollablePageController(
-    initialPage: widget.intitialIndex,
-    viewportConfiguration: ViewportConfiguration(
-      minFraction: 1.0,
-      maxFraction: 1.01,
-      extendPage: true,
-    ),
-  );
-  var isExpanded = ValueNotifier(false);
-  late final _shouldSlideDownNotifier = ValueNotifier(false);
-
-  //details page contorller
+class _DetailsPageState<T> extends State<DetailsPage<T>>
+    with AutomaticSlideMixin {
   late final _controller = widget.controller ?? DetailsPageController();
 
   @override
-  PageController get pageController => controller;
+  PageController get pageController => _pageController.pageController;
+
+  PostDetailsPageViewController get _pageController =>
+      _controller.pageViewController;
 
   late StreamSubscription<PageDirection> pageSubscription;
 
   @override
-  Function() get popper => () {
-        if (widget.onSwipeDownEnd != null) {
-          widget.onSwipeDownEnd!(controller.currentPage.value);
-        } else {
-          _onBackButtonPressed(false);
-        }
-      };
-
-  bool get _isSwiping {
-    if (!controller.hasClients) return false;
-    return controller.page != controller.page?.round();
-  }
-
-  final _keepBottomSheetDown = ValueNotifier(false);
-  var _pageSwipe = true;
-
-  @override
   void initState() {
-    isSwipingDown.addListener(_updateShouldSlideDown);
-    isExpanded.addListener(_updateShouldSlideDown);
-    isExpanded.addListener(_showSystemStatusOnExpanded);
-
-    if (_controller._hideOverlay.value) {
-      _shouldSlideDownNotifier.value = true;
-    }
-    _controller.addListener(_onPageDetailsChanged);
     _controller.slideshow.addListener(_onSlideShowChanged);
 
-    controller.currentPage.addListener(_onPageChanged);
+    _pageController.currentPageNotifier.addListener(_onPageChanged);
+    _pageController.expandedNotifier.addListener(_onExpanded);
 
     pageSubscription = _controller.pageStream.listen((event) async {
       // if expanding, shrunk the viewport first
-      if (isExpanded.value) {
-        await controller.animateViewportInsetTo(
-          ViewportInset.shrunk,
-          curve: Curves.easeOut,
-          duration: const Duration(milliseconds: 150),
+      if (_pageController.isExpanded) {
+        await _pageController.resetSheet(
+          duration: const Duration(milliseconds: 300),
         );
       }
 
       if (event == PageDirection.next) {
         // if last page, do nothing
-        if (controller.page == widget.pageCount - 1) return;
+        if (_pageController.currentPage == widget.itemCount - 1) return;
 
-        controller.nextPage(
+        _pageController.nextPage(
           duration: const Duration(milliseconds: 150),
           curve: Curves.easeOut,
         );
       } else {
         // if first page, do nothing
-        if (controller.page == 0) return;
+        if (_pageController.currentPage == 0) return;
 
-        controller.previousPage(
+        _pageController.previousPage(
           duration: const Duration(milliseconds: 150),
           curve: Curves.easeOut,
         );
@@ -151,19 +112,17 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
 
     if (slideShow) {
       // if in expanded mode, scroll to top to exit expanded mode first
-      if (isExpanded.value) {
-        await controller.animateViewportInsetTo(
-          ViewportInset.shrunk,
-          curve: Curves.easeOut,
-          duration: const Duration(milliseconds: 150),
+      if (_pageController.isExpanded) {
+        await _pageController.resetSheet(
+          duration: const Duration(milliseconds: 300),
         );
       }
 
       final settings = widget.currentSettings();
 
       startAutoSlide(
-        controller.currentPage.value,
-        widget.pageCount,
+        _pageController.currentPage,
+        widget.itemCount,
         skipAnimation: settings.skipSlideshowTransition,
         direction: switch (settings.slideshowDirection) {
           SlideshowDirection.forward => SlideDirection.forward,
@@ -178,48 +137,24 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
   }
 
   void _onPageChanged() {
-    _controller.currentPage.value = controller.currentPage.value;
+    _controller.currentPage.value = _pageController.currentPage;
   }
 
-  void _onPageDetailsChanged() {
-    _updateShouldSlideDown();
-    if (_controller.pageSwipe != _pageSwipe) {
-      setState(() {
-        _pageSwipe = _controller.pageSwipe;
-      });
+  void _onExpanded() {
+    if (widget.onExpanded != null) {
+      widget.onExpanded!();
     }
-  }
 
-  @override
-  void didUpdateWidget(DetailsPage<T> oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    _updateShouldSlideDown();
-  }
-
-  void _showSystemStatusOnExpanded() {
-    if (isExpanded.value) {
+    if (_pageController.isExpanded) {
       showSystemStatus();
+      _controller.setHideOverlay(false);
     }
-  }
-
-  void _updateShouldSlideDown() {
-    if (_keepBottomSheetDown.value) return;
-    _shouldSlideDownNotifier.value = isSwipingDown.value ||
-        isExpanded.value ||
-        _controller.hideOverlay.value;
   }
 
   @override
   void dispose() {
-    controller.currentPage.removeListener(_onPageChanged);
-    controller.dispose();
-
-    isSwipingDown.removeListener(_updateShouldSlideDown);
-    isExpanded.removeListener(_updateShouldSlideDown);
-    isExpanded.removeListener(_showSystemStatusOnExpanded);
-
-    _controller.removeListener(_onPageDetailsChanged);
+    _pageController.currentPageNotifier.removeListener(_onPageChanged);
+    _pageController.expandedNotifier.removeListener(_onExpanded);
 
     _controller.slideshow.removeListener(_onSlideShowChanged);
     stopAutoSlide();
@@ -233,33 +168,12 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
     super.dispose();
   }
 
-  void _handlePointerMove(PointerMoveEvent event, bool expanded) {
-    if (_controller.blockSwipe ||
-        expanded ||
-        context.maybeNavigator?.userGestureInProgress == true ||
-        _controller.slideshow.value ||
-        _isSwiping) {
-      return;
-    }
-
-    handlePointerMove(event);
-  }
-
-  void _handlePointerUp(PointerUpEvent event, bool expanded) {
-    if (expanded || _controller.blockSwipe) {
-      return;
-    }
-
-    handlePointerUp(event);
-  }
-
   void _onBackButtonPressed(bool didPop) {
-    _keepBottomSheetDown.value = true;
     _controller.restoreSystemStatus();
     if (!didPop) {
       context.navigator.pop();
     }
-    widget.onExit(controller.currentPage.value);
+    widget.onExit(_pageController.currentPage);
   }
 
   @override
@@ -274,212 +188,156 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
         _onBackButtonPressed(didPop);
       },
       child: Scaffold(
-        body: ValueListenableBuilder(
-          valueListenable: isExpanded,
-          builder: (context, expanded, navButtonGroup) => Stack(
-            children: [
-              _buildScrollContent(expanded),
-              navButtonGroup!,
-              _buildBottomSheet(),
-              _buildTopRightButtonGroup(expanded),
-            ],
-          ),
-          child: _buildNavigationButtonGroup(context),
-        ),
-      ),
-    );
-  }
+        body: Stack(
+          children: [
+            PostDetailsPageView(
+              maxChildSize: 0.9,
+              controller: _pageController,
+              onSwipeDownThresholdReached: widget.onSwipeDownThresholdReached ??
+                  () {
+                    widget.onExit(_pageController.currentPage);
+                    _onBackButtonPressed(false);
+                  },
+              sheet: Builder(
+                builder: (context) {
+                  final scrollController =
+                      PostDetailsSheetScrollController.of(context);
 
-  Widget _buildBottomSheet() {
-    return Align(
-      alignment: Alignment.bottomCenter,
-      child: widget.bottomSheet != null
-          ? ValueListenableBuilder(
-              valueListenable: _shouldSlideDownNotifier,
-              builder: (context, shouldSlideDown, _) => _BottomSheet(
-                shouldSlideDown: shouldSlideDown,
-                bottomSheet: widget.bottomSheet,
-              ),
-            )
-          : const SizedBox.shrink(),
-    );
-  }
-
-  Widget _buildScrollContent(
-    bool expanded,
-  ) {
-    return ValueListenableBuilder(
-      valueListenable: isSwipingDown,
-      builder: (_, swipingDown, __) => Builder(
-        builder: (context) {
-          final offstage = swipingDown && !expanded;
-          return ValueListenableBuilder(
-            valueListenable: _keepBottomSheetDown,
-            builder: (_, keepDown, __) => Stack(
-              children: [
-                ValueListenableBuilder(
-                  valueListenable: dragDistance,
-                  builder: (_, drag, __) => drag > 0 && keepDown
-                      ? const SizedBox.shrink()
-                      : Offstage(
-                          offstage: offstage,
-                          child: _buildPageView(
-                            expanded,
-                          ),
-                        ),
-                ),
-                ValueListenableBuilder(
-                  valueListenable: dragDistance,
-                  builder: (_, drag, __) => drag > 0
-                      ? ConditionalParentWidget(
-                          condition: !keepDown,
-                          conditionalBuilder: (child) => Offstage(
-                            offstage: !offstage,
-                            child: child,
-                          ),
-                          child: _buildSwipeTarget(expanded),
-                        )
-                      : Offstage(
-                          offstage: !offstage,
-                          child: _buildSwipeTarget(expanded),
-                        ),
-                ),
-              ],
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildPageView(
-    bool expanded,
-  ) {
-    return Listener(
-      onPointerMove: (event) => _handlePointerMove(event, expanded),
-      onPointerUp: (event) => _handlePointerUp(event, expanded),
-      child: ExprollablePageView(
-        controller: controller,
-        onViewportChanged: (metrics) {
-          if (metrics.isPageExpanded == isExpanded.value) {
-            return;
-          }
-
-          isExpanded.value = metrics.isPageExpanded;
-          _controller.setExpanded(metrics.isPageExpanded);
-          if (isExpanded.value) {
-            widget.onExpanded?.call();
-          }
-        },
-        physics: _pageSwipe
-            ? const DefaultPageViewScrollPhysics()
-            : const NeverScrollableScrollPhysics(),
-        itemCount: widget.pageCount,
-        itemBuilder: (context, page) => Scaffold(
-          floatingActionButton: ScrollToTop(
-            scrollController: PageContentScrollController.of(context),
-            child: BooruScrollToTopButton(
-              onPressed: () {
-                controller.animateViewportInsetTo(ViewportInset.shrunk,
-                    curve: Curves.easeOut,
-                    duration: const Duration(milliseconds: 150));
-              },
-            ),
-          ),
-          body: widget.expandedBuilder(
-            context,
-            page,
-            expanded,
-            _pageSwipe,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSwipeTarget(bool expanded) {
-    return ValueListenableBuilder(
-      valueListenable: dragDistance,
-      builder: (context, dd, child) => ValueListenableBuilder(
-        valueListenable: dragDistanceX,
-        builder: (context, ddx, child) => Transform.translate(
-          offset: Offset(ddx, dd),
-          child: Listener(
-            onPointerMove: (event) => _handlePointerMove(event, expanded),
-            onPointerUp: (event) => _handlePointerUp(event, expanded),
-            child: Transform.scale(
-              scale: scale,
-              child: widget.targetSwipeDown,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildNavigationButtonGroup(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: isExpanded,
-      builder: (_, expanded, __) => ValueListenableBuilder(
-        valueListenable: _controller.hideOverlay,
-        builder: (_, hide, __) => AnimatedSwitcher(
-          duration: Durations.long2,
-          child: !hide
-              ? Align(
-                  alignment: Alignment(
-                    -0.75,
-                    getTopActionIconAlignValue(),
-                  ),
-                  child: ValueListenableBuilder(
-                    valueListenable: _shouldSlideDownNotifier,
-                    builder: (context, value, child) => _SlideUpContainer(
-                      shouldSlideUp: value && !expanded,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: _NavigationButtonBar(
-                          onBack: () => _onBackButtonPressed(false),
-                        ),
+                  return Scaffold(
+                    floatingActionButton: ScrollToTop(
+                      scrollController: scrollController,
+                      child: BooruScrollToTopButton(
+                        onPressed: () {
+                          _pageController.resetSheet(
+                            duration: const Duration(milliseconds: 250),
+                          );
+                        },
                       ),
                     ),
+                    body: Stack(
+                      children: [
+                        Positioned.fill(
+                          child: widget.info,
+                        ),
+                        Align(
+                          alignment: Alignment.topCenter,
+                          child: ValueListenableBuilder(
+                            valueListenable: _pageController.expandedNotifier,
+                            builder: (context, expanded, child) =>
+                                expanded ? child! : const SizedBox.shrink(),
+                            child: const Padding(
+                              padding: EdgeInsets.only(
+                                top: 8,
+                              ),
+                              child: DragLine(),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+              itemCount: widget.itemCount,
+              itemBuilder: widget.itemBuilder,
+            ),
+            if (widget.bottomSheet != null)
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: UIOverlayVisibility(
+                  controller: _controller,
+                  pageController: _pageController,
+                  child: ValueListenableBuilder(
+                    valueListenable: _pageController.expandedNotifier,
+                    builder: (context, expanded, _) {
+                      return !expanded
+                          ? HideUIOverlayTransition(
+                              controller: _pageController,
+                              child: widget.bottomSheet!,
+                            )
+                          : const SizedBox.shrink();
+                    },
                   ),
-                )
-              : null,
+                ),
+              ),
+            Align(
+              alignment: Alignment(
+                0.9,
+                getTopActionIconAlignValue(),
+              ),
+              child: UIOverlayVisibility(
+                controller: _controller,
+                pageController: _pageController,
+                child: ValueListenableBuilder(
+                  valueListenable: _pageController.expandedNotifier,
+                  builder: (_, expanded, child) => ConditionalParentWidget(
+                    condition: !expanded,
+                    conditionalBuilder: (child) => HideUIOverlayTransition(
+                      controller: _pageController,
+                      slideDown: false,
+                      child: child,
+                    ),
+                    child: child!,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: widget.topRightButtons,
+                  ),
+                ),
+              ),
+            ),
+            Align(
+              alignment: Alignment(
+                -0.75,
+                getTopActionIconAlignValue(),
+              ),
+              child: UIOverlayVisibility(
+                controller: _controller,
+                pageController: _pageController,
+                child: ValueListenableBuilder(
+                  valueListenable: _pageController.expandedNotifier,
+                  builder: (_, expanded, child) => ConditionalParentWidget(
+                    condition: !expanded,
+                    conditionalBuilder: (child) => HideUIOverlayTransition(
+                      controller: _pageController,
+                      slideDown: false,
+                      child: child,
+                    ),
+                    child: child!,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: _NavigationButtonBar(
+                      onBack: () => _onBackButtonPressed(false),
+                    ),
+                  ),
+                ),
+              ),
+            )
+          ],
         ),
       ),
     );
   }
+}
 
-  Widget _buildTopRightButtonGroup(bool expanded) {
+class UIOverlayVisibility extends StatelessWidget {
+  const UIOverlayVisibility({
+    super.key,
+    required this.pageController,
+    required this.controller,
+    required this.child,
+  });
+
+  final PostDetailsPageViewController pageController;
+  final DetailsPageController controller;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: _controller.hideOverlay,
-      builder: (_, hide, __) => AnimatedSwitcher(
-        duration: Durations.long2,
-        child: !hide
-            ? Align(
-                alignment: Alignment(
-                  0.9,
-                  getTopActionIconAlignValue(),
-                ),
-                child: ValueListenableBuilder(
-                    valueListenable: _shouldSlideDownNotifier,
-                    builder: (context, value, child) => _SlideUpContainer(
-                          shouldSlideUp: value && !expanded,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: OverflowBar(
-                              alignment: MainAxisAlignment.end,
-                              spacing: 4,
-                              children: [
-                                ...widget.topRightButtonsBuilder(
-                                  expanded,
-                                ),
-                              ],
-                            ),
-                          ),
-                        )),
-              )
-            : null,
-      ),
+      valueListenable: controller.hideOverlay,
+      builder: (_, hide, __) => hide ? const SizedBox.shrink() : child,
     );
   }
 }
@@ -519,126 +377,40 @@ class _NavigationButtonBar extends StatelessWidget {
   }
 }
 
-class _BottomSheet extends StatefulWidget {
-  const _BottomSheet({
-    this.bottomSheet,
-    required this.shouldSlideDown,
-  });
-
-  final Widget? bottomSheet;
-  final bool shouldSlideDown;
-
-  @override
-  __BottomSheetState createState() => __BottomSheetState();
-}
-
-class __BottomSheetState extends State<_BottomSheet>
-    with TickerProviderStateMixin {
-  late AnimationController _animController;
-
-  @override
-  void initState() {
-    super.initState();
-    _animController = AnimationController(
-      value: 1,
-      vsync: this,
-    );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _animController.dispose();
-  }
-
-  @override
-  void didUpdateWidget(covariant _BottomSheet oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    if (oldWidget.shouldSlideDown != widget.shouldSlideDown) {
-      _animController.animateTo(
-        widget.shouldSlideDown ? 0 : 1,
-        duration: const Duration(milliseconds: 150),
-        curve: Curves.easeOut,
-      );
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SlideTransition(
-      position: Tween(
-        begin: const Offset(0, 1),
-        end: widget.shouldSlideDown ? const Offset(0, 1) : Offset.zero,
-      ).animate(
-        CurvedAnimation(
-          parent: _animController,
-          curve: Curves.easeOut,
-        ),
-      ),
-      child: widget.bottomSheet ?? const SizedBox.shrink(),
-    );
-  }
-}
-
-class _SlideUpContainer extends StatefulWidget {
-  const _SlideUpContainer({
-    required this.shouldSlideUp,
+class HideUIOverlayTransition extends StatelessWidget {
+  const HideUIOverlayTransition({
+    super.key,
+    required this.controller,
     required this.child,
+    this.slideDown = true,
   });
 
+  final bool slideDown;
+  final PostDetailsPageViewController controller;
   final Widget child;
-  final bool shouldSlideUp;
-
-  @override
-  _SlideUpContainerState createState() => _SlideUpContainerState();
-}
-
-class _SlideUpContainerState extends State<_SlideUpContainer>
-    with TickerProviderStateMixin {
-  late AnimationController _animController;
-
-  @override
-  void initState() {
-    super.initState();
-    _animController = AnimationController(
-      value: 0,
-      vsync: this,
-    );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _animController.dispose();
-  }
-
-  @override
-  void didUpdateWidget(covariant _SlideUpContainer oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    if (oldWidget.shouldSlideUp != widget.shouldSlideUp) {
-      _animController.animateTo(
-        widget.shouldSlideUp ? 1 : 0,
-        duration: const Duration(milliseconds: 150),
-        curve: Curves.easeIn,
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
-    return SlideTransition(
-      position: Tween(
-        begin: Offset.zero,
-        end: const Offset(0, -1.5),
-      ).animate(
-        CurvedAnimation(
-          parent: _animController,
-          curve: Curves.easeIn,
-        ),
-      ),
-      child: widget.child,
+    return ValueListenableBuilder(
+      valueListenable: controller.topDisplacement,
+      builder: (_, topDis, child) => topDis > 0
+          ? Transform.translate(
+              offset: slideDown ? Offset(0, topDis) : Offset(0, -topDis),
+              child: Opacity(
+                opacity: 1.0 - (topDis / 100).clamp(0.0, 1.0),
+                child: child,
+              ),
+            )
+          : ValueListenableBuilder(
+              valueListenable: controller.displacement,
+              builder: (context, dis, _) => Transform.translate(
+                offset:
+                    slideDown ? Offset(0, dis * 0.5) : Offset(0, -dis * 0.5),
+                child: child,
+              ),
+              child: child,
+            ),
+      child: child,
     );
   }
 }

@@ -25,18 +25,12 @@ mixin PostDetailsPageMixin<T extends StatefulWidget, E extends Post>
 
   List<E> get posts;
   DetailsPageController get controller;
-  Function(int page) get onPageChanged;
   ValueNotifier<VideoProgress> get videoProgress => _videoProgress;
   int get initialPage;
   late var _page = initialPage;
 
   void onSwiped(int page) {
     _videoProgress.value = VideoProgress.zero;
-    if (posts[page].isVideo) {
-      controller.disableSwipeDownToDismiss();
-    } else {
-      controller.enableSwipeDownToDismiss();
-    }
 
     // Pause previous video
     if (posts[page].videoUrl.endsWith('.webm')) {
@@ -45,7 +39,6 @@ mixin PostDetailsPageMixin<T extends StatefulWidget, E extends Post>
       _videoControllers[_page]?.pause();
     }
 
-    onPageChanged.call(page);
     _page = page;
   }
 
