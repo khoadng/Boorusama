@@ -36,6 +36,8 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView> {
   ValueNotifier<bool> get _swipe => _controller.swipe;
   ValueNotifier<double> get _verticalPosition => _controller.verticalPosition;
   ValueNotifier<double> get _displacement => _controller.displacement;
+  final _pointerCount = ValueNotifier(0);
+  final _interacting = ValueNotifier(false);
 
   late final PostDetailsPageViewController _controller;
 
@@ -78,55 +80,74 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView> {
             ),
             Expanded(
               child: ValueListenableBuilder(
-                valueListenable: _swipe,
-                builder: (_, swipe, __) => PageView.builder(
-                  controller: _controller.pageController,
-                  physics: swipe
-                      ? const DefaultPageViewScrollPhysics()
-                      : const NeverScrollableScrollPhysics(),
-                  itemCount: widget.itemCount,
-                  itemBuilder: (context, index) => ValueListenableBuilder(
-                    valueListenable: _controller.pullUp,
-                    builder: (_, canPull, __) => GestureDetector(
-                      onVerticalDragUpdate: canPull
-                          ? (details) {
-                              final dy = details.delta.dy;
+                valueListenable: _interacting,
+                builder: (_, interacting, __) => ValueListenableBuilder(
+                  valueListenable: _swipe,
+                  builder: (_, swipe, __) => PageView.builder(
+                    controller: _controller.pageController,
+                    physics: swipe && !interacting
+                        ? const DefaultPageViewScrollPhysics()
+                        : const NeverScrollableScrollPhysics(),
+                    itemCount: widget.itemCount,
+                    itemBuilder: (context, index) => ValueListenableBuilder(
+                      valueListenable: _controller.canPull,
+                      builder: (_, canPull, __) => PointerCountOnScreen(
+                        onCountChanged: (count) {
+                          _pointerCount.value = count;
+                          _interacting.value = count > 1;
+                        },
+                        child: ValueListenableBuilder(
+                          valueListenable: _controller.pulling,
+                          builder: (__, pulling, ___) => GestureDetector(
+                            onVerticalDragStart: canPull && !interacting
+                                ? (details) {
+                                    _controller.pulling.value = true;
+                                  }
+                                : null,
+                            onVerticalDragUpdate: pulling
+                                ? (details) {
+                                    final dy = details.delta.dy;
 
-                              _verticalPosition.value =
-                                  _verticalPosition.value + dy;
-                            }
-                          : null,
-                      onVerticalDragEnd: canPull
-                          ? (details) {
-                              if (_verticalPosition.value >
-                                  widget.swipeDownThreshold) {
-                                _verticalPosition.value = 0.0;
+                                    _verticalPosition.value =
+                                        _verticalPosition.value + dy;
+                                  }
+                                : null,
+                            onVerticalDragEnd: pulling
+                                ? (details) {
+                                    _controller.pulling.value = false;
+                                    if (_verticalPosition.value >
+                                        widget.swipeDownThreshold) {
+                                      _verticalPosition.value = 0.0;
 
-                                if (!_controller.isExpanded) {
-                                  widget.onSwipeDownThresholdReached?.call();
-                                }
-                                return;
-                              }
+                                      if (!_controller.isExpanded) {
+                                        widget.onSwipeDownThresholdReached
+                                            ?.call();
+                                      }
+                                      return;
+                                    }
 
-                              final size = _sheetController.size;
+                                    final size = _sheetController.size;
 
-                              if (size > widget.minSize) {
-                                _controller.expandToSnapPoint();
+                                    if (size > widget.minSize) {
+                                      _controller.expandToSnapPoint();
 
-                                return;
-                              }
+                                      return;
+                                    }
 
-                              if (_verticalPosition.value.abs() <=
-                                  _controller.threshold) {
-                                //TODO: for some reasons, setState is needed, should investigate later
-                                setState(() {
-                                  // Animate back to original position
-                                  _controller.resetSheet();
-                                });
-                              }
-                            }
-                          : null,
-                      child: widget.itemBuilder(context, index),
+                                    if (_verticalPosition.value.abs() <=
+                                        _controller.threshold) {
+                                      //TODO: for some reasons, setState is needed, should investigate later
+                                      setState(() {
+                                        // Animate back to original position
+                                        _controller.resetSheet();
+                                      });
+                                    }
+                                  }
+                                : null,
+                            child: widget.itemBuilder(context, index),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -167,6 +188,74 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView> {
           ),
         ),
       ],
+    );
+  }
+}
+
+class PointerCountOnScreen extends StatefulWidget {
+  const PointerCountOnScreen({
+    super.key,
+    required this.onCountChanged,
+    required this.child,
+  });
+
+  final Widget child;
+  final void Function(int count) onCountChanged;
+
+  @override
+  State<PointerCountOnScreen> createState() => _PointerCountOnScreenState();
+}
+
+class _PointerCountOnScreenState extends State<PointerCountOnScreen> {
+  final _pointersOnScreen = ValueNotifier<Set<int>>({});
+  final _pointerCount = ValueNotifier<int>(0);
+
+  @override
+  void initState() {
+    super.initState();
+    _pointersOnScreen.addListener(_onPointerChanged);
+    _pointerCount.addListener(_onPointerCountChanged);
+  }
+
+  void _onPointerCountChanged() {
+    widget.onCountChanged(_pointerCount.value);
+  }
+
+  void _onPointerChanged() {
+    _pointerCount.value = _pointersOnScreen.value.length;
+  }
+
+  void _addPointer(int index) {
+    _pointersOnScreen.value = {..._pointersOnScreen.value, index};
+  }
+
+  void _removePointer(int index) {
+    _pointersOnScreen.value = {..._pointersOnScreen.value}..remove(index);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _pointersOnScreen.removeListener(_onPointerChanged);
+    _pointerCount.removeListener(_onPointerCountChanged);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Listener(
+      onPointerDown: (event) {
+        _addPointer(event.pointer);
+      },
+      onPointerMove: (event) {
+        _addPointer(event.pointer);
+      },
+      onPointerCancel: (event) {
+        _removePointer(event.pointer);
+      },
+      onPointerUp: (event) {
+        _removePointer(event.pointer);
+      },
+      child: widget.child,
     );
   }
 }
@@ -219,7 +308,8 @@ class PostDetailsPageViewController extends ChangeNotifier {
   late final ValueNotifier<double> topDisplacement = ValueNotifier(0.0);
   late final ValueNotifier<bool> animating = ValueNotifier(false);
   final ValueNotifier<bool> swipe = ValueNotifier(true);
-  final ValueNotifier<bool> pullUp = ValueNotifier(true);
+  final ValueNotifier<bool> canPull = ValueNotifier(true);
+  final ValueNotifier<bool> pulling = ValueNotifier(false);
 
   void _init({
     required BuildContext context,
@@ -338,12 +428,12 @@ class PostDetailsPageViewController extends ChangeNotifier {
 
   void disableAllSwiping() {
     swipe.value = false;
-    pullUp.value = false;
+    canPull.value = false;
   }
 
   void enableAllSwiping() {
     swipe.value = true;
-    pullUp.value = true;
+    canPull.value = true;
   }
 
   @override
