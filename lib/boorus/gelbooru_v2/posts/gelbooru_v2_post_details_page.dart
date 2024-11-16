@@ -27,18 +27,7 @@ final gelbooruV2PostDetailsCharacterMapProvider = StateProvider.autoDispose(
 class GelbooruV2PostDetailsPage extends ConsumerStatefulWidget {
   const GelbooruV2PostDetailsPage({
     super.key,
-    required this.posts,
-    required this.initialIndex,
-    required this.onExit,
-    required this.onPageChanged,
-    required this.controller,
   });
-
-  final int initialIndex;
-  final List<GelbooruV2Post> posts;
-  final void Function(int page) onExit;
-  final void Function(int page) onPageChanged;
-  final PostDetailsController<Post> controller;
 
   @override
   ConsumerState<GelbooruV2PostDetailsPage> createState() =>
@@ -46,15 +35,15 @@ class GelbooruV2PostDetailsPage extends ConsumerStatefulWidget {
 }
 
 class _PostDetailPageState extends ConsumerState<GelbooruV2PostDetailsPage> {
-  List<GelbooruV2Post> get posts => widget.posts;
-
   @override
   Widget build(BuildContext context) {
+    final data = PostDetails.of<GelbooruV2Post>(context);
+    final posts = data.posts;
+    final controller = data.controller;
+
     return PostDetailsPageScaffold(
+      controller: controller,
       posts: posts,
-      initialIndex: widget.initialIndex,
-      onExit: widget.onExit,
-      onPageChangeIndexed: widget.onPageChanged,
       swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
       fileDetailsBuilder: (context, post) => DefaultFileDetailsSection(
         post: post,

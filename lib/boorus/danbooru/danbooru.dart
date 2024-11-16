@@ -157,20 +157,8 @@ class DanbooruBuilder
           initialIndex: payload.initialIndex,
           posts: posts,
           scrollController: payload.scrollController,
-          desktop: (controller) => DanbooruPostDetailsDesktopPage(
-            initialIndex: controller.currentPage.value,
-            posts: posts,
-            onExit: (page) => controller.onExit(page),
-            onPageChanged: (page) => controller.setPage(page),
-            controller: controller,
-          ),
-          mobile: (controller) => DanbooruPostDetailsPage(
-            intitialIndex: controller.currentPage.value,
-            posts: posts,
-            onExit: (page) => controller.onExit(page),
-            onPageChanged: (page) => controller.setPage(page),
-            controller: controller,
-          ),
+          desktop: () => const DanbooruPostDetailsDesktopPage(),
+          mobile: () => const DanbooruPostDetailsPage(),
         );
       };
 

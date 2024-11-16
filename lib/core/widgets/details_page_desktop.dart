@@ -1,6 +1,3 @@
-// Dart imports:
-import 'dart:async';
-
 // Flutter imports:
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -21,88 +18,23 @@ import 'package:boorusama/widgets/circular_icon_button.dart';
 
 const String kShowInfoStateCacheKey = 'showInfoCacheStateKey';
 
-class DetailsPageDesktopController extends ChangeNotifier with UIOverlayMixin {
-  DetailsPageDesktopController({
-    required int initialPage,
-    required this.totalPages,
-    bool hideOverlay = false,
-  })  : currentPage = ValueNotifier(initialPage),
-        currentRealtimePage = ValueNotifier(initialPage),
-        _hideOverlay = ValueNotifier(hideOverlay);
-
-  final ValueNotifier<bool> showInfo = ValueNotifier(false);
-  final ValueNotifier<bool> pageSwipe = ValueNotifier(true);
-  late final ValueNotifier<int> currentPage;
-  late final ValueNotifier<int> currentRealtimePage;
-  final int totalPages;
-
-  final StreamController<PageDirection> _pageController =
-      StreamController<PageDirection>.broadcast();
-
-  Stream<PageDirection> get pageStream => _pageController.stream;
-
-  late final ValueNotifier<bool> _hideOverlay;
-
-  @override
-  ValueNotifier<bool> get hideOverlay => _hideOverlay;
-
-  void toggleShowInfo() {
-    showInfo.value = !showInfo.value;
-    notifyListeners();
-  }
-
-  void setShowInfo(bool value) {
-    showInfo.value = value;
-    notifyListeners();
-  }
-
-  void changePage(int page) {
-    currentPage.value = page;
-    notifyListeners();
-  }
-
-  void changeRealtimePage(int page) {
-    currentRealtimePage.value = page;
-    notifyListeners();
-  }
-
-  void nextPage() {
-    if (currentPage.value < totalPages - 1) {
-      _pageController.add(PageDirection.next);
-    }
-  }
-
-  void previousPage() {
-    if (currentPage.value > 0) {
-      _pageController.add(PageDirection.previous);
-    }
-  }
-
-  void setEnablePageSwipe(bool value) {
-    pageSwipe.value = value;
-    notifyListeners();
-  }
-}
-
 class DetailsPageDesktop extends ConsumerStatefulWidget {
   const DetailsPageDesktop({
     super.key,
     required this.media,
     required this.info,
-    this.initialPage = 0,
     required this.totalPages,
     required this.onExit,
     this.topRight,
-    this.controller,
+    required this.controller,
   });
 
-  final int initialPage;
   final int totalPages;
   final Widget media;
   final Widget info;
   final Widget? topRight;
-  final void Function(int page) onExit;
-  final DetailsPageDesktopController? controller;
+  final void Function() onExit;
+  final DetailsPageDesktopController controller;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -110,11 +42,7 @@ class DetailsPageDesktop extends ConsumerStatefulWidget {
 }
 
 class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
-  late final DetailsPageDesktopController controller = widget.controller ??
-      DetailsPageDesktopController(
-        initialPage: widget.initialPage,
-        totalPages: widget.totalPages,
-      );
+  late final DetailsPageDesktopController controller = widget.controller;
 
   @override
   void initState() {
@@ -129,16 +57,8 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
     showSystemStatus();
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    if (widget.controller == null) {
-      controller.dispose();
-    }
-  }
-
   void _onExit(bool didPop) {
-    widget.onExit.call(controller.currentPage.value);
+    widget.onExit.call();
 
     if (didPop) {
       return;
@@ -183,7 +103,7 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                           widget.media,
                           if (kPreferredLayout.isDesktop)
                             ValueListenableBuilder(
-                              valueListenable: controller.currentPage,
+                              valueListenable: controller.currentLocalPage,
                               builder: (context, page, child) => page <
                                       widget.totalPages - 1
                                   ? Align(
@@ -205,7 +125,7 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                             ),
                           if (kPreferredLayout.isDesktop)
                             ValueListenableBuilder(
-                              valueListenable: controller.currentPage,
+                              valueListenable: controller.currentLocalPage,
                               builder: (context, page, child) => page > 0
                                   ? Align(
                                       alignment: Alignment.centerLeft,

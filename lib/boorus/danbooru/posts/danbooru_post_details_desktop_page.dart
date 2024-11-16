@@ -23,18 +23,7 @@ import '../tags/details/danbooru_tags_tile.dart';
 class DanbooruPostDetailsDesktopPage extends ConsumerStatefulWidget {
   const DanbooruPostDetailsDesktopPage({
     super.key,
-    required this.initialIndex,
-    required this.posts,
-    required this.onExit,
-    required this.onPageChanged,
-    required this.controller,
   });
-
-  final int initialIndex;
-  final List<DanbooruPost> posts;
-  final void Function(int index) onExit;
-  final void Function(int page) onPageChanged;
-  final PostDetailsController<DanbooruPost> controller;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -43,14 +32,16 @@ class DanbooruPostDetailsDesktopPage extends ConsumerStatefulWidget {
 
 class _DanbooruPostDetailsDesktopPageState
     extends ConsumerState<DanbooruPostDetailsDesktopPage> with DebounceMixin {
-  late final currentPage = ValueNotifier(widget.initialIndex);
-
   @override
   Widget build(BuildContext context) {
+    final data = PostDetails.of<DanbooruPost>(context);
+    final posts = data.posts;
+    final controller = data.controller;
+
     return ValueListenableBuilder(
-      valueListenable: currentPage,
+      valueListenable: controller.currentPage,
       builder: (context, page, child) {
-        final post = widget.posts[page];
+        final post = posts[page];
         final isFav = ref.watch(danbooruFavoriteProvider(post.id));
         final booruConfig = ref.watchConfig;
 
@@ -65,18 +56,22 @@ class _DanbooruPostDetailsDesktopPageState
         );
       },
       child: DanbooruCreatorPreloader(
-        posts: widget.posts,
-        child: _buildPage(),
+        posts: posts,
+        child: _buildPage(
+          posts: posts,
+          controller: controller,
+        ),
       ),
     );
   }
 
-  Widget _buildPage() {
+  Widget _buildPage({
+    required List<DanbooruPost> posts,
+    required PostDetailsController<DanbooruPost> controller,
+  }) {
     return PostDetailsPageDesktopScaffold(
-      initialIndex: widget.initialIndex,
-      posts: widget.posts,
-      onExit: widget.onExit,
-      onPageChanged: widget.onPageChanged,
+      controller: controller,
+      posts: posts,
       imageUrlBuilder: defaultPostImageUrlBuilder(ref),
       topRightButtonsBuilder: (currentPage, expanded, post) =>
           DanbooruMoreActionButton(

@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sliver_tools/sliver_tools.dart';
+import 'package:video_player/video_player.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
@@ -71,8 +72,6 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   const PostDetailsPageScaffold({
     super.key,
     required this.posts,
-    required this.initialIndex,
-    required this.onExit,
     this.sliverArtistPostsBuilder,
     this.sliverCharacterPostsBuilder,
     this.onExpanded,
@@ -82,8 +81,6 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     this.topRightButtonsBuilder,
     this.placeholderImageUrlBuilder,
     this.artistInfoBuilder,
-    this.onPageChanged,
-    this.onPageChangeIndexed,
     this.sliverRelatedPostsBuilder,
     this.commentsBuilder,
     this.poolTileBuilder,
@@ -91,16 +88,12 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     this.fileDetailsBuilder,
     this.sourceSectionBuilder,
     this.parts = kDefaultPostDetailsParts,
-    this.postDetailsController,
+    required this.controller,
     this.uiBuilder,
   });
 
-  final int initialIndex;
   final List<T> posts;
-  final void Function(int page) onExit;
   final void Function(T post)? onExpanded;
-  final void Function(T post)? onPageChanged;
-  final void Function(int index)? onPageChangeIndexed;
   final String Function(T post) swipeImageUrlBuilder;
   final String? Function(T post, int currentPage)? placeholderImageUrlBuilder;
   final List<Widget> Function(BuildContext context, T post)?
@@ -121,9 +114,9 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   final Widget Function(BuildContext context, T post)?
       sliverRelatedPostsBuilder;
   final List<Widget> Function(int currentPage, bool expanded, T post,
-      DetailsPageController controller)? topRightButtonsBuilder;
+      DetailsPageMobileController controller)? topRightButtonsBuilder;
 
-  final PostDetailsController<T>? postDetailsController;
+  final PostDetailsController<T> controller;
 
   final PostDetailsUIBuilder? uiBuilder;
 
@@ -136,44 +129,42 @@ class _PostDetailPageScaffoldState<T extends Post>
     extends ConsumerState<PostDetailsPageScaffold<T>>
     with PostDetailsPageMixin<PostDetailsPageScaffold<T>, T> {
   late final _posts = widget.posts;
-  late final _controller = DetailsPageController(
-    initialPage: widget.initialIndex,
+  late final _controller = DetailsPageMobileController(
+    initialPage: widget.controller.initialPage,
     hideOverlay: ref.read(settingsProvider).hidePostDetailsOverlay,
+    totalPageFetcher: () => _posts.length,
+    pageSyncronizer: widget.controller.setPage,
   );
 
   @override
-  DetailsPageController get controller => _controller;
-
-  PostDetailsPageViewController get _pageController =>
-      controller.pageViewController;
+  DetailsPageMobileController get controller => _controller;
 
   @override
   List<T> get posts => _posts;
 
   @override
-  int get initialPage => widget.initialIndex;
-
-  @override
   void initState() {
     super.initState();
-    controller.pageViewController.addListener(_onPageChanged);
+    controller.currentLocalPage.addListener(_onPageChanged);
+    controller.init();
   }
 
   void _onPageChanged() {
-    final page = controller.pageViewController.currentPage;
+    final page = controller.currentLocalPage.value;
 
-    onSwiped(page);
+    onPageChanged();
     ref
         .read(postShareProvider(posts[page]).notifier)
         .updateInformation(posts[page]);
-    widget.onPageChangeIndexed?.call(page);
-    widget.onPageChanged?.call(posts[page]);
+  }
+
+  void _onExit() {
+    widget.controller.onExit();
   }
 
   @override
   void dispose() {
-    controller.pageViewController.currentPageNotifier
-        .removeListener(_onPageChanged);
+    controller.currentLocalPage.removeListener(_onPageChanged);
     _controller.dispose();
 
     super.dispose();
@@ -200,7 +191,7 @@ class _PostDetailPageScaffoldState<T extends Post>
             controller.toggleOverlay(),
         const SingleActivator(LogicalKeyboardKey.escape): () {
           Navigator.of(context).pop();
-          widget.onExit(controller.currentPage.value);
+          _onExit();
         },
       },
       child: Focus(
@@ -218,7 +209,7 @@ class _PostDetailPageScaffoldState<T extends Post>
               ),
             ),
             child: ValueListenableBuilder(
-              valueListenable: controller.currentPage,
+              valueListenable: controller.currentLocalPage,
               builder: (_, page, __) => _build(page),
             ),
           ),
@@ -235,11 +226,10 @@ class _PostDetailPageScaffoldState<T extends Post>
         booruBuilder?.postDetailsUIBuilder.toolbarBuilder;
     final focusedPost = posts[currentPage];
 
-    return DetailsPage(
+    return DetailsPageMobile(
       currentSettings: () => ref.read(settingsProvider),
       controller: controller,
-      intitialIndex: widget.initialIndex,
-      onExit: widget.onExit,
+      onExit: _onExit,
       itemCount: posts.length,
       onSwipeDownThresholdReached: booruBuilder?.canHandlePostGesture(
                     GestureType.swipeDown,
@@ -248,7 +238,7 @@ class _PostDetailPageScaffoldState<T extends Post>
                   true &&
               postGesturesHandler != null
           ? () {
-              _controller.pageViewController.resetSheet();
+              _controller.resetSheet();
 
               postGesturesHandler(
                 ref,
@@ -258,10 +248,10 @@ class _PostDetailPageScaffoldState<T extends Post>
             }
           : null,
       info: ValueListenableBuilder(
-        valueListenable: _pageController.currentPageNotifier,
+        valueListenable: _controller.currentLocalPage,
         builder: (context, index, child) {
           return ValueListenableBuilder(
-            valueListenable: _pageController.expandedNotifier,
+            valueListenable: _controller.expanded,
             builder: (context, expanded, _) {
               return _buildSheet(
                 PostDetailsSheetScrollController.of(context),
@@ -318,10 +308,10 @@ class _PostDetailPageScaffoldState<T extends Post>
               ),
             Expanded(
               child: ValueListenableBuilder(
-                valueListenable: _pageController.currentPageNotifier,
+                valueListenable: _controller.currentLocalPage,
                 builder: (_, currentPage, child) => page == currentPage
                     ? ValueListenableBuilder(
-                        valueListenable: _pageController.topDisplacement,
+                        valueListenable: _controller.topDisplacement,
                         builder: (_, dis, __) {
                           // final scale = (1.0 - (dis / 500)).clamp(0.8, 1.0);
 
@@ -333,7 +323,7 @@ class _PostDetailPageScaffoldState<T extends Post>
                       )
                     : child!,
                 child: ValueListenableBuilder(
-                  valueListenable: _pageController.expandedNotifier,
+                  valueListenable: _controller.expanded,
                   builder: (_, expanded, __) => !expanded
                       ? InteractiveViewExtended(
                           onZoomUpdated: onZoomUpdated,
@@ -424,7 +414,7 @@ class _PostDetailPageScaffoldState<T extends Post>
         ),
       ),
       topRightButtons: ValueListenableBuilder(
-        valueListenable: _pageController.expandedNotifier,
+        valueListenable: _controller.expanded,
         builder: (_, expanded, __) => Padding(
           padding: const EdgeInsets.all(8),
           child: OverflowBar(
@@ -601,5 +591,72 @@ class _PostDetailPageScaffoldState<T extends Post>
         ],
       ),
     );
+  }
+}
+
+mixin PostDetailsPageMixin<T extends StatefulWidget, E extends Post>
+    on State<T> {
+  final _videoProgress = ValueNotifier(VideoProgress.zero);
+
+  //TODO: should have an abstraction for this crap, but I'm too lazy to do it since there are only 2 types of video anyway
+  final Map<int, VideoPlayerController> _videoControllers = {};
+  final Map<int, WebmVideoController> _webmVideoControllers = {};
+
+  List<E> get posts;
+  DetailsPageMobileController get controller;
+  ValueNotifier<VideoProgress> get videoProgress => _videoProgress;
+
+  void onPageChanged() {
+    _videoProgress.value = VideoProgress.zero;
+
+    final page = controller.currentLocalPage.value;
+
+    // Pause previous video
+    if (posts[page].videoUrl.endsWith('.webm')) {
+      _webmVideoControllers[page]?.pause();
+    } else {
+      _videoControllers[page]?.pause();
+    }
+  }
+
+  void onCurrentPositionChanged(double current, double total, String url) {
+    final page = controller.currentLocalPage.value;
+    // check if the current video is the same as the one being played
+    if (posts[page].videoUrl != url) return;
+
+    _videoProgress.value = VideoProgress(
+        Duration(milliseconds: (total * 1000).toInt()),
+        Duration(milliseconds: (current * 1000).toInt()));
+  }
+
+  void onVideoSeekTo(Duration position, int page) {
+    if (posts[page].videoUrl.endsWith('.webm')) {
+      _webmVideoControllers[page]?.seek(position.inSeconds.toDouble());
+    } else {
+      _videoControllers[page]?.seekTo(position);
+    }
+  }
+
+  void onWebmVideoPlayerCreated(WebmVideoController controller, int page) {
+    _webmVideoControllers[page] = controller;
+  }
+
+  void onVideoPlayerCreated(VideoPlayerController controller, int page) {
+    _videoControllers[page] = controller;
+  }
+
+  void onVisibilityChanged(bool value) {
+    controller.setHideOverlay(value);
+  }
+
+  void onZoomUpdated(bool zoom) {
+    controller.setEnableSwiping(!zoom);
+  }
+
+  void onImageTap() {
+    if (controller.slideshow.value) {
+      controller.stopSlideshow();
+    }
+    controller.toggleOverlay();
   }
 }

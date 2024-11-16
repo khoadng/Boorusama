@@ -30,16 +30,7 @@ final allowFetchProvider = StateProvider<bool>((ref) {
 class DefaultPostDetailsDesktopPage extends ConsumerStatefulWidget {
   const DefaultPostDetailsDesktopPage({
     super.key,
-    required this.initialIndex,
-    required this.posts,
-    required this.onExit,
-    required this.onPageChanged,
   });
-
-  final int initialIndex;
-  final List<Post> posts;
-  final void Function(int index) onExit;
-  final void Function(int page) onPageChanged;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -50,11 +41,13 @@ class _DefaultPostDetailsDesktopPageState
     extends ConsumerState<DefaultPostDetailsDesktopPage> {
   @override
   Widget build(BuildContext context) {
+    final data = PostDetails.of<Post>(context);
+    final posts = data.posts;
+    final controller = data.controller;
+
     return PostDetailsPageDesktopScaffold(
-      posts: widget.posts,
-      initialIndex: widget.initialIndex,
-      onExit: widget.onExit,
-      onPageChanged: widget.onPageChanged,
+      controller: controller,
+      posts: posts,
       imageUrlBuilder: (post) => post.sampleImageUrl,
       topRightButtonsBuilder: (currentPage, expanded, post) =>
           GeneralMoreActionButton(post: post),
@@ -73,10 +66,7 @@ class PostDetailsPageDesktopScaffold<T extends Post>
     extends ConsumerStatefulWidget {
   const PostDetailsPageDesktopScaffold({
     super.key,
-    required this.initialIndex,
     required this.posts,
-    required this.onExit,
-    required this.onPageChanged,
     this.topRightButtonsBuilder,
     this.toolbar,
     this.artistInfoBuilder,
@@ -94,12 +84,10 @@ class PostDetailsPageDesktopScaffold<T extends Post>
     this.parts = kDefaultPostDetailsParts,
     this.onPageLoaded,
     this.debounceDuration,
+    required this.controller,
   });
 
-  final int initialIndex;
   final List<T> posts;
-  final void Function(int index) onExit;
-  final void Function(int page) onPageChanged;
   final void Function(T post)? onPageLoaded;
   final Widget Function(int currentPage, bool expanded, T post)?
       topRightButtonsBuilder;
@@ -125,6 +113,8 @@ class PostDetailsPageDesktopScaffold<T extends Post>
 
   final Duration? debounceDuration;
 
+  final PostDetailsController<T> controller;
+
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
       _PostDetailsDesktopScaffoldState<T>();
@@ -135,11 +125,13 @@ class _PostDetailsDesktopScaffoldState<T extends Post>
     with DebounceMixin {
   Timer? _debounceTimer;
   late final controller = DetailsPageDesktopController(
-    initialPage: widget.initialIndex,
-    totalPages: widget.posts.length,
+    totalPageFetcher: () => widget.posts.length,
     hideOverlay: ref.read(settingsProvider).hidePostDetailsOverlay,
+    initialPage: widget.controller.initialPage,
+    pageSyncronizer: widget.controller.setPage,
   );
-  late final pageController = PageController(initialPage: widget.initialIndex);
+  late final pageController =
+      PageController(initialPage: widget.controller.initialPage);
 
   late StreamSubscription<PageDirection> _pageSubscription;
 
@@ -164,7 +156,7 @@ class _PostDetailsDesktopScaffoldState<T extends Post>
 
   void _onInfoChanged() {
     if (controller.showInfo.value) {
-      _fetchInfo(controller.currentPage.value);
+      _fetchInfo(controller.currentLocalPage.value);
     }
   }
 
@@ -196,16 +188,15 @@ class _PostDetailsDesktopScaffoldState<T extends Post>
           control: true,
         ): () => goToOriginalImagePage(
               context,
-              widget.posts[controller.currentPage.value],
+              widget.posts[controller.currentLocalPage.value],
             ),
       },
       child: DetailsPageDesktop(
         controller: controller,
-        onExit: widget.onExit,
-        initialPage: widget.initialIndex,
+        onExit: widget.controller.onExit,
         totalPages: widget.posts.length,
         topRight: ValueListenableBuilder(
-          valueListenable: controller.currentPage,
+          valueListenable: controller.currentLocalPage,
           builder: (context, page, child) {
             return ValueListenableBuilder(
               valueListenable: controller.showInfo,
@@ -233,7 +224,6 @@ class _PostDetailsDesktopScaffoldState<T extends Post>
               _debounceTimer = Timer(
                 widget.debounceDuration ?? const Duration(seconds: 1),
                 () {
-                  widget.onPageChanged(page);
                   controller.changePage(page);
 
                   // if the info is not shown, don't fetch anything
@@ -317,7 +307,7 @@ class _PostDetailsDesktopScaffoldState<T extends Post>
           valueListenable: controller.showInfo,
           builder: (context, value, child) => value
               ? ValueListenableBuilder(
-                  valueListenable: controller.currentPage,
+                  valueListenable: controller.currentLocalPage,
                   builder: (context, page, child) =>
                       _buildInfo(context, widget.posts[page]),
                 )

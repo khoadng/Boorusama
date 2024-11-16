@@ -14,6 +14,8 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
@@ -74,7 +76,17 @@ class PhilomenaBuilder
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) => PhilomenaPostDetailsPage(payload: payload);
+      (context, config, payload) {
+        final posts = payload.posts.map((e) => e as PhilomenaPost).toList();
+
+        return PostDetailsLayoutSwitcher(
+          initialIndex: payload.initialIndex,
+          posts: posts,
+          scrollController: payload.scrollController,
+          desktop: () => const PhilomenaPostDetailsDesktopPage(),
+          mobile: () => const PhilomenaPostDetailsPage(),
+        );
+      };
 
   @override
   TagColorBuilder get tagColorBuilder =>
@@ -153,39 +165,79 @@ class PhilomenaBuilder
   final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder();
 }
 
-class PhilomenaPostDetailsPage extends ConsumerWidget {
-  const PhilomenaPostDetailsPage({
+class PhilomenaPostDetailsDesktopPage extends ConsumerWidget {
+  const PhilomenaPostDetailsDesktopPage({
     super.key,
-    required this.payload,
   });
-
-  final DetailsPayload payload;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return PostDetailsPageScaffold(
-      posts: payload.posts,
-      initialIndex: payload.initialIndex,
+    final data = PostDetails.of<PhilomenaPost>(context);
+    final posts = data.posts;
+    final controller = data.controller;
+
+    return PostDetailsPageDesktopScaffold(
+      controller: controller,
+      debounceDuration: Duration.zero,
+      posts: posts,
+      imageUrlBuilder: defaultPostImageUrlBuilder(ref),
+      fileDetailsBuilder: (context, post) => DefaultFileDetailsSection(
+        post: post,
+        initialExpanded: true,
+      ),
+      tagListBuilder: (context, post) => BasicTagList(
+        tags: post.tags.toList(),
+        onTap: (tag) => goToSearchPage(
+          context,
+          tag: tag,
+        ),
+        unknownCategoryColor: ref.watch(tagColorProvider('general')),
+      ),
+      infoBuilder: (context, post) => SimpleInformationSection(post: post),
+      statsTileBuilder: (context, post) => SimplePostStatsTile(
+        totalComments: post.commentCount,
+        favCount: post.favCount,
+        score: post.score,
+        votePercentText: _generatePercentText(post),
+      ),
       artistInfoBuilder: (context, post) => ArtistSection(
-        commentary: post is PhilomenaPost
-            ? ArtistCommentary.description(post.description)
-            : const ArtistCommentary.empty(),
+        commentary: ArtistCommentary.description(post.description),
+        artistTags: post.artistTags ?? {},
+        source: post.source,
+      ),
+      topRightButtonsBuilder: (currentPage, expanded, post) =>
+          GeneralMoreActionButton(post: post),
+    );
+  }
+}
+
+class PhilomenaPostDetailsPage extends ConsumerWidget {
+  const PhilomenaPostDetailsPage({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final data = PostDetails.of<PhilomenaPost>(context);
+    final posts = data.posts;
+    final controller = data.controller;
+
+    return PostDetailsPageScaffold(
+      controller: controller,
+      posts: posts,
+      artistInfoBuilder: (context, post) => ArtistSection(
+        commentary: ArtistCommentary.description(post.description),
         artistTags: post.artistTags ?? {},
         source: post.source,
       ),
       swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
       infoBuilder: (context, post) => SimpleInformationSection(post: post),
-      statsTileBuilder: (context, rawPost) =>
-          castOrNull<PhilomenaPost>(rawPost).toOption().fold(
-                () => const SizedBox(),
-                (post) => SimplePostStatsTile(
-                  totalComments: post.commentCount,
-                  favCount: post.favCount,
-                  score: post.score,
-                  votePercentText: _generatePercentText(post),
-                ),
-              ),
-      onExit: (page) => payload.scrollController?.scrollToIndex(page),
+      statsTileBuilder: (context, post) => SimplePostStatsTile(
+        totalComments: post.commentCount,
+        favCount: post.favCount,
+        score: post.score,
+        votePercentText: _generatePercentText(post),
+      ),
     );
   }
 }

@@ -119,20 +119,8 @@ class SzurubooruBuilder
           initialIndex: payload.initialIndex,
           posts: posts,
           scrollController: payload.scrollController,
-          desktop: (controller) => SzurubooruPostDetailsDesktopPage(
-            initialIndex: controller.currentPage.value,
-            controller: controller,
-            posts: posts,
-            onExit: (page) => controller.onExit(page),
-            onPageChanged: (page) => controller.setPage(page),
-          ),
-          mobile: (controller) => SzurubooruPostDetailsPage(
-            initialPage: controller.currentPage.value,
-            controller: controller,
-            posts: posts,
-            onExit: (page) => controller.onExit(page),
-            onPageChanged: (page) => controller.setPage(page),
-          ),
+          desktop: () => const SzurubooruPostDetailsDesktopPage(),
+          mobile: () => const SzurubooruPostDetailsPage(),
         );
       };
 

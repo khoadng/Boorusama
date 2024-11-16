@@ -4,84 +4,13 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
-import 'package:video_player/video_player.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/videos/videos.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/widgets/widgets.dart';
-
-mixin PostDetailsPageMixin<T extends StatefulWidget, E extends Post>
-    on State<T> {
-  final _videoProgress = ValueNotifier(VideoProgress.zero);
-
-  //TODO: should have an abstraction for this crap, but I'm too lazy to do it since there are only 2 types of video anyway
-  final Map<int, VideoPlayerController> _videoControllers = {};
-  final Map<int, WebmVideoController> _webmVideoControllers = {};
-
-  List<E> get posts;
-  DetailsPageController get controller;
-  ValueNotifier<VideoProgress> get videoProgress => _videoProgress;
-  int get initialPage;
-  late var _page = initialPage;
-
-  void onSwiped(int page) {
-    _videoProgress.value = VideoProgress.zero;
-
-    // Pause previous video
-    if (posts[page].videoUrl.endsWith('.webm')) {
-      _webmVideoControllers[_page]?.pause();
-    } else {
-      _videoControllers[_page]?.pause();
-    }
-
-    _page = page;
-  }
-
-  void onCurrentPositionChanged(double current, double total, String url) {
-    // check if the current video is the same as the one being played
-    if (posts[_page].videoUrl != url) return;
-
-    _videoProgress.value = VideoProgress(
-        Duration(milliseconds: (total * 1000).toInt()),
-        Duration(milliseconds: (current * 1000).toInt()));
-  }
-
-  void onVideoSeekTo(Duration position, int page) {
-    if (posts[page].videoUrl.endsWith('.webm')) {
-      _webmVideoControllers[page]?.seek(position.inSeconds.toDouble());
-    } else {
-      _videoControllers[page]?.seekTo(position);
-    }
-  }
-
-  void onWebmVideoPlayerCreated(WebmVideoController controller, int page) {
-    _webmVideoControllers[page] = controller;
-  }
-
-  void onVideoPlayerCreated(VideoPlayerController controller, int page) {
-    _videoControllers[page] = controller;
-  }
-
-  void onVisibilityChanged(bool value) {
-    controller.setHideOverlay(value);
-  }
-
-  void onZoomUpdated(bool zoom) {
-    controller.setEnableSwiping(!zoom);
-  }
-
-  void onImageTap() {
-    if (controller.slideshow.value) {
-      controller.stopSlideshow();
-    }
-    controller.toggleOverlay();
-  }
-}
 
 class FlexibleLayoutSwitcher extends StatelessWidget {
   const FlexibleLayoutSwitcher({
@@ -117,8 +46,8 @@ class PostDetailsLayoutSwitcher<T extends Post> extends ConsumerStatefulWidget {
   final int initialIndex;
   final List<T> posts;
   final AutoScrollController? scrollController;
-  final Widget Function(PostDetailsController<T> controller)? desktop;
-  final Widget Function(PostDetailsController<T> controller) mobile;
+  final Widget Function()? desktop;
+  final Widget Function() mobile;
 
   @override
   ConsumerState<PostDetailsLayoutSwitcher<T>> createState() =>
@@ -142,44 +71,56 @@ class _PostDetailsLayoutSwitcherState<T extends Post>
 
   @override
   Widget build(BuildContext context) {
-    return PostDetailsScope(
-      controller: controller,
+    return PostDetails(
+      data: PostDetailsData(
+        posts: widget.posts,
+        controller: controller,
+      ),
       child: CurrentPostScope(
         post: controller.currentPost,
         child: FlexibleLayoutSwitcher(
-          desktop: () => widget.desktop != null
-              ? widget.desktop!(controller)
-              : widget.mobile(controller),
-          mobile: () => widget.mobile(controller),
+          desktop: () =>
+              widget.desktop != null ? widget.desktop!() : widget.mobile(),
+          mobile: () => widget.mobile(),
         ),
       ),
     );
   }
 }
 
-class PostDetailsScope extends InheritedWidget {
-  const PostDetailsScope({
-    super.key,
+class PostDetailsData<T extends Post> {
+  final List<T> posts;
+  final PostDetailsController<T> controller;
+
+  const PostDetailsData({
+    required this.posts,
     required this.controller,
+  });
+}
+
+class PostDetails<T extends Post> extends InheritedWidget {
+  const PostDetails({
+    super.key,
+    required this.data,
     required super.child,
   });
 
-  final PostDetailsController controller;
+  final PostDetailsData<T> data;
 
-  static PostDetailsController of(BuildContext context) {
-    final scope =
-        context.dependOnInheritedWidgetOfExactType<PostDetailsScope>();
+  static PostDetailsData<T> of<T extends Post>(BuildContext context) {
+    final widget = context.dependOnInheritedWidgetOfExactType<PostDetails<T>>();
+    return widget?.data ?? (throw Exception('No PostDetails found in context'));
+  }
 
-    if (scope == null) {
-      throw FlutterError('No PostDetailsScope found in context');
-    }
+  static PostDetailsData<T>? maybeOf<T extends Post>(BuildContext context) {
+    final widget = context.dependOnInheritedWidgetOfExactType<PostDetails<T>>();
 
-    return scope.controller;
+    return widget?.data;
   }
 
   @override
-  bool updateShouldNotify(PostDetailsScope oldWidget) {
-    return controller != oldWidget.controller;
+  bool updateShouldNotify(PostDetails<T> oldWidget) {
+    return data != oldWidget.data;
   }
 }
 
@@ -190,13 +131,18 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
     required this.posts,
     required this.reduceAnimations,
   })  : currentPage = ValueNotifier(initialPage),
+        _initialPage = initialPage,
         currentPost = ValueNotifier(posts[initialPage]);
   final AutoScrollController? scrollController;
   final bool reduceAnimations;
   final List<T> posts;
+  final int _initialPage;
 
   late ValueNotifier<int> currentPage;
   late ValueNotifier<T> currentPost;
+
+  int get initialPage =>
+      currentPage.value != _initialPage ? currentPage.value : _initialPage;
 
   void setPage(int page) {
     currentPage.value = page;
@@ -207,10 +153,12 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
     }
   }
 
-  void onExit(int page) {
+  void onExit() {
     // https://github.com/quire-io/scroll-to-index/issues/44
     // skip scrolling if reduceAnimations is enabled due to a limitation in the package
     if (reduceAnimations) return;
+
+    final page = currentPage.value;
 
     scrollController?.scrollToIndex(page);
   }

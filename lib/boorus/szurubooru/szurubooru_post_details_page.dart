@@ -17,27 +17,18 @@ import 'szurubooru_post.dart';
 class SzurubooruPostDetailsPage extends ConsumerWidget {
   const SzurubooruPostDetailsPage({
     super.key,
-    required this.controller,
-    required this.onExit,
-    required this.onPageChanged,
-    required this.posts,
-    required this.initialPage,
   });
-
-  final List<SzurubooruPost> posts;
-  final PostDetailsController<SzurubooruPost> controller;
-  final void Function(int page) onExit;
-  final void Function(int page) onPageChanged;
-  final int initialPage;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final data = PostDetails.of<SzurubooruPost>(context);
+    final posts = data.posts;
+    final controller = data.controller;
+
     return PostDetailsPageScaffold(
+      controller: controller,
       posts: posts,
-      initialIndex: initialPage,
       swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
-      onExit: onExit,
-      onPageChangeIndexed: onPageChanged,
       statsTileBuilder: (context, rawPost) =>
           castOrNull<SzurubooruPost>(rawPost).toOption().fold(
                 () => const SizedBox.shrink(),
@@ -74,26 +65,17 @@ class SzurubooruPostDetailsPage extends ConsumerWidget {
 class SzurubooruPostDetailsDesktopPage extends ConsumerWidget {
   const SzurubooruPostDetailsDesktopPage({
     super.key,
-    required this.initialIndex,
-    required this.posts,
-    required this.onExit,
-    required this.onPageChanged,
-    required this.controller,
   });
-
-  final int initialIndex;
-  final List<SzurubooruPost> posts;
-  final void Function(int index) onExit;
-  final void Function(int page) onPageChanged;
-  final PostDetailsController<SzurubooruPost> controller;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final data = PostDetails.of<SzurubooruPost>(context);
+    final posts = data.posts;
+    final controller = data.controller;
+
     return PostDetailsPageDesktopScaffold(
-      initialIndex: initialIndex,
+      controller: controller,
       posts: posts,
-      onExit: onExit,
-      onPageChanged: onPageChanged,
       imageUrlBuilder: defaultPostImageUrlBuilder(ref),
       statsTileBuilder: (context, rawPost) =>
           castOrNull<SzurubooruPost>(rawPost).toOption().fold(

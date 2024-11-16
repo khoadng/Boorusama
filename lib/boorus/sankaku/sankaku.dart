@@ -87,23 +87,17 @@ class SankakuBuilder
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) => PostDetailsLayoutSwitcher(
-            initialIndex: payload.initialIndex,
-            posts: payload.posts,
-            scrollController: payload.scrollController,
-            desktop: (controller) => SankakuPostDetailsDesktopPage(
-              initialIndex: controller.currentPage.value,
-              posts: payload.posts.map((e) => e as SankakuPost).toList(),
-              onExit: (page) => controller.onExit(page),
-              onPageChanged: (page) => controller.setPage(page),
-            ),
-            mobile: (controller) => SankakuPostDetailsPage(
-              initialIndex: controller.currentPage.value,
-              posts: payload.posts.map((e) => e as SankakuPost).toList(),
-              onExit: (page) => controller.onExit(page),
-              onPageChanged: (page) => controller.setPage(page),
-            ),
-          );
+      (context, config, payload) {
+        final posts = payload.posts.map((e) => e as SankakuPost).toList();
+
+        return PostDetailsLayoutSwitcher(
+          initialIndex: payload.initialIndex,
+          posts: posts,
+          scrollController: payload.scrollController,
+          desktop: () => const SankakuPostDetailsDesktopPage(),
+          mobile: () => const SankakuPostDetailsPage(),
+        );
+      };
 
   @override
   ArtistPageBuilder? get artistPageBuilder =>
@@ -147,22 +141,17 @@ class SankakuBuilder
 class SankakuPostDetailsPage extends ConsumerWidget {
   const SankakuPostDetailsPage({
     super.key,
-    required this.posts,
-    required this.initialIndex,
-    required this.onExit,
-    required this.onPageChanged,
   });
-
-  final List<SankakuPost> posts;
-  final int initialIndex;
-  final void Function(int page) onPageChanged;
-  final void Function(int page) onExit;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final data = PostDetails.of<SankakuPost>(context);
+    final posts = data.posts;
+    final controller = data.controller;
+
     return PostDetailsPageScaffold(
+      controller: controller,
       posts: posts,
-      initialIndex: initialIndex,
       swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
       infoBuilder: (context, post) => SimpleInformationSection(
         post: post,
@@ -193,8 +182,6 @@ class SankakuPostDetailsPage extends ConsumerWidget {
               .toList()
           : [],
       tagListBuilder: (context, post) => SankakuTagsTile(post: post),
-      onExit: onExit,
-      onPageChangeIndexed: onPageChanged,
     );
   }
 }
@@ -202,24 +189,17 @@ class SankakuPostDetailsPage extends ConsumerWidget {
 class SankakuPostDetailsDesktopPage extends ConsumerWidget {
   const SankakuPostDetailsDesktopPage({
     super.key,
-    required this.initialIndex,
-    required this.posts,
-    required this.onExit,
-    required this.onPageChanged,
   });
-
-  final int initialIndex;
-  final List<SankakuPost> posts;
-  final void Function(int index) onExit;
-  final void Function(int page) onPageChanged;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final data = PostDetails.of<SankakuPost>(context);
+    final posts = data.posts;
+    final controller = data.controller;
+
     return PostDetailsPageDesktopScaffold(
-      initialIndex: initialIndex,
+      controller: controller,
       posts: posts,
-      onExit: onExit,
-      onPageChanged: onPageChanged,
       imageUrlBuilder: defaultPostImageUrlBuilder(ref),
       infoBuilder: (context, post) => SimpleInformationSection(
         post: post,

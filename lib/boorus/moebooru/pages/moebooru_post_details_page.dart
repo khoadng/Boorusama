@@ -48,37 +48,65 @@ List<TagGroupItem> createMoebooruTagGroupItems(
   return tagGroups;
 }
 
-class MoebooruPostDetailsPage extends ConsumerStatefulWidget {
-  const MoebooruPostDetailsPage({
-    super.key,
-    required this.posts,
-    required this.initialPage,
-    required this.onExit,
-    required this.onPageChanged,
-    required this.controller,
-  });
-
-  final List<MoebooruPost> posts;
-  final int initialPage;
-  final void Function(int page) onExit;
-  final void Function(int page) onPageChanged;
-  final PostDetailsController<Post> controller;
+class MoebooruPostDetailsPage extends StatelessWidget {
+  const MoebooruPostDetailsPage({super.key});
 
   @override
-  ConsumerState<MoebooruPostDetailsPage> createState() =>
+  Widget build(BuildContext context) {
+    final data = PostDetails.of<MoebooruPost>(context);
+
+    return MoebooruPostDetailsPageInternal(
+      data: data,
+    );
+  }
+}
+
+class MoebooruPostDetailsPageInternal extends ConsumerStatefulWidget {
+  const MoebooruPostDetailsPageInternal({
+    super.key,
+    required this.data,
+  });
+
+  final PostDetailsData<MoebooruPost> data;
+
+  @override
+  ConsumerState<MoebooruPostDetailsPageInternal> createState() =>
       _MoebooruPostDetailsPageState();
 }
 
 class _MoebooruPostDetailsPageState
-    extends ConsumerState<MoebooruPostDetailsPage> {
-  List<MoebooruPost> get posts => widget.posts;
+    extends ConsumerState<MoebooruPostDetailsPageInternal> {
+  late PostDetailsData<MoebooruPost> data = widget.data;
+
+  List<MoebooruPost> get posts => data.posts;
+  PostDetailsController<MoebooruPost> get controller => data.controller;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _loadFavoriteUsers(posts[widget.initialPage].id);
+      _loadFavoriteUsers(posts[controller.initialPage].id);
     });
+
+    data.controller.currentPage.addListener(_onPageChanged);
+  }
+
+  //FIXME: Need to test this carefully
+  @override
+  void didUpdateWidget(covariant MoebooruPostDetailsPageInternal oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.data != widget.data) {
+      controller.currentPage.removeListener(_onPageChanged);
+      setState(() {
+        data = widget.data;
+        controller.currentPage.addListener(_onPageChanged);
+      });
+    }
+  }
+
+  void _onPageChanged() {
+    _loadFavoriteUsers(posts[controller.currentPage.value].id);
   }
 
   Future<void> _loadFavoriteUsers(int postId) async {
@@ -99,14 +127,18 @@ class _MoebooruPostDetailsPageState
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    controller.currentPage.removeListener(_onPageChanged);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final config = ref.watchConfig;
 
     return PostDetailsPageScaffold(
+      controller: controller,
       posts: posts,
-      initialIndex: widget.initialPage,
-      onExit: widget.onExit,
-      onPageChangeIndexed: widget.onPageChanged,
       swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
       fileDetailsBuilder: (context, post) => DefaultFileDetailsSection(
         post: post,
@@ -202,9 +234,6 @@ class _MoebooruPostDetailsPageState
                 },
                 orElse: () => const SizedBox.shrink(),
               ),
-      onPageChanged: (post) {
-        _loadFavoriteUsers(post.id);
-      },
     );
   }
 
@@ -241,7 +270,7 @@ class MoebooruPostDetailsActionToolbar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfig;
-    final post = InheritedPost.of<Post>(context);
+    final post = InheritedPost.of<MoebooruPost>(context);
     final booru = config.createBooruFrom(ref.watch(booruFactoryProvider));
 
     return booru?.whenMoebooru(

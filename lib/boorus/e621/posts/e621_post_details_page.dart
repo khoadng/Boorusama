@@ -18,18 +18,7 @@ import 'package:boorusama/router.dart';
 class E621PostDetailsPage extends ConsumerStatefulWidget {
   const E621PostDetailsPage({
     super.key,
-    required this.posts,
-    required this.intitialIndex,
-    required this.onExit,
-    required this.onPageChanged,
-    required this.controller,
   });
-
-  final int intitialIndex;
-  final List<E621Post> posts;
-  final void Function(int page) onExit;
-  final void Function(int page) onPageChanged;
-  final PostDetailsController<Post> controller;
 
   @override
   ConsumerState<E621PostDetailsPage> createState() =>
@@ -37,15 +26,15 @@ class E621PostDetailsPage extends ConsumerStatefulWidget {
 }
 
 class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage> {
-  List<E621Post> get posts => widget.posts;
-
   @override
   Widget build(BuildContext context) {
+    final data = PostDetails.of<E621Post>(context);
+    final posts = data.posts;
+    final controller = data.controller;
+
     return PostDetailsPageScaffold(
+      controller: controller,
       posts: posts,
-      initialIndex: widget.intitialIndex,
-      onExit: widget.onExit,
-      onPageChangeIndexed: widget.onPageChanged,
       swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
       sliverArtistPostsBuilder: (context, post) => post.artistTags.isNotEmpty
           ? post.artistTags
@@ -75,7 +64,7 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage> {
         showSource: true,
       ),
       placeholderImageUrlBuilder: (post, currentPage) =>
-          currentPage == widget.intitialIndex && post.isTranslated
+          currentPage == controller.initialPage && post.isTranslated
               ? null
               : post.thumbnailImageUrl,
       parts: kDefaultPostDetailsNoSourceParts,

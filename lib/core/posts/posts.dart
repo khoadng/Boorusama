@@ -9,7 +9,7 @@ export 'details/file_details_section.dart';
 export 'details/information_section.dart';
 export 'details/inherited_post.dart';
 export 'details/post_details_page_desktop_scaffold.dart';
-export 'details/post_details_page_mixin.dart';
+export 'details/post_details.dart';
 export 'details/post_details_page_scaffold.dart';
 export 'details/related_posts_section.dart';
 export 'details/simple_post_action_toolbar.dart';

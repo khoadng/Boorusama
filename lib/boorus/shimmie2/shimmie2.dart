@@ -8,11 +8,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/gelbooru_v2/gelbooru_v2.dart';
+import 'package:boorusama/boorus/shimmie2/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/router.dart';
 
@@ -72,9 +74,17 @@ class Shimmie2Builder
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) => Shimmie2PostDetailsPage(
-            payload: payload,
-          );
+      (context, config, payload) {
+        final posts = payload.posts.map((e) => e as Shimmie2Post).toList();
+
+        return PostDetailsLayoutSwitcher(
+          initialIndex: payload.initialIndex,
+          posts: posts,
+          scrollController: payload.scrollController,
+          desktop: () => const Shimmie2PostDetailsDesktopPage(),
+          mobile: () => const Shimmie2PostDetailsPage(),
+        );
+      };
 
   @override
   final DownloadFilenameGenerator<Post> downloadFilenameBuilder =
@@ -96,21 +106,52 @@ class Shimmie2Builder
   final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder();
 }
 
-class Shimmie2PostDetailsPage extends ConsumerWidget {
-  const Shimmie2PostDetailsPage({
+class Shimmie2PostDetailsDesktopPage extends ConsumerWidget {
+  const Shimmie2PostDetailsDesktopPage({
     super.key,
-    required this.payload,
   });
-
-  final DetailsPayload payload;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final data = PostDetails.of<Shimmie2Post>(context);
+    final posts = data.posts;
+    final controller = data.controller;
+
+    return PostDetailsPageDesktopScaffold(
+      controller: controller,
+      debounceDuration: Duration.zero,
+      posts: posts,
+      imageUrlBuilder: defaultPostImageUrlBuilder(ref),
+      tagListBuilder: (context, post) => BasicTagList(
+        tags: post.tags.toList(),
+        unknownCategoryColor: ref.watch(tagColorProvider('general')),
+        onTap: (tag) => goToSearchPage(context, tag: tag),
+      ),
+      fileDetailsBuilder: (context, post) => DefaultFileDetailsSection(
+        post: post,
+        uploaderName: castOrNull<SimplePost>(post)?.uploaderName,
+      ),
+      topRightButtonsBuilder: (currentPage, expanded, post) =>
+          GeneralMoreActionButton(post: post),
+    );
+  }
+}
+
+class Shimmie2PostDetailsPage extends ConsumerWidget {
+  const Shimmie2PostDetailsPage({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final data = PostDetails.of<Shimmie2Post>(context);
+    final posts = data.posts;
+    final controller = data.controller;
+
     return PostDetailsPageScaffold(
-      posts: payload.posts,
-      initialIndex: payload.initialIndex,
+      controller: controller,
+      posts: posts,
       swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
-      onExit: (page) => payload.scrollController?.scrollToIndex(page),
       tagListBuilder: (context, post) => BasicTagList(
         tags: post.tags.toList(),
         unknownCategoryColor: ref.watch(tagColorProvider('general')),

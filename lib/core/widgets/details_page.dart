@@ -21,13 +21,12 @@ part 'details_page_controller.dart';
 
 double getTopActionIconAlignValue() => hasStatusBar() ? -0.92 : -1;
 
-class DetailsPage<T> extends StatefulWidget {
-  const DetailsPage({
+class DetailsPageMobile<T> extends StatefulWidget {
+  const DetailsPageMobile({
     super.key,
     required this.currentSettings,
-    this.controller,
+    required this.controller,
     required this.info,
-    required this.intitialIndex,
     required this.itemBuilder,
     required this.itemCount,
     this.onExpanded,
@@ -37,16 +36,14 @@ class DetailsPage<T> extends StatefulWidget {
     required this.topRightButtons,
   });
 
-  final int intitialIndex;
-
-  final DetailsPageController? controller;
+  final DetailsPageMobileController controller;
 
   final Widget topRightButtons;
   final Widget info;
   final Widget? bottomSheet;
 
   final void Function()? onExpanded;
-  final void Function(int index) onExit;
+  final void Function() onExit;
   final void Function()? onSwipeDownThresholdReached;
 
   final Settings Function() currentSettings;
@@ -55,18 +52,18 @@ class DetailsPage<T> extends StatefulWidget {
   final int itemCount;
 
   @override
-  State<DetailsPage> createState() => _DetailsPageState();
+  State<DetailsPageMobile> createState() => _DetailsPageMobileState();
 }
 
-class _DetailsPageState<T> extends State<DetailsPage<T>>
+class _DetailsPageMobileState<T> extends State<DetailsPageMobile<T>>
     with AutomaticSlideMixin {
-  late final _controller = widget.controller ?? DetailsPageController();
+  late final _controller = widget.controller;
 
   @override
   PageController get pageController => _pageController.pageController;
 
   PostDetailsPageViewController get _pageController =>
-      _controller.pageViewController;
+      _controller._pageViewController;
 
   late StreamSubscription<PageDirection> pageSubscription;
 
@@ -74,7 +71,6 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
   void initState() {
     _controller.slideshow.addListener(_onSlideShowChanged);
 
-    _pageController.currentPageNotifier.addListener(_onPageChanged);
     _pageController.expandedNotifier.addListener(_onExpanded);
 
     pageSubscription = _controller.pageStream.listen((event) async {
@@ -136,10 +132,6 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
     }
   }
 
-  void _onPageChanged() {
-    _controller.currentPage.value = _pageController.currentPage;
-  }
-
   void _onExpanded() {
     if (widget.onExpanded != null) {
       widget.onExpanded!();
@@ -153,15 +145,10 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
 
   @override
   void dispose() {
-    _pageController.currentPageNotifier.removeListener(_onPageChanged);
     _pageController.expandedNotifier.removeListener(_onExpanded);
 
     _controller.slideshow.removeListener(_onSlideShowChanged);
     stopAutoSlide();
-
-    if (widget.controller == null) {
-      _controller.dispose();
-    }
 
     pageSubscription.cancel();
 
@@ -173,7 +160,7 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
     if (!didPop) {
       context.navigator.pop();
     }
-    widget.onExit(_pageController.currentPage);
+    widget.onExit();
   }
 
   @override
@@ -195,7 +182,7 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
               controller: _pageController,
               onSwipeDownThresholdReached: widget.onSwipeDownThresholdReached ??
                   () {
-                    widget.onExit(_pageController.currentPage);
+                    widget.onExit();
                     _onBackButtonPressed(false);
                   },
               sheet: Builder(
@@ -330,7 +317,7 @@ class UIOverlayVisibility extends StatelessWidget {
   });
 
   final PostDetailsPageViewController pageController;
-  final DetailsPageController controller;
+  final DetailsPageMobileController controller;
   final Widget child;
 
   @override

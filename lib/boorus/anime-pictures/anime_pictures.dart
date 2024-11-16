@@ -97,25 +97,17 @@ class AnimePicturesBuilder
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) => PostDetailsLayoutSwitcher(
-            initialIndex: payload.initialIndex,
-            posts: payload.posts,
-            scrollController: payload.scrollController,
-            desktop: (controller) => AnimePicturesPostDetailsDesktopPage(
-              initialIndex: controller.currentPage.value,
-              controller: controller,
-              posts: payload.posts.map((e) => e as AnimePicturesPost).toList(),
-              onExit: (page) => controller.onExit(page),
-              onPageChanged: (page) => controller.setPage(page),
-            ),
-            mobile: (controller) => AnimePicturesPostDetailsPage(
-              initialPage: controller.currentPage.value,
-              controller: controller,
-              posts: payload.posts.map((e) => e as AnimePicturesPost).toList(),
-              onExit: (page) => controller.onExit(page),
-              onPageChanged: (page) => controller.setPage(page),
-            ),
-          );
+      (context, config, payload) {
+        final posts = payload.posts.map((e) => e as AnimePicturesPost).toList();
+
+        return PostDetailsLayoutSwitcher(
+          initialIndex: payload.initialIndex,
+          posts: posts,
+          scrollController: payload.scrollController,
+          desktop: () => const AnimePicturesPostDetailsDesktopPage(),
+          mobile: () => const AnimePicturesPostDetailsPage(),
+        );
+      };
 
   @override
   HomePageBuilder get homePageBuilder =>
@@ -300,26 +292,18 @@ String _mapToGroupName(AnimePicturesTagType type) => switch (type) {
 class AnimePicturesPostDetailsPage extends ConsumerWidget {
   const AnimePicturesPostDetailsPage({
     super.key,
-    required this.posts,
-    required this.controller,
-    required this.onExit,
-    required this.onPageChanged,
-    required this.initialPage,
   });
-
-  final List<AnimePicturesPost> posts;
-  final PostDetailsController<Post> controller;
-  final void Function(int page) onExit;
-  final void Function(int page) onPageChanged;
-  final int initialPage;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final data = PostDetails.of<AnimePicturesPost>(context);
+    final posts = data.posts;
+    final controller = data.controller;
+
     return PostDetailsPageScaffold(
+      controller: controller,
       posts: posts,
-      initialIndex: initialPage,
       swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
-      onExit: onExit,
       sliverRelatedPostsBuilder: (context, post) => ref
           .watch(postDetailsProvider(post.id))
           .when(
@@ -364,27 +348,18 @@ class AnimePicturesPostDetailsPage extends ConsumerWidget {
 class AnimePicturesPostDetailsDesktopPage extends ConsumerWidget {
   const AnimePicturesPostDetailsDesktopPage({
     super.key,
-    required this.initialIndex,
-    required this.posts,
-    required this.onExit,
-    required this.onPageChanged,
-    required this.controller,
   });
-
-  final int initialIndex;
-  final List<AnimePicturesPost> posts;
-  final void Function(int index) onExit;
-  final void Function(int page) onPageChanged;
-  final PostDetailsController<Post> controller;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final data = PostDetails.of<AnimePicturesPost>(context);
+    final posts = data.posts;
+    final controller = data.controller;
+
     return PostDetailsPageDesktopScaffold(
+      controller: controller,
       debounceDuration: Duration.zero,
-      initialIndex: initialIndex,
       posts: posts,
-      onExit: onExit,
-      onPageChanged: onPageChanged,
       imageUrlBuilder: defaultPostImageUrlBuilder(ref),
       fileDetailsBuilder: (context, post) => DefaultFileDetailsSection(
         post: post,

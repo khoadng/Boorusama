@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/tags/tags.dart';
@@ -17,16 +18,7 @@ import 'widgets/moebooru_information_section.dart';
 class MoebooruPostDetailsDesktopPage extends ConsumerStatefulWidget {
   const MoebooruPostDetailsDesktopPage({
     super.key,
-    required this.initialIndex,
-    required this.posts,
-    required this.onExit,
-    required this.onPageChanged,
   });
-
-  final int initialIndex;
-  final List<Post> posts;
-  final void Function(int index) onExit;
-  final void Function(int page) onPageChanged;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -39,11 +31,13 @@ class _MoebooruPostDetailsDesktopPageState
   Widget build(BuildContext context) {
     final config = ref.watchConfig;
 
+    final data = PostDetails.of<MoebooruPost>(context);
+    final posts = data.posts;
+    final controller = data.controller;
+
     return PostDetailsPageDesktopScaffold(
-      posts: widget.posts,
-      initialIndex: widget.initialIndex,
-      onExit: widget.onExit,
-      onPageChanged: widget.onPageChanged,
+      controller: controller,
+      posts: posts,
       imageUrlBuilder: defaultPostImageUrlBuilder(ref),
       topRightButtonsBuilder: (currentPage, expanded, post) =>
           GeneralMoreActionButton(post: post),

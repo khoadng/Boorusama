@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/gelbooru/artists/artists.dart';
+import 'package:boorusama/boorus/gelbooru/posts/posts.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/tags/tags.dart';
@@ -18,16 +19,7 @@ import 'gelbooru_post_details_page.dart';
 class GelbooruPostDetailsDesktopPage extends ConsumerStatefulWidget {
   const GelbooruPostDetailsDesktopPage({
     super.key,
-    required this.initialIndex,
-    required this.posts,
-    required this.onExit,
-    required this.onPageChanged,
   });
-
-  final int initialIndex;
-  final List<Post> posts;
-  final void Function(int index) onExit;
-  final void Function(int page) onPageChanged;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -59,11 +51,13 @@ class _DanbooruPostDetailsDesktopPageState
   Widget build(BuildContext context) {
     final booruConfig = ref.watchConfig;
 
+    final data = PostDetails.of<GelbooruPost>(context);
+    final posts = data.posts;
+    final controller = data.controller;
+
     return PostDetailsPageDesktopScaffold(
-      posts: widget.posts,
-      initialIndex: widget.initialIndex,
-      onExit: widget.onExit,
-      onPageChanged: widget.onPageChanged,
+      controller: controller,
+      posts: posts,
       onPageLoaded: (post) {
         ref.read(tagsProvider(booruConfig).notifier).load(
           post.tags,

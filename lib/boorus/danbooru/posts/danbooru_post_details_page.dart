@@ -26,18 +26,7 @@ import '../tags/details/danbooru_tags_tile.dart';
 class DanbooruPostDetailsPage extends ConsumerStatefulWidget {
   const DanbooruPostDetailsPage({
     super.key,
-    required this.posts,
-    required this.intitialIndex,
-    required this.onExit,
-    required this.onPageChanged,
-    required this.controller,
   });
-
-  final int intitialIndex;
-  final List<DanbooruPost> posts;
-  final void Function(int page) onExit;
-  final void Function(int page) onPageChanged;
-  final PostDetailsController<DanbooruPost> controller;
 
   @override
   ConsumerState<DanbooruPostDetailsPage> createState() =>
@@ -46,18 +35,18 @@ class DanbooruPostDetailsPage extends ConsumerStatefulWidget {
 
 class _DanbooruPostDetailsPageState
     extends ConsumerState<DanbooruPostDetailsPage> {
-  List<DanbooruPost> get posts => widget.posts;
-
   @override
   Widget build(BuildContext context) {
+    final data = PostDetails.of<DanbooruPost>(context);
+    final posts = data.posts;
+    final controller = data.controller;
+
     return DanbooruCreatorPreloader(
       posts: posts,
       child: PostDetailsPageScaffold(
+        controller: controller,
         posts: posts,
-        initialIndex: widget.intitialIndex,
-        onExit: widget.onExit,
         parts: kDefaultPostDetailsNoSourceParts,
-        onPageChangeIndexed: widget.onPageChanged,
         swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
         sliverArtistPostsBuilder: (context, post) => post.artistTags.isNotEmpty
             ? post.artistTags
@@ -124,7 +113,7 @@ class _DanbooruPostDetailsPageState
                   ),
         ),
         placeholderImageUrlBuilder: (post, currentPage) =>
-            currentPage == widget.intitialIndex && post.isTranslated
+            currentPage == controller.initialPage && post.isTranslated
                 ? null
                 : post.thumbnailImageUrl,
         fileDetailsBuilder: (context, post) => DanbooruFileDetails(post: post),

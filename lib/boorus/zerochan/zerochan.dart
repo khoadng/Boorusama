@@ -76,23 +76,17 @@ class ZerochanBuilder
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) => PostDetailsLayoutSwitcher(
-            initialIndex: payload.initialIndex,
-            posts: payload.posts,
-            scrollController: payload.scrollController,
-            desktop: (controller) => ZerochanPostDetailsDesktopPage(
-              initialIndex: controller.currentPage.value,
-              posts: payload.posts.map((e) => e as ZerochanPost).toList(),
-              onExit: (page) => controller.onExit(page),
-              onPageChanged: (page) => controller.setPage(page),
-            ),
-            mobile: (controller) => ZerochanPostDetailsPage(
-              initialIndex: controller.currentPage.value,
-              posts: payload.posts.map((e) => e as ZerochanPost).toList(),
-              onExit: (page) => controller.onExit(page),
-              onPageChanged: (page) => controller.setPage(page),
-            ),
-          );
+      (context, config, payload) {
+        final posts = payload.posts.map((e) => e as ZerochanPost).toList();
+
+        return PostDetailsLayoutSwitcher(
+          initialIndex: payload.initialIndex,
+          posts: posts,
+          scrollController: payload.scrollController,
+          desktop: () => const ZerochanPostDetailsDesktopPage(),
+          mobile: () => const ZerochanPostDetailsPage(),
+        );
+      };
 
   @override
   TagColorBuilder get tagColorBuilder => (brightness, tagType) {
@@ -140,26 +134,19 @@ class ZerochanBuilder
 class ZerochanPostDetailsPage extends ConsumerWidget {
   const ZerochanPostDetailsPage({
     super.key,
-    required this.posts,
-    required this.initialIndex,
-    required this.onPageChanged,
-    required this.onExit,
   });
-
-  final List<ZerochanPost> posts;
-  final int initialIndex;
-  final void Function(int page) onPageChanged;
-  final void Function(int page) onExit;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final data = PostDetails.of<ZerochanPost>(context);
+    final posts = data.posts;
+    final controller = data.controller;
+
     return PostDetailsPageScaffold(
+      controller: controller,
       posts: posts,
-      initialIndex: initialIndex,
       swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
       tagListBuilder: (context, post) => ZerochanTagsTile(post: post),
-      onExit: onExit,
-      onPageChangeIndexed: onPageChanged,
     );
   }
 }
@@ -167,24 +154,17 @@ class ZerochanPostDetailsPage extends ConsumerWidget {
 class ZerochanPostDetailsDesktopPage extends ConsumerWidget {
   const ZerochanPostDetailsDesktopPage({
     super.key,
-    required this.initialIndex,
-    required this.posts,
-    required this.onExit,
-    required this.onPageChanged,
   });
-
-  final int initialIndex;
-  final List<ZerochanPost> posts;
-  final void Function(int index) onExit;
-  final void Function(int page) onPageChanged;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final data = PostDetails.of<ZerochanPost>(context);
+    final posts = data.posts;
+    final controller = data.controller;
+
     return PostDetailsPageDesktopScaffold(
-      initialIndex: initialIndex,
+      controller: controller,
       posts: posts,
-      onExit: onExit,
-      onPageChanged: onPageChanged,
       imageUrlBuilder: defaultPostImageUrlBuilder(ref),
       tagListBuilder: (context, post) => ZerochanTagsTile(post: post),
       topRightButtonsBuilder: (currentPage, expanded, post) =>

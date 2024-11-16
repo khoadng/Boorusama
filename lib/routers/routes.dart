@@ -17,6 +17,7 @@ import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/biometrics/app_lock.dart';
 import 'package:boorusama/foundation/rating/rating.dart';
 import 'package:boorusama/router.dart';
@@ -100,7 +101,13 @@ class Routes {
           final booruBuilder = ref.readBooruBuilder(config);
           final builder = booruBuilder?.postDetailsPageBuilder;
 
-          final payload = state.extra as DetailsPayload;
+          final payload = castOrNull<DetailsPayload>(state.extra);
+
+          if (payload == null) {
+            return MaterialPage(
+              child: InvalidPage(message: 'Invalid payload: $payload'),
+            );
+          }
 
           if (!payload.isDesktop) {
             return MaterialPage(

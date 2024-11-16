@@ -187,19 +187,8 @@ class GelbooruV2Builder
           initialIndex: payload.initialIndex,
           posts: posts,
           scrollController: payload.scrollController,
-          desktop: (controller) => GelbooruV2PostDetailsDesktopPage(
-            initialIndex: controller.currentPage.value,
-            posts: posts,
-            onExit: (page) => controller.onExit(page),
-            onPageChanged: (page) => controller.setPage(page),
-          ),
-          mobile: (controller) => GelbooruV2PostDetailsPage(
-            initialIndex: controller.currentPage.value,
-            controller: controller,
-            posts: posts,
-            onExit: (page) => controller.onExit(page),
-            onPageChanged: (page) => controller.setPage(page),
-          ),
+          desktop: () => const GelbooruV2PostDetailsDesktopPage(),
+          mobile: () => const GelbooruV2PostDetailsPage(),
         );
       };
 

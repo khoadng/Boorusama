@@ -17,18 +17,7 @@ import 'package:boorusama/router.dart';
 class E621PostDetailsDesktopPage extends ConsumerStatefulWidget {
   const E621PostDetailsDesktopPage({
     super.key,
-    required this.initialIndex,
-    required this.posts,
-    required this.onExit,
-    required this.onPageChanged,
-    required this.controller,
   });
-
-  final int initialIndex;
-  final List<E621Post> posts;
-  final void Function(int index) onExit;
-  final void Function(int page) onPageChanged;
-  final PostDetailsController<E621Post> controller;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -39,11 +28,13 @@ class _DanbooruPostDetailsDesktopPageState
     extends ConsumerState<E621PostDetailsDesktopPage> {
   @override
   Widget build(BuildContext context) {
+    final data = PostDetails.of<E621Post>(context);
+    final posts = data.posts;
+    final controller = data.controller;
+
     return PostDetailsPageDesktopScaffold(
-      posts: widget.posts,
-      initialIndex: widget.initialIndex,
-      onExit: widget.onExit,
-      onPageChanged: widget.onPageChanged,
+      controller: controller,
+      posts: posts,
       onPageLoaded: (post) {
         ref.read(notesControllerProvider(post).notifier).load();
       },

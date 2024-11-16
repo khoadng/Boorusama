@@ -194,15 +194,8 @@ mixin DefaultBooruUIMixin implements BooruBuilder {
           initialIndex: payload.initialIndex,
           posts: payload.posts,
           scrollController: payload.scrollController,
-          desktop: (controller) => DefaultPostDetailsDesktopPage(
-            initialIndex: controller.currentPage.value,
-            posts: payload.posts,
-            onExit: (page) => controller.onExit(page),
-            onPageChanged: (page) => controller.setPage(page),
-          ),
-          mobile: (controller) => DefaultPostDetailsPage(
-            payload: payload,
-          ),
+          desktop: () => const DefaultPostDetailsDesktopPage(),
+          mobile: () => const DefaultPostDetailsPage(),
         );
       };
 }
@@ -210,18 +203,18 @@ mixin DefaultBooruUIMixin implements BooruBuilder {
 class DefaultPostDetailsPage extends ConsumerWidget {
   const DefaultPostDetailsPage({
     super.key,
-    required this.payload,
   });
-
-  final DetailsPayload payload;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final data = PostDetails.of<Post>(context);
+    final posts = data.posts;
+    final controller = data.controller;
+
     return PostDetailsPageScaffold(
-      posts: payload.posts,
-      initialIndex: payload.initialIndex,
+      controller: controller,
+      posts: posts,
       swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
-      onExit: (page) => payload.scrollController?.scrollToIndex(page),
     );
   }
 }

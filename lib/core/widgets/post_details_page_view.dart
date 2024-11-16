@@ -48,7 +48,8 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView> {
   void initState() {
     super.initState();
 
-    _controller = widget.controller ?? PostDetailsPageViewController();
+    _controller =
+        widget.controller ?? PostDetailsPageViewController(initialPage: 0);
 
     _controller._init(
       context: context,
@@ -278,7 +279,7 @@ class DefaultPageViewScrollPhysics extends ScrollPhysics {
 
 class PostDetailsPageViewController extends ChangeNotifier {
   PostDetailsPageViewController({
-    this.initialPage = 0,
+    required this.initialPage,
     this.initialExpanded = false,
     this.maxSize = 0.7,
     this.threshold = 400.0,

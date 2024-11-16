@@ -181,20 +181,8 @@ class E621Builder
           initialIndex: payload.initialIndex,
           posts: posts,
           scrollController: payload.scrollController,
-          desktop: (controller) => E621PostDetailsDesktopPage(
-            initialIndex: controller.currentPage.value,
-            posts: posts,
-            onExit: (page) => controller.onExit(page),
-            onPageChanged: (page) => controller.setPage(page),
-            controller: controller,
-          ),
-          mobile: (controller) => E621PostDetailsPage(
-            intitialIndex: controller.currentPage.value,
-            controller: controller,
-            posts: posts,
-            onExit: (page) => controller.onExit(page),
-            onPageChanged: (page) => controller.setPage(page),
-          ),
+          desktop: () => const E621PostDetailsDesktopPage(),
+          mobile: () => const E621PostDetailsPage(),
         );
       };
 

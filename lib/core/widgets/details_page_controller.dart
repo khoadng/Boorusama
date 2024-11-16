@@ -29,39 +29,77 @@ mixin UIOverlayMixin on ChangeNotifier {
   }
 }
 
-class DetailsPageController extends ChangeNotifier with UIOverlayMixin {
-  DetailsPageController({
+mixin DetailsPageViewMixin on ChangeNotifier {
+  Stream<PageDirection> get pageStream;
+  StreamController<PageDirection> get pageStreamController;
+  int get totalPages;
+  ValueNotifier<int> get currentLocalPage;
+
+  void Function(int page) get pageSyncronizer;
+
+  void nextPage() {
+    if (currentLocalPage.value < totalPages - 1) {
+      pageStreamController.add(PageDirection.next);
+    }
+  }
+
+  void previousPage() {
+    if (currentLocalPage.value > 0) {
+      pageStreamController.add(PageDirection.previous);
+    }
+  }
+}
+
+class DetailsPageMobileController extends ChangeNotifier
+    with UIOverlayMixin, DetailsPageViewMixin {
+  DetailsPageMobileController({
     bool hideOverlay = false,
-    int initialPage = 0,
-  })  : currentPage = ValueNotifier(initialPage),
-        _hideOverlay = ValueNotifier(hideOverlay);
+    required this.initialPage,
+    required this.totalPageFetcher,
+    required this.pageSyncronizer,
+  }) : _hideOverlay = ValueNotifier(hideOverlay);
 
   final _slideshow = ValueNotifier<bool>(false);
+  final int Function() totalPageFetcher;
   late final ValueNotifier<bool> _hideOverlay;
+  final int initialPage;
 
-  late final PostDetailsPageViewController pageViewController =
+  @override
+  final void Function(int page) pageSyncronizer;
+
+  late final PostDetailsPageViewController _pageViewController =
       PostDetailsPageViewController(
-    initialPage: currentPage.value,
+    initialPage: initialPage,
   );
+
+  @override
+  int get totalPages => totalPageFetcher();
+
+  @override
+  final StreamController<PageDirection> pageStreamController =
+      StreamController<PageDirection>.broadcast();
+
+  @override
+  Stream<PageDirection> get pageStream => pageStreamController.stream;
 
   @override
   ValueNotifier<bool> get hideOverlay => _hideOverlay;
   ValueNotifier<bool> get slideshow => _slideshow;
 
-  // use stream event to change to next page or previous page
-  final StreamController<PageDirection> _pageController =
-      StreamController<PageDirection>.broadcast();
+  @override
+  ValueNotifier<int> get currentLocalPage =>
+      _pageViewController.currentPageNotifier;
+  ValueNotifier<bool> get expanded => _pageViewController.expandedNotifier;
+  ValueNotifier<double> get topDisplacement =>
+      _pageViewController.topDisplacement;
 
-  Stream<PageDirection> get pageStream => _pageController.stream;
-
-  late final ValueNotifier<int> currentPage;
-
-  void nextPage() {
-    _pageController.add(PageDirection.next);
+  void init() {
+    currentLocalPage.addListener(_syncPage);
   }
 
-  void previousPage() {
-    _pageController.add(PageDirection.previous);
+  void _syncPage() {
+    final page = currentLocalPage.value;
+    pageSyncronizer(page);
   }
 
   void startSlideshow() {
@@ -78,18 +116,86 @@ class DetailsPageController extends ChangeNotifier with UIOverlayMixin {
     notifyListeners();
   }
 
+  void resetSheet() {
+    _pageViewController.resetSheet();
+  }
+
   void setEnableSwiping(bool value) {
     if (value) {
-      pageViewController.enableAllSwiping();
+      _pageViewController.enableAllSwiping();
     } else {
-      pageViewController.disableAllSwiping();
+      _pageViewController.disableAllSwiping();
     }
   }
 
   @override
   void dispose() {
-    _pageController.close();
-    pageViewController.dispose();
+    currentLocalPage.removeListener(_syncPage);
+    _pageViewController.dispose();
+    pageStreamController.close();
     super.dispose();
+  }
+}
+
+class DetailsPageDesktopController extends ChangeNotifier
+    with UIOverlayMixin, DetailsPageViewMixin {
+  DetailsPageDesktopController({
+    required int initialPage,
+    required this.totalPageFetcher,
+    required this.pageSyncronizer,
+    bool hideOverlay = false,
+  })  : currentLocalPage = ValueNotifier(initialPage),
+        currentRealtimePage = ValueNotifier(initialPage),
+        _hideOverlay = ValueNotifier(hideOverlay);
+
+  final ValueNotifier<bool> showInfo = ValueNotifier(false);
+  final ValueNotifier<bool> pageSwipe = ValueNotifier(true);
+  @override
+  late final ValueNotifier<int> currentLocalPage;
+  late final ValueNotifier<int> currentRealtimePage;
+  final int Function() totalPageFetcher;
+  @override
+  int get totalPages => totalPageFetcher();
+
+  @override
+  final void Function(int page) pageSyncronizer;
+
+  @override
+  final StreamController<PageDirection> pageStreamController =
+      StreamController<PageDirection>.broadcast();
+
+  @override
+  Stream<PageDirection> get pageStream => pageStreamController.stream;
+
+  late final ValueNotifier<bool> _hideOverlay;
+
+  @override
+  ValueNotifier<bool> get hideOverlay => _hideOverlay;
+
+  void toggleShowInfo() {
+    showInfo.value = !showInfo.value;
+    notifyListeners();
+  }
+
+  void setShowInfo(bool value) {
+    showInfo.value = value;
+    notifyListeners();
+  }
+
+  void changePage(int page) {
+    currentLocalPage.value = page;
+    pageSyncronizer(page);
+
+    notifyListeners();
+  }
+
+  void changeRealtimePage(int page) {
+    currentRealtimePage.value = page;
+    notifyListeners();
+  }
+
+  void setEnablePageSwipe(bool value) {
+    pageSwipe.value = value;
+    notifyListeners();
   }
 }

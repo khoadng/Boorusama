@@ -7,25 +7,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/gelbooru_v2/artists/artists.dart';
+import 'package:boorusama/boorus/gelbooru_v2/posts/posts.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
-import 'gelbooru_v2_post_details_page.dart';
 
 class GelbooruV2PostDetailsDesktopPage extends ConsumerStatefulWidget {
   const GelbooruV2PostDetailsDesktopPage({
     super.key,
-    required this.initialIndex,
-    required this.posts,
-    required this.onExit,
-    required this.onPageChanged,
   });
-
-  final int initialIndex;
-  final List<Post> posts;
-  final void Function(int index) onExit;
-  final void Function(int page) onPageChanged;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -36,11 +27,13 @@ class _DanbooruPostDetailsDesktopPageState
     extends ConsumerState<GelbooruV2PostDetailsDesktopPage> {
   @override
   Widget build(BuildContext context) {
+    final data = PostDetails.of<GelbooruV2Post>(context);
+    final posts = data.posts;
+    final controller = data.controller;
+
     return PostDetailsPageDesktopScaffold(
-      posts: widget.posts,
-      initialIndex: widget.initialIndex,
-      onExit: widget.onExit,
-      onPageChanged: widget.onPageChanged,
+      controller: controller,
+      posts: posts,
       imageUrlBuilder: defaultPostImageUrlBuilder(ref),
       topRightButtonsBuilder: (currentPage, expanded, post) =>
           GeneralMoreActionButton(post: post),

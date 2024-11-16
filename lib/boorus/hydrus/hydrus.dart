@@ -253,20 +253,8 @@ class HydrusBuilder
           initialIndex: payload.initialIndex,
           posts: posts,
           scrollController: payload.scrollController,
-          desktop: (controller) => HydrusPostDetailsDesktopPage(
-            initialIndex: controller.currentPage.value,
-            controller: controller,
-            posts: posts,
-            onExit: (page) => controller.onExit(page),
-            onPageChanged: (page) => controller.setPage(page),
-          ),
-          mobile: (controller) => HydrusPostDetailsPage(
-            initialPage: controller.currentPage.value,
-            controller: controller,
-            posts: posts,
-            onExit: (page) => controller.onExit(page),
-            onPageChanged: (page) => controller.setPage(page),
-          ),
+          desktop: () => const HydrusPostDetailsDesktopPage(),
+          mobile: () => const HydrusPostDetailsPage(),
         );
       };
 
@@ -362,27 +350,18 @@ final ratingServiceNameProvider =
 class HydrusPostDetailsPage extends ConsumerWidget {
   const HydrusPostDetailsPage({
     super.key,
-    required this.controller,
-    required this.onExit,
-    required this.onPageChanged,
-    required this.posts,
-    required this.initialPage,
   });
-
-  final List<HydrusPost> posts;
-  final PostDetailsController<HydrusPost> controller;
-  final void Function(int page) onExit;
-  final void Function(int page) onPageChanged;
-  final int initialPage;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final data = PostDetails.of<HydrusPost>(context);
+    final posts = data.posts;
+    final controller = data.controller;
+
     return PostDetailsPageScaffold(
+      controller: controller,
       posts: posts,
-      initialIndex: initialPage,
       swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
-      onExit: onExit,
-      onPageChangeIndexed: onPageChanged,
       fileDetailsBuilder: (context, post) => DefaultFileDetailsSection(
         post: post,
         initialExpanded: true,
@@ -402,27 +381,18 @@ class HydrusPostDetailsPage extends ConsumerWidget {
 class HydrusPostDetailsDesktopPage extends ConsumerWidget {
   const HydrusPostDetailsDesktopPage({
     super.key,
-    required this.initialIndex,
-    required this.posts,
-    required this.onExit,
-    required this.onPageChanged,
-    required this.controller,
   });
-
-  final int initialIndex;
-  final List<HydrusPost> posts;
-  final void Function(int index) onExit;
-  final void Function(int page) onPageChanged;
-  final PostDetailsController<HydrusPost> controller;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final data = PostDetails.of<HydrusPost>(context);
+    final posts = data.posts;
+    final controller = data.controller;
+
     return PostDetailsPageDesktopScaffold(
+      controller: controller,
       debounceDuration: Duration.zero,
-      initialIndex: initialIndex,
       posts: posts,
-      onExit: onExit,
-      onPageChanged: onPageChanged,
       imageUrlBuilder: defaultPostImageUrlBuilder(ref),
       fileDetailsBuilder: (context, post) => DefaultFileDetailsSection(
         post: post,

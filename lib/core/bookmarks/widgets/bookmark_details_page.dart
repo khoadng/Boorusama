@@ -30,11 +30,7 @@ class BookmarkDetailsPage extends ConsumerWidget {
       initialIndex: initialIndex,
       posts: posts,
       desktop: null,
-      mobile: (controller) => BookmarkDetailsPageInternal(
-        initialIndex: initialIndex,
-        controller: controller,
-        posts: posts,
-      ),
+      mobile: () => const BookmarkDetailsPageInternal(),
       scrollController: null,
     );
   }
@@ -43,14 +39,7 @@ class BookmarkDetailsPage extends ConsumerWidget {
 class BookmarkDetailsPageInternal extends ConsumerStatefulWidget {
   const BookmarkDetailsPageInternal({
     super.key,
-    required this.initialIndex,
-    required this.controller,
-    required this.posts,
   });
-
-  final int initialIndex;
-  final List<BookmarkPost> posts;
-  final PostDetailsController<Post> controller;
 
   @override
   ConsumerState<BookmarkDetailsPageInternal> createState() =>
@@ -59,19 +48,14 @@ class BookmarkDetailsPageInternal extends ConsumerStatefulWidget {
 
 class _BookmarkDetailsPageState
     extends ConsumerState<BookmarkDetailsPageInternal> {
-  late var posts = widget.posts;
-
-  @override
-  void didUpdateWidget(covariant BookmarkDetailsPageInternal oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    setState(() {
-      posts = widget.posts;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
+    final data = PostDetails.of<BookmarkPost>(context);
+    final posts = data.posts;
+    final controller = data.controller;
+
     return PostDetailsPageScaffold(
+      controller: controller,
       posts: posts,
       swipeImageUrlBuilder: (post) => post.sampleImageUrl,
       uiBuilder: PostDetailsUIBuilder(
@@ -105,10 +89,6 @@ class _BookmarkDetailsPageState
           },
         ),
       ],
-      initialIndex: widget.initialIndex,
-      onExit: (page) {
-        // TODO: implement onExit
-      },
     );
   }
 }
