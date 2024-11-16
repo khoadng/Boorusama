@@ -250,6 +250,7 @@ class _PostDetailsDesktopScaffoldState<T extends Post>
                   widget.posts.getPrevAndNextPosts(index);
 
               return Stack(
+                alignment: Alignment.center,
                 children: [
                   if (nextPost != null && !nextPost.isVideo)
                     PostDetailsPreloadImage(
@@ -259,19 +260,9 @@ class _PostDetailsDesktopScaffoldState<T extends Post>
                     PostDetailsPreloadImage(
                       url: widget.imageUrlBuilder(prevPost),
                     ),
-                  PostMedia(
-                    post: post,
-                    imageUrl: widget.imageUrlBuilder(post),
-                    // Prevent placeholder image from showing when first loaded a post with translated image
-                    placeholderImageUrl:
-                        post.isTranslated ? null : post.thumbnailImageUrl,
-                    imageOverlayBuilder: (constraints) =>
-                        noteOverlayBuilderDelegate(
-                      constraints,
-                      post,
-                      ref.watch(notesControllerProvider(post)),
-                    ),
-                    onImageTap: () {
+                  InteractiveViewExtended(
+                    onZoomUpdated: onZoomUpdated,
+                    onTap: () {
                       if (!controller.showInfo.value) {
                         controller.toggleOverlay();
                       }
@@ -300,8 +291,22 @@ class _PostDetailsDesktopScaffoldState<T extends Post>
                               post,
                             )
                         : null,
-                    autoPlay: true,
-                    inFocus: true,
+                    child: PostMedia(
+                      post: post,
+                      imageUrl: widget.imageUrlBuilder(post),
+                      // Prevent placeholder image from showing when first loaded a post with translated image
+                      placeholderImageUrl:
+                          post.isTranslated ? null : post.thumbnailImageUrl,
+                      imageOverlayBuilder: (constraints) =>
+                          noteOverlayBuilderDelegate(
+                        constraints,
+                        post,
+                        ref.watch(notesControllerProvider(post)),
+                      ),
+
+                      autoPlay: true,
+                      inFocus: true,
+                    ),
                   ),
                 ],
               );

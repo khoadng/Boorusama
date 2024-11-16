@@ -16,9 +16,6 @@ import 'package:boorusama/widgets/widgets.dart';
 class InteractiveBooruImage extends ConsumerStatefulWidget {
   const InteractiveBooruImage({
     super.key,
-    this.onTap,
-    this.onDoubleTap,
-    this.onLongPress,
     required this.useHero,
     required this.heroTag,
     required this.aspectRatio,
@@ -30,9 +27,6 @@ class InteractiveBooruImage extends ConsumerStatefulWidget {
     this.height,
   });
 
-  final VoidCallback? onTap;
-  final VoidCallback? onDoubleTap;
-  final VoidCallback? onLongPress;
   final bool useHero;
   final String heroTag;
   final double? aspectRatio;

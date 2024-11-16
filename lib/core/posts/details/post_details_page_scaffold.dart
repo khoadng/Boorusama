@@ -247,11 +247,15 @@ class _PostDetailPageScaffoldState<T extends Post>
                   ) ==
                   true &&
               postGesturesHandler != null
-          ? () => postGesturesHandler(
+          ? () {
+              _controller.pageViewController.resetSheet();
+
+              postGesturesHandler(
                 ref,
                 config.postGestures?.fullview?.swipeDown,
                 focusedPost,
-              )
+              );
+            }
           : null,
       info: ValueListenableBuilder(
         valueListenable: _pageController.currentPageNotifier,
@@ -280,31 +284,6 @@ class _PostDetailPageScaffoldState<T extends Post>
           placeholderImageUrl: widget.placeholderImageUrlBuilder != null
               ? widget.placeholderImageUrlBuilder!(post, currentPage)
               : post.thumbnailImageUrl,
-          onImageTap: onImageTap,
-          onDoubleTap: booruBuilder?.canHandlePostGesture(
-                        GestureType.doubleTap,
-                        ref.watchConfig.postGestures?.fullview,
-                      ) ==
-                      true &&
-                  postGesturesHandler != null
-              ? () => postGesturesHandler(
-                    ref,
-                    ref.watchConfig.postGestures?.fullview?.doubleTap,
-                    post,
-                  )
-              : null,
-          onLongPress: booruBuilder?.canHandlePostGesture(
-                        GestureType.longPress,
-                        ref.watchConfig.postGestures?.fullview,
-                      ) ==
-                      true &&
-                  postGesturesHandler != null
-              ? () => postGesturesHandler(
-                    ref,
-                    ref.watchConfig.postGestures?.fullview?.longPress,
-                    post,
-                  )
-              : null,
           onCurrentVideoPositionChanged: onCurrentPositionChanged,
           onVideoVisibilityChanged: onVisibilityChanged,
           imageOverlayBuilder: (constraints) => noteOverlayBuilderDelegate(
@@ -355,6 +334,31 @@ class _PostDetailPageScaffoldState<T extends Post>
                     : child!,
                 child: InteractiveViewExtended(
                   onZoomUpdated: onZoomUpdated,
+                  onTap: onImageTap,
+                  onDoubleTap: booruBuilder?.canHandlePostGesture(
+                                GestureType.doubleTap,
+                                ref.watchConfig.postGestures?.fullview,
+                              ) ==
+                              true &&
+                          postGesturesHandler != null
+                      ? () => postGesturesHandler(
+                            ref,
+                            ref.watchConfig.postGestures?.fullview?.doubleTap,
+                            post,
+                          )
+                      : null,
+                  onLongPress: booruBuilder?.canHandlePostGesture(
+                                GestureType.longPress,
+                                ref.watchConfig.postGestures?.fullview,
+                              ) ==
+                              true &&
+                          postGesturesHandler != null
+                      ? () => postGesturesHandler(
+                            ref,
+                            ref.watchConfig.postGestures?.fullview?.longPress,
+                            post,
+                          )
+                      : null,
                   child: media,
                 ),
               ),

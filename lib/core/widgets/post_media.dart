@@ -23,9 +23,6 @@ class PostMedia extends ConsumerWidget {
     required this.post,
     required this.placeholderImageUrl,
     required this.imageUrl,
-    this.onImageTap,
-    this.onDoubleTap,
-    this.onLongPress,
     this.onCurrentVideoPositionChanged,
     this.onVideoVisibilityChanged,
     this.useHero = false,
@@ -39,9 +36,6 @@ class PostMedia extends ConsumerWidget {
   final Post post;
   final String? placeholderImageUrl;
   final String imageUrl;
-  final VoidCallback? onImageTap;
-  final VoidCallback? onDoubleTap;
-  final VoidCallback? onLongPress;
   final bool useHero;
   final void Function(double current, double total, String url)?
       onCurrentVideoPositionChanged;
@@ -120,9 +114,6 @@ class PostMedia extends ConsumerWidget {
             aspectRatio: post.aspectRatio,
             imageUrl: imageUrl,
             placeholderImageUrl: placeholderImageUrl,
-            onTap: onImageTap,
-            onDoubleTap: onDoubleTap,
-            onLongPress: onLongPress,
             imageOverlayBuilder: (constraints) =>
                 imageOverlayBuilder?.call(constraints) ?? [],
             width: post.width,
