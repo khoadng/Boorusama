@@ -85,58 +85,58 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView> {
                       ? const DefaultPageViewScrollPhysics()
                       : const NeverScrollableScrollPhysics(),
                   itemCount: widget.itemCount,
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onVerticalDragUpdate: (details) {
-                        if (!swipe) return;
+                  itemBuilder: (context, index) => ValueListenableBuilder(
+                    valueListenable: _controller.pullUp,
+                    builder: (_, canPull, __) => GestureDetector(
+                      onVerticalDragUpdate: canPull
+                          ? (details) {
+                              final dy = details.delta.dy;
 
-                        final dy = details.delta.dy;
+                              _verticalPosition.value =
+                                  _verticalPosition.value + dy;
+                            }
+                          : null,
+                      onVerticalDragEnd: canPull
+                          ? (details) {
+                              if (_verticalPosition.value >
+                                  widget.swipeDownThreshold) {
+                                _verticalPosition.value = 0.0;
 
-                        _verticalPosition.value = _verticalPosition.value + dy;
-                      },
-                      onVerticalDragEnd: (details) {
-                        if (!swipe) return;
+                                if (!_controller.isExpanded) {
+                                  widget.onSwipeDownThresholdReached?.call();
+                                }
+                                return;
+                              }
 
-                        if (_verticalPosition.value >
-                            widget.swipeDownThreshold) {
-                          _verticalPosition.value = 0.0;
+                              final size = _sheetController.size;
 
-                          if (!_controller.isExpanded) {
-                            widget.onSwipeDownThresholdReached?.call();
-                          }
-                          return;
-                        }
+                              if (size > widget.minSize) {
+                                _controller.expandToSnapPoint();
 
-                        final size = _sheetController.size;
+                                return;
+                              }
 
-                        if (size > widget.minSize) {
-                          _controller.expandToSnapPoint();
-
-                          return;
-                        }
-
-                        if (_verticalPosition.value.abs() <=
-                            _controller.threshold) {
-                          //TODO: for some reasons, setState is needed, should investigate later
-                          setState(() {
-                            // Animate back to original position
-                            _controller.resetSheet();
-                          });
-                        }
-                      },
+                              if (_verticalPosition.value.abs() <=
+                                  _controller.threshold) {
+                                //TODO: for some reasons, setState is needed, should investigate later
+                                setState(() {
+                                  // Animate back to original position
+                                  _controller.resetSheet();
+                                });
+                              }
+                            }
+                          : null,
                       child: widget.itemBuilder(context, index),
-                    );
-                  },
+                    ),
+                  ),
                 ),
               ),
             ),
             ValueListenableBuilder(
               valueListenable: _displacement,
-              builder: (context, value, child) {
-                return SizedBox(
-                  height: value,
-                );
-              },
+              builder: (context, value, child) => SizedBox(
+                height: value,
+              ),
             ),
           ],
         ),
@@ -219,6 +219,7 @@ class PostDetailsPageViewController extends ChangeNotifier {
   late final ValueNotifier<double> topDisplacement = ValueNotifier(0.0);
   late final ValueNotifier<bool> animating = ValueNotifier(false);
   final ValueNotifier<bool> swipe = ValueNotifier(true);
+  final ValueNotifier<bool> pullUp = ValueNotifier(true);
 
   void _init({
     required BuildContext context,
@@ -333,6 +334,16 @@ class PostDetailsPageViewController extends ChangeNotifier {
       animating.value = false;
       verticalPosition.value = 0.0;
     });
+  }
+
+  void disableAllSwiping() {
+    swipe.value = false;
+    pullUp.value = false;
+  }
+
+  void enableAllSwiping() {
+    swipe.value = true;
+    pullUp.value = true;
   }
 
   @override

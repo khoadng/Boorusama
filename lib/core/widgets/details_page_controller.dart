@@ -78,8 +78,12 @@ class DetailsPageController extends ChangeNotifier with UIOverlayMixin {
     notifyListeners();
   }
 
-  void setEnablePageSwipe(bool value) {
-    pageViewController.swipe.value = value;
+  void setEnableSwiping(bool value) {
+    if (value) {
+      pageViewController.enableAllSwiping();
+    } else {
+      pageViewController.disableAllSwiping();
+    }
   }
 
   @override

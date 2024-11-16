@@ -72,7 +72,7 @@ mixin PostDetailsPageMixin<T extends StatefulWidget, E extends Post>
   }
 
   void onZoomUpdated(bool zoom) {
-    controller.setEnablePageSwipe(!zoom);
+    controller.setEnableSwiping(!zoom);
   }
 
   void onImageTap() {
