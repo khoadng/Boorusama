@@ -63,12 +63,13 @@ class SimplePostActionToolbar extends ConsumerWidget {
   }
 }
 
-class DefaultInheritedPostActionToolbar extends StatelessWidget {
+class DefaultInheritedPostActionToolbar<T extends Post>
+    extends StatelessWidget {
   const DefaultInheritedPostActionToolbar({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final post = InheritedPost.maybeOf<Post>(context);
+    final post = InheritedPost.maybeOf<T>(context);
 
     return post != null
         ? DefaultPostActionToolbar(post: post)

@@ -478,8 +478,8 @@ class _PostDetailPageScaffoldState<T extends Post>
                         ? SliverToBoxAdapter(
                             child: toolbarBuilder(context),
                           )
-                        : const SliverToBoxAdapter(
-                            child: DefaultInheritedPostActionToolbar(),
+                        : SliverToBoxAdapter(
+                            child: DefaultInheritedPostActionToolbar<T>(),
                           ),
                     PostDetailsPart.artistInfo =>
                       widget.artistInfoBuilder != null
