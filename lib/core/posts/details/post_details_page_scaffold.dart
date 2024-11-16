@@ -313,7 +313,6 @@ class _PostDetailPageScaffoldState<T extends Post>
             ref.watch(notesControllerProvider(post)),
           ),
           useHero: page == currentPage,
-          onImageZoomUpdated: onZoomUpdated,
           onVideoPlayerCreated: (controller) =>
               onVideoPlayerCreated(controller, page),
           onWebmVideoPlayerCreated: (controller) =>
@@ -341,7 +340,7 @@ class _PostDetailPageScaffoldState<T extends Post>
             Expanded(
               child: ValueListenableBuilder(
                 valueListenable: _pageController.currentPageNotifier,
-                builder: (_, currentPage, __) => page == currentPage
+                builder: (_, currentPage, child) => page == currentPage
                     ? ValueListenableBuilder(
                         valueListenable: _pageController.topDisplacement,
                         builder: (_, dis, __) {
@@ -349,11 +348,15 @@ class _PostDetailPageScaffoldState<T extends Post>
 
                           return Transform.scale(
                             scale: 1,
-                            child: media,
+                            child: child,
                           );
                         },
                       )
-                    : media,
+                    : child!,
+                child: InteractiveViewExtended(
+                  onZoomUpdated: onZoomUpdated,
+                  child: media,
+                ),
               ),
             ),
           ],

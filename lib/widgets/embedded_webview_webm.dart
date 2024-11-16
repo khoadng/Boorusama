@@ -195,7 +195,6 @@ class _EmbeddedWebViewWebmState extends State<EmbeddedWebViewWebm> {
     onCurrentPositionChanged: (current, total) =>
         widget.onCurrentPositionChanged?.call(current, total, widget.url),
   );
-  final transformationController = TransformationController();
 
   @override
   void didUpdateWidget(covariant EmbeddedWebViewWebm oldWidget) {
@@ -219,48 +218,33 @@ class _EmbeddedWebViewWebmState extends State<EmbeddedWebViewWebm> {
       muted: !widget.sound,
     ));
     widget.onWebmVideoPlayerCreated?.call(webmVideoController);
-
-    transformationController.addListener(() {
-      final clampedMatrix = Matrix4.diagonal3Values(
-        transformationController.value.right.x,
-        transformationController.value.up.y,
-        transformationController.value.forward.z,
-      );
-
-      widget.onZoomUpdated?.call(!clampedMatrix.isIdentity());
-    });
   }
 
   @override
   void dispose() {
     webmVideoController.dispose();
-    transformationController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return InteractiveImage(
-      useOriginalSize: false,
-      transformationController: transformationController,
-      image: GestureDetector(
-        onTap: () {
-          setState(() {
-            showPlay = !showPlay;
-            widget.onVisibilityChanged?.call(!showPlay);
-          });
-        },
-        child: Stack(
-          children: [
-            Container(
-              color: widget.backgroundColor,
-              height: MediaQuery.sizeOf(context).height,
-              child: WebViewWidget(
-                  controller: webmVideoController._webViewController),
-            ),
-            _buildHitArea(),
-          ],
-        ),
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          showPlay = !showPlay;
+          widget.onVisibilityChanged?.call(!showPlay);
+        });
+      },
+      child: Stack(
+        children: [
+          Container(
+            color: widget.backgroundColor,
+            height: MediaQuery.sizeOf(context).height,
+            child: WebViewWidget(
+                controller: webmVideoController._webViewController),
+          ),
+          _buildHitArea(),
+        ],
       ),
     );
   }

@@ -300,7 +300,6 @@ class _PostDetailsDesktopScaffoldState<T extends Post>
                               post,
                             )
                         : null,
-                    onImageZoomUpdated: onZoomUpdated,
                     autoPlay: true,
                     inFocus: true,
                   ),

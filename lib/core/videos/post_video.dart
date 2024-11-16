@@ -21,7 +21,6 @@ class BooruVideo extends StatefulWidget {
     this.onVideoPlayerCreated,
     this.sound = true,
     this.speed = 1.0,
-    this.onZoomUpdated,
     this.customControlsBuilder,
   });
 
@@ -34,7 +33,6 @@ class BooruVideo extends StatefulWidget {
   final bool autoPlay;
   final bool sound;
   final double speed;
-  final void Function(bool value)? onZoomUpdated;
   final Widget? Function()? customControlsBuilder;
 
   @override
@@ -44,7 +42,6 @@ class BooruVideo extends StatefulWidget {
 class _BooruVideoState extends State<BooruVideo> {
   late VideoPlayerController _videoPlayerController;
   late ChewieController _chewieController;
-  late TransformationController transformationController;
 
   @override
   void initState() {
@@ -74,28 +71,13 @@ class _BooruVideoState extends State<BooruVideo> {
     _videoPlayerController.setVolume(widget.sound ? 1 : 0);
     _videoPlayerController.setPlaybackSpeed(widget.speed);
 
-    transformationController = TransformationController();
-    transformationController.addListener(_onTransform);
-
     _listenToVideoPosition();
-  }
-
-  void _onTransform() {
-    final clampedMatrix = Matrix4.diagonal3Values(
-      transformationController.value.right.x,
-      transformationController.value.up.y,
-      transformationController.value.forward.z,
-    );
-
-    widget.onZoomUpdated?.call(!clampedMatrix.isIdentity());
   }
 
   void _disposeVideoPlayerController() {
     _videoPlayerController.removeListener(_onChanged);
-    transformationController.removeListener(_onTransform);
     _videoPlayerController.dispose();
     _chewieController.dispose();
-    transformationController.dispose();
   }
 
   // Listen to the video position and report it back to the parent widget
@@ -138,10 +120,6 @@ class _BooruVideoState extends State<BooruVideo> {
 
   @override
   Widget build(BuildContext context) {
-    return InteractiveImage(
-      useOriginalSize: false,
-      transformationController: transformationController,
-      image: Chewie(controller: _chewieController),
-    );
+    return Chewie(controller: _chewieController);
   }
 }

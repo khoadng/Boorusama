@@ -26,7 +26,6 @@ class PostMedia extends ConsumerWidget {
     this.onImageTap,
     this.onDoubleTap,
     this.onLongPress,
-    this.onImageZoomUpdated,
     this.onCurrentVideoPositionChanged,
     this.onVideoVisibilityChanged,
     this.useHero = false,
@@ -44,7 +43,6 @@ class PostMedia extends ConsumerWidget {
   final VoidCallback? onDoubleTap;
   final VoidCallback? onLongPress;
   final bool useHero;
-  final void Function(bool value)? onImageZoomUpdated;
   final void Function(double current, double total, String url)?
       onCurrentVideoPositionChanged;
   final void Function(bool value)? onVideoVisibilityChanged;
@@ -80,7 +78,6 @@ class PostMedia extends ConsumerWidget {
                                 .watch(
                                     userAgentGeneratorProvider(ref.watchConfig))
                                 .generate(),
-                            onZoomUpdated: onImageZoomUpdated,
                           )
                         : BooruVideo(
                             url: post.videoUrl,
@@ -92,7 +89,6 @@ class PostMedia extends ConsumerWidget {
                             onVideoPlayerCreated: onVideoPlayerCreated,
                             sound: ref.isGlobalVideoSoundOn,
                             speed: ref.watchPlaybackSpeed(post.videoUrl),
-                            onZoomUpdated: onImageZoomUpdated,
                           )
                     : BooruVideo(
                         url: post.videoUrl,
@@ -103,7 +99,6 @@ class PostMedia extends ConsumerWidget {
                         onVideoPlayerCreated: onVideoPlayerCreated,
                         sound: ref.isGlobalVideoSoundOn,
                         speed: ref.watchPlaybackSpeed(post.videoUrl),
-                        onZoomUpdated: onImageZoomUpdated,
                       )
                 : PerformanceOrientationBuilder(
                     builder: (context, orientation) => BooruVideo(
@@ -115,7 +110,6 @@ class PostMedia extends ConsumerWidget {
                       onVideoPlayerCreated: onVideoPlayerCreated,
                       sound: ref.isGlobalVideoSoundOn,
                       speed: ref.watchPlaybackSpeed(post.videoUrl),
-                      onZoomUpdated: onImageZoomUpdated,
                       customControlsBuilder:
                           orientation.isPortrait ? null : () => null,
                     ),
@@ -133,7 +127,6 @@ class PostMedia extends ConsumerWidget {
                 imageOverlayBuilder?.call(constraints) ?? [],
             width: post.width,
             height: post.height,
-            onZoomUpdated: onImageZoomUpdated,
           );
 
     return PerformanceOrientationBuilder(
