@@ -317,13 +317,6 @@ class AnimePicturesPostDetailsPage extends ConsumerWidget {
     return PostDetailsPageScaffold(
       controller: controller,
       posts: posts,
-      infoSheet: (context, controller) => ValueListenableBuilder(
-        valueListenable: controller.expanded,
-        builder: (context, expanded, _) => PostDetailsFullInfoSheet(
-          scrollController: PostDetailsSheetScrollController.of(context),
-          expanded: expanded,
-        ),
-      ),
     );
   }
 }
@@ -401,12 +394,6 @@ class AnimePicturesPostDetailsDesktopPage extends ConsumerWidget {
       imageUrlBuilder: defaultPostImageUrlBuilder(ref),
       topRightButtonsBuilder: (currentPage, expanded, post) =>
           GeneralMoreActionButton(post: post),
-      infoSheet: (context, controller) => ValueListenableBuilder(
-        valueListenable: controller.showInfo,
-        builder: (context, expanded, _) => PostDetailsFullInfoSheet(
-          expanded: expanded,
-        ),
-      ),
     );
   }
 }

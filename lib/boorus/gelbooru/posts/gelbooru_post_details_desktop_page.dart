@@ -6,14 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/gelbooru/artists/artists.dart';
 import 'package:boorusama/boorus/gelbooru/posts/posts.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/functional.dart';
-import 'package:boorusama/router.dart';
 import 'gelbooru_post_details_page.dart';
 
 class GelbooruPostDetailsDesktopPage extends ConsumerStatefulWidget {
@@ -23,10 +20,10 @@ class GelbooruPostDetailsDesktopPage extends ConsumerStatefulWidget {
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
-      _DanbooruPostDetailsDesktopPageState();
+      _GelbooruPostDetailsDesktopPageState();
 }
 
-class _DanbooruPostDetailsDesktopPageState
+class _GelbooruPostDetailsDesktopPageState
     extends ConsumerState<GelbooruPostDetailsDesktopPage> {
   void _loadTags(Post post) {
     final booruConfig = ref.readConfig;
@@ -50,7 +47,6 @@ class _DanbooruPostDetailsDesktopPageState
   @override
   Widget build(BuildContext context) {
     final booruConfig = ref.watchConfig;
-
     final data = PostDetails.of<GelbooruPost>(context);
     final posts = data.posts;
     final controller = data.controller;
@@ -70,40 +66,6 @@ class _DanbooruPostDetailsDesktopPageState
       imageUrlBuilder: defaultPostImageUrlBuilder(ref),
       topRightButtonsBuilder: (currentPage, expanded, post) =>
           GeneralMoreActionButton(post: post),
-      tagListBuilder: (context, post) => TagsTile(
-        tags: ref.watch(tagsProvider(booruConfig)),
-        post: post,
-        onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
-        onExpand: () {
-          _loadTags(post);
-        },
-      ),
-      sliverArtistPostsBuilder: (context, post) =>
-          ref.watch(gelbooruPostDetailsArtistMapProvider).lookup(post.id).fold(
-                () => [],
-                (tags) => tags.isNotEmpty
-                    ? tags
-                        .map((tag) => ArtistPostList(
-                              tag: tag,
-                              builder: (tag) => ref
-                                  .watch(gelbooruArtistPostsProvider(tag))
-                                  .maybeWhen(
-                                    data: (data) => SliverPreviewPostGrid(
-                                      posts: data,
-                                      onTap: (postIdx) => goToPostDetailsPage(
-                                        context: context,
-                                        posts: data,
-                                        initialIndex: postIdx,
-                                      ),
-                                      imageUrl: (item) => item.sampleImageUrl,
-                                    ),
-                                    orElse: () =>
-                                        const SliverPreviewPostGridPlaceholder(),
-                                  ),
-                            ))
-                        .toList()
-                    : [],
-              ),
     );
   }
 }

@@ -73,7 +73,6 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     this.parts = kDefaultPostDetailsParts,
     required this.controller,
     this.uiBuilder,
-    this.infoSheet,
   });
 
   final List<T> posts;
@@ -103,11 +102,6 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   final PostDetailsController<T> controller;
 
   final PostDetailsUIBuilder? uiBuilder;
-
-  final Widget Function(
-    BuildContext context,
-    DetailsPageMobileController controller,
-  )? infoSheet;
 
   @override
   ConsumerState<PostDetailsPageScaffold<T>> createState() =>
@@ -240,26 +234,15 @@ class _PostDetailPageScaffoldState<T extends Post>
               );
             }
           : null,
-      info: widget.infoSheet != null
-          ? Builder(
-              builder: (context) => widget.infoSheet!(context, controller),
-            )
-          : ValueListenableBuilder(
-              valueListenable: _controller.currentLocalPage,
-              builder: (context, index, child) {
-                return ValueListenableBuilder(
-                  valueListenable: _controller.expanded,
-                  builder: (context, expanded, _) {
-                    return _buildSheet(
-                      PostDetailsSheetScrollController.of(context),
-                      context,
-                      posts[index],
-                      expanded,
-                    );
-                  },
-                );
-              },
-            ),
+      info: Builder(
+        builder: (context) => ValueListenableBuilder(
+          valueListenable: controller.expanded,
+          builder: (context, expanded, _) => PostDetailsFullInfoSheet(
+            scrollController: PostDetailsSheetScrollController.of(context),
+            expanded: expanded,
+          ),
+        ),
+      ),
       itemBuilder: (context, index) {
         final post = posts[index];
         final page = index;

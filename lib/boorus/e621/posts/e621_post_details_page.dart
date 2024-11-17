@@ -13,7 +13,6 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/artists/artists.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/router.dart';
 
 class E621PostDetailsPage extends ConsumerStatefulWidget {
@@ -40,13 +39,6 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage> {
           currentPage == controller.initialPage && post.isTranslated
               ? null
               : post.thumbnailImageUrl,
-      infoSheet: (context, controller) => ValueListenableBuilder(
-        valueListenable: controller.expanded,
-        builder: (context, expanded, _) => PostDetailsFullInfoSheet(
-          scrollController: PostDetailsSheetScrollController.of(context),
-          expanded: expanded,
-        ),
-      ),
     );
   }
 }

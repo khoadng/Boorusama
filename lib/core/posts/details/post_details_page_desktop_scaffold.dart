@@ -86,7 +86,6 @@ class PostDetailsPageDesktopScaffold<T extends Post>
     this.debounceDuration,
     required this.controller,
     this.uiBuilder,
-    this.infoSheet,
   });
 
   final List<T> posts;
@@ -118,10 +117,6 @@ class PostDetailsPageDesktopScaffold<T extends Post>
   final PostDetailsController<T> controller;
 
   final PostDetailsUIBuilder? uiBuilder;
-  final Widget Function(
-    BuildContext context,
-    DetailsPageDesktopController controller,
-  )? infoSheet;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -311,20 +306,14 @@ class _PostDetailsDesktopScaffoldState<T extends Post>
             },
           ),
         ),
-        info: widget.infoSheet != null
-            ? Builder(
-                builder: (context) => widget.infoSheet!(context, controller),
-              )
-            : ValueListenableBuilder(
-                valueListenable: controller.showInfo,
-                builder: (context, value, child) => value
-                    ? ValueListenableBuilder(
-                        valueListenable: controller.currentLocalPage,
-                        builder: (context, page, child) =>
-                            _buildInfo(context, widget.posts[page]),
-                      )
-                    : const SizedBox.shrink(),
-              ),
+        info: Builder(
+          builder: (context) => ValueListenableBuilder(
+            valueListenable: controller.showInfo,
+            builder: (context, expanded, _) => PostDetailsFullInfoSheet(
+              expanded: expanded,
+            ),
+          ),
+        ),
       ),
     );
   }

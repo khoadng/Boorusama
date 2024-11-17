@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/gelbooru/artists/artists.dart';
@@ -44,11 +45,93 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailsPage> {
     return PostDetailsPageScaffold(
       controller: controller,
       posts: posts,
-      fileDetailsBuilder: (context, post) => DefaultFileDetailsSection(
-        post: post,
-        uploaderName: post.uploaderName,
+      onExpanded: (post) => ref.read(tagsProvider(booruConfig).notifier).load(
+        post.tags,
+        onSuccess: (tags) {
+          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+            if (!mounted) return;
+            ref.setGelbooruPostDetailsArtistMap(
+              post: post,
+              tags: tags,
+            );
+
+            ref.setGelbooruPostDetailsCharacterMap(
+              post: post,
+              tags: tags,
+            );
+          });
+        },
       ),
-      sliverArtistPostsBuilder: (context, post) =>
+    );
+  }
+}
+
+class GelbooruTagListSection extends ConsumerWidget {
+  const GelbooruTagListSection({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
+    final post = InheritedPost.of<GelbooruPost>(context);
+
+    return TagsTile(
+      tags: ref.watch(tagsProvider(config)),
+      post: post,
+      onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
+    );
+  }
+}
+
+class GelbooruCharacterListSection extends ConsumerWidget {
+  const GelbooruCharacterListSection({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final post = InheritedPost.of<GelbooruPost>(context);
+
+    return ref
+        .watch(gelbooruPostDetailsCharacterMapProvider)
+        .lookup(post.id)
+        .fold(
+          () => const SliverSizedBox.shrink(),
+          (tags) => tags.isNotEmpty
+              ? CharacterPostList(
+                  tags: tags,
+                )
+              : const SliverSizedBox.shrink(),
+        );
+  }
+}
+
+class GelbooruFileDetailsSection extends StatelessWidget {
+  const GelbooruFileDetailsSection({
+    super.key,
+    this.initialExpanded = false,
+  });
+
+  final bool initialExpanded;
+
+  @override
+  Widget build(BuildContext context) {
+    final post = InheritedPost.of<GelbooruPost>(context);
+
+    return DefaultFileDetailsSection(
+      post: post,
+      initialExpanded: initialExpanded,
+      uploaderName: post.uploaderName,
+    );
+  }
+}
+
+class GelbooruArtistPostsSection extends ConsumerWidget {
+  const GelbooruArtistPostsSection({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final post = InheritedPost.of<GelbooruPost>(context);
+
+    return MultiSliver(
+      children:
           ref.watch(gelbooruPostDetailsArtistMapProvider).lookup(post.id).fold(
                 () => const [],
                 (tags) => tags.isNotEmpty
@@ -74,45 +157,7 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailsPage> {
                         .toList()
                     : [],
               ),
-      sliverCharacterPostsBuilder: (context, post) => ref
-          .watch(gelbooruPostDetailsCharacterMapProvider)
-          .lookup(post.id)
-          .fold(
-            () => const SliverSizedBox.shrink(),
-            (tags) => tags.isNotEmpty
-                ? CharacterPostList(
-                    tags: tags,
-                  )
-                : const SliverSizedBox.shrink(),
-          ),
-      tagListBuilder: (context, post) => TagsTile(
-        tags: ref.watch(tagsProvider(booruConfig)),
-        post: post,
-        onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
-      ),
-      onExpanded: (post) => ref.read(tagsProvider(booruConfig).notifier).load(
-            post.tags,
-            onSuccess: (tags) => _setTags(post, tags),
-          ),
     );
-  }
-
-  void _setTags(
-    GelbooruPost post,
-    List<TagGroupItem> tags,
-  ) {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      if (!mounted) return;
-      ref.setGelbooruPostDetailsArtistMap(
-        post: post,
-        tags: tags,
-      );
-
-      ref.setGelbooruPostDetailsCharacterMap(
-        post: post,
-        tags: tags,
-      );
-    });
   }
 }
 

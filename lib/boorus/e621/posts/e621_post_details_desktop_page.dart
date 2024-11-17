@@ -38,12 +38,6 @@ class _DanbooruPostDetailsDesktopPageState
       imageUrlBuilder: defaultPostImageUrlBuilder(ref),
       topRightButtonsBuilder: (currentPage, expanded, post) =>
           GeneralMoreActionButton(post: post),
-      infoSheet: (context, controller) => ValueListenableBuilder(
-        valueListenable: controller.showInfo,
-        builder: (context, expanded, _) => PostDetailsFullInfoSheet(
-          expanded: expanded,
-        ),
-      ),
     );
   }
 }

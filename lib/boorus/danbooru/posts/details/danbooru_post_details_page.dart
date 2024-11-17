@@ -15,7 +15,6 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/core/widgets/post_details_page_view.dart';
 import 'package:boorusama/router.dart';
 
 class DanbooruPostDetailsPage extends ConsumerStatefulWidget {
@@ -41,17 +40,6 @@ class _DanbooruPostDetailsPageState
       child: PostDetailsPageScaffold(
         controller: detailsController,
         posts: posts,
-        infoBuilder: (context, post) => SimpleInformationSection(
-          post: post,
-          showSource: true,
-        ),
-        infoSheet: (context, controller) => ValueListenableBuilder(
-          valueListenable: controller.expanded,
-          builder: (context, expanded, _) => PostDetailsFullInfoSheet(
-            scrollController: PostDetailsSheetScrollController.of(context),
-            expanded: expanded,
-          ),
-        ),
         placeholderImageUrlBuilder: (post, currentPage) =>
             currentPage == detailsController.initialPage && post.isTranslated
                 ? null
