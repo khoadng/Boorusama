@@ -230,7 +230,6 @@ class PhilomenaPostDetailsPage extends ConsumerWidget {
         artistTags: post.artistTags ?? {},
         source: post.source,
       ),
-      swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
       infoBuilder: (context, post) => SimpleInformationSection(post: post),
       statsTileBuilder: (context, post) => SimplePostStatsTile(
         totalComments: post.commentCount,

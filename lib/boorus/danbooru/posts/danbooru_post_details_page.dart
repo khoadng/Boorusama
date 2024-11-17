@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
@@ -47,7 +46,6 @@ class _DanbooruPostDetailsPageState
         controller: controller,
         posts: posts,
         parts: kDefaultPostDetailsNoSourceParts,
-        swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
         sliverArtistPostsBuilder: (context, post) => post.artistTags.isNotEmpty
             ? post.artistTags
                 .map((tag) => ArtistPostList(

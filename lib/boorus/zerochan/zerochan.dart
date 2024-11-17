@@ -145,7 +145,6 @@ class ZerochanPostDetailsPage extends ConsumerWidget {
     return PostDetailsPageScaffold(
       controller: controller,
       posts: posts,
-      swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
       tagListBuilder: (context, post) => ZerochanTagsTile(post: post),
     );
   }

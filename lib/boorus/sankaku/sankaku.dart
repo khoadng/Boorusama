@@ -152,7 +152,6 @@ class SankakuPostDetailsPage extends ConsumerWidget {
     return PostDetailsPageScaffold(
       controller: controller,
       posts: posts,
-      swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
       infoBuilder: (context, post) => SimpleInformationSection(
         post: post,
         showSource: true,

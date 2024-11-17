@@ -361,7 +361,6 @@ class HydrusPostDetailsPage extends ConsumerWidget {
     return PostDetailsPageScaffold(
       controller: controller,
       posts: posts,
-      swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
       fileDetailsBuilder: (context, post) => DefaultFileDetailsSection(
         post: post,
         initialExpanded: true,

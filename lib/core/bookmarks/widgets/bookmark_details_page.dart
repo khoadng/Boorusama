@@ -57,7 +57,7 @@ class _BookmarkDetailsPageState
     return PostDetailsPageScaffold(
       controller: controller,
       posts: posts,
-      swipeImageUrlBuilder: (post) => post.sampleImageUrl,
+      imageUrlBuilder: (post) => post.sampleImageUrl,
       uiBuilder: PostDetailsUIBuilder(
         toolbarBuilder: (context) => const BookmarkPostActionToolbar(),
       ),

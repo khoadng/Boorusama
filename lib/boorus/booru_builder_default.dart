@@ -214,7 +214,6 @@ class DefaultPostDetailsPage extends ConsumerWidget {
     return PostDetailsPageScaffold(
       controller: controller,
       posts: posts,
-      swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
     );
   }
 }

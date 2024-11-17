@@ -77,7 +77,7 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     this.onExpanded,
     this.tagListBuilder,
     this.infoBuilder,
-    required this.swipeImageUrlBuilder,
+    this.imageUrlBuilder,
     this.topRightButtonsBuilder,
     this.placeholderImageUrlBuilder,
     this.artistInfoBuilder,
@@ -94,7 +94,7 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
 
   final List<T> posts;
   final void Function(T post)? onExpanded;
-  final String Function(T post) swipeImageUrlBuilder;
+  final String Function(T post)? imageUrlBuilder;
   final String? Function(T post, int currentPage)? placeholderImageUrlBuilder;
   final List<Widget> Function(BuildContext context, T post)?
       sliverArtistPostsBuilder;
@@ -224,6 +224,9 @@ class _PostDetailPageScaffoldState<T extends Post>
     final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
     final toolbarBuilder = widget.uiBuilder?.toolbarBuilder ??
         booruBuilder?.postDetailsUIBuilder.toolbarBuilder;
+    final imageUrlBuilder =
+        widget.imageUrlBuilder ?? defaultPostImageUrlBuilder(ref);
+
     final focusedPost = posts[currentPage];
 
     return DetailsPageMobile(
@@ -270,7 +273,7 @@ class _PostDetailPageScaffoldState<T extends Post>
         final media = PostMedia(
           inFocus: true,
           post: post,
-          imageUrl: widget.swipeImageUrlBuilder(post),
+          imageUrl: imageUrlBuilder(post),
           placeholderImageUrl: widget.placeholderImageUrlBuilder != null
               ? widget.placeholderImageUrlBuilder!(post, currentPage)
               : post.thumbnailImageUrl,
@@ -297,15 +300,10 @@ class _PostDetailPageScaffoldState<T extends Post>
             if (nextPost != null && !nextPost.isVideo)
               Offstage(
                 child: PostDetailsPreloadImage(
-                  url: widget.swipeImageUrlBuilder(nextPost),
+                  url: imageUrlBuilder(nextPost),
                 ),
               ),
-            if (previousPost != null && !previousPost.isVideo)
-              Offstage(
-                child: PostDetailsPreloadImage(
-                  url: widget.swipeImageUrlBuilder(previousPost),
-                ),
-              ),
+
             Expanded(
               child: ValueListenableBuilder(
                 valueListenable: _controller.currentLocalPage,
@@ -360,6 +358,12 @@ class _PostDetailPageScaffoldState<T extends Post>
                 ),
               ),
             ),
+            if (previousPost != null && !previousPost.isVideo)
+              Offstage(
+                child: PostDetailsPreloadImage(
+                  url: imageUrlBuilder(previousPost),
+                ),
+              ),
           ],
         );
       },

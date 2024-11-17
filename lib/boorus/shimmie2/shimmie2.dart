@@ -151,7 +151,6 @@ class Shimmie2PostDetailsPage extends ConsumerWidget {
     return PostDetailsPageScaffold(
       controller: controller,
       posts: posts,
-      swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
       tagListBuilder: (context, post) => BasicTagList(
         tags: post.tags.toList(),
         unknownCategoryColor: ref.watch(tagColorProvider('general')),

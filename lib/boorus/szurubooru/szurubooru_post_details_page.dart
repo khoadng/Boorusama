@@ -28,7 +28,6 @@ class SzurubooruPostDetailsPage extends ConsumerWidget {
     return PostDetailsPageScaffold(
       controller: controller,
       posts: posts,
-      swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
       statsTileBuilder: (context, rawPost) =>
           castOrNull<SzurubooruPost>(rawPost).toOption().fold(
                 () => const SizedBox.shrink(),

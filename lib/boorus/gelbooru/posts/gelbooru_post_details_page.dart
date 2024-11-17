@@ -6,7 +6,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/gelbooru/artists/artists.dart';
 import 'package:boorusama/boorus/gelbooru/posts/posts.dart';
 import 'package:boorusama/core/configs/configs.dart';
@@ -45,7 +44,6 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailsPage> {
     return PostDetailsPageScaffold(
       controller: controller,
       posts: posts,
-      swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
       fileDetailsBuilder: (context, post) => DefaultFileDetailsSection(
         post: post,
         uploaderName: post.uploaderName,

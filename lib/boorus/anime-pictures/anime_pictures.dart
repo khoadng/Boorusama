@@ -303,7 +303,6 @@ class AnimePicturesPostDetailsPage extends ConsumerWidget {
     return PostDetailsPageScaffold(
       controller: controller,
       posts: posts,
-      swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
       sliverRelatedPostsBuilder: (context, post) => ref
           .watch(postDetailsProvider(post.id))
           .when(

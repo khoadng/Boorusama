@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/e621/artists/artists.dart';
 import 'package:boorusama/boorus/e621/posts/posts.dart';
 import 'package:boorusama/boorus/e621/tags/tags.dart';
@@ -35,7 +34,6 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage> {
     return PostDetailsPageScaffold(
       controller: controller,
       posts: posts,
-      swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
       sliverArtistPostsBuilder: (context, post) => post.artistTags.isNotEmpty
           ? post.artistTags
               .map((tag) => ArtistPostList(
