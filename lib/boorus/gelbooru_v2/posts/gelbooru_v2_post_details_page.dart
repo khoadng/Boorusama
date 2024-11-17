@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/gelbooru_v2/artists/artists.dart';
@@ -43,30 +44,79 @@ class _PostDetailPageState extends ConsumerState<GelbooruV2PostDetailsPage> {
     return PostDetailsPageScaffold(
       controller: controller,
       posts: posts,
-      fileDetailsBuilder: (context, post) => DefaultFileDetailsSection(
-        post: post,
-        uploaderName: post.uploaderName,
-      ),
-      sliverRelatedPostsBuilder: (context, post) => post.hasParent
-          ? ref.watch(gelbooruV2ChildPostsProvider(post)).maybeWhen(
-                data: (data) => RelatedPostsSection(
-                  title: 'Child posts',
-                  posts: data,
-                  imageUrl: (post) => post.sampleImageUrl,
-                  onViewAll: () => goToSearchPage(
-                    context,
-                    tag: post.relationshipQuery,
-                  ),
-                  onTap: (index) => goToPostDetailsPage(
-                    context: context,
-                    posts: data,
-                    initialIndex: index,
-                  ),
+    );
+  }
+}
+
+class GelbooruV2FileDetailsSection extends ConsumerWidget {
+  const GelbooruV2FileDetailsSection({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final post = InheritedPost.of<GelbooruV2Post>(context);
+
+    return DefaultFileDetailsSection(
+      post: post,
+      uploaderName: post.uploaderName,
+    );
+  }
+}
+
+class GelbooruV2RelatedPostsSection extends ConsumerWidget {
+  const GelbooruV2RelatedPostsSection({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final post = InheritedPost.of<GelbooruV2Post>(context);
+
+    return post.hasParent
+        ? ref.watch(gelbooruV2ChildPostsProvider(post)).maybeWhen(
+              data: (data) => RelatedPostsSection(
+                title: 'Child posts',
+                posts: data,
+                imageUrl: (post) => post.sampleImageUrl,
+                onViewAll: () => goToSearchPage(
+                  context,
+                  tag: post.relationshipQuery,
                 ),
-                orElse: () => const SliverSizedBox.shrink(),
-              )
-          : const SliverSizedBox.shrink(),
-      sliverArtistPostsBuilder: (context, post) => ref
+                onTap: (index) => goToPostDetailsPage(
+                  context: context,
+                  posts: data,
+                  initialIndex: index,
+                ),
+              ),
+              orElse: () => const SliverSizedBox.shrink(),
+            )
+        : const SliverSizedBox.shrink();
+  }
+}
+
+class GelbooruV2CharacterPostsSection extends ConsumerWidget {
+  const GelbooruV2CharacterPostsSection({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final post = InheritedPost.of<GelbooruV2Post>(context);
+
+    return ref
+        .watch(gelbooruV2PostDetailsCharacterMapProvider)
+        .lookup(post.id)
+        .fold(
+          () => const SliverSizedBox.shrink(),
+          (tags) => tags.isNotEmpty
+              ? CharacterPostList(
+                  tags: tags,
+                )
+              : const SliverSizedBox.shrink(),
+        );
+  }
+}
+
+class GelbooruV2ArtistPostsSection extends ConsumerWidget {
+  const GelbooruV2ArtistPostsSection({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final post = InheritedPost.of<GelbooruV2Post>(context);
+
+    return MultiSliver(
+      children: ref
           .watch(gelbooruV2PostDetailsArtistMapProvider)
           .lookup(post.id)
           .fold(
@@ -94,40 +144,7 @@ class _PostDetailPageState extends ConsumerState<GelbooruV2PostDetailsPage> {
                     .toList()
                 : [],
           ),
-      sliverCharacterPostsBuilder: (context, post) => ref
-          .watch(gelbooruV2PostDetailsCharacterMapProvider)
-          .lookup(post.id)
-          .fold(
-            () => const SliverSizedBox.shrink(),
-            (tags) => tags.isNotEmpty
-                ? CharacterPostList(
-                    tags: tags,
-                  )
-                : const SliverSizedBox.shrink(),
-          ),
-      tagListBuilder: (context, post) => GelbooruV2TagsTile(
-        post: post,
-        onTagsLoaded: (tags) => _setTags(post, tags),
-      ),
     );
-  }
-
-  void _setTags(
-    GelbooruV2Post post,
-    List<TagGroupItem> tags,
-  ) {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      if (!mounted) return;
-      ref.setGelbooruPostDetailsArtistMap(
-        post: post,
-        tags: tags,
-      );
-
-      ref.setGelbooruPostDetailsCharacterMap(
-        post: post,
-        tags: tags,
-      );
-    });
   }
 }
 
@@ -171,12 +188,7 @@ extension GelbooruV2ArtistMapProviderX on WidgetRef {
 class GelbooruV2TagsTile extends ConsumerStatefulWidget {
   const GelbooruV2TagsTile({
     super.key,
-    required this.post,
-    this.onTagsLoaded,
   });
-
-  final Post post;
-  final void Function(List<TagGroupItem> tags)? onTagsLoaded;
 
   @override
   ConsumerState<GelbooruV2TagsTile> createState() => _GelbooruV2TagsTileState();
@@ -188,20 +200,32 @@ class _GelbooruV2TagsTileState extends ConsumerState<GelbooruV2TagsTile> {
 
   @override
   Widget build(BuildContext context) {
+    final post = InheritedPost.of<GelbooruV2Post>(context);
+
     if (expanded) {
-      ref.listen(gelbooruV2TagsFromIdProvider(widget.post.id),
-          (previous, next) {
+      ref.listen(gelbooruV2TagsFromIdProvider(post.id), (previous, next) {
         next.when(
           data: (data) {
             if (!mounted) return;
 
             if (data.isNotEmpty) {
-              if (widget.onTagsLoaded != null) {
-                widget.onTagsLoaded!(createTagGroupItems(data));
-              }
+              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                if (!mounted) return;
+                final groups = createTagGroupItems(data);
+
+                ref.setGelbooruPostDetailsArtistMap(
+                  post: post,
+                  tags: groups,
+                );
+
+                ref.setGelbooruPostDetailsCharacterMap(
+                  post: post,
+                  tags: groups,
+                );
+              });
             }
 
-            if (data.isEmpty && widget.post.tags.isNotEmpty) {
+            if (data.isEmpty && post.tags.isNotEmpty) {
               // Just a dummy data so the check below will branch into the else block
               setState(() => error = 'No tags found');
             }
@@ -218,14 +242,12 @@ class _GelbooruV2TagsTileState extends ConsumerState<GelbooruV2TagsTile> {
     return error == null
         ? TagsTile(
             tags: expanded
-                ? ref
-                    .watch(gelbooruV2TagsFromIdProvider(widget.post.id))
-                    .maybeWhen(
+                ? ref.watch(gelbooruV2TagsFromIdProvider(post.id)).maybeWhen(
                       data: (data) => createTagGroupItems(data),
                       orElse: () => null,
                     )
                 : null,
-            post: widget.post,
+            post: post,
             onExpand: () => setState(() => expanded = true),
             onCollapse: () {
               // Don't set expanded to false to prevent rebuilding the tags list
@@ -234,7 +256,7 @@ class _GelbooruV2TagsTileState extends ConsumerState<GelbooruV2TagsTile> {
             onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
           )
         : BasicTagList(
-            tags: widget.post.tags.toList(),
+            tags: post.tags.toList(),
             onTap: (tag) => goToSearchPage(context, tag: tag),
           );
   }

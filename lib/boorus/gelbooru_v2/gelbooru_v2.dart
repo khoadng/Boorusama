@@ -238,7 +238,27 @@ class GelbooruV2Builder
   );
 
   @override
-  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder();
+  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
+    preview: {
+      DetailsPart.toolbar: (context) =>
+          const DefaultInheritedPostActionToolbar<GelbooruV2Post>(),
+    },
+    full: {
+      DetailsPart.toolbar: (context) =>
+          const DefaultInheritedPostActionToolbar<GelbooruV2Post>(),
+      DetailsPart.source: (context) =>
+          const DefaultInheritedSourceSection<GelbooruV2Post>(),
+      DetailsPart.tags: (context) => const GelbooruV2TagsTile(),
+      DetailsPart.fileDetails: (context) =>
+          const GelbooruV2FileDetailsSection(),
+      DetailsPart.artistPosts: (context) =>
+          const GelbooruV2ArtistPostsSection(),
+      DetailsPart.relatedPosts: (context) =>
+          const GelbooruV2RelatedPostsSection(),
+      DetailsPart.characterList: (context) =>
+          const GelbooruV2CharacterPostsSection(),
+    },
+  );
 }
 
 class GelbooruV2SearchPage extends ConsumerWidget {
