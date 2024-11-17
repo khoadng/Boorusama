@@ -19,7 +19,6 @@ import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
-import 'package:boorusama/router.dart';
 import 'philomena_post.dart';
 
 class PhilomenaBuilder
@@ -162,7 +161,28 @@ class PhilomenaBuilder
           );
 
   @override
-  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder();
+  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
+    preview: {
+      DetailsPart.info: (context) =>
+          const DefaultInheritedInformationSection<PhilomenaPost>(),
+      DetailsPart.toolbar: (context) =>
+          const DefaultInheritedPostActionToolbar<PhilomenaPost>(),
+    },
+    full: {
+      DetailsPart.info: (context) =>
+          const DefaultInheritedInformationSection<PhilomenaPost>(),
+      DetailsPart.toolbar: (context) =>
+          const DefaultInheritedPostActionToolbar<PhilomenaPost>(),
+      DetailsPart.artistInfo: (context) => const PhilomenaArtistInfoSection(),
+      DetailsPart.stats: (context) => const PhilomenaStatsTileSection(),
+      DetailsPart.source: (context) =>
+          const DefaultInheritedSourceSection<PhilomenaPost>(),
+      DetailsPart.tags: (context) =>
+          const DefaultInheritedTagList<PhilomenaPost>(),
+      DetailsPart.fileDetails: (context) =>
+          const DefaultInheritedFileDetailsSection<PhilomenaPost>(),
+    },
+  );
 }
 
 class PhilomenaPostDetailsDesktopPage extends ConsumerWidget {
@@ -181,32 +201,43 @@ class PhilomenaPostDetailsDesktopPage extends ConsumerWidget {
       debounceDuration: Duration.zero,
       posts: posts,
       imageUrlBuilder: defaultPostImageUrlBuilder(ref),
-      fileDetailsBuilder: (context, post) => DefaultFileDetailsSection(
-        post: post,
-        initialExpanded: true,
-      ),
-      tagListBuilder: (context, post) => BasicTagList(
-        tags: post.tags.toList(),
-        onTap: (tag) => goToSearchPage(
-          context,
-          tag: tag,
-        ),
-        unknownCategoryColor: ref.watch(tagColorProvider('general')),
-      ),
-      infoBuilder: (context, post) => SimpleInformationSection(post: post),
-      statsTileBuilder: (context, post) => SimplePostStatsTile(
-        totalComments: post.commentCount,
-        favCount: post.favCount,
-        score: post.score,
-        votePercentText: _generatePercentText(post),
-      ),
-      artistInfoBuilder: (context, post) => ArtistSection(
-        commentary: ArtistCommentary.description(post.description),
-        artistTags: post.artistTags ?? {},
-        source: post.source,
-      ),
       topRightButtonsBuilder: (currentPage, expanded, post) =>
           GeneralMoreActionButton(post: post),
+    );
+  }
+}
+
+class PhilomenaStatsTileSection extends ConsumerWidget {
+  const PhilomenaStatsTileSection({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final post = InheritedPost.of<PhilomenaPost>(context);
+
+    return SimplePostStatsTile(
+      totalComments: post.commentCount,
+      favCount: post.favCount,
+      score: post.score,
+      votePercentText: _generatePercentText(post),
+    );
+  }
+
+  String _generatePercentText(PhilomenaPost? post) {
+    if (post == null) return '';
+    final percent = post.score > 0 ? (post.upvotes / post.score) : 0;
+    return post.score > 0 ? '(${(percent * 100).toInt()}% upvoted)' : '';
+  }
+}
+
+class PhilomenaArtistInfoSection extends ConsumerWidget {
+  const PhilomenaArtistInfoSection({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final post = InheritedPost.of<PhilomenaPost>(context);
+
+    return ArtistSection(
+      commentary: ArtistCommentary.description(post.description),
+      artistTags: post.artistTags ?? {},
+      source: post.source,
     );
   }
 }
@@ -225,24 +256,6 @@ class PhilomenaPostDetailsPage extends ConsumerWidget {
     return PostDetailsPageScaffold(
       controller: controller,
       posts: posts,
-      artistInfoBuilder: (context, post) => ArtistSection(
-        commentary: ArtistCommentary.description(post.description),
-        artistTags: post.artistTags ?? {},
-        source: post.source,
-      ),
-      infoBuilder: (context, post) => SimpleInformationSection(post: post),
-      statsTileBuilder: (context, post) => SimplePostStatsTile(
-        totalComments: post.commentCount,
-        favCount: post.favCount,
-        score: post.score,
-        votePercentText: _generatePercentText(post),
-      ),
     );
   }
-}
-
-String _generatePercentText(PhilomenaPost? post) {
-  if (post == null) return '';
-  final percent = post.score > 0 ? (post.upvotes / post.score) : 0;
-  return post.score > 0 ? '(${(percent * 100).toInt()}% upvoted)' : '';
 }

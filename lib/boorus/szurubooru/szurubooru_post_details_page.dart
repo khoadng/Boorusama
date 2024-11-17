@@ -9,8 +9,6 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
 import 'szurubooru_post.dart';
 
@@ -28,35 +26,53 @@ class SzurubooruPostDetailsPage extends ConsumerWidget {
     return PostDetailsPageScaffold(
       controller: controller,
       posts: posts,
-      statsTileBuilder: (context, rawPost) =>
-          castOrNull<SzurubooruPost>(rawPost).toOption().fold(
-                () => const SizedBox.shrink(),
-                (post) => Column(
-                  children: [
-                    const Divider(height: 8, thickness: 0.5),
-                    SimplePostStatsTile(
-                      totalComments: post.commentCount,
-                      favCount: post.favoriteCount,
-                      score: post.score,
-                    ),
-                  ],
-                ),
-              ),
-      tagListBuilder: (context, post) =>
-          castOrNull<SzurubooruPost>(post).toOption().fold(
-                () => const SizedBox.shrink(),
-                (post) => TagsTile(
-                  post: post,
-                  tags: createTagGroupItems(post.tagDetails),
-                  initialExpanded: true,
-                  tagColorBuilder: (tag) => tag.category.darkColor,
-                  onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
-                ),
-              ),
-      fileDetailsBuilder: (context, rawPost) => DefaultFileDetailsSection(
-        post: rawPost,
-        uploaderName: castOrNull<SzurubooruPost>(rawPost)?.uploaderName,
-      ),
+    );
+  }
+}
+
+class SzurubooruTagListSection extends ConsumerWidget {
+  const SzurubooruTagListSection({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final post = InheritedPost.of<SzurubooruPost>(context);
+
+    return TagsTile(
+      post: post,
+      tags: createTagGroupItems(post.tagDetails),
+      initialExpanded: true,
+      tagColorBuilder: (tag) => tag.category.darkColor,
+      onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
+    );
+  }
+}
+
+class SzurubooruFileDetailsSection extends ConsumerWidget {
+  const SzurubooruFileDetailsSection({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final post = InheritedPost.of<SzurubooruPost>(context);
+
+    return DefaultFileDetailsSection(
+      post: post,
+      uploaderName: post.uploaderName,
+    );
+  }
+}
+
+class SzurubooruStatsTileSection extends ConsumerWidget {
+  const SzurubooruStatsTileSection({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final post = InheritedPost.of<SzurubooruPost>(context);
+
+    return Column(
+      children: [
+        SimplePostStatsTile(
+          totalComments: post.commentCount,
+          favCount: post.favoriteCount,
+          score: post.score,
+        ),
+      ],
     );
   }
 }
@@ -76,36 +92,8 @@ class SzurubooruPostDetailsDesktopPage extends ConsumerWidget {
       controller: controller,
       posts: posts,
       imageUrlBuilder: defaultPostImageUrlBuilder(ref),
-      statsTileBuilder: (context, rawPost) =>
-          castOrNull<SzurubooruPost>(rawPost).toOption().fold(
-                () => const SizedBox.shrink(),
-                (post) => Column(
-                  children: [
-                    const Divider(height: 8, thickness: 0.5),
-                    SimplePostStatsTile(
-                      totalComments: post.commentCount,
-                      favCount: post.favoriteCount,
-                      score: post.score,
-                    ),
-                  ],
-                ),
-              ),
-      tagListBuilder: (context, post) =>
-          castOrNull<SzurubooruPost>(post).toOption().fold(
-                () => const SizedBox.shrink(),
-                (post) => TagsTile(
-                  post: post,
-                  tags: createTagGroupItems(post.tagDetails),
-                  initialExpanded: true,
-                  onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
-                ),
-              ),
       topRightButtonsBuilder: (currentPage, expanded, post) =>
           GeneralMoreActionButton(post: post),
-      fileDetailsBuilder: (context, rawPost) => DefaultFileDetailsSection(
-        post: rawPost,
-        uploaderName: castOrNull<SzurubooruPost>(rawPost)?.uploaderName,
-      ),
     );
   }
 }

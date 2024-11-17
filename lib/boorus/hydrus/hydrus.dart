@@ -293,7 +293,18 @@ class HydrusBuilder
 
   @override
   final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
-    toolbarBuilder: (context) => const HydrusPostActionToolbar(),
+    preview: {
+      DetailsPart.toolbar: (context) => const HydrusPostActionToolbar(),
+    },
+    full: {
+      DetailsPart.toolbar: (context) => const HydrusPostActionToolbar(),
+      DetailsPart.tags: (context) =>
+          const DefaultInheritedTagList<HydrusPost>(),
+      DetailsPart.fileDetails: (context) =>
+          const DefaultInheritedFileDetailsSection<HydrusPost>(
+            initialExpanded: true,
+          ),
+    },
   );
 }
 
@@ -361,18 +372,6 @@ class HydrusPostDetailsPage extends ConsumerWidget {
     return PostDetailsPageScaffold(
       controller: controller,
       posts: posts,
-      fileDetailsBuilder: (context, post) => DefaultFileDetailsSection(
-        post: post,
-        initialExpanded: true,
-      ),
-      tagListBuilder: (context, post) => BasicTagList(
-        tags: post.tags.toList(),
-        onTap: (tag) => goToSearchPage(
-          context,
-          tag: tag,
-        ),
-        unknownCategoryColor: ref.watch(tagColorProvider('general')),
-      ),
     );
   }
 }
@@ -393,18 +392,6 @@ class HydrusPostDetailsDesktopPage extends ConsumerWidget {
       debounceDuration: Duration.zero,
       posts: posts,
       imageUrlBuilder: defaultPostImageUrlBuilder(ref),
-      fileDetailsBuilder: (context, post) => DefaultFileDetailsSection(
-        post: post,
-        initialExpanded: true,
-      ),
-      tagListBuilder: (context, post) => BasicTagList(
-        tags: post.tags.toList(),
-        onTap: (tag) => goToSearchPage(
-          context,
-          tag: tag,
-        ),
-        unknownCategoryColor: ref.watch(tagColorProvider('general')),
-      ),
       topRightButtonsBuilder: (currentPage, expanded, post) =>
           GeneralMoreActionButton(post: post),
     );

@@ -21,6 +21,7 @@ class DefaultInheritedTagList<T extends Post> extends ConsumerWidget {
 
     return BasicTagList(
       tags: post.tags.toList(),
+      unknownCategoryColor: ref.watch(tagColorProvider('general')),
       onTap: (tag) => goToSearchPage(
         context,
         tag: tag,

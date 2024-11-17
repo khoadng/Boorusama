@@ -346,8 +346,8 @@ class DanbooruBuilder
       DetailsPart.toolbar: (context) =>
           const DanbooruInheritedPostActionToolbar(),
       DetailsPart.artistInfo: (context) => const DanbooruArtistInfoSection(),
-      DetailsPart.tags: (context) => const DanbooruTagsSection(),
       DetailsPart.stats: (context) => const DanbooruStatsSection(),
+      DetailsPart.tags: (context) => const DanbooruTagsSection(),
       DetailsPart.fileDetails: (context) => const DanbooruFileDetailsSection(),
       DetailsPart.artistPosts: (context) => const DanbooruArtistPostsSection(),
       DetailsPart.relatedPosts: (context) =>
