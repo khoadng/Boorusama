@@ -85,6 +85,8 @@ class PostDetailsPageDesktopScaffold<T extends Post>
     this.onPageLoaded,
     this.debounceDuration,
     required this.controller,
+    this.uiBuilder,
+    this.infoSheet,
   });
 
   final List<T> posts;
@@ -109,11 +111,17 @@ class PostDetailsPageDesktopScaffold<T extends Post>
   final Widget Function(BuildContext context, T post)?
       sliverCharacterPostsBuilder;
 
-  final Set<PostDetailsPart> parts;
+  final Set<DetailsPart> parts;
 
   final Duration? debounceDuration;
 
   final PostDetailsController<T> controller;
+
+  final PostDetailsUIBuilder? uiBuilder;
+  final Widget Function(
+    BuildContext context,
+    DetailsPageDesktopController controller,
+  )? infoSheet;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -303,16 +311,20 @@ class _PostDetailsDesktopScaffoldState<T extends Post>
             },
           ),
         ),
-        info: ValueListenableBuilder(
-          valueListenable: controller.showInfo,
-          builder: (context, value, child) => value
-              ? ValueListenableBuilder(
-                  valueListenable: controller.currentLocalPage,
-                  builder: (context, page, child) =>
-                      _buildInfo(context, widget.posts[page]),
-                )
-              : const SizedBox.shrink(),
-        ),
+        info: widget.infoSheet != null
+            ? Builder(
+                builder: (context) => widget.infoSheet!(context, controller),
+              )
+            : ValueListenableBuilder(
+                valueListenable: controller.showInfo,
+                builder: (context, value, child) => value
+                    ? ValueListenableBuilder(
+                        valueListenable: controller.currentLocalPage,
+                        builder: (context, page, child) =>
+                            _buildInfo(context, widget.posts[page]),
+                      )
+                    : const SizedBox.shrink(),
+              ),
       ),
     );
   }
@@ -323,24 +335,29 @@ class _PostDetailsDesktopScaffoldState<T extends Post>
 
   Widget _buildInfo(BuildContext context, T post) {
     final booruBuilder = ref.watch(booruBuilderProvider);
-    final toolbarBuilder = booruBuilder?.postDetailsUIBuilder.toolbarBuilder;
+    final legacyToolbarBuilder = widget.uiBuilder?.toolbarBuilder ??
+        booruBuilder?.postDetailsUIBuilder.toolbarBuilder;
+
+    final toolbarBuilder = widget.uiBuilder?.preview.isNotEmpty == true
+        ? widget.uiBuilder?.preview[DetailsPart.toolbar] ?? legacyToolbarBuilder
+        : legacyToolbarBuilder;
 
     return CustomScrollView(
       slivers: [
         ...widget.parts
             .map(
               (p) => switch (p) {
-                PostDetailsPart.pool => widget.poolTileBuilder != null
+                DetailsPart.pool => widget.poolTileBuilder != null
                     ? SliverToBoxAdapter(
                         child: widget.poolTileBuilder!(context, post),
                       )
                     : null,
-                PostDetailsPart.info => widget.infoBuilder != null
+                DetailsPart.info => widget.infoBuilder != null
                     ? SliverToBoxAdapter(
                         child: widget.infoBuilder!(context, post),
                       )
                     : null,
-                PostDetailsPart.toolbar => widget.toolbar != null
+                DetailsPart.toolbar => widget.toolbar != null
                     ? SliverToBoxAdapter(
                         child: widget.toolbar,
                       )
@@ -351,7 +368,7 @@ class _PostDetailsDesktopScaffoldState<T extends Post>
                         : SliverToBoxAdapter(
                             child: DefaultPostActionToolbar(post: post),
                           ),
-                PostDetailsPart.artistInfo => widget.artistInfoBuilder != null
+                DetailsPart.artistInfo => widget.artistInfoBuilder != null
                     ? SliverToBoxAdapter(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -365,7 +382,7 @@ class _PostDetailsDesktopScaffoldState<T extends Post>
                         ),
                       )
                     : null,
-                PostDetailsPart.stats => widget.statsTileBuilder != null
+                DetailsPart.stats => widget.statsTileBuilder != null
                     ? SliverToBoxAdapter(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -377,7 +394,7 @@ class _PostDetailsDesktopScaffoldState<T extends Post>
                         ),
                       )
                     : null,
-                PostDetailsPart.tags => widget.tagListBuilder != null
+                DetailsPart.tags => widget.tagListBuilder != null
                     ? SliverToBoxAdapter(
                         child: widget.tagListBuilder!(context, post),
                       )
@@ -390,7 +407,7 @@ class _PostDetailsDesktopScaffoldState<T extends Post>
                           ),
                         ),
                       ),
-                PostDetailsPart.fileDetails => widget.fileDetailsBuilder != null
+                DetailsPart.fileDetails => widget.fileDetailsBuilder != null
                     ? SliverToBoxAdapter(
                         child: Column(
                           children: [
@@ -410,7 +427,7 @@ class _PostDetailsDesktopScaffoldState<T extends Post>
                           ],
                         ),
                       ),
-                PostDetailsPart.source => widget.sourceBuilder != null
+                DetailsPart.source => widget.sourceBuilder != null
                     ? SliverToBoxAdapter(
                         child: widget.sourceBuilder!(context, post),
                       )
@@ -420,12 +437,12 @@ class _PostDetailsDesktopScaffoldState<T extends Post>
                         ),
                         () => null,
                       ),
-                PostDetailsPart.comments => widget.commentBuilder != null
+                DetailsPart.comments => widget.commentBuilder != null
                     ? SliverToBoxAdapter(
                         child: widget.commentBuilder!(context, post),
                       )
                     : null,
-                PostDetailsPart.artistPosts =>
+                DetailsPart.artistPosts =>
                   widget.sliverArtistPostsBuilder != null
                       ? MultiSliver(
                           children: widget.sliverArtistPostsBuilder!(
@@ -434,11 +451,11 @@ class _PostDetailsDesktopScaffoldState<T extends Post>
                           ),
                         )
                       : null,
-                PostDetailsPart.relatedPosts =>
+                DetailsPart.relatedPosts =>
                   widget.sliverRelatedPostsBuilder != null
                       ? widget.sliverRelatedPostsBuilder!(context, post)
                       : null,
-                PostDetailsPart.characterList =>
+                DetailsPart.characterList =>
                   widget.sliverCharacterPostsBuilder != null
                       ? widget.sliverCharacterPostsBuilder!(context, post)
                       : null,
