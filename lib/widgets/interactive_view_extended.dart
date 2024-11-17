@@ -10,6 +10,7 @@ class InteractiveViewExtended extends StatefulWidget {
     this.onLongPress,
     this.controller,
     this.onZoomUpdated,
+    this.enable = true,
   });
 
   final Widget child;
@@ -18,6 +19,9 @@ class InteractiveViewExtended extends StatefulWidget {
   final VoidCallback? onLongPress;
   final void Function(bool zoomed)? onZoomUpdated;
   final TransformationController? controller;
+
+  // This is needed to keep the state of the child widget, remove this widget will cause the its child to be recreated
+  final bool enable;
 
   @override
   State<InteractiveViewExtended> createState() =>
@@ -32,6 +36,8 @@ class _InteractiveViewExtendedState extends State<InteractiveViewExtended>
   late final AnimationController _animationController;
   late Animation<Matrix4> _animation;
 
+  late var enable = widget.enable;
+
   @override
   void initState() {
     super.initState();
@@ -41,6 +47,17 @@ class _InteractiveViewExtendedState extends State<InteractiveViewExtended>
     )..addListener(_onAnimationChanged);
 
     _controller.addListener(_onChanged);
+  }
+
+  @override
+  void didUpdateWidget(covariant InteractiveViewExtended oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.enable != widget.enable) {
+      setState(() {
+        enable = widget.enable;
+      });
+    }
   }
 
   void _onAnimationChanged() => _controller.value = _animation.value;
@@ -74,17 +91,22 @@ class _InteractiveViewExtendedState extends State<InteractiveViewExtended>
       minScale: 0.6,
       maxScale: 5,
       transformationController: _controller,
+      panEnabled: enable,
+      scaleEnabled: enable,
       child: GestureDetector(
-        onDoubleTapDown: (details) => _doubleTapDetails = details,
-        onDoubleTap: () {
-          if (widget.onDoubleTap != null) {
-            widget.onDoubleTap!();
-          } else {
-            _handleDoubleTap();
-          }
-        },
-        onLongPress: widget.onLongPress,
-        onTap: widget.onTap,
+        onDoubleTapDown:
+            enable ? (details) => _doubleTapDetails = details : null,
+        onDoubleTap: enable
+            ? () {
+                if (widget.onDoubleTap != null) {
+                  widget.onDoubleTap!();
+                } else {
+                  _handleDoubleTap();
+                }
+              }
+            : null,
+        onLongPress: enable ? widget.onLongPress : null,
+        onTap: enable ? widget.onTap : null,
         child: widget.child,
       ),
     );
