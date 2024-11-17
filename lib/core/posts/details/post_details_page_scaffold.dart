@@ -401,10 +401,18 @@ class _PostDetailPageScaffoldState<T extends Post>
       mainAxisSize: MainAxisSize.min,
       children: [
         if (focusedPost.isVideo) _buildVideoControls(focusedPost),
-        for (final part in uiBuilder.preview.keys)
-          uiBuilder.buildPart(context, part),
-        SizedBox(
-          height: MediaQuery.paddingOf(context).bottom,
+        ColoredBox(
+          color: context.colorScheme.surface,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              for (final part in uiBuilder.preview.keys)
+                uiBuilder.buildPart(context, part),
+              SizedBox(
+                height: MediaQuery.paddingOf(context).bottom,
+              ),
+            ],
+          ),
         ),
       ],
     );

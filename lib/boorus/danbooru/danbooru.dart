@@ -335,7 +335,6 @@ class DanbooruBuilder
 
   @override
   final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
-    toolbarBuilder: (context) => const DanbooruInheritedPostActionToolbar(),
     preview: {
       DetailsPart.info: (context) => const DanbooruInformationSection(),
       DetailsPart.toolbar: (context) =>
