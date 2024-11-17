@@ -60,7 +60,6 @@ class _BookmarkDetailsPageState
       posts: posts,
       imageUrlBuilder: (post) => post.sampleImageUrl,
       uiBuilder: PostDetailsUIBuilder(
-        toolbarBuilder: (context) => const BookmarkPostActionToolbar(),
         preview: {
           DetailsPart.toolbar: (context) => const BookmarkPostActionToolbar(),
         },
