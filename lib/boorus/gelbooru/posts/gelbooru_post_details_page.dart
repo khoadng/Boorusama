@@ -45,23 +45,27 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailsPage> {
     return PostDetailsPageScaffold(
       controller: controller,
       posts: posts,
-      onExpanded: (post) => ref.read(tagsProvider(booruConfig).notifier).load(
-        post.tags,
-        onSuccess: (tags) {
-          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-            if (!mounted) return;
-            ref.setGelbooruPostDetailsArtistMap(
-              post: post,
-              tags: tags,
-            );
+      onExpanded: () {
+        final post = InheritedPost.of<GelbooruPost>(context);
 
-            ref.setGelbooruPostDetailsCharacterMap(
-              post: post,
-              tags: tags,
-            );
-          });
-        },
-      ),
+        ref.read(tagsProvider(booruConfig).notifier).load(
+          post.tags,
+          onSuccess: (tags) {
+            WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+              if (!mounted) return;
+              ref.setGelbooruPostDetailsArtistMap(
+                post: post,
+                tags: tags,
+              );
+
+              ref.setGelbooruPostDetailsCharacterMap(
+                post: post,
+                tags: tags,
+              );
+            });
+          },
+        );
+      },
     );
   }
 }

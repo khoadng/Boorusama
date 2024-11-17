@@ -72,9 +72,9 @@ class _BookmarkDetailsPageState
               const DefaultInheritedFileDetailsSection<BookmarkPost>(),
         },
       ),
-      topRightButtonsBuilder: (context, _, post, controller) => [
+      topRightButtonsBuilder: (controller) => [
         GeneralMoreActionButton(
-          post: post,
+          post: InheritedPost.of<BookmarkPost>(context),
           onStartSlideshow: () => controller.startSlideshow(),
           onDownload: (post) {
             ref.bookmarks.downloadBookmarks(

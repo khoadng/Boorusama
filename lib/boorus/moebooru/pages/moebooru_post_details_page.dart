@@ -134,9 +134,9 @@ class _MoebooruPostDetailsPageState
     return PostDetailsPageScaffold(
       controller: controller,
       posts: posts,
-      topRightButtonsBuilder: (currentPage, expanded, post, controller) => [
+      topRightButtonsBuilder: (controller) => [
         GeneralMoreActionButton(
-          post: post,
+          post: InheritedPost.of<MoebooruPost>(context),
         ),
       ],
     );

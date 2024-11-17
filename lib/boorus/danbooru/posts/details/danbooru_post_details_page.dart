@@ -44,12 +44,17 @@ class _DanbooruPostDetailsPageState
             currentPage == detailsController.initialPage && post.isTranslated
                 ? null
                 : post.thumbnailImageUrl,
-        topRightButtonsBuilder: (page, expanded, post, controller) {
+        topRightButtonsBuilder: (controller) {
+          final post = InheritedPost.of<DanbooruPost>(context);
+
           return [
-            NoteActionButtonWithProvider(
-              post: post,
-              expanded: expanded,
-              noteState: ref.watch(notesControllerProvider(post)),
+            ValueListenableBuilder(
+              valueListenable: controller.expanded,
+              builder: (_, expanded, __) => NoteActionButtonWithProvider(
+                post: post,
+                expanded: expanded,
+                noteState: ref.watch(notesControllerProvider(post)),
+              ),
             ),
             DanbooruMoreActionButton(
               post: post,

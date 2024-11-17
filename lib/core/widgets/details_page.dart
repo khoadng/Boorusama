@@ -37,7 +37,7 @@ class DetailsPageMobile<T> extends StatefulWidget {
 
   final DetailsPageMobileController controller;
 
-  final Widget topRightButtons;
+  final List<Widget> topRightButtons;
   final Widget info;
   final Widget? bottomSheet;
 
@@ -267,7 +267,13 @@ class _DetailsPageMobileState<T> extends State<DetailsPageMobile<T>>
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(8),
-                    child: widget.topRightButtons,
+                    child: OverflowBar(
+                      alignment: MainAxisAlignment.end,
+                      spacing: 4,
+                      children: [
+                        ...widget.topRightButtons,
+                      ],
+                    ),
                   ),
                 ),
               ),

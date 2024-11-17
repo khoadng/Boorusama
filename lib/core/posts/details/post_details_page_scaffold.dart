@@ -33,11 +33,11 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   });
 
   final List<T> posts;
-  final void Function(T post)? onExpanded;
+  final void Function()? onExpanded;
   final String Function(T post)? imageUrlBuilder;
   final String? Function(T post, int currentPage)? placeholderImageUrlBuilder;
-  final List<Widget> Function(int currentPage, bool expanded, T post,
-      DetailsPageMobileController controller)? topRightButtonsBuilder;
+  final List<Widget> Function(DetailsPageMobileController controller)?
+      topRightButtonsBuilder;
   final PostDetailsController<T> controller;
   final PostDetailsUIBuilder? uiBuilder;
 
@@ -281,38 +281,28 @@ class _PostDetailPageScaffoldState<T extends Post>
                   focusedPost,
                 )
               : _buildFallbackPreview(focusedPost: focusedPost),
-      topRightButtons: ValueListenableBuilder(
-        valueListenable: _controller.expanded,
-        builder: (_, expanded, __) => Padding(
-          padding: const EdgeInsets.all(8),
-          child: OverflowBar(
-            alignment: MainAxisAlignment.end,
-            spacing: 4,
-            children: [
-              ...widget.topRightButtonsBuilder != null
-                  ? widget.topRightButtonsBuilder!(
-                      currentPage,
-                      expanded,
-                      focusedPost,
-                      controller,
-                    )
-                  : [
+      topRightButtons: [
+        ...widget.topRightButtonsBuilder != null
+            ? widget.topRightButtonsBuilder!(
+                controller,
+              )
+            : [
+                ValueListenableBuilder(
+                  valueListenable: controller.expanded,
+                  builder: (context, expanded, __) =>
                       NoteActionButtonWithProvider(
-                        post: focusedPost,
-                        expanded: expanded,
-                        noteState:
-                            ref.watch(notesControllerProvider(focusedPost)),
-                      ),
-                      GeneralMoreActionButton(
-                        post: focusedPost,
-                        onStartSlideshow: () => controller.startSlideshow(),
-                      ),
-                    ],
-            ],
-          ),
-        ),
-      ),
-      onExpanded: () => widget.onExpanded?.call(focusedPost),
+                    post: focusedPost,
+                    expanded: expanded,
+                    noteState: ref.watch(notesControllerProvider(focusedPost)),
+                  ),
+                ),
+                GeneralMoreActionButton(
+                  post: focusedPost,
+                  onStartSlideshow: () => controller.startSlideshow(),
+                ),
+              ],
+      ],
+      onExpanded: widget.onExpanded,
     );
   }
 
