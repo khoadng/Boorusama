@@ -336,19 +336,6 @@ class DanbooruBuilder
   @override
   final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
     toolbarBuilder: (context) => const DanbooruInheritedPostActionToolbar(),
-    defaultFull: const {
-      DetailsPart.pool,
-      DetailsPart.info,
-      DetailsPart.toolbar,
-      DetailsPart.artistInfo,
-      DetailsPart.stats,
-      DetailsPart.tags,
-      DetailsPart.fileDetails,
-      DetailsPart.comments,
-      DetailsPart.artistPosts,
-      DetailsPart.relatedPosts,
-      DetailsPart.characterList,
-    },
     preview: {
       DetailsPart.info: (context) => const DanbooruInformationSection(),
       DetailsPart.toolbar: (context) =>
@@ -360,11 +347,9 @@ class DanbooruBuilder
       DetailsPart.toolbar: (context) =>
           const DanbooruInheritedPostActionToolbar(),
       DetailsPart.artistInfo: (context) => const DanbooruArtistInfoSection(),
-      DetailsPart.source: (context) => const SizedBox.shrink(),
       DetailsPart.tags: (context) => const DanbooruTagsSection(),
       DetailsPart.stats: (context) => const DanbooruStatsSection(),
       DetailsPart.fileDetails: (context) => const DanbooruFileDetailsSection(),
-      DetailsPart.comments: (context) => const SizedBox.shrink(),
       DetailsPart.artistPosts: (context) => const DanbooruArtistPostsSection(),
       DetailsPart.relatedPosts: (context) =>
           const DanbooruRelatedPostsSection2(),

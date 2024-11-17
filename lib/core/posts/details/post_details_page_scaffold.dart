@@ -630,7 +630,7 @@ class PostDetailsFullInfoSheet extends ConsumerWidget {
       preview: const DefaultPostDetailsInfoPreview(),
       sliver: MultiSliver(
         children: [
-          ...uiBuilder.defaultFull.map((p) => uiBuilder.buildPart(context, p)),
+          ...uiBuilder.full.keys.map((p) => uiBuilder.buildPart(context, p)),
         ],
       ),
       expanded: expanded,

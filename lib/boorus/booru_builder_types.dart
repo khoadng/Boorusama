@@ -122,12 +122,7 @@ class PostDetailsUIBuilder {
     this.toolbarBuilder,
     this.preview = const {},
     this.full = const {},
-    this.defaultFull = kDefaultPostDetailsNoSourceParts,
-    this.defaultPreview = kDefaultPostDetailsPreviewPart,
   });
-
-  final Set<DetailsPart> defaultFull;
-  final Set<DetailsPart> defaultPreview;
 
   @Deprecated('Use preview instead')
   final Widget Function(BuildContext context)? toolbarBuilder;
