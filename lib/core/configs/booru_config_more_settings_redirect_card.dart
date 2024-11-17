@@ -31,6 +31,9 @@ class BooruConfigMoreSettingsRedirectCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfig;
+    final configs = ref.watch(booruConfigProvider);
+
+    if (configs == null) return const SizedBox.shrink();
 
     return Container(
       padding: const EdgeInsets.symmetric(
