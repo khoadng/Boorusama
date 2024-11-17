@@ -20,55 +20,14 @@ import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
-const kDefaultPostDetailsParts = {
-  DetailsPart.pool,
-  DetailsPart.info,
-  DetailsPart.toolbar,
-  DetailsPart.artistInfo,
-  DetailsPart.stats,
-  DetailsPart.source,
-  DetailsPart.tags,
-  DetailsPart.fileDetails,
-  DetailsPart.comments,
-  DetailsPart.artistPosts,
-  DetailsPart.relatedPosts,
-  DetailsPart.characterList,
-};
-
-const kDefaultPostDetailsNoSourceParts = {
-  DetailsPart.pool,
-  DetailsPart.info,
-  DetailsPart.toolbar,
-  DetailsPart.artistInfo,
-  DetailsPart.stats,
-  DetailsPart.tags,
-  DetailsPart.fileDetails,
-  DetailsPart.comments,
-  DetailsPart.artistPosts,
-  DetailsPart.relatedPosts,
-  DetailsPart.characterList,
-};
-
 class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   const PostDetailsPageScaffold({
     super.key,
     required this.posts,
-    this.sliverArtistPostsBuilder,
-    this.sliverCharacterPostsBuilder,
     this.onExpanded,
-    this.tagListBuilder,
-    this.infoBuilder,
     this.imageUrlBuilder,
     this.topRightButtonsBuilder,
     this.placeholderImageUrlBuilder,
-    this.artistInfoBuilder,
-    this.sliverRelatedPostsBuilder,
-    this.commentsBuilder,
-    this.poolTileBuilder,
-    this.statsTileBuilder,
-    this.fileDetailsBuilder,
-    this.sourceSectionBuilder,
-    this.parts = kDefaultPostDetailsParts,
     required this.controller,
     this.uiBuilder,
   });
@@ -77,28 +36,9 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   final void Function(T post)? onExpanded;
   final String Function(T post)? imageUrlBuilder;
   final String? Function(T post, int currentPage)? placeholderImageUrlBuilder;
-  final List<Widget> Function(BuildContext context, T post)?
-      sliverArtistPostsBuilder;
-  final Widget Function(BuildContext context, T post)?
-      sliverCharacterPostsBuilder;
-  final Widget Function(BuildContext context, T post)? tagListBuilder;
-  final Widget Function(BuildContext context, T post)? infoBuilder;
-  final Widget Function(BuildContext context, T post)? artistInfoBuilder;
-  final Widget Function(BuildContext context, T post)? commentsBuilder;
-  final Widget Function(BuildContext context, T post)? poolTileBuilder;
-  final Widget Function(BuildContext context, T post)? statsTileBuilder;
-  final Widget Function(BuildContext context, T post)? fileDetailsBuilder;
-  final Widget Function(BuildContext context, T post)? sourceSectionBuilder;
-
-  final Set<DetailsPart> parts;
-
-  final Widget Function(BuildContext context, T post)?
-      sliverRelatedPostsBuilder;
   final List<Widget> Function(int currentPage, bool expanded, T post,
       DetailsPageMobileController controller)? topRightButtonsBuilder;
-
   final PostDetailsController<T> controller;
-
   final PostDetailsUIBuilder? uiBuilder;
 
   @override
@@ -209,7 +149,7 @@ class _PostDetailPageScaffoldState<T extends Post>
 
     final focusedPost = posts[currentPage];
 
-    final postDetailsUIBuilder = booruBuilder?.postDetailsUIBuilder;
+    final uiBuilder = widget.uiBuilder ?? booruBuilder?.postDetailsUIBuilder;
 
     return DetailsPageMobile(
       currentSettings: () => ref.read(settingsProvider),
@@ -238,6 +178,7 @@ class _PostDetailPageScaffoldState<T extends Post>
           builder: (context, expanded, _) => PostDetailsFullInfoSheet(
             scrollController: PostDetailsSheetScrollController.of(context),
             expanded: expanded,
+            uiBuilder: uiBuilder,
           ),
         ),
       ),
@@ -335,10 +276,9 @@ class _PostDetailPageScaffoldState<T extends Post>
       },
       bottomSheet: widget.uiBuilder != null
           ? _buildCustomPreview(widget.uiBuilder!, focusedPost)
-          : postDetailsUIBuilder != null &&
-                  postDetailsUIBuilder.preview.isNotEmpty
+          : uiBuilder != null && uiBuilder.preview.isNotEmpty
               ? _buildCustomPreview(
-                  postDetailsUIBuilder,
+                  uiBuilder,
                   focusedPost,
                 )
               : _buildFallbackPreview(focusedPost: focusedPost),
@@ -406,18 +346,6 @@ class _PostDetailPageScaffoldState<T extends Post>
       mainAxisSize: MainAxisSize.min,
       children: [
         if (focusedPost.isVideo) _buildVideoControls(focusedPost),
-        Container(
-          color: context.colorScheme.surface,
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.paddingOf(context).bottom,
-          ),
-          child: Column(
-            children: [
-              if (widget.infoBuilder != null)
-                widget.infoBuilder!(context, focusedPost),
-            ],
-          ),
-        ),
       ],
     );
   }
@@ -445,18 +373,20 @@ class PostDetailsFullInfoSheet extends ConsumerWidget {
   const PostDetailsFullInfoSheet({
     super.key,
     this.scrollController,
+    this.uiBuilder,
     required this.expanded,
   });
 
   final ScrollController? scrollController;
   final bool expanded;
+  final PostDetailsUIBuilder? uiBuilder;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final booruBuilder = ref.watchBooruBuilder(ref.watchConfig);
-    final uiBuilder = booruBuilder?.postDetailsUIBuilder;
+    final builder = uiBuilder ?? booruBuilder?.postDetailsUIBuilder;
 
-    if (uiBuilder == null) {
+    if (builder == null) {
       return const DefaultPostDetailsInfoPreview();
     }
 
@@ -465,7 +395,7 @@ class PostDetailsFullInfoSheet extends ConsumerWidget {
       preview: const DefaultPostDetailsInfoPreview(),
       sliver: MultiSliver(
         children: [
-          ...uiBuilder.full.keys.map((p) => uiBuilder.buildPart(context, p)),
+          ...builder.full.keys.map((p) => builder.buildPart(context, p)),
         ],
       ),
       expanded: expanded,

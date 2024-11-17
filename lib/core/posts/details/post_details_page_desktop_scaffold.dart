@@ -15,7 +15,6 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
-import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
 import 'package:boorusama/foundation/gestures.dart';
@@ -50,13 +49,6 @@ class _DefaultPostDetailsDesktopPageState
       imageUrlBuilder: (post) => post.sampleImageUrl,
       topRightButtonsBuilder: (currentPage, expanded, post) =>
           GeneralMoreActionButton(post: post),
-      tagListBuilder: (context, post) => BasicTagList(
-        tags: post.tags.toList(),
-        onTap: (tag) => goToSearchPage(context, tag: tag),
-      ),
-      fileDetailsBuilder: (context, post) => DefaultFileDetailsSection(
-        post: post,
-      ),
     );
   }
 }
@@ -67,20 +59,7 @@ class PostDetailsPageDesktopScaffold<T extends Post>
     super.key,
     required this.posts,
     this.topRightButtonsBuilder,
-    this.toolbar,
-    this.artistInfoBuilder,
-    this.statsTileBuilder,
-    this.tagListBuilder,
-    this.fileDetailsBuilder,
-    this.poolTileBuilder,
-    this.infoBuilder,
-    this.sourceBuilder,
-    this.commentBuilder,
-    this.sliverRelatedPostsBuilder,
-    this.sliverArtistPostsBuilder,
-    this.sliverCharacterPostsBuilder,
     required this.imageUrlBuilder,
-    this.parts = kDefaultPostDetailsParts,
     this.onPageLoaded,
     this.debounceDuration,
     required this.controller,
@@ -91,30 +70,9 @@ class PostDetailsPageDesktopScaffold<T extends Post>
   final void Function(T post)? onPageLoaded;
   final Widget Function(int currentPage, bool expanded, T post)?
       topRightButtonsBuilder;
-  final Widget? toolbar;
-  final Widget Function(BuildContext context, T post)? artistInfoBuilder;
-  final Widget Function(BuildContext context, T post)? statsTileBuilder;
-  final Widget Function(BuildContext context, T post)? tagListBuilder;
-  final Widget Function(BuildContext context, T post)? fileDetailsBuilder;
-  final Widget Function(BuildContext context, T post)? poolTileBuilder;
-  final Widget Function(BuildContext context, T post)? infoBuilder;
-  final Widget Function(BuildContext context, T post)? sourceBuilder;
-  final Widget Function(BuildContext context, T post)? commentBuilder;
   final String Function(T post) imageUrlBuilder;
-
-  final Widget Function(BuildContext context, T post)?
-      sliverRelatedPostsBuilder;
-  final List<Widget> Function(BuildContext context, T post)?
-      sliverArtistPostsBuilder;
-  final Widget Function(BuildContext context, T post)?
-      sliverCharacterPostsBuilder;
-
-  final Set<DetailsPart> parts;
-
   final Duration? debounceDuration;
-
   final PostDetailsController<T> controller;
-
   final PostDetailsUIBuilder? uiBuilder;
 
   @override
@@ -310,6 +268,7 @@ class _PostDetailsDesktopScaffoldState<T extends Post>
             valueListenable: controller.showInfo,
             builder: (context, expanded, _) => PostDetailsFullInfoSheet(
               expanded: expanded,
+              uiBuilder: widget.uiBuilder,
             ),
           ),
         ),
