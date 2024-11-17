@@ -303,7 +303,6 @@ class _PostDetailPageScaffoldState<T extends Post>
                   url: imageUrlBuilder(nextPost),
                 ),
               ),
-
             Expanded(
               child: ValueListenableBuilder(
                 valueListenable: _controller.currentLocalPage,
