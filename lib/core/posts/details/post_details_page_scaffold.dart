@@ -305,20 +305,15 @@ class _PostDetailPageScaffoldState<T extends Post>
               ),
             Expanded(
               child: ValueListenableBuilder(
-                valueListenable: _controller.currentLocalPage,
-                builder: (_, currentPage, child) => page == currentPage
-                    ? ValueListenableBuilder(
-                        valueListenable: _controller.topDisplacement,
-                        builder: (_, dis, __) {
-                          // final scale = (1.0 - (dis / 500)).clamp(0.8, 1.0);
+                valueListenable: _controller.topDisplacement,
+                builder: (_, dis, child) {
+                  final scale = (1.0 - (dis / 500)).clamp(0.85, 1.0);
 
-                          return Transform.scale(
-                            scale: 1,
-                            child: child,
-                          );
-                        },
-                      )
-                    : child!,
+                  return Transform.scale(
+                    scale: scale,
+                    child: child!,
+                  );
+                },
                 child: ValueListenableBuilder(
                   valueListenable: _controller.expanded,
                   builder: (_, expanded, __) => InteractiveViewExtended(
