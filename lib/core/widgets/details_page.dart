@@ -15,7 +15,6 @@ import 'package:boorusama/foundation/mobile.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import 'post_details_page_view.dart';
 
 part 'details_page_controller.dart';
 
@@ -400,20 +399,4 @@ class HideUIOverlayTransition extends StatelessWidget {
       child: child,
     );
   }
-}
-
-class DefaultPageViewScrollPhysics extends ScrollPhysics {
-  const DefaultPageViewScrollPhysics({super.parent});
-
-  @override
-  DefaultPageViewScrollPhysics applyTo(ScrollPhysics? ancestor) {
-    return DefaultPageViewScrollPhysics(parent: buildParent(ancestor));
-  }
-
-  @override
-  SpringDescription get spring => const SpringDescription(
-        mass: 80,
-        stiffness: 100,
-        damping: 1,
-      );
 }
