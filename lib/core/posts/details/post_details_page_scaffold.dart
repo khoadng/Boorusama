@@ -318,13 +318,13 @@ class _PostDetailPageScaffoldState<T extends Post>
   }
 
   Widget _buildCustomPreview(PostDetailsUIBuilder uiBuilder, T focusedPost) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (focusedPost.isVideo) _buildVideoControls(focusedPost),
-        ColoredBox(
-          color: context.colorScheme.surface,
-          child: Column(
+    return ColoredBox(
+      color: context.colorScheme.surface,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (focusedPost.isVideo) _buildVideoControls(focusedPost),
+          Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               for (final part in uiBuilder.preview.keys)
@@ -334,8 +334,8 @@ class _PostDetailPageScaffoldState<T extends Post>
               ),
             ],
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
