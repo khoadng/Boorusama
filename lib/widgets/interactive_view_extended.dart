@@ -38,22 +38,29 @@ class _InteractiveViewExtendedState extends State<InteractiveViewExtended>
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 300),
-    )..addListener(() => _controller.value = _animation.value);
+    )..addListener(_onAnimationChanged);
 
-    _controller.addListener(() {
-      final clampedMatrix = Matrix4.diagonal3Values(
-        _controller.value.right.x,
-        _controller.value.up.y,
-        _controller.value.forward.z,
-      );
+    _controller.addListener(_onChanged);
+  }
 
-      widget.onZoomUpdated?.call(!clampedMatrix.isIdentity());
-    });
+  void _onAnimationChanged() => _controller.value = _animation.value;
+
+  void _onChanged() {
+    final clampedMatrix = Matrix4.diagonal3Values(
+      _controller.value.right.x,
+      _controller.value.up.y,
+      _controller.value.forward.z,
+    );
+
+    widget.onZoomUpdated?.call(!clampedMatrix.isIdentity());
   }
 
   @override
   void dispose() {
+    _animationController.removeListener(_onAnimationChanged);
     _animationController.dispose();
+
+    _controller.removeListener(_onChanged);
     if (widget.controller == null) {
       _controller.dispose();
     }
