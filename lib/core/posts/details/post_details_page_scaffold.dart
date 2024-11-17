@@ -14,12 +14,10 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
-import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/videos/videos.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 const kDefaultPostDetailsParts = {
@@ -404,14 +402,6 @@ class _PostDetailPageScaffoldState<T extends Post>
   Widget _buildFallbackPreview({
     required T focusedPost,
   }) {
-    final booruBuilder = ref.watchBooruBuilder(ref.watchConfig);
-    final legacyToolbarBuilder = widget.uiBuilder?.toolbarBuilder ??
-        booruBuilder?.postDetailsUIBuilder.toolbarBuilder;
-
-    final toolbarBuilder = widget.uiBuilder?.preview.isNotEmpty == true
-        ? widget.uiBuilder?.preview[DetailsPart.toolbar] ?? legacyToolbarBuilder
-        : legacyToolbarBuilder;
-
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -425,9 +415,6 @@ class _PostDetailPageScaffoldState<T extends Post>
             children: [
               if (widget.infoBuilder != null)
                 widget.infoBuilder!(context, focusedPost),
-              toolbarBuilder != null
-                  ? toolbarBuilder(context)
-                  : DefaultPostActionToolbar(post: focusedPost),
             ],
           ),
         ),
@@ -449,148 +436,6 @@ class _PostDetailPageScaffoldState<T extends Post>
               ref.setPlaybackSpeed(focusedPost.videoUrl, speed),
           onSoundToggle: (value) => ref.setGlobalVideoSound(value),
         ),
-      ),
-    );
-  }
-
-  Widget _buildSheet(
-    ScrollController scrollController,
-    BuildContext context,
-    T post,
-    bool expanded,
-  ) {
-    final booruBuilder = ref.watchBooruBuilder(ref.watchConfig);
-    final toolbarBuilder = widget.uiBuilder?.toolbarBuilder ??
-        booruBuilder?.postDetailsUIBuilder.toolbarBuilder;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4),
-      child: CustomScrollView(
-        controller: scrollController,
-        slivers: [
-          const SliverSizedBox(height: 12),
-          if (expanded)
-            ...widget.parts
-                .map(
-                  (p) => switch (p) {
-                    DetailsPart.pool => widget.poolTileBuilder != null
-                        ? SliverToBoxAdapter(
-                            child: widget.poolTileBuilder!(context, post),
-                          )
-                        : null,
-                    DetailsPart.info => widget.infoBuilder != null
-                        ? SliverToBoxAdapter(
-                            child: widget.infoBuilder!(context, post),
-                          )
-                        : null,
-                    DetailsPart.toolbar => toolbarBuilder != null
-                        ? SliverToBoxAdapter(
-                            child: toolbarBuilder(context),
-                          )
-                        : SliverToBoxAdapter(
-                            child: DefaultInheritedPostActionToolbar<T>(),
-                          ),
-                    DetailsPart.artistInfo => widget.artistInfoBuilder != null
-                        ? SliverToBoxAdapter(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                const Divider(thickness: 0.5, height: 8),
-                                widget.artistInfoBuilder!(
-                                  context,
-                                  post,
-                                ),
-                              ],
-                            ),
-                          )
-                        : null,
-                    DetailsPart.stats => widget.statsTileBuilder != null
-                        ? SliverToBoxAdapter(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                const SizedBox(height: 8),
-                                widget.statsTileBuilder!(context, post),
-                                const Divider(thickness: 0.5),
-                              ],
-                            ),
-                          )
-                        : null,
-                    DetailsPart.tags => widget.tagListBuilder != null
-                        ? SliverToBoxAdapter(
-                            child: widget.tagListBuilder!(context, post),
-                          )
-                        : SliverToBoxAdapter(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 12,
-                              ),
-                              child: BasicTagList(
-                                tags: post.tags.toList(),
-                                onTap: (tag) =>
-                                    goToSearchPage(context, tag: tag),
-                              ),
-                            ),
-                          ),
-                    DetailsPart.fileDetails => widget.fileDetailsBuilder != null
-                        ? SliverToBoxAdapter(
-                            child: Column(
-                              children: [
-                                widget.fileDetailsBuilder!(context, post),
-                                const Divider(thickness: 0.5),
-                              ],
-                            ),
-                          )
-                        : SliverToBoxAdapter(
-                            child: Column(
-                              children: [
-                                FileDetailsSection(
-                                  post: post,
-                                  rating: post.rating,
-                                ),
-                                const Divider(thickness: 0.5),
-                              ],
-                            ),
-                          ),
-                    DetailsPart.source => widget.sourceSectionBuilder != null
-                        ? SliverToBoxAdapter(
-                            child: widget.sourceSectionBuilder!(context, post),
-                          )
-                        : post.source.whenWeb(
-                            (source) => SliverToBoxAdapter(
-                              child: SourceSection(source: source),
-                            ),
-                            () => null,
-                          ),
-                    DetailsPart.comments => widget.commentsBuilder != null
-                        ? SliverToBoxAdapter(
-                            child: widget.commentsBuilder!(context, post),
-                          )
-                        : null,
-                    DetailsPart.artistPosts =>
-                      widget.sliverArtistPostsBuilder != null
-                          ? MultiSliver(
-                              children: widget.sliverArtistPostsBuilder!(
-                                context,
-                                post,
-                              ),
-                            )
-                          : null,
-                    DetailsPart.relatedPosts =>
-                      widget.sliverRelatedPostsBuilder != null
-                          ? widget.sliverRelatedPostsBuilder!(context, post)
-                          : null,
-                    DetailsPart.characterList =>
-                      widget.sliverCharacterPostsBuilder != null
-                          ? widget.sliverCharacterPostsBuilder!(context, post)
-                          : null,
-                  },
-                )
-                .nonNulls,
-          SliverSizedBox(
-            height: MediaQuery.paddingOf(context).bottom + 72,
-          ),
-        ],
       ),
     );
   }

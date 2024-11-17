@@ -98,7 +98,8 @@ class GelbooruV1Builder
   );
 
   @override
-  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder();
+  final PostDetailsUIBuilder postDetailsUIBuilder =
+      kFallbackPostDetailsUIBuilder;
 }
 
 class GelbooruV1SearchPage extends ConsumerWidget {
