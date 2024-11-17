@@ -11,6 +11,7 @@ import 'package:boorusama/core/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 
 class BookmarkDetailsPage extends ConsumerWidget {
@@ -59,23 +60,17 @@ class _BookmarkDetailsPageState
       posts: posts,
       imageUrlBuilder: (post) => post.sampleImageUrl,
       uiBuilder: PostDetailsUIBuilder(
-        toolbarBuilder: (context) => const BookmarkPostActionToolbar(),
-      ),
-      sourceSectionBuilder: (context, post) => Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          post.source.whenWeb(
-            (source) => SourceSection(source: source),
-            () => const SizedBox.shrink(),
-          ),
-          post.realSourceUrl.whenWeb(
-            (source) => SourceSection(
-              title: 'Original Source',
-              source: source,
-            ),
-            () => const SizedBox.shrink(),
-          ),
-        ],
+        preview: {
+          DetailsPart.toolbar: (context) => const BookmarkPostActionToolbar(),
+        },
+        full: {
+          DetailsPart.toolbar: (context) => const BookmarkPostActionToolbar(),
+          DetailsPart.source: (context) => const BookmarkSourceSection(),
+          DetailsPart.tags: (context) =>
+              const DefaultInheritedTagList<BookmarkPost>(),
+          DetailsPart.fileDetails: (context) =>
+              const DefaultInheritedFileDetailsSection<BookmarkPost>(),
+        },
       ),
       topRightButtonsBuilder: (context, _, post, controller) => [
         GeneralMoreActionButton(
@@ -87,6 +82,31 @@ class _BookmarkDetailsPageState
               [post.toBookmark()],
             );
           },
+        ),
+      ],
+    );
+  }
+}
+
+class BookmarkSourceSection extends ConsumerWidget {
+  const BookmarkSourceSection({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final post = InheritedPost.of<BookmarkPost>(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        post.source.whenWeb(
+          (source) => SourceSection(source: source),
+          () => const SizedBox.shrink(),
+        ),
+        post.realSourceUrl.whenWeb(
+          (source) => SourceSection(
+            title: 'Original Source',
+            source: source,
+          ),
+          () => const SizedBox.shrink(),
         ),
       ],
     );

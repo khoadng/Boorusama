@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/e621/artists/artists.dart';
@@ -34,7 +35,25 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage> {
     return PostDetailsPageScaffold(
       controller: controller,
       posts: posts,
-      sliverArtistPostsBuilder: (context, post) => post.artistTags.isNotEmpty
+      placeholderImageUrlBuilder: (post, currentPage) =>
+          currentPage == controller.initialPage && post.isTranslated
+              ? null
+              : post.thumbnailImageUrl,
+    );
+  }
+}
+
+class E621ArtistPostsSection extends ConsumerWidget {
+  const E621ArtistPostsSection({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final post = InheritedPost.of<E621Post>(context);
+
+    return MultiSliver(
+      children: post.artistTags.isNotEmpty
           ? post.artistTags
               .map((tag) => ArtistPostList(
                     tag: tag,
@@ -56,17 +75,6 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage> {
                   ))
               .toList()
           : [],
-      tagListBuilder: (context, post) => E621TagsTile(post: post),
-      infoBuilder: (context, post) => SimpleInformationSection(
-        post: post,
-        showSource: true,
-      ),
-      placeholderImageUrlBuilder: (post, currentPage) =>
-          currentPage == controller.initialPage && post.isTranslated
-              ? null
-              : post.thumbnailImageUrl,
-      parts: kDefaultPostDetailsNoSourceParts,
-      artistInfoBuilder: (context, post) => E621ArtistSection(post: post),
     );
   }
 }
@@ -74,13 +82,12 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage> {
 class E621ArtistSection extends ConsumerWidget {
   const E621ArtistSection({
     super.key,
-    required this.post,
   });
-
-  final E621Post post;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final post = InheritedPost.of<E621Post>(context);
+
     final commentary = post.description;
 
     return ArtistSection(
@@ -94,13 +101,12 @@ class E621ArtistSection extends ConsumerWidget {
 class E621TagsTile extends ConsumerWidget {
   const E621TagsTile({
     super.key,
-    required this.post,
   });
-
-  final E621Post post;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final post = InheritedPost.of<E621Post>(context);
+
     return TagsTile(
       post: post,
       tags: createTagGroupItems([

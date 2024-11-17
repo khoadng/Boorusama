@@ -338,3 +338,15 @@ mixin UnknownMetatagsMixin implements BooruBuilder {
   @override
   MetatagExtractor? get metatagExtractor => null;
 }
+
+final PostDetailsUIBuilder kFallbackPostDetailsUIBuilder = PostDetailsUIBuilder(
+  preview: {
+    DetailsPart.toolbar: (context) => const DefaultInheritedPostActionToolbar(),
+  },
+  full: {
+    DetailsPart.toolbar: (context) => const DefaultInheritedPostActionToolbar(),
+    DetailsPart.tags: (context) => const DefaultInheritedTagList(),
+    DetailsPart.fileDetails: (context) =>
+        const DefaultInheritedFileDetailsSection(),
+  },
+);

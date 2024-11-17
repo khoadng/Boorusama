@@ -128,7 +128,21 @@ class ZerochanBuilder
   );
 
   @override
-  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder();
+  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
+    preview: {
+      DetailsPart.toolbar: (context) =>
+          const DefaultInheritedPostActionToolbar<ZerochanPost>(),
+    },
+    full: {
+      DetailsPart.toolbar: (context) =>
+          const DefaultInheritedPostActionToolbar<ZerochanPost>(),
+      DetailsPart.source: (context) =>
+          const DefaultInheritedSourceSection<ZerochanPost>(),
+      DetailsPart.tags: (context) => const ZerochanTagsTile(),
+      DetailsPart.fileDetails: (context) =>
+          const DefaultInheritedFileDetailsSection<ZerochanPost>(),
+    },
+  );
 }
 
 class ZerochanPostDetailsPage extends ConsumerWidget {
@@ -145,7 +159,6 @@ class ZerochanPostDetailsPage extends ConsumerWidget {
     return PostDetailsPageScaffold(
       controller: controller,
       posts: posts,
-      tagListBuilder: (context, post) => ZerochanTagsTile(post: post),
     );
   }
 }
@@ -165,7 +178,6 @@ class ZerochanPostDetailsDesktopPage extends ConsumerWidget {
       controller: controller,
       posts: posts,
       imageUrlBuilder: defaultPostImageUrlBuilder(ref),
-      tagListBuilder: (context, post) => ZerochanTagsTile(post: post),
       topRightButtonsBuilder: (currentPage, expanded, post) =>
           GeneralMoreActionButton(post: post),
     );
@@ -175,12 +187,7 @@ class ZerochanPostDetailsDesktopPage extends ConsumerWidget {
 class ZerochanTagsTile extends ConsumerStatefulWidget {
   const ZerochanTagsTile({
     super.key,
-    required this.post,
-    this.onTagsLoaded,
   });
-
-  final Post post;
-  final void Function(List<TagGroupItem> tags)? onTagsLoaded;
 
   @override
   ConsumerState<ZerochanTagsTile> createState() => _ZerochanTagsTileState();
@@ -192,19 +199,21 @@ class _ZerochanTagsTileState extends ConsumerState<ZerochanTagsTile> {
 
   @override
   Widget build(BuildContext context) {
+    final post = InheritedPost.of<ZerochanPost>(context);
+
     if (expanded) {
-      ref.listen(zerochanTagsFromIdProvider(widget.post.id), (previous, next) {
+      ref.listen(zerochanTagsFromIdProvider(post.id), (previous, next) {
         next.when(
           data: (data) {
             if (!mounted) return;
 
-            if (data.isNotEmpty) {
-              if (widget.onTagsLoaded != null) {
-                widget.onTagsLoaded!(createTagGroupItems(data));
-              }
-            }
+            // if (data.isNotEmpty) {
+            //   if (widget.onTagsLoaded != null) {
+            //     widget.onTagsLoaded!(createTagGroupItems(data));
+            //   }
+            // }
 
-            if (data.isEmpty && widget.post.tags.isNotEmpty) {
+            if (data.isEmpty && post.tags.isNotEmpty) {
               // Just a dummy data so the check below will branch into the else block
               setState(() => error = 'No tags found');
             }
@@ -221,14 +230,12 @@ class _ZerochanTagsTileState extends ConsumerState<ZerochanTagsTile> {
     return error == null
         ? TagsTile(
             tags: expanded
-                ? ref
-                    .watch(zerochanTagsFromIdProvider(widget.post.id))
-                    .maybeWhen(
+                ? ref.watch(zerochanTagsFromIdProvider(post.id)).maybeWhen(
                       data: (data) => createTagGroupItems(data),
                       orElse: () => null,
                     )
                 : null,
-            post: widget.post,
+            post: post,
             onExpand: () => setState(() => expanded = true),
             onCollapse: () {
               // Don't set expanded to false to prevent rebuilding the tags list
@@ -237,7 +244,7 @@ class _ZerochanTagsTileState extends ConsumerState<ZerochanTagsTile> {
             onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
           )
         : BasicTagList(
-            tags: widget.post.tags.toList(),
+            tags: post.tags.toList(),
             onTap: (tag) => goToSearchPage(context, tag: tag),
           );
   }

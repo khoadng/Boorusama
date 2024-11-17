@@ -15,8 +15,6 @@ import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/router.dart';
 
 class Shimmie2Builder
     with
@@ -103,7 +101,19 @@ class Shimmie2Builder
   );
 
   @override
-  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder();
+  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
+    preview: {
+      DetailsPart.toolbar: (context) =>
+          const DefaultInheritedPostActionToolbar<Shimmie2Post>(),
+    },
+    full: {
+      DetailsPart.toolbar: (context) =>
+          const DefaultInheritedPostActionToolbar<Shimmie2Post>(),
+      DetailsPart.tags: (context) =>
+          const DefaultInheritedTagList<Shimmie2Post>(),
+      DetailsPart.fileDetails: (context) => const Shimmie2FileDetailsSection(),
+    },
+  );
 }
 
 class Shimmie2PostDetailsDesktopPage extends ConsumerWidget {
@@ -122,17 +132,21 @@ class Shimmie2PostDetailsDesktopPage extends ConsumerWidget {
       debounceDuration: Duration.zero,
       posts: posts,
       imageUrlBuilder: defaultPostImageUrlBuilder(ref),
-      tagListBuilder: (context, post) => BasicTagList(
-        tags: post.tags.toList(),
-        unknownCategoryColor: ref.watch(tagColorProvider('general')),
-        onTap: (tag) => goToSearchPage(context, tag: tag),
-      ),
-      fileDetailsBuilder: (context, post) => DefaultFileDetailsSection(
-        post: post,
-        uploaderName: castOrNull<SimplePost>(post)?.uploaderName,
-      ),
       topRightButtonsBuilder: (currentPage, expanded, post) =>
           GeneralMoreActionButton(post: post),
+    );
+  }
+}
+
+class Shimmie2FileDetailsSection extends ConsumerWidget {
+  const Shimmie2FileDetailsSection({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final post = InheritedPost.of<Shimmie2Post>(context);
+
+    return DefaultFileDetailsSection(
+      post: post,
+      uploaderName: post.uploaderName,
     );
   }
 }
@@ -151,15 +165,6 @@ class Shimmie2PostDetailsPage extends ConsumerWidget {
     return PostDetailsPageScaffold(
       controller: controller,
       posts: posts,
-      tagListBuilder: (context, post) => BasicTagList(
-        tags: post.tags.toList(),
-        unknownCategoryColor: ref.watch(tagColorProvider('general')),
-        onTap: (tag) => goToSearchPage(context, tag: tag),
-      ),
-      fileDetailsBuilder: (context, post) => DefaultFileDetailsSection(
-        post: post,
-        uploaderName: castOrNull<SimplePost>(post)?.uploaderName,
-      ),
     );
   }
 }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
@@ -135,7 +136,28 @@ class SankakuBuilder
   );
 
   @override
-  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder();
+  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
+    preview: {
+      DetailsPart.info: (context) =>
+          const DefaultInheritedInformationSection<SankakuPost>(
+            showSource: true,
+          ),
+      DetailsPart.toolbar: (context) =>
+          const DefaultInheritedPostActionToolbar<SankakuPost>(),
+    },
+    full: {
+      DetailsPart.info: (context) =>
+          const DefaultInheritedInformationSection<SankakuPost>(
+            showSource: true,
+          ),
+      DetailsPart.toolbar: (context) =>
+          const DefaultInheritedPostActionToolbar<SankakuPost>(),
+      DetailsPart.tags: (context) => const SankakuTagsTile(),
+      DetailsPart.fileDetails: (context) =>
+          const DefaultInheritedFileDetailsSection<SankakuPost>(),
+      DetailsPart.artistPosts: (context) => const SankakuArtistPostsSection(),
+    },
+  );
 }
 
 class SankakuPostDetailsPage extends ConsumerWidget {
@@ -152,12 +174,18 @@ class SankakuPostDetailsPage extends ConsumerWidget {
     return PostDetailsPageScaffold(
       controller: controller,
       posts: posts,
-      infoBuilder: (context, post) => SimpleInformationSection(
-        post: post,
-        showSource: true,
-      ),
-      parts: kDefaultPostDetailsNoSourceParts,
-      sliverArtistPostsBuilder: (context, post) => post.artistTags.isNotEmpty
+    );
+  }
+}
+
+class SankakuArtistPostsSection extends ConsumerWidget {
+  const SankakuArtistPostsSection({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final post = InheritedPost.of<SankakuPost>(context);
+
+    return MultiSliver(
+      children: post.artistTags.isNotEmpty
           ? post.artistTags
               .map((tag) => ArtistPostList(
                     tag: tag,
@@ -180,7 +208,6 @@ class SankakuPostDetailsPage extends ConsumerWidget {
                   ))
               .toList()
           : [],
-      tagListBuilder: (context, post) => SankakuTagsTile(post: post),
     );
   }
 }
@@ -200,37 +227,8 @@ class SankakuPostDetailsDesktopPage extends ConsumerWidget {
       controller: controller,
       posts: posts,
       imageUrlBuilder: defaultPostImageUrlBuilder(ref),
-      infoBuilder: (context, post) => SimpleInformationSection(
-        post: post,
-        showSource: true,
-      ),
-      sliverArtistPostsBuilder: (context, post) => post.artistTags.isNotEmpty
-          ? post.artistTags
-              .map((tag) => ArtistPostList(
-                    tag: tag,
-                    builder: (tag) => ref
-                        .watch(sankakuArtistPostsProvider(
-                            post.artistTags.firstOrNull))
-                        .maybeWhen(
-                          data: (data) => SliverPreviewPostGrid(
-                            posts: data,
-                            onTap: (postIdx) => goToPostDetailsPage(
-                              context: context,
-                              posts: data,
-                              initialIndex: postIdx,
-                            ),
-                            imageUrl: (item) => item.sampleImageUrl,
-                          ),
-                          orElse: () =>
-                              const SliverPreviewPostGridPlaceholder(),
-                        ),
-                  ))
-              .toList()
-          : [],
-      tagListBuilder: (context, post) => SankakuTagsTile(post: post),
       topRightButtonsBuilder: (currentPage, expanded, post) =>
           GeneralMoreActionButton(post: post),
-      parts: kDefaultPostDetailsNoSourceParts,
     );
   }
 }
@@ -238,13 +236,12 @@ class SankakuPostDetailsDesktopPage extends ConsumerWidget {
 class SankakuTagsTile extends StatelessWidget {
   const SankakuTagsTile({
     super.key,
-    required this.post,
   });
-
-  final SankakuPost post;
 
   @override
   Widget build(BuildContext context) {
+    final post = InheritedPost.of<SankakuPost>(context);
+
     return TagsTile(
       post: post,
       initialExpanded: true,

@@ -11,6 +11,24 @@ import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
+class DefaultInheritedSourceSection<T extends Post> extends StatelessWidget {
+  const DefaultInheritedSourceSection({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final post = InheritedPost.of<T>(context);
+
+    return post.source.whenWeb(
+      (source) => SourceSection(
+        source: source,
+      ),
+      () => const SizedBox.shrink(),
+    );
+  }
+}
+
 class SourceSection extends StatelessWidget {
   const SourceSection({
     super.key,

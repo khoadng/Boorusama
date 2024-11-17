@@ -17,6 +17,29 @@ import 'package:boorusama/string.dart';
 import 'package:boorusama/time.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
+class DefaultInheritedInformationSection<T extends Post>
+    extends StatelessWidget {
+  const DefaultInheritedInformationSection({
+    super.key,
+    this.showSource = false,
+    this.padding,
+  });
+
+  final bool showSource;
+  final EdgeInsetsGeometry? padding;
+
+  @override
+  Widget build(BuildContext context) {
+    final post = InheritedPost.of<T>(context);
+
+    return SimpleInformationSection(
+      post: post,
+      padding: padding,
+      showSource: showSource,
+    );
+  }
+}
+
 class InformationSection extends ConsumerWidget {
   const InformationSection({
     super.key,

@@ -10,9 +10,9 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/favorites/favorites.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/router.dart';
-import '../favorites/favorites.dart';
-import '../post_votes/post_votes.dart';
-import 'posts.dart';
+import '../../favorites/favorites.dart';
+import '../../post_votes/post_votes.dart';
+import '../posts.dart';
 
 class DanbooruInheritedPostActionToolbar extends StatelessWidget {
   const DanbooruInheritedPostActionToolbar({super.key});

@@ -112,10 +112,45 @@ typedef HomeViewBuilder = Widget Function(
   HomePageController controller,
 );
 
+const kDefaultPostDetailsPreviewPart = {
+  DetailsPart.info,
+  DetailsPart.toolbar,
+};
+
 class PostDetailsUIBuilder {
   const PostDetailsUIBuilder({
     this.toolbarBuilder,
+    this.preview = const {},
+    this.full = const {},
   });
 
+  @Deprecated('Use preview instead')
   final Widget Function(BuildContext context)? toolbarBuilder;
+
+  final Map<DetailsPart, Widget Function(BuildContext context)> preview;
+  final Map<DetailsPart, Widget Function(BuildContext context)> full;
+
+  Widget buildPart(BuildContext context, DetailsPart part) {
+    final builder = full[part];
+    if (builder != null) {
+      return builder(context);
+    }
+
+    return const SizedBox.shrink();
+  }
+}
+
+enum DetailsPart {
+  pool,
+  info,
+  toolbar,
+  artistInfo,
+  source,
+  tags,
+  stats,
+  fileDetails,
+  comments,
+  artistPosts,
+  relatedPosts,
+  characterList,
 }

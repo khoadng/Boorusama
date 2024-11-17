@@ -12,6 +12,26 @@ import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/string.dart';
 
+class DefaultInheritedFileDetailsSection<T extends Post>
+    extends StatelessWidget {
+  const DefaultInheritedFileDetailsSection({
+    super.key,
+    this.initialExpanded = false,
+  });
+
+  final bool initialExpanded;
+
+  @override
+  Widget build(BuildContext context) {
+    final post = InheritedPost.of<T>(context);
+
+    return DefaultFileDetailsSection(
+      post: post,
+      initialExpanded: initialExpanded,
+    );
+  }
+}
+
 class DefaultFileDetailsSection extends StatelessWidget {
   const DefaultFileDetailsSection({
     super.key,

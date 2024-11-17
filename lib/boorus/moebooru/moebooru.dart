@@ -24,6 +24,9 @@ import 'pages/moebooru_favorites_page.dart';
 import 'pages/moebooru_home_page.dart';
 import 'pages/moebooru_post_details_desktop_page.dart';
 import 'pages/moebooru_post_details_page.dart';
+import 'pages/widgets/moebooru_comment_section.dart';
+import 'pages/widgets/moebooru_information_section.dart';
+import 'pages/widgets/moebooru_related_post_section.dart';
 
 final moebooruClientProvider =
     Provider.family<MoebooruClient, BooruConfig>((ref, booruConfig) {
@@ -141,7 +144,24 @@ class MoebooruBuilder
 
   @override
   final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
-    toolbarBuilder: (context) => const MoebooruPostDetailsActionToolbar(),
+    preview: {
+      DetailsPart.info: (context) => const MoebooruInformationSection(),
+      DetailsPart.toolbar: (context) =>
+          const MoebooruPostDetailsActionToolbar(),
+    },
+    full: {
+      DetailsPart.info: (context) => const MoebooruInformationSection(),
+      DetailsPart.toolbar: (context) =>
+          const MoebooruPostDetailsActionToolbar(),
+      DetailsPart.tags: (context) => const MoebooruTagListSection(),
+      DetailsPart.fileDetails: (context) => const MoebooruFileDetailsSection(),
+      DetailsPart.artistPosts: (context) => const MoebooruArtistPostsSection(),
+      DetailsPart.relatedPosts: (context) =>
+          const MoebooruRelatedPostsSection(),
+      DetailsPart.comments: (context) => const MoebooruCommentSection(),
+      DetailsPart.characterList: (context) =>
+          const MoebooruCharacterListSection(),
+    },
   );
 }
 

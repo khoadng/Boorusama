@@ -120,7 +120,21 @@ class AnimePicturesBuilder
           );
 
   @override
-  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder();
+  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
+    preview: {
+      DetailsPart.toolbar: (context) =>
+          const DefaultInheritedPostActionToolbar<AnimePicturesPost>(),
+    },
+    full: {
+      DetailsPart.toolbar: (context) =>
+          const DefaultInheritedPostActionToolbar<AnimePicturesPost>(),
+      DetailsPart.tags: (context) => const AnimePicturesTagListSection(),
+      DetailsPart.fileDetails: (context) =>
+          const DefaultInheritedFileDetailsSection<AnimePicturesPost>(),
+      DetailsPart.relatedPosts: (context) =>
+          const AnimePicturesRelatedPostsSection(),
+    },
+  );
 }
 
 class AnimePicturesCurrentUserIdScope extends ConsumerWidget {
@@ -303,44 +317,62 @@ class AnimePicturesPostDetailsPage extends ConsumerWidget {
     return PostDetailsPageScaffold(
       controller: controller,
       posts: posts,
-      sliverRelatedPostsBuilder: (context, post) => ref
-          .watch(postDetailsProvider(post.id))
-          .when(
-            data: (details) => details.tied != null && details.tied!.isNotEmpty
-                ? RelatedPostsSection(
-                    posts: details.tied!.map(dtoToAnimePicturesPost).toList(),
-                    imageUrl: defaultPostImageUrlBuilder(ref),
-                    onTap: (index) => goToPostDetailsPage(
-                      context: context,
-                      posts: posts,
-                      initialIndex: index,
-                    ),
-                  )
-                : const SliverSizedBox.shrink(),
-            error: (e, _) => const SliverSizedBox.shrink(),
-            loading: () => const SliverSizedBox.shrink(),
-          ),
-      tagListBuilder: (context, post) =>
-          ref.watch(postTagsProvider(post.id)).when(
-                data: (tags) => TagsTile(
-                  initialExpanded: true,
-                  initialCount: post.tagsCount,
-                  post: post,
-                  tags: tags,
-                ),
-                loading: () => TagsTile(
-                  initialExpanded: true,
-                  initialCount: post.tagsCount,
-                  post: post,
-                  tags: null,
-                ),
-                error: (e, _) => Text('Error: $e'),
-              ),
-      fileDetailsBuilder: (context, post) => DefaultFileDetailsSection(
-        post: post,
-        initialExpanded: true,
-      ),
     );
+  }
+}
+
+class AnimePicturesTagListSection extends ConsumerWidget {
+  const AnimePicturesTagListSection({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final post = InheritedPost.of<AnimePicturesPost>(context);
+
+    return ref.watch(postTagsProvider(post.id)).when(
+          data: (tags) => TagsTile(
+            initialExpanded: true,
+            initialCount: post.tagsCount,
+            post: post,
+            tags: tags,
+          ),
+          loading: () => TagsTile(
+            initialExpanded: true,
+            initialCount: post.tagsCount,
+            post: post,
+            tags: null,
+          ),
+          error: (e, _) => Text('Error: $e'),
+        );
+  }
+}
+
+class AnimePicturesRelatedPostsSection extends ConsumerWidget {
+  const AnimePicturesRelatedPostsSection({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final posts = PostDetails.of<AnimePicturesPost>(context).posts;
+    final post = InheritedPost.of<AnimePicturesPost>(context);
+
+    return ref.watch(postDetailsProvider(post.id)).when(
+          data: (details) => details.tied != null && details.tied!.isNotEmpty
+              ? RelatedPostsSection(
+                  posts: details.tied!.map(dtoToAnimePicturesPost).toList(),
+                  imageUrl: defaultPostImageUrlBuilder(ref),
+                  onTap: (index) => goToPostDetailsPage(
+                    context: context,
+                    posts: posts,
+                    initialIndex: index,
+                  ),
+                )
+              : const SliverSizedBox.shrink(),
+          error: (e, _) => const SliverSizedBox.shrink(),
+          loading: () => const SliverSizedBox.shrink(),
+        );
   }
 }
 
@@ -360,43 +392,6 @@ class AnimePicturesPostDetailsDesktopPage extends ConsumerWidget {
       debounceDuration: Duration.zero,
       posts: posts,
       imageUrlBuilder: defaultPostImageUrlBuilder(ref),
-      fileDetailsBuilder: (context, post) => DefaultFileDetailsSection(
-        post: post,
-        initialExpanded: true,
-      ),
-      sliverRelatedPostsBuilder: (context, post) => ref
-          .watch(postDetailsProvider(post.id))
-          .when(
-            data: (details) => details.tied != null && details.tied!.isNotEmpty
-                ? RelatedPostsSection(
-                    posts: details.tied!.map(dtoToAnimePicturesPost).toList(),
-                    imageUrl: defaultPostImageUrlBuilder(ref),
-                    onTap: (index) => goToPostDetailsPage(
-                      context: context,
-                      posts: posts,
-                      initialIndex: index,
-                    ),
-                  )
-                : const SliverSizedBox.shrink(),
-            error: (e, _) => const SliverSizedBox.shrink(),
-            loading: () => const SliverSizedBox.shrink(),
-          ),
-      tagListBuilder: (context, post) =>
-          ref.watch(postTagsProvider(post.id)).when(
-                data: (tags) => TagsTile(
-                  initialExpanded: true,
-                  initialCount: post.tagsCount,
-                  post: post,
-                  tags: tags,
-                ),
-                loading: () => TagsTile(
-                  initialExpanded: true,
-                  initialCount: post.tagsCount,
-                  post: post,
-                  tags: null,
-                ),
-                error: (e, _) => Text('Error: $e'),
-              ),
       topRightButtonsBuilder: (currentPage, expanded, post) =>
           GeneralMoreActionButton(post: post),
     );

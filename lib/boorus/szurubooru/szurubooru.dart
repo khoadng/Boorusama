@@ -9,7 +9,7 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/gelbooru_v2/gelbooru_v2.dart';
 import 'package:boorusama/boorus/szurubooru/favorites/favorites.dart';
-import 'package:boorusama/boorus/szurubooru/post_votes/post_votes.dart';
+import 'package:boorusama/boorus/szurubooru/post_votes/szurubooru_post_action_toolbar.dart';
 import 'package:boorusama/boorus/szurubooru/providers.dart';
 import 'package:boorusama/core/comments/comments.dart';
 import 'package:boorusama/core/configs/configs.dart';
@@ -139,7 +139,16 @@ class SzurubooruBuilder
 
   @override
   final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
-    toolbarBuilder: (context) => const SzurubooruPostActionToolbar(),
+    preview: {
+      DetailsPart.toolbar: (context) => const SzurubooruPostActionToolbar(),
+    },
+    full: {
+      DetailsPart.toolbar: (context) => const SzurubooruPostActionToolbar(),
+      DetailsPart.stats: (context) => const SzurubooruStatsTileSection(),
+      DetailsPart.tags: (context) => const SzurubooruTagListSection(),
+      DetailsPart.fileDetails: (context) =>
+          const SzurubooruFileDetailsSection(),
+    },
   );
 }
 

@@ -238,5 +238,27 @@ class E621Builder
   );
 
   @override
-  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder();
+  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
+    preview: {
+      DetailsPart.info: (context) =>
+          const DefaultInheritedInformationSection<E621Post>(
+            showSource: true,
+          ),
+      DetailsPart.toolbar: (context) =>
+          const DefaultInheritedPostActionToolbar<E621Post>(),
+    },
+    full: {
+      DetailsPart.info: (context) =>
+          const DefaultInheritedInformationSection<E621Post>(
+            showSource: true,
+          ),
+      DetailsPart.toolbar: (context) =>
+          const DefaultInheritedPostActionToolbar<E621Post>(),
+      DetailsPart.artistInfo: (context) => const E621ArtistSection(),
+      DetailsPart.tags: (context) => const E621TagsTile(),
+      DetailsPart.fileDetails: (context) =>
+          const DefaultInheritedFileDetailsSection<E621Post>(),
+      DetailsPart.artistPosts: (context) => const E621ArtistPostsSection(),
+    },
+  );
 }
