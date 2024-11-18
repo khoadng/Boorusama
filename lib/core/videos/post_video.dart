@@ -6,8 +6,10 @@ import 'package:chewie/chewie.dart' hide MaterialDesktopControls;
 import 'package:video_player/video_player.dart';
 
 // Project imports:
+import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import 'videos.dart';
 
 //TODO: implement caching video
 class BooruVideo extends StatefulWidget {
@@ -22,6 +24,7 @@ class BooruVideo extends StatefulWidget {
     this.sound = true,
     this.speed = 1.0,
     this.customControlsBuilder,
+    this.thumbnailUrl,
   });
 
   final String url;
@@ -34,6 +37,7 @@ class BooruVideo extends StatefulWidget {
   final bool sound;
   final double speed;
   final Widget? Function()? customControlsBuilder;
+  final String? thumbnailUrl;
 
   @override
   State<BooruVideo> createState() => _BooruVideoState();
@@ -42,16 +46,23 @@ class BooruVideo extends StatefulWidget {
 class _BooruVideoState extends State<BooruVideo> {
   late VideoPlayerController _videoPlayerController;
   late ChewieController _chewieController;
+  final _manager = VideoWidgetManager();
+  var _initialized = false;
+  late var _url = widget.url;
 
   @override
   void initState() {
     super.initState();
+
     _initVideoPlayerController();
   }
 
-  void _initVideoPlayerController() {
-    _videoPlayerController = VideoPlayerController.networkUrl(
-        Uri.parse(widget.url)); // TODO: dangerous parsing here
+  void _initVideoPlayerController() async {
+    _initialized = false;
+
+    _videoPlayerController = await _manager.registerVideo(
+      Uri.parse(_url),
+    );
     _chewieController = ChewieController(
       videoPlayerController: _videoPlayerController,
       aspectRatio: widget.aspectRatio,
@@ -62,7 +73,6 @@ class _BooruVideoState extends State<BooruVideo> {
               onVisibilityChanged: widget.onVisibilityChanged,
             ),
       looping: true,
-      autoInitialize: true,
       showControlsOnInitialize: false,
     );
 
@@ -72,11 +82,19 @@ class _BooruVideoState extends State<BooruVideo> {
     _videoPlayerController.setPlaybackSpeed(widget.speed);
 
     _listenToVideoPosition();
+
+    _initialized = true;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        setState(() {});
+      }
+    });
   }
 
   void _disposeVideoPlayerController() {
     _videoPlayerController.removeListener(_onChanged);
-    _videoPlayerController.dispose();
+    _manager.unregisterVideo(_url);
     _chewieController.dispose();
   }
 
@@ -91,7 +109,7 @@ class _BooruVideoState extends State<BooruVideo> {
   void _onChanged() {
     final current = _videoPlayerController.value.position.inPreciseSeconds;
     final total = _videoPlayerController.value.duration.inPreciseSeconds;
-    widget.onCurrentPositionChanged!(current, total, widget.url);
+    widget.onCurrentPositionChanged!(current, total, _url);
   }
 
   @override
@@ -99,6 +117,7 @@ class _BooruVideoState extends State<BooruVideo> {
     super.didUpdateWidget(oldWidget);
 
     if (widget.url != oldWidget.url) {
+      _url = widget.url;
       _disposeVideoPlayerController();
       _initVideoPlayerController();
     }
@@ -115,11 +134,37 @@ class _BooruVideoState extends State<BooruVideo> {
   @override
   void dispose() {
     _disposeVideoPlayerController();
+
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Chewie(controller: _chewieController);
+    return _initialized
+        ? Chewie(controller: _chewieController)
+        : Center(
+            child: NullableAspectRatio(
+              aspectRatio: widget.aspectRatio,
+              child: widget.thumbnailUrl != null
+                  ? Stack(
+                      children: [
+                        Positioned.fill(
+                          child: BooruImage(
+                            imageUrl: widget.thumbnailUrl!,
+                          ),
+                        ),
+                      ],
+                    )
+                  : const SizedBox(
+                      height: 24,
+                      width: 24,
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          strokeWidth: 3,
+                        ),
+                      ),
+                    ),
+            ),
+          );
   }
 }
