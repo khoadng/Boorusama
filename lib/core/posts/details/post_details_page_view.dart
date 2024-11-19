@@ -105,10 +105,10 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     _sheetController.addListener(_onSheetChanged);
     _controller.verticalPosition.addListener(_onVerticalPositionChanged);
     _controller.slideshow.addListener(_onSlideShowChanged);
-    _controller.expanded.addListener(_onExpandedChanged);
+    _controller.sheetState.addListener(_onSheetStateChanged);
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final currentExpanded = _controller.expanded.value;
+      final currentExpanded = _controller.sheetState.value.isExpanded;
       final orientation = MediaQuery.orientationOf(context);
 
       // auto expand side sheet if it was expanded before
@@ -116,7 +116,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
         final expanded = await widget.sheetStateStorage?.loadExpandedState();
 
         if (expanded == true) {
-          _controller.expanded.value = true;
+          _controller.sheetState.value = SheetState.expanded;
         }
       }
     });
@@ -174,7 +174,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     _controller.displacement.value = dis;
   }
 
-  void _onExpandedChanged() {
+  void _onSheetStateChanged() {
     widget.onExpanded?.call();
 
     if (_controller.isExpanded) {
@@ -202,7 +202,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
             duration: const Duration(milliseconds: 300),
           );
         } else {
-          _controller.expanded.value = false;
+          _controller.sheetState.value = SheetState.hidden;
         }
       }
 
@@ -228,7 +228,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
 
     _debounceTimer?.cancel();
 
-    _controller.expanded.removeListener(_onExpandedChanged);
+    _controller.sheetState.removeListener(_onSheetStateChanged);
     _controller.pageController.removeListener(_onPageChanged);
     _controller.slideshow.removeListener(_onSlideShowChanged);
     _controller.verticalPosition.removeListener(_onVerticalPositionChanged);
@@ -304,14 +304,20 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
 
   Widget _buildSide() {
     return ValueListenableBuilder(
-      valueListenable: _controller.expanded,
-      builder: (context, expanded, child) => !expanded
-          ? const SizedBox.shrink()
-          : Container(
-              constraints: const BoxConstraints(maxWidth: 400),
-              color: Theme.of(context).colorScheme.surface,
-              child: widget.sheetBuilder(context, null),
-            ),
+      valueListenable: _controller.sheetState,
+      builder: (context, state, child) => switch (state) {
+        SheetState.expanded => child!,
+        SheetState.collapsed => const SizedBox.shrink(),
+        SheetState.hidden => Offstage(
+            offstage: true,
+            child: child,
+          )
+      },
+      child: Container(
+        constraints: const BoxConstraints(maxWidth: 400),
+        color: Theme.of(context).colorScheme.surface,
+        child: widget.sheetBuilder(context, null),
+      ),
     );
   }
 
@@ -354,16 +360,16 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
           child: PerformanceOrientationBuilder(
             builder: (context, orientation) => orientation.isPortrait
                 ? ValueListenableBuilder(
-                    valueListenable: _controller.expanded,
-                    builder: (_, expanded, __) => expanded
+                    valueListenable: _controller.sheetState,
+                    builder: (_, state, __) => state.isExpanded
                         // If expanded, show the drag sheet
                         ? _buildDragSheet(
                             initialChildSize: widget.maxSize,
-                            expanded: expanded,
+                            sheetState: state,
                           )
                         // If not expanded, hide it and let the user pull it up
                         : _buildDragSheet(
-                            expanded: expanded,
+                            sheetState: state,
                           ),
                   )
                 : const SizedBox.shrink(),
@@ -376,8 +382,8 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
               builder: (context, orientation) => orientation.isLandscape
                   ? const SizedBox.shrink()
                   : ValueListenableBuilder(
-                      valueListenable: _controller.expanded,
-                      builder: (context, expanded, _) => !expanded
+                      valueListenable: _controller.sheetState,
+                      builder: (context, state, _) => !state.isExpanded
                           ? ValueListenableBuilder(
                               valueListenable: _controller.overlay,
                               builder: (_, overlay, child) =>
@@ -396,9 +402,9 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
           alignment: Alignment.topCenter,
           child: SafeArea(
             child: ValueListenableBuilder(
-              valueListenable: _controller.expanded,
-              builder: (_, expanded, child) => ConditionalParentWidget(
-                condition: !expanded,
+              valueListenable: _controller.sheetState,
+              builder: (_, state, child) => ConditionalParentWidget(
+                condition: !state.isExpanded,
                 conditionalBuilder: (child) => HideUIOverlayTransition(
                   controller: _controller,
                   pointerCount: _pointerCount,
@@ -473,25 +479,26 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     return PerformanceOrientationBuilder(
       builder: (context, orientation) => orientation.isPortrait
           ? ValueListenableBuilder(
-              valueListenable: _controller.expanded,
-              builder: (_, expanded, __) => ValueListenableBuilder(
+              valueListenable: _controller.sheetState,
+              builder: (_, state, __) => ValueListenableBuilder(
                 valueListenable: _displacement,
-                builder: (context, value, child) => expanded && value <= 0
-                    ? SizedBox(
-                        height:
-                            widget.maxSize * MediaQuery.sizeOf(context).height,
-                      )
-                    : ValueListenableBuilder(
-                        valueListenable: _pointerCount,
-                        builder: (_, count, __) => !expanded &&
-                                value >=
-                                    widget.maxSize *
-                                        MediaQuery.sizeOf(context).height &&
-                                !(count >
-                                    0) // Only hide when there is any interaction
-                            ? const SizedBox.shrink()
-                            : SizedBox(height: value),
-                      ),
+                builder: (context, value, child) =>
+                    state.isExpanded && value <= 0
+                        ? SizedBox(
+                            height: widget.maxSize *
+                                MediaQuery.sizeOf(context).height,
+                          )
+                        : ValueListenableBuilder(
+                            valueListenable: _pointerCount,
+                            builder: (_, count, __) => !state.isExpanded &&
+                                    value >=
+                                        widget.maxSize *
+                                            MediaQuery.sizeOf(context).height &&
+                                    !(count >
+                                        0) // Only hide when there is any interaction
+                                ? const SizedBox.shrink()
+                                : SizedBox(height: value),
+                          ),
               ),
             )
           : const SizedBox.shrink(),
@@ -500,12 +507,12 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
 
   Widget buildItem(BuildContext context, int index) {
     return ValueListenableBuilder(
-      valueListenable: _controller.expanded,
-      builder: (_, expanded, __) => GestureDetector(
+      valueListenable: _controller.sheetState,
+      builder: (_, state, __) => GestureDetector(
         // let the user tap the image to toggle overlay
         onTap: _controller.onImageTap,
         child: InteractiveViewExtended(
-          enable: !expanded,
+          enable: !state.isExpanded,
           onZoomUpdated: _controller.onZoomUpdated,
           onTap: _controller.onImageTap,
           onDoubleTap: widget.onItemDoubleTap,
@@ -518,7 +525,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
 
   Widget _buildDragSheet({
     double? initialChildSize,
-    required bool expanded,
+    required SheetState sheetState,
   }) {
     return NotificationListener<ScrollNotification>(
       onNotification: (notification) {
@@ -536,7 +543,8 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
         controller: _sheetController,
         initialChildSize: initialChildSize ?? 0,
         minChildSize: 0,
-        maxChildSize: expanded ? widget.maxChildSize : widget.maxSize,
+        maxChildSize:
+            sheetState.isExpanded ? widget.maxChildSize : widget.maxSize,
         snap: true,
         snapAnimationDuration: const Duration(milliseconds: 100),
         snapSizes: [_controller.maxSize],
@@ -559,9 +567,11 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
               Align(
                 alignment: Alignment.topCenter,
                 child: ValueListenableBuilder(
-                  valueListenable: _controller.expanded,
-                  builder: (context, expanded, child) =>
-                      expanded ? child! : const SizedBox.shrink(),
+                  valueListenable: _controller.sheetState,
+                  builder: (context, state, child) =>
+                      state == SheetState.collapsed
+                          ? const SizedBox.shrink()
+                          : child!,
                   child: const Padding(
                     padding: EdgeInsets.only(
                       top: 8,
@@ -583,9 +593,9 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     bool isPortrait,
   ) {
     return ValueListenableBuilder(
-      valueListenable: _controller.expanded,
-      builder: (_, expanded, __) {
-        final blockSwipe = !swipe || expanded || interacting;
+      valueListenable: _controller.sheetState,
+      builder: (_, state, __) {
+        final blockSwipe = !swipe || state.isExpanded || interacting;
 
         return PageView.builder(
           onPageChanged: blockSwipe && !isPortrait
@@ -924,6 +934,21 @@ class HideUIOverlayTransition extends StatelessWidget {
   }
 }
 
+enum SheetState {
+  /// When the sheet is completely expanded
+  expanded,
+
+  /// When the sheet haven't expanded yet
+  collapsed,
+
+  /// When the sheet has exanded once and then collapsed
+  hidden,
+}
+
+extension SheetExpansionStateX on SheetState {
+  bool get isExpanded => this == SheetState.expanded;
+}
+
 class PostDetailsPageViewController extends ChangeNotifier {
   PostDetailsPageViewController({
     required this.initialPage,
@@ -932,7 +957,7 @@ class PostDetailsPageViewController extends ChangeNotifier {
     this.threshold = 400.0,
   })  : currentPage = ValueNotifier(initialPage),
         overlay = ValueNotifier(!hideOverlay),
-        expanded = ValueNotifier(false);
+        sheetState = ValueNotifier(SheetState.collapsed);
 
   final int initialPage;
   final double maxSize;
@@ -946,10 +971,10 @@ class PostDetailsPageViewController extends ChangeNotifier {
       DraggableScrollableController();
 
   int get page => currentPage.value;
-  bool get isExpanded => expanded.value;
+  bool get isExpanded => sheetState.value.isExpanded;
   PageController get pageController => _pageController;
 
-  late final ValueNotifier<bool> expanded;
+  late final ValueNotifier<SheetState> sheetState;
   late final ValueNotifier<int> currentPage;
   late final ValueNotifier<bool> overlay;
 
@@ -1023,7 +1048,7 @@ class PostDetailsPageViewController extends ChangeNotifier {
     swipe.value = true;
     verticalPosition.value = 0.0;
     topDisplacement.value = 0.0;
-    expanded.value = false;
+    sheetState.value = SheetState.hidden;
 
     return WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _sheetController.animateTo(
@@ -1038,7 +1063,7 @@ class PostDetailsPageViewController extends ChangeNotifier {
   Future<void> expandToSnapPoint() async {
     animating.value = true;
 
-    expanded.value = true;
+    sheetState.value = SheetState.expanded;
 
     return WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _sheetController.animateTo(
@@ -1062,7 +1087,11 @@ class PostDetailsPageViewController extends ChangeNotifier {
   }
 
   void toggleExpanded() {
-    expanded.value = !expanded.value;
+    sheetState.value = switch (sheetState.value) {
+      SheetState.collapsed => SheetState.expanded,
+      SheetState.expanded => SheetState.hidden,
+      SheetState.hidden => SheetState.expanded,
+    };
   }
 
   void onZoomUpdated(bool value) {

@@ -44,13 +44,9 @@ class _DanbooruPostDetailsPageState
           final post = InheritedPost.of<DanbooruPost>(context);
 
           return [
-            ValueListenableBuilder(
-              valueListenable: controller.expanded,
-              builder: (_, expanded, __) => NoteActionButtonWithProvider(
-                post: post,
-                expanded: expanded,
-                noteState: ref.watch(notesControllerProvider(post)),
-              ),
+            NoteActionButtonWithProvider(
+              post: post,
+              noteState: ref.watch(notesControllerProvider(post)),
             ),
             const SizedBox(width: 8),
             DanbooruMoreActionButton(

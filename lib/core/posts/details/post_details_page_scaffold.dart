@@ -182,10 +182,10 @@ class _PostDetailPageScaffoldState<T extends Post>
             : null,
         sheetBuilder: (context, scrollController) {
           return ValueListenableBuilder(
-            valueListenable: _controller.expanded,
-            builder: (context, expanded, _) => PostDetailsFullInfoSheet(
+            valueListenable: _controller.sheetState,
+            builder: (context, state, _) => PostDetailsFullInfoSheet(
               scrollController: scrollController,
-              expanded: expanded,
+              sheetState: state,
               uiBuilder: uiBuilder,
             ),
           );
@@ -260,14 +260,10 @@ class _PostDetailPageScaffoldState<T extends Post>
             )
           else ...[
             ValueListenableBuilder(
-              valueListenable: _controller.expanded,
-              builder: (context, expanded, _) => ValueListenableBuilder(
-                valueListenable: widget.controller.currentPost,
-                builder: (context, post, _) => NoteActionButtonWithProvider(
-                  post: post,
-                  expanded: expanded,
-                  noteState: ref.watch(notesControllerProvider(post)),
-                ),
+              valueListenable: widget.controller.currentPost,
+              builder: (context, post, _) => NoteActionButtonWithProvider(
+                post: post,
+                noteState: ref.watch(notesControllerProvider(post)),
               ),
             ),
             const SizedBox(width: 8),
@@ -345,11 +341,11 @@ class PostDetailsFullInfoSheet extends ConsumerWidget {
     super.key,
     this.scrollController,
     this.uiBuilder,
-    required this.expanded,
+    required this.sheetState,
   });
 
   final ScrollController? scrollController;
-  final bool expanded;
+  final SheetState sheetState;
   final PostDetailsUIBuilder? uiBuilder;
 
   @override
@@ -373,7 +369,7 @@ class PostDetailsFullInfoSheet extends ConsumerWidget {
           ...builder.full.keys.map((p) => builder.buildPart(context, p)),
         ],
       ),
-      expanded: expanded,
+      sheetState: sheetState,
     );
   }
 }
@@ -384,18 +380,18 @@ class RawPostDetailsInfoSheet extends StatelessWidget {
     required this.scrollController,
     required this.preview,
     required this.sliver,
-    required this.expanded,
+    required this.sheetState,
   });
 
   final ScrollController? scrollController;
   final Widget preview;
   final Widget sliver;
 
-  final bool expanded;
+  final SheetState sheetState;
 
   @override
   Widget build(BuildContext context) {
-    if (!expanded) {
+    if (sheetState == SheetState.collapsed) {
       return preview;
     }
 
@@ -405,6 +401,10 @@ class RawPostDetailsInfoSheet extends StatelessWidget {
         controller: scrollController,
         slivers: [
           const SliverSizedBox(height: 12),
+          // SliverOffstage(
+          //   offstage: sheetState == SheetState.hidden,
+          //   sliver: sliver,
+          // ),
           sliver,
           SliverSizedBox(
             height: MediaQuery.paddingOf(context).bottom + 72,
