@@ -138,6 +138,8 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     if (page != _controller.page) {
       _controller.currentPage.value = page;
 
+      _controller.sheetState.value = SheetState.collapsed;
+
       widget.onPageChanged?.call(page);
     }
   }
@@ -382,17 +384,19 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
               builder: (context, orientation) => orientation.isLandscape
                   ? const SizedBox.shrink()
                   : ValueListenableBuilder(
-                      valueListenable: _controller.sheetState,
-                      builder: (context, state, _) => !state.isExpanded
+                      valueListenable: _controller.overlay,
+                      builder: (_, overlay, child) => overlay
                           ? ValueListenableBuilder(
-                              valueListenable: _controller.overlay,
-                              builder: (_, overlay, child) =>
-                                  overlay ? child! : const SizedBox.shrink(),
-                              child: HideUIOverlayTransition(
-                                controller: _controller,
-                                pointerCount: _pointerCount,
-                                child: widget.bottomSheet!,
-                              ),
+                              valueListenable: _controller.sheetState,
+                              builder: (context, state, _) => !state.isExpanded
+                                  ? HideUIOverlayTransition(
+                                      controller: _controller,
+                                      pointerCount: _pointerCount,
+                                      skipTransition:
+                                          state == SheetState.hidden,
+                                      child: widget.bottomSheet!,
+                                    )
+                                  : const SizedBox.shrink(),
                             )
                           : const SizedBox.shrink(),
                     ),
@@ -894,12 +898,14 @@ class HideUIOverlayTransition extends StatelessWidget {
     required this.child,
     this.slideDown = true,
     required this.pointerCount,
+    this.skipTransition = false,
   });
 
   final bool slideDown;
   final PostDetailsPageViewController controller;
   final Widget child;
   final ValueNotifier<int> pointerCount;
+  final bool skipTransition;
 
   @override
   Widget build(BuildContext context) {
@@ -920,9 +926,11 @@ class HideUIOverlayTransition extends StatelessWidget {
                   : ValueListenableBuilder(
                       valueListenable: controller.displacement,
                       builder: (context, dis, _) => Transform.translate(
-                        offset: slideDown
-                            ? Offset(0, dis * 0.5)
-                            : Offset(0, -dis * 0.5),
+                        offset: skipTransition
+                            ? Offset(0, 500)
+                            : slideDown
+                                ? Offset(0, dis * 0.5)
+                                : Offset(0, -dis * 0.5),
                         child: child,
                       ),
                       child: child,
@@ -1048,7 +1056,11 @@ class PostDetailsPageViewController extends ChangeNotifier {
     swipe.value = true;
     verticalPosition.value = 0.0;
     topDisplacement.value = 0.0;
-    sheetState.value = SheetState.hidden;
+    sheetState.value = switch (sheetState.value) {
+      SheetState.expanded => SheetState.hidden,
+      SheetState.collapsed => SheetState.collapsed,
+      SheetState.hidden => SheetState.hidden,
+    };
 
     return WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _sheetController.animateTo(
