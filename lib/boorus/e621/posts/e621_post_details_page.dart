@@ -15,34 +15,6 @@ import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/router.dart';
 
-class E621PostDetailsPage extends ConsumerStatefulWidget {
-  const E621PostDetailsPage({
-    super.key,
-  });
-
-  @override
-  ConsumerState<E621PostDetailsPage> createState() =>
-      _E621PostDetailsPageState();
-}
-
-class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage> {
-  @override
-  Widget build(BuildContext context) {
-    final data = PostDetails.of<E621Post>(context);
-    final posts = data.posts;
-    final controller = data.controller;
-
-    return PostDetailsPageScaffold(
-      controller: controller,
-      posts: posts,
-      placeholderImageUrlBuilder: (post, currentPage) =>
-          currentPage == controller.initialPage && post.isTranslated
-              ? null
-              : post.thumbnailImageUrl,
-    );
-  }
-}
-
 class E621ArtistPostsSection extends ConsumerWidget {
   const E621ArtistPostsSection({
     super.key,

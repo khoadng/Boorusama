@@ -12,7 +12,6 @@ import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
 import 'providers.dart';
@@ -79,12 +78,11 @@ class ZerochanBuilder
       (context, config, payload) {
         final posts = payload.posts.map((e) => e as ZerochanPost).toList();
 
-        return PostDetailsLayoutSwitcher(
+        return PostDetailsScope(
           initialIndex: payload.initialIndex,
           posts: posts,
           scrollController: payload.scrollController,
-          desktop: () => const ZerochanPostDetailsDesktopPage(),
-          mobile: () => const ZerochanPostDetailsPage(),
+          child: const DefaultPostDetailsPage<ZerochanPost>(),
         );
       };
 
@@ -143,45 +141,6 @@ class ZerochanBuilder
           const DefaultInheritedFileDetailsSection<ZerochanPost>(),
     },
   );
-}
-
-class ZerochanPostDetailsPage extends ConsumerWidget {
-  const ZerochanPostDetailsPage({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final data = PostDetails.of<ZerochanPost>(context);
-    final posts = data.posts;
-    final controller = data.controller;
-
-    return PostDetailsPageScaffold(
-      controller: controller,
-      posts: posts,
-    );
-  }
-}
-
-class ZerochanPostDetailsDesktopPage extends ConsumerWidget {
-  const ZerochanPostDetailsDesktopPage({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final data = PostDetails.of<ZerochanPost>(context);
-    final posts = data.posts;
-    final controller = data.controller;
-
-    return PostDetailsPageDesktopScaffold(
-      controller: controller,
-      posts: posts,
-      imageUrlBuilder: defaultPostImageUrlBuilder(ref),
-      topRightButtonsBuilder: (currentPage, expanded, post) =>
-          GeneralMoreActionButton(post: post),
-    );
-  }
 }
 
 class ZerochanTagsTile extends ConsumerStatefulWidget {

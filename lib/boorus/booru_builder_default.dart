@@ -190,24 +190,23 @@ mixin DefaultBooruUIMixin implements BooruBuilder {
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
       (context, config, payload) {
-        return PostDetailsLayoutSwitcher(
+        return PostDetailsScope(
           initialIndex: payload.initialIndex,
           posts: payload.posts,
           scrollController: payload.scrollController,
-          desktop: () => const DefaultPostDetailsDesktopPage(),
-          mobile: () => const DefaultPostDetailsPage(),
+          child: const DefaultPostDetailsPage(),
         );
       };
 }
 
-class DefaultPostDetailsPage extends ConsumerWidget {
+class DefaultPostDetailsPage<T extends Post> extends ConsumerWidget {
   const DefaultPostDetailsPage({
     super.key,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final data = PostDetails.of<Post>(context);
+    final data = PostDetails.of<T>(context);
     final posts = data.posts;
     final controller = data.controller;
 

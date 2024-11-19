@@ -24,59 +24,53 @@ final gelbooruPostDetailsCharacterMapProvider = StateProvider.autoDispose(
   (ref) => <int, Set<String>>{},
 );
 
-class GelbooruPostDetailsPage extends ConsumerStatefulWidget {
-  const GelbooruPostDetailsPage({
-    super.key,
-  });
-
-  @override
-  ConsumerState<GelbooruPostDetailsPage> createState() =>
-      _PostDetailPageState();
-}
-
-class _PostDetailPageState extends ConsumerState<GelbooruPostDetailsPage> {
-  @override
-  Widget build(BuildContext context) {
-    final booruConfig = ref.watchConfig;
-    final data = PostDetails.of<GelbooruPost>(context);
-    final posts = data.posts;
-    final controller = data.controller;
-
-    return PostDetailsPageScaffold(
-      controller: controller,
-      posts: posts,
-      onExpanded: () {
-        final post = InheritedPost.of<GelbooruPost>(context);
-
-        ref.read(tagsProvider(booruConfig).notifier).load(
-          post.tags,
-          onSuccess: (tags) {
-            WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-              if (!mounted) return;
-              ref.setGelbooruPostDetailsArtistMap(
-                post: post,
-                tags: tags,
-              );
-
-              ref.setGelbooruPostDetailsCharacterMap(
-                post: post,
-                tags: tags,
-              );
-            });
-          },
-        );
-      },
-    );
-  }
-}
-
-class GelbooruTagListSection extends ConsumerWidget {
+class GelbooruTagListSection extends ConsumerStatefulWidget {
   const GelbooruTagListSection({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<GelbooruTagListSection> createState() =>
+      _GelbooruTagListSectionState();
+}
+
+class _GelbooruTagListSectionState
+    extends ConsumerState<GelbooruTagListSection> {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (!context.mounted) return;
+      _fetchTags();
+    });
+  }
+
+  void _fetchTags() {
+    final config = ref.watchConfig;
+    final post = InheritedPost.of<GelbooruPost>(context);
+
+    ref.read(tagsProvider(config).notifier).load(
+      post.tags,
+      onSuccess: (tags) {
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+          if (!context.mounted) return;
+          ref.setGelbooruPostDetailsArtistMap(
+            post: post,
+            tags: tags,
+          );
+
+          ref.setGelbooruPostDetailsCharacterMap(
+            post: post,
+            tags: tags,
+          );
+        });
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final config = ref.watchConfig;
     final post = InheritedPost.of<GelbooruPost>(context);
 
@@ -84,6 +78,7 @@ class GelbooruTagListSection extends ConsumerWidget {
       tags: ref.watch(tagsProvider(config)),
       post: post,
       onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
+      onExpand: () => _fetchTags(),
     );
   }
 }

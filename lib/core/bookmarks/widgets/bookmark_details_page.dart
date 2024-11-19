@@ -27,12 +27,11 @@ class BookmarkDetailsPage extends ConsumerWidget {
     final bookmarks = ref.watch(filteredBookmarksProvider);
     final posts = bookmarks.map((e) => e.toPost()).toList();
 
-    return PostDetailsLayoutSwitcher(
+    return PostDetailsScope(
       initialIndex: initialIndex,
       posts: posts,
-      desktop: null,
-      mobile: () => const BookmarkDetailsPageInternal(),
       scrollController: null,
+      child: const BookmarkDetailsPageInternal(),
     );
   }
 }

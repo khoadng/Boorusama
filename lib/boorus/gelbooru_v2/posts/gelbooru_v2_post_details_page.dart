@@ -24,30 +24,6 @@ final gelbooruV2PostDetailsCharacterMapProvider = StateProvider.autoDispose(
   (ref) => <int, Set<String>>{},
 );
 
-class GelbooruV2PostDetailsPage extends ConsumerStatefulWidget {
-  const GelbooruV2PostDetailsPage({
-    super.key,
-  });
-
-  @override
-  ConsumerState<GelbooruV2PostDetailsPage> createState() =>
-      _PostDetailPageState();
-}
-
-class _PostDetailPageState extends ConsumerState<GelbooruV2PostDetailsPage> {
-  @override
-  Widget build(BuildContext context) {
-    final data = PostDetails.of<GelbooruV2Post>(context);
-    final posts = data.posts;
-    final controller = data.controller;
-
-    return PostDetailsPageScaffold(
-      controller: controller,
-      posts: posts,
-    );
-  }
-}
-
 class GelbooruV2FileDetailsSection extends ConsumerWidget {
   const GelbooruV2FileDetailsSection({super.key});
   @override

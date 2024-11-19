@@ -21,7 +21,6 @@ import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/router.dart';
@@ -249,12 +248,11 @@ class HydrusBuilder
       (context, config, payload) {
         final posts = payload.posts.map((e) => e as HydrusPost).toList();
 
-        return PostDetailsLayoutSwitcher(
+        return PostDetailsScope(
           initialIndex: payload.initialIndex,
           posts: posts,
           scrollController: payload.scrollController,
-          desktop: () => const HydrusPostDetailsDesktopPage(),
-          mobile: () => const HydrusPostDetailsPage(),
+          child: const DefaultPostDetailsPage<HydrusPost>(),
         );
       };
 
@@ -357,46 +355,6 @@ final ratingServiceNameProvider =
 
   return services.firstWhereOrNull((e) => e.key == key)?.name;
 });
-
-class HydrusPostDetailsPage extends ConsumerWidget {
-  const HydrusPostDetailsPage({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final data = PostDetails.of<HydrusPost>(context);
-    final posts = data.posts;
-    final controller = data.controller;
-
-    return PostDetailsPageScaffold(
-      controller: controller,
-      posts: posts,
-    );
-  }
-}
-
-class HydrusPostDetailsDesktopPage extends ConsumerWidget {
-  const HydrusPostDetailsDesktopPage({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final data = PostDetails.of<HydrusPost>(context);
-    final posts = data.posts;
-    final controller = data.controller;
-
-    return PostDetailsPageDesktopScaffold(
-      controller: controller,
-      debounceDuration: Duration.zero,
-      posts: posts,
-      imageUrlBuilder: defaultPostImageUrlBuilder(ref),
-      topRightButtonsBuilder: (currentPage, expanded, post) =>
-          GeneralMoreActionButton(post: post),
-    );
-  }
-}
 
 class CreateHydrusConfigPage extends ConsumerWidget {
   const CreateHydrusConfigPage({

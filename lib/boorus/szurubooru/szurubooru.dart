@@ -115,12 +115,11 @@ class SzurubooruBuilder
       (context, config, payload) {
         final posts = payload.posts.map((e) => e as SzurubooruPost).toList();
 
-        return PostDetailsLayoutSwitcher(
+        return PostDetailsScope(
           initialIndex: payload.initialIndex,
           posts: posts,
           scrollController: payload.scrollController,
-          desktop: () => const SzurubooruPostDetailsDesktopPage(),
-          mobile: () => const SzurubooruPostDetailsPage(),
+          child: const DefaultPostDetailsPage<SzurubooruPost>(),
         );
       };
 

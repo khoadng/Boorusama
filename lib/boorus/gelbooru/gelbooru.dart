@@ -27,7 +27,6 @@ import 'package:boorusama/foundation/toast.dart';
 import 'artists/gelbooru_artist_page.dart';
 import 'comments/gelbooru_comment_page.dart';
 import 'configs/create_gelbooru_config_page.dart';
-import 'posts/gelbooru_post_details_desktop_page.dart';
 import 'posts/gelbooru_post_details_page.dart';
 
 export 'posts/posts.dart';
@@ -211,12 +210,11 @@ class GelbooruBuilder
       (context, config, payload) {
         final posts = payload.posts.map((e) => e as GelbooruPost).toList();
 
-        return PostDetailsLayoutSwitcher(
+        return PostDetailsScope(
           initialIndex: payload.initialIndex,
           posts: posts,
           scrollController: payload.scrollController,
-          desktop: () => const GelbooruPostDetailsDesktopPage(),
-          mobile: () => const GelbooruPostDetailsPage(),
+          child: const DefaultPostDetailsPage<GelbooruPost>(),
         );
       };
 

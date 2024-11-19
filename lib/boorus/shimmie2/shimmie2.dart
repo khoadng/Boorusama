@@ -14,7 +14,6 @@ import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
 
 class Shimmie2Builder
     with
@@ -75,12 +74,11 @@ class Shimmie2Builder
       (context, config, payload) {
         final posts = payload.posts.map((e) => e as Shimmie2Post).toList();
 
-        return PostDetailsLayoutSwitcher(
+        return PostDetailsScope(
           initialIndex: payload.initialIndex,
           posts: posts,
           scrollController: payload.scrollController,
-          desktop: () => const Shimmie2PostDetailsDesktopPage(),
-          mobile: () => const Shimmie2PostDetailsPage(),
+          child: const DefaultPostDetailsPage<Shimmie2Post>(),
         );
       };
 
@@ -116,28 +114,6 @@ class Shimmie2Builder
   );
 }
 
-class Shimmie2PostDetailsDesktopPage extends ConsumerWidget {
-  const Shimmie2PostDetailsDesktopPage({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final data = PostDetails.of<Shimmie2Post>(context);
-    final posts = data.posts;
-    final controller = data.controller;
-
-    return PostDetailsPageDesktopScaffold(
-      controller: controller,
-      debounceDuration: Duration.zero,
-      posts: posts,
-      imageUrlBuilder: defaultPostImageUrlBuilder(ref),
-      topRightButtonsBuilder: (currentPage, expanded, post) =>
-          GeneralMoreActionButton(post: post),
-    );
-  }
-}
-
 class Shimmie2FileDetailsSection extends ConsumerWidget {
   const Shimmie2FileDetailsSection({super.key});
   @override
@@ -147,24 +123,6 @@ class Shimmie2FileDetailsSection extends ConsumerWidget {
     return DefaultFileDetailsSection(
       post: post,
       uploaderName: post.uploaderName,
-    );
-  }
-}
-
-class Shimmie2PostDetailsPage extends ConsumerWidget {
-  const Shimmie2PostDetailsPage({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final data = PostDetails.of<Shimmie2Post>(context);
-    final posts = data.posts;
-    final controller = data.controller;
-
-    return PostDetailsPageScaffold(
-      controller: controller,
-      posts: posts,
     );
   }
 }

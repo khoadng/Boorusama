@@ -153,12 +153,11 @@ class DanbooruBuilder
       (context, config, payload) {
         final posts = payload.posts.map((e) => e as DanbooruPost).toList();
 
-        return PostDetailsLayoutSwitcher<DanbooruPost>(
+        return PostDetailsScope<DanbooruPost>(
           initialIndex: payload.initialIndex,
           posts: posts,
           scrollController: payload.scrollController,
-          desktop: () => const DanbooruPostDetailsDesktopPage(),
-          mobile: () => const DanbooruPostDetailsPage(),
+          child: const DanbooruPostDetailsPage(),
         );
       };
 

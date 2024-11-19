@@ -40,10 +40,6 @@ class _DanbooruPostDetailsPageState
       child: PostDetailsPageScaffold(
         controller: detailsController,
         posts: posts,
-        placeholderImageUrlBuilder: (post, currentPage) =>
-            currentPage == detailsController.initialPage && post.isTranslated
-                ? null
-                : post.thumbnailImageUrl,
         topRightButtonsBuilder: (controller) {
           final post = InheritedPost.of<DanbooruPost>(context);
 
@@ -56,6 +52,7 @@ class _DanbooruPostDetailsPageState
                 noteState: ref.watch(notesControllerProvider(post)),
               ),
             ),
+            const SizedBox(width: 8),
             DanbooruMoreActionButton(
               post: post,
               onStartSlideshow: () => controller.startSlideshow(),

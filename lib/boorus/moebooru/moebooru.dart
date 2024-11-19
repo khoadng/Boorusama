@@ -22,7 +22,6 @@ import 'configs/create_moebooru_config_page.dart';
 import 'feats/posts/posts.dart';
 import 'pages/moebooru_favorites_page.dart';
 import 'pages/moebooru_home_page.dart';
-import 'pages/moebooru_post_details_desktop_page.dart';
 import 'pages/moebooru_post_details_page.dart';
 import 'pages/widgets/moebooru_comment_section.dart';
 import 'pages/widgets/moebooru_information_section.dart';
@@ -118,12 +117,11 @@ class MoebooruBuilder
       (context, config, payload) {
         final posts = payload.posts.map((e) => e as MoebooruPost).toList();
 
-        return PostDetailsLayoutSwitcher(
+        return PostDetailsScope(
           initialIndex: payload.initialIndex,
           posts: posts,
           scrollController: payload.scrollController,
-          desktop: () => const MoebooruPostDetailsDesktopPage(),
-          mobile: () => const MoebooruPostDetailsPage(),
+          child: const MoebooruPostDetailsPage(),
         );
       };
 

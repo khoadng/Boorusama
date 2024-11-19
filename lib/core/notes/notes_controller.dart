@@ -98,7 +98,7 @@ class NoteActionButtonWithProvider extends ConsumerWidget {
 
     return NoteActionButton(
       post: post,
-      showDownload: !expanded && noteState.notes.isEmpty,
+      showDownload: noteState.notes.isEmpty,
       enableNotes: noteState.enableNotes,
       onDownload: () => ref.read(notesControllerProvider(post).notifier).load(),
       onToggleNotes: () => ref

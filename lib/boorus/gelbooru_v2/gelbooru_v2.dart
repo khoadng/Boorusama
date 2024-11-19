@@ -24,7 +24,6 @@ import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'create_gelbooru_v2_config_page.dart';
 import 'home/gelbooru_v2_home_page.dart';
-import 'posts/gelbooru_v2_post_details_desktop_page.dart';
 import 'posts/gelbooru_v2_post_details_page.dart';
 
 const kGelbooruV2CustomDownloadFileNameFormat =
@@ -183,12 +182,11 @@ class GelbooruV2Builder
       (context, config, payload) {
         final posts = payload.posts.map((e) => e as GelbooruV2Post).toList();
 
-        return PostDetailsLayoutSwitcher(
+        return PostDetailsScope(
           initialIndex: payload.initialIndex,
           posts: posts,
           scrollController: payload.scrollController,
-          desktop: () => const GelbooruV2PostDetailsDesktopPage(),
-          mobile: () => const GelbooruV2PostDetailsPage(),
+          child: const DefaultPostDetailsPage<GelbooruV2Post>(),
         );
       };
 

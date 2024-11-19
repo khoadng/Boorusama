@@ -8,7 +8,6 @@ export 'danbooru_post_context_menu.dart';
 export 'details/danbooru_creator_preloader.dart';
 export 'details/danbooru_more_action_button.dart';
 export 'details/danbooru_post_action_toolbar.dart';
-export 'details/danbooru_post_details_desktop_page.dart';
 export 'details/danbooru_post_details_page.dart';
 export 'details/details_widgets.dart';
 export 'details/posts_details_provider.dart';

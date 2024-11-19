@@ -8,7 +8,6 @@ export 'details/download_post_button.dart';
 export 'details/file_details_section.dart';
 export 'details/information_section.dart';
 export 'details/inherited_post.dart';
-export 'details/post_details_page_desktop_scaffold.dart';
 export 'details/post_details.dart';
 export 'details/post_details_page_scaffold.dart';
 export 'details/related_posts_section.dart';

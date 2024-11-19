@@ -18,7 +18,6 @@ import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/settings/types.dart';
 import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
@@ -100,12 +99,11 @@ class AnimePicturesBuilder
       (context, config, payload) {
         final posts = payload.posts.map((e) => e as AnimePicturesPost).toList();
 
-        return PostDetailsLayoutSwitcher(
+        return PostDetailsScope(
           initialIndex: payload.initialIndex,
           posts: posts,
           scrollController: payload.scrollController,
-          desktop: () => const AnimePicturesPostDetailsDesktopPage(),
-          mobile: () => const AnimePicturesPostDetailsPage(),
+          child: const DefaultPostDetailsPage<AnimePicturesPost>(),
         );
       };
 
@@ -303,24 +301,6 @@ String _mapToGroupName(AnimePicturesTagType type) => switch (type) {
       AnimePicturesTagType.copyrightOther => 'Other Copyright',
     };
 
-class AnimePicturesPostDetailsPage extends ConsumerWidget {
-  const AnimePicturesPostDetailsPage({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final data = PostDetails.of<AnimePicturesPost>(context);
-    final posts = data.posts;
-    final controller = data.controller;
-
-    return PostDetailsPageScaffold(
-      controller: controller,
-      posts: posts,
-    );
-  }
-}
-
 class AnimePicturesTagListSection extends ConsumerWidget {
   const AnimePicturesTagListSection({
     super.key,
@@ -373,27 +353,5 @@ class AnimePicturesRelatedPostsSection extends ConsumerWidget {
           error: (e, _) => const SliverSizedBox.shrink(),
           loading: () => const SliverSizedBox.shrink(),
         );
-  }
-}
-
-class AnimePicturesPostDetailsDesktopPage extends ConsumerWidget {
-  const AnimePicturesPostDetailsDesktopPage({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final data = PostDetails.of<AnimePicturesPost>(context);
-    final posts = data.posts;
-    final controller = data.controller;
-
-    return PostDetailsPageDesktopScaffold(
-      controller: controller,
-      debounceDuration: Duration.zero,
-      posts: posts,
-      imageUrlBuilder: defaultPostImageUrlBuilder(ref),
-      topRightButtonsBuilder: (currentPage, expanded, post) =>
-          GeneralMoreActionButton(post: post),
-    );
   }
 }

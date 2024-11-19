@@ -9,53 +9,28 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/widgets/widgets.dart';
 
-class FlexibleLayoutSwitcher extends StatelessWidget {
-  const FlexibleLayoutSwitcher({
-    super.key,
-    required this.desktop,
-    required this.mobile,
-  });
-
-  final Widget Function() desktop;
-  final Widget Function() mobile;
-
-  @override
-  Widget build(BuildContext context) {
-    return kPreferredLayout.isMobile
-        ? PerformanceOrientationBuilder(
-            builder: (context, orientation) =>
-                orientation == Orientation.portrait ? mobile() : desktop(),
-          )
-        : desktop();
-  }
-}
-
-class PostDetailsLayoutSwitcher<T extends Post> extends ConsumerStatefulWidget {
-  const PostDetailsLayoutSwitcher({
+class PostDetailsScope<T extends Post> extends ConsumerStatefulWidget {
+  const PostDetailsScope({
     super.key,
     required this.initialIndex,
     required this.posts,
-    required this.desktop,
-    required this.mobile,
+    required this.child,
     required this.scrollController,
   });
 
   final int initialIndex;
   final List<T> posts;
   final AutoScrollController? scrollController;
-  final Widget Function()? desktop;
-  final Widget Function() mobile;
+  final Widget child;
 
   @override
-  ConsumerState<PostDetailsLayoutSwitcher<T>> createState() =>
+  ConsumerState<PostDetailsScope<T>> createState() =>
       _PostDetailsLayoutSwitcherState<T>();
 }
 
 class _PostDetailsLayoutSwitcherState<T extends Post>
-    extends ConsumerState<PostDetailsLayoutSwitcher<T>> {
+    extends ConsumerState<PostDetailsScope<T>> {
   late PostDetailsController<T> controller = PostDetailsController<T>(
     scrollController: widget.scrollController,
     initialPage: widget.initialIndex,
@@ -78,11 +53,7 @@ class _PostDetailsLayoutSwitcherState<T extends Post>
       ),
       child: CurrentPostScope(
         post: controller.currentPost,
-        child: FlexibleLayoutSwitcher(
-          desktop: () =>
-              widget.desktop != null ? widget.desktop!() : widget.mobile(),
-          mobile: () => widget.mobile(),
-        ),
+        child: widget.child,
       ),
     );
   }

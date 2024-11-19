@@ -5,30 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/router.dart';
 import 'szurubooru_post.dart';
-
-class SzurubooruPostDetailsPage extends ConsumerWidget {
-  const SzurubooruPostDetailsPage({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final data = PostDetails.of<SzurubooruPost>(context);
-    final posts = data.posts;
-    final controller = data.controller;
-
-    return PostDetailsPageScaffold(
-      controller: controller,
-      posts: posts,
-    );
-  }
-}
 
 class SzurubooruTagListSection extends ConsumerWidget {
   const SzurubooruTagListSection({super.key});
@@ -73,27 +53,6 @@ class SzurubooruStatsTileSection extends ConsumerWidget {
           score: post.score,
         ),
       ],
-    );
-  }
-}
-
-class SzurubooruPostDetailsDesktopPage extends ConsumerWidget {
-  const SzurubooruPostDetailsDesktopPage({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final data = PostDetails.of<SzurubooruPost>(context);
-    final posts = data.posts;
-    final controller = data.controller;
-
-    return PostDetailsPageDesktopScaffold(
-      controller: controller,
-      posts: posts,
-      imageUrlBuilder: defaultPostImageUrlBuilder(ref),
-      topRightButtonsBuilder: (currentPage, expanded, post) =>
-          GeneralMoreActionButton(post: post),
     );
   }
 }

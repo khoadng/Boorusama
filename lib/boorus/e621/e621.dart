@@ -177,12 +177,11 @@ class E621Builder
       (context, config, payload) {
         final posts = payload.posts.map((e) => e as E621Post).toList();
 
-        return PostDetailsLayoutSwitcher(
+        return PostDetailsScope(
           initialIndex: payload.initialIndex,
           posts: posts,
           scrollController: payload.scrollController,
-          desktop: () => const E621PostDetailsDesktopPage(),
-          mobile: () => const E621PostDetailsPage(),
+          child: const DefaultPostDetailsPage<E621Post>(),
         );
       };
 

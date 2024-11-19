@@ -20,7 +20,6 @@ import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/artist_page_scaffold.dart';
 import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/router.dart';
@@ -91,12 +90,11 @@ class SankakuBuilder
       (context, config, payload) {
         final posts = payload.posts.map((e) => e as SankakuPost).toList();
 
-        return PostDetailsLayoutSwitcher(
+        return PostDetailsScope(
           initialIndex: payload.initialIndex,
           posts: posts,
           scrollController: payload.scrollController,
-          desktop: () => const SankakuPostDetailsDesktopPage(),
-          mobile: () => const SankakuPostDetailsPage(),
+          child: const DefaultPostDetailsPage<SankakuPost>(),
         );
       };
 
@@ -160,24 +158,6 @@ class SankakuBuilder
   );
 }
 
-class SankakuPostDetailsPage extends ConsumerWidget {
-  const SankakuPostDetailsPage({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final data = PostDetails.of<SankakuPost>(context);
-    final posts = data.posts;
-    final controller = data.controller;
-
-    return PostDetailsPageScaffold(
-      controller: controller,
-      posts: posts,
-    );
-  }
-}
-
 class SankakuArtistPostsSection extends ConsumerWidget {
   const SankakuArtistPostsSection({super.key});
   @override
@@ -208,27 +188,6 @@ class SankakuArtistPostsSection extends ConsumerWidget {
                   ))
               .toList()
           : [],
-    );
-  }
-}
-
-class SankakuPostDetailsDesktopPage extends ConsumerWidget {
-  const SankakuPostDetailsDesktopPage({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final data = PostDetails.of<SankakuPost>(context);
-    final posts = data.posts;
-    final controller = data.controller;
-
-    return PostDetailsPageDesktopScaffold(
-      controller: controller,
-      posts: posts,
-      imageUrlBuilder: defaultPostImageUrlBuilder(ref),
-      topRightButtonsBuilder: (currentPage, expanded, post) =>
-          GeneralMoreActionButton(post: post),
     );
   }
 }
