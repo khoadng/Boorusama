@@ -35,8 +35,7 @@ class PostDetailsPageView extends StatefulWidget {
     this.onExit,
     this.onExpanded,
     this.onPageChanged,
-    this.swipeDownThreshold = 180.0,
-    this.maxChildSize = 0.95,
+    this.swipeDownThreshold = 20,
     this.actions = const [],
     this.leftActions = const [],
     this.bottomSheet,
@@ -50,7 +49,6 @@ class PostDetailsPageView extends StatefulWidget {
   final IndexedWidgetBuilder itemBuilder;
   final double minSize;
   final double maxSize;
-  final double maxChildSize;
   final double swipeDownThreshold;
 
   final List<Widget> actions;
@@ -74,13 +72,15 @@ class PostDetailsPageView extends StatefulWidget {
 }
 
 class _PostDetailsPageViewState extends State<PostDetailsPageView>
-    with AutomaticSlideMixin {
+    with AutomaticSlideMixin, TickerProviderStateMixin {
   ValueNotifier<bool> get _swipe => _controller.swipe;
   ValueNotifier<double> get _verticalPosition => _controller.verticalPosition;
   ValueNotifier<double> get _displacement => _controller.displacement;
   final _pointerCount = ValueNotifier(0);
   final _interacting = ValueNotifier(false);
   late var _slideshowOptions = widget.slideshowOptions;
+  var _freestyleMoveStartOffset = Offset.zero;
+  var _freestyleMoveScale = 1.0;
 
   late final PostDetailsPageViewController _controller;
 
@@ -154,7 +154,6 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     final dy = _controller.verticalPosition.value;
 
     if (dy > 0) {
-      _controller.topDisplacement.value = dy;
       return;
     }
 
@@ -335,15 +334,6 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
         Positioned.fill(
           child: Column(
             children: [
-              ValueListenableBuilder(
-                valueListenable: _controller.topDisplacement,
-                builder: (context, dis, child) => SizedBox(
-                  height: (dis * 1.75).clamp(
-                    0.0,
-                    MediaQuery.sizeOf(context).height * 0.6,
-                  ),
-                ),
-              ),
               Expanded(
                 child: PerformanceOrientationBuilder(
                   builder: (context, orientation) => ValueListenableBuilder(
@@ -390,21 +380,29 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
               builder: (context, orientation) => orientation.isLandscape
                   ? const SizedBox.shrink()
                   : ValueListenableBuilder(
-                      valueListenable: _controller.overlay,
-                      builder: (_, overlay, child) => overlay
-                          ? ValueListenableBuilder(
-                              valueListenable: _controller.sheetState,
-                              builder: (context, state, _) => !state.isExpanded
-                                  ? HideUIOverlayTransition(
-                                      controller: _controller,
-                                      pointerCount: _pointerCount,
-                                      skipTransition:
-                                          state == SheetState.hidden,
+                      valueListenable: _controller.freestyleMoving,
+                      builder: (context, moving, child) => Transform.translate(
+                        offset: moving
+                            ? const Offset(0, _kLargeOffset)
+                            : Offset.zero,
+                        child: AnimatedOpacity(
+                          duration: const Duration(milliseconds: 200),
+                          opacity: moving ? 0 : 1,
+                          child: ValueListenableBuilder(
+                            valueListenable: _controller.overlay,
+                            builder: (_, overlay, child) => overlay
+                                ? ValueListenableBuilder(
+                                    valueListenable: _controller.displacement,
+                                    builder: (_, dis, __) =>
+                                        _SlideDownContainer(
+                                      shouldSlideDown: dis > _kMinSlideDistance,
                                       child: widget.bottomSheet!,
-                                    )
-                                  : const SizedBox.shrink(),
-                            )
-                          : const SizedBox.shrink(),
+                                    ),
+                                  )
+                                : const SizedBox.shrink(),
+                          ),
+                        ),
+                      ),
                     ),
             ),
           ),
@@ -415,10 +413,22 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
               valueListenable: _controller.sheetState,
               builder: (_, state, __) => ConditionalParentWidget(
                 condition: !state.isExpanded,
-                conditionalBuilder: (child) => HideUIOverlayTransition(
-                  controller: _controller,
-                  pointerCount: _pointerCount,
-                  slideDown: false,
+                conditionalBuilder: (child) => ValueListenableBuilder(
+                  valueListenable: _controller.freestyleMoving,
+                  builder: (context, moving, child) => Transform.translate(
+                    offset:
+                        moving ? const Offset(0, -_kLargeOffset) : Offset.zero,
+                    child: AnimatedOpacity(
+                      duration: const Duration(milliseconds: 200),
+                      opacity: moving ? 0 : 1,
+                      child: HideUIOverlayTransition(
+                        controller: _controller,
+                        pointerCount: _pointerCount,
+                        slideDown: false,
+                        child: child!,
+                      ),
+                    ),
+                  ),
                   child: child,
                 ),
                 child: SafeArea(
@@ -517,19 +527,22 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     );
   }
 
-  Widget buildItem(BuildContext context, int index) {
+  Widget _buildItem(BuildContext context, int index) {
     return ValueListenableBuilder(
-      valueListenable: _controller.sheetState,
-      builder: (_, state, __) => GestureDetector(
-        // let the user tap the image to toggle overlay
-        onTap: _controller.onImageTap,
-        child: InteractiveViewExtended(
-          enable: !state.isExpanded,
-          onZoomUpdated: _controller.onZoomUpdated,
+      valueListenable: _controller.freestyleMoveOffset,
+      builder: (_, offset, __) => ValueListenableBuilder(
+        valueListenable: _controller.sheetState,
+        builder: (_, state, __) => GestureDetector(
+          // let the user tap the image to toggle overlay
           onTap: _controller.onImageTap,
-          onDoubleTap: widget.onItemDoubleTap,
-          onLongPress: widget.onItemLongPress,
-          child: widget.itemBuilder(context, index),
+          child: InteractiveViewExtended(
+            enable: !state.isExpanded,
+            onZoomUpdated: _controller.onZoomUpdated,
+            onTap: _controller.onImageTap,
+            onDoubleTap: widget.onItemDoubleTap,
+            onLongPress: widget.onItemLongPress,
+            child: widget.itemBuilder(context, index),
+          ),
         ),
       ),
     );
@@ -629,94 +642,149 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
               : const DefaultPageViewScrollPhysics(),
           itemCount: widget.itemCount,
           itemBuilder: isPortrait
-              ? (context, index) => ValueListenableBuilder(
-                    valueListenable: _controller.canPull,
-                    builder: (_, canPull, __) => PointerCountOnScreen(
-                      onCountChanged: (count) {
-                        _pointerCount.value = count;
-                        _interacting.value = count > 1;
-                      },
-                      child: ValueListenableBuilder(
-                        valueListenable: _controller.pulling,
-                        builder: (__, pulling, ___) => GestureDetector(
-                          onVerticalDragStart: canPull && !interacting
-                              ? _onVerticalDragStart
-                              : null,
-                          onVerticalDragUpdate:
-                              pulling ? _onVerticalDragUpdate : null,
-                          onVerticalDragEnd:
-                              pulling ? _onVerticalDragEnd : null,
-                          child: buildItem(context, index),
-                        ),
-                      ),
-                    ),
-                  )
-              : (context, index) => Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      buildItem(context, index),
-                      if (blockSwipe)
-                        ValueListenableBuilder(
-                          valueListenable: _cooldown,
-                          builder: (_, cooldown, __) => PageNavButton(
-                            alignment: Alignment.centerRight,
-                            controller: _controller,
-                            visibleWhen: (page) => page < widget.itemCount - 1,
-                            icon: Icon(Symbols.arrow_forward),
-                            onPressed: !cooldown
-                                ? () => _controller.nextPage(
-                                      duration: Duration.zero,
-                                    )
-                                : null,
-                          ),
-                        ),
-                      if (blockSwipe)
-                        ValueListenableBuilder(
-                          valueListenable: _cooldown,
-                          builder: (_, cooldown, __) => PageNavButton(
-                            alignment: Alignment.centerLeft,
-                            controller: _controller,
-                            visibleWhen: (page) => page > 0,
-                            icon: Icon(Symbols.arrow_back),
-                            onPressed: !cooldown
-                                ? () => _controller.previousPage(
-                                      duration: Duration.zero,
-                                    )
-                                : null,
-                          ),
-                        ),
-                    ],
-                  ),
+              ? (context, index) => _buildPortraitItem(index)
+              : (context, index) => _buildLandscapeItem(index, blockSwipe),
         );
       },
     );
   }
 
+  Widget _buildPortraitItem(int index) {
+    return ValueListenableBuilder(
+      valueListenable: _controller.canPull,
+      builder: (_, canPull, __) => PointerCountOnScreen(
+        onCountChanged: (count) {
+          _pointerCount.value = count;
+          _interacting.value = count > 1;
+        },
+        child: ValueListenableBuilder(
+          valueListenable: _controller.pulling,
+          builder: (__, pulling, ___) => GestureDetector(
+            onVerticalDragStart:
+                canPull && !_interacting.value ? _onVerticalDragStart : null,
+            onVerticalDragUpdate: pulling ? _onVerticalDragUpdate : null,
+            onVerticalDragEnd: pulling ? _onVerticalDragEnd : null,
+            child: AnimatedBuilder(
+              animation: Listenable.merge([
+                _controller.freestyleMoveOffset,
+                _controller.sheetState,
+              ]),
+              builder: (context, child) => Transform(
+                alignment: Alignment.center,
+                transform: Matrix4.identity()
+                  ..translate(
+                    _controller.freestyleMoveOffset.value.dx,
+                    _controller.freestyleMoveOffset.value.dy,
+                  )
+                  ..scale(_freestyleMoveScale),
+                child: child,
+              ),
+              child: _buildItem(context, index),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLandscapeItem(int index, bool blockSwipe) {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        _buildItem(context, index),
+        if (blockSwipe) ...[
+          ValueListenableBuilder(
+            valueListenable: _cooldown,
+            builder: (_, cooldown, __) => PageNavButton(
+              alignment: Alignment.centerRight,
+              controller: _controller,
+              visibleWhen: (page) => page < widget.itemCount - 1,
+              icon: Icon(Symbols.arrow_forward),
+              onPressed: !cooldown
+                  ? () => _controller.nextPage(duration: Duration.zero)
+                  : null,
+            ),
+          ),
+          ValueListenableBuilder(
+            valueListenable: _cooldown,
+            builder: (_, cooldown, __) => PageNavButton(
+              alignment: Alignment.centerLeft,
+              controller: _controller,
+              visibleWhen: (page) => page > 0,
+              icon: Icon(Symbols.arrow_back),
+              onPressed: !cooldown
+                  ? () => _controller.previousPage(duration: Duration.zero)
+                  : null,
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
   void _onVerticalDragStart(DragStartDetails details) {
     _controller.pulling.value = true;
+
+    if (!_controller.isExpanded) {
+      _freestyleMoveStartOffset = details.globalPosition;
+      _controller.freestyleMove.value = true;
+      _controller.freestyleMoving.value = true;
+      _freestyleMoveScale = 1.0;
+    }
   }
 
   void _onVerticalDragUpdate(DragUpdateDetails details) {
     final dy = details.delta.dy;
-
     _verticalPosition.value = _verticalPosition.value + dy;
+
+    if (_controller.freestyleMove.value) {
+      if (_verticalPosition.value <= 0) return;
+
+      // Calculate scale first
+      final movePercent =
+          details.globalPosition.dy - _freestyleMoveStartOffset.dy;
+      final normalizedPercent = movePercent / widget.swipeDownThreshold;
+      _freestyleMoveScale = 1.0 -
+          (normalizedPercent * _kSwipeDownScaleFactor)
+              .clamp(0.0, _kSwipeDownScaleFactor);
+
+      // Adjust translation based on scale
+      final scaledOffset = details.globalPosition - _freestyleMoveStartOffset;
+      // Apply scale compensation to keep the image centered
+      final scaleCompensation = (1 - _freestyleMoveScale) *
+          (_freestyleMoveStartOffset.dy - details.globalPosition.dy) /
+          2;
+
+      _controller.freestyleMoveOffset.value = Offset(
+        scaledOffset.dx,
+        scaledOffset.dy + scaleCompensation,
+      );
+    }
   }
 
   void _onVerticalDragEnd(DragEndDetails details) {
     _controller.pulling.value = false;
-    if (_verticalPosition.value > widget.swipeDownThreshold) {
-      _verticalPosition.value = 0.0;
+    _controller.freestyleMoving.value = false;
 
-      if (!_controller.isExpanded) {
-        if (widget.onSwipeDownThresholdReached != null) {
-          widget.onSwipeDownThresholdReached?.call();
-        } else {
-          _onBackButtonPressed(false);
-        }
+    // Check if drag distance exceeds threshold for dismissal
+    if (_controller.freestyleMoveOffset.value.dy.abs() >
+        widget.swipeDownThreshold) {
+      if (widget.onSwipeDownThresholdReached != null) {
+        widget.onSwipeDownThresholdReached?.call();
+      } else {
+        _onBackButtonPressed(false);
+        return;
       }
-
-      return;
+      // scale back to 1.0
+      _freestyleMoveScale = 1.0;
+    } else {
+      // Animate back to original position
+      _animateBackToPosition();
+      _freestyleMoveScale = 1.0;
     }
+
+    _controller.freestyleMove.value = false;
+    _controller.freestyleMoveOffset.value = Offset.zero;
 
     final size = _sheetController.size;
 
@@ -735,6 +803,34 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
         );
       });
     }
+  }
+
+  void _animateBackToPosition() {
+    final startOffset = _controller.freestyleMoveOffset.value;
+
+    final animController = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+
+    final animation = Tween(
+      begin: startOffset,
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: animController,
+      curve: Curves.easeOut,
+    ));
+
+    animation.addListener(() {
+      if (mounted) {
+        _controller.freestyleMoveOffset.value = animation.value;
+      }
+    });
+
+    // Start animation
+    animController.forward().then((_) {
+      animController.dispose();
+    });
   }
 }
 
@@ -905,6 +1001,7 @@ class SheetStateStorageBuilder implements SheetStateStorage {
 
 const _kLargeOffset = 500.0;
 const _kMinSlideDistance = 5.0;
+const _kSwipeDownScaleFactor = 0.2;
 
 class HideUIOverlayTransition extends StatelessWidget {
   const HideUIOverlayTransition({
@@ -928,31 +1025,83 @@ class HideUIOverlayTransition extends StatelessWidget {
       valueListenable: pointerCount,
       builder: (_, count, __) => count > 0
           ? ValueListenableBuilder(
-              valueListenable: controller.topDisplacement,
-              builder: (_, topDis, child) => topDis > 0
-                  ? Transform.translate(
-                      offset:
-                          slideDown ? Offset(0, topDis) : Offset(0, -topDis),
-                      child: Opacity(
-                        opacity: 1.0 - (topDis / 100).clamp(0.0, 1.0),
-                        child: child,
-                      ),
-                    )
-                  : ValueListenableBuilder(
-                      valueListenable: controller.displacement,
-                      builder: (context, dis, _) => Transform.translate(
-                        offset: skipTransition && dis > _kMinSlideDistance
-                            ? Offset(0, _kLargeOffset)
-                            : slideDown
-                                ? Offset(0, dis * 0.5)
-                                : Offset(0, -dis * 0.5),
-                        child: child,
-                      ),
-                      child: child,
-                    ),
+              valueListenable: controller.displacement,
+              builder: (context, dis, _) => Transform.translate(
+                offset: skipTransition && dis > _kMinSlideDistance
+                    ? Offset(0, _kLargeOffset)
+                    : slideDown
+                        ? Offset(0, dis * 0.5)
+                        : Offset(0, -dis * 0.5),
+                child: child,
+              ),
               child: child,
             )
           : child,
+    );
+  }
+}
+
+class _SlideDownContainer extends StatefulWidget {
+  const _SlideDownContainer({
+    required this.child,
+    required this.shouldSlideDown,
+  });
+
+  final Widget child;
+  final bool shouldSlideDown;
+
+  @override
+  _SlideDownContainerState createState() => _SlideDownContainerState();
+}
+
+class _SlideDownContainerState extends State<_SlideDownContainer>
+    with TickerProviderStateMixin {
+  late AnimationController _animController;
+
+  @override
+  void initState() {
+    super.initState();
+    _animController = AnimationController(
+      value: 0,
+      duration: const Duration(milliseconds: 150),
+      vsync: this,
+    );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _animController.dispose();
+  }
+
+  @override
+  void didUpdateWidget(covariant _SlideDownContainer oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.shouldSlideDown != widget.shouldSlideDown) {
+      _animController.animateTo(
+        widget.shouldSlideDown ? 1 : 0,
+        duration: widget.shouldSlideDown
+            ? const Duration(milliseconds: 200)
+            : const Duration(milliseconds: 100),
+        curve: Curves.easeOut,
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SlideTransition(
+      position: Tween(
+        begin: Offset.zero,
+        end: const Offset(0, 1),
+      ).animate(
+        CurvedAnimation(
+          parent: _animController,
+          curve: Curves.easeOut,
+        ),
+      ),
+      child: widget.child,
     );
   }
 }
@@ -1003,7 +1152,6 @@ class PostDetailsPageViewController extends ChangeNotifier {
 
   late final verticalPosition = ValueNotifier(0.0);
   late final displacement = ValueNotifier(0.0);
-  late final topDisplacement = ValueNotifier(0.0);
   late final animating = ValueNotifier(false);
 
   final swipe = ValueNotifier(true);
@@ -1011,6 +1159,9 @@ class PostDetailsPageViewController extends ChangeNotifier {
   final pulling = ValueNotifier(false);
   final zoom = ValueNotifier(false);
   final slideshow = ValueNotifier(false);
+  final freestyleMove = ValueNotifier(false);
+  final freestyleMoveOffset = ValueNotifier(Offset.zero);
+  final freestyleMoving = ValueNotifier(false);
 
   void jumpToPage(int page) {
     _pageController.jumpToPage(page);
@@ -1070,7 +1221,6 @@ class PostDetailsPageViewController extends ChangeNotifier {
     animating.value = true;
     swipe.value = true;
     verticalPosition.value = 0.0;
-    topDisplacement.value = 0.0;
     sheetState.value = switch (sheetState.value) {
       SheetState.expanded => SheetState.hidden,
       SheetState.collapsed => SheetState.collapsed,
