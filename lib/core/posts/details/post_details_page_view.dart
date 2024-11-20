@@ -26,7 +26,7 @@ class PostDetailsPageView extends StatefulWidget {
     required this.sheetBuilder,
     required this.itemCount,
     required this.itemBuilder,
-    this.minSize = 0.15,
+    this.minSize = 0.18,
     this.maxSize = 0.7,
     this.controller,
     this.onSwipeDownThresholdReached,
@@ -138,7 +138,11 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     if (page != _controller.page) {
       _controller.currentPage.value = page;
 
-      _controller.sheetState.value = SheetState.collapsed;
+      _controller.sheetState.value = switch (_controller.sheetState.value) {
+        SheetState.expanded => SheetState.expanded,
+        SheetState.collapsed => SheetState.collapsed,
+        SheetState.hidden => SheetState.collapsed,
+      };
 
       widget.onPageChanged?.call(page);
     }
@@ -200,9 +204,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
         final orientation = MediaQuery.orientationOf(context);
 
         if (orientation.isPortrait) {
-          await _controller.resetSheet(
-            duration: const Duration(milliseconds: 300),
-          );
+          await _controller.resetSheet();
         } else {
           _controller.sheetState.value = SheetState.hidden;
         }
@@ -313,12 +315,16 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
         SheetState.hidden => Offstage(
             offstage: true,
             child: child,
-          )
+          ),
       },
-      child: Container(
-        constraints: const BoxConstraints(maxWidth: 400),
-        color: Theme.of(context).colorScheme.surface,
-        child: widget.sheetBuilder(context, null),
+      child: MediaQuery.removePadding(
+        context: context,
+        removeLeft: true,
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 360),
+          color: Theme.of(context).colorScheme.surface,
+          child: widget.sheetBuilder(context, null),
+        ),
       ),
     );
   }
@@ -404,10 +410,10 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
           ),
         Align(
           alignment: Alignment.topCenter,
-          child: SafeArea(
-            child: ValueListenableBuilder(
+          child: PerformanceOrientationBuilder(
+            builder: (_, orientation) => ValueListenableBuilder(
               valueListenable: _controller.sheetState,
-              builder: (_, state, child) => ConditionalParentWidget(
+              builder: (_, state, __) => ConditionalParentWidget(
                 condition: !state.isExpanded,
                 conditionalBuilder: (child) => HideUIOverlayTransition(
                   controller: _controller,
@@ -415,9 +421,11 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
                   slideDown: false,
                   child: child,
                 ),
-                child: child!,
+                child: SafeArea(
+                  right: orientation.isLandscape && !state.isExpanded,
+                  child: _buildOverlay(),
+                ),
               ),
-              child: _buildOverlay(),
             ),
           ),
         ),
@@ -535,7 +543,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
       onNotification: (notification) {
         if (_controller.isExpanded) {
           if (notification is ScrollEndNotification) {
-            if (_sheetController.size < 0.65) {
+            if (_sheetController.size < 0.6) {
               _controller.resetSheet();
             }
           }
@@ -547,19 +555,19 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
         controller: _sheetController,
         initialChildSize: initialChildSize ?? 0,
         minChildSize: 0,
-        maxChildSize:
-            sheetState.isExpanded ? widget.maxChildSize : widget.maxSize,
+        maxChildSize: widget.maxSize,
+        shouldCloseOnMinExtent: false,
         snap: true,
-        snapAnimationDuration: const Duration(milliseconds: 100),
-        snapSizes: [_controller.maxSize],
+        snapAnimationDuration: const Duration(milliseconds: 200),
         builder: (context, scrollController) => Scaffold(
           floatingActionButton: ScrollToTop(
             scrollController: scrollController,
             child: BooruScrollToTopButton(
-              onPressed: () {
-                _controller.resetSheet(
-                  duration: const Duration(milliseconds: 250),
-                );
+              onPressed: () async {
+                await _controller.resetSheet();
+                if (mounted) {
+                  scrollController.jumpTo(0);
+                }
               },
             ),
           ),
@@ -632,9 +640,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
                         valueListenable: _controller.pulling,
                         builder: (__, pulling, ___) => GestureDetector(
                           onVerticalDragStart: canPull && !interacting
-                              ? (details) {
-                                  _controller.pulling.value = true;
-                                }
+                              ? _onVerticalDragStart
                               : null,
                           onVerticalDragUpdate:
                               pulling ? _onVerticalDragUpdate : null,
@@ -686,6 +692,10 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     );
   }
 
+  void _onVerticalDragStart(DragStartDetails details) {
+    _controller.pulling.value = true;
+  }
+
   void _onVerticalDragUpdate(DragUpdateDetails details) {
     final dy = details.delta.dy;
 
@@ -720,7 +730,9 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
       //TODO: for some reasons, setState is needed, should investigate later
       setState(() {
         // Animate back to original position
-        _controller.resetSheet();
+        _controller.resetSheet(
+          duration: const Duration(milliseconds: 100),
+        );
       });
     }
   }
@@ -891,6 +903,9 @@ class SheetStateStorageBuilder implements SheetStateStorage {
   Future<void> persistExpandedState(bool expanded) => save(expanded);
 }
 
+const _kLargeOffset = 500.0;
+const _kMinSlideDistance = 5.0;
+
 class HideUIOverlayTransition extends StatelessWidget {
   const HideUIOverlayTransition({
     super.key,
@@ -926,8 +941,8 @@ class HideUIOverlayTransition extends StatelessWidget {
                   : ValueListenableBuilder(
                       valueListenable: controller.displacement,
                       builder: (context, dis, _) => Transform.translate(
-                        offset: skipTransition
-                            ? Offset(0, 500)
+                        offset: skipTransition && dis > _kMinSlideDistance
+                            ? Offset(0, _kLargeOffset)
                             : slideDown
                                 ? Offset(0, dis * 0.5)
                                 : Offset(0, -dis * 0.5),
@@ -1065,7 +1080,7 @@ class PostDetailsPageViewController extends ChangeNotifier {
     return WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _sheetController.animateTo(
         0.0,
-        duration: duration ?? const Duration(milliseconds: 100),
+        duration: duration ?? const Duration(milliseconds: 250),
         curve: curve ?? Curves.easeInOut,
       );
       animating.value = false;
@@ -1080,7 +1095,7 @@ class PostDetailsPageViewController extends ChangeNotifier {
     return WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _sheetController.animateTo(
         maxSize,
-        duration: const Duration(milliseconds: 100),
+        duration: const Duration(milliseconds: 250),
         curve: Curves.easeInOut,
       );
       animating.value = false;
