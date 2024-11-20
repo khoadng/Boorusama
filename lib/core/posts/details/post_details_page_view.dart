@@ -376,34 +376,39 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
         if (widget.bottomSheet != null)
           Align(
             alignment: Alignment.bottomCenter,
-            child: PerformanceOrientationBuilder(
-              builder: (context, orientation) => orientation.isLandscape
-                  ? const SizedBox.shrink()
-                  : ValueListenableBuilder(
-                      valueListenable: _controller.freestyleMoving,
-                      builder: (context, moving, child) => Transform.translate(
-                        offset: moving
-                            ? const Offset(0, _kLargeOffset)
-                            : Offset.zero,
-                        child: AnimatedOpacity(
-                          duration: const Duration(milliseconds: 200),
-                          opacity: moving ? 0 : 1,
-                          child: ValueListenableBuilder(
-                            valueListenable: _controller.overlay,
-                            builder: (_, overlay, child) => overlay
-                                ? ValueListenableBuilder(
-                                    valueListenable: _controller.displacement,
-                                    builder: (_, dis, __) =>
-                                        _SlideDownContainer(
-                                      shouldSlideDown: dis > _kMinSlideDistance,
-                                      child: widget.bottomSheet!,
-                                    ),
-                                  )
-                                : const SizedBox.shrink(),
-                          ),
-                        ),
-                      ),
-                    ),
+            child: ValueListenableBuilder(
+              valueListenable: _controller.sheetState,
+              builder: (_, state, __) => !state.isExpanded
+                  ? PerformanceOrientationBuilder(
+                      builder: (context, orientation) => orientation.isLandscape
+                          ? const SizedBox.shrink()
+                          : ValueListenableBuilder(
+                              valueListenable: _controller.freestyleMoving,
+                              builder: (context, moving, child) =>
+                                  _SlideContainer(
+                                shouldSlide: moving,
+                                direction: SlideContainerDirection.down,
+                                child: ValueListenableBuilder(
+                                  valueListenable: _controller.overlay,
+                                  builder: (_, overlay, child) => overlay
+                                      ? ValueListenableBuilder(
+                                          valueListenable:
+                                              _controller.displacement,
+                                          builder: (_, dis, __) =>
+                                              _SlideContainer(
+                                            direction:
+                                                SlideContainerDirection.down,
+                                            shouldSlide:
+                                                dis > _kMinSlideDistance,
+                                            child: widget.bottomSheet!,
+                                          ),
+                                        )
+                                      : const SizedBox.shrink(),
+                                ),
+                              ),
+                            ),
+                    )
+                  : const SizedBox.shrink(),
             ),
           ),
         Align(
@@ -415,18 +420,14 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
                 condition: !state.isExpanded,
                 conditionalBuilder: (child) => ValueListenableBuilder(
                   valueListenable: _controller.freestyleMoving,
-                  builder: (context, moving, child) => Transform.translate(
-                    offset:
-                        moving ? const Offset(0, -_kLargeOffset) : Offset.zero,
-                    child: AnimatedOpacity(
-                      duration: const Duration(milliseconds: 200),
-                      opacity: moving ? 0 : 1,
-                      child: HideUIOverlayTransition(
-                        controller: _controller,
-                        pointerCount: _pointerCount,
-                        slideDown: false,
-                        child: child!,
-                      ),
+                  builder: (context, moving, child) => _SlideContainer(
+                    shouldSlide: moving,
+                    direction: SlideContainerDirection.up,
+                    child: HideUIOverlayTransition(
+                      controller: _controller,
+                      pointerCount: _pointerCount,
+                      slideDown: false,
+                      child: child!,
                     ),
                   ),
                   child: child,
@@ -852,6 +853,8 @@ class PageNavButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final largeButton = MediaQuery.sizeOf(context).width > 1200;
+
     return ValueListenableBuilder(
       valueListenable: controller.overlay,
       builder: (_, overlay, child) =>
@@ -867,7 +870,7 @@ class PageNavButton extends StatelessWidget {
                   child: MaterialButton(
                     color: context.extendedColorScheme.surfaceContainerOverlay,
                     shape: const CircleBorder(),
-                    padding: const EdgeInsets.all(12),
+                    padding: largeButton ? const EdgeInsets.all(12) : null,
                     onPressed: onPressed,
                     child: icon,
                   ),
@@ -1041,20 +1044,27 @@ class HideUIOverlayTransition extends StatelessWidget {
   }
 }
 
-class _SlideDownContainer extends StatefulWidget {
-  const _SlideDownContainer({
+enum SlideContainerDirection {
+  up,
+  down,
+}
+
+class _SlideContainer extends StatefulWidget {
+  const _SlideContainer({
     required this.child,
-    required this.shouldSlideDown,
+    required this.shouldSlide,
+    required this.direction,
   });
 
   final Widget child;
-  final bool shouldSlideDown;
+  final bool shouldSlide;
+  final SlideContainerDirection direction;
 
   @override
-  _SlideDownContainerState createState() => _SlideDownContainerState();
+  _SlideContainerState createState() => _SlideContainerState();
 }
 
-class _SlideDownContainerState extends State<_SlideDownContainer>
+class _SlideContainerState extends State<_SlideContainer>
     with TickerProviderStateMixin {
   late AnimationController _animController;
 
@@ -1070,18 +1080,18 @@ class _SlideDownContainerState extends State<_SlideDownContainer>
 
   @override
   void dispose() {
-    super.dispose();
     _animController.dispose();
+    super.dispose();
   }
 
   @override
-  void didUpdateWidget(covariant _SlideDownContainer oldWidget) {
+  void didUpdateWidget(covariant _SlideContainer oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (oldWidget.shouldSlideDown != widget.shouldSlideDown) {
+    if (oldWidget.shouldSlide != widget.shouldSlide) {
       _animController.animateTo(
-        widget.shouldSlideDown ? 1 : 0,
-        duration: widget.shouldSlideDown
+        widget.shouldSlide ? 1 : 0,
+        duration: widget.shouldSlide
             ? const Duration(milliseconds: 200)
             : const Duration(milliseconds: 100),
         curve: Curves.easeOut,
@@ -1094,7 +1104,10 @@ class _SlideDownContainerState extends State<_SlideDownContainer>
     return SlideTransition(
       position: Tween(
         begin: Offset.zero,
-        end: const Offset(0, 1),
+        end: switch (widget.direction) {
+          SlideContainerDirection.up => const Offset(0, -1),
+          SlideContainerDirection.down => const Offset(0, 1)
+        },
       ).animate(
         CurvedAnimation(
           parent: _animController,

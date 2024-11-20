@@ -192,6 +192,7 @@ class _PostDetailPageScaffoldState<T extends Post>
           final (previousPost, nextPost) = posts.getPrevAndNextPosts(index);
 
           return Stack(
+            alignment: Alignment.center,
             children: [
               // preload next image only, not the post itself
               if (nextPost != null && !nextPost.isVideo)
@@ -200,19 +201,17 @@ class _PostDetailPageScaffoldState<T extends Post>
                     url: imageUrlBuilder(nextPost),
                   ),
                 ),
-              Positioned.fill(
-                child: PostMedia<T>(
-                  post: post,
-                  imageUrl: imageUrlBuilder(post),
-                  imageOverlayBuilder: (constraints) =>
-                      noteOverlayBuilderDelegate(
-                    constraints,
-                    post,
-                    ref.watch(notesControllerProvider(post)),
-                  ),
-                  controller: _controller,
-                  autoPlay: true,
+              PostMedia<T>(
+                post: post,
+                imageUrl: imageUrlBuilder(post),
+                imageOverlayBuilder: (constraints) =>
+                    noteOverlayBuilderDelegate(
+                  constraints,
+                  post,
+                  ref.watch(notesControllerProvider(post)),
                 ),
+                controller: _controller,
+                autoPlay: true,
               ),
               if (previousPost != null && !previousPost.isVideo)
                 Offstage(
