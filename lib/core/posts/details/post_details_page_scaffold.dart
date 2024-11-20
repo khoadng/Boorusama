@@ -204,14 +204,13 @@ class _PostDetailPageScaffoldState<T extends Post>
                 child: PostMedia<T>(
                   post: post,
                   imageUrl: imageUrlBuilder(post),
-                  // onVideoVisibilityChanged: onVisibilityChanged,
                   imageOverlayBuilder: (constraints) =>
                       noteOverlayBuilderDelegate(
                     constraints,
                     post,
                     ref.watch(notesControllerProvider(post)),
                   ),
-
+                  controller: _controller,
                   autoPlay: true,
                 ),
               ),
