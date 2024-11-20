@@ -112,11 +112,13 @@ class SoundControlButton extends StatelessWidget {
     super.key,
     required this.soundOn,
     this.onSoundChanged,
+    this.padding,
   });
 
   final bool soundOn;
-
   final void Function(bool hasSound)? onSoundChanged;
+  final EdgeInsetsGeometry? padding;
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -124,9 +126,12 @@ class SoundControlButton extends StatelessWidget {
       child: InkWell(
         customBorder: const CircleBorder(),
         onTap: () => onSoundChanged?.call(!soundOn),
-        child: Icon(
-          soundOn ? Symbols.volume_up : Symbols.volume_off,
-          fill: 1,
+        child: Padding(
+          padding: padding ?? EdgeInsets.zero,
+          child: Icon(
+            soundOn ? Symbols.volume_up : Symbols.volume_off,
+            fill: 1,
+          ),
         ),
       ),
     );

@@ -191,7 +191,7 @@ class _PostDetailPageScaffoldState<T extends Post>
           final post = posts[index];
           final (previousPost, nextPost) = posts.getPrevAndNextPosts(index);
 
-          return Column(
+          return Stack(
             children: [
               // preload next image only, not the post itself
               if (nextPost != null && !nextPost.isVideo)
@@ -200,7 +200,7 @@ class _PostDetailPageScaffoldState<T extends Post>
                     url: imageUrlBuilder(nextPost),
                   ),
                 ),
-              Expanded(
+              Positioned.fill(
                 child: PostMedia<T>(
                   post: post,
                   imageUrl: imageUrlBuilder(post),
@@ -219,6 +219,26 @@ class _PostDetailPageScaffoldState<T extends Post>
                 Offstage(
                   child: PostDetailsPreloadImage(
                     url: imageUrlBuilder(previousPost),
+                  ),
+                ),
+              if (post.isVideo)
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: ValueListenableBuilder(
+                    valueListenable: _controller.sheetState,
+                    builder: (_, state, __) => state.isExpanded
+                        ? Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: VideoSoundScope(
+                              builder: (context, soundOn) => SoundControlButton(
+                                padding: const EdgeInsets.all(8),
+                                soundOn: soundOn,
+                                onSoundChanged: (value) =>
+                                    ref.setGlobalVideoSound(value),
+                              ),
+                            ),
+                          )
+                        : const SizedBox.shrink(),
                   ),
                 ),
             ],
