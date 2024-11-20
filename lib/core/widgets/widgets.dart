@@ -13,7 +13,5 @@ export 'infinite_load_list.dart';
 export 'network_indicator_with_state.dart';
 export 'network_unavailable_indicator.dart';
 export 'no_data_box.dart';
-export '../posts/details/post_details_page_view.dart';
-export 'post_media.dart';
 export 'reboot.dart';
 export 'source_link.dart';

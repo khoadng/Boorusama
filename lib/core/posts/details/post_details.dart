@@ -4,11 +4,15 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
+import 'package:video_player/video_player.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/videos/videos.dart';
 import 'package:boorusama/dart.dart';
+import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class PostDetailsScope<T extends Post> extends ConsumerStatefulWidget {
   const PostDetailsScope({
@@ -117,6 +121,8 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
 
   void setPage(int page) {
     currentPage.value = page;
+    _videoProgress.value = VideoProgress.zero;
+
     final post = posts.getOrNull(page);
 
     if (post != null) {
@@ -132,5 +138,39 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
     final page = currentPage.value;
 
     scrollController?.scrollToIndex(page);
+  }
+
+  final _videoProgress = ValueNotifier(VideoProgress.zero);
+
+  //TODO: should have an abstraction for this crap, but I'm too lazy to do it since there are only 2 types of video anyway
+  final Map<int, VideoPlayerController> _videoControllers = {};
+  final Map<int, WebmVideoController> _webmVideoControllers = {};
+
+  ValueNotifier<VideoProgress> get videoProgress => _videoProgress;
+
+  void onCurrentPositionChanged(double current, double total, String url) {
+    // // check if the current video is the same as the one being played
+    if (posts[currentPage.value].videoUrl != url) return;
+
+    _videoProgress.value = VideoProgress(
+        Duration(milliseconds: (total * 1000).toInt()),
+        Duration(milliseconds: (current * 1000).toInt()));
+  }
+
+  void onVideoSeekTo(Duration position, int id, bool isWebm) {
+    // Only Android is using Webview for webm
+    if (isWebm && isAndroid()) {
+      _webmVideoControllers[id]?.seek(position.inSeconds.toDouble());
+    } else {
+      _videoControllers[id]?.seekTo(position);
+    }
+  }
+
+  void onWebmVideoPlayerCreated(WebmVideoController controller, int id) {
+    _webmVideoControllers[id] = controller;
+  }
+
+  void onVideoPlayerCreated(VideoPlayerController controller, int id) {
+    _videoControllers[id] = controller;
   }
 }

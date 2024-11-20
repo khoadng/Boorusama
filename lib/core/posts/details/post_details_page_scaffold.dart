@@ -13,6 +13,7 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/notes/notes.dart';
+import 'package:boorusama/core/posts/details/details.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/videos/videos.dart';
@@ -49,15 +50,13 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
 }
 
 class _PostDetailPageScaffoldState<T extends Post>
-    extends ConsumerState<PostDetailsPageScaffold<T>>
-    with PostDetailsPageMixin {
+    extends ConsumerState<PostDetailsPageScaffold<T>> {
   late final _posts = widget.posts;
   late final _controller = PostDetailsPageViewController(
     initialPage: widget.controller.initialPage,
     hideOverlay: ref.read(settingsProvider).hidePostDetailsOverlay,
   );
 
-  @override
   List<T> get posts => _posts;
 
   @override
@@ -109,8 +108,6 @@ class _PostDetailPageScaffoldState<T extends Post>
     return Scaffold(
       body: PostDetailsPageView(
         onPageChanged: (page) {
-          onPageChanged(page);
-
           widget.controller.setPage(page);
 
           ref
@@ -192,29 +189,7 @@ class _PostDetailPageScaffoldState<T extends Post>
         },
         itemBuilder: (context, index) {
           final post = posts[index];
-          final page = index;
-
-          final media = PostMedia(
-            inFocus: true,
-            post: post,
-            imageUrl: imageUrlBuilder(post),
-            placeholderImageUrl: post.thumbnailImageUrl,
-            onCurrentVideoPositionChanged: (current, total, url) =>
-                onCurrentPositionChanged(current, total, url, page),
-            // onVideoVisibilityChanged: onVisibilityChanged,
-            imageOverlayBuilder: (constraints) => noteOverlayBuilderDelegate(
-              constraints,
-              post,
-              ref.watch(notesControllerProvider(post)),
-            ),
-            onVideoPlayerCreated: (controller) =>
-                onVideoPlayerCreated(controller, page),
-            onWebmVideoPlayerCreated: (controller) =>
-                onWebmVideoPlayerCreated(controller, page),
-            autoPlay: true,
-          );
-
-          final (previousPost, nextPost) = posts.getPrevAndNextPosts(page);
+          final (previousPost, nextPost) = posts.getPrevAndNextPosts(index);
 
           return Column(
             children: [
@@ -226,17 +201,18 @@ class _PostDetailPageScaffoldState<T extends Post>
                   ),
                 ),
               Expanded(
-                child: ValueListenableBuilder(
-                  valueListenable: _controller.topDisplacement,
-                  builder: (_, dis, child) {
-                    final scale = (1.0 - (dis / 500)).clamp(0.85, 1.0);
+                child: PostMedia<T>(
+                  post: post,
+                  imageUrl: imageUrlBuilder(post),
+                  // onVideoVisibilityChanged: onVisibilityChanged,
+                  imageOverlayBuilder: (constraints) =>
+                      noteOverlayBuilderDelegate(
+                    constraints,
+                    post,
+                    ref.watch(notesControllerProvider(post)),
+                  ),
 
-                    return Transform.scale(
-                      scale: scale,
-                      child: child!,
-                    );
-                  },
-                  child: media,
+                  autoPlay: true,
                 ),
               ),
               if (previousPost != null && !previousPost.isVideo)
@@ -317,14 +293,17 @@ class _PostDetailPageScaffoldState<T extends Post>
       valueListenable: widget.controller.currentPost,
       builder: (context, post, _) => post.isVideo
           ? ValueListenableBuilder(
-              valueListenable: videoProgress,
+              valueListenable: widget.controller.videoProgress,
               builder: (_, progress, __) => VideoSoundScope(
                 builder: (context, soundOn) => BooruVideoProgressBar(
                   soundOn: soundOn,
                   progress: progress,
                   playbackSpeed: ref.watchPlaybackSpeed(post.videoUrl),
-                  onSeek: (position) =>
-                      onVideoSeekTo(position, _controller.page),
+                  onSeek: (position) => widget.controller.onVideoSeekTo(
+                    position,
+                    post.id,
+                    post.isWebm,
+                  ),
                   onSpeedChanged: (speed) =>
                       ref.setPlaybackSpeed(post.videoUrl, speed),
                   onSoundToggle: (value) => ref.setGlobalVideoSound(value),
