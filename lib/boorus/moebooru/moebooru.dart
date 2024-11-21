@@ -42,7 +42,6 @@ final moebooruClientProvider =
 class MoebooruBuilder
     with
         FavoriteNotSupportedMixin,
-        PostCountNotSupportedMixin,
         CommentNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
         UnknownMetatagsMixin,

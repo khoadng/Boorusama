@@ -90,10 +90,9 @@ class DefaultPostActionToolbar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfig;
-    final booruBuilder = ref.watch(booruBuilderProvider);
     final isFaved = ref.watch(favoriteProvider(post.id));
-    final favoriteAdder = booruBuilder?.favoriteAdder;
-    final favoriteRemover = booruBuilder?.favoriteRemover;
+    final favoriteAdder = ref.watch(addFavoriteProvider);
+    final favoriteRemover = ref.watch(removeFavoriteProvider);
 
     return SimplePostActionToolbar(
       post: post,

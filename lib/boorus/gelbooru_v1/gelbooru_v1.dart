@@ -28,7 +28,6 @@ part 'providers.dart';
 class GelbooruV1Builder
     with
         FavoriteNotSupportedMixin,
-        PostCountNotSupportedMixin,
         ArtistNotSupportedMixin,
         CharacterNotSupportedMixin,
         CommentNotSupportedMixin,

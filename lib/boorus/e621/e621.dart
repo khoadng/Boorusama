@@ -103,7 +103,6 @@ const kE621PostSamples = [
 
 class E621Builder
     with
-        PostCountNotSupportedMixin,
         CharacterNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
         UnknownMetatagsMixin,
@@ -155,18 +154,6 @@ class E621Builder
               initialTab: initialTab,
             ),
           );
-
-  @override
-  FavoriteAdder? get favoriteAdder => (postId, ref) => ref
-      .read(e621FavoritesProvider(ref.readConfig).notifier)
-      .add(postId)
-      .then((value) => true);
-
-  @override
-  FavoriteRemover? get favoriteRemover => (postId, ref) => ref
-      .read(e621FavoritesProvider(ref.readConfig).notifier)
-      .remove(postId)
-      .then((value) => true);
 
   @override
   SearchPageBuilder get searchPageBuilder =>

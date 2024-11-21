@@ -76,12 +76,11 @@ final tagColorProvider = Provider.family<Color?, String>(
 
 TagColorBuilder? _getCurrentConfigColorBuilder(
   String tag,
-  Map<BooruType, BooruBuilder Function(BooruConfig config)> builders,
+  Map<BooruType, BooruBuilder Function()> builders,
   BooruConfig config,
 ) {
   final booruBuilderFunc = builders[config.booruType];
-  final booruBuilder =
-      booruBuilderFunc != null ? booruBuilderFunc(config) : null;
+  final booruBuilder = booruBuilderFunc != null ? booruBuilderFunc() : null;
 
   return booruBuilder?.tagColorBuilder;
 }

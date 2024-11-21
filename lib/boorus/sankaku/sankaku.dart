@@ -29,7 +29,6 @@ part 'sankaku_provider.dart';
 
 class SankakuBuilder
     with
-        PostCountNotSupportedMixin,
         DefaultThumbnailUrlMixin,
         CommentNotSupportedMixin,
         CharacterNotSupportedMixin,
@@ -103,12 +102,6 @@ class SankakuBuilder
       (context, artistName) => SankakuArtistPage(
             artistName: artistName,
           );
-
-  @override
-  FavoriteAdder? get favoriteAdder => null;
-
-  @override
-  FavoriteRemover? get favoriteRemover => null;
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>

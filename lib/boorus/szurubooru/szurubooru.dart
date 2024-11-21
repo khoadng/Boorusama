@@ -8,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/gelbooru_v2/gelbooru_v2.dart';
-import 'package:boorusama/boorus/szurubooru/favorites/favorites.dart';
 import 'package:boorusama/boorus/szurubooru/post_votes/szurubooru_post_action_toolbar.dart';
 import 'package:boorusama/boorus/szurubooru/providers.dart';
 import 'package:boorusama/core/comments/comments.dart';
@@ -26,7 +25,6 @@ import 'szurubooru_post_details_page.dart';
 
 class SzurubooruBuilder
     with
-        PostCountNotSupportedMixin,
         DefaultThumbnailUrlMixin,
         ArtistNotSupportedMixin,
         CharacterNotSupportedMixin,
@@ -87,18 +85,6 @@ class SzurubooruBuilder
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
       (context, config) => const SzurubooruFavoritesPage();
-
-  @override
-  FavoriteAdder? get favoriteAdder => (postId, ref) => ref
-      .read(szurubooruFavoritesProvider(ref.readConfig).notifier)
-      .add(postId)
-      .then((value) => true);
-
-  @override
-  FavoriteRemover? get favoriteRemover => (postId, ref) => ref
-      .read(szurubooruFavoritesProvider(ref.readConfig).notifier)
-      .remove(postId)
-      .then((value) => true);
 
   @override
   HomePageBuilder get homePageBuilder =>

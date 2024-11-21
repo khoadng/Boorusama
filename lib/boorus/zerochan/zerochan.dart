@@ -23,7 +23,6 @@ const kZerochanCustomDownloadFileNameFormat =
 class ZerochanBuilder
     with
         FavoriteNotSupportedMixin,
-        PostCountNotSupportedMixin,
         ArtistNotSupportedMixin,
         CharacterNotSupportedMixin,
         DefaultThumbnailUrlMixin,

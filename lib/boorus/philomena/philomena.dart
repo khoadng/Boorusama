@@ -23,7 +23,6 @@ import 'philomena_post.dart';
 class PhilomenaBuilder
     with
         FavoriteNotSupportedMixin,
-        PostCountNotSupportedMixin,
         DefaultThumbnailUrlMixin,
         CommentNotSupportedMixin,
         ArtistNotSupportedMixin,

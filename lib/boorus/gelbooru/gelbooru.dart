@@ -17,13 +17,11 @@ import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/favorites/favorites.dart';
 import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
-import 'package:boorusama/foundation/toast.dart';
 import 'artists/gelbooru_artist_page.dart';
 import 'comments/gelbooru_comment_page.dart';
 import 'configs/create_gelbooru_config_page.dart';
@@ -145,7 +143,6 @@ Note gelbooruNoteToNote(NoteDto note) {
 class GelbooruBuilder
     with
         UnknownMetatagsMixin,
-        PostCountNotSupportedMixin,
         DefaultMultiSelectionActionsBuilderMixin,
         DefaultHomeMixin,
         DefaultQuickFavoriteButtonBuilderMixin,
@@ -157,11 +154,7 @@ class GelbooruBuilder
         DefaultPostStatisticsPageBuilderMixin,
         DefaultTagColorMixin
     implements BooruBuilder {
-  GelbooruBuilder({
-    required this.client,
-  });
-
-  final GelbooruClient Function() client;
+  GelbooruBuilder();
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
@@ -263,46 +256,6 @@ class GelbooruBuilder
       'source': (post, config) => config.downloadUrl,
     },
   );
-
-  @override
-  FavoriteAdder? get favoriteAdder => client().canFavorite
-      ? (postId, ref) async {
-          final status = await ref
-              .read(gelbooruFavoritesProvider(ref.readConfig).notifier)
-              .add(postId);
-
-          final context = ref.context;
-
-          if (context.mounted) {
-            if (status == AddFavoriteStatus.alreadyExists) {
-              showErrorToast(context, 'Already favorited');
-            } else if (status == AddFavoriteStatus.failure) {
-              showErrorToast(context, 'Failed to favorite');
-            } else {
-              showSuccessToast(context, 'Favorited');
-            }
-          }
-
-          return status == AddFavoriteStatus.success;
-        }
-      : null;
-
-  @override
-  FavoriteRemover? get favoriteRemover => client().canFavorite
-      ? (postId, ref) async {
-          await ref
-              .read(gelbooruFavoritesProvider(ref.readConfig).notifier)
-              .remove(postId);
-
-          final context = ref.context;
-
-          if (context.mounted) {
-            showSuccessToast(context, 'Favorite removed');
-          }
-
-          return true;
-        }
-      : null;
 
   @override
   final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(

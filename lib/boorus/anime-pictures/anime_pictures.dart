@@ -28,7 +28,6 @@ import 'providers.dart';
 class AnimePicturesBuilder
     with
         FavoriteNotSupportedMixin,
-        PostCountNotSupportedMixin,
         DefaultThumbnailUrlMixin,
         CommentNotSupportedMixin,
         ArtistNotSupportedMixin,

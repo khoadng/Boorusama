@@ -18,7 +18,6 @@ import 'package:boorusama/core/tags/tags.dart';
 class Shimmie2Builder
     with
         FavoriteNotSupportedMixin,
-        PostCountNotSupportedMixin,
         DefaultThumbnailUrlMixin,
         CommentNotSupportedMixin,
         ArtistNotSupportedMixin,

@@ -119,7 +119,6 @@ class GelbooruV2Builder
         FavoriteNotSupportedMixin,
         DefaultThumbnailUrlMixin,
         DefaultThumbnailUrlMixin,
-        PostCountNotSupportedMixin,
         UnknownMetatagsMixin,
         DefaultMultiSelectionActionsBuilderMixin,
         DefaultHomeMixin,
@@ -129,11 +128,7 @@ class GelbooruV2Builder
         DefaultPostStatisticsPageBuilderMixin,
         DefaultTagColorMixin
     implements BooruBuilder {
-  GelbooruV2Builder({
-    required this.client,
-  });
-
-  final GelbooruV2Client client;
+  GelbooruV2Builder();
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (

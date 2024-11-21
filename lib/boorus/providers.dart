@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/blacklist/blacklist.dart';
 import 'package:boorusama/boorus/danbooru/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/posts/posts.dart';
@@ -41,6 +42,7 @@ import 'package:boorusama/core/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
+import 'package:boorusama/core/favorites/favorites.dart';
 import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
@@ -53,6 +55,7 @@ import 'package:boorusama/foundation/http/user_agent_generator_impl.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/package_info.dart';
+import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/functional.dart';
 import 'anime-pictures/providers.dart';
 import 'danbooru/danbooru_provider.dart';
@@ -317,6 +320,27 @@ final tagRepoProvider = Provider.family<TagRepository, BooruConfig>(
             ref.watch(emptyTagRepoProvider),
         });
 
+final postCountRepoProvider =
+    Provider.family<PostCountRepository?, BooruConfig>(
+        (ref, config) => switch (config.booruType) {
+              BooruType.danbooru =>
+                ref.watch(danbooruPostCountRepoProvider(config)),
+              BooruType.gelbooru ||
+              BooruType.moebooru ||
+              BooruType.e621 ||
+              BooruType.gelbooruV1 ||
+              BooruType.gelbooruV2 ||
+              BooruType.zerochan ||
+              BooruType.sankaku ||
+              BooruType.philomena ||
+              BooruType.szurubooru ||
+              BooruType.shimmie2 ||
+              BooruType.hydrus ||
+              BooruType.animePictures ||
+              BooruType.unknown =>
+                null,
+            });
+
 final favoriteProvider = Provider.autoDispose
     .family<bool, int>((ref, postId) => switch (ref.watchConfig.booruType) {
           BooruType.danbooru => ref.watch(danbooruFavoriteProvider(postId)),
@@ -335,6 +359,106 @@ final favoriteProvider = Provider.autoDispose
           BooruType.animePictures ||
           BooruType.unknown =>
             false,
+        });
+
+//TODO: redesign this, it's a mess
+final addFavoriteProvider =
+    Provider<FavoriteAdder?>((r) => switch (r.watchConfig.booruType) {
+          BooruType.danbooru => (postId, ref) =>
+              ref.danbooruFavorites.add(postId).then((_) => true),
+          BooruType.e621 => (postId, ref) => ref
+              .read(e621FavoritesProvider(ref.readConfig).notifier)
+              .add(postId)
+              .then((value) => true),
+          BooruType.szurubooru => (postId, ref) => ref
+              .read(szurubooruFavoritesProvider(ref.readConfig).notifier)
+              .add(postId)
+              .then((value) => true),
+          BooruType.hydrus => (postId, ref) => ref
+              .read(hydrusFavoritesProvider(ref.readConfig).notifier)
+              .add(postId)
+              .then((value) => true),
+          BooruType.gelbooru => r
+                  .read(gelbooruClientProvider(r.readConfig))
+                  .canFavorite
+              ? (postId, ref) async {
+                  final status = await ref
+                      .read(gelbooruFavoritesProvider(ref.readConfig).notifier)
+                      .add(postId);
+
+                  final context = ref.context;
+
+                  if (context.mounted) {
+                    if (status == AddFavoriteStatus.alreadyExists) {
+                      showErrorToast(context, 'Already favorited');
+                    } else if (status == AddFavoriteStatus.failure) {
+                      showErrorToast(context, 'Failed to favorite');
+                    } else {
+                      showSuccessToast(context, 'Favorited');
+                    }
+                  }
+
+                  return status == AddFavoriteStatus.success;
+                }
+              : null,
+          BooruType.gelbooruV1 ||
+          BooruType.gelbooruV2 ||
+          BooruType.zerochan ||
+          BooruType.sankaku ||
+          BooruType.moebooru ||
+          BooruType.philomena ||
+          BooruType.szurubooru ||
+          BooruType.shimmie2 ||
+          BooruType.animePictures ||
+          BooruType.unknown =>
+            null,
+        });
+
+//TODO: redesign this, it's a mess
+final removeFavoriteProvider =
+    Provider<FavoriteAdder?>((r) => switch (r.watchConfig.booruType) {
+          BooruType.danbooru => (postId, ref) =>
+              ref.danbooruFavorites.remove(postId).then((_) => true),
+          BooruType.e621 => (postId, ref) => ref
+              .read(e621FavoritesProvider(ref.readConfig).notifier)
+              .remove(postId)
+              .then((value) => true),
+          BooruType.szurubooru => (postId, ref) => ref
+              .read(szurubooruFavoritesProvider(ref.readConfig).notifier)
+              .remove(postId)
+              .then((value) => true),
+          BooruType.hydrus => (postId, ref) => ref
+              .read(hydrusFavoritesProvider(ref.readConfig).notifier)
+              .remove(postId)
+              .then((value) => true),
+          BooruType.gelbooru => r
+                  .read(gelbooruClientProvider(r.readConfig))
+                  .canFavorite
+              ? (postId, ref) async {
+                  await ref
+                      .read(gelbooruFavoritesProvider(ref.readConfig).notifier)
+                      .remove(postId);
+
+                  final context = ref.context;
+
+                  if (context.mounted) {
+                    showSuccessToast(context, 'Favorite removed');
+                  }
+
+                  return true;
+                }
+              : null,
+          BooruType.gelbooruV1 ||
+          BooruType.gelbooruV2 ||
+          BooruType.zerochan ||
+          BooruType.sankaku ||
+          BooruType.moebooru ||
+          BooruType.philomena ||
+          BooruType.szurubooru ||
+          BooruType.shimmie2 ||
+          BooruType.animePictures ||
+          BooruType.unknown =>
+            null,
         });
 
 final blacklistTagsProvider =

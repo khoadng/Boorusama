@@ -2,11 +2,6 @@ part of 'booru_builder.dart';
 
 mixin FavoriteNotSupportedMixin implements BooruBuilder {
   @override
-  FavoriteAdder? get favoriteAdder => null;
-  @override
-  FavoriteRemover? get favoriteRemover => null;
-
-  @override
   FavoritesPageBuilder? get favoritesPageBuilder => null;
   @override
   QuickFavoriteButtonBuilder? get quickFavoriteButtonBuilder => null;
@@ -33,11 +28,6 @@ mixin CharacterNotSupportedMixin implements BooruBuilder {
 mixin CommentNotSupportedMixin implements BooruBuilder {
   @override
   CommentPageBuilder? get commentPageBuilder => null;
-}
-
-mixin PostCountNotSupportedMixin implements BooruBuilder {
-  @override
-  PostCountFetcher? get postCountFetcher => null;
 }
 
 mixin DefaultThumbnailUrlMixin implements BooruBuilder {
@@ -335,7 +325,7 @@ class DefaultImagePreviewQuickActionButton extends ConsumerWidget {
 
 mixin UnknownMetatagsMixin implements BooruBuilder {
   @override
-  MetatagExtractor? get metatagExtractor => null;
+  MetatagExtractorBuilder? get metatagExtractorBuilder => null;
 }
 
 final PostDetailsUIBuilder kFallbackPostDetailsUIBuilder = PostDetailsUIBuilder(

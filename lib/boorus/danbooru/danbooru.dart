@@ -84,15 +84,7 @@ const kDanbooruPostSamples = [
 class DanbooruBuilder
     with DefaultTagColorMixin, NewGranularRatingOptionsBuilderMixin
     implements BooruBuilder {
-  DanbooruBuilder({
-    required this.favoriteRepo,
-    required this.postCountRepo,
-    required this.tagInfo,
-  });
-
-  final FavoritePostRepository favoriteRepo;
-  final PostCountRepository postCountRepo;
-  final TagInfo tagInfo;
+  DanbooruBuilder();
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
@@ -131,18 +123,6 @@ class DanbooruBuilder
               initialTab: initialTab,
             ),
           );
-
-  @override
-  FavoriteAdder? get favoriteAdder =>
-      (postId, ref) => ref.danbooruFavorites.add(postId).then((_) => true);
-
-  @override
-  FavoriteRemover? get favoriteRemover =>
-      (postId, ref) => ref.danbooruFavorites.remove(postId).then((_) => true);
-
-  @override
-  PostCountFetcher? get postCountFetcher => (config, tags, tagComposer) =>
-      postCountRepo.count(tagComposer.compose(tags));
 
   @override
   SearchPageBuilder get searchPageBuilder =>
@@ -308,9 +288,10 @@ class DanbooruBuilder
       };
 
   @override
-  late final MetatagExtractor metatagExtractor = MetatagExtractor(
-    metatags: tagInfo.metatags,
-  );
+  MetatagExtractorBuilder get metatagExtractorBuilder =>
+      (tagInfo) => MetatagExtractor(
+            metatags: tagInfo.metatags,
+          );
 
   @override
   QuickFavoriteButtonBuilder get quickFavoriteButtonBuilder =>

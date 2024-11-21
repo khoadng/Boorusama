@@ -177,7 +177,6 @@ final hydrusAutocompleteRepoProvider =
 
 class HydrusBuilder
     with
-        PostCountNotSupportedMixin,
         ArtistNotSupportedMixin,
         CharacterNotSupportedMixin,
         DefaultThumbnailUrlMixin,
@@ -261,17 +260,6 @@ class HydrusBuilder
       (context, config) => const HydrusFavoritesPage();
 
   @override
-  FavoriteAdder? get favoriteAdder => (postId, ref) => ref
-      .read(hydrusFavoritesProvider(ref.readConfig).notifier)
-      .add(postId)
-      .then((value) => true);
-
-  @override
-  FavoriteRemover? get favoriteRemover => (postId, ref) => ref
-      .read(hydrusFavoritesProvider(ref.readConfig).notifier)
-      .remove(postId)
-      .then((value) => true);
-
   @override
   HomePageBuilder get homePageBuilder => (context, config) => HydrusHomePage(
         config: config,

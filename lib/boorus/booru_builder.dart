@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
-import 'package:boorusama/boorus/danbooru/favorites/favorites.dart';
 import 'package:boorusama/boorus/e621/e621.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
 import 'package:boorusama/boorus/gelbooru_v1/gelbooru_v1.dart';
@@ -33,7 +32,6 @@ import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'anime-pictures/anime_pictures.dart';
-import 'danbooru/posts/posts.dart';
 import 'gelbooru_v2/gelbooru_v2.dart';
 import 'hydrus/hydrus.dart';
 import 'philomena/philomena.dart';
@@ -75,61 +73,43 @@ abstract class BooruBuilder {
 
   PostGestureHandlerBuilder get postGestureHandlerBuilder;
 
-  MetatagExtractor? get metatagExtractor;
+  MetatagExtractorBuilder? get metatagExtractorBuilder;
 
   MultiSelectionActionsBuilder? get multiSelectionActionsBuilder;
 
   PostDetailsUIBuilder get postDetailsUIBuilder;
-
-  // Action Builders
-  FavoriteAdder? get favoriteAdder;
-  FavoriteRemover? get favoriteRemover;
-
-  PostCountFetcher? get postCountFetcher;
 }
 
 /// A provider that provides a map of [BooruType] to [BooruBuilder] functions
-/// that can be used to build a Booru instances with the given [BooruConfig].
+/// that can be used to build a Booru instances.
 ///
 /// The [BooruType] enum represents different types of boorus that can be built.
-/// The [BooruConfig] class represents the configuration for a booru instance.
 ///
 /// Example usage:
 /// ```
-/// final booruBuildersProvider = Provider<Map<BooruType, BooruBuilder Function(BooruConfig config)>>((ref) =>
+/// final booruBuildersProvider = Provider<Map<BooruType, BooruBuilder Function()>>((ref) =>
 ///   {
-///     BooruType.zerochan: (config) => ZerochanBuilder(
-///       postRepo: ref.watch(zerochanPostRepoProvider(config)),
-///       autocompleteRepo: ref.watch(zerochanAutoCompleteRepoProvider(config)),
-///     ),
+///     BooruType.zerochan: () => ZerochanBuilder(),
 ///     // ...
 ///   }
 /// );
 /// ```
 /// Note that the [BooruBuilder] functions are not called until they are used and they won't be called again
 /// Each local instance of [BooruBuilder] will be cached and reused until the app is restarted.
-final booruBuildersProvider =
-    Provider<Map<BooruType, BooruBuilder Function(BooruConfig config)>>((ref) =>
-        {
-          BooruType.zerochan: (config) => ZerochanBuilder(),
-          BooruType.moebooru: (config) => MoebooruBuilder(),
-          BooruType.gelbooru: (config) => GelbooruBuilder(
-                client: () => ref.read(gelbooruClientProvider(config)),
-              ),
-          BooruType.gelbooruV2: (config) => GelbooruV2Builder(
-                client: ref.read(gelbooruV2ClientProvider(config)),
-              ),
-          BooruType.e621: (config) => E621Builder(),
-          BooruType.danbooru: (config) => DanbooruBuilder(
-                favoriteRepo: ref.read(danbooruFavoriteRepoProvider(config)),
-                postCountRepo: ref.read(danbooruPostCountRepoProvider(config)),
-                tagInfo: ref.read(tagInfoProvider),
-              ),
-          BooruType.gelbooruV1: (config) => GelbooruV1Builder(),
-          BooruType.sankaku: (config) => SankakuBuilder(),
-          BooruType.philomena: (config) => PhilomenaBuilder(),
-          BooruType.shimmie2: (config) => Shimmie2Builder(),
-          BooruType.szurubooru: (config) => SzurubooruBuilder(),
-          BooruType.hydrus: (config) => HydrusBuilder(),
-          BooruType.animePictures: (config) => AnimePicturesBuilder(),
-        });
+final booruBuildersProvider = Provider<Map<BooruType, BooruBuilder Function()>>(
+  (ref) => {
+    BooruType.zerochan: () => ZerochanBuilder(),
+    BooruType.moebooru: () => MoebooruBuilder(),
+    BooruType.gelbooru: () => GelbooruBuilder(),
+    BooruType.gelbooruV2: () => GelbooruV2Builder(),
+    BooruType.e621: () => E621Builder(),
+    BooruType.danbooru: () => DanbooruBuilder(),
+    BooruType.gelbooruV1: () => GelbooruV1Builder(),
+    BooruType.sankaku: () => SankakuBuilder(),
+    BooruType.philomena: () => PhilomenaBuilder(),
+    BooruType.shimmie2: () => Shimmie2Builder(),
+    BooruType.szurubooru: () => SzurubooruBuilder(),
+    BooruType.hydrus: () => HydrusBuilder(),
+    BooruType.animePictures: () => AnimePicturesBuilder(),
+  },
+);
