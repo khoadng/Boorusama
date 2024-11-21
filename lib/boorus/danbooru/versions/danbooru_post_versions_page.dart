@@ -12,6 +12,7 @@ import 'package:boorusama/boorus/danbooru/versions/versions.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import '../posts/posts.dart';
 import 'tag_edit_history_card.dart';
 
 final _postIdProvider = Provider<int>((ref) {
@@ -28,6 +29,16 @@ class DanbooruPostVersionsPage extends ConsumerStatefulWidget {
     required this.postId,
     required this.previewUrl,
   });
+
+  factory DanbooruPostVersionsPage.post({
+    Key? key,
+    required DanbooruPost post,
+  }) =>
+      DanbooruPostVersionsPage(
+        key: key,
+        postId: post.id,
+        previewUrl: post.url720x720,
+      );
 
   final int postId;
   final String previewUrl;
@@ -163,10 +174,8 @@ class _Content extends ConsumerWidget {
                     (context, index) => TagEditHistoryCard(
                       version: data[index],
                       onUserTap: () => goToUserDetailsPage(
-                        ref,
                         context,
                         uid: data[index].updater.id,
-                        username: data[index].updater.name,
                       ),
                     ),
                     childCount: data.length,

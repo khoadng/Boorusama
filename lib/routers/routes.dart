@@ -10,6 +10,7 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/entry_page.dart';
 import 'package:boorusama/core/blacklists/blacklists.dart';
 import 'package:boorusama/core/bookmarks/bookmarks.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
@@ -128,7 +129,7 @@ class Routes {
         path: 'search',
         name: '/search',
         pageBuilder: (context, state) {
-          final booruBuilder = ref.readCurrentBooruBuilder();
+          final booruBuilder = ref.readBooruBuilder(ref.readConfig);
           final builder = booruBuilder?.searchPageBuilder;
           final query = state.uri.queryParameters[kInitialQueryKey];
 
@@ -166,7 +167,7 @@ class Routes {
         name: '/artists',
         pageBuilder: platformAwarePageBuilder(
           builder: (context, state) {
-            final booruBuilder = ref.readCurrentBooruBuilder();
+            final booruBuilder = ref.readBooruBuilder(ref.readConfig);
             final builder = booruBuilder?.artistPageBuilder;
             final artistName = state.uri.queryParameters[kArtistNameKey];
 
@@ -184,7 +185,7 @@ class Routes {
         name: '/characters',
         pageBuilder: platformAwarePageBuilder(
           builder: (context, state) {
-            final booruBuilder = ref.readCurrentBooruBuilder();
+            final booruBuilder = ref.readBooruBuilder(ref.readConfig);
             final builder = booruBuilder?.characterPageBuilder;
             final characterName = state.uri.queryParameters[kCharacterNameKey];
 

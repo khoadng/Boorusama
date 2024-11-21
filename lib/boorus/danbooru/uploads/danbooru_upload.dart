@@ -11,7 +11,6 @@ import 'package:boorusama/clients/danbooru/types/types.dart';
 import 'package:boorusama/core/posts/posts.dart';
 
 class DanbooruUpload extends Equatable {
-
   const DanbooruUpload({
     required this.id,
     required this.source,
@@ -141,6 +140,7 @@ class DanbooruUploadPost extends DanbooruPost {
     required this.mediaAssetCount,
     required this.postedCount,
     required this.mediaAssetId,
+    required this.uploadId,
     required this.uploadMediaAssetId,
     required this.pageUrl,
     required this.sourceRaw,
@@ -151,6 +151,7 @@ class DanbooruUploadPost extends DanbooruPost {
   final int mediaAssetCount;
   final int postedCount;
   final int mediaAssetId;
+  final int uploadId;
   final int uploadMediaAssetId;
   final String pageUrl;
   final String sourceRaw;
@@ -219,6 +220,7 @@ extension DanbooruUploadX on DanbooruUpload {
       mediaAssetCount: mediaAssetCount,
       postedCount: postedCount,
       mediaAssetId: mediaAsset.id ?? 0,
+      uploadId: id,
       uploadMediaAssetId: uploadMediaAssets.id ?? 0,
       pixelHash: mediaAsset.pixelHash ?? '',
       metadata: null,

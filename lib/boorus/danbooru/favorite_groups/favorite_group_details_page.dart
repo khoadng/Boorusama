@@ -119,190 +119,195 @@ class _FavoriteGroupDetailsPageState
     final config = ref.watchConfig;
     final settings = ref.watch(imageListingSettingsProvider);
 
-    return Scaffold(
-      floatingActionButton: editing
-          ? FloatingActionButton(
-              onPressed: () {
-                _aggregate(config);
-                setState(() => editing = false);
-              },
-              child: const Icon(Symbols.save),
-            )
-          : null,
-      appBar: AppBar(
-        centerTitle: false,
-        title: Text(widget.group.name.replaceUnderscoreWithSpace()),
-        actions: [
-          if (!editing)
-            IconButton(
-              onPressed: () {
-                goToSearchPage(
-                  context,
-                  tag: widget.group.getQueryString(),
-                );
-              },
-              icon: const Icon(Symbols.search),
-            ),
-          if (!editing)
-            IconButton(
-              onPressed: () {
-                goToBulkDownloadPage(
-                  context,
-                  [widget.group.getQueryString()],
-                  ref: ref,
-                );
-              },
-              icon: const Icon(Symbols.download),
-            ),
-          if (!editing)
-            IconButton(
-              onPressed: () {
-                setState(() {
-                  editing = true;
-                  commands.clear();
-                });
-              },
-              icon: const Icon(
-                Symbols.edit,
-                fill: 1,
+    return CustomContextMenuOverlay(
+      child: Scaffold(
+        floatingActionButton: editing
+            ? FloatingActionButton(
+                onPressed: () {
+                  _aggregate(config);
+                  setState(() => editing = false);
+                },
+                child: const Icon(Symbols.save),
+              )
+            : null,
+        appBar: AppBar(
+          centerTitle: false,
+          title: Text(widget.group.name.replaceUnderscoreWithSpace()),
+          actions: [
+            if (!editing)
+              IconButton(
+                onPressed: () {
+                  goToSearchPage(
+                    context,
+                    tag: widget.group.getQueryString(),
+                  );
+                },
+                icon: const Icon(Symbols.search),
               ),
-            )
-          else
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  editing = false;
-                  commands.clear();
-                });
-              },
-              child: const Text('generic.action.cancel').tr(),
-            ),
-        ],
-      ),
-      body: refreshing
-          ? const Center(
-              child: CircularProgressIndicator(),
-            )
-          : Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  if (editing)
-                    Row(
-                      children: [
-                        const Expanded(
-                          child: Text('Drag and drop to determine ordering.'),
-                        ),
-                        GridSizeAdjustmentButtons(
-                          minCount: 2,
-                          maxCount: _sizeToGridCount(
-                            Screen.of(context).nextBreakpoint(),
+            if (!editing)
+              IconButton(
+                onPressed: () {
+                  goToBulkDownloadPage(
+                    context,
+                    [widget.group.getQueryString()],
+                    ref: ref,
+                  );
+                },
+                icon: const Icon(Symbols.download),
+              ),
+            if (!editing)
+              IconButton(
+                onPressed: () {
+                  setState(() {
+                    editing = true;
+                    commands.clear();
+                  });
+                },
+                icon: const Icon(
+                  Symbols.edit,
+                  fill: 1,
+                ),
+              )
+            else
+              TextButton(
+                onPressed: () {
+                  setState(() {
+                    editing = false;
+                    commands.clear();
+                  });
+                },
+                child: const Text('generic.action.cancel').tr(),
+              ),
+          ],
+        ),
+        body: refreshing
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    if (editing)
+                      Row(
+                        children: [
+                          const Expanded(
+                            child: Text('Drag and drop to determine ordering.'),
                           ),
-                          count: rowCountEditMode,
-                          onAdded: (count) =>
-                              setState(() => rowCountEditMode = count + 1),
-                          onDecreased: (count) =>
-                              setState(() => rowCountEditMode = count - 1),
-                        ),
-                      ],
-                    ),
-                  Expanded(
-                    child: InfiniteLoadList(
-                      scrollController: scrollController,
-                      onLoadMore: () => controller.fetchMore(),
-                      enableLoadMore: hasMore,
-                      builder: (context, scrollController) {
-                        final count = _sizeToGridCount(Screen.of(context).size);
-
-                        return ReorderableGridView.builder(
-                          controller: scrollController,
-                          dragEnabled: editing,
-                          itemCount: items.length,
-                          onReorder: (oldIndex, newIndex) {
-                            controller.moveAndInsert(
-                              fromIndex: oldIndex,
-                              toIndex: newIndex,
-                              onSuccess: () {
-                                if (oldIndex != newIndex) {
-                                  setState(() {
-                                    commands
-                                        .add([false, oldIndex, newIndex, 0]);
-                                  });
-                                }
-                              },
-                            );
-                          },
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: editing ? rowCountEditMode : count,
-                            mainAxisSpacing: 4,
-                            crossAxisSpacing: 4,
+                          GridSizeAdjustmentButtons(
+                            minCount: 2,
+                            maxCount: _sizeToGridCount(
+                              Screen.of(context).nextBreakpoint(),
+                            ),
+                            count: rowCountEditMode,
+                            onAdded: (count) =>
+                                setState(() => rowCountEditMode = count + 1),
+                            onDecreased: (count) =>
+                                setState(() => rowCountEditMode = count - 1),
                           ),
-                          itemBuilder: (context, index) {
-                            final post = items[index];
+                        ],
+                      ),
+                    Expanded(
+                      child: InfiniteLoadList(
+                        scrollController: scrollController,
+                        onLoadMore: () => controller.fetchMore(),
+                        enableLoadMore: hasMore,
+                        builder: (context, scrollController) {
+                          final count =
+                              _sizeToGridCount(Screen.of(context).size);
 
-                            return Stack(
-                              key: ValueKey(index),
-                              children: [
-                                ConditionalParentWidget(
-                                  condition: !editing,
-                                  conditionalBuilder: (child) =>
-                                      ContextMenuRegion(
-                                    contextMenu: DanbooruPostContextMenu(
+                          return ReorderableGridView.builder(
+                            controller: scrollController,
+                            dragEnabled: editing,
+                            itemCount: items.length,
+                            onReorder: (oldIndex, newIndex) {
+                              controller.moveAndInsert(
+                                fromIndex: oldIndex,
+                                toIndex: newIndex,
+                                onSuccess: () {
+                                  if (oldIndex != newIndex) {
+                                    setState(() {
+                                      commands
+                                          .add([false, oldIndex, newIndex, 0]);
+                                    });
+                                  }
+                                },
+                              );
+                            },
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount:
+                                  editing ? rowCountEditMode : count,
+                              mainAxisSpacing: 4,
+                              crossAxisSpacing: 4,
+                            ),
+                            itemBuilder: (context, index) {
+                              final post = items[index];
+
+                              return Stack(
+                                key: ValueKey(index),
+                                children: [
+                                  ConditionalParentWidget(
+                                    condition: !editing,
+                                    conditionalBuilder: (child) =>
+                                        ContextMenuRegion(
+                                      contextMenu: DanbooruPostContextMenu(
+                                        post: post,
+                                      ),
+                                      child: child,
+                                    ),
+                                    child: DanbooruImageGridItem(
+                                      image: BooruImage(
+                                        fit: BoxFit.cover,
+                                        imageUrl:
+                                            post.thumbnailFromImageQuality(
+                                                settings.imageQuality),
+                                        placeholderUrl: post.thumbnailImageUrl,
+                                      ),
+                                      enableFav: config.hasLoginDetails(),
+                                      hideOverlay: editing,
+                                      autoScrollOptions: AutoScrollOptions(
+                                        controller: scrollController,
+                                        index: index,
+                                      ),
                                       post: post,
-                                    ),
-                                    child: child,
-                                  ),
-                                  child: DanbooruImageGridItem(
-                                    image: BooruImage(
-                                      fit: BoxFit.cover,
-                                      imageUrl: post.thumbnailFromImageQuality(
-                                          settings.imageQuality),
-                                      placeholderUrl: post.thumbnailImageUrl,
-                                    ),
-                                    enableFav: config.hasLoginDetails(),
-                                    hideOverlay: editing,
-                                    autoScrollOptions: AutoScrollOptions(
-                                      controller: scrollController,
-                                      index: index,
-                                    ),
-                                    post: post,
-                                    onTap: !editing
-                                        ? () => goToPostDetailsPageFromPosts(
-                                              context: context,
-                                              posts: items,
-                                              initialIndex: index,
-                                              scrollController:
-                                                  scrollController,
-                                            )
-                                        : null,
-                                  ),
-                                ),
-                                if (editing)
-                                  Positioned(
-                                    top: 4,
-                                    right: 4,
-                                    child: CircularIconButton(
-                                      padding: const EdgeInsets.all(4),
-                                      icon: const Icon(Symbols.close),
-                                      onPressed: () {
-                                        controller
-                                            .remove([post.id], (e) => e.id);
-                                        commands.add([true, 0, 0, post.id]);
-                                      },
+                                      onTap: !editing
+                                          ? () => goToPostDetailsPageFromPosts(
+                                                context: context,
+                                                posts: items,
+                                                initialIndex: index,
+                                                scrollController:
+                                                    scrollController,
+                                              )
+                                          : null,
                                     ),
                                   ),
-                              ],
-                            );
-                          },
-                        );
-                      },
+                                  if (editing)
+                                    Positioned(
+                                      top: 4,
+                                      right: 4,
+                                      child: CircularIconButton(
+                                        padding: const EdgeInsets.all(4),
+                                        icon: const Icon(Symbols.close),
+                                        onPressed: () {
+                                          controller
+                                              .remove([post.id], (e) => e.id);
+                                          commands.add([true, 0, 0, post.id]);
+                                        },
+                                      ),
+                                    ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
+      ),
     );
   }
 }

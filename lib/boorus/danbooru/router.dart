@@ -1,6 +1,3 @@
-// Dart imports:
-import 'dart:math';
-
 // Flutter imports:
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,157 +8,587 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/tags/danbooru_show_tag_list_page.dart';
+import 'package:boorusama/boorus/danbooru/artists/artists.dart';
+import 'package:boorusama/boorus/danbooru/pools/pool_detail_page.dart';
 import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
+import 'package:boorusama/routers/widgets/failsafe_page.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import 'artists/artists.dart';
 import 'blacklist/blacklist.dart';
 import 'comments/comments.dart';
 import 'dmails/dmails.dart';
-import 'explores/explore_hot_page.dart';
-import 'explores/explore_most_viewed_page.dart';
-import 'explores/explore_popular_page.dart';
+import 'explores/explores.dart';
 import 'favorite_groups/favorite_groups.dart';
-import 'forums/danbooru_forum_page.dart';
-import 'pools/pool_detail_page.dart';
+import 'forums/forums.dart';
 import 'pools/pool_search_page.dart';
 import 'pools/pools.dart';
 import 'posts/posts.dart';
 import 'related_tags/related_tags.dart';
 import 'saved_searches/saved_searches.dart';
+import 'tags/danbooru_show_tag_list_page.dart';
 import 'tags/tags.dart';
 import 'uploads/danbooru_my_uploads_page.dart';
 import 'uploads/uploads.dart';
 import 'users/users.dart';
-import 'versions/danbooru_post_versions_page.dart';
+import 'versions/versions.dart';
+
+// Internal custom routes
+final danbooruCustomRoutes = [
+  GoRoute(
+    path: '/internal/danbooru/saved_searches/feed',
+    pageBuilder: (context, state) => CupertinoPage(
+      key: state.pageKey,
+      name: state.name,
+      child: const SavedSearchFeedPage(),
+    ),
+  ),
+  GoRoute(
+    path: '/internal/danbooru/explore/posts/hot',
+    pageBuilder: (context, state) => CupertinoPage(
+      key: state.pageKey,
+      name: state.name,
+      child: const ExploreHotPage(),
+    ),
+  ),
+  GoRoute(
+    path: '/internal/danbooru/settings/blacklist',
+    pageBuilder: (context, state) => CupertinoPage(
+      key: state.pageKey,
+      name: state.name,
+      child: const DanbooruBlacklistedTagsPage(),
+    ),
+  ),
+  GoRoute(
+    path: '/internal/danbooru/posts/:id/editor',
+    pageBuilder: (context, state) {
+      final post = state.extra as DanbooruPost?;
+
+      if (post == null) {
+        return CupertinoPage(
+          key: state.pageKey,
+          name: state.name,
+          child: const InvalidPage(
+            message: 'Invalid post',
+          ),
+        );
+      }
+
+      final page = TagEditPage(
+        post: post,
+      );
+
+      if (context.orientation.isPortrait) {
+        return CupertinoPage(
+          key: state.pageKey,
+          name: state.name,
+          child: page,
+        );
+      } else {
+        return CustomTransitionPage(
+          key: state.pageKey,
+          name: state.name,
+          child: page,
+          transitionsBuilder: fadeTransitionBuilder(),
+        );
+      }
+    },
+  ),
+  GoRoute(
+    path: '/internal/danbooru/posts/:id/comments/editor',
+    pageBuilder: (context, state) => CupertinoPage(
+      key: state.pageKey,
+      name: state.name,
+      child: Builder(
+        builder: (context) {
+          final postId = int.tryParse(state.pathParameters['id'] ?? '');
+          final text = state.uri.queryParameters['text'];
+          final commentId =
+              int.tryParse(state.uri.queryParameters['comment_id'] ?? '');
+
+          if (postId == null) {
+            return const InvalidPage(
+              message: 'Invalid post ID',
+            );
+          }
+
+          if (commentId != null && text != null) {
+            return CommentUpdatePage(
+              postId: postId,
+              commentId: commentId,
+              initialContent: text,
+            );
+          } else {
+            return CommentCreatePage(
+              postId: postId,
+              initialContent: text,
+            );
+          }
+        },
+      ),
+    ),
+  ),
+  GoRoute(
+    path: '/internal/danbooru/posts/:id/favoriter',
+    pageBuilder: (context, state) => CupertinoPage(
+      key: state.pageKey,
+      name: state.name,
+      child: Builder(
+        builder: (context) {
+          final postId = int.tryParse(state.pathParameters['id'] ?? '');
+
+          if (postId == null) {
+            return const InvalidPage(
+              message: 'Invalid post ID',
+            );
+          }
+
+          return DanbooruFavoriterListPage(postId: postId);
+        },
+      ),
+    ),
+  ),
+  GoRoute(
+    path: '/internal/danbooru/posts/:id/voter',
+    pageBuilder: (context, state) => CupertinoPage(
+      key: state.pageKey,
+      name: state.name,
+      child: Builder(
+        builder: (context) {
+          final postId = int.tryParse(state.pathParameters['id'] ?? '');
+
+          if (postId == null) {
+            return const InvalidPage(
+              message: 'Invalid post ID',
+            );
+          }
+
+          return DanbooruVoterListPage(postId: postId);
+        },
+      ),
+    ),
+  ),
+];
+
+final danbooruRoutes = [
+  ...danbooruDirectRoutes,
+  ...danbooruCustomRoutes,
+];
+
+// Danbooru direct mapping routes
+final danbooruDirectRoutes = [
+  GoRoute(
+    path: '/danbooru/profile',
+    pageBuilder: (context, state) => CupertinoPage(
+      key: state.pageKey,
+      name: state.name,
+      child: const DanbooruProfilePage(),
+    ),
+  ),
+  GoRoute(
+    path: '/danbooru/dmails',
+    pageBuilder: (context, state) => CupertinoPage(
+      key: state.pageKey,
+      name: state.name,
+      child: const DanbooruDmailPage(),
+    ),
+  ),
+  GoRoute(
+    path: '/danbooru/artists',
+    pageBuilder: (context, state) => CupertinoPage(
+      key: state.pageKey,
+      name: state.name,
+      child: const DanbooruArtistSearchPage(),
+    ),
+  ),
+  GoRoute(
+    path: '/danbooru/forum_topics',
+    pageBuilder: (context, state) => CupertinoPage(
+      key: state.pageKey,
+      name: state.name,
+      child: const DanbooruForumPage(),
+    ),
+    routes: [
+      GoRoute(
+        path: ':id',
+        pageBuilder: (context, state) => CupertinoPage(
+          key: state.pageKey,
+          name: state.name,
+          child: Builder(
+            builder: (context) {
+              final topic = state.extra as DanbooruForumTopic?;
+
+              if (topic == null) {
+                return const InvalidPage(
+                  message: 'Invalid topic',
+                );
+              }
+
+              return DanbooruForumPostsPage(
+                topic: topic,
+              );
+            },
+          ),
+        ),
+      ),
+    ],
+  ),
+  GoRoute(
+    path: '/danbooru/favorite_groups',
+    pageBuilder: (context, state) => CupertinoPage(
+      key: state.pageKey,
+      name: state.name,
+      child: const FavoriteGroupsPage(),
+    ),
+    routes: [
+      GoRoute(
+        path: ':id',
+        pageBuilder: (context, state) => CupertinoPage(
+          key: state.pageKey,
+          name: state.name,
+          child: Builder(builder: (context) {
+            final group = state.extra as DanbooruFavoriteGroup?;
+
+            if (group == null) {
+              return const InvalidPage(
+                message: 'Invalid group',
+              );
+            }
+
+            return FavoriteGroupDetailsPage(
+              group: group,
+              postIds: QueueList.from(group.postIds),
+            );
+          }),
+        ),
+      ),
+    ],
+  ),
+  GoRoute(
+    path: '/danbooru/explore',
+    pageBuilder: (context, state) => CupertinoPage(
+      key: state.pageKey,
+      name: state.name,
+      child: const DanbooruExplorePage(),
+    ),
+    routes: [
+      GoRoute(
+        path: 'posts/popular',
+        pageBuilder: (context, state) => CupertinoPage(
+          key: state.pageKey,
+          name: state.name,
+          child: ExplorePopularPage.routeOf(context),
+        ),
+      ),
+      GoRoute(
+        path: 'posts/viewed',
+        pageBuilder: (context, state) => CupertinoPage(
+          key: state.pageKey,
+          name: state.name,
+          child: ExploreMostViewedPage.routeOf(context),
+        ),
+      ),
+    ],
+  ),
+  GoRoute(
+    path: '/danbooru/saved_searches',
+    pageBuilder: (context, state) => CupertinoPage(
+      key: state.pageKey,
+      name: state.name,
+      child: const SavedSearchPage(),
+    ),
+  ),
+  GoRoute(
+    path: '/danbooru/users/:id',
+    pageBuilder: (context, state) => CupertinoPage(
+      key: state.pageKey,
+      name: state.name,
+      child: Builder(
+        builder: (context) {
+          final userId = int.tryParse(state.pathParameters['id'] ?? '');
+
+          if (userId == null) {
+            return const InvalidPage(
+              message: 'Invalid user ID',
+            );
+          }
+
+          return UserDetailsPage(
+            uid: userId,
+          );
+        },
+      ),
+    ),
+  ),
+  GoRoute(
+    path: '/danbooru/post_versions',
+    pageBuilder: (context, state) {
+      final post = state.extra as DanbooruPost;
+
+      return CupertinoPage(
+        key: state.pageKey,
+        name: state.name,
+        child: DanbooruPostVersionsPage.post(
+          post: post,
+        ),
+      );
+    },
+  ),
+  GoRoute(
+    path: '/danbooru/pools',
+    pageBuilder: (context, state) => CupertinoPage(
+      key: state.pageKey,
+      name: state.name,
+      child: const DanbooruPoolPage(),
+    ),
+    routes: [
+      GoRoute(
+        path: ':id',
+        pageBuilder: (context, state) => CupertinoPage(
+          key: state.pageKey,
+          name: state.name,
+          child: PoolDetailPage(
+            pool: state.extra as DanbooruPool,
+          ),
+        ),
+      ),
+      GoRoute(
+        path: 'search',
+        pageBuilder: (context, state) => CupertinoPage(
+          key: state.pageKey,
+          name: state.name,
+          child: const PoolSearchPage(),
+        ),
+      ),
+    ],
+  ),
+  GoRoute(
+    path: '/danbooru/uploads',
+    pageBuilder: (context, state) => CupertinoPage(
+      key: state.pageKey,
+      name: state.name,
+      child: const DanbooruUploadsPage(),
+    ),
+    routes: [
+      GoRoute(
+        path: ':id',
+        pageBuilder: (context, state) {
+          final post = state.extra as DanbooruUploadPost?;
+
+          if (post == null) {
+            return CupertinoPage(
+              key: state.pageKey,
+              name: state.name,
+              child: const InvalidPage(
+                message: 'Invalid post',
+              ),
+            );
+          }
+
+          final page = TagEditUploadPage(
+            post: post,
+          );
+
+          if (context.orientation.isPortrait) {
+            return CupertinoPage(
+              key: state.pageKey,
+              name: state.name,
+              child: page,
+            );
+          } else {
+            return CustomTransitionPage(
+              key: state.pageKey,
+              name: state.name,
+              child: page,
+              transitionsBuilder: fadeTransitionBuilder(),
+            );
+          }
+        },
+      ),
+    ],
+  ),
+];
 
 void goToPoolDetailPage(BuildContext context, DanbooruPool pool) {
-  context.navigator.push(CupertinoPageRoute(
-    builder: (_) => PoolDetailPage.of(context, pool: pool),
-  ));
+  context.push(
+    Uri(
+      pathSegments: [
+        '',
+        'danbooru',
+        'pools',
+        '${pool.id}',
+      ],
+    ).toString(),
+    extra: pool,
+  );
 }
 
 void goToPostVersionPage(BuildContext context, DanbooruPost post) {
-  if (context.orientation.isPortrait) {
-    context.navigator.push(
-      CupertinoPageRoute(
-        builder: (_) => DanbooruPostVersionsPage(
-          postId: post.id,
-          previewUrl: post.url720x720,
-        ),
-      ),
-    );
-  } else {
-    showSideSheetFromRight(
-      context: context,
-      width: min(context.screenWidth * 0.35, 500),
-      body: DanbooruPostVersionsPage(
-        postId: post.id,
-        previewUrl: post.url720x720,
-      ),
-    );
-  }
+  context.push(
+    Uri(
+      pathSegments: [
+        '',
+        'danbooru',
+        'post_versions',
+      ],
+      queryParameters: {
+        'search[post_id]': post.id.toString(),
+      },
+    ).toString(),
+    extra: post,
+  );
+}
+
+void goToExplorePage(BuildContext context) {
+  context.push(
+    Uri(
+      pathSegments: [
+        '',
+        'danbooru',
+        'explore',
+      ],
+    ).toString(),
+  );
 }
 
 void goToExplorePopularPage(BuildContext context) {
-  if (kPreferredLayout.isMobile) {
-    context.navigator.push(CupertinoPageRoute(
-      settings: const RouteSettings(
-        name: RouterPageConstant.explorePopular,
-      ),
-      builder: (_) => ExplorePopularPage.routeOf(context),
-    ));
-  } else {
-    showDesktopWindow(
-      context,
-      builder: (_) => ExplorePopularPage.routeOf(context),
-    );
-  }
+  context.push(
+    Uri(
+      pathSegments: [
+        '',
+        'danbooru',
+        'explore',
+        'posts',
+        'popular',
+      ],
+    ).toString(),
+  );
 }
 
 void goToExploreHotPage(BuildContext context) {
-  if (kPreferredLayout.isMobile) {
-    context.navigator.push(CupertinoPageRoute(
-      settings: const RouteSettings(
-        name: RouterPageConstant.exploreHot,
-      ),
-      builder: (_) => const ExploreHotPage(),
-    ));
-  } else {
-    showDesktopWindow(
-      context,
-      builder: (_) => const ExploreHotPage(),
-    );
-  }
+  context.push(
+    Uri(
+      pathSegments: [
+        '',
+        'internal',
+        'danbooru',
+        'explore',
+        'posts',
+        'hot',
+      ],
+    ).toString(),
+  );
 }
 
 void goToExploreMostViewedPage(BuildContext context) {
-  if (kPreferredLayout.isMobile) {
-    context.navigator.push(CupertinoPageRoute(
-      settings: const RouteSettings(
-        name: RouterPageConstant.exploreMostViewed,
-      ),
-      builder: (_) => ExploreMostViewedPage.routeOf(context),
-    ));
-  } else {
-    showDesktopWindow(
-      context,
-      builder: (_) => ExploreMostViewedPage.routeOf(context),
-    );
-  }
+  context.push(
+    Uri(
+      pathSegments: [
+        '',
+        'danbooru',
+        'explore',
+        'posts',
+        'viewed',
+      ],
+    ).toString(),
+  );
 }
 
-void goToSavedSearchPage(BuildContext context, String? username) {
-  context.navigator.push(CupertinoPageRoute(
-    builder: (_) => const SavedSearchFeedPage(),
-  ));
+void goToSavedSearchPage(BuildContext context) {
+  context.push(
+    Uri(
+      pathSegments: [
+        '',
+        'internal',
+        'danbooru',
+        'saved_searches',
+        'feed',
+      ],
+    ).toString(),
+  );
 }
 
 void goToSavedSearchEditPage(BuildContext context) {
-  if (kPreferredLayout.isMobile) {
-    context.navigator.push(CupertinoPageRoute(
-      builder: (_) {
-        return const SavedSearchPage();
-      },
-    ));
-  } else {
-    showDesktopWindow(
-      context,
-      width: min(context.screenWidth * 0.5, 600),
-      builder: (_) => const SavedSearchPage(),
-    );
-  }
+  context.push(
+    Uri(
+      pathSegments: [
+        '',
+        'danbooru',
+        'saved_searches',
+      ],
+    ).toString(),
+  );
 }
 
 void goToPoolPage(BuildContext context, WidgetRef ref) {
-  context.navigator.push(CupertinoPageRoute(
-    builder: (_) => const DanbooruPoolPage(),
-  ));
+  context.push(
+    Uri(
+      pathSegments: [
+        '',
+        'danbooru',
+        'pools',
+      ],
+    ).toString(),
+  );
 }
 
 void goToBlacklistedTagPage(BuildContext context) {
-  context.navigator.push(CupertinoPageRoute(
-    builder: (_) => const DanbooruBlacklistedTagsPage(),
-  ));
+  context.push(
+    Uri(
+      pathSegments: [
+        '',
+        'internal',
+        'danbooru',
+        'settings',
+        'blacklist',
+      ],
+    ).toString(),
+  );
 }
 
 void goToDmailPage(BuildContext context) {
-  context.navigator.push(CupertinoPageRoute(
-    builder: (_) => const DanbooruDmailPage(),
-  ));
+  context.push(
+    Uri(
+      pathSegments: [
+        '',
+        'danbooru',
+        'dmails',
+      ],
+    ).toString(),
+  );
+}
+
+void goToDmailDetailsPage(
+  BuildContext context, {
+  required Dmail dmail,
+}) {
+  context.push(
+    Uri(
+      pathSegments: [
+        '',
+        'danbooru',
+        'dmails',
+        '${dmail.id}',
+      ],
+    ).toString(),
+    extra: dmail,
+  );
 }
 
 void goToArtistSearchPage(BuildContext context) {
-  context.navigator.push(CupertinoPageRoute(
-    builder: (_) => const DanbooruArtistSearchPage(),
-  ));
+  context.push(
+    Uri(
+      pathSegments: [
+        '',
+        'danbooru',
+        'artists',
+      ],
+    ).toString(),
+  );
 }
 
 void goToCommentCreatePage(
@@ -169,15 +596,22 @@ void goToCommentCreatePage(
   required int postId,
   String? initialContent,
 }) {
-  context.navigator.push(CupertinoPageRoute(
-    builder: (_) => CommentCreatePage(
-      postId: postId,
-      initialContent: initialContent,
-    ),
-    settings: const RouteSettings(
-      name: RouterPageConstant.commentCreate,
-    ),
-  ));
+  context.push(
+    Uri(
+      pathSegments: [
+        '',
+        'internal',
+        'danbooru',
+        'posts',
+        '$postId',
+        'comments',
+        'editor',
+      ],
+      queryParameters: {
+        if (initialContent != null) 'text': initialContent,
+      },
+    ).toString(),
+  );
 }
 
 void goToCommentUpdatePage(
@@ -185,57 +619,65 @@ void goToCommentUpdatePage(
   required int postId,
   required int commentId,
   required String commentBody,
-  String? initialContent,
 }) {
-  context.navigator.push(
-    CupertinoPageRoute(
-      builder: (_) => CommentUpdatePage(
-        postId: postId,
-        commentId: commentId,
-        initialContent: commentBody,
-      ),
-      settings: const RouteSettings(
-        name: RouterPageConstant.commentUpdate,
-      ),
-    ),
+  context.push(
+    Uri(
+      pathSegments: [
+        '',
+        'internal',
+        'danbooru',
+        'posts',
+        '$postId',
+        'comments',
+        'editor',
+      ],
+      queryParameters: {
+        'text': commentBody,
+        'comment_id': commentId.toString(),
+      },
+    ).toString(),
+  );
+}
+
+void goToProfilePage(BuildContext context) {
+  context.push(
+    Uri(
+      pathSegments: [
+        '',
+        'danbooru',
+        'profile',
+      ],
+    ).toString(),
   );
 }
 
 void goToUserDetailsPage(
-  WidgetRef ref,
   BuildContext context, {
   required int uid,
-  required String username,
-  bool isSelf = false,
 }) {
-  final page = UserDetailsPage(
-    uid: uid,
-    username: username,
-    isSelf: isSelf,
+  context.push(
+    Uri(
+      pathSegments: [
+        '',
+        'danbooru',
+        'users',
+        '$uid',
+      ],
+    ).toString(),
   );
-
-  if (Screen.of(context).size == ScreenSize.small) {
-    context.navigator.push(
-      CupertinoPageRoute(
-        builder: (_) => page,
-      ),
-    );
-  } else {
-    showSideSheetFromRight(
-      body: page,
-      context: context,
-      width: 480,
-    );
-  }
 }
 
 void goToPoolSearchPage(BuildContext context, WidgetRef ref) {
-  context.navigator.push(CupertinoPageRoute(
-    builder: (_) => const PoolSearchPage(),
-    settings: const RouteSettings(
-      name: RouterPageConstant.poolSearch,
-    ),
-  ));
+  context.push(
+    Uri(
+      pathSegments: [
+        '',
+        'danbooru',
+        'pools',
+        'search',
+      ],
+    ).toString(),
+  );
 }
 
 void goToRelatedTagsPage(
@@ -258,19 +700,33 @@ void goToRelatedTagsPage(
 }
 
 void goToPostFavoritesDetails(BuildContext context, DanbooruPost post) {
-  context.navigator.push(CupertinoPageRoute(
-    builder: (_) => DanbooruFavoriterListPage(
-      postId: post.id,
-    ),
-  ));
+  context.push(
+    Uri(
+      pathSegments: [
+        '',
+        'internal',
+        'danbooru',
+        'posts',
+        '${post.id}',
+        'favoriter',
+      ],
+    ).toString(),
+  );
 }
 
 void goToPostVotesDetails(BuildContext context, DanbooruPost post) {
-  context.navigator.push(CupertinoPageRoute(
-    builder: (_) => DanbooruVoterListPage(
-      postId: post.id,
-    ),
-  ));
+  context.push(
+    Uri(
+      pathSegments: [
+        '',
+        'internal',
+        'danbooru',
+        'posts',
+        '${post.id}',
+        'voter',
+      ],
+    ).toString(),
+  );
 }
 
 void goToSavedSearchCreatePage(
@@ -366,23 +822,32 @@ Future<Object?> goToFavoriteGroupEditPage(
 }
 
 void goToFavoriteGroupPage(BuildContext context) {
-  context.navigator.push(CupertinoPageRoute(
-    builder: (_) => const FavoriteGroupsPage(),
-  ));
+  context.push(
+    Uri(
+      pathSegments: [
+        '',
+        'danbooru',
+        'favorite_groups',
+      ],
+    ).toString(),
+  );
 }
 
 void goToFavoriteGroupDetailsPage(
   BuildContext context,
   DanbooruFavoriteGroup group,
 ) {
-  context.navigator.push(CupertinoPageRoute(
-    builder: (_) => CustomContextMenuOverlay(
-      child: FavoriteGroupDetailsPage(
-        group: group,
-        postIds: QueueList.from(group.postIds),
-      ),
-    ),
-  ));
+  context.push(
+    Uri(
+      pathSegments: [
+        '',
+        'danbooru',
+        'favorite_groups',
+        '${group.id}',
+      ],
+    ).toString(),
+    extra: group,
+  );
 }
 
 Future<bool?> goToAddToFavoriteGroupSelectionPage(
@@ -413,56 +878,79 @@ Future<bool?> goToDanbooruShowTaglistPage(
 }
 
 void goToForumPage(BuildContext context) {
-  context.navigator.push(CupertinoPageRoute(
-    builder: (_) => const DanbooruForumPage(),
-  ));
+  context.push(
+    Uri(
+      pathSegments: [
+        '',
+        'danbooru',
+        'forum_topics',
+      ],
+    ).toString(),
+  );
+}
+
+void goToForumPostsPage(
+  BuildContext context, {
+  required DanbooruForumTopic topic,
+}) {
+  context.push(
+    Uri(
+      pathSegments: [
+        '',
+        'danbooru',
+        'forum_topics',
+        '${topic.id}',
+      ],
+    ).toString(),
+    extra: topic,
+  );
 }
 
 void goToTagEditPage(
   BuildContext context, {
   required DanbooruPost post,
 }) {
-  if (context.orientation.isPortrait) {
-    context.navigator.push(CupertinoPageRoute(
-      builder: (context) => TagEditPage(
-        post: post,
-      ),
-    ));
-  } else {
-    context.navigator.push(FastFadePageRoute(
-      child: TagEditPage(
-        post: post,
-      ),
-    ));
-  }
+  context.push(
+    Uri(
+      pathSegments: [
+        '',
+        'internal',
+        'danbooru',
+        'posts',
+        '${post.id}',
+        'editor',
+      ],
+    ).toString(),
+    extra: post,
+  );
 }
 
 void goToTagEditUploadPage(
   BuildContext context, {
   required DanbooruUploadPost post,
-  required void Function() onSubmitted,
+  required int uploadId,
 }) {
-  if (Screen.of(context).size == ScreenSize.small) {
-    context.navigator.push(CupertinoPageRoute(
-      builder: (context) => TagEditUploadPage(
-        post: post,
-        onSubmitted: onSubmitted,
-      ),
-    ));
-  } else {
-    context.navigator.push(MaterialPageRoute(
-      builder: (context) => TagEditUploadPage(
-        post: post,
-        onSubmitted: onSubmitted,
-      ),
-    ));
-  }
+  context.push(
+    Uri(
+      pathSegments: [
+        '',
+        'danbooru',
+        'uploads',
+        '$uploadId',
+      ],
+    ).toString(),
+    extra: post,
+  );
 }
 
-void goToMyUploadsPage(BuildContext context, int userId) {
-  context.navigator.push(CupertinoPageRoute(
-    builder: (_) => DanbooruMyUploadsPage(
-      userId: userId,
-    ),
-  ));
+void goToMyUploadsPage(BuildContext context) {
+  context.push(
+    Uri(
+      pathSegments: [
+        '',
+        'danbooru',
+        'uploads',
+      ],
+    ).toString(),
+  );
 }

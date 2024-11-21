@@ -92,10 +92,8 @@ class DanbooruFileDetails extends ConsumerWidget {
                         borderRadius: BorderRadius.all(Radius.circular(8)),
                       ),
                       onTap: () => goToUserDetailsPage(
-                        ref,
                         context,
                         uid: uploader.id,
-                        username: uploader.name,
                       ),
                       child: Text(
                         uploader.name.replaceAll('_', ' '),
@@ -119,10 +117,8 @@ class DanbooruFileDetails extends ConsumerWidget {
                 color: Colors.transparent,
                 child: InkWell(
                   onTap: () => goToUserDetailsPage(
-                    ref,
                     context,
                     uid: approver.id,
-                    username: approver.name,
                   ),
                   child: Text(
                     approver.name.replaceAll('_', ' '),

@@ -11,7 +11,20 @@ import 'package:boorusama/core/explores/explores.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 class DanbooruExplorePage extends ConsumerWidget {
-  const DanbooruExplorePage({
+  const DanbooruExplorePage({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('explore.explore').tr(),
+      ),
+      body: const DanbooruExplorePageInternal(),
+    );
+  }
+}
+
+class DanbooruExplorePageInternal extends ConsumerWidget {
+  const DanbooruExplorePageInternal({
     super.key,
     this.useAppBarPadding = true,
   });

@@ -11,8 +11,9 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:boorusama/boorus/danbooru/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/uploads/uploads.dart';
+import 'package:boorusama/boorus/danbooru/users/users_provider.dart';
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs/providers.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
@@ -30,8 +31,38 @@ enum UploadTabType {
   unposted,
 }
 
-class DanbooruMyUploadsPage extends ConsumerStatefulWidget {
-  const DanbooruMyUploadsPage({
+class DanbooruUploadsPage extends ConsumerWidget {
+  const DanbooruUploadsPage({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
+
+    return BooruConfigAuthFailsafe(
+      child: ref.watch(danbooruCurrentUserProvider(config)).maybeWhen(
+            data: (data) => data != null
+                ? DanbooruMyUploadsPageInternal(
+                    userId: data.id,
+                  )
+                : Scaffold(
+                    appBar: AppBar(),
+                    body: const Center(
+                      child: Text('Unauthorized'),
+                    ),
+                  ),
+            orElse: () => Scaffold(
+              appBar: AppBar(),
+              body: const Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+          ),
+    );
+  }
+}
+
+class DanbooruMyUploadsPageInternal extends ConsumerStatefulWidget {
+  const DanbooruMyUploadsPageInternal({
     super.key,
     required this.userId,
   });
@@ -46,7 +77,8 @@ class DanbooruMyUploadsPage extends ConsumerStatefulWidget {
 final _danbooruShowUploadHiddenProvider =
     StateProvider.autoDispose<bool>((ref) => false);
 
-class _DanbooruMyUploadsPageState extends ConsumerState<DanbooruMyUploadsPage>
+class _DanbooruMyUploadsPageState
+    extends ConsumerState<DanbooruMyUploadsPageInternal>
     with SingleTickerProviderStateMixin {
   late final tabController = TabController(length: 2, vsync: this);
 
@@ -231,7 +263,9 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
                       goToTagEditUploadPage(
                         context,
                         post: post,
-                        onSubmitted: () => controller.refresh(),
+                        uploadId: post.uploadId,
+                        //TODO: Refresh later
+                        // onSubmitted: () => controller.refresh(),
                       );
                     }
                   },

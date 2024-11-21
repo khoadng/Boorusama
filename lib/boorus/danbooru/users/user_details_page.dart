@@ -126,8 +126,8 @@ class DanbooruProfilePage extends ConsumerWidget {
 
     return UserDetailsPage(
       uid: userId,
-      username: username,
       hasAppBar: hasAppBar,
+      isSelf: true,
     );
   }
 }
@@ -136,13 +136,11 @@ class UserDetailsPage extends ConsumerWidget {
   const UserDetailsPage({
     super.key,
     required this.uid,
-    required this.username,
     this.hasAppBar = true,
     this.isSelf = false,
   });
 
   final int uid;
-  final String username;
   final bool hasAppBar;
   final bool isSelf;
 
@@ -177,7 +175,7 @@ class UserDetailsPage extends ConsumerWidget {
                   if (user.uploadCount > 0)
                     'Uploads': UserDetailsUploadView(
                       uid: uid,
-                      username: username,
+                      username: user.name,
                       isSelf: isSelf,
                       user: user,
                     ),
@@ -270,7 +268,7 @@ class UserDetailsActionButtons extends ConsumerWidget {
                 foregroundColor: context.colorScheme.onSecondaryContainer,
               ),
               child: const Text('My Uploads'),
-              onPressed: () => goToMyUploadsPage(context, uid),
+              onPressed: () => goToMyUploadsPage(context),
             ),
           const SizedBox(width: 8),
           FilledButton(

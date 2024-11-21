@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -12,7 +11,6 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/users/users.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/forums/forum_topic.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 class DanbooruForumPage extends ConsumerStatefulWidget {
@@ -107,18 +105,13 @@ class _DanbooruForumPageState extends ConsumerState<DanbooruForumPage> {
       creatorName: creatorName,
       creatorColor: creator.getColor(context),
       onCreatorTap: () => goToUserDetailsPage(
-        ref,
         context,
         uid: topic.creatorId,
-        username: creatorName,
       ),
-      onTap: () => context.navigator.push(CupertinoPageRoute(
-        builder: (_) => DanbooruForumPostsPage(
-          topicId: topic.id,
-          title: topic.title,
-          responseCount: topic.responseCount,
-        ),
-      )),
+      onTap: () => goToForumPostsPage(
+        context,
+        topic: topic,
+      ),
     );
   }
 }
