@@ -3,19 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/images/dio_extended_image.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/foundation/mobile.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -186,6 +185,7 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
 
   Widget _buildImage() {
     final config = ref.watchConfig;
+    final dio = ref.watch(dioProvider(config));
 
     return Hero(
       tag: '${widget.id}_hero',
@@ -195,11 +195,10 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
             zoom = value;
           });
         },
-        child: ExtendedImage.network(
+        child: DioExtendedImage.network(
           widget.imageUrl,
+          dio: dio,
           headers: {
-            AppHttpHeaders.userAgentHeader:
-                ref.watch(userAgentGeneratorProvider(config)).generate(),
             ...ref.watch(extraHttpHeaderProvider(config)),
           },
         ),

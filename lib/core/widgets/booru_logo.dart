@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
 import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/images/dio_extended_image.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
 
@@ -54,7 +55,7 @@ class BooruLogo extends StatelessWidget {
     return PostSource.from(source).whenWeb(
       (s) => FittedBox(
         child: s.faviconType == FaviconType.network
-            ? ExtendedImage.network(
+            ? DioExtendedImage.network(
                 s.faviconUrl,
                 width: width ?? 24,
                 height: height ?? 24,

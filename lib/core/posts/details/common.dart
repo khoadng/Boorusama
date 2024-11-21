@@ -2,12 +2,12 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/images/dio_extended_image.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
 
@@ -31,16 +31,17 @@ class PostDetailsPreloadImage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfig;
-    return ExtendedImage.network(
+    final dio = ref.watch(dioProvider(config));
+
+    return DioExtendedImage.network(
       url,
+      dio: dio,
       width: 1,
       height: 1,
       cacheHeight: 10,
       cacheWidth: 10,
       cacheMaxAge: kDefaultImageCacheDuration,
       headers: {
-        AppHttpHeaders.userAgentHeader:
-            ref.watch(userAgentGeneratorProvider(config)).generate(),
         ...ref.watch(extraHttpHeaderProvider(config)),
       },
     );

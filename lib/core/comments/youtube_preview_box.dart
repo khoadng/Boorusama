@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:dio/dio.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:html/parser.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import 'package:boorusama/core/images/dio_extended_image.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
@@ -24,8 +24,9 @@ class YoutubePreviewBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     try {
+      final dio = Dio();
       return FutureBuilder<PreviewUrlData>(
-        future: Dio()
+        future: dio
             .getUri(uri)
             .then((value) => value.data)
             .then((value) => parseHtmlAsync(value, uri.toString())),
@@ -60,8 +61,9 @@ class YoutubePreviewBox extends StatelessWidget {
                             ClipRRect(
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(8)),
-                              child: ExtendedImage.network(
+                              child: DioExtendedImage.network(
                                 data.previewImage!,
+                                dio: dio,
                                 fit: BoxFit.contain,
                                 cacheMaxAge: kDefaultImageCacheDuration,
                               ),
