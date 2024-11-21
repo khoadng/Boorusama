@@ -276,21 +276,28 @@ class _PostDetailPageScaffoldState<T extends Post>
   }
 
   Widget _buildCustomPreview(PostDetailsUIBuilder uiBuilder) {
-    return ColoredBox(
+    return Container(
       color: context.colorScheme.surface,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _buildVideoControls(),
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              for (final part in uiBuilder.preview.keys)
-                uiBuilder.buildPart(context, part),
-              SizedBox(
-                height: MediaQuery.paddingOf(context).bottom,
+      child: CustomScrollView(
+        shrinkWrap: true,
+        slivers: [
+          SliverToBoxAdapter(
+            child: _buildVideoControls(),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  for (final part in uiBuilder.preview.keys)
+                    uiBuilder.buildPart(context, part),
+                ],
               ),
-            ],
+            ),
+          ),
+          SliverSizedBox(
+            height: MediaQuery.paddingOf(context).bottom,
           ),
         ],
       ),
@@ -302,6 +309,9 @@ class _PostDetailPageScaffoldState<T extends Post>
       mainAxisSize: MainAxisSize.min,
       children: [
         _buildVideoControls(),
+        SizedBox(
+          height: MediaQuery.paddingOf(context).bottom,
+        ),
       ],
     );
   }
