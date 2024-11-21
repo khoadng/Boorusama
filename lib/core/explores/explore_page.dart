@@ -177,7 +177,7 @@ class ExploreList extends ConsumerWidget {
             childBuilder: (block) => Padding(
               padding: const EdgeInsets.symmetric(horizontal: 2),
               child: GestureDetector(
-                onTap: () => goToPostDetailsPage(
+                onTap: () => goToPostDetailsPageFromPosts(
                   context: context,
                   posts: filteredPosts,
                   initialIndex: index,

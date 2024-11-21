@@ -343,7 +343,7 @@ class AnimePicturesRelatedPostsSection extends ConsumerWidget {
               ? RelatedPostsSection(
                   posts: details.tied!.map(dtoToAnimePicturesPost).toList(),
                   imageUrl: defaultPostImageUrlBuilder(ref),
-                  onTap: (index) => goToPostDetailsPage(
+                  onTap: (index) => goToPostDetailsPageFromPosts(
                     context: context,
                     posts: posts,
                     initialIndex: index,

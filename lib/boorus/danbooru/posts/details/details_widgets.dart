@@ -111,7 +111,7 @@ class DanbooruArtistPostsSection extends ConsumerWidget {
                         .maybeWhen(
                           data: (data) => SliverPreviewPostGrid(
                             posts: data,
-                            onTap: (postIdx) => goToPostDetailsPage(
+                            onTap: (postIdx) => goToPostDetailsPageFromPosts(
                               context: context,
                               posts: data,
                               initialIndex: postIdx,

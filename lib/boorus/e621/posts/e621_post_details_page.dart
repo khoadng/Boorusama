@@ -29,21 +29,22 @@ class E621ArtistPostsSection extends ConsumerWidget {
           ? post.artistTags
               .map((tag) => ArtistPostList(
                     tag: tag,
-                    builder: (tag) =>
-                        ref.watch(e621ArtistPostsProvider(tag)).maybeWhen(
-                              data: (data) => SliverPreviewPostGrid(
-                                posts: data,
-                                onTap: (postIdx) => goToPostDetailsPage(
-                                  context: context,
-                                  posts: data,
-                                  initialIndex: postIdx,
-                                ),
-                                imageUrl: (item) => item.thumbnailFromSettings(
-                                    ref.watch(imageListingSettingsProvider)),
-                              ),
-                              orElse: () =>
-                                  const SliverPreviewPostGridPlaceholder(),
+                    builder: (tag) => ref
+                        .watch(e621ArtistPostsProvider(tag))
+                        .maybeWhen(
+                          data: (data) => SliverPreviewPostGrid(
+                            posts: data,
+                            onTap: (postIdx) => goToPostDetailsPageFromPosts(
+                              context: context,
+                              posts: data,
+                              initialIndex: postIdx,
                             ),
+                            imageUrl: (item) => item.thumbnailFromSettings(
+                                ref.watch(imageListingSettingsProvider)),
+                          ),
+                          orElse: () =>
+                              const SliverPreviewPostGridPlaceholder(),
+                        ),
                   ))
               .toList()
           : [],

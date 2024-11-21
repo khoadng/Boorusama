@@ -269,7 +269,7 @@ class _FavoriteGroupDetailsPageState
                                     ),
                                     post: post,
                                     onTap: !editing
-                                        ? () => goToPostDetailsPage(
+                                        ? () => goToPostDetailsPageFromPosts(
                                               context: context,
                                               posts: items,
                                               initialIndex: index,

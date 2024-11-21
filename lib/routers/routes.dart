@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
@@ -50,13 +49,6 @@ const kCharacterNameKey = 'name';
 
 const kBulkdownload = 'bulk_download';
 
-typedef DetailsPayload<T extends Post> = ({
-  int initialIndex,
-  List<T> posts,
-  AutoScrollController? scrollController,
-  bool isDesktop,
-});
-
 class Routes {
   static GoRoute home(Ref ref) => GoRoute(
         path: '/',
@@ -95,7 +87,6 @@ class Routes {
 
   static GoRoute postDetails(Ref ref) => GoRoute(
         path: 'details',
-        name: '/details',
         pageBuilder: (context, state) {
           final config = ref.read(currentBooruConfigProvider);
           final booruBuilder = ref.readBooruBuilder(config);
@@ -109,27 +100,27 @@ class Routes {
             );
           }
 
-          if (!payload.isDesktop) {
-            return MaterialPage(
-              key: state.pageKey,
-              name: state.name,
-              child: builder != null
-                  ? builder(context, config, payload)
-                  : const UnimplementedPage(),
-            );
-          } else {
-            return builder != null
-                ? FastFadePage(
-                    key: state.pageKey,
-                    name: state.name,
-                    child: builder(context, config, payload),
-                  )
-                : MaterialPage(
-                    key: state.pageKey,
-                    name: state.name,
-                    child: const UnimplementedPage(),
-                  );
-          }
+          final page = !payload.isDesktop
+              ? MaterialPage(
+                  key: state.pageKey,
+                  name: state.name,
+                  child: builder != null
+                      ? builder(context, config, payload)
+                      : const UnimplementedPage(),
+                )
+              : builder != null
+                  ? FastFadePage(
+                      key: state.pageKey,
+                      name: state.name,
+                      child: builder(context, config, payload),
+                    )
+                  : MaterialPage(
+                      key: state.pageKey,
+                      name: state.name,
+                      child: const UnimplementedPage(),
+                    );
+
+          return page;
         },
       );
 

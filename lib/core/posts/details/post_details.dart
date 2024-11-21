@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:video_player/video_player.dart';
@@ -173,4 +174,39 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
   void onVideoPlayerCreated(VideoPlayerController controller, int id) {
     _videoControllers[id] = controller;
   }
+}
+
+class DetailsPayload<T extends Post> extends Equatable {
+  const DetailsPayload({
+    required this.initialIndex,
+    required this.posts,
+    required this.scrollController,
+    required this.isDesktop,
+  });
+
+  DetailsPayload<T> copyWith({
+    int? initialIndex,
+    AutoScrollController? scrollController,
+    bool? isDesktop,
+  }) {
+    return DetailsPayload<T>(
+      initialIndex: initialIndex ?? this.initialIndex,
+      posts: posts,
+      scrollController: scrollController ?? this.scrollController,
+      isDesktop: isDesktop ?? this.isDesktop,
+    );
+  }
+
+  final int initialIndex;
+  final List<T> posts;
+  final AutoScrollController? scrollController;
+  final bool isDesktop;
+
+  @override
+  List<Object?> get props => [
+        initialIndex,
+        posts,
+        scrollController,
+        isDesktop,
+      ];
 }

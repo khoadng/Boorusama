@@ -53,7 +53,7 @@ class GelbooruV2RelatedPostsSection extends ConsumerWidget {
                   context,
                   tag: post.relationshipQuery,
                 ),
-                onTap: (index) => goToPostDetailsPage(
+                onTap: (index) => goToPostDetailsPageFromPosts(
                   context: context,
                   posts: data,
                   initialIndex: index,
@@ -106,7 +106,8 @@ class GelbooruV2ArtistPostsSection extends ConsumerWidget {
                               .maybeWhen(
                                 data: (data) => SliverPreviewPostGrid(
                                   posts: data,
-                                  onTap: (postIdx) => goToPostDetailsPage(
+                                  onTap: (postIdx) =>
+                                      goToPostDetailsPageFromPosts(
                                     context: context,
                                     posts: data,
                                     initialIndex: postIdx,

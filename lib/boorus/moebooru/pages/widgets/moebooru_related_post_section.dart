@@ -30,7 +30,7 @@ class MoebooruRelatedPostsSection extends ConsumerWidget {
                 context,
                 tag: post.relationshipQuery,
               ),
-              onTap: (index) => goToPostDetailsPage(
+              onTap: (index) => goToPostDetailsPageFromPosts(
                 context: context,
                 posts: posts,
                 initialIndex: index,

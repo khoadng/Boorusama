@@ -232,7 +232,7 @@ class DanbooruRelatedPostsSection extends ConsumerWidget {
         context,
         tag: currentPost.relationshipQuery,
       ),
-      onTap: (index) => goToPostDetailsPage(
+      onTap: (index) => goToPostDetailsPageFromPosts(
         context: context,
         posts: posts,
         initialIndex: index,

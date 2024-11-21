@@ -263,7 +263,7 @@ class SliverUploadPostList extends ConsumerWidget {
           sliver: ref.watch(danbooruUserUploadsProvider(params)).maybeWhen(
                 data: (data) => SliverPreviewPostGrid(
                   posts: data,
-                  onTap: (postIdx) => goToPostDetailsPage(
+                  onTap: (postIdx) => goToPostDetailsPageFromPosts(
                     context: context,
                     posts: data,
                     initialIndex: postIdx,

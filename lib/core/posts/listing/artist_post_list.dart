@@ -96,7 +96,7 @@ class SliverPreviewPostGrid<T extends Post> extends StatelessWidget {
         return ImageGridItem(
           isGif: post.isGif,
           isAI: post.isAI,
-          onTap: () => goToPostDetailsPage(
+          onTap: () => goToPostDetailsPageFromPosts(
             context: context,
             posts: posts,
             initialIndex: index,
