@@ -282,8 +282,9 @@ class _PostDetailPageScaffoldState<T extends Post>
           SliverToBoxAdapter(
             child: _buildVideoControls(),
           ),
-          for (final part in uiBuilder.preview.keys)
-            uiBuilder.buildPart(context, part),
+          ...uiBuilder.preview.keys
+              .map((p) => uiBuilder.buildPart(context, p))
+              .nonNulls,
           SliverSizedBox(
             height: MediaQuery.paddingOf(context).bottom,
           ),
@@ -359,8 +360,10 @@ class PostDetailsFullInfoSheet extends ConsumerWidget {
       preview: DefaultPostDetailsInfoPreview(
         scrollController: scrollController,
       ),
-      slivers:
-          builder.full.keys.map((p) => builder.buildPart(context, p)).toList(),
+      slivers: builder.full.keys
+          .map((p) => builder.buildPart(context, p))
+          .nonNulls
+          .toList(),
       sheetState: sheetState,
     );
   }
