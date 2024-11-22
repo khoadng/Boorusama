@@ -19,12 +19,14 @@ class DefaultInheritedTagList<T extends Post> extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<T>(context);
 
-    return BasicTagList(
-      tags: post.tags.toList(),
-      unknownCategoryColor: ref.watch(tagColorProvider('general')),
-      onTap: (tag) => goToSearchPage(
-        context,
-        tag: tag,
+    return SliverToBoxAdapter(
+      child: BasicTagList(
+        tags: post.tags.toList(),
+        unknownCategoryColor: ref.watch(tagColorProvider('general')),
+        onTap: (tag) => goToSearchPage(
+          context,
+          tag: tag,
+        ),
       ),
     );
   }

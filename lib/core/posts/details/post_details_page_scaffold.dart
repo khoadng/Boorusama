@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:sliver_tools/sliver_tools.dart';
 import 'package:video_player/video_player.dart';
 
 // Project imports:
@@ -283,18 +282,8 @@ class _PostDetailPageScaffoldState<T extends Post>
           SliverToBoxAdapter(
             child: _buildVideoControls(),
           ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  for (final part in uiBuilder.preview.keys)
-                    uiBuilder.buildPart(context, part),
-                ],
-              ),
-            ),
-          ),
+          for (final part in uiBuilder.preview.keys)
+            uiBuilder.buildPart(context, part),
           SliverSizedBox(
             height: MediaQuery.paddingOf(context).bottom,
           ),
@@ -370,11 +359,8 @@ class PostDetailsFullInfoSheet extends ConsumerWidget {
       preview: DefaultPostDetailsInfoPreview(
         scrollController: scrollController,
       ),
-      sliver: MultiSliver(
-        children: [
-          ...builder.full.keys.map((p) => builder.buildPart(context, p)),
-        ],
-      ),
+      slivers:
+          builder.full.keys.map((p) => builder.buildPart(context, p)).toList(),
       sheetState: sheetState,
     );
   }
@@ -385,13 +371,13 @@ class RawPostDetailsInfoSheet extends StatelessWidget {
     super.key,
     required this.scrollController,
     required this.preview,
-    required this.sliver,
+    required this.slivers,
     required this.sheetState,
   });
 
   final ScrollController? scrollController;
   final Widget preview;
-  final Widget sliver;
+  final List<Widget> slivers;
 
   final SheetState sheetState;
 
@@ -407,11 +393,7 @@ class RawPostDetailsInfoSheet extends StatelessWidget {
         controller: scrollController,
         slivers: [
           const SliverSizedBox(height: 12),
-          // SliverOffstage(
-          //   offstage: sheetState == SheetState.hidden,
-          //   sliver: sliver,
-          // ),
-          sliver,
+          ...slivers,
           SliverSizedBox(
             height: MediaQuery.paddingOf(context).bottom + 72,
           ),

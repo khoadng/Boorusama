@@ -118,9 +118,11 @@ class Shimmie2FileDetailsSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<Shimmie2Post>(context);
 
-    return DefaultFileDetailsSection(
-      post: post,
-      uploaderName: post.uploaderName,
+    return SliverToBoxAdapter(
+      child: DefaultFileDetailsSection(
+        post: post,
+        uploaderName: post.uploaderName,
+      ),
     );
   }
 }

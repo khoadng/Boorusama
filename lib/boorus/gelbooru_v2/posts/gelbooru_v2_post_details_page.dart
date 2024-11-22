@@ -30,9 +30,11 @@ class GelbooruV2FileDetailsSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<GelbooruV2Post>(context);
 
-    return DefaultFileDetailsSection(
-      post: post,
-      uploaderName: post.uploaderName,
+    return SliverToBoxAdapter(
+      child: DefaultFileDetailsSection(
+        post: post,
+        uploaderName: post.uploaderName,
+      ),
     );
   }
 }
@@ -45,7 +47,7 @@ class GelbooruV2RelatedPostsSection extends ConsumerWidget {
 
     return post.hasParent
         ? ref.watch(gelbooruV2ChildPostsProvider(post)).maybeWhen(
-              data: (data) => RelatedPostsSection(
+              data: (data) => SliverRelatedPostsSection(
                 title: 'Child posts',
                 posts: data,
                 imageUrl: (post) => post.sampleImageUrl,
@@ -77,7 +79,7 @@ class GelbooruV2CharacterPostsSection extends ConsumerWidget {
         .fold(
           () => const SliverSizedBox.shrink(),
           (tags) => tags.isNotEmpty
-              ? CharacterPostList(
+              ? SliverCharacterPostList(
                   tags: tags,
                 )
               : const SliverSizedBox.shrink(),
@@ -99,7 +101,7 @@ class GelbooruV2ArtistPostsSection extends ConsumerWidget {
             () => [],
             (tags) => tags.isNotEmpty
                 ? tags
-                    .map((tag) => ArtistPostList(
+                    .map((tag) => SliverArtistPostList(
                           tag: tag,
                           builder: (tag) => ref
                               .watch(gelbooruV2ArtistPostsProvider(tag))
@@ -216,25 +218,27 @@ class _GelbooruV2TagsTileState extends ConsumerState<GelbooruV2TagsTile> {
       });
     }
 
-    return error == null
-        ? TagsTile(
-            tags: expanded
-                ? ref.watch(gelbooruV2TagsFromIdProvider(post.id)).maybeWhen(
-                      data: (data) => createTagGroupItems(data),
-                      orElse: () => null,
-                    )
-                : null,
-            post: post,
-            onExpand: () => setState(() => expanded = true),
-            onCollapse: () {
-              // Don't set expanded to false to prevent rebuilding the tags list
-              setState(() => error = null);
-            },
-            onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
-          )
-        : BasicTagList(
-            tags: post.tags.toList(),
-            onTap: (tag) => goToSearchPage(context, tag: tag),
-          );
+    return SliverToBoxAdapter(
+      child: error == null
+          ? TagsTile(
+              tags: expanded
+                  ? ref.watch(gelbooruV2TagsFromIdProvider(post.id)).maybeWhen(
+                        data: (data) => createTagGroupItems(data),
+                        orElse: () => null,
+                      )
+                  : null,
+              post: post,
+              onExpand: () => setState(() => expanded = true),
+              onCollapse: () {
+                // Don't set expanded to false to prevent rebuilding the tags list
+                setState(() => error = null);
+              },
+              onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
+            )
+          : BasicTagList(
+              tags: post.tags.toList(),
+              onTap: (tag) => goToSearchPage(context, tag: tag),
+            ),
+    );
   }
 }

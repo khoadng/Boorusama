@@ -22,10 +22,12 @@ class DanbooruPoolTiles extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<DanbooruPost>(context);
 
-    return ref.watch(danbooruPostDetailsPoolsProvider(post.id)).maybeWhen(
-          data: (pools) => PoolTiles(pools: pools),
-          orElse: () => const SizedBox.shrink(),
-        );
+    return SliverToBoxAdapter(
+      child: ref.watch(danbooruPostDetailsPoolsProvider(post.id)).maybeWhen(
+            data: (pools) => PoolTiles(pools: pools),
+            orElse: () => const SizedBox.shrink(),
+          ),
+    );
   }
 }
 
@@ -35,26 +37,32 @@ class DanbooruInformationSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<DanbooruPost>(context);
 
-    return SimpleInformationSection(
-      post: post,
-      showSource: true,
+    return SliverToBoxAdapter(
+      child: SimpleInformationSection(
+        post: post,
+        showSource: true,
+      ),
     );
   }
 }
 
 class DanbooruArtistInfoSection extends ConsumerWidget {
   const DanbooruArtistInfoSection({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<DanbooruPost>(context);
 
-    return DanbooruArtistSection(
-      post: post,
-      commentary:
-          ref.watch(danbooruArtistCommentaryProvider(post.id)).maybeWhen(
-                data: (commentary) => commentary,
-                orElse: () => const ArtistCommentary.empty(),
-              ),
+    return SliverToBoxAdapter(
+      child: ArtistSection(
+        commentary:
+            ref.watch(danbooruArtistCommentaryProvider(post.id)).maybeWhen(
+                  data: (commentary) => commentary,
+                  orElse: () => const ArtistCommentary.empty(),
+                ),
+        artistTags: post.artistTags,
+        source: post.source,
+      ),
     );
   }
 }
@@ -65,7 +73,9 @@ class DanbooruTagsSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<DanbooruPost>(context);
 
-    return DanbooruTagsTile(post: post);
+    return SliverToBoxAdapter(
+      child: DanbooruTagsTile(post: post),
+    );
   }
 }
 
@@ -75,12 +85,15 @@ class DanbooruStatsSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<DanbooruPost>(context);
 
-    return DanbooruPostStatsTile(
-      post: post,
-      commentCount: ref.watch(danbooruCommentCountProvider(post.id)).maybeWhen(
-            data: (count) => count,
-            orElse: () => null,
-          ),
+    return SliverToBoxAdapter(
+      child: DanbooruPostStatsTile(
+        post: post,
+        commentCount:
+            ref.watch(danbooruCommentCountProvider(post.id)).maybeWhen(
+                  data: (count) => count,
+                  orElse: () => null,
+                ),
+      ),
     );
   }
 }
@@ -91,7 +104,9 @@ class DanbooruFileDetailsSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<DanbooruPost>(context);
 
-    return DanbooruFileDetails(post: post);
+    return SliverToBoxAdapter(
+      child: DanbooruFileDetails(post: post),
+    );
   }
 }
 
@@ -104,7 +119,7 @@ class DanbooruArtistPostsSection extends ConsumerWidget {
     return MultiSliver(
       children: post.artistTags.isNotEmpty
           ? post.artistTags
-              .map((tag) => ArtistPostList(
+              .map((tag) => SliverArtistPostList(
                     tag: tag,
                     builder: (tag) => ref
                         .watch(danbooruPostDetailsArtistProvider(tag))
@@ -151,11 +166,11 @@ class DanbooruCharacterListSection extends ConsumerWidget {
     final post = InheritedPost.of<DanbooruPost>(context);
 
     return post.artistTags.isEmpty
-        ? CharacterPostList(tags: post.characterTags)
+        ? SliverCharacterPostList(tags: post.characterTags)
         : ref
             .watch(danbooruPostDetailsArtistProvider(post.artistTags.first))
             .maybeWhen(
-              data: (_) => CharacterPostList(tags: post.characterTags),
+              data: (_) => SliverCharacterPostList(tags: post.characterTags),
               orElse: () => const SliverSizedBox.shrink(),
             );
   }

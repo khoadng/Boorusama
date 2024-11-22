@@ -22,36 +22,38 @@ class MoebooruCommentSection extends ConsumerWidget {
     final post = InheritedPost.of<MoebooruPost>(context);
     final asyncData = ref.watch(moebooruCommentsProvider(post.id));
 
-    return asyncData.when(
-      data: (comments) => comments.isEmpty
-          ? const SizedBox.shrink()
-          : Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 8,
-                horizontal: 12,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Divider(
-                    thickness: 1.5,
-                  ),
-                  Text(
-                    'comment.comments'.tr(),
-                    style: context.textTheme.titleLarge?.copyWith(
-                      color: context.colorScheme.hintColor,
-                      fontSize: 16,
+    return SliverToBoxAdapter(
+      child: asyncData.when(
+        data: (comments) => comments.isEmpty
+            ? const SizedBox.shrink()
+            : Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 8,
+                  horizontal: 12,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Divider(
+                      thickness: 1.5,
                     ),
-                  ),
-                  ...comments.map((comment) => Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        child: MoebooruCommentItem(comment: comment),
-                      ))
-                ],
+                    Text(
+                      'comment.comments'.tr(),
+                      style: context.textTheme.titleLarge?.copyWith(
+                        color: context.colorScheme.hintColor,
+                        fontSize: 16,
+                      ),
+                    ),
+                    ...comments.map((comment) => Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          child: MoebooruCommentItem(comment: comment),
+                        ))
+                  ],
+                ),
               ),
-            ),
-      loading: () => const SizedBox.shrink(),
-      error: (e, __) => const SizedBox.shrink(),
+        loading: () => const SizedBox.shrink(),
+        error: (e, __) => const SizedBox.shrink(),
+      ),
     );
   }
 }

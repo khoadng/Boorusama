@@ -27,7 +27,7 @@ class E621ArtistPostsSection extends ConsumerWidget {
     return MultiSliver(
       children: post.artistTags.isNotEmpty
           ? post.artistTags
-              .map((tag) => ArtistPostList(
+              .map((tag) => SliverArtistPostList(
                     tag: tag,
                     builder: (tag) => ref
                         .watch(e621ArtistPostsProvider(tag))
@@ -63,10 +63,12 @@ class E621ArtistSection extends ConsumerWidget {
 
     final commentary = post.description;
 
-    return ArtistSection(
-      commentary: ArtistCommentary.description(commentary),
-      artistTags: post.artistTags,
-      source: post.source,
+    return SliverToBoxAdapter(
+      child: ArtistSection(
+        commentary: ArtistCommentary.description(commentary),
+        artistTags: post.artistTags,
+        source: post.source,
+      ),
     );
   }
 }
@@ -80,38 +82,40 @@ class E621TagsTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<E621Post>(context);
 
-    return TagsTile(
-      post: post,
-      tags: createTagGroupItems([
-        ...post.artistTags.map((e) => Tag.noCount(
-              name: e,
-              category: e621ArtistTagCategory,
-            )),
-        ...post.characterTags.map((e) => Tag.noCount(
-              name: e,
-              category: e621CharacterTagCategory,
-            )),
-        ...post.speciesTags.map((e) => Tag.noCount(
-              name: e,
-              category: e621SpeciesTagCategory,
-            )),
-        ...post.copyrightTags.map((e) => Tag.noCount(
-              name: e,
-              category: e621CopyrightTagCategory,
-            )),
-        ...post.generalTags.map((e) => Tag.noCount(
-              name: e,
-              category: e621GeneralTagCategory,
-            )),
-        ...post.metaTags.map((e) => Tag.noCount(
-              name: e,
-              category: e621MetaTagCagegory,
-            )),
-        ...post.loreTags.map((e) => Tag.noCount(
-              name: e,
-              category: e621LoreTagCategory,
-            )),
-      ]),
+    return SliverToBoxAdapter(
+      child: TagsTile(
+        post: post,
+        tags: createTagGroupItems([
+          ...post.artistTags.map((e) => Tag.noCount(
+                name: e,
+                category: e621ArtistTagCategory,
+              )),
+          ...post.characterTags.map((e) => Tag.noCount(
+                name: e,
+                category: e621CharacterTagCategory,
+              )),
+          ...post.speciesTags.map((e) => Tag.noCount(
+                name: e,
+                category: e621SpeciesTagCategory,
+              )),
+          ...post.copyrightTags.map((e) => Tag.noCount(
+                name: e,
+                category: e621CopyrightTagCategory,
+              )),
+          ...post.generalTags.map((e) => Tag.noCount(
+                name: e,
+                category: e621GeneralTagCategory,
+              )),
+          ...post.metaTags.map((e) => Tag.noCount(
+                name: e,
+                category: e621MetaTagCagegory,
+              )),
+          ...post.loreTags.map((e) => Tag.noCount(
+                name: e,
+                category: e621LoreTagCategory,
+              )),
+        ]),
+      ),
     );
   }
 }

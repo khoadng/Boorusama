@@ -10,7 +10,6 @@ import 'package:boorusama/boorus/danbooru/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/users/users.dart';
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/artists/artists.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts/posts.dart';
@@ -166,26 +165,6 @@ class DanbooruPostStatsTile extends ConsumerWidget {
   }
 }
 
-class DanbooruArtistSection extends ConsumerWidget {
-  const DanbooruArtistSection({
-    super.key,
-    required this.post,
-    required this.commentary,
-  });
-
-  final DanbooruPost post;
-  final ArtistCommentary commentary;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return ArtistSection(
-      commentary: commentary,
-      artistTags: post.artistTags,
-      source: post.source,
-    );
-  }
-}
-
 final danbooruTagGroupsProvider = FutureProvider.autoDispose
     .family<List<TagGroupItem>, DanbooruPost>((ref, post) async {
   final config = ref.watchConfig;
@@ -221,7 +200,7 @@ class DanbooruRelatedPostsSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return RelatedPostsSection(
+    return SliverRelatedPostsSection(
       posts: posts,
       imageUrl: (item) => item.url720x720,
       onViewAll: () => goToSearchPage(

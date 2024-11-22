@@ -408,12 +408,14 @@ class HydrusPostActionToolbar extends ConsumerWidget {
               orElse: () => false,
             );
 
-    return PostActionToolbar(
-      children: [
-        if (canFav) HydrusFavoritePostButton(post: post),
-        BookmarkPostButton(post: post),
-        DownloadPostButton(post: post),
-      ],
+    return SliverToBoxAdapter(
+      child: PostActionToolbar(
+        children: [
+          if (canFav) HydrusFavoritePostButton(post: post),
+          BookmarkPostButton(post: post),
+          DownloadPostButton(post: post),
+        ],
+      ),
     );
   }
 }

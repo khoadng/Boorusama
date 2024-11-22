@@ -160,7 +160,7 @@ class SankakuArtistPostsSection extends ConsumerWidget {
     return MultiSliver(
       children: post.artistTags.isNotEmpty
           ? post.artistTags
-              .map((tag) => ArtistPostList(
+              .map((tag) => SliverArtistPostList(
                     tag: tag,
                     builder: (tag) => ref
                         .watch(sankakuArtistPostsProvider(
@@ -194,15 +194,17 @@ class SankakuTagsTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final post = InheritedPost.of<SankakuPost>(context);
 
-    return TagsTile(
-      post: post,
-      initialExpanded: true,
-      tags: createTagGroupItems([
-        ...post.artistDetailsTags,
-        ...post.characterDetailsTags,
-        ...post.copyrightDetailsTags,
-      ]),
-      onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
+    return SliverToBoxAdapter(
+      child: TagsTile(
+        post: post,
+        initialExpanded: true,
+        tags: createTagGroupItems([
+          ...post.artistDetailsTags,
+          ...post.characterDetailsTags,
+          ...post.copyrightDetailsTags,
+        ]),
+        onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
+      ),
     );
   }
 }

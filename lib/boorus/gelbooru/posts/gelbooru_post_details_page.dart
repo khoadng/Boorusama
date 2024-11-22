@@ -74,11 +74,13 @@ class _GelbooruTagListSectionState
     final config = ref.watchConfig;
     final post = InheritedPost.of<GelbooruPost>(context);
 
-    return TagsTile(
-      tags: ref.watch(tagsProvider(config)),
-      post: post,
-      onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
-      onExpand: () => _fetchTags(),
+    return SliverToBoxAdapter(
+      child: TagsTile(
+        tags: ref.watch(tagsProvider(config)),
+        post: post,
+        onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
+        onExpand: () => _fetchTags(),
+      ),
     );
   }
 }
@@ -95,7 +97,7 @@ class GelbooruCharacterListSection extends ConsumerWidget {
         .fold(
           () => const SliverSizedBox.shrink(),
           (tags) => tags.isNotEmpty
-              ? CharacterPostList(
+              ? SliverCharacterPostList(
                   tags: tags,
                 )
               : const SliverSizedBox.shrink(),
@@ -115,10 +117,12 @@ class GelbooruFileDetailsSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final post = InheritedPost.of<GelbooruPost>(context);
 
-    return DefaultFileDetailsSection(
-      post: post,
-      initialExpanded: initialExpanded,
-      uploaderName: post.uploaderName,
+    return SliverToBoxAdapter(
+      child: DefaultFileDetailsSection(
+        post: post,
+        initialExpanded: initialExpanded,
+        uploaderName: post.uploaderName,
+      ),
     );
   }
 }
@@ -135,7 +139,7 @@ class GelbooruArtistPostsSection extends ConsumerWidget {
                 () => const [],
                 (tags) => tags.isNotEmpty
                     ? tags
-                        .map((tag) => ArtistPostList(
+                        .map((tag) => SliverArtistPostList(
                               tag: tag,
                               builder: (tag) => ref
                                   .watch(gelbooruArtistPostsProvider(tag))

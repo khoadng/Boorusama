@@ -149,16 +149,18 @@ class MoebooruTagListSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<MoebooruPost>(context);
 
-    return TagsTile(
-      initialExpanded: true,
-      post: post,
-      tags: ref.watch(moebooruPostDetailTagGroupProvider(post)).maybeWhen(
-            data: (tags) => tags,
-            orElse: () => null,
-          ),
-      onTagTap: (tag) => goToSearchPage(
-        context,
-        tag: tag.rawName,
+    return SliverToBoxAdapter(
+      child: TagsTile(
+        initialExpanded: true,
+        post: post,
+        tags: ref.watch(moebooruPostDetailTagGroupProvider(post)).maybeWhen(
+              data: (tags) => tags,
+              orElse: () => null,
+            ),
+        onTagTap: (tag) => goToSearchPage(
+          context,
+          tag: tag.rawName,
+        ),
       ),
     );
   }
@@ -182,7 +184,7 @@ class MoebooruCharacterListSection extends ConsumerWidget {
                     .maybeWhen(
                       data: (_) {
                         return characterTags != null && characterTags.isNotEmpty
-                            ? CharacterPostList(tags: characterTags)
+                            ? SliverCharacterPostList(tags: characterTags)
                             : const SliverSizedBox.shrink();
                       },
                       orElse: () => const SliverSizedBox.shrink(),
@@ -233,7 +235,7 @@ class MoebooruArtistPostsSection extends ConsumerWidget {
               return artistTags != null && artistTags.isNotEmpty
                   ? artistTags
                       .map(
-                        (tag) => ArtistPostList(
+                        (tag) => SliverArtistPostList(
                           tag: tag,
                           builder: (tag) => ref
                               .watch(moebooruPostDetailsArtistProvider(tag))
@@ -268,9 +270,11 @@ class MoebooruFileDetailsSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<MoebooruPost>(context);
 
-    return DefaultFileDetailsSection(
-      post: post,
-      uploaderName: post.uploaderName,
+    return SliverToBoxAdapter(
+      child: DefaultFileDetailsSection(
+        post: post,
+        uploaderName: post.uploaderName,
+      ),
     );
   }
 }
@@ -286,12 +290,14 @@ class MoebooruPostDetailsActionToolbar extends ConsumerWidget {
     final post = InheritedPost.of<MoebooruPost>(context);
     final booru = config.createBooruFrom(ref.watch(booruFactoryProvider));
 
-    return booru?.whenMoebooru(
-            data: (data) => data.supportsFavorite(config.url)
-                ? _Toolbar(post: post)
-                : DefaultPostActionToolbar(post: post),
-            orElse: () => DefaultPostActionToolbar(post: post)) ??
-        DefaultPostActionToolbar(post: post);
+    return SliverToBoxAdapter(
+      child: booru?.whenMoebooru(
+              data: (data) => data.supportsFavorite(config.url)
+                  ? _Toolbar(post: post)
+                  : DefaultPostActionToolbar(post: post),
+              orElse: () => DefaultPostActionToolbar(post: post)) ??
+          DefaultPostActionToolbar(post: post),
+    );
   }
 }
 

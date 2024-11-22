@@ -4,6 +4,7 @@ export 'count/result_header.dart';
 export 'details/common.dart';
 export 'details/inherited_post.dart';
 export 'details/parts/artist_post_list.dart';
+export 'details/parts/artist_section.dart';
 export 'details/parts/character_post_list.dart';
 export 'details/parts/file_details_section.dart';
 export 'details/parts/information_section.dart';

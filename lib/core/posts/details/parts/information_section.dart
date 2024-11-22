@@ -32,10 +32,12 @@ class DefaultInheritedInformationSection<T extends Post>
   Widget build(BuildContext context) {
     final post = InheritedPost.of<T>(context);
 
-    return SimpleInformationSection(
-      post: post,
-      padding: padding,
-      showSource: showSource,
+    return SliverToBoxAdapter(
+      child: SimpleInformationSection(
+        post: post,
+        padding: padding,
+        showSource: showSource,
+      ),
     );
   }
 }

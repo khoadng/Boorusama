@@ -25,9 +25,11 @@ class DefaultInheritedFileDetailsSection<T extends Post>
   Widget build(BuildContext context) {
     final post = InheritedPost.of<T>(context);
 
-    return DefaultFileDetailsSection(
-      post: post,
-      initialExpanded: initialExpanded,
+    return SliverToBoxAdapter(
+      child: DefaultFileDetailsSection(
+        post: post,
+        initialExpanded: initialExpanded,
+      ),
     );
   }
 }

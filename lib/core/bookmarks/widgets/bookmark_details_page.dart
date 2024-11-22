@@ -92,21 +92,23 @@ class BookmarkSourceSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<BookmarkPost>(context);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        post.source.whenWeb(
-          (source) => SourceSection(source: source),
-          () => const SizedBox.shrink(),
-        ),
-        post.realSourceUrl.whenWeb(
-          (source) => SourceSection(
-            title: 'Original Source',
-            source: source,
+    return SliverToBoxAdapter(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          post.source.whenWeb(
+            (source) => SourceSection(source: source),
+            () => const SizedBox.shrink(),
           ),
-          () => const SizedBox.shrink(),
-        ),
-      ],
+          post.realSourceUrl.whenWeb(
+            (source) => SourceSection(
+              title: 'Original Source',
+              source: source,
+            ),
+            () => const SizedBox.shrink(),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -120,24 +122,26 @@ class BookmarkPostActionToolbar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<BookmarkPost>(context);
 
-    return PostActionToolbar(
-      children: [
-        BookmarkPostButton(post: post),
-        IconButton(
-          splashRadius: 16,
-          onPressed: () {
-            showDownloadStartToast(context);
-            ref.bookmarks.downloadBookmarks(
-              ref.watchConfig,
-              [post.toBookmark()],
-            );
-          },
-          icon: const Icon(
-            Symbols.download,
+    return SliverToBoxAdapter(
+      child: PostActionToolbar(
+        children: [
+          BookmarkPostButton(post: post),
+          IconButton(
+            splashRadius: 16,
+            onPressed: () {
+              showDownloadStartToast(context);
+              ref.bookmarks.downloadBookmarks(
+                ref.watchConfig,
+                [post.toBookmark()],
+              );
+            },
+            icon: const Icon(
+              Symbols.download,
+            ),
           ),
-        ),
-        SharePostButton(post: post),
-      ],
+          SharePostButton(post: post),
+        ],
+      ),
     );
   }
 }
