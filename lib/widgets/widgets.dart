@@ -17,6 +17,7 @@ export 'context_menu.dart';
 export 'date_tooltip.dart';
 export 'delay_render_widget.dart';
 export 'dismissable_info_container.dart';
+export 'dotted_border.dart';
 export 'drag_line.dart';
 export 'editable_mixin.dart';
 export 'embedded_webview_webm.dart';

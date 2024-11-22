@@ -34,6 +34,7 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     this.topRightButtonsBuilder,
     required this.controller,
     this.uiBuilder,
+    this.preferredParts,
   });
 
   final List<T> posts;
@@ -43,6 +44,7 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
       topRightButtonsBuilder;
   final PostDetailsController<T> controller;
   final PostDetailsUIBuilder? uiBuilder;
+  final Set<DetailsPart>? preferredParts;
 
   @override
   ConsumerState<PostDetailsPageScaffold<T>> createState() =>
@@ -102,7 +104,9 @@ class _PostDetailPageScaffoldState<T extends Post>
         widget.imageUrlBuilder ?? defaultPostImageUrlBuilder(ref);
 
     final uiBuilder = widget.uiBuilder ?? booruBuilder?.postDetailsUIBuilder;
-
+    final preferredParts = widget.preferredParts ??
+        config.layout?.getParsedParts() ??
+        uiBuilder?.full.keys.toSet();
     final settings = ref.watch(settingsProvider);
 
     return Scaffold(
@@ -184,6 +188,7 @@ class _PostDetailPageScaffoldState<T extends Post>
               scrollController: scrollController,
               sheetState: state,
               uiBuilder: uiBuilder,
+              preferredParts: preferredParts,
             ),
           );
         },
@@ -347,22 +352,44 @@ class PostDetailsFullInfoSheet extends ConsumerWidget {
   const PostDetailsFullInfoSheet({
     super.key,
     this.scrollController,
-    this.uiBuilder,
+    required this.uiBuilder,
     required this.sheetState,
+    required this.preferredParts,
   });
 
   final ScrollController? scrollController;
   final SheetState sheetState;
   final PostDetailsUIBuilder? uiBuilder;
+  final Set<DetailsPart>? preferredParts;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booruBuilder = ref.watchBooruBuilder(ref.watchConfig);
-    final builder = uiBuilder ?? booruBuilder?.postDetailsUIBuilder;
+    final builder = uiBuilder;
+    final parts = preferredParts;
 
-    if (builder == null) {
-      return DefaultPostDetailsInfoPreview(
+    if (builder == null || parts == null) {
+      return RawPostDetailsInfoSheet(
         scrollController: scrollController,
+        preview: DefaultPostDetailsInfoPreview(
+          scrollController: scrollController,
+        ),
+        sliver: MultiSliver(
+          children: [
+            const SliverSizedBox(height: 12),
+            SliverOffstage(
+              offstage: sheetState == SheetState.hidden,
+              sliver: SliverToBoxAdapter(
+                child: const Center(
+                  child: Text('No widgets to display'),
+                ),
+              ),
+            ),
+            SliverSizedBox(
+              height: MediaQuery.paddingOf(context).bottom + 72,
+            ),
+          ],
+        ),
+        sheetState: sheetState,
       );
     }
 
@@ -373,7 +400,11 @@ class PostDetailsFullInfoSheet extends ConsumerWidget {
       ),
       sliver: MultiSliver(
         children: [
-          ...builder.full.keys.map((p) => builder.buildPart(context, p)),
+          ...parts.map(
+            (p) => builder.buildPart(context, p),
+          ),
+          const SliverSizedBox(height: 24),
+          const AddCustomDetailsButton(),
         ],
       ),
       sheetState: sheetState,

@@ -1,6 +1,7 @@
 export 'bookmark_post_button.dart';
 export 'comment_post_button.dart';
 export 'common.dart';
+export 'custom_details.dart';
 export 'download_post_button.dart';
 export 'file_details_section.dart';
 export 'information_section.dart';

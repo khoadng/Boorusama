@@ -5,9 +5,11 @@ import 'dart:convert';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/home/home.dart';
+import 'package:boorusama/core/posts/details/details.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/gestures.dart';
@@ -354,23 +356,40 @@ enum ImageQuickActionType {
 class LayoutConfigs extends Equatable {
   const LayoutConfigs({
     required this.home,
+    required this.details,
   });
 
-  LayoutConfigs.undefined() : home = CustomHomeViewKey.defaultValue();
+  LayoutConfigs.undefined()
+      : home = CustomHomeViewKey.defaultValue(),
+        details = null;
 
   final CustomHomeViewKey? home;
+  final List<CustomDetailsPartKey>? details;
 
   factory LayoutConfigs.fromJson(Map<String, dynamic> json) {
+    final home = json['home'] == null
+        ? CustomHomeViewKey.defaultValue()
+        : CustomHomeViewKey.fromJson(json['home']);
+
+    final details = json['details'] == null
+        ? null
+        : (json['details'] as List<dynamic>)
+            .map((e) => CustomDetailsPartKey.fromJson(e))
+            .toList();
+
     return LayoutConfigs(
-      home: CustomHomeViewKey.fromJson(json['home']),
+      home: home,
+      details: details,
     );
   }
 
   LayoutConfigs copyWith({
-    CustomHomeViewKey? home,
+    CustomHomeViewKey? Function()? home,
+    List<CustomDetailsPartKey>? Function()? details,
   }) {
     return LayoutConfigs(
-      home: home,
+      home: home != null ? home() : this.home,
+      details: details != null ? details() : this.details,
     );
   }
 
@@ -386,9 +405,29 @@ class LayoutConfigs extends Equatable {
   Map<String, dynamic> toJson() {
     return {
       'home': home?.toJson(),
+      'details': details?.map((e) => e.toJson()).toList(),
     };
   }
 
   @override
-  List<Object?> get props => [home];
+  List<Object?> get props => [home, details];
+}
+
+extension CustomViewKeyX on LayoutConfigs {
+  Set<DetailsPart>? getParsedParts() {
+    if (details == null) return null;
+    if (details!.isEmpty) return null;
+
+    final parts = <DetailsPart>{};
+
+    for (final part in details!) {
+      final parsedPart = parseDetailsPart(part.name);
+
+      if (parsedPart != null) {
+        parts.add(parsedPart);
+      }
+    }
+
+    return parts;
+  }
 }
