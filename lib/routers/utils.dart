@@ -84,15 +84,46 @@ void goToCharacterPage(BuildContext context, String character) {
   context.push('/characters?$kCharacterNameKey=$encodedCharacter');
 }
 
-void goToPostDetailsPage<T extends Post>({
+void goToPostDetailsPageFromPosts<T extends Post>({
   required BuildContext context,
-  required Iterable<T> posts,
+  required List<T> posts,
+  required int initialIndex,
+  AutoScrollController? scrollController,
+}) =>
+    goToPostDetailsPageCore(
+      context: context,
+      posts: posts,
+      initialIndex: initialIndex,
+      scrollController: scrollController,
+    );
+
+void goToPostDetailsPageFromController<T extends Post>({
+  required BuildContext context,
+  required int initialIndex,
+  AutoScrollController? scrollController,
+  required PostGridController<T> controller,
+}) =>
+    goToPostDetailsPageCore(
+      context: context,
+      posts: controller.items.toList(),
+      initialIndex: initialIndex,
+      scrollController: scrollController,
+    );
+
+void goToPostDetailsPageCore<T extends Post>({
+  required BuildContext context,
+  required List<T> posts,
   required int initialIndex,
   AutoScrollController? scrollController,
 }) {
   context.push(
-    '/details',
-    extra: (
+    Uri(
+      pathSegments: [
+        '',
+        'details',
+      ],
+    ).toString(),
+    extra: DetailsPayload(
       initialIndex: initialIndex,
       posts: posts,
       scrollController: scrollController,

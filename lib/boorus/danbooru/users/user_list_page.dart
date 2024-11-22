@@ -181,10 +181,8 @@ class _DanbooruUserListPageState
           ),
           onTap: () {
             goToUserDetailsPage(
-              ref,
               context,
               uid: user.id,
-              username: user.name,
             );
           },
         ),

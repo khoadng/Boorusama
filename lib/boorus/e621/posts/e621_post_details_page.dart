@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/e621/artists/artists.dart';
 import 'package:boorusama/boorus/e621/posts/posts.dart';
 import 'package:boorusama/boorus/e621/tags/tags.dart';
@@ -15,72 +15,39 @@ import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/router.dart';
 
-class E621PostDetailsPage extends ConsumerStatefulWidget {
-  const E621PostDetailsPage({
+class E621ArtistPostsSection extends ConsumerWidget {
+  const E621ArtistPostsSection({
     super.key,
-    required this.posts,
-    required this.intitialIndex,
-    required this.onExit,
-    required this.onPageChanged,
-    required this.controller,
   });
 
-  final int intitialIndex;
-  final List<E621Post> posts;
-  final void Function(int page) onExit;
-  final void Function(int page) onPageChanged;
-  final PostDetailsController<Post> controller;
-
   @override
-  ConsumerState<E621PostDetailsPage> createState() =>
-      _E621PostDetailsPageState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final post = InheritedPost.of<E621Post>(context);
 
-class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage> {
-  List<E621Post> get posts => widget.posts;
-
-  @override
-  Widget build(BuildContext context) {
-    return PostDetailsPageScaffold(
-      posts: posts,
-      initialIndex: widget.intitialIndex,
-      onExit: widget.onExit,
-      onPageChangeIndexed: widget.onPageChanged,
-      toolbar: DefaultPostDetailsActionToolbar(controller: widget.controller),
-      swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
-      sliverArtistPostsBuilder: (context, post) => post.artistTags.isNotEmpty
+    return MultiSliver(
+      children: post.artistTags.isNotEmpty
           ? post.artistTags
               .map((tag) => ArtistPostList(
                     tag: tag,
-                    builder: (tag) =>
-                        ref.watch(e621ArtistPostsProvider(tag)).maybeWhen(
-                              data: (data) => SliverPreviewPostGrid(
-                                posts: data,
-                                onTap: (postIdx) => goToPostDetailsPage(
-                                  context: context,
-                                  posts: data,
-                                  initialIndex: postIdx,
-                                ),
-                                imageUrl: (item) => item.thumbnailFromSettings(
-                                    ref.watch(imageListingSettingsProvider)),
-                              ),
-                              orElse: () =>
-                                  const SliverPreviewPostGridPlaceholder(),
+                    builder: (tag) => ref
+                        .watch(e621ArtistPostsProvider(tag))
+                        .maybeWhen(
+                          data: (data) => SliverPreviewPostGrid(
+                            posts: data,
+                            onTap: (postIdx) => goToPostDetailsPageFromPosts(
+                              context: context,
+                              posts: data,
+                              initialIndex: postIdx,
                             ),
+                            imageUrl: (item) => item.thumbnailFromSettings(
+                                ref.watch(imageListingSettingsProvider)),
+                          ),
+                          orElse: () =>
+                              const SliverPreviewPostGridPlaceholder(),
+                        ),
                   ))
               .toList()
           : [],
-      tagListBuilder: (context, post) => E621TagsTile(post: post),
-      infoBuilder: (context, post) => SimpleInformationSection(
-        post: post,
-        showSource: true,
-      ),
-      placeholderImageUrlBuilder: (post, currentPage) =>
-          currentPage == widget.intitialIndex && post.isTranslated
-              ? null
-              : post.thumbnailImageUrl,
-      parts: kDefaultPostDetailsNoSourceParts,
-      artistInfoBuilder: (context, post) => E621ArtistSection(post: post),
     );
   }
 }
@@ -88,13 +55,12 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage> {
 class E621ArtistSection extends ConsumerWidget {
   const E621ArtistSection({
     super.key,
-    required this.post,
   });
-
-  final E621Post post;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final post = InheritedPost.of<E621Post>(context);
+
     final commentary = post.description;
 
     return ArtistSection(
@@ -108,13 +74,12 @@ class E621ArtistSection extends ConsumerWidget {
 class E621TagsTile extends ConsumerWidget {
   const E621TagsTile({
     super.key,
-    required this.post,
   });
-
-  final E621Post post;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final post = InheritedPost.of<E621Post>(context);
+
     return TagsTile(
       post: post,
       tags: createTagGroupItems([

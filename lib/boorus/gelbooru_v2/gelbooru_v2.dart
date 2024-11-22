@@ -25,7 +25,6 @@ import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'create_gelbooru_v2_config_page.dart';
 import 'home/gelbooru_v2_home_page.dart';
-import 'posts/gelbooru_v2_post_details_desktop_page.dart';
 import 'posts/gelbooru_v2_post_details_page.dart';
 
 const kGelbooruV2CustomDownloadFileNameFormat =
@@ -121,7 +120,6 @@ class GelbooruV2Builder
         FavoriteNotSupportedMixin,
         DefaultThumbnailUrlMixin,
         DefaultThumbnailUrlMixin,
-        PostCountNotSupportedMixin,
         UnknownMetatagsMixin,
         DefaultMultiSelectionActionsBuilderMixin,
         DefaultHomeMixin,
@@ -131,11 +129,7 @@ class GelbooruV2Builder
         DefaultPostStatisticsPageBuilderMixin,
         DefaultTagColorMixin
     implements BooruBuilder {
-  GelbooruV2Builder({
-    required this.client,
-  });
-
-  final GelbooruV2Client client;
+  GelbooruV2Builder();
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
@@ -184,23 +178,11 @@ class GelbooruV2Builder
       (context, config, payload) {
         final posts = payload.posts.map((e) => e as GelbooruV2Post).toList();
 
-        return PostDetailsLayoutSwitcher(
+        return PostDetailsScope(
           initialIndex: payload.initialIndex,
           posts: posts,
           scrollController: payload.scrollController,
-          desktop: (controller) => GelbooruV2PostDetailsDesktopPage(
-            initialIndex: controller.currentPage.value,
-            posts: posts,
-            onExit: (page) => controller.onExit(page),
-            onPageChanged: (page) => controller.setPage(page),
-          ),
-          mobile: (controller) => GelbooruV2PostDetailsPage(
-            initialIndex: controller.currentPage.value,
-            controller: controller,
-            posts: posts,
-            onExit: (page) => controller.onExit(page),
-            onPageChanged: (page) => controller.setPage(page),
-          ),
+          child: const DefaultPostDetailsPage<GelbooruV2Post>(),
         );
       };
 
@@ -252,6 +234,29 @@ class GelbooruV2Builder
   @override
   Map<CustomHomeViewKey, CustomHomeDataBuilder> get customHomeViewBuilders =>
       kGelbooruV2AltHomeView;
+
+  @override
+  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
+    preview: {
+      DetailsPart.toolbar: (context) =>
+          const DefaultInheritedPostActionToolbar<GelbooruV2Post>(),
+    },
+    full: {
+      DetailsPart.toolbar: (context) =>
+          const DefaultInheritedPostActionToolbar<GelbooruV2Post>(),
+      DetailsPart.source: (context) =>
+          const DefaultInheritedSourceSection<GelbooruV2Post>(),
+      DetailsPart.tags: (context) => const GelbooruV2TagsTile(),
+      DetailsPart.fileDetails: (context) =>
+          const GelbooruV2FileDetailsSection(),
+      DetailsPart.artistPosts: (context) =>
+          const GelbooruV2ArtistPostsSection(),
+      DetailsPart.relatedPosts: (context) =>
+          const GelbooruV2RelatedPostsSection(),
+      DetailsPart.characterList: (context) =>
+          const GelbooruV2CharacterPostsSection(),
+    },
+  );
 }
 
 final kGelbooruV2AltHomeView = {

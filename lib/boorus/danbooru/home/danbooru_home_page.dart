@@ -133,13 +133,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
             ),
             title: const Text('profile.profile').tr(),
             onTap: () {
-              goToUserDetailsPage(
-                ref,
-                context,
-                uid: userId,
-                username: widget.config.login!,
-                isSelf: true,
-              );
+              goToProfilePage(context);
             },
           ),
         SideMenuTile(
@@ -147,13 +141,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
             Symbols.explore,
           ),
           title: const Text('explore.explore').tr(),
-          onTap: () => context.navigator.push(CupertinoPageRoute(
-              builder: (_) => Scaffold(
-                    appBar: AppBar(
-                      title: const Text('explore.explore').tr(),
-                    ),
-                    body: const DanbooruExplorePage(),
-                  ))),
+          onTap: () => goToExplorePage(context),
         ),
         SideMenuTile(
           icon: const _Icon(
@@ -207,7 +195,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
             ),
             title: const Text('saved_search.saved_search').tr(),
             onTap: () {
-              goToSavedSearchPage(context, widget.config.login);
+              goToSavedSearchPage(context);
             },
           ),
           SideMenuTile(

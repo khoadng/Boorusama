@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/core/home/home.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -14,6 +13,7 @@ import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
+import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'artists/artists.dart';
@@ -105,7 +105,6 @@ const kE621PostSamples = [
 
 class E621Builder
     with
-        PostCountNotSupportedMixin,
         CharacterNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
         UnknownMetatagsMixin,
@@ -159,41 +158,21 @@ class E621Builder
           );
 
   @override
-  FavoriteAdder? get favoriteAdder => (postId, ref) => ref
-      .read(e621FavoritesProvider(ref.readConfig).notifier)
-      .add(postId)
-      .then((value) => true);
-
-  @override
-  FavoriteRemover? get favoriteRemover => (postId, ref) => ref
-      .read(e621FavoritesProvider(ref.readConfig).notifier)
-      .remove(postId)
-      .then((value) => true);
-
-  @override
   SearchPageBuilder get searchPageBuilder =>
       (context, initialQuery) => E621SearchPage(initialQuery: initialQuery);
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) => PostDetailsLayoutSwitcher(
-            initialIndex: payload.initialIndex,
-            posts: payload.posts,
-            scrollController: payload.scrollController,
-            desktop: (controller) => E621PostDetailsDesktopPage(
-              initialIndex: controller.currentPage.value,
-              posts: payload.posts.map((e) => e as E621Post).toList(),
-              onExit: (page) => controller.onExit(page),
-              onPageChanged: (page) => controller.setPage(page),
-            ),
-            mobile: (controller) => E621PostDetailsPage(
-              intitialIndex: controller.currentPage.value,
-              controller: controller,
-              posts: payload.posts.map((e) => e as E621Post).toList(),
-              onExit: (page) => controller.onExit(page),
-              onPageChanged: (page) => controller.setPage(page),
-            ),
-          );
+      (context, config, payload) {
+        final posts = payload.posts.map((e) => e as E621Post).toList();
+
+        return PostDetailsScope(
+          initialIndex: payload.initialIndex,
+          posts: posts,
+          scrollController: payload.scrollController,
+          child: const DefaultPostDetailsPage<E621Post>(),
+        );
+      };
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
@@ -249,6 +228,31 @@ class E621Builder
   @override
   Map<CustomHomeViewKey, CustomHomeDataBuilder> get customHomeViewBuilders =>
       ke621AltHomeView;
+
+  @override
+  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
+    preview: {
+      DetailsPart.info: (context) =>
+          const DefaultInheritedInformationSection<E621Post>(
+            showSource: true,
+          ),
+      DetailsPart.toolbar: (context) =>
+          const DefaultInheritedPostActionToolbar<E621Post>(),
+    },
+    full: {
+      DetailsPart.info: (context) =>
+          const DefaultInheritedInformationSection<E621Post>(
+            showSource: true,
+          ),
+      DetailsPart.toolbar: (context) =>
+          const DefaultInheritedPostActionToolbar<E621Post>(),
+      DetailsPart.artistInfo: (context) => const E621ArtistSection(),
+      DetailsPart.tags: (context) => const E621TagsTile(),
+      DetailsPart.fileDetails: (context) =>
+          const DefaultInheritedFileDetailsSection<E621Post>(),
+      DetailsPart.artistPosts: (context) => const E621ArtistPostsSection(),
+    },
+  );
 }
 
 final ke621AltHomeView = {

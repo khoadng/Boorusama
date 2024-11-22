@@ -24,14 +24,10 @@ import 'package:boorusama/string.dart';
 class DanbooruForumPostsPage extends ConsumerStatefulWidget {
   const DanbooruForumPostsPage({
     super.key,
-    required this.topicId,
-    required this.title,
-    required this.responseCount,
+    required this.topic,
   });
 
-  final int topicId;
-  final int responseCount;
-  final String title;
+  final DanbooruForumTopic topic;
 
   @override
   ConsumerState<DanbooruForumPostsPage> createState() =>
@@ -42,7 +38,7 @@ class _DanbooruForumPostsPageState
     extends ConsumerState<DanbooruForumPostsPage> {
   late final pagingController = PagingController<int, DanbooruForumPost>(
     firstPageKey: DanbooruForumUtils.getFirstPageKey(
-      responseCount: widget.responseCount,
+      responseCount: widget.topic.responseCount,
     ),
   );
 
@@ -67,7 +63,7 @@ class _DanbooruForumPostsPageState
     final posts = await ref
         .read(danbooruForumPostRepoProvider(ref.readConfig))
         .getForumPostsOrEmpty(
-          widget.topicId,
+          widget.topic.id,
           page: pageKey,
           limit: DanbooruForumUtils.postPerPage,
         );
@@ -81,7 +77,7 @@ class _DanbooruForumPostsPageState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(widget.topic.title),
       ),
       body: Container(
         padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -124,10 +120,8 @@ class _DanbooruForumPostsPageState
             createdAt: post.createdAt,
             authorLevel: creatorLevel,
             onTap: () => goToUserDetailsPage(
-              ref,
               context,
               uid: post.creatorId,
-              username: creatorName,
             ),
           ),
           AppHtml(

@@ -6,10 +6,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 
 class BookmarkDetailsPage extends ConsumerWidget {
@@ -25,16 +27,11 @@ class BookmarkDetailsPage extends ConsumerWidget {
     final bookmarks = ref.watch(filteredBookmarksProvider);
     final posts = bookmarks.map((e) => e.toPost()).toList();
 
-    return PostDetailsLayoutSwitcher(
+    return PostDetailsScope(
       initialIndex: initialIndex,
       posts: posts,
-      desktop: null,
-      mobile: (controller) => BookmarkDetailsPageInternal(
-        initialIndex: initialIndex,
-        controller: controller,
-        posts: posts,
-      ),
       scrollController: null,
+      child: const BookmarkDetailsPageInternal(),
     );
   }
 }
@@ -42,14 +39,7 @@ class BookmarkDetailsPage extends ConsumerWidget {
 class BookmarkDetailsPageInternal extends ConsumerStatefulWidget {
   const BookmarkDetailsPageInternal({
     super.key,
-    required this.initialIndex,
-    required this.controller,
-    required this.posts,
   });
-
-  final int initialIndex;
-  final List<BookmarkPost> posts;
-  final PostDetailsController<Post> controller;
 
   @override
   ConsumerState<BookmarkDetailsPageInternal> createState() =>
@@ -58,44 +48,32 @@ class BookmarkDetailsPageInternal extends ConsumerStatefulWidget {
 
 class _BookmarkDetailsPageState
     extends ConsumerState<BookmarkDetailsPageInternal> {
-  late var posts = widget.posts;
-
-  @override
-  void didUpdateWidget(covariant BookmarkDetailsPageInternal oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    setState(() {
-      posts = widget.posts;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
+    final data = PostDetails.of<BookmarkPost>(context);
+    final posts = data.posts;
+    final controller = data.controller;
+
     return PostDetailsPageScaffold(
+      controller: controller,
       posts: posts,
-      swipeImageUrlBuilder: (post) => post.sampleImageUrl,
-      toolbar: ValueListenableBuilder(
-        valueListenable: widget.controller.currentPost,
-        builder: (context, post, _) => BookmarkPostActionToolbar(post: post),
+      imageUrlBuilder: (post) => post.sampleImageUrl,
+      uiBuilder: PostDetailsUIBuilder(
+        preview: {
+          DetailsPart.toolbar: (context) => const BookmarkPostActionToolbar(),
+        },
+        full: {
+          DetailsPart.toolbar: (context) => const BookmarkPostActionToolbar(),
+          DetailsPart.source: (context) => const BookmarkSourceSection(),
+          DetailsPart.tags: (context) =>
+              const DefaultInheritedTagList<BookmarkPost>(),
+          DetailsPart.fileDetails: (context) =>
+              const DefaultInheritedFileDetailsSection<BookmarkPost>(),
+        },
       ),
-      sourceSectionBuilder: (context, post) => Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          post.source.whenWeb(
-            (source) => SourceSection(source: source),
-            () => const SizedBox.shrink(),
-          ),
-          post.realSourceUrl.whenWeb(
-            (source) => SourceSection(
-              title: 'Original Source',
-              source: source,
-            ),
-            () => const SizedBox.shrink(),
-          ),
-        ],
-      ),
-      topRightButtonsBuilder: (context, _, post, controller) => [
+      topRightButtonsBuilder: (controller) => [
         GeneralMoreActionButton(
-          post: post,
+          post: InheritedPost.of<BookmarkPost>(context),
           onStartSlideshow: () => controller.startSlideshow(),
           onDownload: (post) {
             ref.bookmarks.downloadBookmarks(
@@ -105,10 +83,31 @@ class _BookmarkDetailsPageState
           },
         ),
       ],
-      initialIndex: widget.initialIndex,
-      onExit: (page) {
-        // TODO: implement onExit
-      },
+    );
+  }
+}
+
+class BookmarkSourceSection extends ConsumerWidget {
+  const BookmarkSourceSection({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final post = InheritedPost.of<BookmarkPost>(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        post.source.whenWeb(
+          (source) => SourceSection(source: source),
+          () => const SizedBox.shrink(),
+        ),
+        post.realSourceUrl.whenWeb(
+          (source) => SourceSection(
+            title: 'Original Source',
+            source: source,
+          ),
+          () => const SizedBox.shrink(),
+        ),
+      ],
     );
   }
 }
@@ -116,13 +115,12 @@ class _BookmarkDetailsPageState
 class BookmarkPostActionToolbar extends ConsumerWidget {
   const BookmarkPostActionToolbar({
     super.key,
-    required this.post,
   });
-
-  final Post post;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final post = InheritedPost.of<BookmarkPost>(context);
+
     return PostActionToolbar(
       children: [
         BookmarkPostButton(post: post),

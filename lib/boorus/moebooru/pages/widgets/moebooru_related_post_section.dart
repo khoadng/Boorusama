@@ -13,13 +13,12 @@ import 'package:boorusama/widgets/sliver_sized_box.dart';
 class MoebooruRelatedPostsSection extends ConsumerWidget {
   const MoebooruRelatedPostsSection({
     super.key,
-    required this.post,
   });
-
-  final Post post;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final post = InheritedPost.of<MoebooruPost>(context);
+
     final postsAsync = ref.watch(moebooruPostDetailsChildrenProvider(post));
 
     return postsAsync.maybeWhen(
@@ -31,7 +30,7 @@ class MoebooruRelatedPostsSection extends ConsumerWidget {
                 context,
                 tag: post.relationshipQuery,
               ),
-              onTap: (index) => goToPostDetailsPage(
+              onTap: (index) => goToPostDetailsPageFromPosts(
                 context: context,
                 posts: posts,
                 initialIndex: index,

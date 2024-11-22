@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/tags/metatag.dart';
@@ -39,6 +40,8 @@ class TagSuggestionItems extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final tagInfo = ref.watch(tagInfoProvider);
+
     return Material(
       color: backgroundColor ?? context.colorScheme.surface,
       elevation: elevation ?? 4,
@@ -60,8 +63,10 @@ class TagSuggestionItems extends ConsumerWidget {
             dense: dense,
             currentQuery: currentQuery,
             textColorBuilder: textColorBuilder,
-            metatagExtractor:
-                ref.watchBooruBuilder(ref.watchConfig)?.metatagExtractor,
+            metatagExtractor: ref
+                .watchBooruBuilder(ref.watchConfig)
+                ?.metatagExtractorBuilder
+                ?.call(tagInfo),
           );
         },
       ),

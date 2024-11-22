@@ -63,6 +63,20 @@ class SimplePostActionToolbar extends ConsumerWidget {
   }
 }
 
+class DefaultInheritedPostActionToolbar<T extends Post>
+    extends StatelessWidget {
+  const DefaultInheritedPostActionToolbar({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final post = InheritedPost.maybeOf<T>(context);
+
+    return post != null
+        ? DefaultPostActionToolbar(post: post)
+        : const SizedBox.shrink();
+  }
+}
+
 class DefaultPostActionToolbar extends ConsumerWidget {
   const DefaultPostActionToolbar({
     super.key,
@@ -76,10 +90,9 @@ class DefaultPostActionToolbar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfig;
-    final booruBuilder = ref.watch(booruBuilderProvider);
     final isFaved = ref.watch(favoriteProvider(post.id));
-    final favoriteAdder = booruBuilder?.favoriteAdder;
-    final favoriteRemover = booruBuilder?.favoriteRemover;
+    final favoriteAdder = ref.watch(addFavoriteProvider);
+    final favoriteRemover = ref.watch(removeFavoriteProvider);
 
     return SimplePostActionToolbar(
       post: post,

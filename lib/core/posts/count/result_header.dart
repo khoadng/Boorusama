@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -21,7 +22,7 @@ class ResultHeaderWithProvider extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final fetcher = ref.watch(booruBuilderProvider)?.postCountFetcher;
+    final fetcher = ref.watch(postCountRepoProvider(ref.watchConfig));
 
     if (fetcher == null) return const SizedBox.shrink();
 

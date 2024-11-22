@@ -65,6 +65,7 @@ class _SearchPageScaffoldState<T extends Post>
   var selectedTagString = ValueNotifier('');
   late final selectedTagController = SelectedTagController.fromBooruBuilder(
     builder: ref.readBooruBuilder(ref.readConfig),
+    tagInfo: ref.read(tagInfoProvider),
   );
   final _scrollController = AutoScrollController();
   final _didSearchOnce = ValueNotifier(false);

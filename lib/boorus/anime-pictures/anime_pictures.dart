@@ -18,7 +18,6 @@ import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/settings/types.dart';
 import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
@@ -29,7 +28,6 @@ import 'providers.dart';
 class AnimePicturesBuilder
     with
         FavoriteNotSupportedMixin,
-        PostCountNotSupportedMixin,
         DefaultThumbnailUrlMixin,
         CommentNotSupportedMixin,
         ArtistNotSupportedMixin,
@@ -97,25 +95,16 @@ class AnimePicturesBuilder
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) => PostDetailsLayoutSwitcher(
-            initialIndex: payload.initialIndex,
-            posts: payload.posts,
-            scrollController: payload.scrollController,
-            desktop: (controller) => AnimePicturesPostDetailsDesktopPage(
-              initialIndex: controller.currentPage.value,
-              controller: controller,
-              posts: payload.posts.map((e) => e as AnimePicturesPost).toList(),
-              onExit: (page) => controller.onExit(page),
-              onPageChanged: (page) => controller.setPage(page),
-            ),
-            mobile: (controller) => AnimePicturesPostDetailsPage(
-              initialPage: controller.currentPage.value,
-              controller: controller,
-              posts: payload.posts.map((e) => e as AnimePicturesPost).toList(),
-              onExit: (page) => controller.onExit(page),
-              onPageChanged: (page) => controller.setPage(page),
-            ),
-          );
+      (context, config, payload) {
+        final posts = payload.posts.map((e) => e as AnimePicturesPost).toList();
+
+        return PostDetailsScope(
+          initialIndex: payload.initialIndex,
+          posts: posts,
+          scrollController: payload.scrollController,
+          child: const DefaultPostDetailsPage<AnimePicturesPost>(),
+        );
+      };
 
   @override
   HomePageBuilder get homePageBuilder =>
@@ -126,6 +115,23 @@ class AnimePicturesBuilder
       (context, config) => const AnimePicturesCurrentUserIdScope(
             child: AnimePicturesFavoritesPage(),
           );
+
+  @override
+  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
+    preview: {
+      DetailsPart.toolbar: (context) =>
+          const DefaultInheritedPostActionToolbar<AnimePicturesPost>(),
+    },
+    full: {
+      DetailsPart.toolbar: (context) =>
+          const DefaultInheritedPostActionToolbar<AnimePicturesPost>(),
+      DetailsPart.tags: (context) => const AnimePicturesTagListSection(),
+      DetailsPart.fileDetails: (context) =>
+          const DefaultInheritedFileDetailsSection<AnimePicturesPost>(),
+      DetailsPart.relatedPosts: (context) =>
+          const AnimePicturesRelatedPostsSection(),
+    },
+  );
 }
 
 class AnimePicturesCurrentUserIdScope extends ConsumerWidget {
@@ -294,140 +300,57 @@ String _mapToGroupName(AnimePicturesTagType type) => switch (type) {
       AnimePicturesTagType.copyrightOther => 'Other Copyright',
     };
 
-class AnimePicturesPostDetailsPage extends ConsumerWidget {
-  const AnimePicturesPostDetailsPage({
+class AnimePicturesTagListSection extends ConsumerWidget {
+  const AnimePicturesTagListSection({
     super.key,
-    required this.posts,
-    required this.controller,
-    required this.onExit,
-    required this.onPageChanged,
-    required this.initialPage,
   });
-
-  final List<AnimePicturesPost> posts;
-  final PostDetailsController<Post> controller;
-  final void Function(int page) onExit;
-  final void Function(int page) onPageChanged;
-  final int initialPage;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return PostDetailsPageScaffold(
-      posts: posts,
-      initialIndex: initialPage,
-      swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
-      onExit: onExit,
-      sliverRelatedPostsBuilder: (context, post) => ref
-          .watch(postDetailsProvider(post.id))
-          .when(
-            data: (details) => details.tied != null && details.tied!.isNotEmpty
-                ? RelatedPostsSection(
-                    posts: details.tied!.map(dtoToAnimePicturesPost).toList(),
-                    imageUrl: defaultPostImageUrlBuilder(ref),
-                    onTap: (index) => goToPostDetailsPage(
-                      context: context,
-                      posts: posts,
-                      initialIndex: index,
-                    ),
-                  )
-                : const SliverSizedBox.shrink(),
-            error: (e, _) => const SliverSizedBox.shrink(),
-            loading: () => const SliverSizedBox.shrink(),
+    final post = InheritedPost.of<AnimePicturesPost>(context);
+
+    return ref.watch(postTagsProvider(post.id)).when(
+          data: (tags) => TagsTile(
+            initialExpanded: true,
+            initialCount: post.tagsCount,
+            post: post,
+            tags: tags,
           ),
-      tagListBuilder: (context, post) =>
-          ref.watch(postTagsProvider(post.id)).when(
-                data: (tags) => TagsTile(
-                  initialExpanded: true,
-                  initialCount: post.tagsCount,
-                  post: post,
-                  tags: tags,
-                ),
-                loading: () => TagsTile(
-                  initialExpanded: true,
-                  initialCount: post.tagsCount,
-                  post: post,
-                  tags: null,
-                ),
-                error: (e, _) => Text('Error: $e'),
-              ),
-      toolbar: DefaultPostDetailsActionToolbar(
-        controller: controller,
-      ),
-      fileDetailsBuilder: (context, post) => DefaultFileDetailsSection(
-        post: post,
-        initialExpanded: true,
-      ),
-    );
+          loading: () => TagsTile(
+            initialExpanded: true,
+            initialCount: post.tagsCount,
+            post: post,
+            tags: null,
+          ),
+          error: (e, _) => Text('Error: $e'),
+        );
   }
 }
 
-class AnimePicturesPostDetailsDesktopPage extends ConsumerWidget {
-  const AnimePicturesPostDetailsDesktopPage({
+class AnimePicturesRelatedPostsSection extends ConsumerWidget {
+  const AnimePicturesRelatedPostsSection({
     super.key,
-    required this.initialIndex,
-    required this.posts,
-    required this.onExit,
-    required this.onPageChanged,
-    required this.controller,
   });
-
-  final int initialIndex;
-  final List<AnimePicturesPost> posts;
-  final void Function(int index) onExit;
-  final void Function(int page) onPageChanged;
-  final PostDetailsController<Post> controller;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return PostDetailsPageDesktopScaffold(
-      debounceDuration: Duration.zero,
-      initialIndex: initialIndex,
-      posts: posts,
-      onExit: onExit,
-      onPageChanged: onPageChanged,
-      imageUrlBuilder: defaultPostImageUrlBuilder(ref),
-      fileDetailsBuilder: (context, post) => DefaultFileDetailsSection(
-        post: post,
-        initialExpanded: true,
-      ),
-      toolbarBuilder: (context, post) => DefaultPostActionToolbar(
-        post: post,
-      ),
-      sliverRelatedPostsBuilder: (context, post) => ref
-          .watch(postDetailsProvider(post.id))
-          .when(
-            data: (details) => details.tied != null && details.tied!.isNotEmpty
-                ? RelatedPostsSection(
-                    posts: details.tied!.map(dtoToAnimePicturesPost).toList(),
-                    imageUrl: defaultPostImageUrlBuilder(ref),
-                    onTap: (index) => goToPostDetailsPage(
-                      context: context,
-                      posts: posts,
-                      initialIndex: index,
-                    ),
-                  )
-                : const SliverSizedBox.shrink(),
-            error: (e, _) => const SliverSizedBox.shrink(),
-            loading: () => const SliverSizedBox.shrink(),
-          ),
-      tagListBuilder: (context, post) =>
-          ref.watch(postTagsProvider(post.id)).when(
-                data: (tags) => TagsTile(
-                  initialExpanded: true,
-                  initialCount: post.tagsCount,
-                  post: post,
-                  tags: tags,
-                ),
-                loading: () => TagsTile(
-                  initialExpanded: true,
-                  initialCount: post.tagsCount,
-                  post: post,
-                  tags: null,
-                ),
-                error: (e, _) => Text('Error: $e'),
-              ),
-      topRightButtonsBuilder: (currentPage, expanded, post) =>
-          GeneralMoreActionButton(post: post),
-    );
+    final posts = PostDetails.of<AnimePicturesPost>(context).posts;
+    final post = InheritedPost.of<AnimePicturesPost>(context);
+
+    return ref.watch(postDetailsProvider(post.id)).when(
+          data: (details) => details.tied != null && details.tied!.isNotEmpty
+              ? RelatedPostsSection(
+                  posts: details.tied!.map(dtoToAnimePicturesPost).toList(),
+                  imageUrl: defaultPostImageUrlBuilder(ref),
+                  onTap: (index) => goToPostDetailsPageFromPosts(
+                    context: context,
+                    posts: posts,
+                    initialIndex: index,
+                  ),
+                )
+              : const SliverSizedBox.shrink(),
+          error: (e, _) => const SliverSizedBox.shrink(),
+          loading: () => const SliverSizedBox.shrink(),
+        );
   }
 }

@@ -3,131 +3,46 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
-import 'package:exprollable_page_view/exprollable_page_view.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:sliver_tools/sliver_tools.dart';
+import 'package:video_player/video_player.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/notes/notes.dart';
-import 'package:boorusama/core/posts/details/common.dart';
+import 'package:boorusama/core/posts/details/details.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
-import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/videos/videos.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
-enum PostDetailsPart {
-  pool,
-  info,
-  toolbar,
-  artistInfo,
-  source,
-  tags,
-  stats,
-  fileDetails,
-  comments,
-  artistPosts,
-  relatedPosts,
-  characterList,
-}
-
-const kDefaultPostDetailsParts = {
-  PostDetailsPart.pool,
-  PostDetailsPart.info,
-  PostDetailsPart.toolbar,
-  PostDetailsPart.artistInfo,
-  PostDetailsPart.stats,
-  PostDetailsPart.source,
-  PostDetailsPart.tags,
-  PostDetailsPart.fileDetails,
-  PostDetailsPart.comments,
-  PostDetailsPart.artistPosts,
-  PostDetailsPart.relatedPosts,
-  PostDetailsPart.characterList,
-};
-
-const kDefaultPostDetailsNoSourceParts = {
-  PostDetailsPart.pool,
-  PostDetailsPart.info,
-  PostDetailsPart.toolbar,
-  PostDetailsPart.artistInfo,
-  PostDetailsPart.stats,
-  PostDetailsPart.tags,
-  PostDetailsPart.fileDetails,
-  PostDetailsPart.comments,
-  PostDetailsPart.artistPosts,
-  PostDetailsPart.relatedPosts,
-  PostDetailsPart.characterList,
-};
+const String kShowInfoStateCacheKey = 'showInfoCacheStateKey';
 
 class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   const PostDetailsPageScaffold({
     super.key,
     required this.posts,
-    required this.initialIndex,
-    required this.onExit,
-    this.toolbar,
-    this.sliverArtistPostsBuilder,
-    this.sliverCharacterPostsBuilder,
     this.onExpanded,
-    this.tagListBuilder,
-    this.infoBuilder,
-    required this.swipeImageUrlBuilder,
+    this.imageUrlBuilder,
     this.topRightButtonsBuilder,
-    this.placeholderImageUrlBuilder,
-    this.artistInfoBuilder,
-    this.onPageChanged,
-    this.onPageChangeIndexed,
-    this.sliverRelatedPostsBuilder,
-    this.commentsBuilder,
-    this.poolTileBuilder,
-    this.statsTileBuilder,
-    this.fileDetailsBuilder,
-    this.sourceSectionBuilder,
-    this.parts = kDefaultPostDetailsParts,
-    this.postDetailsController,
+    required this.controller,
+    this.uiBuilder,
   });
 
-  final int initialIndex;
   final List<T> posts;
-  final void Function(int page) onExit;
-  final void Function(T post)? onExpanded;
-  final void Function(T post)? onPageChanged;
-  final void Function(int index)? onPageChangeIndexed;
-  final String Function(T post) swipeImageUrlBuilder;
-  final String? Function(T post, int currentPage)? placeholderImageUrlBuilder;
-  final Widget? toolbar;
-  final List<Widget> Function(BuildContext context, T post)?
-      sliverArtistPostsBuilder;
-  final Widget Function(BuildContext context, T post)?
-      sliverCharacterPostsBuilder;
-  final Widget Function(BuildContext context, T post)? tagListBuilder;
-  final Widget Function(BuildContext context, T post)? infoBuilder;
-  final Widget Function(BuildContext context, T post)? artistInfoBuilder;
-  final Widget Function(BuildContext context, T post)? commentsBuilder;
-  final Widget Function(BuildContext context, T post)? poolTileBuilder;
-  final Widget Function(BuildContext context, T post)? statsTileBuilder;
-  final Widget Function(BuildContext context, T post)? fileDetailsBuilder;
-  final Widget Function(BuildContext context, T post)? sourceSectionBuilder;
-
-  final Set<PostDetailsPart> parts;
-
-  final Widget Function(BuildContext context, T post)?
-      sliverRelatedPostsBuilder;
-  final List<Widget> Function(int currentPage, bool expanded, T post,
-      DetailsPageController controller)? topRightButtonsBuilder;
-
-  final PostDetailsController<T>? postDetailsController;
+  final void Function()? onExpanded;
+  final String Function(T post)? imageUrlBuilder;
+  final List<Widget> Function(PostDetailsPageViewController controller)?
+      topRightButtonsBuilder;
+  final PostDetailsController<T> controller;
+  final PostDetailsUIBuilder? uiBuilder;
 
   @override
   ConsumerState<PostDetailsPageScaffold<T>> createState() =>
@@ -135,46 +50,17 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
 }
 
 class _PostDetailPageScaffoldState<T extends Post>
-    extends ConsumerState<PostDetailsPageScaffold<T>>
-    with PostDetailsPageMixin<PostDetailsPageScaffold<T>, T> {
+    extends ConsumerState<PostDetailsPageScaffold<T>> {
   late final _posts = widget.posts;
-  late final _controller = DetailsPageController(
-    initialPage: widget.initialIndex,
-    swipeDownToDismiss: !posts[widget.initialIndex].isVideo,
+  late final _controller = PostDetailsPageViewController(
+    initialPage: widget.controller.initialPage,
     hideOverlay: ref.read(settingsProvider).hidePostDetailsOverlay,
   );
 
-  @override
-  DetailsPageController get controller => _controller;
-
-  @override
-  Function(int page) get onPageChanged => (page) => ref
-      .read(postShareProvider(posts[page]).notifier)
-      .updateInformation(posts[page]);
-
-  @override
   List<T> get posts => _posts;
 
   @override
-  int get initialPage => widget.initialIndex;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller.currentPage.addListener(_onPageChanged);
-  }
-
-  void _onPageChanged() {
-    final page = _controller.currentPage.value;
-
-    onSwiped(page);
-    widget.onPageChangeIndexed?.call(page);
-    widget.onPageChanged?.call(posts[page]);
-  }
-
-  @override
   void dispose() {
-    _controller.currentPage.removeListener(_onPageChanged);
     _controller.dispose();
 
     super.dispose();
@@ -185,388 +71,427 @@ class _PostDetailPageScaffoldState<T extends Post>
     ref.listen(
       settingsProvider.select((value) => value.hidePostDetailsOverlay),
       (previous, next) {
-        if (previous != next && _controller.hideOverlay.value != next) {
-          _controller.setHideOverlay(next);
+        if (previous != next && _controller.overlay.value != next) {
+          _controller.overlay.value = !next;
         }
       },
     );
 
     return CallbackShortcuts(
       bindings: {
-        const SingleActivator(LogicalKeyboardKey.arrowRight): () =>
-            controller.nextPage(),
-        const SingleActivator(LogicalKeyboardKey.arrowLeft): () =>
-            controller.previousPage(),
-        const SingleActivator(LogicalKeyboardKey.keyO): () =>
-            controller.toggleOverlay(),
-        const SingleActivator(LogicalKeyboardKey.escape): () {
-          Navigator.of(context).pop();
-          widget.onExit(controller.currentPage.value);
-        },
+        const SingleActivator(
+          LogicalKeyboardKey.keyF,
+          control: true,
+        ): () => goToOriginalImagePage(
+              context,
+              widget.posts[_controller.page],
+            ),
       },
-      child: Focus(
-        autofocus: true,
-        child: CustomContextMenuOverlay(
-          backgroundColor: context.colorScheme.secondaryContainer,
-          child: ValueListenableBuilder(
-            valueListenable: controller.slideshow,
-            builder: (context, slideshow, child) => GestureDetector(
-              behavior: slideshow ? HitTestBehavior.opaque : null,
-              onTap: () => controller.stopSlideshow(),
-              child: IgnorePointer(
-                ignoring: slideshow,
-                child: child,
-              ),
-            ),
-            child: ValueListenableBuilder(
-              valueListenable: controller.currentPage,
-              builder: (_, page, __) => _build(page),
-            ),
-          ),
-        ),
+      child: CustomContextMenuOverlay(
+        backgroundColor: context.colorScheme.secondaryContainer,
+        child: _build(),
       ),
     );
   }
 
-  Widget _build(int currentPage) {
+  Widget _build() {
     final config = ref.watchConfig;
     final booruBuilder = ref.watchBooruBuilder(config);
     final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
-    final focusedPost = posts[currentPage];
+    final imageUrlBuilder =
+        widget.imageUrlBuilder ?? defaultPostImageUrlBuilder(ref);
 
-    Widget buildShareChild() {
-      return Column(
-        children: [
-          if (widget.infoBuilder != null)
-            widget.infoBuilder!(context, focusedPost),
-          widget.toolbar != null
-              ? widget.toolbar!
-              : SimplePostActionToolbar(post: focusedPost),
+    final uiBuilder = widget.uiBuilder ?? booruBuilder?.postDetailsUIBuilder;
+
+    final settings = ref.watch(settingsProvider);
+
+    return Scaffold(
+      body: PostDetailsPageView(
+        onPageChanged: (page) {
+          widget.controller.setPage(page);
+
+          ref
+              .read(postShareProvider(posts[page]).notifier)
+              .updateInformation(posts[page]);
+        },
+        sheetStateStorage: SheetStateStorageBuilder(
+            save: (expanded) => ref
+                .read(miscDataProvider(kShowInfoStateCacheKey).notifier)
+                .put(expanded.toString()),
+            load: () async =>
+                ref.read(miscDataProvider(kShowInfoStateCacheKey)) == 'true'),
+        slideshowOptions: SlideshowOptions(
+          duration: settings.slideshowDuration,
+          direction: settings.slideshowDirection,
+          skipTransition: settings.skipSlideshowTransition,
+        ),
+        controller: _controller,
+        onExit: widget.controller.onExit,
+        itemCount: posts.length,
+        leftActions: [
+          CircularIconButton(
+            icon: const Icon(
+              Symbols.home,
+              fill: 1,
+            ),
+            onPressed: () => goToHomePage(context),
+          ),
         ],
-      );
-    }
+        onItemDoubleTap: booruBuilder?.canHandlePostGesture(
+                      GestureType.doubleTap,
+                      ref.watchConfig.postGestures?.fullview,
+                    ) ==
+                    true &&
+                postGesturesHandler != null
+            ? () => postGesturesHandler(
+                  ref,
+                  ref.watchConfig.postGestures?.fullview?.doubleTap,
+                  posts[_controller.page],
+                )
+            : null,
+        onItemLongPress: booruBuilder?.canHandlePostGesture(
+                      GestureType.longPress,
+                      ref.watchConfig.postGestures?.fullview,
+                    ) ==
+                    true &&
+                postGesturesHandler != null
+            ? () => postGesturesHandler(
+                  ref,
+                  ref.watchConfig.postGestures?.fullview?.longPress,
+                  posts[_controller.page],
+                )
+            : null,
+        onSwipeDownThresholdReached: booruBuilder?.canHandlePostGesture(
+                      GestureType.swipeDown,
+                      config.postGestures?.fullview,
+                    ) ==
+                    true &&
+                postGesturesHandler != null
+            ? () {
+                _controller.resetSheet();
 
-    Widget buildBottomSheet() {
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (focusedPost.isVideo)
+                postGesturesHandler(
+                  ref,
+                  config.postGestures?.fullview?.swipeDown,
+                  posts[_controller.page],
+                );
+              }
+            : null,
+        sheetBuilder: (context, scrollController) {
+          return ValueListenableBuilder(
+            valueListenable: _controller.sheetState,
+            builder: (context, state, _) => PostDetailsFullInfoSheet(
+              scrollController: scrollController,
+              sheetState: state,
+              uiBuilder: uiBuilder,
+            ),
+          );
+        },
+        itemBuilder: (context, index) {
+          final post = posts[index];
+          final (previousPost, nextPost) = posts.getPrevAndNextPosts(index);
+
+          return Stack(
+            alignment: Alignment.center,
+            children: [
+              // preload next image only, not the post itself
+              if (nextPost != null && !nextPost.isVideo)
+                Offstage(
+                  child: PostDetailsPreloadImage(
+                    url: imageUrlBuilder(nextPost),
+                  ),
+                ),
+              PostMedia<T>(
+                post: post,
+                imageUrl: imageUrlBuilder(post),
+                imageOverlayBuilder: (constraints) =>
+                    noteOverlayBuilderDelegate(
+                  constraints,
+                  post,
+                  ref.watch(notesControllerProvider(post)),
+                ),
+                controller: _controller,
+                autoPlay: true,
+              ),
+              if (previousPost != null && !previousPost.isVideo)
+                Offstage(
+                  child: PostDetailsPreloadImage(
+                    url: imageUrlBuilder(previousPost),
+                  ),
+                ),
+              if (post.isVideo)
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: ValueListenableBuilder(
+                    valueListenable: _controller.sheetState,
+                    builder: (_, state, __) => state.isExpanded
+                        ? Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: VideoSoundScope(
+                              builder: (context, soundOn) => SoundControlButton(
+                                padding: const EdgeInsets.all(8),
+                                soundOn: soundOn,
+                                onSoundChanged: (value) =>
+                                    ref.setGlobalVideoSound(value),
+                              ),
+                            ),
+                          )
+                        : const SizedBox.shrink(),
+                  ),
+                ),
+            ],
+          );
+        },
+        bottomSheet: widget.uiBuilder != null
+            ? _buildCustomPreview(widget.uiBuilder!)
+            : uiBuilder != null && uiBuilder.preview.isNotEmpty
+                ? _buildCustomPreview(uiBuilder)
+                : _buildFallbackPreview(),
+        actions: [
+          if (widget.topRightButtonsBuilder != null)
+            ...widget.topRightButtonsBuilder!(
+              _controller,
+            )
+          else ...[
             ValueListenableBuilder(
-              valueListenable: videoProgress,
+              valueListenable: widget.controller.currentPost,
+              builder: (context, post, _) => NoteActionButtonWithProvider(
+                post: post,
+                noteState: ref.watch(notesControllerProvider(post)),
+              ),
+            ),
+            const SizedBox(width: 8),
+            ValueListenableBuilder(
+              valueListenable: widget.controller.currentPost,
+              builder: (context, post, _) => GeneralMoreActionButton(
+                post: post,
+                onStartSlideshow: () => _controller.startSlideshow(),
+              ),
+            ),
+          ],
+        ],
+        onExpanded: widget.onExpanded,
+      ),
+    );
+  }
+
+  Widget _buildCustomPreview(PostDetailsUIBuilder uiBuilder) {
+    return Container(
+      color: context.colorScheme.surface,
+      child: CustomScrollView(
+        shrinkWrap: true,
+        slivers: [
+          SliverToBoxAdapter(
+            child: _buildVideoControls(),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  for (final part in uiBuilder.preview.keys)
+                    uiBuilder.buildPart(context, part),
+                ],
+              ),
+            ),
+          ),
+          SliverSizedBox(
+            height: MediaQuery.paddingOf(context).bottom,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFallbackPreview() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _buildVideoControls(),
+        SizedBox(
+          height: MediaQuery.paddingOf(context).bottom,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildVideoControls() {
+    return ValueListenableBuilder(
+      valueListenable: widget.controller.currentPost,
+      builder: (context, post, _) => post.isVideo
+          ? ValueListenableBuilder(
+              valueListenable: widget.controller.videoProgress,
               builder: (_, progress, __) => VideoSoundScope(
                 builder: (context, soundOn) => BooruVideoProgressBar(
                   soundOn: soundOn,
                   progress: progress,
-                  playbackSpeed: ref.watchPlaybackSpeed(focusedPost.videoUrl),
-                  onSeek: (position) => onVideoSeekTo(position, currentPage),
+                  playbackSpeed: ref.watchPlaybackSpeed(post.videoUrl),
+                  onSeek: (position) => widget.controller.onVideoSeekTo(
+                    position,
+                    post.id,
+                    post.isWebm,
+                  ),
                   onSpeedChanged: (speed) =>
-                      ref.setPlaybackSpeed(focusedPost.videoUrl, speed),
+                      ref.setPlaybackSpeed(post.videoUrl, speed),
                   onSoundToggle: (value) => ref.setGlobalVideoSound(value),
                 ),
               ),
-            ),
-          Container(
-            color: context.colorScheme.surface,
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.paddingOf(context).bottom,
-            ),
-            child: buildShareChild(),
-          ),
-        ],
-      );
-    }
-
-    return DetailsPage(
-      currentSettings: () => ref.read(settingsProvider),
-      controller: controller,
-      intitialIndex: widget.initialIndex,
-      onExit: widget.onExit,
-      onSwipeDownEnd: booruBuilder?.canHandlePostGesture(
-                    GestureType.swipeDown,
-                    config.postGestures?.fullview,
-                  ) ==
-                  true &&
-              postGesturesHandler != null
-          ? (page) => postGesturesHandler(
-                ref,
-                config.postGestures?.fullview?.swipeDown,
-                posts[page],
-              )
-          : null,
-      bottomSheet: widget.infoBuilder != null
-          ? DecoratedBox(
-              decoration: BoxDecoration(
-                color: context.colorScheme.surface.applyOpacity(0.8),
-                border: Border(
-                  top: BorderSide(
-                    color: context.theme.dividerColor,
-                    width: 0.2,
-                  ),
-                ),
-              ),
-              child: buildBottomSheet(),
             )
-          : buildBottomSheet(),
-      targetSwipeDown: SwipeTargetImage(
-        imageUrl: focusedPost.isVideo
-            ? focusedPost.videoThumbnailUrl
-            : widget.swipeImageUrlBuilder(focusedPost),
-        aspectRatio: focusedPost.aspectRatio,
-      ),
-      expandedBuilder: (context, page, expanded, enableSwipe) {
-        final post = posts[page];
-        final (previousPost, nextPost) = posts.getPrevAndNextPosts(page);
-        final expandedOnCurrentPage = expanded && page == currentPage;
-        final media = PostMedia(
-          inFocus: !expanded && page == currentPage,
-          post: post,
-          imageUrl: widget.swipeImageUrlBuilder(post),
-          placeholderImageUrl: widget.placeholderImageUrlBuilder != null
-              ? widget.placeholderImageUrlBuilder!(post, currentPage)
-              : post.thumbnailImageUrl,
-          onImageTap: onImageTap,
-          onDoubleTap: booruBuilder?.canHandlePostGesture(
-                        GestureType.doubleTap,
-                        ref.watchConfig.postGestures?.fullview,
-                      ) ==
-                      true &&
-                  postGesturesHandler != null
-              ? () => postGesturesHandler(
-                    ref,
-                    ref.watchConfig.postGestures?.fullview?.doubleTap,
-                    post,
-                  )
-              : null,
-          onLongPress: booruBuilder?.canHandlePostGesture(
-                        GestureType.longPress,
-                        ref.watchConfig.postGestures?.fullview,
-                      ) ==
-                      true &&
-                  postGesturesHandler != null
-              ? () => postGesturesHandler(
-                    ref,
-                    ref.watchConfig.postGestures?.fullview?.longPress,
-                    post,
-                  )
-              : null,
-          onCurrentVideoPositionChanged: onCurrentPositionChanged,
-          onVideoVisibilityChanged: onVisibilityChanged,
-          imageOverlayBuilder: (constraints) => noteOverlayBuilderDelegate(
-            constraints,
-            post,
-            ref.watch(notesControllerProvider(post)),
-          ),
-          useHero: page == currentPage,
-          onImageZoomUpdated: onZoomUpdated,
-          onVideoPlayerCreated: (controller) =>
-              onVideoPlayerCreated(controller, page),
-          onWebmVideoPlayerCreated: (controller) =>
-              onWebmVideoPlayerCreated(controller, page),
-          autoPlay: true,
-        );
-
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4),
-          child: CustomScrollView(
-            physics: enableSwipe ? null : const NeverScrollableScrollPhysics(),
-            controller: PageContentScrollController.of(context),
-            slivers: [
-              // preload next image only, not the post itself
-              if (nextPost != null && !nextPost.isVideo)
-                SliverOffstage(
-                  sliver: SliverToBoxAdapter(
-                    child: PostDetailsPreloadImage(
-                      url: widget.swipeImageUrlBuilder(nextPost),
-                    ),
-                  ),
-                ),
-              if (previousPost != null && !previousPost.isVideo)
-                SliverOffstage(
-                  sliver: SliverToBoxAdapter(
-                    child: PostDetailsPreloadImage(
-                      url: widget.swipeImageUrlBuilder(previousPost),
-                    ),
-                  ),
-                ),
-              if (!expandedOnCurrentPage)
-                SliverSizedBox(
-                  height: context.screenHeight -
-                      MediaQuery.viewPaddingOf(context).top,
-                  child: media,
-                )
-              else
-                SliverToBoxAdapter(child: media),
-              if (!expandedOnCurrentPage)
-                SliverSizedBox(height: context.screenHeight),
-              if (expandedOnCurrentPage)
-                ...widget.parts
-                    .map(
-                      (p) => switch (p) {
-                        PostDetailsPart.pool => widget.poolTileBuilder != null
-                            ? SliverToBoxAdapter(
-                                child: widget.poolTileBuilder!(context, post),
-                              )
-                            : null,
-                        PostDetailsPart.info => widget.infoBuilder != null
-                            ? SliverToBoxAdapter(
-                                child: widget.infoBuilder!(context, post),
-                              )
-                            : null,
-                        PostDetailsPart.toolbar => widget.toolbar != null
-                            ? SliverToBoxAdapter(
-                                child: widget.toolbar,
-                              )
-                            : null,
-                        PostDetailsPart.artistInfo =>
-                          widget.artistInfoBuilder != null
-                              ? SliverToBoxAdapter(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.stretch,
-                                    children: [
-                                      const Divider(thickness: 0.5, height: 8),
-                                      widget.artistInfoBuilder!(
-                                        context,
-                                        post,
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              : null,
-                        PostDetailsPart.stats => widget.statsTileBuilder != null
-                            ? SliverToBoxAdapter(
-                                child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
-                                  children: [
-                                    const SizedBox(height: 8),
-                                    widget.statsTileBuilder!(context, post),
-                                    const Divider(thickness: 0.5),
-                                  ],
-                                ),
-                              )
-                            : null,
-                        PostDetailsPart.tags => widget.tagListBuilder != null
-                            ? SliverToBoxAdapter(
-                                child: widget.tagListBuilder!(context, post),
-                              )
-                            : SliverToBoxAdapter(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 12,
-                                  ),
-                                  child: BasicTagList(
-                                    tags: post.tags.toList(),
-                                    onTap: (tag) =>
-                                        goToSearchPage(context, tag: tag),
-                                  ),
-                                ),
-                              ),
-                        PostDetailsPart.fileDetails =>
-                          widget.fileDetailsBuilder != null
-                              ? SliverToBoxAdapter(
-                                  child: Column(
-                                    children: [
-                                      widget.fileDetailsBuilder!(context, post),
-                                      const Divider(thickness: 0.5),
-                                    ],
-                                  ),
-                                )
-                              : SliverToBoxAdapter(
-                                  child: Column(
-                                    children: [
-                                      FileDetailsSection(
-                                        post: post,
-                                        rating: post.rating,
-                                      ),
-                                      const Divider(thickness: 0.5),
-                                    ],
-                                  ),
-                                ),
-                        PostDetailsPart.source => widget.sourceSectionBuilder !=
-                                null
-                            ? SliverToBoxAdapter(
-                                child:
-                                    widget.sourceSectionBuilder!(context, post),
-                              )
-                            : post.source.whenWeb(
-                                (source) => SliverToBoxAdapter(
-                                  child: SourceSection(source: source),
-                                ),
-                                () => null,
-                              ),
-                        PostDetailsPart.comments =>
-                          widget.commentsBuilder != null
-                              ? SliverToBoxAdapter(
-                                  child: widget.commentsBuilder!(context, post),
-                                )
-                              : null,
-                        PostDetailsPart.artistPosts =>
-                          widget.sliverArtistPostsBuilder != null
-                              ? MultiSliver(
-                                  children: widget.sliverArtistPostsBuilder!(
-                                    context,
-                                    post,
-                                  ),
-                                )
-                              : null,
-                        PostDetailsPart.relatedPosts =>
-                          widget.sliverRelatedPostsBuilder != null
-                              ? widget.sliverRelatedPostsBuilder!(context, post)
-                              : null,
-                        PostDetailsPart.characterList => widget
-                                    .sliverCharacterPostsBuilder !=
-                                null
-                            ? widget.sliverCharacterPostsBuilder!(context, post)
-                            : null,
-                      },
-                    )
-                    .nonNulls,
-              SliverSizedBox(
-                height: MediaQuery.paddingOf(context).bottom + 72,
-              ),
-            ],
-          ),
-        );
-      },
-      pageCount: posts.length,
-      topRightButtonsBuilder: (expanded) =>
-          widget.topRightButtonsBuilder != null
-              ? widget.topRightButtonsBuilder!(
-                  currentPage,
-                  expanded,
-                  focusedPost,
-                  controller,
-                )
-              : [
-                  NoteActionButtonWithProvider(
-                    post: focusedPost,
-                    expanded: expanded,
-                    noteState: ref.watch(notesControllerProvider(focusedPost)),
-                  ),
-                  GeneralMoreActionButton(
-                    post: focusedPost,
-                    onStartSlideshow: () => controller.startSlideshow(),
-                  ),
-                ],
-      onExpanded: () => widget.onExpanded?.call(focusedPost),
+          : const SizedBox.shrink(),
     );
   }
 }
 
-class DefaultPostDetailsActionToolbar extends StatelessWidget {
-  const DefaultPostDetailsActionToolbar({
+class PostDetailsFullInfoSheet extends ConsumerWidget {
+  const PostDetailsFullInfoSheet({
     super.key,
-    required this.controller,
+    this.scrollController,
+    this.uiBuilder,
+    required this.sheetState,
   });
 
-  final PostDetailsController controller;
+  final ScrollController? scrollController;
+  final SheetState sheetState;
+  final PostDetailsUIBuilder? uiBuilder;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final booruBuilder = ref.watchBooruBuilder(ref.watchConfig);
+    final builder = uiBuilder ?? booruBuilder?.postDetailsUIBuilder;
+
+    if (builder == null) {
+      return DefaultPostDetailsInfoPreview(
+        scrollController: scrollController,
+      );
+    }
+
+    return RawPostDetailsInfoSheet(
+      scrollController: scrollController,
+      preview: DefaultPostDetailsInfoPreview(
+        scrollController: scrollController,
+      ),
+      sliver: MultiSliver(
+        children: [
+          ...builder.full.keys.map((p) => builder.buildPart(context, p)),
+        ],
+      ),
+      sheetState: sheetState,
+    );
+  }
+}
+
+class RawPostDetailsInfoSheet extends StatelessWidget {
+  const RawPostDetailsInfoSheet({
+    super.key,
+    required this.scrollController,
+    required this.preview,
+    required this.sliver,
+    required this.sheetState,
+  });
+
+  final ScrollController? scrollController;
+  final Widget preview;
+  final Widget sliver;
+
+  final SheetState sheetState;
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: controller.currentPost,
-      builder: (_, post, __) => DefaultPostActionToolbar(post: post),
+    if (sheetState == SheetState.collapsed) {
+      return preview;
+    }
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+      child: CustomScrollView(
+        controller: scrollController,
+        slivers: [
+          const SliverSizedBox(height: 12),
+          // SliverOffstage(
+          //   offstage: sheetState == SheetState.hidden,
+          //   sliver: sliver,
+          // ),
+          sliver,
+          SliverSizedBox(
+            height: MediaQuery.paddingOf(context).bottom + 72,
+          ),
+        ],
+      ),
     );
+  }
+}
+
+class DefaultPostDetailsInfoPreview extends StatelessWidget {
+  const DefaultPostDetailsInfoPreview({
+    super.key,
+    this.scrollController,
+  });
+
+  final ScrollController? scrollController;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+      child: CustomScrollView(
+        controller: scrollController,
+        slivers: [
+          const SliverSizedBox(height: 12),
+          SliverSizedBox(
+            height: MediaQuery.paddingOf(context).bottom + 72,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+mixin PostDetailsPageMixin<T extends StatefulWidget, E extends Post>
+    on State<T> {
+  final _videoProgress = ValueNotifier(VideoProgress.zero);
+
+  //TODO: should have an abstraction for this crap, but I'm too lazy to do it since there are only 2 types of video anyway
+  final Map<int, VideoPlayerController> _videoControllers = {};
+  final Map<int, WebmVideoController> _webmVideoControllers = {};
+
+  List<E> get posts;
+  ValueNotifier<VideoProgress> get videoProgress => _videoProgress;
+
+  void onPageChanged(int page) {
+    _videoProgress.value = VideoProgress.zero;
+
+    // // Pause previous video
+    // if (posts[page].videoUrl.endsWith('.webm')) {
+    //   _webmVideoControllers[page]?.pause();
+    // } else {
+    //   _videoControllers[page]?.pause();
+    // }
+  }
+
+  void onCurrentPositionChanged(
+      double current, double total, String url, int page) {
+    // check if the current video is the same as the one being played
+    if (posts[page].videoUrl != url) return;
+
+    _videoProgress.value = VideoProgress(
+        Duration(milliseconds: (total * 1000).toInt()),
+        Duration(milliseconds: (current * 1000).toInt()));
+  }
+
+  void onVideoSeekTo(Duration position, int page) {
+    if (posts[page].videoUrl.endsWith('.webm')) {
+      _webmVideoControllers[page]?.seek(position.inSeconds.toDouble());
+    } else {
+      _videoControllers[page]?.seekTo(position);
+    }
+  }
+
+  void onWebmVideoPlayerCreated(WebmVideoController controller, int page) {
+    _webmVideoControllers[page] = controller;
+  }
+
+  void onVideoPlayerCreated(VideoPlayerController controller, int page) {
+    _videoControllers[page] = controller;
   }
 }

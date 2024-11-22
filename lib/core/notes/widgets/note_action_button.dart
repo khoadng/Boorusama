@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/posts/posts.dart';
@@ -29,15 +30,11 @@ class NoteActionButton extends StatelessWidget {
     if (!post.isTranslated) return const SizedBox.shrink();
 
     if (showDownload) {
-      return FilledButton(
-        style: FilledButton.styleFrom(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 8,
-          ),
-          visualDensity: VisualDensity.compact,
+      return CircularIconButton(
+        icon: FaIcon(
+          Symbols.translate,
         ),
         onPressed: onDownload,
-        child: const Text('Notes'),
       );
     }
 

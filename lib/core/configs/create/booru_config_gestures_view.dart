@@ -47,13 +47,6 @@ class BooruConfigGesturesView extends ConsumerWidget {
         children: [
           BooruConfigSettingsHeader(
               label: 'settings.image_viewer.image_viewer'.tr()),
-          WarningContainer(
-            margin: const EdgeInsets.symmetric(vertical: 12),
-            title: 'Limitation',
-            contentBuilder: (_) => const Text(
-              'Images only, not applicable to videos.',
-            ),
-          ),
           ListTile(
             contentPadding: EdgeInsets.zero,
             visualDensity: VisualDensity.compact,

@@ -7,9 +7,28 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/router.dart';
+
+class DefaultInheritedTagList<T extends Post> extends ConsumerWidget {
+  const DefaultInheritedTagList({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final post = InheritedPost.of<T>(context);
+
+    return BasicTagList(
+      tags: post.tags.toList(),
+      unknownCategoryColor: ref.watch(tagColorProvider('general')),
+      onTap: (tag) => goToSearchPage(
+        context,
+        tag: tag,
+      ),
+    );
+  }
+}
 
 class BasicTagList extends ConsumerWidget {
   const BasicTagList({
@@ -26,7 +45,10 @@ class BasicTagList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Container(
-      margin: const EdgeInsets.all(8),
+      margin: const EdgeInsets.symmetric(
+        vertical: 20,
+        horizontal: 8,
+      ),
       child: Wrap(
         spacing: 4,
         runSpacing: 4,

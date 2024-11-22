@@ -22,7 +22,7 @@ final hydrusFavoriteProvider =
 
 final hydrusCanFavoriteProvider =
     FutureProvider.family<bool, BooruConfig>((ref, config) async {
-  final client = ref.read(hydrusClientProvider(config));
+  final client = ref.watch(hydrusClientProvider(config));
 
   final services = await client.getServicesCached();
 

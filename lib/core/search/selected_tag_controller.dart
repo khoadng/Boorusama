@@ -15,8 +15,9 @@ class SelectedTagController extends ValueNotifier<List<TagSearchItem>> {
 
   SelectedTagController.fromBooruBuilder({
     required BooruBuilder? builder,
+    required TagInfo tagInfo,
   }) : this(
-          metatagExtractor: builder?.metatagExtractor,
+          metatagExtractor: builder?.metatagExtractorBuilder?.call(tagInfo),
         );
 
   final MetatagExtractor? metatagExtractor;

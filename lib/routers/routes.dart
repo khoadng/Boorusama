@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/entry_page.dart';
 import 'package:boorusama/core/blacklists/blacklists.dart';
 import 'package:boorusama/core/bookmarks/bookmarks.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
@@ -18,6 +18,7 @@ import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/biometrics/app_lock.dart';
 import 'package:boorusama/foundation/rating/rating.dart';
 import 'package:boorusama/router.dart';
@@ -50,13 +51,6 @@ const kCharacterNameKey = 'name';
 
 const kBulkdownload = 'bulk_download';
 
-typedef DetailsPayload<T extends Post> = ({
-  int initialIndex,
-  List<T> posts,
-  AutoScrollController? scrollController,
-  bool isDesktop,
-});
-
 class Routes {
   static GoRoute home(Ref ref) => GoRoute(
         path: '/',
@@ -74,9 +68,7 @@ class Routes {
         ),
         routes: [
           BoorusRoutes.update(ref),
-          BoorusRoutes.updateDesktop(ref),
           BoorusRoutes.add(ref),
-          BoorusRoutes.addDesktop(),
           search(ref),
           postDetails(ref),
           favorites(ref),
@@ -95,35 +87,42 @@ class Routes {
 
   static GoRoute postDetails(Ref ref) => GoRoute(
         path: 'details',
-        name: '/details',
         pageBuilder: (context, state) {
           final config = ref.read(currentBooruConfigProvider);
           final booruBuilder = ref.readBooruBuilder(config);
           final builder = booruBuilder?.postDetailsPageBuilder;
 
-          final payload = state.extra as DetailsPayload;
+          final payload = castOrNull<DetailsPayload>(state.extra);
 
-          if (!payload.isDesktop) {
+          if (payload == null) {
             return MaterialPage(
-              key: state.pageKey,
-              name: state.name,
-              child: builder != null
-                  ? builder(context, config, payload)
-                  : const UnimplementedPage(),
+              child: InvalidPage(message: 'Invalid payload: $payload'),
             );
-          } else {
-            return builder != null
-                ? FastFadePage(
-                    key: state.pageKey,
-                    name: state.name,
-                    child: builder(context, config, payload),
-                  )
-                : MaterialPage(
-                    key: state.pageKey,
-                    name: state.name,
-                    child: const UnimplementedPage(),
-                  );
           }
+
+          // must use the value from the payload for orientation
+          // Using MediaQuery.orientationOf(context) will cause the page to be rebuilt
+          final page = !payload.isDesktop
+              ? MaterialPage(
+                  key: state.pageKey,
+                  name: state.name,
+                  child: builder != null
+                      ? builder(context, config, payload)
+                      : const UnimplementedPage(),
+                )
+              : builder != null
+                  ? FastFadePage(
+                      key: state.pageKey,
+                      name: state.name,
+                      child: builder(context, config, payload),
+                    )
+                  : MaterialPage(
+                      key: state.pageKey,
+                      name: state.name,
+                      child: const UnimplementedPage(),
+                    );
+
+          return page;
         },
       );
 
@@ -131,8 +130,8 @@ class Routes {
         path: 'search',
         name: '/search',
         pageBuilder: (context, state) {
-          final config = ref.read(currentBooruConfigProvider);
-          final booruBuilder = ref.readCurrentBooruBuilder();
+          final config = ref.readConfig;
+          final booruBuilder = ref.readBooruBuilder(config);
           final builder = booruBuilder?.searchPageBuilder;
           final query = state.uri.queryParameters[kInitialQueryKey];
           final customHomeViewKey = config.layout?.home;
@@ -176,9 +175,9 @@ class Routes {
   static GoRoute artists(Ref ref) => GoRoute(
         path: 'artists',
         name: '/artists',
-        pageBuilder: platformAwarePageBuilder(
+        pageBuilder: largeScreenAwarePageBuilder(
           builder: (context, state) {
-            final booruBuilder = ref.readCurrentBooruBuilder();
+            final booruBuilder = ref.readBooruBuilder(ref.readConfig);
             final builder = booruBuilder?.artistPageBuilder;
             final artistName = state.uri.queryParameters[kArtistNameKey];
 
@@ -194,9 +193,9 @@ class Routes {
   static GoRoute characters(Ref ref) => GoRoute(
         path: 'characters',
         name: '/characters',
-        pageBuilder: platformAwarePageBuilder(
+        pageBuilder: largeScreenAwarePageBuilder(
           builder: (context, state) {
-            final booruBuilder = ref.readCurrentBooruBuilder();
+            final booruBuilder = ref.readBooruBuilder(ref.readConfig);
             final builder = booruBuilder?.characterPageBuilder;
             final characterName = state.uri.queryParameters[kCharacterNameKey];
 

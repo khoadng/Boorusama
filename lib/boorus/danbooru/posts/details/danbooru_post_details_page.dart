@@ -5,9 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/danbooru/artists/artists.dart';
-import 'package:boorusama/boorus/danbooru/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
@@ -19,25 +16,11 @@ import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/widgets.dart';
-import '../pools/pool_tiles.dart';
-import '../tags/details/danbooru_tags_tile.dart';
 
 class DanbooruPostDetailsPage extends ConsumerStatefulWidget {
   const DanbooruPostDetailsPage({
     super.key,
-    required this.posts,
-    required this.intitialIndex,
-    required this.onExit,
-    required this.onPageChanged,
-    required this.controller,
   });
-
-  final int intitialIndex;
-  final List<DanbooruPost> posts;
-  final void Function(int page) onExit;
-  final void Function(int page) onPageChanged;
-  final PostDetailsController<DanbooruPost> controller;
 
   @override
   ConsumerState<DanbooruPostDetailsPage> createState() =>
@@ -46,99 +29,26 @@ class DanbooruPostDetailsPage extends ConsumerStatefulWidget {
 
 class _DanbooruPostDetailsPageState
     extends ConsumerState<DanbooruPostDetailsPage> {
-  List<DanbooruPost> get posts => widget.posts;
-
   @override
   Widget build(BuildContext context) {
+    final data = PostDetails.of<DanbooruPost>(context);
+    final posts = data.posts;
+    final detailsController = data.controller;
+
     return DanbooruCreatorPreloader(
       posts: posts,
       child: PostDetailsPageScaffold(
+        controller: detailsController,
         posts: posts,
-        initialIndex: widget.intitialIndex,
-        onExit: widget.onExit,
-        parts: kDefaultPostDetailsNoSourceParts,
-        onPageChangeIndexed: widget.onPageChanged,
-        toolbar: ValueListenableBuilder(
-          valueListenable: widget.controller.currentPost,
-          builder: (_, post, __) => DanbooruPostActionToolbar(post: post),
-        ),
-        swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
-        sliverArtistPostsBuilder: (context, post) => post.artistTags.isNotEmpty
-            ? post.artistTags
-                .map((tag) => ArtistPostList(
-                      tag: tag,
-                      builder: (tag) => ref
-                          .watch(danbooruPostDetailsArtistProvider(tag))
-                          .maybeWhen(
-                            data: (data) => SliverPreviewPostGrid(
-                              posts: data,
-                              onTap: (postIdx) => goToPostDetailsPage(
-                                context: context,
-                                posts: data,
-                                initialIndex: postIdx,
-                              ),
-                              imageUrl: (item) => item.url360x360,
-                            ),
-                            orElse: () =>
-                                const SliverPreviewPostGridPlaceholder(),
-                          ),
-                    ))
-                .toList()
-            : [],
-        sliverCharacterPostsBuilder: (context, post) => post.artistTags.isEmpty
-            ? CharacterPostList(tags: post.characterTags)
-            : ref
-                .watch(danbooruPostDetailsArtistProvider(post.artistTags.first))
-                .maybeWhen(
-                  data: (_) => CharacterPostList(tags: post.characterTags),
-                  orElse: () => const SliverSizedBox.shrink(),
-                ),
-        sliverRelatedPostsBuilder: (context, post) =>
-            ref.watch(danbooruPostDetailsChildrenProvider(post)).maybeWhen(
-                  data: (posts) => DanbooruRelatedPostsSection(
-                    posts: posts,
-                    currentPost: post,
-                  ),
-                  orElse: () => const SliverSizedBox.shrink(),
-                ),
-        poolTileBuilder: (context, post) =>
-            ref.watch(danbooruPostDetailsPoolsProvider(post.id)).maybeWhen(
-                  data: (pools) => PoolTiles(pools: pools),
-                  orElse: () => const SizedBox.shrink(),
-                ),
-        statsTileBuilder: (context, post) => DanbooruPostStatsTile(
-          post: post,
-          commentCount:
-              ref.watch(danbooruCommentCountProvider(post.id)).maybeWhen(
-                    data: (count) => count,
-                    orElse: () => null,
-                  ),
-        ),
-        tagListBuilder: (context, post) => DanbooruTagsTile(post: post),
-        infoBuilder: (context, post) => SimpleInformationSection(
-          post: post,
-          showSource: true,
-        ),
-        artistInfoBuilder: (context, post) => DanbooruArtistSection(
-          post: post,
-          commentary:
-              ref.watch(danbooruArtistCommentaryProvider(post.id)).maybeWhen(
-                    data: (commentary) => commentary,
-                    orElse: () => const ArtistCommentary.empty(),
-                  ),
-        ),
-        placeholderImageUrlBuilder: (post, currentPage) =>
-            currentPage == widget.intitialIndex && post.isTranslated
-                ? null
-                : post.thumbnailImageUrl,
-        fileDetailsBuilder: (context, post) => DanbooruFileDetails(post: post),
-        topRightButtonsBuilder: (page, expanded, post, controller) {
+        topRightButtonsBuilder: (controller) {
+          final post = InheritedPost.of<DanbooruPost>(context);
+
           return [
             NoteActionButtonWithProvider(
               post: post,
-              expanded: expanded,
               noteState: ref.watch(notesControllerProvider(post)),
             ),
+            const SizedBox(width: 8),
             DanbooruMoreActionButton(
               post: post,
               onStartSlideshow: () => controller.startSlideshow(),
@@ -182,10 +92,8 @@ class DanbooruFileDetails extends ConsumerWidget {
                         borderRadius: BorderRadius.all(Radius.circular(8)),
                       ),
                       onTap: () => goToUserDetailsPage(
-                        ref,
                         context,
                         uid: uploader.id,
-                        username: uploader.name,
                       ),
                       child: Text(
                         uploader.name.replaceAll('_', ' '),
@@ -209,10 +117,8 @@ class DanbooruFileDetails extends ConsumerWidget {
                 color: Colors.transparent,
                 child: InkWell(
                   onTap: () => goToUserDetailsPage(
-                    ref,
                     context,
                     uid: approver.id,
-                    username: approver.name,
                   ),
                   child: Text(
                     approver.name.replaceAll('_', ' '),
@@ -322,7 +228,7 @@ class DanbooruRelatedPostsSection extends ConsumerWidget {
         context,
         tag: currentPost.relationshipQuery,
       ),
-      onTap: (index) => goToPostDetailsPage(
+      onTap: (index) => goToPostDetailsPageFromPosts(
         context: context,
         posts: posts,
         initialIndex: index,

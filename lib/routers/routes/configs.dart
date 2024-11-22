@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -14,69 +13,67 @@ import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import '../widgets/dialog_page.dart';
 
 class BoorusRoutes {
   BoorusRoutes._();
 
   static GoRoute add(Ref ref) => GoRoute(
         path: 'boorus/add',
-        redirect: (context, state) => !context.orientation.isLandscape
-            ? null
-            : Uri(
-                path: '/desktop/boorus/add',
-                queryParameters: state.uri.queryParameters,
-              ).toString(),
-        builder: (context, state) => AddBooruPage(
-          backgroundColor: context.colorScheme.surface,
-          setCurrentBooruOnSubmit:
-              state.uri.queryParameters['setAsCurrent']?.toBool() ?? false,
+        pageBuilder: largeScreenAwarePageBuilder(
+          useDialog: true,
+          builder: (context, state) {
+            final setAsCurrent =
+                state.uri.queryParameters['setAsCurrent']?.toBool() ?? false;
+
+            final landscape = context.orientation.isLandscape;
+
+            final page = AddBooruPage(
+              backgroundColor: context.colorScheme.surface,
+              setCurrentBooruOnSubmit: setAsCurrent,
+            );
+
+            return landscape
+                ? BooruDialog(
+                    child: page,
+                  )
+                : page;
+          },
         ),
       );
 
-  static GoRoute addDesktop() => GoRoute(
-      path: 'desktop/boorus/add',
-      pageBuilder: (context, state) => DialogPage(
-            key: state.pageKey,
-            name: state.name,
-            builder: (context) => const BooruDialog(
-              child: AddBooruPage(
-                setCurrentBooruOnSubmit: false,
-              ),
-            ),
-          ));
-
   static GoRoute update(Ref ref) => GoRoute(
         path: 'boorus/:id/update',
-        redirect: (context, state) => !context.orientation.isLandscape
-            ? null
-            : Uri(
-                path: '/desktop/boorus/${state.pathParameters['id']}/update',
-                queryParameters: state.uri.queryParameters,
-              ).toString(),
-        pageBuilder: (context, state) {
-          final idParam = state.pathParameters['id'];
-          final id = idParam?.toInt();
-          final q = state.uri.queryParameters['q'];
-          final config = ref
-              .read(booruConfigProvider)
-              ?.firstWhere((element) => element.id == id);
+        pageBuilder: largeScreenAwarePageBuilder(
+          useDialog: true,
+          builder: (context, state) {
+            final idParam = state.pathParameters['id'];
+            final id = idParam?.toInt();
+            final q = state.uri.queryParameters['q'];
+            final config = ref
+                .read(booruConfigProvider)
+                ?.firstWhere((element) => element.id == id);
 
-          if (config == null) {
-            return const CupertinoPage(
-              child: Scaffold(
-                body: Center(
-                  child: Text('Booru not found or not loaded yet'),
-                ),
-              ),
-            );
-          }
+            final landscape = context.orientation.isLandscape;
 
-          final booruBuilder = ref.readBooruBuilder(config);
+            if (config == null) {
+              return landscape
+                  ? const BooruDialog(
+                      child: Scaffold(
+                        body: Center(
+                          child: Text('Booru not found or not loaded yet'),
+                        ),
+                      ),
+                    )
+                  : Scaffold(
+                      body: Center(
+                        child: Text('Booru not found or not loaded yet'),
+                      ),
+                    );
+            }
 
-          return CupertinoPage(
-            key: state.pageKey,
-            child: booruBuilder?.updateConfigPageBuilder(
+            final booruBuilder = ref.readBooruBuilder(config);
+
+            final page = booruBuilder?.updateConfigPageBuilder(
                   context,
                   EditBooruConfigId.fromConfig(config),
                   backgroundColor: context.colorScheme.surface,
@@ -88,53 +85,14 @@ class BoorusRoutes {
                     child: Text(
                         'Not implemented, maybe forgot to add the builder implementation?'),
                   ),
-                ),
-          );
-        },
-      );
+                );
 
-  static GoRoute updateDesktop(Ref ref) => GoRoute(
-        path: 'desktop/boorus/:id/update',
-        pageBuilder: (context, state) {
-          final idParam = state.pathParameters['id'];
-          final id = idParam?.toInt();
-          final q = state.uri.queryParameters['q'];
-          final config = ref
-              .read(booruConfigProvider)
-              ?.firstWhere((element) => element.id == id);
-
-          if (config == null) {
-            return DialogPage(
-              builder: (context) => const BooruDialog(
-                child: Scaffold(
-                  body: Center(
-                    child: Text('Booru not found or not loaded yet'),
-                  ),
-                ),
-              ),
-            );
-          }
-
-          final booruBuilder = ref.readBooruBuilder(config);
-
-          return DialogPage(
-            key: state.pageKey,
-            name: state.name,
-            builder: (context) => BooruDialog(
-              padding: const EdgeInsets.all(16),
-              child: booruBuilder?.updateConfigPageBuilder(
-                    context,
-                    EditBooruConfigId.fromConfig(config),
-                    initialTab: q,
-                  ) ??
-                  Scaffold(
-                    appBar: AppBar(),
-                    body: const Center(
-                      child: Text('Not implemented'),
-                    ),
-                  ),
-            ),
-          );
-        },
+            return landscape
+                ? BooruDialog(
+                    child: page,
+                  )
+                : page;
+          },
+        ),
       );
 }

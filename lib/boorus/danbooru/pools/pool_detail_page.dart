@@ -53,101 +53,94 @@ class PoolDetailPage extends ConsumerWidget {
 
   final DanbooruPool pool;
 
-  static Widget of(
-    BuildContext context, {
-    required DanbooruPool pool,
-  }) =>
-      CustomContextMenuOverlay(
-        child: PoolDetailPage(
-          pool: pool,
-        ),
-      );
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final poolDesc = ref.watch(poolDescriptionProvider(pool.id));
     final config = ref.watchConfig;
 
-    return DanbooruInfinitePostIdList(
-      ids: ref.watch(poolPostIdsProvider(pool)),
-      sliverHeaders: [
-        SliverAppBar(
-          title: const Text('pool.pool').tr(),
-          floating: true,
-          actions: [
-            IconButton(
-              icon: const Icon(Symbols.search),
-              onPressed: () {
-                goToSearchPage(
-                  context,
-                  tag: pool.toSearchQuery(),
-                );
-              },
-            ),
-            IconButton(
-              onPressed: () {
-                goToBulkDownloadPage(
-                  context,
-                  [
-                    pool.toSearchQuery(),
-                  ],
-                  ref: ref,
-                );
-              },
-              icon: const Icon(Symbols.download),
-            ),
-          ],
-        ),
-        SliverToBoxAdapter(
-          child: ListTile(
-            title: Text(
-              pool.name.replaceUnderscoreWithSpace(),
-              style: context.theme.textTheme.titleLarge,
-            ),
-            subtitle: Text(
-              '${'pool.detail.last_updated'.tr()}: ${pool.updatedAt.fuzzify(locale: Localizations.localeOf(context))}',
+    return CustomContextMenuOverlay(
+      child: DanbooruInfinitePostIdList(
+        ids: ref.watch(poolPostIdsProvider(pool)),
+        sliverHeaders: [
+          SliverAppBar(
+            title: const Text('pool.pool').tr(),
+            floating: true,
+            actions: [
+              IconButton(
+                icon: const Icon(Symbols.search),
+                onPressed: () {
+                  goToSearchPage(
+                    context,
+                    tag: pool.toSearchQuery(),
+                  );
+                },
+              ),
+              IconButton(
+                onPressed: () {
+                  goToBulkDownloadPage(
+                    context,
+                    [
+                      pool.toSearchQuery(),
+                    ],
+                    ref: ref,
+                  );
+                },
+                icon: const Icon(Symbols.download),
+              ),
+            ],
+          ),
+          SliverToBoxAdapter(
+            child: ListTile(
+              title: Text(
+                pool.name.replaceUnderscoreWithSpace(),
+                style: context.theme.textTheme.titleLarge,
+              ),
+              subtitle: Text(
+                '${'pool.detail.last_updated'.tr()}: ${pool.updatedAt.fuzzify(locale: Localizations.localeOf(context))}',
+              ),
             ),
           ),
-        ),
-        poolDesc.maybeWhen(
-          data: (data) =>
-              data.description.isNotEmpty && hasTextBetweenDiv(data.description)
-                  ? SliverToBoxAdapter(
-                      child: AppHtml(
-                        onLinkTap: !config.hasStrictSFW
-                            ? (url, attributes, element) => _onHtmlLinkTapped(
-                                  attributes,
-                                  url,
-                                  data.descriptionEndpointRefUrl,
-                                )
-                            : null,
-                        data: data.description,
-                      ),
-                    )
-                  : const SliverSizedBox.shrink(),
-          orElse: () => const SliverSizedBox.shrink(),
-        ),
-        SliverPadding(
-          padding: const EdgeInsets.symmetric(
-            vertical: 8,
+          poolDesc.maybeWhen(
+            data: (data) => data.description.isNotEmpty &&
+                    hasTextBetweenDiv(data.description)
+                ? SliverToBoxAdapter(
+                    child: AppHtml(
+                      onLinkTap: !config.hasStrictSFW
+                          ? (url, attributes, element) => _onHtmlLinkTapped(
+                                attributes,
+                                url,
+                                data.descriptionEndpointRefUrl,
+                              )
+                          : null,
+                      data: data.description,
+                    ),
+                  )
+                : const SliverSizedBox.shrink(),
+            orElse: () => const SliverSizedBox.shrink(),
           ),
-          sliver: SliverToBoxAdapter(
-            child: Builder(
-              builder: (context) {
-                return PoolCategoryToggleSwitch(
-                  onToggle: (order) {
-                    ref.read(selectedPoolDetailsOrderProvider.notifier).state =
-                        order;
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      DanbooruPostGridController.of(context).refresh();
-                    });
-                  },
-                );
-              },
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 8,
+            ),
+            sliver: SliverToBoxAdapter(
+              child: Builder(
+                builder: (context) {
+                  return PoolCategoryToggleSwitch(
+                    onToggle: (order) {
+                      ref
+                          .read(selectedPoolDetailsOrderProvider.notifier)
+                          .state = order;
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        DanbooruPostGridController.of(context).refresh();
+                      });
+                    },
+                  );
+                },
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
