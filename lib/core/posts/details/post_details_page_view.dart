@@ -362,7 +362,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
                     builder: (_, state, __) => state.isExpanded
                         // If expanded, show the drag sheet
                         ? _buildDragSheet(
-                            initialChildSize: widget.maxSize,
+                            forceInitialSizeAsMax: true,
                             sheetState: state,
                           )
                         // If not expanded, hide it and let the user pull it up
@@ -502,26 +502,28 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     return PerformanceOrientationBuilder(
       builder: (context, orientation) => orientation.isPortrait
           ? ValueListenableBuilder(
-              valueListenable: _controller.sheetState,
-              builder: (_, state, __) => ValueListenableBuilder(
-                valueListenable: _displacement,
-                builder: (context, value, child) =>
-                    state.isExpanded && value <= 0
-                        ? SizedBox(
-                            height: widget.maxSize *
-                                MediaQuery.sizeOf(context).height,
-                          )
-                        : ValueListenableBuilder(
-                            valueListenable: _pointerCount,
-                            builder: (_, count, __) => !state.isExpanded &&
-                                    value >=
-                                        widget.maxSize *
-                                            MediaQuery.sizeOf(context).height &&
-                                    !(count >
-                                        0) // Only hide when there is any interaction
-                                ? const SizedBox.shrink()
-                                : SizedBox(height: value),
-                          ),
+              valueListenable: _controller.sheetMaxSize,
+              builder: (_, maxSize, __) => ValueListenableBuilder(
+                valueListenable: _controller.sheetState,
+                builder: (_, state, __) => ValueListenableBuilder(
+                  valueListenable: _displacement,
+                  builder: (context, value, child) => state.isExpanded &&
+                          value < 0
+                      ? SizedBox(
+                          height: maxSize * MediaQuery.sizeOf(context).height,
+                        )
+                      : ValueListenableBuilder(
+                          valueListenable: _pointerCount,
+                          builder: (_, count, __) => !state.isExpanded &&
+                                  value >=
+                                      maxSize *
+                                          MediaQuery.sizeOf(context).height &&
+                                  !(count >
+                                      0) // Only hide when there is any interaction
+                              ? const SizedBox.shrink()
+                              : SizedBox(height: value),
+                        ),
+                ),
               ),
             )
           : const SizedBox.shrink(),
@@ -550,7 +552,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
   }
 
   Widget _buildDragSheet({
-    double? initialChildSize,
+    bool? forceInitialSizeAsMax,
     required SheetState sheetState,
   }) {
     return NotificationListener<ScrollNotification>(
@@ -565,48 +567,71 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
 
         return false;
       },
-      child: DraggableScrollableSheet(
-        controller: _sheetController,
-        initialChildSize: initialChildSize ?? 0,
-        minChildSize: 0,
-        maxChildSize: widget.maxSize,
-        shouldCloseOnMinExtent: false,
-        snap: true,
-        snapAnimationDuration: const Duration(milliseconds: 200),
-        builder: (context, scrollController) => Scaffold(
-          floatingActionButton: ScrollToTop(
-            scrollController: scrollController,
-            child: BooruScrollToTopButton(
-              onPressed: () async {
-                await _controller.resetSheet();
-                if (mounted) {
-                  scrollController.jumpTo(0);
-                }
-              },
-            ),
-          ),
-          body: Stack(
-            children: [
-              Positioned.fill(
-                child: widget.sheetBuilder(context, scrollController),
+      child: ValueListenableBuilder(
+        valueListenable: _controller.sheetMaxSize,
+        builder: (_, maxSize, __) => DraggableScrollableSheet(
+          controller: _sheetController,
+          initialChildSize: forceInitialSizeAsMax == true ? maxSize : 0.0,
+          minChildSize: 0,
+          maxChildSize: maxSize,
+          shouldCloseOnMinExtent: false,
+          snap: true,
+          snapAnimationDuration: const Duration(milliseconds: 200),
+          builder: (context, scrollController) => Scaffold(
+            floatingActionButton: ScrollToTop(
+              scrollController: scrollController,
+              child: BooruScrollToTopButton(
+                onPressed: () async {
+                  await _controller.resetSheet();
+                  if (mounted) {
+                    scrollController.jumpTo(0);
+                  }
+                },
               ),
-              Align(
-                alignment: Alignment.topCenter,
-                child: ValueListenableBuilder(
-                  valueListenable: _controller.sheetState,
-                  builder: (context, state, child) =>
-                      state == SheetState.collapsed
-                          ? const SizedBox.shrink()
-                          : child!,
-                  child: const Padding(
-                    padding: EdgeInsets.only(
-                      top: 8,
-                    ),
-                    child: DragLine(),
+            ),
+            body: Stack(
+              children: [
+                Positioned.fill(
+                  child: widget.sheetBuilder(context, scrollController),
+                ),
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: ValueListenableBuilder(
+                    valueListenable: _controller.sheetState,
+                    builder: (context, state, _) => state ==
+                            SheetState.collapsed
+                        ? const SizedBox.shrink()
+                        : SheetDragline(
+                            // Simple hack to reset state when state changes
+                            key: ValueKey(state.isExpanded),
+                            onDragUpdate: state.isExpanded
+                                ? (delta) {
+                                    // Convert delta to percentage of screen height
+                                    final screenHeight =
+                                        MediaQuery.sizeOf(context).height -
+                                            MediaQuery.viewPaddingOf(context)
+                                                .top;
+                                    final percentage = delta / screenHeight;
+
+                                    final customMax =
+                                        (widget.maxSize - percentage)
+                                            .clamp(widget.maxSize, 1.0);
+
+                                    // Update max size with clamped value
+                                    _controller.sheetMaxSize.value = customMax;
+
+                                    WidgetsBinding.instance
+                                        .addPostFrameCallback((_) {
+                                      // Move the sheet to the new position
+                                      _sheetController.jumpTo(customMax);
+                                    });
+                                  }
+                                : null,
+                          ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -832,6 +857,74 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     animController.forward().then((_) {
       animController.dispose();
     });
+  }
+}
+
+class SheetDragline extends StatefulWidget {
+  const SheetDragline({
+    super.key,
+    this.onDragEnd,
+    this.onDragUpdate,
+    this.maxWidth = 120,
+    this.minWidth = 80,
+  });
+
+  final double maxWidth;
+  final double minWidth;
+  final void Function()? onDragEnd;
+  final void Function(double delta)? onDragUpdate;
+
+  @override
+  State<SheetDragline> createState() => _SheetDraglineState();
+}
+
+class _SheetDraglineState extends State<SheetDragline> {
+  var _isHolding = false;
+  var _startDragY = 0.0;
+  var _currentDragY = 0.0;
+  var _totalOffset = 0.0; // Track total movement
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onVerticalDragStart: (details) {
+        setState(() {
+          _isHolding = true;
+          _startDragY = details.globalPosition.dy;
+          _currentDragY = _startDragY;
+        });
+      },
+      onVerticalDragUpdate: (details) {
+        setState(() {
+          _currentDragY = details.globalPosition.dy;
+          final delta = _currentDragY - _startDragY;
+          _totalOffset += delta; // Accumulate the offset
+          widget.onDragUpdate?.call(_totalOffset);
+          _startDragY = _currentDragY; // Update start position for next delta
+        });
+      },
+      onVerticalDragEnd: (_) {
+        setState(() {
+          _isHolding = false;
+          widget.onDragEnd?.call();
+        });
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        color: Colors.transparent,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          width: _isHolding ? widget.maxWidth : widget.minWidth,
+          height: 2,
+          decoration: ShapeDecoration(
+            shape: const StadiumBorder(),
+            color: _isHolding
+                ? Theme.of(context).colorScheme.primary
+                : Theme.of(context).colorScheme.onSurface,
+          ),
+        ),
+      ),
+    );
   }
 }
 
@@ -1166,6 +1259,7 @@ class PostDetailsPageViewController extends ChangeNotifier {
   late final verticalPosition = ValueNotifier(0.0);
   late final displacement = ValueNotifier(0.0);
   late final animating = ValueNotifier(false);
+  late final sheetMaxSize = ValueNotifier(maxSize);
 
   final swipe = ValueNotifier(true);
   final canPull = ValueNotifier(true);
@@ -1241,6 +1335,8 @@ class PostDetailsPageViewController extends ChangeNotifier {
     };
 
     return WidgetsBinding.instance.addPostFrameCallback((_) async {
+      sheetMaxSize.value = maxSize;
+
       await _sheetController.animateTo(
         0.0,
         duration: duration ?? const Duration(milliseconds: 250),
@@ -1277,6 +1373,10 @@ class PostDetailsPageViewController extends ChangeNotifier {
   }
 
   void toggleExpanded() {
+    if (sheetState.value.isExpanded) {
+      sheetMaxSize.value = maxSize;
+    }
+
     sheetState.value = switch (sheetState.value) {
       SheetState.collapsed => SheetState.expanded,
       SheetState.expanded => SheetState.hidden,
