@@ -181,27 +181,32 @@ class DetailsPayload<T extends Post> extends Equatable {
     required this.initialIndex,
     required this.posts,
     required this.scrollController,
+    required this.isDesktop,
   });
 
   DetailsPayload<T> copyWith({
     int? initialIndex,
     AutoScrollController? scrollController,
+    bool? isDesktop,
   }) {
     return DetailsPayload<T>(
       initialIndex: initialIndex ?? this.initialIndex,
       posts: posts,
       scrollController: scrollController ?? this.scrollController,
+      isDesktop: isDesktop ?? this.isDesktop,
     );
   }
 
   final int initialIndex;
   final List<T> posts;
   final AutoScrollController? scrollController;
+  final bool isDesktop;
 
   @override
   List<Object?> get props => [
         initialIndex,
         posts,
         scrollController,
+        isDesktop,
       ];
 }

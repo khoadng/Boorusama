@@ -19,7 +19,6 @@ import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/biometrics/app_lock.dart';
-import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/rating/rating.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/string.dart';
@@ -100,7 +99,9 @@ class Routes {
             );
           }
 
-          final page = !context.orientation.isLandscape
+          // must use the value from the payload for orientation
+          // Using MediaQuery.orientationOf(context) will cause the page to be rebuilt
+          final page = !payload.isDesktop
               ? MaterialPage(
                   key: state.pageKey,
                   name: state.name,
