@@ -1,6 +1,5 @@
 // Flutter imports:
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:go_router/go_router.dart';
@@ -8,6 +7,7 @@ import 'package:go_router/go_router.dart';
 // Project imports:
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import 'widgets/dialog_page.dart';
 
 GoRouterPageBuilder genericMobilePageBuilder({
   required Widget Function(BuildContext context, GoRouterState state) builder,
@@ -20,6 +20,7 @@ GoRouterPageBuilder genericMobilePageBuilder({
 
 GoRouterPageBuilder largeScreenAwarePageBuilder<T>({
   required Widget Function(BuildContext context, GoRouterState state) builder,
+  bool useDialog = false,
 }) =>
     (context, state) {
       return context.orientation.isPortrait
@@ -28,27 +29,18 @@ GoRouterPageBuilder largeScreenAwarePageBuilder<T>({
               name: state.name,
               child: builder(context, state),
             )
-          : FastFadePage<T>(
-              key: state.pageKey,
-              name: state.name,
-              child: builder(context, state),
-            );
+          : useDialog
+              ? DialogPage<T>(
+                  key: state.pageKey,
+                  name: state.name,
+                  builder: (context) => builder(context, state),
+                )
+              : FastFadePage<T>(
+                  key: state.pageKey,
+                  name: state.name,
+                  child: builder(context, state),
+                );
     };
-
-GoRouterPageBuilder platformAwarePageBuilder<T>({
-  required Widget Function(BuildContext context, GoRouterState state) builder,
-}) =>
-    (context, state) => kPreferredLayout.isMobile
-        ? CupertinoPage<T>(
-            key: state.pageKey,
-            name: state.name,
-            child: builder(context, state),
-          )
-        : MaterialPage<T>(
-            key: state.pageKey,
-            name: state.name,
-            child: builder(context, state),
-          );
 
 class FastFadePageRoute<T> extends PageRouteBuilder<T> {
   FastFadePageRoute({

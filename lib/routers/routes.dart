@@ -19,6 +19,7 @@ import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/biometrics/app_lock.dart';
+import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/rating/rating.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/string.dart';
@@ -67,9 +68,7 @@ class Routes {
         ),
         routes: [
           BoorusRoutes.update(ref),
-          BoorusRoutes.updateDesktop(ref),
           BoorusRoutes.add(ref),
-          BoorusRoutes.addDesktop(),
           search(ref),
           postDetails(ref),
           favorites(ref),
@@ -101,7 +100,7 @@ class Routes {
             );
           }
 
-          final page = !payload.isDesktop
+          final page = !context.orientation.isLandscape
               ? MaterialPage(
                   key: state.pageKey,
                   name: state.name,
@@ -165,7 +164,7 @@ class Routes {
   static GoRoute artists(Ref ref) => GoRoute(
         path: 'artists',
         name: '/artists',
-        pageBuilder: platformAwarePageBuilder(
+        pageBuilder: largeScreenAwarePageBuilder(
           builder: (context, state) {
             final booruBuilder = ref.readBooruBuilder(ref.readConfig);
             final builder = booruBuilder?.artistPageBuilder;
@@ -183,7 +182,7 @@ class Routes {
   static GoRoute characters(Ref ref) => GoRoute(
         path: 'characters',
         name: '/characters',
-        pageBuilder: platformAwarePageBuilder(
+        pageBuilder: largeScreenAwarePageBuilder(
           builder: (context, state) {
             final booruBuilder = ref.readBooruBuilder(ref.readConfig);
             final builder = booruBuilder?.characterPageBuilder;

@@ -127,7 +127,6 @@ void goToPostDetailsPageCore<T extends Post>({
       initialIndex: initialIndex,
       posts: posts,
       scrollController: scrollController,
-      isDesktop: context.orientation.isLandscape,
     ),
   );
 }
