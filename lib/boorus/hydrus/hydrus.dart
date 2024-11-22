@@ -20,7 +20,6 @@ import 'package:boorusama/core/downloads/download_file_name_generator.dart';
 import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
-import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/router.dart';

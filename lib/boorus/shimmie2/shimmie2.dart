@@ -13,7 +13,6 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/tags/tags.dart';
 
 class Shimmie2Builder
     with

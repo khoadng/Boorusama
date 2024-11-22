@@ -8,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/images/images.dart';
-import 'package:boorusama/core/posts/details/details.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/videos/videos.dart';
 import 'package:boorusama/foundation/display.dart';
