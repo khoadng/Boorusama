@@ -20,6 +20,7 @@ import 'package:boorusama/foundation/permissions.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
+import 'package:home_widget/home_widget.dart';
 
 class EntryPage extends ConsumerStatefulWidget {
   const EntryPage({
@@ -36,7 +37,21 @@ class _EntryPageState extends ConsumerState<EntryPage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.showChangelogDialogIfNeeded();
+      final configs = ref.read(booruConfigProvider);
+      updateAndroidWidget("You have ${configs?.length ?? 0} boorus");
     });
+  }
+
+  void updateAndroidWidget(
+    String quote,
+  ) {
+    final packageName = 'com.degenk.boorusama';
+
+    HomeWidget.saveWidgetData("quote", quote);
+    HomeWidget.updateWidget(
+      name: 'TestHomeWidget',
+      qualifiedAndroidName: '$packageName.TestHomeWidget',
+    );
   }
 
   @override

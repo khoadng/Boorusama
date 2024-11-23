@@ -72,6 +72,9 @@ android {
             resValue "string", "app_name", "Boorusama"
         }
     }
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 flutter {
