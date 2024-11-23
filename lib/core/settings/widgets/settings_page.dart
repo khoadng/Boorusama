@@ -826,7 +826,6 @@ class ListingSettingsInteractionBlocker extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final hasCustomListing = ref.watch(hasCustomListingSettingsProvider);
     final config = ref.watchConfig;
-    final configs = ref.watch(booruConfigProvider);
 
     return SettingsInteractionBlocker(
       padding: padding,
@@ -842,28 +841,23 @@ class ListingSettingsInteractionBlocker extends ConsumerWidget {
             const TextSpan(
               text: 'These settings are overridden by custom listing. Go to ',
             ),
-            if (configs != null)
-              TextSpan(
-                text: "Booru's profile",
-                recognizer: TapGestureRecognizer()
-                  ..onTap = () {
-                    goToUpdateBooruConfigPage(
-                      context,
-                      config: config,
-                      initialTab: 'listing',
-                    );
+            TextSpan(
+              text: "Booru's profile",
+              recognizer: TapGestureRecognizer()
+                ..onTap = () {
+                  goToUpdateBooruConfigPage(
+                    context,
+                    config: config,
+                    initialTab: 'listing',
+                  );
 
-                    onNavigateAway?.call();
-                  },
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: context.colorScheme.primary,
-                ),
-              )
-            else
-              TextSpan(
-                text: "Booru's profile",
+                  onNavigateAway?.call();
+                },
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: context.colorScheme.primary,
               ),
+            ),
             const TextSpan(
               text: ' page instead.',
             ),

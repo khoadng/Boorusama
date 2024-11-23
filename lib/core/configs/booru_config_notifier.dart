@@ -11,12 +11,17 @@ import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/analytics.dart';
 
-class BooruConfigNotifier extends Notifier<List<BooruConfig>?>
+class BooruConfigNotifier extends Notifier<List<BooruConfig>>
     with BooruConfigExportImportMixin {
+  BooruConfigNotifier({
+    required this.initialConfigs,
+  });
+
+  final List<BooruConfig> initialConfigs;
+
   @override
-  List<BooruConfig>? build() {
-    fetch();
-    return null;
+  List<BooruConfig> build() {
+    return initialConfigs;
   }
 
   Future<void> fetch() async {
@@ -30,7 +35,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?>
 
     await ref.read(settingsProvider.notifier).updateOrder(newOrders);
 
-    state = [...state ?? [], booruConfig];
+    state = [...state, booruConfig];
   }
 
   Future<void> duplicate({
@@ -50,12 +55,11 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?>
     void Function(String message)? onFailure,
     void Function(BooruConfig booruConfig)? onSuccess,
   }) async {
-    if (state == null) return;
     try {
       // check if deleting the last config
-      if (state!.length == 1) {
+      if (state.length == 1) {
         await ref.read(booruConfigRepoProvider).remove(config);
-        state = null;
+        await ref.read(booruConfigProvider.notifier).fetch();
         // reset order
         await ref.read(settingsProvider.notifier).updateOrder([]);
         await ref.read(currentBooruConfigProvider.notifier).setEmpty();
@@ -68,11 +72,11 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?>
       // check if deleting current config, if so, set current to the first config
       final currentConfig = ref.read(currentBooruConfigProvider);
       if (currentConfig.id == config.id) {
-        final firstConfig = state!.first;
+        final firstConfig = state.first;
 
         // check if deleting the first config
         final targetConfig =
-            firstConfig.id == config.id ? state!.skip(1).first : firstConfig;
+            firstConfig.id == config.id ? state.skip(1).first : firstConfig;
 
         await ref
             .read(currentBooruConfigProvider.notifier)
@@ -85,7 +89,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?>
 
       await ref.read(settingsProvider.notifier).updateOrder(newOrders);
 
-      final tmp = [...state!];
+      final tmp = [...state];
       tmp.remove(config);
       state = tmp;
       onSuccess?.call(config);
@@ -100,7 +104,6 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?>
     void Function(String message)? onFailure,
     void Function(BooruConfig booruConfig)? onSuccess,
   }) async {
-    if (state == null) return;
     final updatedConfig = await ref
         .read(booruConfigRepoProvider)
         .update(oldConfigId, booruConfigData);
@@ -112,7 +115,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?>
     }
 
     final newConfigs =
-        state!.replaceFirst(updatedConfig, (item) => item.id == oldConfigId);
+        state.replaceFirst(updatedConfig, (item) => item.id == oldConfigId);
 
     onSuccess?.call(updatedConfig);
 
@@ -138,13 +141,13 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?>
       ref.read(analyticsProvider).sendBooruAddedEvent(
             url: config.url,
             hintSite: config.booruType.name,
-            totalSites: state?.length ?? 0,
+            totalSites: state.length,
             hasLogin: config.hasLoginDetails(),
           );
 
       await _add(config);
 
-      if (setAsCurrent || state?.length == 1) {
+      if (setAsCurrent || state.length == 1) {
         await ref.read(currentBooruConfigProvider.notifier).update(config);
       }
     } catch (e) {
