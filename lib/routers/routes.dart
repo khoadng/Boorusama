@@ -53,13 +53,16 @@ const kBulkdownload = 'bulk_download';
 class Routes {
   static GoRoute home(Ref ref) => GoRoute(
         path: '/',
-        builder: (context, state) => const AppLockWithSettings(
-          child: RateMyAppScope(
-            child: BackgroundDownloaderBuilder(
-              child: CustomContextMenuOverlay(
-                child: Focus(
-                  autofocus: true,
-                  child: EntryPage(),
+        builder: (context, state) => BooruConfigDeepLinkResolver(
+          path: state.uri.toString(),
+          child: const AppLockWithSettings(
+            child: RateMyAppScope(
+              child: BackgroundDownloaderBuilder(
+                child: CustomContextMenuOverlay(
+                  child: Focus(
+                    autofocus: true,
+                    child: EntryPage(),
+                  ),
                 ),
               ),
             ),
