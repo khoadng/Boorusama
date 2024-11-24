@@ -213,7 +213,7 @@
             "aspect_ratio": "Ratio d'aspect"
         },
         "image_viewer": {
-            "image_viewer": "Résolution de l'image",
+            "image_viewer": "Visionneuse d'images",
             "full_res_as_default": "Afficher la résolution max par défaut",
             "full_res_notice": "Le temps de chargement dépend de la taille de l'image",
             "slideshow_modes": {
