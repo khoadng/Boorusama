@@ -243,7 +243,7 @@ mixin BooruSelectorActionMixin<T extends ConsumerStatefulWidget>
 
     newOrders.reorder(oldIndex, newIndex);
 
-    ref.read(settingsProvider.notifier).updateOrder(newOrders);
+    ref.read(settingsNotifierProvider.notifier).updateOrder(newOrders);
   }
 
   bool get reverseScroll => ref.watch(settingsProvider

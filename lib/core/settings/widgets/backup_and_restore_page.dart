@@ -335,13 +335,15 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
       pickDirectoryPathToastOnError(
         context: context,
         onPick: (path) {
-          ref.read(settingsProvider.notifier).exportSettings(context, path);
+          ref
+              .read(settingsNotifierProvider.notifier)
+              .exportSettings(context, path);
         },
       );
 
   void _pickSettingsFile(WidgetRef ref) => _pickFile(
         onPick: (path) {
-          ref.read(settingsProvider.notifier).importSettings(
+          ref.read(settingsNotifierProvider.notifier).importSettings(
                 context: context,
                 path: path,
                 onWillImport: (data) async => true,

@@ -178,12 +178,15 @@ final postArtistCharacterRepoProvider =
                 ref.watch(postRepoProvider(config)),
             });
 
-final settingsProvider = NotifierProvider<SettingsNotifier, Settings>(
-  () => throw UnimplementedError(),
-  dependencies: [
-    settingsRepoProvider,
-  ],
+final settingsProvider = Provider<Settings>(
+  (ref) => ref.watch(settingsNotifierProvider),
   name: 'settingsProvider',
+  dependencies: [settingsNotifierProvider],
+);
+
+final settingsNotifierProvider = NotifierProvider<SettingsNotifier, Settings>(
+  () => throw UnimplementedError(),
+  name: 'settingsNotifierProvider',
 );
 
 final hasCustomListingSettingsProvider = Provider<bool>((ref) {

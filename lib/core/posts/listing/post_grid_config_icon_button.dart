@@ -31,7 +31,7 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final settingsNotifier = ref.watch(settingsProvider.notifier);
+    final settingsNotifier = ref.watch(settingsNotifierProvider.notifier);
     final gridSize = ref
         .watch(imageListingSettingsProvider.select((value) => value.gridSize));
     final imageListType = ref.watch(
@@ -115,7 +115,7 @@ class PostGridActionSheet extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final postStatsPageBuilder =
         ref.watchBooruBuilder(ref.watchConfig)?.postStatisticsPageBuilder;
-    final settingsNotifier = ref.watch(settingsProvider.notifier);
+    final settingsNotifier = ref.watch(settingsNotifierProvider.notifier);
 
     final mobileButtons = [
       ListingSettingsInteractionBlocker(

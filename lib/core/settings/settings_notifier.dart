@@ -119,5 +119,5 @@ extension SettingsNotifierX on SettingsNotifier {
 
 extension SettingsNotifierWidgetRefX on WidgetRef {
   Future<void> updateSettings(Settings settings) =>
-      read(settingsProvider.notifier).updateSettings(settings);
+      read(settingsNotifierProvider.notifier).updateSettings(settings);
 }

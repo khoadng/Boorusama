@@ -107,7 +107,7 @@ class DesktopPostConfigSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final settingsNotifier = ref.watch(settingsProvider.notifier);
+    final settingsNotifier = ref.watch(settingsNotifierProvider.notifier);
 
     final gridSize = ref
         .watch(imageListingSettingsProvider.select((value) => value.gridSize));

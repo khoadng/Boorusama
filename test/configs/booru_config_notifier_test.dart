@@ -115,7 +115,7 @@ ProviderContainer createBooruConfigContainer({
       booruConfigRepoProvider.overrideWith(
           (ref) => booruConfigRepository ?? InMemoryBooruConfigRepository()),
       settingsRepoProvider.overrideWithValue(settingsRepository),
-      settingsProvider
+      settingsNotifierProvider
           .overrideWith(() => SettingsNotifier(Settings.defaultSettings)),
       initialSettingsBooruConfigProvider.overrideWithValue(BooruConfig.empty),
       analyticsProvider.overrideWithValue(mockAnalytics),

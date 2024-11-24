@@ -21,3 +21,8 @@ final initialSettingsBooruConfigProvider = Provider<BooruConfig>(
   (ref) => throw UnimplementedError(),
   name: 'initialSettingsBooruConfigProvider',
 );
+
+final currentReadOnlyBooruConfigProvider = Provider<BooruConfig>(
+  (ref) => ref.watch(currentBooruConfigProvider),
+  name: 'currentReadOnlyBooruConfigProvider',
+);
