@@ -32,10 +32,7 @@ import 'widgets/settings_page_scaffold.dart';
 class BackupAndRestorePage extends ConsumerStatefulWidget {
   const BackupAndRestorePage({
     super.key,
-    this.hasAppBar = true,
   });
-
-  final bool hasAppBar;
 
   @override
   ConsumerState<BackupAndRestorePage> createState() => _DownloadPageState();
@@ -45,7 +42,6 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
   @override
   Widget build(BuildContext context) {
     return SettingsPageScaffold(
-      hasAppBar: widget.hasAppBar,
       title: const Text('settings.backup_and_restore.backup_and_restore').tr(),
       padding: const EdgeInsets.symmetric(horizontal: 8),
       children: [
@@ -65,13 +61,13 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
 
   Widget _buildProfiles() {
     final configs = ref.watch(booruConfigProvider);
-    final first5Configs = configs?.take(5).toList();
+    final first5Configs = configs.take(5).toList();
 
     return BackupRestoreTile(
       leadingIcon: Symbols.settings,
       title: 'Booru profiles',
-      subtitle: '${configs?.length} profiles',
-      extra: first5Configs != null && first5Configs.isNotEmpty
+      subtitle: '${configs.length} profiles',
+      extra: first5Configs.isNotEmpty
           ? [
               const SizedBox(height: 8),
               Wrap(
@@ -84,7 +80,7 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
                       child: BooruLogo.fromConfig(e),
                     ),
                   ),
-                  if (first5Configs.length < configs!.length)
+                  if (first5Configs.length < configs.length)
                     Text(
                       '+${configs.length - first5Configs.length}',
                       textAlign: TextAlign.center,
@@ -126,10 +122,9 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
           }
         },
         itemBuilder: {
-          if (configs != null && configs.isNotEmpty)
-            'export': const Text('Export'),
+          if (configs.isNotEmpty) 'export': const Text('Export'),
           'import': const Text('Import'),
-          if (configs != null && configs.isNotEmpty)
+          if (configs.isNotEmpty)
             'export_clipboard': const Text('Export to clipboard'),
           'import_clipboard': const Text('Import from clipboard'),
         },
@@ -340,13 +335,15 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
       pickDirectoryPathToastOnError(
         context: context,
         onPick: (path) {
-          ref.read(settingsProvider.notifier).exportSettings(context, path);
+          ref
+              .read(settingsNotifierProvider.notifier)
+              .exportSettings(context, path);
         },
       );
 
   void _pickSettingsFile(WidgetRef ref) => _pickFile(
         onPick: (path) {
-          ref.read(settingsProvider.notifier).importSettings(
+          ref.read(settingsNotifierProvider.notifier).importSettings(
                 context: context,
                 path: path,
                 onWillImport: (data) async => true,

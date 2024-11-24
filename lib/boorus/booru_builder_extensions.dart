@@ -11,7 +11,7 @@ extension BooruRef on Ref {
     final booruBuilders = read(booruBuildersProvider);
     final booruBuilderFunc = booruBuilders[config.booruType];
 
-    return booruBuilderFunc != null ? booruBuilderFunc(config) : null;
+    return booruBuilderFunc != null ? booruBuilderFunc() : null;
   }
 
   BooruBuilder? readCurrentBooruBuilder() {
@@ -27,7 +27,7 @@ extension BooruWidgetRef on WidgetRef {
     final booruBuilders = read(booruBuildersProvider);
     final booruBuilderFunc = booruBuilders[config.booruType];
 
-    return booruBuilderFunc != null ? booruBuilderFunc(config) : null;
+    return booruBuilderFunc != null ? booruBuilderFunc() : null;
   }
 
   BooruBuilder? watchBooruBuilder(BooruConfig? config) {
@@ -36,7 +36,7 @@ extension BooruWidgetRef on WidgetRef {
     final booruBuilders = watch(booruBuildersProvider);
     final booruBuilderFunc = booruBuilders[config.booruType];
 
-    return booruBuilderFunc != null ? booruBuilderFunc(config) : null;
+    return booruBuilderFunc != null ? booruBuilderFunc() : null;
   }
 }
 
@@ -45,5 +45,5 @@ final booruBuilderProvider = Provider<BooruBuilder?>((ref) {
   final booruBuilders = ref.watch(booruBuildersProvider);
   final booruBuilderFunc = booruBuilders[config.booruType];
 
-  return booruBuilderFunc != null ? booruBuilderFunc(config) : null;
+  return booruBuilderFunc != null ? booruBuilderFunc() : null;
 });

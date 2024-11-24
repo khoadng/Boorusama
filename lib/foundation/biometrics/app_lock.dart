@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:async';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -10,6 +13,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
+import 'package:boorusama/widgets/widgets.dart';
 import 'biometrics.dart';
 
 class AppLockWithSettings extends ConsumerWidget {
@@ -117,9 +121,12 @@ class _AppLockState extends ConsumerState<AppLock> {
 
               return widget.child;
             },
-            loading: () => const Material(
-              child: Center(
-                child: CircularProgressIndicator(),
+            loading: () => const DelayedRenderWidget(
+              delay: Duration(milliseconds: 500),
+              child: Material(
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
               ),
             ),
             error: (error, stack) => widget.child,

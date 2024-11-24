@@ -20,9 +20,12 @@ import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/functional.dart';
 import 'configs/create_moebooru_config_page.dart';
 import 'feats/posts/posts.dart';
+import 'pages/moebooru_favorites_page.dart';
 import 'pages/moebooru_home_page.dart';
-import 'pages/moebooru_post_details_desktop_page.dart';
 import 'pages/moebooru_post_details_page.dart';
+import 'pages/widgets/moebooru_comment_section.dart';
+import 'pages/widgets/moebooru_information_section.dart';
+import 'pages/widgets/moebooru_related_post_section.dart';
 
 final moebooruClientProvider =
     Provider.family<MoebooruClient, BooruConfig>((ref, booruConfig) {
@@ -39,7 +42,6 @@ final moebooruClientProvider =
 class MoebooruBuilder
     with
         FavoriteNotSupportedMixin,
-        PostCountNotSupportedMixin,
         CommentNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
         UnknownMetatagsMixin,
@@ -107,35 +109,20 @@ class MoebooruBuilder
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
-      (context, config) => config.hasLoginDetails()
-          ? MoebooruFavoritesPage(username: config.login!)
-          : const Scaffold(
-              body: Center(
-                child: Text(
-                    'You need to provide login details to use this feature.'),
-              ),
-            );
+      (context, config) => const MoebooruFavoritesPage();
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) => PostDetailsLayoutSwitcher(
-            initialIndex: payload.initialIndex,
-            posts: payload.posts,
-            scrollController: payload.scrollController,
-            desktop: (controller) => MoebooruPostDetailsDesktopPage(
-              initialIndex: controller.currentPage.value,
-              posts: payload.posts.map((e) => e as MoebooruPost).toList(),
-              onExit: (page) => controller.onExit(page),
-              onPageChanged: (page) => controller.setPage(page),
-            ),
-            mobile: (controller) => MoebooruPostDetailsPage(
-              initialPage: controller.currentPage.value,
-              controller: controller,
-              posts: payload.posts.map((e) => e as MoebooruPost).toList(),
-              onExit: (page) => controller.onExit(page),
-              onPageChanged: (page) => controller.setPage(page),
-            ),
-          );
+      (context, config, payload) {
+        final posts = payload.posts.map((e) => e as MoebooruPost).toList();
+
+        return PostDetailsScope(
+          initialIndex: payload.initialIndex,
+          posts: posts,
+          scrollController: payload.scrollController,
+          child: const MoebooruPostDetailsPage(),
+        );
+      };
 
   @override
   final DownloadFilenameGenerator downloadFilenameBuilder =
@@ -151,27 +138,28 @@ class MoebooruBuilder
       'source': (post, config) => config.downloadUrl,
     },
   );
-}
-
-class MoebooruFavoritesPage extends ConsumerWidget {
-  const MoebooruFavoritesPage({
-    super.key,
-    required this.username,
-  });
-
-  final String username;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
-    final query = 'vote:3:$username order:vote';
-
-    return FavoritesPageScaffold(
-      favQueryBuilder: () => query,
-      fetcher: (page) =>
-          ref.read(moebooruPostRepoProvider(config)).getPosts(query, page),
-    );
-  }
+  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
+    preview: {
+      DetailsPart.info: (context) => const MoebooruInformationSection(),
+      DetailsPart.toolbar: (context) =>
+          const MoebooruPostDetailsActionToolbar(),
+    },
+    full: {
+      DetailsPart.info: (context) => const MoebooruInformationSection(),
+      DetailsPart.toolbar: (context) =>
+          const MoebooruPostDetailsActionToolbar(),
+      DetailsPart.tags: (context) => const MoebooruTagListSection(),
+      DetailsPart.fileDetails: (context) => const MoebooruFileDetailsSection(),
+      DetailsPart.artistPosts: (context) => const MoebooruArtistPostsSection(),
+      DetailsPart.relatedPosts: (context) =>
+          const MoebooruRelatedPostsSection(),
+      DetailsPart.comments: (context) => const MoebooruCommentSection(),
+      DetailsPart.characterList: (context) =>
+          const MoebooruCharacterListSection(),
+    },
+  );
 }
 
 class MoebooruArtistPage extends ConsumerWidget {

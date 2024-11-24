@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -12,6 +11,7 @@ import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/router.dart';
 import 'widgets.dart';
 import 'widgets/settings_header.dart';
 import 'widgets/settings_page_scaffold.dart';
@@ -21,10 +21,7 @@ import 'widgets/settings_tile.dart';
 class AppearancePage extends ConsumerStatefulWidget {
   const AppearancePage({
     super.key,
-    this.hasAppBar = true,
   });
-
-  final bool hasAppBar;
 
   @override
   ConsumerState<AppearancePage> createState() => _AppearancePageState();
@@ -36,7 +33,6 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
     final settings = ref.watch(settingsProvider);
 
     return SettingsPageScaffold(
-      hasAppBar: widget.hasAppBar,
       title: const Text('settings.appearance.appearance').tr(),
       children: [
         SettingsHeader(label: 'settings.theme.theme'.tr()),
@@ -73,24 +69,6 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
             onUpdate: (value) =>
                 ref.updateSettings(settings.copyWith(listing: value)),
           ),
-        ),
-        const Divider(thickness: 1),
-        SettingsHeader(label: 'settings.appearance.booru_config'.tr()),
-        SettingsTile(
-          title: const Text('settings.appearance.booru_config_placement').tr(),
-          selectedOption: settings.booruConfigSelectorPosition,
-          items: const [...BooruConfigSelectorPosition.values],
-          onChanged: (value) => ref.updateSettings(
-              settings.copyWith(booruConfigSelectorPosition: value)),
-          optionBuilder: (value) => Text(value.localize()),
-        ),
-        SettingsTile(
-          title: const Text('Label').tr(),
-          selectedOption: settings.booruConfigLabelVisibility,
-          items: const [...BooruConfigLabelVisibility.values],
-          onChanged: (value) => ref.updateSettings(
-              settings.copyWith(booruConfigLabelVisibility: value)),
-          optionBuilder: (value) => Text(value.localize()),
         ),
         const SizedBox(
           height: 10,
@@ -183,10 +161,13 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
 }
 
 Future<void> openAppearancePage(BuildContext context) {
-  return Navigator.of(context).push(
-    CupertinoPageRoute(
-      builder: (context) => const AppearancePage(),
-    ),
+  return context.push(
+    Uri(
+      path: '/settings',
+      queryParameters: {
+        'initial': 'appearance',
+      },
+    ).toString(),
   );
 }
 

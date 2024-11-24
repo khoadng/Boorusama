@@ -17,13 +17,11 @@ import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
-import 'package:boorusama/router.dart';
 import 'philomena_post.dart';
 
 class PhilomenaBuilder
     with
         FavoriteNotSupportedMixin,
-        PostCountNotSupportedMixin,
         DefaultThumbnailUrlMixin,
         CommentNotSupportedMixin,
         ArtistNotSupportedMixin,
@@ -74,7 +72,16 @@ class PhilomenaBuilder
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) => PhilomenaPostDetailsPage(payload: payload);
+      (context, config, payload) {
+        final posts = payload.posts.map((e) => e as PhilomenaPost).toList();
+
+        return PostDetailsScope(
+          initialIndex: payload.initialIndex,
+          posts: posts,
+          scrollController: payload.scrollController,
+          child: const DefaultPostDetailsPage<PhilomenaPost>(),
+        );
+      };
 
   @override
   TagColorBuilder get tagColorBuilder =>
@@ -148,47 +155,67 @@ class PhilomenaBuilder
                       null => post.representation.small,
                     }),
           );
-}
-
-class PhilomenaPostDetailsPage extends ConsumerWidget {
-  const PhilomenaPostDetailsPage({
-    super.key,
-    required this.payload,
-  });
-
-  final DetailsPayload payload;
 
   @override
+  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
+    preview: {
+      DetailsPart.info: (context) =>
+          const DefaultInheritedInformationSection<PhilomenaPost>(),
+      DetailsPart.toolbar: (context) =>
+          const DefaultInheritedPostActionToolbar<PhilomenaPost>(),
+    },
+    full: {
+      DetailsPart.info: (context) =>
+          const DefaultInheritedInformationSection<PhilomenaPost>(),
+      DetailsPart.toolbar: (context) =>
+          const DefaultInheritedPostActionToolbar<PhilomenaPost>(),
+      DetailsPart.artistInfo: (context) => const PhilomenaArtistInfoSection(),
+      DetailsPart.stats: (context) => const PhilomenaStatsTileSection(),
+      DetailsPart.source: (context) =>
+          const DefaultInheritedSourceSection<PhilomenaPost>(),
+      DetailsPart.tags: (context) =>
+          const DefaultInheritedTagList<PhilomenaPost>(),
+      DetailsPart.fileDetails: (context) =>
+          const DefaultInheritedFileDetailsSection<PhilomenaPost>(),
+    },
+  );
+}
+
+class PhilomenaStatsTileSection extends ConsumerWidget {
+  const PhilomenaStatsTileSection({super.key});
+  @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return PostDetailsPageScaffold(
-      posts: payload.posts,
-      initialIndex: payload.initialIndex,
-      artistInfoBuilder: (context, post) => ArtistSection(
-        commentary: post is PhilomenaPost
-            ? ArtistCommentary.description(post.description)
-            : const ArtistCommentary.empty(),
-        artistTags: post.artistTags ?? {},
-        source: post.source,
+    final post = InheritedPost.of<PhilomenaPost>(context);
+
+    return SliverToBoxAdapter(
+      child: SimplePostStatsTile(
+        totalComments: post.commentCount,
+        favCount: post.favCount,
+        score: post.score,
+        votePercentText: _generatePercentText(post),
       ),
-      swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
-      infoBuilder: (context, post) => SimpleInformationSection(post: post),
-      statsTileBuilder: (context, rawPost) =>
-          castOrNull<PhilomenaPost>(rawPost).toOption().fold(
-                () => const SizedBox(),
-                (post) => SimplePostStatsTile(
-                  totalComments: post.commentCount,
-                  favCount: post.favCount,
-                  score: post.score,
-                  votePercentText: _generatePercentText(post),
-                ),
-              ),
-      onExit: (page) => payload.scrollController?.scrollToIndex(page),
     );
+  }
+
+  String _generatePercentText(PhilomenaPost? post) {
+    if (post == null) return '';
+    final percent = post.score > 0 ? (post.upvotes / post.score) : 0;
+    return post.score > 0 ? '(${(percent * 100).toInt()}% upvoted)' : '';
   }
 }
 
-String _generatePercentText(PhilomenaPost? post) {
-  if (post == null) return '';
-  final percent = post.score > 0 ? (post.upvotes / post.score) : 0;
-  return post.score > 0 ? '(${(percent * 100).toInt()}% upvoted)' : '';
+class PhilomenaArtistInfoSection extends ConsumerWidget {
+  const PhilomenaArtistInfoSection({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final post = InheritedPost.of<PhilomenaPost>(context);
+
+    return SliverToBoxAdapter(
+      child: ArtistSection(
+        commentary: ArtistCommentary.description(post.description),
+        artistTags: post.artistTags ?? {},
+        source: post.source,
+      ),
+    );
+  }
 }

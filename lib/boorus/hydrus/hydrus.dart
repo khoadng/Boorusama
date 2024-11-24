@@ -20,12 +20,8 @@ import 'package:boorusama/core/downloads/download_file_name_generator.dart';
 import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
-import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
-import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'favorites/favorites.dart';
@@ -180,7 +176,6 @@ final hydrusAutocompleteRepoProvider =
 
 class HydrusBuilder
     with
-        PostCountNotSupportedMixin,
         ArtistNotSupportedMixin,
         CharacterNotSupportedMixin,
         DefaultThumbnailUrlMixin,
@@ -248,42 +243,22 @@ class HydrusBuilder
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) => PostDetailsLayoutSwitcher(
-            initialIndex: payload.initialIndex,
-            posts: payload.posts,
-            scrollController: payload.scrollController,
-            desktop: (controller) => HydrusPostDetailsDesktopPage(
-              initialIndex: controller.currentPage.value,
-              controller: controller,
-              posts: payload.posts,
-              onExit: (page) => controller.onExit(page),
-              onPageChanged: (page) => controller.setPage(page),
-            ),
-            mobile: (controller) => HydrusPostDetailsPage(
-              initialPage: controller.currentPage.value,
-              controller: controller,
-              posts: payload.posts,
-              onExit: (page) => controller.onExit(page),
-              onPageChanged: (page) => controller.setPage(page),
-            ),
-          );
+      (context, config, payload) {
+        final posts = payload.posts.map((e) => e as HydrusPost).toList();
+
+        return PostDetailsScope(
+          initialIndex: payload.initialIndex,
+          posts: posts,
+          scrollController: payload.scrollController,
+          child: const DefaultPostDetailsPage<HydrusPost>(),
+        );
+      };
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
       (context, config) => const HydrusFavoritesPage();
 
   @override
-  FavoriteAdder? get favoriteAdder => (postId, ref) => ref
-      .read(hydrusFavoritesProvider(ref.readConfig).notifier)
-      .add(postId)
-      .then((value) => true);
-
-  @override
-  FavoriteRemover? get favoriteRemover => (postId, ref) => ref
-      .read(hydrusFavoritesProvider(ref.readConfig).notifier)
-      .remove(postId)
-      .then((value) => true);
-
   @override
   HomePageBuilder get homePageBuilder => (context, config) => HydrusHomePage(
         config: config,
@@ -300,6 +275,22 @@ class HydrusBuilder
       (context, post) => HydrusQuickFavoriteButton(
             post: post,
           );
+
+  @override
+  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
+    preview: {
+      DetailsPart.toolbar: (context) => const HydrusPostActionToolbar(),
+    },
+    full: {
+      DetailsPart.toolbar: (context) => const HydrusPostActionToolbar(),
+      DetailsPart.tags: (context) =>
+          const DefaultInheritedTagList<HydrusPost>(),
+      DetailsPart.fileDetails: (context) =>
+          const DefaultInheritedFileDetailsSection<HydrusPost>(
+            initialExpanded: true,
+          ),
+    },
+  );
 }
 
 class HydrusHomePage extends StatelessWidget {
@@ -351,105 +342,6 @@ final ratingServiceNameProvider =
 
   return services.firstWhereOrNull((e) => e.key == key)?.name;
 });
-
-class HydrusPostDetailsPage extends ConsumerWidget {
-  const HydrusPostDetailsPage({
-    super.key,
-    required this.controller,
-    required this.onExit,
-    required this.onPageChanged,
-    required this.posts,
-    required this.initialPage,
-  });
-
-  final List<Post> posts;
-  final PostDetailsController<Post> controller;
-  final void Function(int page) onExit;
-  final void Function(int page) onPageChanged;
-  final int initialPage;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return PostDetailsPageScaffold(
-      posts: posts,
-      initialIndex: initialPage,
-      swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
-      onExit: onExit,
-      onPageChangeIndexed: onPageChanged,
-      fileDetailsBuilder: (context, post) => DefaultFileDetailsSection(
-        post: post,
-        initialExpanded: true,
-      ),
-      tagListBuilder: (context, post) => BasicTagList(
-        tags: post.tags.toList(),
-        onTap: (tag) => goToSearchPage(
-          context,
-          tag: tag,
-        ),
-        unknownCategoryColor: ref.watch(tagColorProvider('general')),
-      ),
-      toolbar: ValueListenableBuilder(
-        valueListenable: controller.currentPost,
-        builder: (_, rawPost, __) =>
-            castOrNull<HydrusPost>(rawPost).toOption().fold(
-                  () => SimplePostActionToolbar(post: rawPost),
-                  (post) => HydrusPostActionToolbar(post: post),
-                ),
-      ),
-    );
-  }
-}
-
-class HydrusPostDetailsDesktopPage extends ConsumerWidget {
-  const HydrusPostDetailsDesktopPage({
-    super.key,
-    required this.initialIndex,
-    required this.posts,
-    required this.onExit,
-    required this.onPageChanged,
-    required this.controller,
-  });
-
-  final int initialIndex;
-  final List<Post> posts;
-  final void Function(int index) onExit;
-  final void Function(int page) onPageChanged;
-  final PostDetailsController<Post> controller;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return PostDetailsPageDesktopScaffold(
-      debounceDuration: Duration.zero,
-      initialIndex: initialIndex,
-      posts: posts,
-      onExit: onExit,
-      onPageChanged: onPageChanged,
-      imageUrlBuilder: defaultPostImageUrlBuilder(ref),
-      fileDetailsBuilder: (context, post) => DefaultFileDetailsSection(
-        post: post,
-        initialExpanded: true,
-      ),
-      tagListBuilder: (context, post) => BasicTagList(
-        tags: post.tags.toList(),
-        onTap: (tag) => goToSearchPage(
-          context,
-          tag: tag,
-        ),
-        unknownCategoryColor: ref.watch(tagColorProvider('general')),
-      ),
-      toolbarBuilder: (context, post) => ValueListenableBuilder(
-        valueListenable: controller.currentPost,
-        builder: (_, rawPost, __) =>
-            castOrNull<HydrusPost>(rawPost).toOption().fold(
-                  () => SimplePostActionToolbar(post: rawPost),
-                  (post) => HydrusPostActionToolbar(post: post),
-                ),
-      ),
-      topRightButtonsBuilder: (currentPage, expanded, post) =>
-          GeneralMoreActionButton(post: post),
-    );
-  }
-}
 
 class CreateHydrusConfigPage extends ConsumerWidget {
   const CreateHydrusConfigPage({
@@ -505,25 +397,25 @@ class HydrusAuthConfigView extends ConsumerWidget {
 class HydrusPostActionToolbar extends ConsumerWidget {
   const HydrusPostActionToolbar({
     super.key,
-    required this.post,
   });
-
-  final HydrusPost post;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final post = InheritedPost.of<HydrusPost>(context);
     final canFav =
         ref.watch(hydrusCanFavoriteProvider(ref.watchConfig)).maybeWhen(
               data: (fav) => fav,
               orElse: () => false,
             );
 
-    return PostActionToolbar(
-      children: [
-        if (canFav) HydrusFavoritePostButton(post: post),
-        BookmarkPostButton(post: post),
-        DownloadPostButton(post: post),
-      ],
+    return SliverToBoxAdapter(
+      child: PostActionToolbar(
+        children: [
+          if (canFav) HydrusFavoritePostButton(post: post),
+          BookmarkPostButton(post: post),
+          DownloadPostButton(post: post),
+        ],
+      ),
     );
   }
 }

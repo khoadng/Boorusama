@@ -17,17 +17,14 @@ import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/favorites/favorites.dart';
 import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
-import 'package:boorusama/foundation/toast.dart';
 import 'artists/gelbooru_artist_page.dart';
 import 'comments/gelbooru_comment_page.dart';
 import 'configs/create_gelbooru_config_page.dart';
-import 'posts/gelbooru_post_details_desktop_page.dart';
 import 'posts/gelbooru_post_details_page.dart';
 
 export 'posts/posts.dart';
@@ -157,11 +154,7 @@ class GelbooruBuilder
         DefaultPostStatisticsPageBuilderMixin,
         DefaultTagColorMixin
     implements BooruBuilder {
-  GelbooruBuilder({
-    required this.client,
-  });
-
-  final GelbooruClient Function() client;
+  GelbooruBuilder();
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
@@ -202,52 +195,25 @@ class GelbooruBuilder
           );
 
   @override
-  PostCountFetcher? get postCountFetcher => (config, tags, tagComposer) async {
-        // Delay a bit to avoid this request running before the actual search, this is a hack used for the search page
-        await Future.delayed(const Duration(milliseconds: 100));
-
-        final result = await client().getPosts(
-          tags: tagComposer.compose(tags),
-        );
-
-        return result.count;
-      };
-
-  @override
   SearchPageBuilder get searchPageBuilder =>
       (context, initialQuery) => GelbooruSearchPage(initialQuery: initialQuery);
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) => PostDetailsLayoutSwitcher(
-            initialIndex: payload.initialIndex,
-            posts: payload.posts,
-            scrollController: payload.scrollController,
-            desktop: (controller) => GelbooruPostDetailsDesktopPage(
-              initialIndex: controller.currentPage.value,
-              posts: payload.posts.map((e) => e as GelbooruPost).toList(),
-              onExit: (page) => controller.onExit(page),
-              onPageChanged: (page) => controller.setPage(page),
-            ),
-            mobile: (controller) => GelbooruPostDetailsPage(
-              initialIndex: controller.currentPage.value,
-              controller: controller,
-              posts: payload.posts.map((e) => e as GelbooruPost).toList(),
-              onExit: (page) => controller.onExit(page),
-              onPageChanged: (page) => controller.setPage(page),
-            ),
-          );
+      (context, config, payload) {
+        final posts = payload.posts.map((e) => e as GelbooruPost).toList();
+
+        return PostDetailsScope(
+          initialIndex: payload.initialIndex,
+          posts: posts,
+          scrollController: payload.scrollController,
+          child: const DefaultPostDetailsPage<GelbooruPost>(),
+        );
+      };
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
-      (context, config) => config.hasLoginDetails()
-          ? GelbooruFavoritesPage(uid: config.login!)
-          : const Scaffold(
-              body: Center(
-                child: Text(
-                    'You need to provide login details to use this feature.'),
-              ),
-            );
+      (context, config) => const GelbooruFavoritesPage();
 
   @override
   ArtistPageBuilder? get artistPageBuilder =>
@@ -292,44 +258,23 @@ class GelbooruBuilder
   );
 
   @override
-  FavoriteAdder? get favoriteAdder => client().canFavorite
-      ? (postId, ref) async {
-          final status = await ref
-              .read(gelbooruFavoritesProvider(ref.readConfig).notifier)
-              .add(postId);
-
-          final context = ref.context;
-
-          if (context.mounted) {
-            if (status == AddFavoriteStatus.alreadyExists) {
-              showErrorToast(context, 'Already favorited');
-            } else if (status == AddFavoriteStatus.failure) {
-              showErrorToast(context, 'Failed to favorite');
-            } else {
-              showSuccessToast(context, 'Favorited');
-            }
-          }
-
-          return status == AddFavoriteStatus.success;
-        }
-      : null;
-
-  @override
-  FavoriteRemover? get favoriteRemover => client().canFavorite
-      ? (postId, ref) async {
-          await ref
-              .read(gelbooruFavoritesProvider(ref.readConfig).notifier)
-              .remove(postId);
-
-          final context = ref.context;
-
-          if (context.mounted) {
-            showSuccessToast(context, 'Favorite removed');
-          }
-
-          return true;
-        }
-      : null;
+  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
+    preview: {
+      DetailsPart.toolbar: (context) =>
+          const DefaultInheritedPostActionToolbar<GelbooruPost>(),
+    },
+    full: {
+      DetailsPart.toolbar: (context) =>
+          const DefaultInheritedPostActionToolbar<GelbooruPost>(),
+      DetailsPart.source: (context) =>
+          const DefaultInheritedSourceSection<GelbooruPost>(),
+      DetailsPart.tags: (context) => const GelbooruTagListSection(),
+      DetailsPart.fileDetails: (context) => const GelbooruFileDetailsSection(),
+      DetailsPart.artistPosts: (context) => const GelbooruArtistPostsSection(),
+      DetailsPart.characterList: (context) =>
+          const GelbooruCharacterListSection(),
+    },
+  );
 }
 
 class GelbooruSearchPage extends ConsumerWidget {

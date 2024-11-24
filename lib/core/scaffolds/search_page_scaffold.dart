@@ -16,7 +16,6 @@ import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/search_histories/search_histories.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/error.dart';
-import 'package:boorusama/router.dart';
 
 class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   const SearchPageScaffold({
@@ -66,6 +65,7 @@ class _SearchPageScaffoldState<T extends Post>
   var selectedTagString = ValueNotifier('');
   late final selectedTagController = SelectedTagController.fromBooruBuilder(
     builder: ref.readBooruBuilder(ref.readConfig),
+    tagInfo: ref.read(tagInfoProvider),
   );
   final _scrollController = AutoScrollController();
   final _didSearchOnce = ValueNotifier(false);
@@ -186,6 +186,8 @@ class _SearchPageScaffoldState<T extends Post>
     BuildContext context,
     void Function() search,
   ) {
+    final parentRoute = ModalRoute.of(context);
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight * 1.2),
@@ -193,7 +195,9 @@ class _SearchPageScaffoldState<T extends Post>
           focusNode: focus,
           autofocus: ref.watch(settingsProvider).autoFocusSearchBar,
           controller: textController,
-          leading: (!context.canPop() ? null : const SearchAppBarBackButton()),
+          leading: (parentRoute?.impliesAppBarDismissal ?? false)
+              ? const SearchAppBarBackButton()
+              : null,
         ),
       ),
       floatingActionButton: ValueListenableBuilder(
@@ -271,9 +275,11 @@ class _SearchPageScaffoldState<T extends Post>
               ...[
                 ValueListenableBuilder(
                   valueListenable: selectedTagString,
-                  builder: (context, value, _) => ResultHeaderWithProvider(
-                    selectedTags: value.split(' '),
+                  builder: (context, value, _) => ResultHeaderFromController(
+                    controller: controller,
                     onRefresh: null,
+                    hasCount: ref.watchConfig.booruType.postCountMethod ==
+                        PostCountMethod.search,
                   ),
                 ),
                 const Spacer(),
@@ -332,6 +338,8 @@ class _SuggestionViewState extends State<SuggestionView> {
 
   @override
   Widget build(BuildContext context) {
+    final parentRoute = ModalRoute.of(context);
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight * 1.2),
@@ -339,7 +347,9 @@ class _SuggestionViewState extends State<SuggestionView> {
           focusNode: focus,
           controller: textController,
           onSubmitted: (value) => widget.searchController.submit(value),
-          leading: (!context.canPop() ? null : const SearchAppBarBackButton()),
+          leading: (parentRoute?.impliesAppBarDismissal ?? false)
+              ? const SearchAppBarBackButton()
+              : null,
         ),
       ),
       body: DefaultSearchSuggestionView(

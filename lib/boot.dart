@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
-import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fvp/fvp.dart' as fvp;
@@ -26,12 +25,12 @@ import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
 import 'package:boorusama/core/search_histories/search_histories.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/core/videos/videos.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/analytics.dart';
 import 'package:boorusama/foundation/app_info.dart';
 import 'package:boorusama/foundation/device_info_service.dart';
-import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
 import 'package:boorusama/foundation/mobile.dart';
@@ -87,19 +86,6 @@ Future<void> boot(BootLogger bootLogger) async {
   Hive.registerAdapter(BookmarkHiveObjectAdapter());
   bootLogger.l('Register favorite tag adapter');
   Hive.registerAdapter(FavoriteTagHiveObjectAdapter());
-
-  if (isDesktopPlatform()) {
-    bootLogger.l('Initialize window manager');
-    doWhenWindowReady(() {
-      const iPhoneSize = Size(375, 812);
-      const initialSize = Size(1000, 700);
-      const minSize = Size(500, 500);
-      appWindow.minSize = kPreferredLayout.isMobile ? iPhoneSize : minSize;
-      appWindow.size = kPreferredLayout.isMobile ? iPhoneSize : initialSize;
-      appWindow.alignment = Alignment.center;
-      appWindow.show();
-    });
-  }
 
   if (isDesktopPlatform() || isIOS()) {
     fvp.registerWith(
@@ -181,6 +167,9 @@ Future<void> boot(BootLogger bootLogger) async {
 
   bootLogger.l('Load current booru config');
   final initialConfig = await booruUserRepo.getCurrentBooruConfigFrom(settings);
+
+  bootLogger.l('Load all configs');
+  final allConfigs = await booruUserRepo.getAll();
 
   Box<String> userMetatagBox;
   bootLogger.l('Initialize user metatag box');
@@ -292,46 +281,53 @@ Future<void> boot(BootLogger bootLogger) async {
     runApp(
       Reboot(
         initialConfig: initialConfig ?? BooruConfig.empty,
-        builder: (context, config) => BooruLocalization(
-          child: ProviderScope(
-            overrides: [
-              favoriteTagRepoProvider.overrideWithValue(favoriteTagsRepo),
-              searchHistoryRepoProvider.overrideWithValue(searchHistoryRepo),
-              booruFactoryProvider.overrideWithValue(booruFactory),
-              tagInfoProvider.overrideWithValue(tagInfo),
-              settingsRepoProvider.overrideWithValue(settingRepository),
-              settingsProvider.overrideWith(() => SettingsNotifier(settings)),
-              booruConfigRepoProvider.overrideWithValue(booruUserRepo),
-              currentBooruConfigProvider.overrideWith(
-                  () => CurrentBooruConfigNotifier(initialConfig: config)),
-              globalBlacklistedTagRepoProvider
-                  .overrideWithValue(globalBlacklistedTags),
-              httpCacheDirProvider.overrideWithValue(tempPath),
-              loggerProvider.overrideWithValue(logger),
-              bookmarkRepoProvider.overrideWithValue(bookmarkRepo),
-              downloadNotificationProvider
-                  .overrideWithValue(downloadNotifications),
-              bulkDownloadNotificationProvider
-                  .overrideWithValue(bulkDownloadNotifications),
-              deviceInfoProvider.overrideWithValue(deviceInfo),
-              danbooruUserMetatagRepoProvider
-                  .overrideWithValue(userMetatagRepo),
-              packageInfoProvider.overrideWithValue(packageInfo),
-              appInfoProvider.overrideWithValue(appInfo),
-              appLoggerProvider.overrideWithValue(appLogger),
-              supportedLanguagesProvider.overrideWithValue(supportedLanguages),
-              danbooruCreatorHiveBoxProvider
-                  .overrideWithValue(danbooruCreatorBox),
-              miscDataBoxProvider.overrideWithValue(miscDataBox),
-              booruTagTypePathProvider.overrideWithValue(dbDirectory.path),
-              if (firebaseAnalytics != null)
-                analyticsProvider.overrideWithValue(firebaseAnalytics),
-              if (crashlyticsReporter != null)
-                errorReporterProvider.overrideWithValue(crashlyticsReporter),
-            ],
-            child: App(
-              appName: appInfo.appName,
-              initialSettings: settings,
+        builder: (context, config) => VideoControllerScope(
+          deviceInfo: deviceInfo,
+          child: BooruLocalization(
+            child: ProviderScope(
+              overrides: [
+                favoriteTagRepoProvider.overrideWithValue(favoriteTagsRepo),
+                searchHistoryRepoProvider.overrideWithValue(searchHistoryRepo),
+                booruFactoryProvider.overrideWithValue(booruFactory),
+                tagInfoProvider.overrideWithValue(tagInfo),
+                settingsRepoProvider.overrideWithValue(settingRepository),
+                settingsNotifierProvider
+                    .overrideWith(() => SettingsNotifier(settings)),
+                booruConfigRepoProvider.overrideWithValue(booruUserRepo),
+                booruConfigProvider.overrideWith(() => BooruConfigNotifier(
+                      initialConfigs: allConfigs,
+                    )),
+                initialSettingsBooruConfigProvider.overrideWithValue(config),
+                globalBlacklistedTagRepoProvider
+                    .overrideWithValue(globalBlacklistedTags),
+                httpCacheDirProvider.overrideWithValue(tempPath),
+                loggerProvider.overrideWithValue(logger),
+                bookmarkRepoProvider.overrideWithValue(bookmarkRepo),
+                downloadNotificationProvider
+                    .overrideWithValue(downloadNotifications),
+                bulkDownloadNotificationProvider
+                    .overrideWithValue(bulkDownloadNotifications),
+                deviceInfoProvider.overrideWithValue(deviceInfo),
+                danbooruUserMetatagRepoProvider
+                    .overrideWithValue(userMetatagRepo),
+                packageInfoProvider.overrideWithValue(packageInfo),
+                appInfoProvider.overrideWithValue(appInfo),
+                appLoggerProvider.overrideWithValue(appLogger),
+                supportedLanguagesProvider
+                    .overrideWithValue(supportedLanguages),
+                danbooruCreatorHiveBoxProvider
+                    .overrideWithValue(danbooruCreatorBox),
+                miscDataBoxProvider.overrideWithValue(miscDataBox),
+                booruTagTypePathProvider.overrideWithValue(dbDirectory.path),
+                if (firebaseAnalytics != null)
+                  analyticsProvider.overrideWithValue(firebaseAnalytics),
+                if (crashlyticsReporter != null)
+                  errorReporterProvider.overrideWithValue(crashlyticsReporter),
+              ],
+              child: App(
+                appName: appInfo.appName,
+                initialSettings: settings,
+              ),
             ),
           ),
         ),

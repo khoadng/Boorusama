@@ -19,14 +19,35 @@ import 'package:boorusama/widgets/widgets.dart';
 import 'providers.dart';
 import 'riverpod_widgets.dart';
 
+class DefaultBooruConfigSearchView extends ConsumerWidget {
+  const DefaultBooruConfigSearchView({
+    super.key,
+    this.hasRatingFilter = false,
+  });
+
+  final bool hasRatingFilter;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watch(initialBooruConfigProvider);
+
+    return BooruConfigSearchView(
+      hasRatingFilter: hasRatingFilter,
+      config: config,
+    );
+  }
+}
+
 class BooruConfigSearchView extends ConsumerWidget {
   const BooruConfigSearchView({
     super.key,
     required this.hasRatingFilter,
     required this.config,
+    this.extras,
   });
 
   final bool hasRatingFilter;
+  final List<Widget>? extras;
   final BooruConfig config;
 
   @override
@@ -44,6 +65,10 @@ class BooruConfigSearchView extends ConsumerWidget {
           if (hasRatingFilter) ...[
             const SizedBox(height: 12),
             const DefaultBooruRatingOptionsTile(),
+            const Divider(),
+          ],
+          if (extras != null) ...[
+            ...extras!,
             const Divider(),
           ],
           const SizedBox(height: 12),

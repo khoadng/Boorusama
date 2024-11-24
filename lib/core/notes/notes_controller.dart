@@ -85,11 +85,9 @@ class NoteActionButtonWithProvider extends ConsumerWidget {
   const NoteActionButtonWithProvider({
     super.key,
     required this.post,
-    required this.expanded,
     required this.noteState,
   });
   final Post post;
-  final bool expanded;
   final NotesControllerState noteState;
 
   @override
@@ -98,7 +96,7 @@ class NoteActionButtonWithProvider extends ConsumerWidget {
 
     return NoteActionButton(
       post: post,
-      showDownload: !expanded && noteState.notes.isEmpty,
+      showDownload: noteState.notes.isEmpty,
       enableNotes: noteState.enableNotes,
       onDownload: () => ref.read(notesControllerProvider(post).notifier).load(),
       onToggleNotes: () => ref

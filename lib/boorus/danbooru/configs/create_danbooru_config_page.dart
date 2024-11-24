@@ -63,26 +63,33 @@ class CreateDanbooruConfigPage extends ConsumerWidget {
           ),
         ),
       ),
-      hasRatingFilter: true,
-      postDetailsGestureActions: const {
-        ...kDefaultGestureActions,
-        kToggleFavoriteAction,
-        kUpvoteAction,
-        kDownvoteAction,
-        kEditAction,
-      },
-      describePostDetailsAction: (action) => switch (action) {
-        kToggleFavoriteAction => 'Toggle favorite',
-        kUpvoteAction => 'Upvote',
-        kDownvoteAction => 'Downvote',
-        kEditAction => 'Edit',
-        _ => describeDefaultGestureAction(action),
-      },
-      postDetailsResolution: const DanbooruImageDetailsQualityProvider(),
-      miscOptions: const [
-        DanbooruHideDeletedSwitch(),
-        DanbooruHideBannedSwitch(),
-      ],
+      gestureTab: BooruConfigGesturesView(
+        postDetailsGestureActions: const {
+          ...kDefaultGestureActions,
+          kToggleFavoriteAction,
+          kUpvoteAction,
+          kDownvoteAction,
+          kEditAction,
+        },
+        describePostDetailsAction: (action) => switch (action) {
+          kToggleFavoriteAction => 'Toggle favorite',
+          kUpvoteAction => 'Upvote',
+          kDownvoteAction => 'Downvote',
+          kEditAction => 'Edit',
+          _ => describeDefaultGestureAction(action),
+        },
+      ),
+      imageViewerTab: BooruConfigViewerView(
+        postDetailsResolution: const DanbooruImageDetailsQualityProvider(),
+      ),
+      searchTab: BooruConfigSearchView(
+        hasRatingFilter: true,
+        config: config,
+        extras: const [
+          DanbooruHideDeletedSwitch(),
+          DanbooruHideBannedSwitch(),
+        ],
+      ),
       canSubmit: validLoginAndApiKey,
     );
   }

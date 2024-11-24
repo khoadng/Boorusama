@@ -5,27 +5,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class ResultHeaderWithProvider extends ConsumerWidget {
   const ResultHeaderWithProvider({
     super.key,
-    required this.selectedTags,
+    required this.selectedTagsString,
     required this.onRefresh,
   });
 
-  final List<String> selectedTags;
+  final String selectedTagsString;
   final Future<void> Function(bool maintainPage)? onRefresh;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final fetcher = ref.watch(booruBuilderProvider)?.postCountFetcher;
+    final fetcher = ref.watch(postCountRepoProvider(ref.watchConfig));
 
     if (fetcher == null) return const SizedBox.shrink();
 
-    return ref.watch(postCountProvider(selectedTags.join(' '))).when(
+    return ref.watch(postCountProvider(selectedTagsString)).when(
           data: (data) => data != null
               ? ResultHeader(
                   count: data,
@@ -40,6 +41,39 @@ class ResultHeaderWithProvider extends ConsumerWidget {
           error: (error, stackTrace) => const SizedBox.shrink(),
           loading: () => const ResultHeader(count: 0, loading: true),
         );
+  }
+}
+
+class ResultHeaderFromController extends ConsumerWidget {
+  const ResultHeaderFromController({
+    super.key,
+    required this.controller,
+    required this.onRefresh,
+    this.hasCount = false,
+  });
+
+  final bool hasCount;
+  final PostGridController<Post> controller;
+  final Future<void> Function(bool maintainPage)? onRefresh;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (!hasCount) return const SizedBox.shrink();
+
+    return ValueListenableBuilder(
+      valueListenable: controller.count,
+      builder: (context, data, _) => data != null
+          ? ResultHeader(
+              count: data,
+              loading: false,
+              onRefresh: onRefresh != null
+                  ? () async {
+                      await onRefresh!(true);
+                    }
+                  : null,
+            )
+          : const ResultHeader(count: 0, loading: true),
+    );
   }
 }
 
@@ -100,7 +134,7 @@ class SliverResultHeader extends StatelessWidget {
                     ValueListenableBuilder(
                       valueListenable: selectedTagString,
                       builder: (context, value, _) => ResultHeaderWithProvider(
-                        selectedTags: value.split(' '),
+                        selectedTagsString: value,
                         onRefresh: (maintainPage) => controller.refresh(
                           maintainPage: maintainPage,
                         ),

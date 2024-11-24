@@ -7,26 +7,25 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:material_symbols_icons/symbols.dart';
 
-const _maxSelectablePage = 4;
-
 List<int> generatePage({
   required int current,
   required int? total,
   required int? itemPerPage,
+  int maxSelectablePage = 4,
 }) {
   final maxPage = total != null && itemPerPage != null
       ? (total / itemPerPage).ceil()
       : null;
 
-  if (current < _maxSelectablePage) {
+  if (current < maxSelectablePage) {
     return List.generate(
-      _maxSelectablePage,
+      maxSelectablePage,
       (index) => maxPage != null ? math.min(index + 1, maxPage) : index + 1,
     ).toSet().toList();
   }
 
   final pages = List.generate(
-    _maxSelectablePage,
+    maxSelectablePage,
     (index) => maxPage != null
         ? math.min(current + index - 1, maxPage)
         : current + index - 1,
@@ -34,7 +33,7 @@ List<int> generatePage({
 
   return _adjustPageIfNeeded(
     pages: pages,
-    defaultSelectablePage: _maxSelectablePage,
+    defaultSelectablePage: maxSelectablePage,
   );
 }
 
@@ -81,125 +80,98 @@ class PageSelector extends StatefulWidget {
 }
 
 class _PageSelectorState extends State<PageSelector> {
-  var pageInputMode = false;
-
   @override
   Widget build(BuildContext context) {
-    final pages = generatePage(
-      current: widget.currentPage,
-      total: widget.totalResults,
-      itemPerPage: widget.itemPerPage,
-    );
-    final lastPage = pages.lastOrNull;
-    final isLowPageCount =
-        lastPage != null ? pages.last < _maxSelectablePage : false;
-    final isSinglePage = pages.length == 1 && pages.first == 1;
-    final isLastPage = !isLowPageCount ? false : lastPage == widget.currentPage;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final maxSelectablePage = switch (constraints.maxWidth) {
+          > 1400 => 12,
+          > 1000 => 10,
+          > 700 => 8,
+          > 600 => 6,
+          > 550 => 5,
+          _ => 4,
+        };
 
-    if (isSinglePage) return const SizedBox.shrink();
+        final pages = generatePage(
+          current: widget.currentPage,
+          total: widget.totalResults,
+          itemPerPage: widget.itemPerPage,
+          maxSelectablePage: maxSelectablePage,
+        );
+        final lastPage = pages.lastOrNull;
+        final isLowPageCount =
+            lastPage != null ? pages.last < maxSelectablePage : false;
+        final isSinglePage = pages.length == 1 && pages.first == 1;
+        final isLastPage =
+            !isLowPageCount ? false : lastPage == widget.currentPage;
 
-    return OverflowBar(
-      alignment: MainAxisAlignment.center,
-      children: [
-        IconButton(
-          onPressed: widget.onPrevious,
-          padding: EdgeInsets.zero,
-          visualDensity: VisualDensity.compact,
-          icon: const Icon(
-            Symbols.chevron_left,
-            size: 32,
-          ),
-        ),
-        ...pages.map(
-          (page) => InkWell(
-            borderRadius: BorderRadius.circular(8),
-            onTap: widget.currentPage != page
-                ? () => widget.onPageSelect(page)
-                : null,
-            child: Container(
-              constraints: const BoxConstraints(
-                minWidth: 50,
-                maxWidth: 80,
-              ),
-              padding: const EdgeInsets.symmetric(
-                horizontal: 12,
-                vertical: 8,
-              ),
-              child: Text(
-                '$page',
-                textAlign: TextAlign.center,
-                style: page == widget.currentPage
-                    ? const TextStyle(
-                        fontWeight: FontWeight.bold,
-                      )
-                    : TextStyle(
-                        color: Theme.of(context).colorScheme.outline,
-                      ),
+        if (isSinglePage) return const SizedBox.shrink();
+
+        return OverflowBar(
+          alignment: MainAxisAlignment.center,
+          children: [
+            IconButton(
+              onPressed: widget.onPrevious,
+              padding: EdgeInsets.zero,
+              visualDensity: VisualDensity.compact,
+              icon: const Icon(
+                Symbols.chevron_left,
+                size: 32,
               ),
             ),
-          ),
-        ),
-        if (widget.pageInput)
-          if (!isLowPageCount)
-            if (!pageInputMode)
-              IconButton(
-                padding: EdgeInsets.zero,
-                visualDensity: VisualDensity.compact,
-                onPressed: () {
-                  setState(() {
-                    pageInputMode = !pageInputMode;
-                  });
-                },
-                icon: const Icon(Symbols.more_horiz),
-              )
-            else
-              SizedBox(
-                width: 50,
-                child: Focus(
-                  onFocusChange: (value) {
-                    if (!value) {
-                      setState(() {
-                        pageInputMode = false;
-                      });
-                    }
-                  },
-                  child: TextField(
-                    autofocus: true,
-                    onTapOutside: (_) {
-                      setState(() {
-                        pageInputMode = false;
-                      });
-                    },
-                    decoration: const InputDecoration(
-                      isDense: true,
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 2,
-                      ),
-                    ),
-                    textInputAction: TextInputAction.done,
-                    keyboardType: TextInputType.number,
-                    onSubmitted: onSubmit,
+            ...pages.map(
+              (page) => InkWell(
+                borderRadius: BorderRadius.circular(8),
+                onTap: widget.currentPage != page
+                    ? () => widget.onPageSelect(page)
+                    : null,
+                child: Container(
+                  constraints: const BoxConstraints(
+                    minWidth: 50,
+                    maxWidth: 80,
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                  child: Text(
+                    '$page',
+                    textAlign: TextAlign.center,
+                    style: page == widget.currentPage
+                        ? const TextStyle(
+                            fontWeight: FontWeight.bold,
+                          )
+                        : TextStyle(
+                            color: Theme.of(context).colorScheme.outline,
+                          ),
                   ),
                 ),
               ),
-        IconButton(
-          onPressed: isLastPage ? null : widget.onNext,
-          padding: EdgeInsets.zero,
-          visualDensity: VisualDensity.compact,
-          icon: const Icon(
-            Symbols.chevron_right,
-            size: 32,
-          ),
-        ),
-      ],
+            ),
+            if (widget.pageInput)
+              if (!isLowPageCount)
+                _PageInputBox(
+                  onSubmit: onSubmit,
+                )
+              else
+                const SizedBox(width: 50),
+            IconButton(
+              onPressed: isLastPage ? null : widget.onNext,
+              padding: EdgeInsets.zero,
+              visualDensity: VisualDensity.compact,
+              icon: const Icon(
+                Symbols.chevron_right,
+                size: 32,
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
   void onSubmit(String value) {
-    setState(() {
-      pageInputMode = !pageInputMode;
-    });
     final lastPage = calculateTotalPage(
       widget.totalResults,
       widget.itemPerPage,
@@ -213,5 +185,88 @@ class _PageSelectorState extends State<PageSelector> {
     if (page != null) {
       widget.onPageSelect(page);
     }
+  }
+}
+
+class _PageInputController extends ValueNotifier<bool> {
+  _PageInputController() : super(false);
+
+  void showInput() {
+    value = true;
+  }
+
+  void hideInput() {
+    value = false;
+  }
+}
+
+class _PageInputBox extends StatefulWidget {
+  const _PageInputBox({
+    required this.onSubmit,
+  });
+
+  final void Function(String value) onSubmit;
+
+  @override
+  State<_PageInputBox> createState() => __PageInputBoxState();
+}
+
+class __PageInputBoxState extends State<_PageInputBox> {
+  final _controller = _PageInputController();
+  late var pageInputMode = _controller.value;
+  final focus = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(() {
+      setState(() {
+        pageInputMode = _controller.value;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+    focus.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return !pageInputMode
+        ? IconButton(
+            padding: EdgeInsets.zero,
+            visualDensity: VisualDensity.compact,
+            onPressed: () {
+              _controller.showInput();
+              focus.requestFocus();
+            },
+            icon: const Icon(Symbols.more_horiz),
+          )
+        : SizedBox(
+            width: 40,
+            child: TextField(
+              focusNode: focus,
+              onTapOutside: (_) => _controller.hideInput(),
+              decoration: const InputDecoration(
+                isDense: true,
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 4,
+                  vertical: 2,
+                ),
+              ),
+              textInputAction: TextInputAction.go,
+              // Workaround for iOS to show a submit button with the number keyboard
+              keyboardType: Theme.of(context).platform == TargetPlatform.iOS
+                  ? TextInputType.numberWithOptions(signed: true)
+                  : TextInputType.number,
+              onSubmitted: (value) {
+                _controller.hideInput();
+                widget.onSubmit(value);
+              },
+            ),
+          );
   }
 }

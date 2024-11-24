@@ -6,6 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/videos/videos.dart';
 import 'package:boorusama/foundation/analytics.dart';
 import 'routes.dart';
 
@@ -18,9 +20,15 @@ final routerProvider = Provider<GoRouter>((ref) {
     navigatorKey: navigatorKey,
     observers: [
       analytics.getAnalyticsObserver(),
+      VideoPlayerControllerNavigatorObserver(
+        targetRoutes: [
+          '/details',
+        ],
+      ),
     ],
     routes: [
       Routes.home(ref),
+      ...danbooruRoutes,
     ],
   );
 });

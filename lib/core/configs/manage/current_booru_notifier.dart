@@ -4,17 +4,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/configs/manage/manage.dart';
 
 class CurrentBooruConfigNotifier extends Notifier<BooruConfig> {
-  CurrentBooruConfigNotifier({
-    required this.initialConfig,
-  }) : super();
-
-  final BooruConfig initialConfig;
-
   @override
   BooruConfig build() {
-    return initialConfig;
+    final config = ref.watch(initialSettingsBooruConfigProvider);
+
+    return config;
   }
 
   Future<void> setEmpty() async {
@@ -30,7 +27,7 @@ class CurrentBooruConfigNotifier extends Notifier<BooruConfig> {
     final settings = ref
         .read(settingsProvider)
         .copyWith(currentBooruConfigId: booruConfig.id);
-    await ref.read(settingsProvider.notifier).updateSettings(settings);
+    await ref.read(settingsNotifierProvider.notifier).updateSettings(settings);
     ref.read(loggerProvider).logI('Booru',
         'Current booru config updated from ${intToBooruType(old.booruId)} to ${intToBooruType(booruConfig.booruId)}');
   }

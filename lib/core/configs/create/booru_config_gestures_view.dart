@@ -12,6 +12,17 @@ import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
+class DefaultBooruConfigGesturesView extends ConsumerWidget {
+  const DefaultBooruConfigGesturesView({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return BooruConfigGesturesView(
+      postDetailsGestureActions: kDefaultGestureActions,
+    );
+  }
+}
+
 class BooruConfigGesturesView extends ConsumerWidget {
   const BooruConfigGesturesView({
     super.key,
@@ -36,13 +47,6 @@ class BooruConfigGesturesView extends ConsumerWidget {
         children: [
           BooruConfigSettingsHeader(
               label: 'settings.image_viewer.image_viewer'.tr()),
-          WarningContainer(
-            margin: const EdgeInsets.symmetric(vertical: 12),
-            title: 'Limitation',
-            contentBuilder: (_) => const Text(
-              'Images only, not applicable to videos.',
-            ),
-          ),
           ListTile(
             contentPadding: EdgeInsets.zero,
             visualDensity: VisualDensity.compact,

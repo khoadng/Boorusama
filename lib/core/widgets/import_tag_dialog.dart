@@ -9,6 +9,7 @@ import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 //FIXME: don't reuse translation keys with favorites tags
 class ImportTagsDialog extends ConsumerStatefulWidget {
@@ -38,12 +39,12 @@ class _ImportTagsDialogState extends ConsumerState<ImportTagsDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
+    return BooruDialog(
+      color: context.colorScheme.surfaceContainer,
       child: SingleChildScrollView(
         child: Container(
           margin: const EdgeInsets.symmetric(
-            vertical: 12,
-            horizontal: 16,
+            vertical: 8,
           ),
           decoration: const BoxDecoration(
             borderRadius: BorderRadius.all(

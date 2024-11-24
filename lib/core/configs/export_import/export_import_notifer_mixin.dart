@@ -13,7 +13,7 @@ import 'package:boorusama/core/configs/export_import/export_import.dart';
 import 'package:boorusama/foundation/package_info.dart';
 import 'package:boorusama/foundation/version.dart';
 
-mixin BooruConfigExportImportMixin on Notifier<List<BooruConfig>?> {
+mixin BooruConfigExportImportMixin on Notifier<List<BooruConfig>> {
   // import from json
   Future<void> import({
     required String path,
@@ -22,7 +22,6 @@ mixin BooruConfigExportImportMixin on Notifier<List<BooruConfig>?> {
     void Function(String message, List<BooruConfig> configs)? onSuccess,
     Future<bool> Function(BooruConfigExportData data)? onWillImport,
   }) async {
-    if (state == null) return;
     final configRepo = ref.read(booruConfigRepoProvider);
 
     ref
@@ -92,12 +91,10 @@ mixin BooruConfigExportImportMixin on Notifier<List<BooruConfig>?> {
     void Function(String message)? onFailure,
     void Function(String message)? onSuccess,
   }) async {
-    if (state == null) return;
-
     await ref
         .read(booruConfigFileHandlerProvider)
         .export(
-          configs: state!,
+          configs: state,
           path: path,
         )
         .run()
@@ -116,10 +113,8 @@ mixin BooruConfigExportImportMixin on Notifier<List<BooruConfig>?> {
     void Function(String message)? onSuccess,
     required Version? appVersion,
   }) async {
-    if (state == null) return;
-
     BooruConfigIOHandler.exportToClipboard(
-      configs: state!,
+      configs: state,
       onSucceed: () => onSuccess?.call('Copied to clipboard'),
       onError: (e) => onFailure?.call(e),
       appVersion: appVersion,
@@ -131,8 +126,6 @@ mixin BooruConfigExportImportMixin on Notifier<List<BooruConfig>?> {
     void Function(String message, List<BooruConfig> configs)? onSuccess,
     Future<bool> Function(BooruConfigExportData data)? onWillImport,
   }) async {
-    if (state == null) return;
-
     BooruConfigIOHandler.importFromClipboard().then(
       (value) => value.fold(
         (l) => onFailure?.call(l.toString()),
