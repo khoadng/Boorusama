@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/core/settings/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -15,10 +16,7 @@ import 'package:boorusama/widgets/widgets.dart';
 class LanguagePage extends ConsumerWidget {
   const LanguagePage({
     super.key,
-    this.hasAppBar = true,
   });
-
-  final bool hasAppBar;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -27,7 +25,7 @@ class LanguagePage extends ConsumerWidget {
       ..sort((a, b) => a.name.compareTo(b.name));
 
     return ConditionalParentWidget(
-      condition: hasAppBar,
+      condition: !SettingsPageScope.of(context).options.dense,
       conditionalBuilder: (child) => Scaffold(
         appBar: AppBar(
           title: const Text('settings.language.language').tr(),

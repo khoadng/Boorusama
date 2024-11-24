@@ -9,6 +9,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/dmails/dmails.dart';
 import 'package:boorusama/boorus/danbooru/posts/posts.dart';
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/posts/posts.dart';
@@ -34,6 +35,7 @@ class _LatestViewState extends ConsumerState<LatestView> {
   final _selectedMostSearchedTag = ValueNotifier('');
   late final selectedTagController = SelectedTagController.fromBooruBuilder(
     builder: ref.readBooruBuilder(ref.readConfig),
+    tagInfo: ref.read(tagInfoProvider),
   );
 
   @override

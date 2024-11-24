@@ -76,9 +76,7 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
       desktopViews: [
         const E621PopularPage(),
         if (config.hasLoginDetails()) ...[
-          E621FavoritesPage(
-            username: config.login!,
-          ),
+          const E621FavoritesPage(),
         ],
       ],
     );

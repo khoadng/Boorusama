@@ -10,17 +10,6 @@ class RouterPageConstant {
   static const postFavoriters = 'post/favorites';
   static const postVoters = 'post/votes';
 
-  static const settings = 'settings';
-  static const settingsGeneral = 'settings/general';
-  static const settingsAppearance = 'settings/appearance';
-  static const settingsLanguage = 'settings/language';
-  static const settingsDownload = 'settings/download';
-  static const settingsPerformance = 'settings/performance';
-  static const settingsSearch = 'settings/search';
-  static const settingsPrivacy = 'settings/privacy';
-  static const settingsChangelog = 'settings/changelog';
-  static const settingsInformation = 'settings/information';
-
   static const blacklistedTags = 'blacklisted_tags';
   static const globalBlacklistedTags = 'global_blacklisted_tags';
   static const blacklistedSearch = 'blacklisted_tags/search';

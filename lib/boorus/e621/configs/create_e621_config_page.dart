@@ -20,7 +20,9 @@ class CreateE621ConfigPage extends StatelessWidget {
       initialTab: initialTab,
       backgroundColor: backgroundColor,
       authTab: const DefaultBooruAuthConfigView(),
-      hasRatingFilter: true,
+      searchTab: DefaultBooruConfigSearchView(
+        hasRatingFilter: true,
+      ),
     );
   }
 }

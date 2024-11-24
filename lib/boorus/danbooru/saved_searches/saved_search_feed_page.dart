@@ -20,87 +20,99 @@ import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/string.dart';
 
-class SavedSearchFeedPage extends ConsumerStatefulWidget {
-  const SavedSearchFeedPage({
+class SavedSearchFeedPage extends ConsumerWidget {
+  const SavedSearchFeedPage({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return BooruConfigAuthFailsafe(
+      child: const SavedSearchFeedPageInternal(),
+    );
+  }
+}
+
+class SavedSearchFeedPageInternal extends ConsumerStatefulWidget {
+  const SavedSearchFeedPageInternal({
     super.key,
   });
 
-  static Widget of(BuildContext context) {
-    return const CustomContextMenuOverlay(
-      child: SavedSearchFeedPage(),
-    );
-  }
-
   @override
-  ConsumerState<SavedSearchFeedPage> createState() =>
+  ConsumerState<SavedSearchFeedPageInternal> createState() =>
       _SavedSearchFeedPageState();
 }
 
-class _SavedSearchFeedPageState extends ConsumerState<SavedSearchFeedPage> {
+class _SavedSearchFeedPageState
+    extends ConsumerState<SavedSearchFeedPageInternal> {
   var _selectedSearch = SavedSearch.all();
 
   @override
   Widget build(BuildContext context) {
     final config = ref.watchConfig;
-    final savedSearcheAsync = ref.watch(danbooruSavedSearchesProvider(config));
 
-    return savedSearcheAsync.when(
-      data: (searches) => searches.isNotEmpty
-          ? PostScope(
-              fetcher: (page) => ref
-                  .read(danbooruPostRepoProvider(config))
-                  .getPosts(_selectedSearch.toQuery(), page),
-              builder: (context, controller, errors) =>
-                  DanbooruInfinitePostList(
-                errors: errors,
-                controller: controller,
-                sliverHeaders: [
-                  SliverAppBar(
-                    title: const Text('saved_search.saved_search_feed').tr(),
-                    floating: true,
-                    actions: [
-                      IconButton(
-                        onPressed: () => goToSavedSearchEditPage(context),
-                        icon: const Icon(
-                          Symbols.settings,
-                          fill: 1,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SliverToBoxAdapter(
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 16,
-                      ),
-                      height: 50,
-                      child: _SavedSearchList(
-                        searches: [
-                          SavedSearch.all(),
-                          ...searches,
-                        ],
-                        selectedSearch: _selectedSearch,
-                        onSearchChanged: (search) {
-                          setState(() {
-                            _selectedSearch = search;
-                            controller.refresh();
-                          });
-                        },
-                      ),
-                    ),
-                  ),
-                ],
+    return CustomContextMenuOverlay(
+      child: ref.watch(danbooruSavedSearchesProvider(config)).when(
+            data: (searches) => searches.isNotEmpty
+                ? _buildContent(searches)
+                : const SavedSearchLandingView(),
+            error: (error, stackTrace) => const Scaffold(
+              body: ErrorBox(),
+            ),
+            loading: () => const Scaffold(
+              body: Center(
+                child: CircularProgressIndicator.adaptive(),
               ),
-            )
-          : const SavedSearchLandingView(),
-      error: (error, stackTrace) => const Scaffold(
-        body: ErrorBox(),
-      ),
-      loading: () => const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator.adaptive(),
-        ),
+            ),
+          ),
+    );
+  }
+
+  Widget _buildContent(List<SavedSearch> searches) {
+    final config = ref.watchConfig;
+
+    return PostScope(
+      fetcher: (page) => ref
+          .read(danbooruPostRepoProvider(config))
+          .getPosts(_selectedSearch.toQuery(), page),
+      builder: (context, controller, errors) => DanbooruInfinitePostList(
+        errors: errors,
+        controller: controller,
+        sliverHeaders: [
+          SliverAppBar(
+            title: const Text('saved_search.saved_search_feed').tr(),
+            floating: true,
+            actions: [
+              IconButton(
+                onPressed: () => goToSavedSearchEditPage(context),
+                icon: const Icon(
+                  Symbols.settings,
+                  fill: 1,
+                ),
+              ),
+            ],
+          ),
+          SliverToBoxAdapter(
+            child: Container(
+              margin: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 16,
+              ),
+              height: 50,
+              child: _SavedSearchList(
+                searches: [
+                  SavedSearch.all(),
+                  ...searches,
+                ],
+                selectedSearch: _selectedSearch,
+                onSearchChanged: (search) {
+                  setState(() {
+                    _selectedSearch = search;
+                    controller.refresh();
+                  });
+                },
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

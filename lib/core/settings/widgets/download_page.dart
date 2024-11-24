@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -7,19 +6,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/downloads/l10n.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/settings/widgets/widgets/settings_tile.dart';
+import 'package:boorusama/router.dart';
 import 'widgets/settings_page_scaffold.dart';
 
 class DownloadPage extends ConsumerStatefulWidget {
   const DownloadPage({
     super.key,
-    this.hasAppBar = true,
   });
-
-  final bool hasAppBar;
 
   @override
   ConsumerState<DownloadPage> createState() => _DownloadPageState();
@@ -31,20 +29,16 @@ class _DownloadPageState extends ConsumerState<DownloadPage> {
     final settings = ref.watch(settingsProvider);
 
     return SettingsPageScaffold(
-      hasAppBar: widget.hasAppBar,
       title: const Text('settings.download.title').tr(),
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: DownloadFolderSelectorSection(
-            storagePath: settings.downloadPath,
-            onPathChanged: (path) =>
-                ref.updateSettings(settings.copyWith(downloadPath: path)),
-            deviceInfo: ref.watch(deviceInfoProvider),
-          ),
+        DownloadFolderSelectorSection(
+          storagePath: settings.downloadPath,
+          onPathChanged: (path) =>
+              ref.updateSettings(settings.copyWith(downloadPath: path)),
+          deviceInfo: ref.watch(deviceInfoProvider),
         ),
         const SizedBox(height: 12),
-        SettingsTile<DownloadQuality>(
+        SettingsTile(
           title: const Text('settings.download.quality').tr(),
           selectedOption: settings.downloadQuality,
           items: DownloadQuality.values,
@@ -66,15 +60,19 @@ class _DownloadPageState extends ConsumerState<DownloadPage> {
             },
           ),
         ),
+        const BooruConfigMoreSettingsRedirectCard.download(),
       ],
     );
   }
 }
 
 Future<void> openDownloadSettingsPage(BuildContext context) {
-  return Navigator.of(context).push(
-    CupertinoPageRoute(
-      builder: (context) => const DownloadPage(),
-    ),
+  return context.push(
+    Uri(
+      path: '/settings',
+      queryParameters: {
+        'initial': 'download',
+      },
+    ).toString(),
   );
 }

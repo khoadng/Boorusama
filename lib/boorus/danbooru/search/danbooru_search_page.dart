@@ -111,7 +111,7 @@ class DanbooruSearchPage extends ConsumerWidget {
                     valueListenable: selectedTagString,
                     builder: (context, selectedTags, _) =>
                         ResultHeaderWithProvider(
-                      selectedTags: selectedTags.split(' '),
+                      selectedTagsString: selectedTags,
                       onRefresh: null,
                     ),
                   ),

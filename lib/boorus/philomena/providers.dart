@@ -40,7 +40,7 @@ final philomenaPostRepoProvider =
         perPage: limit,
       );
 
-      return posts
+      return posts.images
           .map((e) {
             final isVideo = e.mimeType?.contains('video') ?? false;
 
@@ -90,7 +90,7 @@ final philomenaPostRepoProvider =
             );
           })
           .toList()
-          .toResult();
+          .toResult(total: posts.count);
     },
   );
 });

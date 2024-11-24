@@ -10,6 +10,7 @@ import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/search_histories/search_histories.dart';
@@ -54,9 +55,6 @@ class HomeSearchBar extends ConsumerWidget {
                     showDialog(
                       context: context,
                       builder: (context) => Dialog(
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(8)),
-                        ),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 16,
@@ -246,6 +244,7 @@ class _SliverHomeSearchBarState
   late final selectedTagController = widget.selectedTagController ??
       SelectedTagController.fromBooruBuilder(
         builder: widget.booruBuilder,
+        tagInfo: ref.read(tagInfoProvider),
       );
 
   late final selectedTagString = widget.selectedTagString ?? ValueNotifier('');

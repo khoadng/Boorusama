@@ -182,9 +182,9 @@ class _InfinitePostListScaffoldState<T extends Post>
                                   post,
                                 );
                               } else {
-                                goToPostDetailsPage(
+                                goToPostDetailsPageFromController(
                                   context: context,
-                                  posts: widget.controller.items,
+                                  controller: widget.controller,
                                   initialIndex: index,
                                   scrollController: _autoScrollController,
                                 );

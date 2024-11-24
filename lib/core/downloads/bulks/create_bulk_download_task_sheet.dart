@@ -168,6 +168,7 @@ class _CreateBulkDownloadTaskSheetState
                   },
                 ),
                 SettingsTile(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   title: const Text('settings.download.quality').tr(),
                   selectedOption:
                       task.options.quality ?? DownloadQuality.original,
@@ -329,7 +330,6 @@ void goToNewBulkDownloadTaskPage(
           ),
           action: SnackBarAction(
             label: 'View',
-            textColor: context.colorScheme.primary,
             onPressed: () {
               context.pushNamed(kBulkdownload);
             },

@@ -5,12 +5,34 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import '../l10n.dart';
 
 class BulkDownloadPage extends ConsumerWidget {
-  const BulkDownloadPage({
+  const BulkDownloadPage({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
+
+    return config.booruType == BooruType.zerochan
+        ? Scaffold(
+            appBar: AppBar(
+              title: const Text(DownloadTranslations.bulkDownloadTitle).tr(),
+            ),
+            body: const Center(
+              child: Text(
+                  'Temporarily disabled due to an issue with getting the download link'),
+            ),
+          )
+        : const BulkDownloadPageInternal();
+  }
+}
+
+class BulkDownloadPageInternal extends ConsumerWidget {
+  const BulkDownloadPageInternal({
     super.key,
   });
 

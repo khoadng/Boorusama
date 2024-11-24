@@ -28,7 +28,6 @@ part 'providers.dart';
 class GelbooruV1Builder
     with
         FavoriteNotSupportedMixin,
-        PostCountNotSupportedMixin,
         ArtistNotSupportedMixin,
         CharacterNotSupportedMixin,
         CommentNotSupportedMixin,
@@ -96,6 +95,10 @@ class GelbooruV1Builder
       'source': (post, config) => config.downloadUrl,
     },
   );
+
+  @override
+  final PostDetailsUIBuilder postDetailsUIBuilder =
+      kFallbackPostDetailsUIBuilder;
 }
 
 class GelbooruV1SearchPage extends ConsumerWidget {

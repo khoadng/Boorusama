@@ -69,7 +69,10 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
 
     if (config.hasStrictSFW) return;
 
-    if (text != null) {
+    final uri = text != null ? Uri.tryParse(text) : null;
+    final isHttp = uri?.scheme == 'http' || uri?.scheme == 'https';
+
+    if (uri != null && isHttp) {
       context.navigator.push(CupertinoPageRoute(
         builder: (context) {
           return AlertDialog(
@@ -86,13 +89,10 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
               TextButton(
                 onPressed: () {
                   Navigator.pop(context);
-                  final uri = Uri.tryParse(text);
 
-                  if (uri != null) {
-                    final encodedUri = Uri.encodeFull(text);
-                    final url = '${booruUrl}uploads/new?url=$encodedUri';
-                    launchExternalUrlString(url);
-                  }
+                  final encodedUri = Uri.encodeFull(uri.toString());
+                  final url = '${booruUrl}uploads/new?url=$encodedUri';
+                  launchExternalUrlString(url);
                 },
                 child: const Text('OK'),
               ),
@@ -133,13 +133,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
             ),
             title: const Text('profile.profile').tr(),
             onTap: () {
-              goToUserDetailsPage(
-                ref,
-                context,
-                uid: userId,
-                username: widget.config.login!,
-                isSelf: true,
-              );
+              goToProfilePage(context);
             },
           ),
         SideMenuTile(
@@ -147,13 +141,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
             Symbols.explore,
           ),
           title: const Text('explore.explore').tr(),
-          onTap: () => context.navigator.push(CupertinoPageRoute(
-              builder: (_) => Scaffold(
-                    appBar: AppBar(
-                      title: const Text('explore.explore').tr(),
-                    ),
-                    body: const DanbooruExplorePage(),
-                  ))),
+          onTap: () => goToExplorePage(context),
         ),
         SideMenuTile(
           icon: const _Icon(
@@ -207,7 +195,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
             ),
             title: const Text('saved_search.saved_search').tr(),
             onTap: () {
-              goToSavedSearchPage(context, widget.config.login);
+              goToSavedSearchPage(context);
             },
           ),
           SideMenuTile(
@@ -312,13 +300,11 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
         if (widget.config.hasLoginDetails()) ...[
           if (userId != null)
             // 5
-            UserDetailsPage(
-              uid: userId,
-              username: widget.config.login!,
+            const DanbooruProfilePage(
               hasAppBar: false,
             ),
           // 6
-          DanbooruFavoritesPage(username: widget.config.login!),
+          const DanbooruFavoritesPage(),
           // 7
           const FavoriteGroupsPage(),
           // 8

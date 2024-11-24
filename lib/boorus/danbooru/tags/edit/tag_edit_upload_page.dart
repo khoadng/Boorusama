@@ -54,11 +54,11 @@ class TagEditUploadPage extends ConsumerStatefulWidget {
   const TagEditUploadPage({
     super.key,
     required this.post,
-    required this.onSubmitted,
+    this.onSubmitted,
   });
 
   final DanbooruUploadPost post;
-  final void Function() onSubmitted;
+  final void Function()? onSubmitted;
 
   @override
   ConsumerState<TagEditUploadPage> createState() => _TagEditUploadPageState();
@@ -88,7 +88,7 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
         next.when(
           data: (data) {
             if (data != null) {
-              widget.onSubmitted();
+              widget.onSubmitted?.call();
               context.pop();
             }
           },

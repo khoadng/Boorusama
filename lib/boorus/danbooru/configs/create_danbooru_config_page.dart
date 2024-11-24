@@ -63,44 +63,34 @@ class CreateDanbooruConfigPage extends ConsumerWidget {
           ),
         ),
       ),
-      hasRatingFilter: true,
-      postDetailsGestureActions: const {
-        ...kDefaultGestureActions,
-        kToggleFavoriteAction,
-        kUpvoteAction,
-        kDownvoteAction,
-        kEditAction,
-      },
-      describePostDetailsAction: (action) => switch (action) {
-        kToggleFavoriteAction => 'Toggle favorite',
-        kUpvoteAction => 'Upvote',
-        kDownvoteAction => 'Downvote',
-        kEditAction => 'Edit',
-        _ => describeDefaultGestureAction(action),
-      },
-      postDetailsResolution: const DanbooruImageDetailsQualityProvider(),
-      miscOptions: const [
-        DanbooruHideDeletedSwitch(),
-        DanbooruHideBannedSwitch(),
-      ],
-      submitButton: const DanbooruBooruConfigSubmitButton(),
-    );
-  }
-}
-
-class DanbooruBooruConfigSubmitButton extends ConsumerWidget {
-  const DanbooruBooruConfigSubmitButton({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final editId = ref.watch(editBooruConfigIdProvider);
-    final auth = ref.watch(editBooruConfigProvider(editId)
-        .select((value) => AuthConfigData.fromConfig(value)));
-
-    return RawBooruConfigSubmitButton(
-      enable: auth.isValid,
+      gestureTab: BooruConfigGesturesView(
+        postDetailsGestureActions: const {
+          ...kDefaultGestureActions,
+          kToggleFavoriteAction,
+          kUpvoteAction,
+          kDownvoteAction,
+          kEditAction,
+        },
+        describePostDetailsAction: (action) => switch (action) {
+          kToggleFavoriteAction => 'Toggle favorite',
+          kUpvoteAction => 'Upvote',
+          kDownvoteAction => 'Downvote',
+          kEditAction => 'Edit',
+          _ => describeDefaultGestureAction(action),
+        },
+      ),
+      imageViewerTab: BooruConfigViewerView(
+        postDetailsResolution: const DanbooruImageDetailsQualityProvider(),
+      ),
+      searchTab: BooruConfigSearchView(
+        hasRatingFilter: true,
+        config: config,
+        extras: const [
+          DanbooruHideDeletedSwitch(),
+          DanbooruHideBannedSwitch(),
+        ],
+      ),
+      canSubmit: validLoginAndApiKey,
     );
   }
 }

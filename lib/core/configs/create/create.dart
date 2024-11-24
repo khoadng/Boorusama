@@ -1,10 +1,11 @@
 export 'add_booru_page.dart';
 export 'add_unknown_booru_page.dart';
+export 'booru_config_auth_view.dart';
 export 'booru_config_download_view.dart';
 export 'booru_config_gestures_view.dart';
 export 'booru_config_listing_view.dart';
-export 'booru_config_misc_view.dart';
 export 'booru_config_search_view.dart';
+export 'booru_config_viewer_view.dart';
 export 'booru_url_error.dart';
 export 'booru_url_validator.dart';
 export 'cookie_access_webview_page.dart';

@@ -20,7 +20,9 @@ class CreateSzurubooruConfigPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return CreateBooruConfigScaffold(
-      hasRatingFilter: true,
+      searchTab: DefaultBooruConfigSearchView(
+        hasRatingFilter: true,
+      ),
       initialTab: initialTab,
       backgroundColor: backgroundColor,
       authTab: const SzurubooruAuthConfigView(),
@@ -36,6 +38,7 @@ class SzurubooruAuthConfigView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return const SingleChildScrollView(
+      padding: EdgeInsets.symmetric(horizontal: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,

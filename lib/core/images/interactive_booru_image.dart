@@ -16,9 +16,6 @@ import 'package:boorusama/widgets/widgets.dart';
 class InteractiveBooruImage extends ConsumerStatefulWidget {
   const InteractiveBooruImage({
     super.key,
-    this.onTap,
-    this.onDoubleTap,
-    this.onLongPress,
     required this.useHero,
     required this.heroTag,
     required this.aspectRatio,
@@ -28,12 +25,8 @@ class InteractiveBooruImage extends ConsumerStatefulWidget {
     this.imageOverlayBuilder,
     this.width,
     this.height,
-    this.onZoomUpdated,
   });
 
-  final VoidCallback? onTap;
-  final VoidCallback? onDoubleTap;
-  final VoidCallback? onLongPress;
   final bool useHero;
   final String heroTag;
   final double? aspectRatio;
@@ -43,7 +36,6 @@ class InteractiveBooruImage extends ConsumerStatefulWidget {
   final List<Widget> Function(BoxConstraints constraints)? imageOverlayBuilder;
   final double? width;
   final double? height;
-  final void Function(bool zoom)? onZoomUpdated;
 
   @override
   ConsumerState<InteractiveBooruImage> createState() =>
@@ -51,28 +43,6 @@ class InteractiveBooruImage extends ConsumerStatefulWidget {
 }
 
 class _InteractiveBooruImageState extends ConsumerState<InteractiveBooruImage> {
-  final transformationController = TransformationController();
-
-  @override
-  void initState() {
-    super.initState();
-    transformationController.addListener(() {
-      final clampedMatrix = Matrix4.diagonal3Values(
-        transformationController.value.right.x,
-        transformationController.value.up.y,
-        transformationController.value.forward.z,
-      );
-
-      widget.onZoomUpdated?.call(!clampedMatrix.isIdentity());
-    });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    transformationController.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     final config = ref.watchConfig;
@@ -85,62 +55,54 @@ class _InteractiveBooruImageState extends ConsumerState<InteractiveBooruImage> {
       );
     }
 
-    return InteractiveImage(
-      useOriginalSize: false,
-      onTap: widget.onTap,
-      onDoubleTap: widget.onDoubleTap,
-      onLongPress: widget.onLongPress,
-      transformationController: transformationController,
-      image: ConditionalParentWidget(
-        condition: widget.useHero,
-        conditionalBuilder: (child) => Hero(
-          tag: widget.heroTag,
-          child: child,
-        ),
-        child: widget.aspectRatio != null
-            ? AspectRatio(
-                aspectRatio: widget.aspectRatio!,
-                child: LayoutBuilder(
-                  builder: (context, constraints) => Stack(
-                    children: [
-                      ExtendedImage.network(
-                        widget.imageUrl,
-                        width: constraints.maxWidth.isFinite
-                            ? constraints.maxWidth
-                            : null,
-                        height: constraints.maxHeight.isFinite
-                            ? constraints.maxHeight
-                            : null,
-                        fit: BoxFit.contain,
-                        cacheMaxAge: kDefaultImageCacheDuration,
-                        headers: {
-                          AppHttpHeaders.userAgentHeader: ua,
-                          ...ref.watch(extraHttpHeaderProvider(config)),
-                        },
-                      ),
-                      ...widget.imageOverlayBuilder?.call(constraints) ?? [],
-                    ],
-                  ),
-                ),
-              )
-            : LayoutBuilder(
-                builder: (context, constraints) => ExtendedImage.network(
-                  widget.imageUrl,
-                  width: constraints.maxWidth.isFinite
-                      ? constraints.maxWidth
-                      : null,
-                  height: constraints.maxHeight.isFinite
-                      ? constraints.maxHeight
-                      : null,
-                  cacheMaxAge: kDefaultImageCacheDuration,
-                  fit: BoxFit.contain,
-                  headers: {
-                    AppHttpHeaders.userAgentHeader: ua,
-                    ...ref.watch(extraHttpHeaderProvider(config)),
-                  },
+    return ConditionalParentWidget(
+      condition: widget.useHero,
+      conditionalBuilder: (child) => Hero(
+        tag: widget.heroTag,
+        child: child,
+      ),
+      child: widget.aspectRatio != null
+          ? AspectRatio(
+              aspectRatio: widget.aspectRatio!,
+              child: LayoutBuilder(
+                builder: (context, constraints) => Stack(
+                  children: [
+                    ExtendedImage.network(
+                      widget.imageUrl,
+                      width: constraints.maxWidth.isFinite
+                          ? constraints.maxWidth
+                          : null,
+                      height: constraints.maxHeight.isFinite
+                          ? constraints.maxHeight
+                          : null,
+                      fit: BoxFit.contain,
+                      cacheMaxAge: kDefaultImageCacheDuration,
+                      headers: {
+                        AppHttpHeaders.userAgentHeader: ua,
+                        ...ref.watch(extraHttpHeaderProvider(config)),
+                      },
+                    ),
+                    ...widget.imageOverlayBuilder?.call(constraints) ?? [],
+                  ],
                 ),
               ),
-      ),
+            )
+          : LayoutBuilder(
+              builder: (context, constraints) => ExtendedImage.network(
+                widget.imageUrl,
+                width:
+                    constraints.maxWidth.isFinite ? constraints.maxWidth : null,
+                height: constraints.maxHeight.isFinite
+                    ? constraints.maxHeight
+                    : null,
+                cacheMaxAge: kDefaultImageCacheDuration,
+                fit: BoxFit.contain,
+                headers: {
+                  AppHttpHeaders.userAgentHeader: ua,
+                  ...ref.watch(extraHttpHeaderProvider(config)),
+                },
+              ),
+            ),
     );
   }
 }

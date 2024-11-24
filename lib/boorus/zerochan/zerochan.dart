@@ -12,7 +12,6 @@ import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
 import 'providers.dart';
@@ -24,7 +23,6 @@ const kZerochanCustomDownloadFileNameFormat =
 class ZerochanBuilder
     with
         FavoriteNotSupportedMixin,
-        PostCountNotSupportedMixin,
         ArtistNotSupportedMixin,
         CharacterNotSupportedMixin,
         DefaultThumbnailUrlMixin,
@@ -76,23 +74,16 @@ class ZerochanBuilder
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) => PostDetailsLayoutSwitcher(
-            initialIndex: payload.initialIndex,
-            posts: payload.posts,
-            scrollController: payload.scrollController,
-            desktop: (controller) => ZerochanPostDetailsDesktopPage(
-              initialIndex: controller.currentPage.value,
-              posts: payload.posts.map((e) => e as ZerochanPost).toList(),
-              onExit: (page) => controller.onExit(page),
-              onPageChanged: (page) => controller.setPage(page),
-            ),
-            mobile: (controller) => ZerochanPostDetailsPage(
-              initialIndex: controller.currentPage.value,
-              posts: payload.posts.map((e) => e as ZerochanPost).toList(),
-              onExit: (page) => controller.onExit(page),
-              onPageChanged: (page) => controller.setPage(page),
-            ),
-          );
+      (context, config, payload) {
+        final posts = payload.posts.map((e) => e as ZerochanPost).toList();
+
+        return PostDetailsScope(
+          initialIndex: payload.initialIndex,
+          posts: posts,
+          scrollController: payload.scrollController,
+          child: const DefaultPostDetailsPage<ZerochanPost>(),
+        );
+      };
 
   @override
   TagColorBuilder get tagColorBuilder => (brightness, tagType) {
@@ -132,74 +123,29 @@ class ZerochanBuilder
       'source': (post, config) => post.source.url,
     },
   );
-}
-
-class ZerochanPostDetailsPage extends ConsumerWidget {
-  const ZerochanPostDetailsPage({
-    super.key,
-    required this.posts,
-    required this.initialIndex,
-    required this.onPageChanged,
-    required this.onExit,
-  });
-
-  final List<ZerochanPost> posts;
-  final int initialIndex;
-  final void Function(int page) onPageChanged;
-  final void Function(int page) onExit;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return PostDetailsPageScaffold(
-      posts: posts,
-      initialIndex: initialIndex,
-      swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
-      tagListBuilder: (context, post) => ZerochanTagsTile(post: post),
-      onExit: onExit,
-      onPageChangeIndexed: onPageChanged,
-    );
-  }
-}
-
-class ZerochanPostDetailsDesktopPage extends ConsumerWidget {
-  const ZerochanPostDetailsDesktopPage({
-    super.key,
-    required this.initialIndex,
-    required this.posts,
-    required this.onExit,
-    required this.onPageChanged,
-  });
-
-  final int initialIndex;
-  final List<ZerochanPost> posts;
-  final void Function(int index) onExit;
-  final void Function(int page) onPageChanged;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return PostDetailsPageDesktopScaffold(
-      initialIndex: initialIndex,
-      posts: posts,
-      onExit: onExit,
-      onPageChanged: onPageChanged,
-      imageUrlBuilder: defaultPostImageUrlBuilder(ref),
-      tagListBuilder: (context, post) => ZerochanTagsTile(post: post),
-      toolbarBuilder: (context, post) => SimplePostActionToolbar(post: post),
-      topRightButtonsBuilder: (currentPage, expanded, post) =>
-          GeneralMoreActionButton(post: post),
-    );
-  }
+  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
+    preview: {
+      DetailsPart.toolbar: (context) =>
+          const DefaultInheritedPostActionToolbar<ZerochanPost>(),
+    },
+    full: {
+      DetailsPart.toolbar: (context) =>
+          const DefaultInheritedPostActionToolbar<ZerochanPost>(),
+      DetailsPart.source: (context) =>
+          const DefaultInheritedSourceSection<ZerochanPost>(),
+      DetailsPart.tags: (context) => const ZerochanTagsTile(),
+      DetailsPart.fileDetails: (context) =>
+          const DefaultInheritedFileDetailsSection<ZerochanPost>(),
+    },
+  );
 }
 
 class ZerochanTagsTile extends ConsumerStatefulWidget {
   const ZerochanTagsTile({
     super.key,
-    required this.post,
-    this.onTagsLoaded,
   });
-
-  final Post post;
-  final void Function(List<TagGroupItem> tags)? onTagsLoaded;
 
   @override
   ConsumerState<ZerochanTagsTile> createState() => _ZerochanTagsTileState();
@@ -211,19 +157,21 @@ class _ZerochanTagsTileState extends ConsumerState<ZerochanTagsTile> {
 
   @override
   Widget build(BuildContext context) {
+    final post = InheritedPost.of<ZerochanPost>(context);
+
     if (expanded) {
-      ref.listen(zerochanTagsFromIdProvider(widget.post.id), (previous, next) {
+      ref.listen(zerochanTagsFromIdProvider(post.id), (previous, next) {
         next.when(
           data: (data) {
             if (!mounted) return;
 
-            if (data.isNotEmpty) {
-              if (widget.onTagsLoaded != null) {
-                widget.onTagsLoaded!(createTagGroupItems(data));
-              }
-            }
+            // if (data.isNotEmpty) {
+            //   if (widget.onTagsLoaded != null) {
+            //     widget.onTagsLoaded!(createTagGroupItems(data));
+            //   }
+            // }
 
-            if (data.isEmpty && widget.post.tags.isNotEmpty) {
+            if (data.isEmpty && post.tags.isNotEmpty) {
               // Just a dummy data so the check below will branch into the else block
               setState(() => error = 'No tags found');
             }
@@ -237,27 +185,27 @@ class _ZerochanTagsTileState extends ConsumerState<ZerochanTagsTile> {
       });
     }
 
-    return error == null
-        ? TagsTile(
-            tags: expanded
-                ? ref
-                    .watch(zerochanTagsFromIdProvider(widget.post.id))
-                    .maybeWhen(
-                      data: (data) => createTagGroupItems(data),
-                      orElse: () => null,
-                    )
-                : null,
-            post: widget.post,
-            onExpand: () => setState(() => expanded = true),
-            onCollapse: () {
-              // Don't set expanded to false to prevent rebuilding the tags list
-              setState(() => error = null);
-            },
-            onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
-          )
-        : BasicTagList(
-            tags: widget.post.tags.toList(),
-            onTap: (tag) => goToSearchPage(context, tag: tag),
-          );
+    return SliverToBoxAdapter(
+      child: error == null
+          ? TagsTile(
+              tags: expanded
+                  ? ref.watch(zerochanTagsFromIdProvider(post.id)).maybeWhen(
+                        data: (data) => createTagGroupItems(data),
+                        orElse: () => null,
+                      )
+                  : null,
+              post: post,
+              onExpand: () => setState(() => expanded = true),
+              onCollapse: () {
+                // Don't set expanded to false to prevent rebuilding the tags list
+                setState(() => error = null);
+              },
+              onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
+            )
+          : BasicTagList(
+              tags: post.tags.toList(),
+              onTap: (tag) => goToSearchPage(context, tag: tag),
+            ),
+    );
   }
 }

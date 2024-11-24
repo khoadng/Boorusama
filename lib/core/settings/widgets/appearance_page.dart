@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -12,6 +11,7 @@ import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/router.dart';
 import 'widgets.dart';
 import 'widgets/settings_header.dart';
 import 'widgets/settings_page_scaffold.dart';
@@ -21,10 +21,7 @@ import 'widgets/settings_tile.dart';
 class AppearancePage extends ConsumerStatefulWidget {
   const AppearancePage({
     super.key,
-    this.hasAppBar = true,
   });
-
-  final bool hasAppBar;
 
   @override
   ConsumerState<AppearancePage> createState() => _AppearancePageState();
@@ -36,7 +33,6 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
     final settings = ref.watch(settingsProvider);
 
     return SettingsPageScaffold(
-      hasAppBar: widget.hasAppBar,
       title: const Text('settings.appearance.appearance').tr(),
       children: [
         SettingsHeader(label: 'settings.general'.tr()),
@@ -49,24 +45,6 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
             onUpdate: (value) =>
                 ref.updateSettings(settings.copyWith(listing: value)),
           ),
-        ),
-        const Divider(thickness: 1),
-        SettingsHeader(label: 'settings.appearance.booru_config'.tr()),
-        SettingsTile<BooruConfigSelectorPosition>(
-          title: const Text('settings.appearance.booru_config_placement').tr(),
-          selectedOption: settings.booruConfigSelectorPosition,
-          items: const [...BooruConfigSelectorPosition.values],
-          onChanged: (value) => ref.updateSettings(
-              settings.copyWith(booruConfigSelectorPosition: value)),
-          optionBuilder: (value) => Text(value.localize()),
-        ),
-        SettingsTile<BooruConfigLabelVisibility>(
-          title: const Text('Label').tr(),
-          selectedOption: settings.booruConfigLabelVisibility,
-          items: const [...BooruConfigLabelVisibility.values],
-          onChanged: (value) => ref.updateSettings(
-              settings.copyWith(booruConfigLabelVisibility: value)),
-          optionBuilder: (value) => Text(value.localize()),
         ),
         const SizedBox(
           height: 10,
@@ -118,10 +96,13 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
 }
 
 Future<void> openAppearancePage(BuildContext context) {
-  return Navigator.of(context).push(
-    CupertinoPageRoute(
-      builder: (context) => const AppearancePage(),
-    ),
+  return context.push(
+    Uri(
+      path: '/settings',
+      queryParameters: {
+        'initial': 'appearance',
+      },
+    ).toString(),
   );
 }
 
@@ -179,24 +160,22 @@ class _ImageListingSettingsSectionState
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SettingsTile<GridSize>(
+        SettingsTile(
           title: const Text('settings.image_grid.grid_size.grid_size').tr(),
           selectedOption: settings.gridSize,
           items: GridSize.values,
           onChanged: (value) => _onUpdate(settings.copyWith(gridSize: value)),
           optionBuilder: (value) => Text(value.localize().tr()),
-          padding: widget.itemPadding,
         ),
-        SettingsTile<ImageListType>(
+        SettingsTile(
           title: const Text('settings.image_list.image_list').tr(),
           selectedOption: settings.imageListType,
           items: ImageListType.values,
           onChanged: (value) =>
               _onUpdate(settings.copyWith(imageListType: value)),
           optionBuilder: (value) => Text(value.localize()).tr(),
-          padding: widget.itemPadding,
         ),
-        SettingsTile<ImageQuality>(
+        SettingsTile(
           title: const Text(
             'settings.image_grid.image_quality.image_quality',
           ).tr(),
@@ -213,9 +192,8 @@ class _ImageListingSettingsSectionState
           onChanged: (value) =>
               _onUpdate(settings.copyWith(imageQuality: value)),
           optionBuilder: (value) => Text(value.localize()).tr(),
-          padding: widget.itemPadding,
         ),
-        SettingsTile<PageMode>(
+        SettingsTile(
           title: const Text('settings.result_layout.result_layout').tr(),
           selectedOption: settings.pageMode,
           subtitle: settings.pageMode == PageMode.infinite
@@ -224,18 +202,16 @@ class _ImageListingSettingsSectionState
           items: const [...PageMode.values],
           onChanged: (value) => _onUpdate(settings.copyWith(pageMode: value)),
           optionBuilder: (value) => Text(value.localize()).tr(),
-          padding: widget.itemPadding,
         ),
         if (settings.pageMode == PageMode.paginated)
           PremiumInteractionBlock(
-            child: SettingsTile<PageIndicatorPosition>(
+            child: SettingsTile(
               title: const Text('settings.page_indicator.page_indicator').tr(),
               selectedOption: settings.pageIndicatorPosition,
               items: const [...PageIndicatorPosition.values],
               onChanged: (value) =>
                   _onUpdate(settings.copyWith(pageIndicatorPosition: value)),
               optionBuilder: (value) => Text(value.localize()).tr(),
-              padding: widget.itemPadding,
             ),
           ),
         SettingsTile(
@@ -256,14 +232,12 @@ class _ImageListingSettingsSectionState
           optionBuilder: (value) => Text(
             value.toString(),
           ),
-          padding: widget.itemPadding,
         ),
         SwitchListTile(
           title: const Text('settings.appearance.show_scores').tr(),
           value: settings.showScoresInGrid,
           onChanged: (value) =>
               _onUpdate(settings.copyWith(showScoresInGrid: value)),
-          contentPadding: widget.itemPadding,
         ),
         SwitchListTile(
           title: const Text('settings.appearance.show_post_list_config_header')
@@ -272,7 +246,6 @@ class _ImageListingSettingsSectionState
           onChanged: (value) => _onUpdate(settings.copyWith(
             showPostListConfigHeader: value,
           )),
-          contentPadding: widget.itemPadding,
         ),
         PremiumInteractionBlock(
           child: SwitchListTile(
@@ -282,7 +255,6 @@ class _ImageListingSettingsSectionState
                 mediaBlurCondition: value
                     ? MediaBlurCondition.explicitOnly
                     : MediaBlurCondition.none)),
-            contentPadding: widget.itemPadding,
           ),
         ),
         const SizedBox(height: 4),
@@ -309,7 +281,7 @@ class _ImageListingSettingsSectionState
           onChangeEnd: (value) =>
               _onUpdate(settings.copyWith(imageBorderRadius: value)),
           onChanged: (value) => _borderRadiusSliderValue.value = value,
-          padding: widget.itemPadding,
+          padding: EdgeInsets.zero,
         );
       },
     );
@@ -327,7 +299,7 @@ class _ImageListingSettingsSectionState
           onChangeEnd: (value) =>
               _onUpdate(settings.copyWith(imageGridSpacing: value)),
           onChanged: (value) => _spacingSliderValue.value = value,
-          padding: widget.itemPadding,
+          padding: EdgeInsets.zero,
         );
       },
     );
@@ -345,7 +317,7 @@ class _ImageListingSettingsSectionState
           onChangeEnd: (value) =>
               _onUpdate(settings.copyWith(imageGridPadding: value)),
           onChanged: (value) => _paddingSliderValue.value = value,
-          padding: widget.itemPadding,
+          padding: EdgeInsets.zero,
         );
       },
     );
@@ -364,7 +336,7 @@ class _ImageListingSettingsSectionState
           onChangeEnd: (value) =>
               _onUpdate(settings.copyWith(imageGridAspectRatio: value)),
           onChanged: (value) => _aspectRatioSliderValue.value = value,
-          padding: widget.itemPadding,
+          padding: EdgeInsets.zero,
         );
       },
     );

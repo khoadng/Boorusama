@@ -34,7 +34,7 @@ class UpdateBooruConfigScope extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final configs = ref.watch(booruConfigProvider);
-    final config = configs?.firstWhereOrNull((e) => e.id == id.id);
+    final config = configs.firstWhereOrNull((e) => e.id == id.id);
 
     if (config == null) {
       return Scaffold(
@@ -83,76 +83,44 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
   const CreateBooruConfigScaffold({
     super.key,
     this.backgroundColor,
-    this.tabsBuilder,
     this.authTab,
     this.searchTab,
-    this.postDetailsResolution,
-    this.hasDownloadTab = true,
-    this.hasRatingFilter = false,
-    this.miscOptions,
-    this.postDetailsGestureActions = kDefaultGestureActions,
-    this.postPreviewQuickActionButtonActions = kDefaultPreviewImageButtonAction,
-    this.describePostDetailsAction,
-    this.describePostPreviewQuickAction,
-    this.submitButton,
+    this.downloadTab,
+    this.gestureTab,
+    this.imageViewerTab,
+    this.listingTab,
+    this.canSubmit,
     required this.initialTab,
     this.footer,
   });
 
   final Color? backgroundColor;
-  final Map<String, Widget> Function(BuildContext context)? tabsBuilder;
 
   final Widget? authTab;
   final Widget? searchTab;
-
-  final Widget? postDetailsResolution;
-
-  final bool hasDownloadTab;
-  final bool hasRatingFilter;
-
-  final List<Widget>? miscOptions;
-
-  final Set<String?> postDetailsGestureActions;
-  final String Function(String? action)? describePostDetailsAction;
-
-  final Set<String?> postPreviewQuickActionButtonActions;
-  final String Function(String? action)? describePostPreviewQuickAction;
-
-  final Widget? submitButton;
+  final Widget? downloadTab;
+  final Widget? gestureTab;
+  final Widget? imageViewerTab;
+  final Widget? listingTab;
 
   final String? initialTab;
 
   final Widget? footer;
 
+  final bool Function(BooruConfigData config)? canSubmit;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watch(initialBooruConfigProvider);
     final editId = ref.watch(editBooruConfigIdProvider);
 
     final tabMap = {
       if (authTab != null) 'booru.authentication': authTab!,
-      'Listing': const BooruConfigListingView(),
-      if (hasDownloadTab)
-        'booru.download': BooruConfigDownloadView(config: config),
-      'Search': searchTab ??
-          BooruConfigSearchView(
-            hasRatingFilter: hasRatingFilter,
-            config: config,
-          ),
-      if (tabsBuilder != null) ...tabsBuilder!(context),
-      'booru.gestures': BooruConfigGesturesView(
-        postDetailsGestureActions: postDetailsGestureActions,
-        describePostDetailsAction: describePostDetailsAction,
-      ),
-      'booru.misc': BooruConfigMiscView(
-        postDetailsGestureActions: postDetailsGestureActions,
-        postPreviewQuickActionButtonActions:
-            postPreviewQuickActionButtonActions,
-        describePostPreviewQuickAction: describePostPreviewQuickAction,
-        describePostDetailsAction: describePostDetailsAction,
-        postDetailsResolution: postDetailsResolution,
-        miscOptions: miscOptions,
-      ),
+      'Listing': listingTab ?? const DefaultBooruConfigListingView(),
+      'booru.download': downloadTab ?? const BooruConfigDownloadView(),
+      'Search': searchTab ?? const DefaultBooruConfigSearchView(),
+      'booru.gestures': gestureTab ?? const DefaultBooruConfigGesturesView(),
+      'settings.image_viewer.image_viewer':
+          imageViewerTab ?? const BooruConfigViewerView(),
     };
 
     return Scaffold(
@@ -164,9 +132,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
           url: editId.url,
         ),
         actions: [
-          submitButton != null
-              ? submitButton!
-              : const DefaultBooruSubmitButton(),
+          CreateOrUpdateBooruConfigButton(canSubmit: canSubmit),
         ],
       ),
       body: SafeArea(
@@ -202,20 +168,11 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
                         constraints: const BoxConstraints(
                           maxWidth: 700,
                         ),
-                        margin: const EdgeInsets.symmetric(horizontal: 8),
                         child: TabBarView(
                           controller: controller,
                           physics: const NeverScrollableScrollPhysics(),
                           children: [
-                            for (final tab in tabMap.values)
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical:
-                                      Screen.of(context).size.isLarge ? 16 : 8,
-                                ),
-                                child: tab,
-                              ),
+                            for (final tab in tabMap.values) tab,
                           ],
                         ),
                       ),

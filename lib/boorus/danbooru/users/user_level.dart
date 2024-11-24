@@ -46,3 +46,21 @@ enum UserLevel {
   admin,
   owner,
 }
+
+extension UserLevelX on UserLevel? {
+  bool get isUnres => switch (this) {
+        null ||
+        UserLevel.restricted ||
+        UserLevel.member ||
+        UserLevel.gold ||
+        UserLevel.platinum ||
+        UserLevel.builder =>
+          false,
+        UserLevel.contributor ||
+        UserLevel.approver ||
+        UserLevel.moderator ||
+        UserLevel.admin ||
+        UserLevel.owner =>
+          true,
+      };
+}

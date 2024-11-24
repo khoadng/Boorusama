@@ -19,8 +19,6 @@ import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import 'booru_selector_item.dart';
-import 'remove_booru_alert_dialog.dart';
 
 class BooruSelector extends ConsumerWidget {
   const BooruSelector({
@@ -126,7 +124,7 @@ class _BooruSelectorHorizontalState
 
     return Container(
       height: 48,
-      color: context.colorScheme.secondaryContainer,
+      color: context.colorScheme.surfaceContainerHigh,
       child: ScrollConfiguration(
         behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
         child: ref.watch(configsProvider).maybeWhen(
@@ -197,9 +195,6 @@ mixin BooruSelectorActionMixin<T extends ConsumerStatefulWidget>
                 showDialog(
                   context: context,
                   builder: (context) => Dialog(
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                    ),
                     child: RemoveBooruConfigAlertDialog(
                       title: "Delete '${config.name}'",
                       description:
@@ -248,7 +243,7 @@ mixin BooruSelectorActionMixin<T extends ConsumerStatefulWidget>
 
     newOrders.reorder(oldIndex, newIndex);
 
-    ref.read(settingsProvider.notifier).updateOrder(newOrders);
+    ref.read(settingsNotifierProvider.notifier).updateOrder(newOrders);
   }
 
   bool get reverseScroll => ref.watch(settingsProvider
