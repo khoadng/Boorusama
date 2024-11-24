@@ -23,10 +23,9 @@ import 'package:boorusama/foundation/picker.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/scrolling.dart';
 import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/foundation/windows.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/string.dart';
-import 'package:boorusama/widgets/widgets.dart';
-import 'widgets/platforms/platforms.dart';
 
 const kMinSideBarWidth = 62.0;
 const kMaxSideBarWidth = 250.0;
@@ -74,20 +73,13 @@ class App extends StatelessWidget {
     ScrollBehavior? scrollBehavior,
   ) {
     return MaterialApp.router(
-      builder: (context, child) => ConditionalParentWidget(
-        condition: isDesktopPlatform(),
-        conditionalBuilder: (child) => WindowTitleBar(
-          appName: appName,
-          child: child,
+      builder: (context, child) => Theme(
+        data: Theme.of(context).copyWith(
+          iconTheme: Theme.of(context).iconTheme.copyWith(
+                weight: isWindows() ? 200 : 400,
+              ),
         ),
-        child: Theme(
-          data: Theme.of(context).copyWith(
-            iconTheme: Theme.of(context).iconTheme.copyWith(
-                  weight: isWindows() ? 200 : 400,
-                ),
-          ),
-          child: child!,
-        ),
+        child: AppTitleBar(child: child!),
       ),
       scrollBehavior: scrollBehavior,
       theme: theme,

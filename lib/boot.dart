@@ -38,6 +38,7 @@ import 'package:boorusama/foundation/package_info.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/tracking.dart';
+import 'package:boorusama/foundation/windows.dart' as window;
 import 'app.dart';
 import 'foundation/i18n.dart';
 
@@ -70,6 +71,10 @@ Future<void> boot(BootLogger bootLogger) async {
   final logger = await loggerWith(appLogger);
   final stopwatch = Stopwatch()..start();
   logger.logI('Start up', 'App Start up');
+
+  if (isDesktopPlatform()) {
+    await window.initialize();
+  }
 
   bootLogger.l("Load database's directory");
   final dbDirectory = isAndroid()

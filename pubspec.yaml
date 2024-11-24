@@ -109,6 +109,7 @@ dependencies:
        ref: 923e514752ad7bb7e83849f11de767a301ac57b5
   webview_flutter: ^4.10.0
   webview_flutter_android: ^4.0.0
+  window_manager: ^0.4.3
   xml: ^6.5.0
   yaml: ^3.1.2
 
