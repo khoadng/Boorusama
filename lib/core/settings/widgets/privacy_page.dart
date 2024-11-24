@@ -13,17 +13,13 @@ import 'widgets/settings_page_scaffold.dart';
 class PrivacyPage extends ConsumerWidget {
   const PrivacyPage({
     super.key,
-    this.hasAppBar = true,
   });
-
-  final bool hasAppBar;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(settingsProvider);
 
     return SettingsPageScaffold(
-      hasAppBar: hasAppBar,
       title: const Text('settings.privacy.privacy').tr(),
       children: [
         ListTile(

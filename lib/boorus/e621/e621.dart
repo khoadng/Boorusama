@@ -103,7 +103,6 @@ const kE621PostSamples = [
 
 class E621Builder
     with
-        PostCountNotSupportedMixin,
         CharacterNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
         UnknownMetatagsMixin,
@@ -157,52 +156,25 @@ class E621Builder
           );
 
   @override
-  FavoriteAdder? get favoriteAdder => (postId, ref) => ref
-      .read(e621FavoritesProvider(ref.readConfig).notifier)
-      .add(postId)
-      .then((value) => true);
-
-  @override
-  FavoriteRemover? get favoriteRemover => (postId, ref) => ref
-      .read(e621FavoritesProvider(ref.readConfig).notifier)
-      .remove(postId)
-      .then((value) => true);
-
-  @override
   SearchPageBuilder get searchPageBuilder =>
       (context, initialQuery) => E621SearchPage(initialQuery: initialQuery);
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) => PostDetailsLayoutSwitcher(
-            initialIndex: payload.initialIndex,
-            posts: payload.posts,
-            scrollController: payload.scrollController,
-            desktop: (controller) => E621PostDetailsDesktopPage(
-              initialIndex: controller.currentPage.value,
-              posts: payload.posts.map((e) => e as E621Post).toList(),
-              onExit: (page) => controller.onExit(page),
-              onPageChanged: (page) => controller.setPage(page),
-            ),
-            mobile: (controller) => E621PostDetailsPage(
-              intitialIndex: controller.currentPage.value,
-              controller: controller,
-              posts: payload.posts.map((e) => e as E621Post).toList(),
-              onExit: (page) => controller.onExit(page),
-              onPageChanged: (page) => controller.setPage(page),
-            ),
-          );
+      (context, config, payload) {
+        final posts = payload.posts.map((e) => e as E621Post).toList();
+
+        return PostDetailsScope(
+          initialIndex: payload.initialIndex,
+          posts: posts,
+          scrollController: payload.scrollController,
+          child: const DefaultPostDetailsPage<E621Post>(),
+        );
+      };
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
-      (context, config) => config.hasLoginDetails()
-          ? E621FavoritesPage(username: config.login!)
-          : const Scaffold(
-              body: Center(
-                child: Text(
-                    'You need to provide login details to use this feature.'),
-              ),
-            );
+      (context, config) => const E621FavoritesPage();
 
   @override
   ArtistPageBuilder? get artistPageBuilder =>
@@ -248,6 +220,31 @@ class E621Builder
       'mpixels': (post, config) => post.mpixels.toString(),
       'aspect_ratio': (post, config) => post.aspectRatio.toString(),
       'source': (post, config) => config.downloadUrl,
+    },
+  );
+
+  @override
+  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
+    preview: {
+      DetailsPart.info: (context) =>
+          const DefaultInheritedInformationSection<E621Post>(
+            showSource: true,
+          ),
+      DetailsPart.toolbar: (context) =>
+          const DefaultInheritedPostActionToolbar<E621Post>(),
+    },
+    full: {
+      DetailsPart.info: (context) =>
+          const DefaultInheritedInformationSection<E621Post>(
+            showSource: true,
+          ),
+      DetailsPart.toolbar: (context) =>
+          const DefaultInheritedPostActionToolbar<E621Post>(),
+      DetailsPart.artistInfo: (context) => const E621ArtistSection(),
+      DetailsPart.tags: (context) => const E621TagsTile(),
+      DetailsPart.fileDetails: (context) =>
+          const DefaultInheritedFileDetailsSection<E621Post>(),
+      DetailsPart.artistPosts: (context) => const E621ArtistPostsSection(),
     },
   );
 }

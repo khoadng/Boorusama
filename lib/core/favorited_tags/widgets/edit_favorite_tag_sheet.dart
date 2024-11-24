@@ -60,12 +60,11 @@ class _EditSavedSearchSheetState extends ConsumerState<EditFavoriteTagSheet> {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: context.colorScheme.secondaryContainer,
+      color: context.colorScheme.surfaceContainer,
       child: Container(
         margin: EdgeInsets.only(
-          left: 30,
-          right: 30,
-          top: 1,
+          left: 12,
+          right: 12,
           bottom: MediaQuery.viewInsetsOf(context).bottom,
         ),
         child: Column(
@@ -77,9 +76,6 @@ class _EditSavedSearchSheetState extends ConsumerState<EditFavoriteTagSheet> {
                 widget.title ?? 'Edit',
                 style: context.textTheme.titleLarge,
               ),
-            ),
-            const SizedBox(
-              height: 16,
             ),
             const SizedBox(
               height: 16,

@@ -10,7 +10,22 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 
 class E621FavoritesPage extends ConsumerWidget {
-  const E621FavoritesPage({
+  const E621FavoritesPage({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
+
+    return BooruConfigAuthFailsafe(
+      child: E621FavoritesPageInternal(
+        username: config.login!,
+      ),
+    );
+  }
+}
+
+class E621FavoritesPageInternal extends ConsumerWidget {
+  const E621FavoritesPageInternal({
     super.key,
     required this.username,
   });

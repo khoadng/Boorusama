@@ -3,10 +3,14 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:extended_image/extended_image.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/foundation/http/http.dart';
 
 extension PostDetailsUtils<T extends Post> on List<T> {
   (T? prev, T? next) getPrevAndNextPosts(int index) {
@@ -17,7 +21,7 @@ extension PostDetailsUtils<T extends Post> on List<T> {
   }
 }
 
-class PostDetailsPreloadImage extends StatelessWidget {
+class PostDetailsPreloadImage extends ConsumerWidget {
   const PostDetailsPreloadImage({
     super.key,
     required this.url,
@@ -26,7 +30,8 @@ class PostDetailsPreloadImage extends StatelessWidget {
   final String url;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
     return ExtendedImage.network(
       url,
       width: 1,
@@ -34,6 +39,11 @@ class PostDetailsPreloadImage extends StatelessWidget {
       cacheHeight: 10,
       cacheWidth: 10,
       cacheMaxAge: kDefaultImageCacheDuration,
+      headers: {
+        AppHttpHeaders.userAgentHeader:
+            ref.watch(userAgentGeneratorProvider(config)).generate(),
+        ...ref.watch(extraHttpHeaderProvider(config)),
+      },
     );
   }
 }

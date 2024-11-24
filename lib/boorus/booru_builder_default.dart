@@ -2,11 +2,6 @@ part of 'booru_builder.dart';
 
 mixin FavoriteNotSupportedMixin implements BooruBuilder {
   @override
-  FavoriteAdder? get favoriteAdder => null;
-  @override
-  FavoriteRemover? get favoriteRemover => null;
-
-  @override
   FavoritesPageBuilder? get favoritesPageBuilder => null;
   @override
   QuickFavoriteButtonBuilder? get quickFavoriteButtonBuilder => null;
@@ -33,11 +28,6 @@ mixin CharacterNotSupportedMixin implements BooruBuilder {
 mixin CommentNotSupportedMixin implements BooruBuilder {
   @override
   CommentPageBuilder? get commentPageBuilder => null;
-}
-
-mixin PostCountNotSupportedMixin implements BooruBuilder {
-  @override
-  PostCountFetcher? get postCountFetcher => null;
 }
 
 mixin DefaultThumbnailUrlMixin implements BooruBuilder {
@@ -190,38 +180,29 @@ mixin DefaultBooruUIMixin implements BooruBuilder {
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
       (context, config, payload) {
-        return PostDetailsLayoutSwitcher(
+        return PostDetailsScope(
           initialIndex: payload.initialIndex,
           posts: payload.posts,
           scrollController: payload.scrollController,
-          desktop: (controller) => DefaultPostDetailsDesktopPage(
-            initialIndex: controller.currentPage.value,
-            posts: payload.posts,
-            onExit: (page) => controller.onExit(page),
-            onPageChanged: (page) => controller.setPage(page),
-          ),
-          mobile: (controller) => DefaultPostDetailsPage(
-            payload: payload,
-          ),
+          child: const DefaultPostDetailsPage(),
         );
       };
 }
 
-class DefaultPostDetailsPage extends ConsumerWidget {
+class DefaultPostDetailsPage<T extends Post> extends ConsumerWidget {
   const DefaultPostDetailsPage({
     super.key,
-    required this.payload,
   });
-
-  final DetailsPayload payload;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final data = PostDetails.of<T>(context);
+    final posts = data.posts;
+    final controller = data.controller;
+
     return PostDetailsPageScaffold(
-      posts: payload.posts,
-      initialIndex: payload.initialIndex,
-      swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
-      onExit: (page) => payload.scrollController?.scrollToIndex(page),
+      controller: controller,
+      posts: posts,
     );
   }
 }
@@ -344,5 +325,17 @@ class DefaultImagePreviewQuickActionButton extends ConsumerWidget {
 
 mixin UnknownMetatagsMixin implements BooruBuilder {
   @override
-  MetatagExtractor? get metatagExtractor => null;
+  MetatagExtractorBuilder? get metatagExtractorBuilder => null;
 }
+
+final PostDetailsUIBuilder kFallbackPostDetailsUIBuilder = PostDetailsUIBuilder(
+  preview: {
+    DetailsPart.toolbar: (context) => const DefaultInheritedPostActionToolbar(),
+  },
+  full: {
+    DetailsPart.toolbar: (context) => const DefaultInheritedPostActionToolbar(),
+    DetailsPart.tags: (context) => const DefaultInheritedTagList(),
+    DetailsPart.fileDetails: (context) =>
+        const DefaultInheritedFileDetailsSection(),
+  },
+);

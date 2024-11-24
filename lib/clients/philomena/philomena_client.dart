@@ -4,6 +4,18 @@ import 'package:dio/dio.dart';
 // Project imports:
 import 'types/types.dart';
 
+typedef PhilomenaImages = ({
+  List<ImageDto> images,
+  int? count,
+});
+
+extension ListToPhilomenaImages on List<ImageDto> {
+  PhilomenaImages toPhilomenaImages({int? count}) => (
+        images: this,
+        count: count,
+      );
+}
+
 class PhilomenaClient {
   PhilomenaClient({
     Dio? dio,
@@ -17,7 +29,7 @@ class PhilomenaClient {
   final Dio _dio;
   final String? apiKey;
 
-  Future<List<ImageDto>> getImages({
+  Future<PhilomenaImages> getImages({
     List<String>? tags,
     int? page,
     int? perPage,
@@ -34,8 +46,12 @@ class PhilomenaClient {
     );
 
     final data = response.data['images'];
+    final count = response.data['total'];
 
-    return (data as List).map((e) => ImageDto.fromJson(e)).toList();
+    return (data as List)
+        .map((e) => ImageDto.fromJson(e))
+        .toList()
+        .toPhilomenaImages(count: count);
   }
 
   Future<List<TagDto>> getTags({

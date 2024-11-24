@@ -507,6 +507,12 @@ enum BooruType {
   animePictures,
 }
 
+enum PostCountMethod {
+  notSupported,
+  endpoint,
+  search,
+}
+
 extension BooruTypeX on BooruType {
   String stringify() => switch (this) {
         BooruType.unknown => 'UNKNOWN',
@@ -550,6 +556,23 @@ extension BooruTypeX on BooruType {
 
   bool get hasUnknownFullImageUrl =>
       this == BooruType.zerochan || this == BooruType.gelbooruV1;
+
+  PostCountMethod get postCountMethod => switch (this) {
+        BooruType.danbooru => PostCountMethod.endpoint,
+        BooruType.gelbooru => PostCountMethod.search,
+        BooruType.moebooru => PostCountMethod.notSupported,
+        BooruType.gelbooruV2 => PostCountMethod.notSupported,
+        BooruType.e621 => PostCountMethod.notSupported,
+        BooruType.zerochan => PostCountMethod.notSupported,
+        BooruType.gelbooruV1 => PostCountMethod.notSupported,
+        BooruType.sankaku => PostCountMethod.notSupported,
+        BooruType.philomena => PostCountMethod.search,
+        BooruType.shimmie2 => PostCountMethod.notSupported,
+        BooruType.szurubooru => PostCountMethod.search,
+        BooruType.hydrus => PostCountMethod.notSupported,
+        BooruType.animePictures => PostCountMethod.notSupported,
+        BooruType.unknown => PostCountMethod.notSupported,
+      };
 
   int toBooruId() => switch (this) {
         BooruType.danbooru => kDanbooruId,

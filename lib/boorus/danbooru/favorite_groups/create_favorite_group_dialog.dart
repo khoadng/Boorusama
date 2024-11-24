@@ -12,6 +12,7 @@ import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/string.dart';
+import 'package:boorusama/widgets/widgets.dart';
 import '../users/users.dart';
 import 'favorite_groups.dart';
 
@@ -61,17 +62,14 @@ class _EditFavoriteGroupDialogState
 
   @override
   Widget build(BuildContext context) {
-    final config = ref.readConfig;
+    final config = ref.watchConfig;
 
-    return Dialog(
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(8)),
-      ),
+    return BooruDialog(
+      color: context.colorScheme.surfaceContainer,
       child: SingleChildScrollView(
         child: Container(
           margin: const EdgeInsets.symmetric(
-            vertical: 12,
-            horizontal: 16,
+            vertical: 8,
           ),
           decoration: const BoxDecoration(
             borderRadius: BorderRadius.all(

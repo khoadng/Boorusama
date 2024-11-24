@@ -44,7 +44,7 @@ class RemoveBooruConfigAlertDialog extends StatelessWidget {
           const SizedBox(height: 20),
           FilledButton(
             style: FilledButton.styleFrom(
-              backgroundColor: context.colorScheme.errorContainer,
+              backgroundColor: context.colorScheme.error,
               shadowColor: Colors.transparent,
               elevation: 0,
             ),
@@ -57,7 +57,7 @@ class RemoveBooruConfigAlertDialog extends StatelessWidget {
               child: Text(
                 'generic.action.delete'.tr(),
                 style: TextStyle(
-                  color: context.colorScheme.onErrorContainer,
+                  color: context.colorScheme.onError,
                   fontWeight: FontWeight.w600,
                 ),
               ),

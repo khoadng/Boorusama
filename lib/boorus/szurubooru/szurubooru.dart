@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/gelbooru_v2/gelbooru_v2.dart';
-import 'package:boorusama/boorus/szurubooru/favorites/favorites.dart';
+import 'package:boorusama/boorus/szurubooru/post_votes/szurubooru_post_action_toolbar.dart';
 import 'package:boorusama/boorus/szurubooru/providers.dart';
 import 'package:boorusama/core/comments/comments.dart';
 import 'package:boorusama/core/configs/configs.dart';
@@ -20,11 +20,11 @@ import 'package:boorusama/foundation/html.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'create_szurubooru_config_page.dart';
 import 'szurubooru_home_page.dart';
+import 'szurubooru_post.dart';
 import 'szurubooru_post_details_page.dart';
 
 class SzurubooruBuilder
     with
-        PostCountNotSupportedMixin,
         DefaultThumbnailUrlMixin,
         ArtistNotSupportedMixin,
         CharacterNotSupportedMixin,
@@ -84,19 +84,7 @@ class SzurubooruBuilder
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
-      (context, config) => SzurubooruFavoritesPage(username: config.name);
-
-  @override
-  FavoriteAdder? get favoriteAdder => (postId, ref) => ref
-      .read(szurubooruFavoritesProvider(ref.readConfig).notifier)
-      .add(postId)
-      .then((value) => true);
-
-  @override
-  FavoriteRemover? get favoriteRemover => (postId, ref) => ref
-      .read(szurubooruFavoritesProvider(ref.readConfig).notifier)
-      .remove(postId)
-      .then((value) => true);
+      (context, config) => const SzurubooruFavoritesPage();
 
   @override
   HomePageBuilder get homePageBuilder =>
@@ -110,25 +98,16 @@ class SzurubooruBuilder
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) => PostDetailsLayoutSwitcher(
-            initialIndex: payload.initialIndex,
-            posts: payload.posts,
-            scrollController: payload.scrollController,
-            desktop: (controller) => SzurubooruPostDetailsDesktopPage(
-              initialIndex: controller.currentPage.value,
-              controller: controller,
-              posts: payload.posts,
-              onExit: (page) => controller.onExit(page),
-              onPageChanged: (page) => controller.setPage(page),
-            ),
-            mobile: (controller) => SzurubooruPostDetailsPage(
-              initialPage: controller.currentPage.value,
-              controller: controller,
-              posts: payload.posts,
-              onExit: (page) => controller.onExit(page),
-              onPageChanged: (page) => controller.setPage(page),
-            ),
-          );
+      (context, config, payload) {
+        final posts = payload.posts.map((e) => e as SzurubooruPost).toList();
+
+        return PostDetailsScope(
+          initialIndex: payload.initialIndex,
+          posts: posts,
+          scrollController: payload.scrollController,
+          child: const DefaultPostDetailsPage<SzurubooruPost>(),
+        );
+      };
 
   @override
   final DownloadFilenameGenerator<Post> downloadFilenameBuilder =
@@ -140,6 +119,20 @@ class SzurubooruBuilder
       'width': (post, config) => post.width.toString(),
       'height': (post, config) => post.height.toString(),
       'source': (post, config) => post.source.url,
+    },
+  );
+
+  @override
+  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
+    preview: {
+      DetailsPart.toolbar: (context) => const SzurubooruPostActionToolbar(),
+    },
+    full: {
+      DetailsPart.toolbar: (context) => const SzurubooruPostActionToolbar(),
+      DetailsPart.stats: (context) => const SzurubooruStatsTileSection(),
+      DetailsPart.tags: (context) => const SzurubooruTagListSection(),
+      DetailsPart.fileDetails: (context) =>
+          const SzurubooruFileDetailsSection(),
     },
   );
 }
@@ -210,7 +203,22 @@ class SzurubooruCommentPage extends ConsumerWidget {
 }
 
 class SzurubooruFavoritesPage extends ConsumerWidget {
-  const SzurubooruFavoritesPage({
+  const SzurubooruFavoritesPage({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
+
+    return BooruConfigAuthFailsafe(
+      child: SzurubooruFavoritesPageInternal(
+        username: config.login!,
+      ),
+    );
+  }
+}
+
+class SzurubooruFavoritesPageInternal extends ConsumerWidget {
+  const SzurubooruFavoritesPageInternal({
     super.key,
     required this.username,
   });

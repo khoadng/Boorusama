@@ -73,12 +73,6 @@ typedef GranularRatingQueryBuilder = List<String> Function(
 
 typedef GranularRatingOptionsBuilder = Set<Rating> Function();
 
-typedef PostCountFetcher = Future<int?> Function(
-  BooruConfig config,
-  List<String> tags,
-  TagQueryComposer tagQueryComposer,
-);
-
 typedef GridThumbnailUrlBuilder = String Function(
   ImageQuality imageQuality,
   Post post,
@@ -106,8 +100,51 @@ typedef PostGestureHandlerBuilder = bool Function(
   Post post,
 );
 
+typedef MetatagExtractorBuilder = MetatagExtractor Function(
+  TagInfo tagInfo,
+);
+
 typedef HomeViewBuilder = Widget Function(
   BuildContext context,
   BooruConfig config,
   HomePageController controller,
 );
+
+const kDefaultPostDetailsPreviewPart = {
+  DetailsPart.info,
+  DetailsPart.toolbar,
+};
+
+class PostDetailsUIBuilder {
+  const PostDetailsUIBuilder({
+    this.preview = const {},
+    this.full = const {},
+  });
+
+  final Map<DetailsPart, Widget Function(BuildContext context)> preview;
+  final Map<DetailsPart, Widget Function(BuildContext context)> full;
+
+  Widget? buildPart(BuildContext context, DetailsPart part) {
+    final builder = full[part];
+    if (builder != null) {
+      return builder(context);
+    }
+
+    return null;
+  }
+}
+
+enum DetailsPart {
+  pool,
+  info,
+  toolbar,
+  artistInfo,
+  source,
+  tags,
+  stats,
+  fileDetails,
+  comments,
+  artistPosts,
+  relatedPosts,
+  characterList,
+}

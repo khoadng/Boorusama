@@ -216,9 +216,9 @@ class CreateBooruImageDetailsResolutionOptionTile<T> extends StatelessWidget {
     return ListTile(
       contentPadding: EdgeInsets.zero,
       visualDensity: VisualDensity.compact,
-      title: const Text("Details page's image resolution"),
+      title: const Text('settings.image_grid.image_quality.image_quality').tr(),
       subtitle: const Text(
-        'Higher resolution will take longer to load.',
+        'Higher quality will take longer to load.',
       ),
       trailing: OptionDropDownButton(
         alignment: AlignmentDirectional.centerStart,

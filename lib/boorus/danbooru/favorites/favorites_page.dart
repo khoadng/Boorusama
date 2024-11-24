@@ -17,7 +17,22 @@ import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class DanbooruFavoritesPage extends ConsumerWidget {
-  const DanbooruFavoritesPage({
+  const DanbooruFavoritesPage({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
+
+    return BooruConfigAuthFailsafe(
+      child: DanbooruFavoritesPageInternal(
+        username: config.login!,
+      ),
+    );
+  }
+}
+
+class DanbooruFavoritesPageInternal extends ConsumerWidget {
+  const DanbooruFavoritesPageInternal({
     super.key,
     required this.username,
   });
@@ -27,6 +42,7 @@ class DanbooruFavoritesPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfig;
+
     final query = buildFavoriteQuery(username);
     final postRepo = ref.watch(danbooruPostRepoProvider(config));
 

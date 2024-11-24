@@ -226,8 +226,9 @@ class AppTheme {
             borderRadius: BorderRadius.all(Radius.circular(8)),
           ),
         ),
-        dialogTheme: const DialogTheme(
+        dialogTheme: DialogTheme(
           surfaceTintColor: Colors.transparent,
+          backgroundColor: colorScheme.surfaceContainer,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),
           ),

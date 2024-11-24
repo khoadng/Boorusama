@@ -20,7 +20,9 @@ class CreateSzurubooruConfigPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return CreateBooruConfigScaffold(
-      hasRatingFilter: true,
+      searchTab: DefaultBooruConfigSearchView(
+        hasRatingFilter: true,
+      ),
       initialTab: initialTab,
       backgroundColor: backgroundColor,
       authTab: const SzurubooruAuthConfigView(),

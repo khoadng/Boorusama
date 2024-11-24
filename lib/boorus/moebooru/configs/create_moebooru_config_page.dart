@@ -24,7 +24,9 @@ class CreateMoebooruConfigPage extends ConsumerWidget {
       initialTab: initialTab,
       backgroundColor: backgroundColor,
       authTab: const MoebooruAuthConfigView(),
-      hasRatingFilter: true,
+      searchTab: DefaultBooruConfigSearchView(
+        hasRatingFilter: true,
+      ),
     );
   }
 }

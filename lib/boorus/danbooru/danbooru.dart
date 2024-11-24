@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/boorus/danbooru/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/create/create.dart';
@@ -22,7 +23,6 @@ import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import 'artists/danbooru_artist_page.dart';
 import 'comments/comments.dart';
 import 'configs/create_danbooru_config_page.dart';
 import 'favorites/favorites.dart';
@@ -84,15 +84,7 @@ const kDanbooruPostSamples = [
 class DanbooruBuilder
     with DefaultTagColorMixin, NewGranularRatingOptionsBuilderMixin
     implements BooruBuilder {
-  DanbooruBuilder({
-    required this.favoriteRepo,
-    required this.postCountRepo,
-    required this.tagInfo,
-  });
-
-  final FavoritePostRepository favoriteRepo;
-  final PostCountRepository postCountRepo;
-  final TagInfo tagInfo;
+  DanbooruBuilder();
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
@@ -133,18 +125,6 @@ class DanbooruBuilder
           );
 
   @override
-  FavoriteAdder? get favoriteAdder =>
-      (postId, ref) => ref.danbooruFavorites.add(postId).then((_) => true);
-
-  @override
-  FavoriteRemover? get favoriteRemover =>
-      (postId, ref) => ref.danbooruFavorites.remove(postId).then((_) => true);
-
-  @override
-  PostCountFetcher? get postCountFetcher => (config, tags, tagComposer) =>
-      postCountRepo.count(tagComposer.compose(tags));
-
-  @override
   SearchPageBuilder get searchPageBuilder =>
       (context, initialQuery) => DanbooruSearchPage(initialQuery: initialQuery);
 
@@ -153,38 +133,17 @@ class DanbooruBuilder
       (context, config, payload) {
         final posts = payload.posts.map((e) => e as DanbooruPost).toList();
 
-        return PostDetailsLayoutSwitcher<DanbooruPost>(
+        return PostDetailsScope<DanbooruPost>(
           initialIndex: payload.initialIndex,
           posts: posts,
           scrollController: payload.scrollController,
-          desktop: (controller) => DanbooruPostDetailsDesktopPage(
-            initialIndex: controller.currentPage.value,
-            posts: posts,
-            onExit: (page) => controller.onExit(page),
-            onPageChanged: (page) => controller.setPage(page),
-          ),
-          mobile: (controller) => DanbooruPostDetailsPage(
-            intitialIndex: controller.currentPage.value,
-            posts: posts,
-            onExit: (page) => controller.onExit(page),
-            onPageChanged: (page) => controller.setPage(page),
-            controller: controller,
-          ),
+          child: const DanbooruPostDetailsPage(),
         );
       };
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
-      (context, config) => config.login != null
-          ? DanbooruFavoritesPage(username: config.login!)
-          : Scaffold(
-              appBar: AppBar(
-                title: const Text('Favorites'),
-              ),
-              body: const Center(
-                child: Text('You must be logged in to view your favorites'),
-              ),
-            );
+      (context, config) => const DanbooruFavoritesPage();
 
   @override
   ArtistPageBuilder? get artistPageBuilder =>
@@ -329,9 +288,10 @@ class DanbooruBuilder
       };
 
   @override
-  late final MetatagExtractor metatagExtractor = MetatagExtractor(
-    metatags: tagInfo.metatags,
-  );
+  MetatagExtractorBuilder get metatagExtractorBuilder =>
+      (tagInfo) => MetatagExtractor(
+            metatags: tagInfo.metatags,
+          );
 
   @override
   QuickFavoriteButtonBuilder get quickFavoriteButtonBuilder =>
@@ -352,6 +312,30 @@ class DanbooruBuilder
             ? DanbooruMultiSelectionActions(controller: controller)
             : DefaultMultiSelectionActions(controller: controller);
       };
+
+  @override
+  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
+    preview: {
+      DetailsPart.info: (context) => const DanbooruInformationSection(),
+      DetailsPart.toolbar: (context) =>
+          const DanbooruInheritedPostActionToolbar(),
+    },
+    full: {
+      DetailsPart.pool: (context) => const DanbooruPoolTiles(),
+      DetailsPart.info: (context) => const DanbooruInformationSection(),
+      DetailsPart.toolbar: (context) =>
+          const DanbooruInheritedPostActionToolbar(),
+      DetailsPart.artistInfo: (context) => const DanbooruArtistInfoSection(),
+      DetailsPart.stats: (context) => const DanbooruStatsSection(),
+      DetailsPart.tags: (context) => const DanbooruTagsSection(),
+      DetailsPart.fileDetails: (context) => const DanbooruFileDetailsSection(),
+      DetailsPart.artistPosts: (context) => const DanbooruArtistPostsSection(),
+      DetailsPart.relatedPosts: (context) =>
+          const DanbooruRelatedPostsSection2(),
+      DetailsPart.characterList: (context) =>
+          const DanbooruCharacterListSection(),
+    },
+  );
 }
 
 bool handleDanbooruGestureAction(

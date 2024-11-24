@@ -70,7 +70,7 @@ class EditBooruConfigNotifier
       customDownloadFileNameFormat: null,
     );
     final config =
-        arg.isNew ? null : configs?.firstWhereOrNull((e) => e.id == arg.id);
+        arg.isNew ? null : configs.firstWhereOrNull((e) => e.id == arg.id);
 
     return (config ?? defaultConfig).toBooruConfigData();
   }
@@ -86,9 +86,9 @@ class EditBooruConfigNotifier
       state = state.copyWith(apiKey: apiKey);
 
   void updatePassHash(
-    String? Function()? passHash,
+    String? passHash,
   ) =>
-      state = state.copyWith(passHash: passHash);
+      state = state.copyWith(passHash: () => passHash);
 
   void updateLoginAndApiKey(
     String login,
