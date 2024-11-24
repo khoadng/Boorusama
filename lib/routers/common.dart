@@ -23,7 +23,7 @@ GoRouterPageBuilder largeScreenAwarePageBuilder<T>({
   bool useDialog = false,
 }) =>
     (context, state) {
-      return context.orientation.isPortrait
+      return !context.isLargeScreen
           ? CupertinoPage<T>(
               key: state.pageKey,
               name: state.name,

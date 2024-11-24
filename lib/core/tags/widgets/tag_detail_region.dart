@@ -25,7 +25,7 @@ class TagDetailsRegion extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return kPreferredLayout.isMobile && context.orientation.isPortrait
+    return !context.isLargeScreen
         ? builder(context)
         : Material(
             color: context.colorScheme.surface,
