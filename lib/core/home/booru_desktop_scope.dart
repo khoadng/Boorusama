@@ -16,6 +16,7 @@ import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
+import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/lazy_indexed_stack.dart';
 
@@ -50,10 +51,6 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
   late MultiSplitViewController splitController;
 
   bool get isDesktop => context.isLargeScreen;
-
-  bool get isMobileLandScape =>
-      kPreferredLayout.isMobile &&
-      MediaQuery.orientationOf(context).isLandscape;
 
   @override
   void initState() {
@@ -216,12 +213,12 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
         drawerEdgeDragWidth: _calculateDrawerEdgeDragWidth(context, swipeArea),
         body: MultiSplitViewTheme(
           data: MultiSplitViewThemeData(
-            dividerThickness: isMobileLandScape
+            dividerThickness: !isDesktopPlatform()
                 ? Screen.of(context).size.isLarge
                     ? 24
                     : 16
                 : 4,
-            dividerPainter: !isMobileLandScape
+            dividerPainter: isDesktopPlatform()
                 ? DividerPainters.background(
                     animationEnabled: false,
                     color: context.colorScheme.surface,
