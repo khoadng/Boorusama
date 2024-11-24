@@ -18,7 +18,7 @@ import 'package:boorusama/foundation/mobile.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
-const _kDefaultCooldownDuration = Duration(milliseconds: 500);
+const _kDefaultCooldownDuration = Duration(milliseconds: 750);
 
 class PostDetailsPageView extends StatefulWidget {
   const PostDetailsPageView({
@@ -94,6 +94,8 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
   Timer? _debounceTimer;
   final _cooldown = ValueNotifier(false);
 
+  bool get isLargeScreen => context.isLargeScreen;
+
   @override
   void initState() {
     super.initState();
@@ -109,10 +111,9 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final currentExpanded = _controller.sheetState.value.isExpanded;
-      final orientation = MediaQuery.orientationOf(context);
 
       // auto expand side sheet if it was expanded before
-      if (orientation.isLandscape && !currentExpanded) {
+      if (isLargeScreen && !currentExpanded) {
         final expanded = await widget.sheetStateStorage?.loadExpandedState();
 
         if (expanded == true) {
@@ -187,9 +188,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
       _controller.overlay.value = true;
     }
 
-    final orientation = MediaQuery.orientationOf(context);
-
-    if (orientation.isLandscape) {
+    if (isLargeScreen) {
       widget.sheetStateStorage?.persistExpandedState(_controller.isExpanded);
     }
   }
@@ -200,9 +199,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     if (slideShow) {
       // if in expanded mode, exit expanded mode first
       if (_controller.isExpanded) {
-        final orientation = MediaQuery.orientationOf(context);
-
-        if (orientation.isPortrait) {
+        if (!isLargeScreen) {
           await _controller.resetSheet();
         } else {
           _controller.sheetState.value = SheetState.hidden;
@@ -229,7 +226,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
   void dispose() {
     super.dispose();
 
-    _debounceTimer?.cancel();
+    _cancelCooldown();
 
     _controller.sheetState.removeListener(_onSheetStateChanged);
     _controller.pageController.removeListener(_onPageChanged);
@@ -266,10 +263,20 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
       },
       child: CallbackShortcuts(
         bindings: {
-          const SingleActivator(LogicalKeyboardKey.arrowRight): () =>
-              _controller.nextPage(),
-          const SingleActivator(LogicalKeyboardKey.arrowLeft): () =>
-              _controller.previousPage(),
+          const SingleActivator(LogicalKeyboardKey.arrowRight): () {
+            if (_cooldown.value) return;
+
+            _controller.nextPage(
+              duration: isLargeScreen ? Duration.zero : null,
+            );
+          },
+          const SingleActivator(LogicalKeyboardKey.arrowLeft): () {
+            if (_cooldown.value) return;
+
+            _controller.previousPage(
+              duration: isLargeScreen ? Duration.zero : null,
+            );
+          },
           const SingleActivator(LogicalKeyboardKey.keyO): () =>
               _controller.toggleOverlay(),
           const SingleActivator(LogicalKeyboardKey.escape): () =>
@@ -293,11 +300,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
                   child: _buildMain(),
                 ),
               ),
-              PerformanceOrientationBuilder(
-                builder: (context, orientation) => orientation.isPortrait
-                    ? const SizedBox.shrink()
-                    : _buildSide(),
-              ),
+              !isLargeScreen ? const SizedBox.shrink() : _buildSide(),
             ],
           ),
         ),
@@ -322,7 +325,17 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
         child: Container(
           constraints: const BoxConstraints(maxWidth: 360),
           color: Theme.of(context).colorScheme.surface,
-          child: widget.sheetBuilder(context, null),
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border(
+                left: BorderSide(
+                  color: Theme.of(context).colorScheme.hintColor,
+                  width: 0.25,
+                ),
+              ),
+            ),
+            child: widget.sheetBuilder(context, null),
+          ),
         ),
       ),
     );
@@ -335,16 +348,14 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
           child: Column(
             children: [
               Expanded(
-                child: PerformanceOrientationBuilder(
-                  builder: (context, orientation) => ValueListenableBuilder(
-                    valueListenable: _interacting,
-                    builder: (_, interacting, __) => ValueListenableBuilder(
-                      valueListenable: _swipe,
-                      builder: (_, swipe, __) => _buildPageView(
-                        swipe,
-                        interacting,
-                        orientation.isPortrait,
-                      ),
+                child: ValueListenableBuilder(
+                  valueListenable: _interacting,
+                  builder: (_, interacting, __) => ValueListenableBuilder(
+                    valueListenable: _swipe,
+                    builder: (_, swipe, __) => _buildPageView(
+                      swipe,
+                      interacting,
+                      !isLargeScreen,
                     ),
                   ),
                 ),
@@ -355,23 +366,21 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
         ),
         Align(
           alignment: Alignment.bottomCenter,
-          child: PerformanceOrientationBuilder(
-            builder: (context, orientation) => orientation.isPortrait
-                ? ValueListenableBuilder(
-                    valueListenable: _controller.sheetState,
-                    builder: (_, state, __) => state.isExpanded
-                        // If expanded, show the drag sheet
-                        ? _buildDragSheet(
-                            forceInitialSizeAsMax: true,
-                            sheetState: state,
-                          )
-                        // If not expanded, hide it and let the user pull it up
-                        : _buildDragSheet(
-                            sheetState: state,
-                          ),
-                  )
-                : const SizedBox.shrink(),
-          ),
+          child: !isLargeScreen
+              ? ValueListenableBuilder(
+                  valueListenable: _controller.sheetState,
+                  builder: (_, state, __) => state.isExpanded
+                      // If expanded, show the drag sheet
+                      ? _buildDragSheet(
+                          forceInitialSizeAsMax: true,
+                          sheetState: state,
+                        )
+                      // If not expanded, hide it and let the user pull it up
+                      : _buildDragSheet(
+                          sheetState: state,
+                        ),
+                )
+              : const SizedBox.shrink(),
         ),
         if (widget.bottomSheet != null)
           Align(
@@ -379,63 +388,54 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
             child: ValueListenableBuilder(
               valueListenable: _controller.sheetState,
               builder: (_, state, __) => !state.isExpanded
-                  ? PerformanceOrientationBuilder(
-                      builder: (context, orientation) => orientation.isLandscape
-                          ? const SizedBox.shrink()
-                          : ValueListenableBuilder(
-                              valueListenable: _controller.freestyleMoving,
-                              builder: (context, moving, child) =>
-                                  _SlideContainer(
-                                shouldSlide: moving,
-                                direction: SlideContainerDirection.down,
-                                child: ValueListenableBuilder(
-                                  valueListenable: _controller.overlay,
-                                  builder: (_, overlay, child) => overlay
-                                      ? ValueListenableBuilder(
-                                          valueListenable:
-                                              _controller.displacement,
-                                          builder: (_, dis, __) =>
-                                              _SlideContainer(
-                                            direction:
-                                                SlideContainerDirection.down,
-                                            shouldSlide:
-                                                dis > _kMinSlideDistance,
-                                            child: widget.bottomSheet!,
-                                          ),
-                                        )
-                                      : const SizedBox.shrink(),
-                                ),
-                              ),
+                  ? isLargeScreen
+                      ? const SizedBox.shrink()
+                      : ValueListenableBuilder(
+                          valueListenable: _controller.freestyleMoving,
+                          builder: (context, moving, child) => _SlideContainer(
+                            shouldSlide: moving,
+                            direction: SlideContainerDirection.down,
+                            child: ValueListenableBuilder(
+                              valueListenable: _controller.overlay,
+                              builder: (_, overlay, child) => overlay
+                                  ? ValueListenableBuilder(
+                                      valueListenable: _controller.displacement,
+                                      builder: (_, dis, __) => _SlideContainer(
+                                        direction: SlideContainerDirection.down,
+                                        shouldSlide: dis > _kMinSlideDistance,
+                                        child: widget.bottomSheet!,
+                                      ),
+                                    )
+                                  : const SizedBox.shrink(),
                             ),
-                    )
+                          ),
+                        )
                   : const SizedBox.shrink(),
             ),
           ),
         Align(
           alignment: Alignment.topCenter,
-          child: PerformanceOrientationBuilder(
-            builder: (_, orientation) => ValueListenableBuilder(
-              valueListenable: _controller.sheetState,
-              builder: (_, state, __) => ConditionalParentWidget(
-                condition: !state.isExpanded,
-                conditionalBuilder: (child) => ValueListenableBuilder(
-                  valueListenable: _controller.freestyleMoving,
-                  builder: (context, moving, child) => _SlideContainer(
-                    shouldSlide: moving,
-                    direction: SlideContainerDirection.up,
-                    child: HideUIOverlayTransition(
-                      controller: _controller,
-                      pointerCount: _pointerCount,
-                      slideDown: false,
-                      child: child!,
-                    ),
+          child: ValueListenableBuilder(
+            valueListenable: _controller.sheetState,
+            builder: (_, state, __) => ConditionalParentWidget(
+              condition: !state.isExpanded,
+              conditionalBuilder: (child) => ValueListenableBuilder(
+                valueListenable: _controller.freestyleMoving,
+                builder: (context, moving, child) => _SlideContainer(
+                  shouldSlide: moving,
+                  direction: SlideContainerDirection.up,
+                  child: HideUIOverlayTransition(
+                    controller: _controller,
+                    pointerCount: _pointerCount,
+                    slideDown: false,
+                    child: child!,
                   ),
-                  child: child,
                 ),
-                child: SafeArea(
-                  right: orientation.isLandscape && !state.isExpanded,
-                  child: _buildOverlay(),
-                ),
+                child: child,
+              ),
+              child: SafeArea(
+                right: isLargeScreen && !state.isExpanded,
+                child: _buildOverlay(),
               ),
             ),
           ),
@@ -479,15 +479,12 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
                     ? [
                         ...widget.actions,
                         const SizedBox(width: 8),
-                        PerformanceOrientationBuilder(
-                          builder: (context, orientation) => orientation
-                                  .isPortrait
-                              ? const SizedBox.shrink()
-                              : CircularIconButton(
-                                  onPressed: () => _controller.toggleExpanded(),
-                                  icon: const Icon(Symbols.info),
-                                ),
-                        ),
+                        !isLargeScreen
+                            ? const SizedBox.shrink()
+                            : CircularIconButton(
+                                onPressed: () => _controller.toggleExpanded(),
+                                icon: const Icon(Symbols.info),
+                              ),
                       ]
                     : const [],
               ),
@@ -499,35 +496,33 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
   }
 
   Widget _buildBottomDisplacement() {
-    return PerformanceOrientationBuilder(
-      builder: (context, orientation) => orientation.isPortrait
-          ? ValueListenableBuilder(
-              valueListenable: _controller.sheetMaxSize,
-              builder: (_, maxSize, __) => ValueListenableBuilder(
-                valueListenable: _controller.sheetState,
-                builder: (_, state, __) => ValueListenableBuilder(
-                  valueListenable: _displacement,
-                  builder: (context, value, child) => state.isExpanded &&
-                          value < 0
-                      ? SizedBox(
-                          height: maxSize * MediaQuery.sizeOf(context).height,
-                        )
-                      : ValueListenableBuilder(
-                          valueListenable: _pointerCount,
-                          builder: (_, count, __) => !state.isExpanded &&
-                                  value >=
-                                      maxSize *
-                                          MediaQuery.sizeOf(context).height &&
-                                  !(count >
-                                      0) // Only hide when there is any interaction
-                              ? const SizedBox.shrink()
-                              : SizedBox(height: value),
-                        ),
-                ),
+    return !isLargeScreen
+        ? ValueListenableBuilder(
+            valueListenable: _controller.sheetMaxSize,
+            builder: (_, maxSize, __) => ValueListenableBuilder(
+              valueListenable: _controller.sheetState,
+              builder: (_, state, __) => ValueListenableBuilder(
+                valueListenable: _displacement,
+                builder: (context, value, child) =>
+                    state.isExpanded && value < 0
+                        ? SizedBox(
+                            height: maxSize * MediaQuery.sizeOf(context).height,
+                          )
+                        : ValueListenableBuilder(
+                            valueListenable: _pointerCount,
+                            builder: (_, count, __) => !state.isExpanded &&
+                                    value >=
+                                        maxSize *
+                                            MediaQuery.sizeOf(context).height &&
+                                    !(count >
+                                        0) // Only hide when there is any interaction
+                                ? const SizedBox.shrink()
+                                : SizedBox(height: value),
+                          ),
               ),
-            )
-          : const SizedBox.shrink(),
-    );
+            ),
+          )
+        : const SizedBox.shrink();
   }
 
   Widget _buildItem(BuildContext context, int index) {
@@ -649,19 +644,8 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
         final blockSwipe = !swipe || state.isExpanded || interacting;
 
         return PageView.builder(
-          onPageChanged: blockSwipe && !isPortrait
-              ? (value) {
-                  _debounceTimer?.cancel();
-                  _cooldown.value = true;
-                  _debounceTimer = Timer(
-                    _kDefaultCooldownDuration,
-                    () {
-                      if (!mounted) return;
-                      _cooldown.value = false;
-                    },
-                  );
-                }
-              : null,
+          onPageChanged:
+              blockSwipe && !isPortrait ? (_) => _startCooldownTimer() : null,
           controller: _controller.pageController,
           physics: blockSwipe
               ? const NeverScrollableScrollPhysics()
@@ -671,6 +655,29 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
               ? (context, index) => _buildPortraitItem(index)
               : (context, index) => _buildLandscapeItem(index, blockSwipe),
         );
+      },
+    );
+  }
+
+  void _cancelCooldown() {
+    _debounceTimer?.cancel();
+    _debounceTimer = null;
+    _cooldown.value = false;
+  }
+
+  void _startCooldownTimer([
+    Duration? duration,
+  ]) {
+    _cancelCooldown();
+
+    if (!mounted) return;
+
+    _cooldown.value = true;
+    _debounceTimer = Timer(
+      duration ?? _kDefaultCooldownDuration,
+      () {
+        if (!mounted) return;
+        _cooldown.value = false;
       },
     );
   }
@@ -715,9 +722,10 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
 
   Widget _buildLandscapeItem(int index, bool blockSwipe) {
     return Stack(
-      alignment: Alignment.center,
       children: [
-        _buildItem(context, index),
+        Positioned.fill(
+          child: _buildItem(context, index),
+        ),
         if (blockSwipe) ...[
           ValueListenableBuilder(
             valueListenable: _cooldown,
@@ -946,8 +954,6 @@ class PageNavButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final largeButton = MediaQuery.sizeOf(context).width > 1200;
-
     return ValueListenableBuilder(
       valueListenable: controller.overlay,
       builder: (_, overlay, child) =>
@@ -963,7 +969,8 @@ class PageNavButton extends StatelessWidget {
                   child: MaterialButton(
                     color: context.extendedColorScheme.surfaceContainerOverlay,
                     shape: const CircleBorder(),
-                    padding: largeButton ? const EdgeInsets.all(12) : null,
+                    padding:
+                        context.isLargeScreen ? const EdgeInsets.all(12) : null,
                     onPressed: onPressed,
                     child: icon,
                   ),

@@ -49,7 +49,7 @@ class BooruDesktopScope extends ConsumerStatefulWidget {
 class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
   late MultiSplitViewController splitController;
 
-  bool get isDesktop => context.isLandscapeLayout;
+  bool get isDesktop => context.isLargeScreen;
 
   bool get isMobileLandScape =>
       kPreferredLayout.isMobile &&
@@ -132,9 +132,15 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
             bottom: false,
             left: false,
             right: false,
-            child: DecoratedBox(
+            child: Container(
               decoration: BoxDecoration(
                 color: context.colorScheme.surfaceContainerLow,
+                border: Border(
+                  right: BorderSide(
+                    color: context.colorScheme.hintColor,
+                    width: 0.25,
+                  ),
+                ),
               ),
               child: Column(
                 children: [

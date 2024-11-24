@@ -94,9 +94,9 @@ extension DisplayX on BuildContext {
   Screen get screen => Screen.of(this);
   Orientation get orientation => MediaQuery.orientationOf(this);
 
-  bool get isLandscapeLayout =>
+  bool get isLargeScreen =>
       kPreferredLayout.isDesktop ||
-      (kPreferredLayout.isMobile && MediaQuery.orientationOf(this).isLandscape);
+      (kPreferredLayout.isMobile && MediaQuery.sizeOf(this).width > 650);
 }
 
 extension OrientationX on Orientation {

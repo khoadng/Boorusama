@@ -68,7 +68,7 @@ class _BooruScopeState extends ConsumerState<BooruScope> {
     final menuWidth = ref.watch(miscDataProvider(kMenuWidthCacheKey));
     final desktopViews = widget.desktopViews
         .mapIndexed((i, e) => Scaffold(
-              appBar: !context.isLandscapeLayout && i > 0
+              appBar: !context.isLargeScreen && i > 0
                   ? AppBar(
                       leading: BackButton(
                         onPressed: () {

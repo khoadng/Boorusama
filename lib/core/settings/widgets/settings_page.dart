@@ -77,7 +77,7 @@ const _entries = [
   ),
 ];
 
-const double _kThresholdWidth = 550;
+const double _kThresholdWidth = 650;
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({

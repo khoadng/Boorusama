@@ -29,12 +29,13 @@ class BoorusRoutes {
             final landscape = context.orientation.isLandscape;
 
             final page = AddBooruPage(
-              backgroundColor: context.colorScheme.surface,
+              backgroundColor: context.colorScheme.surfaceContainerLow,
               setCurrentBooruOnSubmit: setAsCurrent,
             );
 
             return landscape
                 ? BooruDialog(
+                    color: context.colorScheme.surfaceContainerLow,
                     child: page,
                   )
                 : page;
@@ -77,7 +78,7 @@ class BoorusRoutes {
             final page = booruBuilder?.updateConfigPageBuilder(
                   context,
                   EditBooruConfigId.fromConfig(config),
-                  backgroundColor: context.colorScheme.surface,
+                  backgroundColor: context.colorScheme.surfaceContainerLow,
                   initialTab: q,
                 ) ??
                 Scaffold(
@@ -90,6 +91,7 @@ class BoorusRoutes {
 
             return landscape
                 ? BooruDialog(
+                    color: context.colorScheme.surfaceContainerLow,
                     child: page,
                   )
                 : page;
