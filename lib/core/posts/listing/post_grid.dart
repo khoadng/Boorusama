@@ -49,6 +49,7 @@ class PostGrid<T extends Post> extends ConsumerStatefulWidget {
     this.refreshAtStart = true,
     this.enablePullToRefresh = true,
     this.safeArea = true,
+    this.gridHeader,
   });
 
   final VoidCallback? onLoadMore;
@@ -66,6 +67,8 @@ class PostGrid<T extends Post> extends ConsumerStatefulWidget {
   final Widget? footer;
   final Widget? header;
   final Widget body;
+
+  final Widget? gridHeader;
 
   final String? blacklistedIdString;
 
@@ -173,10 +176,11 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
   @override
   Widget build(BuildContext context) {
     final settings = ref.watch(imageListingSettingsProvider);
-    final header = ResponsiveLayoutBuilder(
-      phone: (context) => _buildConfigHeader(Axis.horizontal),
-      pc: (context) => _buildConfigHeader(Axis.vertical),
-    );
+    final header = widget.gridHeader ??
+        ResponsiveLayoutBuilder(
+          phone: (context) => _buildConfigHeader(Axis.horizontal),
+          pc: (context) => _buildConfigHeader(Axis.vertical),
+        );
 
     return PopScope(
       canPop: !multiSelect,
@@ -476,7 +480,7 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
   }
 
   Widget _buildConfigHeader(Axis axis) {
-    final settingsNotifier = ref.watch(settingsProvider.notifier);
+    final settingsNotifier = ref.watch(settingsNotifierProvider.notifier);
 
     return ValueListenableBuilder(
       valueListenable: controller.hasBlacklist,

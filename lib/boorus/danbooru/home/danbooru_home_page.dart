@@ -70,9 +70,9 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
     if (config.hasStrictSFW) return;
 
     final uri = text != null ? Uri.tryParse(text) : null;
-    final isHttp = uri?.scheme == 'http' || uri?.scheme == 'https';
+    // final isHttp = uri?.scheme == 'http' || uri?.scheme == 'https';
 
-    if (uri != null && isHttp) {
+    if (uri != null) {
       context.navigator.push(CupertinoPageRoute(
         builder: (context) {
           return AlertDialog(

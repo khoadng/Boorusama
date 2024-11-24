@@ -20,6 +20,7 @@ import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/biometrics/app_lock.dart';
 import 'package:boorusama/foundation/rating/rating.dart';
+import 'package:boorusama/instance.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -53,15 +54,17 @@ const kBulkdownload = 'bulk_download';
 class Routes {
   static GoRoute home(Ref ref) => GoRoute(
         path: '/',
-        builder: (context, state) => BooruConfigDeepLinkResolver(
-          path: state.uri.toString(),
-          child: const AppLockWithSettings(
-            child: RateMyAppScope(
-              child: BackgroundDownloaderBuilder(
-                child: CustomContextMenuOverlay(
-                  child: Focus(
-                    autofocus: true,
-                    child: EntryPage(),
+        builder: (context, state) => InstanceListener(
+          child: BooruConfigDeepLinkResolver(
+            path: state.uri.toString(),
+            child: const AppLockWithSettings(
+              child: RateMyAppScope(
+                child: BackgroundDownloaderBuilder(
+                  child: CustomContextMenuOverlay(
+                    child: Focus(
+                      autofocus: true,
+                      child: EntryPage(),
+                    ),
                   ),
                 ),
               ),
