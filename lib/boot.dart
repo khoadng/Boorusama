@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
-import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fvp/fvp.dart' as fvp;
@@ -32,7 +31,6 @@ import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/analytics.dart';
 import 'package:boorusama/foundation/app_info.dart';
 import 'package:boorusama/foundation/device_info_service.dart';
-import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
 import 'package:boorusama/foundation/mobile.dart';
@@ -88,19 +86,6 @@ Future<void> boot(BootLogger bootLogger) async {
   Hive.registerAdapter(BookmarkHiveObjectAdapter());
   bootLogger.l('Register favorite tag adapter');
   Hive.registerAdapter(FavoriteTagHiveObjectAdapter());
-
-  if (isDesktopPlatform()) {
-    bootLogger.l('Initialize window manager');
-    doWhenWindowReady(() {
-      const iPhoneSize = Size(375, 812);
-      const initialSize = Size(1000, 700);
-      const minSize = Size(500, 500);
-      appWindow.minSize = kPreferredLayout.isMobile ? iPhoneSize : minSize;
-      appWindow.size = kPreferredLayout.isMobile ? iPhoneSize : initialSize;
-      appWindow.alignment = Alignment.center;
-      appWindow.show();
-    });
-  }
 
   if (isDesktopPlatform() || isIOS()) {
     fvp.registerWith(
